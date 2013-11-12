@@ -13,11 +13,11 @@ define([
     "backbone",
     "i18n",
     "bootstrap"
-], function($, _, Backbone, i18n, bootstrap) {
+], function ($, _, Backbone, i18n, bootstrap) {
     var AlertView = Backbone.View.extend({
         tagName: "div",
         className: "alert",
-        initialize: function(options) {
+        initialize: function (options) {
             var self = this;
 
             if (options) {
@@ -30,7 +30,7 @@ define([
                 self.remove();
             });
         },
-        render: function() {
+        render: function () {
             var self = this;
             var template = _.template($("#alert_template").html(), {
                 msg: this.message
@@ -39,7 +39,9 @@ define([
             this.$el.addClass("alert-" + this.alert).html(template).alert();
 
             if (this.delay > 0) {
-                window.setTimeout(function() { self.$el.alert('close') }, this.delay);
+                window.setTimeout(function () {
+                    self.$el.alert('close')
+                }, this.delay);
             }
 
             $(".block-alert").empty().append(this.$el);

@@ -17,22 +17,22 @@ define([
     "apps/admin/fields/views/modal",
     "apps/admin/fields/views/dcField",
     "apps/admin/fields/errors/error"
-], function($, _, Backbone, i18n, MultiViews, AlertView, ModalView, DcFieldView, Error) {
+], function ($, _, Backbone, i18n, MultiViews, AlertView, ModalView, DcFieldView, Error) {
     // Add multiview methods
     var FieldEditView = Backbone.View.extend(_.extend({}, MultiViews, {
         tagName: "div",
         className: "field-edit",
-        initialize: function() {
+        initialize: function () {
             this.model.on("change", this._onModelChange, this);
         },
-        updateModel: function(model) {
+        updateModel: function (model) {
             // unbind event to previous model
             this.model.off("change");
             this.model = model;
 
             return this;
         },
-        render: function() {
+        render: function () {
             var self = this;
             var template = _.template($("#edit_template").html(), {
                 lng: AdminFieldApp.lng(),
@@ -45,7 +45,7 @@ define([
             this.$el.empty().html(template);
 
             this._assignView({
-                ".dc-fields-subview" : new DcFieldView({
+                ".dc-fields-subview": new DcFieldView({
                     collection: AdminFieldApp.dcFieldsCollection,
                     field: this.model
                 })
@@ -53,15 +53,15 @@ define([
 
             var completer = $("#tag", this.$el).autocomplete({
                 minLength: 2,
-                source: function(request, response) {
+                source: function (request, response) {
                     $.ajax({
                         url: "/admin/fields/tags/search",
                         dataType: "json",
                         data: {
                             term: request.term
                         },
-                        success: function(data) {
-                            response($.map(data, function(item) {
+                        success: function (data) {
+                            response($.map(data, function (item) {
                                 return {
                                     label: item.label,
                                     value: item.value
@@ -70,7 +70,7 @@ define([
                         }
                     });
                 },
-                close: function(e) {
+                close: function (e) {
                     self.tagFieldChangedAction(e);
                 }
             });
@@ -95,7 +95,7 @@ define([
             "change select": "selectionChangedAction",
             "click .lng-label a": "_toggleLabels"
         },
-        triggerControlledVocabulary: function(e) {
+        triggerControlledVocabulary: function (e) {
             if ($(e.target, this.$el).find("option:selected").val() === "") {
                 this.model.set("vocabulary-type", false);
                 this.render();
@@ -105,7 +105,7 @@ define([
                 this.render();
             }
         },
-        selectionChangedAction: function(e) {
+        selectionChangedAction: function (e) {
             var field = $(e.target);
             var data = {};
             data[field.attr("id")] = $("option:selected", field).val();
@@ -113,7 +113,7 @@ define([
 
             return this;
         },
-        fieldChangedAction: function(e) {
+        fieldChangedAction: function (e) {
             var field = $(e.target);
             var fieldId = field.attr("id");
             var data = {};
@@ -122,7 +122,7 @@ define([
 
             return this;
         },
-        labelChangedAction: function(e) {
+        labelChangedAction: function (e) {
             var field = $(e.target);
             var fieldId = field.attr("id");
             var data = this.model.get("labels");
@@ -133,13 +133,13 @@ define([
 
             return this;
         },
-        tagFieldChangedAction: function(e) {
+        tagFieldChangedAction: function (e) {
             var $this = this;
             var fieldTag = $(e.target);
             var fieldTagId = fieldTag.attr("id");
             var fieldTagValue = fieldTag.val();
 
-            var onFieldValid = function() {
+            var onFieldValid = function () {
                 if (fieldTag.closest(".control-group").hasClass("error")) {
                     // remove error
                     AdminFieldApp.errorManager.removeModelFieldError(
@@ -157,7 +157,7 @@ define([
             }
 
             if ("" !== fieldTagValue) {
-                var jqxhr = $.get( "/admin/fields/tags/"+fieldTagValue, onFieldValid).fail(function() {
+                var jqxhr = $.get("/admin/fields/tags/" + fieldTagValue, onFieldValid).fail(function () {
                     fieldTag
                         .closest(".control-group")
                         .addClass("error")
@@ -173,7 +173,7 @@ define([
                 onFieldValid();
             }
         },
-        deleteAction: function() {
+        deleteAction: function () {
             var self = this;
             var modalView = new ModalView({
                 model: this.model,
@@ -191,7 +191,7 @@ define([
             var index = previousIndex ? previousIndex : (nextIndex ? nextIndex - 1 : -1);
 
             modalView.render();
-            modalView.on("modal:confirm", function() {
+            modalView.on("modal:confirm", function () {
                 AdminFieldApp.fieldsToDelete.push(self.model);
                 AdminFieldApp.fieldListView.collection.remove(self.model);
                 self._selectModelView(index);
@@ -200,19 +200,19 @@ define([
 
             return this;
         },
-        _onModelChange: function() {
+        _onModelChange: function () {
             AdminFieldApp.fieldListView.collection.remove(this.model, {silent: true});
             AdminFieldApp.fieldListView.collection.add(this.model, {silent: true});
             AdminFieldApp.saveView.updateStateButton();
         },
         // select temView by index in itemList
-        _selectModelView: function(index) {
+        _selectModelView: function (index) {
             // select previous or next itemview
             if (index >= 0) {
                 AdminFieldApp.fieldListView.itemViews[index].select().animate().click();
             }
         },
-        _toggleLabels: function(event) {
+        _toggleLabels: function (event) {
             event.preventDefault();
             var curLabel = $(event.target);
             $('.lng-label', this.$el).removeClass("select");

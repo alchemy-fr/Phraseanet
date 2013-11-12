@@ -11,9 +11,9 @@ define([
     "underscore",
     "backbone",
     "models/field"
-], function(_, Backbone, FieldModel) {
+], function (_, Backbone, FieldModel) {
     var FieldCollection = Backbone.Collection.extend({
-        initialize: function(models, options) {
+        initialize: function (models, options) {
             options = options || {};
             if (typeof options === "object" && false === "sbas_id" in options) {
                 throw "You must set a sbas id"
@@ -21,23 +21,23 @@ define([
             this.sbasId = options.sbas_id;
         },
         model: FieldModel,
-        url: function() {
+        url: function () {
             return "/admin/fields/" + this.sbasId + "/fields";
         },
-        search: function(letters) {
+        search: function (letters) {
             if (letters === "")
                 return this;
 
             var pattern = new RegExp(letters, "gi");
 
-            return _(this.filter(function(data) {
+            return _(this.filter(function (data) {
                 return pattern.test(data.get("name"));
             }));
         },
-        comparator: function(item) {
+        comparator: function (item) {
             return item.get("sorter");
         },
-        nextIndex: function(model) {
+        nextIndex: function (model) {
             var index = this.indexOf(model);
 
             if (index < 0) {
@@ -50,7 +50,7 @@ define([
 
             return index + 1;
         },
-        previousIndex: function(model) {
+        previousIndex: function (model) {
             var index = this.indexOf(model);
 
             if (index < 0) {
@@ -64,7 +64,7 @@ define([
             return index - 1;
         },
         // save all collection
-        save: function(options) {
+        save: function (options) {
             return Backbone.sync("update", this, options || {});
         }
     });

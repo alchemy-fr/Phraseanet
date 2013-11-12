@@ -4,13 +4,11 @@
  */
 
 
-$(document).ready(function(){
+$(document).ready(function () {
 
-    function users_select_this(n,k)
-    {
+    function users_select_this(n, k) {
 
-        if(p4.users.sel.length >= 800)
-        {
+        if (p4.users.sel.length >= 800) {
             alert(language.max_record_selected);
             return false;
         }
@@ -19,19 +17,17 @@ $(document).ready(function(){
         return true;
     }
 
-    $('#users th.sortable').live('click', function(){
+    $('#users th.sortable').live('click',function () {
 
         var $this = $(this);
 
         var sort = $('input', $this).val();
 
-        if((sort == $('#users_page_form input[name="srt"]').val())
-            && ($('#users_page_form input[name="ord"]').val() == 'asc'))
-        {
+        if ((sort == $('#users_page_form input[name="srt"]').val())
+            && ($('#users_page_form input[name="ord"]').val() == 'asc')) {
             var ord = 'desc';
         }
-        else
-        {
+        else {
             var ord = 'asc';
         }
 
@@ -39,63 +35,65 @@ $(document).ready(function(){
         $('#users_page_form input[name="ord"]').val(ord);
 
         $('#users_page_form').trigger('submit');
-    }).live('mouseover', function(){$(this).addClass('hover');})
-        .live('mouseout', function(){$(this).removeClass('hover');});
+    }).live('mouseover', function () {
+            $(this).addClass('hover');
+        })
+        .live('mouseout', function () {
+            $(this).removeClass('hover');
+        });
 
     var buttons = {};
-    buttons[language.create_user] = function(){
+    buttons[language.create_user] = function () {
         check_new_user(false);
     };
-    buttons[language.annuler] = function(){
+    buttons[language.annuler] = function () {
         $('#user_add_dialog').dialog('close')
     };
 
     $('#user_add_dialog').dialog({
-        buttons:buttons,
-        modal:true,
-        resizable:false,
-        draggable:false,
-        width:500
+        buttons: buttons,
+        modal: true,
+        resizable: false,
+        draggable: false,
+        width: 500
 
     }).dialog('close');
 
     var buttons = {};
-    buttons[language.create_template] = function(){
+    buttons[language.create_template] = function () {
         check_new_user(true);
     };
-    buttons[language.annuler] = function(){
+    buttons[language.annuler] = function () {
         $('#template_add_dialog').dialog('close');
     };
 
     $('#template_add_dialog').dialog({
-        buttons:buttons,
-        modal:true,
-        resizable:false,
-        draggable:false,
-        width:500
+        buttons: buttons,
+        modal: true,
+        resizable: false,
+        draggable: false,
+        width: 500
 
     }).dialog('close');
 
 
-    function check_new_user(is_template)
-    {
+    function check_new_user(is_template) {
         var container = is_template ? $('#template_add_dialog') : $('#user_add_dialog');
         $('#new_user_loader').show();
         $.ajax({
             type: 'POST',
             url: '../admin/users/create/',
-            dataType : 'json',
+            dataType: 'json',
             data: {
-                act:'CREATENEWUSER',
-                value:$('input[name="value"]', container).val(),
+                act: 'CREATENEWUSER',
+                value: $('input[name="value"]', container).val(),
                 send_credentials: $('input[name="send_credentials"]', container).is(':checked') ? 1 : 0,
                 validate_mail: $('input[name="validate_mail"]', container).is(':checked') ? 1 : 0,
-                template:is_template ? '1':'0'
+                template: is_template ? '1' : '0'
             },
-            success: function(data){
+            success: function (data) {
                 $('.new_user_loader', container).hide();
-                if(!data.error)
-                {
+                if (!data.error) {
                     if (container.data("ui-dialog")) {
                         container.dialog('close');
                     }
@@ -106,51 +104,48 @@ $(document).ready(function(){
                         type: 'POST',
                         url: '../admin/users/rights/',
                         data: {
-                            users : data.data
+                            users: data.data
                         },
-                        success: function(data){
+                        success: function (data) {
                             $('#right-ajax').removeClass('loading').html(data);
                         }
                     });
                 }
-                else
-                {
+                else {
                     alert(data.message);
                 }
 
             },
-            error:function()
-            {
+            error: function () {
                 alert(language.serverError);
             },
-            timeout:function()
-            {
+            timeout: function () {
                 alert(language.serverTimeout);
             }
         });
     }
 
 
-    $('#users_page .user_adder').live('click', function(){
+    $('#users_page .user_adder').live('click', function () {
         if ($('#user_add_dialog').data("ui-dialog")) {
             $('#user_add_dialog').dialog('open');
         }
     });
 
-    $('#users_page .template_adder').live('click', function(){
+    $('#users_page .template_adder').live('click', function () {
         if ($('#template_add_dialog').data("ui-dialog")) {
             $('#template_add_dialog').dialog('open');
         }
     });
 
-    $('#users_page_form').live('submit', function(){
+    $('#users_page_form').live('submit', function () {
         var datas = $('#users_page_form').serializeArray();
         $('#right-ajax').empty().addClass('loading');
         $.ajax({
             type: 'POST',
             url: '../admin/users/search/',
             data: datas,
-            success: function(data){
+            success: function (data) {
                 $('#right-ajax').removeClass('loading').empty().html(data);
             }
         });
@@ -158,14 +153,14 @@ $(document).ready(function(){
         return false;
     });
 
-    $('#users_page_search').live('submit', function(){
+    $('#users_page_search').live('submit', function () {
         var datas = $('#users_page_search').serializeArray();
         $('#right-ajax').empty().addClass('loading');
         $.ajax({
             type: 'POST',
             url: '../admin/users/search/',
             data: datas,
-            success: function(data){
+            success: function (data) {
                 $('#right-ajax').removeClass('loading').empty().html(data);
             }
         });
@@ -173,7 +168,7 @@ $(document).ready(function(){
         return false;
     });
 
-    $('#users_page_form .pager').live('click', function(){
+    $('#users_page_form .pager').live('click', function () {
         var form = $('#users_page_form');
 
         var current_page = parseInt($('input[name="page"]', form).val());
@@ -182,32 +177,28 @@ $(document).ready(function(){
 
         var offset_start = 0;
 
-        if($(this).hasClass('prev'))
-        {
-            offset_start = (current_page-2) * perPage;
+        if ($(this).hasClass('prev')) {
+            offset_start = (current_page - 2) * perPage;
         }
-        if($(this).hasClass('first'))
-        {
+        if ($(this).hasClass('first')) {
             offset_start = 0;
         }
-        if($(this).hasClass('next'))
-        {
+        if ($(this).hasClass('next')) {
             offset_start = current_page * perPage;
         }
-        if($(this).hasClass('last'))
-        {
-            offset_start = (Math.floor(parseInt($('input[name=total_results]').val()) / perPage))* perPage;
+        if ($(this).hasClass('last')) {
+            offset_start = (Math.floor(parseInt($('input[name=total_results]').val()) / perPage)) * perPage;
         }
 
         $('input[name="offset_start"]', form).val(offset_start);
     });
 
-    $('#users tbody tr, #users tbody td').live('dblclick', function(evt){
+    $('#users tbody tr, #users tbody td').live('dblclick', function (evt) {
         $('#users_page_form .user_modifier').trigger('click');
     });
 
-    $('#users tbody tr, #users tbody td').live('click', function(evt){
-        if(evt.stopPropagation)
+    $('#users tbody tr, #users tbody td').live('click',function (evt) {
+        if (evt.stopPropagation)
             evt.stopPropagation();
         evt.cancelBubble = true;
         evt.preventDefault();
@@ -216,29 +207,24 @@ $(document).ready(function(){
 
         var k = el.attr('id').split('_').pop();
 
-        if(is_shift_key(evt) && $('tr.last_selected', cont).length!=0)
-        {
+        if (is_shift_key(evt) && $('tr.last_selected', cont).length != 0) {
             var lst = $('tr', cont);
-            var index1 = $.inArray($('tr.last_selected', cont)[0],lst);
-            var index2 = $.inArray($(el)[0],lst);
-            if(index2<index1)
-            {
+            var index1 = $.inArray($('tr.last_selected', cont)[0], lst);
+            var index2 = $.inArray($(el)[0], lst);
+            if (index2 < index1) {
                 var tmp = index1;
-                index1=(index2-1)<0?index2:(index2-1);
-                index2=tmp;
+                index1 = (index2 - 1) < 0 ? index2 : (index2 - 1);
+                index2 = tmp;
             }
 
             var stopped = false;
-            if(index2 != -1 && index1 != -1)
-            {
-                var exp = 'tr:gt('+index1+'):lt('+(index2-index1)+')';
-                $.each($(exp, cont),function(i,n){
+            if (index2 != -1 && index1 != -1) {
+                var exp = 'tr:gt(' + index1 + '):lt(' + (index2 - index1) + ')';
+                $.each($(exp, cont), function (i, n) {
 
-                    if(!$(n).hasClass('selected'))
-                    {
+                    if (!$(n).hasClass('selected')) {
 
-                        if(!users_select_this(n,$(n).attr('id').split('_').pop()))
-                        {
+                        if (!users_select_this(n, $(n).attr('id').split('_').pop())) {
                             stopped = true;
                             return false;
                         }
@@ -246,63 +232,54 @@ $(document).ready(function(){
                 });
             }
 
-            if(!stopped && $.inArray(k,p4.users.sel)<0)
-            {
-                if(!users_select_this(el,k))
+            if (!stopped && $.inArray(k, p4.users.sel) < 0) {
+                if (!users_select_this(el, k))
                     return false;
             }
         }
-        else
-        {
-            if(!is_ctrl_key(evt))
-            {
-                if($.inArray(k,p4.users.sel)<0)
-                {
+        else {
+            if (!is_ctrl_key(evt)) {
+                if ($.inArray(k, p4.users.sel) < 0) {
                     p4.users.sel = new Array();
                     $('tr', cont).removeClass('selected');
 
-                    if(!users_select_this(el,k))
+                    if (!users_select_this(el, k))
                         return false;
                 }
             }
-            else
-            {
-                if($.inArray(k,p4.users.sel)>=0)
-                {
-                    p4.users.sel = $.grep(p4.users.sel,function(n){
-                        return(n!=k);
+            else {
+                if ($.inArray(k, p4.users.sel) >= 0) {
+                    p4.users.sel = $.grep(p4.users.sel, function (n) {
+                        return(n != k);
                     });
                     $(el).removeClass('selected');
                 }
-                else
-                {
-                    if(!users_select_this(el,k))
+                else {
+                    if (!users_select_this(el, k))
                         return false;
                 }
             }
         }
         $('.last_selected', cont).removeClass('last_selected');
         $(el).addClass('last_selected');
-    }).live('mousedown', function(evt){
+    }).live('mousedown', function (evt) {
 
-            if(evt.stopPropagation)
+            if (evt.stopPropagation)
                 evt.stopPropagation();
             evt.cancelBubble = true;
             evt.preventDefault();
         });
 
-    $('#users_apply_template').live('submit', function(){
+    $('#users_apply_template').live('submit', function () {
         var users = p4.users.sel.join(';');
-        if(users === '')
-        {
+        if (users === '') {
             return false;
         }
 
         var $this = $(this);
         var template = $('select[name="template_chooser"]', $this).val();
 
-        if(template === '')
-        {
+        if (template === '') {
             return false;
         }
 
@@ -313,20 +290,19 @@ $(document).ready(function(){
             type: $this.attr('method'),
             url: $this.attr('action'),
             data: {
-                users : users,
-                template : template
+                users: users,
+                template: template
             },
-            success: function(data){
+            success: function (data) {
                 $('#right-ajax').removeClass('loading').html(data);
             }
         });
         return false;
     });
 
-    $('#users_page_form .user_modifier').live('click', function(){
+    $('#users_page_form .user_modifier').live('click', function () {
         var users = p4.users.sel.join(';');
-        if(users === '')
-        {
+        if (users === '') {
             return false;
         }
 
@@ -336,9 +312,9 @@ $(document).ready(function(){
             type: 'POST',
             url: '../admin/users/rights/',
             data: {
-                users : users
+                users: users
             },
-            success: function(data){
+            success: function (data) {
                 $('#right-ajax').removeClass('loading').html(data);
             }
         });
@@ -346,10 +322,9 @@ $(document).ready(function(){
     });
 
 
-    $('#users_page_form .user_deleter').live('click', function(){
+    $('#users_page_form .user_deleter').live('click', function () {
         var users = p4.users.sel.join(';');
-        if(users === '')
-        {
+        if (users === '') {
             return false;
         }
 
@@ -359,19 +334,18 @@ $(document).ready(function(){
             type: 'POST',
             url: '../admin/users/delete/',
             data: {
-                users : users
+                users: users
             },
-            success: function(data){
+            success: function (data) {
                 $('#right-ajax').removeClass('loading').html(data);
             }
         });
         return false;
     });
-    $('#users_page .invite_modifier, #users_page .autoregister_modifier').live('click', function(){
+    $('#users_page .invite_modifier, #users_page .autoregister_modifier').live('click', function () {
         var users = $(this).next('input').val();
 
-        if($.trim(users) === '')
-        {
+        if ($.trim(users) === '') {
             return false;
         }
 
@@ -381,9 +355,9 @@ $(document).ready(function(){
             type: 'POST',
             url: '../admin/users/rights/',
             data: {
-                users : users
+                users: users
             },
-            success: function(data){
+            success: function (data) {
                 $('#right-ajax').removeClass('loading').html(data);
             }
         });

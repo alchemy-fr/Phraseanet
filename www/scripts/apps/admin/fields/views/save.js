@@ -14,46 +14,46 @@ define([
     "i18n",
     "bootstrap",
     "apps/admin/fields/views/alert"
-], function($, _, Backbone, i18n, bootstrap, AlertView) {
+], function ($, _, Backbone, i18n, bootstrap, AlertView) {
     var SaveView = Backbone.View.extend({
-        initialize: function() {
+        initialize: function () {
             var self = this;
             this.previousAttributes = [];
             this.$overlay = null;
 
-            AdminFieldApp.errorManager.on("add-error", function(errors) {
+            AdminFieldApp.errorManager.on("add-error", function (errors) {
                 self._disableSaveButton(true);
             });
 
-            AdminFieldApp.errorManager.on("no-error", function() {
+            AdminFieldApp.errorManager.on("no-error", function () {
                 self._disableSaveButton(false);
             });
         },
         events: {
-            "click button.save-all" : "clickSaveAction"
+            "click button.save-all": "clickSaveAction"
         },
-        clickSaveAction: function(event) {
+        clickSaveAction: function (event) {
             var self = this;
 
             if (this._isModelDesync()) {
                 this._loadingState(true);
-                $.when.apply($, _.map(AdminFieldApp.fieldsToDelete, function(m){
+                $.when.apply($, _.map(AdminFieldApp.fieldsToDelete, function (m) {
                         return m.destroy({
-                            success: function(model, response) {
-                                AdminFieldApp.fieldsToDelete = _.filter(AdminFieldApp.fieldsToDelete, function(m){
+                            success: function (model, response) {
+                                AdminFieldApp.fieldsToDelete = _.filter(AdminFieldApp.fieldsToDelete, function (m) {
                                     return model.get("id") !== m.get("id");
                                 });
                             },
-                            error: function(xhr, textStatus, errorThrown) {
+                            error: function (xhr, textStatus, errorThrown) {
                                 new AlertView({
                                     alert: "error", message: '' !== xhr.responseText ? xhr.responseText : i18n.t("something_wrong")
                                 }).render();
                             }
                         });
                     })).done(
-                    function() {
+                    function () {
                         AdminFieldApp.fieldsCollection.save({
-                            success: function(fields) {
+                            success: function (fields) {
                                 // reset collection with new one
                                 AdminFieldApp.fieldsCollection.reset(fields);
 
@@ -63,12 +63,12 @@ define([
                                     delay: 2000
                                 }).render();
                             },
-                            error: function(xhr, textStatus, errorThrown) {
+                            error: function (xhr, textStatus, errorThrown) {
                                 new AlertView({
                                     alert: "error", message: '' !== xhr.responseText ? xhr.responseText : i18n.t("something_wrong")
                                 }).render();
                             }
-                        }).done(function() {
+                        }).done(function () {
                                 self._loadingState(false);
                             });
                     }
@@ -84,18 +84,18 @@ define([
 
             return this;
         },
-        updateStateButton: function() {
+        updateStateButton: function () {
             this._disableSaveButton(!this._isModelDesync());
         },
         // check whether model has changed or not
         _isModelDesync: function () {
-            return "undefined" !== typeof AdminFieldApp.fieldsCollection.find(function(model) {
+            return "undefined" !== typeof AdminFieldApp.fieldsCollection.find(function (model) {
                 return !_.isEmpty(model.previousAttributes());
             });
         },
         // create a transparent overlay on top of the application
-        _overlay: function(showOrHide) {
-            if(showOrHide && !this.$overlay) {
+        _overlay: function (showOrHide) {
+            if (showOrHide && !this.$overlay) {
                 this.$overlay = $("<div>").addClass("overlay");
                 AdminFieldApp.$bottom.append(this.$overlay);
             } else if (!showOrHide && this.$overlay) {
@@ -107,7 +107,7 @@ define([
             $("button.save-all", this.$el).attr("disabled", active);
         },
         // put application on loading state (add overlay, add spinner, disable global save button)
-        _loadingState: function(active) {
+        _loadingState: function (active) {
             if (active) {
                 $(".save-block", AdminFieldApp.$top).addClass("loading");
                 $(".block-alert", AdminFieldApp.$top).empty();

@@ -10,16 +10,16 @@
 define([
     "underscore",
     "backbone"
-], function(_, Backbone) {
+], function (_, Backbone) {
     var FieldModel = Backbone.Model.extend({
-        initialize : function(attributes, options) {
+        initialize: function (attributes, options) {
             attributes = attributes || {};
             if (typeof attributes === "object" && false === "sbas-id" in attributes) {
                 throw "You must set a sbas id";
             }
         },
         urlRoot: function () {
-            return "/admin/fields/"+ this.get("sbas-id") +"/fields";
+            return "/admin/fields/" + this.get("sbas-id") + "/fields";
         },
         defaults: {
             "business": false,
@@ -36,10 +36,10 @@ define([
             "vocabulary-type": null,
             "vocabulary-restricted": false,
             "labels": {
-                "fr" : "",
-                "en" : "",
-                "de" : "",
-                "nl" : ""
+                "fr": "",
+                "en": "",
+                "de": "",
+                "nl": ""
             }
         }
     });

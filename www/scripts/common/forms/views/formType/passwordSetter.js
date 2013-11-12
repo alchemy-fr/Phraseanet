@@ -14,14 +14,14 @@ define([
     "backbone",
     "bootstrap",
     "common/forms/views/form"
-], function($, _, i18n, Backbone, bootstrap, FormView) {
+], function ($, _, i18n, Backbone, bootstrap, FormView) {
     var PasswordSetterForm = FormView.extend({
-        events: function(){
-            return _.extend({},FormView.prototype.events,{
-                'keyup input[type=password]' : 'onPasswordKeyup'
+        events: function () {
+            return _.extend({}, FormView.prototype.events, {
+                'keyup input[type=password]': 'onPasswordKeyup'
             });
         },
-        onPasswordKeyup : function(event) {
+        onPasswordKeyup: function (event) {
             var input = $(event.target);
             var password = input.val();
             var inputView = this.inputViews[input.attr("name")];
@@ -34,7 +34,7 @@ define([
             };
             var result = "";
 
-            if (password.length > 0 ) {
+            if (password.length > 0) {
                 var passMeter = zxcvbn(input.val());
 
                 switch (passMeter.score) {

@@ -5,14 +5,7 @@ define([
     'common/forms/views/form',
     'common/forms/views/input',
     'common/forms/views/error'
-], function(
-    chai,
-    fixtures,
-    $,
-    FormView,
-    InputView,
-    ErrorView
-    ) {
+], function (chai, fixtures, $, FormView, InputView, ErrorView) {
     var expect = chai.expect;
     var assert = chai.assert;
     var should = chai.should();
@@ -20,10 +13,12 @@ define([
     fixtures.path = 'fixtures';
     $("body").append(fixtures.read('home/login/form', 'home/login/templates'));
 
-    describe("Login Home", function() {
-        describe("Form View", function() {
-            it("should initialize validator with proper rules", function() {
-                var rules = [{name: "hello",rules: "simple_rules"}];
+    describe("Login Home", function () {
+        describe("Form View", function () {
+            it("should initialize validator with proper rules", function () {
+                var rules = [
+                    {name: "hello", rules: "simple_rules"}
+                ];
                 var form = new FormView({
                     el: $('form[name=loginForm]'),
                     rules: rules
@@ -31,7 +26,7 @@ define([
                 form.validator.getRules().should.equal(rules);
             });
 
-            it("should initialize input views", function() {
+            it("should initialize input views", function () {
                 var form = new FormView({
                     el: $('form[name=loginForm]')
                 });
@@ -39,7 +34,7 @@ define([
                 Object.keys(form.inputViews).length.should.equal(5);
             });
 
-            it("should initialize errors", function() {
+            it("should initialize errors", function () {
                 var form = new FormView({
                     el: $('form[name=loginForm]')
                 });
@@ -47,14 +42,16 @@ define([
                 assert.isTrue(_.isEmpty(form.validator.getErrors()));
             });
 
-            it("should render errors on submit", function() {
+            it("should render errors on submit", function () {
                 var form = new FormView({
                     el: $('form[name=loginForm]'),
-                    rules: [{
-                        "name": "login",
-                        "rules": "required",
-                        "message" : "something is wrong"
-                    }]
+                    rules: [
+                        {
+                            "name": "login",
+                            "rules": "required",
+                            "message": "something is wrong"
+                        }
+                    ]
                 });
 
                 form._onSubmit(document.createEvent("Event"));
@@ -62,8 +59,8 @@ define([
             });
         });
 
-        describe("Input View", function() {
-            it("should initialize error view", function() {
+        describe("Input View", function () {
+            it("should initialize error view", function () {
                 var input = new InputView({
                     "name": "test",
                     "errorTemplate": "#field_errors"
@@ -72,9 +69,9 @@ define([
             });
         });
 
-        describe("Error View", function() {
-            it("should render errors", function() {
-                var error ={
+        describe("Error View", function () {
+            it("should render errors", function () {
+                var error = {
                     name: "test",
                     message: "Something is wrong"
                 };
@@ -82,7 +79,7 @@ define([
                 var errorView = new ErrorView({
                     "name": "test",
                     "errors": [error],
-                    "el" : $(".error-view").first(),
+                    "el": $(".error-view").first(),
                     "errorTemplate": "#field_errors"
                 });
 
@@ -91,7 +88,7 @@ define([
                 assert.isTrue(errorView.$el.html().indexOf(error.message) !== -1);
             });
 
-            it("should empty errors content if there are no errors", function() {
+            it("should empty errors content if there are no errors", function () {
                 var $el = $(".error-view").first();
 
                 $el.html('previous error here');
@@ -99,7 +96,7 @@ define([
                 var errorView = new ErrorView({
                     "name": "test",
                     "errors": [],
-                    "el" : $el,
+                    "el": $el,
                     "errorTemplate": "#field_errors"
                 });
 

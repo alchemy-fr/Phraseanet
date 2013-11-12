@@ -1,26 +1,21 @@
-
-function loadXMLDoc(url, post_parms, asxml)
-{
-    if(typeof(asxml)=="undefined")
+function loadXMLDoc(url, post_parms, asxml) {
+    if (typeof(asxml) == "undefined")
         asxml = false;
     out = null;
     xmlhttp = null;
     // code for Mozilla, etc.
     if (window.XMLHttpRequest)
-        xmlhttp=new XMLHttpRequest();
+        xmlhttp = new XMLHttpRequest();
     else if (window.ActiveXObject)
-        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-    if (xmlhttp)
-    {
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    if (xmlhttp) {
         // xmlhttp.onreadystatechange=state_Change
-        if(post_parms)
-        {
+        if (post_parms) {
             xmlhttp.open("POST", url, false);
-            xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+            xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xmlhttp.send(post_parms);
         }
-        else
-        {
+        else {
             xmlhttp.open("GET", url, false);
             xmlhttp.send(null);
         }
@@ -30,25 +25,22 @@ function loadXMLDoc(url, post_parms, asxml)
 }
 
 
-function showFound2(term, lterm, branch, depth)
-{
+function showFound2(term, lterm, branch, depth) {
     var c;
     var ret = 0;
     var thb = branch.firstChild.nextSibling.nextSibling;
     // branch est un <DIV ID="THE_xxx">
 
-    if(thb)
-    {
-        for(c=thb.firstChild; c; c=c.nextSibling)	// THE, les SY ou les TA
+    if (thb) {
+        for (c = thb.firstChild; c; c = c.nextSibling)	// THE, les SY ou les TA
         {
-            if(c.nodeName=="DIV")
-                ret += showFound2(term, lterm, c, depth+1);	// on descend uniquement les THE_yyy
+            if (c.nodeName == "DIV")
+                ret += showFound2(term, lterm, c, depth + 1);	// on descend uniquement les THE_yyy
         }
     }
 
 
-    if(branch.firstChild.nextSibling.nodeValue.substr(0, lterm)==term)
-    {
+    if (branch.firstChild.nextSibling.nodeValue.substr(0, lterm) == term) {
         ret = 1;
 //		alert(branch.firstChild.nextSibling.nodeValue +  " : " + thb.id);
     }
@@ -56,13 +48,11 @@ function showFound2(term, lterm, branch, depth)
 //	if(ret > 0)
 //	if(depth > 0)
 //	{
-    if(ret > 0)
-    {
+    if (ret > 0) {
         //eventObj.Src0.innerHTML = "+";
         thb.className = "OB";
     }
-    else
-    {
+    else {
         //eventObj.Src0.innerHTML = "+";
         thb.className = "ob";
     }
@@ -81,24 +71,20 @@ function showFound2(term, lterm, branch, depth)
     return(ret);
 }
 
-function showAll(branch, depth)
-{
+function showAll(branch, depth) {
     depth = parseInt(depth);
     var c;
-    for(c=branch.firstChild; c; c=c.nextSibling)
-    {
-        if(c.nodeType==1 && c.nodeName=="DIV")		// 1=XML_ELEMENT_NODE
-            showAll(c, depth+1);
+    for (c = branch.firstChild; c; c = c.nextSibling) {
+        if (c.nodeType == 1 && c.nodeName == "DIV")		// 1=XML_ELEMENT_NODE
+            showAll(c, depth + 1);
     }
 
-    if(depth > 0)
+    if (depth > 0)
         branch.style.display = "";
 
-    if(depth===0)
-    {
-        document.getElementById("WT1").style.visibility="hidden";
-        if(document.forms["fTh"].textT1.value!=="")
-        {
+    if (depth === 0) {
+        document.getElementById("WT1").style.visibility = "hidden";
+        if (document.forms["fTh"].textT1.value !== "") {
             // oups! le mot a changé durant le traitement, on recommence
             evt_kup_T1();
         }
@@ -106,33 +92,28 @@ function showAll(branch, depth)
 }
 
 
-
-function scanTerms(inputName, zTerm, showhide)
-{
+function scanTerms(inputName, zTerm, showhide) {
     showhide = !!showhide;
     var lTerm = zTerm.length;
-    var zTable = document.getElementById("L"+inputName);
+    var zTable = document.getElementById("L" + inputName);
     var zTr = zTable.childNodes;	// TR's
     var l = zTr.length;
     var found = null;
-    for(var i=0; i<l; i++)
-    {
+    for (var i = 0; i < l; i++) {
 //		if(renum)
 //			zTr[i].id = inputName+"_"+i
         var t = zTr[i].firstChild.firstChild.nodeValue;
 //		alert(i+" "+t);
-        if(zTerm == t)
+        if (zTerm == t)
             found = zTr[i];
 
-        if(showhide === true)
-        {
-            if(lTerm==0 || (t.substr(0, lTerm)==zTerm))
+        if (showhide === true) {
+            if (lTerm == 0 || (t.substr(0, lTerm) == zTerm))
                 zTr[i].style.display = "";
             else
                 zTr[i].style.display = "none";
         }
-        else
-        {
+        else {
             zTr[i].style.display = "";
         }
     }
@@ -141,8 +122,8 @@ function scanTerms(inputName, zTerm, showhide)
 
 function addTerm(inputName, zTerm, oldid)	// inputName = "TS"|"TA"|"SY"
 {
-    if(typeof(zTerm)=="undefined")		// si pas de terme en argument, prendre dans la zone de saisie
-        zTerm = document.forms["fTh"]["text"+inputName].value;
+    if (typeof(zTerm) == "undefined")		// si pas de terme en argument, prendre dans la zone de saisie
+        zTerm = document.forms["fTh"]["text" + inputName].value;
 // alert(zTerm);
     // on cherche si le zTerm existe déjà
 //	var parent_id = selectedThesaurusItem.getAttribute("id");
@@ -150,17 +131,14 @@ function addTerm(inputName, zTerm, oldid)	// inputName = "TS"|"TA"|"SY"
 
     // found = scanTerms(inputName, true, false);	// renuméroter et tout afficher
     var found = scanTerms(inputName, zTerm, false);	// tout afficher
-    if(!found)
-    {
+    if (!found) {
         // on cherche la div "thb" si elle existe
         var thb, thRef;
-        for(thb=selectedThesaurusItem.firstChild; thb; thb=thb.nextSibling)
-        {
-            if(thb.nodeType==1 && thb.tagName=="DIV" && thb.id.substr(0,4)=="THB_")
+        for (thb = selectedThesaurusItem.firstChild; thb; thb = thb.nextSibling) {
+            if (thb.nodeType == 1 && thb.tagName == "DIV" && thb.id.substr(0, 4) == "THB_")
                 break;
         }
-        if(!thb)
-        {
+        if (!thb) {
             // on ajoute le premier fils ...
             // ... on crée le +/- en face du terme
             selectedThesaurusItem.firstChild.className = "tri";
@@ -174,27 +152,25 @@ function addTerm(inputName, zTerm, oldid)	// inputName = "TS"|"TA"|"SY"
             thb.id = "THB_" + selectedThesaurusItem.id.substr(4);
         }
 
-        if(inputName=="TS") // on ajoute un terme spécifique
+        if (inputName == "TS") // on ajoute un terme spécifique
         {
             // un id pour le nouveau terme
             var nextid = parseInt(selectedThesaurusItem.getAttribute("nextid"));
             //	selectedThesaurusItem.nextid = "" + (nextid+1);
-            selectedThesaurusItem.setAttribute("nextid", "" + (nextid+1));
+            selectedThesaurusItem.setAttribute("nextid", "" + (nextid + 1));
 
             // on ajoute le nouveau terme dans le thb : on crée une nouvelle div
             var div = document.createElement("DIV");
             div.className = "s_";
-            if(selectedThesaurusItem.id == "THE_")
+            if (selectedThesaurusItem.id == "THE_")
                 div.id = "THE_" + nextid;
             else
                 div.id = selectedThesaurusItem.id + "." + nextid;
-            if(typeof(oldid)=="undefined")
-            {
+            if (typeof(oldid) == "undefined") {
                 //		div.oldid = "?";		// permettra de repérer les nouveaux termes
                 div.setAttribute("oldid", "?");		// permettra de repérer les nouveaux termes
             }
-            else
-            {
+            else {
                 //		div.oldid = oldid;		// le terme a provient des termes candidats
                 div.setAttribute("oldid", oldid);		// le terme a provient des termes candidats
             }
@@ -211,7 +187,7 @@ function addTerm(inputName, zTerm, oldid)	// inputName = "TS"|"TA"|"SY"
             p.className = inputName.toLowerCase();	// ta ou sy
             p.appendChild(document.createTextNode(zTerm));
             thRef = thb.appendChild(p);
-            nextid = document.getElementById("L"+inputName).nextid++;
+            nextid = document.getElementById("L" + inputName).nextid++;
         }
 
         // on ajoute aussi à la liste des termes
@@ -222,7 +198,7 @@ function addTerm(inputName, zTerm, oldid)	// inputName = "TS"|"TA"|"SY"
 
         tr.thRef = thRef;	// lien du nouveau terme de la liste vers le thesaurus
 
-        document.forms["fTh"]["text"+inputName].value = "";
+        document.forms["fTh"]["text" + inputName].value = "";
 
         termChanged = true;
 
@@ -235,8 +211,7 @@ function addTerm(inputName, zTerm, oldid)	// inputName = "TS"|"TA"|"SY"
     evt_kup(inputName);
 }
 
-function dirty()
-{
+function dirty() {
     thesaurusChanged = true;
     document.getElementById("saveButton").style.display = "";
 }
@@ -363,60 +338,50 @@ function dirty()
  }
  */
 // supprime un terme et tous ses fils (deplace 'e plat') dans '(deleted)'
-function deleteBranch(the, thb_deleted)
-{
-    if(the.id.substr(0,4)=="THE_")
-    {
-        var d = thb_deleted.appendChild(document.createElement("DIV") );
+function deleteBranch(the, thb_deleted) {
+    if (the.id.substr(0, 4) == "THE_") {
+        var d = thb_deleted.appendChild(document.createElement("DIV"));
         d.className = "s_ R_";
         d.id = "TCE_R" + (thb_deleted.parentNode.id.substr(1)) + "." + (thb_deleted.parentNode.getAttribute("nextid"));
-        thb_deleted.parentNode.setAttribute("nextid", parseInt(thb_deleted.parentNode.getAttribute("nextid")+1) );
-        d.appendChild(the.firstChild.nextSibling.cloneNode(false) );
-        d.setAttribute("oldid", the.oldid ? the.oldid : the.id.substr(4) );
-        if(the.firstChild.nextSibling.nextSibling)
-        {
-            for(var the=the.firstChild.nextSibling.nextSibling.firstChild; the; the=the.nextSibling)
-            {
+        thb_deleted.parentNode.setAttribute("nextid", parseInt(thb_deleted.parentNode.getAttribute("nextid") + 1));
+        d.appendChild(the.firstChild.nextSibling.cloneNode(false));
+        d.setAttribute("oldid", the.oldid ? the.oldid : the.id.substr(4));
+        if (the.firstChild.nextSibling.nextSibling) {
+            for (var the = the.firstChild.nextSibling.nextSibling.firstChild; the; the = the.nextSibling) {
                 deleteBranch(the, thb_deleted);
             }
         }
     }
 }
 
-function alertNode(n, msg)
-{
-    if(typeof(msg)=="undefined")
+function alertNode(n, msg) {
+    if (typeof(msg) == "undefined")
         msg = "";
-    if(n)
-    {
-        if(n.nodeType==1)
-        {
-            alert(msg + " : <"+n.nodeName+" id='"+n.id+"'>");
+    if (n) {
+        if (n.nodeType == 1) {
+            alert(msg + " : <" + n.nodeName + " id='" + n.id + "'>");
         }
-        else
-        {
-            alert(msg + " : nodeType="+n.nodeType);
+        else {
+            alert(msg + " : nodeType=" + n.nodeType);
         }
     }
-    else
-    {
+    else {
         alert(msg + " : NULL");
     }
 }
 
-function appendTerm(inputName, new_term, id)
-{
+function appendTerm(inputName, new_term, id) {
     var tr = document.createElement("TR");
-    tr.id = inputName + "_"+id;
+    tr.id = inputName + "_" + id;
     tr.className = "s_";
     var td = tr.appendChild(document.createElement("TD"));
     td.appendChild(document.createTextNode(new_term));
     td = tr.appendChild(document.createElement("TD"));
-    td.innerHTML = "<img id='"+inputName+"f_"+id+"' src='./images/noflag.gif' />";
+    td.innerHTML = "<img id='" + inputName + "f_" + id + "' src='./images/noflag.gif' />";
     td = tr.appendChild(document.createElement("TD"));
     td.appendChild(document.createTextNode(" "));
 
-    var zTable = document.getElementById("L"+inputName);
+    var zTable = document.getElementById("L" + inputName);
     return(zTable.appendChild(tr));
 }
 

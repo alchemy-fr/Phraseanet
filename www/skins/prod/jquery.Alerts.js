@@ -1,25 +1,22 @@
 var p4 = p4 || {};
 
-(function(p4){
+(function (p4) {
 
-    function create_dialog()
-    {
-        if($('#p4_alerts').length === 0)
-        {
+    function create_dialog() {
+        if ($('#p4_alerts').length === 0) {
             $('body').append('<div id="p4_alerts"></div>');
         }
 
         return $('#p4_alerts');
     }
 
-    function alert(title, message, callback)
-    {
+    function alert(title, message, callback) {
         var dialog = create_dialog();
 
         var button = new Object();
 
-        button['Ok'] = function(){
-            if(typeof callback === 'function')
+        button['Ok'] = function () {
+            if (typeof callback === 'function')
                 callback();
             else
                 dialog.dialog('close');
@@ -29,28 +26,28 @@ var p4 = p4 || {};
             dialog.dialog('destroy');
         }
 
-        dialog.attr('title',title)
+        dialog.attr('title', title)
             .empty()
             .append(message)
             .dialog({
-                autoOpen:false,
-                closeOnEscape:true,
-                resizable:false,
-                draggable:false,
-                modal:true,
-                buttons : button,
+                autoOpen: false,
+                closeOnEscape: true,
+                resizable: false,
+                draggable: false,
+                modal: true,
+                buttons: button,
                 overlay: {
                     backgroundColor: '#000',
                     opacity: 0.7
                 }
             }).dialog('open');
 
-        if(typeof callback === 'function')
-        {
-            dialog.bind( "dialogclose", function(event, ui) {callback();});
+        if (typeof callback === 'function') {
+            dialog.bind("dialogclose", function (event, ui) {
+                callback();
+            });
         }
-        else
-        {
+        else {
 
         }
 

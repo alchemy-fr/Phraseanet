@@ -13,10 +13,10 @@ define([
     "backbone",
     "common/forms/views/error",
     "common/multiviews"
-], function($, _, Backbone, ErrorView, MultiViews) {
+], function ($, _, Backbone, ErrorView, MultiViews) {
     var InputView = Backbone.View.extend(_.extend({}, MultiViews, {
-        initialize: function(options) {
-            options = options || {};
+        initialize: function (options) {
+            options = options || {};
 
             if (false === "name" in options) {
                 throw "Missing name attribute in input view";
@@ -35,7 +35,7 @@ define([
             });
         },
         render: function () {
-            this._assignView({".error-view" : this.errorView});
+            this._assignView({".error-view": this.errorView});
         },
         showErrors: function (errors) {
             this.render();

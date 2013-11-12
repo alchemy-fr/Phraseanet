@@ -1,31 +1,30 @@
-$(document).ready(function(){
-    if(typeof validator_loaded === 'boolean')
+$(document).ready(function () {
+    if (typeof validator_loaded === 'boolean')
         return;
 
 
-
-    $('.confirm_report').live('click',function(){
+    $('.confirm_report').live('click', function () {
         var $this = $(this);
 
         $('.loader', $this).css({
-            visibility:'visible'
+            visibility: 'visible'
         });
 
         $.ajax({
             type: "POST",
             url: "/lightbox/ajax/SET_RELEASE/" + $('#basket_validation_id').val() + "/",
             dataType: 'json',
-            error: function(data) {
+            error: function (data) {
                 $('.loader', $this).css({
                     visibility: 'hidden'
                 });
             },
-            timeout: function(data) {
+            timeout: function (data) {
                 $('.loader', $this).css({
                     visibility: 'hidden'
                 });
             },
-            success: function(data) {
+            success: function (data) {
                 $('.loader', $this).css({
                     visibility: 'hidden'
                 });
@@ -41,7 +40,7 @@ $(document).ready(function(){
         });
     });
 
-    $('.agreement_radio').live('vmousedown', function(){
+    $('.agreement_radio').live('vmousedown', function () {
         var sselcont_id = $(this).attr('for').split('_').pop();
         var agreement = $('#' + $(this).attr('for')).val() == 'yes' ? '1' : '-1';
 
@@ -49,37 +48,34 @@ $(document).ready(function(){
 
         $.ajax({
             type: "POST",
-            url: "/lightbox/ajax/SET_ELEMENT_AGREEMENT/"+sselcont_id+"/",
+            url: "/lightbox/ajax/SET_ELEMENT_AGREEMENT/" + sselcont_id + "/",
             dataType: 'json',
             data: {
-                agreement		: agreement
+                agreement: agreement
             },
-            error: function(datas){
+            error: function (datas) {
                 alert('error');
                 $.mobile.loading();
             },
-            timeout: function(datas){
+            timeout: function (datas) {
                 alert('error');
                 $.mobile.loading();
             },
-            success: function(datas){
-                if(!datas.error)
-                {
-                    if(agreement == '1')
-                        $('.valid_choice_'+sselcont_id).removeClass('disagree').addClass('agree');
+            success: function (datas) {
+                if (!datas.error) {
+                    if (agreement == '1')
+                        $('.valid_choice_' + sselcont_id).removeClass('disagree').addClass('agree');
                     else
-                        $('.valid_choice_'+sselcont_id).removeClass('agree').addClass('disagree');
+                        $('.valid_choice_' + sselcont_id).removeClass('agree').addClass('disagree');
                     $.mobile.loading();
-                    if(datas.error)
-                    {
+                    if (datas.error) {
                         alert(datas.datas);
                         return;
                     }
 
                     releasable = datas.release;
                 }
-                else
-                {
+                else {
                     alert(datas.datas);
                 }
                 return;
@@ -88,34 +84,33 @@ $(document).ready(function(){
         return false;
 
     });
-    $('.note_area_validate').live('click', function(){
+    $('.note_area_validate').live('click', function () {
         var sselcont_id = $(this).closest('form').find('input[name="sselcont_id"]').val();
 
         $.mobile.loading();
         $.ajax({
             type: "POST",
-            url: "/lightbox/ajax/SET_NOTE/"+sselcont_id+"/",
+            url: "/lightbox/ajax/SET_NOTE/" + sselcont_id + "/",
             dataType: 'json',
             data: {
-                note			: $('#note_form_'+sselcont_id).find('textarea').val()
+                note: $('#note_form_' + sselcont_id).find('textarea').val()
             },
-            error: function(datas){
+            error: function (datas) {
                 alert('error');
                 $.mobile.loading();
             },
-            timeout: function(datas){
+            timeout: function (datas) {
                 alert('error');
                 $.mobile.loading();
             },
-            success: function(datas){
+            success: function (datas) {
                 $.mobile.loading();
-                if(datas.error)
-                {
+                if (datas.error) {
                     alert(datas.datas);
                     return;
                 }
 
-                $('#notes_'+sselcont_id).empty().append(datas.datas);
+                $('#notes_' + sselcont_id).empty().append(datas.datas);
                 window.history.back();
                 return;
             }

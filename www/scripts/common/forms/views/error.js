@@ -11,11 +11,11 @@ define([
     "jquery",
     "underscore",
     "backbone"
-], function($, _, Backbone) {
+], function ($, _, Backbone) {
     var ErrorView = Backbone.View.extend({
         tagName: "div",
-        initialize: function(options) {
-            options = options || {};
+        initialize: function (options) {
+            options = options || {};
 
             if (false === "name" in options) {
                 throw "Missing name attribute in error view";
@@ -28,11 +28,11 @@ define([
             this.name = options.name;
             this.errorTemplate = options.errorTemplate;
 
-            this.errors = options.errors || {};
+            this.errors = options.errors || {};
             this.onRenderError = options.onRenderError || null;
         },
-        render: function() {
-            if (this.errors.length > 0 ) {
+        render: function () {
+            if (this.errors.length > 0) {
                 var template = _.template($(this.errorTemplate).html(), {
                     errors: this.errors
                 });
@@ -54,7 +54,7 @@ define([
 
             return this;
         },
-        reset: function() {
+        reset: function () {
             this.$el.empty();
         }
     });

@@ -21,11 +21,11 @@ require.config({
         "jquery.geonames": "../assets/geonames-server-jquery-plugin/jquery.geonames"
     },
     shim: {
-        bootstrap : ["jquery"],
+        bootstrap: ["jquery"],
         jqueryui: {
             deps: ["jquery"]
         },
-        "jquery.geonames" : {
+        "jquery.geonames": {
             deps: ['jquery', 'jqueryui'],
             exports: '$.fn.geocompleter'
         },

@@ -14,28 +14,28 @@ define([
     "backbone",
     "bootstrap",
     "multiselect"
-], function($, _, i18n, Backbone, bootstrap, multiselect) {
-    var initialize = function() {
+], function ($, _, i18n, Backbone, bootstrap, multiselect) {
+    var initialize = function () {
         // close alerts
-        $(document).on("click", ".alert .alert-block-close a", function(e){
+        $(document).on("click", ".alert .alert-block-close a", function (e) {
             e.preventDefault();
             $(this).closest('.alert').alert('close');
             return false;
         });
 
         $("select[multiple='multiple']").multiselect({
-            buttonWidth : "100%",
+            buttonWidth: "100%",
             buttonClass: 'btn btn-inverse',
             maxHeight: 185,
             includeSelectAllOption: true,
             selectAllValue: 'all',
             selectAllText: i18n.t("all_collections"),
-            buttonText: function(options, select) {
+            buttonText: function (options, select) {
                 if (options.length === 0) {
                     return i18n.t("no_collection_selected") + '<b class="caret"></b>';
                 } else {
                     return i18n.t(
-                        options.length === 1 ? "one_collection_selected": "collections_selected", {
+                        options.length === 1 ? "one_collection_selected" : "collections_selected", {
                             postProcess: "sprintf",
                             sprintf: [options.length]
                         }) + ' <b class="caret"></b>';

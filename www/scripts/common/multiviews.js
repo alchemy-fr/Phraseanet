@@ -11,10 +11,10 @@ define([
     "jquery",
     "underscore",
     "backbone"
-], function($, _, Backbone) {
+], function ($, _, Backbone) {
     return {
         // bind a subview to a DOM element
-        "_assignView": function(selector, view) {
+        "_assignView": function (selector, view) {
             var selectors;
             if (_.isObject(selector)) {
                 selectors = selector;
@@ -23,7 +23,7 @@ define([
                 selectors[selector] = view;
             }
             if (!selectors) return;
-            _.each(selectors, function(view, selector) {
+            _.each(selectors, function (view, selector) {
                 view.setElement(this.$(selector)).render();
             }, this);
         }
