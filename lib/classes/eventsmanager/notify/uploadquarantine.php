@@ -180,15 +180,18 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
     }
 
     /**
+     * @param integer $usr_id The id of the user to check
      *
      * @return boolean
      */
-    public function is_available()
+    public function is_available($usr_id)
     {
-        if (null !== $this->app['authentication']->getUser()) {
-            return $this->app['authentication']->getUser()->ACL()->has_right('addrecord');
+        try {
+            $user = \User_Adapter::getInstance($usr_id, $this->app);
+        } catch (\Exception $e) {
+            return false;
         }
 
-        return false;
+        return $user->ACL()->has_right('addrecord');
     }
 }
