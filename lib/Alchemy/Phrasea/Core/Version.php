@@ -18,7 +18,7 @@ namespace Alchemy\Phrasea\Core;
  */
 class Version
 {
-    protected static $number = '3.8.1-alpha.2';
+    protected static $number = '3.8.1-alpha.3';
     protected static $name = 'Diplodocus';
 
     public static function getNumber()
