@@ -73,7 +73,7 @@ class TaskManager implements ControllerProviderInterface
                 $app['task-manager']->setSchedulerState(\task_manager::STATE_TOSTOP);
 
                 return $app->json(array('success' => true));
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
             }
 
@@ -185,7 +185,7 @@ class TaskManager implements ControllerProviderInterface
                     $task->setState(\task_abstract::STATE_TOSTART);
                     $ret = true;
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
             }
 
@@ -206,7 +206,7 @@ class TaskManager implements ControllerProviderInterface
                 }
 
                 $ret = true;
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
             }
 
