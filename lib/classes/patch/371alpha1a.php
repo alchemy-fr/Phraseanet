@@ -62,5 +62,7 @@ class patch_371alpha1a implements patchInterface
         foreach ($databox->get_meta_structure() as $databox_field) {
             $databox_field->save();
         }
+
+        return true;
     }
 }

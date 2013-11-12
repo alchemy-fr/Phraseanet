@@ -220,5 +220,7 @@ class patch_390alpha7a implements patchInterface
 
         $em->flush();
         $em->clear();
+
+        return true;
     }
 }

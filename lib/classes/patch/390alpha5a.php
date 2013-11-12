@@ -85,5 +85,7 @@ class patch_390alpha5a implements patchInterface
 
         $em->flush();
         $em->clear();
+
+        return true;
     }
 }

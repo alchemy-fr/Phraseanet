@@ -60,16 +60,18 @@ class patch_360alpha2b implements patchInterface
          */
         try {
             $sql = "ALTER TABLE `metadatas`
-                            ADD `updated` TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '1',
-                            ADD INDEX ( `updated` )";
+                    ADD `updated` TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '1',
+                    ADD INDEX ( `updated` )";
 
             $stmt = $databox->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
 
             $sql = 'UPDATE metadatas SET updated = "0"
-                            WHERE meta_struct_id
-                                IN (SELECT id FROM metadatas_structure WHERE multi = "1")';
+                    WHERE meta_struct_id IN
+                    (
+                        SELECT id FROM metadatas_structure WHERE multi = "1"
+                    )';
             $stmt = $databox->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
@@ -88,9 +90,9 @@ class patch_360alpha2b implements patchInterface
         }
 
         $sql = 'SELECT m . *
-            FROM metadatas_structure s, metadatas m
-            WHERE m.meta_struct_id = s.id
-            AND s.multi = "1" AND updated="0"';
+                FROM metadatas_structure s, metadatas m
+                WHERE m.meta_struct_id = s.id
+                AND s.multi = "1" AND updated="0"';
 
         $stmt = $databox->get_connection()->prepare($sql);
         $stmt->execute();
@@ -102,9 +104,9 @@ class patch_360alpha2b implements patchInterface
 
         while ($n < $rowCount) {
             $sql = 'SELECT m . *
-            FROM metadatas_structure s, metadatas m
-            WHERE m.meta_struct_id = s.id
-            AND s.multi = "1" LIMIT ' . $n . ', ' . $perPage;
+                    FROM metadatas_structure s, metadatas m
+                    WHERE m.meta_struct_id = s.id
+                    AND s.multi = "1" LIMIT ' . $n . ', ' . $perPage;
 
             $stmt = $databox->get_connection()->prepare($sql);
             $stmt->execute();
@@ -114,7 +116,7 @@ class patch_360alpha2b implements patchInterface
             $databox->get_connection()->beginTransaction();
 
             $sql = 'INSERT INTO metadatas(id, record_id, meta_struct_id, value)
-                                VALUES (null, :record_id, :meta_struct_id, :value)';
+                    VALUES (null, :record_id, :meta_struct_id, :value)';
             $stmt = $databox->get_connection()->prepare($sql);
 
             $databox_fields = [];

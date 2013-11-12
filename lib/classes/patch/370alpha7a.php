@@ -153,7 +153,7 @@ class patch_370alpha7a implements patchInterface
 
         $stmt->closeCursor();
 
-        return;
+        return true;
     }
 
     private function truncateTable(\Doctrine\ORM\EntityManager $em, $className)

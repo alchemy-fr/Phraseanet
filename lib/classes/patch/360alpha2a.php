@@ -57,7 +57,8 @@ class patch_360alpha2a implements patchInterface
     {
 
         $sql = 'UPDATE usr SET usr_mail = NULL
-                        WHERE usr_mail IS NOT NULL AND usr_login LIKE "(#deleted%"';
+                WHERE usr_mail IS NOT NULL
+                AND usr_login LIKE "(#deleted%"';
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();

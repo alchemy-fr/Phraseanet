@@ -123,5 +123,7 @@ class patch_390alpha1b implements patchInterface
         $em->clear();
 
         $em->getEventManager()->addEventSubscriber(new TimestampableListener());
+
+        return true;
     }
 }

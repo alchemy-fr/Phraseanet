@@ -50,5 +50,7 @@ class patch_380alpha6a implements patchInterface
     {
         $app['configuration']->setDefault('registration-fields');
         $app['configuration']->setDefault('authentication');
+
+        return true;
     }
 }

@@ -70,5 +70,7 @@ class patch_380alpha9a implements patchInterface
         $dom->loadXML($sxe->asXML());
 
         $databox->saveStructure($dom);
+
+        return true;
     }
 }

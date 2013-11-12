@@ -57,7 +57,7 @@ class patch_320alpha1a implements patchInterface
     public function apply(base $databox, Application $app)
     {
         $sql = 'UPDATE record SET parent_record_id = "1"
-                            WHERE parent_record_id != "0"';
+                WHERE parent_record_id != "0"';
         $stmt = $databox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();

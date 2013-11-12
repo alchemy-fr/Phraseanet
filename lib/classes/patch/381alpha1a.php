@@ -49,8 +49,8 @@ class patch_381alpha1a implements patchInterface
     public function apply(base $appbox, Application $app)
     {
         $sql = 'SELECT base_id, ord, sbas_id
-            FROM  `bas`
-            ORDER BY sbas_id, ord';
+                FROM  `bas`
+                ORDER BY sbas_id, ord';
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);

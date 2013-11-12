@@ -55,7 +55,6 @@ class patch_370alpha4a implements patchInterface
 
     public function apply(base $databox, Application $app)
     {
-
         $sql = 'SELECT id, src FROM metadatas_structure';
         $stmt = $databox->get_connection()->prepare($sql);
         $stmt->execute();

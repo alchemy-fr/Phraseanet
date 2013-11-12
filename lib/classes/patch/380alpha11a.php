@@ -63,7 +63,7 @@ class patch_380alpha11a implements patchInterface
             $stmt->closeCursor();
         } catch (\PDOException $e) {
             // this may fail on oldest versions
-            return;
+            return false;
         }
 
         foreach ($rs as $row) {
@@ -115,5 +115,7 @@ class patch_380alpha11a implements patchInterface
         }
 
         $app['EM']->flush();
+
+        return true;
     }
 }

@@ -65,5 +65,7 @@ class patch_380alpha10a implements patchInterface
         }
 
         $stmt->closeCursor();
+
+        return true;
     }
 }

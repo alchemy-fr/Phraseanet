@@ -81,5 +81,7 @@ class patch_380alpha4a implements patchInterface
 
         $app['EM']->flush();
         $app['EM']->clear();
+
+        return true;
     }
 }

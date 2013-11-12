@@ -70,6 +70,6 @@ class patch_380alpha2b implements patchInterface
             $app['phraseanet.appbox']->get_connection()->exec($sql);
         }
 
-        return;
+        return true;
     }
 }

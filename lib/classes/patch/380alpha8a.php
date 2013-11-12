@@ -57,7 +57,7 @@ class patch_380alpha8a implements patchInterface
         $stmt->closeCursor();
 
         if (!$row) {
-            return;
+            return false;
         }
 
         $sxe = simplexml_load_string($row['settings']);

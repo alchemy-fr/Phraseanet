@@ -66,5 +66,7 @@ class patch_380alpha2a implements patchInterface
         }
 
         $app['configuration']->setConfig($config);
+
+        return true;
     }
 }

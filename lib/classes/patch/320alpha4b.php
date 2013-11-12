@@ -75,9 +75,8 @@ class patch_320alpha4b implements patchInterface
 
         }
 
-        $sql = 'SELECT ssel_id, usr_id, name, descript, pub_date
-                            , updater, pub_restrict, homelink
-                        FROM ssel WHERE (public = "1" or homelink="1") and migrated = 0';
+        $sql = 'SELECT ssel_id, usr_id, name, descript, pub_date, updater, pub_restrict, homelink
+                FROM ssel WHERE (public = "1" or homelink="1") and migrated = 0';
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
@@ -119,7 +118,7 @@ class patch_320alpha4b implements patchInterface
             }
 
             $sql = 'SELECT sselcont_id, ssel_id, base_id, record_id
-                                FROM sselcont WHERE ssel_id = :ssel_id ORDER BY ord ASC';
+                    FROM sselcont WHERE ssel_id = :ssel_id ORDER BY ord ASC';
             $stmt = $appbox->get_connection()->prepare($sql);
             $stmt->execute([':ssel_id' => $row['ssel_id']]);
             $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -142,7 +141,7 @@ class patch_320alpha4b implements patchInterface
             $app['EM']->persist($entry);
 
             $sql = 'UPDATE ssel SET deleted = "1", migrated="1"
-                            WHERE ssel_id = :ssel_id';
+                    WHERE ssel_id = :ssel_id';
             $stmt = $appbox->get_connection()->prepare($sql);
             $stmt->execute([':ssel_id' => $row['ssel_id']]);
             $stmt->closeCursor();

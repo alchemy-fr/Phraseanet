@@ -63,7 +63,7 @@ class patch_320alpha5a implements patchInterface
         $stmt->closeCursor();
 
         $sql = 'UPDATE basusr SET order_master="1"
-                        WHERE base_id = :base_id AND usr_id = :usr_id';
+                WHERE base_id = :base_id AND usr_id = :usr_id';
         $stmt = $appbox->get_connection()->prepare($sql);
 
         foreach ($rs as $row) {

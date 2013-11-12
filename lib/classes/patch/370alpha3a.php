@@ -69,5 +69,7 @@ class patch_370alpha3a implements patchInterface
             $client->set_type(\API_OAuth2_Application::DESKTOP_TYPE);
             $client->set_redirect_uri(\API_OAuth2_Application::NATIVE_APP_REDIRECT_URI);
         }
+
+        return true;
     }
 }

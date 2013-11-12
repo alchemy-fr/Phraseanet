@@ -80,8 +80,7 @@ class patch_390alpha6a implements patchInterface
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $sql = 'SELECT base_id, record_id, subdef, filename, folder, error,
-                    done, businessfields
+        $sql = 'SELECT base_id, record_id, subdef, filename, folder, error, done, businessfields
                 FROM ftp_export_elements
                 WHERE ftp_export_id = :export_id';
         $stmt = $conn->prepare($sql);
@@ -152,5 +151,7 @@ class patch_390alpha6a implements patchInterface
         $em->clear();
 
         $em->getEventManager()->addEventSubscriber(new TimestampableListener());
+
+        return true;
     }
 }
