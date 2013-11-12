@@ -18,10 +18,8 @@
   <script type="text/javascript" src="/assets/tinymce/tinymce.js"></script>
   <script type="text/javascript" src="{{ path('minifier', { 'g' : 'admin' }) }}"></script>
   <script type="text/javascript">
-    var p4 = p4 || {};
-    p4.users = {
-        sel:[]
-    };
+    var p4 = p4 || {};
+    p4.users = {sel:[]};
     var bodySize = {x:0,y:0};
 
     var language = {
@@ -36,7 +34,14 @@
         annuler :  '{% trans 'boutton::annuler' %}',
         errorFileApiTooBig :  '{% trans 'This file is too big' %}',
         requiredValue: '{% trans 'This field is required' %}',
-        attention: '{% trans 'Attention' %}'
+        attention: '{% trans 'Attention' %}',
+        reset_template_do_reset_apply_button: '{% trans 'Reset and apply' %}',
+        reset_template_confirm_dialog_title: '{% trans 'Confirm reset users rights before applying template' %}',
+        reset_template_do_confirm_choice: '{% trans 'Rights will be erased before applying template, do you confirm?' %}',
+        reset_template_do_reset_button: '{% trans 'Reset and apply template' %}',
+        reset_template_do_not_reset_button: '{% trans 'Apply template' %}',
+        reset_template_dialog_title: '{% trans 'Reset rights before applying template?' %}',
+        reset_template_ask_choice: '{% trans 'Would you like to reset rights before applying the template?' %}'
     };
 
     function sessionactive(){

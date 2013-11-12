@@ -11,7 +11,7 @@ abstract class eventsmanager_notifyAbstract extends eventsmanager_eventAbstract
 
     abstract public function datas($datas, $unread);
 
-    public function is_available()
+    public function is_available($usr_id)
     {
         return true;
     }

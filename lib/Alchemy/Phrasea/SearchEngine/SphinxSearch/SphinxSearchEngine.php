@@ -506,7 +506,7 @@ class SphinxSearchEngine implements SearchEngineInterface
                         );
 
                         $results->add($record);
-                    } catch (Exception $e) {
+                    } catch (\Exception $e) {
 
                     }
                     $resultOffset++;

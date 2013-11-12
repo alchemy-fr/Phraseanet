@@ -56,7 +56,7 @@ class eventsmanager_broker
                 foreach ($this->pool_classes[$classname]->get_events() as $event)
                     $this->bind($event, $classname);
 
-                if ($type === 'notify' && $this->pool_classes[$classname]->is_available())
+                if ($type === 'notify' && $this->pool_classes[$classname])
                     $this->notifications[] = $classname;
             }
         }
@@ -273,11 +273,14 @@ class eventsmanager_broker
         return $this;
     }
 
-    public function list_notifications_available()
+    public function list_notifications_available($usr_id)
     {
         $personnal_notifications = array();
 
         foreach ($this->notifications as $notification) {
+            if (!$this->pool_classes[$notification]->is_available($usr_id)) {
+                continue;
+            }
             $group = $this->pool_classes[$notification]->get_group();
             $group = $group === null ? _('Notifications globales') : $group;
 

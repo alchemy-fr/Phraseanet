@@ -193,21 +193,24 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
     }
 
     /**
+     * @param integer $usr_id The id of the user to check
      *
      * @return boolean
      */
-    public function is_available()
+    public function is_available($usr_id)
     {
-        $bool = false;
-
-        if ( !$this->app['authentication']->isAuthenticated() || ! $this->app['registration.enabled']) {
+        if (!$this->app['registration.enabled']) {
             return false;
         }
 
+        try {
+            $user = \User_Adapter::getInstance($usr_id, $this->app);
+        } catch (\Exception $e) {
+            return false;
         if ($this->app['acl']->get($this->app['authentication']->getUser())->has_right('manageusers')) {
             $bool = true;
         }
 
-        return $bool;
+        return $user->ACL()->has_right('manageusers');
     }
 }

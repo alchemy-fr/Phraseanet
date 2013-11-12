@@ -69,7 +69,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
      *
      * @var array
      */
-    protected static $def_values = array(
+    public static $def_values = array(
         'view'                    => 'thumbs',
         'images_per_page'         => 20,
         'images_size'             => 120,
@@ -274,6 +274,9 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     protected $template_owner;
 
     protected $password;
+
+    protected $preferences_loaded = false;
+    protected $notifications_preferences_loaded = false;
 
     /**
      *
@@ -1030,7 +1033,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     protected function load_preferences()
     {
-        if ($this->_prefs) {
+        if ($this->preferences_loaded) {
             return $this;
         }
 
@@ -1051,42 +1054,49 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
                 }
 
                 $this->_prefs[$k] = $v;
-                $this->update_pref($k, $v);
             }
         }
 
-        $this->load_notifications_preferences($this->app);
+        $this->preferences_loaded = true;
 
         return $this;
     }
 
     protected function load_notifications_preferences(Application $app)
     {
-        $notifications = $app['events-manager']->list_notifications_available();
+        $this->load_preferences();
+
+        $notifications = $app['events-manager']->list_notifications_available($this->id);
 
         foreach ($notifications as $notification_group => $nots) {
             foreach ($nots as $notification) {
                 if (!isset($this->_prefs['notification_' . $notification['id']])) {
                     $this->_prefs['notification_' . $notification['id']] = '1';
-
-                    $this->update_pref('notification_' . $notification['id'], '1');
                 }
             }
         }
+        $this->notification_preferences_loaded = true;
     }
 
     public function get_notifications_preference(Application $app, $notification_id)
     {
-        $this->load_preferences($app);
+        if (!$this->notifications_preferences_loaded)
+            $this->load_notifications_preferences($app);
 
-        return isset($this->_prefs['notification_' . $notification_id]) ? $this->_prefs['notification_' . $notification_id] : null;
+        return isset($this->_prefs['notification_' . $notification_id]) ? $this->_prefs['notification_' . $notification_id] : '0';
     }
 
     public function set_notification_preference(Application $app, $notification_id, $value)
     {
-        $this->load_preferences($app);
+        if (!$this->notifications_preferences_loaded)
+            $this->load_notifications_preferences($app);
 
-        return $this->_prefs['notification_' . $notification_id] = $value ? '1' : '0';
+        $prop = 'notification_' . $notification_id;
+        $value = $value ? '1' : '0';
+
+        $this->setPrefs($prop, $value);
+
+        return ;
     }
 
     public function get_display_name()
@@ -1172,15 +1182,11 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         return $this->_prefs[$prop];
     }
 
-    public function getPrefs($prop)
+    public function getPrefs($prop, $default = null)
     {
         $this->load_preferences();
-        if (!isset($this->_prefs[$prop])) {
-            $this->_prefs[$prop] = null;
-            $this->update_pref($prop, null);
-        }
 
-        return $this->_prefs[$prop];
+        return array_key_exists($prop, $this->_prefs) ? $this->_prefs[$prop] : $default;
     }
 
     public static function get_sys_admins(Application $app)

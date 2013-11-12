@@ -323,7 +323,7 @@ class Account implements ControllerProviderInterface
         return $app['twig']->render('account/account.html.twig', array(
             'user'          => $app['authentication']->getUser(),
             'evt_mngr'      => $app['events-manager'],
-            'notifications' => $app['events-manager']->list_notifications_available(),
+            'notifications' => $app['events-manager']->list_notifications_available($app['authentication']->getUser()->get_id()),
         ));
     }
 
@@ -372,6 +372,7 @@ class Account implements ControllerProviderInterface
         );
 
         if (0 === count(array_diff($accountFields, array_keys($request->request->all())))) {
+
             try {
                 $app['phraseanet.appbox']->get_connection()->beginTransaction();
 
@@ -403,7 +404,7 @@ class Account implements ControllerProviderInterface
                 $app['EM']->persist($ftpCredential);
                 $app['EM']->flush();
                 $app->addFlash('success', _('login::notification: Changements enregistres'));
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $app->addFlash('error', _('forms::erreurs lors de l\'enregistrement des modifications'));
                 $app['phraseanet.appbox']->get_connection()->rollBack();
             }
@@ -411,15 +412,12 @@ class Account implements ControllerProviderInterface
 
         $requestedNotifications = (array) $request->request->get('notifications', array());
 
-        foreach ($app['events-manager']->list_notifications_available() as $notifications) {
+        foreach ($app['events-manager']->list_notifications_available($app['authentication']->getUser()->get_id()) as $notifications) {
             foreach ($notifications as $notification) {
-                $notifId = $notification['id'];
-                $notifName = sprintf('notification_%s', $notifId);
-
-                if (isset($requestedNotifications[$notifId])) {
-                    $app['authentication']->getUser()->setPrefs($notifName, '1');
+                if (isset($requestedNotifications[$notification['id']])) {
+                    $app['authentication']->getUser()->set_notification_preference($app, $notification['id'], '1');
                 } else {
-                    $app['authentication']->getUser()->setPrefs($notifName, '0');
+                    $app['authentication']->getUser()->set_notification_preference($app, $notification['id'], '0');
                 }
             }
         }

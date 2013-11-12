@@ -84,13 +84,13 @@ class Step35 implements DatasUpgraderInterface
 
                     try {
                         $this->updateMetadatas($record, $row['xml']);
-                    } catch (Exception $e) {
+                    } catch (\Exception $e) {
                         $this->app['monolog']->addError(sprintf("Error while upgrading metadatas for record %d on databox %d : %s", $record->get_record_id(), $record->get_sbas_id(), $e->getMessage()));
                     }
 
                     try {
                         $record->set_binary_status($row['status']);
-                    } catch (Exception $e) {
+                    } catch (\Exception $e) {
                         $this->app['monolog']->addError(sprintf("Error while upgrading status for record %d on databox %d : %s", $record->get_record_id(), $record->get_sbas_id(), $e->getMessage()));
                     }
                     unset($record);

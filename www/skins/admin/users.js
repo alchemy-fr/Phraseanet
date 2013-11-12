@@ -283,19 +283,22 @@ $(document).ready(function () {
             return false;
         }
 
-        $('#right-ajax').empty().addClass('loading');
-        p4.users.sel = [];
+        dialogUserTemplate(function (reset_before_apply) {
+            $('#right-ajax').empty().addClass('loading');
+            p4.users.sel = [];
 
-        $.ajax({
-            type: $this.attr('method'),
-            url: $this.attr('action'),
-            data: {
-                users: users,
-                template: template
-            },
-            success: function (data) {
-                $('#right-ajax').removeClass('loading').html(data);
-            }
+            $.ajax({
+                type: $this.attr('method'),
+                url: $this.attr('action'),
+                data: {
+                    users: users,
+                    template: template,
+                    reset_before_apply: reset_before_apply
+                },
+                success: function (data) {
+                    $('#right-ajax').removeClass('loading').html(data);
+                }
+            });
         });
         return false;
     });

@@ -431,7 +431,7 @@ class PhraseaEngine implements SearchEngineInterface
                                 $data['record_id'],
                                 $resultNumber
                 ));
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
             }
             $resultNumber++;
