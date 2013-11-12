@@ -14,8 +14,8 @@ require([
     "common/forms/views/formType/passwordSetter"
 ], function($, i18n, Common, RenewPassword) {
     i18n.init({
-            resGetPath: Common.languagePath,
-            useLocalStorage: true
+        resGetPath: Common.languagePath,
+        useLocalStorage: true
     }, function() {
         Common.initialize();
 

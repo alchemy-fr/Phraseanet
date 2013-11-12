@@ -14,8 +14,8 @@ require([
     "common/forms/views/form"
 ], function($, i18n, Common, RenewEmail) {
     i18n.init({
-            resGetPath: Common.languagePath,
-            useLocalStorage: true
+        resGetPath: Common.languagePath,
+        useLocalStorage: true
     }, function() {
         Common.initialize();
 

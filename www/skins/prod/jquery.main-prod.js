@@ -428,7 +428,7 @@ function afterSearch()
             $('.rollover-gif-hover',this).hide();
             $('.rollover-gif-out',this).show();
         }
-        );
+    );
     viewNbSelect();
     $('#answers div.IMGT').draggable({
         helper : function(){
@@ -464,7 +464,7 @@ function initAnswerForm(){
     searchForm.unbind('submit').bind('submit',function(){
 
         var $this = $(this),
-        method = $this.attr('method') ? $this.attr('method') : 'POST';
+            method = $this.attr('method') ? $this.attr('method') : 'POST';
 
         answAjax = $.ajax({
             type: method,
@@ -750,7 +750,7 @@ function toHex(N) {
     N=Math.min(N,255);
     N=Math.round(N);
     return "0123456789ABCDEF".charAt((N-N%16)/16)
-    + "0123456789ABCDEF".charAt(N%16);
+        + "0123456789ABCDEF".charAt(N%16);
 }
 function hsl2rgb(h, s, l) {
     var m1, m2, hue;
@@ -917,10 +917,10 @@ $(document).ready(function(){
             $('style[title=color_selection]').empty();
 
             var datas = '.diapo.selected,#reorder_box .diapo.selected, #EDIT_ALL .diapo.selected, .list.selected, .list.selected .diapo' +
-            '{'+
-            '    COLOR: #'+back_hex+';'+
-            '    BACKGROUND-COLOR: #'+hex+';'+
-            '}';
+                '{'+
+                '    COLOR: #'+back_hex+';'+
+                '    BACKGROUND-COLOR: #'+hex+';'+
+                '}';
             $('style[title=color_selection]').empty().text(datas);
         }
     });
@@ -1022,22 +1022,22 @@ $(document).ready(function(){
                         $("#DIALOG").dialog('destroy');
                     }
                     $("#DIALOG").attr('title',data.titre)
-                    .empty()
-                    .append(data.texte)
-                    .dialog({
-                        autoOpen:false,
-                        closeOnEscape:true,
-                        resizable:false,
-                        draggable:false,
-                        modal:true,
-                        buttons:buttons,
-                        width:650,
-                        height:250,
-                        overlay: {
-                            backgroundColor: '#000',
-                            opacity: 0.7
-                        }
-                    }).dialog('open');
+                        .empty()
+                        .append(data.texte)
+                        .dialog({
+                            autoOpen:false,
+                            closeOnEscape:true,
+                            resizable:false,
+                            draggable:false,
+                            modal:true,
+                            buttons:buttons,
+                            width:650,
+                            height:250,
+                            overlay: {
+                                backgroundColor: '#000',
+                                opacity: 0.7
+                            }
+                        }).dialog('open');
 
                 }
             }
@@ -1053,8 +1053,8 @@ $(document).ready(function(){
     $('#history-queries ul li').live('mouseover',function(){
         $(this).addClass('hover');
     }).live('mouseout',function(){
-        $(this).removeClass('hover');
-    });
+            $(this).removeClass('hover');
+        });
 
     startThesaurus();
     checkFilters();
@@ -1094,15 +1094,15 @@ $(document).ready(function(){
 
 
             $('#idFrameC').stop().animate({
-                width : nwidth
-            },
-            300,
-            'linear',
-            function(){
-                answerSizer();
-                linearize();
-                saveWindows();
-            });
+                    width : nwidth
+                },
+                300,
+                'linear',
+                function(){
+                    answerSizer();
+                    linearize();
+                    saveWindows();
+                });
         }
     });
 
@@ -1163,17 +1163,17 @@ $(document).ready(function(){
     $('.tools .answer_selector').bind('click',function(){
         selector($(this));
     }).bind('mouseover',function(event){
-        if(is_ctrl_key(event))
-        {
-            $(this).addClass('add_selector');
-        }
-        else
-        {
+            if(is_ctrl_key(event))
+            {
+                $(this).addClass('add_selector');
+            }
+            else
+            {
+                $(this).removeClass('add_selector');
+            }
+        }).bind('mouseout',function(){
             $(this).removeClass('add_selector');
-        }
-    }).bind('mouseout',function(){
-        $(this).removeClass('add_selector');
-    });
+        });
 
     getLanguage();
 
@@ -1233,27 +1233,27 @@ $(document).ready(function(){
                 if(p4.preview.open)
                 {
                     if (($('#dialog_dwnl:visible').length === 0 && $('#DIALOG1').length === 0 && $('#DIALOG2').length === 0)) {
-                    switch(event.keyCode)
-                    {
-                        case 39:
-                            getNext();
-                            cancelKey = shortCut = true;
-                            break;
-                        case 37:
-                            getPrevious();
-                            cancelKey = shortCut = true;
-                            break;
-                        case 27://escape
-                            closePreview();
-                            break;
-                        case 32:
-                            if(p4.slideShow)
-                                stopSlide();
-                            else
-                                startSlide();
-                            cancelKey = shortCut = true;
-                            break;
-                    }
+                        switch(event.keyCode)
+                        {
+                            case 39:
+                                getNext();
+                                cancelKey = shortCut = true;
+                                break;
+                            case 37:
+                                getPrevious();
+                                cancelKey = shortCut = true;
+                                break;
+                            case 27://escape
+                                closePreview();
+                                break;
+                            case 32:
+                                if(p4.slideShow)
+                                    stopSlide();
+                                else
+                                    startSlide();
+                                cancelKey = shortCut = true;
+                                break;
+                        }
                     }
                 }
                 else
@@ -1411,8 +1411,8 @@ $(document).ready(function(){
     $('#EDIT_query').bind('focus',function(){
         $(this).addClass('focused');
     }).bind('blur',function(){
-        $(this).removeClass('focused');
-    });
+            $(this).removeClass('focused');
+        });
 
     $('.basketTips').tooltip({
         delay: 200
@@ -1716,7 +1716,7 @@ function toolREFACTOR(datas){
             dialog.setContent(data);
             return;
         }
-        );
+    );
 
 }
 
@@ -2071,8 +2071,8 @@ function activeIcons()
         }
 
         /**
-     * if works, then the object is not empty
-     */
+         * if works, then the object is not empty
+         */
         for(i in value)
         {
             return chgCollThis(value);
@@ -2098,7 +2098,7 @@ function activeIcons()
                 }
             } else {
                 if ($this.hasClass('basket_element')) {
-                     params.ssel = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+                    params.ssel = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
                 } else {
                     if ($this.hasClass('story_window')) {
                         if (p4.WorkZone.Selection.length() > 0) {
@@ -2388,21 +2388,21 @@ function printThis(value)
         $("#DIALOG").dialog('destroy');
     }
     $('#DIALOG').attr('title', language.print)
-    .empty().addClass('loading')
-    .dialog({
-        resizable:false,
-        closeOnEscape:true,
-        modal:true,
-        width:'800',
-        height:'500',
-        open: function(event, ui) {
-            $(this).dialog("widget").css("z-index", "1999");
-        },
-        close: function(event, ui) {
-            $(this).dialog("widget").css("z-index", "auto");
-        }
-    })
-    .dialog('open');
+        .empty().addClass('loading')
+        .dialog({
+            resizable:false,
+            closeOnEscape:true,
+            modal:true,
+            width:'800',
+            height:'500',
+            open: function(event, ui) {
+                $(this).dialog("widget").css("z-index", "1999");
+            },
+            close: function(event, ui) {
+                $(this).dialog("widget").css("z-index", "auto");
+            }
+        })
+        .dialog('open');
 
     $.ajax({
         type: "POST",
@@ -2413,7 +2413,7 @@ function printThis(value)
         },
         success: function(data){
             $('#DIALOG').removeClass('loading').empty()
-            .append(data);
+                .append(data);
             return;
         }
     });
@@ -2432,7 +2432,7 @@ function downloadThis(datas)
 
         $('.close_button', dialog.getDomElement()).bind('click',function(){
             dialog.Close();
-		});
+        });
 
         return false;
     });
@@ -2581,8 +2581,8 @@ function doDelete(lst)
 
             $.each(data,function(i,n){
                 var imgt = $('#IMGT_'+n),
-                chim = $('.CHIM_'+n),
-                stories = $('.STORY_'+n);
+                    chim = $('.CHIM_'+n),
+                    stories = $('.STORY_'+n);
                 $('.doc_infos', imgt).remove();
                 imgt.unbind("click").removeAttr("ondblclick").removeClass("selected").removeClass("IMGT").find("img").unbind();
 
@@ -3053,10 +3053,10 @@ function set_up_feed_box(data)
         $(this).addClass('selected');
         $('input[name="feed_id"]', $form).val($('input', this).val());
     }).hover(function(){
-        $(this).addClass('hover');
-    },function(){
-        $(this).removeClass('hover');
-    });
+            $(this).addClass('hover');
+        },function(){
+            $(this).removeClass('hover');
+        });
 
     $form.bind('submit', function(){
         return false;

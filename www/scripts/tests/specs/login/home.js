@@ -12,7 +12,7 @@ define([
     FormView,
     InputView,
     ErrorView
-) {
+    ) {
     var expect = chai.expect;
     var assert = chai.assert;
     var should = chai.should();
