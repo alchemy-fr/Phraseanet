@@ -31,7 +31,8 @@ require([
             }, function () {
                 Common.initialize();
 
-                var rules = [
+                var rules = [];
+                var defaultRules = [
                     {
                         name: "email",
                         rules: "required",
@@ -85,7 +86,13 @@ require([
                             "message": i18n.t("validation_blank")
                         };
 
-                        rules.push(rule);
+                        defaultRules.push(rule);
+                    }
+                });
+
+                _.each(defaultRules, function (rule) {
+                    // add rule if element exists
+                    if ($("[name='" + rule.name + "']").length >= 1) {
                     }
                 });
 
