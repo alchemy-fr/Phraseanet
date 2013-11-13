@@ -32,7 +32,7 @@ class Datafiles extends AbstractDelivery
 
         $that = $this;
 
-        $controllers->before(function (Request $request) use ($app) {
+        $controllers->before(function () use ($app) {
             if (!$app['authentication']->isAuthenticated()) {
                 $app->abort(403, 'You are not autorized to see this');
             }

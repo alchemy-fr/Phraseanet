@@ -42,7 +42,7 @@ class Factory
         switch (strtolower($name)) {
             case 'apc':
             case 'apccache':
-                $cache = $this->createApc($options);
+                $cache = $this->createApc();
                 break;
             case 'array':
             case 'arraycache':
@@ -62,11 +62,11 @@ class Factory
                 break;
             case 'wincache':
             case 'wincachecache':
-                $cache = $this->createWincache($options);
+                $cache = $this->createWincache();
                 break;
             case 'xcache':
             case 'xcachecache':
-                $cache = $this->createXcache($options);
+                $cache = $this->createXcache();
                 break;
             default:
                 throw new RuntimeException(sprintf('Unnown cache type %s', $name));
@@ -75,7 +75,7 @@ class Factory
         return $cache;
     }
 
-    private function createXcache($options)
+    private function createXcache()
     {
         if (!extension_loaded('xcache')) {
             throw new RuntimeException('The XCache cache requires the XCache extension.');
@@ -84,7 +84,7 @@ class Factory
         return new XcacheCache();
     }
 
-    private function createWincache($options)
+    private function createWincache()
     {
         if (!extension_loaded('wincache')) {
             throw new RuntimeException('The WinCache cache requires the WinCache extension.');
@@ -123,7 +123,7 @@ class Factory
         return $cache;
     }
 
-    private function createApc($options)
+    private function createApc()
     {
         if (!extension_loaded('apc')) {
             throw new RuntimeException('The APC cache requires the APC extension.');
