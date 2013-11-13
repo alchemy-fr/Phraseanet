@@ -15,55 +15,54 @@ use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Gedmo\Timestampable\TimestampableListener;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class patch_320alpha4b implements patchInterface
 {
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     private $release = '3.2.0-alpha.4';
 
-    /**
-     *
-     * @var Array
-     */
-    private $concern = [base::APPLICATION_BOX];
+    /** @var array */
+    private $concern = array(base::APPLICATION_BOX);
 
     /**
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function get_release()
     {
         return $this->release;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return array('feed');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function require_all_upgrades()
     {
         return true;
     }
 
     /**
-     *
-     * @return Array
+     * {@inheritdoc}
      */
     public function concern()
     {
         return $this->concern;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $appbox, Application $app)
     {
-        $version = $app['doctrine-migration.configuration']->getVersion($this->release);
-        $version->execute('up');
-
         $feeds = array();
 
         try {
@@ -120,7 +119,7 @@ class patch_320alpha4b implements patchInterface
             $sql = 'SELECT sselcont_id, ssel_id, base_id, record_id
                     FROM sselcont WHERE ssel_id = :ssel_id ORDER BY ord ASC';
             $stmt = $appbox->get_connection()->prepare($sql);
-            $stmt->execute([':ssel_id' => $row['ssel_id']]);
+            $stmt->execute(array(':ssel_id' => $row['ssel_id']));
             $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
@@ -143,7 +142,7 @@ class patch_320alpha4b implements patchInterface
             $sql = 'UPDATE ssel SET deleted = "1", migrated="1"
                     WHERE ssel_id = :ssel_id';
             $stmt = $appbox->get_connection()->prepare($sql);
-            $stmt->execute([':ssel_id' => $row['ssel_id']]);
+            $stmt->execute(array(':ssel_id' => $row['ssel_id']));
             $stmt->closeCursor();
             $app['EM']->persist($feed);
             $n++;
@@ -171,7 +170,7 @@ class patch_320alpha4b implements patchInterface
 
         return;
     }
-    protected static $feeds = [];
+    protected static $feeds = array();
 
     protected function get_feed(appbox $appbox, User_Adapter $user, $pub_restrict, $homelink, Application $app)
     {
@@ -204,9 +203,9 @@ class patch_320alpha4b implements patchInterface
             if ($homelink) {
                 $feed->setPublic(true);
 
-            $app['EM']->persist($feed);
-            $app['EM']->persist($user);
-            $app['EM']->flush();
+                $app['EM']->persist($feed);
+                $app['EM']->persist($user);
+                $app['EM']->flush();
 
             } elseif ($pub_restrict == 1) {
                 $collections = $app['acl']->get($user)->get_granted_base();

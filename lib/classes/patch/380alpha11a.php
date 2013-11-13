@@ -48,11 +48,16 @@ class patch_380alpha11a implements patchInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrineMigrations()
+    {
+        return array('session');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $appbox, Application $app)
     {
-        $version = $app['doctrine-migration.configuration']->getVersion($this->release);
-        $version->execute('up');
-
         try {
             $sql = 'SELECT usr_id, user_agent, ip, platform, browser, app,
                         browser_version, screen, token, nonce, lastaccess, created_on

@@ -11,42 +11,40 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class patch_373alpha1a implements patchInterface
 {
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     private $release = '3.7.3-alpha.1';
 
-    /**
-     *
-     * @var Array
-     */
-    private $concern = [base::APPLICATION_BOX];
+    /** @var array */
+    private $concern = array(base::APPLICATION_BOX);
 
     /**
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function get_release()
     {
         return $this->release;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function require_all_upgrades()
     {
         return false;
     }
 
     /**
-     *
-     * @return Array
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return array();
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function concern()
     {
@@ -54,15 +52,14 @@ class patch_373alpha1a implements patchInterface
     }
 
     /**
-     * @param base        $appbox
-     * @param Application $app
+     * {@inheritdoc}
      */
     public function apply(base $appbox, Application $app)
     {
         $sql = 'SELECT * FROM registry WHERE `key` = :key';
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
 
-        $Regbinaries = [
+        $Regbinaries = array(
             'GV_cli',
             'GV_swf_extract',
             'GV_pdf2swf',
@@ -72,9 +69,9 @@ class patch_373alpha1a implements patchInterface
             'GV_ffprobe',
             'GV_mp4box',
             'GV_pdftotext',
-        ];
+        );
 
-        $mapping = [
+        $mapping = array(
             'GV_cli'           => 'php_binary',
             'GV_swf_extract'   => 'swf_extract_binary',
             'GV_pdf2swf'       => 'pdf2swf_binary',
@@ -84,12 +81,12 @@ class patch_373alpha1a implements patchInterface
             'GV_ffprobe'       => 'ffprobe_binary',
             'GV_mp4box'        => 'mp4box_binary',
             'GV_pdftotext'     => 'pdftotext_binary',
-        ];
+        );
 
-        $binaries = ['ghostscript_binary' => null];
+        $binaries = array('ghostscript_binary' => null);
 
         foreach ($Regbinaries as $name) {
-            $stmt->execute([':key' => $name]);
+            $stmt->execute(array(':key' => $name));
             $row = $stmt->fetch(\PDO::FETCH_ASSOC);
             $value = is_executable($row['value']) ? $row['value'] : null;
 
@@ -105,14 +102,14 @@ class patch_373alpha1a implements patchInterface
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
 
         foreach ($Regbinaries as $name) {
-            $stmt->execute([':key' => $name]);
+            $stmt->execute(array(':key' => $name));
         }
 
         $stmt->closeCursor();
 
         $sql = 'SELECT value FROM registry WHERE `key` = :key';
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute([':key'=>'GV_sit']);
+        $stmt->execute(array(':key'=>'GV_sit'));
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -122,7 +119,7 @@ class patch_373alpha1a implements patchInterface
 
         $sql = 'DELETE FROM registry WHERE `key` = :key';
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute([':key'=>'GV_sit']);
+        $stmt->execute(array(':key'=>'GV_sit'));
         $stmt->closeCursor();
 
         return true;

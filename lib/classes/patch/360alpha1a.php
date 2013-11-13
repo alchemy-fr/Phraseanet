@@ -13,53 +13,52 @@ use Alchemy\Phrasea\Application;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Doctrine\DBAL\DriverManager;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
+
 class patch_360alpha1a implements patchInterface
 {
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     private $release = '3.6.0-alpha.1';
 
-    /**
-     *
-     * @var Array
-     */
-    private $concern = [base::APPLICATION_BOX];
+    /** @var array */
+    private $concern = array(base::APPLICATION_BOX);
 
     /**
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function get_release()
     {
         return $this->release;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function require_all_upgrades()
     {
         return true;
     }
 
     /**
-     *
-     * @return Array
+     * {@inheritdoc}
      */
     public function concern()
     {
         return $this->concern;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return array('workzone', 'session');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $appbox, Application $app)
     {
-        $version = $app['doctrine-migration.configuration']->getVersion($this->release);
-        $version->execute('up');
-
         $tables = array('StoryWZ', 'ValidationDatas', 'ValidationParticipants', 'ValidationSessions', 'BasketElements', 'Baskets');
 
         foreach ($tables as $table) {
@@ -69,7 +68,7 @@ class patch_360alpha1a implements patchInterface
             $stmt->closeCursor();
         }
 
-        $stories = [];
+        $stories = array();
 
         $sql = 'SELECT sbas_id, rid as record_id, usr_id
                 FROM ssel
@@ -80,7 +79,7 @@ class patch_360alpha1a implements patchInterface
         $rs_s = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $current = [];
+        $current = array();
 
         foreach ($rs_s as $row_story) {
             $serial = $row_story['sbas_id'] . '_' . $row_story['usr_id'] . '_' . $row_story['record_id'];
@@ -99,11 +98,11 @@ class patch_360alpha1a implements patchInterface
         $stmt = $appbox->get_connection()->prepare($sql);
 
         foreach ($stories as $row) {
-            $params = [
+            $params = array(
                 ':usr_id'    => $row['usr_id'],
                 ':sbas_id'   => $row['sbas_id'],
                 ':record_id' => $row['record_id']
-            ];
+            );
             $stmt->execute($params);
         }
 
@@ -138,7 +137,7 @@ class patch_360alpha1a implements patchInterface
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $sselcont_ids = [];
+        $sselcont_ids = array();
 
         foreach ($rs as $row) {
             $sql = 'SELECT c.sselcont_id, c.record_id, b.sbas_id
@@ -147,11 +146,11 @@ class patch_360alpha1a implements patchInterface
                     AND c.ssel_id = :ssel_id AND s.ssel_id = c.ssel_id';
 
             $stmt = $appbox->get_connection()->prepare($sql);
-            $stmt->execute([':ssel_id' => $row['ssel_id']]);
+            $stmt->execute(array(':ssel_id' => $row['ssel_id']));
             $rs_be = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
-            $current = [];
+            $current = array();
 
             foreach ($rs_be as $row_sselcont) {
                 $serial = $row_sselcont['sbas_id'] . '_' . $row_sselcont['record_id'];
@@ -168,7 +167,7 @@ class patch_360alpha1a implements patchInterface
         $stmt = $appbox->get_connection()->prepare($sql);
 
         foreach ($sselcont_ids as $sselcont_id) {
-            $stmt->execute([':sselcont_id' => $sselcont_id]);
+            $stmt->execute(array(':sselcont_id' => $sselcont_id));
         }
 
         $stmt->closeCursor();
@@ -237,11 +236,11 @@ class patch_360alpha1a implements patchInterface
             )';
         $stmt = $appbox->get_connection()->prepare($sql);
         foreach ($rs as $row) {
-            $params = [
+            $params = array(
                 ':participant_id' => $row['participant_id'],
                 ':basket_id'      => $row['basket_id'],
                 ':usr_id'         => $row['usr_id'],
-            ];
+            );
             $stmt->execute($params);
         }
 

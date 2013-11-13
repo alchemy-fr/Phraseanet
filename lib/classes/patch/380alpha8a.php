@@ -46,6 +46,14 @@ class patch_380alpha8a implements patchInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrineMigrations()
+    {
+        return array();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $appbox, Application $app)
     {
         $conn = $appbox->get_connection();

@@ -30,6 +30,13 @@ class patch_380alpha15a implements patchInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrineMigrations()
+    {
+        return array();
+    }
+    /**
+     * {@inheritdoc}
+     */
     public function require_all_upgrades()
     {
         return false;

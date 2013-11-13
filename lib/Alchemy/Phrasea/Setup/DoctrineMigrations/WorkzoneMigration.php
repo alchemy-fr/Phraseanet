@@ -1,20 +1,22 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Alchemy\Phrasea\Setup\DoctrineMigrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
-class Version360alpha1 extends AbstractMigration
+class WorkzoneMigration extends AbstractMigration
 {
-    public function up(Schema $schema)
+    public function doUpSql(Schema $schema)
     {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
-        
         $this->addSql("CREATE TABLE IF NOT EXISTS Baskets (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(128) NOT NULL, description LONGTEXT DEFAULT NULL, usr_id INT NOT NULL, is_read TINYINT(1) NOT NULL, pusher_id INT DEFAULT NULL, archived TINYINT(1) NOT NULL, created DATETIME NOT NULL, updated DATETIME NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB");
         $this->addSql("CREATE TABLE IF NOT EXISTS StoryWZ (id INT AUTO_INCREMENT NOT NULL, sbas_id INT NOT NULL, record_id INT NOT NULL, usr_id INT NOT NULL, created DATETIME NOT NULL, UNIQUE INDEX user_story (usr_id, sbas_id, record_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB");
         $this->addSql("CREATE TABLE IF NOT EXISTS ValidationSessions (id INT AUTO_INCREMENT NOT NULL, basket_id INT DEFAULT NULL, initiator_id INT NOT NULL, created DATETIME NOT NULL, updated DATETIME NOT NULL, expires DATETIME DEFAULT NULL, UNIQUE INDEX UNIQ_5B9DFB061BE1FB52 (basket_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB");
@@ -28,25 +30,18 @@ class Version360alpha1 extends AbstractMigration
         $this->addSql("ALTER TABLE ValidationParticipants ADD CONSTRAINT FK_17850D7BF25B0F5B FOREIGN KEY (ValidationSession_id) REFERENCES ValidationSessions (id)");
     }
 
-    public function down(Schema $schema)
+    public function doDownSql(Schema $schema)
     {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
-        
         $this->addSql("ALTER TABLE ValidationSessions DROP FOREIGN KEY FK_5B9DFB061BE1FB52");
-        $this->addSql("ALTER TABLE Orders DROP FOREIGN KEY FK_E283F8D81BE1FB52");
         $this->addSql("ALTER TABLE BasketElements DROP FOREIGN KEY FK_C0B7ECB71BE1FB52");
         $this->addSql("ALTER TABLE ValidationParticipants DROP FOREIGN KEY FK_17850D7BF25B0F5B");
-        $this->addSql("ALTER TABLE OrderElements DROP FOREIGN KEY FK_8C7066C88D9F6D38");
         $this->addSql("ALTER TABLE ValidationDatas DROP FOREIGN KEY FK_70E84DDCE989605");
         $this->addSql("ALTER TABLE ValidationDatas DROP FOREIGN KEY FK_70E84DDC9D1C3019");
         $this->addSql("DROP TABLE Baskets");
         $this->addSql("DROP TABLE StoryWZ");
         $this->addSql("DROP TABLE ValidationSessions");
-        $this->addSql("DROP TABLE Orders");
         $this->addSql("DROP TABLE ValidationDatas");
         $this->addSql("DROP TABLE BasketElements");
         $this->addSql("DROP TABLE ValidationParticipants");
-        $this->addSql("DROP TABLE OrderElements");
     }
 }

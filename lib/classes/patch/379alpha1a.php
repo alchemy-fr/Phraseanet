@@ -13,35 +13,38 @@ use Alchemy\Phrasea\Application;
 
 class patch_379alpha1a implements patchInterface
 {
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     private $release = '3.7.9-alpha1';
 
-    /**
-     *
-     * @var Array
-     */
-    private $concern = [base::DATA_BOX];
+    /** @var array */
+    private $concern = array(base::DATA_BOX);
 
     /**
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function get_release()
     {
         return $this->release;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function require_all_upgrades()
     {
         return false;
     }
 
     /**
-     *
-     * @return Array
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return array();
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function concern()
     {
@@ -49,8 +52,7 @@ class patch_379alpha1a implements patchInterface
     }
 
     /**
-     * @param base        $appbox
-     * @param Application $app
+     * {@inheritdoc}
      */
     public function apply(base $appbox, Application $app)
     {

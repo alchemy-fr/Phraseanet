@@ -4,47 +4,44 @@ table_name: doctrine_migration_versions
 
 migrations:
   migration1:
-    version: 3.2.0-alpha.4
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version320alpha4
+    version: feed
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\FeedMigration
   migration2:
-    version: 3.6.0-alpha.1
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version360alpha1
+    version: workzone
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\WorkzoneMigration
   migration3:
-    version: 3.7.0-alpha.7
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version370alpha7
+    version: lazaret
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\LazaretMigration
   migration4:
-    version: 3.7.0-alpha.8
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version370alpha8
+    version: task
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\TaskMigration
   migration5:
-    version: 3.8.0-alpha.4
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version380alpha4
+    version: auth-failure
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\AuthFailureMigration
   migration6:
-    version: 3.8.0-alpha.11
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version380alpha11
+    version: session
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\SessionMigration
   migration7:
-    version: 3.9.0-alpha.1a
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version390alpha1a
+    version: ftp-credential
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\FtpCredentialMigration
   migration8:
-    version: 3.9.0-alpha.1b
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version390alpha1b
+    version: order
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\OrderMigration
   migration9:
-    version: 3.9.0-alpha.2
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version390alpha2
+    version: user
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\UserMigration
   migration10:
-    version: 3.9.0-alpha.3
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version390alpha3
+    version: user-query
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\UserQueryMigration
   migration11:
-    version: 3.9.0-alpha.4
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version390alpha4
+    version: user-setting
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\UserSettingMigration
   migration12:
-    version: 3.9.0-alpha.5
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version390alpha5
+    version: user-notif-setting
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\UserNotificationSettingMigration
   migration13:
-    version: 3.9.0-alpha.6
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version390alpha6
+    version: ftp-export
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\FtpExportMigration
   migration14:
-    version: 3.9.0-alpha.7
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version390alpha7
-  migration15:
-    version: 3.9.0-alpha.8
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version390alpha8
+    version: aggregate-token
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\AggregateTokenMigration

@@ -46,6 +46,14 @@ class patch_380alpha9a implements patchInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrineMigrations()
+    {
+        return array();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $databox, Application $app)
     {
         $sxe = $databox->get_sxml_structure();

@@ -11,48 +11,50 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
+
 class patch_360alpha2b implements patchInterface
 {
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     private $release = '3.6.0-alpha.2';
 
-    /**
-     *
-     * @var Array
-     */
-    private $concern = [base::DATA_BOX];
+    /** @var array */
+    private $concern = array(base::DATA_BOX);
 
     /**
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function get_release()
     {
         return $this->release;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return array();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function require_all_upgrades()
     {
         return true;
     }
 
     /**
-     *
-     * @return Array
+     * {@inheritdoc}
      */
     public function concern()
     {
         return $this->concern;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $databox, Application $app)
     {
         /**
@@ -119,7 +121,7 @@ class patch_360alpha2b implements patchInterface
                     VALUES (null, :record_id, :meta_struct_id, :value)';
             $stmt = $databox->get_connection()->prepare($sql);
 
-            $databox_fields = [];
+            $databox_fields = array();
 
             foreach ($rs as $row) {
                 $meta_struct_id = $row['meta_struct_id'];
@@ -131,11 +133,11 @@ class patch_360alpha2b implements patchInterface
                 $values = \caption_field::get_multi_values($row['value'], $databox_fields[$meta_struct_id]->get_separator());
 
                 foreach ($values as $value) {
-                    $params = [
+                    $params = array(
                         ':record_id'      => $row['record_id'],
                         ':meta_struct_id' => $row['meta_struct_id'],
                         ':value'          => $value,
-                    ];
+                    );
                     $stmt->execute($params);
                 }
             }
@@ -146,7 +148,7 @@ class patch_360alpha2b implements patchInterface
             $stmt = $databox->get_connection()->prepare($sql);
 
             foreach ($rs as $row) {
-                $params = [':id' => $row['id']];
+                $params = array(':id' => $row['id']);
                 $stmt->execute($params);
             }
 

@@ -49,11 +49,16 @@ class patch_390alpha2a implements patchInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrineMigrations()
+    {
+        return array('user');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $appbox, Application $app)
     {
-        $version = $app['doctrine-migration.configuration']->getVersion($this->release);
-        $version->execute('up');
-
         $sql = 'DELETE FROM Users';
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute();

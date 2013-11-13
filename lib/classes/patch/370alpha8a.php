@@ -12,46 +12,41 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Task;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class patch_370alpha8a implements patchInterface
 {
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     private $release = '3.7.0-alpha.8';
 
-    /**
-     *
-     * @var Array
-     */
-    private $concern = [base::APPLICATION_BOX];
+    /** @var array */
+    private $concern = array(base::APPLICATION_BOX);
 
     /**
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function get_release()
     {
         return $this->release;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function require_all_upgrades()
     {
         return false;
     }
 
     /**
-     *
-     * @return Array
+     * {@inheritdoc}
      */
     public function concern()
     {
         return $this->concern;
+    }
+
+    public function getDoctrineMigrations()
+    {
+        return array('task');
     }
 
     /**
@@ -65,9 +60,6 @@ class patch_370alpha8a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $version = $app['doctrine-migration.configuration']->getVersion($this->release);
-        $version->execute('up');
-
         $ttasks = array();
         $conn = $appbox->get_connection();
         $sql = 'SELECT task_id, active, name, class, settings FROM task2 WHERE class=\'task_period_workflow01\'';
@@ -77,11 +69,11 @@ class patch_370alpha8a implements patchInterface
             $stmt->closeCursor();
         }
 
-        $tdom = [];     // key = period
-        $taskstodel = [];
+        $tdom = array();     // key = period
+        $taskstodel = array();
         foreach ($ttasks as $task) {
             $active = true;
-            $warning = [];
+            $warning = array();
 
             /*
              * migrating task 'workflow01'
@@ -98,7 +90,7 @@ class patch_370alpha8a implements patchInterface
                     $ts->appendChild($dom->createElement('period'))->appendChild($dom->createTextNode(60 * $period));
                     $ts->appendChild($dom->createElement('logsql'))->appendChild($dom->createTextNode('1'));
                     $tasks = $ts->appendChild($dom->createElement('tasks'));
-                    $tdom['_' . $period] = ['dom'   => $dom, 'tasks' => $tasks];
+                    $tdom['_' . $period] = array('dom'   => $dom, 'tasks' => $tasks);
                 } else {
                     $dom = &$tdom['_' . $period]['dom'];
                     $tasks = &$tdom['_' . $period]['tasks'];

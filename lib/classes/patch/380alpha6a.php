@@ -46,6 +46,14 @@ class patch_380alpha6a implements patchInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrineMigrations()
+    {
+        return array();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $appbox, Application $app)
     {
         $app['configuration']->setDefault('registration-fields');

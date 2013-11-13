@@ -19,29 +19,35 @@ class patch_3715alpha1a implements patchInterface
      */
     private $release = '3.7.15-alpha1';
 
-    /**
-     *
-     * @var Array
-     */
-    private $concern = [base::APPLICATION_BOX];
+    /** @var array */
+    private $concern = array(base::APPLICATION_BOX);
 
     /**
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function get_release()
     {
         return $this->release;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function require_all_upgrades()
     {
         return false;
     }
 
     /**
-     *
-     * @return Array
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return array();
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function concern()
     {
@@ -49,7 +55,7 @@ class patch_3715alpha1a implements patchInterface
     }
 
     /**
-     * @param base $databox
+     * {@inheritdoc}
      */
     public function apply(base $appbox, Application $app)
     {

@@ -11,48 +11,49 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class patch_320alpha2a implements patchInterface
 {
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     private $release = '3.2.0-alpha.2';
 
-    /**
-     *
-     * @var Array
-     */
-    private $concern = [base::APPLICATION_BOX];
+    /** @var array */
+    private $concern = array(base::APPLICATION_BOX);
 
     /**
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function get_release()
     {
         return $this->release;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function require_all_upgrades()
     {
         return false;
     }
 
     /**
-     *
-     * @return Array
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return array();
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function concern()
     {
         return $this->concern;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $appbox, Application $app)
     {
         $sql = 'SELECT * FROM usr WHERE nonce IS NULL';
@@ -65,7 +66,7 @@ class patch_320alpha2a implements patchInterface
         $stmt = $appbox->get_connection()->prepare($sql);
         foreach ($rs as $row) {
             $nonce = random::generatePassword(16);
-            $params = [':usr_id' => $row['usr_id'], ':nonce'  => $nonce];
+            $params = array(':usr_id' => $row['usr_id'], ':nonce'  => $nonce);
             $stmt->execute($params);
         }
         $stmt->closeCursor();
@@ -82,10 +83,10 @@ class patch_320alpha2a implements patchInterface
             if (strpos($row['class'], 'task_period_') !== false)
                 continue;
 
-            $params = [
+            $params = array(
                 ':task_id' => $row['task_id']
                 , ':class'   => str_replace('task_', 'task_period_', $row['class'])
-            ];
+            );
 
             $stmt->execute($params);
         }

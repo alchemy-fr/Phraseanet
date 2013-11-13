@@ -12,48 +12,50 @@
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
+
 class patch_361alpha1a implements patchInterface
 {
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     private $release = '3.6.1-alpha.1';
 
-    /**
-     *
-     * @var Array
-     */
-    private $concern = [base::APPLICATION_BOX];
+    /** @var array */
+    private $concern = array(base::APPLICATION_BOX);
 
     /**
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function get_release()
     {
         return $this->release;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function require_all_upgrades()
     {
-        return false;
+        return true;
     }
 
     /**
-     *
-     * @return Array
+     * {@inheritdoc}
      */
     public function concern()
     {
         return $this->concern;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return array('workzone');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $appbox, Application $app)
     {
         $conn = $appbox->get_connection();
@@ -77,7 +79,7 @@ class patch_361alpha1a implements patchInterface
 
             $sql = 'SELECT record_id FROM record WHERE record_id = :record_id';
             $stmt = $connbas->prepare($sql);
-            $stmt->execute([':record_id' => $row['record_id']]);
+            $stmt->execute(array(':record_id' => $row['record_id']));
             $rowCount = $stmt->rowCount();
             $stmt->closeCursor();
 
