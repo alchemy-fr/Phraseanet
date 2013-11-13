@@ -9,15 +9,9 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-class patchthesaurus_100
+class patchthesaurus_100 implements patchthesaurus_interface
 {
-
-    public function patch($version, \DOMDocument $domct, \DOMDocument $domth, \connection_interface $connbas)
+    public function patch($version, \DOMDocument $domct, \DOMDocument $domth, \connection_interface $connbas, \unicode $unicode)
     {
         if ($version == "") {
             $th = $domth->documentElement;
@@ -37,7 +31,7 @@ class patchthesaurus_100
                 }
                 foreach ($te1 as $tei) {
                     $th->appendChild($tei);
-                    $this->fixThesaurus2($domth, $tei);
+                    $this->fixThesaurus2($domth, $tei, 0, $unicode);
                     // $tei->parentNode->removeChild($tei);
                 }
                 $te0->parentNode->removeChild($te0);
@@ -52,9 +46,8 @@ class patchthesaurus_100
         return($version);
     }
 
-    public function fixThesaurus2(&$domth, &$tenode, $depth = 0)
+    private function fixThesaurus2(&$domth, &$tenode, $depth, \unicode $unicode)
     {
-        $unicode = new unicode();
         $sy = $tenode->appendChild($domth->createElement("sy"));
         $sy->setAttribute("lng", $v = $tenode->getAttribute("lng"));
         $sy->setAttribute("v", $v = $tenode->getAttribute("v"));
@@ -73,7 +66,7 @@ class patchthesaurus_100
             if ($n->nodeName == "ta")
                 $todel[] = $n;
             if ($n->nodeName == "te")
-                $this->fixThesaurus2($domth, $n, $depth + 1);
+                $this->fixThesaurus2($domth, $n, $depth + 1, $unicode);
         }
         foreach ($todel as $n) {
             $n->parentNode->removeChild($n);

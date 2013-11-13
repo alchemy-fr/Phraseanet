@@ -1039,7 +1039,7 @@ class Thesaurus implements ControllerProviderInterface
 
             $last_version = $version;
             $zcls = new $cls;
-            $version = $zcls->patch($version, $domct, $domth, $connbas);
+            $version = $zcls->patch($version, $domct, $domth, $connbas, $app['unicode']);
 
             if ($version == $last_version) {
                 break;

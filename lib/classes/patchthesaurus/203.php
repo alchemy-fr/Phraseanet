@@ -9,18 +9,11 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-class patchthesaurus_203
+class patchthesaurus_203 implements patchthesaurus_interface
 {
-
-    public function patch($version, \DOMDocument $domct, \DOMDocument $domth, \connection_interface $connbas)
+    public function patch($version, \DOMDocument $domct, \DOMDocument $domth, \connection_interface $connbas, \unicode $unicode)
     {
-        global $ctchanged, $thchanged, $needreindex;
-        $unicode = new unicode();
+        $needreindex = false;
 
         if ($version == "2.0.3") {
             $xp = new DOMXPath($domth);
@@ -45,8 +38,6 @@ class patchthesaurus_203
             }
             $domth->documentElement->setAttribute("version", "2.0.4");
             $domth->documentElement->setAttribute("modification_date", date("YmdHis"));
-
-            $thchanged = true;
 
             if ($needreindex) {
                 print("//   need to reindex, deleting cterms (keeping rejected)\n");
@@ -95,7 +86,6 @@ class patchthesaurus_203
 
             $domct->documentElement->setAttribute("version", "2.0.4");
             $domct->documentElement->setAttribute("modification_date", date("YmdHis"));
-            $ctchanged = true;
 
             $version = "2.0.4";
         }
