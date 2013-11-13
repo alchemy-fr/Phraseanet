@@ -1295,9 +1295,10 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $app['EM']->flush();
 
         if ($invite) {
-            $sql = 'UPDATE usr SET usr_login = "invite' . $usr_id . '" WHERE usr_id="' . $usr_id . '"';
+            $sql = 'UPDATE usr SET usr_login = :login
+                    WHERE usr_id = :usr_id';
             $stmt = $conn->prepare($sql);
-            $stmt->execute();
+            $stmt->execute(array(':login' => 'invite'.$usr_id, ':usr_id' => $usr_id));
             $stmt->closeCursor();
         }
 
