@@ -77,6 +77,8 @@ use Alchemy\Phrasea\Core\Event\Subscriber\LogoutSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\MaintenanceSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\CookiesDisablerSubscriber;
+use Alchemy\Phrasea\Core\Middleware\BasketMiddlewareProvider;
+use Alchemy\Phrasea\Core\Provider\ACLServiceProvider;
 use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
@@ -195,6 +197,9 @@ class Application extends SilexApplication
             ini_set('error_log', $this['root.path'] . '/logs/php_error.log');
         }
 
+        $this->register(new BasketMiddlewareProvider());
+
+        $this->register(new ACLServiceProvider());
         $this->register(new AuthenticationManagerServiceProvider());
         $this->register(new BorderManagerServiceProvider());
         $this->register(new BrowserServiceProvider());

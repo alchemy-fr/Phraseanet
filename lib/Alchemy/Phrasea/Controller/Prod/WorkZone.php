@@ -11,11 +11,12 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\StoryWZ;
+use Alchemy\Phrasea\Helper\WorkZone as WorkzoneHelper;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Alchemy\Phrasea\Helper\WorkZone as WorkzoneHelper;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -35,7 +36,10 @@ class WorkZone implements ControllerProviderInterface
 
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAuthentication();
-        });
+        })
+            // Silex\Route::convert is not used as this should be done prior the before middleware
+            ->before($app['middleware.basket.converter'])
+            ->before($app['middleware.basket.user-access']);;
 
         $controllers->get('/', 'controller.prod.workzone:displayWorkzone')
             ->bind('prod_workzone_show');
@@ -46,9 +50,9 @@ class WorkZone implements ControllerProviderInterface
         $controllers->get('/Browse/Search/', 'controller.prod.workzone:browserSearch')
             ->bind('prod_workzone_search');
 
-        $controllers->get('/Browse/Basket/{basket_id}/', 'controller.prod.workzone:browseBasket')
+        $controllers->get('/Browse/Basket/{basket}/', 'controller.prod.workzone:browseBasket')
             ->bind('prod_workzone_basket')
-            ->assert('basket_id', '\d+');
+            ->assert('basket', '\d+');
 
         $controllers->post('/attachStories/', 'controller.prod.workzone:attachStories');
 
@@ -113,12 +117,8 @@ class WorkZone implements ControllerProviderInterface
         return $app['twig']->render('prod/WorkZone/Browser/Results.html.twig', $params);
     }
 
-    public function browseBasket(Application $app, Request $request, $basket_id)
+    public function browseBasket(Application $app, Request $request, Basket $basket)
     {
-        $basket = $app['EM']
-            ->getRepository('Alchemy\Phrasea\Model\Entities\Basket')
-            ->findUserBasket($app, $basket_id, $app['authentication']->getUser(), false);
-
         return $app['twig']->render('prod/WorkZone/Browser/Basket.html.twig', array('Basket' => $basket));
     }
 

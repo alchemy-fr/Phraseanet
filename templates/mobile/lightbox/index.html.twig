@@ -94,7 +94,7 @@
                   {% if basket.getElements().first() %}
                   <img src="{{ basket.getElements().first().getRecord(app).get_thumbnail.get_url()}}" />
                   {% endif %}
-                  <h3><a href="{{ path('lightbox_validation', { 'ssel_id' : basket.getId() }) }}">{{basket.getName()}}</a></h3>
+                  <h3><a href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">{{basket.getName()}}</a></h3>
                   <p>{{ basket.getDescription() }}</p>
                   <span class="ui-li-count">{{ basket_length }}</span>
                 </li>
@@ -123,7 +123,7 @@
                   {% if basket.getElements().first() %}
                   <img src="{{ basket.getElements().first().getRecord(app).get_thumbnail.get_url()}}" />
                   {% endif %}
-                  <h3><a href="{{ path('lightbox_validation', { 'ssel_id' : basket.getId() }) }}">{{ basket.getName() }}</a></h3>
+                  <h3><a href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">{{ basket.getName() }}</a></h3>
                   <p>{{ basket.getDescription() }}</p>
                   <span class="ui-li-count">{{basket_length}}</span>
                 </li>

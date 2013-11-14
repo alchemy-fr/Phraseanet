@@ -206,9 +206,8 @@ class RecordsRequest extends ArrayCollection
         $basket = null;
 
         if ($request->get('ssel')) {
-            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
-
-            $basket = $repository->findUserBasket($app, $request->get('ssel'), $app['authentication']->getUser(), false);
+            $basket = $app['converter.basket']->convert($request->get('ssel'));
+            $app['acl.basket']->hasAccess($basket, $app['authentication']->getUser());
 
             foreach ($basket->getElements() as $basket_element) {
                 $received[$basket_element->getRecord($app)->get_serialize_key()] = $basket_element->getRecord($app);

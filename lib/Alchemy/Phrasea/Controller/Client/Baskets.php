@@ -86,9 +86,8 @@ class Baskets implements ControllerProviderInterface
     public function deleteBasket(Application $app, Request $request)
     {
         try {
-            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
-            /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
-            $basket = $repository->findUserBasket($app, $request->request->get('courChuId'), $app['authentication']->getUser(), true);
+            $basket = $app['converter.basket']->convert($request->request->get('courChuId'));
+            $app['acl.basket']->isOwner($basket, $app['authentication']->getUser());
 
             $app['EM']->remove($basket);
             $app['EM']->flush();
@@ -137,25 +136,22 @@ class Baskets implements ControllerProviderInterface
      */
     public function addElementToBasket(Application $app, Request $request)
     {
-        $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
-        /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
-        $basket = $repository->findUserBasket($app, $request->request->get('courChuId'), $app['authentication']->getUser(), true);
+        $basket = $app['converter.basket']->convert($request->request->get('courChuId'));
+        $app['acl.basket']->isOwner($basket, $app['authentication']->getUser());
 
-        if ($basket) {
-            try {
-                $record = new \record_adapter($app, $request->request->get('sbas'), $request->request->get('p0'));
+        try {
+            $record = new \record_adapter($app, $request->request->get('sbas'), $request->request->get('p0'));
 
-                $basketElement = new BasketElement();
-                $basketElement->setRecord($record);
-                $basketElement->setBasket($basket);
-                $basket->addElement($basketElement);
+            $basketElement = new BasketElement();
+            $basketElement->setRecord($record);
+            $basketElement->setBasket($basket);
+            $basket->addElement($basketElement);
 
-                $app['EM']->persist($basket);
+            $app['EM']->persist($basket);
 
-                $app['EM']->flush();
-            } catch (\Exception $e) {
+            $app['EM']->flush();
+        } catch (\Exception $e) {
 
-            }
         }
 
         return $app->redirectPath('get_client_baskets', array(
@@ -181,7 +177,8 @@ class Baskets implements ControllerProviderInterface
         }
 
         if ('' !== $selectedBasketId) {
-            $selectedBasket = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket')->findUserBasket($app, $selectedBasketId, $app['authentication']->getUser(), true);
+            $selectedBasket = $app['converter.basket']->convert($selectedBasketId);
+            $app['acl.basket']->isOwner($selectedBasket, $app['authentication']->getUser());
         }
 
         $basketCollections = $baskets->partition(function ($key, $basket) {

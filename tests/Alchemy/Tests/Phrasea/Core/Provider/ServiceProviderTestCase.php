@@ -16,7 +16,7 @@ abstract class ServiceProviderTestCase extends \PhraseanetPHPUnitAbstract
         $instance2 = self::$DI['app'][$key];
 
         $this->assertInstanceof($classname, $instance1);
-        $this->assertEquals($instance1, $instance2);
+        $this->assertSame($instance1, $instance2);
     }
 
     abstract public function provideServiceDescription();

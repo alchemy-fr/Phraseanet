@@ -119,51 +119,6 @@ class BasketRepository extends EntityRepository
         return $query->getResult();
     }
 
-    /**
-     * Find a basket specified by his basket_id and his owner
-     *
-     * @throws NotFoundHttpException
-     * @throws AccessDeniedHttpException
-     * @param  type                      $basket_id
-     * @param  \User_Adapter             $user
-     * @return Basket
-     */
-    public function findUserBasket(Application $app, $basket_id, \User_Adapter $user, $requireOwner)
-    {
-        $dql = 'SELECT b
-            FROM Alchemy\Phrasea\Model\Entities\Basket b
-            LEFT JOIN b.elements e
-            WHERE b.id = :basket_id';
-
-        $query = $this->_em->createQuery($dql);
-        $query->setParameters(array('basket_id' => $basket_id));
-
-        $basket = $query->getOneOrNullResult();
-
-        /* @var $basket Basket */
-        if (null === $basket) {
-            throw new NotFoundHttpException(_('Basket is not found'));
-        }
-
-        if ($basket->getOwner($app)->get_id() != $user->get_id()) {
-            $participant = false;
-
-            if ($basket->getValidation() && !$requireOwner) {
-                try {
-                    $basket->getValidation()->getParticipant($user, $app);
-                    $participant = true;
-                } catch (\Exception $e) {
-
-                }
-            }
-            if (!$participant) {
-                throw new AccessDeniedHttpException(_('You have not access to this basket'));
-            }
-        }
-
-        return $basket;
-    }
-
     public function findContainingRecordForUser(\record_adapter $record, \User_Adapter $user)
     {
 

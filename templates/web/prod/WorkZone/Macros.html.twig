@@ -11,12 +11,12 @@
     {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::VALIDATIONS')) %}
 
 
-        <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket_id' : basket.getId() }) }}"
+        <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}"
              id="SSTT_{{basket.getId()}}"
              class="basketTips ui-accordion-header ui-state-default
                     ui-corner-all header SSTT basket {% if not basket.getIsRead() %}unread{% endif %}
                     {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}">
-          <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket_id' : basket.getId() }) }}">
+          <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}">
             <span>
               <img src='/skins/icons/basket.gif' title=''/>
               {{basket.getName()}}
@@ -55,13 +55,13 @@
                       </div>
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
-                          <a href="{{ path('lightbox_compare', { 'ssel_id' : basket.getId() }) }}" target="_blank">Lightbox</a>
+                          <a href="{{ path('lightbox_compare', { 'basket' : basket.getId() }) }}" target="_blank">Lightbox</a>
                         </div>
                       </div>
 
                       {% if basket.getValidation() %}
                         <div title="" class="context-menu-item">
-                          <a target="_blank" href="{{ path('lightbox_validation', { 'ssel_id' : basket.getId() }) }}">
+                          <a target="_blank" href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">
                             <div class="context-menu-item-inner">
                               {% trans 'action::Valider' %}
                             </div>
@@ -86,12 +86,12 @@
     {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) %}
 
 
-        <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket_id' : basket.getId() }) }}"
+        <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}"
              id="SSTT_{{basket.getId()}}"
              class="basketTips ui-accordion-header ui-state-default
                     ui-corner-all header SSTT basket {% if not basket.getIsRead() %}unread{% endif %}
                     {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}">
-          <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket_id' : basket.getId() }) }}" style="">
+          <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}" style="">
             <span>
               <img src='/skins/icons/basket.gif' title=''/>
               {{basket.getName()}}
@@ -140,12 +140,12 @@
                       </div>
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
-                          <a href="{{ path('lightbox_compare', { 'ssel_id' : basket.getId() }) }}" target="_blank">Lightbox</a>
+                          <a href="{{ path('lightbox_compare', { 'basket' : basket.getId() }) }}" target="_blank">Lightbox</a>
                         </div>
                       </div>
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
-                          <a class="dialog small-dialog" title="{% trans 'action::renommer' %}" href="{{ path('prod_baskets_basket_update', { 'basket_id' : basket.getId()}) }}">
+                          <a class="dialog small-dialog" title="{% trans 'action::renommer' %}" href="{{ path('prod_baskets_basket_update', { 'basket' : basket.getId()}) }}">
                             {% trans 'action::renommer' %}
                           </a>
                         </div>
@@ -153,7 +153,7 @@
 
                       {% if basket.getValidation() %}
                         <div title="" class="context-menu-item">
-                          <a target="_blank" href="{{ path('lightbox_validation', { 'ssel_id' : basket.getId() }) }}">
+                          <a target="_blank" href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">
                             <div class="context-menu-item-inner">
                               {% trans 'action::Valider' %}
                             </div>
@@ -176,7 +176,7 @@
 
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
-                          <a class="dialog" title="{% trans 'Re-ordonner' %}" href="{{ path('prod_baskets_basket_reorder', { 'basket_id' : basket.getId() }) }}">
+                          <a class="dialog" title="{% trans 'Re-ordonner' %}" href="{{ path('prod_baskets_basket_reorder', { 'basket' : basket.getId() }) }}">
                             {% trans 'Re-ordonner' %}
                           </a>
                         </div>
@@ -310,7 +310,7 @@
               href="{{ path('prod_stories_story_remove_element', { 'sbas_id' : container.get_sbas_id(), 'record_id' : container.get_record_id(), 'child_sbas_id' : record.get_sbas_id(), 'child_record_id' : record.get_record_id() }) }}"
             {% elseif wz_scope == 'basket' %}
               id="WZEL_{{ container.getId() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}"
-              href="{{ path('prod_baskets_basket_element_remove', { 'basket_id' : container.getId(), 'basket_element_id' : contained.getId()}) }}"
+              href="{{ path('prod_baskets_basket_element_remove', { 'basket' : container.getId(), 'basket_element_id' : contained.getId()}) }}"
             {% elseif wz_scope == 'basket' %}
               href="#"
             {% endif %}

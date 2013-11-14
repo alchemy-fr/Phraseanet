@@ -144,10 +144,8 @@ class record_preview extends record_adapter
 
                 break;
             case "BASK":
-                $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
-
-                /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
-                $Basket = $repository->findUserBasket($app, $contId, $app['authentication']->getUser(), false);
+                $Basket = $app['converter.basket']->convert($contId);
+                $app['acl.basket']->hasAccess($Basket, $app['authentication']->getUser());
 
                 /* @var $Basket Basket */
                 $this->container = $Basket;

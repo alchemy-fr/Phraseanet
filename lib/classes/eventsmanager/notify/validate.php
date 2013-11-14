@@ -146,17 +146,14 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
         $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
 
         try {
-            $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
-
-            $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['authentication']->getUser(), false);
-
+            $basket = $this->app['converter.basket']->convert($ssel_id);
             $basket_name = trim($basket->getName()) ? : _('Une selection');
         } catch (Exception $e) {
             $basket_name = _('Une selection');
         }
 
         $bask_link = '<a href="'
-            . $this->app->url('lightbox_validation', array('ssel_id' => (string) $sx->ssel_id))
+            . $this->app->url('lightbox_validation', array('basket' => (string) $sx->ssel_id))
             . '" target="_blank">'
             . $basket_name . '</a>';
 

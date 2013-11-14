@@ -557,12 +557,10 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertArrayHasKey('basket', $response['response']);
 
         $em = self::$DI['app']['EM'];
-        $repo = $em->getRepository('\Alchemy\Phrasea\Model\Entities\Basket');
 
-        /* @var $repo Alchemy\Phrasea\Model\Repositories\BasketRepository */
-        $basket = $repo->findUserBasket(self::$DI['app'], $response['response']['basket']['basket_id'], self::$DI['app']['authentication']->getUser(), true);
+        $basket = self::$DI['app']['converter.basket']->convert($response['response']['basket']['basket_id']);
+        self::$DI['app']['acl.basket']->isOwner($basket, self::$DI['app']['authentication']->getUser());
 
-        $this->assertTrue($basket instanceof \Alchemy\Phrasea\Model\Entities\Basket);
         $em->remove($basket);
         $em->flush();
     }
@@ -581,20 +579,17 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $em->persist($Basket);
         $em->flush();
 
-        $ssel_id = $Basket->getId();
-
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
-        $result = $this->object->delete_basket($request, $ssel_id);
+        $result = $this->object->delete_basket($request, $Basket);
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
         $this->assertTrue(is_array(json_decode($result->format(), true)));
 
-        $repo = $em->getRepository('\Alchemy\Phrasea\Model\Entities\Basket');
-
         try {
-            $repo->findUserBasket(self::$DI['app'], $ssel_id, $user, true);
+            $basket = self::$DI['app']['converter.basket']->convert($Basket->getId());
+            self::$DI['app']['acl.basket']->isOwner($basket, $user);
             $this->fail('An exception should have been raised');
-        } catch (NotFoundHttpException $e) {
+        } catch (\Exception $e) {
 
         }
     }
@@ -606,7 +601,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $basket = $this->insertOneBasket();
 
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
-        $result = $this->object->get_basket($request, $basket->getId());
+        $result = $this->object->get_basket($request, $basket);
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
         $this->assertTrue(is_array(json_decode($result->format(), true)));
@@ -619,7 +614,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $basket = $this->insertOneBasket();
 
         $request = new Request(array(), array(), array('name' => 'PROUTO'), array(), array(), array('HTTP_Accept' => 'application/json'));
-        $result = $this->object->set_basket_title($request, $basket->getId());
+        $result = $this->object->set_basket_title($request, $basket);
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
         $this->assertTrue(is_array(json_decode($result->format(), true)));
@@ -638,7 +633,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $basket = $this->insertOneBasket();
 
         $request = new Request(array(), array(), array('description' => 'une belle description'), array(), array(), array('HTTP_Accept' => 'application/json'));
-        $result = $this->object->set_basket_description($request, $basket->getId());
+        $result = $this->object->set_basket_description($request, $basket);
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
         $this->assertTrue(is_array(json_decode($result->format(), true)));
