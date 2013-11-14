@@ -36,7 +36,7 @@ class CLI extends Application
      * @param string|null $version     Version number for this application.
      * @param string|null $environment The environment.
      */
-    public function __construct($name, $version = null, $environment = null)
+    public function __construct($name, $version = null, $environment = self::ENV_PROD)
     {
         parent::__construct($environment);
 
