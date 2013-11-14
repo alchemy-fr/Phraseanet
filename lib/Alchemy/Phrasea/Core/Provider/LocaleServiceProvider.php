@@ -23,19 +23,19 @@ class LocaleServiceProvider implements ServiceProviderInterface
             return $app['phraseanet.registry']->get('GV_default_lng', 'en_GB');
         });
 
-        $app['locale.I18n'] = function (Application $app) {
+        $app['locale.I18n'] = $app->share(function (Application $app) {
             $data = explode('_', $app['locale']);
 
             return $data[0];
-        };
+        });
 
-        $app['locale.l10n'] = function (Application $app) {
+        $app['locale.l10n'] = $app->share(function (Application $app) {
             $data = explode('_', $app['locale']);
 
             return $data[1];
-        };
+        });
 
-        $app['locales.available'] = function (Application $app) {
+        $app['locales.available'] = $app->share(function (Application $app) {
             $availableLanguages = PhraseaApplication::getAvailableLanguages();
 
             if ($app['phraseanet.configuration']->isSetup()
@@ -65,9 +65,9 @@ class LocaleServiceProvider implements ServiceProviderInterface
             } else {
                 return $availableLanguages;
             }
-        };
+        });
 
-        $app['locales.mapping'] = function (Application $app) {
+        $app['locales.mapping'] = $app->share(function (Application $app) {
             $codes = array();
             foreach ($app['locales.available'] as $code => $language) {
                 $data = explode('_', $code);
@@ -75,7 +75,7 @@ class LocaleServiceProvider implements ServiceProviderInterface
             }
 
             return $codes;
-        };
+        });
 
         $app['locales.I18n.available'] = $app->share(function (Application $app) {
             $locales = array();
