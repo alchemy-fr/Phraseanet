@@ -535,4 +535,11 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
                 ->with($record);
         $record->reindex();
     }
+
+    public function testSetStatus()
+    {
+        $record = new \record_adapter(self::$DI['app'], self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());
+        $record->set_binary_status('1001001001010101');
+        $this->assertSame('00000000000000001001001001010101', $record->get_status());
+    }
 }

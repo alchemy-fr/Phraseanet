@@ -1208,10 +1208,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     {
         $connbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
 
-        $sql = 'UPDATE record SET status = 0b' . $status . '
-            WHERE record_id= :record_id';
+        $sql = 'UPDATE record SET status = :status WHERE record_id= :record_id';
         $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':record_id' => $this->record_id));
+        $stmt->execute(array(':record_id' => $this->record_id, ':status' => bindec($status)));
         $stmt->closeCursor();
 
         $sql = 'REPLACE INTO status (id, record_id, name, value) VALUES (null, :record_id, :name, :value)';

@@ -167,11 +167,11 @@ class UserManager
     private function cleanProperties(User $user)
     {
         foreach(array(
-            'edit_presets',
-            'sselnew',
-            'tokens',
-        ) as $table) {
-            $stmt = $this->appboxConnection->prepare('DELETE FROM `' .$table. '` WHERE usr_id = :usr_id');
+            'DELETE FROM `edit_presets` WHERE usr_id = :usr_id',
+            'DELETE FROM `sselnew` WHERE usr_id = :usr_id',
+            'DELETE FROM `tokens` WHERE usr_id = :usr_id',
+        ) as $sql) {
+            $stmt = $this->appboxConnection->prepare($sql);
             $stmt->execute(array(':usr_id' => $user->getId()));
             $stmt->closeCursor();
         }
@@ -191,10 +191,10 @@ class UserManager
     private function cleanRights(User $user)
     {
         foreach(array(
-            'basusr',
-            'sbasusr',
-        ) as $table) {
-            $stmt = $this->appboxConnection->prepare('DELETE FROM `' .$table. '` WHERE usr_id = :usr_id');
+            'DELETE FROM `basusr` WHERE usr_id = :usr_id',
+            'DELETE FROM `sbasusr` WHERE usr_id = :usr_id',
+        ) as $sql) {
+            $stmt = $this->appboxConnection->prepare($sql);
             $stmt->execute(array(':usr_id' => $user->getId()));
             $stmt->closeCursor();
         }

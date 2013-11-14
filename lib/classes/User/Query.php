@@ -495,51 +495,11 @@ class User_Query implements User_QueryInterface
     public function execute()
     {
         $conn = $this->app['phraseanet.appbox']->get_connection();
-
-        $sorter = array();
-
-        foreach ($this->sort as $sort => $ord) {
-
-            $k = count($sorter);
-
-            switch ($sort) {
-                case self::SORT_FIRSTNAME:
-                case self::SORT_LASTNAME:
-                case self::SORT_COMPANY:
-                case self::SORT_LOGIN:
-                case self::SORT_EMAIL:
-                    $sorter[$k] = ' usr.`' . $sort . '` COLLATE utf8_unicode_ci ';
-                    break;
-                case self::SORT_ID:
-                case self::SORT_CREATIONDATE:
-                case self::SORT_COUNTRY:
-                case self::SORT_LASTMODEL:
-                    $sorter[$k] = ' usr.`' . $sort . '` ';
-                    break;
-                default:
-                    break;
-            }
-
-            if ( ! isset($sorter[$k]))
-                continue;
-
-            switch ($ord) {
-                case self::ORD_ASC:
-                default:
-                    $sorter[$k] .= ' ASC ';
-                    break;
-                case self::ORD_DESC:
-                    $sorter[$k] .= ' DESC ';
-                    break;
-            }
-        }
-
         $sql = 'SELECT DISTINCT usr.usr_id ' . $this->generate_sql_constraints();
 
-        $sorter = implode(', ', $sorter);
-
-        if (trim($sorter) != '')
+        if ('' !== $sorter = $this->generate_sort_constraint()) {
             $sql .= ' ORDER BY ' . $sorter;
+        }
 
         if (is_int($this->offset_start) && is_int($this->results_quantity)) {
             $sql .= sprintf(
@@ -1044,5 +1004,48 @@ class User_Query implements User_QueryInterface
         }
 
         return $lastModel;
+    }
+
+    private function generate_sort_constraint()
+    {
+        $sorter = array();
+
+        foreach ($this->sort as $sort => $ord) {
+
+            $k = count($sorter);
+
+            switch ($sort) {
+                case self::SORT_FIRSTNAME:
+                case self::SORT_LASTNAME:
+                case self::SORT_COMPANY:
+                case self::SORT_LOGIN:
+                case self::SORT_EMAIL:
+                    $sorter[$k] = ' usr.`' . $sort . '` COLLATE utf8_unicode_ci ';
+                    break;
+                case self::SORT_ID:
+                case self::SORT_CREATIONDATE:
+                case self::SORT_COUNTRY:
+                case self::SORT_LASTMODEL:
+                    $sorter[$k] = ' usr.`' . $sort . '` ';
+                    break;
+                default:
+                    break;
+            }
+
+            if ( ! isset($sorter[$k]))
+                continue;
+
+            switch ($ord) {
+                case self::ORD_ASC:
+                default:
+                    $sorter[$k] .= ' ASC ';
+                    break;
+                case self::ORD_DESC:
+                    $sorter[$k] .= ' DESC ';
+                    break;
+            }
+        }
+
+        return implode(', ', $sorter);
     }
 }
