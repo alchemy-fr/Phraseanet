@@ -255,10 +255,6 @@ class RecordMoverJob extends AbstractJob
             $tw[] = $tws[0];
         elseif (count($tws) > 1)
             $tw[] = '(' . implode(') OR (', $tws) . ')';
-        if (count($tw) == 1)
-            $where = $tw[0];
-        if (count($tw) > 1)
-            $where = '(' . implode(') AND (', $tw) . ')';
 
         // build the TEST sql (select)
         $sql_test = 'SELECT record_id FROM record' . $join;
@@ -431,13 +427,6 @@ class RecordMoverJob extends AbstractJob
             $tw[] = '(status^0b' . $mx . ')=0';
         } elseif ($ma) {
             $tw[] = '(status&0b' . $ma . ")=0";
-        }
-
-        if (count($tw) == 1) {
-            $where = $tw[0];
-        }
-        if (count($tw) > 1) {
-            $where = '(' . implode(') AND (', $tw) . ')';
         }
 
         return array($tw, $join);

@@ -31,7 +31,7 @@ class Users implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function (Request $request) use ($app) {
+        $controllers->before(function (Request $request, Application $app) {
             $app['firewall']->requireAccessToModule('admin')
                 ->requireRight('manageusers');
         });
@@ -350,7 +350,7 @@ class Users implements ControllerProviderInterface
             return $response;
         })->bind('admin_users_export_csv');
 
-        $controllers->get('/demands/', function (Application $app, Request $request) {
+        $controllers->get('/demands/', function (Application $app) {
 
             $lastMonth = time() - (3 * 4 * 7 * 24 * 60 * 60);
             $sql = "DELETE FROM demand WHERE date_modif < :date";
@@ -689,7 +689,7 @@ class Users implements ControllerProviderInterface
                         $passwordToVerif = $value;
 
                         if ($passwordToVerif === "") {
-                            $out['errors'][] = sprintf(_("Password is empty at line %d"), $i);
+                            $out['errors'][] = sprintf(_("Password is empty at line %d"), $nbLine);
                         } else {
                             $pwdValid = true;
                         }
@@ -870,7 +870,7 @@ class Users implements ControllerProviderInterface
             return $app->redirectPath('admin_users_search', array('user-updated' => $nbCreation));
         })->bind('users_submit_import');
 
-        $controllers->get('/import/example/csv/', function (Application $app, Request $request) {
+        $controllers->get('/import/example/csv/', function (Application $app) {
 
             $file = new \SplFileInfo($app['root.path'] . '/lib/Fixtures/exampleImportUsers.csv');
 
@@ -889,7 +889,7 @@ class Users implements ControllerProviderInterface
             return $response;
         })->bind('users_import_csv');
 
-        $controllers->get('/import/example/rtf/', function (Application $app, Request $request) {
+        $controllers->get('/import/example/rtf/', function (Application $app) {
 
             $file = new \SplFileInfo($app['root.path'] . '/lib/Fixtures/Fields.rtf');
 

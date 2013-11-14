@@ -1586,8 +1586,9 @@ class unicode
 
         $out = '';
         $_map = &self::$map[$target];   // faster in loop
+        $length = mb_strlen($string, 'UTF-8');
 
-        for ($i = 0; $i < mb_strlen($string, 'UTF-8'); $i++) {
+        for ($i = 0; $i < $length; $i++) {
             if (true === array_key_exists(($c = mb_substr($string, $i, 1, 'UTF-8')), $_map)) {
                 $out .= $_map[$c];
             } else {

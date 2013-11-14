@@ -9,15 +9,9 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-class patchthesaurus_202
+class patchthesaurus_202 implements patchthesaurus_interface
 {
-
-    public function patch($version, \DOMDocument $domct, \DOMDocument $domth, \connection_interface $connbas)
+    public function patch($version, \DOMDocument $domct, \DOMDocument $domth, \connection_interface $connbas, \unicode $unicode)
     {
         if ($version == "2.0.2") {
             $th = $domth->documentElement;

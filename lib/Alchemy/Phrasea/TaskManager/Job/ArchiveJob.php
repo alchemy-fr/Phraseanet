@@ -366,8 +366,12 @@ class ArchiveJob extends AbstractJob
 
         $xpath = new \DOMXPath($dom);
 
-        for ($n = $node->firstChild; $this->isStarted() && $n; $n = $n->nextSibling) {
+        for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
             usleep(10);
+
+            if (!$this->isStarted()) {
+                break;
+            }
 
             // make xml lighter (free ram)
             foreach (array("size", "ctime", "mtime") as $k) {
@@ -472,7 +476,10 @@ class ArchiveJob extends AbstractJob
         }
 
         // scan again for unmatched files
-        for ($n = $node->firstChild; $this->isStarted() && $n; $n = $n->nextSibling) {
+        for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
+            if (!$this->isStarted()) {
+                break;
+            }
             if (!$n->getAttribute('isdir') == '1' && !$n->getAttribute('match')) {
                 // still no match, now it's an error (bubble to the top)
                 for ($nn = $n; $nn && $nn->nodeType == XML_ELEMENT_NODE; $nn = $nn->parentNode) {
@@ -492,8 +499,12 @@ class ArchiveJob extends AbstractJob
         }
 
         $nodesToDel = array();
-        for ($n = $node->firstChild; $this->isStarted() && $n; $n = $n->nextSibling) {
+        for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
             usleep(10);
+
+            if (!$this->isStarted()) {
+                break;
+            }
 
             if ($n->getAttribute('temperature') == 'hot') {
                 // do not move hotfiles
@@ -557,8 +568,12 @@ class ArchiveJob extends AbstractJob
         }
 
         $nodesToDel = array();
-        for ($n = $node->firstChild; $this->isStarted() && $n; $n = $n->nextSibling) {
+        for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
             usleep(10);
+
+            if (!$this->isStarted()) {
+                break;
+            }
 
             if ($n->getAttribute('temperature') == 'hot') {
                 continue;
@@ -1082,7 +1097,10 @@ class ArchiveJob extends AbstractJob
     private function archiveFilesToGrp(Application $app, \databox $databox, \DOMDocument $dom, \DOMElement $node, $path, $path_archived, $path_error, $grp_rid, $stat0, $stat1, $moveError, $moveArchived)
     {
         $nodesToDel = array();
-        for ($n = $node->firstChild; $this->isStarted() && $n; $n = $n->nextSibling) {
+        for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
+            if (!$this->isStarted()) {
+                break;
+            }
             if ($n->getAttribute('isdir') == '1') {
                 // in a grp, all levels goes in the same grp
                 $node->setAttribute('archived', '1');  // the main grp folder is 'keep'ed, but not subfolders
