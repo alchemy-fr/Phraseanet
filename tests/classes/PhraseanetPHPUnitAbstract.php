@@ -220,6 +220,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             return new Client($DI['app'], array());
         });
 
+        self::$DI['user']->purgePreferences();
     }
 
     public function tearDown()

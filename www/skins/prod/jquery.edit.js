@@ -1740,7 +1740,7 @@ function startThisEditing(sbas_id, what, regbasprid, ssel) {
         },
         stop: function () {
             hsplit1();
-            setPref('editing_top_box', Math.floor($('#EDIT_TOP').height() * 100 / $('#EDIT_ALL').height()) + '%');
+            setPref('editing_top_box', Math.floor($('#EDIT_TOP').height() * 100 / $('#EDIT_ALL').height()));
             setSizeLimits();
         }
     });
@@ -1753,7 +1753,7 @@ function startThisEditing(sbas_id, what, regbasprid, ssel) {
             setPreviewEdit();
         },
         stop: function () {
-            setPref('editing_right_box', Math.floor($('#divS').width() * 100 / $('#EDIT_MID_L').width()) + '%');
+            setPref('editing_right_box', Math.floor($('#divS').width() * 100 / $('#EDIT_MID_L').width()));
             vsplit1();
             setSizeLimits();
         }
@@ -1769,7 +1769,7 @@ function startThisEditing(sbas_id, what, regbasprid, ssel) {
                 setPreviewEdit();
             },
             stop: function () {
-                setPref('editing_left_box', Math.floor($('#EDIT_MID_R').width() * 100 / $('#EDIT_MID').width()) + '%');
+                setPref('editing_left_box', Math.floor($('#EDIT_MID_R').width() * 100 / $('#EDIT_MID').width()));
                 vsplit2();
                 setSizeLimits();
             }

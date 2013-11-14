@@ -58,6 +58,30 @@ class userTest extends PhraseanetPHPUnitAbstract
         $this->assertSame(\User_Adapter::$def_values['editing_top_box'], $user->getPrefs('editing_top_box'));
     }
 
+    public function testGetPrefWithACustomizedConf()
+    {
+        $data = isset(self::$DI['app']['phraseanet.configuration']['user-settings']) ? self::$DI['app']['phraseanet.configuration']['user-settings'] : null;
+
+        self::$DI['app']['phraseanet.configuration']['user-settings'] = array(
+            'images_per_page' => 42,
+            'images_size'     => 666,
+            'lalala'          => 'didou',
+        );
+
+        $user = $this->get_user();
+
+        $this->assertNull($user->getPrefs('lalala'));
+        $this->assertSame(666, $user->getPrefs('images_size'));
+        $this->assertSame(42, $user->getPrefs('images_per_page'));
+        $this->assertSame(\User_Adapter::$def_values['editing_top_box'], $user->getPrefs('editing_top_box'));
+
+        if (null === $data) {
+            unset(self::$DI['app']['phraseanet.configuration']['user-settings']);
+        } else {
+            self::$DI['app']['phraseanet.configuration']['user-settings'] = $data;
+        }
+    }
+
     public function testSetPref()
     {
         $user = $this->get_user();

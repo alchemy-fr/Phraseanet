@@ -74,9 +74,9 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         'images_per_page'         => 20,
         'images_size'             => 120,
         'editing_images_size'     => 134,
-        'editing_top_box'         => '180px',
-        'editing_right_box'       => '400px',
-        'editing_left_box'        => '710px',
+        'editing_top_box'         => 30,
+        'editing_right_box'       => 48,
+        'editing_left_box'        => 33,
         'basket_sort_field'       => 'name',
         'basket_sort_order'       => 'ASC',
         'warning_on_delete_story' => 'true',
@@ -1057,9 +1057,25 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             }
         }
 
+        if (isset($this->app['phraseanet.configuration']['user-settings'])) {
+            $this->_prefs = array_replace(
+                $this->_prefs,
+                // remove keys that are not defined in default values
+                array_intersect_key(
+                    $this->app['phraseanet.configuration']['user-settings'],
+                    self::$def_values
+                )
+            );
+        }
+
         $this->preferences_loaded = true;
 
         return $this;
+    }
+
+    public function purgePreferences()
+    {
+        $this->notifications_preferences_loaded = $this->preferences_loaded = false;
     }
 
     protected function load_notifications_preferences(Application $app)
@@ -1075,7 +1091,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
                 }
             }
         }
-        $this->notification_preferences_loaded = true;
+        $this->notifications_preferences_loaded = true;
     }
 
     public function get_notifications_preference(Application $app, $notification_id)

@@ -72,7 +72,7 @@ class Login implements ControllerProviderInterface
             'meta_keywords' => $app['phraseanet.registry']->get('GV_metakeywords'),
             'browser_name' => $app['browser']->getBrowser(),
             'browser_version' => $app['browser']->getVersion(),
-            'available_language' => $app->getAvailableLanguages(),
+            'available_language' => $app['locales.available'],
             'locale' => $app['locale'],
             'current_url' => $app['request']->getUri(),
             'flash_types' => $app->getAvailableFlashTypes(),
