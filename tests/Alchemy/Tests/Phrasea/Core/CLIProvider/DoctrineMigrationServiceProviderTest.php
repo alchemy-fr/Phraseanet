@@ -8,7 +8,7 @@ class DoctrineMigrationServiceProviderTest extends ServiceProviderTestCase
     {
         return array(
             array(
-                'Alchemy\Phrasea\Core\CLIProvider\ DoctrineMigrationServiceProvider',
+                'Alchemy\Phrasea\Core\CLIProvider\DoctrineMigrationServiceProvider',
                 'doctrine-migration.configuration',
                 'Doctrine\DBAL\Migrations\Configuration\YamlConfiguration'
             )
