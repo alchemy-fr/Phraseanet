@@ -1334,9 +1334,25 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             }
         }
 
+        if (isset($this->app['phraseanet.configuration']['user-settings'])) {
+            $this->_prefs = array_replace(
+                $this->_prefs,
+                // remove keys that are not defined in default values
+                array_intersect_key(
+                    $this->app['phraseanet.configuration']['user-settings'],
+                    self::$def_values
+                )
+            );
+        }
+
         $this->preferences_loaded = true;
 
         return $this;
+    }
+
+    public function purgePreferences()
+    {
+        $this->notifications_preferences_loaded = $this->preferences_loaded = false;
     }
 
     protected function load_notifications_preferences(Application $app)
@@ -1352,7 +1368,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
                 }
             }
         }
-        $this->notification_preferences_loaded = true;
+        $this->notifications_preferences_loaded = true;
     }
 
     public function get_notifications_preference(Application $app, $notification_id)
