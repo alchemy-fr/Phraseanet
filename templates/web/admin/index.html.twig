@@ -23,25 +23,26 @@
     var bodySize = {x:0,y:0};
 
     var language = {
-        serverName: '{{ app['phraseanet.registry'].get('GV_ServerName') }}',
-        serverError: '{% trans 'phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, contactez le support technique' %}',
-        serverTimeout:  '{% trans 'phraseanet::erreur: La connection au serveur Phraseanet semble etre indisponible' %}',
-        serverDisconnected: '{% trans 'phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier' %}',
-        check_all : '{% trans 'Cocher toute la colonne' %}',
-        uncheck_all :  '{% trans 'Decocher toute la colonne' %}',
-        create_template :  '{% trans 'Creer un model' %}',
-        create_user :  '{% trans 'Creer un utilisateur' %}',
-        annuler :  '{% trans 'boutton::annuler' %}',
-        errorFileApiTooBig :  '{% trans 'This file is too big' %}',
-        requiredValue: '{% trans 'This field is required' %}',
-        attention: '{% trans 'Attention' %}',
-        reset_template_do_reset_apply_button: '{% trans 'Reset and apply' %}',
-        reset_template_confirm_dialog_title: '{% trans 'Confirm reset users rights before applying template' %}',
-        reset_template_do_confirm_choice: '{% trans 'Rights will be erased before applying template, do you confirm?' %}',
-        reset_template_do_reset_button: '{% trans 'Reset and apply template' %}',
-        reset_template_do_not_reset_button: '{% trans 'Apply template' %}',
-        reset_template_dialog_title: '{% trans 'Reset rights before applying template?' %}',
-        reset_template_ask_choice: '{% trans 'Would you like to reset rights before applying the template?' %}'
+        serverName: '{{ app['phraseanet.registry'].get('GV_ServerName') | e('js') }}',
+        serverError: '{{ 'phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, contactez le support technique' | trans | e('js') }}',
+        serverTimeout:  '{{ 'phraseanet::erreur: La connection au serveur Phraseanet semble etre indisponible' | trans | e('js') }}',
+        serverDisconnected: '{{ 'phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier' | trans | e('js') }}',
+        check_all : '{{ 'Cocher toute la colonne' | trans | e('js') }}',
+        uncheck_all :  '{{ 'Decocher toute la colonne' | trans | e('js') }}',
+        create_template :  '{{ 'Creer un model' | trans | e('js') }}',
+        create_user :  '{{ 'Creer un utilisateur' | trans | e('js') }}',
+        annuler :  '{{ 'boutton::annuler' | trans | e('js') }}',
+        errorFileApiTooBig :  '{{ 'This file is too big' | trans | e('js') }}',
+        requiredValue: '{{ 'This field is required' | trans | e('js') }}',
+        attention: '{{ 'Attention' | trans | e('js') }}',
+        reset_template_do_reset_apply_button: '{{ 'Reset and apply' | trans | e('js') }}',
+        reset_template_confirm_dialog_title: '{{ 'Confirm reset users rights before applying template' | trans | e('js') }}',
+        reset_template_do_confirm_choice: '{{ 'Rights will be erased before applying template, do you confirm?' | trans | e('js') }}',
+        reset_template_do_reset_button: '{{ 'Reset and apply template' | trans | e('js') }}',
+        reset_template_do_not_reset_button: '{{ 'Apply template' | trans | e('js') }}',
+        reset_template_dialog_title: '{{ 'Reset rights before applying template?' | trans | e('js') }}',
+        reset_template_ask_choice: '{{ 'Would you like to reset rights before applying the template?' | trans | e('js') }}',
+        reset_template_ask_choice: '{{ 'Would you like to reset rights before applying the template?' | trans | e('js') }}'
     };
 
     function sessionactive(){
