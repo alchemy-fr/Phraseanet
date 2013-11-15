@@ -2,6 +2,10 @@
 
 * 3.8.1 (2013-11-15)
 
+  - BugFix : Locale translation may block administration module load.
+
+* 3.8.1 (2013-11-15)
+
   - BugFix : IE 6 homepage error message is broken.
   - BugFix : Databox fields administration is broken on firefox.
   - BugFix : Report CSS is broken.
