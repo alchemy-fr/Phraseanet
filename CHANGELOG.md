@@ -1,6 +1,6 @@
 # CHANGELOG
 
-* 3.8.1 (2013-xx-xx)
+* 3.8.1 (2013-11-15)
 
   - BugFix : IE 6 homepage error message is broken.
   - BugFix : Databox fields administration is broken on firefox.
