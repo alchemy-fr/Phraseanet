@@ -1,6 +1,6 @@
 # CHANGELOG
 
-* 3.8.1 (2013-11-15)
+* 3.8.2 (2013-11-15)
 
   - BugFix : Locale translation may block administration module load.
 
