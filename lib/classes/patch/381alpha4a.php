@@ -64,7 +64,7 @@ class patch_381alpha4a implements patchInterface
             $value = $row['value'];
 
             if ('px' === substr($value, -2)) {
-                $value = substr($value, 0, -2);
+                $value = 35;
             } elseif ('%' === substr($value, -1)) {
                 $value = substr($value, 0, -1);
             }
