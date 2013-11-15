@@ -310,9 +310,9 @@ class API_V1_adapter extends API_V1_Abstract
 
         $ret['phraseanet']['environment'] = $app->getEnvironment();
         $ret['phraseanet']['debug'] = $app['debug'];
-        $ret['phraseanet']['maintenance'] = $app['phraseanet.configuration']['main']['maintenance'];
+        $ret['phraseanet']['maintenance'] = $app['configuration']['main']['maintenance'];
         $ret['phraseanet']['errorsLog'] = $app['debug'];
-        $ret['phraseanet']['serverName'] = $app['phraseanet.configuration']['main']['servername'];
+        $ret['phraseanet']['serverName'] = $app['configuration']['main']['servername'];
 
         return $ret;
     }
@@ -330,7 +330,7 @@ class API_V1_adapter extends API_V1_Abstract
             $SEStatus = array('error' => $e->getMessage());
         }
 
-        $binaries = $app['phraseanet.configuration']['binaries'];
+        $binaries = $app['configuration']['binaries'];
 
         return array(
             'global_values' => array(
@@ -341,13 +341,13 @@ class API_V1_adapter extends API_V1_Abstract
                 'httpServer'  => array(
                     'logErrors'       => $app['phraseanet.registry']->get('GV_log_errors'),
                     'phpTimezone'     => ini_get('date.timezone'),
-                    'siteId'          => $app['phraseanet.configuration']['main']['key'],
+                    'siteId'          => $app['configuration']['main']['key'],
                     'staticUrl'       => $app['phraseanet.registry']->get('GV_STATIC_URL'),
                     'defaultLanguage' => $app['phraseanet.registry']->get('id_GV_default_lng'),
                     'allowIndexing'   => $app['phraseanet.registry']->get('GV_allow_search_engine'),
                     'modes'           => array(
-                        'XsendFile'                     => $app['phraseanet.configuration']['xsendfile']['enabled'],
-                        'XsendFileMapping'              => $app['phraseanet.configuration']['xsendfile']['mapping'],
+                        'XsendFile'                     => $app['configuration']['xsendfile']['enabled'],
+                        'XsendFileMapping'              => $app['configuration']['xsendfile']['mapping'],
                         'h264Streaming'                 => $app['phraseanet.registry']->get('GV_h264_streaming'),
                         'authTokenDirectory'            => $app['phraseanet.registry']->get('GV_mod_auth_token_directory'),
                         'authTokenDirectoryPath'        => $app['phraseanet.registry']->get('GV_mod_auth_token_directory_path'),

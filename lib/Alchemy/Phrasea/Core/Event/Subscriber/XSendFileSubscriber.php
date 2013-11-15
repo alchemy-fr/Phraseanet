@@ -35,7 +35,7 @@ class XSendFileSubscriber implements EventSubscriberInterface
 
     public function applyHeaders(GetResponseEvent $event)
     {
-        if (!$this->app['phraseanet.configuration']->isSetup()) {
+        if (!$this->app['configuration']->isSetup()) {
             return;
         }
 

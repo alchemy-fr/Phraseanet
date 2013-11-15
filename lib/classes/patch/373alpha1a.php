@@ -98,7 +98,7 @@ class patch_373alpha1a implements patchInterface
 
         $stmt->closeCursor();
 
-        $config = $app['phraseanet.configuration']->getConfig();
+        $config = $app['configuration']->getConfig();
         $config['binaries'] = $binaries;
 
         $sql = 'DELETE FROM registry WHERE `key` = :key';
@@ -118,7 +118,7 @@ class patch_373alpha1a implements patchInterface
 
         $config['main']['key'] = $row['value'];
 
-        $app['phraseanet.configuration']->setConfig($config);
+        $app['configuration']->setConfig($config);
 
         $sql = 'DELETE FROM registry WHERE `key` = :key';
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);

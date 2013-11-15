@@ -29,7 +29,7 @@ class Migration35 implements MigrationInterface
             throw new \LogicException('Required config files not found');
         }
 
-        $config = $this->app['phraseanet.configuration']->initialize();
+        $config = $this->app['configuration']->initialize();
 
         foreach ($config['registration-fields'] as $key => $field) {
             $config['registration-fields'][$key]['required'] = (boolean) $field['required'];
@@ -67,6 +67,6 @@ class Migration35 implements MigrationInterface
         rename(__DIR__ . '/../../../../../../config/connexion.inc', __DIR__ . '/../../../../../../config/connexion.inc.old');
         rename(__DIR__ . '/../../../../../../config/config.inc', __DIR__ . '/../../../../../../config/config.inc.old');
 
-        $this->app['phraseanet.configuration']->setConfig($config);
+        $this->app['configuration']->setConfig($config);
     }
 }

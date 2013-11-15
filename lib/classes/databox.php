@@ -462,7 +462,7 @@ class databox extends base
 
         $this->app['EM']->flush();
 
-        $params = array(':site_id' => $this->app['phraseanet.configuration']['main']['key']);
+        $params = array(':site_id' => $this->app['configuration']['main']['key']);
 
         $sql = 'DELETE FROM clients WHERE site_id = :site_id';
         $stmt = $this->get_connection()->prepare($sql);

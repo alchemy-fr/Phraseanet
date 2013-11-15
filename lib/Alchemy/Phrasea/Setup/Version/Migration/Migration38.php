@@ -49,14 +49,14 @@ class Migration38 implements MigrationInterface
 
     private function doMigrate($app)
     {
-        $app['phraseanet.configuration']->initialize();
-        $conf = $app['phraseanet.configuration']->getConfig();
+        $app['configuration']->initialize();
+        $conf = $app['configuration']->getConfig();
 
         $this->migrateConnexions($conf);
         $this->migrateConfigAndServices($conf);
         $this->migrateBinaries($conf);
 
-        $app['phraseanet.configuration']->setConfig($conf);
+        $app['configuration']->setConfig($conf);
 
         foreach (array(
             $this->configYaml,

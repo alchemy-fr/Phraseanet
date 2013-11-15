@@ -30,13 +30,13 @@ class XSendFileMappingGeneratorTest extends \PhraseanetPHPUnitAbstract
         self::$DI['cli']['monolog'] = self::$DI['cli']->share(function () use ($phpunit) {
             return $phpunit->getMockBuilder('Monolog\Logger')->disableOriginalConstructor()->getMock();
         });
-        self::$DI['cli']['phraseanet.configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
+        self::$DI['cli']['configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
         if ($option) {
-            self::$DI['cli']['phraseanet.configuration']->expects($this->once())
+            self::$DI['cli']['configuration']->expects($this->once())
                 ->method('offsetSet')
                 ->with('xsendfile');
         } else {
-            self::$DI['cli']['phraseanet.configuration']->expects($this->never())
+            self::$DI['cli']['configuration']->expects($this->never())
                 ->method('offsetSet');
         }
         $command->setContainer(self::$DI['cli']);

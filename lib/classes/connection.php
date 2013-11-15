@@ -129,7 +129,7 @@ class connection
             if (trim($name) !== 'appbox') {
                 $connection_params = phrasea::sbas_params($app);
             } else {
-                $connexion = $app['phraseanet.configuration']['main']['database'];
+                $connexion = $app['configuration']['main']['database'];
 
                 $hostname = $connexion['host'];
                 $port = $connexion['port'];

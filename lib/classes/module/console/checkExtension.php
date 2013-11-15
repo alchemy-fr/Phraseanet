@@ -70,7 +70,7 @@ class module_console_checkExtension extends Command
             $output->writeln("<info>$function</info>");
         }
 
-        $configuration = $this->getService('phraseanet.configuration');
+        $configuration = $this->getService('configuration');
         $connexion = $configuration['main']['database'];
         $hostname = $connexion['host'];
         $port = $connexion['port'];
@@ -167,7 +167,7 @@ class module_console_checkExtension extends Command
                 , $base["sbas_id"]
                 , $base["searchcoll"]
                 , $base["arrayq"]
-                , $this->container['phraseanet.configuration']['main']['key']
+                , $this->container['configuration']['main']['key']
                 , $usrId
                 , false
                 , PHRASEA_MULTIDOC_DOCONLY

@@ -64,7 +64,7 @@ class module_report_sqlfilter
     {
         $finalfilter = '';
 
-        $params = array(':log_site' => $this->app['phraseanet.configuration']['main']['key']);
+        $params = array(':log_site' => $this->app['configuration']['main']['key']);
 
         if ($this->filter['date']) {
             $finalfilter .= $this->filter['date']['sql'] . ' AND ';
@@ -88,7 +88,7 @@ class module_report_sqlfilter
         $params = array();
 
         $sql = 'log.site = :log_site_gv_filter';
-        $params[':log_site_gv_filter'] = $this->app['phraseanet.configuration']['main']['key'];
+        $params[':log_site_gv_filter'] = $this->app['configuration']['main']['key'];
 
         return array('sql' => $sql, 'params' => $params);
     }

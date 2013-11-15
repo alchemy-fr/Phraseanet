@@ -38,10 +38,10 @@ class LocaleServiceProvider implements ServiceProviderInterface
         $app['locales.available'] = $app->share(function (Application $app) {
             $availableLanguages = PhraseaApplication::getAvailableLanguages();
 
-            if ($app['phraseanet.configuration']->isSetup()
-                && isset($app['phraseanet.configuration']['main']['languages'])
-                && !empty($app['phraseanet.configuration']['main']['languages'])) {
-                $languages = $app['phraseanet.configuration']['main']['languages'];
+            if ($app['configuration']->isSetup()
+                && isset($app['configuration']['main']['languages'])
+                && !empty($app['configuration']['main']['languages'])) {
+                $languages = $app['configuration']['main']['languages'];
                 $enabledLanguages = $availableLanguages;
 
                 foreach ($enabledLanguages as $code => $language) {

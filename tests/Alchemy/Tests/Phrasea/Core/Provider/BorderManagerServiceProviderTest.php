@@ -32,7 +32,7 @@ class BorderManagerServiceProvidertest extends ServiceProviderTestCase
             )
         ));
         $app->register(new BorderManagerServiceProvider());
-        $app['phraseanet.configuration'] = array('border-manager' => array('enabled' => false));
+        $app['configuration'] = array('border-manager' => array('enabled' => false));
 
         $this->assertInstanceOf('Alchemy\Phrasea\Border\Manager', $app['border-manager']);
         $this->assertNull($app['border-manager']->getPdfToText());
@@ -54,7 +54,7 @@ class BorderManagerServiceProvidertest extends ServiceProviderTestCase
             )
         ));
         $app->register(new BorderManagerServiceProvider());
-        $app['phraseanet.configuration'] = array('border-manager' => array('enabled' => false));
+        $app['configuration'] = array('border-manager' => array('enabled' => false));
 
         $this->assertInstanceOf('Alchemy\Phrasea\Border\Manager', $app['border-manager']);
         $this->assertInstanceOf('XPDF\PdfToText', $app['border-manager']->getPdfToText());

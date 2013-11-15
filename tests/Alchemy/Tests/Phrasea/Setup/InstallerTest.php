@@ -51,7 +51,7 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
         @unlink($config);
         @unlink($compiled);
 
-        $app['phraseanet.configuration'] = new Configuration(new Yaml(), new Compiler(), $config, $compiled, true);
+        $app['configuration'] = new Configuration(new Yaml(), new Compiler(), $config, $compiled, true);
 
         $abConn = new \connection_pdo('abConn', 'localhost', 3306, $credentials['user'], $credentials['password'], 'ab_unitTests');
         $dbConn = new \connection_pdo('dbConn', 'localhost', 3306, $credentials['user'], $credentials['password'], 'db_unitTests');
@@ -64,14 +64,14 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
 
         \User_Adapter::unsetInstances();
 
-        $this->assertTrue($app['phraseanet.configuration']->isSetup());
+        $this->assertTrue($app['configuration']->isSetup());
         $this->assertTrue($app['phraseanet.configuration-tester']->isUpToDate());
 
         $databoxes = $app['phraseanet.appbox']->get_databoxes();
         $databox = array_pop($databoxes);
         $this->assertContains('<path>'.realpath($dataPath).'/db_unitTests/subdefs</path>', $databox->get_structure());
 
-        $conf = $app['phraseanet.configuration']->getConfig();
+        $conf = $app['configuration']->getConfig();
         $this->assertArrayHasKey('main', $conf);
         $this->assertArrayHasKey('key', $conf['main']);
         $this->assertGreaterThan(10, strlen($conf['main']['key']));

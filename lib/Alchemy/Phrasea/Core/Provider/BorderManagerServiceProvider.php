@@ -30,7 +30,7 @@ class BorderManagerServiceProvider implements ServiceProviderInterface
 
             }
 
-            $options = $app['phraseanet.configuration']['border-manager'];
+            $options = $app['configuration']['border-manager'];
 
             $registeredCheckers = array();
 

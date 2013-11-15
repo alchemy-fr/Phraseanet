@@ -48,7 +48,7 @@ class patch_380alpha14a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $app['phraseanet.configuration']->setDefault('plugins');
+        $app['configuration']->setDefault('plugins');
 
         return true;
     }

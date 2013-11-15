@@ -32,7 +32,7 @@ class RegenerateSqliteDb extends Command
         }
 
         try {
-            $dbParams = $this->container['phraseanet.configuration']->getTestConnectionParameters();
+            $dbParams = $this->container['configuration']->getTestConnectionParameters();
             $dbParams['path'] = $source;
 
             $this->container->register(new ORMServiceProvider());

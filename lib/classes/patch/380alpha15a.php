@@ -48,9 +48,9 @@ class patch_380alpha15a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $binaries = $app['phraseanet.configuration']['binaries'];
+        $binaries = $app['configuration']['binaries'];
         unset($binaries['composite_binary'], $binaries['convert_binary']);
-        $app['phraseanet.configuration']['binaries'] = $binaries;
+        $app['configuration']['binaries'] = $binaries;
 
         return true;
     }
