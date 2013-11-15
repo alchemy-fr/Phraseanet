@@ -8,11 +8,11 @@
   - Convert Ftp Export custom adapter to Doctrine entity.
   - Convert Ftp Export custom adapter to Doctrine entity.
 
-* 3.8.1 (2013-11-15)
+* 3.8.2 (2013-11-15)
 
   - BugFix : Locale translation may block administration module load.
 
-* 3.8.1 (2013-xx-xx)
+* 3.8.1 (2013-11-15)
 
   - BugFix : IE 6 homepage error message is broken.
   - BugFix : Databox fields administration is broken on firefox.
