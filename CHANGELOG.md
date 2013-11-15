@@ -10,7 +10,49 @@
 
 * 3.8.1 (2013-xx-xx)
 
-  - Fix IE6 message display on homepage.
+  - BugFix : IE 6 homepage error message is broken.
+  - BugFix : Databox fields administration is broken on firefox.
+  - BugFix : Report CSS is broken.
+  - BugFix : Databox fields administration has some behavior bugs.
+  - BugFix : Install data-path is not saved.
+  - BugFix : Third-party applications are displayed disabled when enabled and vice-versa.
+  - BugFix : Increase tasks default memory limit.
+  - BugFix : Oauth2 password grant_type authentication is broken.
+  - BugFix : CSS issues on mobile devices.
+  - BugFix : Editing records from multiple databoxes triggers a fatal error.
+  - BugFix : API search query is discarded with GET method.
+  - BugFix : Wrong offset for Classic query result.
+  - BugFix : API does not return SearchEngine suggestions correctly.
+  - BugFix : SearchEngine collection filter does not work in Classic.
+  - BugFix : Unable to start scheduler on Windows platform.
+  - BugFix : Resizing images is broken on mobile devices in landscape mode.
+  - BugFix : Text input color is not correctly rendered on old IEs.
+  - BugFix : IE11 is not recognize as HTML5 compatible.
+  - BugFix : Disallow push when records can not be pushed.
+  - BugFix : Upgrade data command fails.
+  - BugFix : Export by mail fails.
+  - BugFix : ACL cache issue.
+  - BugFix : Registration collection auto-selection is broken.
+  - BugFix : Allow thesaurus browsing to non-thesaurus-admins.
+  - BugFix : Datepickers displays incorrectly on firefox.
+  - BugFix : Bridge playlists loading fails.
+  - BugFix : Editing modal box is broken on IE7.
+  - BugFix : A user can remove himself from the admin panel.
+  - BugFix : Basket export fails.
+  - BugFix : Allow stemmed search only if stemming is enabled.
+  - BugFix : Reset date sort to the correct value on advanced-search reset.
+  - BugFix : Disable SQL logging when in non-dev environment.
+  - BugFix : Task-Manager scheduler randomly stops.
+  - BugFix : Increase usr_login size, display error if login is longer than possible.
+  - Enhancement : Allow default user settings customisation.
+  - Enhancement : Propose rights reset prior apply template.
+  - Enhancement : Enhance CSS selector for IE performance.
+  - Enhancement : Sanitize caption XML values.
+  - Enhancement : Add checkbox on feed creation to disable email notifications.
+  - Enhancement : Add Bootstrap Carousel & Galleria to homepage presentation mode.
+  - Enhancement : Push or feedback names are now mandatory.
+  - Enhancement : Add Phraseanet twig namespace.
+  - Enhancement : Allow video bitrate up to 12M.
 
 * 3.8.0 (2013-09-26)
 
