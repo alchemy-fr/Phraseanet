@@ -12,12 +12,12 @@ class PreferencesTest extends \PhraseanetAuthenticatedWebTestCase
     public function testSaveUserPref()
     {
         self::$DI['app']['authentication']->setUser($this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
-            ->setMethods(array('setPrefs'))
+            ->setMethods(array('setSettingValue'))
             ->disableOriginalConstructor()
             ->getMock());
 
         self::$DI['app']['authentication']->getUser()->expects($this->once())
-            ->method('setPrefs')
+            ->method('setSettingValue')
             ->with($this->equalTo('prop_test'), $this->equalTo('val_test'))
             ->will($this->returnValue(true));
 

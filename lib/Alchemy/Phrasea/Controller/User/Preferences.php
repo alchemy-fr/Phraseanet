@@ -85,7 +85,7 @@ class Preferences implements ControllerProviderInterface
 
         $success = false;
         if (null !== $prop && null !== $value) {
-            $app['authentication']->getUser()->setPrefs($prop, $value);
+            $app['authentication']->getUser()->setSettingValue($prop, $value);
             $success = true;
             $msg = $app->trans('Preference saved !');
         }

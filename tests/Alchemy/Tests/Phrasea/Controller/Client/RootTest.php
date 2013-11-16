@@ -61,15 +61,15 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testExecuteQuery()
     {
-        $queryParameters = [];
-        $queryParameters["mod"] = self::$DI['user']->getPrefs('client_view') ? : '3X6';
+        $queryParameters = array();
+        $queryParameters["mod"] = self::$DI['user']->getSettingValue('client_view', '3X6');
         $queryParameters["bas"] = array_keys(self::$DI['app']['acl']->get(self::$DI['user'])->get_granted_base());
-        $queryParameters["qry"] = self::$DI['user']->getPrefs('start_page_query') ? : 'all';
+        $queryParameters["qry"] = self::$DI['user']->getSettingValue('start_page_query', 'all');
         $queryParameters["pag"] = 0;
         $queryParameters["search_type"] = SearchEngineOptions::RECORD_RECORD;
         $queryParameters["qryAdv"] = '';
-        $queryParameters["opAdv"] = [];
-        $queryParameters["status"] = [];
+        $queryParameters["opAdv"] = array();
+        $queryParameters["status"] = array();
         $queryParameters["recordtype"] = SearchEngineOptions::TYPE_ALL;
         $queryParameters["sort"] = '';
         $queryParameters["infield"] = [];

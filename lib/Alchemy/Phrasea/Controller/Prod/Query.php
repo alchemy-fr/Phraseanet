@@ -52,7 +52,7 @@ class Query implements ControllerProviderInterface
     {
         $query = (string) $request->request->get('qry');
 
-        $mod = $app['authentication']->getUser()->getPrefs('view');
+        $mod = $app['authentication']->getUser()->getSettingValue('view');
 
         $json = [];
 
@@ -60,7 +60,7 @@ class Query implements ControllerProviderInterface
 
         $form = $options->serialize();
 
-        $perPage = (int) $app['authentication']->getUser()->getPrefs('images_per_page');
+        $perPage = (int) $app['authentication']->getUser()->getSettingValue('images_per_page');
 
         $page = (int) $request->request->get('pag');
         $firstPage = $page < 1;
@@ -79,8 +79,8 @@ class Query implements ControllerProviderInterface
         $app['EM']->persist($userQuery);
         $app['EM']->flush();
 
-        if ($app['authentication']->getUser()->getPrefs('start_page') === 'LAST_QUERY') {
-            $app['authentication']->getUser()->setPrefs('start_page_query', $result->getQuery());
+        if ($app['authentication']->getUser()->getSettingValue('start_page') === 'LAST_QUERY') {
+            $app['authentication']->getUser()->setSettingValue('start_page_query', $result->getQuery());
         }
 
         foreach ($options->getDataboxes() as $databox) {

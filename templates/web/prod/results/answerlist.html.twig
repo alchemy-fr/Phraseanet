@@ -16,7 +16,7 @@
                     <div class="fixeddesc">
                         {% set business = app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'canmodifrecord') %}
                         {{caption.format_caption(record, highlight, searchEngine, searchOptions, business)}}
-                        {% if app['authentication'].getUser().getPrefs('technical_display') == 'group' %}<hr/>{{record.get_technical_infos|raw}}{% endif %}
+                        {% if app['authentication'].getUser().getSettingValue('technical_display') == 'group' %}<hr/>{{record.get_technical_infos|raw}}{% endif %}
                     </div>
                 </div>
             </td>

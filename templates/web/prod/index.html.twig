@@ -96,12 +96,12 @@
 
     <style title="color_selection" type="text/css">
         /*  .diapo.ui-selecting,#reorder_box .diapo.selecting, #EDIT_ALL .diapo.selecting, .list.selecting, .list.selecting .diapo {
-            color: #{% if app['authentication'].getUser().getPrefs('fontcolor-selection') != '' %}{{app['authentication'].getUser().getPrefs('fontcolor-selection')}}{% else %}FFFFFF{% endif %};
-            background-color: #{% if app['authentication'].getUser().getPrefs('background-selection-disabled') != '' %}{{app['authentication'].getUser().getPrefs('background-selection-disabled')}}{% else %}333333{% endif %};
+            color: #{{ app['authentication'].getUser().getSettingValue('fontcolor-selection', 'FFFFFF') }};
+            background-color: #{{ app['authentication'].getUser().getSettingValue('background-selection-disabled', '333333')}}};
         }*/
         .diapo.selected,#reorder_box .diapo.selected, #EDIT_ALL .diapo.selected, .list.selected, .list.selected .diapo {
-            color: #{% if app['authentication'].getUser().getPrefs('fontcolor-selection') != '' %}{{app['authentication'].getUser().getPrefs('fontcolor-selection')}}{% else %}FFFFFF{% endif %};
-            background-color: #{% if app['authentication'].getUser().getPrefs('background-selection') != '' %}{{app['authentication'].getUser().getPrefs('background-selection')}}{% else %}404040{% endif %};
+            color: #{{app['authentication'].getUser().getSettingValue('fontcolor-selection', 'FFFFFF')}};
+            background-color: #{{app['authentication'].getUser().getSettingValue('background-selection', '404040')}};
         }
     </style>
 {% endblock %}
@@ -123,7 +123,7 @@
     </div>
 
     <div id="desktop" class="PNB" style="overflow:hidden;">
-        {% set ratio = app['authentication'].getUser().getPrefs('search_window') %}
+        {% set ratio = app['authentication'].getUser().getSettingValue('search_window') %}
         {% if ratio == 0 %}
             {% set ratio = '0.333' %}
         {% endif %}
@@ -283,7 +283,7 @@
                 <div style="margin: 15px auto; line-height: 30px; width: 580px;">
                     <form id="searchForm" method="POST" action="{{ path('prod_query') }}" name="phrasea_query" class="phrasea_query">
                         <div class="input-append">
-                            <input autocomplete="off" class="search query" id="EDIT_query" name="qry" type="text" name="qry" value="{{app['authentication'].getUser().getPrefs('start_page_query')}}">
+                            <input autocomplete="off" class="search query" id="EDIT_query" name="qry" type="text" name="qry" value="{{app['authentication'].getUser().getSettingValue('start_page_query')}}">
                             <a href="#" class="btn btn-inverse adv_trigger adv_search_button">
                                 <img src="/skins/icons/settings.png" title="{{ 'Advanced Search' | trans }}"/>
                             </a>
@@ -680,11 +680,11 @@
                 <div id="answers" class=" PNB10" style="top:48px; bottom:30px;">
                     <script>
                         $(document).ready(function(){
-                            {% if app['authentication'].getUser().getPrefs('start_page') == 'QUERY' %}
+                            {% if app['authentication'].getUser().getSettingValue('start_page') == 'QUERY' %}
                                 $('form[name="phrasea_query"]').addClass('triggerAfterInit');
-                            {% elseif app['authentication'].getUser().getPrefs('start_page') == 'LAST_QUERY' %}
+                            {% elseif app['authentication'].getUser().getSettingValue('start_page') == 'LAST_QUERY' %}
                                 $('form[name="phrasea_query"]').addClass('triggerAfterInit');
-                            {% elseif app['authentication'].getUser().getPrefs('start_page') == 'PUBLI' %}
+                            {% elseif app['authentication'].getUser().getSettingValue('start_page') == 'PUBLI' %}
                                 getHome('PUBLI');
                             {% endif %}
                         });
@@ -741,7 +741,7 @@
     <div id="MESSAGE-push"></div>
     <div id="MESSAGE-publi"></div>
     <div id="DIALOG"></div>
-    <div id="keyboard-dialog" class="{% if app['authentication'].getUser().getPrefs('keyboard_infos') != '0' %}auto{% endif %}" style="display:none;" title="{{ 'raccourci :: a propos des raccourcis claviers' | trans }}">
+    <div id="keyboard-dialog" class="{% if app['authentication'].getUser().getSettingValue('keyboard_infos') != '0' %}auto{% endif %}" style="display:none;" title="{{ 'raccourci :: a propos des raccourcis claviers' | trans }}">
         <div>
             <h1>{{ 'Raccourcis claviers en cours de recherche :' | trans }}</h1>
             <ul>
@@ -814,6 +814,8 @@
                 <div class="box">
                     <div class="" style="float:left; width:49%;">
                         <h1>{{ 'Mode de presentation' | trans }}</h1>
+                        {% set mod = app['authentication'].getUser().getSettingValue('view') %}
+                        <h1>{{ 'Mode de presentation' | trans }}</h1>
                         {% set mod = app['authentication'].getUser().getPrefs('view') %}
                         <label class="radio inline" for="thumbs_view">
                             <input onchange="setPref('view',$(this).val());" name="view_type" type="radio" style="margin: 3px 0 0 -18px;" class="radio" value="thumbs" id="thumbs_view" {% if mod == 'thumbs' %}checked="checked"{% endif %}/>
@@ -833,7 +835,7 @@
                     </div>
                 </div>
                 <div class="box">
-                    {% set rollover_thumbnail = app['authentication'].getUser().getPrefs('rollover_thumbnail') %}
+                    {% set rollover_thumbnail = app['authentication'].getUser().getSettingValue('rollover_thumbnail') %}
                     <h1>{{ 'Presentation de vignettes' | trans }}</h1>
                     <label class="radio" for="rollover_caption">
                         <input onchange="setPref('rollover_thumbnail',$(this).val());" name="rollover_thumbnail" type="radio" class="radio" value="caption" id="rollover_caption" {% if rollover_thumbnail == 'caption' %}checked="checked" {% endif %}/>
@@ -845,7 +847,7 @@
                     </label>
                 </div>
                 <div class="box">
-                    {% set technical_display = app['authentication'].getUser().getPrefs('technical_display') %}
+                    {% set technical_display = app['authentication'].getUser().getSettingValue('technical_display') %}
                     <h1>{{ 'Informations techniques' | trans }}</h1>
                     <label class="radio" for="technical_show">
                         <input onchange="setPref('technical_display',$(this).val());" name="technical_display" type="radio" class="radio" value="1" id="technical_show" {% if technical_display == '1' %}checked="checked"{% endif %}/>
@@ -861,7 +863,7 @@
                     </label>
                 </div>
                 <div class="box">
-                    {% set doctype_display = app['authentication'].getUser().getPrefs('doctype_display') %}
+                    {% set doctype_display = app['authentication'].getUser().getSettingValue('doctype_display') %}
                     <h1>{{ 'Type de documents' | trans }}</h1>
                     <label class="checkbox" for="doctype_display_show">
                         <input onchange="setPref('doctype_display',($(this).attr('checked') ? '1' :'0'));" name="doctype_display" type="checkbox" class="checkbox" value="1" id="doctype_display_show" {% if doctype_display != '0' %}checked="checked"{% endif %}/>
@@ -874,14 +876,14 @@
                         <h1>{{ 'reponses:: images par pages :' | trans }}</h1>
                         <div class="box">
                             <div id="nperpage_slider" class="ui-corner-all" style="width:100px; display:inline-block;"></div>
-                            <input type="text" readonly style="width:35px;" value="{{app['authentication'].getUser().getPrefs('images_per_page')}}" id="nperpage_value"/>
+                            <input type="text" readonly style="width:35px;" value="{{app['authentication'].getUser().getSettingValue('images_per_page')}}" id="nperpage_value"/>
                         </div>
                     </div>
                     <div style="float:right; width:49%;">
                         <h1>{{ 'reponses:: taille des images :' | trans }}</h1>
                         <div class="box">
                             <div id="sizeAns_slider" class="ui-corner-all" style="width:100px;display:inline-block;"></div>
-                            <input type="hidden" value="{{app['authentication'].getUser().getPrefs('images_size')}}" id="sizeAns_value"/>
+                            <input type="hidden" value="{{app['authentication'].getUser().getSettingValue('images_size')}}" id="sizeAns_value"/>
                         </div>
                     </div>
                 </div>
@@ -897,7 +899,7 @@
                     <div class="box">
                         <h1>{{ 'Affichage au demarrage' | trans }}</h1>
                         <form class="form-inline">
-                            {% set start_page_pref = app['authentication'].getUser().getPrefs('start_page') %}
+                            {% set start_page_pref = app['authentication'].getUser().getSettingValue('start_page') %}
                             <select class="span4" name="start_page" onchange="start_page_selector();">
                                 <option value="LAST_QUERY" {% if start_page_pref == 'LAST_QUERY' %}selected="selected"{% endif %} >
                                     {{ 'Ma derniere question' | trans }}
@@ -912,7 +914,7 @@
                                     {{ 'Aide' | trans }}
                                 </option>
                             </select>
-                            <input type="text" class="span4" name="start_page_value" value="{{app['authentication'].getUser().getPrefs('start_page_query')}}" style="display:{% if start_page_pref == 'QUERY' %}inline{% else %}none{% endif %}" />
+                            <input type="text" class="span4" name="start_page_value" value="{{app['authentication'].getUser().getSettingValue('start_page_query')}}" style="display:{% if start_page_pref == 'QUERY' %}inline{% else %}none{% endif %}" />
                             <input type="button" class="btn btn-inverse" value="{{ 'boutton::valider' | trans }}" onclick="set_start_page();" />
                         </form>
                     </div>
@@ -982,7 +984,7 @@
         <div class="box">
             <h1>{{ 'Presentation de vignettes de panier' | trans }}</h1>
             <div>
-                {% set basket_status_display = app['authentication'].getUser().getPrefs('basket_status_display') %}
+                {% set basket_status_display = app['authentication'].getUser().getSettingValue('basket_status_display') %}
                 <label for="basket_status_display" class="checkbox">
                     <input onchange="setPref('basket_status_display',($(this).attr('checked') ? '1' :'0'));"
                     name="basket_status_display" type="checkbox" class="checkbox" value="1"
@@ -991,7 +993,7 @@
                 </label>
             </div>
             <div>
-                {% set basket_caption_display = app['authentication'].getUser().getPrefs('basket_caption_display') %}
+                {% set basket_caption_display = app['authentication'].getUser().getSettingValue('basket_caption_display') %}
                 <label for="basket_caption_display" class="checkbox">
                     <input onchange="setPref('basket_caption_display',($(this).attr('checked') ? '1' :'0'));"
                     name="basket_caption_display" type="checkbox" class="checkbox" value="1"
@@ -1000,7 +1002,7 @@
                 </label>
             </div>
             <div>
-                {% set basket_title_display = app['authentication'].getUser().getPrefs('basket_title_display') %}
+                {% set basket_title_display = app['authentication'].getUser().getSettingValue('basket_title_display') %}
                 <label for="basket_title_display" class="checkbox">
                     <input onchange="setPref('basket_title_display',($(this).attr('checked') ? '1' :'0'));"
                     name="basket_title_display" type="checkbox" class="checkbox" value="1"
@@ -1022,7 +1024,7 @@
     <script type="text/javascript" src="{{ path('minifier', { 'g' : 'prod' }) }}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            p4.reg_delete="{% if app['authentication'].getUser().getPrefs("warning_on_delete_story") %}true{% else %}false{% endif %}";
+            p4.reg_delete="{% if app['authentication'].getUser().getSettingValue("warning_on_delete_story") %}true{% else %}false{% endif %}";
         });
 
         function sessionactive(){

@@ -73,9 +73,9 @@ class userTest extends \PhraseanetTestCase
     {
         $user = $this->get_user();
 
-        $this->assertNull($user->getPrefs('lalala'));
-        $this->assertSame('popo', $user->getPrefs('lalala', 'popo'));
-        $this->assertSame(User::$defaultUserSettings['editing_top_box'], $user->getPrefs('editing_top_box'));
+        $this->assertNull($user->getSettingValue('lalala'));
+        $this->assertSame('popo', $user->getSettingValue('lalala', 'popo'));
+        $this->assertSame(User::$defaultUserSettings['editing_top_box'], $user->getSettingValue('editing_top_box'));
     }
 
     public function testGetPrefWithACustomizedConf()
@@ -109,26 +109,26 @@ class userTest extends \PhraseanetTestCase
     {
         $user = $this->get_user();
 
-        $user->setPrefs('prout', 'pooop');
-        $this->assertSame('pooop', $user->getPrefs('prout'));
+        $user->setSettingValue('prout', 'pooop');
+        $this->assertSame('pooop', $user->getSettingValue('prout'));
     }
 
     public function testGetNotificationPref()
     {
         $user = $this->get_user();
 
-        $this->assertSame('1', $user->get_notifications_preference(self::$DI['app'], 'eventsmanager_notify_push'));
+        $this->assertSame('1', $user->getNotificationSettingValue('eventsmanager_notify_push'));
     }
 
     public function testNotificationPref()
     {
         $user = $this->get_user();
 
-        $this->assertSame('1', $user->get_notifications_preference(self::$DI['app'], 'eventsmanager_notify_push'));
-        $user->set_notification_preference(self::$DI['app'], 'eventsmanager_notify_push', false);
-        $this->assertSame('0', $user->get_notifications_preference(self::$DI['app'], 'eventsmanager_notify_push'));
-        $user->set_notification_preference(self::$DI['app'], 'eventsmanager_notify_push', true);
-        $this->assertSame('1', $user->get_notifications_preference(self::$DI['app'], 'eventsmanager_notify_push'));
+        $this->assertSame('1', $user->getNotificationSettingValue('eventsmanager_notify_push'));
+        $user->setNotificationSettingValue('eventsmanager_notify_push', false);
+        $this->assertSame('0', $user->getNotificationSettingValue('eventsmanager_notify_push'));
+        $user->setNotificationSettingValue('eventsmanager_notify_push', true);
+        $this->assertSame('1', $user->getNotificationSettingValue('eventsmanager_notify_push'));
     }
 
     private function get_user()
