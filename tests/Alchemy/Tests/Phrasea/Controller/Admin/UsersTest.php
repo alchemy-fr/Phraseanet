@@ -69,7 +69,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['app']['acl']->get($user)->has_right_on_base($base_id, "manage"));
         $this->assertTrue(self::$DI['app']['acl']->get($user)->has_right_on_base($base_id, "canpush"));
         $this->assertTrue(self::$DI['app']['acl']->get($user)->has_right_on_base($base_id, "canreport"));
-        $user->delete();
+        self::$DI['app']['model.user-manager']->delete($user);
     }
 
     public function testRouteRightsApplyException()
@@ -87,7 +87,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         $datas = json_decode($response->getContent());
         $this->assertTrue(is_object($datas));
         $this->assertTrue($datas->error);
-        $user->delete();
+        self::$DI['app']['model.user-manager']->delete($user);
     }
 
     public function testRouteQuota()
@@ -155,7 +155,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request('POST', '/admin/users/rights/time/apply/', array('base_id' => $base_id, 'dmin'    => $dmin, 'dmax'    => $dmax, 'limit'   => 1, 'users'   => $user->getId()));
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOK());
-        $user->delete();
+        self::$DI['app']['model.user-manager']->delete($user);
     }
 
     public function testRouteRightTimeApplySbas()
@@ -170,7 +170,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request('POST', '/admin/users/rights/time/apply/', array('sbas_id' => $sbas_id, 'dmin'    => $dmin, 'dmax'    => $dmax, 'limit'   => 1, 'users'   => $user->getId()));
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOK());
-        $user->delete();
+        self::$DI['app']['model.user-manager']->delete($user);
     }
 
     public function testRouteRightTimeApplyWithtoutBasOrSbas()
@@ -184,7 +184,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request('POST', '/admin/users/rights/time/apply/', array('dmin'    => $dmin, 'dmax'    => $dmax, 'limit'   => 1, 'users'   => $user->getId()));
         $response = self::$DI['client']->getResponse();
         $this->assertEquals(400, $response->getStatusCode());
-        $user->delete();
+        self::$DI['app']['model.user-manager']->delete($user);
     }
 
     public function testRouteRightMask()
@@ -208,7 +208,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         ));
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOK());
-        $user->delete();
+        self::$DI['app']['model.user-manager']->delete($user);
     }
 
     public function testRouteSearch()
@@ -249,9 +249,8 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
-
-        $template->delete();
-        $user->delete();
+        self::$DI['app']['model.user-manager']->delete($template);
+        self::$DI['app']['model.user-manager']->delete($user);
     }
 
     public function testRouteCreateException()
@@ -295,7 +294,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFalse($datas->error);
 
         $this->assertNotNull($user = (self::$DI['app']['manipulator.user']->getRepository((int) $datas->data)));
-        $user->delete();
+        self::$DI['app']['model.user-manager']->delete($user);
     }
 
     public function testRouteCreateUserAndSendCredentials()
@@ -318,7 +317,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFalse($datas->error);
 
         $this->assertNotNull($user = (self::$DI['app']['manipulator.user']->getRepository((int) $datas->data)));
-        $user->delete();
+        self::$DI['app']['model.user-manager']->delete($user);
     }
 
     public function testRouteExportCsv()
@@ -372,7 +371,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(is_object($datas));
         $this->assertFalse($datas->error);
         $this->assertFalse(self::$DI['app']['acl']->get($user)->has_access_to_base($base_id));
-        $user->delete();
+        self::$DI['app']['model.user-manager']->delete($user);
     }
 
     public function testRenderDemands()

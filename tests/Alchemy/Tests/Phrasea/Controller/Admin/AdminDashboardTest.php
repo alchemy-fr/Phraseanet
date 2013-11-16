@@ -123,7 +123,6 @@ class AdminDashboardTest extends \PhraseanetAuthenticatedWebTestCase
         ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-
-        $user->delete();
+        self::$DI['app']['model.user-manager']->delete($user);
     }
 }

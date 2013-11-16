@@ -57,7 +57,8 @@ class AccountCreatorTest extends \PhraseanetTestCase
         $user = $creator->create(self::$DI['app'], self::$DI['app']['tokens']->generatePassword());
 
         $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\User', $user);
-        $user->delete();
+
+        self::$DI['app']['model.user-manager']->delete($user);
     }
 
     public function testCreateWithTemplates()
@@ -77,10 +78,10 @@ class AccountCreatorTest extends \PhraseanetTestCase
         $user = $creator->create(self::$DI['app'], self::$DI['app']['tokens']->generatePassword(), null, $extra);
 
         $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\User', $user);
-        $user->delete();
-        $template1->delete();
-        $template2->delete();
-        $template3->delete();
+        self::$DI['app']['model.user-manager']->delete($user);
+        self::$DI['app']['model.user-manager']->delete($template1);
+        self::$DI['app']['model.user-manager']->delete($template2);
+        self::$DI['app']['model.user-manager']->delete($template3);
     }
 
     public function testCreateWithAlreadyExistingLogin()
@@ -90,6 +91,6 @@ class AccountCreatorTest extends \PhraseanetTestCase
 
         $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\User', $user);
         $this->assertNotEquals(self::$DI['user']->getLogin(), $user->getLogin());
-        $user->delete();
+        self::$DI['app']['model.user-manager']->delete($user);
     }
 }

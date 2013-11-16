@@ -13,11 +13,11 @@ class ACLTest extends \PhraseanetAuthenticatedTestCase
     {
         $application = new Application('test');
         if (null !== $template = self::$DI['app']['manipulator.user']->findByLogin('test_phpunit2')) {
-            $template->delete();
+            self::$DI['app']['model.user-manager']->delete($template);
         }
 
         if (null !== $template = self::$DI['app']['manipulator.user']->findByLogin('test_phpunit3')) {
-            $template->delete();
+            self::$DI['app']['model.user-manager']->delete($template);
         }
 
         if (null !== $template = self::$DI['app']['manipulator.user']->findByLogin('test_phpunit3')) {
@@ -105,8 +105,8 @@ class ACLTest extends \PhraseanetAuthenticatedTestCase
             $this->assertNull(self::$DI['app']['acl']->get($cobaye)->get_limits($base_id));
         }
 
-        $template->delete();
-        $cobaye->delete();
+        self::$DI['app']['model.user-manager']->delete($template);
+        self::$DI['app']['model.user-manager']->delete($cobaye);
     }
 
     public function testApply_model_with_time_limit()
@@ -143,8 +143,8 @@ class ACLTest extends \PhraseanetAuthenticatedTestCase
             $this->assertEquals(array('dmin' => $limit_from, 'dmax' => $limit_to), self::$DI['app']['acl']->get($cobaye)->get_limits($base_id));
         }
 
-        $template->delete();
-        $cobaye->delete();
+        self::$DI['app']['model.user-manager']->delete($template);
+        self::$DI['app']['model.user-manager']->delete($cobaye);
     }
 
     public function testRevoke_access_from_bases()

@@ -164,7 +164,7 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 
         $this->assertEquals(array($template1, $template2), $app['authentication.providers.account-creator']->getTemplates());
 
-        $template1->delete();
-        $template2->delete();
+        self::$DI['app']['model.user-manager']->delete($template1);
+        self::$DI['app']['model.user-manager']->delete($template2);
     }
 }

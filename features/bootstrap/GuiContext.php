@@ -71,7 +71,7 @@ class GuiContext extends MinkContext
                 $this->app['authentication']->getUser()->ACL()->get_granted_base(array('canadmin'))
             ));
 
-            $user->delete();
+            $this->app['model.user-manager']->delete($user);
         }
     }
 

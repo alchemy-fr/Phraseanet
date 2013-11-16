@@ -40,7 +40,7 @@ class userTest extends \PhraseanetTestCase
         self::$DI['app']['EM']->persist($provider);
         self::$DI['app']['EM']->flush();
 
-        $user->delete();
+        self::$DI['app']['model.user-manager']->delete($user);
 
         $repo = self::$DI['app']['EM']->getRepository('Phraseanet:UsrAuthProvider');
         $this->assertNull($repo->findWithProviderAndId('custom-one', 12345));
@@ -134,7 +134,7 @@ class userTest extends \PhraseanetTestCase
     private function get_user()
     {
         if (null !== $user = self::$DI['app']['manipulator.user']->getRepository()->findByLogin('notif_ref_test')) {
-            $user->delete();
+            self::$DI['app']['model.user-manager']->delete($user);
         }
 
         return self::$DI['app']['manipulator.user']->create('notif_ref_test', mt_rand(), null, false);
