@@ -67,8 +67,8 @@ class GuiContext extends MinkContext
     public function aUserDoesNotExist($login)
     {
         if (null !== $user = $this->app['manipulator.user']->getRepository()->findByLogin($login)) {
-            $user->ACL()->revoke_access_from_bases(array_keys(
-                $this->app['authentication']->getUser()->ACL()->get_granted_base(array('canadmin'))
+            $this->app['acl']->get($user)->revoke_access_from_bases(array_keys(
+                $this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(array('canadmin'))
             ));
 
             $this->app['model.user-manager']->delete($user);
@@ -165,11 +165,11 @@ class GuiContext extends MinkContext
             $user = $this->app['manipulator.user']->create(User::USER_GUEST, '');
         }
 
-        $user->ACL()->give_access_to_sbas(array_keys($this->app['phraseanet.appbox']->get_databoxes()));
+        $this->app['acl']->get($user)->give_access_to_sbas(array_keys($this->app['phraseanet.appbox']->get_databoxes()));
 
         foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
-                $user->ACL()->give_access_to_base(array($collection->get_base_id()));
+                $this->app['acl']->get($user)->give_access_to_base(array($collection->get_base_id()));
             }
         }
     }
@@ -182,7 +182,7 @@ class GuiContext extends MinkContext
         if (null !== $user = $this->app['manipulator.user']->getRepository()->findByLogin(User::USER_GUEST)) {
             foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
                 foreach ($databox->get_collections() as $collection) {
-                    $user->ACL()->revoke_access_from_bases(array($collection->get_base_id()));
+                    $this->app['acl']->get($user)->revoke_access_from_bases(array($collection->get_base_id()));
                 }
             }
         }
