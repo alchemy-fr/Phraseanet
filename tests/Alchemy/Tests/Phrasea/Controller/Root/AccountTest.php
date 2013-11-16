@@ -65,7 +65,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('/account/', $response->headers->get('location'));
 
         $this->assertEquals('new_email@email.com', self::$DI['user']->getEmail());
-        self::$DI['user']->set_email('noone@example.com');
+        self::$DI['user']->setEmail('noone@example.com');
         try {
             self::$DI['app']['tokens']->helloToken($token);
             $this->fail('Token has not been removed');
@@ -123,7 +123,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     public function testPostResetMailBadEmail()
     {
         $password = \random::generatePassword();
-        self::$DI['app']['authentication']->getUser()->set_password($password);
+        self::$DI['app']['authentication']->getUser()->setPassword($password);
         self::$DI['client']->request('POST', '/account/reset-email/', array(
             'form_password'      => $password,
             'form_email'         => "invalid#!&&@@email.x",
@@ -143,7 +143,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     public function testPostResetMailEmailNotIdentical()
     {
         $password = \random::generatePassword();
-        self::$DI['app']['authentication']->getUser()->set_password($password);
+        self::$DI['app']['authentication']->getUser()->setPassword($password);
         self::$DI['client']->request('POST', '/account/reset-email/', array(
             'form_password'      => $password,
             'form_email'         => 'email1@email.com',
@@ -165,7 +165,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate');
 
         $password = \random::generatePassword();
-        self::$DI['app']['authentication']->getUser()->set_password($password);
+        self::$DI['app']['authentication']->getUser()->setPassword($password);
         self::$DI['client']->request('POST', '/account/reset-email/', array(
             'form_password'      => $password,
             'form_email'         => 'email1@email.com',
@@ -370,7 +370,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testPostRenewPasswordBadArguments($oldPassword, $password, $passwordConfirm)
     {
-        self::$DI['app']['authentication']->getUser()->set_password($oldPassword);
+        self::$DI['app']['authentication']->getUser()->setPassword($oldPassword);
 
         $crawler = self::$DI['client']->request('POST', '/account/reset-password/', array(
             'password' => array(
@@ -407,7 +407,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $password = \random::generatePassword();
 
-        self::$DI['app']['authentication']->getUser()->set_password($password);
+        self::$DI['app']['authentication']->getUser()->setPassword($password);
 
         $crawler = self::$DI['client']->request('POST', '/account/reset-password/', array(
             'password' => array(
@@ -427,7 +427,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $password = \random::generatePassword();
 
-        self::$DI['app']['authentication']->getUser()->set_password($password);
+        self::$DI['app']['authentication']->getUser()->setPassword($password);
 
         self::$DI['client']->request('POST', '/account/reset-password/', array(
             'password' => array(

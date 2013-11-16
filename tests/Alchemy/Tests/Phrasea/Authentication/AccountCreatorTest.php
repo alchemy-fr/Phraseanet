@@ -64,11 +64,11 @@ class AccountCreatorTest extends \PhraseanetTestCase
     {
         $random = self::$DI['app']['tokens'];
         $template1 = self::$DI['app']['manipulator.user']->createUser('template' . $random->generatePassword(), $random->generatePassword());
-        $template1->set_template(self::$DI['user']);
+        $template1->setModel(self::$DI['user']);
         $template2 = self::$DI['app']['manipulator.user']->createUser('template' . $random->generatePassword(), $random->generatePassword());
-        $template2->set_template(self::$DI['user']);
+        $template2->setModel(self::$DI['user']);
         $template3 = self::$DI['app']['manipulator.user']->createUser('template' . $random->generatePassword(), $random->generatePassword());
-        $template3->set_template(self::$DI['user']);
+        $template3->setModel(self::$DI['user']);
 
         $templates = array($template1, $template2);
         $extra = array($template3);

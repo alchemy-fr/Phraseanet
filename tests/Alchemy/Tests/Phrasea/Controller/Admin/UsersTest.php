@@ -238,7 +238,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
     public function testRouteApplyTp()
     {
         $template = self::$DI['app']['manipulator.user']->createUser(uniqid('template_'), "test");
-        $template->set_template(self::$DI['user']);
+        $template->setModel(self::$DI['user']);
 
         $user = self::$DI['app']['manipulator.user']->createUser(uniqid('user_'), "test");
 

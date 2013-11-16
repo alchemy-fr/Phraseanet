@@ -94,7 +94,7 @@ class Account implements ControllerProviderInterface
                 $user = $app['authentication']->getUser();
 
                 if ($app['auth.password-encoder']->isPasswordValid($user->getPassword(), $data['oldPassword'], $user->getNonce())) {
-                    $user->set_password($data['password']);
+                    $user->setPassword($data['password']);
                     $app->addFlash('success', $app->trans('login::notification: Mise a jour du mot de passe avec succes'));
 
                     return $app->redirectPath('account');
@@ -180,7 +180,7 @@ class Account implements ControllerProviderInterface
             try {
                 $datas = $app['tokens']->helloToken($token);
                 $user = $app['manipulator.user']->getRepository()->find((int) $datas['usr_id']);
-                $user->set_email($datas['datas']);
+                $user->setEmail($datas['datas']);
                 $app['tokens']->removeToken($token);
 
                 $app->addFlash('success', $app->trans('admin::compte-utilisateur: L\'email a correctement ete mis a jour'));
@@ -375,17 +375,17 @@ class Account implements ControllerProviderInterface
                 $app['phraseanet.appbox']->get_connection()->beginTransaction();
 
                 $app['authentication']->getUser()
-                    ->set_gender($request->request->get("form_gender"))
-                    ->set_firstname($request->request->get("form_firstname"))
-                    ->set_lastname($request->request->get("form_lastname"))
-                    ->set_address($request->request->get("form_address"))
-                    ->set_zip($request->request->get("form_zip"))
-                    ->set_tel($request->request->get("form_phone"))
-                    ->set_fax($request->request->get("form_fax"))
-                    ->set_job($request->request->get("form_activity"))
-                    ->set_company($request->request->get("form_company"))
-                    ->set_position($request->request->get("form_function"))
-                    ->set_geonameid($request->request->get("form_geonameid"))
+                    ->setGender($request->request->get("form_gender"))
+                    ->setFirstName($request->request->get("form_firstname"))
+                    ->setLastName($request->request->get("form_lastname"))
+                    ->setAddress($request->request->get("form_address"))
+                    ->setZipCode($request->request->get("form_zip"))
+                    ->setPhone($request->request->get("form_phone"))
+                    ->setFax($request->request->get("form_fax"))
+                    ->setJob($request->request->get("form_activity"))
+                    ->setCompany($request->request->get("form_company"))
+                    ->setActivity($request->request->get("form_function"))
+                    ->setGeonanameId($request->request->get("form_geonameid"))
                     ->set_mail_notifications((bool) $request->request->get("mail_notifications"));
 
                 $ftpCredential = $app['authentication']->getUser()->getFtpCredential();

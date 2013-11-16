@@ -156,9 +156,9 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 
         $random = $app['tokens'];
         $template1 = $user = self::$DI['app']['manipulator.user']->createUser('template' . $random->generatePassword(), $random->generatePassword());
-        $template1->set_template(self::$DI['user']);
+        $template1->setModel(self::$DI['user']);
         $template2 = self::$DI['app']['manipulator.user']->createUser('template' . $random->generatePassword(), $random->generatePassword());
-        $template2->set_template(self::$DI['user']);
+        $template2->setModel(self::$DI['user']);
 
         $app['conf']->set(['authentication', 'auto-create'], ['templates' => [$template1->get_id(), $template2->get_login()]]);
 

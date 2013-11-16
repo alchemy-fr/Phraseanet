@@ -595,18 +595,18 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $old_email = $user->getEmail();
 
-        $user->set_firstname($parm['first_name'])
-            ->set_lastname($parm['last_name'])
-            ->set_gender($parm['gender'])
-            ->set_email($parm['email'])
-            ->set_address($parm['address'])
-            ->set_zip($parm['zip'])
-            ->set_geonameid($parm['geonameid'])
-            ->set_position($parm['function'])
-            ->set_job($parm['activite'])
-            ->set_company($parm['company'])
-            ->set_tel($parm['telephone'])
-            ->set_fax($parm['fax']);
+        $user->setFirstName($parm['first_name'])
+            ->setLastName($parm['last_name'])
+            ->setGender($parm['gender'])
+            ->setEmail($parm['email'])
+            ->setAddress($parm['address'])
+            ->setZipCode($parm['zip'])
+            ->setGeonanameId($parm['geonameid'])
+            ->setActivity($parm['function'])
+            ->setJob($parm['activite'])
+            ->setCompany($parm['company'])
+            ->setPhone($parm['telephone'])
+            ->setFax($parm['fax']);
 
         $new_email = $user->getEmail();
 

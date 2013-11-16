@@ -392,7 +392,7 @@ class ACL implements cache_cacheableInterface
 
         $this->apply_template_time_limits($template_user, $base_ids);
 
-        $this->user->set_last_template($template_user);
+        $this->user->setLastModel($template_user);
 
         return $this;
     }

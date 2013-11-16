@@ -87,7 +87,7 @@ class module_console_systemMailCheck extends Command
                         throw new Exception('Invalid user');
                     }
 
-                    $tmp_user->set_email(null);
+                    $tmp_user->setEmail(null);
 
                     unset($users[$id]);
                 } catch (Exception $e) {

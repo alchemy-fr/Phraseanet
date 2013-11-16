@@ -186,7 +186,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $email = $this->generateEmail();
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, self::$DI['user']->getId(), null, $email);
 
-        self::$DI['user']->set_mail_locked(false);
+        self::$DI['user']->setMailLocked(false);
 
         self::$DI['client']->request('GET', '/login/register-confirm/', array('code'    => $token));
         $response = self::$DI['client']->getResponse();
@@ -208,7 +208,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $appboxRegister = new \appbox_register(self::$DI['app']['phraseanet.appbox']);
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, self::$DI['user']->getId(), null, $email);
 
-        self::$DI['user']->set_mail_locked(true);
+        self::$DI['user']->setMailLocked(true);
         $this->deleteRequest();
         $appboxRegister->add_request(self::$DI['user'], self::$DI['collection']);
         self::$DI['client']->request('GET', '/login/register-confirm/', array('code'    => $token));
@@ -233,7 +233,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $email = $this->generateEmail();
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, $user->getId(), null, $email);
 
-        $user->set_mail_locked(true);
+        $user->setMailLocked(true);
 
         $this->deleteRequest();
 
@@ -1136,8 +1136,8 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $password = \random::generatePassword();
 
         $login = self::$DI['app']['authentication']->getUser()->getLogin();
-        self::$DI['app']['authentication']->getUser()->set_password($password);
-        self::$DI['app']['authentication']->getUser()->set_mail_locked(false);
+        self::$DI['app']['authentication']->getUser()->setPassword($password);
+        self::$DI['app']['authentication']->getUser()->setMailLocked(false);
 
         $this->logout(self::$DI['app']);
 
@@ -1161,8 +1161,8 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $password = \random::generatePassword();
 
         $login = self::$DI['app']['authentication']->getUser()->getLogin();
-        self::$DI['app']['authentication']->getUser()->set_password($password);
-        self::$DI['app']['authentication']->getUser()->set_mail_locked(false);
+        self::$DI['app']['authentication']->getUser()->setPassword($password);
+        self::$DI['app']['authentication']->getUser()->setMailLocked(false);
 
         $this->logout(self::$DI['app']);
 
@@ -1208,7 +1208,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $password = \random::generatePassword();
 
         $login = self::$DI['app']['authentication']->getUser()->getLogin();
-        self::$DI['app']['authentication']->getUser()->set_password($password);
+        self::$DI['app']['authentication']->getUser()->setPassword($password);
 
         $this->logout(self::$DI['app']);
 
@@ -1340,7 +1340,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->logout(self::$DI['app']);
         $password = \random::generatePassword();
-        self::$DI['user']->set_mail_locked(true);
+        self::$DI['user']->setMailLocked(true);
         self::$DI['client']->request('POST', '/login/authenticate/', array(
             'login' => self::$DI['user']->getLogin(),
             'password'   => $password,
@@ -1350,7 +1350,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertEquals('/login/', self::$DI['client']->getResponse()->headers->get('location'));
         $this->assertFalse(self::$DI['app']['authentication']->isAuthenticated());
-        self::$DI['user']->set_mail_locked(false);
+        self::$DI['user']->setMailLocked(false);
     }
 
     public function testAuthenticateWithProvider()

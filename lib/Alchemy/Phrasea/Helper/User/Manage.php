@@ -178,7 +178,7 @@ class Manage extends Helper
             }
 
             if ($validateMail) {
-                $createdUser->set_mail_locked(true);
+                $createdUser->setMailLocked(true);
 
                 if ($receiver) {
                     $expire = new \DateTime('+3 days');
@@ -208,7 +208,7 @@ class Manage extends Helper
         }
 
         $created_user = $this->app['manipulator.user']->getRepository()->find($name, \random::generatePassword(16));
-        $created_user->set_template($this->app['authentication']->getUser());
+        $created_user->setModel($this->app['authentication']->getUser());
         $this->usr_id = $this->app['authentication']->getUser()->getId();
 
         return $created_user;

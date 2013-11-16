@@ -81,7 +81,7 @@ class ACLTest extends \PhraseanetAuthenticatedTestCase
     public function testApply_model()
     {
         $template = self::$DI['app']['manipulator.user']->createUser('test_phpunit2', 'blabla2', 'test2@example.com');
-        $template->set_template(self::$DI['user']);
+        $template->setModel(self::$DI['user']);
 
         $base_ids = array();
         foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
@@ -112,7 +112,7 @@ class ACLTest extends \PhraseanetAuthenticatedTestCase
     public function testApply_model_with_time_limit()
     {
         $template = self::$DI['app']['manipulator.user']->createUser('test_phpunit2', 'blabla2', 'test2@example.com');
-        $template->set_template(self::$DI['user']);
+        $template->setModel(self::$DI['user']);
 
         $base_ids = array();
         foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {

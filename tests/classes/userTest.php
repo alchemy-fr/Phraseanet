@@ -8,18 +8,17 @@ class userTest extends \PhraseanetTestCase
     {
         $this->assertNull(self::$DI['app']['manipulator.user']->getRepository()->findByEmail(null));
         try {
-            self::$DI['user']->set_email(null);
+            self::$DI['user']->setEmail(null);
             $this->assertNull(self::$DI['app']['manipulator.user']->getRepository()->findByEmail(null));
-            self::$DI['user']->set_email('');
+            self::$DI['user']->setEmail('');
             $this->assertNull(self::$DI['app']['manipulator.user']->getRepository()->findByEmail(null));
-            self::$DI['user']->set_email('noone@example.com');
+            self::$DI['user']->setEmail('noone@example.com');
             $this->assertEquals(self::$DI['user'], self::$DI['app']['manipulator.user']->getRepository()->findByEmail('noone@example.com'));
         } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
         try {
-
-            self::$DI['user']->set_email('noonealt1@example.com');
+            self::$DI['user']->setEmail('noonealt1@example.com');
             $this->fail('A user already got this address');
         } catch (Exception $e) {
 

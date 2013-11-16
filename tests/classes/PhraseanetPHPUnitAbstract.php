@@ -107,7 +107,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             self::generateRecords($application);
 
-            self::$DI['user']->set_email('valid@phraseanet.com');
+            self::$DI['user']->setEmail('valid@phraseanet.com');
 
             self::$updated = true;
         }

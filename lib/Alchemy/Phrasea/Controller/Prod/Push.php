@@ -549,15 +549,15 @@ class Push implements ControllerProviderInterface
 
                     $user = $app['manipulator.user']->getRepository()->createUser($email, $password, $email);
 
-                    $user->set_firstname($request->request->get('firstname'))
-                        ->set_lastname($request->request->get('lastname'));
+                    $user->setFirstName($request->request->get('firstname'))
+                        ->setLastName($request->request->get('lastname'));
 
                     if ($request->request->get('company'))
-                        $user->set_company($request->request->get('company'));
+                        $user->setCompany($request->request->get('company'));
                     if ($request->request->get('job'))
-                        $user->set_company($request->request->get('job'));
+                        $user->setCompany($request->request->get('job'));
                     if ($request->request->get('form_geonameid'))
-                        $user->set_geonameid($request->request->get('form_geonameid'));
+                        $user->setGeonanameId($request->request->get('form_geonameid'));
 
                     $result['message'] = $app->trans('User successfully created');
                     $result['success'] = true;

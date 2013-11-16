@@ -365,19 +365,19 @@ class Login implements ControllerProviderInterface
 
                     $user = $app['manipulator.user']->createUser($data['login'], $data['password'], $data['email'], false);
 
-                    foreach ([
-                        'gender'    => 'set_gender',
-                        'firstname' => 'set_firstname',
-                        'lastname'  => 'set_lastname',
-                        'address'   => 'set_address',
-                        'zipcode'   => 'set_zip',
-                        'tel'       => 'set_tel',
-                        'fax'       => 'set_fax',
-                        'job'       => 'set_job',
-                        'company'   => 'set_company',
-                        'position'  => 'set_position',
-                        'geonameid' => 'set_geonameid',
-                    ] as $property => $method) {
+                    foreach (array(
+                        'gender'    => 'setGender',
+                        'firstname' => 'setFirstName',
+                        'lastname'  => 'setLastName',
+                        'address'   => 'setAddress',
+                        'zipcode'   => 'setZipCode',
+                        'tel'       => 'setPhone',
+                        'fax'       => 'setFax',
+                        'job'       => 'setJob',
+                        'company'   => 'setCompany',
+                        'position'  => 'setActivity',
+                        'geonameid' => 'setGeonanameId',
+                    ) as $property => $method) {
                         if (isset($data[$property])) {
                             call_user_func([$user, $method], $data[$property]);
                         }
@@ -425,7 +425,7 @@ class Login implements ControllerProviderInterface
                     $app['events-manager']->trigger('__REGISTER_AUTOREGISTER__', $params);
                     $app['events-manager']->trigger('__REGISTER_APPROVAL__', $params);
 
-                    $user->set_mail_locked(true);
+                    $user->setMailLocked(true);
 
                     try {
                         $this->sendAccountUnlockEmail($app, $user);
@@ -570,7 +570,7 @@ class Login implements ControllerProviderInterface
         }
 
         $app['tokens']->removeToken($code);
-        $user->set_mail_locked(false);
+        $user->setMailLocked(false);
 
         try {
             $receiver = Receiver::fromUser($user);
@@ -621,7 +621,7 @@ class Login implements ControllerProviderInterface
                     $datas = $app['tokens']->helloToken($token);
 
                     $user = $app['manipulator.user']->getRepository()->find($datas['usr_id']);
-                    $user->set_password($data['password']);
+                    $user->setPassword($data['password']);
 
                     $app['tokens']->removeToken($token);
 
@@ -882,7 +882,7 @@ class Login implements ControllerProviderInterface
         $session = $app['authentication']->openAccount($user);
 
         if ($user->getLocale() != $app['locale']) {
-            $user->set_locale($app['locale']);
+            $user->setLocale($app['locale']);
         }
 
         $width = $height = null;
