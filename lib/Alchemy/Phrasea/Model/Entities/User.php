@@ -924,6 +924,34 @@ class User
     }
 
     /**
+     * Sets the value of a user setting.
+     *
+     * @param $name
+     * @param $value
+     *
+     * @return $this
+     */
+    public function setSettingValue($name, $value)
+    {
+        foreach ($this->settings as $setting) {
+            if ($name === $setting->getName()) {
+                $setting->setValue($value);
+                $this->cachedSettings = null;
+
+                return $this;
+            }
+        }
+
+        $setting = new UserSetting();
+        $setting->setName($name);
+        $setting->setValue($value);
+
+        $this->cachedSettings = null;
+
+        return $this;
+    }
+
+    /**
      * @return ArrayCollection
      */
     public function getNotificationSettings()
@@ -941,6 +969,51 @@ class User
         $this->notificationSettings->set($notificationSetting->getName(), $notificationSetting);
 
         return $this;
+    }
+
+    /**
+     * Sets the value of a notification setting.
+     *
+     * @param $name
+     * @param $value
+     *
+     * @return $this
+     */
+    public function setNotificationSettingValue($name, $value)
+    {
+        foreach ($this->notificationSettings as $setting) {
+            if ($name === $setting->getName()) {
+                $setting->setValue((Boolean) $value);
+
+                return $this;
+            }
+        }
+
+        $notificationSetting = new UserNotificationSetting();
+        $notificationSetting->setName($name);
+        $notificationSetting->setValue((Boolean) $value);
+
+        $this->notificationSettings->add($notificationSetting);
+
+        return $this;
+    }
+
+    /**
+     * Retrieves user notification setting value.
+     *
+     * @param $name
+     *
+     * @return boolean
+     */
+    public function getNotificationSettingValue($name)
+    {
+        foreach ($this->notificationSettings as $setting) {
+            if ($name === $setting->getName()) {
+                return (Boolean) $setting->getValue();
+            }
+        }
+
+        return true;
     }
 
     /**
