@@ -827,7 +827,7 @@ abstract class base implements cache_cacheableInterface
         $success = true;
 
         foreach ($list_patches as $patch) {
-            foreach($patch->getDoctrineMigrations() as $doctrineVersion) {
+            foreach ($patch->getDoctrineMigrations() as $doctrineVersion) {
                 $version = $app['doctrine-migration.configuration']->getVersion($doctrineVersion);
                 $version->getMigration()->setEntityManager($app['EM']);
                 if (false === $version->isMigrated()) {

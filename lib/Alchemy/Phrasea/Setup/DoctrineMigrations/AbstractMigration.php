@@ -14,7 +14,6 @@ namespace Alchemy\Phrasea\Setup\DoctrineMigrations;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Doctrine\DBAL\Migrations\AbstractMigration as BaseMigration;
 use Doctrine\DBAL\Schema\Schema;
-use Doctrine\DBAL\Migrations\Configuration;
 use Doctrine\ORM\EntityManager;
 
 abstract class AbstractMigration extends BaseMigration

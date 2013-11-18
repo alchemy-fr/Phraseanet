@@ -15,7 +15,6 @@ use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Gedmo\Timestampable\TimestampableListener;
-use Doctrine\ORM\Query\ResultSetMapping;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class patch_320alpha4b implements patchInterface

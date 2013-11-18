@@ -10,9 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Doctrine\DBAL\Migrations\Configuration\Configuration;
-use Doctrine\DBAL\DriverManager;
-
 
 class patch_360alpha1a implements patchInterface
 {

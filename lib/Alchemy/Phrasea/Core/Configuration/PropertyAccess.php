@@ -159,6 +159,7 @@ class PropertyAccess
                 if (!is_array($conf[$prop])) {
                     throw new InvalidArgumentException('Unable to merge an array in a scalar.');
                 }
+
                 return $conf[$prop] = array_replace($conf[$prop], $value);
             }
 

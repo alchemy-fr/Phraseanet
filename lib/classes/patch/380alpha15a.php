@@ -34,6 +34,7 @@ class patch_380alpha15a implements patchInterface
     {
         return [];
     }
+    
     /**
      * {@inheritdoc}
      */

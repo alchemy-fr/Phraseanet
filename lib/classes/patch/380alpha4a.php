@@ -52,7 +52,6 @@ class patch_380alpha4a implements patchInterface
         return ['auth-failure'];
     }
 
-
     /**
      * {@inheritdoc}
      */

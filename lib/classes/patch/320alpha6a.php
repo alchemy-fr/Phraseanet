@@ -11,7 +11,6 @@
 
 use Alchemy\Phrasea\Application;
 
-
 class patch_320alpha6a implements patchInterface
 {
     /** @var string */
