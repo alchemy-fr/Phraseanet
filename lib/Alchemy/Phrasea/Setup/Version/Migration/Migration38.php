@@ -76,7 +76,7 @@ class Migration38 implements MigrationInterface
         if (is_file($this->binariesYaml)) {
             $binaries = $this->yaml->parse($this->binariesYaml);
             foreach ($binaries['binaries'] as $key => $value) {
-                $conf['binaries'][$key] = $value;
+                $conf['main']['binaries'][$key] = $value;
             }
         }
     }

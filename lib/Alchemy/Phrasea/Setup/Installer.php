@@ -186,9 +186,9 @@ class Installer
         $config['main']['database']['driver'] = 'pdo_mysql';
         $config['main']['database']['charset'] = 'UTF8';
 
-        $config['binaries'] = $binaryData;
+        $config['main']['binaries'] = $binaryData;
 
-        $config['main']['servername'] = $serverName;
+        $config['servername'] = $serverName;
         $config['main']['key'] = md5(mt_rand(100000000, 999999999));
 
         $this->app['phraseanet.registry']->setKey($config['main']['key']);

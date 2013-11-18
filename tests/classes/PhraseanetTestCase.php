@@ -258,7 +258,7 @@ abstract class PhraseanetTestCase extends WebTestCase
         });
 
         $app['url_generator'] = $app->share($app->extend('url_generator', function ($generator, $app) {
-            $host = parse_url($app['conf']->get(['main', 'servername']), PHP_URL_HOST);
+            $host = parse_url($app['conf']->get('servername'), PHP_URL_HOST);
             $generator->setContext(new RequestContext('', 'GET', $host));
 
             return $generator;

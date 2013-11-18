@@ -42,7 +42,7 @@ class registry implements registryInterface
         $this->cache = new ArrayCache();
 
         if ($app['phraseanet.configuration-tester']->isInstalled()) {
-            $this->cache->save('GV_ServerName', $app['conf']->get(['main', 'servername']));
+            $this->cache->save('GV_ServerName', $app['conf']->get('servername'));
             $this->cache->save('GV_debug', $app['debug']);
 
             if ($app['conf']->has(['main', 'key'])) {

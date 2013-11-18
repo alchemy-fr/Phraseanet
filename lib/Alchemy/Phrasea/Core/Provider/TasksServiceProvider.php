@@ -41,7 +41,7 @@ class TasksServiceProvider implements ServiceProviderInterface
                 'host'      => '127.0.0.1',
                 'port'      => 6660,
                 'linger'    => 500,
-            ], $app['conf']->get(['task-manager', 'listener'], []));
+            ], $app['conf']->get(['main', 'task-manager', 'listener'], []));
         });
 
         $app['task-manager.job-factory'] = $app->share(function (Application $app) {

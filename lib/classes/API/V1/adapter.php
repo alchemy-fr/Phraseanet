@@ -307,7 +307,7 @@ class API_V1_adapter extends API_V1_Abstract
         $ret['phraseanet']['debug'] = $app['debug'];
         $ret['phraseanet']['maintenance'] = $app['conf']->get(['main', 'maintenance']);
         $ret['phraseanet']['errorsLog'] = $app['debug'];
-        $ret['phraseanet']['serverName'] = $app['conf']->get(['main', 'servername']);
+        $ret['phraseanet']['serverName'] = $app['conf']->get('servername');
 
         return $ret;
     }
@@ -325,7 +325,7 @@ class API_V1_adapter extends API_V1_Abstract
             $SEStatus = ['error' => $e->getMessage()];
         }
 
-        $binaries = $app['conf']->get('binaries');
+        $binaries = $app['conf']->get(['main', 'binaries']);
 
         return [
             'global_values' => [
