@@ -646,7 +646,7 @@ class SearchEngineOptions
         }
 
         if ($app['authentication']->isAuthenticated() && $app['acl']->get($app['authentication']->getUser())->has_right('modifyrecord')) {
-            $BF = array_filter($bas, function( $collection) use ($app) {
+            $BF = array_filter($bas, function ($collection) use ($app) {
                 return $app['acl']->get($app['authentication']->getUser())->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
             });
 

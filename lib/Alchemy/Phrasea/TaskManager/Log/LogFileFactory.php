@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\TaskManager\Log;
 
 use Alchemy\Phrasea\Model\Entities\Task;
 
-class LogFilefactory
+class LogFileFactory
 {
     private $root;
 

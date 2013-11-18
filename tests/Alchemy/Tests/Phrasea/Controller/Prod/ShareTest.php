@@ -40,7 +40,6 @@ class ShareTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('has_access_to_subdef')
             ->will($this->returnValue(true));
 
-
         $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
             ->disableOriginalConstructor()
             ->getMock();
@@ -81,7 +80,6 @@ class ShareTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $stubbedACL->expects($this->once())
             ->method('has_access_to_subdef')
             ->will($this->returnValue(false));
-
 
         $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
             ->disableOriginalConstructor()

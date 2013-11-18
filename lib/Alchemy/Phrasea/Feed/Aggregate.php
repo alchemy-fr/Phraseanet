@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Feed;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Exception\LogicException;
 use Doctrine\ORM\EntityManager;
 use Alchemy\Phrasea\Model\Entities\AggregateToken;

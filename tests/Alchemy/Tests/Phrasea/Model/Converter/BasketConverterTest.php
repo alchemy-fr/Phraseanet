@@ -3,7 +3,6 @@
 namespace Alchemy\Phrasea\Model\Converter;
 
 use Alchemy\Phrasea\Model\Converter\BasketConverter;
-use Alchemy\Phrasea\Model\Entities\Task;
 
 class BasketConverterTest extends \PhraseanetPHPUnitAbstract
 {

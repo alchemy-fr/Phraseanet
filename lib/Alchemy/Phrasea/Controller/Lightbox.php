@@ -331,7 +331,6 @@ class Lightbox implements ControllerProviderInterface
             ->assert('entry_id', '\d+');
 
         $controllers->get('/ajax/LOAD_REPORT/{basket}/', function (SilexApplication $app, Basket $basket) {
-
             return new Response($app['twig']->render('lightbox/basket_content_report.html.twig', array('basket' => $basket)));
         })
             ->bind('lightbox_ajax_report')

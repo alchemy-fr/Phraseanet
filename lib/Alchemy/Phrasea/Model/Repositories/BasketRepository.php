@@ -11,11 +11,8 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *

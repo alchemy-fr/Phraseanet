@@ -2,9 +2,6 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Middleware;
 
-use Alchemy\Phrasea\Application;
-use Symfony\Component\HttpFoundation\Request;
-
 abstract class MiddlewareProviderTestCase extends \PhraseanetPHPUnitAbstract
 {
     /**

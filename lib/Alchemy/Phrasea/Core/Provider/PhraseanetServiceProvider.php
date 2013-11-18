@@ -39,7 +39,7 @@ class PhraseanetServiceProvider implements ServiceProviderInterface
             return $events;
         });
 
-        $app['acl'] = $app->share(function(SilexApplication $app) {
+        $app['acl'] = $app->share(function (SilexApplication $app) {
             return new ACLProvider($app);
         });
     }

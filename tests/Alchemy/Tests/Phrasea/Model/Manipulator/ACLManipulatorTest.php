@@ -11,8 +11,6 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
-use Alchemy\Phrasea\Exception\InvalidArgumentException;
-
 class ACLManipulatorTest extends \PhraseanetPHPUnitAbstract
 {
     public function testResetAdminRights()
@@ -23,7 +21,7 @@ class ACLManipulatorTest extends \PhraseanetPHPUnitAbstract
         $databoxId = null;
         $baseId = null;
 
-        foreach(self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             $databoxId = $databox->get_sbas_id();
 
             $acl->update_rights_to_sbas($databoxId, array(
@@ -33,7 +31,7 @@ class ACLManipulatorTest extends \PhraseanetPHPUnitAbstract
                 'bas_chupub'        => '0'
             ));
 
-            foreach($databox->get_collections() as $collection) {
+            foreach ($databox->get_collections() as $collection) {
                 $baseId = $collection->get_base_id();
                 $acl->set_limits($baseId, true);
                 $acl->set_masks_on_base($baseId, '1', '1', '1', '1');

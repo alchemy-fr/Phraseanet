@@ -205,7 +205,7 @@ class Feed implements ControllerProviderInterface
                 $app['firewall']->requireRight('bas_chupub');
             });
 
-        $controllers->get('/', function(Application $app, Request $request) {
+        $controllers->get('/', function (Application $app, Request $request) {
             $request = $app['request'];
             $page = (int) $request->query->get('page');
             $page = $page > 0 ? $page : 1;

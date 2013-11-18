@@ -269,7 +269,7 @@ class Upload implements ControllerProviderInterface
     /**
      * Get current user's granted collections where he can upload
      *
-     * @param  \ACL $acl The user's ACL.
+     * @param \ACL $acl The user's ACL.
      *
      * @return array
      */

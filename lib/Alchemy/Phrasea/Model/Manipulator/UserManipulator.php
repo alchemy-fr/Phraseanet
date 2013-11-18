@@ -180,9 +180,9 @@ class UserManipulator implements ManipulatorInterface
     /**
      * Sets a preference setting for a user.
      *
-     * @param User      $user
-     * @param string    $name
-     * @param string    $value
+     * @param User   $user
+     * @param string $name
+     * @param string $value
      */
     public function addUserSetting(User $user, $name, $value)
     {
@@ -198,9 +198,9 @@ class UserManipulator implements ManipulatorInterface
     /**
      * Sets a notification setting for a user.
      *
-     * @param User      $user
-     * @param string    $name
-     * @param string    $value
+     * @param User   $user
+     * @param string $name
+     * @param string $value
      */
     public function addNotificationSetting(User $user, $name, $value)
     {
@@ -216,7 +216,7 @@ class UserManipulator implements ManipulatorInterface
     /**
      * Logs a user query.
      *
-     * @param User  $user
+     * @param User   $user
      * @param string $query
      */
     public function logQuery(User $user, $query)

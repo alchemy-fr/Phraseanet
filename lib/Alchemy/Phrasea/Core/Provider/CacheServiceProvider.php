@@ -15,7 +15,6 @@ use Alchemy\Phrasea\Cache\Manager as CacheManager;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Alchemy\Phrasea\Core\Configuration\Compiler;
-use Alchemy\Phrasea\Cache\ConnectionFactory;
 use Alchemy\Phrasea\Cache\Factory;
 
 class CacheServiceProvider implements ServiceProviderInterface

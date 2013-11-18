@@ -30,11 +30,11 @@ class Root implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAccessToModule('admin');
         });
 
-        $controllers->get('/', function(Application $app, Request $request) {
+        $controllers->get('/', function (Application $app, Request $request) {
             try {
                 \Session_Logger::updateClientInfos($app, 3);
             } catch (SessionNotFound $e) {
@@ -315,7 +315,7 @@ class Root implements ControllerProviderInterface
           ->assert('bit', '\d+')
           ->bind('database_display_statusbit_form');
 
-        $controllers->post('/statusbit/{databox_id}/status/{bit}/delete/', function(Application $app, Request $request, $databox_id, $bit) {
+        $controllers->post('/statusbit/{databox_id}/status/{bit}/delete/', function (Application $app, Request $request, $databox_id, $bit) {
             if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
                 $app->abort(400, _('Bad request format, only JSON is allowed'));
             }
@@ -338,7 +338,7 @@ class Root implements ControllerProviderInterface
             ->assert('databox_id', '\d+')
             ->assert('bit', '\d+');
 
-        $controllers->post('/statusbit/{databox_id}/status/{bit}/', function(Application $app, Request $request, $databox_id, $bit) {
+        $controllers->post('/statusbit/{databox_id}/status/{bit}/', function (Application $app, Request $request, $databox_id, $bit) {
             if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                 $app->abort(403);
             }

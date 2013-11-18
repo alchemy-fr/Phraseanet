@@ -2,7 +2,6 @@
 
 use Alchemy\Phrasea\Border\File as BorderFile;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 {
