@@ -306,8 +306,6 @@ class appbox extends base
 
         $upgrader->set_current_message(_('Creating new tables'));
 
-        $app['phraseanet.pre-schema-upgrader']->apply($app);
-
         $upgrader->add_steps_complete(1);
 
         /**
