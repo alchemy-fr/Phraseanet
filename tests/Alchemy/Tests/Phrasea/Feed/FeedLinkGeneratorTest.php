@@ -60,16 +60,16 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
 
                 $this->assertCount(0, self::$DI['app']['EM']
                     ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
-                    ->findBy(array('value' => $tokenValue)));
+                    ->findBy(['value' => $tokenValue]));
                 $this->assertCount(1, self::$DI['app']['EM']
                     ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
-                    ->findBy(array('value' => $capture['token'])));
+                    ->findBy(['value' => $capture['token']]));
             } else {
-                $expectedParams = array(
+                $expectedParams = [
                     'token'  => $tokenValue,
                     'id'     => $feed->getId(),
                     'format' => $format,
-                );
+                ];
 
                 if ($page !== null) {
                     $expectedParams['page'] = $page;
@@ -79,7 +79,7 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
 
                 $this->assertCount(1, self::$DI['app']['EM']
                     ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
-                    ->findBy(array('value' => $tokenValue)));
+                    ->findBy(['value' => $tokenValue]));
             }
         } else {
             if (null !== $page) {
@@ -91,7 +91,7 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
 
             $this->assertCount(1, self::$DI['app']['EM']
                 ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
-                ->findBy(array('value' => $capture['token'])));
+                ->findBy(['value' => $capture['token']]));
         }
     }
 

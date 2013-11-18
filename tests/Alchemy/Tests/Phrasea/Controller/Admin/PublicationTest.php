@@ -37,7 +37,7 @@ class PublicationTest extends \PhraseanetAuthenticatedWebTestCase
         $feeds = self::$DI['app']['EM']->getRepository('Phraseanet:Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
         $count = sizeof($feeds);
 
-        $crawler = self::$DI['client']->request('POST', '/admin/publications/create/', array("title"    => "hello", "subtitle" => "coucou", "base_id"  => self::$DI['collection']->get_base_id()));
+        $crawler = self::$DI['client']->request('POST', '/admin/publications/create/', ["title"    => "hello", "subtitle" => "coucou", "base_id"  => self::$DI['collection']->get_base_id()]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect('/admin/publications/list/'));
 
@@ -59,11 +59,11 @@ class PublicationTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
 
-        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/update/", array(
+        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/update/", [
             'title'    => 'test'
             , 'subtitle' => 'test'
             , 'public'   => '1'
-        ));
+        ]);
 
         $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', $feed->getId());
 
@@ -83,12 +83,12 @@ class PublicationTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
 
-        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/update/", array(
+        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/update/", [
             'title'    => 'test'
             , 'subtitle' => 'test'
             , 'public'   => '1'
             , 'base_id'  => self::$DI['collection']->get_base_id()
-        ));
+        ]);
 
         $this->assertTrue(
             strpos(
@@ -116,7 +116,7 @@ class PublicationTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 3);
 
-        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/iconupload/", array(), array(), array('HTTP_ACCEPT' => 'application/json'));
+        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/iconupload/", [], [], ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -130,8 +130,8 @@ class PublicationTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request(
             "POST"
             , "/admin/publications/feed/" . $feed->getId() . "/iconupload/"
-            , array()
-            , array('Filedata' => array('error'   => 1))
+            , []
+            , ['Filedata' => ['error'   => 1]]
         );
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
@@ -148,8 +148,8 @@ class PublicationTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request(
             "POST"
             , "/admin/publications/feed/" . $feed->getId() . "/iconupload/"
-            , array()
-            , array('Filedata' => array('error'    => 0, 'tmp_name' => __DIR__ . '/../../../../../files/test007.ppt'))
+            , []
+            , ['Filedata' => ['error'    => 0, 'tmp_name' => __DIR__ . '/../../../../../files/test007.ppt']]
         );
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
@@ -163,18 +163,18 @@ class PublicationTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
 
-        $files = array(
-            'files' => array(
+        $files = [
+            'files' => [
                 new \Symfony\Component\HttpFoundation\File\UploadedFile(
                     __DIR__ . '/../../../../../files/logocoll.gif', 'logocoll.gif'
                 )
-            )
-        );
+            ]
+        ];
 
         self::$DI['client']->request(
             "POST"
             , "/admin/publications/feed/" . $feed->getId() . "/iconupload/"
-            , array()
+            , []
             , $files
         );
 
@@ -191,9 +191,9 @@ class PublicationTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
 
-        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/addpublisher/", array(
+        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/addpublisher/", [
             'usr_id' => self::$DI['user_alt1']->getId()
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
@@ -229,9 +229,9 @@ class PublicationTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
 
-        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/removepublisher/", array(
+        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/removepublisher/", [
             'usr_id' => self::$DI['user_alt1']->getId()
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());

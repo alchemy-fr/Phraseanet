@@ -20,7 +20,7 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
      *
      * @var string
      */
-    public $events = array('__ORDER_NOT_DELIVERED__');
+    public $events = ['__ORDER_NOT_DELIVERED__'];
 
     public function __construct(Application $app, eventsmanager_broker $broker)
     {
@@ -37,11 +37,11 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
 
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'from' => ''
             , 'to'   => ''
             , 'n'    => ''
-        );
+        ];
 
         $params = array_merge($default, $params);
 
@@ -108,7 +108,7 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
         $n = (int) $sx->n;
 
         if (null === $user = $this->app['manipulator.user']->getRepository()->find($from)) {
-            return array();
+            return [];
         }
 
         $sender = $user->getDisplayName();
@@ -116,7 +116,7 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
         $ret = [
             'text'  => $this->app->trans('%user% a refuse la livraison de %quantity% document(s) pour votre commande', ['%user%' => $sender, '%quantity%' => $n])
             , 'class' => ''
-        );
+        ];
 
         return $ret;
     }

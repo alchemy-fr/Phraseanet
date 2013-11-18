@@ -406,11 +406,11 @@ class User
      */
     public function setGender($gender)
     {
-        if (null !== $gender && !in_array($gender, array(
+        if (null !== $gender && !in_array($gender, [
             self::GENDER_MISS,
             self::GENDER_MR,
             self::GENDER_MRS
-        ))) {
+        ])) {
             throw new InvalidArgumentException(sprintf("Invalid gender %s.", $gender));
         }
 
@@ -1029,7 +1029,7 @@ class User
      */
     public function isSpecial()
     {
-        return in_array($this->login, array(self::USER_GUEST, self::USER_AUTOREGISTER));
+        return in_array($this->login, [self::USER_GUEST, self::USER_AUTOREGISTER]);
     }
 
     /**

@@ -19,7 +19,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = array('__REGISTER_AUTOREGISTER__');
+    public $events = ['__REGISTER_AUTOREGISTER__'];
 
     /**
      *
@@ -39,10 +39,10 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'usr_id'       => ''
-            , 'autoregister' => array()
-        );
+            , 'autoregister' => []
+        ];
 
         $params = array_merge($default, $params);
         $base_ids = array_keys($params['autoregister']);
@@ -51,7 +51,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
             return;
         }
 
-        $mailColl = array();
+        $mailColl = [];
 
         $sql = 'SELECT u.usr_id, b.base_id FROM usr u, basusr b
       WHERE u.usr_id = b.usr_id
@@ -70,7 +70,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
 
             foreach ($rs as $row) {
                 if ( ! isset($mailColl[$row['usr_id']]))
-                    $mailColl[$row['usr_id']] = array();
+                    $mailColl[$row['usr_id']] = [];
 
                 $mailColl[$row['usr_id']][] = $row['base_id'];
             }
@@ -139,13 +139,13 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
         $usr_id = (string) $sx->usr_id;
 
         if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
-            return array();
+            return [];
         }
 
         $ret = [
             'text'  => $this->app->trans('%user% s\'est enregistre sur une ou plusieurs %before_link% scollections %after_link%', ['%user%' => $user->getDisplayName(), '%before_link%' => '<a href="/admin/?section=users" target="_blank">', '%after_link%' => '</a>'])
             , 'class' => ''
-        );
+        ];
 
         return $ret;
     }

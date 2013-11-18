@@ -45,7 +45,7 @@ class appbox_register
         $sql = "INSERT INTO demand (date_modif, usr_id, base_id, en_cours, refuser)
       VALUES (now(), :usr_id , :base_id, 1, 0)";
         $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id'  => $user->getId(), ':base_id' => $collection->get_base_id()));
+        $stmt->execute([':usr_id'  => $user->getId(), ':base_id' => $collection->get_base_id()]);
         $stmt->closeCursor();
 
         return $this;
@@ -64,10 +64,10 @@ class appbox_register
     {
         $sql = 'SELECT base_id FROM demand WHERE usr_id = :usr_id AND en_cours="1" ';
         $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $user->getId()));
+        $stmt->execute([':usr_id' => $user->getId()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-        $ret = array();
+        $ret = [];
         foreach ($rs as $row) {
             $ret[] = collection::get_from_base_id($app, $row['base_id']);
         }
@@ -86,7 +86,7 @@ class appbox_register
         $lastMonth = new DateTime('-1 month');
         $sql = "delete from demand where date_modif < :lastMonth";
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':lastMonth' => $lastMonth->format(DATE_ISO8601)));
+        $stmt->execute([':lastMonth' => $lastMonth->format(DATE_ISO8601)]);
         $stmt->closeCursor();
 
         return;

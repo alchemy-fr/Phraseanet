@@ -20,7 +20,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = array('__PUSH_VALIDATION__');
+    public $events = ['__PUSH_VALIDATION__'];
 
     /**
      *
@@ -52,12 +52,12 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'from'    => ''
             , 'to'      => ''
             , 'message' => ''
             , 'ssel_id' => ''
-        );
+        ];
 
         $params = array_merge($default, $params);
 
@@ -138,7 +138,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
         $ssel_id = (string) $sx->ssel_id;
 
         if (null === $user = $this->app['manipulator.user']->getRepository()->find($from)) {
-            return array();
+            return [];
         }
 
         $sender = $user->getDisplayName();
@@ -151,7 +151,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
         }
 
         $bask_link = '<a href="'
-            . $this->app->url('lightbox_validation', array('ssel_id' => (string) $sx->ssel_id))
+            . $this->app->url('lightbox_validation', ['ssel_id' => (string) $sx->ssel_id])
             . '" target="_blank">'
             . $basket_name . '</a>';
 
@@ -161,7 +161,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
                 '%title%' => $bask_link,
             ])
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
-        );
+        ];
 
         return $ret;
     }

@@ -96,10 +96,10 @@ class Session_Logger
      */
     public static function create(Application $app, databox $databox, Browser $browser)
     {
-        $colls = array();
+        $colls = [];
 
         if ($app['authentication']->getUser()) {
-            $bases = $app['acl']->get($app['authentication']->getUser())->get_granted_base(array(), array($databox->get_sbas_id()));
+            $bases = $app['acl']->get($app['authentication']->getUser())->get_granted_base([], [$databox->get_sbas_id()]);
             foreach ($bases as $collection) {
                 $colls[] = $collection->get_coll_id();
             }
@@ -116,7 +116,7 @@ class Session_Logger
               , :browser, :browser_version,  :platform, :screen, :ip
               , :user_agent, :appli, :fonction, :company, :activity, :country)";
 
-        $params = array(
+        $params = [
             ':ses_id'          => $app['session']->get('session_id'),
             ':usr_login'       => $app['authentication']->getUser() ? $app['authentication']->getUser()->getLogin() : null,
             ':site_id'         => $app['conf']->get(['main', 'key']),
@@ -127,12 +127,12 @@ class Session_Logger
             ':screen'          => $browser->getScreenSize(),
             ':ip'              => $browser->getIP(),
             ':user_agent'      => $browser->getUserAgent(),
-            ':appli'           => serialize(array()),
+            ':appli'           => serialize([]),
             ':fonction' => $app['authentication']->getUser() ? $app['authentication']->getUser()->getJob() : null,
             ':company'  => $app['authentication']->getUser() ? $app['authentication']->getUser()->getCompany() : null,
             ':activity' => $app['authentication']->getUser() ? $app['authentication']->getUser()->getActivity() : null,
             ':country'  => $app['authentication']->getUser() ? $app['authentication']->getUser()->getCountry() : null
-        );
+        ];
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
@@ -143,10 +143,10 @@ class Session_Logger
         $stmt = $conn->prepare($sql);
 
         foreach ($colls as $collId) {
-            $stmt->execute(array(
+            $stmt->execute([
                 ':log_id'  => $log_id,
                 ':coll_id' => $collId
-            ));
+            ]);
         }
 
         $stmt->closeCursor();
@@ -205,7 +205,7 @@ class Session_Logger
             $app['EM']->flush();
         }
 
-        $appName = array(
+        $appName = [
             '1' => 'Prod',
             '2' => 'Client',
             '3' => 'Admin',
@@ -215,7 +215,7 @@ class Session_Logger
             '7' => 'Validate',
             '8' => 'Upload',
             '9' => 'API'
-        );
+        ];
 
         if (isset($appName[$appId])) {
             $sbas_ids = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_sbas());
@@ -227,7 +227,7 @@ class Session_Logger
                     $connbas = connection::getPDOConnection($app, $sbas_id);
                     $sql = 'SELECT appli FROM log WHERE id = :log_id';
                     $stmt = $connbas->prepare($sql);
-                    $stmt->execute(array(':log_id' => $logger->get_id()));
+                    $stmt->execute([':log_id' => $logger->get_id()]);
                     $row3 = $stmt->fetch(PDO::FETCH_ASSOC);
                     $stmt->closeCursor();
 
@@ -241,10 +241,10 @@ class Session_Logger
 
                     $sql = 'UPDATE log SET appli = :applis WHERE id = :log_id';
 
-                    $params = array(
+                    $params = [
                         ':applis' => serialize($applis)
                         , ':log_id' => $logger->get_id()
-                    );
+                    ];
 
                     $stmt = $connbas->prepare($sql);
                     $stmt->execute($params);

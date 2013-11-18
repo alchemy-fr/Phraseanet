@@ -22,13 +22,13 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['app']['events-manager'] = $eventManagerStub;
 
-        self::$DI['client']->request('POST', '/prod/download/', array(
+        self::$DI['client']->request('POST', '/prod/download/', [
             'lst'               => self::$DI['record_1']->get_serialize_key(),
             'ssttid'            => '',
-            'obj'               => array('preview', 'document'),
+            'obj'               => ['preview', 'document'],
             'title'             => 'export_title_test',
             'businessfields'    => '1'
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
@@ -53,7 +53,7 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['app']['events-manager'] = $eventManagerStub;
 
         self::$DI['app']['authentication']->setUser($this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
-            ->setMethods(array('ACL'))
+            ->setMethods(['ACL'])
             ->disableOriginalConstructor()
             ->getMock());
 
@@ -85,13 +85,13 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['app']['acl'] = $aclProvider;
 
-        self::$DI['client']->request('POST', '/prod/download/', array(
+        self::$DI['client']->request('POST', '/prod/download/', [
             'lst'               => self::$DI['record_1']->get_serialize_key(),
             'ssttid'            => '',
-            'obj'               => array('preview', 'document'),
+            'obj'               => ['preview', 'document'],
             'title'             => 'export_title_test',
             'businessfields'    => '1'
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
@@ -117,13 +117,13 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['app']['events-manager'] = $eventManagerStub;
 
-        self::$DI['client']->request('POST', '/prod/download/', array(
+        self::$DI['client']->request('POST', '/prod/download/', [
             'lst'               => '',
             'ssttid'            => $basket->getId(),
-            'obj'               => array('preview', 'document'),
+            'obj'               => ['preview', 'document'],
             'title'             => 'export_title_test',
             'businessfields'    => '1'
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
@@ -149,13 +149,13 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['app']['events-manager'] = $eventManagerStub;
 
-        self::$DI['client']->request('POST', '/prod/download/', array(
+        self::$DI['client']->request('POST', '/prod/download/', [
             'lst'               => '',
             'ssttid'            => $basket->getId(),
-            'obj'               => array('preview', 'document'),
+            'obj'               => ['preview', 'document'],
             'title'             => 'export_title_test',
             'businessfields'    => '1'
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());

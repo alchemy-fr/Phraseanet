@@ -57,7 +57,7 @@ class Aggregate implements FeedInterface
         $this->updatedOn = new \DateTime();
         $this->em = $em;
 
-        $tmp_feeds = array();
+        $tmp_feeds = [];
 
         foreach ($feeds as $feed) {
             $tmp_feeds[$feed->getId()] = $feed;
@@ -80,7 +80,7 @@ class Aggregate implements FeedInterface
     public static function createFromUser(Application $app, User $user)
     {
         $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['acl']->get($user));
-        $token = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')->findOneBy(array('usrId' => $user->getId()));
+        $token = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')->findOneBy(['usrId' => $user->getId()]);
 
         return new static($app['EM'], $feeds, $token);
     }
@@ -117,7 +117,7 @@ class Aggregate implements FeedInterface
             return new ArrayCollection();
         }
 
-        $feedIds = array();
+        $feedIds = [];
         foreach ($this->feeds as $feed) {
             $feedIds[] = $feed->getId();
         }
@@ -203,7 +203,7 @@ class Aggregate implements FeedInterface
     public function getCountTotalEntries()
     {
         if (count($this->feeds) > 0) {
-            $feedIds = array();
+            $feedIds = [];
             foreach ($this->feeds as $feed) {
                 $feedIds[] = $feed->getId();
             }
@@ -240,6 +240,6 @@ class Aggregate implements FeedInterface
      */
     public static function getPublic(Application $app)
     {
-        return new static($app['EM'], $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(array('public' => true), array('updatedOn' => 'DESC')));
+        return new static($app['EM'], $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(['public' => true], ['updatedOn' => 'DESC']));
     }
 }

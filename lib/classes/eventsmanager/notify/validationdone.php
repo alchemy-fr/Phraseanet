@@ -20,7 +20,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = array('__VALIDATION_DONE__');
+    public $events = ['__VALIDATION_DONE__'];
 
     /**
      *
@@ -52,11 +52,11 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'from'    => ''
             , 'to'      => ''
             , 'ssel_id' => ''
-        );
+        ];
 
         $params = array_merge($default, $params);
 
@@ -132,7 +132,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
         $ssel_id = (string) $sx->ssel_id;
 
         if (null === $registered_user = $this->app['manipulator.user']->getRepository()->find($from)) {
-            return array();
+            return [];
         }
 
         $sender = $registered_user->getDisplayName();
@@ -142,7 +142,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
 
             $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['authentication']->getUser(), false);
         } catch (Exception $e) {
-            return array();
+            return [];
         }
 
         $ret = [
@@ -151,7 +151,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
                 . $basket->getName() . '</a>'
             ])
             , 'class' => ''
-        );
+        ];
 
         return $ret;
     }

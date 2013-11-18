@@ -18,7 +18,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = array('__NEW_ORDER__');
+    public $events = ['__NEW_ORDER__'];
 
     /**
      *
@@ -38,22 +38,22 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'usr_id'   => ''
-            , 'order_id' => array()
-        );
+            , 'order_id' => []
+        ];
 
         $params = array_merge($default, $params);
         $order_id = $params['order_id'];
 
-        $users = array();
+        $users = [];
 
         try {
             $repository = $this->app['EM']->getRepository('Phraseanet:OrderElement');
 
-            $results = $repository->findBy(array('orderId' => $order_id));
+            $results = $repository->findBy(['orderId' => $order_id]);
 
-            $base_ids = array();
+            $base_ids = [];
             foreach ($results as $result) {
                 $base_ids[] = $result->getBaseId();
             }
@@ -61,7 +61,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
 
             $query = new User_Query($this->app);
             $users = $query->on_base_ids($base_ids)
-                    ->who_have_right(array('order_master'))
+                    ->who_have_right(['order_master'])
                     ->execute()->get_results();
         } catch (Exception $e) {
 
@@ -137,7 +137,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
         $order_id = (string) $sx->order_id;
 
         if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
-            return array();
+            return [];
         }
 
         $sender = $user->getDisplayName();
@@ -148,7 +148,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
                 '%opening_link%' => '<a href="/prod/order/'.$order_id.'/" class="dialog full-dialog" title="'.$this->app->trans('Orders manager').'">',
                 '%end_link%' => '</a>',])
             , 'class' => ''
-        );
+        ];
 
         return $ret;
     }

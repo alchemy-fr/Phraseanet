@@ -69,6 +69,6 @@ class FtpExportRepository extends EntityRepository
      */
     public function findByUser(User $user)
     {
-        return $this->findBy(array('usrId' => $user->getId()));
+        return $this->findBy(['usrId' => $user->getId()]);
     }
 }

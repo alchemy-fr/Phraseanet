@@ -21,7 +21,7 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
     public function setAdmin($bool)
     {
         $stubAuthenticatedUser = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')//, array('is_admin', 'ACL'), array(self::$DI['app']['authentication']->getUser()->getId(), self::$DI['app']))
-            ->setMethods(array('getId'))
+            ->setMethods(['getId'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -67,11 +67,11 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
 
         $this->StubbedACL->expects($this->any())
             ->method('get_granted_base')
-            ->will($this->returnValue(array(self::$DI['collection'])));
+            ->will($this->returnValue([self::$DI['collection']]));
 
         $this->StubbedACL->expects($this->any())
             ->method('get_granted_sbas')
-            ->will($this->returnValue(array(self::$DI['collection']->get_databox())));
+            ->will($this->returnValue([self::$DI['collection']->get_databox()]));
 
         $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
             ->disableOriginalConstructor()
@@ -90,7 +90,7 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         self::$DI['app']['authentication']->setUser($stubAuthenticatedUser);
 
         self::$DI['client'] = self::$DI->share(function ($DI) {
-                return new Client($DI['app'], array());
+                return new Client($DI['app'], []);
             });
     }
 
@@ -162,12 +162,12 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
 
     public function provideFlashMessages()
     {
-        return array(
-            array('warning', 'Be careful !'),
-            array('error', 'An error occured'),
-            array('info', 'You need to do something more'),
-            array('success', "Success operation !"),
-        );
+        return [
+            ['warning', 'Be careful !'],
+            ['error', 'An error occured'],
+            ['info', 'You need to do something more'],
+            ['success', "Success operation !"],
+        ];
     }
 
     protected function assertFormOrFlashError(Crawler $crawler, $quantity)

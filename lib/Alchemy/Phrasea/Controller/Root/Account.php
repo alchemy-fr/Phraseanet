@@ -146,7 +146,7 @@ class Account implements ControllerProviderInterface
 
         $date = new \DateTime('1 day');
         $token = $app['tokens']->getUrlToken(\random::TYPE_EMAIL, $app['authentication']->getUser()->getId(), $date, $app['authentication']->getUser()->getEmail());
-        $url = $app->url('account_reset_email', array('token' => $token));
+        $url = $app->url('account_reset_email', ['token' => $token]);
 
         try {
             $receiver = Receiver::fromUser($app['authentication']->getUser());
@@ -239,9 +239,9 @@ class Account implements ControllerProviderInterface
     {
         require_once $app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
 
-        return $app['twig']->render('account/access.html.twig', array(
+        return $app['twig']->render('account/access.html.twig', [
             'inscriptions' => giveMeBases($app, $app['authentication']->getUser()->getId())
-        ));
+        ]);
     }
 
     /**
@@ -318,11 +318,11 @@ class Account implements ControllerProviderInterface
      */
     public function displayAccount(Application $app, Request $request)
     {
-        return $app['twig']->render('account/account.html.twig', array(
+        return $app['twig']->render('account/account.html.twig', [
             'user'          => $app['authentication']->getUser(),
             'evt_mngr'      => $app['events-manager'],
             'notifications' => $app['events-manager']->list_notifications_available($app['authentication']->getUser()->getId()),
-        ));
+        ]);
     }
 
     /**

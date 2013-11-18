@@ -28,7 +28,7 @@ class UsrAuthProviderRepository extends EntityRepository
                 FROM Phraseanet:UsrAuthProvider u
                 WHERE u.usr_id = :usrId';
 
-        $params = array('usrId' => $user->getId());
+        $params = ['usrId' => $user->getId()];
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
@@ -42,7 +42,7 @@ class UsrAuthProviderRepository extends EntityRepository
                 FROM Phraseanet:UsrAuthProvider u
                 WHERE u.provider = :providerId AND u.distant_id = :distantId';
 
-        $params = array('providerId' => $providerId, 'distantId' => $distantId);
+        $params = ['providerId' => $providerId, 'distantId' => $distantId];
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);

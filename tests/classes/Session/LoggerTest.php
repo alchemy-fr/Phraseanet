@@ -37,7 +37,7 @@ class Session_LoggerTest extends \PhraseanetTestCase
 
         $sql = 'SELECT id FROM log
             WHERE sit_session = :ses_id AND usrid = :usr_id AND site = :site';
-        $params = [
+        $params = array(
             ':ses_id' => self::$DI['app']['session']->get('session_id')
             , ':usr_id' => self::$DI['app']['authentication']->getUser()->getId()
             , ':site'   => self::$DI['app']['conf']->get(['main', 'key'])

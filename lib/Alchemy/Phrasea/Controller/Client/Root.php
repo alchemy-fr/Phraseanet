@@ -261,7 +261,7 @@ class Root implements ControllerProviderInterface
             'storage_access'    => $this->getDocumentStorageAccess($app),
             'tabs_setup'        => $this->getTabSetup($app),
             'module'            => 'client',
-            'menubar'           => $app['twig']->render('common/menubar.html.twig', array('module' => 'client')),
+            'menubar'           => $app['twig']->render('common/menubar.html.twig', ['module' => 'client']),
             'css_file'          => $this->getCssFile($app),
             'basket_status'     => $app['authentication']->getUser()->getSettingValue('client_basket_status', '1'),
             'mod_pres'          => $app['authentication']->getUser()->getSettingValue('client_view', '' ),
@@ -349,7 +349,7 @@ class Root implements ControllerProviderInterface
     {
         $cssPath = __DIR__ . '/../../../../../www/skins/client/';
 
-        $css = array();
+        $css = [];
         $cssFile = $app['authentication']->getUser()->getSettingValue('client_css');
 
         $finder = new Finder();

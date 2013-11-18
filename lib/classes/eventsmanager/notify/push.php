@@ -19,7 +19,7 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = array('__PUSH_DATAS__');
+    public $events = ['__PUSH_DATAS__'];
 
     /**
      *
@@ -39,12 +39,12 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'from'    => ''
             , 'to'      => ''
             , 'message' => ''
             , 'ssel_id' => ''
-        );
+        ];
 
         $params = array_merge($default, $params);
 
@@ -120,7 +120,7 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
         $from = (string) $sx->from;
 
         if (null === $user = $this->app['manipulator.user']->getRepository()->find($from)) {
-            return array();
+            return [];
         }
 
         $sender = $user->getDisplayName();
@@ -129,7 +129,7 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
             'text'  => $this->app->trans('%user% vous a envoye un %before_link% panier %after_link%', ['%user%' => $sender, '%before_link%' => '<a href="#" onclick="openPreview(\'BASK\',1,\''
                 . (string) $sx->ssel_id . '\');return false;">', '%after_link%' => '</a>'])
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
-        );
+        ];
 
         return $ret;
     }

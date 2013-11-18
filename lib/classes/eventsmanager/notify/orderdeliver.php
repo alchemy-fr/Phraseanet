@@ -20,7 +20,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = array('__ORDER_DELIVER__');
+    public $events = ['__ORDER_DELIVER__'];
 
     /**
      *
@@ -52,12 +52,12 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'from'    => ''
             , 'to'      => ''
             , 'ssel_id' => ''
             , 'n'       => ''
-        );
+        ];
 
         $params = array_merge($default, $params);
 
@@ -107,7 +107,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
             }
 
             if ($readyToSend) {
-                $url = $this->app->url('lightbox_compare', array(
+                $url = $this->app->url('lightbox_compare', [
                     'ssel_id' => $basket->getId(),
                     'LOG' => $this->app['tokens']->getUrlToken(
                         \random::TYPE_VIEW,
@@ -115,7 +115,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
                         null,
                         $basket->getId()
                     )
-                ));
+                ]);
 
                 $mail = MailInfoOrderDelivered::create($this->app, $receiver, $emitter, null);
                 $mail->setButtonUrl($url);
@@ -145,7 +145,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
         $n = (int) $sx->n;
 
         if (null === $user= $this->app['manipulator.user']->getRepository()->find(($from))) {
-            return array();
+            return [];
         }
 
         $sender = $user->getDisplayName();
@@ -155,14 +155,14 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
 
             $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['authentication']->getUser(), false);
         } catch (Exception $e) {
-            return array();
+            return [];
         }
         $ret = [
             'text'  => $this->app->trans('%user% vous a delivre %quantity% document(s) pour votre commande %title%', ['%user%' => $sender, '%quantity%' => $n, '%title%' => '<a href="/lightbox/compare/'
                 . (string) $sx->ssel_id . '/" target="_blank">'
                 . $basket->getName() . '</a>'])
             , 'class' => ''
-        );
+        ];
 
         return $ret;
     }

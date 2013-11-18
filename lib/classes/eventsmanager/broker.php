@@ -13,9 +13,9 @@ use Alchemy\Phrasea\Application;
 
 class eventsmanager_broker
 {
-    protected $events = array();
-    protected $notifications = array();
-    protected $pool_classes = array();
+    protected $events = [];
+    protected $notifications = [];
+    protected $pool_classes = [];
 
     /**
      *
@@ -32,11 +32,11 @@ class eventsmanager_broker
 
     public function start()
     {
-        $iterators_pool = array(
-            'event' => array(
+        $iterators_pool = [
+            'event' => [
                 'eventsmanager_event_test'
-            ),
-            'notify' => array(
+            ],
+            'notify' => [
                 'eventsmanager_notify_autoregister',
                 'eventsmanager_notify_bridgeuploadfail',
                 'eventsmanager_notify_downloadmailfail',
@@ -50,8 +50,8 @@ class eventsmanager_broker
                 'eventsmanager_notify_validate',
                 'eventsmanager_notify_validationdone',
                 'eventsmanager_notify_validationreminder',
-            )
-        );
+            ]
+        ];
 
         foreach ($iterators_pool as $type => $iterators) {
             foreach ($iterators as $fileinfo) {
@@ -73,7 +73,7 @@ class eventsmanager_broker
         return;
     }
 
-    public function trigger($event, $array_params = array(), &$object = false)
+    public function trigger($event, $array_params = [], &$object = false)
     {
         if (array_key_exists($event, $this->events)) {
             foreach ($this->events[$event] as $classname) {
@@ -88,7 +88,7 @@ class eventsmanager_broker
     {
 
         if ( ! array_key_exists($event, $this->events))
-            $this->events[$event] = array();
+            $this->events[$event] = [];
 
         $this->events[$event][] = $object_name;
     }
@@ -102,12 +102,12 @@ class eventsmanager_broker
               VALUES
               (null, :usr_id, :event_type, 1, :mailed, :datas, NOW())';
 
-            $params = array(
+            $params = [
                 ':usr_id'     => $usr_id
                 , ':event_type' => $event_type
                 , ':mailed'     => ($mailed ? 1 : 0)
                 , ':datas'      => $datas
-            );
+            ];
 
             $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
             $stmt->execute($params);
@@ -127,7 +127,7 @@ class eventsmanager_broker
             FROM notifications WHERE usr_id = :usr_id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->app['authentication']->getUser()->getId()));
+        $stmt->execute([':usr_id' => $this->app['authentication']->getUser()->getId()]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -142,10 +142,10 @@ class eventsmanager_broker
             ORDER BY created_on DESC
             LIMIT ' . ((int) $page * $n) . ', ' . $n;
 
-        $data = array('notifications' => array(), 'next' => '');
+        $data = ['notifications' => [], 'next' => ''];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->app['authentication']->getUser()->getId()));
+        $stmt->execute([':usr_id' => $this->app['authentication']->getUser()->getId()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -156,7 +156,7 @@ class eventsmanager_broker
             if ( ! isset($this->pool_classes[$type]) || count($content) === 0) {
                 $sql = 'DELETE FROM notifications WHERE id = :id';
                 $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-                $stmt->execute(array(':id' => $row['id']));
+                $stmt->execute([':id' => $row['id']]);
                 $stmt->closeCursor();
                 continue;
             }
@@ -165,19 +165,19 @@ class eventsmanager_broker
             $display_date = $this->app['date-formatter']->getDate(new DateTime($row['created_on']));
 
             if ( ! isset($data['notifications'][$date_key])) {
-                $data['notifications'][$date_key] = array(
+                $data['notifications'][$date_key] = [
                     'display'       => $display_date
-                    , 'notifications' => array()
-                );
+                    , 'notifications' => []
+                ];
             }
 
-            $data['notifications'][$date_key]['notifications'][$row['id']] = array(
+            $data['notifications'][$date_key]['notifications'][$row['id']] = [
                 'classname' => $content['class']
                 , 'time'      => $this->app['date-formatter']->getTime(new DateTime($row['created_on']))
                 , 'icon'      => '<img src="' . $this->pool_classes[$type]->icon_url() . '" style="vertical-align:middle;width:16px;margin:2px;" />'
                 , 'id'        => $row['id']
                 , 'text'      => $content['text']
-            );
+            ];
         }
 
         if (((int) $page + 1) * $n < $total) {
@@ -195,7 +195,7 @@ class eventsmanager_broker
             FROM notifications
             WHERE usr_id = :usr_id AND unread="1"';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->app['authentication']->getUser()->getId()));
+        $stmt->execute([':usr_id' => $this->app['authentication']->getUser()->getId()]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -214,7 +214,7 @@ class eventsmanager_broker
             FROM notifications WHERE usr_id = :usr_id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->app['authentication']->getUser()->getId()));
+        $stmt->execute([':usr_id' => $this->app['authentication']->getUser()->getId()]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -230,9 +230,9 @@ class eventsmanager_broker
               WHERE usr_id = :usr_id AND unread="1" ORDER BY created_on DESC';
         }
 
-        $ret = array();
+        $ret = [];
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->app['authentication']->getUser()->getId()));
+        $stmt->execute([':usr_id' => $this->app['authentication']->getUser()->getId()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -246,19 +246,19 @@ class eventsmanager_broker
             if ( ! isset($this->pool_classes[$type]) || count($datas) === 0) {
                 $sql = 'DELETE FROM notifications WHERE id = :id';
                 $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-                $stmt->execute(array(':id' => $row['id']));
+                $stmt->execute([':id' => $row['id']]);
                 $stmt->closeCursor();
                 continue;
             }
 
             $ret[] = array_merge(
                 $datas
-                , array(
+                , [
                 'created_on' => $this->app['date-formatter']->getPrettyString(new DateTime($row['created_on']))
                 , 'icon'       => $this->pool_classes[$type]->icon_url()
                 , 'id'         => $row['id']
                 , 'unread'     => $row['unread']
-                )
+                ]
             );
         }
 
@@ -276,7 +276,7 @@ class eventsmanager_broker
               AND (id="' . implode('" OR id="', $notifications) . '")';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $usr_id));
+        $stmt->execute([':usr_id' => $usr_id]);
         $stmt->closeCursor();
 
         return $this;
@@ -284,7 +284,7 @@ class eventsmanager_broker
 
     public function list_notifications_available($usr_id)
     {
-        $personnal_notifications = array();
+        $personnal_notifications = [];
 
         foreach ($this->notifications as $notification) {
             if (!$this->pool_classes[$notification]->is_available($usr_id)) {
@@ -293,12 +293,12 @@ class eventsmanager_broker
             $group = $this->pool_classes[$notification]->get_group();
             $group = $group === null ? $this->app->trans('Notifications globales') : $group;
 
-            $personnal_notifications[$group][] = array(
+            $personnal_notifications[$group][] = [
                 'name'             => $this->pool_classes[$notification]->get_name()
                 , 'id'               => $notification
                 , 'description'      => $this->pool_classes[$notification]->get_description()
                 , 'subscribe_emails' => true
-            );
+            ];
         }
 
         return $personnal_notifications;

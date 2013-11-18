@@ -35,7 +35,7 @@ class StoryWZRepository extends EntityRepository
         }
 
         $query = $this->_em->createQuery($dql);
-        $query->setParameters(array('usr_id' => $user->getId()));
+        $query->setParameters(['usr_id' => $user->getId()]);
 
         $stories = $query->getResult();
 
@@ -51,7 +51,7 @@ class StoryWZRepository extends EntityRepository
         $this->getEntityManager()->flush();
 
         if ($sort == 'name') {
-            $sortedStories = array();
+            $sortedStories = [];
             foreach ($stories as $story) {
                 $sortedStories[] = $story->getRecord($app)->get_title();
             }
@@ -97,11 +97,11 @@ class StoryWZRepository extends EntityRepository
     public function findUserStory(Application $app, User $user, \record_adapter $Story)
     {
         $story = $this->findOneBy(
-            array(
+            [
                 'usr_id'    => $user->getId(),
                 'sbas_id'   => $Story->get_sbas_id(),
                 'record_id' => $Story->get_record_id(),
-            )
+            ]
         );
 
         if ($story) {
@@ -123,10 +123,10 @@ class StoryWZRepository extends EntityRepository
                 AND s.record_id = :record_id';
 
         $query = $this->_em->createQuery($dql);
-        $query->setParameters(array(
+        $query->setParameters([
             'sbas_id' => $Story->get_sbas_id(),
             'record_id' => $Story->get_record_id(),
-        ));
+        ]);
 
         $stories = $query->getResult();
 
@@ -148,9 +148,9 @@ class StoryWZRepository extends EntityRepository
         $dql = 'SELECT s FROM Phraseanet:StoryWZ s WHERE s.sbas_id = :sbas_id';
 
         $query = $this->_em->createQuery($dql);
-        $query->setParameters(array(
+        $query->setParameters([
             'sbas_id' => $databox->get_sbas_id(),
-        ));
+        ]);
 
         $stories = $query->getResult();
 

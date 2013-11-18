@@ -20,7 +20,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
      *
      * @var string
      */
-    public $events = array('__VALIDATION_REMINDER__');
+    public $events = ['__VALIDATION_REMINDER__'];
 
     /**
      *
@@ -52,12 +52,12 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'from'    => ''
             , 'to'      => ''
             , 'ssel_id' => ''
             , 'url'     => ''
-        );
+        ];
 
         $params = array_merge($default, $params);
 
@@ -137,7 +137,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
         $ssel_id = (string) $sx->ssel_id;
 
         if (null === $user = $this->app['manipulator.user']->getRepository()->find($from)) {
-            return array();
+            return [];
         }
 
         $sender = $user->getDisplayName();
@@ -156,7 +156,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
         $ret = [
             'text'  => $this->app->trans('Rappel : Il vous reste %number% jours pour valider %title% de %user%', ['%number%' => $this->app['conf']->get(['registry', 'actions', 'validation-reminder-days']), '%title%' => $bask_link, '%user%' => $sender])
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
-        );
+        ];
 
         return $ret;
     }

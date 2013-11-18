@@ -90,7 +90,7 @@ class UsrLists implements ControllerProviderInterface
                 $owners = $entries = [];
 
                 foreach ($list->getOwners() as $owner) {
-                    $owners[] = array(
+                    $owners[] = [
                         'usr_id'       => $owner->getUser($app)->getId(),
                         'display_name' => $owner->getUser($app)->getDisplayName(),
                         'position'     => $owner->getUser($app)->getActivity(),
@@ -98,18 +98,18 @@ class UsrLists implements ControllerProviderInterface
                         'company'      => $owner->getUser($app)->getCompany(),
                         'email'        => $owner->getUser($app)->getEmail(),
                         'role'         => $owner->getRole()
-                    );
+                    ];
                 }
 
                 foreach ($list->getEntries() as $entry) {
-                    $entries[] = array(
+                    $entries[] = [
                         'usr_id'       => $owner->getUser($app)->getId(),
                         'display_name' => $owner->getUser($app)->getDisplayName(),
                         'position'     => $owner->getUser($app)->getActivity(),
                         'job'          => $owner->getUser($app)->getJob(),
                         'company'      => $owner->getUser($app)->getCompany(),
                         'email'        => $owner->getUser($app)->getEmail(),
-                    );
+                    ];
                 }
 
                 /* @var $list UsrList */
@@ -201,7 +201,7 @@ class UsrLists implements ControllerProviderInterface
         $owners = new ArrayCollection();
 
         foreach ($list->getOwners() as $owner) {
-            $owners[] = array(
+            $owners[] = [
                 'usr_id'       => $owner->getUser($app)->getId(),
                 'display_name' => $owner->getUser($app)->getDisplayName(),
                 'position'     => $owner->getUser($app)->getActivity(),
@@ -209,18 +209,18 @@ class UsrLists implements ControllerProviderInterface
                 'company'      => $owner->getUser($app)->getCompany(),
                 'email'        => $owner->getUser($app)->getEmail(),
                 'role'         => $owner->getRole($app)
-            );
+            ];
         }
 
         foreach ($list->getEntries() as $entry) {
-            $entries[] = array(
+            $entries[] = [
                 'usr_id'       => $entry->getUser($app)->getId(),
                 'display_name' => $entry->getUser($app)->getDisplayName(),
                 'position'     => $entry->getUser($app)->getActivity(),
                 'job'          => $entry->getUser($app)->getJob(),
                 'company'      => $entry->getUser($app)->getCompany(),
                 'email'        => $entry->getUser($app)->getEmail(),
-            );
+            ];
         }
 
         return $app->json([

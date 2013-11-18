@@ -365,7 +365,7 @@ class Login implements ControllerProviderInterface
 
                     $user = $app['manipulator.user']->createUser($data['login'], $data['password'], $data['email'], false);
 
-                    foreach (array(
+                    foreach ([
                         'gender'    => 'setGender',
                         'firstname' => 'setFirstName',
                         'lastname'  => 'setLastName',
@@ -377,7 +377,7 @@ class Login implements ControllerProviderInterface
                         'company'   => 'setCompany',
                         'position'  => 'setActivity',
                         'geonameid' => 'setGeonanameId',
-                    ) as $property => $method) {
+                    ] as $property => $method) {
                         if (isset($data[$property])) {
                             call_user_func([$user, $method], $data[$property]);
                         }
@@ -394,7 +394,7 @@ class Login implements ControllerProviderInterface
 
                         $template_user = $app['manipulator.user']->getRepository()->findbyLogin('autoregister');
 
-                        $base_ids = array();
+                        $base_ids = [];
 
                         foreach (array_keys($inscOK) as $base_id) {
                             $base_ids[] = $base_id;
@@ -416,11 +416,11 @@ class Login implements ControllerProviderInterface
                         $demandOK[$base_id] = true;
                     }
 
-                    $params = array(
+                    $params = [
                         'demand'       => $demandOK,
                         'autoregister' => $autoReg,
                         'usr_id'       => $user->getId()
-                    );
+                    ];
 
                     $app['events-manager']->trigger('__REGISTER_AUTOREGISTER__', $params);
                     $app['events-manager']->trigger('__REGISTER_APPROVAL__', $params);

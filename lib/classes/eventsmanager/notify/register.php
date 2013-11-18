@@ -18,7 +18,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = array('__REGISTER_APPROVAL__');
+    public $events = ['__REGISTER_APPROVAL__'];
 
     /**
      *
@@ -38,10 +38,10 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'usr_id' => ''
-            , 'demand' => array()
-        );
+            , 'demand' => []
+        ];
 
         $params = array_merge($default, $params);
         $base_ids = $params['demand'];
@@ -50,7 +50,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
             return;
         }
 
-        $mailColl = array();
+        $mailColl = [];
 
         try {
             $sql = 'SELECT u.usr_id, b.base_id
@@ -70,7 +70,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 
             foreach ($rs as $row) {
                 if ( ! isset($mailColl[$row['usr_id']]))
-                    $mailColl[$row['usr_id']] = array();
+                    $mailColl[$row['usr_id']] = [];
 
                 $mailColl[$row['usr_id']][] = $row['base_id'];
             }
@@ -149,7 +149,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
         $usr_id = (string) $sx->usr_id;
 
         if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
-            return array();
+            return [];
         }
 
         $sender = $user->getDisplayName();
@@ -157,7 +157,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
         $ret = [
             'text'  => $this->app->trans('%user% demande votre approbation sur une ou plusieurs %before_link% collections %after_link%', ['%user%' => $sender, '%before_link%' => '<a href="' . $this->app->url('admin', ['section' => 'registrations']) . '" target="_blank">', '%after_link%' => '</a>'])
             , 'class' => ''
-        );
+        ];
 
         return $ret;
     }

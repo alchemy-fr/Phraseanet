@@ -36,11 +36,11 @@ class BasketElementRepository extends EntityRepository
             WHERE (b.usr_id = :usr_id OR p.usr_id = :same_usr_id)
               AND e.id = :element_id';
 
-        $params = array(
+        $params = [
             'usr_id'      => $user->getId(),
             'same_usr_id' => $user->getId(),
             'element_id'  => $element_id
-        );
+        ];
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
@@ -65,10 +65,10 @@ class BasketElementRepository extends EntityRepository
             WHERE e.record_id = :record_id
             AND e.sbas_id = :sbas_id';
 
-        $params = array(
+        $params = [
             'sbas_id'   => $record->get_sbas_id(),
             'record_id' => $record->get_record_id()
-        );
+        ];
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
@@ -85,9 +85,9 @@ class BasketElementRepository extends EntityRepository
             LEFT JOIN s.participants p
             WHERE e.sbas_id = :sbas_id';
 
-        $params = array(
+        $params = [
             'sbas_id'   => $databox->get_sbas_id(),
-        );
+        ];
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
@@ -113,11 +113,11 @@ class BasketElementRepository extends EntityRepository
             AND e.record_id = :record_id
             AND e.sbas_id = :sbas_id';
 
-        $params = array(
+        $params = [
             'sbas_id'   => $record->get_sbas_id(),
             'record_id' => $record->get_record_id(),
             'usr_id'    => $user->getId()
-        );
+        ];
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
@@ -136,11 +136,11 @@ class BasketElementRepository extends EntityRepository
             AND e.record_id = :record_id
             AND e.sbas_id = :sbas_id';
 
-        $params = array(
+        $params = [
             'sbas_id'   => $record->get_sbas_id(),
             'record_id' => $record->get_record_id(),
             'usr_id'    => $user->getId()
-        );
+        ];
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);

@@ -21,7 +21,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
         $another_feed = new Feed($user);
         $another_feed->setTitle("another_title");
 
-        $feeds = array($feed, $another_feed);
+        $feeds = [$feed, $another_feed];
 
         $aggregate = new Aggregate(self::$DI['app']['EM'], $feeds);
 
@@ -68,15 +68,15 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
 
                 $this->assertCount(0, self::$DI['app']['EM']
                     ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
-                    ->findBy(array('value' => $tokenValue)));
+                    ->findBy(['value' => $tokenValue]));
                 $this->assertCount(1, self::$DI['app']['EM']
                     ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
-                    ->findBy(array('value' => $capture['token'])));
+                    ->findBy(['value' => $capture['token']]));
             } else {
-                $expectedParams = array(
+                $expectedParams = [
                     'token'  => $tokenValue,
                     'format' => $format,
-                );
+                ];
 
                 if ($page !== null) {
                     $expectedParams['page'] = $page;
@@ -86,7 +86,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
 
                 $this->assertCount(1, self::$DI['app']['EM']
                     ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
-                    ->findBy(array('value' => $tokenValue)));
+                    ->findBy(['value' => $tokenValue]));
             }
         } else {
             if (null !== $page) {
@@ -97,7 +97,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
 
             $this->assertCount(1, self::$DI['app']['EM']
                 ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
-                ->findBy(array('value' => $capture['token'])));
+                ->findBy(['value' => $capture['token']]));
         }
     }
 
@@ -125,11 +125,11 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
 
     public function provideGenerationDataPublic()
     {
-        return array(
-            array('doliprane', 'atom', null),
-            array('doliprane', 'atom', 1),
-            array('doliprane', 'rss', null),
-            array('doliprane', 'rss', 1)
-        );
+        return [
+            ['doliprane', 'atom', null],
+            ['doliprane', 'atom', 1],
+            ['doliprane', 'rss', null],
+            ['doliprane', 'rss', 1]
+        ];
     }
 }

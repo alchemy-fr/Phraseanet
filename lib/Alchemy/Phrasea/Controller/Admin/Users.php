@@ -365,7 +365,7 @@ class Users implements ControllerProviderInterface
             $sql = 'SELECT usr_id, usr_login FROM usr WHERE model_of = :usr_id';
 
             $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute(array(':usr_id' => $app['authentication']->getUser()->getId()));
+            $stmt->execute([':usr_id' => $app['authentication']->getUser()->getId()]);
             $models = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
@@ -726,7 +726,7 @@ class Users implements ControllerProviderInterface
             GROUP BY usr_id";
 
             $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute(array(':usr_id' => $app['authentication']->getUser()->getId()));
+            $stmt->execute([':usr_id' => $app['authentication']->getUser()->getId()]);
             $models = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
@@ -861,7 +861,7 @@ class Users implements ControllerProviderInterface
                         }
 
                         $app['acl']->get($NewUser)->apply_model(
-                            $app['manipulator.user']->getRepository()->find($model), array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(array('manage')))
+                            $app['manipulator.user']->getRepository()->find($model), array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['manage']))
                         );
 
                         $nbCreation++;
