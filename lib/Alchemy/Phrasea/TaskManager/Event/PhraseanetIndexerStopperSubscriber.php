@@ -29,9 +29,9 @@ class PhraseanetIndexerStopperSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            TaskManagerEvents::STOP_REQUEST => array('onStopRequest'),
-        );
+        return [
+            TaskManagerEvents::STOP_REQUEST => ['onStopRequest'],
+        ];
     }
 
     public function onStopRequest(JobEvent $event)

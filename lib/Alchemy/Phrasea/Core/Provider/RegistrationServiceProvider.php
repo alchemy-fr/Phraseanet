@@ -21,7 +21,7 @@ class RegistrationServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['registration.fields'] = $app->share(function (Application $app) {
-            return isset($app['configuration']['registration-fields']) ? $app['configuration']['registration-fields'] : array();
+            return isset($app['configuration']['registration-fields']) ? $app['configuration']['registration-fields'] : [];
         });
 
         $app['registration.enabled'] = $app->share(function (Application $app) {
@@ -41,97 +41,97 @@ class RegistrationServiceProvider implements ServiceProviderInterface
         });
 
         $app['registration.optional-fields'] = $app->share(function (Application $app) {
-            return array(
-                'login'=> array(
+            return [
+                'login'=> [
                     'label'       => _('admin::compte-utilisateur identifiant'),
                     'type'        => 'text',
-                    'constraints' => array(
+                    'constraints' => [
                         new Assert\NotBlank(),
                         new NewLogin($app),
-                    )
-                ),
-                'gender' => array(
+                    ]
+                ],
+                'gender' => [
                     'label'   => _('admin::compte-utilisateur sexe'),
                     'type'    => 'choice',
                     'multiple' => false,
                     'expanded' => false,
-                    'choices' => array(
+                    'choices' => [
                         '0' => _('admin::compte-utilisateur:sexe: mademoiselle'),
                         '1' => _('admin::compte-utilisateur:sexe: madame'),
                         '2' => _('admin::compte-utilisateur:sexe: monsieur'),
-                    )
-                ),
-                'firstname' => array(
+                    ]
+                ],
+                'firstname' => [
                     'label' => _('admin::compte-utilisateur prenom'),
                     'type' => 'text',
-                    'constraints' => array(
+                    'constraints' => [
                         new Assert\NotBlank(),
-                    )
-                ),
-                'lastname' => array(
+                    ]
+                ],
+                'lastname' => [
                     'label' => _('admin::compte-utilisateur nom'),
                     'type' => 'text',
-                    'constraints' => array(
+                    'constraints' => [
                         new Assert\NotBlank(),
-                    )
-                ),
-                'address' => array(
+                    ]
+                ],
+                'address' => [
                     'label' => _('admin::compte-utilisateur adresse'),
                     'type' => 'textarea',
-                    'constraints' => array(
+                    'constraints' => [
                         new Assert\NotBlank(),
-                    )
-                ),
-                'zipcode' => array(
+                    ]
+                ],
+                'zipcode' => [
                     'label' => _('admin::compte-utilisateur code postal'),
                     'type' => 'text',
-                    'constraints' => array(
+                    'constraints' => [
                         new Assert\NotBlank(),
-                    )
-                ),
-                'geonameid' => array(
+                    ]
+                ],
+                'geonameid' => [
                     'label' => _('admin::compte-utilisateur ville'),
                     'type' => new \Alchemy\Phrasea\Form\Type\GeonameType(),
-                    'constraints' => array(
+                    'constraints' => [
                         new Assert\NotBlank(),
-                    )
-                ),
-                'position' => array(
+                    ]
+                ],
+                'position' => [
                     'label' => _('admin::compte-utilisateur poste'),
                     'type' => 'text',
-                    'constraints' => array(
+                    'constraints' => [
                         new Assert\NotBlank(),
-                    )
-                ),
-                'company' => array(
+                    ]
+                ],
+                'company' => [
                     'label' => _('admin::compte-utilisateur societe'),
                     'type' => 'text',
-                    'constraints' => array(
+                    'constraints' => [
                         new Assert\NotBlank(),
-                    )
-                ),
-                'job' => array(
+                    ]
+                ],
+                'job' => [
                     'label' => _('admin::compte-utilisateur activite'),
                     'type' => 'text',
-                    'constraints' => array(
+                    'constraints' => [
                         new Assert\NotBlank(),
-                    )
-                ),
-                'tel' => array(
+                    ]
+                ],
+                'tel' => [
                     'label' => _('admin::compte-utilisateur tel'),
                     'type' => 'text',
-                    'constraints' => array(
+                    'constraints' => [
                         new Assert\NotBlank(),
-                    )
-                ),
-                'fax' => array(
+                    ]
+                ],
+                'fax' => [
                     'label' => _('admin::compte-utilisateur fax'),
                     'type' => 'text',
-                    'constraints' => array(
+                    'constraints' => [
                         new Assert\NotBlank(),
-                    )
-                ),
-            );
+                    ]
+                ],
+            ];
         });
     }
 

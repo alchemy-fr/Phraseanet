@@ -28,14 +28,14 @@ class ControllerToolsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $record = self::$DI['record_1'];
 
-        $crawler = self::$DI['client']->request('POST', '/prod/tools/hddoc/', array(
+        $crawler = self::$DI['client']->request('POST', '/prod/tools/hddoc/', [
             'sbas_id' => $record->get_sbas_id(),
             'record_id' => $record->get_record_id(),
-        ), array(
+        ], [
             'newHD' => new UploadedFile(
                $this->tmpFile, 'KIKOO.JPG', 'image/jpg', 2000
             )
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $message = trim($crawler->filterXPath('//div')->text());
@@ -47,14 +47,14 @@ class ControllerToolsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $record = self::$DI['record_1'];
 
-        $crawler = self::$DI['client']->request('POST', '/prod/tools/chgthumb/', array(
+        $crawler = self::$DI['client']->request('POST', '/prod/tools/chgthumb/', [
             'sbas_id' => $record->get_sbas_id(),
             'record_id' => $record->get_record_id(),
-        ), array(
+        ], [
             'newThumb' => new UploadedFile(
                $this->tmpFile, 'KIKOO.JPG', 'image/jpg', 2000
             )
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $message = trim($crawler->filterXPath('//div')->text());

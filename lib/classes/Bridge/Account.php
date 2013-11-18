@@ -92,7 +92,7 @@ class Bridge_Account
             FROM bridge_accounts WHERE id = :id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':id' => $this->id));
+        $stmt->execute([':id' => $this->id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -196,11 +196,11 @@ class Bridge_Account
         $sql = 'UPDATE bridge_accounts
             SET name = :name, updated_on = :update WHERE id = :id';
 
-        $params = array(
+        $params = [
             ':name'   => $this->name
             , ':id'     => $this->id
             , ':update' => $this->updated_on->format(DATE_ISO8601)
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -225,7 +225,7 @@ class Bridge_Account
         $sql = 'DELETE FROM bridge_accounts WHERE id = :id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':id' => $this->id));
+        $stmt->execute([':id' => $this->id]);
         $stmt->closeCursor();
 
         return;
@@ -242,7 +242,7 @@ class Bridge_Account
         $sql = 'SELECT id, api_id FROM bridge_accounts WHERE id = :account_id';
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':account_id' => $account_id));
+        $stmt->execute([':account_id' => $account_id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -268,11 +268,11 @@ class Bridge_Account
         $sql = 'SELECT id FROM bridge_accounts
             WHERE api_id = :api_id AND usr_id = :usr_id AND dist_id = :dist_id';
 
-        $params = array(
+        $params = [
             ':api_id'  => $api->get_id()
             , ':usr_id'  => $user->get_id()
             , ':dist_id' => $distant_id
-        );
+        ];
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -298,11 +298,11 @@ class Bridge_Account
             LIMIT 0,' . (int) $quantity;
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':api_id' => $api->get_id()));
+        $stmt->execute([':api_id' => $api->get_id()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $results = array();
+        $results = [];
 
         foreach ($rs as $row) {
             $results[] = new Bridge_Account($app, $api, $row['id']);
@@ -322,12 +322,12 @@ class Bridge_Account
         $sql = 'SELECT id, api_id FROM bridge_accounts WHERE usr_id = :usr_id';
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $user->get_id()));
+        $stmt->execute([':usr_id' => $user->get_id()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $results = array();
-        $apis = array();
+        $results = [];
+        $apis = [];
 
         foreach ($rs as $row) {
             $api_id = $row['api_id'];
@@ -360,12 +360,12 @@ class Bridge_Account
             (id, api_id, dist_id, usr_id, name, created_on, updated_on)
             VALUES (null, :api_id, :dist_id, :usr_id, :name, NOW(), NOW())';
 
-        $params = array(
+        $params = [
             ':api_id'  => $api->get_id()
             , ':dist_id' => $dist_id
             , ':usr_id'  => $user->get_id()
             , ':name'    => $name
-        );
+        ];
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);

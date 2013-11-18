@@ -33,7 +33,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
     private function createEmptyRegistry()
     {
-        file_put_contents($this->file, $this->compiler->compile(array()));
+        file_put_contents($this->file, $this->compiler->compile([]));
     }
 
     public function testFactoryCreateOne()
@@ -54,7 +54,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $cache = $this->getMock('Alchemy\Phrasea\Cache\Cache');
 
         $name = 'array';
-        $values = array('option', 'value');
+        $values = ['option', 'value'];
 
         $factory->expects($this->once())
             ->method('create')
@@ -72,7 +72,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testNoCompilationIfNoChange()
     {
-        file_put_contents($this->file, $this->compiler->compile(array("custom-type" => "array")));
+        file_put_contents($this->file, $this->compiler->compile(["custom-type" => "array"]));
 
         $compiler = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\Compiler')
             ->disableOriginalConstructor()
@@ -90,7 +90,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $cache = $this->getMock('Alchemy\Phrasea\Cache\Cache');
 
         $name = 'array';
-        $values = array('option', 'value');
+        $values = ['option', 'value'];
 
         $factory->expects($this->once())
             ->method('create')
@@ -103,11 +103,11 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testNoCompilationIfNoChangeWithMultiple()
     {
-        file_put_contents($this->file, $this->compiler->compile(array(
+        file_put_contents($this->file, $this->compiler->compile([
             "custom-type" => "array",
             "another-type" => "array",
             "yet-another-type" => "array",
-        )));
+        ]));
 
         $compiler = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\Compiler')
             ->disableOriginalConstructor()
@@ -125,7 +125,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $cache = $this->getMock('Alchemy\Phrasea\Cache\Cache');
 
         $name = 'array';
-        $values = array('option', 'value');
+        $values = ['option', 'value'];
 
         $factory->expects($this->exactly(3))
             ->method('create')
@@ -146,9 +146,9 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testUnknownCacheReturnsArrayCacheAndLogs()
     {
-        file_put_contents($this->file, $this->compiler->compile(array(
+        file_put_contents($this->file, $this->compiler->compile([
             "custom-type" => "unknown",
-        )));
+        ]));
 
         $compiler = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\Compiler')
             ->disableOriginalConstructor()
@@ -169,7 +169,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $cache = $this->getMock('Alchemy\Phrasea\Cache\Cache');
 
         $name = 'unknown';
-        $values = array('option', 'value');
+        $values = ['option', 'value'];
 
         $factory->expects($this->at(0))
             ->method('create')
@@ -178,7 +178,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         $factory->expects($this->at(1))
             ->method('create')
-            ->with('array', array())
+            ->with('array', [])
             ->will($this->returnValue($cache));
 
         $manager = new Manager($compiler, $this->file, $logger, $factory);

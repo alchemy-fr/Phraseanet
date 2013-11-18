@@ -48,20 +48,20 @@ $finder
     ->ignoreVCS(false)
     ->in(__DIR__);
 
-$files = array();
+$files = [];
 
 foreach ($finder as $file) {
     $files[$file->getRealpath()] = $file->getRealpath();
 }
 
-foreach (array(
+foreach ([
     __DIR__ . '/bin/behat',
     __DIR__ . '/bin/developer',
     __DIR__ . '/bin/doctrine.php',
     __DIR__ . '/bin/doctrine',
     __DIR__ . '/bin/phpunit',
     __DIR__ . '/bin/validate-json',
-) as $binary) {
+] as $binary) {
     if (is_file($binary)) {
         $files[$binary] = $binary;
     }
@@ -71,7 +71,7 @@ $finder = new Finder();
 $finder
     ->ignoreDotFiles(false)
     ->ignoreVCS(false)
-    ->in(array('logs'));
+    ->in(['logs']);
 
 foreach ($finder as $file) {
     $files[$file->getRealpath()] = $file->getRealpath();
@@ -118,7 +118,7 @@ $finder
     ->in(__DIR__);
 
 
-$dirs = array();
+$dirs = [];
 
 foreach ($finder as $dir) {
     $dirs[] = $dir->getRealpath();

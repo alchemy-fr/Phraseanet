@@ -63,7 +63,7 @@ class DoDownload implements ControllerProviderInterface
             $app->abort(500, 'Invalid datas');
         }
 
-        $records = array();
+        $records = [];
 
         foreach ($list['files'] as $file) {
             if (!is_array($file) || !isset($file['base_id']) || !isset($file['record_id'])) {
@@ -81,14 +81,14 @@ class DoDownload implements ControllerProviderInterface
         }
 
         return new Response($app['twig']->render(
-            '/prod/actions/Download/prepare.html.twig', array(
+            '/prod/actions/Download/prepare.html.twig', [
             'module_name'   => _('Export'),
             'module'        => _('Export'),
             'list'          => $list,
             'records'       => $records,
             'token'         => $token,
             'anonymous'     => $request->query->get('anonymous', false)
-        )));
+        ]));
     }
 
     /**
@@ -153,17 +153,17 @@ class DoDownload implements ControllerProviderInterface
         try {
             $datas = $app['tokens']->helloToken($token);
         } catch (NotFoundHttpException $e) {
-            return $app->json(array(
+            return $app->json([
                 'success' => false,
                 'message' => 'Invalid token'
-            ));
+            ]);
         }
 
         if (false === $list = @unserialize((string) $datas['datas'])) {
-            return $app->json(array(
+            return $app->json([
                 'success' => false,
                 'message' => 'Invalid datas'
-            ));
+            ]);
         }
 
         set_time_limit(0);
@@ -178,9 +178,9 @@ class DoDownload implements ControllerProviderInterface
             sprintf($app['root.path'] . '/tmp/download/%s.zip', $datas['value']) // Dest file
         );
 
-        return $app->json(array(
+        return $app->json([
             'success' => true,
             'message' => ''
-        ));
+        ]);
     }
 }

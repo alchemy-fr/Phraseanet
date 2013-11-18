@@ -91,10 +91,10 @@ class Order implements ControllerProviderInterface
     {
         $success = false;
         $collectionHasOrderAdmins = new ArrayCollection();
-        $toRemove = array();
+        $toRemove = [];
 
-        $records = RecordsRequest::fromRequest($app, $request, true, array('cancmd'));
-        $hasOneAdmin = array();
+        $records = RecordsRequest::fromRequest($app, $request, true, ['cancmd']);
+        $hasOneAdmin = [];
 
         if (!$records->isEmpty()) {
             $order = new OrderEntity();
@@ -110,8 +110,8 @@ class Order implements ControllerProviderInterface
 
                 if (!isset($hasOneAdmin[$record->get_base_id()])) {
                     $query = new \User_Query($app);
-                    $hasOneAdmin[$record->get_base_id()] = (Boolean) count($query->on_base_ids(array($record->get_base_id()))
-                        ->who_have_right(array('order_master'))
+                    $hasOneAdmin[$record->get_base_id()] = (Boolean) count($query->on_base_ids([$record->get_base_id()])
+                        ->who_have_right(['order_master'])
                         ->execute()->get_results());
                 }
 
@@ -146,10 +146,10 @@ class Order implements ControllerProviderInterface
             $order->setTodo($order->getElements()->count());
 
             try {
-                $app['events-manager']->trigger('__NEW_ORDER__', array(
+                $app['events-manager']->trigger('__NEW_ORDER__', [
                     'order_id' => $order->getId(),
                     'usr_id'   => $order->getUsrId()
-                ));
+                ]);
                 $success = true;
 
                 $app['EM']->persist($order);
@@ -168,16 +168,16 @@ class Order implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $msg,
-            ));
+            ]);
         }
 
-        return $app->redirectPath('prod_orders', array(
+        return $app->redirectPath('prod_orders', [
             'success' => (int) $success,
             'action'  => 'send'
-        ));
+        ]);
     }
 
     /**
@@ -195,19 +195,19 @@ class Order implements ControllerProviderInterface
         $perPage = (int) $request->query->get('per-page', 10);
         $sort = $request->query->get('sort');
 
-        $baseIds = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(array('order_master')));
+        $baseIds = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['order_master']));
 
         $ordersList = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->listOrders($baseIds, $offsetStart, $perPage, $sort);
         $total = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->countTotalOrders($baseIds);
 
-        return $app['twig']->render('prod/orders/order_box.html.twig', array(
+        return $app['twig']->render('prod/orders/order_box.html.twig', [
             'page'         => $page,
             'perPage'      => $perPage,
             'total'        => $total,
             'previousPage' => $page < 2 ? false : ($page - 1),
             'nextPage'     => $page >= ceil($total / $perPage) ? false : $page + 1,
             'orders'       => new ArrayCollection($ordersList)
-        ));
+        ]);
     }
 
     /**
@@ -225,9 +225,9 @@ class Order implements ControllerProviderInterface
             throw new NotFoundHttpException('Order not found');
         }
 
-        return $app['twig']->render('prod/orders/order_item.html.twig', array(
+        return $app['twig']->render('prod/orders/order_item.html.twig', [
             'order' => $order
-        ));
+        ]);
     }
 
     /**
@@ -261,7 +261,7 @@ class Order implements ControllerProviderInterface
         }
 
         $n = 0;
-        $elements = $request->request->get('elements', array());
+        $elements = $request->request->get('elements', []);
         foreach ($order->getElements() as $orderElement) {
             if (in_array($orderElement->getId(), $elements)) {
                 $sbas_id = \phrasea::sbasFromBas($app, $orderElement->getBaseId());
@@ -286,12 +286,12 @@ class Order implements ControllerProviderInterface
             if ($n > 0) {
                 $order->setTodo($order->getTodo() - $n);
 
-                $app['events-manager']->trigger('__ORDER_DELIVER__', array(
+                $app['events-manager']->trigger('__ORDER_DELIVER__', [
                     'ssel_id' => $order->getBasket()->getId(),
                     'from'    => $app['authentication']->getUser()->get_id(),
                     'to'      => $dest_user->get_id(),
                     'n'       => $n
-                ));
+                ]);
             }
             $success = true;
 
@@ -304,17 +304,17 @@ class Order implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success'  => $success,
                 'msg'      => $success ? _('Order has been sent') : _('An error occured while sending, please retry  or contact an admin if problem persists'),
                 'order_id' => $order_id
-            ));
+            ]);
         }
 
-        return $app->redirectPath('prod_orders', array(
+        return $app->redirectPath('prod_orders', [
             'success' => (int) $success,
             'action'  => 'send'
-        ));
+        ]);
     }
 
     /**
@@ -334,7 +334,7 @@ class Order implements ControllerProviderInterface
         }
 
         $n = 0;
-        $elements = $request->request->get('elements', array());
+        $elements = $request->request->get('elements', []);
         foreach ($order->getElements() as $orderElement) {
             if (in_array($orderElement->getId(),$elements)) {
                 $orderElement->setOrderMasterId($app['authentication']->getUser()->get_id());
@@ -349,11 +349,11 @@ class Order implements ControllerProviderInterface
             if ($n > 0) {
                 $order->setTodo($order->getTodo() - $n);
 
-                $app['events-manager']->trigger('__ORDER_NOT_DELIVERED__', array(
+                $app['events-manager']->trigger('__ORDER_NOT_DELIVERED__', [
                     'from' => $app['authentication']->getUser()->get_id(),
                     'to'   => $order->getUsrId(),
                     'n'    => $n
-                ));
+                ]);
             }
             $success = true;
 
@@ -364,16 +364,16 @@ class Order implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success'  => $success,
                 'msg'      => $success ? _('Order has been denied') : _('An error occured while denying, please retry  or contact an admin if problem persists'),
                 'order_id' => $order_id
-            ));
+            ]);
         }
 
-        return $app->redirectPath('prod_orders', array(
+        return $app->redirectPath('prod_orders', [
             'success' => (int) $success,
             'action'  => 'send'
-        ));
+        ]);
     }
 }

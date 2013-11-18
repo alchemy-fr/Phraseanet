@@ -61,7 +61,7 @@ class Query implements ControllerProviderInterface
 
         $mod = $app['authentication']->getUser()->getPrefs('view');
 
-        $json = array();
+        $json = [];
 
         $options = SearchEngineOptions::fromRequest($app, $request);
 
@@ -196,12 +196,12 @@ class Query implements ControllerProviderInterface
             }
         }
 
-        $json['results'] = $app['twig']->render($template, array(
+        $json['results'] = $app['twig']->render($template, [
             'results'         => $result,
             'highlight'       => $result->getQuery(),
             'searchEngine'    => $app['phraseanet.SE'],
             'suggestions'     => $prop
-            )
+            ]
         );
 
         $json['query'] = $query;
@@ -239,12 +239,12 @@ class Query implements ControllerProviderInterface
 
         $record = new \record_preview($app, 'RESULT', $pos, '', $app['phraseanet.SE'], $query);
 
-        return $app->json(array(
-            'current' => $app['twig']->render('prod/preview/result_train.html.twig', array(
+        return $app->json([
+            'current' => $app['twig']->render('prod/preview/result_train.html.twig', [
                 'records'  => $record->get_train($pos, $query, $app['phraseanet.SE']),
                 'selected' => $pos
-            ))
-        ));
+            ])
+        ]);
     }
 
     /**
@@ -258,9 +258,9 @@ class Query implements ControllerProviderInterface
     {
         $record = new \record_preview($app, 'REG', $request->request->get('pos'), $request->request->get('cont'));
 
-        return new Response($app['twig']->render('prod/preview/reg_train.html.twig', array(
+        return new Response($app['twig']->render('prod/preview/reg_train.html.twig', [
             'container_records' => $record->get_container()->get_children(),
             'record'            => $record
-        )));
+        ]));
     }
 }

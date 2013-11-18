@@ -20,7 +20,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
      *
      * @var string
      */
-    public $events = array('__VALIDATION_REMINDER__');
+    public $events = ['__VALIDATION_REMINDER__'];
 
     /**
      *
@@ -52,12 +52,12 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'from'    => ''
             , 'to'      => ''
             , 'ssel_id' => ''
             , 'url'     => ''
-        );
+        ];
 
         $params = array_merge($default, $params);
 
@@ -139,7 +139,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
         try {
             User_Adapter::getInstance($from, $this->app);
         } catch (Exception $e) {
-            return array();
+            return [];
         }
 
         $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
@@ -155,12 +155,12 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
             . (string) $sx->ssel_id . '\');return false;">'
             . $basket_name . '</a>';
 
-        $ret = array(
+        $ret = [
             'text'  => sprintf(
                 _('Rappel : Il vous reste %1$d jours pour valider %2$s de %3$s'), $this->app['phraseanet.registry']->get('GV_validation_reminder'), $bask_link, $sender
             )
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
-        );
+        ];
 
         return $ret;
     }

@@ -28,17 +28,17 @@ class ImportStrategyTest extends PluginTestCase
 
     public function provideFolderSources()
     {
-        return array(
-            array(__DIR__),
-            array(dirname(__DIR__)),
-        );
+        return [
+            [__DIR__],
+            [dirname(__DIR__)],
+        ];
     }
 
     public function provideInvalidFolderSources()
     {
-        return array(
-            array('/path/to/invalid/dir'),
-            array(__FILE__),
-        );
+        return [
+            ['/path/to/invalid/dir'],
+            [__FILE__],
+        ];
     }
 }

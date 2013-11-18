@@ -72,7 +72,7 @@ class ServeFileResponseFactory implements DeliverDataInterface
 
     private function sanitizeFilename($filename)
     {
-        return str_replace(array('/', '\\'), '', $filename);
+        return str_replace(['/', '\\'], '', $filename);
     }
 
     private function sanitizeFilenameFallback($filename)

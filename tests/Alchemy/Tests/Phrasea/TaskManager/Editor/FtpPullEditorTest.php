@@ -8,15 +8,15 @@ class FtpPullEditorTest extends EditorTestCase
 {
     public function provideDataForXMLUpdatesFromForm()
     {
-        return array(
-            array('<?xml version="1.0" encoding="UTF-8"?>
+        return [
+            ['<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
 <proxy></proxy><proxyport></proxyport><passive>0</passive><ssl>0</ssl><password></password><user></user><ftppath></ftppath><localpath></localpath><port></port><host></host></tasksettings>
 ', '<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
-</tasksettings>', array()
-            ),
-            array('<?xml version="1.0" encoding="UTF-8"?>
+</tasksettings>', []
+            ],
+            ['<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
   <proxy>1234</proxy>
   <proxyport>5678</proxyport>
@@ -31,9 +31,9 @@ class FtpPullEditorTest extends EditorTestCase
 </tasksettings>
 ', '<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings><proxy>12</proxy><proxyport>8</proxyport><passive>0</passive><ssl>0</ssl><password></password><user></user><ftppath></ftppath><localpath></localpath><port>21</port><host></host>
-</tasksettings>', array('proxy' => 1234, 'proxyport' => 5678, 'passive' => 1, 'ssl' => 1, 'password' => 'a password', 'user' => 'username', 'ftppath' => 'nice path', 'localpath' => 'path to the future', 'port' => 22, 'host' => 'example.com')
-            ),
-            array('<?xml version="1.0" encoding="UTF-8"?>
+</tasksettings>', ['proxy' => 1234, 'proxyport' => 5678, 'passive' => 1, 'ssl' => 1, 'password' => 'a password', 'user' => 'username', 'ftppath' => 'nice path', 'localpath' => 'path to the future', 'port' => 22, 'host' => 'example.com']
+            ],
+            ['<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
   <customtag>value</customtag>
   <proxy></proxy>
@@ -50,9 +50,9 @@ class FtpPullEditorTest extends EditorTestCase
 ', '<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
   <customtag>value</customtag>
-</tasksettings>', array()
-            ),
-        );
+</tasksettings>', []
+            ],
+        ];
     }
 
     protected function getEditor()

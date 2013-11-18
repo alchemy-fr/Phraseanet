@@ -13,7 +13,7 @@ use Alchemy\Phrasea\Application;
 
 class module_report_add extends module_report
 {
-    protected $cor_query = array(
+    protected $cor_query = [
         'user'      => 'log.user',
         'site'      => 'log.site',
         'societe'   => 'log.societe',
@@ -29,7 +29,7 @@ class module_report_add extends module_report
         'final'     => 'd.final',
         'comment'   => 'd.comment',
         'size'      => 's.size'
-    );
+    ];
 
     /**
      * constructor
@@ -71,7 +71,7 @@ class module_report_add extends module_report
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $ret = array();
+        $ret = [];
 
         foreach ($rs as $row) {
             $value = $row['val'];
@@ -88,7 +88,7 @@ class module_report_add extends module_report
             elseif ($field == 'size')
                 $caption = p4string::format_octets($value);
 
-            $ret[] = array('val'   => $caption, 'value' => $value);
+            $ret[] = ['val'   => $caption, 'value' => $value];
         }
 
         return $ret;

@@ -29,9 +29,9 @@ class UsrListRepository extends EntityRepository
               JOIN l.owners o
             WHERE o.usr_id = :usr_id';
 
-        $params = array(
+        $params = [
             'usr_id' => $user->get_id(),
-        );
+        ];
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
@@ -74,10 +74,10 @@ class UsrListRepository extends EntityRepository
               JOIN l.owners o
             WHERE o.usr_id = :usr_id AND l.name LIKE :name';
 
-        $params = array(
+        $params = [
             'usr_id' => $user->get_id(),
             'name'   => $name . '%'
-        );
+        ];
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);

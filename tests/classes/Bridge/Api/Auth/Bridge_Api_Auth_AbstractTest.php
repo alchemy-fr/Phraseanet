@@ -8,7 +8,7 @@ class Bridge_Api_Auth_AbstractTest extends PHPUnit_Framework_TestCase
     public function testSet_settings()
     {
         $stub = $this->getMockForAbstractClass('Bridge_Api_Auth_Abstract');
-        $setting = $this->getMock("Bridge_AccountSettings", array(), array(), '', false);
+        $setting = $this->getMock("Bridge_AccountSettings", [], [], '', false);
         $return = $stub->set_settings($setting);
         $this->assertEquals($stub, $return);
     }

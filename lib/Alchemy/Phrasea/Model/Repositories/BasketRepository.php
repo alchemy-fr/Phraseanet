@@ -47,7 +47,7 @@ class BasketRepository extends EntityRepository
         }
 
         $query = $this->_em->createQuery($dql);
-        $query->setParameters(array('usr_id' => $user->get_id()));
+        $query->setParameters(['usr_id' => $user->get_id()]);
 
         return $query->getResult();
     }
@@ -74,11 +74,11 @@ class BasketRepository extends EntityRepository
               )
             AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP())';
 
-        $params = array(
+        $params = [
             'usr_id_owner'       => $user->get_id(),
             'usr_id_ownertwo'    => $user->get_id(),
             'usr_id_participant' => $user->get_id()
-        );
+        ];
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
@@ -111,7 +111,7 @@ class BasketRepository extends EntityRepository
         }
 
         $query = $this->_em->createQuery($dql);
-        $query->setParameters(array(1 => $user->get_id(), 2 => $user->get_id()));
+        $query->setParameters([1 => $user->get_id(), 2 => $user->get_id()]);
 
         return $query->getResult();
     }
@@ -125,10 +125,10 @@ class BasketRepository extends EntityRepository
             WHERE e.record_id = :record_id AND e.sbas_id = e.sbas_id
               AND b.usr_id = :usr_id';
 
-        $params = array(
+        $params = [
             'record_id' => $record->get_record_id(),
             'usr_id'    => $user->get_id()
-        );
+        ];
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
@@ -138,7 +138,7 @@ class BasketRepository extends EntityRepository
 
     public function findWorkzoneBasket(\User_Adapter $user, $query, $year, $type, $offset, $perPage)
     {
-        $params = array();
+        $params = [];
 
         switch ($type) {
             case self::RECEIVED:
@@ -146,9 +146,9 @@ class BasketRepository extends EntityRepository
                 FROM Alchemy\Phrasea\Model\Entities\Basket b
                 JOIN b.elements e
                 WHERE b.usr_id = :usr_id AND b.pusher_id IS NOT NULL';
-                $params = array(
+                $params = [
                     'usr_id' => $user->get_id()
-                );
+                ];
                 break;
             case self::VALIDATION_DONE:
                 $dql = 'SELECT b
@@ -157,10 +157,10 @@ class BasketRepository extends EntityRepository
                 JOIN b.validation s
                 JOIN s.participants p
                 WHERE b.usr_id != ?1 AND p.usr_id = ?2';
-                $params = array(
+                $params = [
                     1       => $user->get_id()
                     , 2       => $user->get_id()
-                );
+                ];
                 break;
             case self::VALIDATION_SENT:
                 $dql = 'SELECT b
@@ -168,9 +168,9 @@ class BasketRepository extends EntityRepository
                 JOIN b.elements e
                 JOIN b.validation v
                 WHERE b.usr_id = :usr_id';
-                $params = array(
+                $params = [
                     'usr_id' => $user->get_id()
-                );
+                ];
                 break;
             default:
                 $dql = 'SELECT b
@@ -179,10 +179,10 @@ class BasketRepository extends EntityRepository
                 LEFT JOIN b.validation s
                 LEFT JOIN s.participants p
                 WHERE (b.usr_id = :usr_id OR p.usr_id = :validating_usr_id)';
-                $params = array(
+                $params = [
                     'usr_id'            => $user->get_id(),
                     'validating_usr_id' => $user->get_id()
-                );
+                ];
                 break;
             case self::MYBASKETS:
                 $dql = 'SELECT b
@@ -191,9 +191,9 @@ class BasketRepository extends EntityRepository
                 LEFT JOIN b.validation s
                 LEFT JOIN s.participants p
                 WHERE (b.usr_id = :usr_id)';
-                $params = array(
+                $params = [
                     'usr_id' => $user->get_id()
-                );
+                ];
                 break;
         }
 
@@ -249,7 +249,7 @@ class BasketRepository extends EntityRepository
         }
 
         $query = $this->_em->createQuery($dql);
-        $query->setParameters(array('usr_id' => $user->get_id()));
+        $query->setParameters(['usr_id' => $user->get_id()]);
 
         return $query->getResult();
     }

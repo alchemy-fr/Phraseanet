@@ -26,10 +26,10 @@ class FailureManagerTest extends \PhraseanetPHPUnitAbstract
             ->method('getClientIp')
             ->will($this->returnValue($ip));
 
-        $oldFailures = array(
+        $oldFailures = [
             $this->getMock('Alchemy\Phrasea\Model\Entities\AuthFailure'),
             $this->getMock('Alchemy\Phrasea\Model\Entities\AuthFailure')
-        );
+        ];
 
         $repo->expects($this->once())
             ->method('findOldFailures')
@@ -67,7 +67,7 @@ class FailureManagerTest extends \PhraseanetPHPUnitAbstract
 
         $username = 'romainneutron';
 
-        $oldFailures = array();
+        $oldFailures = [];
 
         $repo->expects($this->once())
             ->method('findLockedFailuresMatching')
@@ -293,7 +293,7 @@ class FailureManagerTest extends \PhraseanetPHPUnitAbstract
 
     private function ArrayIze($failure, $n)
     {
-        $failures = array();
+        $failures = [];
 
         for ($i = 0; $i != $n; $i++) {
             $failures[] = $failure();

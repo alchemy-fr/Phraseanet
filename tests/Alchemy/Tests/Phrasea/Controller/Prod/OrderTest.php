@@ -30,10 +30,10 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
              ->will($this->returnValue(null));
 
         self::$DI['app']['events-manager'] = $eventManagerStub;
-        self::$DI['client']->request('POST', '/prod/order/', array(
+        self::$DI['client']->request('POST', '/prod/order/', [
             'lst'      => self::$DI['record_1']->get_serialize_key(),
             'deadline' => '+10 minutes'
-        ));
+        ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
@@ -54,10 +54,10 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         self::$DI['app']['events-manager'] = $eventManagerStub;
 
-        $this->XMLHTTPRequest('POST', '/prod/order/', array(
+        $this->XMLHTTPRequest('POST', '/prod/order/', [
             'lst'      => self::$DI['record_1']->get_serialize_key(),
             'deadline' => '+10 minutes'
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
@@ -74,13 +74,13 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testDisplayOrders()
     {
-        $this->XMLHTTPRequest('POST', '/prod/order/', array(
+        $this->XMLHTTPRequest('POST', '/prod/order/', [
             'lst'      => self::$DI['record_1']->get_serialize_key(),
             'deadline' => '+10 minutes'
-        ));
-        self::$DI['client']->request('GET', '/prod/order/', array(
+        ]);
+        self::$DI['client']->request('GET', '/prod/order/', [
             'sort' => 'usage'
-        ));
+        ]);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
@@ -103,11 +103,11 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoOrderDelivered');
 
-        $parameters = array();
+        $parameters = [];
         foreach ($order->getElements() as $element) {
             $parameters[] = $element->getId();
         }
-        self::$DI['client']->request('POST', '/prod/order/' . $order->getId() . '/send/', array('elements' => $parameters));
+        self::$DI['client']->request('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $url = parse_url(self::$DI['client']->getResponse()->headers->get('location'));
         parse_str($url['query']);
@@ -123,11 +123,11 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoOrderDelivered');
 
-        $parameters = array();
+        $parameters = [];
         foreach ($order->getElements() as $element) {
             $parameters[] = $element->getId();
         }
-        $this->XMLHTTPRequest('POST', '/prod/order/' . $order->getId() . '/send/', array('elements' => $parameters));
+        $this->XMLHTTPRequest('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
@@ -149,11 +149,11 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoOrderCancelled');
 
-        $parameters = array();
+        $parameters = [];
         foreach ($order->getElements() as $element) {
             $parameters[] = $element->getId();
         }
-        self::$DI['client']->request('POST', '/prod/order/' . $order->getId() . '/deny/', array('elements' => $parameters));
+        self::$DI['client']->request('POST', '/prod/order/' . $order->getId() . '/deny/', ['elements' => $parameters]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $url = parse_url(self::$DI['client']->getResponse()->headers->get('location'));
         parse_str($url['query']);
@@ -169,11 +169,11 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoOrderCancelled');
 
-        $parameters = array();
+        $parameters = [];
         foreach ($order->getElements() as $element) {
             $parameters[] = $element->getId();
         }
-        $this->XMLHTTPRequest('POST', '/prod/order/' . $order->getId() . '/deny/', array('elements' => $parameters));
+        $this->XMLHTTPRequest('POST', '/prod/order/' . $order->getId() . '/deny/', ['elements' => $parameters]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
         $this->assertEquals('application/json', $response->headers->get('Content-Type'));
@@ -191,11 +191,11 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoOrderDelivered');
 
-        $parameters = array();
+        $parameters = [];
         foreach ($order->getElements() as $element) {
             $parameters[] = $element->getId();
         }
-        self::$DI['client']->request('POST', '/prod/order/' . $order->getId() . '/send/', array('elements' => $parameters));
+        self::$DI['client']->request('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
 
         $testOrder = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->find($order->getId());
         $this->assertEquals(0, $testOrder->getTodo());
@@ -216,13 +216,13 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['app']['EM']->persist($orderElement);
         self::$DI['app']['EM']->flush();
 
-        $parameters = array($order->getElements()->first()->getId());
-        self::$DI['client']->request('POST', '/prod/order/' . $order->getId() . '/send/', array('elements' => $parameters));
+        $parameters = [$order->getElements()->first()->getId()];
+        self::$DI['client']->request('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
         $testOrder = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->find($order->getId());
         $this->assertEquals(1, $testOrder->getTodo());
 
-        $parameters = array($orderElement->getId());
-        self::$DI['client']->request('POST', '/prod/order/' . $order->getId() . '/deny/', array('elements' => $parameters));
+        $parameters = [$orderElement->getId()];
+        self::$DI['client']->request('POST', '/prod/order/' . $order->getId() . '/deny/', ['elements' => $parameters]);
 
         $testOrder = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->find($order->getId());
         $this->assertEquals(0, $testOrder->getTodo());
@@ -234,7 +234,7 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->disableOriginalConstructor()
             ->getMock();
 
-        $receveid = array(self::$DI['record_1']->get_serialize_key() => self::$DI['record_1']);
+        $receveid = [self::$DI['record_1']->get_serialize_key() => self::$DI['record_1']];
 
         $order = new Order();
         $order->setOrderUsage($usage);

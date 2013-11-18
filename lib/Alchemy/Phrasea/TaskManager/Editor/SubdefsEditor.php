@@ -49,8 +49,8 @@ EOF;
      */
     protected function getFormProperties()
     {
-        return array(
+        return [
             'embedded' => static::FORM_TYPE_BOOLEAN,
-        );
+        ];
     }
 }

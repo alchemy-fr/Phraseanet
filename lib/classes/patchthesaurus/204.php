@@ -45,7 +45,7 @@ class patchthesaurus_204 implements patchthesaurus_interface
                 $xp = new DOMXPath($domct);
 
                 $nodes = $xp->query("//te[not(starts-with(@id, 'R')) and count(te[starts-with(@id, 'R')])=0]");
-                $nodestodel = array();
+                $nodestodel = [];
                 for ($i = 0; $i < $nodes->length; $i ++ )
                     $nodestodel[] = $nodes->item($i);
                 $ctdel = 0;
@@ -53,7 +53,7 @@ class patchthesaurus_204 implements patchthesaurus_interface
                     $sql2 = "DELETE FROM thit WHERE value LIKE :like";
 
                     $stmt = $connbas->prepare($sql2);
-                    $stmt->execute(array(':like' => str_replace(".", "d", $node->getAttribute("id")) . "d%"));
+                    $stmt->execute([':like' => str_replace(".", "d", $node->getAttribute("id")) . "d%"]);
                     $stmt->closeCursor();
 
                     $node->parentNode->removeChild($node);
@@ -117,7 +117,7 @@ class patchthesaurus_204 implements patchthesaurus_interface
                 $sql = "UPDATE thit SET value = :newid WHERE value = :oldid";
 
                 $stmt = $connbas->prepare($sql);
-                $stmt->execute(array(':newid' => $newid, ':oldid' => $id));
+                $stmt->execute([':newid' => $newid, ':oldid' => $id]);
                 $stmt->closeCursor();
             }
         }
@@ -146,7 +146,7 @@ class patchthesaurus_204 implements patchthesaurus_interface
                     $sql = "UPDATE thit SET value = :newid WHERE value = :oldid";
 
                     $stmt = $connbas->prepare($sql);
-                    $stmt->execute(array(':newid' => $newid, ':oldid' => $id));
+                    $stmt->execute([':newid' => $newid, ':oldid' => $id]);
                     $stmt->closeCursor();
                 }
             }

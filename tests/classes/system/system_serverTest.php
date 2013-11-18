@@ -5,7 +5,7 @@ class system_serverTest extends PhraseanetPHPUnitAbstract
     /**
      * @var system_server
      */
-    protected $objects = array();
+    protected $objects = [];
 
     public function setUp()
     {

@@ -50,7 +50,7 @@ class XSendFileFactory
     {
         $conf = $app['configuration']['xsendfile'];
 
-        $mapping = array();
+        $mapping = [];
 
         if (isset($conf['mapping'])) {
             $mapping = $conf['mapping'];

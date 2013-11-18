@@ -34,12 +34,12 @@ class LoadOneBasketEnv extends \PhraseaFixture\AbstractWZ implements FixtureInte
     /**
      * @var Array
      */
-    protected $participants = array();
+    protected $participants = [];
 
     /**
      * @var Array
      */
-    protected $basketElements = array();
+    protected $basketElements = [];
 
     public function addParticipant(\User_Adapter $user)
     {

@@ -25,8 +25,8 @@ class LogoutSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             PhraseaEvents::LOGOUT => 'onLogout',
-        );
+        ];
     }
 }

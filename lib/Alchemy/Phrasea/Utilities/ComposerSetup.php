@@ -61,7 +61,7 @@ class ComposerSetup
             throw new RuntimeException('Unable to move to target directory for composer install.');
         }
 
-        $process = ProcessBuilder::create(array($this->phpExecutable, $installer))->getProcess();
+        $process = ProcessBuilder::create([$this->phpExecutable, $installer])->getProcess();
 
         try {
             $process->run();

@@ -55,12 +55,12 @@ class API_OAuth2_Adapter extends OAuth2
      *
      * @var array
      */
-    protected $token_type = array("bearer" => "Bearer");
+    protected $token_type = ["bearer" => "Bearer"];
 
     /**
      * @var array
      */
-    protected $authentication_scheme = array("authorization", "uri", "body");
+    protected $authentication_scheme = ["authorization", "uri", "body"];
 
     /**
      *
@@ -95,7 +95,7 @@ class API_OAuth2_Adapter extends OAuth2
     public function __construct(Application $app)
     {
         parent::__construct();
-        $this->params = array();
+        $this->params = [];
         $this->app = $app;
 
         return $this;
@@ -227,7 +227,7 @@ class API_OAuth2_Adapter extends OAuth2
         try {
             $token = API_OAuth2_Token::load_by_oauth_token($this->app, $oauth_token);
 
-            $result = array(
+            $result = [
                 'scope'       => $token->get_scope()
                 , 'expires'     => $token->get_expires()
                 , 'client_id'   => $token->get_account()->get_application()->get_client_id()
@@ -235,7 +235,7 @@ class API_OAuth2_Adapter extends OAuth2
                 , 'revoked'     => ($token->get_account()->is_revoked() ? '1' : '0')
                 , 'usr_id'      => $token->get_account()->get_user()->get_id()
                 , 'oauth_token' => $token->get_value()
-            );
+            ];
 
         } catch (Exception $e) {
 
@@ -272,10 +272,10 @@ class API_OAuth2_Adapter extends OAuth2
      */
     protected function getSupportedGrantTypes()
     {
-        return array(
+        return [
             OAUTH2_GRANT_TYPE_AUTH_CODE,
             OAUTH2_GRANT_TYPE_USER_CREDENTIALS
-        );
+        ];
     }
 
     /**
@@ -286,7 +286,7 @@ class API_OAuth2_Adapter extends OAuth2
      */
     protected function getSupportedScopes()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -300,12 +300,12 @@ class API_OAuth2_Adapter extends OAuth2
         try {
             $code = new API_OAuth2_AuthCode($this->app, $code);
 
-            return array(
+            return [
                 'redirect_uri' => $code->get_redirect_uri()
                 , 'client_id'    => $code->get_account()->get_application()->get_client_id()
                 , 'expires'      => $code->get_expires()
                 , 'account_id'   => $code->get_account()->get_id()
-            );
+            ];
         } catch (Exception $e) {
 
         }
@@ -352,11 +352,11 @@ class API_OAuth2_Adapter extends OAuth2
         try {
             $token = new API_OAuth2_RefreshToken($this->app, $refresh_token);
 
-            return array(
+            return [
                 'token'     => $token->get_value()
                 , 'expires'   => $token->get_expires()->format('U')
                 , 'client_id' => $token->get_account()->get_application()->get_client_id()
-            );
+            ];
         } catch (Exception $e) {
 
         }
@@ -383,11 +383,11 @@ class API_OAuth2_Adapter extends OAuth2
     public function getAuthorizationRequestParameters(Request $request)
     {
 
-        $datas = array(
+        $datas = [
             'response_type' => $request->get('response_type', false)
             , 'client_id'     => $request->get('client_id', false)
             , 'redirect_uri'  => $request->get('redirect_uri', false)
-        );
+        ];
 
         $scope = $request->get('scope', false);
         $state = $request->get('state', false);
@@ -400,21 +400,21 @@ class API_OAuth2_Adapter extends OAuth2
             $datas["scope"] = $scope;
         }
 
-        $filters = array(
-            "client_id" => array(
+        $filters = [
+            "client_id" => [
                 "filter"  => FILTER_VALIDATE_REGEXP
-                , "options" => array("regexp"        => OAUTH2_CLIENT_ID_REGEXP)
+                , "options" => ["regexp"        => OAUTH2_CLIENT_ID_REGEXP]
                 , "flags"         => FILTER_REQUIRE_SCALAR
-            )
-            , "response_type" => array(
+            ]
+            , "response_type" => [
                 "filter"  => FILTER_VALIDATE_REGEXP
-                , "options" => array("regexp"       => OAUTH2_AUTH_RESPONSE_TYPE_REGEXP)
+                , "options" => ["regexp"       => OAUTH2_AUTH_RESPONSE_TYPE_REGEXP]
                 , "flags"        => FILTER_REQUIRE_SCALAR
-            )
-            , "redirect_uri" => array("filter" => FILTER_SANITIZE_URL)
-            , "state"  => array("flags" => FILTER_REQUIRE_SCALAR)
-            , "scope" => array("flags" => FILTER_REQUIRE_SCALAR)
-        );
+            ]
+            , "redirect_uri" => ["filter" => FILTER_SANITIZE_URL]
+            , "state"  => ["flags" => FILTER_REQUIRE_SCALAR]
+            , "scope" => ["flags" => FILTER_REQUIRE_SCALAR]
+        ];
 
         $input = filter_var_array($datas, $filters);
 
@@ -544,13 +544,13 @@ class API_OAuth2_Adapter extends OAuth2
      * @param  array  $params
      * @return string
      */
-    public function finishNativeClientAuthorization($is_authorized, $params = array())
+    public function finishNativeClientAuthorization($is_authorized, $params = [])
     {
-        $result = array();
-        $params += array(
+        $result = [];
+        $params += [
             'scope' => NULL,
             'state' => NULL,
-        );
+        ];
         extract($params);
 
         if ($state !== NULL)
@@ -632,12 +632,12 @@ class API_OAuth2_Adapter extends OAuth2
         return TRUE;
     }
 
-    public function finishClientAuthorization($is_authorized, $params = array())
+    public function finishClientAuthorization($is_authorized, $params = [])
     {
-        $params += array(
+        $params += [
             'scope' => NULL,
             'state' => NULL,
-        );
+        ];
         extract($params);
 
         if ($state !== NULL)
@@ -659,17 +659,17 @@ class API_OAuth2_Adapter extends OAuth2
      */
     public function grantAccessToken()
     {
-        $filters = array(
-            "grant_type" => array("filter"  => FILTER_VALIDATE_REGEXP, "options" => array("regexp" => OAUTH2_GRANT_TYPE_REGEXP), "flags"  => FILTER_REQUIRE_SCALAR),
-            "scope"  => array("flags" => FILTER_REQUIRE_SCALAR),
-            "code"  => array("flags"        => FILTER_REQUIRE_SCALAR),
-            "redirect_uri" => array("filter"   => FILTER_SANITIZE_URL),
-            "username" => array("flags"    => FILTER_REQUIRE_SCALAR),
-            "password" => array("flags"          => FILTER_REQUIRE_SCALAR),
-            "assertion_type" => array("flags"     => FILTER_REQUIRE_SCALAR),
-            "assertion" => array("flags"         => FILTER_REQUIRE_SCALAR),
-            "refresh_token" => array("flags" => FILTER_REQUIRE_SCALAR),
-        );
+        $filters = [
+            "grant_type" => ["filter"  => FILTER_VALIDATE_REGEXP, "options" => ["regexp" => OAUTH2_GRANT_TYPE_REGEXP], "flags"  => FILTER_REQUIRE_SCALAR],
+            "scope"  => ["flags" => FILTER_REQUIRE_SCALAR],
+            "code"  => ["flags"        => FILTER_REQUIRE_SCALAR],
+            "redirect_uri" => ["filter"   => FILTER_SANITIZE_URL],
+            "username" => ["flags"    => FILTER_REQUIRE_SCALAR],
+            "password" => ["flags"          => FILTER_REQUIRE_SCALAR],
+            "assertion_type" => ["flags"     => FILTER_REQUIRE_SCALAR],
+            "assertion" => ["flags"         => FILTER_REQUIRE_SCALAR],
+            "refresh_token" => ["flags" => FILTER_REQUIRE_SCALAR],
+        ];
 
         $input = filter_input_array(INPUT_POST, $filters);
 
@@ -773,10 +773,10 @@ class API_OAuth2_Adapter extends OAuth2
 
     protected function createAccessToken($account_id, $scope = NULL)
     {
-        $token = array(
+        $token = [
             "access_token" => $this->genAccessToken(),
             "scope"        => $scope
-        );
+        ];
 
         if ($this->enable_expire)
             $token['expires_in'] = $this->getVariable('access_token_lifetime', OAUTH2_DEFAULT_ACCESS_TOKEN_LIFETIME);
@@ -810,11 +810,11 @@ class API_OAuth2_Adapter extends OAuth2
 
             $account = API_OAuth2_Account::load_with_user($this->app, $application, $user);
 
-            return array(
+            return [
                 'redirect_uri' => $application->get_redirect_uri()
                 , 'client_id'    => $application->get_client_id()
                 , 'account_id'   => $account->get_id()
-            );
+            ];
         } catch (AccountLockedException $e) {
             return false;
         } catch (RequireCaptchaException $e) {

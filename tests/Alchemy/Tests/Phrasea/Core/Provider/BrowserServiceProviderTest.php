@@ -9,8 +9,8 @@ class BrowserServiceProvidertest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {
-        return array(
-            array('Alchemy\Phrasea\Core\Provider\BrowserServiceProvider', 'browser', 'Browser'),
-        );
+        return [
+            ['Alchemy\Phrasea\Core\Provider\BrowserServiceProvider', 'browser', 'Browser'],
+        ];
     }
 }

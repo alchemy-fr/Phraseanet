@@ -123,11 +123,11 @@ class SphinxSearchEngine implements SearchEngineInterface
      */
     public function getAvailableSort()
     {
-        return array(
+        return [
             'relevance'  => _('pertinence'),
             'created_on' => _('date dajout'),
             'random'     => _('aleatoire'),
-        );
+        ];
     }
 
     /**
@@ -135,10 +135,10 @@ class SphinxSearchEngine implements SearchEngineInterface
      */
     public function getAvailableOrder()
     {
-        return array(
+        return [
             'desc' => _('descendant'),
             'asc'  => _('ascendant'),
-        );
+        ];
     }
 
     /**
@@ -195,7 +195,7 @@ class SphinxSearchEngine implements SearchEngineInterface
      */
     public function getAvailableTypes()
     {
-        return array(self::GEM_TYPE_RECORD, self::GEM_TYPE_STORY);
+        return [self::GEM_TYPE_RECORD, self::GEM_TYPE_STORY];
     }
 
     /**
@@ -207,8 +207,8 @@ class SphinxSearchEngine implements SearchEngineInterface
             throw new RuntimeException('Unable to connect to sphinx real-time index');
         }
 
-        $all_datas = array();
-        $status = array();
+        $all_datas = [];
+        $status = [];
 
         $binStatus = strrev($record->get_status());
 
@@ -220,13 +220,13 @@ class SphinxSearchEngine implements SearchEngineInterface
 
         $sql_date_fields = $this->getSqlDateFields($record);
 
-        $indexes = array(
+        $indexes = [
             "metas_realtime" . $this->CRCdatabox($record->get_databox()),
             "metas_realtime_stemmed_fr_" . $this->CRCdatabox($record->get_databox()),
             "metas_realtime_stemmed_nl_" . $this->CRCdatabox($record->get_databox()),
             "metas_realtime_stemmed_de_" . $this->CRCdatabox($record->get_databox()),
             "metas_realtime_stemmed_en_" . $this->CRCdatabox($record->get_databox()),
-        );
+        ];
 
         foreach ($record->get_caption()->get_fields(null, true) as $field) {
             if (!$field->is_indexable()) {
@@ -263,13 +263,13 @@ class SphinxSearchEngine implements SearchEngineInterface
             }
         }
 
-        $indexes = array(
+        $indexes = [
             "docs_realtime" . $this->CRCdatabox($record->get_databox()),
             "docs_realtime_stemmed_fr_" . $this->CRCdatabox($record->get_databox()),
             "docs_realtime_stemmed_nl_" . $this->CRCdatabox($record->get_databox()),
             "docs_realtime_stemmed_en_" . $this->CRCdatabox($record->get_databox()),
             "docs_realtime_stemmed_de_" . $this->CRCdatabox($record->get_databox()),
-        );
+        ];
 
         foreach ($indexes as $index) {
             $this->rt_conn->exec("REPLACE INTO "
@@ -303,27 +303,27 @@ class SphinxSearchEngine implements SearchEngineInterface
         }
 
         $CRCdatabox = $this->CRCdatabox($record->get_databox());
-        $indexes = array(
+        $indexes = [
             "metadatas" . $CRCdatabox,
             "metadatas" . $CRCdatabox . "_stemmed_en",
             "metadatas" . $CRCdatabox . "_stemmed_fr",
             "metadatas" . $CRCdatabox . "_stemmed_de",
             "metadatas" . $CRCdatabox . "_stemmed_nl",
-        );
-        $RTindexes = array(
+        ];
+        $RTindexes = [
             "metas_realtime" . $CRCdatabox,
             "metas_realtime_stemmed_fr_" . $CRCdatabox,
             "metas_realtime_stemmed_en_" . $CRCdatabox,
             "metas_realtime_stemmed_nl_" . $CRCdatabox,
             "metas_realtime_stemmed_de_" . $CRCdatabox,
-        );
+        ];
 
         foreach ($record->get_caption()->get_fields(null, true) as $field) {
 
             foreach ($field->get_values() as $value) {
 
                 foreach ($indexes as $index) {
-                    $this->sphinx->UpdateAttributes($index, array("deleted"), array($value->getId() => array(1)));
+                    $this->sphinx->UpdateAttributes($index, ["deleted"], [$value->getId() => [1]]);
                 }
 
                 foreach ($RTindexes as $index) {
@@ -332,23 +332,23 @@ class SphinxSearchEngine implements SearchEngineInterface
             }
         }
 
-        $indexes = array(
+        $indexes = [
             "documents" . $CRCdatabox,
             "documents" . $CRCdatabox . "_stemmed_fr",
             "documents" . $CRCdatabox . "_stemmed_en",
             "documents" . $CRCdatabox . "_stemmed_de",
             "documents" . $CRCdatabox . "_stemmed_nl"
-        );
-        $RTindexes = array(
+        ];
+        $RTindexes = [
             "docs_realtime" . $CRCdatabox,
             "docs_realtime_stemmed_fr_" . $CRCdatabox,
             "docs_realtime_stemmed_en_" . $CRCdatabox,
             "docs_realtime_stemmed_nl_" . $CRCdatabox,
             "docs_realtime_stemmed_de_" . $CRCdatabox,
-        );
+        ];
 
         foreach ($indexes as $index) {
-            $this->sphinx->UpdateAttributes($index, array("deleted"), array($record->get_record_id() => array(1)));
+            $this->sphinx->UpdateAttributes($index, ["deleted"], [$record->get_record_id() => [1]]);
         }
 
         foreach ($RTindexes as $index) {
@@ -461,7 +461,7 @@ class SphinxSearchEngine implements SearchEngineInterface
         $preg = preg_match('/\s?(recordid|storyid)\s?=\s?([0-9]+)/i', $query, $matches, 0, 0);
 
         if ($preg > 0) {
-            $this->sphinx->SetFilter('record_id', array($matches[2]));
+            $this->sphinx->SetFilter('record_id', [$matches[2]]);
             $query = '';
         }
 
@@ -483,7 +483,7 @@ class SphinxSearchEngine implements SearchEngineInterface
 
             $total = $available = $duration = 0;
             $suggestions = new ArrayCollection();
-            $propositions = array();
+            $propositions = [];
         } else {
             $error = $res['error'];
             $warning = $res['warning'];
@@ -551,12 +551,12 @@ class SphinxSearchEngine implements SearchEngineInterface
             }
         }
 
-        $opts = array(
+        $opts = [
             'before_match' => "<em>",
             'after_match'  => "</em>",
-        );
+        ];
 
-        $fields_to_send = array();
+        $fields_to_send = [];
 
         foreach ($fields as $k => $f) {
             $fields_to_send[$k] = $f['value'];
@@ -578,7 +578,7 @@ class SphinxSearchEngine implements SearchEngineInterface
      *
      * @return SphinxSearchEngine
      */
-    public static function create(Application $app, array $options = array())
+    public static function create(Application $app, array $options = [])
     {
         $options = ConfigurationPanel::populateConfiguration($options);
 
@@ -595,7 +595,7 @@ class SphinxSearchEngine implements SearchEngineInterface
     {
         return sprintf("%u", crc32(
                 str_replace(
-                        array('.', '%')
+                        ['.', '%']
                         , '_'
                         , sprintf('%s_%s_%s_%s', $databox->get_host(), $databox->get_port(), $databox->get_user(), $databox->get_dbname())
                 )
@@ -614,7 +614,7 @@ class SphinxSearchEngine implements SearchEngineInterface
     {
         $this->resetSphinx();
 
-        $filters = array();
+        $filters = [];
 
         foreach ($options->getCollections() as $collection) {
             $filters[] = sprintf("%u", crc32($collection->get_databox()->get_sbas_id() . '_' . $collection->get_coll_id()));
@@ -622,8 +622,8 @@ class SphinxSearchEngine implements SearchEngineInterface
 
         $this->sphinx->SetFilter('crc_sbas_coll', $filters);
 
-        $this->sphinx->SetFilter('deleted', array(0));
-        $this->sphinx->SetFilter('parent_record_id', array($options->getSearchType()));
+        $this->sphinx->SetFilter('deleted', [0]);
+        $this->sphinx->SetFilter('parent_record_id', [$options->getSearchType()]);
 
         if ($options->getDateFields() && ($options->getMaxDate() || $options->getMinDate())) {
             foreach (array_unique(array_map(function (\databox_field $field) {
@@ -638,7 +638,7 @@ class SphinxSearchEngine implements SearchEngineInterface
 
         if ($options->getFields()) {
 
-            $filters = array();
+            $filters = [];
             foreach ($options->getFields() as $field) {
                 $filters[] = sprintf("%u", crc32($field->get_databox()->get_sbas_id() . '_' . $field->get_id()));
             }
@@ -648,14 +648,14 @@ class SphinxSearchEngine implements SearchEngineInterface
 
         if ($options->getBusinessFieldsOn()) {
 
-            $crc_coll_business = array();
+            $crc_coll_business = [];
 
             foreach ($options->getBusinessFieldsOn() as $collection) {
                 $crc_coll_business[] = sprintf("%u", crc32($collection->get_coll_id() . '_1'));
                 $crc_coll_business[] = sprintf("%u", crc32($collection->get_coll_id() . '_0'));
             }
 
-            $non_business = array();
+            $non_business = [];
 
             foreach ($options->getCollections() as $collection) {
                 foreach ($options->getBusinessFieldsOn() as $BFcollection) {
@@ -672,7 +672,7 @@ class SphinxSearchEngine implements SearchEngineInterface
 
             $this->sphinx->SetFilter('crc_coll_business', $crc_coll_business);
         } elseif ($options->getFields()) {
-            $this->sphinx->SetFilter('business', array(0));
+            $this->sphinx->SetFilter('business', [0]);
         }
 
         /**
@@ -686,12 +686,12 @@ class SphinxSearchEngine implements SearchEngineInterface
                 if (!array_key_exists($databox->get_sbas_id(), $status_opts[$n]))
                     continue;
                 $crc = sprintf("%u", crc32($databox->get_sbas_id() . '_' . $n));
-                $this->sphinx->SetFilter('status', array($crc), ($status_opts[$n][$databox->get_sbas_id()] == '0'));
+                $this->sphinx->SetFilter('status', [$crc], ($status_opts[$n][$databox->get_sbas_id()] == '0'));
             }
         }
 
         if ($options->getRecordType()) {
-            $this->sphinx->SetFilter('crc_type', array(sprintf("%u", crc32($options->getRecordType()))));
+            $this->sphinx->SetFilter('crc_type', [sprintf("%u", crc32($options->getRecordType()))]);
         }
 
         $order = '';
@@ -727,7 +727,7 @@ class SphinxSearchEngine implements SearchEngineInterface
     {
         $configuration = $this->getConfiguration();
 
-        $sql_fields = array();
+        $sql_fields = [];
 
         foreach ($configuration['date_fields'] as $field_name) {
 
@@ -756,7 +756,7 @@ class SphinxSearchEngine implements SearchEngineInterface
      */
     private function cleanupQuery($query)
     {
-        return str_replace(array("all", "last", "et", "ou", "sauf", "and", "or", "except", "in", "dans", "'", '"', "(", ")", "_", "-", "+"), ' ', $query);
+        return str_replace(["all", "last", "et", "ou", "sauf", "and", "or", "except", "in", "dans", "'", '"', "(", ")", "_", "-", "+"], ' ', $query);
     }
 
     /**
@@ -770,7 +770,7 @@ class SphinxSearchEngine implements SearchEngineInterface
         // First we split the query into simple words
         $words = explode(" ", $this->cleanupQuery(mb_strtolower($query)));
 
-        $tmpWords = array();
+        $tmpWords = [];
 
         foreach ($words as $word) {
             if (trim($word) === '') {
@@ -781,10 +781,10 @@ class SphinxSearchEngine implements SearchEngineInterface
 
         $words = array_unique($tmpWords);
 
-        $altVersions = array();
+        $altVersions = [];
 
         foreach ($words as $word) {
-            $altVersions[$word] = array($word);
+            $altVersions[$word] = [$word];
         }
 
         // As we got words, we look for alternate word for each of them
@@ -814,10 +814,10 @@ class SphinxSearchEngine implements SearchEngineInterface
         }
 
         // We now build an array of all possibilities based on the original query
-        $queries = array($query);
+        $queries = [$query];
 
         foreach ($altVersions as $word => $versions) {
-            $tmp_queries = array();
+            $tmp_queries = [];
             foreach ($versions as $version) {
                 foreach ($queries as $alt_query) {
                     $tmp_queries[] = $alt_query;
@@ -828,7 +828,7 @@ class SphinxSearchEngine implements SearchEngineInterface
             $queries = array_unique(array_merge($queries, $tmp_queries));
         }
 
-        $suggestions = array();
+        $suggestions = [];
         $max_results = 0;
 
         foreach ($queries as $alt_query) {
@@ -842,7 +842,7 @@ class SphinxSearchEngine implements SearchEngineInterface
             }
         }
 
-        usort($suggestions, array('self', 'suggestionsHitSorter'));
+        usort($suggestions, ['self', 'suggestionsHitSorter']);
 
         $tmpSuggestions = new ArrayCollection();
         foreach ($suggestions as $key => $suggestion) {
@@ -891,7 +891,7 @@ class SphinxSearchEngine implements SearchEngineInterface
         $this->suggestionClient->SetSortMode(SPH_SORT_EXTENDED, "@weight DESC");
         $this->suggestionClient->SetLimits(0, 10);
 
-        $indexes = array();
+        $indexes = [];
 
         foreach ($this->options->getDataboxes() as $databox) {
             $indexes[] = 'suggest' . $this->CRCdatabox($databox);
@@ -901,14 +901,14 @@ class SphinxSearchEngine implements SearchEngineInterface
         $res = $this->suggestionClient->Query($query, $index);
 
         if ($this->suggestionClient->Status() === false) {
-            return array();
+            return [];
         }
 
         if (!$res || !isset($res["matches"])) {
-            return array();
+            return [];
         }
 
-        $words = array();
+        $words = [];
         foreach ($res["matches"] as $match) {
             $words[] = $match['attrs']['keyword'];
         }
@@ -920,7 +920,7 @@ class SphinxSearchEngine implements SearchEngineInterface
     {
         $index = '*';
 
-        $index_keys = array();
+        $index_keys = [];
 
         foreach ($this->options->getDataboxes() as $databox) {
             $index_keys[] = $this->CRCdatabox($databox);
@@ -976,9 +976,9 @@ class SphinxSearchEngine implements SearchEngineInterface
             }
         }
 
-        $query = str_ireplace(array(' ou ', ' or '), '|', $query);
-        $query = str_ireplace(array(' sauf ', ' except '), ' -', $query);
-        $query = str_ireplace(array(' and ', ' et '), ' +', $query);
+        $query = str_ireplace([' ou ', ' or '], '|', $query);
+        $query = str_ireplace([' sauf ', ' except '], ' -', $query);
+        $query = str_ireplace([' and ', ' et '], ' +', $query);
 
         return $query;
     }
@@ -1019,7 +1019,7 @@ class SphinxSearchEngine implements SearchEngineInterface
 
     protected function BuildDictionarySQL($dictionnary, $threshold)
     {
-        $out = array();
+        $out = [];
 
         $n = 1;
         $lines = explode("\n", $dictionnary);

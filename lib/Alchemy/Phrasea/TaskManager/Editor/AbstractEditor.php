@@ -56,7 +56,7 @@ abstract class AbstractEditor implements EditorInterface
             }
         }
 
-        return new Response($dom->saveXML(), 200, array('Content-type' => 'text/xml'));
+        return new Response($dom->saveXML(), 200, ['Content-type' => 'text/xml']);
     }
 
     /**

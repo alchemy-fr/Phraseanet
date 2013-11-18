@@ -355,11 +355,11 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
 
     public function provideLanguageCodes()
     {
-        $codes = array();
+        $codes = [];
 
         foreach (Application::getAvailableLanguages() as $code => $language) {
             $data = explode('_', $code);
-            $codes[] = array($data[0]);
+            $codes[] = [$data[0]];
         }
 
         return $codes;
@@ -393,13 +393,13 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
     {
         $AddedValue = 'scalar value';
 
-        self::$DI['record_1']->set_metadatas(array(
-            array(
+        self::$DI['record_1']->set_metadatas([
+            [
                 'meta_id'        => null,
                 'meta_struct_id' => $this->object_mono->get_id(),
                 'value'          => $AddedValue
-            )
-        ));
+            ]
+        ]);
 
         $this->object_mono->set_name('Bonobo yoyo')->save();
 
@@ -410,7 +410,7 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
 
     public function testToArray()
     {
-        foreach (array($this->object_mono, $this->object_multi) as $object) {
+        foreach ([$this->object_mono, $this->object_multi] as $object) {
             $data = $object->toArray();
 
             $this->assertInternalType('array', $data);

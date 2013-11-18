@@ -162,10 +162,10 @@ class Configuration implements ConfigurationInterface
     public function delete()
     {
         $this->cache = null;
-        foreach (array(
+        foreach ([
             $this->config,
             $this->compiled,
-        ) as $file) {
+        ] as $file) {
             $this->eraseFile($file);
         }
     }
@@ -196,11 +196,11 @@ class Configuration implements ConfigurationInterface
 
     public function getTestConnectionParameters()
     {
-        return array(
+        return [
             'driver'  => 'pdo_sqlite',
             'path'    => '/tmp/db.sqlite',
             'charset' => 'UTF8',
-        );
+        ];
     }
 
     private function loadDefaultConfiguration()

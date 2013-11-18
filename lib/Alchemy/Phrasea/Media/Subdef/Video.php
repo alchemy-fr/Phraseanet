@@ -25,7 +25,7 @@ class Video extends Audio
     const OPTION_VCODEC = 'vcodec';
     const OPTION_GOPSIZE = 'GOPsize';
 
-    protected $options = array();
+    protected $options = [];
 
     public function __construct()
     {
@@ -35,9 +35,9 @@ class Video extends Audio
         $this->registerOption(new OptionType\Range(_('GOP size'), self::OPTION_GOPSIZE, 1, 300, 10));
         $this->registerOption(new OptionType\Range(_('Dimension'), self::OPTION_SIZE, 64, 2000, 600, 16));
         $this->registerOption(new OptionType\Range(_('Frame Rate'), self::OPTION_FRAMERATE, 1, 200, 20));
-        $this->registerOption(new OptionType\Enum(_('Video Codec'), self::OPTION_VCODEC, array('libx264', 'libvpx', 'libtheora'), 'libx264'));
+        $this->registerOption(new OptionType\Enum(_('Video Codec'), self::OPTION_VCODEC, ['libx264', 'libvpx', 'libtheora'], 'libx264'));
         $this->unregisterOption(self::OPTION_ACODEC);
-        $this->registerOption(new OptionType\Enum(_('Audio Codec'), self::OPTION_ACODEC, array('libfaac', 'libvo_aacenc', 'libmp3lame', 'libvorbis'), 'libfaac'));
+        $this->registerOption(new OptionType\Enum(_('Audio Codec'), self::OPTION_ACODEC, ['libfaac', 'libvo_aacenc', 'libmp3lame', 'libvorbis'], 'libfaac'));
     }
 
     public function getType()

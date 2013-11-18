@@ -28,10 +28,10 @@ class reportTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $date->modify('-6 month');
         $this->dmin = $date->format("Y-m-d H:i:s");
         $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
-        $this->ret = array();
+        $this->ret = [];
         foreach ($databoxes as $databox) {
             $colls = $databox->get_collections();
-            $rett = array();
+            $rett = [];
             foreach ($colls as $coll) {
                 $rett[$coll->get_coll_id()] = $coll->get_coll_id();
             }
@@ -107,7 +107,7 @@ class reportTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $bool = false;
         $report->setCsv($bool);
         $this->assertEquals($bool, $report->getCsv());
-        $filter = array('test', 'array');
+        $filter = ['test', 'array'];
         $report->setFilter($filter);
         $this->assertEquals($filter, $report->getTabFilter());
         $periode = "2 years";
@@ -123,7 +123,7 @@ class reportTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertEquals($limit, $report->getNbRecord());
         $report->setGroupBy($bool);
         $this->assertEquals($bool, $report->getGroupBy());
-        $column = array('col1', 'col2');
+        $column = ['col1', 'col2'];
         $report->setActiveColumn($column);
         $this->assertEquals($column, $report->getActiveColumn());
         $report->setConfig($bool);
@@ -132,13 +132,13 @@ class reportTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertFalse($report->getConfig());
         $this->assertFalse($report->getPrint());
         $this->assertFalse($report->getHasLimit());
-        $result = array('result', 'result');
+        $result = ['result', 'result'];
         $report->setResult($result);
         $this->assertEquals($result, $report->getResult());
         $total = 3200;
         $report->setTotal($total);
         $this->assertEquals($total, $report->getTotal());
-        $default_display = array('a', 'b', 'c');
+        $default_display = ['a', 'b', 'c'];
         $report->setDefault_display($default_display);
         $this->assertEquals($default_display, $report->getDefault_display());
     }
@@ -147,7 +147,7 @@ class reportTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
 
         foreach ($this->ret as $sbasid => $collections) {
-            $report = $this->getMock('module_report', array('buildReq', 'buildResult'), array(), '', FALSE);
+            $report = $this->getMock('module_report', ['buildReq', 'buildResult'], [], '', FALSE);
             $report->setSbas_id($sbasid);
             $this->assertEquals($sbasid, $report->getSbas_id());
 
@@ -170,7 +170,7 @@ class reportTest extends PhraseanetPHPUnitAuthenticatedAbstract
           ip
          FROM log ');
             $report->expects($this->any())->method('buildReq')->will($this->returnValue(''));
-            $report->expects($this->any())->method('buildResult')->will($this->returnValue(array()));
+            $report->expects($this->any())->method('buildResult')->will($this->returnValue([]));
             $result = $report->buildReport(false, 'user');
 
         }

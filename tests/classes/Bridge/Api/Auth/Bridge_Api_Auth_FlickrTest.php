@@ -25,7 +25,7 @@ class Bridge_Api_Auth_FlickrTest extends PHPUnit_Framework_TestCase
 
     public function testConnect()
     {
-        $api = $this->getMock("Phlickr_Api", array(), array(), "", false);
+        $api = $this->getMock("Phlickr_Api", [], [], "", false);
         //mock api method
         $api->expects($this->once())
             ->method("setAuthTokenFromFrob")
@@ -39,7 +39,7 @@ class Bridge_Api_Auth_FlickrTest extends PHPUnit_Framework_TestCase
             ->method("isAuthValid")
             ->will($this->returnValue(true));
 
-        $stub = $this->getMock("Bridge_Api_Auth_Flickr", array("get_api"));
+        $stub = $this->getMock("Bridge_Api_Auth_Flickr", ["get_api"]);
 
         $stub->expects($this->any())
             ->method("get_api")
@@ -54,7 +54,7 @@ class Bridge_Api_Auth_FlickrTest extends PHPUnit_Framework_TestCase
 
     public function testBadConnect()
     {
-        $api = $this->getMock("Phlickr_Api", array(), array(), "", false);
+        $api = $this->getMock("Phlickr_Api", [], [], "", false);
         //mock api method
         $api->expects($this->once())
             ->method("setAuthTokenFromFrob")
@@ -64,7 +64,7 @@ class Bridge_Api_Auth_FlickrTest extends PHPUnit_Framework_TestCase
             ->method("isAuthValid")
             ->will($this->returnValue(false));
 
-        $stub = $this->getMock("Bridge_Api_Auth_Flickr", array("get_api"));
+        $stub = $this->getMock("Bridge_Api_Auth_Flickr", ["get_api"]);
 
         $stub->expects($this->any())
             ->method("get_api")
@@ -82,7 +82,7 @@ class Bridge_Api_Auth_FlickrTest extends PHPUnit_Framework_TestCase
 
     public function testDisconnect()
     {
-        $setting = $this->getMock("Bridge_AccountSettings", array("set"), array(), "", false);
+        $setting = $this->getMock("Bridge_AccountSettings", ["set"], [], "", false);
 
         $setting->expects($this->once())
             ->method("set")
@@ -97,7 +97,7 @@ class Bridge_Api_Auth_FlickrTest extends PHPUnit_Framework_TestCase
 
     public function testIs_connected()
     {
-        $setting = $this->getMock("Bridge_AccountSettings", array("get"), array(), "", false);
+        $setting = $this->getMock("Bridge_AccountSettings", ["get"], [], "", false);
 
         $setting->expects($this->any())
             ->method("get")
@@ -113,7 +113,7 @@ class Bridge_Api_Auth_FlickrTest extends PHPUnit_Framework_TestCase
 
     public function testGet_auth_signatures()
     {
-        $setting = $this->getMock("Bridge_AccountSettings", array("get"), array(), "", false);
+        $setting = $this->getMock("Bridge_AccountSettings", ["get"], [], "", false);
 
         $setting->expects($this->once())
             ->method("get")
@@ -131,12 +131,12 @@ class Bridge_Api_Auth_FlickrTest extends PHPUnit_Framework_TestCase
 
     public function testSet_parameters()
     {
-        $parameters = array(
+        $parameters = [
             "caca"      => "boudain"
             , "sirop"     => "fraise"
             , "choco"     => "banane"
             , "pirouette" => "cacahuete"
-        );
+        ];
 
         $return = $this->object->set_parameters($parameters);
 
@@ -146,7 +146,7 @@ class Bridge_Api_Auth_FlickrTest extends PHPUnit_Framework_TestCase
 
     public function testGet_auth_url()
     {
-        $api = $this->getMock("Phlickr_Api", array(), array(), "", false);
+        $api = $this->getMock("Phlickr_Api", [], [], "", false);
         //mock api method
         $api->expects($this->any())
             ->method("requestFrob")
@@ -157,13 +157,13 @@ class Bridge_Api_Auth_FlickrTest extends PHPUnit_Framework_TestCase
             ->with($this->equalTo("write"), $this->equalTo("un_token"))
             ->will($this->returnValue("une_super_url"));
 
-        $stub = $this->getMock("Bridge_Api_Auth_Flickr", array("get_api"));
+        $stub = $this->getMock("Bridge_Api_Auth_Flickr", ["get_api"]);
 
         $stub->expects($this->any())
             ->method("get_api")
             ->will($this->returnValue($api));
 
-        $params = array("permissions" => "write");
+        $params = ["permissions" => "write"];
 
         $stub->set_parameters($params);
 

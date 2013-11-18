@@ -5,6 +5,6 @@
 $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
-return array(
+return [
     'Vendor\\PluginService' => $baseDir . '/src/Vendor/PluginService.php',
-);
+];

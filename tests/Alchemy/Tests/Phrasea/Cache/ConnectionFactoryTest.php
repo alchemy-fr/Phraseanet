@@ -31,7 +31,7 @@ class ConnectionFactoryTest extends \PHPUnit_Framework_TestCase
         }
 
         $factory = new ConnectionFactory();
-        $redis = $factory->getRedisConnection(array('host' => 'unknown-host', 'port' => 666));
+        $redis = $factory->getRedisConnection(['host' => 'unknown-host', 'port' => 666]);
 
         $this->assertInstanceOf('Redis', $redis);
         $this->assertSame($redis, $factory->getRedisConnection());
@@ -61,7 +61,7 @@ class ConnectionFactoryTest extends \PHPUnit_Framework_TestCase
         }
 
         $factory = new ConnectionFactory();
-        $memcached = $factory->getMemcachedConnection(array('host' => 'unknown-host', 'port' => 666));
+        $memcached = $factory->getMemcachedConnection(['host' => 'unknown-host', 'port' => 666]);
 
         $this->assertInstanceOf('Memcached', $memcached);
         $this->assertSame($memcached, $factory->getMemcachedConnection());
@@ -91,7 +91,7 @@ class ConnectionFactoryTest extends \PHPUnit_Framework_TestCase
         }
 
         $factory = new ConnectionFactory();
-        $memcache = $factory->getMemcacheConnection(array('host' => 'unknown-host', 'port' => 666));
+        $memcache = $factory->getMemcacheConnection(['host' => 'unknown-host', 'port' => 666]);
 
         $this->assertInstanceOf('Memcache', $memcache);
         $this->assertSame($memcache, $factory->getMemcacheConnection());

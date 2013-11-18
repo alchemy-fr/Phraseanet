@@ -39,7 +39,7 @@ class Setup_Upgrade
      *
      * @var array
      */
-    protected $recommendations = array();
+    protected $recommendations = [];
 
     /**
      *
@@ -135,7 +135,7 @@ class Setup_Upgrade
      */
     public function addRecommendation($recommendation, $command = null)
     {
-        $this->recommendations[] = array($recommendation, $command);
+        $this->recommendations[] = [$recommendation, $command];
     }
 
     /**
@@ -171,13 +171,13 @@ class Setup_Upgrade
         $date_obj = new DateTime();
         $dumper = new Symfony\Component\Yaml\Dumper();
         $datas = $dumper->dump(
-            array(
+            [
             'percentage'      => $this->get_percentage()
             , 'total_steps'     => $this->total_steps
             , 'completed_steps' => $this->completed_steps
             , 'message'         => $this->message
             , 'last_update'     => $date_obj->format(DATE_ATOM)
-            ), 1
+            ], 1
         );
 
         if (!file_put_contents(self::get_lock_file(), $datas))
@@ -241,14 +241,14 @@ class Setup_Upgrade
     {
         $active = self::lock_exists();
 
-        $datas = array(
+        $datas = [
             'active'          => $active
             , 'percentage'      => 1
             , 'total_steps'     => 0
             , 'completed_steps' => 0
             , 'message'         => null
             , 'last_update'     => null
-        );
+        ];
 
         if ($active) {
             $parser = new Symfony\Component\Yaml\Parser();

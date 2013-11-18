@@ -55,7 +55,7 @@ class MaintenanceSubscriberTest extends \PHPUnit_Framework_TestCase
             $this->fail('An exception should have been raised');
         } catch (HttpException $e) {
             $this->assertEquals(503, $e->getStatusCode());
-            $this->assertEquals(array('Retry-After' => 3600), $e->getHeaders());
+            $this->assertEquals(['Retry-After' => 3600], $e->getHeaders());
         }
     }
 }

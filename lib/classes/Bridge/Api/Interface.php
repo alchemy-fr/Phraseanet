@@ -152,7 +152,7 @@ interface Bridge_Api_Interface
 
     public function get_error_message_from_status($connector_status);
 
-    public function upload(record_adapter $record, array $options = array());
+    public function upload(record_adapter $record, array $options = []);
 
     public function is_valid_object_id($object_id);
 

@@ -28,9 +28,9 @@ class XSendFileSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::REQUEST => array('applyHeaders', 0),
-        );
+        return [
+            KernelEvents::REQUEST => ['applyHeaders', 0],
+        ];
     }
 
     public function applyHeaders(GetResponseEvent $event)

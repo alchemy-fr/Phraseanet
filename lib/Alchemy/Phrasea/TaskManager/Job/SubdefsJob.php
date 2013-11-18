@@ -92,7 +92,7 @@ class SubdefsJob extends AbstractJob
                       WHERE record_id=:record_id';
 
                 $stmt = $connbas->prepare($sql);
-                $stmt->execute(array(':record_id' => $row['record_id']));
+                $stmt->execute([':record_id' => $row['record_id']]);
                 $stmt->closeCursor();
 
                 // rewrite metadata
@@ -101,7 +101,7 @@ class SubdefsJob extends AbstractJob
                         jeton=(jeton | ' . JETON_WRITE_META_SUBDEF . ')
                     WHERE record_id=:record_id';
                 $stmt = $connbas->prepare($sql);
-                $stmt->execute(array(':record_id' => $row['record_id']));
+                $stmt->execute([':record_id' => $row['record_id']]);
                 $stmt->closeCursor();
 
                 unset($record);

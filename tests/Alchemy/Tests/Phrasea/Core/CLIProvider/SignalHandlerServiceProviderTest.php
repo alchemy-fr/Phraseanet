@@ -6,12 +6,12 @@ class SignalHandlerServiceProvidertest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {
-        return array(
-            array(
+        return [
+            [
                 'Alchemy\Phrasea\Core\CLIProvider\SignalHandlerServiceProvider',
                 'signal-handler',
                 'Neutron\SignalHandler\SignalHandler'
-            ),
-        );
+            ],
+        ];
     }
 }

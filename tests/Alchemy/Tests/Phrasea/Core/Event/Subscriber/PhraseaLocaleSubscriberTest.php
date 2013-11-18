@@ -19,7 +19,7 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetPHPUnitAbstract
         $this->mockRegistryAndReturnLocale($app, 'fr_FR');
 
         $client = new Client($app);
-        $client->request('GET', '/', array(), array(), array('HTTP_accept-language' => ''));
+        $client->request('GET', '/', [], [], ['HTTP_accept-language' => '']);
 
         $this->assertEquals('fr_FR', $client->getResponse()->getContent());
     }
@@ -31,8 +31,8 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetPHPUnitAbstract
         $cookieJar = new CookieJar();
         $cookieJar->set(new BrowserCookie('locale', 'de_DE'));
 
-        $client = new Client($app, array(), null, $cookieJar);
-        $client->request('GET', '/', array(), array(), array('HTTP_accept-language' => ''));
+        $client = new Client($app, [], null, $cookieJar);
+        $client->request('GET', '/', [], [], ['HTTP_accept-language' => '']);
 
         $this->assertEquals('de_DE', $client->getResponse()->getContent());
     }
@@ -42,7 +42,7 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetPHPUnitAbstract
         $app = $this->getAppThatReturnLocale();
 
         $client = new Client($app);
-        $client->request('GET', '/', array(), array(), array('HTTP_ACCEPT_LANGUAGE' => 'fr_FR,fr;q=0.9'));
+        $client->request('GET', '/', [], [], ['HTTP_ACCEPT_LANGUAGE' => 'fr_FR,fr;q=0.9']);
 
         $this->assertEquals('fr_FR', $client->getResponse()->getContent());
     }
@@ -52,7 +52,7 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetPHPUnitAbstract
         $app = $this->getAppThatReturnLocale();
 
         $client = new Client($app);
-        $client->request('GET', '/', array(), array(), array('HTTP_ACCEPT_LANGUAGE' => 'fr-FR,fr;q=0.9'));
+        $client->request('GET', '/', [], [], ['HTTP_ACCEPT_LANGUAGE' => 'fr-FR,fr;q=0.9']);
 
         $this->assertEquals('fr_FR', $client->getResponse()->getContent());
     }
@@ -60,7 +60,7 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetPHPUnitAbstract
     public function testCookieIsSet()
     {
         $client = new Client(self::$DI['app']);
-        $client->request('GET', '/', array(), array(), array('HTTP_ACCEPT_LANGUAGE' => 'fr-FR,fr;q=0.9'));
+        $client->request('GET', '/', [], [], ['HTTP_ACCEPT_LANGUAGE' => 'fr-FR,fr;q=0.9']);
 
         $settedCookie = null;
         foreach ($client->getResponse()->headers->getCookies() as $cookie) {
@@ -83,7 +83,7 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetPHPUnitAbstract
         $this->mockRegistryAndReturnLocale($app, 'en_USA');
 
         $client = $this->getClientWithCookie($app, null);
-        $client->request('GET', '/', array(), array(), array('HTTP_accept-language' => ''));
+        $client->request('GET', '/', [], [], ['HTTP_accept-language' => '']);
 
         $this->assertEquals('en_USA', $client->getResponse()->getContent());
     }
@@ -97,7 +97,7 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetPHPUnitAbstract
         $this->mockRegistryAndReturnLocale($app, 'en_USA');
 
         $client = $this->getClientWithCookie($app, 'de_PL');
-        $client->request('GET', '/', array(), array(), array('HTTP_accept-language' => ''));
+        $client->request('GET', '/', [], [], ['HTTP_accept-language' => '']);
 
         $this->assertEquals('en_USA', $client->getResponse()->getContent());
     }
@@ -135,6 +135,6 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetPHPUnitAbstract
             $cookieJar->set(new BrowserCookie('locale', $locale));
         }
 
-        return new Client($app, array(), null, $cookieJar);
+        return new Client($app, [], null, $cookieJar);
     }
 }

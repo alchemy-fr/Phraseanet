@@ -15,18 +15,18 @@ class LiveInformationTest extends \PhraseanetPHPUnitAbstract
         $notifier->expects($this->once())
                 ->method('notify')
                 ->with(Notifier::MESSAGE_INFORMATIONS)
-                ->will($this->returnValue(array(
-                    'manager' => array(
+                ->will($this->returnValue([
+                    'manager' => [
                         'process-id' => 1234,
-                    )
-                )));
+                    ]
+                ]));
 
         $live = new LiveInformation($this->createStatusMock(TaskManagerStatus::STATUS_STARTED), $notifier);
-        $expected = array(
+        $expected = [
             'configuration' => TaskManagerStatus::STATUS_STARTED,
             'actual'        => TaskManagerStatus::STATUS_STARTED,
             'process-id'    => 1234,
-        );
+        ];
         $this->assertEquals($expected, $live->getManager());
     }
 
@@ -39,11 +39,11 @@ class LiveInformationTest extends \PhraseanetPHPUnitAbstract
                 ->will($this->returnValue(null));
 
         $live = new LiveInformation($this->createStatusMock(TaskManagerStatus::STATUS_STARTED), $notifier);
-        $expected = array(
+        $expected = [
             'configuration' => TaskManagerStatus::STATUS_STARTED,
             'actual'        => TaskManagerStatus::STATUS_STOPPED,
             'process-id'    => null,
-        );
+        ];
         $this->assertEquals($expected, $live->getManager());
     }
 
@@ -59,24 +59,24 @@ class LiveInformationTest extends \PhraseanetPHPUnitAbstract
         $notifier->expects($this->once())
                 ->method('notify')
                 ->with(Notifier::MESSAGE_INFORMATIONS)
-                ->will($this->returnValue(array(
-                    'manager' => array(
+                ->will($this->returnValue([
+                    'manager' => [
                         'process-id' => 1234,
-                    ),
-                    'jobs' => array(
-                        $task->getId() => array(
+                    ],
+                    'jobs' => [
+                        $task->getId() => [
                             'status'     => Task::STATUS_STARTED,
                             'process-id' => 1235,
-                        )
-                    ),
-                )));
+                        ]
+                    ],
+                ]));
 
         $live = new LiveInformation($this->createStatusMock(TaskManagerStatus::STATUS_STARTED), $notifier);
-        $expected = array(
+        $expected = [
             'configuration' => Task::STATUS_STARTED,
             'actual'        => Task::STATUS_STARTED,
             'process-id'    => 1235,
-        );
+        ];
         $this->assertEquals($expected, $live->getTask($task));
     }
 
@@ -95,11 +95,11 @@ class LiveInformationTest extends \PhraseanetPHPUnitAbstract
                 ->will($this->returnValue(null));
 
         $live = new LiveInformation($this->createStatusMock(TaskManagerStatus::STATUS_STARTED), $notifier);
-        $expected = array(
+        $expected = [
             'configuration' => Task::STATUS_STARTED,
             'actual'        => Task::STATUS_STOPPED,
             'process-id'    => null,
-        );
+        ];
         $this->assertEquals($expected, $live->getTask($task));
     }
 

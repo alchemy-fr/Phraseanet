@@ -18,9 +18,9 @@ class PhraseaProbe extends PhraseaRequirements implements ProbeInterface
 {
     public function __construct(Application $app)
     {
-        parent::__construct(array(
+        parent::__construct([
             // here goes the custom setting
-        ));
+        ]);
     }
 
     /**

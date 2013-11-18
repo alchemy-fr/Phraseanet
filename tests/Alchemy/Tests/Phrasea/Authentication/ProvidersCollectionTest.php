@@ -17,7 +17,7 @@ class ProvidersCollectionTest extends \PHPUnit_Framework_TestCase
         $providers = new ProvidersCollection();
         $providers->register($provider);
 
-        $expectedIterator = new \ArrayIterator(array('neutron-provider' => $provider));
+        $expectedIterator = new \ArrayIterator(['neutron-provider' => $provider]);
 
         $this->assertEquals($expectedIterator, $providers->getIterator());
     }

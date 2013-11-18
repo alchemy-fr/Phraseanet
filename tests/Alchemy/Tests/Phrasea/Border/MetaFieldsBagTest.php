@@ -38,11 +38,11 @@ class MetaFieldsBagTest extends \PhraseanetPHPUnitAbstract
 
         foreach ($structure as $databox_field) {
             if (!$monoAdded) {
-                $this->object->set($databox_field->get_name(), new MetaField($databox_field, array('mono value')));
+                $this->object->set($databox_field->get_name(), new MetaField($databox_field, ['mono value']));
                 $monoAdded = $databox_field->get_id();
             } elseif (!$multiAdded) {
                 if ($databox_field->is_multi()) {
-                    $this->object->set($databox_field->get_name(), new MetaField($databox_field, array('multi', 'value')));
+                    $this->object->set($databox_field->get_name(), new MetaField($databox_field, ['multi', 'value']));
                     $multiAdded = $databox_field->get_id();
                 }
             } else {
@@ -54,22 +54,22 @@ class MetaFieldsBagTest extends \PhraseanetPHPUnitAbstract
             $this->markTestSkipped('Unable to find multi value field');
         }
 
-        $this->assertEquals(array(
-            array(
+        $this->assertEquals([
+            [
                 'meta_struct_id' => $monoAdded,
                 'value'          => 'mono value',
                 'meta_id'        => null
-            ),
-            array(
+            ],
+            [
                 'meta_struct_id' => $multiAdded,
                 'value'          => 'multi',
                 'meta_id'        => null
-            ),
-            array(
+            ],
+            [
                 'meta_struct_id' => $multiAdded,
                 'value'          => 'value',
                 'meta_id'        => null
-            ),
-            ), $this->object->toMetadataArray($structure));
+            ],
+            ], $this->object->toMetadataArray($structure));
     }
 }

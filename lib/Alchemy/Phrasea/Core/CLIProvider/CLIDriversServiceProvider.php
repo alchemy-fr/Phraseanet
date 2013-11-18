@@ -30,7 +30,7 @@ class CLIDriversServiceProvider implements ServiceProviderInterface
         });
 
         $app['driver.binary-finder'] = $app->protect(function ($name, $configName) use ($app) {
-            $extraDirs = array();
+            $extraDirs = [];
 
             if (is_dir($app['root.path'] . '/node_modules')) {
                 $extraDirs[] = $app['root.path'] . '/node_modules/.bin';
@@ -54,7 +54,7 @@ class CLIDriversServiceProvider implements ServiceProviderInterface
                 throw new RuntimeException('Unable to find bower executable.');
             }
 
-            return BowerDriver::create(array('bower.binaries' => $bowerBinary, 'timeout' => 300), $app['monolog']);
+            return BowerDriver::create(['bower.binaries' => $bowerBinary, 'timeout' => 300], $app['monolog']);
         });
 
         $app['driver.recess'] = $app->share(function (Application $app) {
@@ -64,7 +64,7 @@ class CLIDriversServiceProvider implements ServiceProviderInterface
                 throw new RuntimeException('Unable to find recess executable.');
             }
 
-            return RecessDriver::create(array('recess.binaries' => $recessBinary), $app['monolog']);
+            return RecessDriver::create(['recess.binaries' => $recessBinary], $app['monolog']);
         });
 
         $app['driver.composer'] = $app->share(function (Application $app) {
@@ -74,7 +74,7 @@ class CLIDriversServiceProvider implements ServiceProviderInterface
                 throw new RuntimeException('Unable to find composer executable.');
             }
 
-            return ComposerDriver::create(array('composer.binaries' => $composerBinary, 'timeout' => 300), $app['monolog']);
+            return ComposerDriver::create(['composer.binaries' => $composerBinary, 'timeout' => 300], $app['monolog']);
         });
 
         $app['driver.uglifyjs'] = $app->share(function (Application $app) {
@@ -84,7 +84,7 @@ class CLIDriversServiceProvider implements ServiceProviderInterface
                 throw new RuntimeException('Unable to find uglifyJs executable.');
             }
 
-            return UglifyJsDriver::create(array('uglifyjs.binaries' => $uglifyJsBinary), $app['monolog']);
+            return UglifyJsDriver::create(['uglifyjs.binaries' => $uglifyJsBinary], $app['monolog']);
         });
 
         $app['driver.grunt'] = $app->share(function (Application $app) {
@@ -94,7 +94,7 @@ class CLIDriversServiceProvider implements ServiceProviderInterface
                 throw new RuntimeException('Unable to find grunt executable.');
             }
 
-            return GruntDriver::create(array('grunt.binaries' => $gruntBinary), $app['monolog']);
+            return GruntDriver::create(['grunt.binaries' => $gruntBinary], $app['monolog']);
         });
     }
 

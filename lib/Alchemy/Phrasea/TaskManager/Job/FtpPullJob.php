@@ -67,14 +67,14 @@ class FtpPullJob extends AbstractJob
         $ssl = (Boolean) (string) $settings->ssl;
         $passive = (Boolean) (string) $settings->passive;
 
-        foreach (array(
+        foreach ([
             'localpath' => $localPath,
             'host'      => $host,
             'port'      => $host,
             'user'      => $user,
             'password'  => $password,
             'ftppath'   => $ftpPath,
-            ) as $name => $value) {
+            ] as $name => $value) {
             if (trim($value) === '') {
                 // maybe throw an exception to consider the job as failing ?
                 $this->log('error', sprintf('setting `%s` must be set', $name));

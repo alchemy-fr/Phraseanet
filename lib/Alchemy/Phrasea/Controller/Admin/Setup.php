@@ -68,11 +68,11 @@ class Setup implements ControllerProviderInterface
             }
         }
 
-        return $app['twig']->render('admin/setup.html.twig', array(
+        return $app['twig']->render('admin/setup.html.twig', [
             'GV'                => $GV,
             'update_post_datas' => $update,
             'listTimeZone'      => \DateTimeZone::listAbbreviations()
-        ));
+        ]);
     }
 
     /**
@@ -85,13 +85,13 @@ class Setup implements ControllerProviderInterface
     public function postGlobals(Application $app, Request $request)
     {
         if (\setup::create_global_values($app, $request->request->all())) {
-            return $app->redirectPath('setup_display_globals', array(
+            return $app->redirectPath('setup_display_globals', [
                 'success' => 1
-            ));
+            ]);
         }
 
-        return $app->redirectPath('setup_display_globals', array(
+        return $app->redirectPath('setup_display_globals', [
             'success' => 0
-        ));
+        ]);
     }
 }

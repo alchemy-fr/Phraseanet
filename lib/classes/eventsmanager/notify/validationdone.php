@@ -20,7 +20,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = array('__VALIDATION_DONE__');
+    public $events = ['__VALIDATION_DONE__'];
 
     /**
      *
@@ -52,11 +52,11 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'from'    => ''
             , 'to'      => ''
             , 'ssel_id' => ''
-        );
+        ];
 
         $params = array_merge($default, $params);
 
@@ -134,7 +134,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
         try {
             $registered_user = User_Adapter::getInstance($from, $this->app);
         } catch (Exception $e) {
-            return array();
+            return [];
         }
 
         $sender = $registered_user->get_display_name();
@@ -142,17 +142,17 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
         try {
             $basket = $this->app['converter.basket']->convert($ssel_id);
         } catch (Exception $e) {
-            return array();
+            return [];
         }
 
-        $ret = array(
+        $ret = [
             'text'  => sprintf(
                 _('%1$s a envoye son rapport de validation de %2$s'), $sender, '<a href="/lightbox/validate/'
                 . (string) $sx->ssel_id . '/" target="_blank">'
                 . $basket->getName() . '</a>'
             )
             , 'class' => ''
-        );
+        ];
 
         return $ret;
     }

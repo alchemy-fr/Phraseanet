@@ -11,10 +11,10 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 1997,Ford,E350
                 2000,Mercury,Cougar';
 
-        self::$DI['client']->request('POST', '/report/export/csv', array(
+        self::$DI['client']->request('POST', '/report/export/csv', [
             'csv'           => $data,
             'name'          => 'test',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 

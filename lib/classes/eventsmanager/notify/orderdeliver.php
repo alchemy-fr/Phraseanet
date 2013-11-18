@@ -26,7 +26,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = array('__ORDER_DELIVER__');
+    public $events = ['__ORDER_DELIVER__'];
 
     /**
      *
@@ -58,12 +58,12 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'from'    => ''
             , 'to'      => ''
             , 'ssel_id' => ''
             , 'n'       => ''
-        );
+        ];
 
         $params = array_merge($default, $params);
 
@@ -113,7 +113,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
             }
 
             if ($readyToSend) {
-                $url = $this->app->url('lightbox_compare', array(
+                $url = $this->app->url('lightbox_compare', [
                     'basket' => $basket->getId(),
                     'LOG' => $this->app['tokens']->getUrlToken(
                         \random::TYPE_VIEW,
@@ -121,7 +121,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
                         null,
                         $basket->getId()
                     )
-                ));
+                ]);
 
                 $mail = MailInfoOrderDelivered::create($this->app, $receiver, $emitter, null);
                 $mail->setButtonUrl($url);
@@ -153,7 +153,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
         try {
             User_Adapter::getInstance($from, $this->app);
         } catch (Exception $e) {
-            return array();
+            return [];
         }
 
         $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
@@ -161,16 +161,16 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
         try {
             $basket = $this->app['converter.basket']->convert($ssel_id);
         } catch (Exception $e) {
-            return array();
+            return [];
         }
-        $ret = array(
+        $ret = [
             'text'  => sprintf(
                 _('%1$s vous a delivre %2$d document(s) pour votre commande %3$s'), $sender, $n, '<a href="/lightbox/compare/'
                 . (string) $sx->ssel_id . '/" target="_blank">'
                 . $basket->getName() . '</a>'
             )
             , 'class' => ''
-        );
+        ];
 
         return $ret;
     }

@@ -66,7 +66,7 @@ abstract class ProviderTestCase extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->assertEquals(array(), $provider->getTemplates($identity));
+        $this->assertEquals([], $provider->getTemplates($identity));
     }
 
     public function testGetName()

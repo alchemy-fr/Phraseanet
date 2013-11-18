@@ -96,48 +96,48 @@ class Records implements ControllerProviderInterface
 
         if ($record->is_from_reg()) {
             $train = $app['twig']->render('prod/preview/reg_train.html.twig',
-                array('record' => $record)
+                ['record' => $record]
             );
         }
 
         if ($record->is_from_basket() && $reloadTrain) {
             $train = $app['twig']->render('prod/preview/basket_train.html.twig',
-                array('record' => $record)
+                ['record' => $record]
             );
         }
 
         if ($record->is_from_feed()) {
             $train = $app['twig']->render('prod/preview/feed_train.html.twig',
-                array('record' => $record)
+                ['record' => $record]
             );
         }
 
-        return $app->json(array(
-            "desc"          => $app['twig']->render('prod/preview/caption.html.twig', array(
+        return $app->json([
+            "desc"          => $app['twig']->render('prod/preview/caption.html.twig', [
                 'record'        => $record,
                 'highlight'     => $query,
                 'searchEngine'  => $searchEngine
-            )),
-            "html_preview"  => $app['twig']->render('common/preview.html.twig', array(
+            ]),
+            "html_preview"  => $app['twig']->render('common/preview.html.twig', [
                 'record'        => $record
-            )),
-            "others"        => $app['twig']->render('prod/preview/appears_in.html.twig', array(
+            ]),
+            "others"        => $app['twig']->render('prod/preview/appears_in.html.twig', [
                 'parents'       => $record->get_grouping_parents(),
                 'baskets'       => $record->get_container_baskets($app['EM'], $app['authentication']->getUser())
-            )),
+            ]),
             "current"       => $train,
-            "history"       => $app['twig']->render('prod/preview/short_history.html.twig', array(
+            "history"       => $app['twig']->render('prod/preview/short_history.html.twig', [
                 'record'        => $record
-            )),
-            "popularity"    => $app['twig']->render('prod/preview/popularity.html.twig', array(
+            ]),
+            "popularity"    => $app['twig']->render('prod/preview/popularity.html.twig', [
                 'record'        => $record
-            )),
-            "tools"         => $app['twig']->render('prod/preview/tools.html.twig', array(
+            ]),
+            "tools"         => $app['twig']->render('prod/preview/tools.html.twig', [
                 'record'        => $record
-            )),
+            ]),
             "pos"           => $record->get_number(),
             "title"         => $record->get_title($query, $searchEngine)
-        ));
+        ]);
     }
 
     /**
@@ -149,14 +149,14 @@ class Records implements ControllerProviderInterface
      */
     public function doDeleteRecords(Application $app, Request $request)
     {
-        $records = RecordsRequest::fromRequest($app, $request, !!$request->request->get('del_children'), array(
+        $records = RecordsRequest::fromRequest($app, $request, !!$request->request->get('del_children'), [
             'candeleterecord'
-        ));
+        ]);
 
         $basketElementsRepository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
         $StoryWZRepository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\StoryWZ');
 
-        $deleted = array();
+        $deleted = [];
 
         foreach ($records as $record) {
             try {
@@ -194,13 +194,13 @@ class Records implements ControllerProviderInterface
      */
     public function whatCanIDelete(Application $app, Request $request)
     {
-        $records = RecordsRequest::fromRequest($app, $request, !!$request->request->get('del_children'), array(
+        $records = RecordsRequest::fromRequest($app, $request, !!$request->request->get('del_children'), [
             'candeleterecord'
-        ));
+        ]);
 
-        return $app['twig']->render('prod/actions/delete_records_confirm.html.twig', array(
+        return $app['twig']->render('prod/actions/delete_records_confirm.html.twig', [
             'records'   => $records
-        ));
+        ]);
     }
 
     /**
@@ -215,7 +215,7 @@ class Records implements ControllerProviderInterface
     {
         $records = RecordsRequest::fromRequest($app, $request, !!$request->request->get('renew_children_url'));
 
-        $renewed = array();
+        $renewed = [];
         foreach ($records as $record) {
             $renewed[$record->get_serialize_key()] = $record->get_preview()->renew_url();
         };

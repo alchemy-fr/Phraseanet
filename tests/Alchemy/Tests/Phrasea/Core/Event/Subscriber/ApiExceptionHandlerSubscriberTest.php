@@ -34,15 +34,15 @@ class ApiExceptionHandlerSubscriberTest extends \PHPUnit_Framework_TestCase
 
     public function provideExceptionsAndCode()
     {
-        return array(
-            array(new \API_V1_exception_methodnotallowed(), 405),
-            array(new MethodNotAllowedHttpException(array('PUT', 'HEAD')), 405),
-            array(new \API_V1_exception_badrequest(), 400),
-            array(new \API_V1_exception_forbidden(), 403),
-            array(new \API_V1_exception_unauthorized(), 401),
-            array(new \API_V1_exception_internalservererror(), 500),
-            array(new NotFoundHttpException(), 404),
-            array(new \Exception(), 500),
-        );
+        return [
+            [new \API_V1_exception_methodnotallowed(), 405],
+            [new MethodNotAllowedHttpException(['PUT', 'HEAD']), 405],
+            [new \API_V1_exception_badrequest(), 400],
+            [new \API_V1_exception_forbidden(), 403],
+            [new \API_V1_exception_unauthorized(), 401],
+            [new \API_V1_exception_internalservererror(), 500],
+            [new NotFoundHttpException(), 404],
+            [new \Exception(), 500],
+        ];
     }
 }

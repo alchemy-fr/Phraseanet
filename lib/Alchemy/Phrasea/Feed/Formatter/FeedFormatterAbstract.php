@@ -53,7 +53,7 @@ abstract class FeedFormatterAbstract
 
         $medium = strtolower($content->getRecord($app)->get_type());
 
-        if ( ! in_array($medium, array('image', 'audio', 'video'))) {
+        if ( ! in_array($medium, ['image', 'audio', 'video'])) {
             return $this;
         }
 

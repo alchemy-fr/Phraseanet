@@ -2,7 +2,7 @@
 
 abstract class eventsmanager_notifyAbstract extends eventsmanager_eventAbstract
 {
-    protected $events = array('__EVENT__');
+    protected $events = ['__EVENT__'];
 
     public function fire($event, $params, &$object)
     {

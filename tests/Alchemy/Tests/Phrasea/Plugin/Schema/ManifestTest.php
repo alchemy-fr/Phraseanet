@@ -13,20 +13,20 @@ class ManifestTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('test-plugin', $manifest->getName());
         $this->assertEquals('A custom class connector', $manifest->getDescription());
-        $this->assertEquals(array('connector'), $manifest->getKeywords());
-        $this->assertEquals(array(array(
+        $this->assertEquals(['connector'], $manifest->getKeywords());
+        $this->assertEquals([[
             'name' => 'Author name',
             'homepage' => 'http://example.com',
             'email' => 'email@example.com',
-        )), $manifest->getAuthors());
+        ]], $manifest->getAuthors());
         $this->assertEquals('http://example.com/project/example', $manifest->getHomepage());
         $this->assertEquals('MIT', $manifest->getLicense());
         $this->assertEquals('0.1', $manifest->getVersion());
         $this->assertEquals('3.8', $manifest->getMinimumPhraseanetVersion());
         $this->assertEquals('3.10', $manifest->getMaximumPhraseanetVersion());
-        $this->assertEquals(array('views', 'twig-views'), $manifest->getTwigPaths());
-        $this->assertEquals(array(array('class' => 'Vendor\CustomCommand')), $manifest->getCommands());
-        $this->assertEquals(array(array('class' => 'Vendor\PluginService')), $manifest->getServices());
-        $this->assertEquals(array('property' => 'value'), $manifest->getExtra());
+        $this->assertEquals(['views', 'twig-views'], $manifest->getTwigPaths());
+        $this->assertEquals([['class' => 'Vendor\CustomCommand']], $manifest->getCommands());
+        $this->assertEquals([['class' => 'Vendor\PluginService']], $manifest->getServices());
+        $this->assertEquals(['property' => 'value'], $manifest->getExtra());
     }
 }

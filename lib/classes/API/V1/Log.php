@@ -108,7 +108,7 @@ class API_V1_Log
         api_log_id = :log_id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':log_id' => $this->id));
+        $stmt->execute([':log_id' => $this->id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -137,10 +137,10 @@ class API_V1_Log
             SET api_account_id = :account_id
             WHERE api_log_id = :log_id';
 
-        $params = array(
+        $params = [
             ':api_account_id' => $this->account_id
             , ':log_id'         => $this->id
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -162,10 +162,10 @@ class API_V1_Log
             SET api_log_date = :date
             WHERE api_log_id = :log_id';
 
-        $params = array(
+        $params = [
             ':date'   => $this->date->format("Y-m-d H:i:s")
             , ':log_id' => $this->id
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -187,10 +187,10 @@ class API_V1_Log
             SET api_log_status_code = :code
             WHERE api_log_id = :log_id';
 
-        $params = array(
+        $params = [
             ':code'   => $this->status_code
             , ':log_id' => $this->id
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -207,7 +207,7 @@ class API_V1_Log
     public function set_format($format)
     {
 
-        if ( ! in_array($format, array('json', 'jsonp', 'yaml', 'unknow')))
+        if ( ! in_array($format, ['json', 'jsonp', 'yaml', 'unknow']))
             throw new Exception_InvalidArgument();
 
         $this->format = $format;
@@ -216,10 +216,10 @@ class API_V1_Log
             SET api_log_format = :format
             WHERE api_log_id = :log_id';
 
-        $params = array(
+        $params = [
             ':format' => $this->format
             , ':log_id' => $this->id
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -235,7 +235,7 @@ class API_V1_Log
 
     public function set_ressource($ressource)
     {
-        if ( ! in_array($format, array(self::DATABOXES_RESSOURCE, self::BASKETS_RESSOURCE, self::FEEDS_RESSOURCE, self::RECORDS_RESSOURCE)))
+        if ( ! in_array($format, [self::DATABOXES_RESSOURCE, self::BASKETS_RESSOURCE, self::FEEDS_RESSOURCE, self::RECORDS_RESSOURCE]))
             throw new Exception_InvalidArgument();
 
         $this->ressource = $ressource;
@@ -244,10 +244,10 @@ class API_V1_Log
             SET api_log_ressource = :ressource
             WHERE api_log_id = :log_id';
 
-        $params = array(
+        $params = [
             ':ressource' => $this->ressource
             , ':log_id'    => $this->id
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -269,10 +269,10 @@ class API_V1_Log
             SET api_log_general = :general
             WHERE api_log_id = :log_id';
 
-        $params = array(
+        $params = [
             ':general' => $this->general
             , ':log_id'  => $this->id
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -294,10 +294,10 @@ class API_V1_Log
             SET api_log_aspect = :aspect
             WHERE api_log_id = :log_id';
 
-        $params = array(
+        $params = [
             ':aspect' => $this->aspect
             , ':log_id' => $this->id
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -319,10 +319,10 @@ class API_V1_Log
             SET api_log_action = :action
             WHERE api_log_id = :log_id';
 
-        $params = array(
+        $params = [
             ':action' => $this->action
             , ':log_id' => $this->id
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -365,7 +365,7 @@ class API_V1_Log
         :action
       )';
 
-        $params = array(
+        $params = [
             ':account_id'  => $account->get_id(),
             ':route'       => $route,
             ':status_code' => $status_code,
@@ -374,7 +374,7 @@ class API_V1_Log
             ':general'     => $general,
             ':aspect'      => $aspect,
             ':action'      => $action
-        );
+        ];
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);

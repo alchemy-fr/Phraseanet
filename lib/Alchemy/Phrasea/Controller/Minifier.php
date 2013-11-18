@@ -80,7 +80,7 @@ class Minifier implements ControllerProviderInterface
              * array('//static' => 'D:\\staticStorage')  // Windows
              * </code>
              */
-            $min_symlinks = array();
+            $min_symlinks = [];
 
             /**
              * If you upload files from Windows to a non-Windows server, Windows may report

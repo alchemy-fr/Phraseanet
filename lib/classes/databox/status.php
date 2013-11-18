@@ -26,7 +26,7 @@ class databox_status
      *
      * @var Array
      */
-    private static $_status = array();
+    private static $_status = [];
 
     /**
      *
@@ -38,7 +38,7 @@ class databox_status
      *
      * @var Array
      */
-    private $status = array();
+    private $status = [];
 
     /**
      *
@@ -59,7 +59,7 @@ class databox_status
      */
     private function __construct(Application $app, $sbas_id)
     {
-        $this->status = array();
+        $this->status = [];
 
         $path = $url = false;
 
@@ -138,7 +138,7 @@ class databox_status
 
         $sbas_ids = $app['acl']->get($app['authentication']->getUser())->get_granted_sbas();
 
-        $statuses = array();
+        $statuses = [];
 
         foreach ($sbas_ids as $databox) {
             try {
@@ -155,11 +155,11 @@ class databox_status
 
     public static function getSearchStatus(Application $app)
     {
-        $statuses = array();
+        $statuses = [];
 
         $sbas_ids = $app['acl']->get($app['authentication']->getUser())->get_granted_sbas();
 
-        $see_all = array();
+        $see_all = [];
 
         foreach ($sbas_ids as $databox) {
             $see_all[$databox->get_sbas_id()] = false;
@@ -177,7 +177,7 @@ class databox_status
             }
         }
 
-        $stats = array();
+        $stats = [];
 
         foreach ($statuses as $sbas_id => $status) {
 
@@ -202,31 +202,31 @@ class databox_status
                         }
                     }
                     if (! $set) {
-                        $stats[$bit][] = array(
-                            'sbas'            => array($sbas_id),
+                        $stats[$bit][] = [
+                            'sbas'            => [$sbas_id],
                             'labeloff'        => $props['labeloff'],
                             'labelon'         => $props['labelon'],
                             'labels_on_i18n'  => $props['labels_on_i18n'],
                             'labels_off_i18n' => $props['labels_off_i18n'],
                             'imgoff'          => $props['img_off'],
                             'imgon'           => $props['img_on']
-                        );
+                        ];
                         $set = true;
                     }
                 }
 
                 if (! $set) {
-                    $stats[$bit] = array(
-                        array(
-                            'sbas'            => array($sbas_id),
+                    $stats[$bit] = [
+                        [
+                            'sbas'            => [$sbas_id],
                             'labeloff'        => $props['labeloff'],
                             'labelon'         => $props['labelon'],
                             'labels_on_i18n'  => $props['labels_on_i18n'],
                             'labels_off_i18n' => $props['labels_off_i18n'],
                             'imgoff'          => $props['img_off'],
                             'imgon'           => $props['img_on']
-                        )
-                    );
+                        ]
+                    ];
                 }
             }
         }
@@ -387,7 +387,7 @@ class databox_status
     {
         $status = self::getStatus($app, $sbas_id);
 
-        $switch = in_array($switch, array('on', 'off')) ? $switch : false;
+        $switch = in_array($switch, ['on', 'off']) ? $switch : false;
 
         if (! $switch) {
             return false;
@@ -407,7 +407,7 @@ class databox_status
 
     public static function updateIcon(Application $app, $sbas_id, $bit, $switch, UploadedFile $file)
     {
-        $switch = in_array($switch, array('on', 'off')) ? $switch : false;
+        $switch = in_array($switch, ['on', 'off']) ? $switch : false;
 
         if (! $switch) {
             throw new Exception_InvalidArgument();

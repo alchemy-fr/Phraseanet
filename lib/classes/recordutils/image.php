@@ -34,7 +34,7 @@ class recordutils_image extends recordutils
             $palette = new RGB();
         }
 
-        $xmlToColor = function($attr, $ret = array(255, 255, 255)) use ($palette) {
+        $xmlToColor = function ($attr, $ret = [255, 255, 255]) use ($palette) {
             try {
                 return $palette->color($attr, 0);
             } catch (ImagineException $e) {
@@ -134,20 +134,20 @@ class recordutils_image extends recordutils
 
         }
 
-        $tables = array(
-            'TOP' => array('h'    => 0, 'rows' => array()),
-            'TOP-OVER' => array('h'    => 0, 'rows' => array()),
-            'BOTTOM' => array('h'    => 0, 'rows' => array()),
-            'BOTTOM-OVER' => array('h'    => 0, 'rows' => array())
-        );
+        $tables = [
+            'TOP' => ['h'    => 0, 'rows' => []],
+            'TOP-OVER' => ['h'    => 0, 'rows' => []],
+            'BOTTOM' => ['h'    => 0, 'rows' => []],
+            'BOTTOM-OVER' => ['h'    => 0, 'rows' => []]
+        ];
 
         for ($istamp = 0; $istamp < $stampNodes->length; $istamp++) {
             $stamp = $stampNodes->item($istamp);
 
-            $stamp_background = $xmlToColor($stamp->getAttribute('background'), array(255, 255, 255));
+            $stamp_background = $xmlToColor($stamp->getAttribute('background'), [255, 255, 255]);
 
             $stamp_position = strtoupper(trim($stamp->getAttribute('position')));
-            if (!in_array($stamp_position, array('TOP', 'TOP-OVER', 'BOTTOM-OVER', 'BOTTOM'))) {
+            if (!in_array($stamp_position, ['TOP', 'TOP-OVER', 'BOTTOM-OVER', 'BOTTOM'])) {
                 $stamp_position = 'BOTTOM';
             }
 
@@ -232,7 +232,7 @@ class recordutils_image extends recordutils
 
             // compute text blocks
             $txth = 0;
-            $txtblock = array();
+            $txtblock = [];
             $texts = $xpprefs->query('text', $stamp);
             $fontsize = "100%";
             for ($i = 0; $i < $texts->length; $i++) {
@@ -255,12 +255,12 @@ class recordutils_image extends recordutils
 
                 if ($txtline != '') {
                     $wrap = static::wrap($app['imagine'], $fontsize, 0, __DIR__ . '/arial.ttf', $txtline, $text_width);
-                    $txtblock[] = array(
+                    $txtblock[] = [
                         'fontsize'  => $fontsize,
-                        'fontcolor' => $xmlToColor($texts->item($i)->getAttribute('color'), array(0, 0, 0)),
+                        'fontcolor' => $xmlToColor($texts->item($i)->getAttribute('color'), [0, 0, 0]),
                         'h'     => $wrap['toth'],
                         'lines' => $wrap['l']
-                    );
+                    ];
                     $txth += $wrap['toth'];
                 }
             }
@@ -305,13 +305,13 @@ class recordutils_image extends recordutils
             }
 
             // memo into one of the 4 buffer
-            $tables[$stamp_position]['rows'][] = array(
+            $tables[$stamp_position]['rows'][] = [
                 'x0'  => 0,
                 'y0'  => $tables[$stamp_position]['h'],
                 'w'   => $image_width,
                 'h'   => $stampheight,
                 'img' => $imfg
-            );
+            ];
 
             $tables[$stamp_position]['h'] += $stampheight;
         }
@@ -336,7 +336,7 @@ class recordutils_image extends recordutils
         }
 
         // paste blocks
-        foreach (array('TOP', 'TOP-OVER', 'BOTTOM-OVER', 'BOTTOM') as $ta) {
+        foreach (['TOP', 'TOP-OVER', 'BOTTOM-OVER', 'BOTTOM'] as $ta) {
             foreach ($tables[$ta]['rows'] as $row) {
                 if ($row['h'] > 0) {
                     $image_out->paste($row['img'], new Point($row['x0'], $row['y0']));
@@ -427,10 +427,10 @@ class recordutils_image extends recordutils
             $draw->line(new Point(1, $in_h - 1), new Point($in_w - 1, 1), $white);
 
             $fsize = max(8, (int) (max($in_w, $in_h) / 30));
-            $fonts = array(
+            $fonts = [
                 $app['imagine']->font(__DIR__ . '/arial.ttf', $fsize, $black),
                 $app['imagine']->font(__DIR__ . '/arial.ttf', $fsize, $white)
-            );
+            ];
             $testbox = $fonts[0]->box($collname, 0);
             $tx_w = min($in_w, $testbox->getWidth());
             $tx_h = min($in_h, $testbox->getHeight());
@@ -482,21 +482,21 @@ class recordutils_image extends recordutils
         $testbox = $font->box("M", $angle); // 1 em
         $dy = $testbox->getHeight();
         $toth = 0;
-        $ret = array();
+        $ret = [];
 
         foreach (explode("\n", $string) as $lig) {
             if ($lig == '') {
-                $ret[] = array('w' => 0, 'h' => $dy, 't' => '');
+                $ret[] = ['w' => 0, 'h' => $dy, 't' => ''];
                 $toth += $dy;
             } else {
-                $twords = array();
+                $twords = [];
                 $iword = -1;
                 $lastc = '';
                 $length = strlen($lig);
                 for ($i = 0; $i < $length; $i++) {
                     $c = $lig[$i];
                     if ($iword == -1 || (ctype_space($c) && !ctype_space($lastc))) {
-                        $twords[++$iword] = array(($part = 0) => '', 1           => '');
+                        $twords[++$iword] = [($part = 0) => '', 1           => ''];
                     }
                     if (!ctype_space($c) && $part == 0) {
                         $part++;
@@ -512,7 +512,7 @@ class recordutils_image extends recordutils
                         $w = $testbox->getWidth();
                         $h = $testbox->getHeight();
                         if ($i > 0 && $testbox->getWidth() > $width) {
-                            $ret[] = array('w'   => $lastw, 'h'   => $lasth, 't'   => $buff);
+                            $ret[] = ['w'   => $lastw, 'h'   => $lasth, 't'   => $buff];
                             $toth += $lasth;
                             $buff = $wrd[1];
                         } else {
@@ -522,13 +522,13 @@ class recordutils_image extends recordutils
                         $lasth = $h;
                     }
                     if ($buff != '') {
-                        $ret[] = array('w' => $lastw, 'h' => $lasth, 't' => $buff);
+                        $ret[] = ['w' => $lastw, 'h' => $lasth, 't' => $buff];
                         $toth += $lasth;
                     }
                 }
             }
         }
 
-        return array('toth' => $toth, 'l'    => $ret, 'h'    => $height, 'dy'   => $dy);
+        return ['toth' => $toth, 'l'    => $ret, 'h'    => $height, 'dy'   => $dy];
     }
 }

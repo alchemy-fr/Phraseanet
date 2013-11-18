@@ -24,7 +24,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = array('__REGISTER_AUTOREGISTER__');
+    public $events = ['__REGISTER_AUTOREGISTER__'];
 
     /**
      *
@@ -44,10 +44,10 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'usr_id'       => ''
-            , 'autoregister' => array()
-        );
+            , 'autoregister' => []
+        ];
 
         $params = array_merge($default, $params);
         $base_ids = array_keys($params['autoregister']);
@@ -56,7 +56,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
             return;
         }
 
-        $mailColl = array();
+        $mailColl = [];
 
         $sql = 'SELECT u.usr_id, b.base_id FROM usr u, basusr b
       WHERE u.usr_id = b.usr_id
@@ -75,7 +75,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
 
             foreach ($rs as $row) {
                 if ( ! isset($mailColl[$row['usr_id']]))
-                    $mailColl[$row['usr_id']] = array();
+                    $mailColl[$row['usr_id']] = [];
 
                 $mailColl[$row['usr_id']][] = $row['base_id'];
             }
@@ -149,16 +149,16 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
         try {
             User_Adapter::getInstance($usr_id, $this->app);
         } catch (Exception $e) {
-            return array();
+            return [];
         }
 
         $sender = User_Adapter::getInstance($usr_id, $this->app)->get_display_name();
 
-        $ret = array(
+        $ret = [
             'text'  => sprintf(
                 _('%1$s s\'est enregistre sur une ou plusieurs %2$scollections%3$s'), $sender, '<a href="/admin/?section=users" target="_blank">', '</a>')
             , 'class' => ''
-        );
+        ];
 
         return $ret;
     }

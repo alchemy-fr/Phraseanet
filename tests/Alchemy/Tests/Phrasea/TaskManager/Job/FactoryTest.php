@@ -26,20 +26,20 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
     public function provideValidClasses()
     {
-        return array(
-            array('Alchemy\Phrasea\TaskManager\Job\ArchiveJob'),
-            array('Alchemy\Phrasea\TaskManager\Job\BridgeJob'),
-            array('Alchemy\Phrasea\TaskManager\Job\NullJob'),
-        );
+        return [
+            ['Alchemy\Phrasea\TaskManager\Job\ArchiveJob'],
+            ['Alchemy\Phrasea\TaskManager\Job\BridgeJob'],
+            ['Alchemy\Phrasea\TaskManager\Job\NullJob'],
+        ];
     }
 
     public function provideValidIds()
     {
-        return array(
-            array('Archive', 'Alchemy\Phrasea\TaskManager\Job\ArchiveJob'),
-            array('Bridge', 'Alchemy\Phrasea\TaskManager\Job\BridgeJob'),
-            array('Null', 'Alchemy\Phrasea\TaskManager\Job\NullJob'),
-        );
+        return [
+            ['Archive', 'Alchemy\Phrasea\TaskManager\Job\ArchiveJob'],
+            ['Bridge', 'Alchemy\Phrasea\TaskManager\Job\BridgeJob'],
+            ['Null', 'Alchemy\Phrasea\TaskManager\Job\NullJob'],
+        ];
     }
 
     /**

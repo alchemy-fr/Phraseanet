@@ -37,7 +37,7 @@ class MetadataBagTest extends \PhraseanetPHPUnitAbstract
         $structure = self::$DI['collection']->get_databox()->get_meta_structure();
 
         $valueMono = new Mono('mono value');
-        $valueMulti = new Multi(array('multi', 'value'));
+        $valueMulti = new Multi(['multi', 'value']);
 
         $monoAdded = $multiAdded = false;
 
@@ -59,22 +59,22 @@ class MetadataBagTest extends \PhraseanetPHPUnitAbstract
             $this->markTestSkipped('Unable to find multi value field');
         }
 
-        $this->assertEquals(array(
-            array(
+        $this->assertEquals([
+            [
                 'meta_struct_id' => $monoAdded,
                 'value'          => 'mono value',
                 'meta_id'        => null
-            ),
-            array(
+            ],
+            [
                 'meta_struct_id' => $multiAdded,
                 'value'          => 'multi',
                 'meta_id'        => null
-            ),
-            array(
+            ],
+            [
                 'meta_struct_id' => $multiAdded,
                 'value'          => 'value',
                 'meta_id'        => null
-            ),
-            ), $this->object->toMetadataArray($structure));
+            ],
+            ], $this->object->toMetadataArray($structure));
     }
 }

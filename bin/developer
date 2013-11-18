@@ -57,10 +57,10 @@ $cli = new CLI("
             . ' Phraseanet Developer Tools ', Version::getName() . ' ' . Version::getNumber());
 
 if ($cli['configuration']->isSetup()) {
-    $helpers = array(
+    $helpers = [
         'db' => new ConnectionHelper($cli['EM']->getConnection()),
         'em' => new EntityManagerHelper($cli['EM'])
-    );
+    ];
 
     $helperSet = $cli['console']->getHelperSet();
     foreach ($helpers as $name => $helper) {
@@ -80,7 +80,7 @@ $cli->command(new Uninstaller());
 $cli->command(new \module_console_systemTemplateGenerator('system:generate-templates'));
 
 
-$cli['console']->addCommands(array(
+$cli['console']->addCommands([
     // DBAL Commands
     new RunSqlCommand(),
     new ImportCommand(),
@@ -99,6 +99,6 @@ $cli['console']->addCommands(array(
     new ConvertMappingCommand(),
     new RunDqlCommand(),
     new ValidateSchemaCommand(),
-));
+]);
 
 exit($cli->runCLI());

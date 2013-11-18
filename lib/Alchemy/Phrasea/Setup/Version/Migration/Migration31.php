@@ -38,13 +38,13 @@ class Migration31 implements MigrationInterface
         $retrieve_old_credentials = function () {
                 require __DIR__ . '/../../../../../../config/connexion.inc';
 
-                return array(
+                return [
                     'hostname' => $hostname,
                     'port'     => $port,
                     'user'     => $user,
                     'password' => $password,
                     'dbname'   => $dbname,
-                );
+                ];
             };
 
         $params = $retrieve_old_credentials();
@@ -110,19 +110,19 @@ class Migration31 implements MigrationInterface
                         break;
                 }
 
-                $stmt->execute(array(
+                $stmt->execute([
                     ':key'   => $datas['name'],
                     ':value' => $val,
                     ':type'  => $type,
-                ));
+                ]);
             }
         }
 
-        $stmt->execute(array(
+        $stmt->execute([
             ':key'   => 'GV_sit',
             ':value' => GV_sit,
             ':type'  => \registry::TYPE_STRING,
-        ));
+        ]);
 
         $stmt->closeCursor();
 

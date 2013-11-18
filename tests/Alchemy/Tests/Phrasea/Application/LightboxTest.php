@@ -273,7 +273,7 @@ class LightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $crawler = self::$DI['client']->request(
             'POST'
             , '/lightbox/ajax/SET_NOTE/' . $validationBasketElement->getId() . '/'
-            , array('note' => 'une jolie note')
+            , ['note' => 'une jolie note']
         );
 
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode(), sprintf('set note to element %s ', $validationBasketElement->getId()));
@@ -299,7 +299,7 @@ class LightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $crawler = self::$DI['client']->request(
             'POST'
             , '/lightbox/ajax/SET_ELEMENT_AGREEMENT/' . $validationBasketElement->getId() . '/'
-            , array('agreement' => 1)
+            , ['agreement' => 1]
         );
 
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode(), sprintf('set note to element %s ', $validationBasketElement->getId()));

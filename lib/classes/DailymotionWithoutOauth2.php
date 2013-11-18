@@ -27,14 +27,13 @@ class DailymotionWithoutOauth2 extends Dailymotion
      * @throws DailymotionAuthRequiredException if not authentication info is available
      * @throws DailymotionTransportException    if an error occurs during request.
      */
-    public function call($method, $args = array(), $access_token = null)
+    public function call($method, $args = [], $access_token = null)
     {
-        $headers = array('Content-Type: application/json');
-        $payload = json_encode(array
-            (
+        $headers = ['Content-Type: application/json'];
+        $payload = json_encode([
             'call' => $method,
             'args' => $args,
-            ));
+            ]);
 
         $status_code = null;
         try {
@@ -77,10 +76,10 @@ class DailymotionWithoutOauth2 extends Dailymotion
      */
     public function uploadFileWithToken($filePath, $oauth_token)
     {
-        $result = $this->call('file.upload', array(), $oauth_token);
+        $result = $this->call('file.upload', [], $oauth_token);
         $timeout = $this->timeout;
         $this->timeout = null;
-        $result = json_decode($this->httpRequest($result['upload_url'], array('file' => '@' . $filePath)), true);
+        $result = json_decode($this->httpRequest($result['upload_url'], ['file' => '@' . $filePath]), true);
         $this->timeout = $timeout;
 
         return $result['url'];

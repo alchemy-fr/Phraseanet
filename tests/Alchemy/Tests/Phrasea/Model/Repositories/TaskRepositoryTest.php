@@ -24,13 +24,13 @@ class TaskRepositoryTest extends \PhraseanetPHPUnitAbstract
         self::$DI['app']['EM']->flush();
 
         $repository = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Task');
-        $this->assertSame(array($task2), $repository->findActiveTasks());
+        $this->assertSame([$task2], $repository->findActiveTasks());
 
         $task1->setStatus(Task::STATUS_STARTED);
 
         self::$DI['app']['EM']->persist($task1);
         self::$DI['app']['EM']->flush();
 
-        $this->assertSame(array($task1, $task2), $repository->findActiveTasks());
+        $this->assertSame([$task1, $task2], $repository->findActiveTasks());
     }
 }

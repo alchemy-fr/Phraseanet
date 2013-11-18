@@ -111,7 +111,7 @@ class SetupTest extends \PhraseanetWebTestCaseAbstract
             ->getMock();
         $acl->expects($this->once())
             ->method('get_granted_sbas')
-            ->will($this->returnValue(array()));
+            ->will($this->returnValue([]));
 
         $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
             ->disableOriginalConstructor()
@@ -139,7 +139,7 @@ class SetupTest extends \PhraseanetWebTestCaseAbstract
 
         $dataDir = sys_get_temp_dir() . '/datainstall/';
 
-        $params = array(
+        $params = [
             'email'             => 'user@example.org',
             'password'          => 'prètty%%password',
             'binary_xpdf'       => '/path/to/xpdf',
@@ -162,9 +162,9 @@ class SetupTest extends \PhraseanetWebTestCaseAbstract
             'ab_name'           => $abName,
             'db_name'           => $dbName,
             'db_template'       => 'en-simple',
-            'create_task'       => array(),
+            'create_task'       => [],
             'binary_phraseanet_indexer' => '/path/to/phraseanet_indexer',
-        );
+        ];
 
         $crawler = $client->request('POST', '/setup/installer/install/', $params);
         $response = $client->getResponse();

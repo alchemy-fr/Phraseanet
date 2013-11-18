@@ -17,11 +17,11 @@ class RootApplicationTest extends \PHPUnit_Framework_TestCase
 
     public function provideEnvironments()
     {
-        return array(
-            array(Application::ENV_PROD),
-            array(Application::ENV_TEST),
-            array(Application::ENV_DEV),
-        );
+        return [
+            [Application::ENV_PROD],
+            [Application::ENV_TEST],
+            [Application::ENV_DEV],
+        ];
     }
 
     public function testWebProfilerDisableInProdEnv()

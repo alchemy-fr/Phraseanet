@@ -52,7 +52,7 @@ class CreateCollection extends Command
         if ($new_collection && $input->getOption('base_id_rights')) {
 
             $query = new \User_Query($this->container);
-            $total = $query->on_base_ids(array($input->getOption('base_id_rights')))->get_total();
+            $total = $query->on_base_ids([$input->getOption('base_id_rights')])->get_total();
 
             $n = 0;
             while ($n < $total) {

@@ -32,13 +32,13 @@ class BowerDriver extends AbstractBinary
      *
      * @return BowerDriver
      */
-    public static function create($conf = array(), LoggerInterface $logger = null)
+    public static function create($conf = [], LoggerInterface $logger = null)
     {
         if (!$conf instanceof ConfigurationInterface) {
             $conf = new Configuration($conf);
         }
 
-        $binaries = $conf->get('bower.binaries', array('bower'));
+        $binaries = $conf->get('bower.binaries', ['bower']);
 
         return static::load($binaries, $logger, $conf);
     }

@@ -19,7 +19,7 @@ class module_report_nav extends module_report
      */
     public $total_pourcent = null;
     public $config = false;
-    public $cor_query = array(
+    public $cor_query = [
         'user'      => 'log.user',
         'site'      => 'log.site',
         'societe'   => 'log.societe',
@@ -35,7 +35,7 @@ class module_report_nav extends module_report
         'final'     => 'log_docs.final',
         'comment'   => 'log_docs.comment',
         'size'      => 'subdef.size'
-    );
+    ];
 
     /**
      * constructor
@@ -57,7 +57,7 @@ class module_report_nav extends module_report
         $filter = $sqlBuilder->getFilters();
 
         $report_filter = $filter->getReportFilter();
-        $params = array_merge(array(), $report_filter['params']);
+        $params = array_merge([], $report_filter['params']);
 
         $sql = '
             SELECT SUM(1) AS total FROM (
@@ -81,12 +81,12 @@ class module_report_nav extends module_report
      */
     private function initialize()
     {
-        $this->report['legend'] = array();
-        $this->report['value'] = array();
-        $this->result = array();
-        $this->champ = array();
-        $this->default_display = array();
-        $this->display = array();
+        $this->report['legend'] = [];
+        $this->report['value'] = [];
+        $this->result = [];
+        $this->champ = [];
+        $this->default_display = [];
+        $this->display = [];
     }
 
     /**
@@ -109,7 +109,7 @@ class module_report_nav extends module_report
         }
 
         $report_filter = $filter->getReportFilter();
-        $params = array_merge(array(), $report_filter['params']);
+        $params = array_merge([], $report_filter['params']);
 
         $sql = '
             SELECT tt.nav, SUM(1) AS nb, ROUND((SUM(1) / ' . $this->total_pourcent . ' * 100), 1) AS pourcent
@@ -168,7 +168,7 @@ class module_report_nav extends module_report
         }
 
         $report_filter = $filter->getReportFilter();
-        $params = array_merge(array(), $report_filter['params']);
+        $params = array_merge([], $report_filter['params']);
 
         $sql = '
             SELECT tt.os, COUNT(os) AS nb, ROUND((COUNT(os)/' . $this->total_pourcent . '*100),1) AS pourcent
@@ -226,7 +226,7 @@ class module_report_nav extends module_report
         }
 
         $report_filter = $filter->getReportFilter();
-        $params = array_merge(array(), $report_filter['params']);
+        $params = array_merge([], $report_filter['params']);
 
         $sql = '
             SELECT tt.res, COUNT(res) AS nb, ROUND((COUNT(res)/ ' . $this->total_pourcent . '*100),1) AS pourcent
@@ -286,7 +286,7 @@ class module_report_nav extends module_report
         }
 
         $report_filter = $filter->getReportFilter();
-        $params = array_merge(array(), $report_filter['params']);
+        $params = array_merge([], $report_filter['params']);
 
         $sql = "
             SELECT tt.combo, COUNT( tt.combo ) AS nb, ROUND((COUNT(tt.combo)/" . $this->total_pourcent . "*100), 1) AS pourcent
@@ -338,8 +338,8 @@ class module_report_nav extends module_report
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters();
         $this->title = _('report:: modules');
-        $x = array();
-        $tab_appli = array();
+        $x = [];
+        $tab_appli = [];
 
         $this->total_pourcent = $this->setTotalPourcent();
 
@@ -348,7 +348,7 @@ class module_report_nav extends module_report
         }
 
         $report_filter = $filter->getReportFilter();
-        $params = array_merge(array(), $report_filter['params']);
+        $params = array_merge([], $report_filter['params']);
 
         $sql = '
             SELECT tt.appli
@@ -391,11 +391,11 @@ class module_report_nav extends module_report
         foreach ($tab_appli as $appli => $nb) {
             $pourcent = round(($nb / $total) * 100, 1);
             foreach ($this->champ as $key => $value) {
-                $this->result[] = array(
+                $this->result[] = [
                     'appli'    => $appli,
                     'nb'       => $nb,
                     'pourcent' => $pourcent . '%'
-                );
+                ];
             }
             $this->report['value'][] = $nb;
             $this->report['legend'][] = $appli;
@@ -412,7 +412,7 @@ class module_report_nav extends module_report
     {
         $this->initialize();
         empty($on) ? $on = false : "";
-        $filter_id_apbox = $filter_id_datbox = array();
+        $filter_id_apbox = $filter_id_datbox = [];
         $conn = $this->app['phraseanet.appbox']->get_connection();
 
         $this->title = sprintf(_('report:: Information sur les utilisateurs correspondant a %s'), $val);
@@ -452,7 +452,7 @@ class module_report_nav extends module_report
                  WHERE (usr_id = :value)';
         }
 
-        $params2 = array(':value' => $val);
+        $params2 = [':value' => $val];
         $stmt = $conn->prepare($sql);
         $stmt->execute($params2);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -503,21 +503,21 @@ class module_report_nav extends module_report
         }
 
         $this->setDisplay($tab);
-        $this->champ = array(
+        $this->champ = [
             'photo',
             'record_id',
             'date',
             'type',
             'titre',
             'taille'
-        );
+        ];
 
         $document = $record->get_subdef('document');
         $this->title = sprintf(
             _('report:: Information sur l\'enregistrement numero %d'), (int) $rid);
 
         $x = $record->get_thumbnail();
-        $this->result[] = array(
+        $this->result[] = [
             'photo'     =>
             "<img style='width:" . $x->get_width() . "px;height:" . $x->get_height() . "px;'
                         src='" . $x->get_url() . "'>"
@@ -526,7 +526,7 @@ class module_report_nav extends module_report
             , 'type'      => $document->get_mime()
             , 'titre'     => $record->get_title()
             , 'taille'    => $document->get_size()
-        );
+        ];
 
         $this->setDisplayNav();
         $this->setReport();
@@ -542,7 +542,7 @@ class module_report_nav extends module_report
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters();
         $report_filter = $filter->getReportFilter();
-        $params = array_merge($report_filter['params'], array(':browser' => $navigator));
+        $params = array_merge($report_filter['params'], [':browser' => $navigator]);
 
         $sql = "
             SELECT DISTINCT(tt.version), COUNT(tt.version) as nb

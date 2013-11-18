@@ -71,9 +71,9 @@ class Baskets implements ControllerProviderInterface
 
         }
 
-        return $app->redirectPath('get_client_baskets', array(
+        return $app->redirectPath('get_client_baskets', [
             'courChuId' => $request->request->get('courChuId', '')
-        ));
+        ]);
     }
 
     /**
@@ -122,9 +122,9 @@ class Baskets implements ControllerProviderInterface
 
         }
 
-        return $app->redirectPath('get_client_baskets', array(
+        return $app->redirectPath('get_client_baskets', [
             'courChuId' => null !== $basket ? $basket->getId() : ''
-        ));
+        ]);
     }
 
     /**
@@ -154,9 +154,9 @@ class Baskets implements ControllerProviderInterface
 
         }
 
-        return $app->redirectPath('get_client_baskets', array(
+        return $app->redirectPath('get_client_baskets', [
             'courChuId' => $basket ? $basket->getId() : ''
-        ));
+        ]);
     }
 
     /**
@@ -185,13 +185,13 @@ class Baskets implements ControllerProviderInterface
             return (Boolean) $basket->getPusherId();
         });
 
-        return $app['twig']->render('client/baskets.html.twig', array(
+        return $app['twig']->render('client/baskets.html.twig', [
             'total_baskets'            => $baskets->count(),
             'user_baskets'             => $basketCollections[1],
             'recept_user_basket'       => $basketCollections[0],
             'selected_basket'          => $selectedBasket,
             'selected_basket_elements' => $selectedBasket ? $selectedBasket->getElements() : new ArrayCollection()
-        ));
+        ]);
     }
 
     /**
@@ -215,10 +215,10 @@ class Baskets implements ControllerProviderInterface
             }
         }
 
-        return $app->json(array(
+        return $app->json([
             'success' => true,
             'message' => '',
             'no_view' => $noview
-        ));
+        ]);
     }
 }

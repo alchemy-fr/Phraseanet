@@ -33,7 +33,7 @@ class Printer implements ControllerProviderInterface
         $controllers->post('/', function (Application $app) {
                 $printer = new RecordHelper\Printer($app, $app['request']);
 
-                return $app['twig']->render('prod/actions/printer_default.html.twig', array('printer' => $printer, 'message' => ''));
+                return $app['twig']->render('prod/actions/printer_default.html.twig', ['printer' => $printer, 'message' => '']);
             }
         );
 
@@ -50,7 +50,7 @@ class Printer implements ControllerProviderInterface
             }
             $PDF = new PDFExport($app, $printer->get_elements(), $layout);
 
-            $response =  new Response($PDF->render(), 200, array('Content-Type' => 'application/pdf'));
+            $response =  new Response($PDF->render(), 200, ['Content-Type' => 'application/pdf']);
             $response->headers->set('Pragma', 'public', true);
             $response->setMaxAge(0);
 

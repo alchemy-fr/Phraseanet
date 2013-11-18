@@ -42,7 +42,7 @@ class Bridge_Api_Flickr_Element implements Bridge_Api_ElementInterface
      */
     public function __construct(SimpleXMLElement $entry, $user_id, $type, $entry_from_list = true)
     {
-        $this->entry = array();
+        $this->entry = [];
         $this->type = $type;
 
         if ($entry_from_list)
@@ -80,7 +80,7 @@ class Bridge_Api_Flickr_Element implements Bridge_Api_ElementInterface
         }
         $dates = $photo->dates;
         $visibility = $photo->visibility;
-        $tags = array();
+        $tags = [];
         foreach ($photo->tags->tag as $one_tag) {
             $tags[] = $one_tag;
         }

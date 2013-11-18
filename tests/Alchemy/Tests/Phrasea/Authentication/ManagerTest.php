@@ -38,7 +38,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $providers = $this->getProvidersMock();
 
         $providerName = 'roro-provider';
-        $parameters = array('key' => 'value');
+        $parameters = ['key' => 'value'];
         $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
 
         $providers->expects($this->once())

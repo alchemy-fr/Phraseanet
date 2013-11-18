@@ -42,10 +42,10 @@ class ConfigurationPanel extends AbstractConfigurationPanel
     {
         $configuration = $this->getConfiguration();
 
-        $params = array(
+        $params = [
             'configuration' => $configuration,
             'available_sort'=> $this->searchEngine->getAvailableSort(),
-        );
+        ];
 
         return $app['twig']->render('admin/search-engine/phrasea.html.twig', $params);
     }
@@ -56,9 +56,9 @@ class ConfigurationPanel extends AbstractConfigurationPanel
     public function post(Application $app, Request $request)
     {
         $configuration = $this->getConfiguration();
-        $configuration['date_fields'] = array();
+        $configuration['date_fields'] = [];
 
-        foreach ($request->request->get('date_fields', array()) as $field) {
+        foreach ($request->request->get('date_fields', []) as $field) {
             $configuration['date_fields'][] = $field;
         }
 
@@ -75,14 +75,14 @@ class ConfigurationPanel extends AbstractConfigurationPanel
      */
     public function getConfiguration()
     {
-        $configuration = isset($this->conf['main']['search-engine']['options']) ? $this->conf['main']['search-engine']['options'] : array();
+        $configuration = isset($this->conf['main']['search-engine']['options']) ? $this->conf['main']['search-engine']['options'] : [];
 
         if (!is_array($configuration)) {
-            $configuration = array();
+            $configuration = [];
         }
 
         if (!isset($configuration['date_fields'])) {
-            $configuration['date_fields'] = array();
+            $configuration['date_fields'] = [];
         }
 
         if (!isset($configuration['default_sort'])) {

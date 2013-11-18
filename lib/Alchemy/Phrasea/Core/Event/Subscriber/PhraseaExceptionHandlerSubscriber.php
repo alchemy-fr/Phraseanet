@@ -46,6 +46,6 @@ class PhraseaExceptionHandlerSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(KernelEvents::EXCEPTION => array('onSilexError', 0));
+        return [KernelEvents::EXCEPTION => ['onSilexError', 0]];
     }
 }

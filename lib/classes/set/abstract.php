@@ -21,7 +21,7 @@ abstract class set_abstract implements IteratorAggregate
      *
      * @var Array
      */
-    protected $elements = array();
+    protected $elements = [];
 
     /**
      *
@@ -175,7 +175,7 @@ abstract class set_abstract implements IteratorAggregate
      */
     public function serialize_list()
     {
-        $basrec = array();
+        $basrec = [];
         foreach ($this->elements as $record) {
             $basrec[] = $record->get_serialize_key();
         }

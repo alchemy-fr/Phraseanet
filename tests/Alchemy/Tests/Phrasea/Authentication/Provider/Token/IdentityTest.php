@@ -16,7 +16,7 @@ class IdentityTest extends \PHPUnit_Framework_TestCase
 
     public function testThatConstructArgumentAreSet()
     {
-        $identity = new Identity(array(Identity::PROPERTY_IMAGEURL => 'image-uri'));
+        $identity = new Identity([Identity::PROPERTY_IMAGEURL => 'image-uri']);
 
         $this->assertNull($identity->get(Identity::PROPERTY_ID));
         $this->assertEquals('image-uri', $identity->get(Identity::PROPERTY_IMAGEURL));
@@ -34,7 +34,7 @@ class IdentityTest extends \PHPUnit_Framework_TestCase
 
     public function testGetFirstname()
     {
-        $identity = new Identity(array(
+        $identity = new Identity([
             Identity::PROPERTY_ID        => 'id',
             Identity::PROPERTY_IMAGEURL  => 'image url',
             Identity::PROPERTY_COMPANY   => 'company',
@@ -42,7 +42,7 @@ class IdentityTest extends \PHPUnit_Framework_TestCase
             Identity::PROPERTY_EMAIL     => 'email',
             Identity::PROPERTY_FIRSTNAME => 'first name',
             Identity::PROPERTY_LASTNAME  => 'last name',
-        ));
+        ]);
 
         $this->assertEquals($identity->getId(), $identity->get($identity::PROPERTY_ID));
         $this->assertEquals($identity->getImageURI(), $identity->get($identity::PROPERTY_IMAGEURL));
@@ -58,9 +58,9 @@ class IdentityTest extends \PHPUnit_Framework_TestCase
 
     public function testHas()
     {
-        $identity = new Identity(array(
+        $identity = new Identity([
                                       Identity::PROPERTY_IMAGEURL  => 'image url',
-                                 ));
+                                 ]);
 
         $this->assertTrue($identity->has(Identity::PROPERTY_IMAGEURL));
 
@@ -84,10 +84,10 @@ class IdentityTest extends \PHPUnit_Framework_TestCase
     {
         $identity = new Identity();
 
-        $this->assertEquals(array(), $identity->all());
+        $this->assertEquals([], $identity->all());
 
         $identity->set(Identity::PROPERTY_IMAGEURL, 'image-uri');
-        $this->assertEquals(array('image_url' => 'image-uri'), $identity->all());
+        $this->assertEquals(['image_url' => 'image-uri'], $identity->all());
 
         return $identity;
     }

@@ -38,7 +38,7 @@ class SchedulerRun extends Command
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         declare(ticks=1);
-        $this->container['signal-handler']->register(array(SIGINT, SIGTERM), array($this, 'signalHandler'));
+        $this->container['signal-handler']->register([SIGINT, SIGTERM], [$this, 'signalHandler']);
         $this->container['task-manager']->addSubscriber(new LockFileSubscriber($this->container['task-manager.logger'], $this->container['root.path'].'/tmp/locks'));
         $this->container['task-manager']->start();
     }

@@ -28,7 +28,7 @@ class patch_360alpha2b implements patchInterface
      *
      * @var Array
      */
-    private $concern = array(base::DATA_BOX);
+    private $concern = [base::DATA_BOX];
 
     /**
      *
@@ -117,7 +117,7 @@ class patch_360alpha2b implements patchInterface
                                 VALUES (null, :record_id, :meta_struct_id, :value)';
             $stmt = $databox->get_connection()->prepare($sql);
 
-            $databox_fields = array();
+            $databox_fields = [];
 
             foreach ($rs as $row) {
                 $meta_struct_id = $row['meta_struct_id'];
@@ -129,11 +129,11 @@ class patch_360alpha2b implements patchInterface
                 $values = \caption_field::get_multi_values($row['value'], $databox_fields[$meta_struct_id]->get_separator());
 
                 foreach ($values as $value) {
-                    $params = array(
+                    $params = [
                         ':record_id'      => $row['record_id'],
                         ':meta_struct_id' => $row['meta_struct_id'],
                         ':value'          => $value,
-                    );
+                    ];
                     $stmt->execute($params);
                 }
             }
@@ -144,7 +144,7 @@ class patch_360alpha2b implements patchInterface
             $stmt = $databox->get_connection()->prepare($sql);
 
             foreach ($rs as $row) {
-                $params = array(':id' => $row['id']);
+                $params = [':id' => $row['id']];
                 $stmt->execute($params);
             }
 

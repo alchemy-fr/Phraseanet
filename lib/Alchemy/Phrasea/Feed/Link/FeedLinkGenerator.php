@@ -50,11 +50,11 @@ class FeedLinkGenerator implements LinkGeneratorInterface
 
         switch ($format) {
             case self::FORMAT_ATOM:
-                $params = array(
+                $params = [
                     'token'  => $this->getFeedToken($feed, $user, $renew)->getValue(),
                     'id'     => $feed->getId(),
                     'format' => 'atom'
-                );
+                ];
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
@@ -65,11 +65,11 @@ class FeedLinkGenerator implements LinkGeneratorInterface
                     'application/atom+xml'
                 );
             case self::FORMAT_RSS:
-                $params = array(
+                $params = [
                     'token'  => $this->getFeedToken($feed, $user, $renew)->getValue(),
                     'id'     => $feed->getId(),
                     'format' => 'rss'
-                );
+                ];
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
@@ -103,10 +103,10 @@ class FeedLinkGenerator implements LinkGeneratorInterface
 
         switch ($format) {
             case self::FORMAT_ATOM:
-                $params = array(
+                $params = [
                     'id'     => $feed->getId(),
                     'format' => 'atom'
-                );
+                ];
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
@@ -117,10 +117,10 @@ class FeedLinkGenerator implements LinkGeneratorInterface
                     'application/atom+xml'
                 );
             case self::FORMAT_RSS:
-                $params = array(
+                $params = [
                     'id'     => $feed->getId(),
                     'format' => 'rss'
-                );
+                ];
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
@@ -139,7 +139,7 @@ class FeedLinkGenerator implements LinkGeneratorInterface
     {
         $token = $this->em
             ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
-            ->findOneBy(array('usrId' => $user->get_id(), 'feed' => $feed->getId()));
+            ->findOneBy(['usrId' => $user->get_id(), 'feed' => $feed->getId()]);
 
         if (null === $token || true === $renew) {
             if (null === $token) {

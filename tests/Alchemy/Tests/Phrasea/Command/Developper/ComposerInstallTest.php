@@ -21,7 +21,7 @@ class ComposerInstallTest extends \PhraseanetPHPUnitAbstract
 
         self::$DI['cli']['driver.composer']->expects($this->at(1))
             ->method('command')
-            ->with(array('install', '--optimize-autoloader', '--quiet', '--no-interaction', '--dev'));
+            ->with(['install', '--optimize-autoloader', '--quiet', '--no-interaction', '--dev']);
 
         $command = new ComposerInstall();
         $command->setContainer(self::$DI['cli']);

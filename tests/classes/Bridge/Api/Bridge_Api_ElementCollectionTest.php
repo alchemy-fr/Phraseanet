@@ -7,7 +7,7 @@ class Bridge_Api_ElementCollectionTest extends PHPUnit_Framework_TestCase
 
     public function testAdd_element()
     {
-        $elements = array();
+        $elements = [];
         $collection = new Bridge_Api_ElementCollection();
         $i = 0;
         while ($i < 5) {

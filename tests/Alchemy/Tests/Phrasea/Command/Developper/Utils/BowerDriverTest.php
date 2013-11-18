@@ -19,7 +19,7 @@ class BowerDriverTest extends \PHPUnit_Framework_TestCase
         $finder = new PhpExecutableFinder();
         $php = $finder->find();
 
-        $driver = BowerDriver::create(array('bower.binaries' => $php));
+        $driver = BowerDriver::create(['bower.binaries' => $php]);
         $this->assertInstanceOf('Alchemy\Phrasea\Command\Developer\Utils\BowerDriver', $driver);
         $this->assertEquals($php, $driver->getProcessBuilderFactory()->getBinary());
     }

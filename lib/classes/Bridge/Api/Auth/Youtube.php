@@ -22,12 +22,12 @@ class Bridge_Api_Auth_Youtube extends Bridge_Api_Auth_OAuth2
      * @param  array  $supp_parameters
      * @return string
      */
-    public function get_auth_url(array $supp_parameters = array())
+    public function get_auth_url(array $supp_parameters = [])
     {
         $supp_parameters = array_merge(
-            $supp_parameters, array(
+            $supp_parameters, [
             'access_type'     => 'offline',
-            'approval_prompt' => 'force')
+            'approval_prompt' => 'force']
         );
 
         return parent::get_auth_url($supp_parameters);

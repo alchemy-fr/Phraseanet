@@ -36,21 +36,21 @@ class MailChecker
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $users = array();
+        $users = [];
 
         foreach ($rs as $row) {
             if (!isset($users[$row['usr_mail']])) {
-                $users[$row['usr_mail']] = array();
+                $users[$row['usr_mail']] = [];
             }
 
             $users[$row['usr_mail']][] = $row;
         }
 
-        $badUsers = array();
+        $badUsers = [];
 
         foreach ($users as $email => $usrs) {
             if (count($usrs) > 1) {
-                $badUsers[$email] = array();
+                $badUsers[$email] = [];
                 foreach ($usrs as $usrInfo) {
                     $badUsers[$email][$usrInfo['usr_id']] = $usrInfo;
                 }

@@ -74,11 +74,11 @@ class Twitter extends AbstractProvider
         $code = $this->twitter->request(
             'POST',
             $this->twitter->url('oauth/request_token', ''),
-            array('oauth_callback' => $this->generator->generate(
+            ['oauth_callback' => $this->generator->generate(
                 'login_authentication_provider_callback',
-                array('providerId' => $this->getId()),
+                ['providerId' => $this->getId()],
                 UrlGenerator::ABSOLUTE_URL
-            ))
+            )]
         );
 
         if ($code != 200) {
@@ -92,7 +92,7 @@ class Twitter extends AbstractProvider
         return new RedirectResponse(sprintf(
                 '%s?%s',
                 $this->twitter->url("oauth/authenticate", ''),
-                http_build_query(array('oauth_token' => $oauth['oauth_token']), '', '&')
+                http_build_query(['oauth_token' => $oauth['oauth_token']], '', '&')
         ));
     }
 
@@ -117,7 +117,7 @@ class Twitter extends AbstractProvider
         $code = $this->twitter->request(
             'POST',
             $this->twitter->url('oauth/access_token', ''),
-            array('oauth_verifier' => $request->query->get('oauth_verifier'))
+            ['oauth_verifier' => $request->query->get('oauth_verifier')]
         );
 
         if ($code != 200) {
@@ -248,11 +248,11 @@ class Twitter extends AbstractProvider
      */
     public static function create(UrlGenerator $generator, SessionInterface $session, array $options)
     {
-        $twitter = new \tmhOAuth(array(
+        $twitter = new \tmhOAuth([
             'consumer_key'    => $options['consumer-key'],
             'consumer_secret' => $options['consumer-secret'],
             'timezone'        => date_default_timezone_get(),
-        ));
+        ]);
 
         return new Twitter($generator, $session, $twitter);
     }

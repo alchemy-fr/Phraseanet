@@ -5,8 +5,8 @@ class format
 
     public static function arr_to_csv_line($arr, $tri_column = false)
     {
-        $line = array();
-        $tmp = array();
+        $line = [];
+        $tmp = [];
         foreach ($arr as $v) {
             if (is_array($v)) {
                 $line[] = self::arr_to_csv_line($v);
@@ -40,7 +40,7 @@ class format
 
     public static function arr_to_csv($arr, $tri_column = false)
     {
-        $lines = array();
+        $lines = [];
 
         if ($tri_column) {
             $title = "";
@@ -60,7 +60,7 @@ class format
     public static function csv_to_arr($filename)
     {
         $separateur = ",";
-        $array = array();
+        $array = [];
         // For mac
         $autoDetectLineEndings = ini_get("auto_detect_line_endings");
 

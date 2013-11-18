@@ -14,10 +14,10 @@ use Alchemy\Phrasea\Application;
 class module_report_filter
 {
     private $app;
-    private $posting_filter = array();
-    private $cor_query = array();
-    private $active_column = array();
-    private $trans = array(
+    private $posting_filter = [];
+    private $cor_query = [];
+    private $active_column = [];
+    private $trans = [
         'user'      => 'phraseanet::utilisateurs',
         'ddate'     => 'report:: date',
         'ip'        => 'report:: IP',
@@ -31,7 +31,7 @@ class module_report_filter
         'coll_id'   => 'report:: collections',
         'comment'   => 'report:: commentaire',
         'search'    => 'report:: question',
-    );
+    ];
 
     public function __construct(Application $app, $current_filter, $correspondance)
     {
@@ -64,7 +64,7 @@ class module_report_filter
     public function addFilter($field, $operator, $value)
     {
         if ($this->checkSameFilter($field, $operator, $value))
-            $this->tab_filter[] = array('f' => $field, 'o' => $operator, 'v' => $value);
+            $this->tab_filter[] = ['f' => $field, 'o' => $operator, 'v' => $value];
     }
 
     public function getPostingFilter()
@@ -87,7 +87,7 @@ class module_report_filter
                     $value = $this->app['date-formatter']->getPrettyString(new DateTime($value));
                 }
 
-                $this->posting_filter[] = array('f' => $field, 'v' => $value);
+                $this->posting_filter[] = ['f' => $field, 'v' => $value];
             }
         }
 

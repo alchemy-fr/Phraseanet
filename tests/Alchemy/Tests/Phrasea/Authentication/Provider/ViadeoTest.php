@@ -16,12 +16,12 @@ class ViadeoTest extends ProviderTestCase
         $provider->getSession()->set('viadeo.provider.state', $state . mt_rand());
 
         $request = $this->getRequestMock();
-        $this->addQueryParameter($request, array('state' => $state));
+        $this->addQueryParameter($request, ['state' => $state]);
 
-        return array(
-            array($this->getProvider(), $this->getRequestMock()),
-            array($provider, $request),
-        );
+        return [
+            [$this->getProvider(), $this->getRequestMock()],
+            [$provider, $request],
+        ];
     }
 
     public function getProviderForLogout()
@@ -111,19 +111,19 @@ class ViadeoTest extends ProviderTestCase
         $provider->getSession()->set('viadeo.provider.state', $state);
 
         $request = $this->getRequestMock();
-        $this->addQueryParameter($request, array('state' => $state));
+        $this->addQueryParameter($request, ['state' => $state]);
 
-        return array(
-            array($provider, $request),
-        );
+        return [
+            [$provider, $request],
+        ];
     }
 
     public function getTestOptions()
     {
-        return array(
+        return [
             'client-id'     => 'viadeo-client-id',
             'client-secret' => 'viadeo-client-secret',
-        );
+        ];
     }
 
     protected function getProviderForAuthentication()
@@ -168,24 +168,24 @@ class ViadeoTest extends ProviderTestCase
         $response1->expects($this->any())
             ->method('getBody')
             ->with($this->equalTo(true))
-            ->will($this->returnValue(json_encode(array(
+            ->will($this->returnValue(json_encode([
                 'id'            => self::ID,
                 'first_name'    => self::FIRSTNAME,
                 'last_name'     => self::LASTNAME,
                 'picture_large' => self::IMAGEURL,
                 'nickname'      => self::USERNAME,
-            ))));
+            ])));
 
         $response2->expects($this->any())
             ->method('getBody')
             ->with($this->equalTo(true))
-            ->will($this->returnValue(json_encode(array(
-                'data' => array(
-                   array(
+            ->will($this->returnValue(json_encode([
+                'data' => [
+                   [
                        'company_name' => self::COMPANY
-                   )
-                ),
-            ))));
+                   ]
+                ],
+            ])));
 
         $requestGet1->expects($this->any())
             ->method('send')
@@ -252,14 +252,14 @@ class ViadeoTest extends ProviderTestCase
 
     protected function getAvailableFieldsForIdentity()
     {
-        return array(
+        return [
             Identity::PROPERTY_ID        => self::ID,
             Identity::PROPERTY_FIRSTNAME => self::FIRSTNAME,
             Identity::PROPERTY_LASTNAME  => self::LASTNAME,
             Identity::PROPERTY_USERNAME  => self::USERNAME,
             Identity::PROPERTY_IMAGEURL  => self::IMAGEURL,
             Identity::PROPERTY_COMPANY   => self::COMPANY,
-        );
+        ];
     }
 
     protected function authenticate(ProviderInterface $provider)

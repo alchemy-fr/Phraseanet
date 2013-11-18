@@ -134,16 +134,16 @@ class module_console_checkExtension extends Command
             return 1;
         }
 
-        $tbases = array();
+        $tbases = [];
 
         foreach ($phSession["bases"] as $phbase) {
-            $tcoll = array();
+            $tcoll = [];
             foreach ($phbase["collections"] as $coll) {
                 $tcoll[] = 0 + $coll["base_id"];
             }
             if (sizeof($tcoll) > 0) {
                 $kbase = "S" . $phbase["sbas_id"];
-                $tbases[$kbase] = array();
+                $tbases[$kbase] = [];
                 $tbases[$kbase]["sbas_id"] = $phbase["sbas_id"];
                 $tbases[$kbase]["searchcoll"] = $tcoll;
                 $tbases[$kbase]["mask_xor"] = $tbases[$kbase]["mask_and"] = 0;
@@ -172,7 +172,7 @@ class module_console_checkExtension extends Command
                 , false
                 , PHRASEA_MULTIDOC_DOCONLY
                 , ''
-                , array()
+                , []
             );
 
             if ($ret) {
@@ -206,10 +206,10 @@ class module_console_checkExtension extends Command
         // prepare the test before closing session
         if (function_exists("phrasea_public_query")) {
             // fill an array for each sbas to query
-            $tbases = array();
+            $tbases = [];
             foreach ($phSession["bases"] as $phbase) {
                 // fill an array of collections to query for this sbas
-                $tcoll = array();
+                $tcoll = [];
                 foreach ($phbase["collections"] as $coll) {
                     $tcoll[] = 0 + $coll["base_id"];
                 }
@@ -220,11 +220,11 @@ class module_console_checkExtension extends Command
                     $treeq = $qp->parsequery($input->getOption('query'));
                     $arrayq = $qp->makequery($treeq);
 
-                    $tbases["S".$phbase["sbas_id"]] = array(    // key does no matter
+                    $tbases["S".$phbase["sbas_id"]] = [    // key does no matter
                         "sbas_id" => $phbase["sbas_id"],        // sbas_id
                         "searchcoll" => $tcoll,                 // colls to query
                         "arrayq" => $arrayq                     // parsed query
-                    );
+                    ];
                 }
             }
         }
@@ -249,7 +249,7 @@ class module_console_checkExtension extends Command
                 $tbases                         // array of sbas with colls and query
                 , PHRASEA_MULTIDOC_DOCONLY      // mode
                 , ''                            // sortfield
-                , array()                       // search business fields
+                , []                       // search business fields
                 , ''                            // lng for stemmed search
                 , 0                             // offset for first answer (start=0)
                 , 5                             // nbr of answers

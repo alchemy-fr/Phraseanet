@@ -9,33 +9,33 @@ class TasksServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {
-        return array(
-            array(
+        return [
+            [
                 'Alchemy\Phrasea\Core\Provider\TasksServiceProvider',
                 'task-manager.job-factory',
                 'Alchemy\Phrasea\TaskManager\Job\Factory'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\Provider\TasksServiceProvider',
                 'task-manager.status',
                 'Alchemy\Phrasea\TaskManager\TaskManagerStatus'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\Provider\TasksServiceProvider',
                 'task-manager.log-file.factory',
                 'Alchemy\Phrasea\TaskManager\Log\LogFileFactory'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\Provider\TasksServiceProvider',
                 'task-manager.notifier',
                 'Alchemy\Phrasea\TaskManager\Notifier'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\Provider\TasksServiceProvider',
                 'task-manager.live-information',
                 'Alchemy\Phrasea\TaskManager\LiveInformation'
-            ),
-        );
+            ],
+        ];
     }
 
     public function testGetAvailableJobs()

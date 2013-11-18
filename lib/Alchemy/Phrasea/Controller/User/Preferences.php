@@ -65,7 +65,7 @@ class Preferences implements ControllerProviderInterface
             $msg = _('Preference saved !');
         }
 
-        return new JsonResponse(array('success' => $success, 'message' => $msg));
+        return new JsonResponse(['success' => $success, 'message' => $msg]);
     }
 
     /**
@@ -92,6 +92,6 @@ class Preferences implements ControllerProviderInterface
             $msg = _('Preference saved !');
         }
 
-        return new JsonResponse(array('success' => $success, 'message' => $msg));
+        return new JsonResponse(['success' => $success, 'message' => $msg]);
     }
 }

@@ -16,12 +16,12 @@ class GithubTest extends ProviderTestCase
         $provider->getSession()->set('github.provider.state', $state . mt_rand());
 
         $request = $this->getRequestMock();
-        $this->addQueryParameter($request, array('state' => $state));
+        $this->addQueryParameter($request, ['state' => $state]);
 
-        return array(
-            array($this->getProvider(), $this->getRequestMock()),
-            array($provider, $request),
-        );
+        return [
+            [$this->getProvider(), $this->getRequestMock()],
+            [$provider, $request],
+        ];
     }
 
     public function getProviderForLogout()
@@ -76,19 +76,19 @@ class GithubTest extends ProviderTestCase
         $provider->getSession()->set('github.provider.state', $state);
 
         $request = $this->getRequestMock();
-        $this->addQueryParameter($request, array('state' => $state));
+        $this->addQueryParameter($request, ['state' => $state]);
 
-        return array(
-            array($provider, $request),
-        );
+        return [
+            [$provider, $request],
+        ];
     }
 
     public function getTestOptions()
     {
-        return array(
+        return [
             'client-id'     => 'github-client-id',
             'client-secret' => 'github-client-secret',
-        );
+        ];
     }
 
     protected function getProviderForAuthentication()
@@ -123,12 +123,12 @@ class GithubTest extends ProviderTestCase
         $response->expects($this->any())
             ->method('getBody')
             ->with($this->equalTo(true))
-            ->will($this->returnValue(json_encode(array(
+            ->will($this->returnValue(json_encode([
                 'id'         => self::ID,
                 'name'       => self::FIRSTNAME . ' ' . self::LASTNAME,
                 'email'      => self::EMAIL,
                 'avatar_url' => self::IMAGEURL,
-            ))));
+            ])));
 
         $requestGet->expects($this->any())
             ->method('send')
@@ -188,13 +188,13 @@ class GithubTest extends ProviderTestCase
 
     protected function getAvailableFieldsForIdentity()
     {
-        return array(
+        return [
             Identity::PROPERTY_ID        => self::ID,
             Identity::PROPERTY_FIRSTNAME => self::FIRSTNAME,
             Identity::PROPERTY_LASTNAME  => self::LASTNAME,
             Identity::PROPERTY_EMAIL     => self::EMAIL,
             Identity::PROPERTY_IMAGEURL  => self::IMAGEURL,
-        );
+        ];
     }
 
     protected function authenticate(ProviderInterface $provider)

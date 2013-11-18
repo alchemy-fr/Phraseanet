@@ -39,7 +39,7 @@ class Manager
     {
         $session = $this->em
             ->getRepository('Alchemy\Phrasea\Model\Entities\Session')
-            ->findOneBy(array('token' => $cookieValue));
+            ->findOneBy(['token' => $cookieValue]);
 
         if (!$session) {
             return false;

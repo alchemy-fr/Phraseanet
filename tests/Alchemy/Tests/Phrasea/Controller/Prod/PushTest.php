@@ -39,20 +39,20 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/push/send/';
 
-        $records = array(
+        $records = [
             self::$DI['record_1']->get_serialize_key(),
             self::$DI['record_2']->get_serialize_key(),
-        );
+        ];
 
-        $receivers = array(
-            array('usr_id' => self::$DI['user_alt1']->get_id(), 'HD'     => 1)
-            , array('usr_id' => self::$DI['user_alt2']->get_id(), 'HD'     => 0)
-        );
+        $receivers = [
+            ['usr_id' => self::$DI['user_alt1']->get_id(), 'HD'     => 1]
+            , ['usr_id' => self::$DI['user_alt2']->get_id(), 'HD'     => 0]
+        ];
 
-        $params = array(
+        $params = [
             'lst'          => implode(';', $records)
             , 'participants' => $receivers
-        );
+        ];
 
         self::$DI['client']->request('POST', $route, $params);
 
@@ -75,30 +75,30 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/push/validate/';
 
-        $records = array(
+        $records = [
             self::$DI['record_1']->get_serialize_key(),
             self::$DI['record_2']->get_serialize_key(),
-        );
+        ];
 
-        $participants = array(
-            array(
+        $participants = [
+            [
                 'usr_id'     => self::$DI['user_alt1']->get_id(),
                 'agree'      => 0,
                 'see_others' => 1,
                 'HD'         => 0,
-            )
-            , array(
+            ]
+            , [
                 'usr_id'     => self::$DI['user_alt2']->get_id(),
                 'agree'      => 1,
                 'see_others' => 0,
                 'HD'         => 1,
-            )
-        );
+            ]
+        ];
 
-        $params = array(
+        $params = [
             'lst'          => implode(';', $records)
             , 'participants' => $participants
-        );
+        ];
 
         self::$DI['client']->request('POST', $route, $params);
 
@@ -119,9 +119,9 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $route = '/prod/push/search-user/';
 
-        $params = array(
+        $params = [
             'query' => ''
-        );
+        ];
 
         self::$DI['client']->request('GET', $route, $params);
 

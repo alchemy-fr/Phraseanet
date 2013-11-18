@@ -83,33 +83,33 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPermalinkAuthenticated()
     {
         $this->assertTrue(self::$DI['app']['authentication']->isAuthenticated());
-        $this->get_a_permalinkBCcompatibility(array("Content-Type" => "image/jpeg"));
-        $this->get_a_permaviewBCcompatibility(array("Content-Type" => "text/html; charset=UTF-8"));
-        $this->get_a_permalink(array("Content-Type" => "image/jpeg"));
-        $this->get_a_permaview(array("Content-Type" => "text/html; charset=UTF-8"));
+        $this->get_a_permalinkBCcompatibility(["Content-Type" => "image/jpeg"]);
+        $this->get_a_permaviewBCcompatibility(["Content-Type" => "text/html; charset=UTF-8"]);
+        $this->get_a_permalink(["Content-Type" => "image/jpeg"]);
+        $this->get_a_permaview(["Content-Type" => "text/html; charset=UTF-8"]);
     }
 
     public function testPermalinkNotAuthenticated()
     {
         self::$DI['app']['authentication']->closeAccount();
         $this->assertFalse(self::$DI['app']['authentication']->isAuthenticated());
-        $this->get_a_permalinkBCcompatibility(array("Content-Type" => "image/jpeg"));
-        $this->get_a_permaviewBCcompatibility(array("Content-Type" => "text/html; charset=UTF-8"));
-        $this->get_a_permalink(array("Content-Type" => "image/jpeg"));
-        $this->get_a_permaview(array("Content-Type" => "text/html; charset=UTF-8"));
+        $this->get_a_permalinkBCcompatibility(["Content-Type" => "image/jpeg"]);
+        $this->get_a_permaviewBCcompatibility(["Content-Type" => "text/html; charset=UTF-8"]);
+        $this->get_a_permalink(["Content-Type" => "image/jpeg"]);
+        $this->get_a_permaview(["Content-Type" => "text/html; charset=UTF-8"]);
     }
 
     public function testCaptionAuthenticated()
     {
         $this->assertTrue(self::$DI['app']['authentication']->isAuthenticated());
-        $this->get_a_caption(array("Content-Type" => "application/json"));
+        $this->get_a_caption(["Content-Type" => "application/json"]);
     }
 
     public function testCaptionNotAuthenticated()
     {
         self::$DI['app']['authentication']->closeAccount();
         $this->assertFalse(self::$DI['app']['authentication']->isAuthenticated());
-        $this->get_a_caption(array("Content-Type" => "application/json"));
+        $this->get_a_caption(["Content-Type" => "application/json"]);
     }
 
     public function testCaptionWithaWrongToken()
@@ -167,7 +167,7 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    protected function get_a_caption(array $headers = array())
+    protected function get_a_caption(array $headers = [])
     {
         $token = self::$DI['record_1']->get_thumbnail()->get_permalink()->get_token();
         $url = '/permalink/v1/' . self::$DI['record_1']->get_sbas_id() . "/" . self::$DI['record_1']->get_record_id() . '/caption/?token='.$token;
@@ -184,7 +184,7 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    protected function get_a_permalinkBCcompatibility(array $headers = array())
+    protected function get_a_permalinkBCcompatibility(array $headers = [])
     {
         $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
         $url = '/permalink/v1/whateverIwannt/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/' . $token . '/preview/';
@@ -210,7 +210,7 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
     }
 
-    protected function get_a_permaviewBCcompatibility(array $headers = array())
+    protected function get_a_permaviewBCcompatibility(array $headers = [])
     {
         $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
         $url = '/permalink/v1/whateverIwannt/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/' . $token . '/preview/';
@@ -226,7 +226,7 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    protected function get_a_permalink(array $headers = array())
+    protected function get_a_permalink(array $headers = [])
     {
         $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
         $url = '/permalink/v1/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/whateverIwannt.jpg?token=' . $token . '';
@@ -242,7 +242,7 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    protected function get_a_permaview(array $headers = array())
+    protected function get_a_permaview(array $headers = [])
     {
         $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
         $url = '/permalink/v1/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/?token=' . $token . '';

@@ -15,28 +15,28 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetSlash($type, $errorMsgId)
     {
-        self::$DI['client']->request('GET', '/admin/databoxes/', array(
+        self::$DI['client']->request('GET', '/admin/databoxes/', [
             $type => $errorMsgId
-        ));
+        ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
     public function msgProvider()
     {
-        return array(
-            array('error', 'already-started'),
-            array('error', 'scheduler-started'),
-            array('error', 'unknow'),
-            array('error', 'bad-email'),
-            array('error', 'special-chars'),
-            array('error', 'base-failed'),
-            array('error', 'database-failed'),
-            array('error', 'no-empty'),
-            array('success', 'restart'),
-            array('success', 'mount-ok'),
-            array('success', 'database-ok'),
-        );
+        return [
+            ['error', 'already-started'],
+            ['error', 'scheduler-started'],
+            ['error', 'unknow'],
+            ['error', 'bad-email'],
+            ['error', 'special-chars'],
+            ['error', 'base-failed'],
+            ['error', 'database-failed'],
+            ['error', 'no-empty'],
+            ['success', 'restart'],
+            ['success', 'mount-ok'],
+            ['success', 'database-ok'],
+        ];
     }
 
     /**
@@ -73,9 +73,9 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $base = $this->createDatabox();
         $base->unmount_databox();
 
-        self::$DI['client']->request('POST', '/admin/databoxes/mount/', array(
+        self::$DI['client']->request('POST', '/admin/databoxes/mount/', [
             'new_dbname' => 'unit_test_db'
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -104,9 +104,9 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        self::$DI['client']->request('POST', '/admin/databoxes/', array(
+        self::$DI['client']->request('POST', '/admin/databoxes/', [
             'new_dbname' => ''
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
@@ -120,9 +120,9 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        self::$DI['client']->request('POST', '/admin/databoxes/', array(
+        self::$DI['client']->request('POST', '/admin/databoxes/', [
             'new_dbname' => 'ééààèè'
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
@@ -138,10 +138,10 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->createDatabase();
 
-        self::$DI['client']->request('POST', '/admin/databoxes/', array(
+        self::$DI['client']->request('POST', '/admin/databoxes/', [
             'new_dbname'        => 'unit_test_db',
             'new_data_template' => 'fr-simple',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());

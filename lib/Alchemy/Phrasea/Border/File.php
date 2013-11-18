@@ -65,7 +65,7 @@ class File
         $this->app = $app;
         $this->media = $media;
         $this->collection = $collection;
-        $this->attributes = array();
+        $this->attributes = [];
         $this->originalName = $originalName ? : pathinfo($this->media->getFile()->getPathname(), PATHINFO_BASENAME);
     }
 
@@ -96,13 +96,13 @@ class File
             return $this->uuid;
         }
 
-        $availableUUIDs = array(
+        $availableUUIDs = [
             'XMP-exif:ImageUniqueID',
             'SigmaRaw:ImageUniqueID',
             'IPTC:UniqueDocumentID',
             'ExifIFD:ImageUniqueID',
             'Canon:ImageUniqueID',
-        );
+        ];
 
         if (! $this->uuid) {
             $metadatas = $this->media->getMetadatas();

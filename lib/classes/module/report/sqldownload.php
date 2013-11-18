@@ -25,10 +25,10 @@ class module_report_sqldownload extends module_report_sql implements module_repo
 
     public function buildSql()
     {
-        $customFieldMap = array();
+        $customFieldMap = [];
 
-        $filter = $this->filter->getReportFilter() ? : array('params' => array(), 'sql' => false);
-        $this->params = array_merge(array(), $filter['params']);
+        $filter = $this->filter->getReportFilter() ? : ['params' => [], 'sql' => false];
+        $this->params = array_merge([], $filter['params']);
 
         if ($this->groupby == false) {
             $this->sql = "
@@ -57,14 +57,14 @@ class module_report_sqldownload extends module_report_sql implements module_repo
                        INNER JOIN record ON (log_docs.record_id = record.record_id)
                        INNER JOIN subdef ON (log_docs.record_id = subdef.record_id)';
 
-                $customFieldMap = array(
+                $customFieldMap = [
                     $field => $name,
                     'log_docs.comment'  => 'tt.comment',
                     'subdef.size'       => 'tt.size',
                     'subdef.file'       => 'tt.file',
                     'subdef.mime'       => 'tt.mime',
                     'log_docs.final'    => 'tt.final',
-                );
+                ];
 
             } elseif ($this->on == 'DOC') {
                 $this->sql = '
@@ -115,8 +115,8 @@ class module_report_sqldownload extends module_report_sql implements module_repo
 
     public function sqlDistinctValByField($field)
     {
-        $filter = $this->filter->getReportFilter() ? : array('params' => array(), 'sql' => false);
-        $this->params = array_merge(array(), $filter['params']);
+        $filter = $this->filter->getReportFilter() ? : ['params' => [], 'sql' => false];
+        $this->params = array_merge([], $filter['params']);
 
         $this->sql = '
             SELECT DISTINCT(tt.val)
@@ -135,6 +135,6 @@ class module_report_sqldownload extends module_report_sql implements module_repo
         $this->sql .= $this->filter->getOrderFilter() ? : '';
         $this->sql .= $this->filter->getLimitFilter() ? : '';
 
-        return array('sql' => $this->sql, 'params' => $this->params);
+        return ['sql' => $this->sql, 'params' => $this->params];
     }
 }

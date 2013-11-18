@@ -36,13 +36,13 @@ class TaskList implements TaskListInterface
      */
     public function refresh()
     {
-        return array_map(array($this, 'entityToTask'), $this->repository->findActiveTasks());
+        return array_map([$this, 'entityToTask'], $this->repository->findActiveTasks());
     }
 
     public function entityToTask(TaskEntity $task)
     {
         $name = $task->getId() ;
-        $arguments = array($this->phpExec);
+        $arguments = [$this->phpExec];
 
         if ($this->phpConf) {
             $arguments[] = '-c';

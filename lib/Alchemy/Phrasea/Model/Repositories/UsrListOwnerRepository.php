@@ -53,10 +53,10 @@ class UsrListOwnerRepository extends EntityRepository
               JOIN o.list l
             WHERE l.id = :list_id AND o.usr_id = :usr_id';
 
-        $params = array(
+        $params = [
             'usr_id'  => $usr_id,
             'list_id' => $list->getId()
-        );
+        ];
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);

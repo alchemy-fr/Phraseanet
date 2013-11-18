@@ -142,22 +142,22 @@ class UserTest extends \PhraseanetPHPUnitAbstract
 
     public function genderProvider()
     {
-        return array(
-            array(null),
-            array(User::GENDER_MISS),
-            array(User::GENDER_MR),
-            array(User::GENDER_MR),
-        );
+        return [
+            [null],
+            [User::GENDER_MISS],
+            [User::GENDER_MR],
+            [User::GENDER_MR],
+        ];
     }
 
     public function invalidGenderProvider()
     {
-        return array(
-            array(false),
-            array(''),
-            array(1),
-            array('madame')
-        );
+        return [
+            [false],
+            [''],
+            [1],
+            ['madame']
+        ];
     }
 
     public function testGetSettingValue()

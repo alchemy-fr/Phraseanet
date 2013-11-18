@@ -19,7 +19,7 @@ use Alchemy\Phrasea\Application;
 class PreSchemaUpgradeCollection
 {
     /** @var PreSchemaUpgradeInterface[] */
-    private $upgrades = array();
+    private $upgrades = [];
 
     public function __construct()
     {

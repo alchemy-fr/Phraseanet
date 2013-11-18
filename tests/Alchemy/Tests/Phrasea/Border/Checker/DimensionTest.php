@@ -36,32 +36,32 @@ class DimensionTest extends \PhraseanetPHPUnitAbstract
 
         $File = new File(self::$DI['app'], $media, self::$DI['collection']);
 
-        $object = new Dimension(self::$DI['app'], array('width' => 800));
+        $object = new Dimension(self::$DI['app'], ['width' => 800]);
         $response = $object->check(self::$DI['app']['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertFalse($response->isOk());
 
-        $object = new Dimension(self::$DI['app'], array('width' => 500));
+        $object = new Dimension(self::$DI['app'], ['width' => 500]);
         $response = $object->check(self::$DI['app']['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertFalse($response->isOk());
 
-        $object = new Dimension(self::$DI['app'], array('width' => 400));
+        $object = new Dimension(self::$DI['app'], ['width' => 400]);
         $response = $object->check(self::$DI['app']['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertTrue($response->isOk());
 
-        $object = new Dimension(self::$DI['app'], array('width' => 600, 'height' => 500));
+        $object = new Dimension(self::$DI['app'], ['width' => 600, 'height' => 500]);
         $response = $object->check(self::$DI['app']['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertFalse($response->isOk());
 
-        $object = new Dimension(self::$DI['app'], array('width' => 600, 'height' => 400));
+        $object = new Dimension(self::$DI['app'], ['width' => 600, 'height' => 400]);
         $response = $object->check(self::$DI['app']['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertTrue($response->isOk());
 
-        $object = new Dimension(self::$DI['app'], array('width' => 200, 'height' => 200));
+        $object = new Dimension(self::$DI['app'], ['width' => 200, 'height' => 200]);
         $response = $object->check(self::$DI['app']['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertTrue($response->isOk());
@@ -83,7 +83,7 @@ class DimensionTest extends \PhraseanetPHPUnitAbstract
                     $height = $dimensions['height'];
                 }
 
-                new Dimension(self::$DI['app'], array('width' => $width,'height' => $height));
+                new Dimension(self::$DI['app'], ['width' => $width,'height' => $height]);
                 $this->fail(sprintf('Exception raised with dimensions %s and %s', $width, $height));
             } catch (\InvalidArgumentException $e) {
 
@@ -93,17 +93,17 @@ class DimensionTest extends \PhraseanetPHPUnitAbstract
 
     public function getWrongDimensions()
     {
-        return array(
-            array('width' => 0),
-            array('width' => -1),
-            array('width' => 5, 'height' => -4),
-            array('width' => 5, 'height' => 'a'),
-            array('width' => 'a', 'height' => 5),
-            array('width' => 'a', 'height' => 'b'),
-            array('width' => 'a'),
-            array('width' => 0, 'height' => 35),
-            array('width' => 30, 'height' => 0)
-        );
+        return [
+            ['width' => 0],
+            ['width' => -1],
+            ['width' => 5, 'height' => -4],
+            ['width' => 5, 'height' => 'a'],
+            ['width' => 'a', 'height' => 5],
+            ['width' => 'a', 'height' => 'b'],
+            ['width' => 'a'],
+            ['width' => 0, 'height' => 35],
+            ['width' => 30, 'height' => 0]
+        ];
     }
 
     /**
@@ -119,6 +119,6 @@ class DimensionTest extends \PhraseanetPHPUnitAbstract
      */
     public function testContructorInvalidArgumentException()
     {
-        new Dimension(self::$DI['app'], array('witdh' => 38));
+        new Dimension(self::$DI['app'], ['witdh' => 38]);
     }
 }

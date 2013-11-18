@@ -25,7 +25,7 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testDisplayMultiExport()
     {
-        self::$DI['client']->request('POST', '/prod/export/multi-export/', array('lst' => self::$DI['record_1']->get_serialize_key()));
+        self::$DI['client']->request('POST', '/prod/export/multi-export/', ['lst' => self::$DI['record_1']->get_serialize_key()]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
         unset($response);
@@ -39,12 +39,12 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $framework = $this;
         self::$DI['app']['phraseanet.ftp.client'] = self::$DI['app']->protect(function ($host, $port = 21, $timeout = 90, $ssl = false, $proxy = false, $proxyport = false) use ($framework) {
             return $framework->getMockBuilder('\ftpclient')
-                    ->setMethods(array('login', 'close'))
+                    ->setMethods(['login', 'close'])
                     ->disableOriginalConstructor()
                     ->getMock();
         });
 
-        $this->XMLHTTPRequest('POST', '/prod/export/ftp/test/', array('lst' => self::$DI['record_1']->get_serialize_key()));
+        $this->XMLHTTPRequest('POST', '/prod/export/ftp/test/', ['lst' => self::$DI['record_1']->get_serialize_key()]);
         $response = self::$DI['client']->getResponse();
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
@@ -61,7 +61,7 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $framework = $this;
         self::$DI['app']['phraseanet.ftp.client'] = self::$DI['app']->protect(function ($host, $port = 21, $timeout = 90, $ssl = false, $proxy = false, $proxyport = false) use ($framework) {
             $ftpStub = $framework->getMockBuilder('\ftpclient')
-                ->setMethods(array('login', 'close'))
+                ->setMethods(['login', 'close'])
                 ->disableOriginalConstructor()
                 ->getMock();
 
@@ -72,7 +72,7 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             return $ftpStub;
         });
 
-        self::$DI['client']->request('POST', '/prod/export/ftp/test/', array('lst' => self::$DI['record_1']->get_serialize_key()));
+        self::$DI['client']->request('POST', '/prod/export/ftp/test/', ['lst' => self::$DI['record_1']->get_serialize_key()]);
         $response = self::$DI['client']->getResponse();
         $datas = (array) json_decode($response->getContent());
 
@@ -84,13 +84,13 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testExportFtpNoDocs()
     {
-        self::$DI['client']->request('POST', '/prod/export/ftp/',  array(
+        self::$DI['client']->request('POST', '/prod/export/ftp/',  [
             'address' => 'test.ftp',
             'login'      => 'login',
             'dest_folder' => 'documents',
             'prefix_folder' => 'documents',
-            'obj'        => array('preview')
-        ));
+            'obj'        => ['preview']
+        ]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
         $datas = (array) json_decode($response->getContent());
@@ -113,13 +113,13 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function getMissingArguments()
     {
-        return array(
-            array(array()),
-            array(array('address' => '')),
-            array(array('address'  => '', 'login' => '')),
-            array(array('address'       => '', 'login'      => '', 'dest_folder' => '')),
-            array(array('address'       => '', 'login'      => '', 'dest_folder' => '', 'prefix_folder' => '')),
-        );
+        return [
+            [[]],
+            [['address' => '']],
+            [['address'  => '', 'login' => '']],
+            [['address'       => '', 'login'      => '', 'dest_folder' => '']],
+            [['address'       => '', 'login'      => '', 'dest_folder' => '', 'prefix_folder' => '']],
+        ];
     }
 
     /**
@@ -132,15 +132,15 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
            self::$GV_activeFTP = true;
         }
         //inserted rows from this function are deleted in tearDownAfterClass
-        self::$DI['client']->request('POST', '/prod/export/ftp/', array(
+        self::$DI['client']->request('POST', '/prod/export/ftp/', [
             'lst'        => self::$DI['record_1']->get_serialize_key(),
             'user_dest'  => self::$DI['user']->get_id(),
             'address'    => 'local.phrasea.test',
             'login'      => self::$DI['user']->get_email(),
             'dest_folder' => '/home/test/',
             'prefix_folder' => 'test2/',
-            'obj'        => array('preview')
-        ));
+            'obj'        => ['preview']
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
@@ -158,11 +158,11 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRecordsExport');
 
-        self::$DI['client']->request('POST', '/prod/export/mail/', array(
+        self::$DI['client']->request('POST', '/prod/export/mail/', [
             'lst'        => self::$DI['record_1']->get_serialize_key(),
             'destmail'   => 'user@example.com',
-            'obj'        => array('preview'),
-        ));
+            'obj'        => ['preview'],
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());

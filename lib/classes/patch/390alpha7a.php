@@ -23,7 +23,7 @@ class patch_390alpha7a implements patchInterface
     private $release = '3.9.0-alpha.7';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -132,7 +132,7 @@ class patch_390alpha7a implements patchInterface
             $feed->setUpdatedOn(new \DateTime($row['updated_on']));
             $feed->setCollection($row['base_id'] ? collection::get_from_base_id($app, $row['base_id']) : null);
 
-            $fpStmt->execute(array(':feed_id' => $row['id']));
+            $fpStmt->execute([':feed_id' => $row['id']]);
             $fpRes = $fpStmt->fetchAll(\PDO::FETCH_ASSOC);
 
             foreach ($fpRes as $fpRow) {
@@ -143,7 +143,7 @@ class patch_390alpha7a implements patchInterface
                 $feedPublisher->setIsOwner((Boolean) $fpRow['owner']);
                 $feedPublisher->setUsrId($fpRow['usr_id']);
 
-                $feStmt->execute(array(':feed_id' => $row['id'], ':publisher_id' => $fpRow['id']));
+                $feStmt->execute([':feed_id' => $row['id'], ':publisher_id' => $fpRow['id']]);
                 $feRes = $feStmt->fetchAll(\PDO::FETCH_ASSOC);
 
                 foreach ($feRes as $feRow) {
@@ -158,7 +158,7 @@ class patch_390alpha7a implements patchInterface
                     $feedEntry->setCreatedOn(new \DateTime($feRow['created_on']));
                     $feedEntry->setUpdatedOn(new \DateTime($feRow['updated_on']));
 
-                    $fiStmt->execute(array(':entry_id' => $feRow['id']));
+                    $fiStmt->execute([':entry_id' => $feRow['id']]);
                     $fiRes = $fiStmt->fetchAll(\PDO::FETCH_ASSOC);
 
                     foreach ($fiRes as $fiRow) {
@@ -176,7 +176,7 @@ class patch_390alpha7a implements patchInterface
                 $em->persist($feedPublisher);
             }
 
-            $ftStmt->execute(array(':feed_id' => $row['id']));
+            $ftStmt->execute([':feed_id' => $row['id']]);
             $ftRes = $ftStmt->fetchAll(\PDO::FETCH_ASSOC);
 
             foreach ($ftRes as $ftRow) {

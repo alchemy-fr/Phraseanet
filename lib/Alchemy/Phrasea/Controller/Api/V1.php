@@ -142,7 +142,7 @@ class V1 implements ControllerProviderInterface
                 }
             }
 
-            return array('ressource' => $ressource, 'general'   => $general, 'aspect'    => $aspect, 'action'    => $action);
+            return ['ressource' => $ressource, 'general'   => $general, 'aspect'    => $aspect, 'action'    => $action];
         };
 
         /**
@@ -227,7 +227,7 @@ class V1 implements ControllerProviderInterface
         $controllers->get('/monitor/task/{task}/', function (SilexApplication $app, Request $request, $task) {
             return $app['api']->get_task($app, $task)->get_response();
         })
-            ->convert('task', array($app['converter.task'], 'convert'))
+            ->convert('task', [$app['converter.task'], 'convert'])
             ->before($mustBeAdmin)->assert('task', '\d+');
 
         /**
@@ -244,7 +244,7 @@ class V1 implements ControllerProviderInterface
         $controllers->post('/monitor/task/{task}/', function (SilexApplication $app, Request $request, $task) {
             return $app['api']->set_task_property($app, $task)->get_response();
         })
-            ->convert('task', array($app['converter.task'], 'convert'))
+            ->convert('task', [$app['converter.task'], 'convert'])
             ->before($mustBeAdmin)->assert('task', '\d+');
 
         /**
@@ -260,7 +260,7 @@ class V1 implements ControllerProviderInterface
         $controllers->post('/monitor/task/{task}/start/', function (SilexApplication $app, Request $request, $task) {
             return $app['api']->start_task($app, $task)->get_response();
         })
-            ->convert('task', array($app['converter.task'], 'convert'))
+            ->convert('task', [$app['converter.task'], 'convert'])
             ->before($mustBeAdmin);
 
         /**
@@ -276,7 +276,7 @@ class V1 implements ControllerProviderInterface
         $controllers->post('/monitor/task/{task}/stop/', function (SilexApplication $app, Request $request, $task) {
             return $app['api']->stop_task($app, $task)->get_response();
         })
-            ->convert('task', array($app['converter.task'], 'convert'))
+            ->convert('task', [$app['converter.task'], 'convert'])
             ->before($mustBeAdmin);
 
         /**

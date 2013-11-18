@@ -26,7 +26,7 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = array('__UPLOAD_QUARANTINE__');
+    public $events = ['__UPLOAD_QUARANTINE__'];
 
     /**
      *
@@ -87,8 +87,8 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
                 $query = new User_Query($this->app);
 
                 $users = $query
-                    ->on_base_ids(array($lazaretFile->getBaseId()))
-                    ->who_have_right(array('canaddrecord'))
+                    ->on_base_ids([$lazaretFile->getBaseId()])
+                    ->who_have_right(['canaddrecord'])
                     ->execute()
                     ->get_results();
 
@@ -140,7 +140,7 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
     {
         $sx = simplexml_load_string($datas);
 
-        $reasons = array();
+        $reasons = [];
 
         foreach ($sx->reasons as $reason) {
             $checkClassName = (string) $reason->checkClassName;
@@ -158,7 +158,7 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
             $text .= ' ' . sprintf(_('for the following reasons : %s'), implode(', ', $reasons));
         }
 
-        $ret = array('text'  => $text, 'class' => '');
+        $ret = ['text'  => $text, 'class' => ''];
 
         return $ret;
     }

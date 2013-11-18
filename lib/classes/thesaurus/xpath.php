@@ -20,7 +20,7 @@ class thesaurus_xpath extends DOMXPath
      *
      * @var array
      */
-    protected static $r = array();
+    protected static $r = [];
 
     /**
      *

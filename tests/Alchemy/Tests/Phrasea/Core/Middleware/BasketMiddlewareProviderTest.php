@@ -9,20 +9,20 @@ class BasketMiddlewareProviderTest extends MiddlewareProviderTestCase
 {
     public function provideDescription()
     {
-        return array(
-            array(
+        return [
+            [
                 'Alchemy\Phrasea\Core\Middleware\BasketMiddlewareProvider',
                 'middleware.basket.converter'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\Middleware\BasketMiddlewareProvider',
                 'middleware.basket.user-access'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\Middleware\BasketMiddlewareProvider',
                 'middleware.basket.user-is-owner'
-            ),
-        );
+            ],
+        ];
     }
 
     public function testConverterWithNoParameter()

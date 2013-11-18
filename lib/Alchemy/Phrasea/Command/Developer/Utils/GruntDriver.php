@@ -32,13 +32,13 @@ class GruntDriver extends AbstractBinary
      *
      * @return GruntDriver
      */
-    public static function create($conf = array(), LoggerInterface $logger = null)
+    public static function create($conf = [], LoggerInterface $logger = null)
     {
         if (!$conf instanceof ConfigurationInterface) {
             $conf = new Configuration($conf);
         }
 
-        $binaries = $conf->get('grunt.binaries', array('grunt'));
+        $binaries = $conf->get('grunt.binaries', ['grunt']);
 
         return static::load($binaries, $logger, $conf);
     }

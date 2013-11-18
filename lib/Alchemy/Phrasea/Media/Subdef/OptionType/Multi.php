@@ -28,7 +28,7 @@ class Multi implements OptionType
     {
         $this->displayName = $displayName;
         $this->name = $name;
-        $this->available = array();
+        $this->available = [];
         foreach ($available as $a) {
             $this->available[$a] = false;
         }
@@ -93,7 +93,7 @@ class Multi implements OptionType
             return $this->available;
         }
 
-        $value = array();
+        $value = [];
 
         foreach ($this->available as $a => $selected) {
             if ($selected) {

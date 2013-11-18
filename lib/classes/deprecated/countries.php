@@ -16,7 +16,7 @@
  */
 function getCountries($lng = 'fr')
 {
-    $countries['en'] = array(
+    $countries['en'] = [
         'AF' => 'AFGHANISTAN',
         'AX' => 'ÅLAND ISLANDS',
         'AL' => 'ALBANIA',
@@ -263,11 +263,11 @@ function getCountries($lng = 'fr')
         'YE' => 'YEMEN',
         'ZM' => 'ZAMBIA',
         'ZW' => 'ZIMBABWE',
-    );
+    ];
 
     $countries['us'] = $countries['en'];
 
-    $countries['fr'] = array(
+    $countries['fr'] = [
         'AF'                 => 'AFGHANISTAN',
         'ZA'                 => 'AFRIQUE DU SUD',
         'AX'                 => 'ÅLAND, ÎLES',
@@ -514,7 +514,7 @@ function getCountries($lng = 'fr')
         'YE'                 => 'YÉMEN',
         'ZM'                 => 'ZAMBIE',
         'ZW'                 => 'ZIMBABWE'
-    );
+    ];
     if ( ! isset($countries[$lng]))
         $lng = 'us';
     foreach ($countries[$lng] as $k => $country)

@@ -32,18 +32,18 @@ class PathFileTest implements ControllerProviderInterface
          * @todo : check this as it would lead to a security issue
          */
         $controllers->get('/path/', function (Application $app, Request $request) {
-            return $app->json(array(
+            return $app->json([
                     'exists'     => file_exists($request->query->get('path'))
                     , 'file'       => is_file($request->query->get('path'))
                     , 'dir'        => is_dir($request->query->get('path'))
                     , 'readable'   => is_readable($request->query->get('path'))
                     , 'writeable'  => is_writable($request->query->get('path'))
                     , 'executable' => is_executable($request->query->get('path'))
-                ));
+                ]);
         });
 
         $controllers->get('/url/', function (Application $app, Request $request) {
-            return $app->json(array('code' => \http_query::getHttpCodeFromUrl($request->query->get('url'))));
+            return $app->json(['code' => \http_query::getHttpCodeFromUrl($request->query->get('url'))]);
         });
 
         return $controllers;

@@ -29,7 +29,7 @@ class Language implements ControllerProviderInterface
 
         $controller->get("/", function (Application $app) {
 
-            $out = array();
+            $out = [];
             $out['thesaurusBasesChanged'] = _('prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee.');
             $out['confirmDel'] = _('paniers::Vous etes sur le point de supprimer ce panier. Cette action est irreversible. Souhaitez-vous continuer ?');
             $out['serverError'] = _('phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, contactez le support technique');

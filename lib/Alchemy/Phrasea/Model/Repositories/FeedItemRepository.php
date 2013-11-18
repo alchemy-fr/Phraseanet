@@ -34,7 +34,7 @@ class FeedItemRepository extends EntityRepository
                 AND f.public = true';
 
         $query = $this->_em->createQuery($dql);
-        $query->setParameters(array('sbas_id' => $sbas_id, 'record_id' => $record_id));
+        $query->setParameters(['sbas_id' => $sbas_id, 'record_id' => $record_id]);
 
         return count($query->getResult()) > 0;
     }
@@ -50,7 +50,7 @@ class FeedItemRepository extends EntityRepository
     public function loadLatest(Application $app, $nbItems = 20)
     {
         $execution = 0;
-        $items = array();
+        $items = [];
 
         do {
             $dql = 'SELECT i

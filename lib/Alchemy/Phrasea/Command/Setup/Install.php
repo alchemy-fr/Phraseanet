@@ -129,14 +129,14 @@ class Install extends Command
                 $abName = $dialog->ask($output, "DB name (phraseanet) : ", 'phraseanet');
 
                 try {
-                    $abConn = new \connection_pdo('appbox', $hostname, $port, $dbUser, $dbPassword, $abName, array(), $this->container['debug']);
+                    $abConn = new \connection_pdo('appbox', $hostname, $port, $dbUser, $dbPassword, $abName, [], $this->container['debug']);
                     $output->writeln("\n\t<info>Application-Box : Connection successful !</info>\n");
                 } catch (\Exception $e) {
                     $output->writeln("\n\t<error>Invalid connection parameters</error>\n");
                 }
             } while (!$abConn);
         } else {
-            $abConn = new \connection_pdo('appbox', $input->getOption('db-host'), $input->getOption('db-port'), $input->getOption('db-user'), $input->getOption('db-password'), $input->getOption('appbox'), array(), $this->container['debug']);
+            $abConn = new \connection_pdo('appbox', $input->getOption('db-host'), $input->getOption('db-port'), $input->getOption('db-user'), $input->getOption('db-password'), $input->getOption('appbox'), [], $this->container['debug']);
             $output->writeln("\n\t<info>Application-Box : Connection successful !</info>\n");
         }
 
@@ -155,12 +155,12 @@ class Install extends Command
 
                 if ($dbName) {
                     try {
-                        $dbConn = new \connection_pdo('databox', $credentials['hostname'], $credentials['port'], $credentials['user'], $credentials['password'], $dbName, array(), $this->container['debug']);
+                        $dbConn = new \connection_pdo('databox', $credentials['hostname'], $credentials['port'], $credentials['user'], $credentials['password'], $dbName, [], $this->container['debug']);
                         $output->writeln("\n\t<info>Data-Box : Connection successful !</info>\n");
 
                         do {
                             $template = $dialog->ask($output, 'Choose a language template for metadata structure, available are fr (french) and en (english) (en) : ', 'en');
-                        } while (!in_array($template, array('en', 'fr')));
+                        } while (!in_array($template, ['en', 'fr']));
 
                         $output->writeln("\n\tLanguage selected is <info>'$template'</info>\n");
                     } catch (\Exception $e) {
@@ -171,12 +171,12 @@ class Install extends Command
                 }
             } while ($retry);
         } else {
-            $dbConn = new \connection_pdo('databox', $input->getOption('db-host'), $input->getOption('db-port'), $input->getOption('db-user'), $input->getOption('db-password'), $input->getOption('databox'), array(), $this->container['debug']);
+            $dbConn = new \connection_pdo('databox', $input->getOption('db-host'), $input->getOption('db-port'), $input->getOption('db-user'), $input->getOption('db-password'), $input->getOption('databox'), [], $this->container['debug']);
             $output->writeln("\n\t<info>Data-Box : Connection successful !</info>\n");
             $template = $input->getOption('db-template') ? : 'en';
         }
 
-        return array($dbConn, $template);
+        return [$dbConn, $template];
     }
 
     private function getCredentials(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
@@ -205,7 +205,7 @@ class Install extends Command
             throw new \RuntimeException('You have to provide both email and password');
         }
 
-        return array($email, $password);
+        return [$email, $password];
     }
 
     private function getDataPath(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
@@ -259,7 +259,7 @@ class Install extends Command
 
     private function detectBinaries()
     {
-        return array(
+        return [
             'php_binary'           => $this->executableFinder->find('php'),
             'phraseanet_indexer'   => $this->executableFinder->find('phraseanet_indexer'),
             'pdf2swf_binary'       => $this->executableFinder->find('pdf2swf'),
@@ -272,6 +272,6 @@ class Install extends Command
             'pdftotext_binary'     => $this->executableFinder->find('pdftotext'),
             'ghostscript_binary'   => $this->executableFinder->find('gs'),
             'recess_binary'        => $this->executableFinder->find('recess'),
-        );
+        ];
     }
 }

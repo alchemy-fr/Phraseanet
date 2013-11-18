@@ -22,10 +22,10 @@ class FirewallSubscriber implements EventSubscriberInterface
 {
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::RESPONSE  => array('onKernelResponse', 0),
-            KernelEvents::EXCEPTION => array('onSilexError', 20),
-        );
+        return [
+            KernelEvents::RESPONSE  => ['onKernelResponse', 0],
+            KernelEvents::EXCEPTION => ['onSilexError', 20],
+        ];
     }
 
     public function onKernelResponse(FilterResponseEvent $event)
@@ -43,7 +43,7 @@ class FirewallSubscriber implements EventSubscriberInterface
             $headers = $e->getHeaders();
 
             if (isset($headers['X-Phraseanet-Redirect'])) {
-                $event->setResponse(new RedirectResponse($headers['X-Phraseanet-Redirect'], 302, array('X-Status-Code' => 302)));
+                $event->setResponse(new RedirectResponse($headers['X-Phraseanet-Redirect'], 302, ['X-Status-Code' => 302]));
             }
         }
     }

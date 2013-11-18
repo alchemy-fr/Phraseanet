@@ -28,7 +28,7 @@ class AddPluginTest extends PluginCommandTestCase
 
         self::$DI['cli']['temporary-filesystem'] = $this->createTemporaryFilesystemMock();
         self::$DI['cli']['plugins.autoloader-generator'] = $this->createPluginsAutoloaderGeneratorMock();
-        self::$DI['cli']['plugins.explorer'] = array(self::$DI['cli']['plugins.directory'].'/TestPlugin');
+        self::$DI['cli']['plugins.explorer'] = [self::$DI['cli']['plugins.directory'].'/TestPlugin'];
         self::$DI['cli']['plugins.plugins-validator'] = $this->createPluginsValidatorMock();
         self::$DI['cli']['filesystem'] = $this->createFilesystemMock();
         self::$DI['cli']['plugins.composer-installer'] = $this->createComposerInstallerMock();
@@ -71,7 +71,7 @@ class AddPluginTest extends PluginCommandTestCase
 
         self::$DI['cli']['plugins.autoloader-generator']->expects($this->once())
             ->method('write')
-            ->with(array($manifest));
+            ->with([$manifest]);
 
         $result = $command->execute($input, $output);
 

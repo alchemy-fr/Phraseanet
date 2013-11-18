@@ -16,19 +16,19 @@ class AutoloaderGeneratorTest extends \PHPUnit_Framework_TestCase
         $pluginDir = __DIR__ . '/../Fixtures/PluginDirInstalled/test-plugin';
         $pluginsDir = __DIR__ . '/../Fixtures/PluginDirInstalled';
 
-        $files = array(
+        $files = [
             $pluginsDir . '/services.php',
             $pluginsDir . '/autoload.php',
             $pluginsDir . '/commands.php',
             $pluginsDir . '/twig-paths.php',
             $pluginsDir . '/login.less',
             $pluginsDir . '/account.less',
-        );
+        ];
 
         $this->cleanup($files);
 
         $generator = new AutoloaderGenerator($pluginsDir);
-        $generator->write(array(new Manifest(json_decode(file_get_contents($pluginDir . '/manifest.json'), true))));
+        $generator->write([new Manifest(json_decode(file_get_contents($pluginDir . '/manifest.json'), true))]);
 
         $finder = new ExecutableFinder();
         $php = $finder->find('php');
@@ -39,7 +39,7 @@ class AutoloaderGeneratorTest extends \PHPUnit_Framework_TestCase
 
         foreach ($files as $file) {
             $this->assertFileExists($file);
-            $process = ProcessBuilder::create(array($php, '-l', $file))->getProcess();
+            $process = ProcessBuilder::create([$php, '-l', $file])->getProcess();
             $process->run();
             $this->assertTrue($process->isSuccessful(), basename($file) . ' is valid');
         }
@@ -65,7 +65,7 @@ class AutoloaderGeneratorTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Vendor\CustomCommand', $cli['console']->find('hello:world'));
 
         $mapping = require $pluginsDir . '/twig-paths.php';
-        $this->assertSame(array('plugin-test-plugin' => $pluginsDir . '/test-plugin/views', $pluginsDir . '/test-plugin/views', $pluginsDir . '/test-plugin/twig-views'), $mapping);
+        $this->assertSame(['plugin-test-plugin' => $pluginsDir . '/test-plugin/views', $pluginsDir . '/test-plugin/views', $pluginsDir . '/test-plugin/twig-views'], $mapping);
 
         $this->assertRegExp('#@import#', file_get_contents($pluginsDir . '/login.less'));
         $this->assertRegExp('#@import#', file_get_contents($pluginsDir . '/account.less'));

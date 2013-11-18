@@ -78,7 +78,7 @@ class TaskManagerStatus
     private function ensureConfigurationSchema()
     {
         if (!isset($this->conf['task-manager'])) {
-            $this->conf['task-manager'] = array('status' => static::STATUS_STARTED);
+            $this->conf['task-manager'] = ['status' => static::STATUS_STARTED];
 
             return;
         }
@@ -95,6 +95,6 @@ class TaskManagerStatus
 
     private function isValidStatus($status)
     {
-        return in_array($status, array(static::STATUS_STARTED, static::STATUS_STOPPED));
+        return in_array($status, [static::STATUS_STARTED, static::STATUS_STOPPED]);
     }
 }

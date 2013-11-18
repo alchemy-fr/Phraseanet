@@ -87,7 +87,7 @@ class Lazaret implements ControllerProviderInterface
      */
     public function listElement(Application $app, Request $request)
     {
-        $baseIds = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(array('canaddrecord')));
+        $baseIds = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['canaddrecord']));
 
         $lazaretFiles = null;
 
@@ -100,7 +100,7 @@ class Lazaret implements ControllerProviderInterface
         }
 
         return $app['twig']->render(
-            'prod/upload/lazaret.html.twig', array('lazaretFiles' => $lazaretFiles)
+            'prod/upload/lazaret.html.twig', ['lazaretFiles' => $lazaretFiles]
         );
     }
 
@@ -115,7 +115,7 @@ class Lazaret implements ControllerProviderInterface
      */
     public function getElement(Application $app, Request $request, $file_id)
     {
-        $ret = array('success' => false, 'message' => '', 'result'  => array());
+        $ret = ['success' => false, 'message' => '', 'result'  => []];
 
         $lazaretFile = $app['EM']->find('Alchemy\Phrasea\Model\Entities\LazaretFile', $file_id);
 
@@ -126,7 +126,7 @@ class Lazaret implements ControllerProviderInterface
             return $app->json($ret);
         }
 
-        $file = array(
+        $file = [
             'filename' => $lazaretFile->getOriginalName(),
             'base_id'  => $lazaretFile->getBaseId(),
             'created'  => $lazaretFile->getCreated()->format(\DateTime::ATOM),
@@ -134,7 +134,7 @@ class Lazaret implements ControllerProviderInterface
             'pathname' => $app['root.path'] . '/tmp/lazaret/' . $lazaretFile->getFilename(),
             'sha256'   => $lazaretFile->getSha256(),
             'uuid'     => $lazaretFile->getUuid(),
-        );
+        ];
 
         $ret['result'] = $file;
         $ret['success'] = true;
@@ -157,11 +157,11 @@ class Lazaret implements ControllerProviderInterface
      */
     public function addElement(Application $app, Request $request, $file_id)
     {
-        $ret = array('success' => false, 'message' => '', 'result'  => array());
+        $ret = ['success' => false, 'message' => '', 'result'  => []];
 
         //Optional parameter
         $keepAttributes = !!$request->request->get('keep_attributes', false);
-        $attributesToKeep = $request->request->get('attributes', array());
+        $attributesToKeep = $request->request->get('attributes', []);
 
         //Mandatory parameter
         if (null === $request->request->get('bas_id')) {
@@ -258,7 +258,7 @@ class Lazaret implements ControllerProviderInterface
         }
 
         try {
-            $app['filesystem']->remove(array($lazaretFileName, $lazaretThumbFileName));
+            $app['filesystem']->remove([$lazaretFileName, $lazaretThumbFileName]);
         } catch (IOException $e) {
 
         }
@@ -277,7 +277,7 @@ class Lazaret implements ControllerProviderInterface
      */
     public function denyElement(Application $app, Request $request, $file_id)
     {
-        $ret = array('success' => false, 'message' => '', 'result'  => array());
+        $ret = ['success' => false, 'message' => '', 'result'  => []];
 
         $lazaretFile = $app['EM']->find('Alchemy\Phrasea\Model\Entities\LazaretFile', $file_id);
         /* @var $lazaretFile LazaretFile */
@@ -306,7 +306,7 @@ class Lazaret implements ControllerProviderInterface
         $app['EM']->flush();
 
         try {
-            $app['filesystem']->remove(array($lazaretFileName, $lazaretThumbFileName));
+            $app['filesystem']->remove([$lazaretFileName, $lazaretThumbFileName]);
         } catch (IOException $e) {
 
         }
@@ -324,7 +324,7 @@ class Lazaret implements ControllerProviderInterface
      */
     public function emptyLazaret(Application $app, Request $request)
     {
-        $ret = array('success' => false, 'message' => '', 'result'  => array());
+        $ret = ['success' => false, 'message' => '', 'result'  => []];
 
         $lazaretFiles = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\LazaretFile')->findAll();
 
@@ -355,7 +355,7 @@ class Lazaret implements ControllerProviderInterface
      */
     public function acceptElement(Application $app, Request $request, $file_id)
     {
-        $ret = array('success' => false, 'message' => '', 'result'  => array());
+        $ret = ['success' => false, 'message' => '', 'result'  => []];
 
         //Mandatory parameter
         if (null === $recordId = $request->request->get('record_id')) {
@@ -416,7 +416,7 @@ class Lazaret implements ControllerProviderInterface
         }
 
         try {
-            $app['filesystem']->remove(array($lazaretFileName, $lazaretThumbFileName));
+            $app['filesystem']->remove([$lazaretFileName, $lazaretThumbFileName]);
         } catch (IOException $e) {
 
         }

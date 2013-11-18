@@ -28,7 +28,7 @@ class Filename extends AbstractChecker
      * @param Application $app
      * @param array       $options An array of options. available : 'sensitive' (false by default)
      */
-    public function __construct(Application $app, array $options = array())
+    public function __construct(Application $app, array $options = [])
     {
         if ( ! isset($options['sensitive'])) {
             $options['sensitive'] = false;

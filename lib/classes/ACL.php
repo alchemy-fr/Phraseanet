@@ -65,7 +65,7 @@ class ACL implements cache_cacheableInterface
      *
      * @var Array
      */
-    protected $_global_rights = array(
+    protected $_global_rights = [
         'taskmanager'        => false,
         'manageusers'        => false,
         'order'              => false,
@@ -86,7 +86,7 @@ class ACL implements cache_cacheableInterface
         'bas_chupub'         => false,
         'candwnldpreview'    => true,
         'candwnldhd'         => true
-    );
+    ];
 
     /**
      *
@@ -151,13 +151,13 @@ class ACL implements cache_cacheableInterface
             VALUES
             (null, :usr_id, :sbas_id, :record_id, 1, :case, :pusher)';
 
-        $params = array(
+        $params = [
             ':usr_id'    => $this->user->get_id()
             , ':sbas_id'   => $record->get_sbas_id()
             , ':record_id' => $record->get_record_id()
             , ':case'      => $action
             , ':pusher'    => $pusher->get_id()
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -175,13 +175,13 @@ class ACL implements cache_cacheableInterface
             VALUES
             (null, :usr_id, :sbas_id, :record_id, 1, :case, :pusher)';
 
-        $params = array(
+        $params = [
             ':usr_id'    => $this->user->get_id()
             , ':sbas_id'   => $record->get_sbas_id()
             , ':record_id' => $record->get_record_id()
             , ':case'      => $action
             , ':pusher'    => $pusher->get_id()
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -278,7 +278,7 @@ class ACL implements cache_cacheableInterface
             return $this;
         }
 
-        $sbas_ids = array();
+        $sbas_ids = [];
 
         foreach ($base_ids as $base_id) {
             $sbas_ids[] = phrasea::sbasFromBas($this->app, $base_id);
@@ -286,10 +286,10 @@ class ACL implements cache_cacheableInterface
 
         $sbas_ids = array_unique($sbas_ids);
 
-        $sbas_rights = array('bas_manage', 'bas_modify_struct', 'bas_modif_th', 'bas_chupub');
+        $sbas_rights = ['bas_manage', 'bas_modify_struct', 'bas_modif_th', 'bas_chupub'];
 
-        $sbas_to_acces = array();
-        $rights_to_give = array();
+        $sbas_to_acces = [];
+        $rights_to_give = [];
 
         foreach ($this->app['acl']->get($template_user)->get_granted_sbas() as $databox) {
             $sbas_id = $databox->get_sbas_id();
@@ -314,27 +314,27 @@ class ACL implements cache_cacheableInterface
             $this->update_rights_to_sbas($sbas_id, $rights);
         }
 
-        $bas_rights = array('canputinalbum', 'candwnldhd'
+        $bas_rights = ['canputinalbum', 'candwnldhd'
             , 'candwnldpreview', 'cancmd'
             , 'canadmin', 'actif', 'canreport', 'canpush'
             , 'canaddrecord', 'canmodifrecord', 'candeleterecord'
             , 'chgstatus', 'imgtools'
             , 'manage', 'modify_struct'
             , 'nowatermark', 'order_master'
-        );
+        ];
 
-        $bas_to_acces = $masks_to_give = $rights_to_give = array();
+        $bas_to_acces = $masks_to_give = $rights_to_give = [];
 
         /**
          * map masks (and+xor) of template to masks to apply to user on base
          * (and_and, and_or, xor_and, xor_or)
          */
-        $sbmap = array(
-            '00' => array('aa' => '1', 'ao' => '0', 'xa' => '1', 'xo' => '0'),
-            '01' => array('aa' => '1', 'ao' => '0', 'xa' => '1', 'xo' => '0'),
-            '10' => array('aa' => '1', 'ao' => '1', 'xa' => '0', 'xo' => '0'),
-            '11' => array('aa' => '1', 'ao' => '1', 'xa' => '1', 'xo' => '1')
-        );
+        $sbmap = [
+            '00' => ['aa' => '1', 'ao' => '0', 'xa' => '1', 'xo' => '0'],
+            '01' => ['aa' => '1', 'ao' => '0', 'xa' => '1', 'xo' => '0'],
+            '10' => ['aa' => '1', 'ao' => '1', 'xa' => '0', 'xo' => '0'],
+            '11' => ['aa' => '1', 'ao' => '1', 'xa' => '1', 'xo' => '1']
+        ];
 
         foreach ($this->app['acl']->get($template_user)->get_granted_base() as $collection) {
             $base_id = $collection->get_base_id();
@@ -371,7 +371,7 @@ class ACL implements cache_cacheableInterface
                 . databox_status::dec2bin($this->app, $mask_xor)
                 , -32
             );
-            $m = array('aa' => '', 'ao' => '', 'xa' => '', 'xo' => '');
+            $m = ['aa' => '', 'ao' => '', 'xa' => '', 'xo' => ''];
             for ($i = 0; $i < 32; $i++) {
                 $ax = $mand[$i] . $mxor[$i];
 
@@ -380,12 +380,12 @@ class ACL implements cache_cacheableInterface
                 }
             }
 
-            $masks_to_give[$base_id] = array(
+            $masks_to_give[$base_id] = [
                 'aa' => $m['aa']
                 , 'ao' => $m['ao']
                 , 'xa' => $m['xa']
                 , 'xo' => $m['xo']
-            );
+            ];
         }
 
         $this->give_access_to_base($bas_to_acces);
@@ -678,10 +678,10 @@ class ACL implements cache_cacheableInterface
      * @param  array|null $sbas_ids Optionnal sbas_id to restrict the query on
      * @return array      An array of collection
      */
-    public function get_granted_base(Array $rights = array(), array $sbas_ids = null)
+    public function get_granted_base(Array $rights = [], array $sbas_ids = null)
     {
         $this->load_rights_bas();
-        $ret = array();
+        $ret = [];
 
         foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
             if ($sbas_ids && !in_array($databox->get_sbas_id(), $sbas_ids)) {
@@ -725,16 +725,16 @@ class ACL implements cache_cacheableInterface
      * @param  Array $rights
      * @return Array
      */
-    public function get_granted_sbas($rights = array())
+    public function get_granted_sbas($rights = [])
     {
         if (is_string($rights))
-            $rights = array($rights);
+            $rights = [$rights];
 
         assert(is_array($rights));
 
         $this->load_rights_sbas();
 
-        $ret = array();
+        $ret = [];
 
         foreach ($this->_rights_sbas as $sbas_id => $datas) {
             $continue = false;
@@ -770,10 +770,10 @@ class ACL implements cache_cacheableInterface
         $sql = 'UPDATE usr SET create_db = :create_db WHERE usr_id = :usr_id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(
+        $stmt->execute([
             ':create_db' => $boolean ? '1' : '0',
             ':usr_id'    => $this->user->get_id()
-        ));
+        ]);
         $stmt->closeCursor();
 
         $this->delete_data_from_cache(self::CACHE_IS_ADMIN);
@@ -808,13 +808,13 @@ class ACL implements cache_cacheableInterface
             FROM records_rights WHERE usr_id = :usr_id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->user->get_id()));
+        $stmt->execute([':usr_id' => $this->user->get_id()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
         unset($stmt);
 
-        $this->_rights_records_preview = array();
-        $this->_rights_records_document = array();
+        $this->_rights_records_preview = [];
+        $this->_rights_records_document = [];
 
         foreach ($rs as $row) {
             $currentid = $row["sbas_id"] . "_" . $row["record_id"];
@@ -823,10 +823,10 @@ class ACL implements cache_cacheableInterface
             $this->_rights_records_preview[$currentid] = $currentid;
         }
 
-        $datas = array(
+        $datas = [
             'preview'  => $this->_rights_records_preview
             , 'document' => $this->_rights_records_document
-        );
+        ];
 
         $this->set_data_to_cache($datas, self::CACHE_RIGHTS_RECORDS);
 
@@ -850,7 +850,7 @@ class ACL implements cache_cacheableInterface
             FROM usr WHERE usr_id = :usr_id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id'       => $this->user->get_id()));
+        $stmt->execute([':usr_id'       => $this->user->get_id()]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
         unset($stmt);
@@ -887,11 +887,11 @@ class ACL implements cache_cacheableInterface
               AND sbas.sbas_id = sbasusr.sbas_id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->user->get_id()));
+        $stmt->execute([':usr_id' => $this->user->get_id()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $this->_rights_sbas = array();
+        $this->_rights_sbas = [];
 
         $this->_global_rights['bas_modif_th'] = false;
         $this->_global_rights['bas_modify_struct'] = false;
@@ -948,11 +948,11 @@ class ACL implements cache_cacheableInterface
             AND s.sbas_id = b.sbas_id ';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->user->get_id()));
+        $stmt->execute([':usr_id' => $this->user->get_id()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $this->_rights_bas = $this->_limited = array();
+        $this->_rights_bas = $this->_limited = [];
 
         $this->_global_rights['manageusers'] = false;
         $this->_global_rights['coll_manage'] = false;
@@ -1009,10 +1009,10 @@ class ACL implements cache_cacheableInterface
 
             if ($row['time_limited'] == '1'
                 && ($row['limited_from'] !== '' || $row['limited_to'] !== '')) {
-                $this->_limited[$row['base_id']] = array(
+                $this->_limited[$row['base_id']] = [
                     'dmin' => $row['limited_from'] ? new DateTime($row['limited_from']) : null
                     , 'dmax' => $row['limited_to'] ? new DateTime($row['limited_to']) : null
-                );
+                ];
             }
 
             $this->_rights_bas[$row['base_id']]['imgtools']
@@ -1128,7 +1128,7 @@ class ACL implements cache_cacheableInterface
         $usr_id = $this->user->get_id();
 
         foreach ($base_ids as $base_id) {
-            if (!$stmt_del->execute(array(':base_id' => $base_id, ':usr_id'  => $usr_id))) {
+            if (!$stmt_del->execute([':base_id' => $base_id, ':usr_id'  => $usr_id])) {
                 throw new Exception('Error while deleteing some rights');
             }
         }
@@ -1148,12 +1148,12 @@ class ACL implements cache_cacheableInterface
                 VALUES (null, :base_id, :usr_id, "1")';
         $stmt_ins = $this->app['phraseanet.appbox']->get_connection()->prepare($sql_ins);
         $usr_id = $this->user->get_id();
-        $to_update = array();
+        $to_update = [];
         $this->load_rights_bas();
 
         foreach ($base_ids as $base_id) {
             if (!isset($this->_rights_bas[$base_id])) {
-                $stmt_ins->execute(array(':base_id' => $base_id, ':usr_id'  => $usr_id));
+                $stmt_ins->execute([':base_id' => $base_id, ':usr_id'  => $usr_id]);
             } elseif ($this->_rights_bas[$base_id]['actif'] === false) {
                 $to_update[] = $base_id;
             }
@@ -1164,7 +1164,7 @@ class ACL implements cache_cacheableInterface
                   WHERE usr_id = :usr_id AND base_id = :base_id';
         $stmt_upd = $this->app['phraseanet.appbox']->get_connection()->prepare($sql_upd);
         foreach ($to_update as $base_id) {
-            $stmt_upd->execute(array(':usr_id'  => $usr_id, ':base_id' => $base_id));
+            $stmt_upd->execute([':usr_id'  => $usr_id, ':base_id' => $base_id]);
         }
         $stmt_upd->closeCursor();
 
@@ -1188,7 +1188,7 @@ class ACL implements cache_cacheableInterface
 
         foreach ($sbas_ids as $sbas_id) {
             if (!$this->has_access_to_sbas($sbas_id))
-                $stmt_ins->execute(array(':sbas_id' => $sbas_id, ':usr_id'  => $usr_id));
+                $stmt_ins->execute([':sbas_id' => $sbas_id, ':usr_id'  => $usr_id]);
         }
         $this->delete_data_from_cache(self::CACHE_RIGHTS_SBAS);
 
@@ -1207,12 +1207,12 @@ class ACL implements cache_cacheableInterface
     {
 
         if (!$this->has_access_to_base($base_id) && (!isset($rights['actif']) || $rights['actif'] == '1')) {
-            $this->give_access_to_base(array($base_id));
+            $this->give_access_to_base([$base_id]);
         }
 
         $sql_up = "UPDATE basusr SET ";
 
-        $sql_args = $params = array();
+        $sql_args = $params = [];
         foreach ($rights as $right => $v) {
             $sql_args[] = " " . $right . " = :" . $right;
             switch ($right) {
@@ -1237,7 +1237,7 @@ class ACL implements cache_cacheableInterface
 
         $params = array_merge(
             $params
-            , array(':base_id' => $base_id, ':usr_id'  => $usr_id)
+            , [':base_id' => $base_id, ':usr_id'  => $usr_id]
         );
 
         $stmt_up = $this->app['phraseanet.appbox']->get_connection()->prepare($sql_up);
@@ -1262,7 +1262,7 @@ class ACL implements cache_cacheableInterface
             WHERE usr_id = :usr_id_2 AND b.base_id = bu.base_id)';
 
         $usr_id = $this->user->get_id();
-        $params = array(':usr_id_1' => $usr_id, ':usr_id_2' => $usr_id);
+        $params = [':usr_id_1' => $usr_id, ':usr_id_2' => $usr_id];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -1282,13 +1282,13 @@ class ACL implements cache_cacheableInterface
     public function update_rights_to_sbas($sbas_id, $rights)
     {
         if (!$this->has_access_to_sbas($sbas_id))
-            $this->give_access_to_sbas(array($sbas_id));
+            $this->give_access_to_sbas([$sbas_id]);
 
         $sql_up = "UPDATE sbasusr SET ";
 
-        $sql_args = array();
+        $sql_args = [];
         $usr_id = $this->user->get_id();
-        $params = array(':sbas_id' => $sbas_id, ':usr_id'  => $usr_id);
+        $params = [':sbas_id' => $sbas_id, ':usr_id'  => $usr_id];
 
         foreach ($rights as $right => $v) {
             $sql_args[] = " " . $right . " = :" . $right;
@@ -1324,7 +1324,7 @@ class ACL implements cache_cacheableInterface
       WHERE usr_id = :usr_id AND base_id = :base_id ';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id'  => $this->user->get_id(), ':base_id' => $base_id));
+        $stmt->execute([':usr_id'  => $this->user->get_id(), ':base_id' => $base_id]);
         $stmt->closeCursor();
 
         unset($stmt);
@@ -1340,13 +1340,13 @@ class ACL implements cache_cacheableInterface
             AND usr_id = :usr_id
             AND MONTH(lastconn) != MONTH(NOW()) AND restrict_dwnld = 1';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->user->get_id()));
+        $stmt->execute([':usr_id' => $this->user->get_id()]);
         $stmt->closeCursor();
 
         $sql = "UPDATE basusr SET lastconn=now()
             WHERE usr_id = :usr_id AND actif = 1";
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->user->get_id()));
+        $stmt->execute([':usr_id' => $this->user->get_id()]);
         $stmt->closeCursor();
 
         unset($stmt);
@@ -1368,12 +1368,12 @@ class ACL implements cache_cacheableInterface
       SET remain_dwnld = :restes, restrict_dwnld = 1, month_dwnld_max = :droits
       WHERE usr_id = :usr_id AND base_id = :base_id ';
 
-        $params = array(
+        $params = [
             ':usr_id'  => $this->user->get_id(),
             ':base_id' => $base_id,
             ':restes'  => $restes,
             ':droits'  => $droits
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -1390,10 +1390,10 @@ class ACL implements cache_cacheableInterface
         $sql = 'SELECT * FROM basusr
               WHERE base_id = :base_from AND usr_id = :usr_id';
 
-        $params = array(
+        $params = [
             ':base_from' => $base_id_from,
             ':usr_id'    => $this->user->get_id()
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -1404,12 +1404,12 @@ class ACL implements cache_cacheableInterface
             return $this;
         }
 
-        $this->give_access_to_base(array($base_id_dest));
+        $this->give_access_to_base([$base_id_dest]);
 
-        $rights = array(
+        $rights = [
             'mask_and' => $row['mask_and'],
             'mask_xor' => $row['mask_xor'],
-        );
+        ];
 
         if ($row['canputinalbum'])
             $rights['canputinalbum'] = true;
@@ -1476,15 +1476,15 @@ class ACL implements cache_cacheableInterface
         $stmt = $databox->get_connection()->prepare($sql);
         $iord = 0;
 
-        foreach ($this->get_granted_base(array(), array($databox->get_sbas_id())) as $collection) {
-            $stmt->execute(array(
+        foreach ($this->get_granted_base([], [$databox->get_sbas_id()]) as $collection) {
+            $stmt->execute([
                 ':site_id'  => $this->app['configuration']['main']['key'],
                 ':usr_id'   => $this->user->get_id(),
                 ':coll_id'  => $collection->get_coll_id(),
                 ':mask_and' => $this->get_mask_and($collection->get_base_id()),
                 ':mask_xor' => $this->get_mask_xor($collection->get_base_id()),
                 ':ord'      => $iord++
-            ));
+            ]);
         }
 
         $stmt->closeCursor();
@@ -1504,10 +1504,10 @@ class ACL implements cache_cacheableInterface
     public function delete_injected_rights_sbas(databox $databox)
     {
         $sql = 'DELETE FROM collusr WHERE usr_id = :usr_id AND site = :site';
-        $params = array(
+        $params = [
             ':usr_id' => $this->user->get_id()
             , ':site'   => $this->app['configuration']['main']['key']
-        );
+        ];
         $stmt = $databox->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
@@ -1517,13 +1517,13 @@ class ACL implements cache_cacheableInterface
 
     public function set_masks_on_base($base_id, $and_and, $and_or, $xor_and, $xor_or)
     {
-        $vhex = array();
-        $datas = array(
+        $vhex = [];
+        $datas = [
             'and_and' => $and_and,
             'and_or'  => $and_or,
             'xor_and' => $xor_and,
             'xor_or'  => $xor_or
-        );
+        ];
 
         foreach ($datas as $name => $f) {
             $vhex[$name] = "0x";
@@ -1545,7 +1545,7 @@ class ACL implements cache_cacheableInterface
         WHERE usr_id = :usr_id and base_id = :base_id";
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':base_id' => $base_id, ':usr_id'  => $this->user->get_id()));
+        $stmt->execute([':base_id' => $base_id, ':usr_id'  => $this->user->get_id()]);
         $stmt->closeCursor();
 
         unset($stmt);
@@ -1596,12 +1596,12 @@ class ACL implements cache_cacheableInterface
               WHERE base_id = :base_id AND usr_id = :usr_id';
         }
 
-        $params = array(
+        $params = [
             ':usr_id'      => $this->user->get_id()
             , ':base_id'     => $base_id
             , 'limited_from' => ($limit_from ? $limit_from->format(DATE_ISO8601) : null)
             , 'limited_to'   => ($limit_to ? $limit_to->format(DATE_ISO8601) : null)
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
 
@@ -1623,11 +1623,11 @@ class ACL implements cache_cacheableInterface
     {
         $sql = 'SELECT base_id FROM basusr WHERE order_master="1" AND usr_id= :usr_id ';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->user->get_id()));
+        $stmt->execute([':usr_id' => $this->user->get_id()]);
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $collections = array();
+        $collections = [];
 
         foreach ($rs as $row) {
             $collections[] = \collection::get_from_base_id($this->app, $row['base_id']);
@@ -1650,11 +1650,11 @@ class ACL implements cache_cacheableInterface
                 WHERE usr_id = :usr_id AND base_id = :base_id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(
+        $stmt->execute([
             ':master'    => $bool ? 1 : 0,
             ':usr_id'    => $this->user->get_id(),
             ':base_id'   => $collection->get_base_id()
-        ));
+        ]);
         $stmt->closeCursor();
 
         return $this;

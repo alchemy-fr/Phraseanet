@@ -17,7 +17,7 @@ class patch_380alpha16a implements patchInterface
     private $release = '3.8.0-alpha.16';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -51,17 +51,17 @@ class patch_380alpha16a implements patchInterface
         $xsendfile = $app['configuration']['xsendfile'];
 
         if (!isset($xsendfile['mapping'])) {
-            $xsendfile['mapping'] = array();
+            $xsendfile['mapping'] = [];
         }
 
-        $xsendfile['mapping'][] = array(
+        $xsendfile['mapping'][] = [
             'directory' => $app['root.path'] . '/tmp/lazaret/',
             'mount-point' => '/lazaret/',
-        );
-        $xsendfile['mapping'][] = array(
+        ];
+        $xsendfile['mapping'][] = [
             'directory' => $app['root.path'] . '/tmp/download/',
             'mount-point' => '/download/',
-        );
+        ];
 
         $app['configuration']['xsendfile'] = $xsendfile;
 

@@ -88,7 +88,7 @@ class Authenticator
 
     public function refreshAccount(Session $session)
     {
-        if (!$this->em->getRepository('Alchemy\Phrasea\Model\Entities\Session')->findOneBy(array('id' => $session->getId()))) {
+        if (!$this->em->getRepository('Alchemy\Phrasea\Model\Entities\Session')->findOneBy(['id' => $session->getId()])) {
             throw new RuntimeException('Unable to refresh the session, it does not exist anymore');
         }
 

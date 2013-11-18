@@ -36,7 +36,7 @@ class AtomFormatter extends FeedFormatterAbstract implements FeedFormatterInterf
     public function createResponse(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', Application $app = null)
     {
         $content = $this->format($feed, $page, $user, $generator, $app);
-        $response = new Response($content, 200, array('Content-Type' => 'application/atom+xml'));
+        $response = new Response($content, 200, ['Content-Type' => 'application/atom+xml']);
 
         return $response;
     }

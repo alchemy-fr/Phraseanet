@@ -100,12 +100,12 @@ class Bridge implements ControllerProviderInterface
     public function doPostManager(Application $app, Request $request)
     {
         $route = new RecordHelper\Bridge($app, $request);
-        $params = array(
+        $params = [
             'user_accounts'      => \Bridge_Account::get_accounts_by_user($app, $app['authentication']->getUser()),
             'available_apis'     => \Bridge_Api::get_availables($app),
             'route'              => $route,
             'current_account_id' => '',
-        );
+        ];
 
         return $app['twig']->render('prod/actions/Bridge/index.html.twig', $params);
     }
@@ -147,7 +147,7 @@ class Bridge implements ControllerProviderInterface
             $error_message = $e->getMessage();
         }
 
-        $params = array('error_message' => $error_message);
+        $params = ['error_message' => $error_message];
 
         return $app['twig']->render('prod/actions/Bridge/callback.html.twig', $params);
     }
@@ -158,10 +158,10 @@ class Bridge implements ControllerProviderInterface
         $this->requireConnection($app, $account);
         $account->get_api()->get_connector()->disconnect();
 
-        return $app->redirectPath('bridge_load_elements', array(
+        return $app->redirectPath('bridge_load_elements', [
             'account_id' => $account_id,
             'type'       => $account->get_api()->get_connector()->get_default_element_type(),
-        ));
+        ]);
     }
 
     public function doPostAccountDelete(Application $app, Request $request, $account_id)
@@ -183,7 +183,7 @@ class Bridge implements ControllerProviderInterface
             $message = _('Something went wrong, please contact an administrator');
         }
 
-        return $app->json(array('success' => $success, 'message' => $message));
+        return $app->json(['success' => $success, 'message' => $message]);
     }
 
     public function doGetloadRecords(Application $app, Request $request, $account_id)
@@ -196,13 +196,13 @@ class Bridge implements ControllerProviderInterface
 
         $this->requireConnection($app, $account);
 
-        $params = array(
+        $params = [
             'adapter_action' => 'load-records'
             , 'account'        => $account
             , 'elements'       => $elements
             , 'error_message'  => $request->query->get('error')
             , 'notice_message' => $request->query->get('notice')
-        );
+        ];
 
         return $app['twig']->render('prod/actions/Bridge/records_list.html.twig', $params);
     }
@@ -218,14 +218,14 @@ class Bridge implements ControllerProviderInterface
 
         $elements = $account->get_api()->list_elements($type, $offset_start, $quantity);
 
-        $params = array(
+        $params = [
             'action_type'    => $type,
             'adapter_action' => 'load-elements',
             'account'        => $account,
             'elements'       => $elements,
             'error_message'  => $request->query->get('error'),
             'notice_message' => $request->query->get('notice'),
-        );
+        ];
 
         return $app['twig']->render('prod/actions/Bridge/element_list.html.twig', $params);
     }
@@ -240,14 +240,14 @@ class Bridge implements ControllerProviderInterface
         $this->requireConnection($app, $account);
         $elements = $account->get_api()->list_containers($type, $offset_start, $quantity);
 
-        $params = array(
+        $params = [
             'action_type'    => $type,
             'adapter_action' => 'load-containers',
             'account'        => $account,
             'elements'       => $elements,
             'error_message'  => $request->query->get('error'),
             'notice_message' => $request->query->get('notice'),
-        );
+        ];
 
         return $app['twig']->render('prod/actions/Bridge/element_list.html.twig', $params);
     }
@@ -257,11 +257,11 @@ class Bridge implements ControllerProviderInterface
         $account = \Bridge_Account::load_account($app, $account_id);
 
         $this->requireConnection($app, $account);
-        $elements = $request->query->get('elements_list', array());
+        $elements = $request->query->get('elements_list', []);
         $elements = is_array($elements) ? $elements : explode(';', $elements);
 
         $destination = $request->query->get('destination');
-        $route_params = array();
+        $route_params = [];
         $class = $account->get_api()->get_connector()->get_object_class_from_type($element_type);
 
         switch ($action) {
@@ -270,25 +270,25 @@ class Bridge implements ControllerProviderInterface
 
             case 'modify':
                 if (count($elements) != 1) {
-                    return $app->redirectPath('bridge_load_elements', array(
+                    return $app->redirectPath('bridge_load_elements', [
                         'account_id' => $account_id,
                         'type'       => $element_type,
                         'page'       => '',
                         'error'      => _('Vous ne pouvez pas editer plusieurs elements simultanement'),
-                    ));
+                    ]);
                 }
                 foreach ($elements as $element_id) {
                     if ($class === \Bridge_Api_Interface::OBJECT_CLASS_ELEMENT) {
-                        $route_params = array('element' => $account->get_api()->get_element_from_id($element_id, $element_type));
+                        $route_params = ['element' => $account->get_api()->get_element_from_id($element_id, $element_type)];
                     }
                     if ($class === \Bridge_Api_Interface::OBJECT_CLASS_CONTAINER) {
-                        $route_params = array('element' => $account->get_api()->get_container_from_id($element_id, $element_type));
+                        $route_params = ['element' => $account->get_api()->get_container_from_id($element_id, $element_type)];
                     }
                 }
                 break;
 
             case 'moveinto':
-                $route_params = array('containers' => $account->get_api()->list_containers($destination, 0, 0));
+                $route_params = ['containers' => $account->get_api()->list_containers($destination, 0, 0)];
                 break;
 
             case 'deleteelement':
@@ -299,7 +299,7 @@ class Bridge implements ControllerProviderInterface
                 break;
         }
 
-        $params = array(
+        $params = [
             'account'           => $account,
             'destination'       => $destination,
             'element_type'      => $element_type,
@@ -309,7 +309,7 @@ class Bridge implements ControllerProviderInterface
             'elements'          => $elements,
             'error_message'     => $request->query->get('error'),
             'notice_message'    => $request->query->get('notice'),
-        );
+        ];
 
         $params = array_merge($params, $route_params);
         $template = 'prod/actions/Bridge/' . $account->get_api()->get_connector()->get_name() . '/' . $element_type . '_' . $action . ($destination ? '_' . $destination : '') . '.html.twig';
@@ -323,7 +323,7 @@ class Bridge implements ControllerProviderInterface
 
         $this->requireConnection($app, $account);
 
-        $elements = $request->request->get('elements_list', array());
+        $elements = $request->request->get('elements_list', []);
         $elements = is_array($elements) ? $elements : explode(';', $elements);
 
         $destination = $request->request->get('destination');
@@ -342,7 +342,7 @@ class Bridge implements ControllerProviderInterface
                     }
 
                     if (count($errors) > 0) {
-                        $params = array(
+                        $params = [
                             'element'           => $account->get_api()->get_element_from_id($element_id, $element_type),
                             'account'           => $account,
                             'destination'       => $destination,
@@ -353,7 +353,7 @@ class Bridge implements ControllerProviderInterface
                             'error_message'     => _('Request contains invalid datas'),
                             'constraint_errors' => $errors,
                             'notice_message'    => $request->request->get('notice'),
-                        );
+                        ];
 
                         $template = 'prod/actions/Bridge/' . $account->get_api()->get_connector()->get_name() . '/' . $element_type . '_' . $action . ($destination ? '_' . $destination : '') . '.html.twig';
 
@@ -417,14 +417,14 @@ class Bridge implements ControllerProviderInterface
 
         $route->grep_records($account->get_api()->acceptable_records());
 
-        $params = array(
+        $params = [
             'route'             => $route,
             'account'           => $account,
             'error_message'     => $request->query->get('error'),
             'notice_message'    => $request->query->get('notice'),
             'constraint_errors' => null,
             'adapter_action'    => 'upload',
-        );
+        ];
 
         return $app['twig']->render(
             'prod/actions/Bridge/' . $account->get_api()->get_connector()->get_name() . '/upload.html.twig', $params
@@ -433,7 +433,7 @@ class Bridge implements ControllerProviderInterface
 
     public function doPostUpload(Application $app, Request $request)
     {
-        $errors = array();
+        $errors = [];
         $account = \Bridge_Account::load_account($app, $request->request->get('account_id'));
         $this->requireConnection($app, $account);
 
@@ -448,14 +448,14 @@ class Bridge implements ControllerProviderInterface
         }
 
         if (count($errors) > 0) {
-            $params = array(
+            $params = [
                 'route'             => $route,
                 'account'           => $account,
                 'error_message'     => _('Request contains invalid datas'),
                 'constraint_errors' => $errors,
                 'notice_message'    => $request->request->get('notice'),
                 'adapter_action'    => 'upload',
-            );
+            ];
 
             return $app['twig']->render('prod/actions/Bridge/' . $account->get_api()->get_connector()->get_name() . '/upload.html.twig', $params);
         }

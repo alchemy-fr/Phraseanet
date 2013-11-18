@@ -28,7 +28,7 @@ interface connection_interface
 
     public function close();
 
-    public function prepare($statement, $driver_options = array());
+    public function prepare($statement, $driver_options = []);
 
     public function beginTransaction();
 

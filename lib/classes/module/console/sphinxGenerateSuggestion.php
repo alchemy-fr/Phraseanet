@@ -43,7 +43,7 @@ class module_console_sphinxGenerateSuggestion extends Command
         foreach ($params as $sbas_id => $p) {
             $index = sprintf("%u", crc32(
                 str_replace(
-                    array('.', '%')
+                    ['.', '%']
                     , '_'
                     , sprintf('%s_%s_%s_%s', $p['host'], $p['port'], $p['user'], $p['dbname'])
                 )
@@ -61,7 +61,7 @@ class module_console_sphinxGenerateSuggestion extends Command
                 return 1;
             }
 
-            $builder = ProcessBuilder::create(array('/usr/local/bin/indexer'));
+            $builder = ProcessBuilder::create(['/usr/local/bin/indexer']);
             $builder->add('metadatas' . $index)
                 ->add('--buildstops')
                 ->add($tmp_file)

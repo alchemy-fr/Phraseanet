@@ -84,17 +84,17 @@ class Linkedin extends AbstractProvider
 
         $this->session->set('linkedin.provider.state', $state);
 
-        return new RedirectResponse('https://www.linkedin.com/uas/oauth2/authorization?' . http_build_query(array(
+        return new RedirectResponse('https://www.linkedin.com/uas/oauth2/authorization?' . http_build_query([
              'response_type' => 'code',
              'client_id' => $this->key,
              'scope' => 'r_basicprofile r_emailaddress',
              'state' => $state,
              'redirect_uri' => $this->generator->generate(
                  'login_authentication_provider_callback',
-                 array('providerId' => $this->getId()),
+                 ['providerId' => $this->getId()],
                  UrlGenerator::ABSOLUTE_URL
              ),
-        ), '', '&'));
+        ], '', '&'));
     }
 
     /**
@@ -119,17 +119,17 @@ class Linkedin extends AbstractProvider
         }
 
         try {
-            $guzzleRequest = $this->client->post('https://www.linkedin.com/uas/oauth2/accessToken?' . http_build_query(array(
+            $guzzleRequest = $this->client->post('https://www.linkedin.com/uas/oauth2/accessToken?' . http_build_query([
                 'grant_type'    => 'authorization_code',
                 'code'          => $request->query->get('code'),
                 'redirect_uri'  => $this->generator->generate(
                     'login_authentication_provider_callback',
-                    array('providerId' => $this->getId()),
+                    ['providerId' => $this->getId()],
                     UrlGenerator::ABSOLUTE_URL
                 ),
                 'client_id'     => $this->key,
                 'client_secret' => $this->secret,
-            ), '', '&'));
+            ], '', '&'));
             $response = $guzzleRequest->send();
         } catch (GuzzleException $e) {
             throw new NotAuthenticatedException('Unable to query LinkedIn access token', $e->getCode(), $e);

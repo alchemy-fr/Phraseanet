@@ -18,12 +18,12 @@ class PluginsExplorerTest extends PluginTestCase
     {
         $explorer = new PluginsExplorer(__DIR__ . '/../Fixtures/PluginDir');
 
-        $dirs = array();
+        $dirs = [];
 
         foreach ($explorer as $dir) {
             $dirs[] = (string) realpath($dir);
         }
 
-        $this->assertSame(array(realpath(__DIR__ . '/../Fixtures/PluginDir/TestPlugin')), $dirs);
+        $this->assertSame([realpath(__DIR__ . '/../Fixtures/PluginDir/TestPlugin')], $dirs);
     }
 }

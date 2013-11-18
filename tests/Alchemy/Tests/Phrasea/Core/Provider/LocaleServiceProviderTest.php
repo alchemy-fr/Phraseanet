@@ -33,7 +33,7 @@ class LocaleServiceProvidertest extends \PhraseanetPHPUnitAbstract
         $app['configuration']->expects($this->any())
             ->method('offsetGet')
             ->with('main')
-            ->will($this->returnValue(array('languages' => array('fr_FR', 'en_US', 'de'))));
+            ->will($this->returnValue(['languages' => ['fr_FR', 'en_US', 'de']]));
 
         $original = Application::getAvailableLanguages();
         unset($original['en_GB']);
@@ -57,7 +57,7 @@ class LocaleServiceProvidertest extends \PhraseanetPHPUnitAbstract
         $app['configuration']->expects($this->any())
             ->method('offsetGet')
             ->with('main')
-            ->will($this->returnValue(array('languages' => array('en_US'))));
+            ->will($this->returnValue(['languages' => ['en_US']]));
         $app['monolog'] = $this->getMock('Psr\Log\LoggerInterface');
         $app['monolog']->expects($this->once())
             ->method('error');
@@ -73,7 +73,7 @@ class LocaleServiceProvidertest extends \PhraseanetPHPUnitAbstract
         $app->register(new LocaleServiceProvider());
 
         $this->assertEquals(array_values(Application::getAvailableLanguages()), array_values($app['locales.I18n.available']));
-        $this->assertEquals(array('de', 'en', 'fr', 'nl'), array_keys($app['locales.I18n.available']));
+        $this->assertEquals(['de', 'en', 'fr', 'nl'], array_keys($app['locales.I18n.available']));
     }
 
     public function testLocaleI18n()

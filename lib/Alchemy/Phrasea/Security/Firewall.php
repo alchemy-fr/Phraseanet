@@ -16,9 +16,9 @@ class Firewall
     public function requireSetUp()
     {
         if (!$this->app['phraseanet.configuration-tester']->isInstalled()) {
-            $this->app->abort(302, 'Phraseanet is not installed', array(
+            $this->app->abort(302, 'Phraseanet is not installed', [
                 'X-Phraseanet-Redirect' => $this->app->path('setup')
-            ));
+            ]);
         }
 
         return null;
@@ -115,9 +115,9 @@ class Firewall
     public function requireAuthentication()
     {
         if (!$this->app['authentication']->isAuthenticated()) {
-            $this->app->abort(302, 'You are not authenticated', array(
+            $this->app->abort(302, 'You are not authenticated', [
                 'X-Phraseanet-Redirect' => $this->app->path('homepage')
-            ));
+            ]);
         }
 
         return $this;
@@ -126,9 +126,9 @@ class Firewall
     public function requireNotAuthenticated()
     {
         if ($this->app['authentication']->isAuthenticated()) {
-            $this->app->abort(302, 'You are authenticated', array(
+            $this->app->abort(302, 'You are authenticated', [
                 'X-Phraseanet-Redirect' => $this->app->path('prod')
-            ));
+            ]);
         }
 
         return $this;
@@ -136,7 +136,7 @@ class Firewall
 
     public function requireOrdersAdmin()
     {
-        if (false === !!count($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(array('order_master')))) {
+        if (false === !!count($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['order_master']))) {
             $this->app->abort(403, 'You are not an order admin');
         }
 

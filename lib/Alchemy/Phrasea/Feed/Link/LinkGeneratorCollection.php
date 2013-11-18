@@ -7,7 +7,7 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
 class LinkGeneratorCollection implements LinkGeneratorInterface
 {
-    private $generators = array();
+    private $generators = [];
 
     /**
      * Adds a LinkGeneratorInterface to the internal array.

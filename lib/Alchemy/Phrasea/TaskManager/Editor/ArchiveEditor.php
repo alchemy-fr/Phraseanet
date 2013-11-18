@@ -55,7 +55,7 @@ EOF;
      */
     protected function getFormProperties()
     {
-        return array(
+        return [
             'base_id'       => static::FORM_TYPE_INTEGER,
             'hotfolder'     => static::FORM_TYPE_STRING,
             'move_archived' => static::FORM_TYPE_BOOLEAN,
@@ -63,6 +63,6 @@ EOF;
             'delfolder'     => static::FORM_TYPE_BOOLEAN,
             'copy_spe'      => static::FORM_TYPE_BOOLEAN,
             'cold'          => static::FORM_TYPE_INTEGER,
-        );
+        ];
     }
 }

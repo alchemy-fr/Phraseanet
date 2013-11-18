@@ -24,19 +24,19 @@ class ACLManipulatorTest extends \PhraseanetPHPUnitAbstract
         foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             $databoxId = $databox->get_sbas_id();
 
-            $acl->update_rights_to_sbas($databoxId, array(
+            $acl->update_rights_to_sbas($databoxId, [
                 'bas_manage'        => '0',
                 'bas_modify_struct' => '0',
                 'bas_modif_th'      => '0',
                 'bas_chupub'        => '0'
-            ));
+            ]);
 
             foreach ($databox->get_collections() as $collection) {
                 $baseId = $collection->get_base_id();
                 $acl->set_limits($baseId, true);
                 $acl->set_masks_on_base($baseId, '1', '1', '1', '1');
 
-                $acl->update_rights_to_base($baseId, array(
+                $acl->update_rights_to_base($baseId, [
                     'canputinalbum'     => '0',
                     'candwnldhd'        => '0',
                     'candwnldsubdef'    => '0',
@@ -55,7 +55,7 @@ class ACLManipulatorTest extends \PhraseanetPHPUnitAbstract
                     'manage'            => '0',
                     'modify_struct'     => '0',
                     'bas_modify_struct' => '0'
-                ));
+                ]);
 
                 break 2;
             }

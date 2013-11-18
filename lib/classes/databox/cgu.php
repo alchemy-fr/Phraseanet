@@ -49,7 +49,7 @@ class databox_cgu
 
     private static function getUnvalidated(Application $app, $home = false)
     {
-        $terms = array();
+        $terms = [];
 
         foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
             try {
@@ -71,7 +71,7 @@ class databox_cgu
                 }
 
                 if ($userValidation)
-                    $terms[$name] = array('sbas_id' => $databox->get_sbas_id(), 'terms'   => $value, 'date'    => $update);
+                    $terms[$name] = ['sbas_id' => $databox->get_sbas_id(), 'terms'   => $value, 'date'    => $update];
             } catch (Exception $e) {
 
             }

@@ -71,7 +71,7 @@ class Bridge_Api
         $sql = 'SELECT id, name, disable_time, created_on, updated_on
             FROM bridge_apis WHERE id = :id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':id' => $this->id));
+        $stmt->execute([':id' => $this->id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -364,7 +364,7 @@ class Bridge_Api
      * @param  array          $options specific option, regarding the connector
      * @return string         The distant_id of the created element
      */
-    public function upload(record_adapter $record, array $options = array())
+    public function upload(record_adapter $record, array $options = [])
     {
         $action = function (Bridge_Api $obj) use ($record, $options) {
                 return $obj->get_connector()->upload($record, $options);
@@ -389,7 +389,7 @@ class Bridge_Api
         $sql = 'DELETE FROM bridge_apis WHERE id = :id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':id' => $this->id));
+        $stmt->execute([':id' => $this->id]);
         $stmt->closeCursor();
 
         return;
@@ -406,11 +406,11 @@ class Bridge_Api
         $sql = 'UPDATE bridge_apis SET disable_time = :time, updated_on = :update
             WHERE id = :id';
 
-        $params = array(
+        $params = [
             ':time'   => $value
             , ':id'     => $this->id
             , ':update' => $this->updated_on->format(DATE_ISO8601)
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -463,7 +463,7 @@ class Bridge_Api
      */
     public static function generate_callback_url(UrlGenerator $generator, $api_name)
     {
-        return $generator->generate('prod_bridge_callback', array('api_name' => strtolower($api_name)), UrlGenerator::ABSOLUTE_URL);
+        return $generator->generate('prod_bridge_callback', ['api_name' => strtolower($api_name)], UrlGenerator::ABSOLUTE_URL);
     }
 
     /**
@@ -474,7 +474,7 @@ class Bridge_Api
      */
     public static function generate_login_url(UrlGenerator $generator, $api_name)
     {
-        return $generator->generate('prod_bridge_login', array('api_name' => strtolower($api_name)), UrlGenerator::ABSOLUTE_URL);
+        return $generator->generate('prod_bridge_login', ['api_name' => strtolower($api_name)], UrlGenerator::ABSOLUTE_URL);
     }
 
     /**
@@ -504,7 +504,7 @@ class Bridge_Api
 
         $sql = 'SELECT id FROM bridge_apis WHERE name = :name';
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':name' => $name));
+        $stmt->execute([':name' => $name]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -527,7 +527,7 @@ class Bridge_Api
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $results = array();
+        $results = [];
 
         foreach ($rs as $row) {
             try {
@@ -547,7 +547,7 @@ class Bridge_Api
             VALUES (null, :name, 0, null, NOW(), NOW())';
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':name' => strtolower($name)));
+        $stmt->execute([':name' => strtolower($name)]);
         $stmt->closeCursor();
 
         $api_id = $app['phraseanet.appbox']->get_connection()->lastInsertId();

@@ -224,10 +224,10 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $yaml = new Yaml();
 
         $conf = new Configuration($yaml, $compiler, $configFile, $compiled, false);
-        $conf->setConfig(array('main' => 'boule'));
+        $conf->setConfig(['main' => 'boule']);
 
         $updated = $yaml->parse(file_get_contents($configFile));
-        $this->assertEquals(array('main' => 'boule'), $conf->getConfig());
+        $this->assertEquals(['main' => 'boule'], $conf->getConfig());
     }
 
     public function testCompilNever()
@@ -279,7 +279,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $compiler->expects($this->once())
             ->method('compile')
-            ->with(array('main' => 'tiptop'))
+            ->with(['main' => 'tiptop'])
             ->will($this->returnValue('<?php return array("main" => "tiptop");'));
 
         $yaml = $this->getMockBuilder('Symfony\Component\Yaml\Yaml')
@@ -287,12 +287,12 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $yaml::staticExpects($this->once())
             ->method('parse')
-            ->will($this->returnValue(array('main' => 'tiptop')));
+            ->will($this->returnValue(['main' => 'tiptop']));
 
         $conf = new Configuration($yaml, $compiler, $configFile, $compiled, true);
-        $this->assertSame(array('main' => 'tiptop'), $conf->getConfig());
-        $this->assertSame(array('main' => 'tiptop'), $conf->getConfig());
-        $this->assertSame(array('main' => 'tiptop'), $conf->getConfig());
+        $this->assertSame(['main' => 'tiptop'], $conf->getConfig());
+        $this->assertSame(['main' => 'tiptop'], $conf->getConfig());
+        $this->assertSame(['main' => 'tiptop'], $conf->getConfig());
         $this->assertSame('tiptop', $conf['main']);
         $this->assertSame('tiptop', $conf['main']);
         $this->assertSame('tiptop', $conf['main']);

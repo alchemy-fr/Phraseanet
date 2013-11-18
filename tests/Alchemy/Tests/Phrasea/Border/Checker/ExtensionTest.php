@@ -19,7 +19,7 @@ class ExtensionTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new Extension(self::$DI['app'], array('extensions' => array('jpg', 'png', 'tiff')));
+        $this->object = new Extension(self::$DI['app'], ['extensions' => ['jpg', 'png', 'tiff']]);
     }
 
     /**
@@ -27,16 +27,16 @@ class ExtensionTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCheck()
     {
-        $tests = array(
+        $tests = [
             'jpg'  => true,
             'JPG'  => true,
             'tiff' => true,
             'exe'  => false,
-        );
+        ];
 
         foreach ($tests as $extension => $result) {
 
-            $spl = $this->getMock('\\Symfony\\Component\\HttpFoundation\\File\\File', array('getExtension'), array(__DIR__ . '/../../../../../files/test001.jpg'));
+            $spl = $this->getMock('\\Symfony\\Component\\HttpFoundation\\File\\File', ['getExtension'], [__DIR__ . '/../../../../../files/test001.jpg']);
 
             $spl->expects($this->any())
                 ->method('getExtension')
@@ -71,6 +71,6 @@ class ExtensionTest extends \PhraseanetPHPUnitAbstract
      */
     public function testContructorInvalidArgumentException()
     {
-        new Extension(self::$DI['app'], array(array('jpg', 'png', 'tiff')));
+        new Extension(self::$DI['app'], [['jpg', 'png', 'tiff']]);
     }
 }

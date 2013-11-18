@@ -5,9 +5,9 @@ class ValidationParticipantRepositoryTest extends PhraseanetPHPUnitAuthenticated
 
     public function testFindNotConfirmedAndNotRemindedParticipants()
     {
-        $this->insertOneValidationBasket(array(
+        $this->insertOneValidationBasket([
             'expires' => new \DateTime('+1 days')
-        ));
+        ]);
 
         $em = self::$DI['app']['EM'];
         $repo = $em->getRepository('\Alchemy\Phrasea\Model\Entities\ValidationParticipant');

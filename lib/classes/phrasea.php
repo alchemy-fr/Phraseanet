@@ -52,7 +52,7 @@ class phrasea
 
         }
 
-        self::$_sbas_params = array();
+        self::$_sbas_params = [];
 
         $sql = 'SELECT sbas_id, host, port, user, pwd, dbname FROM sbas';
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
@@ -88,9 +88,9 @@ class phrasea
 
     public static function modulesName($array_modules)
     {
-        $array = array();
+        $array = [];
 
-        $modules = array(
+        $modules = [
             1 => _('admin::monitor: module production'),
             2 => _('admin::monitor: module client'),
             3 => _('admin::monitor: module admin'),
@@ -99,7 +99,7 @@ class phrasea
             6 => _('admin::monitor: module comparateur'),
             7 => _('admin::monitor: module validation'),
             8 => _('admin::monitor: module upload')
-        );
+        ];
 
         foreach ($array_modules as $a) {
             if (isset($modules[$a]))
@@ -144,7 +144,7 @@ class phrasea
 
             foreach ($rs as $row) {
                 if (!isset(self::$_coll2bas[$row['sbas_id']]))
-                    self::$_coll2bas[$row['sbas_id']] = array();
+                    self::$_coll2bas[$row['sbas_id']] = [];
                 self::$_coll2bas[$row['sbas_id']][$row['server_coll_id']] = (int) $row['base_id'];
             }
         }
@@ -156,12 +156,12 @@ class phrasea
     {
         self::$_coll2bas = self::$_bas2coll = self::$_bas_labels = self::$_bas2sbas = null;
         $appbox->delete_data_from_cache(
-            array(
+            [
                 self::CACHE_BAS_2_COLL
                 , self::CACHE_BAS_2_COLL
                 , self::CACHE_BAS_LABELS
                 , self::CACHE_SBAS_FROM_BAS
-            )
+            ]
         );
 
         return;
@@ -171,12 +171,12 @@ class phrasea
     {
         self::$_sbas_names = self::$_sbas_labels = self::$_sbas_params = self::$_bas2sbas = null;
         $appbox->delete_data_from_cache(
-            array(
+            [
                 self::CACHE_SBAS_NAMES,
                 self::CACHE_SBAS_LABELS,
                 self::CACHE_SBAS_FROM_BAS,
                 self::CACHE_SBAS_PARAMS,
-            )
+            ]
         );
 
         return;
@@ -223,12 +223,12 @@ class phrasea
                 self::$_sbas_labels = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_LABELS);
             } catch (Exception $e) {
                 foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
-                    self::$_sbas_labels[$databox->get_sbas_id()] = array(
+                    self::$_sbas_labels[$databox->get_sbas_id()] = [
                         'fr' => $databox->get_label('fr'),
                         'en' => $databox->get_label('en'),
                         'de' => $databox->get_label('de'),
                         'nl' => $databox->get_label('nl'),
-                    );
+                    ];
                 }
                 $app['phraseanet.appbox']->set_data_to_cache(self::$_sbas_labels, self::CACHE_SBAS_LABELS);
             }
@@ -249,12 +249,12 @@ class phrasea
             } catch (Exception $e) {
                 foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
                     foreach ($databox->get_collections() as $collection) {
-                        self::$_bas_labels[$collection->get_base_id()] = array(
+                        self::$_bas_labels[$collection->get_base_id()] = [
                             'fr' => $collection->get_label('fr'),
                             'en' => $collection->get_label('en'),
                             'de' => $collection->get_label('de'),
                             'nl' => $collection->get_label('nl'),
-                        );
+                        ];
                     }
                 }
 

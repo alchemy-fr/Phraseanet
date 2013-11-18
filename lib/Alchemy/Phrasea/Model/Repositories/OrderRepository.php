@@ -21,7 +21,7 @@ class OrderRepository extends EntityRepository
      */
     public function findByUser(\User_Adapter $user)
     {
-        return $this->findBy(array('usrId' => $user->get_id()));
+        return $this->findBy(['usrId' => $user->get_id()]);
     }
 
     /**
@@ -66,7 +66,7 @@ class OrderRepository extends EntityRepository
      *
      * @return integer
      */
-    public function countTotalOrders(array $baseIds = array())
+    public function countTotalOrders(array $baseIds = [])
     {
         $qb = $this
             ->createQueryBuilder('o');

@@ -54,7 +54,7 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
      * @desc le tableau qui contien les resultats
      * @var <array>
      */
-    public $report = array();
+    public $report = [];
     private $app;
 
     /**
@@ -242,9 +242,9 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
 
     public function __sleep()
     {
-        $vars = array();
+        $vars = [];
         foreach ($this as $key => $value) {
-            if (in_array($key, array('app')))
+            if (in_array($key, ['app']))
                 continue;
             $vars[] = $key;
         }

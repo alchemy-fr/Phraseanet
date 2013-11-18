@@ -19,7 +19,7 @@ namespace Alchemy\Phrasea\Media\Subdef;
  */
 class FlexPaper extends Provider
 {
-    protected $options = array();
+    protected $options = [];
 
     public function __construct()
     {

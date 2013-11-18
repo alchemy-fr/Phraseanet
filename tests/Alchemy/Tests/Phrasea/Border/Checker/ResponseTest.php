@@ -15,7 +15,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\Checker\\CheckerInterface', array('getMessage', 'check', 'isApplicable'));
+        $this->mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\Checker\\CheckerInterface', ['getMessage', 'check', 'isApplicable']);
         $this->object = new Response(true, $this->mock);
     }
 

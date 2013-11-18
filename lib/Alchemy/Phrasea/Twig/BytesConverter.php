@@ -17,7 +17,7 @@ class BytesConverter extends \Twig_Extension
 
     public function __construct()
     {
-        $this->unit = array();
+        $this->unit = [];
         $this->unit['B'] = 'Bytes'; // 8 bits
         $this->unit['KB'] = 'Kilobytes'; // 1024 bytes
         $this->unit['MB'] = 'Megabytes'; // 1048576 bytes
@@ -36,14 +36,14 @@ class BytesConverter extends \Twig_Extension
 
     public function getFilters()
     {
-        return array(
+        return [
             'bytesTo*' => new \Twig_Filter_Method($this, 'bytes2Filter')
-        );
+        ];
     }
 
     public function bytes2Filter($suffix, $bytes, $precision = 2)
     {
-        $auto = array('Human', 'Auto');
+        $auto = ['Human', 'Auto'];
         $unit = array_keys($this->unit);
 
         if ($bytes <= 0) {

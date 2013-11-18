@@ -36,7 +36,7 @@ class PDF
     {
         $this->app = $app;
 
-        $list = array();
+        $list = [];
 
         foreach ($records as $record) {
             switch ($layout) {
@@ -458,8 +458,8 @@ class PDF
                     $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
 
                     $t = str_replace(
-                        array("&lt;", "&gt;", "&amp;")
-                        , array("<", ">", "&")
+                        ["&lt;", "&gt;", "&amp;"]
+                        , ["<", ">", "&"]
                         , strip_tags($field->get_serialized_values())
                     );
 

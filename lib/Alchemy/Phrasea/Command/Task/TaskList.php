@@ -36,18 +36,18 @@ class TaskList extends Command
                 $errors ++;
             }
 
-            return array(
+            return [
                 $task->getId(),
                 $task->getName(),
                 $task->getStatus() !== 'started' ? $task->getStatus() . " (warning)" : $task->getStatus(),
                 $error ? $info['actual'] . " (error)" : $info['actual'],
                 $info['process-id'],
-            );
+            ];
         }, $this->container['manipulator.task']->getRepository()->findAll());
 
         $this
             ->getHelperSet()->get('table')
-            ->setHeaders(array('Id', 'Name', 'Status', 'Actual', 'Process Id'))
+            ->setHeaders(['Id', 'Name', 'Status', 'Actual', 'Process Id'])
             ->setRows($rows)
             ->render($output);
 

@@ -333,7 +333,7 @@ class record_preview extends record_adapter
             return $this->short_history;
         }
 
-        $tab = array();
+        $tab = [];
 
         $report = $this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($this->get_base_id(), 'canreport');
 
@@ -343,7 +343,7 @@ class record_preview extends record_adapter
                 FROM log_docs d, log l
                 WHERE d.log_id = l.id
                 AND d.record_id = :record_id ';
-        $params = array(':record_id' => $this->get_record_id());
+        $params = [':record_id' => $this->get_record_id()];
 
         if (! $report) {
             $sql .= ' AND ((l.usrid = :usr_id AND l.site= :site) OR action="add")';
@@ -362,17 +362,17 @@ class record_preview extends record_adapter
             $hour = $this->app['date-formatter']->getPrettyString(new DateTime($row['date']));
 
             if ( ! isset($tab[$hour]))
-                $tab[$hour] = array();
+                $tab[$hour] = [];
 
             $site = $row['site'];
 
             if ( ! isset($tab[$hour][$site]))
-                $tab[$hour][$site] = array();
+                $tab[$hour][$site] = [];
 
             $action = $row['action'];
 
             if ( ! isset($tab[$hour][$site][$action]))
-                $tab[$hour][$site][$action] = array();
+                $tab[$hour][$site][$action] = [];
 
             if ( ! isset($tab[$hour][$site][$action][$row['usr_id']])) {
                 $user = null;
@@ -384,11 +384,11 @@ class record_preview extends record_adapter
                 }
 
                 $tab[$hour][$site][$action][$row['usr_id']] =
-                    array(
-                        'final' => array()
-                        , 'comment' => array()
+                    [
+                        'final' => []
+                        , 'comment' => []
                         , 'user' => $user
-                );
+                ];
             }
 
             if ( ! in_array($row['final'], $tab[$hour][$site][$action][$row['usr_id']]['final'])) {
@@ -427,7 +427,7 @@ class record_preview extends record_adapter
             return $this->view_popularity;
         }
 
-        $views = $dwnls = array();
+        $views = $dwnls = [];
         $top = 1;
         $day = 30;
         $min = 0;
@@ -451,10 +451,10 @@ class record_preview extends record_adapter
         $connsbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
         $stmt = $connsbas->prepare($sql);
         $stmt->execute(
-            array(
+            [
                 ':record_id' => $this->get_record_id(),
                 ':site'      => $this->app['configuration']['main']['key']
-            )
+            ]
         );
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -525,11 +525,11 @@ class record_preview extends record_adapter
             GROUP BY referrer ORDER BY referrer ASC';
 
         $stmt = $connsbas->prepare($sql);
-        $stmt->execute(array(':record_id' => $this->get_record_id()));
+        $stmt->execute([':record_id' => $this->get_record_id()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $referrers = array();
+        $referrers = [];
 
         foreach ($rs as $row) {
             if ($row['referrer'] == 'NO REFERRER')
@@ -588,7 +588,7 @@ class record_preview extends record_adapter
             return $this->download_popularity;
         }
 
-        $views = $dwnls = array();
+        $views = $dwnls = [];
         $top = 1;
         $day = 30;
 
@@ -612,10 +612,10 @@ class record_preview extends record_adapter
         $connsbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
         $stmt = $connsbas->prepare($sql);
         $stmt->execute(
-            array(
+            [
                 ':record_id' => $this->get_record_id(),
                 ':site'      => $this->app['configuration']['main']['key']
-            )
+            ]
         );
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();

@@ -20,7 +20,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
      *
      * @var Array
      */
-    protected $AvSubdefs = array();
+    protected $AvSubdefs = [];
 
     /**
      *
@@ -76,13 +76,13 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
     {
         $sx_struct = $this->databox->get_sxml_structure();
 
-        $this->AvSubdefs = array(
-            'image' => array(),
-            'video' => array(),
-            'audio' => array(),
-            'document' => array(),
-            'flash' => array()
-        );
+        $this->AvSubdefs = [
+            'image' => [],
+            'video' => [],
+            'audio' => [],
+            'document' => [],
+            'flash' => []
+        ];
 
         if (! $sx_struct) {
             return $this;
@@ -94,7 +94,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
             $subdefgroup_name = strtolower($subdefs->attributes()->name);
 
             if ( ! isset($AvSubdefs[$subdefgroup_name])) {
-                $AvSubdefs[$subdefgroup_name] = array();
+                $AvSubdefs[$subdefgroup_name] = [];
             }
 
             foreach ($subdefs as $sd) {

@@ -50,21 +50,21 @@ class Login implements ControllerProviderInterface
 {
     public static function getDefaultTemplateVariables(Application $app)
     {
-        $items = array();
+        $items = [];
 
         foreach ($app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedItem')->loadLatest($app, 20) as $item) {
             $record = $item->getRecord($app);
             $preview = $record->get_subdef('preview');
             $permalink = $preview->get_permalink();
 
-            $items[] = array(
+            $items[] = [
                 'record' => $record,
                 'preview' => $preview,
                 'permalink' => $permalink
-            );
+            ];
         }
 
-        return array(
+        return [
             'last_publication_items' => $items,
             'instance_title' => $app['phraseanet.registry']->get('GV_homeTitle'),
             'has_terms_of_use' => $app->hasTermsOfUse(),
@@ -84,7 +84,7 @@ class Login implements ControllerProviderInterface
             'authentication_providers' => $app['authentication.providers'],
             'registration_fields' => $app['registration.fields'],
             'registration_optional_fields' => $app['registration.optional-fields']
-        );
+        ];
     }
 
     public function connect(Application $app)
@@ -110,10 +110,10 @@ class Login implements ControllerProviderInterface
                         // then post login operation like getting baskets from an invit session
                         // could be done by Session_handler authentication process
 
-                        $params = array();
+                        $params = [];
 
                         if (null !== $redirect = $request->query->get('redirect')) {
-                            $params = array('redirect' => ltrim($redirect, '/'));
+                            $params = ['redirect' => ltrim($redirect, '/')];
                         }
 
                         $response = $app->redirectPath('logout', $params);
@@ -203,7 +203,7 @@ class Login implements ControllerProviderInterface
         // Displays Terms of use
         $controllers->get('/cgus', function (PhraseaApplication $app, Request $request) {
             return $app['twig']->render('login/cgus.html.twig', array_merge(
-                array('cgus' => \databox_cgu::getHome($app)),
+                ['cgus' => \databox_cgu::getHome($app)],
                 self::getDefaultTemplateVariables($app)
             ));
         })->bind('login_cgus');
@@ -216,7 +216,7 @@ class Login implements ControllerProviderInterface
 
     public function getLanguage(Application $app, Request $request)
     {
-        $response =  $app->json(array(
+        $response =  $app->json([
             'validation_blank'          => _('Please provide a value.'),
             'validation_choice_min'     => _('Please select at least %s choice.'),
             'validation_email'          => _('Please provide a valid email address.'),
@@ -234,7 +234,7 @@ class Login implements ControllerProviderInterface
             'ordinary'                  => _('Ordinary'),
             'good'                      => _('Good'),
             'great'                     => _('Great'),
-        ));
+        ]);
 
         $response->setExpires(new \DateTime('+1 day'));
 
@@ -314,7 +314,7 @@ class Login implements ControllerProviderInterface
                         $selected = isset($data['collections']) ? $data['collections'] : null;
                     }
                     $inscriptions = giveMeBases($app);
-                    $inscOK = array();
+                    $inscOK = [];
 
                     foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
 
@@ -342,7 +342,7 @@ class Login implements ControllerProviderInterface
 
                     $user = \User_Adapter::create($app, $data['login'], $data['password'], $data['email'], false);
 
-                    foreach (array(
+                    foreach ([
                         'gender'    => 'set_gender',
                         'firstname' => 'set_firstname',
                         'lastname'  => 'set_lastname',
@@ -354,9 +354,9 @@ class Login implements ControllerProviderInterface
                         'company'   => 'set_company',
                         'position'  => 'set_position',
                         'geonameid' => 'set_geonameid',
-                    ) as $property => $method) {
+                    ] as $property => $method) {
                         if (isset($data[$property])) {
-                            call_user_func(array($user, $method), $data[$property]);
+                            call_user_func([$user, $method], $data[$property]);
                         }
                     }
 
@@ -365,7 +365,7 @@ class Login implements ControllerProviderInterface
                         $app['EM']->flush();
                     }
 
-                    $demandOK = array();
+                    $demandOK = [];
 
                     if ($app['phraseanet.registry']->get('GV_autoregister')) {
 
@@ -373,7 +373,7 @@ class Login implements ControllerProviderInterface
 
                         $template_user = \User_Adapter::getInstance($template_user_id, $app);
 
-                        $base_ids = array();
+                        $base_ids = [];
 
                         foreach (array_keys($inscOK) as $base_id) {
                             $base_ids[] = $base_id;
@@ -395,11 +395,11 @@ class Login implements ControllerProviderInterface
                         $demandOK[$base_id] = true;
                     }
 
-                    $params = array(
+                    $params = [
                         'demand'       => $demandOK,
                         'autoregister' => $autoReg,
                         'usr_id'       => $user->get_id()
-                    );
+                    ];
 
                     $app['events-manager']->trigger('__REGISTER_AUTOREGISTER__', $params);
                     $app['events-manager']->trigger('__REGISTER_APPROVAL__', $params);
@@ -423,21 +423,21 @@ class Login implements ControllerProviderInterface
             $provider = $this->findProvider($app, $request->query->get('providerId'));
             $identity = $provider->getIdentity();
 
-            $form->setData(array_filter(array(
+            $form->setData(array_filter([
                 'email'       => $identity->getEmail(),
                 'firstname'   => $identity->getFirstname(),
                 'lastname'    => $identity->getLastname(),
                 'company'     => $identity->getCompany(),
                 'provider-id' => $provider->getId(),
-            )));
+            ]));
         }
 
         return $app['twig']->render('login/register-classic.html.twig', array_merge(
             self::getDefaultTemplateVariables($app),
-            array(
+            [
                 'geonames_server_uri' => str_replace(sprintf('%s:', parse_url($app['geonames.server-uri'], PHP_URL_SCHEME)), '', $app['geonames.server-uri']),
                 'form' => $form->createView()
-        )));
+        ]));
     }
 
     private function attachProviderToUser(EntityManager $em, ProviderInterface $provider, \User_Adapter $user)
@@ -505,7 +505,7 @@ class Login implements ControllerProviderInterface
         $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), $expire, $user->get_email());
 
         $mail = MailRequestEmailConfirmation::create($app, $receiver);
-        $mail->setButtonUrl($app->url('login_register_confirm', array('code' => $token)));
+        $mail->setButtonUrl($app->url('login_register_confirm', ['code' => $token]));
         $mail->setExpiration($expire);
 
         $app['notification.deliverer']->deliver($mail);
@@ -589,7 +589,7 @@ class Login implements ControllerProviderInterface
         }
 
         $form = $app->form(new PhraseaRecoverPasswordForm($app));
-        $form->setData(array('token' => $token));
+        $form->setData(['token' => $token]);
 
         if ('POST' === $request->getMethod()) {
             $form->bind($request);
@@ -615,7 +615,7 @@ class Login implements ControllerProviderInterface
 
         return $app['twig']->render('login/renew-password.html.twig', array_merge(
             self::getDefaultTemplateVariables($app),
-            array('form' => $form->createView())
+            ['form' => $form->createView()]
         ));
     }
 
@@ -655,7 +655,7 @@ class Login implements ControllerProviderInterface
                         return $app->abort(500, 'Unable to generate a token');
                     }
 
-                    $url = $app->url('login_renew_password', array('token' => $token), true);
+                    $url = $app->url('login_renew_password', ['token' => $token], true);
 
                     $mail = MailRequestPasswordUpdate::create($app, $receiver);
                     $mail->setLogin($user->get_login());
@@ -673,9 +673,9 @@ class Login implements ControllerProviderInterface
 
         return $app['twig']->render('login/forgot-password.html.twig', array_merge(
             self::getDefaultTemplateVariables($app),
-            array(
+            [
             'form'  => $form->createView(),
-        )));
+        ]));
     }
 
     /**
@@ -712,9 +712,9 @@ class Login implements ControllerProviderInterface
 
         $app->addFlash('info', _('Vous etes maintenant deconnecte. A bientot.'));
 
-        $response = $app->redirectPath('homepage', array(
+        $response = $app->redirectPath('homepage', [
             'redirect' => $request->query->get("redirect")
-        ));
+        ]);
 
         $response->headers->clearCookie('persistent');
         $response->headers->clearCookie('last_act');
@@ -740,19 +740,19 @@ class Login implements ControllerProviderInterface
             $app->addFlash('error', _('login::erreur: No available connection - Please contact sys-admin'));
         }
 
-        $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(array('public' => true), array('updatedOn' => 'DESC'));
+        $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(['public' => true], ['updatedOn' => 'DESC']);
 
         $form = $app->form(new PhraseaAuthenticationForm());
-        $form->setData(array(
+        $form->setData([
             'redirect' => $request->query->get('redirect')
-        ));
+        ]);
 
         return $app['twig']->render('login/index.html.twig', array_merge(
             self::getDefaultTemplateVariables($app),
-            array(
+            [
                 'feeds'             => $feeds,
                 'form'              => $form->createView(),
-        )));
+        ]));
     }
 
     /**
@@ -765,7 +765,7 @@ class Login implements ControllerProviderInterface
     public function authenticate(PhraseaApplication $app, Request $request)
     {
         $form = $app->form(new PhraseaAuthenticationForm());
-        $redirector = function (array $params = array()) use ($app) {
+        $redirector = function (array $params = []) use ($app) {
             return $app->redirectPath('homepage', $params);
         };
 
@@ -847,13 +847,13 @@ class Login implements ControllerProviderInterface
                 continue;
             }
 
-            $app['events-manager']->trigger('__VALIDATION_REMINDER__', array(
+            $app['events-manager']->trigger('__VALIDATION_REMINDER__', [
                 'to'          => $participantId,
                 'ssel_id'     => $basketId,
                 'from'        => $validationSession->getInitiatorId(),
                 'validate_id' => $validationSession->getId(),
-                'url'         => $app->url('lightbox_validation', array('basket' => $basketId, 'LOG' => $token)),
-            ));
+                'url'         => $app->url('lightbox_validation', ['basket' => $basketId, 'LOG' => $token]),
+            ]);
 
             $participant->setReminded(new \DateTime('now'));
             $app['EM']->persist($participant);
@@ -959,7 +959,7 @@ class Login implements ControllerProviderInterface
 
             return $app->redirect($redirection);
         } elseif ($app['registration.enabled']) {
-            return $app->redirectPath('login_register_classic', array('providerId' => $providerId));
+            return $app->redirectPath('login_register_classic', ['providerId' => $providerId]);
         }
 
         $app->addFlash('error', _('Your identity is not recognized.'));
@@ -999,7 +999,7 @@ class Login implements ControllerProviderInterface
             throw new AuthenticationException(call_user_func($redirector));
         }
 
-        $params = array();
+        $params = [];
 
         if (null !== $redirect = $request->get('redirect')) {
             $params['redirect'] = ltrim($redirect, '/');
@@ -1039,7 +1039,7 @@ class Login implements ControllerProviderInterface
                 if ($user->get_id() != $inviteUsrId = $request->cookies->get('invite-usr_id')) {
 
                     $repo = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
-                    $baskets = $repo->findBy(array('usr_id' => $inviteUsrId));
+                    $baskets = $repo->findBy(['usr_id' => $inviteUsrId]);
 
                     foreach ($baskets as $basket) {
                         $basket->setUsrId($user->get_id());

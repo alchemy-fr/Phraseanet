@@ -15,7 +15,7 @@ class GeonameTest extends \PhraseanetPHPUnitAbstract
         $connector->expects($this->once())
             ->method('geoname')
             ->with(123456)
-            ->will($this->returnValue(new GeonameResult(array())));
+            ->will($this->returnValue(new GeonameResult([])));
 
         $constraint = new Geoname($connector);
         $this->assertTrue($constraint->isValid(123456));

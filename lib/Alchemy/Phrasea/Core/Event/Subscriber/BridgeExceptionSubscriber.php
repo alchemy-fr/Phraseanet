@@ -35,9 +35,9 @@ class BridgeExceptionSubscriber implements EventSubscriberInterface
         $e = $event->getException();
         $request = $event->getRequest();
 
-        $params = array(
+        $params = [
             'account'        => null,
-            'elements'       => array(),
+            'elements'       => [],
             'message'        => $e->getMessage(),
             'error_message'  => null,
             'notice_message' => null,
@@ -45,23 +45,23 @@ class BridgeExceptionSubscriber implements EventSubscriberInterface
             'line'           => $e->getLine(),
             'r_method'       => $request->getMethod(),
             'r_action'       => $request->getRequestUri(),
-            'r_parameters'   => ($request->getMethod() == 'GET' ? array() : $request->request->all()),
-        );
+            'r_parameters'   => ($request->getMethod() == 'GET' ? [] : $request->request->all()),
+        ];
 
         if ($e instanceof \Bridge_Exception_ApiConnectorNotConfigured) {
-            $params = array_replace($params, array('account' => $this->app['bridge.account']));
-            $response = new Response($this->app['twig']->render('/prod/actions/Bridge/notconfigured.html.twig', $params), 200, array('X-Status-Code' => 200));
+            $params = array_replace($params, ['account' => $this->app['bridge.account']]);
+            $response = new Response($this->app['twig']->render('/prod/actions/Bridge/notconfigured.html.twig', $params), 200, ['X-Status-Code' => 200]);
         } elseif ($e instanceof \Bridge_Exception_ApiConnectorNotConnected) {
-            $params = array_replace($params, array('account' => $this->app['bridge.account']));
-            $response = new Response($this->app['twig']->render('/prod/actions/Bridge/disconnected.html.twig', $params), 200, array('X-Status-Code' => 200));
+            $params = array_replace($params, ['account' => $this->app['bridge.account']]);
+            $response = new Response($this->app['twig']->render('/prod/actions/Bridge/disconnected.html.twig', $params), 200, ['X-Status-Code' => 200]);
         } elseif ($e instanceof \Bridge_Exception_ApiConnectorAccessTokenFailed) {
-            $params = array_replace($params, array('account' => $this->app['bridge.account']));
-            $response = new Response($this->app['twig']->render('/prod/actions/Bridge/disconnected.html.twig', $params), 200, array('X-Status-Code' => 200));
+            $params = array_replace($params, ['account' => $this->app['bridge.account']]);
+            $response = new Response($this->app['twig']->render('/prod/actions/Bridge/disconnected.html.twig', $params), 200, ['X-Status-Code' => 200]);
         } elseif ($e instanceof \Bridge_Exception_ApiDisabled) {
-            $params = array_replace($params, array('api' => $e->get_api()));
-            $response = new Response($this->app['twig']->render('/prod/actions/Bridge/deactivated.html.twig', $params), 200, array('X-Status-Code' => 200));
+            $params = array_replace($params, ['api' => $e->get_api()]);
+            $response = new Response($this->app['twig']->render('/prod/actions/Bridge/deactivated.html.twig', $params), 200, ['X-Status-Code' => 200]);
         } else {
-            $response = new Response($this->app['twig']->render('/prod/actions/Bridge/error.html.twig', $params), 200, array('X-Status-Code' => 200));
+            $response = new Response($this->app['twig']->render('/prod/actions/Bridge/error.html.twig', $params), 200, ['X-Status-Code' => 200]);
         }
 
         $response->headers->set('Phrasea-StatusCode', 200);
@@ -74,6 +74,6 @@ class BridgeExceptionSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(KernelEvents::EXCEPTION => array('onSilexError', 20));
+        return [KernelEvents::EXCEPTION => ['onSilexError', 20]];
     }
 }

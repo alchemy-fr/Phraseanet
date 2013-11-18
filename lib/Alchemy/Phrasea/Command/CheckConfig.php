@@ -40,7 +40,7 @@ class CheckConfig extends AbstractCheckCommand
 
     protected function provideRequirements()
     {
-        return array(
+        return [
             BinariesProbe::create($this->container),
             CacheServerProbe::create($this->container),
             DataboxStructureProbe::create($this->container),
@@ -52,6 +52,6 @@ class CheckConfig extends AbstractCheckCommand
             SearchEngineProbe::create($this->container),
             SubdefsPathsProbe::create($this->container),
             SystemProbe::create($this->container),
-        );
+        ];
     }
 }

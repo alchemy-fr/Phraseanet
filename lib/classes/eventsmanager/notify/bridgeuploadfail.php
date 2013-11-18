@@ -24,7 +24,7 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = array('__BRIDGE_UPLOAD_FAIL__');
+    public $events = ['__BRIDGE_UPLOAD_FAIL__'];
 
     /**
      *
@@ -44,13 +44,13 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'usr_id'     => null
             , 'reason'     => ''
             , 'account_id' => null
             , 'base_id'    => null
             , 'record_id'  => null
-        );
+        ];
 
         $params = array_merge($default, $params);
 
@@ -127,14 +127,14 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
             $account = Bridge_Account::load_account($this->app, $account_id);
             $record = new record_adapter($this->app, $sbas_id, $rid);
         } catch (Exception $e) {
-            return array();
+            return [];
         }
 
-        $ret = array(
+        $ret = [
             'text'  => sprintf("L'upload concernant le record %s sur le comptre %s a echoue pour les raisons suivantes : %s"
                 , $record->get_title(), $account->get_api()->get_connector()->get_name(), $reason)
             , 'class' => ''
-        );
+        ];
 
         return $ret;
     }

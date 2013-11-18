@@ -28,9 +28,9 @@ class UsrListEntryRepository extends EntityRepository
         $dql = 'SELECT e FROM Alchemy\Phrasea\Model\Entities\UsrListEntry e
             WHERE e.usr_id = :usr_id';
 
-        $params = array(
+        $params = [
             'usr_id' => $user->get_id(),
-        );
+        ];
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
@@ -60,10 +60,10 @@ class UsrListEntryRepository extends EntityRepository
               JOIN e.list l
             WHERE e.usr_id = :usr_id AND l.id = :list_id';
 
-        $params = array(
+        $params = [
             'usr_id'  => $usr_id,
             'list_id' => $list->getId(),
-        );
+        ];
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);

@@ -78,11 +78,11 @@ class UsrLists implements ControllerProviderInterface
 
     public function getAll(Application $app, Request $request)
     {
-        $datas = array(
+        $datas = [
             'success' => false
             , 'message' => ''
             , 'result'  => null
-        );
+        ];
 
         $lists = new ArrayCollection();
 
@@ -91,13 +91,13 @@ class UsrLists implements ControllerProviderInterface
 
             $lists = $repository->findUserLists($app['authentication']->getUser());
 
-            $result = array();
+            $result = [];
 
             foreach ($lists as $list) {
-                $owners = $entries = array();
+                $owners = $entries = [];
 
                 foreach ($list->getOwners() as $owner) {
-                    $owners[] = array(
+                    $owners[] = [
                         'usr_id'       => $owner->getUser($app)->get_id(),
                         'display_name' => $owner->getUser($app)->get_display_name(),
                         'position'     => $owner->getUser($app)->get_position(),
@@ -105,40 +105,40 @@ class UsrLists implements ControllerProviderInterface
                         'company'      => $owner->getUser($app)->get_company(),
                         'email'        => $owner->getUser($app)->get_email(),
                         'role'         => $owner->getRole()
-                    );
+                    ];
                 }
 
                 foreach ($list->getEntries() as $entry) {
-                    $entries[] = array(
+                    $entries[] = [
                         'usr_id'       => $owner->getUser($app)->get_id(),
                         'display_name' => $owner->getUser($app)->get_display_name(),
                         'position'     => $owner->getUser($app)->get_position(),
                         'job'          => $owner->getUser($app)->get_job(),
                         'company'      => $owner->getUser($app)->get_company(),
                         'email'        => $owner->getUser($app)->get_email(),
-                    );
+                    ];
                 }
 
                 /* @var $list UsrList */
-                $result[] = array(
+                $result[] = [
                     'name'    => $list->getName(),
                     'created' => $list->getCreated()->format(DATE_ATOM),
                     'updated' => $list->getUpdated()->format(DATE_ATOM),
                     'owners'  => $owners,
                     'users'   => $entries
-                );
+                ];
             }
 
-            $datas = array(
+            $datas = [
                 'success' => true
                 , 'message' => ''
                 , 'result'  => $result
-            );
+            ];
         } catch (ControllerException $e) {
-            $datas = array(
+            $datas = [
                 'success' => false
                 , 'message' => $e->getMessage()
-            );
+            ];
         } catch (\Exception $e) {
 
         }
@@ -147,7 +147,7 @@ class UsrLists implements ControllerProviderInterface
             return $app->json($datas);
         }
 
-        return $app['twig']->render('prod/actions/Feedback/lists-all.html.twig', array('lists' => $lists));
+        return $app['twig']->render('prod/actions/Feedback/lists-all.html.twig', ['lists' => $lists]);
     }
 
     public function createList(Application $app)
@@ -156,11 +156,11 @@ class UsrLists implements ControllerProviderInterface
 
         $list_name = $request->request->get('name');
 
-        $datas = array(
+        $datas = [
             'success' => false
             , 'message' => sprintf(_('Unable to create list %s'), $list_name)
             , 'list_id' => null
-        );
+        ];
 
         try {
             if (!$list_name) {
@@ -181,16 +181,16 @@ class UsrLists implements ControllerProviderInterface
             $app['EM']->persist($List);
             $app['EM']->flush();
 
-            $datas = array(
+            $datas = [
                 'success' => true
                 , 'message' => sprintf(_('List %s has been created'), $list_name)
                 , 'list_id' => $List->getId()
-            );
+            ];
         } catch (ControllerException $e) {
-            $datas = array(
+            $datas = [
                 'success' => false
                 , 'message' => $e->getMessage()
-            );
+            ];
         } catch (\Exception $e) {
 
         }
@@ -208,7 +208,7 @@ class UsrLists implements ControllerProviderInterface
         $owners = new ArrayCollection();
 
         foreach ($list->getOwners() as $owner) {
-            $owners[] = array(
+            $owners[] = [
                 'usr_id'       => $owner->getUser($app)->get_id(),
                 'display_name' => $owner->getUser($app)->get_display_name(),
                 'position'     => $owner->getUser($app)->get_position(),
@@ -216,40 +216,40 @@ class UsrLists implements ControllerProviderInterface
                 'company'      => $owner->getUser($app)->get_company(),
                 'email'        => $owner->getUser($app)->get_email(),
                 'role'         => $owner->getRole($app)
-            );
+            ];
         }
 
         foreach ($list->getEntries() as $entry) {
-            $entries[] = array(
+            $entries[] = [
                 'usr_id'       => $entry->getUser($app)->get_id(),
                 'display_name' => $entry->getUser($app)->get_display_name(),
                 'position'     => $entry->getUser($app)->get_position(),
                 'job'          => $entry->getUser($app)->get_job(),
                 'company'      => $entry->getUser($app)->get_company(),
                 'email'        => $entry->getUser($app)->get_email(),
-            );
+            ];
         }
 
-        return $app->json(array(
-            'result' => array(
+        return $app->json([
+            'result' => [
                 'id'      => $list->getId(),
                 'name'    => $list->getName(),
                 'created' => $list->getCreated()->format(DATE_ATOM),
                 'updated' => $list->getUpdated()->format(DATE_ATOM),
                 'owners'  => $owners,
                 'users'   => $entries
-            )
-        ));
+            ]
+        ]);
     }
 
     public function updateList(Application $app, $list_id)
     {
         $request = $app['request'];
 
-        $datas = array(
+        $datas = [
             'success' => false
             , 'message' => _('Unable to update list')
-        );
+        ];
 
         try {
             $list_name = $request->request->get('name');
@@ -270,15 +270,15 @@ class UsrLists implements ControllerProviderInterface
 
             $app['EM']->flush();
 
-            $datas = array(
+            $datas = [
                 'success' => true
                 , 'message' => _('List has been updated')
-            );
+            ];
         } catch (ControllerException $e) {
-            $datas = array(
+            $datas = [
                 'success' => false
                 , 'message' => $e->getMessage()
-            );
+            ];
         } catch (\Exception $e) {
 
         }
@@ -300,21 +300,21 @@ class UsrLists implements ControllerProviderInterface
             $app['EM']->remove($list);
             $app['EM']->flush();
 
-            $datas = array(
+            $datas = [
                 'success' => true
                 , 'message' => sprintf(_('List has been deleted'))
-            );
+            ];
         } catch (ControllerException $e) {
-            $datas = array(
+            $datas = [
                 'success' => false
                 , 'message' => $e->getMessage()
-            );
+            ];
         } catch (\Exception $e) {
 
-            $datas = array(
+            $datas = [
                 'success' => false
                 , 'message' => sprintf(_('Unable to delete list'))
-            );
+            ];
         }
 
         return $app->json($datas);
@@ -339,21 +339,21 @@ class UsrLists implements ControllerProviderInterface
             $app['EM']->remove($user_entry);
             $app['EM']->flush();
 
-            $datas = array(
+            $datas = [
                 'success' => true
                 , 'message' => _('Entry removed from list')
-            );
+            ];
         } catch (ControllerException $e) {
-            $datas = array(
+            $datas = [
                 'success' => false
                 , 'message' => $e->getMessage()
-            );
+            ];
         } catch (\Exception $e) {
 
-            $datas = array(
+            $datas = [
                 'success' => false
                 , 'message' => _('Unable to remove entry from list ' . $e->getMessage())
-            );
+            ];
         }
 
         return $app->json($datas);
@@ -375,7 +375,7 @@ class UsrLists implements ControllerProviderInterface
                 throw new ControllerException(_('You are not authorized to do this'));
             }
 
-            $inserted_usr_ids = array();
+            $inserted_usr_ids = [];
 
             foreach ($request->request->get('usr_ids') as $usr_id) {
                 $user_entry = \User_Adapter::getInstance($usr_id, $app);
@@ -397,29 +397,29 @@ class UsrLists implements ControllerProviderInterface
             $app['EM']->flush();
 
             if (count($inserted_usr_ids) > 1) {
-                $datas = array(
+                $datas = [
                     'success' => true
                     , 'message' => sprintf(_('%d Users added to list'), count($inserted_usr_ids))
                     , 'result'  => $inserted_usr_ids
-                );
+                ];
             } else {
-                $datas = array(
+                $datas = [
                     'success' => true
                     , 'message' => sprintf(_('%d User added to list'), count($inserted_usr_ids))
                     , 'result'  => $inserted_usr_ids
-                );
+                ];
             }
         } catch (ControllerException $e) {
-            $datas = array(
+            $datas = [
                 'success' => false
                 , 'message' => $e->getMessage()
-            );
+            ];
         } catch (\Exception $e) {
 
-            $datas = array(
+            $datas = [
                 'success' => false
                 , 'message' => _('Unable to add usr to list')
-            );
+            ];
         }
 
         return $app->json($datas);
@@ -443,16 +443,16 @@ class UsrLists implements ControllerProviderInterface
 
         }
 
-        return $app['twig']->render('prod/actions/Feedback/List-Share.html.twig', array('list' => $list));
+        return $app['twig']->render('prod/actions/Feedback/List-Share.html.twig', ['list' => $list]);
     }
 
     public function shareWithUser(Application $app, $list_id, $usr_id)
     {
-        $availableRoles = array(
+        $availableRoles = [
             UsrListOwner::ROLE_USER,
             UsrListOwner::ROLE_EDITOR,
             UsrListOwner::ROLE_ADMIN,
-        );
+        ];
 
         if (!$app['request']->request->get('role'))
             throw new BadRequestHttpException('Missing role parameter');
@@ -493,21 +493,21 @@ class UsrLists implements ControllerProviderInterface
 
             $app['EM']->flush();
 
-            $datas = array(
+            $datas = [
                 'success' => true
                 , 'message' => _('List shared to user')
-            );
+            ];
         } catch (ControllerException $e) {
-            $datas = array(
+            $datas = [
                 'success' => false
                 , 'message' => $e->getMessage()
-            );
+            ];
         } catch (\Exception $e) {
 
-            $datas = array(
+            $datas = [
                 'success' => false
                 , 'message' => _('Unable to share the list with the usr')
-            );
+            ];
         }
 
         return $app->json($datas);
@@ -532,20 +532,20 @@ class UsrLists implements ControllerProviderInterface
             $app['EM']->remove($owner);
             $app['EM']->flush();
 
-            $datas = array(
+            $datas = [
                 'success' => true
                 , 'message' => _('Owner removed from list')
-            );
+            ];
         } catch (ControllerException $e) {
-            $datas = array(
+            $datas = [
                 'success' => false
                 , 'message' => $e->getMessage()
-            );
+            ];
         } catch (\Exception $e) {
-            $datas = array(
+            $datas = [
                 'success' => false
                 , 'message' => _('Unable to remove usr from list')
-            );
+            ];
         }
 
         return $app->json($datas);

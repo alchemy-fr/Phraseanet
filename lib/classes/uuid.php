@@ -22,7 +22,7 @@ class uuid
         }
 
         // Get hexadecimal components of namespace
-        $nhex = str_replace(array('-', '{', '}'), '', $namespace);
+        $nhex = str_replace(['-', '{', '}'], '', $namespace);
 
         // Binary Value
         $nstr = '';
@@ -89,7 +89,7 @@ class uuid
         }
 
         // Get hexadecimal components of namespace
-        $nhex = str_replace(array('-', '{', '}'), '', $namespace);
+        $nhex = str_replace(['-', '{', '}'], '', $namespace);
 
         // Binary Value
         $nstr = '';

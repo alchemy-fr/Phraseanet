@@ -17,7 +17,7 @@ class patch_381alpha3a implements patchInterface
     private $release = '3.8.1-alpha.3';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -48,7 +48,7 @@ class patch_381alpha3a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $propSql = $propArgs = array();
+        $propSql = $propArgs = [];
         $n = 0;
 
         foreach (\User_Adapter::$def_values as $prop => $value) {

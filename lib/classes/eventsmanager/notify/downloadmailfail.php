@@ -24,7 +24,7 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = array('__EXPORT_MAIL_FAIL__');
+    public $events = ['__EXPORT_MAIL_FAIL__'];
 
     /**
      *
@@ -44,13 +44,13 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'usr_id' => null
             , 'lst'    => ''
             , 'ssttid' => ''
             , 'dest'   => ''
             , 'reason' => ''
-        );
+        ];
 
         $params = array_merge($default, $params);
 
@@ -117,10 +117,10 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
             , $reason
         );
 
-        $ret = array(
+        $ret = [
             'text'  => $text
             , 'class' => ''
-        );
+        ];
 
         return $ret;
     }

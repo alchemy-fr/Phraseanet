@@ -68,7 +68,7 @@ class RecordAdd extends Command
         if (!$input->getOption('yes')) {
             do {
                 $continue = strtolower($dialog->ask($output, sprintf("Will add record <info>%s</info> (%s) on collection <info>%s</info>\n<question>Continue ? (y/N)</question>", $file, $media->getType(), $collection->get_label($this->container['locale.I18n'])), 'N'));
-            } while ( ! in_array($continue, array('y', 'n')));
+            } while ( ! in_array($continue, ['y', 'n']));
 
             if (strtolower($continue) !== 'y') {
                 $output->writeln('Aborted !');

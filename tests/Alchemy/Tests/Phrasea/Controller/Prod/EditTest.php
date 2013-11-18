@@ -11,7 +11,7 @@ class ControllerEditTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRouteSlash()
     {
-        self::$DI['client']->request('POST', '/prod/records/edit/', array('lst' => self::$DI['record_1']->get_serialize_key()));
+        self::$DI['client']->request('POST', '/prod/records/edit/', ['lst' => self::$DI['record_1']->get_serialize_key()]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -20,7 +20,7 @@ class ControllerEditTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteSlashWithStory()
     {
-        self::$DI['client']->request('POST', '/prod/records/edit/', array('lst' => self::$DI['record_story_1']->get_serialize_key()));
+        self::$DI['client']->request('POST', '/prod/records/edit/', ['lst' => self::$DI['record_story_1']->get_serialize_key()]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -29,7 +29,7 @@ class ControllerEditTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testApply()
     {
-        self::$DI['client']->request('POST', '/prod/records/edit/apply/', array('lst' => self::$DI['record_1']->get_serialize_key()));
+        self::$DI['client']->request('POST', '/prod/records/edit/apply/', ['lst' => self::$DI['record_1']->get_serialize_key()]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -52,7 +52,7 @@ class ControllerEditTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $datas = json_decode($response->getContent());
         $this->assertFalse($datas->success);
 
-        $params = array('sbas_id' => self::$DI['collection']->get_sbas_id());
+        $params = ['sbas_id' => self::$DI['collection']->get_sbas_id()];
         self::$DI['client']->request('GET', '/prod/records/edit/vocabulary/Zanzibar/', $params);
 
         $response = self::$DI['client']->getResponse();
@@ -60,7 +60,7 @@ class ControllerEditTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $datas = json_decode($response->getContent());
         $this->assertFalse($datas->success);
 
-        $params = array('sbas_id' => self::$DI['collection']->get_sbas_id());
+        $params = ['sbas_id' => self::$DI['collection']->get_sbas_id()];
         self::$DI['client']->request('GET', '/prod/records/edit/vocabulary/User/', $params);
 
         $response = self::$DI['client']->getResponse();

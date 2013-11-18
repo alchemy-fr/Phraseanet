@@ -53,11 +53,11 @@ class Lightbox implements ControllerProviderInterface
             }
             switch ($datas['type']) {
                 case \random::TYPE_FEED_ENTRY:
-                    return $app->redirectPath('lightbox_feed_entry', array('entry_id' => $datas['datas']));
+                    return $app->redirectPath('lightbox_feed_entry', ['entry_id' => $datas['datas']]);
                     break;
                 case \random::TYPE_VALIDATE:
                 case \random::TYPE_VIEW:
-                    return $app->redirectPath('lightbox_validation', array('basket' => $datas['datas']));
+                    return $app->redirectPath('lightbox_validation', ['basket' => $datas['datas']]);
                     break;
             }
         });
@@ -88,11 +88,11 @@ class Lightbox implements ControllerProviderInterface
                 $template = 'lightbox/IE6/index.html.twig';
             }
 
-            return new Response($app['twig']->render($template, array(
+            return new Response($app['twig']->render($template, [
                     'baskets_collection' => $basket_collection,
                     'module_name'        => 'Lightbox',
                     'module'             => 'lightbox'
-                    )
+                    ]
             ));
         })
             ->bind('lightbox');
@@ -107,10 +107,10 @@ class Lightbox implements ControllerProviderInterface
                 ->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement')
                 ->findUserElement($sselcont_id, $app['authentication']->getUser());
 
-            $parameters = array(
+            $parameters = [
                 'basket_element' => $basketElement,
                 'module_name'    => '',
-            );
+            ];
 
             return $app['twig']->render('lightbox/note_form.html.twig', $parameters);
         })
@@ -123,10 +123,10 @@ class Lightbox implements ControllerProviderInterface
             $BasketElement = $repository->findUserElement($sselcont_id, $app['authentication']->getUser());
 
             if ($app['browser']->isMobile()) {
-                $output = $app['twig']->render('lightbox/basket_element.html.twig', array(
+                $output = $app['twig']->render('lightbox/basket_element.html.twig', [
                     'basket_element' => $BasketElement,
                     'module_name'    => $BasketElement->getRecord($app)->get_title()
-                    )
+                    ]
                 );
 
                 return new Response($output);
@@ -145,16 +145,16 @@ class Lightbox implements ControllerProviderInterface
 
                 $Basket = $BasketElement->getBasket();
 
-                $ret = array();
+                $ret = [];
                 $ret['number'] = $BasketElement->getRecord($app)->get_number();
                 $ret['title'] = $BasketElement->getRecord($app)->get_title();
 
-                $ret['preview'] = $app['twig']->render($template_preview, array('record'             => $BasketElement->getRecord($app), 'not_wrapped'        => true));
-                $ret['options_html'] = $app['twig']->render($template_options, array('basket_element'       => $BasketElement));
-                $ret['agreement_html'] = $app['twig']->render($template_agreement, array('basket'              => $Basket, 'basket_element'      => $BasketElement));
-                $ret['selector_html'] = $app['twig']->render($template_selector, array('basket_element'  => $BasketElement));
-                $ret['note_html'] = $app['twig']->render($template_note, array('basket_element' => $BasketElement));
-                $ret['caption'] = $app['twig']->render($template_caption, array('view'   => 'preview', 'record' => $BasketElement->getRecord($app)));
+                $ret['preview'] = $app['twig']->render($template_preview, ['record'             => $BasketElement->getRecord($app), 'not_wrapped'        => true]);
+                $ret['options_html'] = $app['twig']->render($template_options, ['basket_element'       => $BasketElement]);
+                $ret['agreement_html'] = $app['twig']->render($template_agreement, ['basket'              => $Basket, 'basket_element'      => $BasketElement]);
+                $ret['selector_html'] = $app['twig']->render($template_selector, ['basket_element'  => $BasketElement]);
+                $ret['note_html'] = $app['twig']->render($template_note, ['basket_element' => $BasketElement]);
+                $ret['caption'] = $app['twig']->render($template_caption, ['view'   => 'preview', 'record' => $BasketElement->getRecord($app)]);
 
                 return $app->json($ret);
             }
@@ -168,10 +168,10 @@ class Lightbox implements ControllerProviderInterface
             $item = $entry->getItem($item_id);
 
             if ($app['browser']->isMobile()) {
-                $output = $app['twig']->render('lightbox/feed_element.html.twig', array(
+                $output = $app['twig']->render('lightbox/feed_element.html.twig', [
                     'feed_element' => $item,
                     'module_name'  => $item->getRecord($app)->get_title()
-                    )
+                    ]
                 );
 
                 return new Response($output);
@@ -184,13 +184,13 @@ class Lightbox implements ControllerProviderInterface
                     $template_options = 'lightbox/IE6/feed_options_box.html.twig';
                 }
 
-                $ret = array();
+                $ret = [];
                 $ret['number'] = $item->getRecord($app)->get_number();
                 $ret['title'] = $item->getRecord($app)->get_title();
 
-                $ret['preview'] = $app['twig']->render($template_preview, array('record'             => $item->getRecord($app), 'not_wrapped'        => true));
-                $ret['options_html'] = $app['twig']->render($template_options, array('feed_element'  => $item));
-                $ret['caption'] = $app['twig']->render($template_caption, array('view'   => 'preview', 'record' => $item->getRecord($app)));
+                $ret['preview'] = $app['twig']->render($template_preview, ['record'             => $item->getRecord($app), 'not_wrapped'        => true]);
+                $ret['options_html'] = $app['twig']->render($template_options, ['feed_element'  => $item]);
+                $ret['caption'] = $app['twig']->render($template_caption, ['view'   => 'preview', 'record' => $item->getRecord($app)]);
 
                 $ret['agreement_html'] = $ret['selector_html'] = $ret['note_html'] = '';
 
@@ -233,13 +233,13 @@ class Lightbox implements ControllerProviderInterface
                 $template = 'lightbox/IE6/validate.html.twig';
             }
 
-            $response = new Response($app['twig']->render($template, array(
+            $response = new Response($app['twig']->render($template, [
                         'baskets_collection' => $basket_collection,
                         'basket'             => $basket,
                         'local_title'        => strip_tags($basket->getName()),
                         'module'             => 'lightbox',
                         'module_name'        => _('admin::monitor: module validation')
-                        )
+                        ]
                 ));
             $response->setCharset('UTF-8');
 
@@ -280,13 +280,13 @@ class Lightbox implements ControllerProviderInterface
                 $template = 'lightbox/IE6/validate.html.twig';
             }
 
-            $response = new Response($app['twig']->render($template, array(
+            $response = new Response($app['twig']->render($template, [
                         'baskets_collection' => $basket_collection,
                         'basket'             => $basket,
                         'local_title'        => strip_tags($basket->getName()),
                         'module'             => 'lightbox',
                         'module_name'        => _('admin::monitor: module validation')
-                        )
+                        ]
                 ));
             $response->setCharset('UTF-8');
 
@@ -314,13 +314,13 @@ class Lightbox implements ControllerProviderInterface
             $content = $feed_entry->getItems();
             $first = $content->first();
 
-            $output = $app['twig']->render($template, array(
+            $output = $app['twig']->render($template, [
                 'feed_entry'  => $feed_entry,
                 'first_item'  => $first,
                 'local_title' => $feed_entry->getTitle(),
                 'module'      => 'lightbox',
                 'module_name' => _('admin::monitor: module validation')
-                )
+                ]
             );
             $response = new Response($output, 200);
             $response->setCharset('UTF-8');
@@ -331,13 +331,13 @@ class Lightbox implements ControllerProviderInterface
             ->assert('entry_id', '\d+');
 
         $controllers->get('/ajax/LOAD_REPORT/{basket}/', function (SilexApplication $app, Basket $basket) {
-            return new Response($app['twig']->render('lightbox/basket_content_report.html.twig', array('basket' => $basket)));
+            return new Response($app['twig']->render('lightbox/basket_content_report.html.twig', ['basket' => $basket]));
         })
             ->bind('lightbox_ajax_report')
             ->assert('basket', '\d+');
 
         $controllers->post('/ajax/SET_NOTE/{sselcont_id}/', function (SilexApplication $app, $sselcont_id) {
-            $output = array('error' => true, 'datas' => _('Erreur lors de l\'enregistrement des donnees'));
+            $output = ['error' => true, 'datas' => _('Erreur lors de l\'enregistrement des donnees')];
 
             $request = $app['request'];
             $note = $request->request->get('note');
@@ -359,15 +359,15 @@ class Lightbox implements ControllerProviderInterface
             $app['EM']->flush();
 
             if ($app['browser']->isMobile()) {
-                $datas = $app['twig']->render('lightbox/sc_note.html.twig', array('basket_element' => $basket_element));
+                $datas = $app['twig']->render('lightbox/sc_note.html.twig', ['basket_element' => $basket_element]);
 
-                $output = array('error' => false, 'datas' => $datas);
+                $output = ['error' => false, 'datas' => $datas];
             } else {
                 $template = 'lightbox/sc_note.html.twig';
 
-                $datas = $app['twig']->render($template, array('basket_element' => $basket_element));
+                $datas = $app['twig']->render($template, ['basket_element' => $basket_element]);
 
-                $output = array('error' => false, 'datas' => $datas);
+                $output = ['error' => false, 'datas' => $datas];
             }
 
             return $app->json($output);
@@ -387,11 +387,11 @@ class Lightbox implements ControllerProviderInterface
 
             $releasable = false;
             try {
-                $ret = array(
+                $ret = [
                     'error'      => true,
                     'releasable' => false,
                     'datas'      => _('Erreur lors de la mise a jour des donnes ')
-                );
+                ];
 
                 $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
 
@@ -423,11 +423,11 @@ class Lightbox implements ControllerProviderInterface
                     $releasable = _('Do you want to send your report ?');
                 }
 
-                $ret = array(
+                $ret = [
                     'error'      => false
                     , 'datas'      => ''
                     , 'releasable' => $releasable
-                );
+                ];
             } catch (ControllerException $e) {
                 $ret['datas'] = $e->getMessage();
             }
@@ -439,7 +439,7 @@ class Lightbox implements ControllerProviderInterface
 
         $controllers->post('/ajax/SET_RELEASE/{basket}/', function (SilexApplication $app, Basket $basket) {
 
-            $datas = array('error' => true, 'datas' => '');
+            $datas = ['error' => true, 'datas' => ''];
 
             try {
                 if (!$basket->getValidation()) {
@@ -466,20 +466,20 @@ class Lightbox implements ControllerProviderInterface
                 $participant = $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app);
 
                 $expires = new \DateTime('+10 days');
-                $url = $app->url('lightbox', array('LOG' => $app['tokens']->getUrlToken(
+                $url = $app->url('lightbox', ['LOG' => $app['tokens']->getUrlToken(
                         \random::TYPE_VALIDATE
                         , $basket->getValidation()->getInitiator($app)->get_id()
                         , $expires
                         , $basket->getId()
-                )));
+                )]);
 
                 $to = $basket->getValidation()->getInitiator($app)->get_id();
-                $params = array(
+                $params = [
                     'ssel_id' => $basket->getId(),
                     'from'    => $app['authentication']->getUser()->get_id(),
                     'url'     => $url,
                     'to'      => $to
-                );
+                ];
 
                 $app['events-manager']->trigger('__VALIDATION_DONE__', $params);
 
@@ -488,9 +488,9 @@ class Lightbox implements ControllerProviderInterface
                 $app['EM']->merge($participant);
                 $app['EM']->flush();
 
-                $datas = array('error' => false, 'datas' => _('Envoie avec succes'));
+                $datas = ['error' => false, 'datas' => _('Envoie avec succes')];
             } catch (ControllerException $e) {
-                $datas = array('error' => true, 'datas' => $e->getMessage());
+                $datas = ['error' => true, 'datas' => $e->getMessage()];
             }
 
             return $app->json($datas);

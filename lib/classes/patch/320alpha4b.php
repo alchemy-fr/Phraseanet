@@ -34,7 +34,7 @@ class patch_320alpha4b implements patchInterface
      *
      * @var Array
      */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      *
@@ -61,7 +61,7 @@ class patch_320alpha4b implements patchInterface
 
     public function apply(base $appbox, Application $app)
     {
-        $feeds = array();
+        $feeds = [];
 
         try {
             $sql = 'ALTER TABLE `ssel` ADD `migrated` INT NOT NULL DEFAULT "0"';
@@ -118,7 +118,7 @@ class patch_320alpha4b implements patchInterface
             $sql = 'SELECT sselcont_id, ssel_id, base_id, record_id
                                 FROM sselcont WHERE ssel_id = :ssel_id ORDER BY ord ASC';
             $stmt = $appbox->get_connection()->prepare($sql);
-            $stmt->execute(array(':ssel_id' => $row['ssel_id']));
+            $stmt->execute([':ssel_id' => $row['ssel_id']]);
             $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
@@ -141,7 +141,7 @@ class patch_320alpha4b implements patchInterface
             $sql = 'UPDATE ssel SET deleted = "1", migrated="1"
                             WHERE ssel_id = :ssel_id';
             $stmt = $appbox->get_connection()->prepare($sql);
-            $stmt->execute(array(':ssel_id' => $row['ssel_id']));
+            $stmt->execute([':ssel_id' => $row['ssel_id']]);
             $stmt->closeCursor();
             $app['EM']->persist($feed);
             $n++;
@@ -169,7 +169,7 @@ class patch_320alpha4b implements patchInterface
 
         return;
     }
-    protected static $feeds = array();
+    protected static $feeds = [];
 
     protected function get_feed(appbox $appbox, User_Adapter $user, $pub_restrict, $homelink, Application $app)
     {

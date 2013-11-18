@@ -26,7 +26,7 @@ class Factory
         $this->session = $session;
     }
 
-    public function build($name, array $options = array())
+    public function build($name, array $options = [])
     {
         $name = implode('', array_map(function ($chunk) {
             return ucfirst(strtolower($chunk));

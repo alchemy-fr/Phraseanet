@@ -25,7 +25,7 @@ abstract class AbstractRoutesDumper extends Command
         $maxNameLength = 0;
         $maxMethodsLength = 0;
 
-        $data = array();
+        $data = [];
 
         foreach ($routes as $name => $route) {
             $methods = implode('|', $route->getMethods());
@@ -40,12 +40,12 @@ abstract class AbstractRoutesDumper extends Command
                 $warning = true;
             }
 
-            $data[] = array(
+            $data[] = [
                 'name' => $name,
                 'methods' => $methods ?: 'ALL',
                 'pattern' => $pattern,
                 'warning' => $warning
-            );
+            ];
         }
 
         foreach ($data as $route) {

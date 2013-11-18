@@ -84,14 +84,14 @@ class Tooltip implements ControllerProviderInterface
 
     public function displayBasket(Application $app, Basket $basket)
     {
-        return $app['twig']->render('prod/Tooltip/Basket.html.twig', array('basket' => $basket));
+        return $app['twig']->render('prod/Tooltip/Basket.html.twig', ['basket' => $basket]);
     }
 
     public function displayStory(Application $app, $sbas_id, $record_id)
     {
         $Story = new \record_adapter($app, $sbas_id, $record_id);
 
-        return $app['twig']->render('prod/Tooltip/Story.html.twig', array('Story' => $Story));
+        return $app['twig']->render('prod/Tooltip/Story.html.twig', ['Story' => $Story]);
     }
 
     public function displayUserBadge(Application $app, $usr_id)
@@ -100,7 +100,7 @@ class Tooltip implements ControllerProviderInterface
 
         return $app['twig']->render(
                 'prod/Tooltip/User.html.twig'
-                , array('user' => $user)
+                , ['user' => $user]
         );
     }
 
@@ -110,7 +110,7 @@ class Tooltip implements ControllerProviderInterface
 
         return $app['twig']->render(
                 'prod/Tooltip/Preview.html.twig'
-                , array('record'      => $record, 'not_wrapped' => true)
+                , ['record'      => $record, 'not_wrapped' => true]
         );
     }
 
@@ -132,12 +132,12 @@ class Tooltip implements ControllerProviderInterface
 
         return $app['twig']->render(
             'prod/Tooltip/Caption.html.twig'
-            , array(
+            , [
             'record'       => $record,
             'view'         => $context,
             'highlight'    => $app['request']->request->get('query'),
             'searchEngine' => $search_engine,
-        ));
+        ]);
     }
 
     public function displayTechnicalDatas(Application $app, $sbas_id, $record_id)
@@ -152,7 +152,7 @@ class Tooltip implements ControllerProviderInterface
 
         return $app['twig']->render(
                 'prod/Tooltip/TechnicalDatas.html.twig'
-                , array('record'   => $record, 'document' => $document)
+                , ['record'   => $record, 'document' => $document]
         );
     }
 
@@ -163,7 +163,7 @@ class Tooltip implements ControllerProviderInterface
 
         return $app['twig']->render(
                 'prod/Tooltip/DataboxField.html.twig'
-                , array('field' => $field)
+                , ['field' => $field]
         );
     }
 
@@ -174,7 +174,7 @@ class Tooltip implements ControllerProviderInterface
 
         return $app['twig']->render(
                 'prod/Tooltip/DCESFieldInfo.html.twig'
-                , array('field' => $field)
+                , ['field' => $field]
         );
     }
 
@@ -185,7 +185,7 @@ class Tooltip implements ControllerProviderInterface
 
         return $app['twig']->render(
                 'prod/Tooltip/DataboxFieldRestrictions.html.twig'
-                , array('field' => $field)
+                , ['field' => $field]
         );
     }
 }

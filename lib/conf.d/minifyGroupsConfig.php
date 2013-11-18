@@ -8,19 +8,19 @@
  * You may wish to use the Minify URI Builder app to suggest
  * changes. http://yourdomain/min/builder/
  * */
-$groups = array(
-    'authentication_css' => array(
+$groups = [
+    'authentication_css' => [
         '//assets/normalize-css/normalize.css',
         '//assets/build/login.css',
         '//assets/font-awesome/css/font-awesome.css',
         '//assets/jquery.ui/themes/base/jquery.ui.autocomplete.css'
-    ),
-    'authentication' => array(
+    ],
+    'authentication' => [
         '//assets/modernizr/modernizr.js',
         '//assets/requirejs/require.js',
         '//scripts/apps/login/home/config.js'
-    ),
-    'client' => array(
+    ],
+    'client' => [
         '//assets/swfobject/swfobject.js'
         , '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
         , '//assets/jquery.cookie/jquery.cookie.js'
@@ -33,8 +33,8 @@ $groups = array(
         , '//include/jquery.tooltip.js'
         , '//include/jquery.p4.preview.js'
         , '//include/jquery.image_enhancer.js'
-        , '//include/jslibs/jquery.contextmenu_scroll.js'),
-    'admin' => array(
+        , '//include/jslibs/jquery.contextmenu_scroll.js'],
+    'admin' => [
         '//assets/modernizr/modernizr.js'
         , '//assets/underscore-amd/underscore.js'
         , '//assets/jquery.cookie/jquery.cookie.js'
@@ -51,8 +51,8 @@ $groups = array(
         , '//assets/blueimp-load-image/load-image.js'
         , '//assets/jquery-file-upload/jquery.iframe-transport.js'
         , '//assets/jquery-file-upload/jquery.fileupload.js'
-    ),
-    'report' => array(
+    ],
+    'report' => [
          '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
         , '//assets/jquery.cookie/jquery.cookie.js'
         , '//include/jquery.common.js'
@@ -62,11 +62,11 @@ $groups = array(
         , '//include/jslibs/jquery.cluetip.js'
         , '//include/jquery.nicoslider.js'
         , '//skins/report/report.js'
-    ),
-    'modalBox' => array(
+    ],
+    'modalBox' => [
          '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
-    ),
-    'prod' => array(
+    ],
+    'prod' => [
         '//assets/swfobject/swfobject.js'
         , '//assets/underscore-amd/underscore.js'
         , '//assets/json2/json2.js'
@@ -105,8 +105,8 @@ $groups = array(
         , '//include/jquery.image_enhancer.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//include/jslibs/jquery-treeview/jquery.treeview.js'
-        , '//include/jslibs/jquery-treeview/jquery.treeview.async.js'),
-    'thesaurus' => array(
+        , '//include/jslibs/jquery-treeview/jquery.treeview.async.js'],
+    'thesaurus' => [
          '//assets/jquery.cookie/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//include/jquery.common.js'
@@ -114,8 +114,8 @@ $groups = array(
         , '//skins/thesaurus/xmlhttp.js'
         , '//skins/thesaurus/thesaurus.js'
         , '//skins/thesaurus/sprintf.js'
-    ),
-    'lightbox' => array(
+    ],
+    'lightbox' => [
          '//include/jslibs/jquery.mousewheel.js'
         , '//include/jquery.tooltip.js'
         , '//assets/swfobject/swfobject.js'
@@ -126,8 +126,8 @@ $groups = array(
         , '//skins/prod/jquery.Dialog.js'
         , '//skins/lightbox/jquery.lightbox.js'
         , '//include/jslibs/flowplayer/flowplayer-3.2.11.min.js'
-    ),
-    'lightboxie6' => array(
+    ],
+    'lightboxie6' => [
          '//include/jslibs/jquery.mousewheel.js'
         , '//include/jquery.tooltip.js'
         , '//assets/swfobject/swfobject.js'
@@ -138,11 +138,11 @@ $groups = array(
         , '//skins/prod/jquery.Dialog.js'
         , '//skins/lightbox/jquery.lightbox.ie6.js'
         , '//include/jslibs/flowplayer/flowplayer-3.2.11.min.js'
-    ),
-    'uploadflash' => array(
+    ],
+    'uploadflash' => [
         '//include/jslibs/SWFUpload/swfupload.js'
         , '//include/jslibs/SWFUpload/plugins/swfupload.queue.js'
-    )
-);
+    ]
+];
 
 return $groups;

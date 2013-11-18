@@ -124,7 +124,7 @@ class API_V1_result
         }
 
         $accept = $this->request->getAcceptableContentTypes();
-        $response_types = array();
+        $response_types = [];
 
         foreach ($accept as $key => $app_type) {
             $response_types[strtolower($app_type)] = true;
@@ -183,8 +183,8 @@ class API_V1_result
             . $this->request->getPathInfo()
         );
 
-        $ret = array(
-            'meta' => array(
+        $ret = [
+            'meta' => [
                 'api_version'   => $this->api_version
                 , 'request'       => $request_uri
                 , 'response_time' => $this->response_time
@@ -193,9 +193,9 @@ class API_V1_result
                 , 'error_message' => $this->error_message
                 , 'error_details' => $this->error_details
                 , 'charset'       => 'UTF-8'
-            )
+            ]
             , 'response'      => $this->response
-        );
+        ];
 
         $this->app['dispatcher']->dispatch(PhraseaEvents::API_RESULT, new ApiResultEvent());
 
@@ -214,7 +214,7 @@ class API_V1_result
                 break;
             case self::FORMAT_YAML:
                 if ($ret['response'] instanceof stdClass)
-                    $ret['response'] = array();
+                    $ret['response'] = [];
 
                 $dumper = new Symfony\Component\Yaml\Dumper();
                 $return_value = $dumper->dump($ret, 8);
@@ -388,7 +388,7 @@ class API_V1_result
         $response = new Response(
                 $this->format(),
                 $this->get_http_code(),
-                array('Content-Type'  => $this->get_content_type())
+                ['Content-Type'  => $this->get_content_type()]
         );
         $response->setCharset('UTF-8');
 

@@ -31,7 +31,7 @@ interface Bridge_Api_Auth_Interface
 
     public function parse_request_token();
 
-    public function get_auth_url(Array $supp_parameters = array());
+    public function get_auth_url(Array $supp_parameters = []);
 
     public function get_auth_signatures();
 

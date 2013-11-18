@@ -45,12 +45,12 @@ class ConfigurationPanel extends AbstractConfigurationPanel
     {
         $configuration = $this->getConfiguration();
 
-        $params = array(
+        $params = [
             'configuration' => $configuration,
             'configfile'    => $this->generateSphinxConf($app['phraseanet.appbox']->get_databoxes(), $configuration),
             'charsets'      => $this->getAvailableCharsets(),
             'date_fields'   => $this->getAvailableDateFields($app['phraseanet.appbox']->get_databoxes()),
-        );
+        ];
 
         return $app['twig']->render('admin/search-engine/sphinx-search.html.twig', $params);
     }
@@ -61,13 +61,13 @@ class ConfigurationPanel extends AbstractConfigurationPanel
     public function post(Application $app, Request $request)
     {
         $configuration = $this->getConfiguration();
-        $configuration['charset_tables'] = array();
-        $configuration['date_fields'] = array();
+        $configuration['charset_tables'] = [];
+        $configuration['date_fields'] = [];
 
-        foreach ($request->request->get('charset_tables', array()) as $table) {
+        foreach ($request->request->get('charset_tables', []) as $table) {
             $configuration['charset_tables'][] = $table;
         }
-        foreach ($request->request->get('date_fields', array()) as $field) {
+        foreach ($request->request->get('date_fields', []) as $field) {
             $configuration['date_fields'][] = $field;
         }
 
@@ -86,7 +86,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
      */
     public function getConfiguration()
     {
-        $configuration = isset($this->conf['main']['search-engine']['options']) ? $this->conf['main']['search-engine']['options'] : array();
+        $configuration = isset($this->conf['main']['search-engine']['options']) ? $this->conf['main']['search-engine']['options'] : [];
 
         return self::populateConfiguration($configuration);
     }
@@ -114,7 +114,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
             return $this->charsets;
         }
 
-        $this->charsets = array();
+        $this->charsets = [];
 
         $finder = new Finder();
         $finder->in(__DIR__ . '/Charset/')->files()->name('*.php');
@@ -208,7 +208,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
 
             $index_crc = $this->searchEngine->CRCdatabox($databox);
 
-            $date_selects = $date_left_joins = $date_fields = array();
+            $date_selects = $date_left_joins = $date_fields = [];
             foreach ($configuration['date_fields'] as $name) {
                 $field = $databox->get_meta_structure()->get_element_by_name($name);
 
@@ -738,13 +738,13 @@ searchd
      */
     public static function populateConfiguration(array $configuration)
     {
-        return array_replace(array(
-            'charset_tables' => array("common", "latin"),
-            'date_fields'    => array(),
+        return array_replace([
+            'charset_tables' => ["common", "latin"],
+            'date_fields'    => [],
             'host'           => '127.0.0.1',
             'port'           => 9312,
             'rt_host'        => '127.0.0.1',
             'rt_port'        => 9306,
-        ), $configuration);
+        ], $configuration);
     }
 }

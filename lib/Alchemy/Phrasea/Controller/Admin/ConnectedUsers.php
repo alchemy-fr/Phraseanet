@@ -42,13 +42,13 @@ class ConnectedUsers implements ControllerProviderInterface
             ORDER BY s.updated DESC';
 
         $date = new \DateTime('-2 hours');
-        $params = array('date' => $date->format('Y-m-d h:i:s'));
+        $params = ['date' => $date->format('Y-m-d h:i:s')];
 
         $query = $app['EM']->createQuery($dql);
         $query->setParameters($params);
         $sessions = $query->getResult();
 
-        $result = array();
+        $result = [];
 
         foreach ($sessions as $session) {
             $info = '';
@@ -76,15 +76,15 @@ class ConnectedUsers implements ControllerProviderInterface
                 ));
             }
 
-            $result[] = array(
+            $result[] = [
                 'session' => $session,
                 'info' => $info,
-            );
+            ];
         }
 
-        $ret = array(
+        $ret = [
             'sessions'     => $result,
-            'applications' => array(
+            'applications' => [
                 '0' => 0,
                 '1' => 0,
                 '2' => 0,
@@ -94,8 +94,8 @@ class ConnectedUsers implements ControllerProviderInterface
                 '6' => 0,
                 '7' => 0,
                 '8' => 0,
-            )
-        );
+            ]
+        ];
 
         foreach ($result as $session) {
             foreach ($session['session']->getModules() as $module) {
@@ -105,7 +105,7 @@ class ConnectedUsers implements ControllerProviderInterface
             }
         }
 
-        return $app['twig']->render('admin/connected-users.html.twig', array('data' => $ret));
+        return $app['twig']->render('admin/connected-users.html.twig', ['data' => $ret]);
     }
 
     /**
@@ -117,7 +117,7 @@ class ConnectedUsers implements ControllerProviderInterface
      */
     public static function appName($appId)
     {
-        $appRef = array(
+        $appRef = [
             '0' => _('admin::monitor: module inconnu'),
             '1' => _('admin::monitor: module production'),
             '2' => _('admin::monitor: module client'),
@@ -127,7 +127,7 @@ class ConnectedUsers implements ControllerProviderInterface
             '6' => _('admin::monitor: module comparateur'),
             '7' => _('admin::monitor: module validation'),
             '8' => _('admin::monitor: module upload'),
-        );
+        ];
 
         return isset($appRef[$appId]) ? $appRef[$appId] : null;
     }

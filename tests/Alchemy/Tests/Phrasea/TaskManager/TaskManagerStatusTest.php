@@ -24,16 +24,16 @@ class TaskManagerStatusTest extends \PHPUnit_Framework_TestCase
 
     public function provideInitialData()
     {
-        return array(
-            array(array()),
-            array(array('task-manager' => array())),
-            array(array('task-manager' => array('status' => TaskManagerStatus::STATUS_STARTED))),
-            array(array('task-manager' => array('status' => TaskManagerStatus::STATUS_STOPPED))),
-            array(array('key1' => 'value1')),
-            array(array('task-manager' => array(), 'key2' => 'value2')),
-            array(array('task-manager' => array('status' => TaskManagerStatus::STATUS_STARTED, 'key3' => 'value3'), 'key4' => 'value4')),
-            array(array('task-manager' => array('status' => TaskManagerStatus::STATUS_STOPPED, 'key5' => 'value5'), 'key6' => 'value6')),
-        );
+        return [
+            [[]],
+            [['task-manager' => []]],
+            [['task-manager' => ['status' => TaskManagerStatus::STATUS_STARTED]]],
+            [['task-manager' => ['status' => TaskManagerStatus::STATUS_STOPPED]]],
+            [['key1' => 'value1']],
+            [['task-manager' => [], 'key2' => 'value2']],
+            [['task-manager' => ['status' => TaskManagerStatus::STATUS_STARTED, 'key3' => 'value3'], 'key4' => 'value4']],
+            [['task-manager' => ['status' => TaskManagerStatus::STATUS_STOPPED, 'key5' => 'value5'], 'key6' => 'value6']],
+        ];
     }
 
     /**
@@ -63,13 +63,13 @@ class TaskManagerStatusTest extends \PHPUnit_Framework_TestCase
 
     public function provideConfAndStatusData()
     {
-        return array(
+        return [
 //            array(array(), TaskManagerStatus::STATUS_STARTED, true),
 //            array(array('task-manager' => array()), TaskManagerStatus::STATUS_STARTED, true),
-            array(array('task-manager' => array('status' => TaskManagerStatus::STATUS_STOPPED)), TaskManagerStatus::STATUS_STOPPED, false),
+            [['task-manager' => ['status' => TaskManagerStatus::STATUS_STOPPED]], TaskManagerStatus::STATUS_STOPPED, false],
 //            array(array('task-manager' => array('status' => TaskManagerStatus::STATUS_STARTED)), TaskManagerStatus::STATUS_STARTED, true),
 //            array(array('task-manager' => array('status' => 'unknown')), TaskManagerStatus::STATUS_STARTED, true),
-        );
+        ];
     }
 
     /**
@@ -85,7 +85,7 @@ class TaskManagerStatusTest extends \PHPUnit_Framework_TestCase
 
 class ConfigurationTest implements ConfigurationInterface
 {
-    private $data = array();
+    private $data = [];
 
     public function __construct(array $data)
     {

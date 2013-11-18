@@ -18,7 +18,7 @@ namespace Alchemy\Phrasea\Media\Subdef;
  */
 abstract class Provider implements Subdef
 {
-    protected $options = array();
+    protected $options = [];
     protected $spec;
 
     public function registerOption(OptionType\OptionType $option)

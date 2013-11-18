@@ -20,8 +20,8 @@ use Alchemy\Phrasea\Border\File;
 abstract class AbstractChecker implements CheckerInterface
 {
     protected $app;
-    protected $databoxes = array();
-    protected $collections = array();
+    protected $databoxes = [];
+    protected $collections = [];
 
     public function __construct(Application $app)
     {
@@ -44,7 +44,7 @@ abstract class AbstractChecker implements CheckerInterface
             throw new \LogicException('You can not restrict on databoxes and collections simultanously');
         }
 
-        $this->databoxes = array();
+        $this->databoxes = [];
 
         foreach ($this->toIterator($databoxes) as $databox) {
             if (! $databox instanceof \databox) {
@@ -72,7 +72,7 @@ abstract class AbstractChecker implements CheckerInterface
             throw new \LogicException('You can not restrict on databoxes and collections simultanously');
         }
 
-        $this->collections = array();
+        $this->collections = [];
 
         foreach ($this->toIterator($collections) as $collection) {
             if (! $collection instanceof \collection) {
@@ -122,6 +122,6 @@ abstract class AbstractChecker implements CheckerInterface
      */
     protected function toIterator($data)
     {
-        return new \ArrayObject(is_array($data) ? $data : array($data));
+        return new \ArrayObject(is_array($data) ? $data : [$data]);
     }
 }

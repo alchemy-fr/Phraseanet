@@ -12,7 +12,7 @@ class Bridge_Api_Dailymotion_ElementTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->test = array(
+        $this->test = [
             'created_time'         => time()
             , 'description'          => 'Description of a dailymotion element'
             , 'id'                   => "1"
@@ -25,7 +25,7 @@ class Bridge_Api_Dailymotion_ElementTest extends PHPUnit_Framework_TestCase
             , 'ratings_total'        => '4'
             , 'duration'             => 80
             , 'channel'              => 'animation'
-        );
+        ];
     }
 
     public function testGet_created_on()

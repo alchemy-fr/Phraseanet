@@ -9,23 +9,23 @@ class RecordMoverEditorTest extends EditorTestCase
 {
     public function provideDataForXMLUpdatesFromForm()
     {
-        return array(
-            array('<?xml version="1.0" encoding="UTF-8"?>
+        return [
+            ['<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
 <logsql>0</logsql></tasksettings>
 ', '<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
-</tasksettings>', array()
-            ),
-            array('<?xml version="1.0" encoding="UTF-8"?>
+</tasksettings>', []
+            ],
+            ['<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
   <logsql>1</logsql>
 </tasksettings>
 ', '<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings><logsql>0</logsql>
-</tasksettings>', array('logsql' => 1)
-            ),
-            array('<?xml version="1.0" encoding="UTF-8"?>
+</tasksettings>', ['logsql' => 1]
+            ],
+            ['<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
   <customtag>value</customtag>
   <logsql>0</logsql>
@@ -33,9 +33,9 @@ class RecordMoverEditorTest extends EditorTestCase
 ', '<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
   <customtag>value</customtag>
-</tasksettings>', array()
-            ),
-        );
+</tasksettings>', []
+            ],
+        ];
     }
 
     protected function getEditor()
@@ -57,7 +57,7 @@ class RecordMoverEditorTest extends EditorTestCase
             $this->markTestSkipped('Unable to get a databox');
         }
 
-        $request = new Request(array(), array(
+        $request = new Request([], [
             'ACT' => $action,
             'xml' => '<?xml version="1.0" encoding="UTF-8"?>
                 <tasksettings>
@@ -73,7 +73,7 @@ class RecordMoverEditorTest extends EditorTestCase
                         </task>
                     </tasks>
                 </tasksettings>',
-        ));
+        ]);
 
         $editor = $this->getEditor();
         $response = $editor->facility(self::$DI['app'], $request);
@@ -82,6 +82,6 @@ class RecordMoverEditorTest extends EditorTestCase
 
     public function provideFacilityActions()
     {
-        return array(array('CALCTEST'), array('PLAYTEST'), array('CALCSQL'));
+        return [['CALCTEST'], ['PLAYTEST'], ['CALCSQL']];
     }
 }

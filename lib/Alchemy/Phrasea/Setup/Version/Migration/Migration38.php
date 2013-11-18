@@ -58,12 +58,12 @@ class Migration38 implements MigrationInterface
 
         $app['configuration']->setConfig($conf);
 
-        foreach (array(
+        foreach ([
             $this->configYaml,
             $this->connexionsYaml,
             $this->binariesYaml,
             $this->servicesYaml
-        ) as $file) {
+        ] as $file) {
             if (is_file($file)) {
                 rename($file, $file.'.bkp');
             }
@@ -103,7 +103,7 @@ class Migration38 implements MigrationInterface
                 if (isset($services['Cache'][$opcodeCacheService]['options'])) {
                     $conf['main']['opcodecache']['options'] = $services['Cache'][$opcodeCacheService]['options'];
                 } else {
-                    $conf['main']['opcodecache']['options'] = array();
+                    $conf['main']['opcodecache']['options'] = [];
                 }
             }
             if (null !== $cacheService) {
@@ -111,7 +111,7 @@ class Migration38 implements MigrationInterface
                 if (isset($services['Cache'][$cacheService]['options'])) {
                     $conf['main']['cache']['options'] = $services['Cache'][$cacheService]['options'];
                 } else {
-                    $conf['main']['cache']['options'] = array();
+                    $conf['main']['cache']['options'] = [];
                 }
             }
             $conf['border-manager'] = $services['Border']['border_manager']['options'];

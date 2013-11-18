@@ -28,7 +28,7 @@ class set_selection extends set_abstract
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->elements = array();
+        $this->elements = [];
 
         return $this;
     }
@@ -54,9 +54,9 @@ class set_selection extends set_abstract
      *
      * @return set_selection
      */
-    public function grep_authorized(Array $rights = array(), Array $sbas_rights = array())
+    public function grep_authorized(Array $rights = [], Array $sbas_rights = [])
     {
-        $to_remove = array();
+        $to_remove = [];
 
         foreach ($this->elements as $id => $record) {
             $base_id = $record->get_base_id();
@@ -99,7 +99,7 @@ class set_selection extends set_abstract
                 AND record_id = :record_id';
 
                 $stmt = $connsbas->prepare($sql);
-                $stmt->execute(array(':record_id' => $record_id));
+                $stmt->execute([':record_id' => $record_id]);
                 $num_rows = $stmt->rowCount();
                 $stmt->closeCursor();
 
@@ -153,7 +153,7 @@ class set_selection extends set_abstract
      */
     public function get_distinct_sbas_ids()
     {
-        $ret = array();
+        $ret = [];
         foreach ($this->elements as $record) {
             $sbas_id = phrasea::sbasFromBas($this->app, $record->get_base_id());
             $ret[$sbas_id] = $sbas_id;

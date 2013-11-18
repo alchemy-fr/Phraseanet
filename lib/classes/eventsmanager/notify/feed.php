@@ -24,7 +24,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = array('__FEED_ENTRY_CREATE__');
+    public $events = ['__FEED_ENTRY_CREATE__'];
 
     /**
      *
@@ -44,10 +44,10 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$entry)
     {
-        $params = array(
+        $params = [
             'entry_id' => $entry->getId(),
             'notify_email' => $params['notify_email'],
-        );
+        ];
 
         $dom_xml = new DOMDocument('1.0', 'UTF-8');
 
@@ -74,16 +74,16 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
             ->email_not_null(true);
 
         if ($entry->getFeed()->getCollection($this->app)) {
-            $Query->on_base_ids(array($entry->getFeed()->getCollection($this->app)->get_base_id()));
+            $Query->on_base_ids([$entry->getFeed()->getCollection($this->app)->get_base_id()]);
         }
 
         $start = 0;
         $perLoop = 100;
 
-        $from = array(
+        $from = [
             'email' => $entry->getAuthorEmail(),
             'name'  => $entry->getAuthorName()
-        );
+        ];
 
         do {
             $results = $Query->limit($start, $perLoop)->execute()->get_results();
@@ -102,7 +102,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
                                 , $entry->getId()
                         );
 
-                        $url = $this->app->url('lightbox', array('LOG' => $token));
+                        $url = $this->app->url('lightbox', ['LOG' => $token]);
 
                         $receiver = Receiver::fromUser($user_to_notif);
                         $readyToSend = true;
@@ -142,17 +142,17 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
         $entry = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find((int) $sx->entry_id);
 
         if (null === $entry) {
-            return array();
+            return [];
         }
 
-        $ret = array(
+        $ret = [
             'text'  => sprintf(
                 _('%1$s has published %2$s')
                 , $entry->getAuthorName()
                 , '<a href="/lightbox/feeds/entry/' . $entry->getId() . '/" target="_blank">' . $entry->getTitle() . '</a>'
             )
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
-        );
+        ];
 
         return $ret;
     }

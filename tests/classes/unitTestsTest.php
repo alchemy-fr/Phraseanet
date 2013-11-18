@@ -5,14 +5,14 @@ class unitTestsTest extends PhraseanetPHPUnitAbstract
 
     public function testFiles()
     {
-        $reserved = array(
+        $reserved = [
             "BoilerPlate.php",
             "PhraseanetPHPUnitAbstract.php",
             "PhraseanetWebTestCaseAbstract.php",
             "PhraseanetPHPUnitAuthenticatedAbstract.php",
             "PhraseanetWebTestCaseAuthenticatedAbstract.php",
             "PhraseanetPHPUnitListener.php",
-        );
+        ];
 
         $testDir = __DIR__ . '/';
         foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($testDir), RecursiveIteratorIterator::LEAVES_ONLY) as $file) {

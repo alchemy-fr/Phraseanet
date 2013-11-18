@@ -42,7 +42,7 @@ class module_console_systemMailCheck extends Command
     {
         $output->writeln("Processing...");
 
-        $bad_users = array();
+        $bad_users = [];
         if (version_compare($this->getService('phraseanet.appbox')->get_version(), '3.9', '<')) {
             $bad_users = MailChecker::getWrongEmailUsers($this->container);
         }
@@ -76,7 +76,7 @@ class module_console_systemMailCheck extends Command
                     . 'continue (C), detach from mail (d), or stop (s)</question>';
 
                 $continue = mb_strtolower($dialog->ask($output, $question, 'C'));
-            } while ( ! in_array($continue, array('c', 'd', 's')));
+            } while ( ! in_array($continue, ['c', 'd', 's']));
 
             if ($continue == 's') {
                 return false;

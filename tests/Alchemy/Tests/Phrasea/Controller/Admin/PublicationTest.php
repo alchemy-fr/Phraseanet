@@ -31,7 +31,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
         $feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
         $count = sizeof($feeds);
 
-        $crawler = self::$DI['client']->request('POST', '/admin/publications/create/', array("title"    => "hello", "subtitle" => "coucou", "base_id"  => self::$DI['collection']->get_base_id()));
+        $crawler = self::$DI['client']->request('POST', '/admin/publications/create/', ["title"    => "hello", "subtitle" => "coucou", "base_id"  => self::$DI['collection']->get_base_id()]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect('/admin/publications/list/'));
 
@@ -54,11 +54,11 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
 
         $feed = $this->insertOneFeed(self::$DI['user']);
 
-        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/update/", array(
+        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/update/", [
             'title'    => 'test'
             , 'subtitle' => 'test'
             , 'public'   => '1'
-        ));
+        ]);
 
         $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', $feed->getId());
 
@@ -78,12 +78,12 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
     {
         $feed = $this->insertOneFeed(self::$DI['user']);
 
-        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/update/", array(
+        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/update/", [
             'title'    => 'test'
             , 'subtitle' => 'test'
             , 'public'   => '1'
             , 'base_id'  => self::$DI['collection']->get_base_id()
-        ));
+        ]);
 
         $this->assertTrue(
             strpos(
@@ -111,7 +111,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
     {
         $feed = $this->insertOneFeed(self::$DI['user_alt1']);
 
-        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/iconupload/", array(), array(), array('HTTP_ACCEPT' => 'application/json'));
+        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/iconupload/", [], [], ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -125,8 +125,8 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
         self::$DI['client']->request(
             "POST"
             , "/admin/publications/feed/" . $feed->getId() . "/iconupload/"
-            , array()
-            , array('Filedata' => array('error'   => 1))
+            , []
+            , ['Filedata' => ['error'   => 1]]
         );
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
@@ -143,8 +143,8 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
         self::$DI['client']->request(
             "POST"
             , "/admin/publications/feed/" . $feed->getId() . "/iconupload/"
-            , array()
-            , array('Filedata' => array('error'    => 0, 'tmp_name' => __DIR__ . '/../../../../../files/test007.ppt'))
+            , []
+            , ['Filedata' => ['error'    => 0, 'tmp_name' => __DIR__ . '/../../../../../files/test007.ppt']]
         );
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
@@ -158,18 +158,18 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
     {
         $feed = $this->insertOneFeed(self::$DI['user']);
 
-        $files = array(
-            'files' => array(
+        $files = [
+            'files' => [
                 new \Symfony\Component\HttpFoundation\File\UploadedFile(
                     __DIR__ . '/../../../../../files/logocoll.gif', 'logocoll.gif'
                 )
-            )
-        );
+            ]
+        ];
 
         self::$DI['client']->request(
             "POST"
             , "/admin/publications/feed/" . $feed->getId() . "/iconupload/"
-            , array()
+            , []
             , $files
         );
 
@@ -186,9 +186,9 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
     {
         $feed = $this->insertOneFeed(self::$DI['user']);
 
-        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/addpublisher/", array(
+        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/addpublisher/", [
             'usr_id' => self::$DI['user_alt1']->get_id()
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
@@ -224,9 +224,9 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
     {
         $feed = $this->insertOneFeed(self::$DI['user']);
 
-        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/removepublisher/", array(
+        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/removepublisher/", [
             'usr_id' => self::$DI['user_alt1']->get_id()
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());

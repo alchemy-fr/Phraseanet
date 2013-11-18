@@ -21,7 +21,7 @@ class ComposerInstallerTest extends \PHPUnit_Framework_TestCase
         $installFile =  __DIR__ . '/installer';
         $composer = __DIR__ . '/composer.phar';
 
-        $fs->remove(array($composer, $installFile, $vendorDir));
+        $fs->remove([$composer, $installFile, $vendorDir]);
 
         if (null === $php) {
             $this->markTestSkipped('Unable to find PHP executable.');

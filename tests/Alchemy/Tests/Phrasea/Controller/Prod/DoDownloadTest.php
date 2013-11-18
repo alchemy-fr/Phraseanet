@@ -13,17 +13,17 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testPrepareDownload()
     {
-        $token = $this->getToken(array(
+        $token = $this->getToken([
             'export_name' => 'Export_2012-10-23_621.zip',
             'count' => 1,
-            'files' => array(
-                array(
+            'files' => [
+                [
                     'base_id' => 1,
                     'record_id' => 1,
                     'export_name' => 'my_downloads',
                     'original_name' => '0470',
-                    'subdefs' => array(
-                        'document' => array (
+                    'subdefs' => [
+                        'document' => [
                             'ajout'     => '',
                             'path'      => 'my_base/documents/2012/10/23/00000',
                             'file'      => '1_document.jpg',
@@ -32,11 +32,11 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                             'mime'      => 'image/jpeg',
                             'folder'    => '',
                             'exportExt' => 'jpg'
-                        )
-                    )
-                )
-            )
-        ));
+                        ]
+                    ]
+                ]
+            ]
+        ]);
         $url = sprintf('/download/%s/prepare/', $token);
         self::$DI['client']->request('GET', $url);
         $response = self::$DI['client']->getResponse();
@@ -60,7 +60,7 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testPrepareDownloadInvalidData()
     {
-        $token = $this->getToken(array('bad_string' => base64_decode(serialize(array('fail')))));
+        $token = $this->getToken(['bad_string' => base64_decode(serialize(['fail']))]);
         self::$DI['client']->request('GET', sprintf('/download/%s/prepare/', $token));
 
         $response = self::$DI['client']->getResponse();
@@ -76,17 +76,17 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $nbRowLogsBefore = $this->getNbRowLogs(self::$DI['record_1']->get_databox());
         $thumbnail = self::$DI['record_1']->get_thumbnail();
 
-        $token = $this->getToken(array(
+        $token = $this->getToken([
             'export_name' => 'Export_2012-10-23_621.zip',
             'count' => 1,
-            'files' => array(
-                array(
+            'files' => [
+                [
                     'base_id' => self::$DI['record_1']->get_base_id(),
                     'record_id' => self::$DI['record_1']->get_record_id(),
                     'export_name' => 'my_downloads',
                     'original_name' => '0470',
-                    'subdefs' => array(
-                        'document' => array (
+                    'subdefs' => [
+                        'document' => [
                             'ajout'     => '',
                             'path'      => $thumbnail->get_path(),
                             'file'      => $thumbnail->get_file(),
@@ -95,11 +95,11 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                             'mime'      => $thumbnail->get_mime(),
                             'folder'    => '',
                             'exportExt' => pathinfo($thumbnail->get_file(), PATHINFO_EXTENSION)
-                        )
-                    )
-                )
-            )
-        ));
+                        ]
+                    ]
+                ]
+            ]
+        ]);
 
         $url = sprintf('/download/%s/get/', $token);
         self::$DI['client']->request('POST', $url);
@@ -121,17 +121,17 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $thumbnail = self::$DI['record_1']->get_thumbnail();
         $thumbnail2 = self::$DI['record_2']->get_thumbnail();
 
-        $list = array(
+        $list = [
             'export_name' => 'Export_2012-10-23_617.zip',
             'count' => 2,
-            'files' => array(
-                array(
+            'files' => [
+                [
                     'base_id' => self::$DI['record_1']->get_base_id(),
                     'record_id' => self::$DI['record_1']->get_record_id(),
                     'export_name' => 'my_downloads',
                     'original_name' => '0470',
-                    'subdefs' => array(
-                        'document' => array (
+                    'subdefs' => [
+                        'document' => [
                             'ajout'     => '',
                             'path'      => $thumbnail->get_path(),
                             'file'      => $thumbnail->get_file(),
@@ -140,16 +140,16 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                             'mime'      => $thumbnail->get_mime(),
                             'folder'    => '',
                             'exportExt' => pathinfo($thumbnail->get_file(), PATHINFO_EXTENSION)
-                        )
-                    )
-                ),
-                array(
+                        ]
+                    ]
+                ],
+                [
                     'base_id' => self::$DI['record_2']->get_base_id(),
                     'record_id' => self::$DI['record_2']->get_record_id(),
                     'export_name' => 'my_downloads2',
                     'original_name' => '0471',
-                    'subdefs' => array(
-                        'document' => array (
+                    'subdefs' => [
+                        'document' => [
                             'ajout'     => '',
                             'path'      => $thumbnail2->get_path(),
                             'file'      => $thumbnail2->get_file(),
@@ -158,11 +158,11 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                             'mime'      => $thumbnail2->get_mime(),
                             'folder'    => '',
                             'exportExt' => pathinfo($thumbnail2->get_file(), PATHINFO_EXTENSION)
-                        )
-                    )
-                )
-            )
-        );
+                        ]
+                    ]
+                ]
+            ]
+        ];
 
         $token = $this->getToken($list);
         // Get token
@@ -192,17 +192,17 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testDocumentsDownloadNotFound()
     {
-        $token = $this->getToken(array(
+        $token = $this->getToken([
             'export_name' => 'Export_2012-10-23_621.zip',
             'count' => 1,
-            'files' => array(
-                array(
+            'files' => [
+                [
                     'base_id' => 1,
                     'record_id' => 1,
                     'export_name' => 'my_downloads',
                     'original_name' => '0470',
-                    'subdefs' => array(
-                        'document' => array (
+                    'subdefs' => [
+                        'document' => [
                             'ajout'     => '',
                             'path'      => 'my_base/documents/2012/10/23/00000',
                             'file'      => '1_document.jpg',
@@ -211,11 +211,11 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                             'mime'      => 'image/jpeg',
                             'folder'    => '',
                             'exportExt' => 'jpg'
-                        )
-                    )
-                )
-            )
-        ));
+                        ]
+                    ]
+                ]
+            ]
+        ]);
         $url = sprintf('/download/%s/get/', $token);
         self::$DI['client']->request('POST', $url);
 
@@ -238,7 +238,7 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testDocumentsDownloadInvalidData()
     {
-        $token = $this->getToken(array('bad_string' => base64_decode(serialize(array('fail')))));
+        $token = $this->getToken(['bad_string' => base64_decode(serialize(['fail']))]);
         self::$DI['client']->request('POST', sprintf('/download/%s/get/', $token));
 
         $response = self::$DI['client']->getResponse();
@@ -251,7 +251,7 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testExecuteDownloadInvalidData()
     {
-        $token = $this->getToken(array('bad_string' => base64_decode(serialize(array('fail')))));
+        $token = $this->getToken(['bad_string' => base64_decode(serialize(['fail']))]);
         $url = sprintf('/download/%s/execute/', $token);
         self::$DI['client']->request('POST', $url);
         $response = self::$DI['client']->getResponse();
@@ -284,17 +284,17 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $thumbnail = self::$DI['record_1']->get_thumbnail();
         $thumbnail2 = self::$DI['record_2']->get_thumbnail();
 
-        $list = array(
+        $list = [
             'export_name' => 'Export_2012-10-23_617.zip',
             'count' => 2,
-            'files' => array(
-                array(
+            'files' => [
+                [
                     'base_id' => 1,
                     'record_id' => 1,
                     'export_name' => 'my_downloads',
                     'original_name' => '0470',
-                    'subdefs' => array(
-                        'document' => array (
+                    'subdefs' => [
+                        'document' => [
                             'ajout'     => '',
                             'path'      => $thumbnail->get_path(),
                             'file'      => $thumbnail->get_file(),
@@ -303,16 +303,16 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                             'mime'      => $thumbnail->get_mime(),
                             'folder'    => '',
                             'exportExt' => pathinfo($thumbnail->get_file(), PATHINFO_EXTENSION)
-                        )
-                    )
-                ),
-                array(
+                        ]
+                    ]
+                ],
+                [
                     'base_id' => 1,
                     'record_id' => 1,
                     'export_name' => 'my_downloads2',
                     'original_name' => '0471',
-                    'subdefs' => array(
-                        'document' => array (
+                    'subdefs' => [
+                        'document' => [
                             'ajout'     => '',
                             'path'      => $thumbnail2->get_path(),
                             'file'      => $thumbnail2->get_file(),
@@ -321,11 +321,11 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                             'mime'      => $thumbnail2->get_mime(),
                             'folder'    => '',
                             'exportExt' => pathinfo($thumbnail2->get_file(), PATHINFO_EXTENSION)
-                        )
-                    )
-                )
-            )
-        );
+                        ]
+                    ]
+                ]
+            ]
+        ];
 
         $token = $this->getToken($list);
 
@@ -338,7 +338,7 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         unset($response);
     }
 
-    private function getToken($datas = array())
+    private function getToken($datas = [])
     {
         return self::$DI['app']['tokens']->getUrlToken(
             \random::TYPE_DOWNLOAD,

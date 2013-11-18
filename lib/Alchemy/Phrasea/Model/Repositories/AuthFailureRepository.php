@@ -20,7 +20,7 @@ class AuthFailureRepository extends EntityRepository
                 FROM Alchemy\Phrasea\Model\Entities\AuthFailure f
                 WHERE f.created < :date';
 
-        $params = array('date' => $date->format('Y-m-d h:i:s'));
+        $params = ['date' => $date->format('Y-m-d h:i:s')];
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
@@ -35,10 +35,10 @@ class AuthFailureRepository extends EntityRepository
                 WHERE (f.username = :username OR f.ip = :ip)
                     AND f.locked = true';
 
-        $params = array(
+        $params = [
             'username' => $username,
             'ip'       => $ip,
-        );
+        ];
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);

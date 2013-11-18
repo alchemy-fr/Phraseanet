@@ -56,7 +56,7 @@ class random
             $sql = 'SELECT * FROM tokens WHERE expire_on < :date
               AND datas IS NOT NULL AND (type="download" OR type="email")';
             $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':date' => $date));
+            $stmt->execute([':date' => $date]);
             $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
             foreach ($rs as $row) {
@@ -72,7 +72,7 @@ class random
 
             $sql = 'DELETE FROM tokens WHERE expire_on < :date and (type="download" OR type="email")';
             $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':date' => $date));
+            $stmt->execute([':date' => $date]);
             $stmt->closeCursor();
 
             return true;
@@ -95,7 +95,7 @@ class random
             throw new Exception_InvalidArgument ();
 
         $password = "";
-        if ( ! in_array($possible, array(self::LETTERS_AND_NUMBERS, self::LETTERS, self::NUMBERS)))
+        if ( ! in_array($possible, [self::LETTERS_AND_NUMBERS, self::LETTERS, self::NUMBERS]))
             $possible = self::LETTERS_AND_NUMBERS;
         $i = 0;
         $possible_length = strlen($possible);
@@ -145,7 +145,7 @@ class random
         $stmt = $conn->prepare($sql);
         while ($n < 100) {
             $test = self::generatePassword(16);
-            $stmt->execute(array(':test' => $test));
+            $stmt->execute([':test' => $test]);
             if ($stmt->rowCount() === 0) {
                 $token = $test;
                 break;
@@ -159,13 +159,13 @@ class random
           VALUES (null, :token, :type, :usr, NOW(), :end_date, :datas)';
             $stmt = $conn->prepare($sql);
 
-            $params = array(
+            $params = [
                 ':token'    => $token
                 , ':type'     => $type
                 , ':usr'      => ($usr ? $usr : '-1')
                 , ':end_date' => ($end_date instanceof DateTime ? $end_date->format(DATE_ISO8601) : null)
                 , ':datas'    => ((trim($datas) != '') ? $datas : null)
-            );
+            ];
             $stmt->execute($params);
             $stmt->closeCursor();
         }
@@ -181,7 +181,7 @@ class random
             $conn = connection::getPDOConnection($this->app);
             $sql = 'DELETE FROM tokens WHERE value = :token';
             $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':token' => $token));
+            $stmt->execute([':token' => $token]);
             $stmt->closeCursor();
 
             return true;
@@ -201,7 +201,7 @@ class random
               WHERE value = :token';
 
             $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':datas' => $datas, ':token' => $token));
+            $stmt->execute([':datas' => $datas, ':token' => $token]);
             $stmt->closeCursor();
 
             return true;
@@ -221,7 +221,7 @@ class random
             WHERE value = :token
               AND (expire_on > NOW() OR expire_on IS NULL)';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':token' => $token));
+        $stmt->execute([':token' => $token]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -252,11 +252,11 @@ class random
             AND (expire_on > NOW() OR expire_on IS NULL)';
 
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(
+        $stmt->execute([
             ':type'      => self::TYPE_VALIDATE,
             ':usr_id'    => (int) $userId,
             ':basket_id' => (int) $basketId,
-        ));
+        ]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 

@@ -42,10 +42,10 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
 
         switch ($format) {
             case self::FORMAT_ATOM:
-                $params = array(
+                $params = [
                     'token'  => $this->getAggregateToken($user, $renew)->getValue(),
                     'format' => 'atom'
-                );
+                ];
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
@@ -56,10 +56,10 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
                     'application/atom+xml'
                 );
             case self::FORMAT_RSS:
-                $params = array(
+                $params = [
                     'token'  => $this->getAggregateToken($user, $renew)->getValue(),
                     'format' => 'rss'
-                );
+                ];
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
@@ -93,7 +93,7 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
 
         switch ($format) {
             case self::FORMAT_ATOM:
-                $params = array('format' => 'atom');
+                $params = ['format' => 'atom'];
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
@@ -104,7 +104,7 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
                     'application/atom+xml'
                 );
             case self::FORMAT_RSS:
-                $params = array('format' => 'rss');
+                $params = ['format' => 'rss'];
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
@@ -123,7 +123,7 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
     {
         $token = $this->em
             ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
-            ->findOneBy(array('usrId' => $user->get_id()));
+            ->findOneBy(['usrId' => $user->get_id()]);
 
         if (null === $token || true === $renew) {
             if (null === $token) {
