@@ -54,7 +54,7 @@ class Bridge_AccountSettings
         $sql = 'SELECT value FROM bridge_account_settings
             WHERE account_id = :account_id AND `key` = :key';
 
-        $params = array(':account_id' => $this->account->get_id(), ':key'        => $key);
+        $params = [':account_id' => $this->account->get_id(), ':key'        => $key];
 
         $stmt = $this->appbox->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -75,11 +75,11 @@ class Bridge_AccountSettings
         $sql = 'REPLACE INTO bridge_account_settings
             (account_id, `key`, value) VALUES (:account_id, :key, :value)';
 
-        $params = array(
+        $params = [
             ':value'      => $value
             , ':account_id' => $this->account->get_id()
             , ':key'        => $key
-        );
+        ];
 
         $stmt = $this->appbox->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -100,7 +100,7 @@ class Bridge_AccountSettings
         $sql = 'DELETE FROM bridge_account_settings
             WHERE account_id = :account_id AND `key` = :key';
 
-        $params = array(':account_id' => $this->account->get_id(), ':key'        => $key);
+        $params = [':account_id' => $this->account->get_id(), ':key'        => $key];
 
         $stmt = $this->appbox->get_connection()->prepare($sql);
         $stmt->execute($params);

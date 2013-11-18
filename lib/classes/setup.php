@@ -24,11 +24,11 @@ use Symfony\Component\Process\ExecutableFinder;
  */
 class setup
 {
-    public static function create_global_values(Application $app, $datas = array())
+    public static function create_global_values(Application $app, $datas = [])
     {
         $GV = require(__DIR__ . "/../../lib/conf.d/_GV_template.inc");
 
-        $vars = array();
+        $vars = [];
         $error = false;
 
         foreach ($GV as $section) {
@@ -94,7 +94,7 @@ class setup
                 if ($variable['type'] !== 'integer' && $variable['type'] !== 'boolean')
                     $datas[$variable['name']] = $datas[$variable['name']];
 
-                $vars[$variable['name']] = array('value' => $datas[$variable['name']], 'type'  => $type);
+                $vars[$variable['name']] = ['value' => $datas[$variable['name']], 'type'  => $type];
             }
         }
 
@@ -117,55 +117,55 @@ class setup
         $phpFinder = new PhpExecutableFinder();
         $finder = new ExecutableFinder();
 
-        return array(
-            'php' => array(
+        return [
+            'php' => [
                 'name'               => 'PHP CLI',
                 'binary'             => $phpFinder->find()
-            ),
-            'phraseanet_indexer' => array(
+            ],
+            'phraseanet_indexer' => [
                 'name'    => 'Indexeur Phrasea',
                 'binary'  => $finder->find('phraseanet_indexer')
-            ),
-            'convert' => array(
+            ],
+            'convert' => [
                 'name'      => 'ImageMagick (convert)',
                 'binary'    => $finder->find('convert')
-            ),
-            'composite' => array(
+            ],
+            'composite' => [
                 'name'    => 'ImageMagick (composite)',
                 'binary'  => $finder->find('composite')
-            ),
-            'pdf2swf' => array(
+            ],
+            'pdf2swf' => [
                 'name'    => 'PDF 2 SWF',
                 'binary'  => $finder->find('pdf2swf')
-            ),
-            'unoconv' => array(
+            ],
+            'unoconv' => [
                 'name'       => 'Unoconv',
                 'binary'     => $finder->find('unoconv')
-            ),
-            'swfextract' => array(
+            ],
+            'swfextract' => [
                 'name'      => 'SWFextract',
                 'binary'    => $finder->find('swfextract')
-            ),
-            'swfrender' => array(
+            ],
+            'swfrender' => [
                 'name'   => 'SWFrender',
                 'binary' => $finder->find('swfrender')
-            ),
-            'MP4Box' => array(
+            ],
+            'MP4Box' => [
                 'name'   => 'MP4Box',
                 'binary' => $finder->find('MP4Box')
-            ),
-            'xpdf'   => array(
+            ],
+            'xpdf'   => [
                 'name'   => 'XPDF',
                 'binary' => $finder->find('xpdf')
-            ),
-            'ffmpeg' => array(
+            ],
+            'ffmpeg' => [
                 'name'   => 'FFmpeg',
                 'binary' => $finder->find('ffmpeg')
-            ),
-            'recess' => array(
+            ],
+            'recess' => [
                 'name'   => 'Recesss',
                 'binary' => $finder->find('recess')
-            ),
-        );
+            ],
+        ];
     }
 }

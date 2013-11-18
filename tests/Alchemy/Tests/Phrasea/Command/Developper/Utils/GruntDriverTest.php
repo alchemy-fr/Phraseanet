@@ -19,7 +19,7 @@ class GruntDriverTest extends \PHPUnit_Framework_TestCase
         $finder = new PhpExecutableFinder();
         $php = $finder->find();
 
-        $driver = GruntDriver::create(array('grunt.binaries' => $php));
+        $driver = GruntDriver::create(['grunt.binaries' => $php]);
         $this->assertInstanceOf('Alchemy\Phrasea\Command\Developer\Utils\GruntDriver', $driver);
         $this->assertEquals($php, $driver->getProcessBuilderFactory()->getBinary());
     }

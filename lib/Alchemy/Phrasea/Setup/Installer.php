@@ -24,7 +24,7 @@ class Installer
         $this->app = $app;
     }
 
-    public function install($email, $password, \connection_interface $abConn, $serverName, $dataPath, \connection_interface $dbConn = null, $template = null, array $binaryData = array())
+    public function install($email, $password, \connection_interface $abConn, $serverName, $dataPath, \connection_interface $dbConn = null, $template = null, array $binaryData = [])
     {
         $this->rollbackInstall($abConn, $dbConn);
 
@@ -79,27 +79,27 @@ class Installer
         $template = new \SplFileInfo(__DIR__ . '/../../../conf.d/data_templates/' . $template . '-simple.xml');
         $databox = \databox::create($this->app, $dbConn, $template, $this->app['phraseanet.registry']);
         $this->app['acl']->get($this->app['authentication']->getUser())
-            ->give_access_to_sbas(array($databox->get_sbas_id()))
+            ->give_access_to_sbas([$databox->get_sbas_id()])
             ->update_rights_to_sbas(
-                $databox->get_sbas_id(), array(
+                $databox->get_sbas_id(), [
                 'bas_manage'        => 1, 'bas_modify_struct' => 1,
                 'bas_modif_th'      => 1, 'bas_chupub'        => 1
-                )
+                ]
         );
 
         $collection = \collection::create($this->app, $databox, $this->app['phraseanet.appbox'], 'test', $this->app['authentication']->getUser());
 
-        $this->app['acl']->get($this->app['authentication']->getUser())->give_access_to_base(array($collection->get_base_id()));
-        $this->app['acl']->get($this->app['authentication']->getUser())->update_rights_to_base($collection->get_base_id(), array(
+        $this->app['acl']->get($this->app['authentication']->getUser())->give_access_to_base([$collection->get_base_id()]);
+        $this->app['acl']->get($this->app['authentication']->getUser())->update_rights_to_base($collection->get_base_id(), [
             'canpush'         => 1, 'cancmd'          => 1
             , 'canputinalbum'   => 1, 'candwnldhd'      => 1, 'candwnldpreview' => 1, 'canadmin'        => 1
             , 'actif'           => 1, 'canreport'       => 1, 'canaddrecord'    => 1, 'canmodifrecord'  => 1
             , 'candeleterecord' => 1, 'chgstatus'       => 1, 'imgtools'        => 1, 'manage'          => 1
             , 'modify_struct'   => 1, 'nowatermark'     => 1
-            )
+            ]
         );
 
-        foreach (array('PhraseanetIndexer', 'Subdefs', 'WriteMetadata') as $jobName) {
+        foreach (['PhraseanetIndexer', 'Subdefs', 'WriteMetadata'] as $jobName) {
             $job = $this->app['task-manager.job-factory']->create($jobName);
             $this->app['manipulator.task']->create(
                 $job->getName(),

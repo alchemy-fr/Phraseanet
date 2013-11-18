@@ -17,7 +17,7 @@ class patch_380alpha10a implements patchInterface
     private $release = '3.8.0-alpha.10';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -58,10 +58,10 @@ class patch_380alpha10a implements patchInterface
         $stmt = $appbox->get_connection()->prepare($sql);
 
         foreach ($rs as $row) {
-            $stmt->execute(array(
+            $stmt->execute([
                 ':usage' => strip_tags($row['usage']),
                 ':id' => $row['id'],
-            ));
+            ]);
         }
 
         $stmt->closeCursor();

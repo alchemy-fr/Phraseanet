@@ -18,7 +18,7 @@
 abstract class connection_abstract extends PDO
 {
     protected $name;
-    protected $credentials = array();
+    protected $credentials = [];
     protected $multi_db = true;
 
     public function get_credentials()
@@ -57,7 +57,7 @@ abstract class connection_abstract extends PDO
      * @param  array        $driver_options
      * @return PDOStatement
      */
-    public function prepare($statement, $driver_options = array())
+    public function prepare($statement, $driver_options = [])
     {
         return parent::prepare($statement, $driver_options);
     }

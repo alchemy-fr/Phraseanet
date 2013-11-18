@@ -21,7 +21,7 @@ class ACLProvider
      *
      * @var array
      */
-    private static $cache = array();
+    private static $cache = [];
 
     private $app;
 
@@ -51,7 +51,7 @@ class ACLProvider
      */
     public function purge()
     {
-        self::$cache = array();
+        self::$cache = [];
     }
 
     /**

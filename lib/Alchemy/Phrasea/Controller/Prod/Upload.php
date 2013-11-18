@@ -76,12 +76,12 @@ class Upload implements ControllerProviderInterface
         $maxFileSize = $this->getUploadMaxFileSize();
 
         return $app['twig']->render(
-            'prod/upload/upload-flash.html.twig', array(
+            'prod/upload/upload-flash.html.twig', [
             'sessionId'           => session_id(),
             'collections'         => $this->getGrantedCollections($app['acl']->get($app['authentication']->getUser())),
             'maxFileSize'         => $maxFileSize,
             'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
-        ));
+        ]);
     }
 
     /**
@@ -97,11 +97,11 @@ class Upload implements ControllerProviderInterface
         $maxFileSize = $this->getUploadMaxFileSize();
 
         return $app['twig']->render(
-            'prod/upload/upload.html.twig', array(
+            'prod/upload/upload.html.twig', [
             'collections'         => $this->getGrantedCollections($app['acl']->get($app['authentication']->getUser())),
             'maxFileSize'         => $maxFileSize,
             'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
-        ));
+        ]);
     }
 
     /**
@@ -121,14 +121,14 @@ class Upload implements ControllerProviderInterface
      */
     public function upload(Application $app, Request $request)
     {
-        $datas = array(
+        $datas = [
             'success' => false,
             'code'    => null,
             'message' => '',
             'element' => '',
-            'reasons' => array(),
+            'reasons' => [],
             'id' => '',
-        );
+        ];
 
         if (null === $request->files->get('files')) {
             throw new BadRequestHttpException('Missing file parameter');
@@ -185,7 +185,7 @@ class Upload implements ControllerProviderInterface
 
             $forceBehavior = $request->request->get('forceAction');
 
-            $reasons = array();
+            $reasons = [];
             $elementCreated = null;
 
             $callback = function ($element, $visa, $code) use (&$reasons, &$elementCreated) {
@@ -205,7 +205,7 @@ class Upload implements ControllerProviderInterface
             $app['filesystem']->rename($renamedFilename, $uploadedFilename);
 
             if (!!$forceBehavior) {
-                $reasons = array();
+                $reasons = [];
             }
 
             if ($elementCreated instanceof \record_adapter) {
@@ -237,7 +237,7 @@ class Upload implements ControllerProviderInterface
                     }
                 }
             } else {
-                $params = array('lazaret_file' => $elementCreated);
+                $params = ['lazaret_file' => $elementCreated];
 
                 $app['events-manager']->trigger('__UPLOAD_QUARANTINE__', $params);
 
@@ -246,14 +246,14 @@ class Upload implements ControllerProviderInterface
                 $message = _('The file was moved to the quarantine');
             }
 
-            $datas = array(
+            $datas = [
                 'success' => true,
                 'code'    => $code,
                 'message' => $message,
                 'element' => $element,
                 'reasons' => $reasons,
                 'id'      => $id,
-            );
+            ];
         } catch (\Exception $e) {
             $datas['message'] = _('Unable to add file to Phraseanet');
         }
@@ -275,16 +275,16 @@ class Upload implements ControllerProviderInterface
      */
     private function getGrantedCollections(\ACL $acl)
     {
-        $collections = array();
+        $collections = [];
 
-        foreach ($acl->get_granted_base(array('canaddrecord')) as $collection) {
+        foreach ($acl->get_granted_base(['canaddrecord']) as $collection) {
             $databox = $collection->get_databox();
 
             if ( ! isset($collections[$databox->get_sbas_id()])) {
-                $collections[$databox->get_sbas_id()] = array(
+                $collections[$databox->get_sbas_id()] = [
                     'databox'             => $databox,
-                    'databox_collections' => array()
-                );
+                    'databox_collections' => []
+                ];
             }
 
             $collections[$databox->get_sbas_id()]['databox_collections'][] = $collection;

@@ -6,17 +6,17 @@ class ManipulatorServiceProvidertest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {
-        return array(
-            array(
+        return [
+            [
                 'Alchemy\Phrasea\Core\Provider\ManipulatorServiceProvider',
                 'manipulator.task',
                 'Alchemy\Phrasea\Model\Manipulator\TaskManipulator'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\Provider\ManipulatorServiceProvider',
                 'manipulator.acl',
                 'Alchemy\Phrasea\Model\Manipulator\ACLManipulator'
-            ),
-        );
+            ],
+        ];
     }
 }

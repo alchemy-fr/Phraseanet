@@ -57,7 +57,7 @@ abstract class AbstractProvider implements ProviderInterface
      */
     public function getTemplates(Identity $identity)
     {
-        return array();
+        return [];
     }
 
     /**

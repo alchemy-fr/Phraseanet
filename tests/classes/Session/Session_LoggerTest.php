@@ -37,11 +37,11 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
 
         $sql = 'SELECT id FROM log
             WHERE sit_session = :ses_id AND usrid = :usr_id AND site = :site';
-        $params = array(
+        $params = [
             ':ses_id' => self::$DI['app']['session']->get('session_id')
             , ':usr_id' => self::$DI['app']['authentication']->getUser()->get_id()
             , ':site'   => self::$DI['app']['configuration']['main']['key']
-        );
+        ];
 
         $stmt = $this->databox->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -56,11 +56,11 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
 
         $sql = 'SELECT id FROM log
             WHERE sit_session = :ses_id AND usrid = :usr_id AND site = :site';
-        $params = array(
+        $params = [
             ':ses_id' => $ses_id
             , ':usr_id' => $usr_id
             , ':site'   => self::$DI['app']['configuration']['main']['key']
-        );
+        ];
 
         $stmt = $this->databox->get_connection()->prepare($sql);
         $stmt->execute($params);

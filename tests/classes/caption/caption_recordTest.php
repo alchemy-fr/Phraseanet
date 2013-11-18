@@ -37,7 +37,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
         foreach (self::$DI['record_1']->get_caption()->get_fields() as $field) {
             if ($field->get_databox_field()->is_multi()) {
                 $tagname = $field->get_name();
-                $retrieved = array();
+                $retrieved = [];
                 foreach ($sxe->description->$tagname as $value) {
                     $retrieved[] = (string) $value;
                 }
@@ -71,7 +71,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
         foreach (self::$DI['record_1']->get_caption()->get_fields() as $field) {
             if ($field->get_databox_field()->is_multi()) {
                 $tagname = $field->get_name();
-                $retrieved = array();
+                $retrieved = [];
                 foreach ($json["record"]["description"][$tagname] as $value) {
                     $retrieved[] = $value;
                 }
@@ -109,7 +109,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
         foreach (self::$DI['record_1']->get_caption()->get_fields() as $field) {
             if ($field->get_databox_field()->is_multi()) {
                 $tagname = $field->get_name();
-                $retrieved = array();
+                $retrieved = [];
                 foreach ($yaml["record"]["description"][$tagname] as $value) {
                     $retrieved[] = (string) $value;
                 }
@@ -177,13 +177,13 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
         $captionField = self::$DI['record_1']->get_caption()->get_field($field->get_name());
 
         if (!$captionField) {
-            self::$DI['record_1']->set_metadatas(array(
-                array(
+            self::$DI['record_1']->set_metadatas([
+                [
                     'meta_id'        => null,
                     'meta_struct_id' => $field->get_id(),
-                    'value'          => array('HELLO MO !'),
-                )
-            ));
+                    'value'          => ['HELLO MO !'],
+                ]
+            ]);
             $value = 'HELLO MO !';
         } else {
             $value = $captionField->get_serialized_values();

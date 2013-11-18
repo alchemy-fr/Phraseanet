@@ -36,7 +36,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         $repo->expects($this->once())
             ->method('findOneBy')
-            ->with($this->equalTo(array('token' => $tokenValue)))
+            ->with($this->equalTo(['token' => $tokenValue]))
             ->will($this->returnValue($session));
 
         $em->expects($this->once())
@@ -81,7 +81,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         $repo->expects($this->once())
             ->method('findOneBy')
-            ->with($this->equalTo(array('token' => $tokenValue)))
+            ->with($this->equalTo(['token' => $tokenValue]))
             ->will($this->returnValue($session));
 
         $em->expects($this->once())
@@ -114,7 +114,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         $repo->expects($this->once())
             ->method('findOneBy')
-            ->with($this->equalTo(array('token' => $tokenValue)))
+            ->with($this->equalTo(['token' => $tokenValue]))
             ->will($this->returnValue(null));
 
         $em->expects($this->once())

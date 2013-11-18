@@ -60,9 +60,9 @@ class Notifications implements ControllerProviderInterface
                 $app['authentication']->getUser()->get_id()
             );
 
-            return $app->json(array('success' => true, 'message' => ''));
+            return $app->json(['success' => true, 'message' => '']);
         } catch (\Exception $e) {
-            return $app->json(array('success' => false, 'message' => $e->getMessage()));
+            return $app->json(['success' => false, 'message' => $e->getMessage()]);
         }
     }
 

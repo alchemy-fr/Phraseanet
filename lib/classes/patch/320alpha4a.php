@@ -28,7 +28,7 @@ class patch_320alpha4a implements patchInterface
      *
      * @var Array
      */
-    private $concern = array(base::DATA_BOX);
+    private $concern = [base::DATA_BOX];
 
     /**
      *
@@ -70,7 +70,7 @@ class patch_320alpha4a implements patchInterface
         $stmt->execute();
         $stmt->closeCursor();
 
-        $phrasea_maps = array(
+        $phrasea_maps = [
             'pdftext'        => 'Phraseanet:pdftext'
             , 'tf-archivedate' => 'Phraseanet:tf-archivedate'
             , 'tf-atime'       => 'Phraseanet:tf-atime'
@@ -89,7 +89,7 @@ class patch_320alpha4a implements patchInterface
             , 'tf-recordid'    => 'Phraseanet:tf-recordid'
             , 'tf-size'        => 'Phraseanet:tf-size'
             , 'tf-width'       => 'Phraseanet:tf-width'
-        );
+        ];
 
         $sxe = $databox->get_sxml_structure();
         $dom_struct = $databox->get_dom_structure();

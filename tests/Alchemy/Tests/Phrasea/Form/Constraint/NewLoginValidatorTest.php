@@ -35,12 +35,12 @@ class NewLoginValidatorTest extends \PhraseanetPHPUnitAbstract
 
     public function provideValidationData()
     {
-        return array(
-            array('romainneutron', true),
-            array('romainneutron', false),
-            array('', false),
-            array(null, false),
-        );
+        return [
+            ['romainneutron', true],
+            ['romainneutron', false],
+            ['', false],
+            [null, false],
+        ];
     }
 
     private function getConstraint()

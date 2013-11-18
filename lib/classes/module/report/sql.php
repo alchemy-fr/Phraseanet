@@ -43,7 +43,7 @@ class module_report_sql
         $this->connbas = connection::getPDOConnection($app, $report->getSbasId());
         $this->filter = new module_report_sqlfilter($app, $report);
         $this->sql = '';
-        $this->params = array();
+        $this->params = [];
         $this->total_row = 0;
         $this->enable_limit = $report->getEnableLimit();
     }

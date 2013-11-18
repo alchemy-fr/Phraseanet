@@ -27,9 +27,9 @@ class PersistentCookieSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::REQUEST => array('checkPersistentCookie', 128),
-        );
+        return [
+            KernelEvents::REQUEST => ['checkPersistentCookie', 128],
+        ];
     }
 
     public function checkPersistentCookie(GetResponseEvent $event)

@@ -180,8 +180,8 @@ class phraseadate
      */
     public function isodateToDate($isodelimdate, $format)
     {
-        $tc = array();
-        $bal = array();
+        $tc = [];
+        $bal = [];
         $isodelimdate = trim($isodelimdate);
 
         while ($isodelimdate != "") {
@@ -198,14 +198,14 @@ class phraseadate
                     $isodelimdate = "";
                 }
             } else {
-                $tc[] = array("char"        => $c, "bals"        => $bal);
+                $tc[] = ["char"        => $c, "bals"        => $bal];
                 $isodelimdate = substr($isodelimdate, 1);
             }
         }
 
         $strdate = "";
-        $paterns = array("YYYY" => 0, "YY"   => 2, "MM"   => 5,
-            "DD"   => 8, "HH"   => 11, "NN"   => 14, "SS"   => 17);
+        $paterns = ["YYYY" => 0, "YY"   => 2, "MM"   => 5,
+            "DD"   => 8, "HH"   => 11, "NN"   => 14, "SS"   => 17];
 
         while ($format != "") {
             $patfound = false;
@@ -245,12 +245,12 @@ class phraseadate
     {
         $v_y = $v_m = $v_d = $v_h = $v_n = $v_s = 0;
         $v = str_replace(
-            array("-", ":", "/", "."), array(" ", " ", " ", " "), trim($strdate)
+            ["-", ":", "/", "."], [" ", " ", " ", " "], trim($strdate)
         );
         $n = 0;
 
         $format = str_replace(
-            array("-", ":", "/", "."), array(" ", " ", " ", " "), $format
+            ["-", ":", "/", "."], [" ", " ", " ", " "], $format
         );
         $isodelimdate = null;
         switch ($format) {

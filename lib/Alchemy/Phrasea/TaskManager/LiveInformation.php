@@ -35,11 +35,11 @@ class LiveInformation
     {
         $data = $this->notifier->notify(Notifier::MESSAGE_INFORMATIONS);
 
-        return array(
+        return [
             'configuration' => $this->status->getStatus(),
             'actual'        => isset($data['manager']) ? TaskManagerStatus::STATUS_STARTED : TaskManagerStatus::STATUS_STOPPED,
             'process-id'    => isset($data['manager']) ? $data['manager']['process-id'] : null,
-        );
+        ];
     }
 
     /**
@@ -50,12 +50,12 @@ class LiveInformation
     public function getTask(Task $task)
     {
         $data = $this->notifier->notify(Notifier::MESSAGE_INFORMATIONS);
-        $taskData = (isset($data['jobs']) && isset($data['jobs'][$task->getId()])) ? $data['jobs'][$task->getId()] : array();
+        $taskData = (isset($data['jobs']) && isset($data['jobs'][$task->getId()])) ? $data['jobs'][$task->getId()] : [];
 
-        return array(
+        return [
             'configuration' => $this->status->getStatus(),
             'actual'        => isset($taskData['status']) ? $taskData['status'] : Task::STATUS_STOPPED,
             'process-id'    => isset($taskData['process-id']) ? $taskData['process-id'] : null,
-        );
+        ];
     }
 }

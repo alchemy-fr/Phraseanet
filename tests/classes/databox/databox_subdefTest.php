@@ -245,10 +245,10 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
         $typeDocument = new \Alchemy\Phrasea\Media\Type\Document();
         $typeVideo = new \Alchemy\Phrasea\Media\Type\Video();
 
-        return array(
-            array(new databox_subdef($typeAudio, simplexml_load_string($xmlImage))),
-            array(new databox_subdef($typeDocument, simplexml_load_string($xmlImage))),
-            array(new databox_subdef($typeVideo, simplexml_load_string($xmlImage))),
-        );
+        return [
+            [new databox_subdef($typeAudio, simplexml_load_string($xmlImage))],
+            [new databox_subdef($typeDocument, simplexml_load_string($xmlImage))],
+            [new databox_subdef($typeVideo, simplexml_load_string($xmlImage))],
+        ];
     }
 }

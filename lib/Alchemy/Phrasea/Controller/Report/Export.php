@@ -54,7 +54,7 @@ class Export implements ControllerProviderInterface
         $filename = mb_strtolower('report_' . $name . '_' . date('dmY') . '.csv');
         $data = preg_replace('/[ \t\r\f]+/', '', $data);
 
-        $response = new Response($data, 200, array(
+        $response = new Response($data, 200, [
             'Expires'               => 'Mon, 26 Jul 1997 05:00:00 GMT',
             'Last-Modified'         => gmdate('D, d M Y H:i:s'). ' GMT',
             'Cache-Control'         => 'no-store, no-cache, must-revalidate',
@@ -64,7 +64,7 @@ class Export implements ControllerProviderInterface
             'Content-Length'        => strlen($data),
             'Cache-Control'         => 'max-age=3600, must-revalidate',
             'Content-Disposition'   => 'max-age=3600, must-revalidate',
-        ));
+        ]);
 
         $response->headers->set('Content-Disposition', $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename));
 

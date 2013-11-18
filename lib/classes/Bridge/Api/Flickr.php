@@ -169,7 +169,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
     {
         switch ($object) {
             case self::ELEMENT_TYPE_PHOTO:
-                $params = array('photo_id'   => $element_id);
+                $params = ['photo_id'   => $element_id];
                 $th_response = $this->_api->executeMethod('flickr.photos.getInfo', $params);
 
                 if ( ! $th_response->isOk())
@@ -198,7 +198,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
         switch ($object) {
             case self::CONTAINER_TYPE_PHOTOSET:
 
-                $params = array('photoset_id' => $element_id);
+                $params = ['photoset_id' => $element_id];
                 $response = $this->_api->executeMethod('flickr.photoset.getInfo', $params);
 
                 if ( ! $response->isOk())
@@ -227,7 +227,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
     {
         switch ($object) {
             case self::CONTAINER_TYPE_PHOTOSET:
-                $params = array();
+                $params = [];
                 if ($quantity)
                     $params['per_page'] = $quantity;
                 $params['page'] = $quantity != 0 ? floor($offset_start / $quantity) + 1 : 1;
@@ -267,17 +267,17 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
      */
     public function update_element($object, $object_id, Array $datas)
     {
-        $required_fields = array("title");
+        $required_fields = ["title"];
         foreach ($required_fields as $field) {
             if ( ! array_key_exists($field, $datas) || trim($datas[$field]) === '')
                 throw new Bridge_Exception_ActionMandatoryField("Le paramétre " . $field . " est manquant");
         }
 
-        $params = array(
+        $params = [
             'title'       => $datas["title"]
             , 'photo_id'    => $object_id
             , 'description' => $datas["description"]
-        );
+        ];
 
         switch ($object) {
             case self::ELEMENT_TYPE_PHOTO :
@@ -309,11 +309,11 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
                 if (is_null($pid))
                     throw new Bridge_Exception_ActionMandatoryField('You must define a default photo for the photoset');
 
-                $params = array(
+                $params = [
                     'title'            => $request->get('title')
                     , 'primary_photo_id' => $pid
                     , 'description'      => $request->get('description')
-                );
+                ];
 
                 $response = $this->_api->executeMethod('flickr.photosets.create', $params);
 
@@ -348,7 +348,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
             case self::ELEMENT_TYPE_PHOTO:
                 switch ($destination) {
                     case self::CONTAINER_TYPE_PHOTOSET:
-                        $params = array('photo_id'    => $element_id, 'photoset_id' => $container_id);
+                        $params = ['photo_id'    => $element_id, 'photoset_id' => $container_id];
                         $response = $this->_api->executeMethod('flickr.photosets.addPhoto', $params);
 
                         if ( ! $response->isOk()) {
@@ -385,7 +385,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
             case self::ELEMENT_TYPE_PHOTO:
                 $response = $this->_api->executeMethod(
                     'flickr.photos.delete'
-                    , array('photo_id' => $object_id)
+                    , ['photo_id' => $object_id]
                 );
                 if ( ! $response->isOk())
                     throw new Bridge_Exception_ApiConnectorRequestFailed();
@@ -393,7 +393,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
             case self::CONTAINER_TYPE_PHOTOSET:
                 $response = $this->_api->executeMethod(
                     'flickr.photosets.delete'
-                    , array('photoset_id' => $object_id)
+                    , ['photoset_id' => $object_id]
                 );
                 if ( ! $response->isOk())
                     throw new Bridge_Exception_ApiConnectorRequestFailed();
@@ -417,9 +417,9 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
     {
         switch ($type) {
             case self::ELEMENT_TYPE_PHOTO:
-                $params = array();
+                $params = [];
                 //info to display during search
-                $extras = array(
+                $extras = [
                     'description'
                     , 'license'
                     , 'date_upload'
@@ -430,7 +430,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
                     , 'views'
                     , 'url_sq'
                     , 'url_t'
-                );
+                ];
 
                 $params['user_id'] = $this->get_user_id();
                 $params['extras'] = implode(",", $extras);
@@ -510,7 +510,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
      * @param  array          $options
      * @return string         The new distant Id
      */
-    public function upload(record_adapter $record, Array $options = array())
+    public function upload(record_adapter $record, Array $options = [])
     {
         $uploader = new Phlickr_Uploader($this->_api);
 
@@ -534,7 +534,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
     public function acceptable_records()
     {
         return function (record_adapter $record) {
-                return in_array($record->get_type(), array('image'));
+                return in_array($record->get_type(), ['image']);
             };
     }
 
@@ -568,7 +568,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
                 $family = $friends = $public = false;
                 break;
         }
-        $ret = array('friends' => $friends, 'family'  => $family, 'public'  => $public);
+        $ret = ['friends' => $friends, 'family'  => $family, 'public'  => $public];
 
         return $ret;
     }
@@ -601,7 +601,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
      */
     public function get_element_types()
     {
-        return array(self::ELEMENT_TYPE_PHOTO => _('Photos'));
+        return [self::ELEMENT_TYPE_PHOTO => _('Photos')];
     }
 
     /**
@@ -610,7 +610,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
      */
     public function get_container_types()
     {
-        return array(self::CONTAINER_TYPE_PHOTOSET => _('Photosets'));
+        return [self::CONTAINER_TYPE_PHOTOSET => _('Photosets')];
     }
 
     /**
@@ -622,7 +622,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
      */
     public function get_category_list()
     {
-        return array();
+        return [];
     }
 
     public function is_configured()
@@ -678,11 +678,11 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
     protected function set_auth_params()
     {
         $this->_auth->set_parameters(
-            array(
+            [
                 'flickr_client_id'     => $this->registry->get('GV_flickr_client_id')
                 , 'flickr_client_secret' => $this->registry->get('GV_flickr_client_secret')
                 , 'permissions'          => 'delete'
-            )
+            ]
         );
 
         return $this;
@@ -719,7 +719,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
     public function check_update_constraints(Array $datas)
     {
-        $errors = array();
+        $errors = [];
         $check = function ($field) use (&$errors, $datas) {
                 $name = $field['name'];
                 $length = (int) $field['length'];
@@ -748,10 +748,10 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
      */
     public function get_update_datas(Request $request)
     {
-        $datas = array(
+        $datas = [
             'title'       => $request->get('modif_title', ''),
             'description' => $request->get('modif_description', '')
-        );
+        ];
 
         return $datas;
     }
@@ -767,13 +767,13 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
     public function get_upload_datas(Request $request, record_adapter $record)
     {
         $key = $record->get_serialize_key();
-        $datas = array(
+        $datas = [
             'title'       => $request->get('title_' . $key),
             'description' => $request->get('description_' . $key),
             'category'    => $request->get('category_' . $key),
             'tags'        => $request->get('tags_' . $key),
             'privacy'     => $request->get('privacy_' . $key),
-        );
+        ];
 
         return $datas;
     }
@@ -793,23 +793,23 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
      */
     private function get_fields()
     {
-        return array(
-            array(
+        return [
+            [
                 'name'     => 'title',
                 'length'   => '100',
                 'required' => true
-            )
-            , array(
+            ]
+            , [
                 'name'     => 'description',
                 'length'   => '500',
                 'required' => false
-            )
-            , array(
+            ]
+            , [
                 'name'     => 'tags',
                 'length'   => '200',
                 'required' => false
-            )
-        );
+            ]
+        ];
     }
 
     /**
@@ -819,7 +819,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
      */
     private function check_record_constraints(record_adapter $record)
     {
-        $errors = array();
+        $errors = [];
         if ( ! $record->get_hd_file() instanceof \SplFileInfo)
             $errors["file_size"] = _("Le record n'a pas de fichier physique"); //Record must rely on real file
         if ($record->get_technical_infos('size') > self::AUTH_PHOTO_SIZE)
@@ -830,8 +830,8 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
     private function checkTicket($ticketsId, $type)
     {
-        $return = array("status"  => self::UPLOAD_STATE_FAILED, "dist_id" => null);
-        $response = $this->_api->executeMethod("flickr.photos.upload.checkTickets", array("tickets" => $ticketsId));
+        $return = ["status"  => self::UPLOAD_STATE_FAILED, "dist_id" => null];
+        $response = $this->_api->executeMethod("flickr.photos.upload.checkTickets", ["tickets" => $ticketsId]);
         if ( ! $response->isOk())
             throw new Bridge_Exception_ApiConnectorRequestFailed('Unable to retrieve element list ' . $type);
 

@@ -32,11 +32,11 @@ class PhraseaEngine implements SearchEngineInterface
     private $app;
     private $dateFields;
     private $configuration;
-    private $queries = array();
-    private $arrayq = array();
-    private $colls = array();
-    private $qp = array();
-    private $needthesaurus = array();
+    private $queries = [];
+    private $arrayq = [];
+    private $colls = [];
+    private $qp = [];
+    private $needthesaurus = [];
     private $configurationPanel;
     private $resetCacheNextQuery = false;
 
@@ -63,7 +63,7 @@ class PhraseaEngine implements SearchEngineInterface
     public function getAvailableDateFields()
     {
         if (!$this->dateFields) {
-            $this->dateFields = array();
+            $this->dateFields = [];
             foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
                 foreach ($databox->get_meta_structure() as $databox_field) {
                     if ($databox_field->get_type() != \databox_field::TYPE_DATE) {
@@ -109,7 +109,7 @@ class PhraseaEngine implements SearchEngineInterface
     {
         $date_fields = $this->getAvailableDateFields();
 
-        $sort = array('' => _('No sort'));
+        $sort = ['' => _('No sort')];
 
         foreach ($date_fields as $field) {
             $sort[$field] = $field;
@@ -133,10 +133,10 @@ class PhraseaEngine implements SearchEngineInterface
      */
     public function getAvailableOrder()
     {
-        return array(
+        return [
             'desc' => _('descendant'),
             'asc'  => _('ascendant'),
-        );
+        ];
     }
 
     /**
@@ -214,9 +214,9 @@ class PhraseaEngine implements SearchEngineInterface
      */
     public function getStatus()
     {
-        $status = array();
+        $status = [];
         foreach (phrasea_info() as $key => $value) {
-            $status[] = array($key, $value);
+            $status[] = [$key, $value];
         }
 
         return $status;
@@ -239,7 +239,7 @@ class PhraseaEngine implements SearchEngineInterface
      */
     public function getAvailableTypes()
     {
-        return array(self::GEM_TYPE_RECORD, self::GEM_TYPE_STORY);
+        return [self::GEM_TYPE_RECORD, self::GEM_TYPE_STORY];
     }
 
     /**
@@ -259,17 +259,17 @@ class PhraseaEngine implements SearchEngineInterface
 
         $sql = "DELETE FROM prop WHERE record_id = :record_id";
         $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':record_id' => $record->get_record_id()));
+        $stmt->execute([':record_id' => $record->get_record_id()]);
         $stmt->closeCursor();
 
         $sql = "DELETE FROM idx WHERE record_id = :record_id";
         $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':record_id' => $record->get_record_id()));
+        $stmt->execute([':record_id' => $record->get_record_id()]);
         $stmt->closeCursor();
 
         $sql = "DELETE FROM thit WHERE record_id = :record_id";
         $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':record_id' => $record->get_record_id()));
+        $stmt->execute([':record_id' => $record->get_record_id()]);
         $stmt->closeCursor();
 
         unset($stmt, $connbas);
@@ -377,7 +377,7 @@ class PhraseaEngine implements SearchEngineInterface
 
         $sql = 'SELECT query, query_time, duration, total FROM cache WHERE session_id = :ses_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':ses_id' => $this->app['session']->get('phrasea_session_id')));
+        $stmt->execute([':ses_id' => $this->app['session']->get('phrasea_session_id')]);
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -398,7 +398,7 @@ class PhraseaEngine implements SearchEngineInterface
 
             $sql = 'SELECT query, query_time, duration, total FROM cache WHERE session_id = :ses_id';
             $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute(array(':ses_id' => $this->app['session']->get('phrasea_session_id')));
+            $stmt->execute([':ses_id' => $this->app['session']->get('phrasea_session_id')]);
             $row = $stmt->fetch(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
         } else {
@@ -412,7 +412,7 @@ class PhraseaEngine implements SearchEngineInterface
                 $this->app['session']->get('phrasea_session_id'), $offset + 1, $perPage, false
         );
 
-        $rs = array();
+        $rs = [];
         $error = _('Unable to execute query');
 
         if (isset($res['results']) && is_array($res['results'])) {
@@ -450,7 +450,7 @@ class PhraseaEngine implements SearchEngineInterface
      */
     private function getSuggestions($query)
     {
-        $suggestions = array();
+        $suggestions = [];
 
         if ($this->qp && isset($this->qp['main'])) {
             $suggestions = array_map(function ($value) use ($query) {
@@ -512,7 +512,7 @@ class PhraseaEngine implements SearchEngineInterface
      *
      * @return PhraseaEngine
      */
-    public static function create(Application $app, array $options = array())
+    public static function create(Application $app, array $options = [])
     {
         return new static($app);
     }
@@ -542,7 +542,7 @@ class PhraseaEngine implements SearchEngineInterface
         }
 
         foreach ($this->queries as $sbas_id => $qry) {
-            $BF = array();
+            $BF = [];
 
             foreach ($this->options->getBusinessFieldsOn() as $collection) {
                 // limit business field query to databox local collection
@@ -575,12 +575,12 @@ class PhraseaEngine implements SearchEngineInterface
                 SET query = :query, query_time = NOW(), duration = :duration, total = :total
                 WHERE session_id = :ses_id';
 
-        $params = array(
+        $params = [
             'query'     => $query,
             ':ses_id'   => $this->app['session']->get('phrasea_session_id'),
             ':duration' => $total_time,
             ':total'    => $nbanswers,
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -602,7 +602,7 @@ class PhraseaEngine implements SearchEngineInterface
      */
     public function excerpt($query, $fields, \record_adapter $record)
     {
-        $ret = array();
+        $ret = [];
 
         $this->initialize();
         $this->checkSession();
@@ -613,22 +613,22 @@ class PhraseaEngine implements SearchEngineInterface
         );
 
         if (!isset($res['results']) || !is_array($res['results'])) {
-            return array();
+            return [];
         }
 
         $rs = $res['results'];
         $res = array_shift($rs);
         if (!isset($res['xml'])) {
-            return array();
+            return [];
         }
 
         $sxe = @simplexml_load_string($res['xml']);
 
         foreach ($fields as $name => $field) {
             if ($sxe && $sxe->description && $sxe->description->$name) {
-                $val = array();
+                $val = [];
                 foreach ($sxe->description->$name as $value) {
-                    $val[] = str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), (string) $value);
+                    $val[] = str_replace(['[[em]]', '[[/em]]'], ['<em>', '</em>'], (string) $value);
                 }
                 $separator = $field['separator'] ? $field['separator'][0] : '';
                 $val = implode(' ' . $separator . ' ', $val);
@@ -648,7 +648,7 @@ class PhraseaEngine implements SearchEngineInterface
     public function resetCache()
     {
         $this->resetCacheNextQuery = true;
-        $this->queries = $this->arrayq = $this->colls = $this->qp = $this->needthesaurus = array();
+        $this->queries = $this->arrayq = $this->colls = $this->qp = $this->needthesaurus = [];
 
         return $this;
     }
@@ -721,7 +721,7 @@ class PhraseaEngine implements SearchEngineInterface
         foreach ($this->options->getDataboxes() as $databox) {
             $sbas_id = $databox->get_sbas_id();
 
-            $this->colls[$sbas_id] = array();
+            $this->colls[$sbas_id] = [];
 
             foreach ($databox->get_collections() as $collection) {
                 if (in_array($collection->get_base_id(), $base_ids)) {
@@ -803,7 +803,7 @@ class PhraseaEngine implements SearchEngineInterface
         $sql = "SELECT session_id FROM cache WHERE lastaccess <= :date";
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':date' => $date->format(DATE_ISO8601)));
+        $stmt->execute([':date' => $date->format(DATE_ISO8601)]);
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 

@@ -101,7 +101,7 @@ class PhraseanetIndexerJob extends AbstractJob
 
     private function getCommandline($indexerPath, Application $app, Task $task)
     {
-        $cmd = array($indexerPath, '-o');
+        $cmd = [$indexerPath, '-o'];
 
         $settings = simplexml_load_string($task->getSettings());
 

@@ -60,7 +60,7 @@ class UserManipulatorTest extends \PhraseanetPHPUnitAbstract
         $geoname->expects($this->once())
             ->method('get')
             ->with($this->equalTo('country'))
-            ->will($this->returnValue(array('code' => 'fr')));
+            ->will($this->returnValue(['code' => 'fr']));
 
         $geonamesConnector = $this->getMockBuilder('Alchemy\Geonames\Connector')
             ->disableOriginalConstructor()
@@ -87,7 +87,7 @@ class UserManipulatorTest extends \PhraseanetPHPUnitAbstract
         $this->assertFalse($user->isAdmin());
         $user2 = self::$DI['app']['manipulator.user']->createUser('login2', 'toto');
         $this->assertFalse($user2->isAdmin());
-        self::$DI['app']['manipulator.user']->promote(array($user, $user2));
+        self::$DI['app']['manipulator.user']->promote([$user, $user2]);
         $user = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login');
         $this->assertTrue($user->isAdmin());
         $user2 = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login');
@@ -127,7 +127,7 @@ class UserManipulatorTest extends \PhraseanetPHPUnitAbstract
         $geoname->expects($this->once())
             ->method('get')
             ->with($this->equalTo('country'))
-            ->will($this->returnValue(array('code' => 'fr')));
+            ->will($this->returnValue(['code' => 'fr']));
 
         $geonamesConnector = $this->getMockBuilder('Alchemy\Geonames\Connector')
             ->disableOriginalConstructor()

@@ -31,7 +31,7 @@ class MonologSQLLogger implements SQLLogger
      */
     private $logger;
     private $start;
-    private $output = array();
+    private $output = [];
     private $outputType;
 
     /**

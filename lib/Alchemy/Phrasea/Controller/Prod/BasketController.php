@@ -111,10 +111,10 @@ class BasketController implements ControllerProviderInterface
             }
         }
 
-        $params = array(
+        $params = [
             'basket' => $basket,
             'ordre'  => $request->query->get('order')
-        );
+        ];
 
         return $app['twig']->render('prod/WorkZone/Basket.html.twig', $params);
     }
@@ -152,17 +152,17 @@ class BasketController implements ControllerProviderInterface
         $app['EM']->flush();
 
         if ($request->getRequestFormat() === 'json') {
-            $data = array(
+            $data = [
                 'success' => true
                 , 'message' => _('Basket created')
-                , 'basket'  => array(
+                , 'basket'  => [
                     'id' => $Basket->getId()
-                )
-            );
+                ]
+            ];
 
             return $app->json($data);
         } else {
-            return $app->redirectPath('prod_baskets_basket', array('basket' => $Basket->getId()));
+            return $app->redirectPath('prod_baskets_basket', ['basket' => $Basket->getId()]);
         }
     }
 
@@ -171,10 +171,10 @@ class BasketController implements ControllerProviderInterface
         $app['EM']->remove($basket);
         $app['EM']->flush();
 
-        $data = array(
+        $data = [
             'success' => true
             , 'message' => _('Basket has been deleted')
-        );
+        ];
 
         if ($request->getRequestFormat() === 'json') {
             return $app->json($data);
@@ -194,10 +194,10 @@ class BasketController implements ControllerProviderInterface
 
         $app['EM']->flush();
 
-        $data = array(
+        $data = [
             'success' => true
             , 'message' => _('Record removed from basket')
-        );
+        ];
 
         if ($request->getRequestFormat() === 'json') {
             return $app->json($data);
@@ -227,11 +227,11 @@ class BasketController implements ControllerProviderInterface
             $msg = _('An error occurred');
         }
 
-        $data = array(
+        $data = [
             'success' => $success
             , 'message' => $msg
-            , 'basket'  => array('id' => $basket->getId())
-        );
+            , 'basket'  => ['id' => $basket->getId()]
+        ];
 
         if ($request->getRequestFormat() === 'json') {
             return $app->json($data);
@@ -242,17 +242,17 @@ class BasketController implements ControllerProviderInterface
 
     public function displayUpdateForm(Application $app, BasketEntity $basket)
     {
-        return $app['twig']->render('prod/Baskets/Update.html.twig', array('basket' => $basket));
+        return $app['twig']->render('prod/Baskets/Update.html.twig', ['basket' => $basket]);
     }
 
     public function displayReorderForm(Application $app, BasketEntity $basket)
     {
-        return $app['twig']->render('prod/Baskets/Reorder.html.twig', array('basket' => $basket));
+        return $app['twig']->render('prod/Baskets/Reorder.html.twig', ['basket' => $basket]);
     }
 
     public function reorder(Application $app, BasketEntity $basket)
     {
-        $ret = array('success' => false, 'message' => _('An error occured'));
+        $ret = ['success' => false, 'message' => _('An error occured')];
         try {
             $order = $app['request']->request->get('element');
 
@@ -266,7 +266,7 @@ class BasketController implements ControllerProviderInterface
             }
 
             $app['EM']->flush();
-            $ret = array('success' => true, 'message' => _('Basket updated'));
+            $ret = ['success' => true, 'message' => _('Basket updated')];
         } catch (\Exception $e) {
 
         }
@@ -289,11 +289,11 @@ class BasketController implements ControllerProviderInterface
             $message = _('Basket has been unarchived');
         }
 
-        $data = array(
+        $data = [
             'success' => true
             , 'archive' => $archive_status
             , 'message' => $message
-        );
+        ];
 
         if ($request->getRequestFormat() === 'json') {
             return $app->json($data);
@@ -338,10 +338,10 @@ class BasketController implements ControllerProviderInterface
 
         $app['EM']->flush();
 
-        $data = array(
+        $data = [
             'success' => true
             , 'message' => sprintf(_('%d records added'), $n)
-        );
+        ];
 
         if ($request->getRequestFormat() === 'json') {
             return $app->json($data);
@@ -370,10 +370,10 @@ class BasketController implements ControllerProviderInterface
 
         $app['EM']->flush();
 
-        $data = array(
+        $data = [
             'success' => true
             , 'message' => sprintf(_('%d records moved'), $n)
-        );
+        ];
 
         if ($request->getRequestFormat() === 'json') {
             return $app->json($data);

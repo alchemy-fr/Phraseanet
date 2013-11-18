@@ -11,13 +11,13 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
     {
         $connexion = self::$DI['app']['configuration']['main']['database'];
 
-        $params = array(
+        $params = [
             "hostname" => $connexion['host'],
             "port"     => $connexion['port'],
             "user"     => $connexion['user'],
             "password" => $connexion['password'],
             "dbname"   => $connexion['dbname'],
-        );
+        ];
 
         self::$DI['client']->request("GET", "/admin/tests/connection/mysql/", $params);
         $response = self::$DI['client']->getResponse();
@@ -28,13 +28,13 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
     {
         $connexion = self::$DI['app']['configuration']['main']['database'];
 
-        $params = array(
+        $params = [
             "hostname" => $connexion['host'],
             "port"     => $connexion['port'],
             "user"     => $connexion['user'],
             "password" => "fakepassword",
             "dbname"   => $connexion['dbname'],
-        );
+        ];
 
         self::$DI['client']->request("GET", "/admin/tests/connection/mysql/", $params);
         $response = self::$DI['client']->getResponse();
@@ -54,13 +54,13 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
     {
         $connexion = self::$DI['app']['configuration']['main']['database'];
 
-        $params = array(
+        $params = [
             "hostname" => $connexion['host'],
             "port"     => $connexion['port'],
             "user"     => $connexion['user'],
             "password" => $connexion['password'],
             "dbname"   => "fake-DTABASE-name"
-        );
+        ];
 
         self::$DI['client']->request("GET", "/admin/tests/connection/mysql/", $params);
         $response = self::$DI['client']->getResponse();

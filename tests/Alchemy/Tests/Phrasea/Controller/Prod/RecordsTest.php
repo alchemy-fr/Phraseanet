@@ -22,7 +22,7 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testWhatCanIDelete()
     {
-        self::$DI['client']->request('POST', '/prod/records/delete/what/', array('lst'     => self::$DI['record_1']->get_serialize_key()));
+        self::$DI['client']->request('POST', '/prod/records/delete/what/', ['lst'     => self::$DI['record_1']->get_serialize_key()]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
         unset($response);
@@ -35,7 +35,7 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/cestlafete.jpg'), self::$DI['collection']);
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
-        $this->XMLHTTPRequest('POST', '/prod/records/delete/', array('lst'     => $record->get_serialize_key()));
+        $this->XMLHTTPRequest('POST', '/prod/records/delete/', ['lst'     => $record->get_serialize_key()]);
         $response = self::$DI['client']->getResponse();
         $datas = (array) json_decode($response->getContent());
         $this->assertContains($record->get_serialize_key(), $datas);
@@ -55,7 +55,7 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/cestlafete.jpg'), self::$DI['collection']);
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
-        $this->XMLHTTPRequest('POST', '/prod/records/renew-url/', array('lst'     => $record->get_serialize_key()));
+        $this->XMLHTTPRequest('POST', '/prod/records/renew-url/', ['lst'     => $record->get_serialize_key()]);
         $response = self::$DI['client']->getResponse();
         $datas = (array) json_decode($response->getContent());
         $this->assertTrue(count($datas) > 0);
@@ -86,12 +86,12 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $options->onCollections($acl->get_granted_base());
         $serializedOptions = $options->serialize();
 
-        $this->XMLHTTPRequest('POST', '/prod/records/', array(
+        $this->XMLHTTPRequest('POST', '/prod/records/', [
             'env'            => 'RESULT',
             'options_serial' => $serializedOptions,
             'pos'            => 0,
             'query'          => ''
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $data = json_decode($response->getContent(), true);
@@ -117,12 +117,12 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->authenticate(self::$DI['app']);
         self::$DI['record_story_1'];
 
-        $this->XMLHTTPRequest('POST', '/prod/records/', array(
+        $this->XMLHTTPRequest('POST', '/prod/records/', [
             'env'   => 'REG',
             'pos'   => 0,
             'query' => '',
             'cont'  =>   self::$DI['record_story_1']->get_serialize_key()
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $data = json_decode($response->getContent());
@@ -158,12 +158,12 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['app']['EM']->persist($basket);
         self::$DI['app']['EM']->flush();
 
-        $this->XMLHTTPRequest('POST', '/prod/records/', array(
+        $this->XMLHTTPRequest('POST', '/prod/records/', [
             'env'   => 'BASK',
             'pos'   => 0,
             'query' => '',
             'cont'  => $basket->getId()
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $data = json_decode($response->getContent());
@@ -195,12 +195,12 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $item = $this->insertOneFeedItem(self::$DI['user']);
         $feedEntry = $item->getEntry();
 
-        $this->XMLHTTPRequest('POST', '/prod/records/', array(
+        $this->XMLHTTPRequest('POST', '/prod/records/', [
             'env'   => 'FEED',
             'pos'   => 0,
             'query' => '',
             'cont'  => $feedEntry->getId()
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $data = json_decode($response->getContent());

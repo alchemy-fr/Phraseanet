@@ -29,7 +29,7 @@ class MetaFieldTest extends \PhraseanetPHPUnitAbstract
      */
     public function setUp()
     {
-        $this->value = array("Un éléphant ça trompe");
+        $this->value = ["Un éléphant ça trompe"];
         foreach (self::$DI['collection']->get_databox()->get_meta_structure() as $databox_field) {
             $this->databox_field = $databox_field;
             break;
@@ -58,8 +58,8 @@ class MetaFieldTest extends \PhraseanetPHPUnitAbstract
      */
     public function testConstruct()
     {
-        new MetaField($this->databox_field, array(0.57));
-        new MetaField($this->databox_field, array(3));
+        new MetaField($this->databox_field, [0.57]);
+        new MetaField($this->databox_field, [3]);
     }
 
     /**
@@ -119,6 +119,6 @@ class MetaFieldTest extends \PhraseanetPHPUnitAbstract
     {
         \PHPUnit_Framework_Error_Warning::$enabled = false;
         \PHPUnit_Framework_Error_Notice::$enabled = false;
-        MetaField::loadFromString(self::$DI['app'], serialize(array('Elephant', 'sbas_id' => self::$DI['collection']->get_sbas_id(), 'id' => 0)));
+        MetaField::loadFromString(self::$DI['app'], serialize(['Elephant', 'sbas_id' => self::$DI['collection']->get_sbas_id(), 'id' => 0]));
     }
 }

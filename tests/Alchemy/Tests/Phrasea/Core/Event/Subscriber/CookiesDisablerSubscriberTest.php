@@ -44,23 +44,23 @@ class CookiesDisablerSubscriberTest extends \PHPUnit_Framework_TestCase
         $cookieJar = new CookieJar();
         $cookieJar->set(new BrowserCookie('test-cookie', 'cookievalue'));
 
-        return new Client($app, array(), null, $cookieJar);
+        return new Client($app, [], null, $cookieJar);
     }
 
     public function provideVariousRoutes()
     {
-        return array(
-            array(false, '/prod'),
-            array(false, '/admin'),
-            array(false, '/api'),
-            array(false, '/api/oauthv2'),
-            array(false, '/'),
-            array(false, '/datafiles/'),
-            array(true, '/permalink'),
-            array(true, '/permalink/v1'),
-            array(true, '/api/v1'),
-            array(true, '/api/v1/'),
-            array(true, '/api/v1/records'),
-        );
+        return [
+            [false, '/prod'],
+            [false, '/admin'],
+            [false, '/api'],
+            [false, '/api/oauthv2'],
+            [false, '/'],
+            [false, '/datafiles/'],
+            [true, '/permalink'],
+            [true, '/permalink/v1'],
+            [true, '/api/v1'],
+            [true, '/api/v1/'],
+            [true, '/api/v1/records'],
+        ];
     }
 }

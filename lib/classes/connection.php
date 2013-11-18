@@ -22,7 +22,7 @@ class connection
      *
      * @var Array
      */
-    private static $_PDO_instance = array();
+    private static $_PDO_instance = [];
 
     /**
      *
@@ -34,7 +34,7 @@ class connection
      *
      * @var Array
      */
-    public static $log = array();
+    public static $log = [];
     protected $app;
 
     public function __construct(Application $app)
@@ -67,8 +67,8 @@ class connection
         foreach (self::$log as $entry) {
             $query = $entry['query'];
             do {
-                $query = str_replace(array("\n", "  "), " ", $query);
-            } while ($query != str_replace(array("\n", "  "), " ", $query));
+                $query = str_replace(["\n", "  "], " ", $query);
+            } while ($query != str_replace(["\n", "  "], " ", $query));
 
             $totalTime += $entry['time'];
             $string = $entry['time'] . "\t" . ' - ' . $query . ' - ' . "\n";
@@ -124,7 +124,7 @@ class connection
         if (!isset(self::$_PDO_instance[$name])) {
             $hostname = $port = $user = $password = $dbname = false;
 
-            $connection_params = array();
+            $connection_params = [];
 
             if (trim($name) !== 'appbox') {
                 $connection_params = phrasea::sbas_params($app);
@@ -147,7 +147,7 @@ class connection
             }
 
             try {
-                self::$_PDO_instance[$name] = new connection_pdo($name, $hostname, $port, $user, $password, $dbname, array(), $app['debug']);
+                self::$_PDO_instance[$name] = new connection_pdo($name, $hostname, $port, $user, $password, $dbname, [], $app['debug']);
             } catch (Exception $e) {
                 throw new Exception('Connection not available');
             }

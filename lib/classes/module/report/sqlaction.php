@@ -22,7 +22,7 @@ class module_report_sqlaction extends module_report_sql implements module_report
 
     public function setAction($action)
     {
-        $a = array('edit', 'add', 'push', 'validate', 'mail');
+        $a = ['edit', 'add', 'push', 'validate', 'mail'];
 
         if (in_array($action, $a)) {
             $this->action = $action;
@@ -38,10 +38,10 @@ class module_report_sqlaction extends module_report_sql implements module_report
 
     public function buildSql()
     {
-        $customFieldMap = array();
+        $customFieldMap = [];
 
-        $filter = $this->filter->getReportFilter() ? : array('params' => array(), 'sql' => false);
-        $this->params = array_merge(array(':action' => $this->action), $filter['params']);
+        $filter = $this->filter->getReportFilter() ? : ['params' => [], 'sql' => false];
+        $this->params = array_merge([':action' => $this->action], $filter['params']);
 
         if ($this->groupby == false) {
             $this->sql = "
@@ -55,7 +55,7 @@ class module_report_sqlaction extends module_report_sql implements module_report
                     WHERE (" . $filter['sql'] . ") AND (d.action = :action)
                 ) AS tt";
 
-            $customFieldMap = array(
+            $customFieldMap = [
                 'log.usrid'     => 'tt.usrid',
                 'log.user'      => 'tt.user',
                 'd.final'       => 'getter',
@@ -64,7 +64,7 @@ class module_report_sqlaction extends module_report_sql implements module_report
                 'record.mime'   => 'tt.mime',
                 'file'          => 'tt.file',
                 'd.comment'     => 'tt.comment'
-            );
+            ];
 
             $stmt = $this->getConnBas()->prepare($this->sql);
             $stmt->execute($this->params);
@@ -100,8 +100,8 @@ class module_report_sqlaction extends module_report_sql implements module_report
 
     public function sqlDistinctValByField($field)
     {
-        $filter = $this->filter->getReportFilter() ? : array('params' => array(), 'sql' => false);
-        $this->params = array_merge(array(':action' => $this->action), $filter['params']);
+        $filter = $this->filter->getReportFilter() ? : ['params' => [], 'sql' => false];
+        $this->params = array_merge([':action' => $this->action], $filter['params']);
 
         $this->sql = "
             SELECT DISTINCT(val)
@@ -116,6 +116,6 @@ class module_report_sqlaction extends module_report_sql implements module_report
                 AND (d.action = :action)
             ) AS tt " . ($this->filter->getOrderFilter() ? $this->filter->getOrderFilter() : '');
 
-        return array('sql' => $this->sql, 'params' => $this->params);
+        return ['sql' => $this->sql, 'params' => $this->params];
     }
 }

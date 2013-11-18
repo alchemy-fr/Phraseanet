@@ -37,11 +37,11 @@ class QueryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $options->onCollections(self::$DI['app']['acl']->get(self::$DI['app']['authentication']->getUser())->get_granted_base());
         $serializedOptions = $options->serialize();
 
-        self::$DI['client']->request('POST', '/prod/query/answer-train/', array(
+        self::$DI['client']->request('POST', '/prod/query/answer-train/', [
             'options_serial' => $serializedOptions,
             'pos'            => 0,
             'query'          => ''
-            ));
+            ]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
         $datas = (array) json_decode($response->getContent());
@@ -54,10 +54,10 @@ class QueryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testQueryRegTrain()
     {
-       self::$DI['client']->request('POST', '/prod/query/reg-train/', array(
+       self::$DI['client']->request('POST', '/prod/query/reg-train/', [
             'pos'  => 1,
             'cont' => self::$DI['record_story_1']->get_serialize_key()
-            ));
+            ]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
         unset($response);

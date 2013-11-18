@@ -14,7 +14,7 @@ abstract class EditorTestCase extends \PhraseanetPHPUnitAbstract
     public function testThatUpdateXmlWithRequestThrowsABadRequestOnWrongXML()
     {
         $editor = $this->getEditor();
-        $editor->updateXMLWithRequest(new Request(array(), array('xml' => 'invalid xml')));
+        $editor->updateXMLWithRequest(new Request([], ['xml' => 'invalid xml']));
     }
 
     /**
@@ -23,7 +23,7 @@ abstract class EditorTestCase extends \PhraseanetPHPUnitAbstract
     public function testThatUpdateXmlWithRequestUpdates($expected, $xml, array $params)
     {
         $editor = $this->getEditor();
-        $response = $editor->updateXMLWithRequest(new Request(array(), array_merge(array('xml' => $xml), $params)));
+        $response = $editor->updateXMLWithRequest(new Request([], array_merge(['xml' => $xml], $params)));
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
         $this->assertEquals($expected, $response->getContent());
     }

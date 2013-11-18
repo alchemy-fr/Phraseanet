@@ -28,7 +28,7 @@ class patch_360alpha1b implements patchInterface
      *
      * @var Array
      */
-    private $concern = array(base::DATA_BOX);
+    private $concern = [base::DATA_BOX];
 
     /**
      *

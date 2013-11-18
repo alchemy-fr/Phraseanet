@@ -33,7 +33,7 @@ class Visa
      */
     public function __construct()
     {
-        $this->responses = array();
+        $this->responses = [];
     }
 
     /**

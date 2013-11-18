@@ -90,7 +90,7 @@ class Developers implements ControllerProviderInterface
             $error = true;
         }
 
-        return $app->json(array('success' => !$error));
+        return $app->json(['success' => !$error]);
     }
 
     /**
@@ -121,7 +121,7 @@ class Developers implements ControllerProviderInterface
             $error = true;
         }
 
-        return $app->json(array('success' => !$error));
+        return $app->json(['success' => !$error]);
     }
 
     /**
@@ -158,7 +158,7 @@ class Developers implements ControllerProviderInterface
             $error = true;
         }
 
-        return $app->json(array('success' => !$error, 'token'   => $accessToken));
+        return $app->json(['success' => !$error, 'token'   => $accessToken]);
     }
 
     /**
@@ -184,7 +184,7 @@ class Developers implements ControllerProviderInterface
             $error = true;
         }
 
-        return $app->json(array('success' => !$error));
+        return $app->json(['success' => !$error]);
     }
 
     /**
@@ -212,13 +212,13 @@ class Developers implements ControllerProviderInterface
                 ->set_type($form->getType())
                 ->set_website($form->getSchemeWebsite() . $form->getWebsite());
 
-            return $app->redirectPath('developers_application', array('id' => $application->get_id()));
+            return $app->redirectPath('developers_application', ['id' => $application->get_id()]);
         }
 
-        $var = array(
+        $var = [
             "violations" => $violations,
             "form"       => $form
-        );
+        ];
 
         return $app['twig']->render('/developers/application_form.html.twig', $var);
     }
@@ -232,9 +232,9 @@ class Developers implements ControllerProviderInterface
      */
     public function listApps(Application $app, Request $request)
     {
-        return $app['twig']->render('developers/applications.html.twig', array(
+        return $app['twig']->render('developers/applications.html.twig', [
             "applications" => \API_OAuth2_Application::load_dev_app_by_user($app, $app['authentication']->getUser())
-        ));
+        ]);
     }
 
     /**
@@ -246,11 +246,11 @@ class Developers implements ControllerProviderInterface
      */
     public function displayFormApp(Application $app, Request $request)
     {
-        return $app['twig']->render('developers/application_form.html.twig', array(
+        return $app['twig']->render('developers/application_form.html.twig', [
             "violations" => null,
             'form'       => null,
             'request'    => $request
-        ));
+        ]);
     }
 
     /**
@@ -271,10 +271,10 @@ class Developers implements ControllerProviderInterface
 
         $token = $client->get_user_account($app['authentication']->getUser())->get_token()->get_value();
 
-        return $app['twig']->render('developers/application.html.twig', array(
+        return $app['twig']->render('developers/application.html.twig', [
             "application" => $client,
             "user"        => $app['authentication']->getUser(),
             "token"       => $token
-        ));
+        ]);
     }
 }

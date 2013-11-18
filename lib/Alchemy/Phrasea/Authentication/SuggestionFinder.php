@@ -42,7 +42,7 @@ class SuggestionFinder
 
             $sql = 'SELECT usr_id FROM usr WHERE usr_mail = :email';
             $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute(array(':email' => $infos->get(Identity::PROPERTY_EMAIL)));
+            $stmt->execute([':email' => $infos->get(Identity::PROPERTY_EMAIL)]);
             $row = $stmt->fetch(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 

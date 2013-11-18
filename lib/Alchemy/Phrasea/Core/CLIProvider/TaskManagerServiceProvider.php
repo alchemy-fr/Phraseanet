@@ -37,11 +37,11 @@ class TaskManagerServiceProvider implements ServiceProviderInterface
                 $app['dispatcher'],
                 $app['task-manager.logger'],
                 $app['task-manager.task-list'],
-                array(
+                [
                     'listener_protocol' => $options['protocol'],
                     'listener_host'     => $options['host'],
                     'listener_port'     => $options['port'],
-                )
+                ]
             );
         });
 

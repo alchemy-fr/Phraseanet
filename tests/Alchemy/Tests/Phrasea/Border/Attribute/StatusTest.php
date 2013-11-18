@@ -25,14 +25,14 @@ class StatusTest extends \PhraseanetPHPUnitAbstract
 
     public function getValidStatuses()
     {
-        return array(
-          array(123, '1111011'),
-          array('123', '1111011'),
-          array('0b1111011', '1111011'),
-          array('1111011', '1111011'),
-          array('0x7b', '1111011'),
-          array('7b', '1111011'),
-        );
+        return [
+          [123, '1111011'],
+          ['123', '1111011'],
+          ['0b1111011', '1111011'],
+          ['1111011', '1111011'],
+          ['0x7b', '1111011'],
+          ['7b', '1111011'],
+        ];
     }
 
     /**
@@ -47,11 +47,11 @@ class StatusTest extends \PhraseanetPHPUnitAbstract
 
     public function getInvalidStatuses()
     {
-        return array(
-          array('0b00z2'),
-          array('0x00g2'),
-          array('g2'),
-        );
+        return [
+          ['0b00z2'],
+          ['0x00g2'],
+          ['g2'],
+        ];
     }
 
     /**

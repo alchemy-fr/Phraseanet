@@ -108,7 +108,7 @@ class Account implements ControllerProviderInterface
 
         return $app['twig']->render('account/change-password.html.twig', array_merge(
             Login::getDefaultTemplateVariables($app),
-            array('form' => $form->createView())
+            ['form' => $form->createView()]
         ));
     }
 
@@ -148,7 +148,7 @@ class Account implements ControllerProviderInterface
 
         $date = new \DateTime('1 day');
         $token = $app['tokens']->getUrlToken(\random::TYPE_EMAIL, $app['authentication']->getUser()->get_id(), $date, $app['authentication']->getUser()->get_email());
-        $url = $app->url('account_reset_email', array('token' => $token));
+        $url = $app->url('account_reset_email', ['token' => $token]);
 
         try {
             $receiver = Receiver::fromUser($app['authentication']->getUser());
@@ -227,7 +227,7 @@ class Account implements ControllerProviderInterface
             $error = true;
         }
 
-        return $app->json(array('success' => !$error));
+        return $app->json(['success' => !$error]);
     }
 
     /**
@@ -241,9 +241,9 @@ class Account implements ControllerProviderInterface
     {
         require_once $app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
 
-        return $app['twig']->render('account/access.html.twig', array(
+        return $app['twig']->render('account/access.html.twig', [
             'inscriptions' => giveMeBases($app, $app['authentication']->getUser()->get_id())
-        ));
+        ]);
     }
 
     /**
@@ -255,9 +255,9 @@ class Account implements ControllerProviderInterface
      */
     public function accountAuthorizedApps(Application $app, Request $request)
     {
-        return $app['twig']->render('account/authorized_apps.html.twig', array(
+        return $app['twig']->render('account/authorized_apps.html.twig', [
             "applications" => \API_OAuth2_Application::load_app_by_user($app, $app['authentication']->getUser()),
-        ));
+        ]);
     }
 
     /**
@@ -274,10 +274,10 @@ class Account implements ControllerProviderInterface
             ORDER BY s.created DESC';
 
         $query = $app['EM']->createQuery($dql);
-        $query->setParameters(array('usr_id' => $app['session']->get('usr_id')));
+        $query->setParameters(['usr_id' => $app['session']->get('usr_id')]);
         $sessions = $query->getResult();
 
-        $result = array();
+        $result = [];
         foreach ($sessions as $session) {
             $info = '';
             try {
@@ -302,13 +302,13 @@ class Account implements ControllerProviderInterface
 
             }
 
-            $result[] = array(
+            $result[] = [
                 'session' => $session,
                 'info'    => $info,
-            );
+            ];
         }
 
-        return $app['twig']->render('account/sessions.html.twig', array('sessions' => $result));
+        return $app['twig']->render('account/sessions.html.twig', ['sessions' => $result]);
     }
 
     /**
@@ -320,11 +320,11 @@ class Account implements ControllerProviderInterface
      */
     public function displayAccount(Application $app, Request $request)
     {
-        return $app['twig']->render('account/account.html.twig', array(
+        return $app['twig']->render('account/account.html.twig', [
             'user'          => $app['authentication']->getUser(),
             'evt_mngr'      => $app['events-manager'],
             'notifications' => $app['events-manager']->list_notifications_available($app['authentication']->getUser()->get_id()),
-        ));
+        ]);
     }
 
     /**
@@ -336,7 +336,7 @@ class Account implements ControllerProviderInterface
      */
     public function updateAccount(PhraseaApplication $app, Request $request)
     {
-        $demands = (array) $request->request->get('demand', array());
+        $demands = (array) $request->request->get('demand', []);
 
         if (0 !== count($demands)) {
             $register = new \appbox_register($app['phraseanet.appbox']);
@@ -351,7 +351,7 @@ class Account implements ControllerProviderInterface
             }
         }
 
-        $accountFields = array(
+        $accountFields = [
             'form_gender',
             'form_firstname',
             'form_lastname',
@@ -369,7 +369,7 @@ class Account implements ControllerProviderInterface
             'form_destFTP',
             'form_prefixFTPfolder',
             'form_retryFTP'
-        );
+        ];
 
         if (0 === count(array_diff($accountFields, array_keys($request->request->all())))) {
 
@@ -410,7 +410,7 @@ class Account implements ControllerProviderInterface
             }
         }
 
-        $requestedNotifications = (array) $request->request->get('notifications', array());
+        $requestedNotifications = (array) $request->request->get('notifications', []);
 
         foreach ($app['events-manager']->list_notifications_available($app['authentication']->getUser()->get_id()) as $notifications) {
             foreach ($notifications as $notification) {

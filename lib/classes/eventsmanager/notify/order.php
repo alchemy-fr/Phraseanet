@@ -24,7 +24,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = array('__NEW_ORDER__');
+    public $events = ['__NEW_ORDER__'];
 
     /**
      *
@@ -44,22 +44,22 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'usr_id'   => ''
-            , 'order_id' => array()
-        );
+            , 'order_id' => []
+        ];
 
         $params = array_merge($default, $params);
         $order_id = $params['order_id'];
 
-        $users = array();
+        $users = [];
 
         try {
             $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\OrderElement');
 
-            $results = $repository->findBy(array('orderId' => $order_id));
+            $results = $repository->findBy(['orderId' => $order_id]);
 
-            $base_ids = array();
+            $base_ids = [];
             foreach ($results as $result) {
                 $base_ids[] = $result->getBaseId();
             }
@@ -67,7 +67,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
 
             $query = new User_Query($this->app);
             $users = $query->on_base_ids($base_ids)
-                    ->who_have_right(array('order_master'))
+                    ->who_have_right(['order_master'])
                     ->execute()->get_results();
         } catch (Exception $e) {
 
@@ -147,18 +147,18 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
         try {
             User_Adapter::getInstance($usr_id, $this->app);
         } catch (Exception $e) {
-            return array();
+            return [];
         }
 
         $sender = User_Adapter::getInstance($usr_id, $this->app)->get_display_name();
 
-        $ret = array(
+        $ret = [
             'text'  => sprintf(_('%1$s a passe une %2$scommande%3$s')
                 , $sender
                 , '<a href="/prod/order/'.$order_id.'/" class="dialog full-dialog" title="'._('Orders manager').'">'
                 , '</a>')
             , 'class' => ''
-        );
+        ];
 
         return $ret;
     }

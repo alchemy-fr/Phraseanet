@@ -57,8 +57,8 @@ class Share implements ControllerProviderInterface
             $app->abort(403);
         }
 
-        return new Response($app['twig']->render('prod/Share/record.html.twig', array(
+        return new Response($app['twig']->render('prod/Share/record.html.twig', [
             'record' => $record,
-        )));
+        ]));
     }
 }

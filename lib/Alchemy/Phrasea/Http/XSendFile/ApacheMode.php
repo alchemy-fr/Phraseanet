@@ -21,9 +21,9 @@ class ApacheMode extends AbstractXSendFileMode implements ModeInterface
      */
     public function setHeaders(Request $request)
     {
-        $request->headers->add(array(
+        $request->headers->add([
             'X-Sendfile-Type' => 'X-SendFile',
-        ));
+        ]);
     }
 
     /**
@@ -31,7 +31,7 @@ class ApacheMode extends AbstractXSendFileMode implements ModeInterface
      */
     public function setMapping(array $mapping)
     {
-        $final = array();
+        $final = [];
 
         foreach ($mapping as $entry) {
             if (!is_array($entry)) {
@@ -46,9 +46,9 @@ class ApacheMode extends AbstractXSendFileMode implements ModeInterface
                 continue;
             }
 
-            $final[] = array(
+            $final[] = [
                 'directory' => $this->sanitizePath(realpath($entry['directory']))
-            );
+            ];
         }
 
         $this->mapping = $final;

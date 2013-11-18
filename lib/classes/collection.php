@@ -27,12 +27,12 @@ class collection implements cache_cacheableInterface
     protected $name;
     protected $prefs;
     protected $pub_wm;
-    protected $labels = array();
-    private static $_logos = array();
-    private static $_stamps = array();
-    private static $_watermarks = array();
-    private static $_presentations = array();
-    private static $_collections = array();
+    protected $labels = [];
+    private static $_logos = [];
+    private static $_stamps = [];
+    private static $_watermarks = [];
+    private static $_presentations = [];
+    private static $_collections = [];
     protected $databox;
     protected $is_active;
     protected $binary_logo;
@@ -79,7 +79,7 @@ class collection implements cache_cacheableInterface
                     label_en, label_fr, label_de, label_nl
                 FROM coll WHERE coll_id = :coll_id';
         $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':coll_id' => $this->coll_id));
+        $stmt->execute([':coll_id' => $this->coll_id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ( ! $row)
@@ -89,12 +89,12 @@ class collection implements cache_cacheableInterface
         $this->pub_wm = $row['pub_wm'];
         $this->name = $row['asciiname'];
         $this->prefs = $row['prefs'];
-        $this->labels = array(
+        $this->labels = [
             'fr' => $row['label_fr'],
             'en' => $row['label_en'],
             'de' => $row['label_de'],
             'nl' => $row['label_nl'],
-        );
+        ];
 
         $conn = connection::getPDOConnection($this->app);
 
@@ -102,7 +102,7 @@ class collection implements cache_cacheableInterface
             WHERE server_coll_id = :coll_id AND sbas_id = :sbas_id';
 
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':coll_id' => $this->coll_id, ':sbas_id' => $this->databox->get_sbas_id()));
+        $stmt->execute([':coll_id' => $this->coll_id, ':sbas_id' => $this->databox->get_sbas_id()]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -116,7 +116,7 @@ class collection implements cache_cacheableInterface
 
         $stmt->closeCursor();
 
-        $datas = array(
+        $datas = [
             'is_active' => $this->is_active
             , 'base_id'   => $this->base_id
             , 'available' => $this->available
@@ -125,7 +125,7 @@ class collection implements cache_cacheableInterface
             , 'ord'       => $this->ord
             , 'prefs'     => $this->prefs
             , 'labels'    => $this->labels
-        );
+        ];
 
         $this->set_data_to_cache($datas);
 
@@ -136,7 +136,7 @@ class collection implements cache_cacheableInterface
     {
         $sql = 'UPDATE bas SET active = "1" WHERE base_id = :base_id';
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':base_id' => $this->get_base_id()));
+        $stmt->execute([':base_id' => $this->get_base_id()]);
         $stmt->closeCursor();
 
         $this->is_active = true;
@@ -166,7 +166,7 @@ class collection implements cache_cacheableInterface
     {
         $sql = 'UPDATE bas SET active=0 WHERE base_id = :base_id';
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':base_id'       => $this->get_base_id()));
+        $stmt->execute([':base_id'       => $this->get_base_id()]);
         $stmt->closeCursor();
         $this->is_active = false;
         $this->delete_data_from_cache();
@@ -186,7 +186,7 @@ class collection implements cache_cacheableInterface
             ORDER BY record_id DESC LIMIT 0, " . $pass_quantity;
 
         $stmt = $this->databox->get_connection()->prepare($sql);
-        $stmt->execute(array(':coll_id' => $this->get_coll_id()));
+        $stmt->execute([':coll_id' => $this->get_coll_id()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -220,10 +220,10 @@ class collection implements cache_cacheableInterface
 
     public function set_public_presentation($publi)
     {
-        if (in_array($publi, array('none', 'wm', 'stamp'))) {
+        if (in_array($publi, ['none', 'wm', 'stamp'])) {
             $sql = 'UPDATE coll SET pub_wm = :pub_wm WHERE coll_id = :coll_id';
             $stmt = $this->get_connection()->prepare($sql);
-            $stmt->execute(array(':pub_wm'  => $publi, ':coll_id' => $this->get_coll_id()));
+            $stmt->execute([':pub_wm'  => $publi, ':coll_id' => $this->get_coll_id()]);
             $stmt->closeCursor();
 
             $this->pub_wm = $publi;
@@ -244,7 +244,7 @@ class collection implements cache_cacheableInterface
         $sql = "UPDATE coll SET asciiname = :asciiname
             WHERE coll_id = :coll_id";
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute(array(':asciiname' => $name, ':coll_id'   => $this->get_coll_id()));
+        $stmt->execute([':asciiname' => $name, ':coll_id'   => $this->get_coll_id()]);
         $stmt->closeCursor();
 
         $this->name = $name;
@@ -265,7 +265,7 @@ class collection implements cache_cacheableInterface
         $sql = "UPDATE coll SET label_$code = :label
             WHERE coll_id = :coll_id";
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute(array(':label' => $label, ':coll_id'   => $this->get_coll_id()));
+        $stmt->execute([':label' => $label, ':coll_id'   => $this->get_coll_id()]);
         $stmt->closeCursor();
 
         $this->labels[$code] = $label;
@@ -294,7 +294,7 @@ class collection implements cache_cacheableInterface
     {
         $sql = "SELECT COUNT(record_id) AS n FROM record WHERE coll_id = :coll_id";
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute(array(':coll_id' => $this->get_coll_id()));
+        $stmt->execute([':coll_id' => $this->get_coll_id()]);
         $rowbas = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -313,17 +313,17 @@ class collection implements cache_cacheableInterface
                   GROUP BY record.coll_id, subdef.name";
 
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute(array(':coll_id' => $this->get_coll_id()));
+        $stmt->execute([':coll_id' => $this->get_coll_id()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $ret = array();
+        $ret = [];
         foreach ($rs as $row) {
-            $ret[] = array(
+            $ret[] = [
                 "coll_id" => (int) $row["coll_id"],
                 "name"    => $row["name"],
                 "amount"  => (int) $row["n"],
-                "size"    => (int) $row["size"]);
+                "size"    => (int) $row["size"]];
         }
 
         return $ret;
@@ -339,7 +339,7 @@ class collection implements cache_cacheableInterface
 
         $sql = "UPDATE coll SET logo = :logo, majLogo=NOW() WHERE coll_id = :coll_id";
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute(array(':logo'    => $this->binary_logo, ':coll_id' => $this->get_coll_id()));
+        $stmt->execute([':logo'    => $this->binary_logo, ':coll_id' => $this->get_coll_id()]);
         $stmt->closeCursor();
 
         return $this;
@@ -352,7 +352,7 @@ class collection implements cache_cacheableInterface
             WHERE r.coll_id = :coll_id AND r.type="image" AND s.name="preview"';
 
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute(array(':coll_id' => $this->get_coll_id()));
+        $stmt->execute([':coll_id' => $this->get_coll_id()]);
 
         while ($row2 = $stmt->fetch(PDO::FETCH_ASSOC)) {
             @unlink(p4string::addEndSlash($row2['path']) . 'watermark_' . $row2['file']);
@@ -369,7 +369,7 @@ class collection implements cache_cacheableInterface
             WHERE r.coll_id = :coll_id
               AND r.type="image" AND s.name IN ("preview", "document")';
 
-        $params = array(':coll_id' => $this->get_coll_id());
+        $params = [':coll_id' => $this->get_coll_id()];
 
         if ($record_id) {
             $sql .= ' AND record_id = :record_id';
@@ -395,24 +395,24 @@ class collection implements cache_cacheableInterface
 
         $sql = "DELETE FROM coll WHERE coll_id = :coll_id";
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute(array(':coll_id' => $this->get_coll_id()));
+        $stmt->execute([':coll_id' => $this->get_coll_id()]);
         $stmt->closeCursor();
 
         $appbox = $this->databox->get_appbox();
 
         $sql = "DELETE FROM bas WHERE base_id = :base_id";
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':base_id' => $this->get_base_id()));
+        $stmt->execute([':base_id' => $this->get_base_id()]);
         $stmt->closeCursor();
 
         $sql = "DELETE FROM basusr WHERE base_id = :base_id";
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':base_id' => $this->get_base_id()));
+        $stmt->execute([':base_id' => $this->get_base_id()]);
         $stmt->closeCursor();
 
         $sql = "DELETE FROM demand WHERE base_id = :base_id";
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':base_id' => $this->get_base_id()));
+        $stmt->execute([':base_id' => $this->get_base_id()]);
         $stmt->closeCursor();
 
         $this->get_databox()->delete_data_from_cache(databox::CACHE_COLLECTIONS);
@@ -488,7 +488,7 @@ class collection implements cache_cacheableInterface
 
         $sql = "UPDATE coll SET prefs = :prefs WHERE coll_id = :coll_id";
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute(array(':prefs'   => $this->prefs, ':coll_id' => $this->get_coll_id()));
+        $stmt->execute([':prefs'   => $this->prefs, ':coll_id' => $this->get_coll_id()]);
         $stmt->closeCursor();
 
         $this->delete_data_from_cache();
@@ -513,10 +513,10 @@ class collection implements cache_cacheableInterface
 
     public function unmount_collection(Application $app)
     {
-        $params = array(':base_id' => $this->get_base_id());
+        $params = [':base_id' => $this->get_base_id()];
 
         $query = new User_Query($app);
-        $total = $query->on_base_ids(array($this->get_base_id()))
+        $total = $query->on_base_ids([$this->get_base_id()])
                 ->include_phantoms(false)
                 ->include_special_users(true)
                 ->include_invite(true)
@@ -568,10 +568,10 @@ class collection implements cache_cacheableInterface
         $sql = "INSERT INTO coll (coll_id, asciiname, prefs, logo)
                 VALUES (null, :name, :prefs, '')";
 
-        $params = array(
+        $params = [
             ':name' => $name,
             'prefs'  => $prefs,
-        );
+        ];
 
         $stmt = $connbas->prepare($sql);
         $stmt->execute($params);
@@ -583,7 +583,7 @@ class collection implements cache_cacheableInterface
             VALUES
             (null, 1, :server_coll_id, :sbas_id, '')";
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':server_coll_id' => $new_id, ':sbas_id'        => $sbas_id));
+        $stmt->execute([':server_coll_id' => $new_id, ':sbas_id'        => $sbas_id]);
         $stmt->closeCursor();
 
         $new_bas = $conn->lastInsertId();
@@ -606,7 +606,7 @@ class collection implements cache_cacheableInterface
     public function set_admin($base_id, user_adapter $user)
     {
 
-        $rights = array(
+        $rights = [
             "canputinalbum"   => "1",
             "candwnldhd"      => "1",
             "nowatermark"     => "1",
@@ -624,7 +624,7 @@ class collection implements cache_cacheableInterface
             "imgtools"        => "1",
             "manage"          => "1",
             "modify_struct"   => "1"
-        );
+        ];
 
         $this->app['acl']->get($user)->update_rights_to_base($base_id, $rights);
 
@@ -638,7 +638,7 @@ class collection implements cache_cacheableInterface
             VALUES
             (null, 1, :server_coll_id, :sbas_id, '')";
         $stmt = $databox->get_appbox()->get_connection()->prepare($sql);
-        $stmt->execute(array(':server_coll_id' => $coll_id, ':sbas_id'        => $sbas_id));
+        $stmt->execute([':server_coll_id' => $coll_id, ':sbas_id'        => $sbas_id]);
         $stmt->closeCursor();
 
         $new_bas = $databox->get_appbox()->get_connection()->lastInsertId();

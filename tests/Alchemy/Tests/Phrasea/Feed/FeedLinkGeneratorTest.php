@@ -60,16 +60,16 @@ class FeedLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
 
                 $this->assertCount(0, self::$DI['app']['EM']
                     ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
-                    ->findBy(array('value' => $tokenValue)));
+                    ->findBy(['value' => $tokenValue]));
                 $this->assertCount(1, self::$DI['app']['EM']
                     ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
-                    ->findBy(array('value' => $capture['token'])));
+                    ->findBy(['value' => $capture['token']]));
             } else {
-                $expectedParams = array(
+                $expectedParams = [
                     'token'  => $tokenValue,
                     'id'     => $feed->getId(),
                     'format' => $format,
-                );
+                ];
 
                 if ($page !== null) {
                     $expectedParams['page'] = $page;
@@ -79,7 +79,7 @@ class FeedLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
 
                 $this->assertCount(1, self::$DI['app']['EM']
                     ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
-                    ->findBy(array('value' => $tokenValue)));
+                    ->findBy(['value' => $tokenValue]));
             }
         } else {
             if (null !== $page) {
@@ -91,11 +91,11 @@ class FeedLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
 
             $this->assertCount(1, self::$DI['app']['EM']
                 ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
-                ->findBy(array('value' => $capture['token'])));
+                ->findBy(['value' => $capture['token']]));
         }
         $token = self::$DI['app']['EM']
             ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
-            ->findOneBy(array('usrId' => $user->get_id(), 'feed' => $feed->getId()));
+            ->findOneBy(['usrId' => $user->get_id(), 'feed' => $feed->getId()]);
         self::$DI['app']['EM']->remove($token);
         self::$DI['app']['EM']->flush();
     }
@@ -157,24 +157,24 @@ class FeedLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
         $feed = new \Alchemy\Phrasea\Model\Entities\Feed();
         $feed->setTitle('Title');
 
-        return array(
-            array('doliprane', 'atom', $feed, $user, null, false, false),
-            array('doliprane', 'atom', $feed, $user, null, false, true),
-            array('doliprane', 'atom', $feed, $user, null, true, false),
-            array('doliprane', 'atom', $feed, $user, null, true, true),
-            array('doliprane', 'atom', $feed, $user, 1, false, false),
-            array('doliprane', 'atom', $feed, $user, 1, false, true),
-            array('doliprane', 'atom', $feed, $user, 1, true, false),
-            array('doliprane', 'atom', $feed, $user, 1, true, true),
-            array('doliprane', 'rss', $feed, $user, null, false, false),
-            array('doliprane', 'rss', $feed, $user, null, false, true),
-            array('doliprane', 'rss', $feed, $user, null, true, false),
-            array('doliprane', 'rss', $feed, $user, null, true, true),
-            array('doliprane', 'rss', $feed, $user, 1, false, false),
-            array('doliprane', 'rss', $feed, $user, 1, false, true),
-            array('doliprane', 'rss', $feed, $user, 1, true, false),
-            array('doliprane', 'rss', $feed, $user, 1, true, true),
-        );
+        return [
+            ['doliprane', 'atom', $feed, $user, null, false, false],
+            ['doliprane', 'atom', $feed, $user, null, false, true],
+            ['doliprane', 'atom', $feed, $user, null, true, false],
+            ['doliprane', 'atom', $feed, $user, null, true, true],
+            ['doliprane', 'atom', $feed, $user, 1, false, false],
+            ['doliprane', 'atom', $feed, $user, 1, false, true],
+            ['doliprane', 'atom', $feed, $user, 1, true, false],
+            ['doliprane', 'atom', $feed, $user, 1, true, true],
+            ['doliprane', 'rss', $feed, $user, null, false, false],
+            ['doliprane', 'rss', $feed, $user, null, false, true],
+            ['doliprane', 'rss', $feed, $user, null, true, false],
+            ['doliprane', 'rss', $feed, $user, null, true, true],
+            ['doliprane', 'rss', $feed, $user, 1, false, false],
+            ['doliprane', 'rss', $feed, $user, 1, false, true],
+            ['doliprane', 'rss', $feed, $user, 1, true, false],
+            ['doliprane', 'rss', $feed, $user, 1, true, true],
+        ];
     }
 
     public function provideGenerationDataPublic()
@@ -182,11 +182,11 @@ class FeedLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
         $feed = new \Alchemy\Phrasea\Model\Entities\Feed();
         $feed->setTitle('Title');
 
-        return array(
-            array('doliprane', 'atom', $feed, null),
-            array('doliprane', 'atom', $feed, 1),
-            array('doliprane', 'rss', $feed, null),
-            array('doliprane', 'rss', $feed, 1)
-        );
+        return [
+            ['doliprane', 'atom', $feed, null],
+            ['doliprane', 'atom', $feed, 1],
+            ['doliprane', 'rss', $feed, null],
+            ['doliprane', 'rss', $feed, 1]
+        ];
     }
 }

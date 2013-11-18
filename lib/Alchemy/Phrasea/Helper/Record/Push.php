@@ -25,6 +25,6 @@ use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper;
 class Push extends RecordHelper
 {
     protected $flatten_groupings = true;
-    protected $required_rights = array('canpush');
+    protected $required_rights = ['canpush'];
 
 }

@@ -20,7 +20,7 @@ class Migration38Test extends AbstractSetupTester
 
     private function revert()
     {
-        foreach (array('binaries.yml.bkp', 'config.yml.bkp', 'connexions.yml.bkp', 'services.yml.bkp') as $backupFile) {
+        foreach (['binaries.yml.bkp', 'config.yml.bkp', 'connexions.yml.bkp', 'services.yml.bkp'] as $backupFile) {
             if (is_file(__DIR__ . '/../Probe/fixtures-3807/config/' . $backupFile)) {
                 rename(__DIR__ . '/../Probe/fixtures-3807/config/' . $backupFile, __DIR__ . '/../Probe/fixtures-3807/config/' . substr($backupFile, 0, -4));
             }
@@ -56,24 +56,24 @@ class Migration38Test extends AbstractSetupTester
         $modified['main']['servername'] = 'http://sub.domain.tld/';
         $modified['main']['maintenance'] = true;
         $modified['binaries']['test_binary'] = '/path/to/test/binary/file';
-        $modified['main']['database'] = array_replace($modified['main']['database'], array(
+        $modified['main']['database'] = array_replace($modified['main']['database'], [
             'host' => 'sql-host',
             'port' => '13306',
             'user' => 'username',
             'password' => 's3cr3t',
             'dbname' => 'phrasea_db',
-        ));
-        $modified['main']['cache'] = array(
+        ]);
+        $modified['main']['cache'] = [
             'type' => 'MemcacheCache',
-            'options' => array(
+            'options' => [
                 'host' => 'memcache-host',
                 'port' => 21211,
-            )
-        );
-        $modified['main']['opcodecache'] = array(
+            ]
+        ];
+        $modified['main']['opcodecache'] = [
             'type' => 'ApcCache',
-            'options' => array(),
-        );
+            'options' => [],
+        ];
         $modified['border-manager']['enabled'] = false;
 
         return $modified;
@@ -81,11 +81,11 @@ class Migration38Test extends AbstractSetupTester
 
     private function getCurrent()
     {
-        return array(
-            'main' => array(
+        return [
+            'main' => [
                 'servername' => 'http://local.phrasea/',
                 'maintenance' => false,
-                'database' => array(
+                'database' => [
                     'host' => '127.0.0.1',
                     'port' => '3306',
                     'user' => 'root',
@@ -93,71 +93,71 @@ class Migration38Test extends AbstractSetupTester
                     'dbname' => 'ab_test',
                     'driver' => 'pdo_mysql',
                     'charset' => 'UTF8',
-                ),
-                'database-test' => array(
+                ],
+                'database-test' => [
                     'driver' => 'pdo_sqlite',
                     'path' => '/tmp/db.sqlite',
                     'charset' => 'UTF8',
-                ),
+                ],
                 'api-timers' => true,
-                'cache' => array(
+                'cache' => [
                     'type' => 'ArrayCache',
-                    'options' => array(
-                    ),
-                ),
-                'opcodecache' => array(
+                    'options' => [
+                    ],
+                ],
+                'opcodecache' => [
                     'type' => 'ArrayCache',
-                    'options' => array(
-                    ),
-                ),
-                'search-engine' => array(
+                    'options' => [
+                    ],
+                ],
+                'search-engine' => [
                     'type' => 'Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine',
-                    'options' => array(
-                    ),
-                ),
-                'task-manager' => array(
+                    'options' => [
+                    ],
+                ],
+                'task-manager' => [
                     'options' => '',
-                ),
+                ],
                 'key' => null,
-            ),
-            'binaries' => array(
+            ],
+            'binaries' => [
                 'legacy_binay' => '/path/to/legacy/binary',
-            ),
-            'border-manager' => array(
+            ],
+            'border-manager' => [
                 'enabled' => true,
-                'checkers' => array(
-                    array(
+                'checkers' => [
+                    [
                         'type' => 'Checker\Sha256',
                         'enabled' => true,
-                    ),
-                    array(
+                    ],
+                    [
                         'type' => 'Checker\UUID',
                         'enabled' => true,
-                    ),
-                    array(
+                    ],
+                    [
                         'type' => 'Checker\Colorspace',
                         'enabled' => false,
-                        'options' => array(
-                            'colorspaces' => array(
+                        'options' => [
+                            'colorspaces' => [
                                 'cmyk',
                                 'grayscale',
                                 'rgb',
-                            ),
-                        ),
-                    ),
-                    array(
+                            ],
+                        ],
+                    ],
+                    [
                         'type' => 'Checker\Dimension',
                         'enabled' => false,
-                        'options' => array(
+                        'options' => [
                             'width' => 80,
                             'height' => 160,
-                        ),
-                    ),
-                    array(
+                        ],
+                    ],
+                    [
                         'type' => 'Checker\Extension',
                         'enabled' => false,
-                        'options' => array(
-                            'extensions' => array(
+                        'options' => [
+                            'extensions' => [
                                 'jpg',
                                 'jpeg',
                                 'bmp',
@@ -175,99 +175,99 @@ class Migration38Test extends AbstractSetupTester
                                 'flv',
                                 'mp3',
                                 'mp2',
-                            ),
-                        ),
-                    ),
-                    array(
+                            ],
+                        ],
+                    ],
+                    [
                         'type' => 'Checker\Filename',
                         'enabled' => false,
-                        'options' => array(
+                        'options' => [
                             'sensitive' => true,
-                        ),
-                    ),
-                    array(
+                        ],
+                    ],
+                    [
                         'type' => 'Checker\MediaType',
                         'enabled' => false,
-                        'options' => array(
-                            'mediatypes' => array(
+                        'options' => [
+                            'mediatypes' => [
                                 'Audio',
                                 'Document',
                                 'Flash',
                                 'Image',
                                 'Video',
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-            'authentication' => array(
-                'auto-create' => array(
-                    'templates' => array(
-                    ),
-                ),
-                'captcha' => array(
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'authentication' => [
+                'auto-create' => [
+                    'templates' => [
+                    ],
+                ],
+                'captcha' => [
                     'enabled' => true,
                     'trials-before-display' => 9,
-                ),
-                'providers' => array(
-                    'facebook' => array(
+                ],
+                'providers' => [
+                    'facebook' => [
                         'enabled' => false,
-                        'options' => array(
+                        'options' => [
                             'app-id' => '',
                             'secret' => '',
-                        ),
-                    ),
-                    'twitter' => array(
+                        ],
+                    ],
+                    'twitter' => [
                         'enabled' => false,
-                        'options' => array(
+                        'options' => [
                             'consumer-key' => '',
                             'consumer-secret' => '',
-                        ),
-                    ),
-                    'google-plus' => array(
+                        ],
+                    ],
+                    'google-plus' => [
                         'enabled' => false,
-                        'options' => array(
+                        'options' => [
                             'client-id' => '',
                             'client-secret' => '',
-                        ),
-                    ),
-                    'github' => array(
+                        ],
+                    ],
+                    'github' => [
                         'enabled' => false,
-                        'options' => array(
+                        'options' => [
                             'client-id' => '',
                             'client-secret' => '',
-                        ),
-                    ),
-                    'viadeo' => array(
+                        ],
+                    ],
+                    'viadeo' => [
                         'enabled' => false,
-                        'options' => array(
+                        'options' => [
                             'client-id' => '',
                             'client-secret' => '',
-                        ),
-                    ),
-                    'linkedin' => array(
+                        ],
+                    ],
+                    'linkedin' => [
                         'enabled' => false,
-                        'options' => array(
+                        'options' => [
                             'client-id' => '',
                             'client-secret' => '',
-                        ),
-                    ),
-                ),
-            ),
-            'registration-fields' => array(
-                array(
+                        ],
+                    ],
+                ],
+            ],
+            'registration-fields' => [
+                [
                     'name' => 'company',
                     'required' => true,
-                ),
-                array(
+                ],
+                [
                     'name' => 'firstname',
                     'required' => true,
-                ),
-                array(
+                ],
+                [
                     'name' => 'geonameid',
                     'required' => true,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

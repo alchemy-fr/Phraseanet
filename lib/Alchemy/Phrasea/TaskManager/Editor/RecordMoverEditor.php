@@ -37,7 +37,7 @@ class RecordMoverEditor extends AbstractEditor
 
     public function facility(Application $app, Request $request)
     {
-        $ret = array('tasks' => array());
+        $ret = ['tasks' => []];
         $job = new RecordMoverJob();
         switch ($request->get('ACT')) {
             case 'CALCTEST':
@@ -141,6 +141,6 @@ EOF;
      */
     protected function getFormProperties()
     {
-        return array('logsql' => static::FORM_TYPE_BOOLEAN);
+        return ['logsql' => static::FORM_TYPE_BOOLEAN];
     }
 }

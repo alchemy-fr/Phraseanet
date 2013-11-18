@@ -48,7 +48,7 @@ class SystemRequirements extends RequirementCollection implements RequirementInt
         );
 
         if (version_compare($installedPhpVersion, self::REQUIRED_PHP_VERSION, '>=')) {
-            $timezones = array();
+            $timezones = [];
             foreach (\DateTimeZone::listAbbreviations() as $abbreviations) {
                 foreach ($abbreviations as $abbreviation) {
                     $timezones[$abbreviation['timezone_id']] = true;

@@ -122,10 +122,10 @@ class TaskManager implements ControllerProviderInterface
 
     public function getTasks(Application $app, Request $request)
     {
-        return $app['twig']->render('admin/task-manager/list.html.twig', array(
+        return $app['twig']->render('admin/task-manager/list.html.twig', [
             'available_jobs'  => $app['task-manager.available-jobs'],
             'tasks'           => $app['manipulator.task']->getRepository()->findAll(),
-        ));
+        ]);
     }
 
     public function postCreateTask(Application $app, Request $request)
@@ -143,7 +143,7 @@ class TaskManager implements ControllerProviderInterface
             $job->getEditor()->getDefaultPeriod()
         );
 
-        return $app->redirectPath('admin_tasks_task_show', array('task' => $task->getId()));
+        return $app->redirectPath('admin_tasks_task_show', ['task' => $task->getId()]);
     }
 
     public function getSchedulerLog(Application $app, Request $request)
@@ -153,10 +153,10 @@ class TaskManager implements ControllerProviderInterface
             $logFile->clear();
         }
 
-        return $app['twig']->render('admin/task-manager/log.html.twig', array(
+        return $app['twig']->render('admin/task-manager/log.html.twig', [
             'logfile' => $logFile,
             'logname' => 'Scheduler',
-        ));
+        ]);
     }
 
     public function getTaskLog(Application $app, Request $request, Task $task)
@@ -166,10 +166,10 @@ class TaskManager implements ControllerProviderInterface
             $logFile->clear();
         }
 
-        return $app['twig']->render('admin/task-manager/log.html.twig', array(
+        return $app['twig']->render('admin/task-manager/log.html.twig', [
             'logfile' => $logFile,
             'logname' => sprintf('%s (task id %d)', $task->getName(), $task->getId()),
-        ));
+        ]);
     }
 
     public function postTaskDelete(Application $app, Request $request, Task $task)
@@ -197,13 +197,13 @@ class TaskManager implements ControllerProviderInterface
     {
         $app['manipulator.task']->resetCrashes($task);
 
-        return $app->json(array('success' => true));
+        return $app->json(['success' => true]);
     }
 
     public function postSaveTask(Application $app, Request $request, Task $task)
     {
         if (!$this->doValidateXML($request->request->get('settings'))) {
-            return $app->json(array('success' => false, 'message' => sprintf('Unable to load XML %s', $request->request->get('xml'))));
+            return $app->json(['success' => false, 'message' => sprintf('Unable to load XML %s', $request->request->get('xml'))]);
         }
 
         $form = $app->form(new TaskForm());
@@ -212,13 +212,13 @@ class TaskManager implements ControllerProviderInterface
         if ($form->isValid()) {
             $app['manipulator.task']->update($task);
 
-            return $app->json(array('success' => true));
+            return $app->json(['success' => true]);
         }
 
-        return $app->json(array(
+        return $app->json([
             'success' => false,
             'message' => implode("\n", $form->getErrors())
-        ));
+        ]);
     }
 
     public function postTaskFacility(Application $app, Request $request, Task $task)
@@ -246,16 +246,16 @@ class TaskManager implements ControllerProviderInterface
         $form = $app->form(new TaskForm());
         $form->setData($task);
 
-        return $app['twig']->render($editor->getTemplatePath(), array(
+        return $app['twig']->render($editor->getTemplatePath(), [
             'task' => $task,
             'form' => $form->createView(),
             'view' => 'XML',
-        ));
+        ]);
     }
 
     public function validateXML(Application $app, Request $request)
     {
-        return $app->json(array('success' => $this->doValidateXML($request->getContent())));
+        return $app->json(['success' => $this->doValidateXML($request->getContent())]);
     }
 
     private function doValidateXML($string)

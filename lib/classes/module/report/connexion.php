@@ -13,7 +13,7 @@ use Alchemy\Phrasea\Application;
 
 class module_report_connexion extends module_report
 {
-    protected $cor_query = array(
+    protected $cor_query = [
         'user'        => 'log.user',
         'usrid'       => 'log.usrid',
         'ddate'       => 'log.date',
@@ -25,7 +25,7 @@ class module_report_connexion extends module_report
         'sit_session' => 'log.sit_session',
         'appli'       => 'log.appli',
         'ip'          => 'log.ip'
-    );
+    ];
 
     /**
      * constructor
@@ -64,7 +64,7 @@ class module_report_connexion extends module_report
      */
     public function colFilter($field)
     {
-        $ret = array();
+        $ret = [];
         $sqlBuilder = $this->sqlBuilder('connexion');
         $var = $sqlBuilder->sqlDistinctValByField($field);
         $sql = $var['sql'];
@@ -83,7 +83,7 @@ class module_report_connexion extends module_report
                 $caption = $this->app['date-formatter']->getPrettyString(new DateTime($value));
             else
                 $caption = $row['val'];
-            $ret[] = array('val'   => $caption, 'value' => $value);
+            $ret[] = ['val'   => $caption, 'value' => $value];
         }
 
         return $ret;
@@ -140,9 +140,9 @@ class module_report_connexion extends module_report
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
-        $params = array_merge(array(
+        $params = array_merge([
                 ':site_id' => $app['configuration']['main']['key']
-            ),
+            ],
             $datefilter['params'],
             $collfilter['params']
         );

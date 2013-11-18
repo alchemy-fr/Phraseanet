@@ -20,7 +20,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
         $another_feed = new Feed($user);
         $another_feed->setTitle("another_title");
 
-        $feeds = array($feed, $another_feed);
+        $feeds = [$feed, $another_feed];
 
         $aggregate = new Aggregate(self::$DI['app']['EM'], $feeds);
 
@@ -67,15 +67,15 @@ class AggregateLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
 
                 $this->assertCount(0, self::$DI['app']['EM']
                     ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
-                    ->findBy(array('value' => $tokenValue)));
+                    ->findBy(['value' => $tokenValue]));
                 $this->assertCount(1, self::$DI['app']['EM']
                     ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
-                    ->findBy(array('value' => $capture['token'])));
+                    ->findBy(['value' => $capture['token']]));
             } else {
-                $expectedParams = array(
+                $expectedParams = [
                     'token'  => $tokenValue,
                     'format' => $format,
-                );
+                ];
 
                 if ($page !== null) {
                     $expectedParams['page'] = $page;
@@ -85,7 +85,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
 
                 $this->assertCount(1, self::$DI['app']['EM']
                     ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
-                    ->findBy(array('value' => $tokenValue)));
+                    ->findBy(['value' => $tokenValue]));
             }
         } else {
             if (null !== $page) {
@@ -96,11 +96,11 @@ class AggregateLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
 
             $this->assertCount(1, self::$DI['app']['EM']
                 ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
-                ->findBy(array('value' => $capture['token'])));
+                ->findBy(['value' => $capture['token']]));
         }
         $token = self::$DI['app']['EM']
             ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
-            ->findOneBy(array('usrId' => $user->get_id()));
+            ->findOneBy(['usrId' => $user->get_id()]);
         self::$DI['app']['EM']->remove($token);
         self::$DI['app']['EM']->flush();
     }
@@ -115,33 +115,33 @@ class AggregateLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
             ->method('get_id')
             ->will($this->returnValue(42));
 
-        return array(
-            array('doliprane', 'atom', $user, null, false, false),
-            array('doliprane', 'atom', $user, null, false, true),
-            array('doliprane', 'atom', $user, null, true, false),
-            array('doliprane', 'atom', $user, null, true, true),
-            array('doliprane', 'atom', $user, 1, false, false),
-            array('doliprane', 'atom', $user, 1, false, true),
-            array('doliprane', 'atom', $user, 1, true, false),
-            array('doliprane', 'atom', $user, 1, true, true),
-            array('doliprane', 'rss', $user, null, false, false),
-            array('doliprane', 'rss', $user, null, false, true),
-            array('doliprane', 'rss', $user, null, true, false),
-            array('doliprane', 'rss', $user, null, true, true),
-            array('doliprane', 'rss', $user, 1, false, false),
-            array('doliprane', 'rss', $user, 1, false, true),
-            array('doliprane', 'rss', $user, 1, true, false),
-            array('doliprane', 'rss', $user, 1, true, true),
-        );
+        return [
+            ['doliprane', 'atom', $user, null, false, false],
+            ['doliprane', 'atom', $user, null, false, true],
+            ['doliprane', 'atom', $user, null, true, false],
+            ['doliprane', 'atom', $user, null, true, true],
+            ['doliprane', 'atom', $user, 1, false, false],
+            ['doliprane', 'atom', $user, 1, false, true],
+            ['doliprane', 'atom', $user, 1, true, false],
+            ['doliprane', 'atom', $user, 1, true, true],
+            ['doliprane', 'rss', $user, null, false, false],
+            ['doliprane', 'rss', $user, null, false, true],
+            ['doliprane', 'rss', $user, null, true, false],
+            ['doliprane', 'rss', $user, null, true, true],
+            ['doliprane', 'rss', $user, 1, false, false],
+            ['doliprane', 'rss', $user, 1, false, true],
+            ['doliprane', 'rss', $user, 1, true, false],
+            ['doliprane', 'rss', $user, 1, true, true],
+        ];
     }
 
     public function provideGenerationDataPublic()
     {
-        return array(
-            array('doliprane', 'atom', null),
-            array('doliprane', 'atom', 1),
-            array('doliprane', 'rss', null),
-            array('doliprane', 'rss', 1)
-        );
+        return [
+            ['doliprane', 'atom', null],
+            ['doliprane', 'atom', 1],
+            ['doliprane', 'rss', null],
+            ['doliprane', 'rss', 1]
+        ];
     }
 }

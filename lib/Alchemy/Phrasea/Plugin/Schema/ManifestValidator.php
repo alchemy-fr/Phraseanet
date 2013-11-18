@@ -45,7 +45,7 @@ class ManifestValidator
         $this->validator->check($data, $this->schemaData);
 
         if (!$this->validator->isValid()) {
-            $errors = array();
+            $errors = [];
             foreach ((array) $this->validator->getErrors() as $error) {
                 $errors[] = ($error['property'] ? $error['property'].' : ' : '').$error['message'];
             }
@@ -53,7 +53,7 @@ class ManifestValidator
         }
 
         if (!preg_match('/^[a-z0-9-_]+$/', $data->name)) {
-            throw new JsonValidationException('Does not match the expected JSON schema', array('"name" must not contains only alphanumeric caracters'));
+            throw new JsonValidationException('Does not match the expected JSON schema', ['"name" must not contains only alphanumeric caracters']);
         }
 
         if (isset($data->{'minimum-phraseanet-version'})) {

@@ -39,15 +39,15 @@ class TasksServiceProvider implements ServiceProviderInterface
             if (isset($app['configuration']['task-manager']) && isset($app['configuration']['task-manager']['listener'])) {
                 $listenerConf = $app['configuration']['task-manager']['listener'];
             } else {
-                $listenerConf = array();
+                $listenerConf = [];
             }
 
-            return array_replace(array(
+            return array_replace([
                 'protocol'  => 'tcp',
                 'host'      => '127.0.0.1',
                 'port'      => 6660,
                 'linger'    => 500,
-            ), $listenerConf);
+            ], $listenerConf);
         });
 
         $app['task-manager.job-factory'] = $app->share(function (Application $app) {
@@ -71,7 +71,7 @@ class TasksServiceProvider implements ServiceProviderInterface
         });
 
         $app['task-manager.available-jobs'] = $app->share(function (Application $app) {
-            return array(
+            return [
                 new FtpJob(),
                 new ArchiveJob(),
                 new BridgeJob(),
@@ -80,7 +80,7 @@ class TasksServiceProvider implements ServiceProviderInterface
                 new RecordMoverJob(),
                 new SubdefsJob(),
                 new WriteMetadataJob(),
-            );
+            ];
         });
     }
 

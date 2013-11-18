@@ -48,7 +48,7 @@ class TokenTest extends \PHPUnit_Framework_TestCase
             ->method('getIdentity')
             ->will($this->returnValue($identity));
 
-        $templates = array(25, 42);
+        $templates = [25, 42];
 
         $provider->expects($this->once())
             ->method('getTemplates')

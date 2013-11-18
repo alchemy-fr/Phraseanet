@@ -44,7 +44,7 @@ class WorkZone extends Helper
         /* @var $repo_baskets Alchemy\Phrasea\Model\Repositories\BasketRepository */
         $repo_baskets = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-        $sort = in_array($sort, array('date', 'name')) ? $sort : 'name';
+        $sort = in_array($sort, ['date', 'name']) ? $sort : 'name';
 
         $ret = new ArrayCollection();
 
@@ -59,7 +59,7 @@ class WorkZone extends Helper
 
             $this->app['EM']->persist($basket);
             $this->app['EM']->flush();
-            $baskets = array($basket);
+            $baskets = [$basket];
         }
 
         $validations = $repo_baskets->findActiveValidationByUser($this->app['authentication']->getUser(), $sort);

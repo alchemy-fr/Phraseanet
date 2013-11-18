@@ -52,8 +52,8 @@ class Controller
      */
     public static function getAvailable(Application $app)
     {
-        return array(
+        return [
             new ControlProvider\UserProvider($app)
-        );
+        ];
     }
 }

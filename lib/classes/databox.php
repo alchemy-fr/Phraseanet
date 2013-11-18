@@ -32,19 +32,19 @@ class databox extends base
      *
      * @var Array
      */
-    protected static $_xpath_thesaurus = array();
+    protected static $_xpath_thesaurus = [];
 
     /**
      *
      * @var Array
      */
-    protected static $_dom_thesaurus = array();
+    protected static $_dom_thesaurus = [];
 
     /**
      *
      * @var Array
      */
-    protected static $_thesaurus = array();
+    protected static $_thesaurus = [];
 
     /**
      *
@@ -86,7 +86,7 @@ class databox extends base
      *
      * @var SimpleXMLElement
      */
-    protected static $_sxml_thesaurus = array();
+    protected static $_sxml_thesaurus = [];
 
     const BASE_TYPE = self::DATA_BOX;
     const CACHE_BASE_DATABOX = 'base_infos';
@@ -99,7 +99,7 @@ class databox extends base
     protected $cache;
     protected $connection;
     protected $app;
-    private $labels = array();
+    private $labels = [];
     private $ord;
     private $viewname;
     private $loaded = false;
@@ -140,7 +140,7 @@ class databox extends base
             $sql = 'SELECT ord, viewname, label_en, label_fr, label_de, label_nl
                 FROM sbas WHERE sbas_id = :sbas_id';
             $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute(array('sbas_id' => $this->id));
+            $stmt->execute(['sbas_id' => $this->id]);
             $row = $stmt->fetch(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
@@ -175,7 +175,7 @@ class databox extends base
         $sql = 'UPDATE sbas SET viewname = :viewname WHERE sbas_id = :sbas_id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':viewname' => $viewname, ':sbas_id' => $this->id));
+        $stmt->execute([':viewname' => $viewname, ':sbas_id' => $this->id]);
         $stmt->closeCursor();
 
         $this->delete_data_from_cache(static::CACHE_BASE_DATABOX);
@@ -201,7 +201,7 @@ class databox extends base
 
     public function get_collections()
     {
-        $ret = array();
+        $ret = [];
 
         foreach ($this->get_available_collections() as $coll_id) {
             try {
@@ -229,11 +229,11 @@ class databox extends base
               AND b.active = '1'
             ORDER BY s.ord ASC, b.ord,b.base_id ASC";
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':sbas_id' => $this->id));
+        $stmt->execute([':sbas_id' => $this->id]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $ret = array();
+        $ret = [];
 
         foreach ($rs as $row) {
             $ret[] = (int) $row['server_coll_id'];
@@ -280,7 +280,7 @@ class databox extends base
         $sql = "UPDATE sbas SET label_$code = :label
             WHERE sbas_id = :sbas_id";
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':label' => $label, ':sbas_id'   => $this->id));
+        $stmt->execute([':label' => $label, ':sbas_id'   => $this->id]);
         $stmt->closeCursor();
 
         $this->labels[$code] = $label;
@@ -376,15 +376,15 @@ class databox extends base
 
         foreach ($rs as $rowbas) {
             if ( ! isset($trows[$rowbas[$sortk1]]))
-                $trows[$rowbas[$sortk1]] = array();
-            $trows[$rowbas[$sortk1]][$rowbas[$sortk2]] = array(
+                $trows[$rowbas[$sortk1]] = [];
+            $trows[$rowbas[$sortk1]][$rowbas[$sortk2]] = [
                 "coll_id"   => $rowbas["coll_id"],
                 "asciiname" => $rowbas["asciiname"],
                 "lostcoll"  => $rowbas["lostcoll"],
                 "name"      => $rowbas["name"],
                 "n"         => $rowbas["n"],
                 "siz"       => $rowbas["siz"]
-            );
+            ];
         }
 
         ksort($trows);
@@ -416,7 +416,7 @@ class databox extends base
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $ret = array('xml_indexed'       => 0, 'thesaurus_indexed' => 0);
+        $ret = ['xml_indexed'       => 0, 'thesaurus_indexed' => 0];
         foreach ($rs as $row) {
             $status = $row['status'];
             if ($status & 1)
@@ -435,7 +435,7 @@ class databox extends base
         }
 
         $query = new User_Query($this->app);
-        $total = $query->on_sbas_ids(array($this->id))
+        $total = $query->on_sbas_ids([$this->id])
             ->include_phantoms(false)
             ->include_special_users(true)
             ->include_invite(true)
@@ -462,7 +462,7 @@ class databox extends base
 
         $this->app['EM']->flush();
 
-        $params = array(':site_id' => $this->app['configuration']['main']['key']);
+        $params = [':site_id' => $this->app['configuration']['main']['key']];
 
         $sql = 'DELETE FROM clients WHERE site_id = :site_id';
         $stmt = $this->get_connection()->prepare($sql);
@@ -476,12 +476,12 @@ class databox extends base
 
         $sql = "DELETE FROM sbas WHERE sbas_id = :sbas_id";
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':sbas_id' => $this->id));
+        $stmt->execute([':sbas_id' => $this->id]);
         $stmt->closeCursor();
 
         $sql = "DELETE FROM sbasusr WHERE sbas_id = :sbas_id";
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':sbas_id' => $this->id));
+        $stmt->execute([':sbas_id' => $this->id]);
         $stmt->closeCursor();
 
         $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
@@ -508,13 +508,13 @@ class databox extends base
         $user = $credentials['user'];
         $password = $credentials['password'];
 
-        $params = array(
+        $params = [
             ':host'     => $host
             , ':port'     => $port
             , ':dbname'   => $dbname
             , ':user'     => $user
             , ':password' => $password
-        );
+        ];
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -551,14 +551,14 @@ class databox extends base
         $sql = 'INSERT INTO sbas (sbas_id, ord, host, port, dbname, sqlengine, user, pwd)
               VALUES (null, :ord, :host, :port, :dbname, "MYSQL", :user, :password)';
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(
+        $stmt->execute([
             ':ord'      => $ord
             , ':host'     => $host
             , ':port'     => $port
             , ':dbname'   => $dbname
             , ':user'     => $user
             , ':password' => $password
-        ));
+        ]);
         $stmt->closeCursor();
         $sbas_id = (int) $app['phraseanet.appbox']->get_connection()->lastInsertId();
 
@@ -586,7 +586,7 @@ class databox extends base
      */
     public static function mount(Application $app, $host, $port, $user, $password, $dbname, registry $registry)
     {
-        new connection_pdo('test', $host, $port, $user, $password, $dbname, array(), $app['debug']);
+        new connection_pdo('test', $host, $port, $user, $password, $dbname, [], $app['debug']);
 
         $conn = $app['phraseanet.appbox']->get_connection();
         $sql = 'SELECT MAX(ord) as ord FROM sbas';
@@ -600,14 +600,14 @@ class databox extends base
         $sql = 'INSERT INTO sbas (sbas_id, ord, host, port, dbname, sqlengine, user, pwd)
               VALUES (null, :ord, :host, :port, :dbname, "MYSQL", :user, :password)';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(
+        $stmt->execute([
             ':ord'      => $ord
             , ':host'     => $host
             , ':port'     => $port
             , ':dbname'   => $dbname
             , ':user'     => $user
             , ':password' => $password
-        ));
+        ]);
 
         $stmt->closeCursor();
         $sbas_id = (int) $conn->lastInsertId();
@@ -735,7 +735,7 @@ class databox extends base
 
     public static function get_available_dcfields()
     {
-        return array(
+        return [
             databox_Field_DCESAbstract::Contributor => new databox_Field_DCES_Contributor()
             , databox_Field_DCESAbstract::Coverage    => new databox_Field_DCES_Coverage()
             , databox_Field_DCESAbstract::Creator     => new databox_Field_DCES_Creator()
@@ -751,7 +751,7 @@ class databox extends base
             , databox_Field_DCESAbstract::Subject     => new databox_Field_DCES_Subject()
             , databox_Field_DCESAbstract::Title       => new databox_Field_DCES_Title()
             , databox_Field_DCESAbstract::Type        => new databox_Field_DCES_Type()
-        );
+        ];
     }
 
     /**
@@ -761,11 +761,11 @@ class databox extends base
     public function get_mountable_colls()
     {
         $conn = connection::getPDOConnection($this->app);
-        $colls = array();
+        $colls = [];
 
         $sql = 'SELECT server_coll_id FROM bas WHERE sbas_id = :sbas_id';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':sbas_id' => $this->id));
+        $stmt->execute([':sbas_id' => $this->id]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -773,7 +773,7 @@ class databox extends base
             $colls[] = (int) $row['server_coll_id'];
         }
 
-        $mountable_colls = array();
+        $mountable_colls = [];
 
         $sql = 'SELECT coll_id, asciiname FROM coll';
 
@@ -796,11 +796,11 @@ class databox extends base
     public function get_activable_colls()
     {
         $conn = connection::getPDOConnection($this->app);
-        $base_ids = array();
+        $base_ids = [];
 
         $sql = 'SELECT base_id FROM bas WHERE sbas_id = :sbas_id AND active = "0"';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':sbas_id' => $this->id));
+        $stmt->execute([':sbas_id' => $this->id]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -829,10 +829,10 @@ class databox extends base
 
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute(
-            array(
+            [
                 ':structure' => $this->structure,
                 ':now'       => $now
-            )
+            ]
         );
         $stmt->closeCursor();
 
@@ -858,10 +858,10 @@ class databox extends base
                 WHERE prop='cterms'";
 
         $this->cterms = $dom_cterms->saveXML();
-        $params = array(
+        $params = [
             ':xml'  => $this->cterms
             , ':date' => $now
-        );
+        ];
 
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -879,7 +879,7 @@ class databox extends base
 
         $sql = "UPDATE pref SET value = :xml, updated_on = :date WHERE prop='thesaurus'";
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute(array(':xml'  => $this->thesaurus, ':date' => $now));
+        $stmt->execute([':xml'  => $this->thesaurus, ':date' => $now]);
         $stmt->closeCursor();
         $this->delete_data_from_cache(databox::CACHE_THESAURUS);
 
@@ -895,8 +895,8 @@ class databox extends base
         $contents = file_get_contents($data_template->getPathname());
 
         $contents = str_replace(
-            array("{{basename}}", "{{datapathnoweb}}")
-            , array($this->dbname, $path_doc)
+            ["{{basename}}", "{{datapathnoweb}}"]
+            , [$this->dbname, $path_doc]
             , $contents
         );
 
@@ -931,12 +931,12 @@ class databox extends base
 
             $type = isset($field['type']) ? $field['type'] : 'string';
             $type = in_array($type
-                    , array(
+                    , [
                     databox_field::TYPE_DATE
                     , databox_field::TYPE_NUMBER
                     , databox_field::TYPE_STRING
                     , databox_field::TYPE_TEXT
-                    )
+                    ]
                 ) ? $type : databox_field::TYPE_STRING;
 
             $multi = isset($field['multi']) ? (Boolean) (string) $field['multi'] : false;
@@ -973,12 +973,12 @@ class databox extends base
         $conn = connection::getPDOConnection($this->app);
 
         $this->app['acl']->get($user)
-            ->give_access_to_sbas(array($this->id))
+            ->give_access_to_sbas([$this->id])
             ->update_rights_to_sbas(
-                $this->id, array(
+                $this->id, [
                 'bas_manage'        => 1, 'bas_modify_struct' => 1,
                 'bas_modif_th'      => 1, 'bas_chupub'        => 1
-                )
+                ]
         );
 
         $sql = "SELECT * FROM coll";
@@ -992,10 +992,10 @@ class databox extends base
                             (null,'1', :coll_id, :sbas_id)";
         $stmt = $conn->prepare($sql);
 
-        $base_ids = array();
+        $base_ids = [];
         foreach ($rs as $row) {
             try {
-                $stmt->execute(array(':coll_id'  => $row['coll_id'], ':sbas_id'  => $this->id));
+                $stmt->execute([':coll_id'  => $row['coll_id'], ':sbas_id'  => $this->id]);
                 $base_ids[] = $base_id = $conn->lastInsertId();
 
                 if ( ! empty($row['logo'])) {
@@ -1008,13 +1008,13 @@ class databox extends base
 
         $this->app['acl']->get($user)->give_access_to_base($base_ids);
         foreach ($base_ids as $base_id) {
-            $this->app['acl']->get($user)->update_rights_to_base($base_id, array(
+            $this->app['acl']->get($user)->update_rights_to_base($base_id, [
                 'canpush'         => 1, 'cancmd'          => 1
                 , 'canputinalbum'   => 1, 'candwnldhd'      => 1, 'candwnldpreview' => 1, 'canadmin'        => 1
                 , 'actif'           => 1, 'canreport'       => 1, 'canaddrecord'    => 1, 'canmodifrecord'  => 1
                 , 'candeleterecord' => 1, 'chgstatus'       => 1, 'imgtools'        => 1, 'manage'          => 1
                 , 'modify_struct'   => 1, 'nowatermark'     => 1
-                )
+                ]
             );
         }
 
@@ -1039,7 +1039,7 @@ class databox extends base
 
     public function clear_logs()
     {
-        foreach (array('log', 'log_colls', 'log_docs', 'log_search', 'log_view', 'log_thumb') as $table) {
+        foreach (['log', 'log_colls', 'log_docs', 'log_search', 'log_view', 'log_thumb'] as $table) {
             $sql = 'TRUNCATE ' . $table;
             $stmt = $this->get_connection()->prepare($sql);
             $stmt->execute();
@@ -1309,9 +1309,9 @@ class databox extends base
         $sx_structure = simplexml_load_string($structure);
 
         $subdefgroup = $sx_structure->subdefs[0];
-        $AvSubdefs = array();
+        $AvSubdefs = [];
 
-        $errors = array();
+        $errors = [];
 
         foreach ($subdefgroup as $k => $subdefs) {
             $subdefgroup_name = trim((string) $subdefs->attributes()->name);
@@ -1322,7 +1322,7 @@ class databox extends base
             }
 
             if ( ! isset($AvSubdefs[$subdefgroup_name]))
-                $AvSubdefs[$subdefgroup_name] = array();
+                $AvSubdefs[$subdefgroup_name] = [];
 
             foreach ($subdefs as $sd) {
                 $sd_name = trim(mb_strtolower((string) $sd->attributes()->name));
@@ -1331,7 +1331,7 @@ class databox extends base
                     $errors[] = _('ERREUR : Les name de subdef sont uniques par groupe de subdefs et necessaire');
                     continue;
                 }
-                if ( ! in_array($sd_class, array('thumbnail', 'preview', 'document'))) {
+                if ( ! in_array($sd_class, ['thumbnail', 'preview', 'document'])) {
                     $errors[] = _('ERREUR : La classe de subdef est necessaire et egal a "thumbnail","preview" ou "document"');
                     continue;
                 }
@@ -1371,10 +1371,10 @@ class databox extends base
         $stmt->closeCursor();
 
         foreach ($rs as $row) {
-            $TOU[$row['locale']] = array('updated_on' => $row['updated_on'], 'value'      => $row['value']);
+            $TOU[$row['locale']] = ['updated_on' => $row['updated_on'], 'value'      => $row['value']];
         }
 
-        $missing_locale = array();
+        $missing_locale = [];
 
         $avLanguages = $this->app['locales.available'];
         foreach ($avLanguages as $code => $language) {
@@ -1389,8 +1389,8 @@ class databox extends base
               VALUES (null, 'ToU', '', :locale, :date, NOW())";
         $stmt = $this->get_connection()->prepare($sql);
         foreach ($missing_locale as $v) {
-            $stmt->execute(array(':locale' => $v, ':date'   => $date));
-            $TOU[$v] = array('updated_on' => $date, 'value'      => '');
+            $stmt->execute([':locale' => $v, ':date'   => $date]);
+            $TOU[$v] = ['updated_on' => $date, 'value'      => ''];
         }
         $stmt->closeCursor();
         $this->cgus = $TOU;
@@ -1403,7 +1403,7 @@ class databox extends base
 
     public function update_cgus($locale, $terms, $reset_date)
     {
-        $terms = str_replace(array("\r\n", "\n", "\r"), array('', '', ''), strip_tags($terms, '<p><strong><a><ul><ol><li><h1><h2><h3><h4><h5><h6>'));
+        $terms = str_replace(["\r\n", "\n", "\r"], ['', '', ''], strip_tags($terms, '<p><strong><a><ul><ol><li><h1><h2><h3><h4><h5><h6>'));
         $sql = 'UPDATE pref SET value = :terms ';
 
         if ($reset_date)
@@ -1412,7 +1412,7 @@ class databox extends base
         $sql .= ' WHERE prop="ToU" AND locale = :locale';
 
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute(array(':terms'    => $terms, ':locale'   => $locale));
+        $stmt->execute([':terms'    => $terms, ':locale'   => $locale]);
         $stmt->closeCursor();
         $this->cgus = null;
         $this->delete_data_from_cache(self::CACHE_CGUS);
@@ -1424,10 +1424,10 @@ class databox extends base
     {
         $this->_sxml_structure = $this->_dom_structure = $this->_xpath_structure = null;
 
-        $vars = array();
+        $vars = [];
 
         foreach ($this as $key => $value) {
-            if (in_array($key, array('app', 'meta_struct'))) {
+            if (in_array($key, ['app', 'meta_struct'])) {
                 continue;
             }
 

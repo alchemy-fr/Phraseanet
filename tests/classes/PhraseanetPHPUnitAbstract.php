@@ -37,7 +37,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      * @var \Pimple
      */
     public static $DI;
-    protected static $testsTime = array();
+    protected static $testsTime = [];
     protected static $records;
     public static $recordsInitialized = false;
 
@@ -217,7 +217,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         });
 
         self::$DI['client'] = self::$DI->share(function ($DI) {
-            return new Client($DI['app'], array());
+            return new Client($DI['app'], []);
         });
 
         self::$DI['user']->purgePreferences();
@@ -299,7 +299,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $executor = new Doctrine\Common\DataFixtures\Executor\ORMExecutor(self::$DI['app']['EM'], $purger);
         $executor->execute($fixtureLoader->getFixtures(), $append);
         self::$DI['client'] = self::$DI->share(function ($DI) {
-            return new Client($DI['app'], array());
+            return new Client($DI['app'], []);
         });
     }
 
@@ -310,7 +310,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     {
         $purger = new Doctrine\Common\DataFixtures\Purger\ORMPurger();
         $executor = new Doctrine\Common\DataFixtures\Executor\ORMExecutor(self::$DI['app']['EM'], $purger);
-        $executor->execute(array());
+        $executor->execute([]);
         self::$DI['app']["phraseanet.cache-service"]->flushAll();
     }
 
@@ -325,7 +325,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $app->register(new \Silex\Provider\TwigServiceProvider());
         $app->setupTwig();
         self::$DI['client'] = self::$DI->share(function ($DI) use ($app) {
-            return new Client($app, array());
+            return new Client($app, []);
         });
     }
 
@@ -612,7 +612,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      *
      * @return \Alchemy\Phrasea\Model\Entities\Basket
      */
-    protected function insertOneValidationBasket(array $parameters = array())
+    protected function insertOneValidationBasket(array $parameters = [])
     {
         $em = self::$DI['app']['EM'];
 
@@ -672,7 +672,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $basket->setOwner(self::$DI['user']);
         self::$DI['app']['EM']->persist($basket);
 
-        foreach (array(self::$DI['record_1'], self::$DI['record_2']) as $record) {
+        foreach ([self::$DI['record_1'], self::$DI['record_2']] as $record) {
             $basketElement = new BasketElement();
             $basketElement->setRecord($record);
             $basketElement->setBasket($basket);
@@ -688,7 +688,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $validationSession->setExpires($expires);
         $validationSession->setInitiator(self::$DI['user']);
 
-        foreach (array(self::$DI['user_alt1'], self::$DI['user_alt2']) as $user) {
+        foreach ([self::$DI['user_alt1'], self::$DI['user_alt2']] as $user) {
             $validationParticipant = new ValidationParticipant();
             $validationParticipant->setUser($user);
             $validationParticipant->setSession($validationSession);
@@ -766,12 +766,12 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      *
      * @return Crawler
      */
-    protected function XMLHTTPRequest($method, $uri, array $parameters = array(), $httpAccept = 'application/json')
+    protected function XMLHTTPRequest($method, $uri, array $parameters = [], $httpAccept = 'application/json')
     {
-        return self::$DI['client']->request($method, $uri, $parameters, array(), array(
+        return self::$DI['client']->request($method, $uri, $parameters, [], [
             'HTTP_ACCEPT'           => $httpAccept,
             'HTTP_X-Requested-With' => 'XMLHttpRequest',
-        ));
+        ]);
     }
 
     /**
@@ -880,22 +880,22 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
 
-            $rights = array(
+            $rights = [
                 'bas_manage'        => '1'
                 , 'bas_modify_struct' => '1'
                 , 'bas_modif_th'      => '1'
                 , 'bas_chupub'        => '1'
-            );
+            ];
 
             $app['acl']->get($user)->update_rights_to_sbas($databox->get_sbas_id(), $rights);
 
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
 
-                $app['acl']->get($user)->give_access_to_base(array($base_id));
-                $app['acl']->get($user)->update_rights_to_base($base_id, array('order_master' => true));
+                $app['acl']->get($user)->give_access_to_base([$base_id]);
+                $app['acl']->get($user)->update_rights_to_base($base_id, ['order_master' => true]);
 
-                $rights = array(
+                $rights = [
                     'canputinalbum'     => '1'
                     , 'candwnldhd'        => '1'
                     , 'candwnldsubdef'    => '1'
@@ -915,7 +915,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                     , 'modify_struct'     => '1'
                     , 'manage'            => '1'
                     , 'bas_modify_struct' => '1'
-                );
+                ];
 
                 $app['acl']->get($user)->update_rights_to_base($collection->get_base_id(), $rights);
             }
@@ -963,8 +963,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             $DI['user'] = $DI->share(
                 $DI->extend('user', function ($user, $DI) use ($collection_no_acces) {
-                    $DI['app']['acl']->get($user)->revoke_access_from_bases(array($collection_no_acces->get_base_id()));
-                    $DI['client'] = new Client($DI['app'], array());
+                    $DI['app']['acl']->get($user)->revoke_access_from_bases([$collection_no_acces->get_base_id()]);
+                    $DI['client'] = new Client($DI['app'], []);
 
                     return $user;
                 })
@@ -983,7 +983,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $DI['user'] = $DI->share(
                 $DI->extend('user', function ($user, $DI) use ($collection_no_acces_by_status) {
                     $DI['app']['acl']->get($user)->set_masks_on_base($collection_no_acces_by_status->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
-                    $DI['client'] = new Client($DI['app'], array());
+                    $DI['client'] = new Client($DI['app'], []);
 
                     return $user;
                 })
@@ -1006,7 +1006,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             $logger = new \Monolog\Logger('tests');
             $logger->pushHandler(new \Monolog\Handler\NullHandler());
-            self::$recordsInitialized = array();
+            self::$recordsInitialized = [];
 
             $resolvePathfile = function ($i) {
                 $finder = new Symfony\Component\Finder\Finder();
@@ -1110,7 +1110,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 self::$DI['record_' . $i]->delete();
             }
 
-            self::$recordsInitialized = array();
+            self::$recordsInitialized = [];
         }
 
         return;
@@ -1174,7 +1174,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     public function createRandomMock()
     {
         return $this->getMockBuilder('\random')
-            ->setMethods(array('generatePassword'))
+            ->setMethods(['generatePassword'])
             ->disableOriginalConstructor()
             ->getMock();
     }

@@ -116,7 +116,7 @@ class databox_field implements cache_cacheableInterface
      *
      * @var array
      */
-    protected $labels = array();
+    protected $labels = [];
 
     /**
      *
@@ -138,7 +138,7 @@ class databox_field implements cache_cacheableInterface
      * @var int
      */
     protected $sbas_id;
-    protected static $_instance = array();
+    protected static $_instance = [];
     protected $dces_element;
     protected $Vocabulary;
     protected $VocabularyType;
@@ -192,7 +192,7 @@ class databox_field implements cache_cacheableInterface
               FROM metadatas_structure WHERE id=:id";
 
         $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':id' => $id));
+        $stmt->execute([':id' => $id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -209,7 +209,7 @@ class databox_field implements cache_cacheableInterface
             $this->on_error = true;
         }
 
-        foreach (array('en', 'fr', 'de', 'nl') as $code) {
+        foreach (['en', 'fr', 'de', 'nl'] as $code) {
             $this->labels[$code] = $row['label_' . $code];
         }
 
@@ -338,7 +338,7 @@ class databox_field implements cache_cacheableInterface
         $connbas = $this->get_connection();
         $sql = 'DELETE FROM metadatas_structure WHERE id = :id';
         $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':id' => $this->get_id()));
+        $stmt->execute([':id' => $this->get_id()]);
         $stmt->closeCursor();
 
         $dom_struct = $this->databox->get_dom_structure();
@@ -389,7 +389,7 @@ class databox_field implements cache_cacheableInterface
           `label_nl` = :label_nl
           WHERE id = :id';
 
-        $params = array(
+        $params = [
             ':name'                  => $this->name,
             ':source'                => $this->tag->getTagname(),
             ':indexable'             => $this->indexable ? '1' : '0',
@@ -410,7 +410,7 @@ class databox_field implements cache_cacheableInterface
             ':label_fr'              => isset($this->labels['fr']) ? $this->labels['fr'] : null,
             ':label_de'              => isset($this->labels['de']) ? $this->labels['de'] : null,
             ':label_nl'              => isset($this->labels['nl']) ? $this->labels['nl'] : null
-        );
+        ];
 
         $stmt = $connbas->prepare($sql);
         $stmt->execute($params);
@@ -611,9 +611,9 @@ class databox_field implements cache_cacheableInterface
                SET dces_element = null WHERE dces_element = :dces_element';
 
             $stmt = $connbas->prepare($sql);
-            $stmt->execute(array(
+            $stmt->execute([
                 ':dces_element' => $DCES_element->get_label()
-            ));
+            ]);
             $stmt->closeCursor();
         }
 
@@ -621,10 +621,10 @@ class databox_field implements cache_cacheableInterface
               SET dces_element = :dces_element WHERE id = :id';
 
         $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(
+        $stmt->execute([
             ':dces_element' => $DCES_element ? $DCES_element->get_label() : null
             , ':id'           => $this->id
-        ));
+        ]);
         $stmt->closeCursor();
         $this->dces_element = $DCES_element;
 
@@ -925,7 +925,7 @@ class databox_field implements cache_cacheableInterface
 
     public function toArray()
     {
-        return array(
+        return [
             'id'                    => $this->id,
             'sbas-id'               => $this->sbas_id,
             'labels'                => $this->labels,
@@ -945,7 +945,7 @@ class databox_field implements cache_cacheableInterface
             'dces-element'          => $this->dces_element ? $this->dces_element->get_label() : null,
             'vocabulary-type'       => $this->Vocabulary ? $this->Vocabulary->getType() : null,
             'vocabulary-restricted' => $this->VocabularyRestriction,
-        );
+        ];
     }
 
     /**
@@ -990,7 +990,7 @@ class databox_field implements cache_cacheableInterface
         $multi = $multi ? 1 : 0;
 
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute(array(':name'   => $name, ':sorter' => $sorter, ':multi' => $multi));
+        $stmt->execute([':name'   => $name, ':sorter' => $sorter, ':multi' => $multi]);
         $id = $databox->get_connection()->lastInsertId();
         $stmt->closeCursor();
 
@@ -1014,9 +1014,9 @@ class databox_field implements cache_cacheableInterface
      */
     public function __sleep()
     {
-        $vars = array();
+        $vars = [];
         foreach ($this as $key => $value) {
-            if (in_array($key, array('databox', 'app', 'Vocabulary')))
+            if (in_array($key, ['databox', 'app', 'Vocabulary']))
                 continue;
             $vars[] = $key;
         }

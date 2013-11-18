@@ -28,10 +28,10 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->authenticate(self::$DI['app']);
 
-        $this->XMLHTTPRequest('GET', '/report/dashboard', array(
+        $this->XMLHTTPRequest('GET', '/report/dashboard', [
             'dmin' => $this->dmin->format('Y-m-d H:i:s'),
             'dmax' => $this->dmin->format('Y-m-d H:i:s'),
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -40,7 +40,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteInitReport()
     {
-        self::$DI['client']->request('POST', '/report/init', array('popbases' => array('1_1')));
+        self::$DI['client']->request('POST', '/report/init', ['popbases' => ['1_1']]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -49,7 +49,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportConnexions()
     {
-        self::$DI['client']->request('POST', '/report/connexions', array(
+        self::$DI['client']->request('POST', '/report/connexions', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
@@ -58,7 +58,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'champ'         => 'user',
             'page'          => 1,
             'limit'         => 10,
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -67,13 +67,13 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportConnexionsPrintCSV()
     {
-        self::$DI['client']->request('POST', '/report/connexions', array(
+        self::$DI['client']->request('POST', '/report/connexions', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'printcsv'      => 'on',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -82,13 +82,13 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportConnexionsFilterColumns()
     {
-        self::$DI['client']->request('POST', '/report/connexions', array(
+        self::$DI['client']->request('POST', '/report/connexions', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'list_column'   => 'user ddate',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -97,7 +97,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportConnexionsFilterResultOnOneColumn()
     {
-        self::$DI['client']->request('POST', '/report/connexions', array(
+        self::$DI['client']->request('POST', '/report/connexions', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
@@ -105,7 +105,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'filter_column' => 'user',
             'filter_value'  => 'admin',
             'liste'         => 'on',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -114,13 +114,13 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportConnexionsFilterConf()
     {
-        self::$DI['client']->request('POST', '/report/connexions', array(
+        self::$DI['client']->request('POST', '/report/connexions', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'conf'          => 'on',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -129,13 +129,13 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportConnexionsGroupBy()
     {
-        self::$DI['client']->request('POST', '/report/connexions', array(
+        self::$DI['client']->request('POST', '/report/connexions', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'groupby'       => 'user',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -144,7 +144,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportQuestions()
     {
-        self::$DI['client']->request('POST', '/report/questions', array(
+        self::$DI['client']->request('POST', '/report/questions', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
@@ -153,7 +153,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'champ'         => 'user',
             'page'          => 1,
             'limit'         => 10,
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -162,13 +162,13 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportQuestionsPrintCSV()
     {
-        self::$DI['client']->request('POST', '/report/questions', array(
+        self::$DI['client']->request('POST', '/report/questions', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'printcsv'      => 'on',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -177,13 +177,13 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportQuestionsFilterColumns()
     {
-        self::$DI['client']->request('POST', '/report/questions', array(
+        self::$DI['client']->request('POST', '/report/questions', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'list_column'   => 'user ddate',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -192,7 +192,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportQuestionsFilterResultOnOneColumn()
     {
-        self::$DI['client']->request('POST', '/report/questions', array(
+        self::$DI['client']->request('POST', '/report/questions', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
@@ -200,7 +200,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'filter_column' => 'user',
             'filter_value'  => 'admin',
             'liste'         => 'on',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -209,13 +209,13 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportQuestionsFilterConf()
     {
-        self::$DI['client']->request('POST', '/report/questions', array(
+        self::$DI['client']->request('POST', '/report/questions', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'conf'          => 'on',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -224,13 +224,13 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportQuestionsGroupBy()
     {
-        self::$DI['client']->request('POST', '/report/questions', array(
+        self::$DI['client']->request('POST', '/report/questions', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'groupby'       => 'user',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -239,7 +239,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportDownloads()
     {
-        self::$DI['client']->request('POST', '/report/downloads', array(
+        self::$DI['client']->request('POST', '/report/downloads', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
@@ -248,7 +248,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'champ'         => 'user',
             'page'          => 1,
             'limit'         => 10,
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -257,13 +257,13 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportDownloadsPrintCSV()
     {
-        self::$DI['client']->request('POST', '/report/downloads', array(
+        self::$DI['client']->request('POST', '/report/downloads', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'printcsv'      => 'on',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -272,13 +272,13 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportDownloadsFilterColumns()
     {
-        self::$DI['client']->request('POST', '/report/downloads', array(
+        self::$DI['client']->request('POST', '/report/downloads', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'list_column'   => 'user ddate',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -287,7 +287,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportDownloadsFilterResultOnOneColumn()
     {
-        self::$DI['client']->request('POST', '/report/downloads', array(
+        self::$DI['client']->request('POST', '/report/downloads', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
@@ -295,7 +295,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'filter_column' => 'user',
             'filter_value'  => 'admin',
             'liste'         => 'on',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -304,13 +304,13 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportDownloadsFilterConf()
     {
-        self::$DI['client']->request('POST', '/report/downloads', array(
+        self::$DI['client']->request('POST', '/report/downloads', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'conf'          => 'on',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -319,13 +319,13 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportDownloadsGroupBy()
     {
-        self::$DI['client']->request('POST', '/report/downloads', array(
+        self::$DI['client']->request('POST', '/report/downloads', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'groupby'       => 'user',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -334,7 +334,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportDocuments()
     {
-        self::$DI['client']->request('POST', '/report/documents', array(
+        self::$DI['client']->request('POST', '/report/documents', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
@@ -344,7 +344,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'tbl'           => 'DOC',
             'page'          => 1,
             'limit'         => 10,
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -353,13 +353,13 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportDocumentsPrintCSV()
     {
-        self::$DI['client']->request('POST', '/report/documents', array(
+        self::$DI['client']->request('POST', '/report/documents', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'printcsv'      => 'on',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -368,13 +368,13 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportDocumentsFilterColumns()
     {
-        self::$DI['client']->request('POST', '/report/documents', array(
+        self::$DI['client']->request('POST', '/report/documents', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'list_column'   => 'file mime',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -383,7 +383,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportDocumentsFilterResultOnOneColumn()
     {
-        self::$DI['client']->request('POST', '/report/documents', array(
+        self::$DI['client']->request('POST', '/report/documents', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
@@ -391,7 +391,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'filter_column' => 'mime',
             'filter_value'  => 'pdf',
             'liste'         => 'on',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -400,13 +400,13 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportDocumentsFilterConf()
     {
-        self::$DI['client']->request('POST', '/report/documents', array(
+        self::$DI['client']->request('POST', '/report/documents', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'conf'          => 'on',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -415,13 +415,13 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportDocumentsGroupBy()
     {
-        self::$DI['client']->request('POST', '/report/documents', array(
+        self::$DI['client']->request('POST', '/report/documents', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'groupby'       => 'mime',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -430,12 +430,12 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportClients()
     {
-        self::$DI['client']->request('POST', '/report/clients', array(
+        self::$DI['client']->request('POST', '/report/clients', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -444,13 +444,13 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDoReportClientPrintCSV()
     {
-        self::$DI['client']->request('POST', '/report/clients', array(
+        self::$DI['client']->request('POST', '/report/clients', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'printcsv'      => 'on',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 

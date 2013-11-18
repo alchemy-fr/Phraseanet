@@ -9,8 +9,8 @@ class SearchEngineServiceProvidertest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {
-        return array(
-            array('Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider', 'phraseanet.SE', 'Alchemy\Phrasea\SearchEngine\SearchEngineInterface'),
-        );
+        return [
+            ['Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider', 'phraseanet.SE', 'Alchemy\Phrasea\SearchEngine\SearchEngineInterface'],
+        ];
     }
 }

@@ -25,7 +25,7 @@ class TrustedProxySubscriberTest extends \PHPUnit_Framework_TestCase
         $configuration->expects($this->once())
             ->method('offsetGet')
             ->with('trusted-proxies')
-            ->will($this->returnValue(array('8.8.8.8', '127.0.0.1')));
+            ->will($this->returnValue(['8.8.8.8', '127.0.0.1']));
 
         $configuration->expects($this->once())
             ->method('offsetExists')
@@ -42,7 +42,7 @@ class TrustedProxySubscriberTest extends \PHPUnit_Framework_TestCase
         $client->request('GET', '/');
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $this->assertEquals(array('8.8.8.8', '127.0.0.1'), Request::getTrustedProxies());
+        $this->assertEquals(['8.8.8.8', '127.0.0.1'], Request::getTrustedProxies());
     }
 
     public function testAllowedIpsAreSetWhenEmpty()
@@ -66,6 +66,6 @@ class TrustedProxySubscriberTest extends \PHPUnit_Framework_TestCase
         $client->request('GET', '/');
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $this->assertEquals(array(), Request::getTrustedProxies());
+        $this->assertEquals([], Request::getTrustedProxies());
     }
 }

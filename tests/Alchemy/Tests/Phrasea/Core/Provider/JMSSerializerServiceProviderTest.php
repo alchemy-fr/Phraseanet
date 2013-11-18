@@ -9,8 +9,8 @@ class JMSServiceProviderServiceProvidertest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {
-        return array(
-            array('Alchemy\Phrasea\Core\Provider\JMSSerializerServiceProvider', 'serializer', 'JMS\Serializer\Serializer'),
-        );
+        return [
+            ['Alchemy\Phrasea\Core\Provider\JMSSerializerServiceProvider', 'serializer', 'JMS\Serializer\Serializer'],
+        ];
     }
 }

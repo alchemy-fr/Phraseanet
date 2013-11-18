@@ -52,7 +52,7 @@ class Root implements ControllerProviderInterface
             $buffer = "User-Agent: *\n" . "Disallow: /\n";
         }
 
-        return new Response($buffer, 200, array('Content-Type' => 'text/plain'));
+        return new Response($buffer, 200, ['Content-Type' => 'text/plain']);
     }
 
     public function getRoot(Application $app, Request $request)

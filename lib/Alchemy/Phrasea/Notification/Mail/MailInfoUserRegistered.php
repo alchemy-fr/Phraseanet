@@ -65,6 +65,6 @@ class MailInfoUserRegistered extends AbstractMail
      */
     public function getButtonURL()
     {
-        return $this->app->url('admin', array('section' => 'registrations'));
+        return $this->app->url('admin', ['section' => 'registrations']);
     }
 }

@@ -88,7 +88,7 @@ class API_OAuth2_Account
             WHERE api_account_id = :api_account_id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':api_account_id' => $this->id));
+        $stmt->execute([':api_account_id' => $this->id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -150,10 +150,10 @@ class API_OAuth2_Account
         $sql = 'UPDATE api_accounts SET revoked = :revoked
             WHERE api_account_id = :account_id';
 
-        $params = array(
+        $params = [
             ':revoked'   => ($boolean ? '1' : '0')
             , 'account_id' => $this->id
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -218,7 +218,7 @@ class API_OAuth2_Account
         $sql = 'DELETE FROM api_accounts WHERE api_account_id = :account_id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array('account_id' => $this->id));
+        $stmt->execute(['account_id' => $this->id]);
         $stmt->closeCursor();
 
         return;
@@ -231,13 +231,13 @@ class API_OAuth2_Account
             VALUES (null, :usr_id, :revoked, :api_version, :application_id, :created)';
 
         $datetime = new Datetime();
-        $params = array(
+        $params = [
             ':usr_id'         => $user->get_id()
             , ':application_id' => $application->get_id()
             , ':api_version'    => API_OAuth2_Adapter::API_VERSION
             , ':revoked'        => 0
             , ':created'        => $datetime->format("Y-m-d H:i:s")
-        );
+        ];
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -253,10 +253,10 @@ class API_OAuth2_Account
         $sql = 'SELECT api_account_id FROM api_accounts
             WHERE usr_id = :usr_id AND application_id = :application_id';
 
-        $params = array(
+        $params = [
             ":usr_id"         => $user->get_id(),
             ":application_id" => $application->get_id()
-        );
+        ];
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);

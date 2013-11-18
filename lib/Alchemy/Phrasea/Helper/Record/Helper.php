@@ -62,13 +62,13 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
      *
      * @var Array
      */
-    protected $required_rights = array();
+    protected $required_rights = [];
 
     /**
      *
      * @var Array
      */
-    protected $required_sbas_rights = array();
+    protected $required_sbas_rights = [];
 
     /**
      *
@@ -125,7 +125,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
 
             $storyWZ = $repository->findByUserAndId($app, $app['authentication']->getUser(), $Request->get('story'));
 
-            $this->selection->load_list(array($storyWZ->getRecord($this->app)->get_serialize_key()), $this->flatten_groupings);
+            $this->selection->load_list([$storyWZ->getRecord($this->app)->get_serialize_key()], $this->flatten_groupings);
         } else {
             $this->selection->load_list(explode(";", $Request->get('lst')), $this->flatten_groupings);
         }

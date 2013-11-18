@@ -17,7 +17,7 @@ class patch_380alpha13a implements patchInterface
     private $release = '3.8.0-alpha.13';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -59,22 +59,22 @@ class patch_380alpha13a implements patchInterface
         $config['xsendfile']['type'] = $config['xsendfile']['enabled'] ? 'nginx' : '';
 
         if (null !== $xsendfilePath && null !== $xsendfileMountPoint) {
-            $config['xsendfile']['mapping'] = array(array(
+            $config['xsendfile']['mapping'] = [[
                 'directory' => $xsendfilePath,
                 'mount-point' => $xsendfileMountPoint,
-            ));
+            ]];
         }
 
         $app['configuration']->setConfig($config);
 
-        $toRemove = array('GV_X_Accel_Redirect', 'GV_X_Accel_Redirect_mount_point', 'GV_modxsendfile');
+        $toRemove = ['GV_X_Accel_Redirect', 'GV_X_Accel_Redirect_mount_point', 'GV_modxsendfile'];
 
         $sql = 'DELETE FROM registry WHERE `key` = :k';
         $stmt = $appbox->get_connection()->prepare($sql);
         foreach ($toRemove as $registryKey) {
-            $stmt->execute(array(
+            $stmt->execute([
                 ':k' => $registryKey
-            ));
+            ]);
         }
         $stmt->closeCursor();
 

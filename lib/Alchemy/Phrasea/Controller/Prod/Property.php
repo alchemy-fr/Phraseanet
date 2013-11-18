@@ -61,16 +61,16 @@ class Property implements ControllerProviderInterface
             $app->abort(400);
         }
 
-        $records = RecordsRequest::fromRequest($app, $request, false, array('chgstatus'));
+        $records = RecordsRequest::fromRequest($app, $request, false, ['chgstatus']);
         $databoxStatus = \databox_status::getDisplayStatus($app);
-        $statusBit = $nRec = array();
+        $statusBit = $nRec = [];
 
         foreach ($records as $record) {
             //perform logic
             $sbasId = $record->get_databox()->get_sbas_id();
 
             if (!isset($nRec[$sbasId])) {
-                $nRec[$sbasId] = array('stories' => 0, 'records' => 0);
+                $nRec[$sbasId] = ['stories' => 0, 'records' => 0];
             }
 
             $nRec[$sbasId]['records']++;
@@ -80,7 +80,7 @@ class Property implements ControllerProviderInterface
             }
 
             if (!isset($statusBit[$sbasId])) {
-                $statusBit[$sbasId] = isset($databoxStatus[$sbasId]) ? $databoxStatus[$sbasId] : array();
+                $statusBit[$sbasId] = isset($databoxStatus[$sbasId]) ? $databoxStatus[$sbasId] : [];
 
                 foreach (array_keys($statusBit[$sbasId]) as $bit) {
                     $statusBit[$sbasId][$bit]['nset'] = 0;
@@ -101,11 +101,11 @@ class Property implements ControllerProviderInterface
             }
         }
 
-        return new Response($app['twig']->render('prod/actions/Property/index.html.twig', array(
+        return new Response($app['twig']->render('prod/actions/Property/index.html.twig', [
             'records'   => $records,
             'statusBit' => $statusBit,
             'nRec'      => $nRec
-        )));
+        ]));
     }
 
     /**
@@ -121,29 +121,29 @@ class Property implements ControllerProviderInterface
             $app->abort(400);
         }
 
-        $records = RecordsRequest::fromRequest($app, $request, false, array('canmodifrecord'));
+        $records = RecordsRequest::fromRequest($app, $request, false, ['canmodifrecord']);
 
-        $recordsType = array();
+        $recordsType = [];
 
         foreach ($records as $record) {
             //perform logic
             $sbasId = $record->get_databox()->get_sbas_id();
 
             if (!isset($recordsType[$sbasId])) {
-                $recordsType[$sbasId] = array();
+                $recordsType[$sbasId] = [];
             }
 
             if (!isset($recordsType[$sbasId][$record->get_type()])) {
-                $recordsType[$sbasId][$record->get_type()] = array();
+                $recordsType[$sbasId][$record->get_type()] = [];
             }
 
             $recordsType[$sbasId][$record->get_type()][] = $record;
         }
 
-        return new Response($app['twig']->render('prod/actions/Property/type.html.twig', array(
+        return new Response($app['twig']->render('prod/actions/Property/type.html.twig', [
             'records'     => $records,
             'recordsType' => $recordsType,
-        )));
+        ]));
     }
 
     /**
@@ -155,9 +155,9 @@ class Property implements ControllerProviderInterface
      */
     public function changeStatus(Application $app, Request $request)
     {
-        $applyStatusToChildren = $request->request->get('apply_to_children', array());
-        $records = RecordsRequest::fromRequest($app, $request, false, array('chgstatus'));
-        $updated = array();
+        $applyStatusToChildren = $request->request->get('apply_to_children', []);
+        $records = RecordsRequest::fromRequest($app, $request, false, ['chgstatus']);
+        $updated = [];
         $postStatus = (array) $request->request->get('status');
 
         foreach ($records as $record) {
@@ -178,7 +178,7 @@ class Property implements ControllerProviderInterface
             }
         }
 
-        return $app->json(array('success' => true, 'updated' => $updated), 201);
+        return $app->json(['success' => true, 'updated' => $updated], 201);
     }
 
     /**
@@ -190,10 +190,10 @@ class Property implements ControllerProviderInterface
      */
     public function changeType(Application $app, Request $request)
     {
-        $typeLst = $request->request->get('types', array());
-        $records = RecordsRequest::fromRequest($app, $request, false, array('canmodifrecord'));
+        $typeLst = $request->request->get('types', []);
+        $records = RecordsRequest::fromRequest($app, $request, false, ['canmodifrecord']);
         $forceType = $request->request->get('force_types', '');
-        $updated = array();
+        $updated = [];
 
         foreach ($records as $record) {
             try {
@@ -208,7 +208,7 @@ class Property implements ControllerProviderInterface
             }
         }
 
-        return $app->json(array('success' => true, 'updated' => $updated), 201);
+        return $app->json(['success' => true, 'updated' => $updated], 201);
     }
 
     /**
@@ -233,10 +233,10 @@ class Property implements ControllerProviderInterface
 
             $record->set_binary_status(strrev($newStatus));
 
-            return array(
+            return [
                 'current_status' => $currentStatus,
                 'new_status'     => $newStatus
-            );
+            ];
         }
 
         return null;

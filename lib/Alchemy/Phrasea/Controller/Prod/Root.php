@@ -50,7 +50,7 @@ class Root implements ControllerProviderInterface
 
             $cssPath = $app['root.path'] . '/www/skins/prod/';
 
-            $css = array();
+            $css = [];
             $cssfile = false;
 
             $finder = new Finder();
@@ -87,25 +87,25 @@ class Root implements ControllerProviderInterface
                 $queries_topics = \queries::tree_topics($app['locale.I18n']);
             }
 
-            $sbas = $bas2sbas = array();
+            $sbas = $bas2sbas = [];
 
             foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
                 $sbas_id = $databox->get_sbas_id();
 
-                $sbas['s' + $sbas_id] = array(
+                $sbas['s' + $sbas_id] = [
                     'sbid'   => $sbas_id,
-                    'seeker' => null);
+                    'seeker' => null];
 
                 foreach ($databox->get_collections() as $coll) {
-                    $bas2sbas['b' . $coll->get_base_id()] = array(
+                    $bas2sbas['b' . $coll->get_base_id()] = [
                         'sbid'  => $sbas_id,
-                        'ckobj' => array('checked'    => false),
+                        'ckobj' => ['checked'    => false],
                         'waschecked' => false
-                    );
+                    ];
                 }
             }
 
-            return $app['twig']->render('prod/index.html.twig', array(
+            return $app['twig']->render('prod/index.html.twig', [
                 'module_name'          => 'Production',
                 'WorkZone'             => new Helper\WorkZone($app, $app['request']),
                 'module_prod'          => new Helper\Prod($app, $app['request']),
@@ -127,7 +127,7 @@ class Root implements ControllerProviderInterface
                 'thesau_json_sbas'     => json_encode($sbas),
                 'thesau_json_bas2sbas' => json_encode($bas2sbas),
                 'thesau_languages'     => $app['locales.available'],
-            ));
+            ]);
         })->bind('prod');
 
         return $controllers;

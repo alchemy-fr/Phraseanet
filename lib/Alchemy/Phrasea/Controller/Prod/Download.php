@@ -48,7 +48,7 @@ class Download implements ControllerProviderInterface
     {
         $lst = $request->request->get('lst');
         $ssttid = $request->request->get('ssttid', '');
-        $subdefs = $request->request->get('obj', array());
+        $subdefs = $request->request->get('obj', []);
 
         $download = new \set_export($app, $lst, $ssttid);
 
@@ -77,14 +77,14 @@ class Download implements ControllerProviderInterface
             throw new \RuntimeException('Download token could not be generated');
         }
 
-        $app['events-manager']->trigger('__DOWNLOAD__', array(
+        $app['events-manager']->trigger('__DOWNLOAD__', [
             'lst'         => $lst,
             'downloader'  => $app['authentication']->getUser()->get_id(),
             'subdefs'     => $subdefs,
             'from_basket' => $ssttid,
             'export_file' => $download->getExportName()
-        ));
+        ]);
 
-        return $app->redirectPath('prepare_download', array('token' => $token));
+        return $app->redirectPath('prepare_download', ['token' => $token]);
     }
 }

@@ -425,7 +425,7 @@ class LazaretFile
      */
     public function getRecordsToSubstitute(Application $app)
     {
-        $ret = array();
+        $ret = [];
 
         $shaRecords = \record_adapter::get_record_by_sha(
                 $app, $this->getCollection($app)->get_sbas_id(), $this->getSha256()

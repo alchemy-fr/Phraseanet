@@ -114,7 +114,7 @@ abstract class Bridge_Api_Abstract
      *
      * @return string
      */
-    public function get_auth_url($supp_params = array())
+    public function get_auth_url($supp_params = [])
     {
         return $this->_auth->get_auth_url($supp_params);
     }

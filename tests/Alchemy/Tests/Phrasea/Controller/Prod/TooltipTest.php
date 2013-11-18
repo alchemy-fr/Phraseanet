@@ -52,13 +52,13 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $route_base = '/prod/tooltip/caption/' . self::$DI['record_1']->get_sbas_id()
             . '/' . self::$DI['record_1']->get_record_id() . '/%s/';
 
-        $routes = array(
+        $routes = [
             sprintf($route_base, 'answer')
             , sprintf($route_base, 'lazaret')
             , sprintf($route_base, 'preview')
             , sprintf($route_base, 'basket')
             , sprintf($route_base, 'overview')
-        );
+        ];
 
         foreach ($routes as $route) {
             $crawler = self::$DI['client']->request('POST', $route);
@@ -72,17 +72,17 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $route_base = '/prod/tooltip/caption/' . self::$DI['record_1']->get_sbas_id()
             . '/' . self::$DI['record_1']->get_record_id() . '/%s/';
 
-        $routes = array(
+        $routes = [
             sprintf($route_base, 'answer')
             , sprintf($route_base, 'lazaret')
             , sprintf($route_base, 'preview')
             , sprintf($route_base, 'basket')
             , sprintf($route_base, 'overview')
-        );
+        ];
 
         foreach ($routes as $route) {
             $option = new SearchEngineOptions();
-            $crawler = self::$DI['client']->request('POST', $route, array('options_serial' => $option->serialize()));
+            $crawler = self::$DI['client']->request('POST', $route, ['options_serial' => $option->serialize()]);
 
             $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         }
@@ -115,12 +115,12 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRouteMetasDCESInfos()
     {
         $databox = self::$DI['record_1']->get_databox();
-        $dces = array(
+        $dces = [
             \databox_field::DCES_CONTRIBUTOR => new \databox_Field_DCES_Contributor()
             , \databox_field::DCES_COVERAGE    => new \databox_Field_DCES_Coverage()
             , \databox_field::DCES_CREATOR     => new \databox_Field_DCES_Creator()
             , \databox_field::DCES_DESCRIPTION => new \databox_Field_DCES_Description()
-        );
+        ];
 
         foreach ($databox->get_meta_structure() as $field) {
             $dces_element = array_shift($dces);

@@ -30,7 +30,7 @@ class SuggestionFinderTest extends \PhraseanetPHPUnitAbstract
 
     protected function getToken($email)
     {
-        $identity = new Identity(array(Identity::PROPERTY_EMAIL => $email));
+        $identity = new Identity([Identity::PROPERTY_EMAIL => $email]);
 
         $token = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Provider\Token\Token')
             ->disableOriginalConstructor()

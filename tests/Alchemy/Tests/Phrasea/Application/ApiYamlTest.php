@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Application;
 class ApiYamlApplication extends ApiAbstract
 {
 
-    public function getParameters(array $parameters = array())
+    public function getParameters(array $parameters = [])
     {
         return $parameters;
     }

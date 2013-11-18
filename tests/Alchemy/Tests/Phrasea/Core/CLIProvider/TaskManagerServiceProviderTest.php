@@ -9,22 +9,22 @@ class TaskManagerServiceProvidertest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {
-        return array(
-            array(
+        return [
+            [
                 'Alchemy\Phrasea\Core\CLIProvider\TaskManagerServiceProvider',
                 'task-manager.logger',
                 'Monolog\Logger'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\CLIProvider\TaskManagerServiceProvider',
                 'task-manager',
                 'Alchemy\TaskManager\TaskManager'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\CLIProvider\TaskManagerServiceProvider',
                 'task-manager.task-list',
                 'Alchemy\Phrasea\TaskManager\TaskList'
-            ),
-        );
+            ],
+        ];
     }
 }

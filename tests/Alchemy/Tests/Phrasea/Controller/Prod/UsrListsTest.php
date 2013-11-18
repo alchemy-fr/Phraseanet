@@ -20,7 +20,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/all/';
 
-        self::$DI['client']->request('GET', $route, array(), array(), array("HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"       => "application/json"));
+        self::$DI['client']->request('GET', $route, [], [], ["HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"       => "application/json"]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -74,7 +74,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertFalse($datas['success']);
 
-        self::$DI['client']->request('POST', $route, array('name' => 'New List'));
+        self::$DI['client']->request('POST', $route, ['name' => 'New List']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -96,7 +96,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list_id . '/';
 
-        self::$DI['client']->request('GET', $route, array(), array(), array("HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"       => "application/json"));
+        self::$DI['client']->request('GET', $route, [], [], ["HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"       => "application/json"]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
@@ -130,7 +130,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertFalse($datas['success']);
 
-        self::$DI['client']->request('POST', $route, array('name' => 'New NAME'));
+        self::$DI['client']->request('POST', $route, ['name' => 'New NAME']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -180,7 +180,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list_id . '/remove/' . $usr_id . '/';
 
-        self::$DI['client']->request('POST', $route, array(), array(), array("HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"       => "application/json"));
+        self::$DI['client']->request('POST', $route, [], [], ["HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"       => "application/json"]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -207,7 +207,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list->getId() . '/add/';
 
-        self::$DI['client']->request('POST', $route, array('usr_ids' => array(self::$DI['user']->get_id())), array(), array("HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"       => "application/json"));
+        self::$DI['client']->request('POST', $route, ['usr_ids' => [self::$DI['user']->get_id()]], [], ["HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"       => "application/json"]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -245,7 +245,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
-        self::$DI['client']->request('POST', $route, array('role' => 'general'));
+        self::$DI['client']->request('POST', $route, ['role' => 'general']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -254,7 +254,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
-        self::$DI['client']->request('POST', $route, array('role' => \Alchemy\Phrasea\Model\Entities\UsrListOwner::ROLE_ADMIN));
+        self::$DI['client']->request('POST', $route, ['role' => \Alchemy\Phrasea\Model\Entities\UsrListOwner::ROLE_ADMIN]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -284,7 +284,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
-        self::$DI['client']->request('POST', $route, array('role' => \Alchemy\Phrasea\Model\Entities\UsrListOwner::ROLE_ADMIN));
+        self::$DI['client']->request('POST', $route, ['role' => \Alchemy\Phrasea\Model\Entities\UsrListOwner::ROLE_ADMIN]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -335,7 +335,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
-        self::$DI['client']->request('POST', $route, array('role' => \Alchemy\Phrasea\Model\Entities\UsrListOwner::ROLE_ADMIN));
+        self::$DI['client']->request('POST', $route, ['role' => \Alchemy\Phrasea\Model\Entities\UsrListOwner::ROLE_ADMIN]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -351,7 +351,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user']->get_id() . '/';
 
-        self::$DI['client']->request('POST', $route, array('role' => \Alchemy\Phrasea\Model\Entities\UsrListOwner::ROLE_USER));
+        self::$DI['client']->request('POST', $route, ['role' => \Alchemy\Phrasea\Model\Entities\UsrListOwner::ROLE_USER]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -367,7 +367,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
-        self::$DI['client']->request('POST', $route, array('role' => \Alchemy\Phrasea\Model\Entities\UsrListOwner::ROLE_USER));
+        self::$DI['client']->request('POST', $route, ['role' => \Alchemy\Phrasea\Model\Entities\UsrListOwner::ROLE_USER]);
 
         $response = self::$DI['client']->getResponse();
 

@@ -11,8 +11,8 @@
 
 class module_report_dashboard_merge implements module_report_dashboard_componentInterface
 {
-    public $sort = array();
-    public $sorted = array();
+    public $sort = [];
+    public $sorted = [];
     private $currentkey;
     private $valid = false;
 

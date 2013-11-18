@@ -61,7 +61,7 @@ class AccountCreator
      * @throws RuntimeException         In case the AccountCreator is disabled
      * @throws InvalidArgumentException In case a user with the same email already exists
      */
-    public function create(Application $app, $id, $email = null, array $templates = array())
+    public function create(Application $app, $id, $email = null, array $templates = [])
     {
         if (!$this->enabled) {
             throw new RuntimeException('Account creator is disabled');
@@ -81,7 +81,7 @@ class AccountCreator
 
         $user = \User_Adapter::create($app, $login, $this->random->generatePassword(), $email, false, false);
 
-        $base_ids = array();
+        $base_ids = [];
         foreach ($this->appbox->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_ids[] = $collection->get_base_id();

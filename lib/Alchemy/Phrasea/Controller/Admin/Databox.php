@@ -181,12 +181,12 @@ class Databox implements ControllerProviderInterface
                 break;
         }
 
-        return $app['twig']->render('admin/databox/databox.html.twig', array(
+        return $app['twig']->render('admin/databox/databox.html.twig', [
             'databox'    => $databox,
             'showDetail' => (int) $request->query->get("sta") < 1,
             'errorMsg'   => $errorMsg,
             'reloadTree' => $request->query->get('reload-tree') === '1'
-        ));
+        ]);
     }
 
     /**
@@ -199,11 +199,11 @@ class Databox implements ControllerProviderInterface
      */
     public function getDatabaseCGU(Application $app, Request $request, $databox_id)
     {
-        return $app['twig']->render('admin/databox/cgus.html.twig', array(
+        return $app['twig']->render('admin/databox/cgus.html.twig', [
             'languages'      => $app['locales.available'],
             'cgus'           => $app['phraseanet.appbox']->get_databox($databox_id)->get_cgus(),
             'current_locale' => $app['locale']
-        ));
+        ]);
     }
 
     /**
@@ -235,17 +235,17 @@ class Databox implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $msg,
                 'sbas_id' => $databox->get_sbas_id()
-            ));
+            ]);
         }
 
-        $params = array(
+        $params = [
             'databox_id' => $databox->get_sbas_id(),
             'success'    => (int) $success,
-        );
+        ];
 
         if ($databox->get_record_amount() > 0) {
             $params['error'] = 'databox-not-empty';
@@ -279,10 +279,10 @@ class Databox implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $success ? _('Successful update') : _('An error occured')
-            ));
+            ]);
         }
 
         return $app->redirect('/admin/databox/' . $databox->get_sbas_id() . '/?success=' . (int) $success . '&reload-tree=1');
@@ -308,17 +308,17 @@ class Databox implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $success ? _('Successful update') : _('An error occured'),
                 'sbas_id' => $databox_id
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_database', array(
+        return $app->redirectPath('admin_database', [
             'databox_id' => $databox_id,
             'success'    => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -341,17 +341,17 @@ class Databox implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $success ? _('Successful update') : _('An error occured'),
                 'sbas_id' => $databox_id
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_database', array(
+        return $app->redirectPath('admin_database', [
             'databox_id' => $databox_id,
             'success'    => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -367,20 +367,20 @@ class Databox implements ControllerProviderInterface
         $databox = $app['phraseanet.appbox']->get_databox($databox_id);
 
         try {
-            foreach ($request->request->get('TOU', array()) as $loc => $terms) {
+            foreach ($request->request->get('TOU', []) as $loc => $terms) {
                 $databox->update_cgus($loc, $terms, !!$request->request->get('valid', false));
             }
         } catch (\Exception $e) {
-            return $app->redirectPath('admin_database_display_cgus', array(
+            return $app->redirectPath('admin_database_display_cgus', [
                 'databox_id' => $databox_id,
                 'success'    => 0,
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_database_display_cgus', array(
+        return $app->redirectPath('admin_database_display_cgus', [
             'databox_id' => $databox_id,
             'success'    => 1,
-        ));
+        ]);
     }
 
     /**
@@ -405,7 +405,7 @@ class Databox implements ControllerProviderInterface
             $query = new \User_Query($app);
             $n = 0;
 
-            while ($n < $query->on_base_ids(array($othCollSel))->get_total()) {
+            while ($n < $query->on_base_ids([$othCollSel])->get_total()) {
                 $results = $query->limit($n, 50)->execute()->get_results();
 
                 foreach ($results as $user) {
@@ -417,17 +417,17 @@ class Databox implements ControllerProviderInterface
 
             $app['phraseanet.appbox']->get_connection()->commit();
 
-            return $app->redirectPath('admin_database', array(
+            return $app->redirectPath('admin_database', [
                 'databox_id' => $databox_id,
                 'mount'      => 'ok',
-            ));
+            ]);
         } catch (\Exception $e) {
             $app['phraseanet.appbox']->get_connection()->rollBack();
 
-            return $app->redirectPath('admin_database', array(
+            return $app->redirectPath('admin_database', [
                 'databox_id' => $databox_id,
                 'mount'      => 'ko',
-            ));
+            ]);
         }
     }
 
@@ -449,30 +449,30 @@ class Databox implements ControllerProviderInterface
                     $app['phraseanet.appbox']->write_databox_pic($app['media-alchemyst'], $app['filesystem'], $databox, $file, \databox::PIC_PDF);
                     unlink($file->getPathname());
 
-                    return $app->redirectPath('admin_database', array(
+                    return $app->redirectPath('admin_database', [
                         'databox_id' => $databox_id,
                         'success'    => '1',
-                    ));
+                    ]);
                 } else {
-                    return $app->redirectPath('admin_database', array(
+                    return $app->redirectPath('admin_database', [
                         'databox_id' => $databox_id,
                         'success'    => '0',
                         'error'      => 'file-too-big',
-                    ));
+                    ]);
                 }
             } else {
-                return $app->redirectPath('admin_database', array(
+                return $app->redirectPath('admin_database', [
                     'databox_id' => $databox_id,
                     'success'    => '0',
                     'error'      => 'file-invalid',
-                ));
+                ]);
             }
         } catch (\Exception $e) {
-            return $app->redirectPath('admin_database', array(
+            return $app->redirectPath('admin_database', [
                 'databox_id' => $databox_id,
                 'success'    => '0',
                 'error'      => 'file-error',
-            ));
+            ]);
         }
     }
 
@@ -496,17 +496,17 @@ class Databox implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $success ? _('Successful removal') : _('An error occured'),
                 'sbas_id' => $databox_id
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_database', array(
+        return $app->redirectPath('admin_database', [
             'databox_id' => $databox_id,
             'error'      => 'file-too-big',
-        ));
+        ]);
     }
 
     /**
@@ -529,17 +529,17 @@ class Databox implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $success ? _('Successful update') : _('An error occured'),
                 'sbas_id' => $databox_id
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_database', array(
+        return $app->redirectPath('admin_database', [
             'databox_id' => $databox_id,
             'error'      => 'file-too-big',
-        ));
+        ]);
     }
 
     /**
@@ -566,17 +566,17 @@ class Databox implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $success ? _('Successful update') : _('An error occured'),
                 'sbas_id' => $databox_id
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_database', array(
+        return $app->redirectPath('admin_database', [
             'databox_id' => $databox_id,
             'error'      => 'file-too-big',
-        ));
+        ]);
     }
 
     /**
@@ -601,16 +601,16 @@ class Databox implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $success ? _('The publication has been stopped') : _('An error occured'),
                 'sbas_id' => $databox_id
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_databases', array(
+        return $app->redirectPath('admin_databases', [
             'reload-tree' => 1,
-        ));
+        ]);
     }
 
     /**
@@ -649,17 +649,17 @@ class Databox implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $msg,
                 'sbas_id' => $databox_id
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_database', array(
+        return $app->redirectPath('admin_database', [
             'databox_id' => $databox_id,
             'error'      => 'file-too-big',
-        ));
+        ]);
     }
 
     /**
@@ -678,7 +678,7 @@ class Databox implements ControllerProviderInterface
 
         $app['phraseanet.appbox'] = $app['phraseanet.appbox'];
 
-        $ret = array(
+        $ret = [
             'success'           => false,
             'msg'               => _('An error occured'),
             'sbas_id'           => null,
@@ -688,7 +688,7 @@ class Databox implements ControllerProviderInterface
             'thesaurus_indexed' => 0,
             'viewname'          => null,
             'printLogoURL'      => null
-        );
+        ];
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox($databox_id);
@@ -724,9 +724,9 @@ class Databox implements ControllerProviderInterface
      */
     public function getReorder(Application $app, Request $request, $databox_id)
     {
-        return $app['twig']->render('admin/collection/reorder.html.twig', array(
-            'collections' => $app['acl']->get($app['authentication']->getUser())->get_granted_base(array(), array($databox_id)),
-        ));
+        return $app['twig']->render('admin/collection/reorder.html.twig', [
+            'collections' => $app['acl']->get($app['authentication']->getUser())->get_granted_base([], [$databox_id]),
+        ]);
     }
 
     /**
@@ -740,7 +740,7 @@ class Databox implements ControllerProviderInterface
     public function setReorder(Application $app, Request $request, $databox_id)
     {
         try {
-            foreach ($request->request->get('order', array()) as $data) {
+            foreach ($request->request->get('order', []) as $data) {
                 $collection = \collection::get_from_base_id($app, $data['id']);
                 $collection->set_ord($data['offset']);
             }
@@ -750,17 +750,17 @@ class Databox implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $success ? _('Successful update') : _('An error occured'),
                 'sbas_id' => $databox_id
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_database_display_collections_order', array(
+        return $app->redirectPath('admin_database_display_collections_order', [
             'databox_id' => $databox_id,
             'success'    => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -787,10 +787,10 @@ class Databox implements ControllerProviderInterface
     public function createCollection(Application $app, Request $request, $databox_id)
     {
         if (($name = trim($request->request->get('name', ''))) === '') {
-            return $app->redirectPath('admin_database_display_new_collection_form', array(
+            return $app->redirectPath('admin_database_display_new_collection_form', [
                 'databox_id' => $databox_id,
                 'error'      => 'name',
-            ));
+            ]);
         }
 
         try {
@@ -800,7 +800,7 @@ class Databox implements ControllerProviderInterface
             if (($request->request->get('ccusrothercoll') === "on")
                 && (null !== $othcollsel = $request->request->get('othcollsel'))) {
                 $query = new \User_Query($app);
-                $total = $query->on_base_ids(array($othcollsel))->get_total();
+                $total = $query->on_base_ids([$othcollsel])->get_total();
                 $n = 0;
                 while ($n < $total) {
                     $results = $query->limit($n, 20)->execute()->get_results();
@@ -811,9 +811,9 @@ class Databox implements ControllerProviderInterface
                 }
             }
 
-            return $app->redirectPath('admin_display_collection', array('bas_id' => $collection->get_base_id(), 'success' => 1, 'reload-tree' => 1));
+            return $app->redirectPath('admin_display_collection', ['bas_id' => $collection->get_base_id(), 'success' => 1, 'reload-tree' => 1]);
         } catch (\Exception $e) {
-            return $app->redirectPath('admin_database_submit_collection', array('databox_id' => $databox_id, 'error' => 'error'));
+            return $app->redirectPath('admin_database_submit_collection', ['databox_id' => $databox_id, 'error' => 'error']);
         }
     }
 
@@ -829,15 +829,15 @@ class Databox implements ControllerProviderInterface
     {
         $databox = $app['phraseanet.appbox']->get_databox($databox_id);
 
-        $details = array();
-        $total = array('total_subdefs' => 0, 'total_size' => 0);
+        $details = [];
+        $total = ['total_subdefs' => 0, 'total_size' => 0];
 
         foreach ($databox->get_record_details($request->query->get('sort')) as $collName => $colDetails) {
-            $details[$collName] = array(
+            $details[$collName] = [
                 'total_subdefs' => 0,
                 'total_size' => 0,
-                'medias' => array()
-            );
+                'medias' => []
+            ];
 
             foreach ($colDetails as $subdefName => $subdefDetails) {
                 $details[$collName]['total_subdefs'] += $subdefDetails['n'];
@@ -845,18 +845,18 @@ class Databox implements ControllerProviderInterface
                 $details[$collName]['total_size'] += $subdefDetails['siz'];
                 $total['total_size'] += $subdefDetails['siz'];
 
-                $details[$collName]['medias'][] = array (
+                $details[$collName]['medias'][] = [
                     'subdef_name' => $subdefName,
                     'total_subdefs' => $subdefDetails['n'],
                     'total_size' => $subdefDetails['siz'],
-                );
+                ];
             }
         }
 
-        return $app['twig']->render('admin/databox/details.html.twig', array(
+        return $app['twig']->render('admin/databox/details.html.twig', [
             'databox' => $databox,
             'table'   => $details,
             'total'   => $total
-        ));
+        ]);
     }
 }

@@ -59,7 +59,7 @@ class BowerInstall extends Command
 
         if ($input->getOption('clear-cache')) {
             $output->write("Cleaning bower cache... ");
-            $bower->command(array('cache', 'clean'));
+            $bower->command(['cache', 'clean']);
             $output->writeln("<comment>OK</comment>");
         }
 

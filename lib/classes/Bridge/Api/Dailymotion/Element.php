@@ -170,6 +170,6 @@ class Bridge_Api_Dailymotion_Element implements Bridge_Api_ElementInterface
      */
     public function get_tags()
     {
-        return implode(",", $this->get('tags', array()));
+        return implode(",", $this->get('tags', []));
     }
 }

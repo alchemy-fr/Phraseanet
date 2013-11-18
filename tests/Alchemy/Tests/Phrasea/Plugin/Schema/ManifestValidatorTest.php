@@ -19,10 +19,10 @@ class ManifestValidatorTest extends PluginTestCase
 
     public function provideGoodManifestFiles()
     {
-        return array(
-            array(__DIR__ . '/../Fixtures/manifest-good-big.json'),
-            array(__DIR__ . '/../Fixtures/manifest-good-minimal.json'),
-        );
+        return [
+            [__DIR__ . '/../Fixtures/manifest-good-big.json'],
+            [__DIR__ . '/../Fixtures/manifest-good-minimal.json'],
+        ];
     }
 
     /**
@@ -37,15 +37,15 @@ class ManifestValidatorTest extends PluginTestCase
 
     public function provideWrongManifestFiles()
     {
-        return array(
-            array(__DIR__ . '/../Fixtures/manifest-wrong1.json'),
-            array(__DIR__ . '/../Fixtures/manifest-wrong2.json'),
-            array(__DIR__ . '/../Fixtures/manifest-wrong3.json'),
-            array(__DIR__ . '/../Fixtures/manifest-wrong4.json'),
-            array(__DIR__ . '/../Fixtures/manifest-wrong5-min-version.json'),
-            array(__DIR__ . '/../Fixtures/manifest-wrong6-max-version.json'),
-            array(__DIR__ . '/../Fixtures/manifest-wrong7-invalid-name.json')
-        );
+        return [
+            [__DIR__ . '/../Fixtures/manifest-wrong1.json'],
+            [__DIR__ . '/../Fixtures/manifest-wrong2.json'],
+            [__DIR__ . '/../Fixtures/manifest-wrong3.json'],
+            [__DIR__ . '/../Fixtures/manifest-wrong4.json'],
+            [__DIR__ . '/../Fixtures/manifest-wrong5-min-version.json'],
+            [__DIR__ . '/../Fixtures/manifest-wrong6-max-version.json'],
+            [__DIR__ . '/../Fixtures/manifest-wrong7-invalid-name.json']
+        ];
     }
 
     /**
@@ -54,7 +54,7 @@ class ManifestValidatorTest extends PluginTestCase
     public function testValidateInvalidData()
     {
         $validator = $this->createValidator();
-        $validator->validate(array());
+        $validator->validate([]);
     }
 
     /**
@@ -62,7 +62,7 @@ class ManifestValidatorTest extends PluginTestCase
      */
     public function testConstructWithInvalidSchema()
     {
-        new ManifestValidator(new JsonSchemaValidator(), array(), self::$DI['cli']['phraseanet.version']);
+        new ManifestValidator(new JsonSchemaValidator(), [], self::$DI['cli']['phraseanet.version']);
     }
 
     public function testCreate()

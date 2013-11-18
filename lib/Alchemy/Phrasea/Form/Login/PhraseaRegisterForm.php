@@ -24,7 +24,7 @@ class PhraseaRegisterForm extends AbstractType
     private $params;
     private $camelizer;
 
-    public function __construct(Application $app, array $available, array $params = array(), Camelizer $camelizer = null)
+    public function __construct(Application $app, array $available, array $params = [], Camelizer $camelizer = null)
     {
         $this->app = $app;
         $this->available = $available;
@@ -34,46 +34,46 @@ class PhraseaRegisterForm extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('email', 'email', array(
+        $builder->add('email', 'email', [
             'label'       => _('E-mail'),
             'required'    => true,
-            'constraints' => array(
+            'constraints' => [
                 new Assert\NotBlank(),
                 new Assert\Email(),
                 new \Alchemy\Phrasea\Form\Constraint\NewEmail($this->app),
-            ),
-        ));
+            ],
+        ]);
 
-        $builder->add('password', 'repeated', array(
+        $builder->add('password', 'repeated', [
             'type'              => 'password',
             'required'          => true,
             'invalid_message'   => _('Please provide the same passwords.'),
             'first_name'        => 'password',
             'second_name'       => 'confirm',
-            'first_options'     => array('label' => _('Password')),
-            'second_options'    => array('label' => _('Password (confirmation)')),
-            'constraints'       => array(
+            'first_options'     => ['label' => _('Password')],
+            'second_options'    => ['label' => _('Password (confirmation)')],
+            'constraints'       => [
                 new Assert\NotBlank(),
-                new Assert\Length(array('min' => 5)),
-            ),
-        ));
+                new Assert\Length(['min' => 5]),
+            ],
+        ]);
 
         if ($this->app->hasTermsOfUse()) {
-            $builder->add('accept-tou', 'checkbox', array(
+            $builder->add('accept-tou', 'checkbox', [
                 'label'         => _('Terms of Use'),
                 'mapped'        => false,
-                "constraints"   => array(
-                    new Assert\True(array(
+                "constraints"   => [
+                    new Assert\True([
                         "message" => _("Please accept the Terms and conditions in order to register.")
-                    ))),
-            ));
+                    ])],
+            ]);
         }
 
         $builder->add('provider-id', 'hidden');
 
         require_once $this->app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
-        $choices = array();
-        $baseIds = array();
+        $choices = [];
+        $baseIds = [];
 
         foreach (\giveMeBases($this->app) as $sbas_id => $baseInsc) {
             if (($baseInsc['CollsCGU'] || $baseInsc['Colls']) && $baseInsc['inscript']) {
@@ -83,7 +83,7 @@ class PhraseaRegisterForm extends AbstractType
                         $sbasName= \phrasea::sbas_names($sbas_id, $this->app);
 
                         if (!isset($choices[$sbasName])) {
-                            $choices[$sbasName] = array();
+                            $choices[$sbasName] = [];
                         }
 
                         $choices[$sbasName][$baseId] = \phrasea::bas_labels($baseId, $this->app);
@@ -97,7 +97,7 @@ class PhraseaRegisterForm extends AbstractType
                         $sbasName= \phrasea::sbas_names($sbas_id, $this->app);
 
                         if (!isset($choices[$sbasName])) {
-                            $choices[$sbasName] = array();
+                            $choices[$sbasName] = [];
                         }
 
                         $choices[$sbasName][$baseId] = \phrasea::bas_labels($baseId, $this->app);
@@ -108,19 +108,19 @@ class PhraseaRegisterForm extends AbstractType
         }
 
         if (!$this->app['phraseanet.registry']->get('GV_autoselectDB')) {
-            $builder->add('collections', 'choice', array(
+            $builder->add('collections', 'choice', [
                 'choices'     => $choices,
                 'multiple'    => true,
                 'expanded'    => false,
-                'constraints' => array(
-                    new Assert\Choice(array(
+                'constraints' => [
+                    new Assert\Choice([
                         'choices' => $baseIds,
                         'minMessage' => _('You must select at least %s collection.'),
                         'multiple' => true,
                         'min'      => 1,
-                    )),
-                ),
-            ));
+                    ]),
+                ],
+            ]);
         }
 
         foreach ($this->params as $param) {
@@ -129,7 +129,7 @@ class PhraseaRegisterForm extends AbstractType
                 throw new InvalidArgumentException(sprintf('%s is not a valid fieldname'));
             }
             if (isset($this->available[$name])) {
-                $options = array_merge($this->available[$name], array('required' => $param['required']));
+                $options = array_merge($this->available[$name], ['required' => $param['required']]);
                 if (!$param['required']) {
                     unset($options['constraints']);
                 }

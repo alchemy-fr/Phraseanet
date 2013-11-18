@@ -19,7 +19,7 @@ class PhraseaRequirements extends RequirementCollection implements RequirementIn
     const PHRASEA_EXTENSION_VERSION = '1.21.1.0';
     const PHRASEA_INDEXER_VERSION = '3.10.2.3';
 
-    public function __construct($binaries = array())
+    public function __construct($binaries = [])
     {
         $this->setName('Phrasea');
 

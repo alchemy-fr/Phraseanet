@@ -29,7 +29,7 @@ class patchthesaurus_202 implements patchthesaurus_interface
 
             $sql = "UPDATE pref SET thesaurus_moddate = :date1, cterms_moddate = :date2";
             $stmt = $connbas->prepare($sql);
-            $stmt->execute(array(':date1' => $th->getAttribute("modification_date"), ':date2' => $ct->getAttribute("modification_date")));
+            $stmt->execute([':date1' => $th->getAttribute("modification_date"), ':date2' => $ct->getAttribute("modification_date")]);
             $stmt->closeCursor();
 
             $ct->setAttribute("version", $version = "2.0.3");

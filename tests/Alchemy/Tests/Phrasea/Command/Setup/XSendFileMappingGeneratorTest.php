@@ -62,9 +62,9 @@ class XSendFileMappingGeneratorTest extends \PhraseanetPHPUnitAbstract
 
     public function provideVariousOptions()
     {
-        return array(
-            array(true),
-            array(false),
-        );
+        return [
+            [true],
+            [false],
+        ];
     }
 }

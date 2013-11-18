@@ -21,36 +21,36 @@ class TaskForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', array(
+        $builder->add('name', 'text', [
             'label'       => _('Task name'),
             'required'    => true,
-            'constraints' => array(
+            'constraints' => [
                 new Assert\NotBlank(),
-            ),
-        ));
-        $builder->add('period', 'integer', array(
+            ],
+        ]);
+        $builder->add('period', 'integer', [
             'label'       => _('Task period (in seconds)'),
             'required'    => true,
-            'constraints' => array(
+            'constraints' => [
                 new Assert\NotBlank(),
-                new Assert\GreaterThan(array('value' => 0)),
-            ),
-        ));
-        $builder->add('status', 'choice', array(
+                new Assert\GreaterThan(['value' => 0]),
+            ],
+        ]);
+        $builder->add('status', 'choice', [
             'label'       => _('The task status'),
-            'choices'   => array(
+            'choices'   => [
                 Task::STATUS_STARTED   => 'Started',
                 Task::STATUS_STOPPED   => 'Stopped',
-            ),
-        ));
+            ],
+        ]);
         $builder->add('settings', 'hidden');
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'Alchemy\Phrasea\Model\Entities\Task',
-        ));
+        ]);
     }
 
     public function getName()

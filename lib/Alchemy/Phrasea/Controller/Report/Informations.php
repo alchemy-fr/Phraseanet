@@ -50,38 +50,38 @@ class Informations implements ControllerProviderInterface
      */
     public function doReportInformationsUser(Application $app, Request $request)
     {
-        $conf = array(
-            'config'    => array(
-                'photo'     => array(_('report:: document'), 0, 0, 0, 0),
-                'record_id' => array(_('report:: record id'), 0, 0, 0, 0),
-                'date'      => array(_('report:: date'), 0, 0, 0, 0),
-                'type'      => array(_('phrseanet:: sous definition'), 0, 0, 0, 0),
-                'titre'     => array(_('report:: titre'), 0, 0, 0, 0),
-                'taille'    => array(_('report:: poids'), 0, 0, 0, 0)
-            ),
-            'conf'  => array(
-                'identifiant'   => array(_('report:: identifiant'), 0, 0, 0, 0),
-                'nom'           => array(_('report:: nom'), 0, 0, 0, 0),
-                'mail'          => array(_('report:: email'), 0, 0, 0, 0),
-                'adresse'       => array(_('report:: adresse'), 0, 0, 0, 0),
-                'tel'           => array(_('report:: telephone'), 0, 0, 0, 0)
-            ),
-            'config_cnx'    => array(
-                'ddate'     => array(_('report:: date'), 0, 0, 0, 0),
-                'appli'     => array(_('report:: modules'), 0, 0, 0, 0),
-            ),
-            'config_dl' => array(
-                'ddate'     => array(_('report:: date'), 0, 0, 0, 0),
-                'record_id' => array(_('report:: record id'), 0, 1, 0, 0),
-                'final'     => array(_('phrseanet:: sous definition'), 0, 0, 0, 0),
-                'coll_id'   => array(_('report:: collections'), 0, 0, 0, 0),
-                'comment'   => array(_('report:: commentaire'), 0, 0, 0, 0),
-            ),
-            'config_ask' => array(
-                'search'    => array(_('report:: question'), 0, 0, 0, 0),
-                'ddate'     => array(_('report:: date'), 0, 0, 0, 0)
-            )
-        );
+        $conf = [
+            'config'    => [
+                'photo'     => [_('report:: document'), 0, 0, 0, 0],
+                'record_id' => [_('report:: record id'), 0, 0, 0, 0],
+                'date'      => [_('report:: date'), 0, 0, 0, 0],
+                'type'      => [_('phrseanet:: sous definition'), 0, 0, 0, 0],
+                'titre'     => [_('report:: titre'), 0, 0, 0, 0],
+                'taille'    => [_('report:: poids'), 0, 0, 0, 0]
+            ],
+            'conf'  => [
+                'identifiant'   => [_('report:: identifiant'), 0, 0, 0, 0],
+                'nom'           => [_('report:: nom'), 0, 0, 0, 0],
+                'mail'          => [_('report:: email'), 0, 0, 0, 0],
+                'adresse'       => [_('report:: adresse'), 0, 0, 0, 0],
+                'tel'           => [_('report:: telephone'), 0, 0, 0, 0]
+            ],
+            'config_cnx'    => [
+                'ddate'     => [_('report:: date'), 0, 0, 0, 0],
+                'appli'     => [_('report:: modules'), 0, 0, 0, 0],
+            ],
+            'config_dl' => [
+                'ddate'     => [_('report:: date'), 0, 0, 0, 0],
+                'record_id' => [_('report:: record id'), 0, 1, 0, 0],
+                'final'     => [_('phrseanet:: sous definition'), 0, 0, 0, 0],
+                'coll_id'   => [_('report:: collections'), 0, 0, 0, 0],
+                'comment'   => [_('report:: commentaire'), 0, 0, 0, 0],
+            ],
+            'config_ask' => [
+                'search'    => [_('report:: question'), 0, 0, 0, 0],
+                'ddate'     => [_('report:: date'), 0, 0, 0, 0]
+            ]
+        ];
 
         $report = null;
         $html = $html_info = '';
@@ -94,10 +94,10 @@ class Informations implements ControllerProviderInterface
         }
 
         if ('' !== $on && $app['phraseanet.registry']->get('GV_anonymousReport') == true) {
-            $conf['conf'] = array(
-                 $on   => array($on, 0, 0, 0, 0),
-                'nb'   => array(_('report:: nombre'), 0, 0, 0, 0)
-            );
+            $conf['conf'] = [
+                 $on   => [$on, 0, 0, 0, 0],
+                'nb'   => [_('report:: nombre'), 0, 0, 0, 0]
+            ];
         }
 
         if ($from == 'CNXU' || $from == 'CNX') {
@@ -135,7 +135,7 @@ class Informations implements ControllerProviderInterface
         if ($report) {
             $mapColumnTitleToSqlField = $report->getTransQueryString();
 
-            $currentfilter = array();
+            $currentfilter = [];
 
             if ('' !== $serializedFilter = $request->request->get('liste_filter', '')) {
                 $currentfilter = @unserialize(urldecode($serializedFilter));
@@ -148,10 +148,10 @@ class Informations implements ControllerProviderInterface
                 $value = $request->request->get('filter_value', '');
 
                 if ($request->request->get('liste') == 'on') {
-                    return $app->json(array('diag'  => $app['twig']->render('report/colFilter.html.twig', array(
+                    return $app->json(['diag'  => $app['twig']->render('report/colFilter.html.twig', [
                         'result' => $report->colFilter($field),
                         'field'  => $field
-                    )), 'title'  => sprintf(_('filtrer les resultats sur la colonne %s'), $field)));
+                    ]), 'title'  => sprintf(_('filtrer les resultats sur la colonne %s'), $field)]);
                 }
 
                 if ($field === $value) {
@@ -188,17 +188,17 @@ class Informations implements ControllerProviderInterface
                     $csv = '';
                 }
 
-                return $app->json(array('rs' => $csv));
+                return $app->json(['rs' => $csv]);
             }
 
-            $html = $app['twig']->render('report/ajax_data_content.html.twig', array(
+            $html = $app['twig']->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($reportArray['report']) ? $reportArray['report'] : $reportArray,
                 'is_infouser' => $report instanceof \module_report_download,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
                 'is_doc'      => false
-            ));
+            ]);
         }
 
         $info = new \module_report_nav(
@@ -214,32 +214,32 @@ class Informations implements ControllerProviderInterface
 
         $infoArray = $info->buildTabGrpInfo(
             null !== $report ? $report->getReq() : '',
-            null !== $report ? $report->getParams() : array(),
+            null !== $report ? $report->getParams() : [],
             $selectValue,
             $conf['conf'],
             $on
         );
 
         if (false == $app['phraseanet.registry']->get('GV_anonymousReport')) {
-            $html_info = $app['twig']->render('report/ajax_data_content.html.twig', array(
+            $html_info = $app['twig']->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($infoArray['report']) ? $infoArray['report'] : $infoArray,
                 'is_infouser' => false,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
                 'is_doc'      => false
-            ));
+            ]);
 
             $title = ('' === $on && isset($infoArray['result'])) ? $infoArray['result'][0]['identifiant'] : $selectValue;
         } else {
             $title = $selectValue;
         }
 
-        return $app->json(array(
+        return $app->json([
             'rs'          => sprintf('%s%s', $html_info, $html),
             'display_nav' => false,
             'title'       => $title
-        ));
+        ]);
     }
 
     /**
@@ -251,10 +251,10 @@ class Informations implements ControllerProviderInterface
      */
     public function doReportinformationsBrowser(Application $app, Request $request)
     {
-        $conf = array(
-            'version'   => array(_('report::version '), 0, 0, 0, 0),
-            'nb'        => array(_('report:: nombre'), 0, 0, 0, 0)
-        );
+        $conf = [
+            'version'   => [_('report::version '), 0, 0, 0, 0],
+            'nb'        => [_('report:: nombre'), 0, 0, 0, 0]
+        ];
 
         $info = new \module_report_nav(
             $app,
@@ -273,18 +273,18 @@ class Informations implements ControllerProviderInterface
 
         $reportArray = $info->buildTabInfoNav($conf, $browser);
 
-        return $app->json(array(
-                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+        return $app->json([
+                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
                     'result'      => isset($reportArray['report']) ? $reportArray['report'] : $reportArray,
                     'is_infouser' => false,
                     'is_nav'      => false,
                     'is_groupby'  => false,
                     'is_plot'     => false,
                     'is_doc'      => false
-                )),
+                ]),
                 'display_nav' => false,
                 'title'       => $browser
-            ));
+            ]);
     }
 
     /**
@@ -296,26 +296,26 @@ class Informations implements ControllerProviderInterface
      */
     public function doReportInformationsDocument(Application $app, Request $request)
     {
-        $config = array(
-            'photo'     => array(_('report:: document'), 0, 0, 0, 0),
-            'record_id' => array(_('report:: record id'), 0, 0, 0, 0),
-            'date'      => array(_('report:: date'), 0, 0, 0, 0),
-            'type'      => array(_('phrseanet:: sous definition'), 0, 0, 0, 0),
-            'titre'     => array(_('report:: titre'), 0, 0, 0, 0),
-            'taille'    => array(_('report:: poids'), 0, 0, 0, 0)
-        );
+        $config = [
+            'photo'     => [_('report:: document'), 0, 0, 0, 0],
+            'record_id' => [_('report:: record id'), 0, 0, 0, 0],
+            'date'      => [_('report:: date'), 0, 0, 0, 0],
+            'type'      => [_('phrseanet:: sous definition'), 0, 0, 0, 0],
+            'titre'     => [_('report:: titre'), 0, 0, 0, 0],
+            'taille'    => [_('report:: poids'), 0, 0, 0, 0]
+        ];
 
-        $config_dl = array(
-            'ddate'     => array(_('report:: date'), 0, 0, 0, 0),
-            'user'      => array(_('report:: utilisateurs'), 0, 0, 0, 0),
-            'final'     => array(_('phrseanet:: sous definition'), 0, 0, 0, 0),
-            'coll_id'   => array(_('report:: collections'), 0, 0, 0, 0),
-            'comment'   => array(_('report:: commentaire'), 0, 0, 0, 0),
-            'fonction'  => array(_('report:: fonction'), 0, 0, 0, 0),
-            'activite'  => array(_('report:: activite'), 0, 0, 0, 0),
-            'pays'      => array(_('report:: pays'), 0, 0, 0, 0),
-            'societe'   => array(_('report:: societe'), 0, 0, 0, 0)
-        );
+        $config_dl = [
+            'ddate'     => [_('report:: date'), 0, 0, 0, 0],
+            'user'      => [_('report:: utilisateurs'), 0, 0, 0, 0],
+            'final'     => [_('phrseanet:: sous definition'), 0, 0, 0, 0],
+            'coll_id'   => [_('report:: collections'), 0, 0, 0, 0],
+            'comment'   => [_('report:: commentaire'), 0, 0, 0, 0],
+            'fonction'  => [_('report:: fonction'), 0, 0, 0, 0],
+            'activite'  => [_('report:: activite'), 0, 0, 0, 0],
+            'pays'      => [_('report:: pays'), 0, 0, 0, 0],
+            'societe'   => [_('report:: societe'), 0, 0, 0, 0]
+        ];
 
         //format conf according user preferences
         if ('' !== $columnsList = $request->request->get('list_column', '')) {
@@ -361,25 +361,25 @@ class Informations implements ControllerProviderInterface
 
         $title = $what->getTitle();
 
-        $html = $app['twig']->render('report/ajax_data_content.html.twig', array(
+        $html = $app['twig']->render('report/ajax_data_content.html.twig', [
             'result'      => isset($reportArray['report']) ? $reportArray['report'] : $reportArray,
             'is_infouser' => false,
             'is_nav'      => false,
             'is_groupby'  => false,
             'is_plot'     => false,
             'is_doc'      => false
-        ));
+        ]);
 
         $from = $request->request->get('from', '');
 
         if ('TOOL' === $from) {
             $what->setTitle('');
 
-            return $app->json(array(
+            return $app->json([
                 'rs'          => $html,
                 'display_nav' => false,
                 'title'       => $title
-            ));
+            ]);
         }
 
         if ('DASH' !== $from && 'PUSHDOC' !== $from) {
@@ -393,7 +393,7 @@ class Informations implements ControllerProviderInterface
 
             $mapColumnTitleToSqlField = $download->getTransQueryString();
 
-            $currentfilter = array();
+            $currentfilter = [];
 
             if ('' !== $serializedFilter = $request->request->get('liste_filter', '')) {
                 $currentfilter = @unserialize(urldecode($serializedFilter));
@@ -406,10 +406,10 @@ class Informations implements ControllerProviderInterface
                 $value = $request->request->get('filter_value', '');
 
                 if ($request->request->get('liste') == 'on') {
-                    return $app->json(array('diag'  => $app['twig']->render('report/colFilter.html.twig', array(
+                    return $app->json(['diag'  => $app['twig']->render('report/colFilter.html.twig', [
                         'result' => $download->colFilter($field),
                         'field'  => $field
-                    )), 'title'  => sprintf(_('filtrer les resultats sur la colonne %s'), $field)));
+                    ]), 'title'  => sprintf(_('filtrer les resultats sur la colonne %s'), $field)]);
                 }
 
                 if ($field === $value) {
@@ -437,33 +437,33 @@ class Informations implements ControllerProviderInterface
                     $csv = '';
                 }
 
-                return $app->json(array('rs' => $csv));
+                return $app->json(['rs' => $csv]);
             }
 
-            $html .= $app['twig']->render('report/ajax_data_content.html.twig', array(
+            $html .= $app['twig']->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($reportArray['report']) ? $reportArray['report'] : $reportArray,
                 'is_infouser' => false,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
                 'is_doc'      => false
-            ));
+            ]);
 
-            return $app->json(array(
+            return $app->json([
                 'rs'          => $html,
                 'display_nav' => false,
                 'title'       => $title
-            ));
+            ]);
         }
 
         if ($app['phraseanet.registry']->get('GV_anonymousReport') == false && $from !== 'DOC' && $from !== 'DASH' && $from !== 'GEN' && $from !== 'PUSHDOC') {
-            $conf = array(
-                'identifiant'   => array(_('report:: identifiant'), 0, 0, 0, 0),
-                'nom'           => array(_('report:: nom'), 0, 0, 0, 0),
-                'mail'          => array(_('report:: email'), 0, 0, 0, 0),
-                'adresse'       => array(_('report:: adresse'), 0, 0, 0, 0),
-                'tel'           => array(_('report:: telephone'), 0, 0, 0, 0)
-            );
+            $conf = [
+                'identifiant'   => [_('report:: identifiant'), 0, 0, 0, 0],
+                'nom'           => [_('report:: nom'), 0, 0, 0, 0],
+                'mail'          => [_('report:: email'), 0, 0, 0, 0],
+                'adresse'       => [_('report:: adresse'), 0, 0, 0, 0],
+                'tel'           => [_('report:: telephone'), 0, 0, 0, 0]
+            ];
 
             $info = new \module_report_nav(
                 $app,
@@ -477,7 +477,7 @@ class Informations implements ControllerProviderInterface
             $info->setConfig(false);
             $info->setTitle(_('report:: utilisateur'));
 
-            $reportArray = $info->buildTabGrpInfo(false, array(),  $request->request->get('user'), $conf, false);
+            $reportArray = $info->buildTabGrpInfo(false, [],  $request->request->get('user'), $conf, false);
 
             if ($request->request->get('printcsv') == 'on') {
                 $download->setPrettyString(false);
@@ -488,29 +488,29 @@ class Informations implements ControllerProviderInterface
                     $csv = '';
                 }
 
-                return $app->json(array('rs' => $csv));
+                return $app->json(['rs' => $csv]);
             }
 
-            $html .= $app['twig']->render('report/ajax_data_content.html.twig', array(
+            $html .= $app['twig']->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($reportArray['report']) ? $reportArray['report'] : $reportArray,
                 'is_infouser' => false,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
                 'is_doc'      => false
-            ));
+            ]);
 
-            return $app->json(array(
+            return $app->json([
                 'rs'          => $html,
                 'display_nav' => false,
                 'title'       => $title
-            ));
+            ]);
         }
 
-        return $app->json(array(
+        return $app->json([
             'rs'          => $html,
             'display_nav' => false,
             'title'       => $title
-        ));
+        ]);
     }
 }

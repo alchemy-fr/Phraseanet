@@ -36,13 +36,13 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
      * a le droit de report
      * @var <array>
      */
-    public $authorizedCollection = array();
+    public $authorizedCollection = [];
 
     /**
      * @desc le tableau qui contient le dashboard
      * @var <array>
      */
-    public $dashboard = array();
+    public $dashboard = [];
 
     /**
      * @des le nombre par defaut de resultats afficher par categorie
@@ -207,7 +207,7 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
         $tri = $this->group()->tri();
         $x = $tri->getDash();
         $a = $tri->top()->getTop($this->nbtop);
-        $this->dashboard = array();
+        $this->dashboard = [];
         foreach ($a as $k => $v) {
             if (array_key_exists($k, $x)) {
                 $x[$k] = $v;
@@ -239,23 +239,23 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
      */
     public function getAllColl()
     {
-        $all_coll = array();
+        $all_coll = [];
 
-        $base_ids = $this->app['acl']->get($this->usr)->get_granted_base(array('canreport'));
+        $base_ids = $this->app['acl']->get($this->usr)->get_granted_base(['canreport']);
 
         foreach ($base_ids as $base_id => $collection) {
             $databox = $collection->get_databox();
             $sbas_id = $databox->get_sbas_id();
             if ( ! isset($all_coll[$sbas_id])) {
-                $all_coll[$sbas_id] = array();
+                $all_coll[$sbas_id] = [];
                 $all_coll[$sbas_id]['name_sbas'] = $databox->get_label($this->app['locale.I18n']);
             }
-            $all_coll[$sbas_id]['sbas_collections'][] = array(
+            $all_coll[$sbas_id]['sbas_collections'][] = [
                 'base_id' => $base_id,
                 'sbas_id' => $sbas_id,
                 'coll_id' => $collection->get_base_id(),
                 'name'    => $collection->get_label($this->app['locale.I18n'])
-            );
+            ];
         }
 
         return $all_coll;
@@ -270,17 +270,17 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
         $all_coll = $this->getAllColl();
 
         foreach ($all_coll as $sbas => $info) {
-            $listeColl = array();
+            $listeColl = [];
 
             foreach ($info['sbas_collections'] as $key => $value) {
                 $listeColl[] = (int) $value['coll_id'];
             }
 
-            $this->authorizedCollection[(int) $sbas] = array(
+            $this->authorizedCollection[(int) $sbas] = [
                 'sbas_id' => (int) $sbas,
                 'coll'    => implode(',', $listeColl),
                 'name'    => phrasea::sbas_labels($sbas, $this->app)
-            );
+            ];
         }
 
         return;

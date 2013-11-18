@@ -42,7 +42,7 @@ class Publications implements ControllerProviderInterface
             );
 
             return $app['twig']
-                    ->render('admin/publications/list.html.twig', array('feeds' => $feeds));
+                    ->render('admin/publications/list.html.twig', ['feeds' => $feeds]);
         })->bind('admin_feeds_list');
 
         $controllers->post('/create/', function (PhraseaApplication $app, Request $request) {
@@ -82,7 +82,7 @@ class Publications implements ControllerProviderInterface
             $feed = $app["EM"]->find('Alchemy\Phrasea\Model\Entities\Feed', $id);
 
             return $app['twig']
-                    ->render('admin/publications/fiche.html.twig', array('feed'  => $feed, 'error' => $app['request']->query->get('error')));
+                    ->render('admin/publications/fiche.html.twig', ['feed'  => $feed, 'error' => $app['request']->query->get('error')]);
         })
             ->bind('admin_feeds_feed')
             ->assert('id', '\d+');
@@ -112,17 +112,17 @@ class Publications implements ControllerProviderInterface
             $feed = $app["EM"]->find('Alchemy\Phrasea\Model\Entities\Feed', $request->attributes->get('id'));
 
             if (!$feed->isOwner($app['authentication']->getUser())) {
-                return $app->redirectPath('admin_feeds_feed', array('id' => $request->attributes->get('id'), 'error' =>  _('You are not the owner of this feed, you can not edit it')));
+                return $app->redirectPath('admin_feeds_feed', ['id' => $request->attributes->get('id'), 'error' =>  _('You are not the owner of this feed, you can not edit it')]);
             }
         })
             ->bind('admin_feeds_feed_update')
             ->assert('id', '\d+');
 
         $controllers->post('/feed/{id}/iconupload/', function (PhraseaApplication $app, Request $request, $id) {
-            $datas = array(
+            $datas = [
                 'success' => false,
                 'message' => '',
-            );
+            ];
             $feed = $app["EM"]->find('Alchemy\Phrasea\Model\Entities\Feed', $id);
 
             if (null === $feed) {
@@ -213,7 +213,7 @@ class Publications implements ControllerProviderInterface
                 $error = "An error occured";
             }
 
-            return $app->redirectPath('admin_feeds_feed', array('id' => $id, 'error' => $error));
+            return $app->redirectPath('admin_feeds_feed', ['id' => $id, 'error' => $error]);
         })
             ->bind('admin_feeds_feed_add_publisher')
             ->assert('id', '\d+');
@@ -240,7 +240,7 @@ class Publications implements ControllerProviderInterface
                 $error = "An error occured";
             }
 
-            return $app->redirectPath('admin_feeds_feed', array('id' => $id, 'error' => $error));
+            return $app->redirectPath('admin_feeds_feed', ['id' => $id, 'error' => $error]);
         })
             ->bind('admin_feeds_feed_remove_publisher')
             ->assert('id', '\d+');

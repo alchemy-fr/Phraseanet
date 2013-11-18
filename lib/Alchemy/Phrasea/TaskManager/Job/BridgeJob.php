@@ -55,13 +55,13 @@ class BridgeJob extends AbstractJob
     {
         $app = $data->getApplication();
 
-        $status = array(
+        $status = [
             \Bridge_Element::STATUS_PENDING,
             \Bridge_Element::STATUS_PROCESSING,
             \Bridge_Element::STATUS_PROCESSING_SERVER
-        );
+        ];
 
-        $params = array();
+        $params = [];
         $n = 1;
 
         foreach ($status as $stat) {
@@ -96,7 +96,7 @@ class BridgeJob extends AbstractJob
                 $this->log('error', sprintf("An error occured : %s", $e->getMessage()));
 
                 $sql = 'UPDATE bridge_elements SET status = :status WHERE id = :id';
-                $params = array(':status' => \Bridge_Element::STATUS_ERROR, ':id' => $row['id']);
+                $params = [':status' => \Bridge_Element::STATUS_ERROR, ':id' => $row['id']];
                 $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
                 $stmt->execute($params);
                 $stmt->closeCursor();
@@ -154,13 +154,13 @@ class BridgeJob extends AbstractJob
         switch ($status) {
             case \Bridge_Element::STATUS_ERROR:
 
-                $params = array(
+                $params = [
                     'usr_id'     => $account->get_user()->get_id(),
                     'reason'     => $error_message,
                     'account_id' => $account->get_id(),
                     'sbas_id'    => $element->get_record()->get_sbas_id(),
                     'record_id'  => $element->get_record()->get_record_id(),
-                );
+                ];
                 $app['events-manager']->trigger('__BRIDGE_UPLOAD_FAIL__', $params);
 
                 break;

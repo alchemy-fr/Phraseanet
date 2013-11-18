@@ -68,7 +68,7 @@ class Deliverer
             if (!$mail->getEmitter()) {
                 throw new LogicException('You must provide an emitter for a ReadReceipt');
             }
-            $message->setReadReceiptTo(array($mail->getEmitter()->getEmail() => $mail->getEmitter()->getName()));
+            $message->setReadReceiptTo([$mail->getEmitter()->getEmail() => $mail->getEmitter()->getName()]);
         }
 
         $ret = $this->mailer->send($message);

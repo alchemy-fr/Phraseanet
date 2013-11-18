@@ -23,7 +23,7 @@ class Identity
     const PROPERTY_USERNAME = 'username';
     const PROPERTY_COMPANY = 'company';
 
-    private $data = array(
+    private $data = [
         self::PROPERTY_ID        => null,
         self::PROPERTY_IMAGEURL  => null,
         self::PROPERTY_EMAIL     => null,
@@ -31,9 +31,9 @@ class Identity
         self::PROPERTY_LASTNAME  => null,
         self::PROPERTY_USERNAME  => null,
         self::PROPERTY_COMPANY   => null,
-    );
+    ];
 
-    public function __construct(array $data = array())
+    public function __construct(array $data = [])
     {
         $this->data = array_merge($this->data, $data);
     }
@@ -55,10 +55,10 @@ class Identity
      */
     public function getDisplayName()
     {
-        $data = array_filter(array(
+        $data = array_filter([
             $this->get(self::PROPERTY_FIRSTNAME),
             $this->get(self::PROPERTY_LASTNAME),
-        ));
+        ]);
 
         return implode(' ', $data);
     }

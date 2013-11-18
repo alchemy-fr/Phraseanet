@@ -13,7 +13,7 @@ abstract class FormTestCase extends \PhraseanetPHPUnitAbstract
             ->disableOriginalConstructor()
             ->getMock();
 
-        $form->buildForm($builder, array('disabled' => false));
+        $form->buildForm($builder, ['disabled' => false]);
     }
 
     public function testGetName()

@@ -11,33 +11,33 @@ class CLISDriversServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {
-        return array(
-            array(
+        return [
+            [
                 'Alchemy\Phrasea\Core\CLIProvider\CLIDriversServiceProvider',
                 'executable-finder',
                 'Symfony\Component\Process\ExecutableFinder'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\CLIProvider\CLIDriversServiceProvider',
                 'driver.bower',
                 'Alchemy\Phrasea\Command\Developer\Utils\BowerDriver'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\CLIProvider\CLIDriversServiceProvider',
                 'driver.composer',
                 'Alchemy\Phrasea\Command\Developer\Utils\ComposerDriver'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\CLIProvider\CLIDriversServiceProvider',
                 'driver.uglifyjs',
                 'Alchemy\Phrasea\Command\Developer\Utils\UglifyJsDriver'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\CLIProvider\CLIDriversServiceProvider',
                 'driver.recess',
                 'Alchemy\Phrasea\Command\Developer\Utils\RecessDriver'
-            ),
-        );
+            ],
+        ];
     }
 
     public function testComposerTimeout()

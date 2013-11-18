@@ -79,12 +79,12 @@ class ACLManipulator implements ManipulatorInterface
     {
         $collections = $databox->get_collections();
 
-        $acl->update_rights_to_sbas($databox->get_sbas_id(), array(
+        $acl->update_rights_to_sbas($databox->get_sbas_id(), [
             'bas_manage'        => '1',
             'bas_modify_struct' => '1',
             'bas_modif_th'      => '1',
             'bas_chupub'        => '1'
-        ));
+        ]);
 
         $acl->give_access_to_base(array_map(function (\collection $collection) {
             return $collection->get_base_id();
@@ -108,7 +108,7 @@ class ACLManipulator implements ManipulatorInterface
         $acl->set_limits($baseId, false);
         $acl->remove_quotas_on_base($baseId);
         $acl->set_masks_on_base($baseId, '0', '0', '0', '0');
-        $acl->update_rights_to_base($baseId, array(
+        $acl->update_rights_to_base($baseId, [
             'canputinalbum'     => '1',
             'candwnldhd'        => '1',
             'candwnldsubdef'    => '1',
@@ -127,7 +127,7 @@ class ACLManipulator implements ManipulatorInterface
             'manage'            => '1',
             'modify_struct'     => '1',
             'bas_modify_struct' => '1'
-        ));
+        ]);
     }
 
     /**
@@ -140,7 +140,7 @@ class ACLManipulator implements ManipulatorInterface
     private function makeTraversable($var)
     {
         if (!is_array($var) && !$var instanceof \Traversable) {
-            return array($var);
+            return [$var];
         }
 
         return $var;

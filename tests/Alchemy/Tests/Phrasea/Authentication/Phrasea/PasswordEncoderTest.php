@@ -8,25 +8,25 @@ class PasswordEncoderTest extends \PHPUnit_Framework_TestCase
 {
     public function providePasswords()
     {
-        return array(
-            array(
+        return [
+            [
                 'foo-key', 'foo', 'bar',
                 '116a409f4597bf3ccfe8bc4529c638452c9831d941355f9b49386e6733db31138b228d52fd50409af8960d8059fd03b6c128884efff05055beada86d1ea9a025'
-            ),
-            array(
+            ],
+            [
                 'foo-key', 'baz', 'bar',
                 'f77b2da9276efd3e4ca66503cf50f4399798968731521c3e71758bb412737d57f2370144fd3adc3a740f87bee9b04b4369018d549c221bc28fcf7967c6712302'
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideInvalidKeys()
     {
-        return array(
-            array(null),
-            array(''),
-            array('  '),
-        );
+        return [
+            [null],
+            [''],
+            ['  '],
+        ];
     }
 
     /**

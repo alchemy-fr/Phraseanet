@@ -38,16 +38,16 @@ class GooglePlus extends AbstractProvider
 
         $this->plus = new \Google_PlusService($this->client);
 
-        $this->client->setScopes(array(
+        $this->client->setScopes([
             'https://www.googleapis.com/auth/plus.me',
             'https://www.googleapis.com/auth/userinfo.email',
-        ));
+        ]);
 
         $this->client->setRedirectUri(
             $this->generator->generate(
-                'login_authentication_provider_callback', array(
+                'login_authentication_provider_callback', [
                     'providerId' => $this->getId(),
-                ), UrlGenerator::ABSOLUTE_URL
+                ], UrlGenerator::ABSOLUTE_URL
             )
         );
 
@@ -218,7 +218,7 @@ class GooglePlus extends AbstractProvider
         try {
             $request = $this->guzzle->get(sprintf(
                 'https://www.googleapis.com/oauth2/v1/tokeninfo?%s',
-                http_build_query(array('access_token' => $token['access_token']), '', '&')
+                http_build_query(['access_token' => $token['access_token']], '', '&')
             ));
             $response = $request->send();
         } catch (GuzzleException $e) {

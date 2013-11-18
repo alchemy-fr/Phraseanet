@@ -29,7 +29,7 @@ class PhraseaEngineTest extends SearchEngineAbstractTest
         self::$searchEngine = PhraseaEngine::create(self::$DI['app']);
     }
 
-    protected function updateIndex(array $stemms = array())
+    protected function updateIndex(array $stemms = [])
     {
         $appbox = self::$DI['app']['phraseanet.appbox'];
         $cmd = '/usr/local/bin/phraseanet_indexer '
@@ -82,10 +82,10 @@ class PhraseaEngineTest extends SearchEngineAbstractTest
         $date = new \DateTime('-2 months');
 
         foreach ($rs as $row) {
-            $stmt->execute(array(
+            $stmt->execute([
                 ':date'       => $date->format(DATE_ISO8601),
                 ':session_id' => $row['session_id'],
-            ));
+            ]);
 
             break;
         }

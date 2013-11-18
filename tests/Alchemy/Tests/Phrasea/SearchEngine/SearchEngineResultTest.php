@@ -13,9 +13,9 @@ class SearchEngineResultTest extends \PhraseanetPHPUnitAbstract
      */
     public function testBasic()
     {
-        $results = new ArrayCollection(array(
+        $results = new ArrayCollection([
                     self::$DI['record_24']
-                ));
+                ]);
 
         $query = 'Gotainer';
         $duration = 1 / 3;
@@ -24,9 +24,9 @@ class SearchEngineResultTest extends \PhraseanetPHPUnitAbstract
         $total = 10000;
         $error = 'this is an error message';
         $warning = 'this is a warning message';
-        $suggestions = new ArrayCollection(array(
+        $suggestions = new ArrayCollection([
                         new SearchEngineSuggestion($query, 'Richard', 22)
-        ));
+        ]);
         $propositions = new ArrayCollection();
         $indexes = 'new-index';
 
@@ -51,9 +51,9 @@ class SearchEngineResultTest extends \PhraseanetPHPUnitAbstract
 
     public function testWithOffsetStartAtZero()
     {
-        $results = new ArrayCollection(array(
+        $results = new ArrayCollection([
                     self::$DI['record_24']
-                ));
+                ]);
 
         $query = 'Gotainer';
         $duration = 1 / 3;
@@ -62,9 +62,9 @@ class SearchEngineResultTest extends \PhraseanetPHPUnitAbstract
         $total = 10000;
         $error = 'this is an error message';
         $warning = 'this is a warning message';
-        $suggestions = new ArrayCollection(array(
+        $suggestions = new ArrayCollection([
                         new SearchEngineSuggestion($query, 'Richard', 22)
-        ));
+        ]);
         $propositions = new ArrayCollection();
         $indexes = 'new-index';
 

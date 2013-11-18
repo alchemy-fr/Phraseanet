@@ -22,7 +22,7 @@ class TaskManipulatorTest extends \PhraseanetPHPUnitAbstract
         $this->assertEquals('bla bla', $task->getJobId());
         $this->assertEquals('super settings', $task->getSettings());
         $this->assertEquals(0, $task->getPeriod());
-        $this->assertSame(array($task), $this->findAllTasks());
+        $this->assertSame([$task], $this->findAllTasks());
 
         return $task;
     }
@@ -39,7 +39,7 @@ class TaskManipulatorTest extends \PhraseanetPHPUnitAbstract
         $task->setName('new name');
         $this->assertSame($task, $manipulator->update($task));
         self::$DI['app']['EM']->clear();
-        $this->assertEquals(array($task), $this->findAllTasks());
+        $this->assertEquals([$task], $this->findAllTasks());
     }
 
     public function testDelete()
@@ -52,7 +52,7 @@ class TaskManipulatorTest extends \PhraseanetPHPUnitAbstract
         $manipulator = new TaskManipulator(self::$DI['app']['EM'], $notifier);
         $task = $this->loadTask();
         $manipulator->delete($task);
-        $this->assertEquals(array(), $this->findAllTasks());
+        $this->assertEquals([], $this->findAllTasks());
     }
 
     public function testStart()
@@ -121,7 +121,7 @@ class TaskManipulatorTest extends \PhraseanetPHPUnitAbstract
 
         $tasks = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Task')->findAll();
         $this->assertSame('EmptyCollection', $task->getJobId());
-        $this->assertSame(array($task), $tasks);
+        $this->assertSame([$task], $tasks);
         $settings = simplexml_load_string($task->getSettings());
         $this->assertEquals(42, (int) $settings->bas_id);
     }

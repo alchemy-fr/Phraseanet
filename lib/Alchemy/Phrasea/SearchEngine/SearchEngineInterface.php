@@ -238,5 +238,5 @@ interface SearchEngineInterface
      * @param Application $app
      * @param array       $options
      */
-    public static function create(Application $app, array $options = array());
+    public static function create(Application $app, array $options = []);
 }

@@ -31,20 +31,20 @@ class databox_subdef
      * @var string
      */
     protected $class;
-    protected $devices = array();
+    protected $devices = [];
     protected $name;
     protected $path;
     protected $subdef_group;
-    protected $labels = array();
+    protected $labels = [];
     protected $write_meta;
     protected $downloadable;
-    protected static $mediaTypeToSubdefTypes = array(
-        SubdefType::TYPE_AUDIO => array(SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_AUDIO),
-        SubdefType::TYPE_DOCUMENT => array(SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_FLEXPAPER),
-        SubdefType::TYPE_FLASH => array(SubdefSpecs::TYPE_IMAGE),
-        SubdefType::TYPE_IMAGE => array(SubdefSpecs::TYPE_IMAGE),
-        SubdefType::TYPE_VIDEO => array(SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_VIDEO, SubdefSpecs::TYPE_ANIMATION),
-    );
+    protected static $mediaTypeToSubdefTypes = [
+        SubdefType::TYPE_AUDIO => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_AUDIO],
+        SubdefType::TYPE_DOCUMENT => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_FLEXPAPER],
+        SubdefType::TYPE_FLASH => [SubdefSpecs::TYPE_IMAGE],
+        SubdefType::TYPE_IMAGE => [SubdefSpecs::TYPE_IMAGE],
+        SubdefType::TYPE_VIDEO => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_VIDEO, SubdefSpecs::TYPE_ANIMATION],
+    ];
 
     const CLASS_THUMBNAIL = 'thumbnail';
     const CLASS_PREVIEW = 'preview';
@@ -194,16 +194,16 @@ class databox_subdef
      */
     public function getAvailableSubdefTypes()
     {
-        $subdefTypes = array();
+        $subdefTypes = [];
 
-        $availableDevices = array(
+        $availableDevices = [
             self::DEVICE_ALL,
             self::DEVICE_HANDHELD,
             self::DEVICE_PRINT,
             self::DEVICE_PROJECTION,
             self::DEVICE_SCREEN,
             self::DEVICE_TV,
-        );
+        ];
 
         if (isset(self::$mediaTypeToSubdefTypes[$this->subdef_group->getType()])) {
 

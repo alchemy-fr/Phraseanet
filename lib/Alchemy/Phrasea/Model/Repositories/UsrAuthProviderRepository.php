@@ -18,7 +18,7 @@ class UsrAuthProviderRepository extends EntityRepository
                 FROM Alchemy\Phrasea\Model\Entities\UsrAuthProvider u
                 WHERE u.usr_id = :usrId';
 
-        $params = array('usrId' => $user->get_id());
+        $params = ['usrId' => $user->get_id()];
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
@@ -32,7 +32,7 @@ class UsrAuthProviderRepository extends EntityRepository
                 FROM Alchemy\Phrasea\Model\Entities\UsrAuthProvider u
                 WHERE u.provider = :providerId AND u.distant_id = :distantId';
 
-        $params = array('providerId' => $providerId, 'distantId' => $distantId);
+        $params = ['providerId' => $providerId, 'distantId' => $distantId];
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);

@@ -29,7 +29,7 @@ class patch_361alpha1a implements patchInterface
      *
      * @var Array
      */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      *
@@ -77,7 +77,7 @@ class patch_361alpha1a implements patchInterface
 
             $sql = 'SELECT record_id FROM record WHERE record_id = :record_id';
             $stmt = $connbas->prepare($sql);
-            $stmt->execute(array(':record_id' => $row['record_id']));
+            $stmt->execute([':record_id' => $row['record_id']]);
             $rowCount = $stmt->rowCount();
             $stmt->closeCursor();
 

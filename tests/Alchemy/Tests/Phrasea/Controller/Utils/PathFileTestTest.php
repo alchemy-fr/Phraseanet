@@ -10,7 +10,7 @@ class ControllerPathFileTestTest extends \PhraseanetWebTestCaseAbstract
     public function testRoutePath()
     {
         $file = new \SplFileObject(__DIR__ . '/../../../../../files/cestlafete.jpg');
-        self::$DI['client']->request("GET", "/admin/tests/pathurl/path/", array('path' => $file->getPathname()));
+        self::$DI['client']->request("GET", "/admin/tests/pathurl/path/", ['path' => $file->getPathname()]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
@@ -26,7 +26,7 @@ class ControllerPathFileTestTest extends \PhraseanetWebTestCaseAbstract
 
     public function testRouteUrl()
     {
-        self::$DI['client']->request("GET", "/admin/tests/pathurl/url/", array('url' => "www.google.com"));
+        self::$DI['client']->request("GET", "/admin/tests/pathurl/url/", ['url' => "www.google.com"]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());

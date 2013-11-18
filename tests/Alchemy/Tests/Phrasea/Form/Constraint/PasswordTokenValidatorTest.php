@@ -35,10 +35,10 @@ class PasswordTokenValidatorTest extends \PhraseanetPHPUnitAbstract
 
     public function provideValidationData()
     {
-        return array(
-            array(\random::generatePassword(), true),
-            array(\random::generatePassword(), false),
-        );
+        return [
+            [\random::generatePassword(), true],
+            [\random::generatePassword(), false],
+        ];
     }
 
     private function getConstraint()

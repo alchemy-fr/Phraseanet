@@ -12,18 +12,18 @@ class FileServeServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {
-        return array(
-            array(
+        return [
+            [
                 'Alchemy\Phrasea\Core\Provider\FileServeServiceProvider',
                 'phraseanet.file-serve',
                 'Alchemy\Phrasea\Http\ServeFileResponseFactory'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\Provider\FileServeServiceProvider',
                 'phraseanet.xsendfile-factory',
                 'Alchemy\Phrasea\Http\XSendFile\XSendFileFactory'
-            ),
-        );
+            ],
+        ];
     }
 
     public function testMapping()

@@ -123,10 +123,10 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
         $databox = array_shift($databoxes);
-        $fieldObjects = array();
+        $fieldObjects = [];
         // create two fields
-        $fields = array(
-            array(
+        $fields = [
+            [
                 'sbas-id' => $databox->get_sbas_id(),
                 'name' => 'testfield' . mt_rand(),
                 'multi' => true,
@@ -143,7 +143,7 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 'dces-element' => null,
                 'vocabulary-type' => null,
                 'vocabulary-restricted' => false,
-            ), array(
+            ], [
                 'sbas-id' => $databox->get_sbas_id(),
                 'name' => 'testfield' . mt_rand(),
                 'multi' => true,
@@ -160,7 +160,7 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 'dces-element' => null,
                 'vocabulary-type' => null,
                 'vocabulary-restricted' => false,
-        ));
+        ]];
 
         foreach ($fields as $fieldData) {
             $field = \databox_field::create(self::$DI['app'], $databox, $fieldData['name'], $fieldData['multi']);
@@ -190,7 +190,7 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $body[count($body) - 1]['readonly'] = true;
         $body[count($body) - 1]['required'] = false;
 
-        self::$DI['client']->request("PUT", sprintf("/admin/fields/%d/fields", $databox->get_sbas_id()), array(), array(), array(), json_encode($body));
+        self::$DI['client']->request("PUT", sprintf("/admin/fields/%d/fields", $databox->get_sbas_id()), [], [], [], json_encode($body));
 
         $response = self::$DI['client']->getResponse()->getContent();
 
@@ -214,7 +214,7 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
         $databox = array_shift($databoxes);
 
-        $body = json_encode(array(
+        $body = json_encode([
             'sbas-id' => $databox->get_sbas_id(),
             'name' => 'testfield' . mt_rand(),
             'multi' => true,
@@ -223,12 +223,12 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'business' => false,
             'indexable' => true,
             'required' => true,
-            'labels' => array(
+            'labels' => [
                 'en' => 'Label',
                 'fr' => 'Libellé',
                 'de' => null,
                 'nl' => null,
-            ),
+            ],
             'separator' => '=;',
             'readonly' => false,
             'type' => 'string',
@@ -237,9 +237,9 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'dces-element' => null,
             'vocabulary-type' => 'User',
             'vocabulary-restricted' => true,
-        ));
+        ]);
 
-        self::$DI['client']->request("POST", sprintf("/admin/fields/%d/fields", $databox->get_sbas_id()), array(), array(), array(), $body);
+        self::$DI['client']->request("POST", sprintf("/admin/fields/%d/fields", $databox->get_sbas_id()), [], [], [], $body);
 
         $response = self::$DI['client']->getResponse()->getContent();
         $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
@@ -308,7 +308,7 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $data['business'] = true;
         $data['vocabulary-type'] = 'User';
 
-        self::$DI['client']->request("PUT", sprintf("/admin/fields/%d/fields/%d", $databox->get_sbas_id(), $field->get_id()), array(), array(), array(), json_encode($data));
+        self::$DI['client']->request("PUT", sprintf("/admin/fields/%d/fields/%d", $databox->get_sbas_id(), $field->get_id()), [], [], [], json_encode($data));
 
         $response = self::$DI['client']->getResponse()->getContent();
         $this->assertEquals($data, json_decode($response, true));
@@ -329,7 +329,7 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $data['business'] = true;
         $data['vocabulary-type'] = 'User';
 
-        self::$DI['client']->request("DELETE", sprintf("/admin/fields/%d/fields/%d", $databox->get_sbas_id(), $field->get_id()), array(), array(), array(), json_encode($data));
+        self::$DI['client']->request("DELETE", sprintf("/admin/fields/%d/fields/%d", $databox->get_sbas_id(), $field->get_id()), [], [], [], json_encode($data));
 
         $response = self::$DI['client']->getResponse()->getContent();
         $this->assertEquals('', $response);
@@ -345,7 +345,7 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     private function assertField($field)
     {
-        $properties = array(
+        $properties = [
             'name',
             'multi',
             'thumbtitle',
@@ -361,7 +361,7 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'dces-element',
             'vocabulary-type',
             'vocabulary-restricted'
-        );
+        ];
 
         foreach ($properties as $property) {
             $this->assertArrayHasKey($property, $field);

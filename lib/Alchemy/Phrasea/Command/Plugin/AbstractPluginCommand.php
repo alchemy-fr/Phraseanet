@@ -19,7 +19,7 @@ abstract class AbstractPluginCommand extends Command
 {
     protected function validatePlugins(InputInterface $input, OutputInterface $output)
     {
-        $manifests = array();
+        $manifests = [];
 
         $output->write("Validating plugins...");
         foreach ($this->container['plugins.explorer'] as $directory) {

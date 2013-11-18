@@ -71,9 +71,9 @@ class PluginServiceProvider implements ServiceProviderInterface
         });
 
         $app['plugins.importer'] = $app->share(function (Application $app) {
-            return new Importer($app['plugins.import-strategy'], array(
+            return new Importer($app['plugins.import-strategy'], [
                 'plugins.importer.folder-importer' => $app['plugins.importer.folder-importer'],
-            ));
+            ]);
         });
 
         $app['plugins.importer.folder-importer'] = $app->share(function (Application $app) {

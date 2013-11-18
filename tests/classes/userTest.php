@@ -62,11 +62,11 @@ class userTest extends PhraseanetPHPUnitAbstract
     {
         $data = isset(self::$DI['app']['configuration']['user-settings']) ? self::$DI['app']['configuration']['user-settings'] : null;
 
-        self::$DI['app']['configuration']['user-settings'] = array(
+        self::$DI['app']['configuration']['user-settings'] = [
             'images_per_page' => 42,
             'images_size'     => 666,
             'lalala'          => 'didou',
-        );
+        ];
 
         $user = $this->get_user();
 

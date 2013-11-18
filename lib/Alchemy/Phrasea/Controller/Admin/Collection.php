@@ -130,12 +130,12 @@ class Collection implements ControllerProviderInterface
     {
         $collection = \collection::get_from_base_id($app, $bas_id);
 
-        $admins = array();
+        $admins = [];
 
         if ($app['acl']->get($app['authentication']->getUser())->has_right_on_base($bas_id, 'manage')) {
             $query = new \User_Query($app);
-            $admins = $query->on_base_ids(array($bas_id))
-                ->who_have_right(array('order_master'))
+            $admins = $query->on_base_ids([$bas_id])
+                ->who_have_right(['order_master'])
                 ->execute()
                 ->get_results();
         }
@@ -155,12 +155,12 @@ class Collection implements ControllerProviderInterface
                 break;
         }
 
-        return $app['twig']->render('admin/collection/collection.html.twig', array(
+        return $app['twig']->render('admin/collection/collection.html.twig', [
             'collection' => $collection,
             'admins'     => $admins,
             'errorMsg'   => $errorMsg,
             'reloadTree' => $request->query->get('reload-tree') === '1'
-        ));
+        ]);
     }
 
     /**
@@ -175,8 +175,8 @@ class Collection implements ControllerProviderInterface
     {
         $success = false;
 
-        if (count($admins = $request->request->get('admins', array())) > 0) {
-            $newAdmins = array();
+        if (count($admins = $request->request->get('admins', [])) > 0) {
+            $newAdmins = [];
 
             foreach ($admins as $admin) {
                 $newAdmins[] = $admin;
@@ -189,17 +189,17 @@ class Collection implements ControllerProviderInterface
                 try {
                     $userQuery = new \User_Query($app);
 
-                    $result = $userQuery->on_base_ids(array($bas_id))
-                            ->who_have_right(array('order_master'))
+                    $result = $userQuery->on_base_ids([$bas_id])
+                            ->who_have_right(['order_master'])
                             ->execute()->get_results();
 
                     foreach ($result as $user) {
-                        $app['acl']->get($user)->update_rights_to_base($bas_id, array('order_master' => false));
+                        $app['acl']->get($user)->update_rights_to_base($bas_id, ['order_master' => false]);
                     }
 
                     foreach (array_filter($newAdmins) as $admin) {
                         $user = \User_Adapter::getInstance($admin, $app);
-                        $app['acl']->get($user)->update_rights_to_base($bas_id, array('order_master' => true));
+                        $app['acl']->get($user)->update_rights_to_base($bas_id, ['order_master' => true]);
                     }
                     $conn->commit();
 
@@ -210,10 +210,10 @@ class Collection implements ControllerProviderInterface
             }
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $bas_id,
             'success' => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -246,17 +246,17 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                     'success' => $success,
                     'msg'     => $msg,
                     'bas_id'  => $collection->get_base_id()
-                ));
+                ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $collection->get_base_id(),
             'success' => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -281,17 +281,17 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $success ? _('Successful removal') : _('An error occured'),
                 'bas_id'  => $collection->get_base_id()
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $collection->get_base_id(),
             'success' => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -316,17 +316,17 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $success ? _('Successful removal') : _('An error occured'),
                 'bas_id'  => $collection->get_base_id()
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $collection->get_base_id(),
             'success' => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -351,17 +351,17 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $success ? _('Successful removal') : _('An error occured'),
                 'bas_id'  => $collection->get_base_id()
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $collection->get_base_id(),
             'success' => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -387,17 +387,17 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $success ? _('Successful removal') : _('An error occured'),
                 'bas_id'  => $collection->get_base_id()
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $collection->get_base_id(),
             'success' => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -415,19 +415,19 @@ class Collection implements ControllerProviderInterface
         }
 
         if ($file->getClientSize() > 1024 * 1024) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-too-big',
-            ));
+            ]);
         }
 
         if (!$file->isValid()) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-invalid',
-            ));
+            ]);
         }
 
         $collection = \collection::get_from_base_id($app, $bas_id);
@@ -437,17 +437,17 @@ class Collection implements ControllerProviderInterface
 
             $app['filesystem']->remove($file->getPathname());
         } catch (\Exception $e) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-error',
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $bas_id,
             'success' => 1,
-        ));
+        ]);
     }
 
     /**
@@ -465,19 +465,19 @@ class Collection implements ControllerProviderInterface
         }
 
         if ($file->getClientSize() > 1024 * 1024) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-too-big',
-            ));
+            ]);
         }
 
         if (!$file->isValid()) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-invalid',
-            ));
+            ]);
         }
 
         $collection = \collection::get_from_base_id($app, $bas_id);
@@ -487,17 +487,17 @@ class Collection implements ControllerProviderInterface
 
             $app['filesystem']->remove($file->getPathname());
         } catch (\Exception $e) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-error',
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $bas_id,
             'success' => 1,
-        ));
+        ]);
     }
 
     /**
@@ -515,19 +515,19 @@ class Collection implements ControllerProviderInterface
         }
 
         if ($file->getClientSize() > 65535) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-too-big',
-            ));
+            ]);
         }
 
         if (!$file->isValid()) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-invalid',
-            ));
+            ]);
         }
 
         $collection = \collection::get_from_base_id($app, $bas_id);
@@ -536,17 +536,17 @@ class Collection implements ControllerProviderInterface
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, $file, \collection::PIC_WM);
             $app['filesystem']->remove($file->getPathname());
         } catch (\Exception $e) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-error',
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $bas_id,
             'success' => 1,
-        ));
+        ]);
     }
 
     /**
@@ -564,19 +564,19 @@ class Collection implements ControllerProviderInterface
         }
 
         if ($file->getClientSize() > 65535) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-too-big',
-            ));
+            ]);
         }
 
         if (!$file->isValid()) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-invalid',
-            ));
+            ]);
         }
 
         $collection = \collection::get_from_base_id($app, $bas_id);
@@ -585,17 +585,17 @@ class Collection implements ControllerProviderInterface
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, $file, \collection::PIC_LOGO);
             $app['filesystem']->remove($file->getPathname());
         } catch (\Exception $e) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-error',
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $bas_id,
             'success' => 1,
-        ));
+        ]);
     }
 
     /**
@@ -627,32 +627,32 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $msg
-            ));
+            ]);
         }
 
         if ($collection->get_record_amount() > 0) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $collection->get_sbas_id(),
                 'success' => 0,
                 'error'   => 'collection-not-empty',
-            ));
+            ]);
         }
 
         if ($success) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'      => $collection->get_sbas_id(),
                 'success'     => 1,
                 'reload-tree' => 1,
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $collection->get_sbas_id(),
             'success' => 0,
-        ));
+        ]);
     }
 
     /**
@@ -677,16 +677,16 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $success ? _('The publication has been stopped') : _('An error occured')
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $collection->get_sbas_id(),
             'success' => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -715,17 +715,17 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $success ? _('Successful update') : _('An error occured')
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'      => $collection->get_base_id(),
             'success'     => (int) $success,
             'reload-tree' => 1,
-        ));
+        ]);
     }
 
     public function labels(Application $app, Request $request, $bas_id)
@@ -753,17 +753,17 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $success ? _('Successful update') : _('An error occured')
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'      => $collection->get_base_id(),
             'success'     => (int) $success,
             'reload-tree' => 1,
-        ));
+        ]);
     }
 
     /**
@@ -792,16 +792,16 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $success ? _('Successful update') : _('An error occured')
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'      => $collection->get_sbas_id(),
             'success'     => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -826,16 +826,16 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $success ? _('Successful update') : _('An error occured')
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'      => $collection->get_sbas_id(),
             'success'     => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -860,16 +860,16 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $success ? _('Successful update') : _('An error occured')
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'      => $collection->get_sbas_id(),
             'success'     => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -883,7 +883,7 @@ class Collection implements ControllerProviderInterface
     {
         $databox = $app['phraseanet.appbox']->get_databox(\phrasea::sbasFromBas($app, $bas_id));
         $collection = \collection::get_from_base_id($app, $bas_id);
-        $structFields = $suggestedValues = $basePrefs = array();
+        $structFields = $suggestedValues = $basePrefs = [];
 
         foreach ($databox->get_meta_structure() as $meta) {
             if ($meta->is_readonly()) {
@@ -900,9 +900,9 @@ class Collection implements ControllerProviderInterface
                 foreach ($z[0] as $ki => $vi) {
                     if ($vi && isset($structFields[$ki])) {
                         foreach ($vi->value as $oneValue) {
-                            $suggestedValues[] = array(
+                            $suggestedValues[] = [
                                 'key'   => $ki, 'value' => $f, 'name'  => (string) $oneValue
-                            );
+                            ];
                             $f++;
                         }
                     }
@@ -912,7 +912,7 @@ class Collection implements ControllerProviderInterface
             $z = $sxe->xpath('/baseprefs');
             if ($z && is_array($z)) {
                 foreach ($z[0] as $ki => $vi) {
-                    $pref = array('status' => null, 'xml'    => null);
+                    $pref = ['status' => null, 'xml'    => null];
 
                     if ($ki == 'status') {
                         $pref['status'] = $vi;
@@ -925,13 +925,13 @@ class Collection implements ControllerProviderInterface
             }
         }
 
-        return $app['twig']->render('admin/collection/suggested_value.html.twig', array(
+        return $app['twig']->render('admin/collection/suggested_value.html.twig', [
             'collection'      => $collection,
             'databox'         => $databox,
             'suggestedValues' => $suggestedValues,
             'structFields'    => $structFields,
             'basePrefs'       => $basePrefs,
-        ));
+        ]);
     }
 
     /**
@@ -959,17 +959,17 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $success ? _('Successful update') : _('An error occured'),
                 'bas_id'  => $collection->get_base_id()
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_collection_display_suggested_values', array(
+        return $app->redirectPath('admin_collection_display_suggested_values', [
             'bas_id'      => $collection->get_sbas_id(),
             'success'     => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -984,12 +984,12 @@ class Collection implements ControllerProviderInterface
     {
         $collection = \collection::get_from_base_id($app, $bas_id);
 
-        $out = array('total' => array('totobj' => 0, 'totsiz' => 0, 'mega'   => '0', 'giga'   => '0'), 'result' => array());
+        $out = ['total' => ['totobj' => 0, 'totsiz' => 0, 'mega'   => '0', 'giga'   => '0'], 'result' => []];
 
         foreach ($collection->get_record_details() as $vrow) {
 
             $last_k1 = $last_k2 = null;
-            $outRow = array('midobj' => 0, 'midsiz' => 0);
+            $outRow = ['midobj' => 0, 'midsiz' => 0];
 
             if ($vrow['amount'] > 0 || $last_k1 !== $vrow['coll_id']) {
 
@@ -1059,9 +1059,9 @@ class Collection implements ControllerProviderInterface
             $out['total']['giga'] = $out['total']['totsiz'] / (1024 * 1024 * 1024);
         }
 
-        return $app['twig']->render('admin/collection/details.html.twig', array(
+        return $app['twig']->render('admin/collection/details.html.twig', [
             'collection' => $collection,
             'table'      => $out,
-        ));
+        ]);
     }
 }

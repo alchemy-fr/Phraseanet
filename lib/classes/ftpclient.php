@@ -5,7 +5,7 @@ class ftpclient
     protected $connexion;
     protected $proxy;
     protected $host;
-    protected $cached_dirs = array();
+    protected $cached_dirs = [];
     protected $debug = false;
 
     public function __construct($host, $port = 21, $timeout = 90, $ssl = false, $proxy = false, $proxyport = false)
@@ -365,7 +365,7 @@ class ftpclient
         $current_dir = $this->pwd();
         $contents = ftp_rawlist($this->connexion, $current_dir,  ! ! $recursive);
 
-        $list = array();
+        $list = [];
 
         foreach ($contents as $content) {
             if ($content == '')
@@ -388,9 +388,9 @@ class ftpclient
                 $date = strtotime($info[6] . ' ' . $info[5] . ' ' . date('Y') . ' ' . $info[7]);
             }
 
-            $list[$file] = array(
+            $list[$file] = [
                 'date' => $date
-            );
+            ];
         }
 
         return $list;

@@ -32,7 +32,7 @@ class BasketsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testCreateBasket()
     {
        $nbBasketsBefore = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM \Alchemy\Phrasea\Model\Entities\Basket b')->getSingleScalarResult();
-       self::$DI['client']->request("POST", "/client/baskets/new/", array('p0' => 'hello'));
+       self::$DI['client']->request("POST", "/client/baskets/new/", ['p0' => 'hello']);
        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
        $nbBasketsAfter = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM \Alchemy\Phrasea\Model\Entities\Basket b')->getSingleScalarResult();
        $this->assertGreaterThan($nbBasketsBefore,$nbBasketsAfter);
@@ -44,11 +44,11 @@ class BasketsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testAddElementToBasket()
     {
         $basket = $this->insertOneBasket();
-        self::$DI['client']->request("POST", "/client/baskets/add-element/", array(
+        self::$DI['client']->request("POST", "/client/baskets/add-element/", [
             'courChuId'  => $basket->getId(),
             'sbas'       => self::$DI['record_1']->get_sbas_id(),
             'p0'         => self::$DI['record_1']->get_record_id()
-        ));
+        ]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $basket = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket')->find($basket->getId());
         $this->assertGreaterThan(0, $basket->getElements()->count());
@@ -60,9 +60,9 @@ class BasketsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testDeleteBasket()
     {
         $basket = $this->insertOneBasket();
-        self::$DI['client']->request("POST", "/client/baskets/delete/", array(
+        self::$DI['client']->request("POST", "/client/baskets/delete/", [
             'courChuId'  => $basket->getId()
-        ));
+        ]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         try {
             $basket = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket')->find($basket->getId());
@@ -91,9 +91,9 @@ class BasketsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['app']['EM']->persist($basket);
         self::$DI['app']['EM']->flush();
 
-        self::$DI['client']->request("POST", "/client/baskets/delete-element/", array(
+        self::$DI['client']->request("POST", "/client/baskets/delete-element/", [
             'p0'  => $basketElement->getId()
-        ));
+        ]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertEquals(0, $basket->getElements()->count());
     }

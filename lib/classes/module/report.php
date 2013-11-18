@@ -41,7 +41,7 @@ class module_report
      * The result of the report
      * @var array
      */
-    public $report = array();
+    public $report = [];
 
     /**
      * The title of the report
@@ -53,25 +53,25 @@ class module_report
      * default displayed value in the formated tab
      * @var array
      */
-    protected $display = array();
+    protected $display = [];
 
     /**
      * ?
      * @var <array>
      */
-    protected $default_display = array();
+    protected $default_display = [];
 
     /**
      * Contain all the field from the sql request
      * @var array
      */
-    protected $champ = array();
+    protected $champ = [];
 
     /**
      * result of the report
      * @var array
      */
-    protected $result = array();
+    protected $result = [];
 
     /**
      * The id of all collections from a databox
@@ -117,7 +117,7 @@ class module_report
     /**
      * the request executed
      */
-    protected $params = array();
+    protected $params = [];
 
     /**
      * do we display  next and previous button
@@ -159,33 +159,33 @@ class module_report
      * filter executed on report choose by the user
      * @var array;
      */
-    protected $tab_filter = array();
+    protected $tab_filter = [];
 
     /**
      * column displayed in the report choose by the user
      * @var <array>
      */
-    protected $active_column = array();
+    protected $active_column = [];
 
     /**
      * array that contains the string displayed
      * foreach filters
      * @var <array>
      */
-    protected $posting_filter = array();
+    protected $posting_filter = [];
 
     /**
      * The ORDER BY filters of the query
      * by default is empty
      * @var array
      */
-    protected $tab_order = array();
+    protected $tab_order = [];
 
     /**
      * define columns that are boundable
      * @var <array>
      */
-    protected $bound = array();
+    protected $bound = [];
 
     /**
      * do we display print button
@@ -209,7 +209,7 @@ class module_report
      * gettext correspondance for all available columns in report
      * @var array
      */
-    protected $cor = array();
+    protected $cor = [];
 
     /**
      * group result of a report this is the name ogf the grouped column
@@ -232,7 +232,7 @@ class module_report
     /**
      *
      */
-    protected $cor_query = array();
+    protected $cor_query = [];
     protected $isInformative;
 
     /**
@@ -596,8 +596,8 @@ class module_report
     {
         $row = array_shift($rs);
 
-        $this->champ = is_array($row) ? array_keys($row) : array();
-        $this->default_display = is_array($row) ? array_keys($row) : array();
+        $this->champ = is_array($row) ? array_keys($row) : [];
+        $this->default_display = is_array($row) ? array_keys($row) : [];
 
         return;
     }
@@ -657,7 +657,7 @@ class module_report
      */
     private function setCor()
     {
-        return array(
+        return [
             'user'           => _('report:: utilisateur'),
             'coll_id'        => _('report:: collections'),
             'connexion'      => _('report:: Connexion'),
@@ -680,7 +680,7 @@ class module_report
             'size'           => _('report:: taille'),
             'copyright'      => _('report:: copyright'),
             'final'          => _('phraseanet:: sous definition')
-        );
+        ];
 
         return;
     }
@@ -691,14 +691,14 @@ class module_report
      */
     private function setDay()
     {
-        return Array(
+        return [
             1 => _('phraseanet::jours:: lundi'),
             2 => _('phraseanet::jours:: mardi'),
             3 => _('phraseanet::jours:: mercredi'),
             4 => _('phraseanet::jours:: jeudi'),
             5 => _('phraseanet::jours:: vendredi'),
             6 => _('phraseanet::jours:: samedi'),
-            7 => _('phraseanet::jours:: dimanche'));
+            7 => _('phraseanet::jours:: dimanche')];
     }
 
     /**
@@ -707,7 +707,7 @@ class module_report
      */
     private function setMonth()
     {
-        return array(
+        return [
             _('janvier'),
             _('fevrier'),
             _('mars'),
@@ -720,7 +720,7 @@ class module_report
             _('octobre'),
             _('novembre'),
             _('decembre')
-        );
+        ];
     }
 
     /**
@@ -759,9 +759,9 @@ class module_report
      */
     protected function initDefaultConfigColumn($display)
     {
-        $array = array();
+        $array = [];
         foreach ($display as $key => $value)
-            $array[$value] = array("", 0, 0, 0, 0);
+            $array[$value] = ["", 0, 0, 0, 0];
         $this->setConfigColumn($array);
     }
 
@@ -791,13 +791,13 @@ class module_report
                 $bound = array_key_exists($column, $this->bound) ? $this->bound[$column] : $row[2];
                 $filter = (isset($row[3]) ? $row[3] : 0);
                 $groupby = $row[4];
-                $config = array(
+                $config = [
                     'title'          => empty($title) ? (empty($title_text) ? $column : $title_text) : $title,
                     'sort'           => $sort,
                     'bound'          => $bound,
                     'filter'         => $filter,
                     'groupby'        => $groupby
-                );
+                ];
 
                 $this->display[$column] = $config;
             }
@@ -857,7 +857,7 @@ class module_report
 
     public static function getPreff(Application $app, $sbasid)
     {
-        $tab = array();
+        $tab = [];
 
         $databox = $app['phraseanet.appbox']->get_databox((int) $sbasid);
 

@@ -9,7 +9,7 @@ class sqlActionTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         parent::setUp();
 
-        $this->mock = $this->getMock('module_report', array(), array(), '', false);
+        $this->mock = $this->getMock('module_report', [], [], '', false);
 
         $this->action = new module_report_sqlaction(self::$DI['app'], $this->mock);
     }

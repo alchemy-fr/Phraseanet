@@ -19,7 +19,7 @@ class ColorspaceTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new Colorspace(self::$DI['app'], array('colorspaces' => array('RGB', 'cmyk')));
+        $this->object = new Colorspace(self::$DI['app'], ['colorspaces' => ['RGB', 'cmyk']]);
     }
 
     /**
@@ -59,6 +59,6 @@ class ColorspaceTest extends \PhraseanetPHPUnitAbstract
      */
     public function testContructorInvalidArgumentException()
     {
-        new Colorspace(self::$DI['app'], array(array('RGB', 'cmyk')));
+        new Colorspace(self::$DI['app'], [['RGB', 'cmyk']]);
     }
 }

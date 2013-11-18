@@ -13,7 +13,7 @@ class PropertyTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testDisplayStatusProperty()
     {
-        $this->XMLHTTPRequest('GET', '/prod/records/property/', array('lst' => implode(';', array(self::$DI['record_no_access']->get_serialize_key(), self::$DI['record_1']->get_serialize_key(), self::$DI['record_4']->get_serialize_key()))));
+        $this->XMLHTTPRequest('GET', '/prod/records/property/', ['lst' => implode(';', [self::$DI['record_no_access']->get_serialize_key(), self::$DI['record_1']->get_serialize_key(), self::$DI['record_4']->get_serialize_key()])]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
         unset($response);
@@ -34,7 +34,7 @@ class PropertyTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testDisplayTypeProperty()
     {
-        $this->XMLHTTPRequest('GET', '/prod/records/property/type/',array('lst' => implode(';', array(self::$DI['record_no_access']->get_serialize_key(), self::$DI['record_1']->get_serialize_key(), self::$DI['record_4']->get_serialize_key()))));
+        $this->XMLHTTPRequest('GET', '/prod/records/property/type/',['lst' => implode(';', [self::$DI['record_no_access']->get_serialize_key(), self::$DI['record_1']->get_serialize_key(), self::$DI['record_4']->get_serialize_key()])]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
         unset($response);
@@ -61,15 +61,15 @@ class PropertyTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
         $story->appendChild($record2);
 
-        self::$DI['client']->request('POST', '/prod/records/property/status/', array(
-            'apply_to_children' => array($story->get_sbas_id() => true),
-            'status'                                   => array(
-                $record->get_sbas_id() => array(6     => true, 8     => true, 11    => true)
-            ),
-            'lst' => implode(';', array(
+        self::$DI['client']->request('POST', '/prod/records/property/status/', [
+            'apply_to_children' => [$story->get_sbas_id() => true],
+            'status'                                   => [
+                $record->get_sbas_id() => [6     => true, 8     => true, 11    => true]
+            ],
+            'lst' => implode(';', [
                 $record->get_serialize_key(),$story->get_serialize_key()
-            ))
-        ));
+            ])
+        ]);
         $response = self::$DI['client']->getResponse();
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
@@ -113,15 +113,15 @@ class PropertyTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
         $record2 = \record_adapter::createFromFile($file, self::$DI['app']);
 
-        self::$DI['client']->request('POST', '/prod/records/property/type/',  array(
-            'lst' => implode(';', array(
+        self::$DI['client']->request('POST', '/prod/records/property/type/',  [
+            'lst' => implode(';', [
                 $record->get_serialize_key(), $record2->get_serialize_key()
-            )),
-            'types' => array(
+            ]),
+            'types' => [
                 $record->get_serialize_key() => 'document',
                 $record2->get_serialize_key() => 'flash',
-            )
-        ));
+            ]
+        ]);
         $response = self::$DI['client']->getResponse();
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);

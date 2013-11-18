@@ -152,13 +152,13 @@ use Symfony\Component\Form\Exception\FormException;
 
 class Application extends SilexApplication
 {
-    private static $availableLanguages = array(
+    private static $availableLanguages = [
         'de_DE' => 'Deutsch',
         'en_GB' => 'English',
         'fr_FR' => 'Français',
         'nl_NL' => 'Dutch',
-    );
-    private static $flashTypes = array('warning', 'info', 'success', 'error');
+    ];
+    private static $flashTypes = ['warning', 'info', 'success', 'error'];
     private $environment;
 
     const ENV_DEV = 'dev';
@@ -222,9 +222,9 @@ class Application extends SilexApplication
 
         $this->register(new MediaAlchemystServiceProvider());
         $this['media-alchemyst.configuration'] = $this->share(function (Application $app) {
-            $configuration = array();
+            $configuration = [];
 
-            foreach (array(
+            foreach ([
                     'swftools.pdf2swf.binaries'    => 'pdf2swf_binary',
                     'swftools.swfrender.binaries'  => 'swf_render_binary',
                     'swftools.swfextract.binaries' => 'swf_extract_binary',
@@ -239,7 +239,7 @@ class Application extends SilexApplication
                     'mp4box.timeout'               => 'mp4box_timeout',
                     'swftools.timeout'             => 'swftools_timeout',
                     'unoconv.timeout'              => 'unoconv_timeout',
-            ) as $parameter => $key) {
+            ] as $parameter => $key) {
                 if (isset($this['configuration']['binaries'][$key])) {
                     $configuration[$parameter] = $this['configuration']['binaries'][$key];
                 }
@@ -284,20 +284,20 @@ class Application extends SilexApplication
         });
 
         $this->register(new SearchEngineServiceProvider());
-        $this->register(new SessionServiceProvider(), array(
+        $this->register(new SessionServiceProvider(), [
             'session.test' => $this->getEnvironment() === static::ENV_TEST
-        ));
+        ]);
         $this->register(new ServiceControllerServiceProvider());
         $this->register(new SwiftmailerServiceProvider());
         $this->register(new TasksServiceProvider());
         $this->register(new TemporaryFilesystemServiceProvider());
         $this->register(new TokensServiceProvider());
-        $this->register(new TwigServiceProvider(), array(
-            'twig.options' => array(
+        $this->register(new TwigServiceProvider(), [
+            'twig.options' => [
                 'cache'           => $this['root.path'] . '/tmp/cache_twig/',
-            ),
-            'twig.form.templates' => array('login/common/form_div_layout.html.twig')
-        ));
+            ],
+            'twig.form.templates' => ['login/common/form_div_layout.html.twig']
+        ]);
         $this->register(new FormServiceProvider());
 
         $this->setupTwig();
@@ -319,24 +319,24 @@ class Application extends SilexApplication
             if ($app['phraseanet.registry']->get('GV_smtp')) {
                 $transport = new \Swift_Transport_EsmtpTransport(
                     $app['swiftmailer.transport.buffer'],
-                    array($app['swiftmailer.transport.authhandler']),
+                    [$app['swiftmailer.transport.authhandler']],
                     $app['swiftmailer.transport.eventdispatcher']
                 );
 
                 $encryption = null;
 
-                if (in_array($app['phraseanet.registry']->get('GV_smtp_secure'), array('ssl', 'tls'))) {
+                if (in_array($app['phraseanet.registry']->get('GV_smtp_secure'), ['ssl', 'tls'])) {
                     $encryption = $app['phraseanet.registry']->get('GV_smtp_secure');
                 }
 
-                $options = $app['swiftmailer.options'] = array_replace(array(
+                $options = $app['swiftmailer.options'] = array_replace([
                     'host'       => $app['phraseanet.registry']->get('GV_smtp_host'),
                     'port'       => $app['phraseanet.registry']->get('GV_smtp_port'),
                     'username'   => $app['phraseanet.registry']->get('GV_smtp_user'),
                     'password'   => $app['phraseanet.registry']->get('GV_smtp_password'),
                     'encryption' => $encryption,
                     'auth_mode'  => null,
-                ), $app['swiftmailer.options']);
+                ], $app['swiftmailer.options']);
 
                 $transport->setHost($options['host']);
                 $transport->setPort($options['port']);
@@ -400,8 +400,8 @@ class Application extends SilexApplication
 
         $this['dispatcher'] = $this->share(
             $this->extend('dispatcher', function ($dispatcher, Application $app) {
-                $dispatcher->addListener(KernelEvents::REQUEST, array($app, 'initSession'), 254);
-                $dispatcher->addListener(KernelEvents::RESPONSE, array($app, 'addUTF8Charset'), -128);
+                $dispatcher->addListener(KernelEvents::REQUEST, [$app, 'initSession'], 254);
+                $dispatcher->addListener(KernelEvents::RESPONSE, [$app, 'addUTF8Charset'], -128);
                 $dispatcher->addSubscriber(new LogoutSubscriber());
                 $dispatcher->addSubscriber(new PhraseaLocaleSubscriber($app));
                 $dispatcher->addSubscriber(new MaintenanceSubscriber($app));
@@ -411,7 +411,7 @@ class Application extends SilexApplication
             })
         );
 
-        $this['log.channels'] = array('monolog', 'task-manager.logger');
+        $this['log.channels'] = ['monolog', 'task-manager.logger'];
 
         $this->register(new LocaleServiceProvider());
 
@@ -462,7 +462,7 @@ class Application extends SilexApplication
      *
      * @throws FormException if any given option is not applicable to the given type
      */
-    public function form($type = 'form', $data = null, array $options = array(), FormBuilderInterface $parent = null)
+    public function form($type = 'form', $data = null, array $options = [], FormBuilderInterface $parent = null)
     {
         return $this['form.factory']->create($type, $data, $options, $parent);
     }
@@ -475,7 +475,7 @@ class Application extends SilexApplication
      *
      * @return string The generated path
      */
-    public function path($route, $parameters = array())
+    public function path($route, $parameters = [])
     {
         return $this['url_generator']->generate($route, $parameters, UrlGenerator::ABSOLUTE_PATH);
     }
@@ -488,7 +488,7 @@ class Application extends SilexApplication
      *
      * @return RedirectResponse
      */
-    public function redirectPath($route, $parameters = array())
+    public function redirectPath($route, $parameters = [])
     {
         return $this->redirect($this->path($route, $parameters));
     }
@@ -501,7 +501,7 @@ class Application extends SilexApplication
      *
      * @return string The generated URL
      */
-    public function url($route, $parameters = array())
+    public function url($route, $parameters = [])
     {
         return $this['url_generator']->generate($route, $parameters, UrlGenerator::ABSOLUTE_URL);
     }
@@ -514,7 +514,7 @@ class Application extends SilexApplication
      *
      * @return RedirectResponse
      */
-    public function redirectUrl($route, $parameters = array())
+    public function redirectUrl($route, $parameters = [])
     {
         return $this->redirect($this->url($route, $parameters));
     }
@@ -671,7 +671,7 @@ class Application extends SilexApplication
      *
      * @return array
      */
-    public function getFlash($type, array $default = array())
+    public function getFlash($type, array $default = [])
     {
         return $this['session']->getFlashBag()->get($type, $default);
     }
@@ -763,7 +763,7 @@ class Application extends SilexApplication
      */
     public function getOpenCollections()
     {
-        return array();
+        return [];
     }
 
     public function bindRoutes()

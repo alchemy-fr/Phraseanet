@@ -56,7 +56,7 @@ class registryTest extends PhraseanetPHPUnitAbstract
         $this->object->set('key_test', '1', registry::TYPE_INTEGER);
         $this->assertTrue($this->object->get('key_test') === 1);
 
-        $this->object->set('key_test', array('caca'), registry::TYPE_INTEGER);
+        $this->object->set('key_test', ['caca'], registry::TYPE_INTEGER);
         $this->assertTrue($this->object->get('key_test') === 1);
 
         /**
@@ -71,7 +71,7 @@ class registryTest extends PhraseanetPHPUnitAbstract
         $this->object->set('key_test', '1', registry::TYPE_BOOLEAN);
         $this->assertTrue($this->object->get('key_test') === true);
 
-        $this->object->set('key_test', array('caca'), registry::TYPE_BOOLEAN);
+        $this->object->set('key_test', ['caca'], registry::TYPE_BOOLEAN);
         $this->assertTrue($this->object->get('key_test') === true);
 
         $this->object->set('key_test', '0', registry::TYPE_BOOLEAN);
@@ -90,34 +90,34 @@ class registryTest extends PhraseanetPHPUnitAbstract
          * Set value with type enum_multi
          */
         $this->object->set('key_test', 'value1', registry::TYPE_ENUM_MULTI);
-        $this->assertTrue($this->object->get('key_test') === array('value1'));
+        $this->assertTrue($this->object->get('key_test') === ['value1']);
 
         $this->object->set('key_test', 1, registry::TYPE_ENUM_MULTI);
-        $this->assertTrue($this->object->get('key_test') === array(1));
+        $this->assertTrue($this->object->get('key_test') === [1]);
 
         $this->object->set('key_test', '1', registry::TYPE_ENUM_MULTI);
-        $this->assertTrue($this->object->get('key_test') === array('1'));
+        $this->assertTrue($this->object->get('key_test') === ['1']);
 
-        $this->object->set('key_test', array('caca'), registry::TYPE_ENUM_MULTI);
-        $this->assertTrue($this->object->get('key_test') === array('caca'));
+        $this->object->set('key_test', ['caca'], registry::TYPE_ENUM_MULTI);
+        $this->assertTrue($this->object->get('key_test') === ['caca']);
 
         $this->object->set('key_test', '0', registry::TYPE_ENUM_MULTI);
-        $this->assertTrue($this->object->get('key_test') === array('0'));
+        $this->assertTrue($this->object->get('key_test') === ['0']);
 
         $this->object->set('key_test', 0, registry::TYPE_ENUM_MULTI);
-        $this->assertTrue($this->object->get('key_test') === array(0));
+        $this->assertTrue($this->object->get('key_test') === [0]);
 
         $this->object->set('key_test', false, registry::TYPE_ENUM_MULTI);
-        $this->assertTrue($this->object->get('key_test') === array(false));
+        $this->assertTrue($this->object->get('key_test') === [false]);
 
         $this->object->set('key_test', true, registry::TYPE_ENUM_MULTI);
-        $this->assertTrue($this->object->get('key_test') === array(true));
+        $this->assertTrue($this->object->get('key_test') === [true]);
     }
 
     public function testSetArrayToString()
     {
         try {
-            $this->object->set('key_test', array('caca'), registry::TYPE_STRING);
+            $this->object->set('key_test', ['caca'], registry::TYPE_STRING);
 
             if (version_compare(PHP_VERSION, '5.4', '>=')) {
                 $this->fail('Should raise an error notice');
@@ -130,7 +130,7 @@ class registryTest extends PhraseanetPHPUnitAbstract
 
         try {
 
-            $this->object->set('key_test', array('caca'), registry::TYPE_STRING);
+            $this->object->set('key_test', ['caca'], registry::TYPE_STRING);
 
             if (version_compare(PHP_VERSION, '5.4', '>=')) {
                 $this->fail('Should raise an error notice');

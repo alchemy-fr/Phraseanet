@@ -173,7 +173,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         $this->insertOneFeed(self::$DI['user'], "test1", true);
         $this->insertOneFeed(self::$DI['user'], "test2", true);
 
-        $all_feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(array('public' => true), array('updatedOn' => 'DESC'));
+        $all_feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(['public' => true], ['updatedOn' => 'DESC']);
 
         foreach ($all_feeds as $feed) {
             $this->assertTrue($feed->isPublic());
@@ -190,7 +190,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         $this->insertOneFeed(self::$DI['user'], "test1", true);
         $this->insertOneFeed(self::$DI['user'], "test2", true);
 
-        $all_feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(array('public' => true), array('updatedOn' => 'DESC'));
+        $all_feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(['public' => true], ['updatedOn' => 'DESC']);
 
         foreach ($all_feeds as $feed) {
             $this->assertTrue($feed->isPublic());
@@ -361,7 +361,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
     public function checkRSSEntryItemsNode(\DOMXPath $xpath, FeedEntry $entry, $count)
     {
         $content = $entry->getItems();
-        $available_medium = array('image', 'audio', 'video');
+        $available_medium = ['image', 'audio', 'video'];
         array_walk($content, $this->removeBadItems($content, $available_medium));
         $media_group = $xpath->query("/rss/channel/item[" . $count . "]/media:group");
         $this->assertEquals(sizeof($content), $media_group->length, sizeof($content)." != ".$media_group->length);
@@ -391,7 +391,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function parseAttributes(\DOMNode $node)
     {
-        $current_attributes = array();
+        $current_attributes = [];
         foreach ($node->attributes as $attribute) {
             $current_attributes[$attribute->name] = $attribute->value;
         }
@@ -460,75 +460,75 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function checkOptionnalMediaGroupNode(\DOMNode $node, FeedItem $entry_item)
     {
-        $fields = array(
-            'title' => array(
+        $fields = [
+            'title' => [
                 'dc_field'    => \databox_Field_DCESAbstract::Title,
-                'media_field' => array(
+                'media_field' => [
                     'name'       => 'media:title',
-                    'attributes' => array(
+                    'attributes' => [
                         'type'        => 'plain'
-                    )
-                ),
+                    ]
+                ],
                 'separator'   => ' '
-            )
-            , 'description' => array(
+            ]
+            , 'description' => [
                 'dc_field'    => \databox_Field_DCESAbstract::Description,
-                'media_field' => array(
+                'media_field' => [
                     'name'       => 'media:description',
-                    'attributes' => array()
-                ),
+                    'attributes' => []
+                ],
                 'separator'   => ' '
-            )
-            , 'contributor' => array(
+            ]
+            , 'contributor' => [
                 'dc_field'    => \databox_Field_DCESAbstract::Contributor,
-                'media_field' => array(
+                'media_field' => [
                     'name'       => 'media:credit',
-                    'attributes' => array(
+                    'attributes' => [
                         'role'      => 'contributor',
                         'scheme'    => 'urn:ebu'
-                    )
-                ),
+                    ]
+                ],
                 'separator' => ' '
-            )
-            , 'director'  => array(
+            ]
+            , 'director'  => [
                 'dc_field'    => \databox_Field_DCESAbstract::Creator,
-                'media_field' => array(
+                'media_field' => [
                     'name'       => 'media:credit',
-                    'attributes' => array(
+                    'attributes' => [
                         'role'      => 'director',
                         'scheme'    => 'urn:ebu'
-                    )
-                ),
+                    ]
+                ],
                 'separator' => ' '
-            )
-            , 'publisher' => array(
+            ]
+            , 'publisher' => [
                 'dc_field'    => \databox_Field_DCESAbstract::Publisher,
-                'media_field' => array(
+                'media_field' => [
                     'name'       => 'media:credit',
-                    'attributes' => array(
+                    'attributes' => [
                         'role'      => 'publisher',
                         'scheme'    => 'urn:ebu'
-                    )
-                ),
+                    ]
+                ],
                 'separator' => ' '
-            )
-            , 'rights'    => array(
+            ]
+            , 'rights'    => [
                 'dc_field'    => \databox_Field_DCESAbstract::Rights,
-                'media_field' => array(
+                'media_field' => [
                     'name'       => 'media:copyright',
-                    'attributes' => array()
-                ),
+                    'attributes' => []
+                ],
                 'separator' => ' '
-            )
-            , 'keywords'  => array(
+            ]
+            , 'keywords'  => [
                 'dc_field'    => \databox_Field_DCESAbstract::Subject,
-                'media_field' => array(
+                'media_field' => [
                     'name'       => 'media:keywords',
-                    'attributes' => array()
-                ),
+                    'attributes' => []
+                ],
                 'separator' => ', '
-            )
-        );
+            ]
+        ];
 
         foreach ($fields as $key_field => $field) {
 
@@ -674,7 +674,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
 
         $content = $entry->getItems()->toArray();
 
-        $available_medium = array('image', 'audio', 'video');
+        $available_medium = ['image', 'audio', 'video'];
 
         array_walk($content, $this->removeBadItems($content, $available_medium));
 

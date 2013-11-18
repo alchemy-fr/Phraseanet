@@ -12,7 +12,7 @@ class PasswordTokenTest extends \PhraseanetPHPUnitAbstract
         $random = $this
             ->getMockBuilder('random')
             ->disableOriginalConstructor()
-            ->setMethods(array('helloToken'))
+            ->setMethods(['helloToken'])
             ->getMock();
 
         $token = \random::generatePassword();
@@ -32,7 +32,7 @@ class PasswordTokenTest extends \PhraseanetPHPUnitAbstract
         $random = $this
             ->getMockBuilder('random')
             ->disableOriginalConstructor()
-            ->setMethods(array('helloToken'))
+            ->setMethods(['helloToken'])
             ->getMock();
 
         $token = \random::generatePassword();
@@ -41,7 +41,7 @@ class PasswordTokenTest extends \PhraseanetPHPUnitAbstract
             ->expects($this->once())
             ->method('helloToken')
             ->with($token)
-            ->will($this->returnValue(array('usr_id' => mt_rand(), 'type' => \random::TYPE_PASSWORD)));
+            ->will($this->returnValue(['usr_id' => mt_rand(), 'type' => \random::TYPE_PASSWORD]));
 
         $constraint = new PasswordToken(self::$DI['app'], $random);
         $this->assertTrue($constraint->isValid($token));

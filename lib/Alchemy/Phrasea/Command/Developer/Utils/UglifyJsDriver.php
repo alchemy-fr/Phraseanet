@@ -32,13 +32,13 @@ class UglifyJsDriver extends AbstractBinary
      *
      * @return UglifyJsDriver
      */
-    public static function create($conf = array(), LoggerInterface $logger = null)
+    public static function create($conf = [], LoggerInterface $logger = null)
     {
         if (!$conf instanceof ConfigurationInterface) {
             $conf = new Configuration($conf);
         }
 
-        $binaries = $conf->get('uglifyjs.binaries', array('uglifyjs'));
+        $binaries = $conf->get('uglifyjs.binaries', ['uglifyjs']);
 
         return static::load($binaries, $logger, $conf);
     }

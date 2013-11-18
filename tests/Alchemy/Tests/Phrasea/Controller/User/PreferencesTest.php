@@ -12,7 +12,7 @@ class PreferencesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testSaveUserPref()
     {
         self::$DI['app']['authentication']->setUser($this->getMockBuilder('\User_Adapter')
-            ->setMethods(array('setPrefs'))
+            ->setMethods(['setPrefs'])
             ->disableOriginalConstructor()
             ->getMock());
 
@@ -21,7 +21,7 @@ class PreferencesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->with($this->equalTo('prop_test'), $this->equalTo('val_test'))
             ->will($this->returnValue(true));
 
-        $this->XMLHTTPRequest('POST', '/user/preferences/', array('prop'  => 'prop_test', 'value' => 'val_test'));
+        $this->XMLHTTPRequest('POST', '/user/preferences/', ['prop'  => 'prop_test', 'value' => 'val_test']);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
         $datas = (array) json_decode($response->getContent());
@@ -36,7 +36,7 @@ class PreferencesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testSaveUserPrefNoXMLHTTPRequests()
     {
-        self::$DI['client']->request('POST', '/user/preferences/',  array('prop'  => 'prop_test', 'value' => 'val_test'));
+        self::$DI['client']->request('POST', '/user/preferences/',  ['prop'  => 'prop_test', 'value' => 'val_test']);
 
         $this->assertBadResponse(self::$DI['client']->getResponse());
     }
@@ -46,7 +46,7 @@ class PreferencesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testSaveTempPrefNoXMLHTTPRequests()
     {
-        self::$DI['client']->request('POST', '/user/preferences/temporary/',  array('prop'  => 'prop_test', 'value' => 'val_test'));
+        self::$DI['client']->request('POST', '/user/preferences/temporary/',  ['prop'  => 'prop_test', 'value' => 'val_test']);
 
         $this->assertBadResponse(self::$DI['client']->getResponse());
     }
@@ -56,7 +56,7 @@ class PreferencesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testSaveTemporaryPref()
     {
-        $this->XMLHTTPRequest('POST', "/user/preferences/temporary/", array('prop'  => 'prop_test', 'value' => 'val_test'));
+        $this->XMLHTTPRequest('POST', "/user/preferences/temporary/", ['prop'  => 'prop_test', 'value' => 'val_test']);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
         $datas = (array) json_decode($response->getContent());

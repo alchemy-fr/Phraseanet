@@ -189,10 +189,10 @@ class queries
 
         $queries = $app['EM']
             ->getRepository('Alchemy\Phrasea\Model\Entities\UserQuery')
-            ->findBy(array('usrId' => $usrId), array('created' => 'ASC'), 25, 0);
+            ->findBy(['usrId' => $usrId], ['created' => 'ASC'], 25, 0);
 
         foreach ($queries as $query) {
-            $history .= '<li onclick="doSpecialSearch(\'' . str_replace(array("'", '"'), array("\'", '&quot;'), $query->getQuery()) . '\')">' . $query->getQuery() . '</li>';
+            $history .= '<li onclick="doSpecialSearch(\'' . str_replace(["'", '"'], ["\'", '&quot;'], $query->getQuery()) . '\')">' . $query->getQuery() . '</li>';
         }
 
         $history .= '<ul>';
@@ -220,7 +220,7 @@ class queries
             $t .= '{ ';
             $t .= 'label:"' . p4string::MakeString(utf8_decode($subtopic->label), 'js') . '"';
             if ($q = $subtopic->query) {
-                $q = str_replace(array("\\", "'", "\r", "\n"), array("\\\\", "\\'", "\\r", "\\n"), $subtopic->query);
+                $q = str_replace(["\\", "'", "\r", "\n"], ["\\\\", "\\'", "\\r", "\\n"], $subtopic->query);
                 $t .= ", query:'" . $q . "'";
             } else {
                 $t .= ', query:null';
@@ -246,7 +246,7 @@ class queries
             $l = p4string::MakeString($s, 'html');
             $l = '<span class=\'topic_' . $depth . '\'>' . $l . '</span>';
             if ($subtopic->query) {
-                $q = str_replace(array("\\", "\"", "'", "\r", "\n"), array("\\\\", "&quot;", "\\'", "\\r", "\\n"), $subtopic->query);
+                $q = str_replace(["\\", "\"", "'", "\r", "\n"], ["\\\\", "&quot;", "\\'", "\\r", "\\n"], $subtopic->query);
                 $q = '<a href="javascript:void();" onClick="doSpecialSearch(\'' . $q . '\',true);">' . $l . '</a>';
             } else {
                 $q = $l;

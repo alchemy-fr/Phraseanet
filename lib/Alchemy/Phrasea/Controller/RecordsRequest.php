@@ -45,7 +45,7 @@ class RecordsRequest extends ArrayCollection
         $this->isSingleStory = ($flatten !== self::FLATTEN_YES && 1 === count($this) && $this->first()->is_grouping());
 
         if (self::FLATTEN_NO !== $flatten) {
-            $to_remove = array();
+            $to_remove = [];
             foreach ($this as $key => $record) {
                 if ($record->is_grouping()) {
                     if (self::FLATTEN_YES === $flatten) {
@@ -77,7 +77,7 @@ class RecordsRequest extends ArrayCollection
     public function databoxes()
     {
         if (!$this->databoxes) {
-            $this->databoxes = array();
+            $this->databoxes = [];
 
             foreach ($this as $record) {
                 if (false === array_key_exists($record->get_databox()->get_sbas_id(), $this->databoxes)) {
@@ -99,7 +99,7 @@ class RecordsRequest extends ArrayCollection
     public function collections()
     {
         if (!$this->collections) {
-            $this->collections = array();
+            $this->collections = [];
 
             foreach ($this as $record) {
                 if (false === array_key_exists($record->get_base_id(), $this->collections)) {
@@ -182,7 +182,7 @@ class RecordsRequest extends ArrayCollection
             return $this->singleStory()->get_serialize_key();
         }
 
-        $basrec = array();
+        $basrec = [];
         foreach ($this as $record) {
             $basrec[] = $record->get_serialize_key();
         }
@@ -200,9 +200,9 @@ class RecordsRequest extends ArrayCollection
      * @param  array          $rightsDatabox
      * @return RecordsRequest
      */
-    public static function fromRequest(Application $app, Request $request, $flattenStories = self::FLATTEN_NO, array $rightsColl = array(), array $rightsDatabox = array())
+    public static function fromRequest(Application $app, Request $request, $flattenStories = self::FLATTEN_NO, array $rightsColl = [], array $rightsDatabox = [])
     {
-        $elements = $received = array();
+        $elements = $received = [];
         $basket = null;
 
         if ($request->get('ssel')) {
@@ -239,7 +239,7 @@ class RecordsRequest extends ArrayCollection
 
         $elements = $received;
 
-        $to_remove = array();
+        $to_remove = [];
 
         foreach ($elements as $id => $record) {
 

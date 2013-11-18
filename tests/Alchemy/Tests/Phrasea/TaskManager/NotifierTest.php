@@ -27,14 +27,14 @@ class NotifierTest extends \PHPUnit_Framework_TestCase
 
     public function provideMessagesData()
     {
-        $managerData = array('manager' => array('process-id' => 1234), 'jobs' => array('24' => array('process-id' => 4567, 'status' => 'started')));
+        $managerData = ['manager' => ['process-id' => 1234], 'jobs' => ['24' => ['process-id' => 4567, 'status' => 'started']]];
 
-        return array(
-            array(Notifier::MESSAGE_CREATE, TaskManager::MESSAGE_PROCESS_UPDATE, json_encode(array('request' => TaskManager::MESSAGE_PROCESS_UPDATE, 'reply' => TaskManager::RESPONSE_OK)), TaskManager::RESPONSE_OK),
-            array(Notifier::MESSAGE_DELETE, TaskManager::MESSAGE_PROCESS_UPDATE, json_encode(array('request' => TaskManager::MESSAGE_PROCESS_UPDATE, 'reply' => TaskManager::RESPONSE_OK)), TaskManager::RESPONSE_OK),
-            array(Notifier::MESSAGE_UPDATE, TaskManager::MESSAGE_PROCESS_UPDATE, json_encode(array('request' => TaskManager::MESSAGE_PROCESS_UPDATE, 'reply' => TaskManager::RESPONSE_OK)), TaskManager::RESPONSE_OK),
-            array(Notifier::MESSAGE_INFORMATIONS, TaskManager::MESSAGE_STATE, json_encode(array('request' => TaskManager::MESSAGE_STATE, 'reply' => $managerData)), $managerData),
-        );
+        return [
+            [Notifier::MESSAGE_CREATE, TaskManager::MESSAGE_PROCESS_UPDATE, json_encode(['request' => TaskManager::MESSAGE_PROCESS_UPDATE, 'reply' => TaskManager::RESPONSE_OK]), TaskManager::RESPONSE_OK],
+            [Notifier::MESSAGE_DELETE, TaskManager::MESSAGE_PROCESS_UPDATE, json_encode(['request' => TaskManager::MESSAGE_PROCESS_UPDATE, 'reply' => TaskManager::RESPONSE_OK]), TaskManager::RESPONSE_OK],
+            [Notifier::MESSAGE_UPDATE, TaskManager::MESSAGE_PROCESS_UPDATE, json_encode(['request' => TaskManager::MESSAGE_PROCESS_UPDATE, 'reply' => TaskManager::RESPONSE_OK]), TaskManager::RESPONSE_OK],
+            [Notifier::MESSAGE_INFORMATIONS, TaskManager::MESSAGE_STATE, json_encode(['request' => TaskManager::MESSAGE_STATE, 'reply' => $managerData]), $managerData],
+        ];
     }
 
     public function testNoresultsReturnNull()
@@ -70,7 +70,7 @@ class NotifierTest extends \PHPUnit_Framework_TestCase
 
         $socket->expects($this->once())
                 ->method('recv')
-                ->will($this->returnValue(json_encode(array('request' => 'popo', 'reply' => array()))));
+                ->will($this->returnValue(json_encode(['request' => 'popo', 'reply' => []])));
 
         $notifier = new Notifier($socket);
         $this->assertNull($notifier->notify(Notifier::MESSAGE_CREATE));
@@ -85,7 +85,7 @@ class NotifierTest extends \PHPUnit_Framework_TestCase
 
         $socket->expects($this->once())
                 ->method('recv')
-                ->will($this->returnValue(json_encode(array('request' => TaskManager::MESSAGE_PROCESS_UPDATE))));
+                ->will($this->returnValue(json_encode(['request' => TaskManager::MESSAGE_PROCESS_UPDATE])));
 
         $notifier = new Notifier($socket);
         $this->assertNull($notifier->notify(Notifier::MESSAGE_CREATE));

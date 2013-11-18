@@ -28,7 +28,7 @@ class patch_370alpha1a implements patchInterface
      *
      * @var Array
      */
-    private $concern = array(base::DATA_BOX);
+    private $concern = [base::DATA_BOX];
 
     /**
      *
@@ -84,7 +84,7 @@ class patch_370alpha1a implements patchInterface
 
         $sql = 'UPDATE pref SET value = :structure WHERE prop = "structure"';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':structure' => $DOMDocument->saveXML()));
+        $stmt->execute([':structure' => $DOMDocument->saveXML()]);
         $stmt->closeCursor();
 
         return true;

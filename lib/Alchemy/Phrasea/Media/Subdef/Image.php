@@ -26,7 +26,7 @@ class Image extends Provider
     const OPTION_STRIP = 'strip';
     const OPTION_QUALITY = 'quality';
 
-    protected $options = array();
+    protected $options = [];
 
     public function __construct()
     {

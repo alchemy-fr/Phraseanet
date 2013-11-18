@@ -20,7 +20,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = array('__PUSH_VALIDATION__');
+    public $events = ['__PUSH_VALIDATION__'];
 
     /**
      *
@@ -52,12 +52,12 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'from'    => ''
             , 'to'      => ''
             , 'message' => ''
             , 'ssel_id' => ''
-        );
+        ];
 
         $params = array_merge($default, $params);
 
@@ -140,7 +140,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
         try {
             User_Adapter::getInstance($from, $this->app);
         } catch (Exception $e) {
-            return array();
+            return [];
         }
 
         $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
@@ -153,17 +153,17 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
         }
 
         $bask_link = '<a href="'
-            . $this->app->url('lightbox_validation', array('basket' => (string) $sx->ssel_id))
+            . $this->app->url('lightbox_validation', ['basket' => (string) $sx->ssel_id])
             . '" target="_blank">'
             . $basket_name . '</a>';
 
-        $ret = array(
+        $ret = [
             'text'  => sprintf(
                 _('%1$s vous demande de valider %2$s')
                 , $sender, $bask_link
             )
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
-        );
+        ];
 
         return $ret;
     }

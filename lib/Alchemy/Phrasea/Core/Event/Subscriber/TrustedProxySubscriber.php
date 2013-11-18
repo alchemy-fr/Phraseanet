@@ -28,9 +28,9 @@ class TrustedProxySubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::REQUEST => array('setProxyConf', 0),
-        );
+        return [
+            KernelEvents::REQUEST => ['setProxyConf', 0],
+        ];
     }
 
     public function setProxyConf(GetResponseEvent $event)
@@ -39,7 +39,7 @@ class TrustedProxySubscriber implements EventSubscriberInterface
             return;
         }
 
-        $proxies = isset($this->configuration['trusted-proxies']) ? $this->configuration['trusted-proxies'] : array();
+        $proxies = isset($this->configuration['trusted-proxies']) ? $this->configuration['trusted-proxies'] : [];
         Request::setTrustedProxies($proxies);
     }
 }

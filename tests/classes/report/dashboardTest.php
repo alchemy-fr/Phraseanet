@@ -46,9 +46,9 @@ class dashboardTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $date2 = new DateTime($this->dashboard->dmax);
         $interval = $date1->diff($date2);
         $nbDay = $interval->format("%a");
-        $int = array('nb_dl', 'nb_conn');
-        $top = array('top_ten_user_doc', 'top_ten_user_poiddoc', 'top_dl_document', 'top_ten_question', 'ask', 'top_ten_added');
-        $activity = array('activity', 'activity_day', 'activity_added');
+        $int = ['nb_dl', 'nb_conn'];
+        $top = ['top_ten_user_doc', 'top_ten_user_poiddoc', 'top_dl_document', 'top_ten_question', 'ask', 'top_ten_added'];
+        $activity = ['activity', 'activity_day', 'activity_added'];
         foreach ($dashboard as $key => $dash) {
             if (count($dash) == 0)
                 continue;

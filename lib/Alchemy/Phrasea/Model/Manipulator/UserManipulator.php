@@ -293,7 +293,7 @@ class UserManipulator implements ManipulatorInterface
     private function makeTraversable($var)
     {
         if (!is_array($var) && !$var instanceof \Traversable) {
-            return array($var);
+            return [$var];
         }
 
         return $var;

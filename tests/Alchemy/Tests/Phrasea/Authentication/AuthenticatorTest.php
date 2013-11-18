@@ -94,7 +94,7 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
             ->getMock();
         $acl->expects($this->once())
             ->method('get_granted_sbas')
-            ->will($this->returnValue(array()));
+            ->will($this->returnValue([]));
 
         $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
             ->disableOriginalConstructor()
@@ -151,7 +151,7 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
 
         $repo->expects($this->once())
             ->method('findOneBy')
-            ->with($this->equalTo(array('id' => $session->getId())))
+            ->with($this->equalTo(['id' => $session->getId()]))
             ->will($this->returnValue($session));
 
         $em->expects($this->once())
@@ -193,7 +193,7 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
 
         $repo->expects($this->once())
             ->method('findOneBy')
-            ->with($this->equalTo(array('id' => $session->getId())))
+            ->with($this->equalTo(['id' => $session->getId()]))
             ->will($this->returnValue(null));
 
         $em->expects($this->once())

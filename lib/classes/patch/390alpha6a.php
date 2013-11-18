@@ -20,7 +20,7 @@ class patch_390alpha6a implements patchInterface
     private $release = '3.9.0-alpha.6';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -114,7 +114,7 @@ class patch_390alpha6a implements patchInterface
 
             $em->persist($export);
 
-            $stmt->execute(array('export_id' => $row['id']));
+            $stmt->execute(['export_id' => $row['id']]);
             $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
             foreach ($rs as $element) {

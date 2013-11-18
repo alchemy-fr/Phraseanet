@@ -72,11 +72,11 @@ class Dashboard implements ControllerProviderInterface
                 break;
         }
 
-        $parameters = array(
+        $parameters = [
             'cache_flushed'                 => $request->query->get('flush_cache') === 'ok',
             'admins'                        => \User_Adapter::get_sys_admins($app),
             'email_status'                  => $emailStatus,
-        );
+        ];
 
         return $app['twig']->render('admin/dashboard.html.twig', $parameters);
     }
@@ -91,10 +91,10 @@ class Dashboard implements ControllerProviderInterface
     public function flush(Application $app, Request $request)
     {
         if ($app['phraseanet.cache-service']->flushAll()) {
-            return $app->redirectPath('admin_dashbord', array('flush_cache' => 'ok'));
+            return $app->redirectPath('admin_dashbord', ['flush_cache' => 'ok']);
         }
 
-        return $app->redirectPath('admin_dashbord', array('flush_cache' => 'ko'));
+        return $app->redirectPath('admin_dashbord', ['flush_cache' => 'ko']);
     }
 
     /**
@@ -117,7 +117,7 @@ class Dashboard implements ControllerProviderInterface
         try {
             $receiver = new Receiver(null, $mail);
         } catch (InvalidArgumentException $e) {
-            return $app->redirectPath('admin_dashbord', array('email' => 'not-sent'));
+            return $app->redirectPath('admin_dashbord', ['email' => 'not-sent']);
         }
 
         $mail = MailTest::create($app, $receiver);
@@ -125,7 +125,7 @@ class Dashboard implements ControllerProviderInterface
         $app['notification.deliverer']->deliver($mail);
         $app['swiftmailer.spooltransport']->getSpool()->flushQueue($app['swiftmailer.transport']);
 
-        return $app->redirectPath('admin_dashbord', array('email' => 'sent'));
+        return $app->redirectPath('admin_dashbord', ['email' => 'sent']);
     }
 
     /**
@@ -153,7 +153,7 @@ class Dashboard implements ControllerProviderInterface
      */
     public function addAdmins(Application $app, Request $request)
     {
-        if (count($admins = $request->request->get('admins', array())) > 0) {
+        if (count($admins = $request->request->get('admins', [])) > 0) {
 
             if (!in_array($app['authentication']->getUser()->get_id(), $admins)) {
                 $admins[] = $app['authentication']->getUser()->get_id();

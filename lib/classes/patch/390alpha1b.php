@@ -20,7 +20,7 @@ class patch_390alpha1b implements patchInterface
     private $release = '3.9.0-alpha.1';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -76,7 +76,7 @@ class patch_390alpha1b implements patchInterface
 
             $sql = 'SELECT count(id) as todo FROM order_elements WHERE deny = NULL AND order_id = :id';
             $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':id' => $row['id']));
+            $stmt->execute([':id' => $row['id']]);
             $todo = $stmt->fetch(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
@@ -94,7 +94,7 @@ class patch_390alpha1b implements patchInterface
                     FROM order_elements
                     WHERE order_id = :id';
             $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':id' => $row['id']));
+            $stmt->execute([':id' => $row['id']]);
             $elements = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 

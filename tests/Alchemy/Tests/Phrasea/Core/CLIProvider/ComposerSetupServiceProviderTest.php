@@ -9,12 +9,12 @@ class ComposerSetupServiceProvidertest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {
-        return array(
-            array(
+        return [
+            [
                 'Alchemy\Phrasea\Core\CLIProvider\ComposerSetupServiceProvider',
                 'composer-setup',
                 'Alchemy\Phrasea\Utilities\ComposerSetup'
-            ),
-        );
+            ],
+        ];
     }
 }

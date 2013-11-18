@@ -96,13 +96,13 @@ class RedisCache extends CacheProvider implements Cache
     {
         $stats = $this->_redis->info();
 
-        return array(
+        return [
             Cache::STATS_HITS              => false,
             Cache::STATS_MISSES            => false,
             Cache::STATS_UPTIME            => $stats['uptime_in_seconds'],
             Cache::STATS_MEMORY_USAGE      => $stats['used_memory'],
             Cache::STATS_MEMORY_AVAILIABLE => false,
-        );
+        ];
     }
 
     /**

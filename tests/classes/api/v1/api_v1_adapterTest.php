@@ -19,7 +19,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_error_code()
     {
-        $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->get_error_code($request, 400);
         $this->assertTrue(is_array(json_decode($result->format(), true)));
         $this->assertEquals(400, $result->get_http_code());
@@ -53,7 +53,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_error_message()
     {
-        $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->get_error_message($request, API_V1_result::ERROR_BAD_REQUEST, 'detaillage');
         $this->assertTrue(is_array(json_decode($result->format(), true)));
         $this->assertEquals(400, $result->get_http_code());
@@ -92,7 +92,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_databoxes()
     {
-        $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->get_databoxes($request);
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
@@ -113,11 +113,11 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_record()
     {
 
-        $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->get_record($request, self::$DI['record_1']->get_sbas_id(), "-40");
         $this->assertEquals(400, $result->get_http_code());
 
-        $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->get_record($request, self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
@@ -126,7 +126,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_databox_status()
     {
-        $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             $result = $this->object->get_databox_status($request, $databox->get_sbas_id());
             $this->assertEquals(200, $result->get_http_code());
@@ -137,7 +137,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_databox_metadatas()
     {
-        $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             $result = $this->object->get_databox_metadatas($request, $databox->get_sbas_id());
             $this->assertEquals(200, $result->get_http_code());
@@ -148,7 +148,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_databox_terms()
     {
-        $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             $result = $this->object->get_databox_terms($request, $databox->get_sbas_id());
             $this->assertEquals(200, $result->get_http_code());
@@ -163,7 +163,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $record = \record_adapter::createFromFile(BorderFile::buildFromPathfile(__DIR__ . '/../../../files/cestlafete.jpg', self::$DI['collection'], self::$DI['app']), self::$DI['app']);
 
-        $request = new Request(array('record_type' => "image", 'search_type' => 0), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request(['record_type' => "image", 'search_type' => 0], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->search_records($request);
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
@@ -186,7 +186,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSearch_withOffset()
     {
-        $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->search_records($request);
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
@@ -200,10 +200,10 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $total = $data['response']['total_results'];
 
-        $request = new Request(array(
+        $request = new Request([
             'offset_start' => 0,
             'per_page' => 1,
-        ), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        ], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $resultData1 = $this->object->search_records($request);
 
         $data = json_decode($resultData1->format(), true);
@@ -211,10 +211,10 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertCount(1, $data['response']['results']);
         $result1 = array_pop($data['response']['results']);
 
-        $request = new Request(array(
+        $request = new Request([
             'offset_start' => 1,
             'per_page' => 1,
-        ), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        ], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $resultData2 = $this->object->search_records($request);
 
         $data = json_decode($resultData2->format(), true);
@@ -226,10 +226,10 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertNotEquals($result1['record_id'], $result2['record_id']);
 
         // last item is last item
-        $request = new Request(array(
+        $request = new Request([
             'offset_start' => $total - 1,
             'per_page' => 10,
-        ), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        ], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $resultData = $this->object->search_records($request);
 
         $data = json_decode($resultData->format(), true);
@@ -247,7 +247,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             $story->appendChild(self::$DI['record_1']);
         }
 
-        $request = new Request(array('search_type' => 1), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request(['search_type' => 1], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->search_records($request);
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
@@ -279,7 +279,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             $story->appendChild(self::$DI['record_1']);
         }
 
-        $request = new Request(array('search_type' => 1), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request(['search_type' => 1], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->search($request);
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
@@ -310,7 +310,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $record = \record_adapter::createFromFile(BorderFile::buildFromPathfile(__DIR__ . '/../../../files/cestlafete.jpg', self::$DI['collection'], self::$DI['app']), self::$DI['app']);
 
-        $request = new Request(array('search_type' => 0), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request(['search_type' => 0], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->search($request);
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
@@ -349,7 +349,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         self::$DI['app']['EM']->flush($basketElement);
 
-        $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->get_record_related($request, self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
@@ -388,7 +388,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_record_metadatas()
     {
 
-        $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->get_record_metadatas($request, self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
@@ -399,7 +399,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
 
         $request = new Request();
-        $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->get_record_status($request, self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
@@ -409,7 +409,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_record_embed()
     {
 
-        $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->get_record_embed($request, self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
@@ -419,11 +419,11 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testSet_record_metadatas()
     {
         $databox = self::$DI['record_1']->get_databox();
-        $request = new Request(array("salut" => "salut c'est la fete"), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request(["salut" => "salut c'est la fete"], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->set_record_metadatas($request, self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());
         $this->assertEquals(400, $result->get_http_code());
 
-        $request = new Request(array("metadatas" => "salut c'est la fete"), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request(["metadatas" => "salut c'est la fete"], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $this->object->set_record_metadatas($request, self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());
         $this->assertEquals(400, $result->get_http_code());
 
@@ -431,7 +431,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             $caption_field_value = caption_Field_Value::create(self::$DI['app'], databox_field::get_instance(self::$DI['app'], $databox, 1), self::$DI['record_1'], 'my value');
         }
 
-        $metadatas = array();
+        $metadatas = [];
 
         foreach (self::$DI['record_1']->get_databox()->get_meta_structure()->get_elements() as $field) {
             try {
@@ -442,14 +442,14 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
                 $meta_id = null;
             }
 
-            $metadatas[] = array(
+            $metadatas[] = [
                 'meta_id'        => $meta_id
                 , 'meta_struct_id' => $field->get_id()
                 , 'value'          => 'poOM POOM TCHOK ' . $field->get_id()
-            );
+            ];
         }
 
-        $request = new Request(array("metadatas" => $metadatas), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request(["metadatas" => $metadatas], [], [], [], [], ['HTTP_Accept' => 'application/json']);
 
         $result = $this->object->set_record_metadatas($request, self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());
 
@@ -463,7 +463,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testSet_record_status()
     {
         $app = self::$DI['app'];
-        $stub = $this->getMock("API_V1_adapter", array("list_record_status"), array($app));
+        $stub = $this->getMock("API_V1_adapter", ["list_record_status"], [$app]);
         $databox = self::$DI['record_1']->get_databox();
 
         $statusbit = null;
@@ -476,17 +476,17 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             $this->markTestSkipped('No status bit defined in databox');
         }
 
-        $request = new Request(array("salut" => "salut c'est la fete"), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request(["salut" => "salut c'est la fete"], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $stub->set_record_status($request, self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());
         $this->assertEquals(400, $result->get_http_code());
 
-        $request = new Request(array("status" => "salut c'est la fete"), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request(["status" => "salut c'est la fete"], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $stub->set_record_status($request, self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());
         $this->assertEquals(400, $result->get_http_code());
 
-        $status = array($statusbit => '1');
+        $status = [$statusbit => '1'];
 
-        $request = new Request(array("status" => $status), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request(["status" => $status], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         //check method use record->get_caption
         $stub->expects($this->once())
             ->method("list_record_status")
@@ -499,10 +499,10 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testSet_record_collection()
     {
         $app = self::$DI['app'];
-        $stub = $this->getMock("API_V1_adapter", array("list_record"), array($app));
+        $stub = $this->getMock("API_V1_adapter", ["list_record"], [$app]);
         $databox = self::$DI['record_1']->get_databox();
 
-        $request = new Request(array("salut" => "salut c'est la fete"), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request(["salut" => "salut c'est la fete"], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $stub->set_record_collection($request, self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());
         $this->assertEquals(400, $result->get_http_code());
 
@@ -513,7 +513,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $collection = array_shift($collections);
 
-        $request = new Request(array("base_id" => $collection->get_base_id()), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request(["base_id" => $collection->get_base_id()], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         //check method use record->get_caption
         $stub->expects($this->once())
             ->method("list_record")
@@ -536,7 +536,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSearch_baskets()
     {
-        $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->search_baskets($request);
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
@@ -545,7 +545,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testCreate_basket()
     {
-        $request = new Request(array(), array(), array('name' => 'BIG BASKET'), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request([], [], ['name' => 'BIG BASKET'], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->create_basket($request);
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
@@ -578,7 +578,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $em->persist($Basket);
         $em->flush();
 
-        $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->delete_basket($request, $Basket);
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
@@ -599,7 +599,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $basket = $this->insertOneBasket();
 
-        $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->get_basket($request, $basket);
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
@@ -612,7 +612,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $basket = $this->insertOneBasket();
 
-        $request = new Request(array(), array(), array('name' => 'PROUTO'), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request([], [], ['name' => 'PROUTO'], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->set_basket_title($request, $basket);
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
@@ -631,7 +631,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $basket = $this->insertOneBasket();
 
-        $request = new Request(array(), array(), array('description' => 'une belle description'), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request([], [], ['description' => 'une belle description'], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->set_basket_description($request, $basket);
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
@@ -646,7 +646,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSearch_publications()
     {
-        $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $feed = $this->insertOneFeed(self::$DI['user']);
         $result = $this->object->search_publications($request, self::$DI['user']);
         $this->checkResponseField($result, "feeds", 'array');
@@ -667,7 +667,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             ->getMock();
 
         $date = new DateTime();
-        $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept'    => 'application/json'));
+        $request = new Request([], [], [], [], [], ['HTTP_Accept'    => 'application/json']);
         $feedItem = $this->insertOneFeedItem(self::$DI['user']);
         $feed = $feedItem->getEntry()->getFeed();
 

@@ -40,7 +40,7 @@ function giveMeBases(Application $app, $usr = null)
              AND usr.usr_id = :usr_id AND model_of = 0';
 
         $stmt = $conn->prepare($sqlU);
-        $stmt->execute(array(':usr_id' => $usr));
+        $stmt->execute([':usr_id' => $usr]);
         $rsU = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -72,7 +72,7 @@ function giveMeBases(Application $app, $usr = null)
     foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
         $collname = $basname = null;
         $sbas_id = $databox->get_sbas_id();
-        $inscriptions[$sbas_id] = array();
+        $inscriptions[$sbas_id] = [];
         $inscriptions[$sbas_id]['CGU'] = false;
         $inscriptions[$sbas_id]['CGUrelease'] = false;
         $inscriptions[$sbas_id]['inscript'] = false;
@@ -293,7 +293,7 @@ function giveMeBaseUsr(Application $app, $usr)
 
     $out .= '</table>';
 
-    return array('tab'      => $out, 'demandes' => $noDemand);
+    return ['tab'      => $out, 'demandes' => $noDemand];
 }
 
 function giveModInscript($usr, $lng)

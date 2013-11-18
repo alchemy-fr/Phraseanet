@@ -36,19 +36,19 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         $appbox = $app['phraseanet.appbox'];
 
         $configuration = $app['configuration']->getConfig();
-        $configuration['main']['search-engine']['options'] = array(
+        $configuration['main']['search-engine']['options'] = [
             'host'    => '127.0.0.1',
             'port'    => 9312,
             'rt_host' => '127.0.0.1',
             'rt_port' => 9306,
-        );
+        ];
         $app['configuration']->setConfig($configuration);
 
         self::$searchEngine = SphinxSearchEngine::create($app, $app['configuration']['main']['search-engine']['options']);
 
         self::$config = tempnam(sys_get_temp_dir(), 'tmp_sphinx.conf');
         $configuration = self::$searchEngine->getConfigurationPanel()->getConfiguration();
-        $configuration['date_fields'] = array();
+        $configuration['date_fields'] = [];
 
         foreach ($appbox->get_databoxes() as $databox) {
             foreach ($databox->get_meta_structure() as $databox_field) {
@@ -119,7 +119,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
     {
         $record = self::$DI['record_24'];
 
-        $toupdate = array();
+        $toupdate = [];
 
         foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field) {
             try {
@@ -130,11 +130,11 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
                 $meta_id = null;
             }
 
-            $toupdate[$field->get_id()] = array(
+            $toupdate[$field->get_id()] = [
                 'meta_id'        => $meta_id
                 , 'meta_struct_id' => $field->get_id()
                 , 'value'          => 'jeanne, jeannine, jeannette, jean-pierre et jean claude'
-            );
+            ];
             break;
         }
 
@@ -163,7 +163,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         }
     }
 
-    protected function updateIndex(array $stemms = array())
+    protected function updateIndex(array $stemms = [])
     {
         return $this;
     }

@@ -26,7 +26,7 @@ class MetadataBag extends ArrayCollection implements MetaBagInterface
      */
     public function toMetadataArray(\databox_descriptionStructure $metadatasStructure)
     {
-        $metas = array();
+        $metas = [];
         $unicode = new \unicode();
 
         foreach ($metadatasStructure as $databox_field) {
@@ -42,7 +42,7 @@ class MetadataBag extends ArrayCollection implements MetaBagInterface
 
                     $values = $this->get($databox_field->get_tag()->getTagname())->getValue()->asArray();
 
-                    $tmp = array();
+                    $tmp = [];
 
                     foreach ($values as $value) {
                         foreach (\caption_field::get_multi_values($value, $databox_field->get_separator()) as $v) {
@@ -60,11 +60,11 @@ class MetadataBag extends ArrayCollection implements MetaBagInterface
                             $value = $unicode->parseDate($value);
                         }
 
-                        $metas[] = array(
+                        $metas[] = [
                             'meta_struct_id' => $databox_field->get_id(),
                             'value'          => $value,
                             'meta_id'        => null
-                        );
+                        ];
                     }
                 } else {
                     $value = $this->get($databox_field->get_tag()->getTagname())->getValue()->asString();
@@ -75,11 +75,11 @@ class MetadataBag extends ArrayCollection implements MetaBagInterface
                         $value = $unicode->parseDate($value);
                     }
 
-                    $metas[] = array(
+                    $metas[] = [
                         'meta_struct_id' => $databox_field->get_id(),
                         'value'          => $value,
                         'meta_id'        => null
-                    );
+                    ];
                 }
             }
         }

@@ -75,7 +75,7 @@ class API_OAuth2_Token
             FROM api_oauth_tokens
             WHERE api_account_id = :account_id';
         $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':account_id' => $this->account->get_id()));
+        $stmt->execute([':account_id' => $this->account->get_id()]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ( ! $row)
@@ -110,10 +110,10 @@ class API_OAuth2_Token
         $sql = 'UPDATE api_oauth_tokens SET oauth_token = :oauth_token
             WHERE oauth_token = :current_token';
 
-        $params = array(
+        $params = [
             ':oauth_token'   => $oauth_token
             , ':current_token' => $this->token
-        );
+        ];
 
         $stmt = $this->appbox->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -143,10 +143,10 @@ class API_OAuth2_Token
         $sql = 'UPDATE api_oauth_tokens SET session_id = :session_id
             WHERE oauth_token = :current_token';
 
-        $params = array(
+        $params = [
             ':session_id'    => $session_id
             , ':current_token' => $this->token
-        );
+        ];
 
         $stmt = $this->appbox->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -176,10 +176,10 @@ class API_OAuth2_Token
         $sql = 'UPDATE api_oauth_tokens SET expires = FROM_UNIXTIME(:expires)
             WHERE oauth_token = :oauth_token';
 
-        $params = array(
+        $params = [
             ':expires'     => $expires
             , ':oauth_token' => $this->get_value()
-        );
+        ];
 
         $stmt = $this->appbox->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -204,10 +204,10 @@ class API_OAuth2_Token
         $sql = 'UPDATE api_oauth_tokens SET scope = :scope
             WHERE oauth_token = :oauth_token';
 
-        $params = array(
+        $params = [
             ':scope'       => $scope
             , ':oauth_token' => $this->get_value()
-        );
+        ];
 
         $stmt = $this->appbox->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -238,10 +238,10 @@ class API_OAuth2_Token
 
         $new_token = self::generate_token();
 
-        $params = array(
+        $params = [
             ':new_token' => $new_token
             , ':old_token' => $this->get_value()
-        );
+        ];
 
         $stmt = $this->appbox->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -261,7 +261,7 @@ class API_OAuth2_Token
         $sql = 'DELETE FROM api_oauth_tokens WHERE oauth_token = :oauth_token';
 
         $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':oauth_token' => $this->get_value()));
+        $stmt->execute([':oauth_token' => $this->get_value()]);
         $stmt->closeCursor();
 
         return;
@@ -281,7 +281,7 @@ class API_OAuth2_Token
               AND a.api_account_id = b.api_account_id';
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $params = array(":oauth_token" => $oauth_token);
+        $params = [":oauth_token" => $oauth_token];
         $stmt->execute($params);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -309,12 +309,12 @@ class API_OAuth2_Token
 
         $expires = new \DateTime('+1 hour');
 
-        $params = array(
+        $params = [
             ':token'      => self::generate_token()
             , ':account_id' => $account->get_id()
             , ':expire'     => $expires->format(DATE_ISO8601)
             , ':scope'      => $scope
-        );
+        ];
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute($params);

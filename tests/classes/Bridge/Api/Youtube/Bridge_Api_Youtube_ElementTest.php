@@ -22,10 +22,10 @@ class Bridge_Api_Youtube_ElementTest extends PHPUnit_Framework_TestCase
         $stat->setViewCount("5");
         $thumb = new Zend_Gdata_Media_Extension_MediaThumbnail('une url', '120', '90');
         $media = new Zend_Gdata_YouTube_Extension_MediaGroup();
-        $media->setPlayer(array($player));
+        $media->setPlayer([$player]);
         $media->setDuration($duration);
         $media->setVideoId($id);
-        $media->setThumbnail(array($thumb));
+        $media->setThumbnail([$thumb]);
         $entry = new Zend_Gdata_YouTube_VideoEntry();
         $entry->setMajorProtocolVersion(2);
         $entry->setMediaGroup($media);
@@ -34,7 +34,7 @@ class Bridge_Api_Youtube_ElementTest extends PHPUnit_Framework_TestCase
         $entry->setVideoCategory("category");
         $entry->setVideoDescription("one description");
         $entry->setVideoPrivate();
-        $entry->setVideoTags(array('tags'));
+        $entry->setVideoTags(['tags']);
         $entry->setVideoTitle("hellow");
         $entry->setUpdated($updated);
         $entry->setPublished($published);

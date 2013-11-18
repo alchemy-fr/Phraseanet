@@ -73,7 +73,7 @@ class BuildMissingSubdefs extends Command
                         if ( ! $record->has_subdef($subdef->get_name())) {
                             $todo = true;
                         }
-                        if (in_array($subdef->get_name(), array('preview', 'thumbnail', 'thumbnailgif'))) {
+                        if (in_array($subdef->get_name(), ['preview', 'thumbnail', 'thumbnailgif'])) {
                             try {
                                 $sub = $record->get_subdef($subdef->get_name());
                                 if ( ! $sub->is_physically_present()) {
@@ -85,7 +85,7 @@ class BuildMissingSubdefs extends Command
                         }
 
                         if ($todo) {
-                            $record->generate_subdefs($databox, $this->container, array($subdef->get_name()));
+                            $record->generate_subdefs($databox, $this->container, [$subdef->get_name()]);
                             $this->container['monolog']->addInfo("generate " . $subdef->get_name() . " for record " . $record->get_record_id());
                             $n ++;
                         }

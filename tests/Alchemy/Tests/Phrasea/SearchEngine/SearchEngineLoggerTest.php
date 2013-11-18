@@ -13,7 +13,7 @@ class SearchEngineLoggerTest extends \PhraseanetPHPUnitAbstract
     public function testLog()
     {
         $databox = self::$DI['collection']->get_databox();
-        $coll_ids = array(self::$DI['collection']->get_coll_id());
+        $coll_ids = [self::$DI['collection']->get_coll_id()];
         $answers = 42;
         $query = \random::generatePassword();
 

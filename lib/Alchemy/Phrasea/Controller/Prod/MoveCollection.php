@@ -46,32 +46,32 @@ class MoveCollection implements ControllerProviderInterface
 
     public function displayForm(Application $app, Request $request)
     {
-        $records = RecordsRequest::fromRequest($app, $request, false, array('candeleterecord'));
+        $records = RecordsRequest::fromRequest($app, $request, false, ['candeleterecord']);
 
         $sbas_ids = array_map(function (\databox $databox) {
                 return $databox->get_sbas_id();
             }, $records->databoxes());
 
         $collections = $app['acl']->get($app['authentication']->getUser())
-            ->get_granted_base(array('canaddrecord'), $sbas_ids);
+            ->get_granted_base(['canaddrecord'], $sbas_ids);
 
-        $parameters = array(
+        $parameters = [
             'records'     => $records,
             'message'     => '',
             'collections' => $collections,
-        );
+        ];
 
         return $app['twig']->render('prod/actions/collection_default.html.twig', $parameters);
     }
 
     public function apply(Application $app, Request $request)
     {
-        $records = RecordsRequest::fromRequest($app, $request, false, array('candeleterecord'));
+        $records = RecordsRequest::fromRequest($app, $request, false, ['candeleterecord']);
 
-        $datas = array(
+        $datas = [
             'success' => false,
             'message' => '',
-        );
+        ];
 
         try {
             if (null === $request->request->get('base_id')) {
@@ -106,15 +106,15 @@ class MoveCollection implements ControllerProviderInterface
                 }
             }
 
-            $ret = array(
+            $ret = [
                 'success' => true,
                 'message' => _('Records have been successfuly moved'),
-            );
+            ];
         } catch (\Exception $e) {
-            $ret = array(
+            $ret = [
                 'success' => false,
                 'message' => _('An error occured'),
-            );
+            ];
         }
 
         return $app->json($ret);

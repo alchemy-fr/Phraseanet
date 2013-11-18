@@ -159,16 +159,16 @@ class FtpJob extends AbstractJob
                 }
             }
 
-            $obj = array();
+            $obj = [];
 
             $basefolder = '';
-            if (!in_array(trim($export->getDestfolder()), array('.', './', ''))) {
+            if (!in_array(trim($export->getDestfolder()), ['.', './', ''])) {
                 $basefolder = \p4string::addEndSlash($export->getDestfolder());
             }
 
             $basefolder .= $export->getFoldertocreate();
 
-            if (in_array(trim($basefolder), array('.', './', ''))) {
+            if (in_array(trim($basefolder), ['.', './', ''])) {
                 $basefolder = '/';
             }
 
@@ -229,10 +229,10 @@ class FtpJob extends AbstractJob
 
                     $ftp_client->put($remotefile, $localfile);
 
-                    $obj[] = array(
+                    $obj[] = [
                         "name"     => $subdef, "size"     => filesize($localfile),
                         "shortXml" => ($sdcaption ? $sdcaption : '')
-                    );
+                    ];
 
                     if ($subdef == 'caption') {
                         unlink($localfile);
@@ -340,7 +340,7 @@ class FtpJob extends AbstractJob
 
     private function send_mails(Application $app, FtpExport $export)
     {
-        $transferts = array();
+        $transferts = [];
         $transfert_status = _('task::ftp:Tous les documents ont ete transferes avec succes');
 
         foreach ($export->getElements() as $element) {

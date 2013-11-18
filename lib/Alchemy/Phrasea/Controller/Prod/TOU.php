@@ -52,13 +52,13 @@ class TOU implements ControllerProviderInterface
      */
     public function denyTermsOfUse(Application $app, Request $request, $sbas_id)
     {
-        $ret = array('success' => false, 'message' => '');
+        $ret = ['success' => false, 'message' => ''];
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
             $app['acl']->get($app['authentication']->getUser())->revoke_access_from_bases(
-                array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(array(), array($databox->get_sbas_id())))
+                array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base([], [$databox->get_sbas_id()]))
             );
             $app['acl']->get($app['authentication']->getUser())->revoke_unused_sbas_rights();
 
@@ -81,8 +81,8 @@ class TOU implements ControllerProviderInterface
      */
     public function displayTermsOfUse(Application $app, Request $request)
     {
-        $toDisplay = $request->query->get('to_display', array());
-        $data = array();
+        $toDisplay = $request->query->get('to_display', []);
+        $data = [];
 
         foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
             if (count($toDisplay) > 0 && !in_array($databox->get_sbas_id(), $toDisplay)) {
@@ -98,9 +98,9 @@ class TOU implements ControllerProviderInterface
             $data[$databox->get_label($app['locale.I18n'])] = $cgus[$app['locale']]['value'];
         }
 
-        return new Response($app['twig']->render('/prod/TOU.html.twig', array(
+        return new Response($app['twig']->render('/prod/TOU.html.twig', [
             'TOUs'        => $data,
             'local_title' => _('Terms of use')
-        )));
+        ]));
     }
 }

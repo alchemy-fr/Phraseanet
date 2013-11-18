@@ -24,7 +24,7 @@ class PluginServiceProvider implements ServiceProviderInterface
     {
         $app['twig'] = $app->share(
             $app->extend('twig', function ($twig, Application $app) {
-                $function = new \Twig_SimpleFunction('plugin_asset', array('Alchemy\Phrasea\Plugin\Management\AssetsManager', 'twigPluginAsset'));
+                $function = new \Twig_SimpleFunction('plugin_asset', ['Alchemy\Phrasea\Plugin\Management\AssetsManager', 'twigPluginAsset']);
                 $twig->addFunction($function);
 
                 return $twig;

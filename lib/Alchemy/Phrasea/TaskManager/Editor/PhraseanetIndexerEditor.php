@@ -77,7 +77,7 @@ EOF;
      */
     protected function getFormProperties()
     {
-        return array(
+        return [
             'host'       => static::FORM_TYPE_STRING,
             'port'       => static::FORM_TYPE_INTEGER,
             'base'       => static::FORM_TYPE_STRING,
@@ -91,6 +91,6 @@ EOF;
             'debugmask'  => static::FORM_TYPE_INTEGER,
             'stem'       => static::FORM_TYPE_STRING,
             'sortempty'  => static::FORM_TYPE_STRING,
-        );
+        ];
     }
 }

@@ -68,7 +68,7 @@ class LocaleServiceProvider implements ServiceProviderInterface
         });
 
         $app['locales.mapping'] = $app->share(function (Application $app) {
-            $codes = array();
+            $codes = [];
             foreach ($app['locales.available'] as $code => $language) {
                 $data = explode('_', $code);
                 $codes[$data[0]] = $code;
@@ -78,7 +78,7 @@ class LocaleServiceProvider implements ServiceProviderInterface
         });
 
         $app['locales.I18n.available'] = $app->share(function (Application $app) {
-            $locales = array();
+            $locales = [];
 
             foreach ($app['locales.available'] as $code => $language) {
                 $data = explode('_', $code);

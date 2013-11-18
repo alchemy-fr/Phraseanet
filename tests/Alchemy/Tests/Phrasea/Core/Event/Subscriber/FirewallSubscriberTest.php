@@ -15,7 +15,7 @@ class FirewallSubscriberTest extends \PHPUnit_Framework_TestCase
         unset($app['exception_handler']);
         $app['dispatcher']->addSubscriber(new FirewallSubscriber());
         $app->get('/', function () {
-            throw new HttpException(500, null, null, array('X-Phraseanet-Redirect' => '/hello-world'));
+            throw new HttpException(500, null, null, ['X-Phraseanet-Redirect' => '/hello-world']);
         });
 
         $client = new Client($app);

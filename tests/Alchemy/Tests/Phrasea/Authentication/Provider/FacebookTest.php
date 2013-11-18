@@ -35,9 +35,9 @@ class FacebookTest extends ProviderTestCase
             ->method('getUser')
             ->will($this->returnValue(null));
 
-        return array(
-            array($provider, $this->getRequestMock())
-        );
+        return [
+            [$provider, $this->getRequestMock()]
+        ];
     }
 
     public function getProviderForLogout()
@@ -52,9 +52,9 @@ class FacebookTest extends ProviderTestCase
             ->method('getUser')
             ->will($this->returnValue('123456'));
 
-        return array(
-            array($provider, $this->getRequestMock())
-        );
+        return [
+            [$provider, $this->getRequestMock()]
+        ];
     }
 
     protected function getProvider()
@@ -76,7 +76,7 @@ class FacebookTest extends ProviderTestCase
 
         $facebook = $this->getMockBuilder('Facebook')
             ->disableOriginalConstructor()
-            ->setMethods(array('getLoginUrl', 'api', 'getUser'))
+            ->setMethods(['getLoginUrl', 'api', 'getUser'])
             ->getMock();
 
         $facebook->expects($this->any())
@@ -85,13 +85,13 @@ class FacebookTest extends ProviderTestCase
 
         $facebook->expects($this->once())
             ->method('api')
-            ->will($this->returnValue(array(
+            ->will($this->returnValue([
                'id'         => self::ID,
                'username'   => self::FIRSTNAME,
                'first_name' => self::FIRSTNAME,
                'last_name'  => self::LASTNAME,
                'email'      => self::EMAIL,
-            )));
+            ]));
 
         $provider->setFacebook($facebook);
 
@@ -105,21 +105,21 @@ class FacebookTest extends ProviderTestCase
 
     protected function getAvailableFieldsForIdentity()
     {
-        return array(
+        return [
             Identity::PROPERTY_ID        => self::ID,
             Identity::PROPERTY_USERNAME  => self::FIRSTNAME,
             Identity::PROPERTY_FIRSTNAME => self::FIRSTNAME,
             Identity::PROPERTY_LASTNAME  => self::LASTNAME,
             Identity::PROPERTY_EMAIL     => self::EMAIL,
-        );
+        ];
     }
 
     protected function getTestOptions()
     {
-        return array(
+        return [
             'app-id' => 'zizi',
             'secret' => 's3cr3t',
-        );
+        ];
     }
 
     protected function getProviderForAuthentication()
@@ -131,7 +131,7 @@ class FacebookTest extends ProviderTestCase
     {
         $facebook = $this->getMockBuilder('Facebook')
             ->disableOriginalConstructor()
-            ->setMethods(array('getLoginUrl', 'api', 'getUser'))
+            ->setMethods(['getLoginUrl', 'api', 'getUser'])
             ->getMock();
 
         $facebook->expects($this->any())
@@ -142,9 +142,9 @@ class FacebookTest extends ProviderTestCase
             ->method('api')
             ->will($this->returnCallback(function () use ($facebook) {
                 if (!$facebook->getUser()) {
-                    throw new \FacebookApiException(array(
+                    throw new \FacebookApiException([
                         'error_msg' => 'Not authenticated'
-                    ));
+                    ]);
                 }
             }));
 

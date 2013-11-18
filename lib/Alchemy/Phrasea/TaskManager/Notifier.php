@@ -91,7 +91,7 @@ class Notifier
      *
      * @return Notifier
      */
-    public static function create(array $options = array())
+    public static function create(array $options = [])
     {
         $context = new \ZMQContext();
         $socket = $context->getSocket(\ZMQ::SOCKET_REQ);

@@ -42,9 +42,9 @@ class NotificationsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testSetNotificationsReaded()
     {
-        $this->XMLHTTPRequest('POST', '/user/notifications/read/', array(
+        $this->XMLHTTPRequest('POST', '/user/notifications/read/', [
             'notifications' => ''
-        ));
+        ]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
         $datas = (array) json_decode($response->getContent());
@@ -61,7 +61,7 @@ class NotificationsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRequireAuthentication()
     {
         self::$DI['app']['authentication']->setUser($this->getMockBuilder('\User_Adapter')
-            ->setMethods(array('is_guest'))
+            ->setMethods(['is_guest'])
             ->disableOriginalConstructor()
             ->getMock());
 

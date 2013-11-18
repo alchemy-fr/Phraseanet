@@ -15,7 +15,7 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['app'] = new Application('test');
 
         self::giveRightsToUser(self::$DI['app'], self::$DI['user']);
-        self::$DI['app']['acl']->get(self::$DI['user'])->revoke_access_from_bases(array(self::$DI['collection_no_access']->get_base_id()));
+        self::$DI['app']['acl']->get(self::$DI['user'])->revoke_access_from_bases([self::$DI['collection_no_access']->get_base_id()]);
         self::$DI['app']['acl']->get(self::$DI['user'])->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
     }
 
@@ -44,7 +44,7 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication'), $this->equalTo(null));
 
         $feed = $this->insertOneFeed(self::$DI['user']);
-        $params = array(
+        $params = [
             "feed_id"        => $feed->getId()
             , "notify"        => 1
             , "title"        => "salut"
@@ -52,7 +52,7 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , "author_name"  => "robert"
             , "author_mail"  => "robert@kikoo.mail"
             , 'lst'          => self::$DI['record_1']->get_serialize_key()
-        );
+        ];
 
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/create/', $params);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
@@ -65,14 +65,14 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testEntryCreateError()
     {
-        $params = array(
+        $params = [
             "feed_id"        => 'unknow'
             , "title"        => "salut"
             , "subtitle"     => "coucou"
             , "author_name"  => "robert"
             , "author_mail"  => "robert@kikoo.mail"
             , 'lst'          => self::$DI['record_1']->get_serialize_key()
-        );
+        ];
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/create/', $params);
         $this->assertFalse(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals(404, self::$DI['client']->getResponse()->getStatusCode());
@@ -89,14 +89,14 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['app']['notification.deliverer']->expects($this->never())
             ->method('deliver');
 
-        $params = array(
+        $params = [
             "feed_id"        => $feed->getId()
             , "title"        => "salut"
             , "subtitle"     => "coucou"
             , "author_name"  => "robert"
             , "author_mail"  => "robert@kikoo.mail"
             , 'lst'          => self::$DI['record_1']->get_serialize_key()
-        );
+        ];
 
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/create/', $params);
         $this->assertEquals(403, self::$DI['client']->getResponse()->getStatusCode());
@@ -132,13 +132,13 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $entry = $this->insertOneFeedEntry(self::$DI['user']);
 
-        $params = array(
+        $params = [
             "title"        => "dog",
             "subtitle"     => "cat",
             "author_name"  => "bird",
             "author_mail"  => "mouse",
             'lst'          => self::$DI['record_1']->get_serialize_key(),
-        );
+        ];
 
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
@@ -156,14 +156,14 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $entry = $this->insertOneFeedEntry(self::$DI['user']);
         $newfeed = $this->insertOneFeed(self::$DI['user'], "test2");
 
-        $params = array(
+        $params = [
             "feed_id"      => $newfeed->getId(),
             "title"        => "dog",
             "subtitle"     => "cat",
             "author_name"  => "bird",
             "author_mail"  => "mouse",
             'lst'          => self::$DI['record_1']->get_serialize_key(),
-        );
+        ];
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
@@ -186,14 +186,14 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['app']['EM']->persist($newfeed);
         self::$DI['app']['EM']->flush();
 
-        $params = array(
+        $params = [
             "feed_id"      => $newfeed->getId(),
             "title"        => "dog",
             "subtitle"     => "cat",
             "author_name"  => "bird",
             "author_mail"  => "mouse",
             'lst'          => self::$DI['record_1']->get_serialize_key(),
-        );
+        ];
 
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
         $this->assertEquals(403, self::$DI['client']->getResponse()->getStatusCode());
@@ -203,14 +203,14 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $entry = $this->insertOneFeedEntry(self::$DI['user']);
 
-        $params = array(
+        $params = [
             "feed_id"      => 0,
             "title"        => "dog",
             "subtitle"     => "cat",
             "author_name"  => "bird",
             "author_mail"  => "mouse",
             'lst'          => self::$DI['record_1']->get_serialize_key(),
-        );
+        ];
 
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
         $this->assertEquals(404, self::$DI['client']->getResponse()->getStatusCode());
@@ -219,14 +219,14 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testEntryUpdateNotFound()
     {
 
-        $params = array(
+        $params = [
             "feed_id"        => 9999999
             , "title"        => "dog"
             , "subtitle"     => "cat"
             , "author_name"  => "bird"
             , "author_mail"  => "mouse"
             , 'lst'          => self::$DI['record_1']->get_serialize_key()
-        );
+        ];
 
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/99999999/update/', $params);
 
@@ -241,14 +241,14 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $entry = $this->insertOneFeedEntry(self::$DI['user']);
 
-        $params = array(
+        $params = [
             "feed_id"        => 9999999
             , "title"        => "dog"
             , "subtitle"     => "cat"
             , "author_name"  => "bird"
             , "author_mail"  => "mouse"
             , 'sorted_lst'   => self::$DI['record_1']->get_serialize_key() . ";" . self::$DI['record_2']->get_serialize_key() . ";12345;" . "unknow_unknow"
-        );
+        ];
 
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
 
@@ -265,14 +265,14 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $entry = $this->insertOneFeedEntry(self::$DI['user_alt1']);
 
-        $params = array(
+        $params = [
             "feed_id"      => $entry->getFeed()->getId()
             , "title"        => "dog"
             , "subtitle"     => "cat"
             , "author_name"  => "bird"
             , "author_mail"  => "mouse"
             , 'lst'          => self::$DI['record_1']->get_serialize_key()
-        );
+        ];
 
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
 
@@ -298,13 +298,13 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $ord1 = $item1->getOrd();
         $ord2 = $item2->getOrd();
 
-        $params = array(
+        $params = [
             "title"         => $entry->getTitle(),
             "author_name"   => $entry->getAuthorName(),
             "author_mail"   => $entry->getAuthorEmail(),
             'sorted_lst'    => $item1->getId() . '_' . $item2->getOrd() . ';'
                              . $item2->getId() . '_' . $item1->getOrd()
-            );
+            ];
 
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());

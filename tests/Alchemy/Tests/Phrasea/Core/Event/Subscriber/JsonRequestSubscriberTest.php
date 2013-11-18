@@ -21,11 +21,11 @@ class JsonRequestSubscriberTest extends \PHPUnit_Framework_TestCase
         });
 
         $client = new Client($app);
-        $headers = $isJson ? array('HTTP_ACCEPT' => 'application/json') : array();
+        $headers = $isJson ? ['HTTP_ACCEPT' => 'application/json'] : [];
         if ($exceptionExpected) {
             $this->setExpectedException('Exception');
         }
-        $client->request('GET', $route, array(), array(), $headers);
+        $client->request('GET', $route, [], [], $headers);
         if (!$exceptionExpected) {
             $this->assertEquals(200, $client->getResponse()->getStatusCode());
             $this->assertEquals('application/json', $client->getResponse()->headers->get('content-type'));
@@ -38,16 +38,16 @@ class JsonRequestSubscriberTest extends \PHPUnit_Framework_TestCase
 
     public function provideRouteParameters()
     {
-        return array(
-            array('/admin/status', true, true),
-            array('/admin/collection/24', false, true),
-            array('/admin/collection/24', true, false),
-            array('/admin/databox/42', false, true),
-            array('/admin/databox/42', true, false),
-            array('/report', false, true),
-            array('/report', true, false),
-            array('/prod', false, true),
-            array('/prod', true, false),
-        );
+        return [
+            ['/admin/status', true, true],
+            ['/admin/collection/24', false, true],
+            ['/admin/collection/24', true, false],
+            ['/admin/databox/42', false, true],
+            ['/admin/databox/42', true, false],
+            ['/report', false, true],
+            ['/report', true, false],
+            ['/prod', false, true],
+            ['/prod', true, false],
+        ];
     }
 }

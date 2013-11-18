@@ -123,7 +123,7 @@ class RecordMoverJob extends AbstractJob
 
     private function getData(Application $app, array $tasks, $logsql)
     {
-        $ret = array();
+        $ret = [];
 
         foreach ($tasks as $sxtask) {
             if (!$this->isStarted()) {
@@ -150,11 +150,11 @@ class RecordMoverJob extends AbstractJob
             $stmt = $databox->get_connection()->prepare($task['sql']['real']['sql']);
             $stmt->execute();
             while ($this->isStarted() && false !== $row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                $tmp = array(
+                $tmp = [
                     'sbas_id'   => $task['sbas_id'],
                     'record_id' => $row['record_id'],
                     'action'    => $task['action']
-                );
+                ];
 
                 $rec = $databox->get_record($row['record_id']);
                 switch ($task['action']) {
@@ -188,7 +188,7 @@ class RecordMoverJob extends AbstractJob
     {
         $sbas_id = (int) $sxtask['sbas_id'];
 
-        $ret = array(
+        $ret = [
             'name'                 => $sxtask['name'] ? (string) $sxtask['name'] : 'sans nom',
             'name_htmlencoded'     => \p4string::MakeString(($sxtask['name'] ? $sxtask['name'] : 'sans nom'), 'html'),
             'active'               => trim($sxtask['active']) === '1',
@@ -199,7 +199,7 @@ class RecordMoverJob extends AbstractJob
             'sql'                  => null,
             'err'                  => '',
             'err_htmlencoded'      => '',
-        );
+        ];
 
         try {
             $dbox = $app['phraseanet.appbox']->get_databox($sbas_id);
@@ -229,7 +229,7 @@ class RecordMoverJob extends AbstractJob
 
     private function calcUPDATE(Application $app, $sbas_id, &$sxtask, $playTest)
     {
-        $tws = array(); // NEGATION of updates, used to build the 'test' sql
+        $tws = []; // NEGATION of updates, used to build the 'test' sql
         //
         // set coll_id ?
         if (($x = (int) ($sxtask->to->coll['id'])) > 0) {
@@ -238,8 +238,8 @@ class RecordMoverJob extends AbstractJob
 
         // set status ?
         $x = $sxtask->to->status['mask'];
-        $mx = str_replace(' ', '0', ltrim(str_replace(array('0', 'x'), array(' ', ' '), $x)));
-        $ma = str_replace(' ', '0', ltrim(str_replace(array('x', '0'), array(' ', '1'), $x)));
+        $mx = str_replace(' ', '0', ltrim(str_replace(['0', 'x'], [' ', ' '], $x)));
+        $ma = str_replace(' ', '0', ltrim(str_replace(['x', '0'], [' ', '1'], $x)));
         if ($mx && $ma)
             $tws[] = '((status ^ 0b' . $mx . ') & 0b' . $ma . ')!=0';
         elseif ($mx)
@@ -266,18 +266,18 @@ class RecordMoverJob extends AbstractJob
         if (count($tw) > 0)
             $sql .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
 
-        $ret = array(
-            'real' => array(
+        $ret = [
+            'real' => [
                 'sql'             => $sql,
                 'sql_htmlencoded' => htmlentities($sql),
-            ),
-            'test'            => array(
+            ],
+            'test'            => [
                 'sql'             => $sql_test,
                 'sql_htmlencoded' => htmlentities($sql_test),
                 'result'          => NULL,
                 'err'             => NULL
-            )
-        );
+            ]
+        ];
 
         if ($playTest) {
             $ret['test']['result'] = $this->playTest($app, $sbas_id, $sql_test);
@@ -302,18 +302,18 @@ class RecordMoverJob extends AbstractJob
         if (count($tw) > 0)
             $sql .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
 
-        $ret = array(
-            'real' => array(
+        $ret = [
+            'real' => [
                 'sql'             => $sql,
                 'sql_htmlencoded' => htmlentities($sql),
-            ),
-            'test'            => array(
+            ],
+            'test'            => [
                 'sql'             => $sql_test,
                 'sql_htmlencoded' => htmlentities($sql_test),
                 'result'          => NULL,
                 'err'             => NULL
-            )
-        );
+            ]
+        ];
 
         if ($playTest) {
             $ret['test']['result'] = $this->playTest($app, $sbas_id, $sql_test);
@@ -325,12 +325,12 @@ class RecordMoverJob extends AbstractJob
     private function playTest(Application $app, $sbas_id, $sql)
     {
         $connbas = \connection::getPDOConnection($app, $sbas_id);
-        $result = array('rids' => array(), 'err' => '', 'n'   => null);
+        $result = ['rids' => [], 'err' => '', 'n'   => null];
 
         $result['n'] = $connbas->query('SELECT COUNT(*) AS n FROM (' . $sql . ') AS x')->fetchColumn();
 
         $stmt = $connbas->prepare('SELECT record_id FROM (' . $sql . ') AS x LIMIT 10');
-        if ($stmt->execute(array())) {
+        if ($stmt->execute([])) {
             while (($row = $stmt->fetch(\PDO::FETCH_ASSOC))) {
                 $result['rids'][] = $row['record_id'];
             }
@@ -346,7 +346,7 @@ class RecordMoverJob extends AbstractJob
     {
         $connbas = \connection::getPDOConnection($app, $sbas_id);
 
-        $tw = array();
+        $tw = [];
         $join = '';
 
         $ijoin = 0;
@@ -367,7 +367,7 @@ class RecordMoverJob extends AbstractJob
         foreach ($sxtask->from->text as $x) {
             $ijoin++;
             $comp = strtoupper($x['compare']);
-            if (in_array($comp, array('<', '>', '<=', '>=', '=', '!='))) {
+            if (in_array($comp, ['<', '>', '<=', '>=', '=', '!='])) {
                 $s = 'p' . $ijoin . '.name=\'' . $x['field'] . '\' AND p' . $ijoin . '.value' . $comp;
                 $s .= '' . $connbas->quote($x['value']) . '';
 
@@ -419,8 +419,8 @@ class RecordMoverJob extends AbstractJob
 
         // criteria <status mask="XXXXX" />
         $x = $sxtask->from->status['mask'];
-        $mx = str_replace(' ', '0', ltrim(str_replace(array('0', 'x'), array(' ', ' '), $x)));
-        $ma = str_replace(' ', '0', ltrim(str_replace(array('x', '0'), array(' ', '1'), $x)));
+        $mx = str_replace(' ', '0', ltrim(str_replace(['0', 'x'], [' ', ' '], $x)));
+        $ma = str_replace(' ', '0', ltrim(str_replace(['x', '0'], [' ', '1'], $x)));
         if ($mx && $ma) {
             $tw[] = '((status^0b' . $mx . ')&0b' . $ma . ')=0';
         } elseif ($mx) {
@@ -429,6 +429,6 @@ class RecordMoverJob extends AbstractJob
             $tw[] = '(status&0b' . $ma . ")=0";
         }
 
-        return array($tw, $join);
+        return [$tw, $join];
     }
 }

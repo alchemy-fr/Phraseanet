@@ -30,7 +30,7 @@ class DebuggerSubscriberTest extends \PHPUnit_Framework_TestCase
             unlink($app['phraseanet.configuration.config-compiled-path']);
         }
 
-        $app['configuration']['debugger'] = array('allowed-ips' => $authorized);
+        $app['configuration']['debugger'] = ['allowed-ips' => $authorized];
         $app['dispatcher']->addSubscriber(new DebuggerSubscriber($app));
         $app->get('/', function () {
             return 'success';
@@ -41,19 +41,19 @@ class DebuggerSubscriberTest extends \PHPUnit_Framework_TestCase
             $this->setExpectedException('Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException');
         }
 
-        $app->handle(new Request(array(), array(), array(), array(), array(), array('REMOTE_ADDR' => $incomingIp)));
+        $app->handle(new Request([], [], [], [], [], ['REMOTE_ADDR' => $incomingIp]));
     }
 
     public function provideIpsAndEnvironments()
     {
-        return array(
-            array(false, Application::ENV_PROD, '127.0.0.1', array()),
-            array(false, Application::ENV_PROD, '192.168.0.1', array()),
-            array(false, Application::ENV_DEV, '127.0.0.1', array()),
-            array(true, Application::ENV_DEV, '192.168.0.1', array()),
-            array(false, Application::ENV_DEV, '192.168.0.1', array('192.168.0.1')),
-            array(false, Application::ENV_TEST, '127.0.0.1', array()),
-            array(false, Application::ENV_TEST, '192.168.0.1', array()),
-        );
+        return [
+            [false, Application::ENV_PROD, '127.0.0.1', []],
+            [false, Application::ENV_PROD, '192.168.0.1', []],
+            [false, Application::ENV_DEV, '127.0.0.1', []],
+            [true, Application::ENV_DEV, '192.168.0.1', []],
+            [false, Application::ENV_DEV, '192.168.0.1', ['192.168.0.1']],
+            [false, Application::ENV_TEST, '127.0.0.1', []],
+            [false, Application::ENV_TEST, '192.168.0.1', []],
+        ];
     }
 }

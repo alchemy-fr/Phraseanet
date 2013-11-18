@@ -38,13 +38,13 @@ class Migration35 implements MigrationInterface
         $retrieve_old_credentials = function () {
             require __DIR__ . '/../../../../../../config/connexion.inc';
 
-            return array(
+            return [
                 'hostname' => $hostname,
                 'port'     => $port,
                 'user'     => $user,
                 'password' => $password,
                 'dbname'   => $dbname,
-            );
+            ];
         };
 
         foreach ($retrieve_old_credentials() as $key => $value) {
@@ -55,9 +55,9 @@ class Migration35 implements MigrationInterface
         $retrieve_old_parameters = function () {
             require __DIR__ . '/../../../../../../config/config.inc';
 
-            return array(
+            return [
                 'servername' => $servername
-            );
+            ];
         };
 
         $old_parameters = $retrieve_old_parameters();

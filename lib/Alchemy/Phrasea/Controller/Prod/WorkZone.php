@@ -66,12 +66,12 @@ class WorkZone implements ControllerProviderInterface
 
     public function displayWorkzone(Application $app)
     {
-        $params = array(
+        $params = [
             'WorkZone'      => new WorkzoneHelper($app, $app['request'])
             , 'selected_type' => $app['request']->query->get('type')
             , 'selected_id'   => $app['request']->query->get('id')
             , 'srt'           => $app['request']->query->get('sort')
-        );
+        ];
 
         return $app['twig']->render('prod/WorkZone/WorkZone.html.twig', $params);
     }
@@ -104,7 +104,7 @@ class WorkZone implements ControllerProviderInterface
         $page = floor($offsetStart / $PerPage) + 1;
         $maxPage = floor(count($Baskets) / $PerPage) + 1;
 
-        $params = array(
+        $params = [
             'Baskets' => $Baskets
             , 'Page'    => $page
             , 'MaxPage' => $maxPage
@@ -112,14 +112,14 @@ class WorkZone implements ControllerProviderInterface
             , 'Query'   => $request->query->get('Query')
             , 'Year'    => $request->query->get('Year')
             , 'Type'    => $request->query->get('Type')
-        );
+        ];
 
         return $app['twig']->render('prod/WorkZone/Browser/Results.html.twig', $params);
     }
 
     public function browseBasket(Application $app, Request $request, Basket $basket)
     {
-        return $app['twig']->render('prod/WorkZone/Browser/Basket.html.twig', array('Basket' => $basket));
+        return $app['twig']->render('prod/WorkZone/Browser/Basket.html.twig', ['Basket' => $basket]);
     }
 
     public function attachStories(Application $app, Request $request)
@@ -132,7 +132,7 @@ class WorkZone implements ControllerProviderInterface
 
         $alreadyFixed = $done = 0;
 
-        $stories = $request->request->get('stories', array());
+        $stories = $request->request->get('stories', []);
 
         foreach ($stories as $element) {
             $element = explode('_', $element);
@@ -190,10 +190,10 @@ class WorkZone implements ControllerProviderInterface
         }
 
         if ($request->getRequestFormat() == 'json') {
-            return $app->json(array(
+            return $app->json([
                 'success' => true
                 , 'message' => $message
-            ));
+            ]);
         }
 
         return $app->redirectPath('prod_workzone_show');
@@ -216,10 +216,10 @@ class WorkZone implements ControllerProviderInterface
         $app['EM']->flush();
 
         if ($request->getRequestFormat() == 'json') {
-            return $app->json(array(
+            return $app->json([
                 'success' => true
                 , 'message' => _('Story detached from the WorkZone')
-            ));
+            ]);
         }
 
         return $app->redirectPath('prod_workzone_show');

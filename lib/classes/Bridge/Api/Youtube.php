@@ -167,7 +167,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     public function get_element_types()
     {
-        return array(self::ELEMENT_TYPE_VIDEO => _('Videos'));
+        return [self::ELEMENT_TYPE_VIDEO => _('Videos')];
     }
 
     /**
@@ -176,7 +176,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     public function get_container_types()
     {
-        return array(self::CONTAINER_TYPE_PLAYLIST => _('Playlists'));
+        return [self::CONTAINER_TYPE_PLAYLIST => _('Playlists')];
     }
 
     /**
@@ -297,7 +297,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     public function update_element($object, $object_id, Array $datas)
     {
-        $required_fields = array("description", "category", "tags", "title", "privacy");
+        $required_fields = ["description", "category", "tags", "title", "privacy"];
         foreach ($required_fields as $field) {
             if ( ! array_key_exists($field, $datas))
                 throw new Bridge_Exception_ActionMandatoryField("Le paramétre " . $field . " est manquant");
@@ -626,7 +626,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     protected function parse_xml_error($string)
     {
-        $rs = array();
+        $rs = [];
         libxml_use_internal_errors(true);
         $xml = simplexml_load_string($string);
         libxml_clear_errors();
@@ -636,7 +636,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
         }
 
         if (isset($xml->HEAD) || isset($xml->head)) {
-            return array();
+            return [];
         } else {
             $domaine = explode(":", (string) $xml->error[0]->domain);
             $rs['type'] = count($domaine) > 1 ? $domaine[1] : $domaine[0];
@@ -655,7 +655,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      * @param  array          $options
      * @return string         The new distant Id
      */
-    public function upload(record_adapter $record, array $options = array())
+    public function upload(record_adapter $record, array $options = [])
     {
         switch ($record->get_type()) {
             case 'video':
@@ -671,7 +671,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
                 $video_entry->setVideoDescription($options['description']);
                 $video_entry->setVideoCategory($options['category']);
                 $video_entry->SetVideoTags(explode(' ', $options['tags']));
-                $video_entry->setVideoDeveloperTags(array('phraseanet'));
+                $video_entry->setVideoDeveloperTags(['phraseanet']);
 
                 if ($options['privacy'] == "public")
                     $video_entry->setVideoPublic();
@@ -721,7 +721,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     public function get_category_list()
     {
-        $cat = array();
+        $cat = [];
         $url_cat = sprintf('%s?hl=%s', self::CATEGORY_URL, $this->get_locale());
 
         if (false === $cxml = simplexml_load_file($url_cat)) {
@@ -815,7 +815,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
     protected function set_auth_params()
     {
         $this->_auth->set_parameters(
-            array(
+            [
                 'client_id'      => $this->registry->get('GV_youtube_client_id')
                 , 'client_secret'  => $this->registry->get('GV_youtube_client_secret')
                 , 'redirect_uri'   => Bridge_Api::generate_callback_url($this->generator, $this->get_name())
@@ -823,7 +823,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
                 , 'response_type'  => 'code'
                 , 'token_endpoint' => self::OAUTH2_TOKEN_ENDPOINT
                 , 'auth_endpoint'  => self::OAUTH2_AUTHORIZE_ENDPOINT
-            )
+            ]
         );
 
         return $this;
@@ -884,11 +884,11 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     public function get_locale()
     {
-        $youtube_available_locale = array(
+        $youtube_available_locale = [
             'zh-CN', 'zh-TW', 'cs-CZ', 'nl-NL', 'en-GB', 'en-US', 'fr-FR', 'de-DE',
             'it-IT', 'ja-JP', 'ko-KR', 'pl-PL', 'pt-PT', 'ru-RU', 'es-ES', 'es-MX',
             'sv-SE'
-        );
+        ];
         if ( ! is_null($this->locale)) {
             $youtube_format_locale = str_replace('_', '-', $this->locale);
             if (in_array(trim($youtube_format_locale), $youtube_available_locale)) {
@@ -937,7 +937,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     public function check_update_constraints(Array $datas)
     {
-        $errors = array();
+        $errors = [];
         $check = function ($field) use (&$errors, $datas) {
                 $name = $field['name'];
                 $length = (int) $field['length'];
@@ -970,13 +970,13 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     public function get_update_datas(Request $request)
     {
-        $datas = array(
+        $datas = [
             'title'       => $request->get('modif_title'),
             'description' => $request->get('modif_description'),
             'category'    => $request->get('modif_category'),
             'tags'        => $request->get('modif_tags'),
             'privacy'     => $request->get('modif_privacy'),
-        );
+        ];
 
         return $datas;
     }
@@ -992,13 +992,13 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
     public function get_upload_datas(Request $request, record_adapter $record)
     {
         $key = $record->get_serialize_key();
-        $datas = array(
+        $datas = [
             'title'       => $request->get('title_' . $key),
             'description' => $request->get('description_' . $key),
             'category'    => $request->get('category_' . $key),
             'tags'        => $request->get('tags_' . $key),
             'privacy'     => $request->get('privacy_' . $key),
-        );
+        ];
 
         return $datas;
     }
@@ -1021,7 +1021,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     private function check_record_constraints(record_adapter $record)
     {
-        $errors = array();
+        $errors = [];
         $key = $record->get_serialize_key();
         if ( ! $record->get_hd_file() instanceof SplFileInfo)
             $errors["file_size_" . $key] = _("Le record n'a pas de fichier physique"); //Record must rely on real file
@@ -1041,38 +1041,38 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     private function get_fields()
     {
-        return array(
-            array(
+        return [
+            [
                 'name'     => 'title',
                 'length'   => '100',
                 'required' => true,
                 'empty'    => false
-            )
-            , array(
+            ]
+            , [
                 'name'     => 'description',
                 'length'   => '2000',
                 'required' => true,
                 'empty'    => true
-            )
-            , array(
+            ]
+            , [
                 'name'       => 'tags',
                 'length'     => '500',
                 'tag_length' => '30',
                 'required'   => true,
                 'empty'      => true
-            )
-            , array(
+            ]
+            , [
                 'name'     => 'privacy',
                 'length'   => '0',
                 'required' => true,
                 'empty'    => false
-            )
-            , array(
+            ]
+            , [
                 'name'     => 'category',
                 'length'   => '0',
                 'required' => true,
                 'empty'    => false
-            )
-        );
+            ]
+        ];
     }
 }

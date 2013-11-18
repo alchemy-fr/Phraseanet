@@ -30,10 +30,10 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRootPostCreateTask()
     {
-        $parameters = array(
+        $parameters = [
             'job-name' => 'Alchemy\Phrasea\TaskManager\Job\NullJob',
             '_token' => 'token',
-        );
+        ];
 
         self::$DI['client']->request('POST', '/admin/task-manager/tasks/create', $parameters);
         $this->assertEquals(302, self::$DI['client']->getResponse()->getStatusCode());
@@ -42,10 +42,10 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testPostCreateTaskWithWrongName()
     {
-        $parameters = array(
+        $parameters = [
             'job-name' => 'NoJob',
             '_token' => 'token',
-        );
+        ];
 
         self::$DI['client']->request('POST', '/admin/task-manager/tasks/create', $parameters);
         $this->assertFalse(self::$DI['client']->getResponse()->isOk());
@@ -177,13 +177,13 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $status = Task::STATUS_STOPPED;
         $settings = '<?xml version="1.0" encoding="UTF-8"?><tasksettings><neutron></neutron></tasksettings>';
 
-        $parameters = array(
+        $parameters = [
             '_token'   => 'token',
             'name'     => $name,
             'period'   => $period,
             'status'   => $status,
             'settings' => $settings,
-        );
+        ];
 
         self::$DI['client']->request('POST', '/admin/task-manager/task/'.$task->getId().'/save', $parameters);
 
@@ -217,19 +217,19 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testValidateInvalidXML()
     {
-        self::$DI['client']->request('POST', '/admin/task-manager/task/validate-xml', array(), array(), array(), 'Invalid XML');
+        self::$DI['client']->request('POST', '/admin/task-manager/task/validate-xml', [], [], [], 'Invalid XML');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         $this->assertEquals('application/json', self::$DI['client']->getResponse()->headers->get('content-type'));
-        $this->assertEquals(array('success' => false), json_decode(self::$DI['client']->getResponse()->getContent(), true));
+        $this->assertEquals(['success' => false], json_decode(self::$DI['client']->getResponse()->getContent(), true));
     }
 
     public function testValidateXML()
     {
-        self::$DI['client']->request('POST', '/admin/task-manager/task/validate-xml', array(), array(), array(),
+        self::$DI['client']->request('POST', '/admin/task-manager/task/validate-xml', [], [], [],
            '<?xml version="1.0" encoding="UTF-8"?><tasksettings><neutron></neutron></tasksettings>');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         $this->assertEquals('application/json', self::$DI['client']->getResponse()->headers->get('content-type'));
-        $this->assertEquals(array('success' => true), json_decode(self::$DI['client']->getResponse()->getContent(), true));
+        $this->assertEquals(['success' => true], json_decode(self::$DI['client']->getResponse()->getContent(), true));
     }
 
     public function testPostTaskFacility()

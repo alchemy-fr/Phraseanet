@@ -39,7 +39,7 @@ class API_OAuth2_RefreshToken
             FROM api_oauth_refresh_tokens WHERE refresh_token = :token';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':token' => $this->token));
+        $stmt->execute([':token' => $this->token]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -88,7 +88,7 @@ class API_OAuth2_RefreshToken
             WHERE refresh_token = :refresh_token';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(":refresh_token" => $this->token));
+        $stmt->execute([":refresh_token" => $this->token]);
         $stmt->closeCursor();
 
         return;
@@ -106,11 +106,11 @@ class API_OAuth2_RefreshToken
             WHERE api_account_id = :account_id';
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':account_id' => $account->get_id()));
+        $stmt->execute([':account_id' => $account->get_id()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $tokens = array();
+        $tokens = [];
 
         foreach ($rs as $row) {
             $tokens[] = new API_OAuth2_RefreshToken($app, $row['refresh_token']);
@@ -135,12 +135,12 @@ class API_OAuth2_RefreshToken
             VALUES (:refresh_token, :account_id, :expires, :scope)';
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $params = array(
+        $params = [
             ":refresh_token" => $refresh_token,
             ":account_id"    => $account->get_id(),
             ":expires"       => $expires,
             ":scope"         => $scope
-        );
+        ];
         $stmt->execute($params);
         $stmt->closeCursor();
 

@@ -17,7 +17,7 @@ class patch_381alpha4a implements patchInterface
     private $release = '3.8.1-alpha.4';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -69,7 +69,7 @@ class patch_381alpha4a implements patchInterface
                 $value = substr($value, 0, -1);
             }
 
-            $stmt->execute(array(':value' => $value, ':usr_id' => $row['usr_id'], ':prop' => $row['prop']));
+            $stmt->execute([':value' => $value, ':usr_id' => $row['usr_id'], ':prop' => $row['prop']]);
         }
 
         $stmt->closeCursor();

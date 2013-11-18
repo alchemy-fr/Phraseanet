@@ -45,6 +45,6 @@ EOF;
 
     protected function getFormProperties()
     {
-        return array();
+        return [];
     }
 }

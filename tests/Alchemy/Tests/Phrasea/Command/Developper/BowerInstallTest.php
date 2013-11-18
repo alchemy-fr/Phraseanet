@@ -24,7 +24,7 @@ class BowerInstallTest extends \PhraseanetPHPUnitAbstract
             ->getMock();
 
         $mockedCommand = $this->getMockBuilder('Symfony\Component\Console\Command\Command')
-            ->setMethods(array('execute'))
+            ->setMethods(['execute'])
             ->disableOriginalConstructor()
             ->getMock();
 

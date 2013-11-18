@@ -75,7 +75,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testProcess()
     {
 
-        $records = array();
+        $records = [];
 
         $postProcessRecord = function ($record) use (&$records) {
                 $records[] = $record;
@@ -117,7 +117,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testProcessForceLazaret()
     {
-        $records = array();
+        $records = [];
 
         $postProcessRecord = function ($record) use (&$records) {
                 $records[] = $record;
@@ -137,7 +137,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testCreateRecord()
     {
-        $records = array();
+        $records = [];
 
         $postProcessRecord = function ($record) use (&$records) {
                 $records[] = $record;
@@ -145,7 +145,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $file = File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']);
         $first = $odd = false;
-        $tofetch = array();
+        $tofetch = [];
         foreach (self::$DI['collection']->get_databox()->get_meta_structure() as $databox_field) {
             if ($databox_field->is_readonly()) {
                 continue;
@@ -157,7 +157,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
             if ($databox_field->is_multi()) {
 
-                $data = array('a', 'Hello Multi ' . $databox_field->get_tag()->getTagname());
+                $data = ['a', 'Hello Multi ' . $databox_field->get_tag()->getTagname()];
                 $tofetch [$databox_field->get_name()] = $data;
 
                 $data[] = null;
@@ -166,7 +166,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 $file->addAttribute(new Metadata(new \PHPExiftool\Driver\Metadata\Metadata($databox_field->get_tag(), $value)));
             } else {
 
-                $data = array('Hello Mono ' . $databox_field->get_tag()->getTagname());
+                $data = ['Hello Mono ' . $databox_field->get_tag()->getTagname()];
 
                 if (!$first) {
                     if ($odd) {
@@ -178,7 +178,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                         $value = new \PHPExiftool\Driver\Value\Mono(current($data));
                         $tofetch [$databox_field->get_name()] = $data;
 
-                        $file->addAttribute(new MetaField($databox_field, array(current($data))));
+                        $file->addAttribute(new MetaField($databox_field, [current($data)]));
                     }
                 }
                 if ($first) {
@@ -230,7 +230,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         foreach ($tofetch as $name => $values) {
 
-            $found = array();
+            $found = [];
             foreach ($record->get_caption()->get_field($name)->get_values() as $value) {
                 $found[] = $value->getValue();
             }
@@ -258,7 +258,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $file = File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']);
         $odd = false;
-        $tofetchMeta = $tofetchField = array();
+        $tofetchMeta = $tofetchField = [];
         foreach (self::$DI['collection']->get_databox()->get_meta_structure() as $databox_field) {
             if ($databox_field->is_readonly()) {
                 continue;
@@ -270,7 +270,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
             if ($databox_field->is_multi()) {
 
-                $data = array('a', 'Hello Multi ' . $databox_field->get_tag()->getTagname());
+                $data = ['a', 'Hello Multi ' . $databox_field->get_tag()->getTagname()];
                 $tofetchMeta [$databox_field->get_tag()->getTagname()] = $data;
 
                 $value = new \PHPExiftool\Driver\Value\Multi($data);
@@ -278,7 +278,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 $file->addAttribute(new Metadata(new \PHPExiftool\Driver\Metadata\Metadata($databox_field->get_tag(), $value)));
             } else {
 
-                $data = array('Hello Mono ' . $databox_field->get_tag()->getTagname());
+                $data = ['Hello Mono ' . $databox_field->get_tag()->getTagname()];
 
                 if ($odd) {
                     $value = new \PHPExiftool\Driver\Value\Mono(current($data));
@@ -288,7 +288,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 } else {
                     $tofetchField [$databox_field->get_name()] = $data;
 
-                    $file->addAttribute(new MetaField($databox_field, array(current($data))));
+                    $file->addAttribute(new MetaField($databox_field, [current($data)]));
                 }
             }
 
@@ -308,7 +308,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $story_found = $status_found = false;
 
-        $foundMeta = $foundField = array();
+        $foundMeta = $foundField = [];
 
         /* @var $lazaret \Alchemy\Phrasea\Model\Entities\LazaretFile */
         foreach ($lazaret->getAttributes() as $attr) {
@@ -323,7 +323,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 $tagname = $attribute->getValue()->getTag()->getTagname();
 
                 if (!isset($foundMeta[$tagname])) {
-                    $foundMeta[$tagname] = array();
+                    $foundMeta[$tagname] = [];
                 }
 
                 $foundMeta[$tagname] = array_merge($foundMeta[$tagname], $attribute->getValue()->getValue()->asArray());
@@ -332,7 +332,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 $fieldname = $attribute->getField()->get_name();
 
                 if (!isset($foundField[$fieldname])) {
-                    $foundField[$fieldname] = array();
+                    $foundField[$fieldname] = [];
                 }
 
                 $foundField[$fieldname] = array_merge($foundField[$fieldname], (array) $attribute->getValue());
@@ -375,7 +375,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $monoData = new \PHPExiftool\Driver\Metadata\Metadata($objectNameTag, $monoValue);
 
         $personInImageTag = new \PHPExiftool\Driver\Tag\XMPIptcExt\PersonInImage();
-        $multiValue = new \PHPExiftool\Driver\Value\Multi(array('Babar', 'Celeste'));
+        $multiValue = new \PHPExiftool\Driver\Value\Multi(['Babar', 'Celeste']);
         $multiData = new \PHPExiftool\Driver\Metadata\Metadata($personInImageTag, $multiValue);
 
         $file->addAttribute(new Metadata($monoData));
@@ -418,7 +418,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $file = File::buildFromPathfile(__DIR__ . '/../../../../files/HelloWorld.pdf', self::$DI['collection'], self::$DI['app']);
         $manager->addMediaAttributesTester($file);
 
-        $toFound = array(
+        $toFound = [
             'Phraseanet:tf-width',
             'Phraseanet:tf-height',
             'Phraseanet:tf-bits',
@@ -430,14 +430,14 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'Phraseanet:tf-basename',
             'Phraseanet:tf-extension',
             'Phraseanet:tf-size',
-        );
+        ];
 
         foreach ($file->getAttributes() as $attribute) {
             if ($attribute->getName() == AttributeInterface::NAME_METADATA) {
                 $tagname = $attribute->getValue()->getTag()->getTagname();
                 if (in_array($tagname, $toFound)) {
                     $previousC = count($toFound);
-                    $tmp = array();
+                    $tmp = [];
                     foreach ($toFound as $val) {
                         if ($tagname != $val) {
                             $tmp[] = $val;
@@ -449,7 +449,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             }
         }
 
-        $this->assertEquals(array('Phraseanet:tf-duration'), $toFound);
+        $this->assertEquals(['Phraseanet:tf-duration'], $toFound);
     }
 
     /**
@@ -466,7 +466,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $count = count($file->getAttributes());
 
-        $toFound = array(
+        $toFound = [
             'Phraseanet:tf-width',
             'Phraseanet:tf-height',
             'Phraseanet:tf-bits',
@@ -477,14 +477,14 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'Phraseanet:tf-basename',
             'Phraseanet:tf-extension',
             'Phraseanet:tf-size',
-        );
+        ];
 
         foreach ($file->getAttributes() as $attribute) {
             if ($attribute->getName() == AttributeInterface::NAME_METADATA) {
                 $tagname = $attribute->getValue()->getTag()->getTagname();
                 if (in_array($tagname, $toFound)) {
                     $previousC = count($toFound);
-                    $tmp = array();
+                    $tmp = [];
                     foreach ($toFound as $val) {
                         if ($tagname != $val) {
                             $tmp[] = $val;
@@ -496,7 +496,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             }
         }
 
-        $this->assertEquals(array('Phraseanet:tf-width', 'Phraseanet:tf-height', 'Phraseanet:tf-bits', 'Phraseanet:tf-channels'), $toFound);
+        $this->assertEquals(['Phraseanet:tf-width', 'Phraseanet:tf-height', 'Phraseanet:tf-bits', 'Phraseanet:tf-channels'], $toFound);
     }
 
     /**
@@ -513,7 +513,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $count = count($file->getAttributes());
 
-        $toFound = array(
+        $toFound = [
             'Phraseanet:tf-width',
             'Phraseanet:tf-height',
             'Phraseanet:tf-bits',
@@ -524,14 +524,14 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'Phraseanet:tf-basename',
             'Phraseanet:tf-extension',
             'Phraseanet:tf-size',
-        );
+        ];
 
         foreach ($file->getAttributes() as $attribute) {
             if ($attribute->getName() == AttributeInterface::NAME_METADATA) {
                 $tagname = $attribute->getValue()->getTag()->getTagname();
                 if (in_array($tagname, $toFound)) {
                     $previousC = count($toFound);
-                    $tmp = array();
+                    $tmp = [];
                     foreach ($toFound as $val) {
                         if ($tagname != $val) {
                             $tmp[] = $val;
@@ -543,7 +543,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             }
         }
 
-        $this->assertEquals(array('Phraseanet:tf-duration'), $toFound);
+        $this->assertEquals(['Phraseanet:tf-duration'], $toFound);
     }
 
     /**
@@ -551,7 +551,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetVisa()
     {
-        $records = array();
+        $records = [];
 
         $postProcessRecord = function ($record) use (&$records) {
                 $records[] = $record;
@@ -592,14 +592,14 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRegisterChecker()
     {
-        $this->assertEquals(array(), $this->object->getCheckers());
+        $this->assertEquals([], $this->object->getCheckers());
 
         $shaChecker = new Sha256(self::$DI['app']);
         $this->object->registerChecker($shaChecker);
         $uuidChecker = new UUID(self::$DI['app']);
         $this->object->registerChecker($uuidChecker);
 
-        $this->assertEquals(array($shaChecker, $uuidChecker), $this->object->getCheckers());
+        $this->assertEquals([$shaChecker, $uuidChecker], $this->object->getCheckers());
     }
 
     /**
@@ -608,13 +608,13 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRegisterCheckers()
     {
-        $this->assertEquals(array(), $this->object->getCheckers());
+        $this->assertEquals([], $this->object->getCheckers());
 
         $shaChecker = new Sha256(self::$DI['app']);
         $uuidChecker = new UUID(self::$DI['app']);
-        $this->object->registerCheckers(array($shaChecker, $uuidChecker));
+        $this->object->registerCheckers([$shaChecker, $uuidChecker]);
 
-        $this->assertEquals(array($shaChecker, $uuidChecker), $this->object->getCheckers());
+        $this->assertEquals([$shaChecker, $uuidChecker], $this->object->getCheckers());
     }
 
     /**
@@ -622,17 +622,17 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUnregisterChecker()
     {
-        $this->assertEquals(array(), $this->object->getCheckers());
+        $this->assertEquals([], $this->object->getCheckers());
 
         $shaChecker = new Sha256(self::$DI['app']);
         $uuidChecker = new UUID(self::$DI['app']);
         $filenameChecker = new Filename(self::$DI['app']);
-        $this->object->registerCheckers(array($shaChecker, $uuidChecker, $filenameChecker));
+        $this->object->registerCheckers([$shaChecker, $uuidChecker, $filenameChecker]);
 
-        $this->assertEquals(array($shaChecker, $uuidChecker, $filenameChecker), $this->object->getCheckers());
+        $this->assertEquals([$shaChecker, $uuidChecker, $filenameChecker], $this->object->getCheckers());
 
         $this->object->unregisterChecker($uuidChecker);
-        $this->assertEquals(array($shaChecker, $filenameChecker), $this->object->getCheckers());
+        $this->assertEquals([$shaChecker, $filenameChecker], $this->object->getCheckers());
     }
 
     /**

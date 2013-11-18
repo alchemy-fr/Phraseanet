@@ -21,7 +21,7 @@ class eventsmanager_event_test extends eventsmanager_eventAbstract
      *
      * @var Array
      */
-    protected $events = array('__EVENT__');
+    protected $events = ['__EVENT__'];
 
     /**
      *

@@ -63,7 +63,7 @@ class ORMServiceProvider implements ServiceProviderInterface
 
             $annotationDriver = new AnnotationDriver(
                 $annotationReader,
-                array($app['root.path'].'/lib/Alchemy/Phrasea/Model/Entities')
+                [$app['root.path'].'/lib/Alchemy/Phrasea/Model/Entities']
             );
 
             $driverChain->addDriver($annotationDriver, 'Alchemy\Phrasea\Model\Entities');
@@ -136,13 +136,13 @@ class ORMServiceProvider implements ServiceProviderInterface
 
             $platform = $em->getConnection()->getDatabasePlatform();
 
-            $types = array(
+            $types = [
                 'blob' => 'Alchemy\Phrasea\Model\Types\Blob',
                 'enum' => 'Alchemy\Phrasea\Model\Types\Blob',
                 'longblob' => 'Alchemy\Phrasea\Model\Types\LongBlob',
                 'varbinary' => 'Alchemy\Phrasea\Model\Types\VarBinary',
                 'binary' => 'Alchemy\Phrasea\Model\Types\Binary',
-            );
+            ];
 
             foreach ($types as $type => $class) {
                 if (!Type::hasType($type)) {

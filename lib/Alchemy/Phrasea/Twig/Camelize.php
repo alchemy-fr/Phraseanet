@@ -40,9 +40,9 @@ class Camelize extends \Twig_Extension
      */
     public function getFilters()
     {
-        return array(
+        return [
             'camelize' => new \Twig_Filter_Method($this, 'toCamelCase'),
-        );
+        ];
     }
 
     public function toCamelCase($str, $separator = '-', $pascalCase = false)

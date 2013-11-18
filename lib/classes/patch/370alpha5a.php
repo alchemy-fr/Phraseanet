@@ -28,7 +28,7 @@ class patch_370alpha5a implements patchInterface
      *
      * @var Array
      */
-    private $concern = array(base::DATA_BOX);
+    private $concern = [base::DATA_BOX];
 
     /**
      *
@@ -62,20 +62,20 @@ class patch_370alpha5a implements patchInterface
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $update = array();
+        $update = [];
 
         foreach ($rs as $row) {
             $src = str_replace(
-                array('/rdf:RDF/rdf:Description/PHRASEANET:', '/rdf:RDF/rdf:Description/'), array('Phraseanet:', ''), $row['src']
+                ['/rdf:RDF/rdf:Description/PHRASEANET:', '/rdf:RDF/rdf:Description/'], ['Phraseanet:', ''], $row['src']
             );
-            $update[] = array('id'  => $row['id'], 'src' => $src);
+            $update[] = ['id'  => $row['id'], 'src' => $src];
         }
 
         $sql = 'UPDATE metadatas_structure SET src = :src WHERE id = :id';
         $stmt = $databox->get_connection()->prepare($sql);
 
         foreach ($update as $row) {
-            $stmt->execute(array(':src' => $row['src'], ':id'  => $row['id']));
+            $stmt->execute([':src' => $row['src'], ':id'  => $row['id']]);
         }
 
         $stmt->closeCursor();

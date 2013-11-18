@@ -90,7 +90,7 @@ class Fields implements ControllerProviderInterface
 
     public function updateFields(Application $app, Request $request, $sbas_id)
     {
-        $fields = array();
+        $fields = [];
         $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
         $metaStructure = $databox->get_meta_structure();
         $connection = $databox->get_connection();
@@ -125,7 +125,7 @@ class Fields implements ControllerProviderInterface
 
     public function getLanguage(Application $app, Request $request)
     {
-        return $app->json(array(
+        return $app->json([
             'something_wrong'           => _('Something wrong happened, please try again or contact an admin.'),
             'created_success'           => _('%s field has been created with success.'),
             'deleted_success'           => _('%s field has been deleted with success.'),
@@ -136,29 +136,29 @@ class Fields implements ControllerProviderInterface
             'validation_tag_invalid'    => _('Field source is not valid.'),
             'field_error'               => _('Field %s contains errors.'),
             'fields_save'               => _('Your configuration has been successfuly saved.'),
-        ));
+        ]);
     }
 
     public function displayApp(Application $app, Request $request, $sbas_id)
     {
-        $languages = array();
+        $languages = [];
 
         foreach ($app['locales.available'] as $code => $language) {
             $data = explode('_', $code);
             $languages[$data[0]] = $language;
         }
 
-        return $app['twig']->render('/admin/fields/index.html.twig', array(
+        return $app['twig']->render('/admin/fields/index.html.twig', [
             'sbas_id'   => $sbas_id,
             'languages' => $languages,
-        ));
+        ]);
     }
 
     public function listDcFields(Application $app, Request $request)
     {
         $data = $app['serializer']->serialize(array_values(\databox::get_available_dcfields()), 'json');
 
-        return new Response($data, 200, array('content-type' => 'application/json'));
+        return new Response($data, 200, ['content-type' => 'application/json']);
     }
 
     public function listVocabularies(Application $app, Request $request)
@@ -166,10 +166,10 @@ class Fields implements ControllerProviderInterface
         $vocabularies = VocabularyController::getAvailable($app);
 
         return $app->json(array_map(function ($vocabulary) {
-            return array(
+            return [
                 'type' => $vocabulary->getType(),
                 'name' => $vocabulary->getName(),
-            );
+            ];
         }, $vocabularies));
     }
 
@@ -177,16 +177,16 @@ class Fields implements ControllerProviderInterface
     {
         $vocabulary = VocabularyController::get($app, $type);
 
-        return $app->json(array(
+        return $app->json([
             'type' => $vocabulary->getType(),
             'name' => $vocabulary->getName(),
-        ));
+        ]);
     }
 
     public function searchTag(Application $app, Request $request)
     {
         $term = trim(strtolower($request->query->get('term')));
-        $res = array();
+        $res = [];
 
         if ($term) {
             $provider = new TagProvider();
@@ -199,11 +199,11 @@ class Fields implements ControllerProviderInterface
                         continue;
                     }
 
-                    $res[] = array(
+                    $res[] = [
                         'id'    => $namespace . '/' . $tagname,
                         'label' => $datas['namespace'] . ' / ' . $datas['tagname'],
                         'value' => $datas['namespace'] . ':' . $datas['tagname'],
-                    );
+                    ];
                 }
             }
         }
@@ -216,7 +216,7 @@ class Fields implements ControllerProviderInterface
         $tag = \databox_field::loadClassFromTagName($tagname);
         $json = $app['serializer']->serialize($tag, 'json');
 
-        return new Response($json, 200, array('Content-Type' => 'application/json'));
+        return new Response($json, 200, ['Content-Type' => 'application/json']);
     }
 
     public function createField(Application $app, Request $request, $sbas_id)
@@ -236,11 +236,11 @@ class Fields implements ControllerProviderInterface
             $app->abort(500, _(sprintf('Field %s could not be created, please try again or contact an admin.', $data['name'])));
         }
 
-        return $app->json($field->toArray(), 201, array(
-            'location' => $app->path('admin_fields_show_field', array(
+        return $app->json($field->toArray(), 201, [
+            'location' => $app->path('admin_fields_show_field', [
                 'sbas_id' => $sbas_id,
                 'id' => $field->get_id()
-        ))));
+        ])]);
     }
 
     public function listFields(Application $app, $sbas_id)
@@ -361,11 +361,11 @@ class Fields implements ControllerProviderInterface
 
     private function getMandatoryFieldProperties()
     {
-        return array(
+        return [
             'name', 'multi', 'thumbtitle', 'tag', 'business', 'indexable',
             'required', 'separator', 'readonly', 'type', 'tbranch', 'report',
             'vocabulary-type', 'vocabulary-restricted', 'dces-element', 'labels'
-        );
+        ];
     }
 
     private function validateNameField(\databox_descriptionStructure $metaStructure, array $field)

@@ -21,7 +21,7 @@ class FilesystemRequirements extends RequirementCollection implements Requiremen
 
         $this->setName('Filesystem');
 
-        $paths = array(
+        $paths = [
             $baseDir . '/config',
             $baseDir . '/config/stamp',
             $baseDir . '/config/status',
@@ -41,7 +41,7 @@ class FilesystemRequirements extends RequirementCollection implements Requiremen
             $baseDir . '/tmp/desc_tmp',
             $baseDir . '/tmp/download',
             $baseDir . '/tmp/batches'
-        );
+        ];
 
         foreach ($paths as $path) {
             $this->addRequirement(

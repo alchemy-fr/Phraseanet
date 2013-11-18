@@ -48,7 +48,7 @@ class User
      *
      * @var array
      */
-    private static $defaultUserSettings = array(
+    private static $defaultUserSettings = [
         'view'                    => 'thumbs',
         'images_per_page'         => '20',
         'images_size'             => '120',
@@ -70,7 +70,7 @@ class User
         'basket_caption_display'  => '0',
         'basket_status_display'   => '0',
         'basket_title_display'    => '0'
-    );
+    ];
 
     /**
      * @ORM\Column(type="integer")
@@ -439,11 +439,11 @@ class User
      */
     public function setGender($gender)
     {
-        if (null !== $gender && !in_array($gender, array(
+        if (null !== $gender && !in_array($gender, [
             self::GENDER_MISS,
             self::GENDER_MR,
             self::GENDER_MRS
-        ))) {
+        ])) {
             throw new InvalidArgumentException(sprintf("Invalid gender %s.", $gender));
         }
 
@@ -1018,7 +1018,7 @@ class User
      */
     public function isSpecial()
     {
-        return in_array($this->login, array(self::USER_GUEST, self::USER_AUTOREGISTER));
+        return in_array($this->login, [self::USER_GUEST, self::USER_AUTOREGISTER]);
     }
 
     /**

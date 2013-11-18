@@ -23,7 +23,7 @@ class ComposerSetupTest extends \PHPUnit_Framework_TestCase
         $finder = new PhpExecutableFinder();
         $php = $finder->find();
 
-        $process = ProcessBuilder::create(array($php, $target, '--version'))->getProcess();
+        $process = ProcessBuilder::create([$php, $target, '--version'])->getProcess();
         $process->run();
 
         $this->assertTrue($process->isSuccessful());

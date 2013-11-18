@@ -56,7 +56,7 @@ class caption_Field_Value implements cache_cacheableInterface
     protected $record;
     protected $app;
 
-    protected static $localCache = array();
+    protected static $localCache = [];
 
     /**
      *
@@ -96,7 +96,7 @@ class caption_Field_Value implements cache_cacheableInterface
             FROM metadatas WHERE id = :id';
 
         $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':id' => $this->id));
+        $stmt->execute([':id' => $this->id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -133,11 +133,11 @@ class caption_Field_Value implements cache_cacheableInterface
             }
         }
 
-        $datas = array(
+        $datas = [
             'value'          => $this->value,
             'vocabularyId'   => $this->VocabularyId,
             'vocabularyType' => $this->VocabularyType ? $this->VocabularyType->getType() : null,
-        );
+        ];
 
         $this->set_data_to_cache($datas);
 
@@ -185,7 +185,7 @@ class caption_Field_Value implements cache_cacheableInterface
 
         $sql = 'DELETE FROM metadatas WHERE id = :id';
         $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':id' => $this->id));
+        $stmt->execute([':id' => $this->id]);
         $stmt->closeCursor();
 
         $this->delete_data_from_cache();
@@ -200,11 +200,11 @@ class caption_Field_Value implements cache_cacheableInterface
     {
         $connbas = $this->databox_field->get_connection();
 
-        $params = array(
+        $params = [
             ':VocabType'    => null
             , ':VocabularyId' => null
             , ':meta_id'      => $this->getId()
-        );
+        ];
 
         $sql_up = 'UPDATE metadatas
               SET VocabularyType = :VocabType, VocabularyId = :VocabularyId
@@ -224,11 +224,11 @@ class caption_Field_Value implements cache_cacheableInterface
     {
         $connbas = $this->databox_field->get_connection();
 
-        $params = array(
+        $params = [
             ':VocabType'    => $vocabulary->getType()
             , ':VocabularyId' => $vocab_id
             , ':meta_id'      => $this->getId()
-        );
+        ];
 
         $sql_up = 'UPDATE metadatas
               SET VocabularyType = :VocabType, VocabularyId = :VocabularyId
@@ -248,10 +248,10 @@ class caption_Field_Value implements cache_cacheableInterface
 
         $connbas = $this->databox_field->get_connection();
 
-        $params = array(
+        $params = [
             ':meta_id' => $this->id
             , ':value'   => $value
-        );
+        ];
 
         $sql_up = 'UPDATE metadatas SET value = :value WHERE id = :meta_id';
         $stmt_up = $connbas->prepare($sql_up);
@@ -309,13 +309,13 @@ class caption_Field_Value implements cache_cacheableInterface
       VALUES
       (null, :record_id, :field, :value, :VocabType, :VocabId)';
 
-        $params = array(
+        $params = [
             ':record_id' => $record->get_record_id(),
             ':field'     => $databox_field->get_id(),
             ':value'     => $value,
             ':VocabType' => $vocabulary ? $vocabulary->getType() : null,
             ':VocabId'   => $vocabulary ? $vocabularyId : null,
-        );
+        ];
 
         $stmt_ins = $connbas->prepare($sql_ins);
         $stmt_ins->execute($params);
@@ -355,7 +355,7 @@ class caption_Field_Value implements cache_cacheableInterface
 
         $fvalue = $value;
 
-        $cleanvalue = str_replace(array("<em>", "</em>", "'"), array("", "", "&apos;"), $fvalue);
+        $cleanvalue = str_replace(["<em>", "</em>", "'"], ["", "", "&apos;"], $fvalue);
 
         list($term_noacc, $context_noacc) = $this->splitTermAndContext($cleanvalue);
         $term_noacc = $this->app['unicode']->remove_indexer_chars($term_noacc);
@@ -375,8 +375,8 @@ class caption_Field_Value implements cache_cacheableInterface
                 if ($node->getAttribute("lng") == $this->app['locale.I18n']) {
                     // le terme est dans la bonne langue, on le rend cliquable
                     list($term, $context) = $this->splitTermAndContext($fvalue);
-                    $term = str_replace(array("<em>", "</em>"), array("", ""), $term);
-                    $context = str_replace(array("<em>", "</em>"), array("", ""), $context);
+                    $term = str_replace(["<em>", "</em>"], ["", ""], $term);
+                    $context = str_replace(["<em>", "</em>"], ["", ""], $context);
                     $qjs = $term;
                     if ($context) {
                         $qjs .= " [" . $context . "]";
@@ -400,8 +400,8 @@ class caption_Field_Value implements cache_cacheableInterface
             }
             if (! $lngfound) {
                 list($term, $context) = $this->splitTermAndContext($fvalue);
-                $term = str_replace(array("<em>", "</em>"), array("", ""), $term);
-                $context = str_replace(array("<em>", "</em>"), array("", ""), $context);
+                $term = str_replace(["<em>", "</em>"], ["", ""], $term);
+                $context = str_replace(["<em>", "</em>"], ["", ""], $context);
                 $qjs = $term;
                 if ($context) {
                     $qjs .= " [" . $context . "]";
@@ -439,7 +439,7 @@ class caption_Field_Value implements cache_cacheableInterface
             }
         }
 
-        return array($term, $context);
+        return [$term, $context];
     }
 
     /**

@@ -25,7 +25,7 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = array('__PUSH_DATAS__');
+    public $events = ['__PUSH_DATAS__'];
 
     /**
      *
@@ -45,12 +45,12 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'from'    => ''
             , 'to'      => ''
             , 'message' => ''
             , 'ssel_id' => ''
-        );
+        ];
 
         $params = array_merge($default, $params);
 
@@ -128,17 +128,17 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
         try {
             User_Adapter::getInstance($from, $this->app);
         } catch (Exception $e) {
-            return array();
+            return [];
         }
 
         $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
 
-        $ret = array(
+        $ret = [
             'text'  => sprintf(
                 _('%1$s vous a envoye un %2$spanier%3$s'), $sender, '<a href="#" onclick="openPreview(\'BASK\',1,\''
                 . (string) $sx->ssel_id . '\');return false;">', '</a>')
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
-        );
+        ];
 
         return $ret;
     }

@@ -74,7 +74,7 @@ class Root implements ControllerProviderInterface
 
             $dashboard->execute();
 
-            return $app['twig']->render('report/report_layout_child.html.twig', array(
+            return $app['twig']->render('report/report_layout_child.html.twig', [
                 'ajax_dash'   => true,
                 'dashboard'   => $dashboard,
                 'home_title'  => $app['phraseanet.registry']->get('GV_homeTitle'),
@@ -84,7 +84,7 @@ class Root implements ControllerProviderInterface
                 'g_anal'      => $app['phraseanet.registry']->get('GV_googleAnalytics'),
                 'ajax'        => false,
                 'ajax_chart'  => false
-            ));
+            ]);
         }
 
         $dmin = $request->request->get('dmin');
@@ -96,9 +96,9 @@ class Root implements ControllerProviderInterface
 
         $dashboard->execute();
 
-        return $app->json(array('html' => $app['twig']->render('report/ajax_dashboard_content_child.html.twig', array(
+        return $app->json(['html' => $app['twig']->render('report/ajax_dashboard_content_child.html.twig', [
             'dashboard' => $dashboard
-        ))));
+        ])]);
     }
 
     /**
@@ -111,7 +111,7 @@ class Root implements ControllerProviderInterface
      */
     public function initReport(Application $app, Request $request)
     {
-        $popbases = $request->request->get('popbases', array());
+        $popbases = $request->request->get('popbases', []);
 
         if ('' === $dmin = $request->request->get('dmin', '')) {
             $dmin = '01-' . date('m') . '-' . date('Y');
@@ -125,7 +125,7 @@ class Root implements ControllerProviderInterface
         $dmax = \DateTime::createFromFormat('d-m-Y H:i:s', sprintf('%s 23:59:59', $dmax));
 
         //get user's sbas & collections selection from popbases
-        $selection = array();
+        $selection = [];
         $liste = $id_sbas = '';
         $i = 0;
         foreach (array_fill_keys($popbases, 0) as $key => $val) {
@@ -142,13 +142,13 @@ class Root implements ControllerProviderInterface
         //fill the last entry
         $selection[$id_sbas]['liste'] = $liste;
 
-        return $app['twig']->render('report/ajax_report_content.html.twig', array(
+        return $app['twig']->render('report/ajax_report_content.html.twig', [
             'selection' => $selection,
             'anonymous' => $app['phraseanet.registry']->get('GV_anonymousReport'),
             'ajax'      => true,
             'dmin'      => $dmin->format('Y-m-d H:i:s'),
             'dmax'      => $dmax->format('Y-m-d H:i:s'),
-        ));
+        ]);
     }
 
     /**
@@ -168,16 +168,16 @@ class Root implements ControllerProviderInterface
             $request->request->get('collection')
         );
 
-        $conf = array(
-            'user'      => array(_('phraseanet::utilisateurs'), 1, 1, 1, 1),
-            'ddate'     => array(_('report:: date'), 1, 0, 1, 1),
-            'ip'        => array(_('report:: IP'), 1, 0, 0, 0),
-            'appli'     => array(_('report:: modules'), 1, 0, 0, 0),
-            'fonction'  => array(_('report::fonction'), 1, 1, 1, 1),
-            'activite'  => array(_('report::activite'), 1, 1, 1, 1),
-            'pays'      => array(_('report::pays'), 1, 1, 1, 1),
-            'societe'   => array(_('report::societe'), 1, 1, 1, 1)
-        );
+        $conf = [
+            'user'      => [_('phraseanet::utilisateurs'), 1, 1, 1, 1],
+            'ddate'     => [_('report:: date'), 1, 0, 1, 1],
+            'ip'        => [_('report:: IP'), 1, 0, 0, 0],
+            'appli'     => [_('report:: modules'), 1, 0, 0, 0],
+            'fonction'  => [_('report::fonction'), 1, 1, 1, 1],
+            'activite'  => [_('report::activite'), 1, 1, 1, 1],
+            'pays'      => [_('report::pays'), 1, 1, 1, 1],
+            'societe'   => [_('report::societe'), 1, 1, 1, 1]
+        ];
 
         if ($request->request->get('printcsv') == 'on') {
             $cnx->setHasLimit(false);
@@ -189,7 +189,7 @@ class Root implements ControllerProviderInterface
                 $csv = '';
             }
 
-            return $app->json(array('rs' => $csv));
+            return $app->json(['rs' => $csv]);
         }
 
         $report = $this->doReport($app, $request, $cnx, $conf);
@@ -198,15 +198,15 @@ class Root implements ControllerProviderInterface
             return $report;
         }
 
-        return $app->json(array(
-                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+        return $app->json([
+                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
                 'is_doc'      => false
-            )),
+            ]),
             'display_nav' => $report['display_nav'], // do we display the prev and next button ?
             'next'        => $report['next_page'], //Number of the next page
             'prev'        => $report['previous_page'], //Number of the previoous page
@@ -214,7 +214,7 @@ class Root implements ControllerProviderInterface
             'filter'      => ((sizeof($report['filter']) > 0) ? serialize($report['filter']) : ''), //the serialized filters
             'col'         => $report['active_column'], //all the columns where a filter is applied
             'limit'       => $report['nb_record']
-        ));
+        ]);
     }
 
     /**
@@ -234,15 +234,15 @@ class Root implements ControllerProviderInterface
             $request->request->get('collection')
         );
 
-        $conf = array(
-            'user'      => array(_('report:: utilisateur'), 1, 1, 1, 1),
-            'search'    => array(_('report:: question'), 1, 0, 1, 1),
-            'ddate'     => array(_('report:: date'), 1, 0, 1, 1),
-            'fonction'  => array(_('report:: fonction'), 1, 1, 1, 1),
-            'activite'  => array(_('report:: activite'), 1, 1, 1, 1),
-            'pays'      => array(_('report:: pays'), 1, 1, 1, 1),
-            'societe'   => array(_('report:: societe'), 1, 1, 1, 1)
-        );
+        $conf = [
+            'user'      => [_('report:: utilisateur'), 1, 1, 1, 1],
+            'search'    => [_('report:: question'), 1, 0, 1, 1],
+            'ddate'     => [_('report:: date'), 1, 0, 1, 1],
+            'fonction'  => [_('report:: fonction'), 1, 1, 1, 1],
+            'activite'  => [_('report:: activite'), 1, 1, 1, 1],
+            'pays'      => [_('report:: pays'), 1, 1, 1, 1],
+            'societe'   => [_('report:: societe'), 1, 1, 1, 1]
+        ];
 
         if ($request->request->get('printcsv') == 'on') {
             $questions->setHasLimit(false);
@@ -254,7 +254,7 @@ class Root implements ControllerProviderInterface
                 $csv = '';
             }
 
-            return $app->json(array('rs' => $csv));
+            return $app->json(['rs' => $csv]);
         }
 
         $report = $this->doReport($app, $request, $questions, $conf);
@@ -263,15 +263,15 @@ class Root implements ControllerProviderInterface
             return $report;
         }
 
-        return $app->json(array(
-                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+        return $app->json([
+                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
                 'is_doc'      => false
-            )),
+            ]),
             'display_nav' => $report['display_nav'], // do we display the prev and next button ?
             'next'        => $report['next_page'], //Number of the next page
             'prev'        => $report['previous_page'], //Number of the previoous page
@@ -279,7 +279,7 @@ class Root implements ControllerProviderInterface
             'filter'      => ((sizeof($report['filter']) > 0) ? serialize($report['filter']) : ''), //the serialized filters
             'col'         => $report['active_column'], //all the columns where a filter is applied
             'limit'       => $report['nb_record']
-        ));
+        ]);
     }
 
     /**
@@ -299,24 +299,24 @@ class Root implements ControllerProviderInterface
             $request->request->get('collection')
         );
 
-        $conf_pref = array();
+        $conf_pref = [];
 
         foreach (\module_report::getPreff($app, $request->request->get('sbasid')) as $field) {
-            $conf_pref[strtolower($field)] = array($field, 0, 0, 0, 0);
+            $conf_pref[strtolower($field)] = [$field, 0, 0, 0, 0];
         }
 
-        $conf = array_merge(array(
-            'user'      => array(_('report:: utilisateurs'), 1, 1, 1, 1),
-            'ddate'     => array(_('report:: date'), 1, 0, 1, 1),
-            'record_id' => array(_('report:: record id'), 1, 1, 1, 1),
-            'final'     => array(_('phrseanet:: sous definition'), 1, 0, 1, 1),
-            'coll_id'   => array(_('report:: collections'), 1, 0, 1, 1),
-            'comment'   => array(_('report:: commentaire'), 1, 0, 0, 0),
-            'fonction'  => array(_('report:: fonction'), 1, 1, 1, 1),
-            'activite'  => array(_('report:: activite'), 1, 1, 1, 1),
-            'pays'      => array(_('report:: pays'), 1, 1, 1, 1),
-            'societe'   => array(_('report:: societe'), 1, 1, 1, 1)
-        ), $conf_pref);
+        $conf = array_merge([
+            'user'      => [_('report:: utilisateurs'), 1, 1, 1, 1],
+            'ddate'     => [_('report:: date'), 1, 0, 1, 1],
+            'record_id' => [_('report:: record id'), 1, 1, 1, 1],
+            'final'     => [_('phrseanet:: sous definition'), 1, 0, 1, 1],
+            'coll_id'   => [_('report:: collections'), 1, 0, 1, 1],
+            'comment'   => [_('report:: commentaire'), 1, 0, 0, 0],
+            'fonction'  => [_('report:: fonction'), 1, 1, 1, 1],
+            'activite'  => [_('report:: activite'), 1, 1, 1, 1],
+            'pays'      => [_('report:: pays'), 1, 1, 1, 1],
+            'societe'   => [_('report:: societe'), 1, 1, 1, 1]
+        ], $conf_pref);
 
         if ($request->request->get('printcsv') == 'on') {
             $download->setHasLimit(false);
@@ -328,7 +328,7 @@ class Root implements ControllerProviderInterface
                 $csv = '';
             }
 
-            return $app->json(array('rs' => $csv));
+            return $app->json(['rs' => $csv]);
         }
 
         $report = $this->doReport($app, $request, $download, $conf);
@@ -337,15 +337,15 @@ class Root implements ControllerProviderInterface
             return $report;
         }
 
-        return $app->json(array(
-                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+        return $app->json([
+                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
                 'is_doc'      => false
-            )),
+            ]),
             'display_nav' => $report['display_nav'], // do we display the prev and next button ?
             'next'        => $report['next_page'], //Number of the next page
             'prev'        => $report['previous_page'], //Number of the previoous page
@@ -353,7 +353,7 @@ class Root implements ControllerProviderInterface
             'filter'      => ((sizeof($report['filter']) > 0) ? serialize($report['filter']) : ''), //the serialized filters
             'col'         => $report['active_column'], //all the columns where a filter is applied
             'limit'       => $report['nb_record']
-        ));
+        ]);
     }
 
     /**
@@ -373,20 +373,20 @@ class Root implements ControllerProviderInterface
             $request->request->get('collection')
         );
 
-        $conf_pref = array();
+        $conf_pref = [];
 
         foreach (\module_report::getPreff($app, $request->request->get('sbasid')) as $field) {
-            $conf_pref[strtolower($field)] = array($field, 0, 0, 0, 0);
+            $conf_pref[strtolower($field)] = [$field, 0, 0, 0, 0];
         }
 
-        $conf = array_merge(array(
-            'telechargement'    => array(_('report:: telechargements'), 1, 0, 0, 0),
-            'record_id'         => array(_('report:: record id'), 1, 1, 1, 0),
-            'final'             => array(_('phraseanet:: sous definition'), 1, 0, 1, 1),
-            'file'              => array(_('report:: fichier'), 1, 0, 0, 1),
-            'mime'              => array(_('report:: type'), 1, 0, 1, 1),
-            'size'              => array(_('report:: taille'), 1, 0, 1, 1)
-        ), $conf_pref);
+        $conf = array_merge([
+            'telechargement'    => [_('report:: telechargements'), 1, 0, 0, 0],
+            'record_id'         => [_('report:: record id'), 1, 1, 1, 0],
+            'final'             => [_('phraseanet:: sous definition'), 1, 0, 1, 1],
+            'file'              => [_('report:: fichier'), 1, 0, 0, 1],
+            'mime'              => [_('report:: type'), 1, 0, 1, 1],
+            'size'              => [_('report:: taille'), 1, 0, 1, 1]
+        ], $conf_pref);
 
         if ($request->request->get('printcsv') == 'on') {
             $document->setHasLimit(false);
@@ -398,7 +398,7 @@ class Root implements ControllerProviderInterface
                 $csv = '';
             }
 
-            return $app->json(array('rs' => $csv));
+            return $app->json(['rs' => $csv]);
         }
 
         $report = $this->doReport($app, $request, $document, $conf, 'record_id');
@@ -407,15 +407,15 @@ class Root implements ControllerProviderInterface
             return $report;
         }
 
-        return $app->json(array(
-                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+        return $app->json([
+                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
                 'is_doc'      => true
-            )),
+            ]),
             'display_nav' => $report['display_nav'], // do we display the prev and next button ?
             'next'        => $report['next_page'], //Number of the next page
             'prev'        => $report['previous_page'], //Number of the previoous page
@@ -423,7 +423,7 @@ class Root implements ControllerProviderInterface
             'filter'      => ((sizeof($report['filter']) > 0) ? serialize($report['filter']) : ''), //the serialized filters
             'col'         => $report['active_column'], //all the columns where a filter is applied
             'limit'       => $report['nb_record']
-        ));
+        ]);
     }
 
     /**
@@ -443,63 +443,63 @@ class Root implements ControllerProviderInterface
             $request->request->get('collection')
         );
 
-        $conf_nav = array(
-            'nav'       => array(_('report:: navigateur'), 0, 1, 0, 0),
-            'nb'        => array(_('report:: nombre'), 0, 0, 0, 0),
-            'pourcent'  => array(_('report:: pourcentage'), 0, 0, 0, 0)
-        );
+        $conf_nav = [
+            'nav'       => [_('report:: navigateur'), 0, 1, 0, 0],
+            'nb'        => [_('report:: nombre'), 0, 0, 0, 0],
+            'pourcent'  => [_('report:: pourcentage'), 0, 0, 0, 0]
+        ];
 
-        $conf_combo = array(
-            'combo'     => array(_('report:: navigateurs et plateforme'), 0, 0, 0, 0),
-            'nb'        => array(_('report:: nombre'), 0, 0, 0, 0),
-            'pourcent'  => array(_('report:: pourcentage'), 0, 0, 0, 0)
-        );
-        $conf_os = array(
-            'os'        => array(_('report:: plateforme'), 0, 0, 0, 0),
-            'nb'        => array(_('report:: nombre'), 0, 0, 0, 0),
-            'pourcent'  => array(_('report:: pourcentage'), 0, 0, 0, 0)
-        );
-        $conf_res = array(
-            'res'       => array(_('report:: resolution'), 0, 0, 0, 0),
-            'nb'        => array(_('report:: nombre'), 0, 0, 0, 0),
-            'pourcent'  => array(_('report:: pourcentage'), 0, 0, 0, 0)
-        );
-        $conf_mod = array(
-            'appli'     => array(_('report:: module'), 0, 0, 0, 0),
-            'nb'        => array(_('report:: nombre'), 0, 0, 0, 0),
-            'pourcent'  => array(_('report:: pourcentage'), 0, 0, 0, 0)
-        );
+        $conf_combo = [
+            'combo'     => [_('report:: navigateurs et plateforme'), 0, 0, 0, 0],
+            'nb'        => [_('report:: nombre'), 0, 0, 0, 0],
+            'pourcent'  => [_('report:: pourcentage'), 0, 0, 0, 0]
+        ];
+        $conf_os = [
+            'os'        => [_('report:: plateforme'), 0, 0, 0, 0],
+            'nb'        => [_('report:: nombre'), 0, 0, 0, 0],
+            'pourcent'  => [_('report:: pourcentage'), 0, 0, 0, 0]
+        ];
+        $conf_res = [
+            'res'       => [_('report:: resolution'), 0, 0, 0, 0],
+            'nb'        => [_('report:: nombre'), 0, 0, 0, 0],
+            'pourcent'  => [_('report:: pourcentage'), 0, 0, 0, 0]
+        ];
+        $conf_mod = [
+            'appli'     => [_('report:: module'), 0, 0, 0, 0],
+            'nb'        => [_('report:: nombre'), 0, 0, 0, 0],
+            'pourcent'  => [_('report:: pourcentage'), 0, 0, 0, 0]
+        ];
 
-        $report = array(
+        $report = [
             'nav'   => $nav->buildTabNav($conf_nav),
             'os'    => $nav->buildTabOs($conf_os),
             'res'   => $nav->buildTabRes($conf_res),
             'mod'   => $nav->buildTabModule($conf_mod),
             'combo' => $nav->buildTabCombo($conf_combo)
-        );
+        ];
 
          if ($request->request->get('printcsv') == 'on') {
-             return $app->json(array(
+             return $app->json([
                 'nav'   => \format::arr_to_csv($report['nav']['result'], $conf_nav),
                 'os'    => \format::arr_to_csv($report['os']['result'], $conf_os),
                 'res'   => \format::arr_to_csv($report['res']['result'], $conf_res),
                 'mod'   => \format::arr_to_csv($report['mod']['result'], $conf_mod),
                 'combo' => \format::arr_to_csv($report['combo']['result'], $conf_combo)
-            ));
+            ]);
          }
 
-         return $app->json(array(
-            'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+         return $app->json([
+            'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => true,
                 'is_groupby'  => false,
                 'is_plot'     => false,
                 'is_doc'      => false
-            )),
+            ]),
             'display_nav' => false,
             'title'       => false
-        ));
+        ]);
     }
 
     /**
@@ -541,9 +541,9 @@ class Root implements ControllerProviderInterface
 
         //display content of a table column when user click on it
         if ($request->request->get('conf') == 'on') {
-            return $app->json(array('liste' => $app['twig']->render('report/listColumn.html.twig', array(
+            return $app->json(['liste' => $app['twig']->render('report/listColumn.html.twig', [
                 'conf'  => $base_conf
-            )), 'title' => _('configuration')));
+            ]), 'title' => _('configuration')]);
         }
 
         //set order
@@ -554,7 +554,7 @@ class Root implements ControllerProviderInterface
         //work on filters
         $mapColumnTitleToSqlField = $report->getTransQueryString();
 
-        $currentfilter = array();
+        $currentfilter = [];
 
         if ('' !== $serializedFilter = $request->request->get('liste_filter', '')) {
             $currentfilter = @unserialize(urldecode($serializedFilter));
@@ -567,10 +567,10 @@ class Root implements ControllerProviderInterface
             $value = $request->request->get('filter_value', '');
 
             if ($request->request->get('liste') == 'on') {
-                return $app->json(array('diag'  => $app['twig']->render('report/colFilter.html.twig', array(
+                return $app->json(['diag'  => $app['twig']->render('report/colFilter.html.twig', [
                     'result' => $report->colFilter($field),
                     'field'  => $field
-                )), 'title'  => sprintf(_('filtrer les resultats sur la colonne %s'), $field)));
+                ]), 'title'  => sprintf(_('filtrer les resultats sur la colonne %s'), $field)]);
             }
 
             if ($field === $value) {
@@ -605,18 +605,18 @@ class Root implements ControllerProviderInterface
                 $groupField = isset($conf[strtolower($groupby)]['title']) ? $conf[strtolower($groupby)]['title'] : '';
             }
 
-            return $app->json(array(
-                'rs' => $app['twig']->render('report/ajax_data_content.html.twig', array(
+            return $app->json([
+                'rs' => $app['twig']->render('report/ajax_data_content.html.twig', [
                     'result'      => isset($reportArray['report']) ? $reportArray['report'] : $reportArray,
                     'is_infouser' => false,
                     'is_nav'      => false,
                     'is_groupby'  => true,
                     'is_plot'     => false,
                     'is_doc'      => false
-                )),
+                ]),
                 'display_nav' => false,
                 'title'       => _(sprintf('Groupement des resultats sur le champ %s',  $groupField))
-            ));
+            ]);
         }
 
         //set Limit

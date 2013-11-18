@@ -46,19 +46,19 @@ class SearchEngineOptions
      *
      * @var array
      */
-    protected $collections = array();
+    protected $collections = [];
 
     /**
      *
      * @var array
      */
-    protected $fields = array();
+    protected $fields = [];
 
     /**
      *
      * @var array
      */
-    protected $status = array();
+    protected $status = [];
 
     /**
      *
@@ -76,7 +76,7 @@ class SearchEngineOptions
      *
      * @var array
      */
-    protected $date_fields = array();
+    protected $date_fields = [];
 
     /**
      *
@@ -101,7 +101,7 @@ class SearchEngineOptions
      * @var string
      */
     protected $sort_ord = self::SORT_MODE_DESC;
-    protected $business_fields = array();
+    protected $business_fields = [];
 
     /**
      * Defines locale code to use for query
@@ -163,7 +163,7 @@ class SearchEngineOptions
      */
     public function disallowBusinessFields()
     {
-        $this->business_fields = array();
+        $this->business_fields = [];
 
         return $this;
     }
@@ -284,7 +284,7 @@ class SearchEngineOptions
      */
     public function getDataboxes()
     {
-        $databoxes = array();
+        $databoxes = [];
 
         foreach ($this->collections as $collection) {
             $databoxes[$collection->get_databox()->get_sbas_id()] = $collection->get_databox();
@@ -320,7 +320,7 @@ class SearchEngineOptions
      */
     public function setStatus(Array $status)
     {
-        $tmp = array();
+        $tmp = [];
         foreach ($status as $n => $options) {
             if (count($options) > 1) {
                 continue;
@@ -467,17 +467,17 @@ class SearchEngineOptions
      */
     public function serialize()
     {
-        $ret = array();
+        $ret = [];
         foreach ($this as $key => $value) {
             if ($value instanceof \DateTime) {
                 $value = $value->format(DATE_ATOM);
             }
-            if (in_array($key, array('date_fields', 'fields'))) {
+            if (in_array($key, ['date_fields', 'fields'])) {
                 $value = array_map(function (\databox_field $field) {
                             return $field->get_databox()->get_sbas_id() . '_' . $field->get_id();
                         }, $value);
             }
-            if (in_array($key, array('collections', 'business_fields'))) {
+            if (in_array($key, ['collections', 'business_fields'])) {
                 $value = array_map(function ($collection) {
                             return $collection->get_base_id();
                         }, $value);
@@ -516,19 +516,19 @@ class SearchEngineOptions
                 case is_null($value):
                     $value = null;
                     break;
-                case in_array($key, array('date_min', 'date_max')):
+                case in_array($key, ['date_min', 'date_max']):
                     $value = \DateTime::createFromFormat(DATE_ATOM, $value);
                     break;
                 case $value instanceof stdClass:
                     $tmpvalue = (array) $value;
-                    $value = array();
+                    $value = [];
 
                     foreach ($tmpvalue as $k => $data) {
                         $k = ctype_digit($k) ? (int) $k : $k;
                         $value[$k] = $data;
                     }
                     break;
-                case in_array($key, array('date_fields', 'fields')):
+                case in_array($key, ['date_fields', 'fields']):
                     $value = array_map(function ($serialized) use ($app) {
                                 $data = explode('_', $serialized);
 
@@ -536,7 +536,7 @@ class SearchEngineOptions
                                 return \collection::get_from_base_id($app, $base_id);
                             }, $value);
                     break;
-                case in_array($key, array('collections', 'business_fields')):
+                case in_array($key, ['collections', 'business_fields']):
                     $value = array_map(function ($base_id) use ($app) {
                                 return \collection::get_from_base_id($app, $base_id);
                             }, $value);
@@ -637,7 +637,7 @@ class SearchEngineOptions
             }
         });
 
-        $databoxes = array();
+        $databoxes = [];
 
         foreach ($bas as $collection) {
             if (!isset($databoxes[$collection->get_sbas_id()])) {
@@ -653,10 +653,10 @@ class SearchEngineOptions
             $options->allowBusinessFieldsOn($BF);
         }
 
-        $status = is_array($request->get('status')) ? $request->get('status') : array();
-        $fields = is_array($request->get('fields')) ? $request->get('fields') : array();
+        $status = is_array($request->get('status')) ? $request->get('status') : [];
+        $fields = is_array($request->get('fields')) ? $request->get('fields') : [];
 
-        $databoxFields = array();
+        $databoxFields = [];
 
         foreach ($databoxes as $databox) {
             foreach ($fields as $field) {
@@ -690,7 +690,7 @@ class SearchEngineOptions
         $options->setMinDate($min_date);
         $options->setMaxDate($max_date);
 
-        $databoxDateFields = array();
+        $databoxDateFields = [];
 
         foreach ($databoxes as $databox) {
             foreach (explode('|', $request->get('date_field')) as $field) {

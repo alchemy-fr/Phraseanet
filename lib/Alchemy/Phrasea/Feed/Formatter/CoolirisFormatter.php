@@ -37,7 +37,7 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
     public function createResponse(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', Application $app = null)
     {
         $content = $this->format($feed, $page, $user, $generator, $app);
-        $response = new Response($content, 200, array('Content-Type' => 'application/rss+xml'));
+        $response = new Response($content, 200, ['Content-Type' => 'application/rss+xml']);
 
         return $response;
     }
@@ -188,7 +188,7 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
 
         $medium = strtolower($content->getRecord($app)->get_type());
 
-        if ( ! in_array($medium, array('image', 'audio', 'video'))) {
+        if ( ! in_array($medium, ['image', 'audio', 'video'])) {
             return $this;
         }
 

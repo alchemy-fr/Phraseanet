@@ -44,9 +44,9 @@ class Feed implements ControllerProviderInterface
             $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(
                 $app['acl']->get($app['authentication']->getUser())
             );
-            $publishing = RecordsRequest::fromRequest($app, $request, true, array(), array('bas_chupub'));
+            $publishing = RecordsRequest::fromRequest($app, $request, true, [], ['bas_chupub']);
 
-            return $app['twig']->render('prod/actions/publish/publish.html.twig', array('publishing' => $publishing, 'feeds' => $feeds));
+            return $app['twig']->render('prod/actions/publish/publish.html.twig', ['publishing' => $publishing, 'feeds' => $feeds]);
         });
 
         $controllers->post('/entry/create/', function (Application $app, Request $request) {
@@ -56,7 +56,7 @@ class Feed implements ControllerProviderInterface
                 $app->abort(404, "Feed not found");
             }
 
-            $publisher = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedPublisher')->findOneBy(array('feed' => $feed, 'usrId' => $app['authentication']->getUser()->get_id()));
+            $publisher = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedPublisher')->findOneBy(['feed' => $feed, 'usrId' => $app['authentication']->getUser()->get_id()]);
 
             if ('' === $title = trim($request->request->get('title', ''))) {
                 $app->abort(400, "Bad request");
@@ -76,7 +76,7 @@ class Feed implements ControllerProviderInterface
 
             $feed->addEntry($entry);
 
-            $publishing = RecordsRequest::fromRequest($app, $request, true, array(), array('bas_chupub'));
+            $publishing = RecordsRequest::fromRequest($app, $request, true, [], ['bas_chupub']);
             foreach ($publishing as $record) {
                 $item = new FeedItem();
                 $item->setEntry($entry)
@@ -90,9 +90,9 @@ class Feed implements ControllerProviderInterface
             $app['EM']->persist($feed);
             $app['EM']->flush();
 
-            $app['events-manager']->trigger('__FEED_ENTRY_CREATE__', array('entry_id' => $entry->getId(), 'notify_email' => (Boolean) $request->request->get('notify')), $entry);
+            $app['events-manager']->trigger('__FEED_ENTRY_CREATE__', ['entry_id' => $entry->getId(), 'notify_email' => (Boolean) $request->request->get('notify')], $entry);
 
-            $datas = array('error' => false, 'message' => false);
+            $datas = ['error' => false, 'message' => false];
 
             return $app->json($datas);
         })
@@ -110,7 +110,7 @@ class Feed implements ControllerProviderInterface
 
             $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['acl']->get($app['authentication']->getUser()));
 
-            $datas = $app['twig']->render('prod/actions/publish/publish_edit.html.twig', array('entry' => $entry, 'feeds' => $feeds));
+            $datas = $app['twig']->render('prod/actions/publish/publish_edit.html.twig', ['entry' => $entry, 'feeds' => $feeds]);
 
             return new Response($datas);
         })
@@ -121,7 +121,7 @@ class Feed implements ControllerProviderInterface
             });
 
         $controllers->post('/entry/{id}/update/', function (Application $app, Request $request, $id) {
-            $datas = array('error' => true, 'message' => '', 'datas' => '');
+            $datas = ['error' => true, 'message' => '', 'datas' => ''];
             $entry = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($id);
 
             if (null === $entry) {
@@ -170,13 +170,13 @@ class Feed implements ControllerProviderInterface
             $app['EM']->persist($entry);
             $app['EM']->flush();
 
-            return $app->json(array(
+            return $app->json([
                 'error' => false,
                 'message' => 'succes',
-                'datas' => $app['twig']->render('prod/feeds/entry.html.twig', array(
+                'datas' => $app['twig']->render('prod/feeds/entry.html.twig', [
                     'entry' => $entry
-                ))
-            ));
+                ])
+            ]);
         })
             ->bind('prod_feeds_entry_update')
             ->assert('id', '\d+')->before(function (Request $request) use ($app) {
@@ -184,7 +184,7 @@ class Feed implements ControllerProviderInterface
             });
 
         $controllers->post('/entry/{id}/delete/', function (Application $app, Request $request, $id) {
-            $datas = array('error' => true, 'message' => '');
+            $datas = ['error' => true, 'message' => ''];
 
             $entry = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($id);
 
@@ -198,7 +198,7 @@ class Feed implements ControllerProviderInterface
             $app['EM']->remove($entry);
             $app['EM']->flush();
 
-            return $app->json(array('error' => false, 'message' => 'succes'));
+            return $app->json(['error' => false, 'message' => 'succes']);
         })
             ->bind('prod_feeds_entry_delete')
             ->assert('id', '\d+')->before(function (Request $request) use ($app) {
@@ -212,11 +212,11 @@ class Feed implements ControllerProviderInterface
 
             $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['acl']->get($app['authentication']->getUser()));
 
-            $datas = $app['twig']->render('prod/feeds/feeds.html.twig', array(
+            $datas = $app['twig']->render('prod/feeds/feeds.html.twig', [
                 'feeds' => $feeds,
                 'feed' => new Aggregate($app['EM'], $feeds),
                 'page' => $page
-            ));
+            ]);
 
             return new Response($datas);
         })->bind('prod_feeds');
@@ -231,7 +231,7 @@ class Feed implements ControllerProviderInterface
             }
             $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['acl']->get($app['authentication']->getUser()));
 
-            $datas = $app['twig']->render('prod/feeds/feeds.html.twig', array('feed' => $feed, 'feeds' => $feeds, 'page' => $page));
+            $datas = $app['twig']->render('prod/feeds/feeds.html.twig', ['feed' => $feed, 'feeds' => $feeds, 'page' => $page]);
 
             return new Response($datas);
         })
@@ -249,12 +249,12 @@ class Feed implements ControllerProviderInterface
                 null, $renew
             );
 
-            $output = array(
+            $output = [
                 'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')
                 . '</p><p>' . _('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
             <div><input type="text" readonly="readonly" class="input_select_copy" value="' . $link->getURI() . '"/></div>',
                 'titre' => _('publications::votre rss personnel')
-            );
+            ];
 
             return $app->json($output);
         })->bind('prod_feeds_subscribe_aggregated');
@@ -268,12 +268,12 @@ class Feed implements ControllerProviderInterface
             }
             $link = $app['feed.user-link-generator']->generate($feed, $app['authentication']->getUser(), FeedLinkGenerator::FORMAT_RSS, null, $renew);
 
-            $output = array(
+            $output = [
                 'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')
                 . '</p><p>' . _('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
             <div><input type="text" style="width:100%" value="' . $link->getURI() . '"/></div>',
                 'titre' => _('publications::votre rss personnel')
-            );
+            ];
 
             return $app->json($output);
         })

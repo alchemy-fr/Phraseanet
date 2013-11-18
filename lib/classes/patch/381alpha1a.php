@@ -17,7 +17,7 @@ class patch_381alpha1a implements patchInterface
     private $release = '3.8.1-alpha.1';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -56,13 +56,13 @@ class patch_381alpha1a implements patchInterface
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $sbasData = array();
+        $sbasData = [];
         $sbas_id = null;
-        $reorder = array();
+        $reorder = [];
         foreach ($rs as $row) {
-            $sbasData[$row['sbas_id']][] = array('base_id' => $row['base_id']);
+            $sbasData[$row['sbas_id']][] = ['base_id' => $row['base_id']];
             if ($sbas_id !== $row['sbas_id']) {
-                $orders = array();
+                $orders = [];
             }
             $sbas_id = $row['sbas_id'];
             if (in_array($row['ord'], $orders, true)) {
@@ -78,7 +78,7 @@ class patch_381alpha1a implements patchInterface
             foreach ($reorder as $sbas_id) {
                 $i = 1;
                 foreach ($sbasData[$sbas_id] as $data) {
-                    $stmt->execute(array('base_id' => $data['base_id'], 'ord' => $i++));
+                    $stmt->execute(['base_id' => $data['base_id'], 'ord' => $i++]);
                 }
             }
             $stmt->closeCursor();

@@ -25,7 +25,7 @@ class patchthesaurus_100 implements patchthesaurus_interface
                 $te0 = $te->item(0);
                 $th->setAttribute("nextid", $te0->getAttribute("nextid"));
                 $te = $xp->query("te", $te0);
-                $te1 = array();
+                $te1 = [];
                 for ($i = 0; $i < $te->length; $i ++) {
                     $te1[] = $te->item($i);
                 }
@@ -61,7 +61,7 @@ class patchthesaurus_100 implements patchthesaurus_interface
         if ($tenode->getAttribute("nextid") == "")
             $tenode->setAttribute("nextid", "0");
         // $tenode->setAttribute("id", "0.".$tenode->getAttribute("id"));
-        $todel = array();
+        $todel = [];
         for ($n = $tenode->firstChild; $n; $n = $n->nextSibling) {
             if ($n->nodeName == "ta")
                 $todel[] = $n;

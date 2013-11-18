@@ -4,7 +4,7 @@ use Alchemy\Phrasea\Application;
 
 abstract class eventsmanager_eventAbstract
 {
-    protected $events = array();
+    protected $events = [];
     protected $group = null;
 
     /**

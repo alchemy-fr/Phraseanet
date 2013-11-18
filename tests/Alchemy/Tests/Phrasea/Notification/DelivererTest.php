@@ -133,7 +133,7 @@ class DelivererTest extends \PHPUnit_Framework_TestCase
         $deliverer->deliver($mail, true);
 
         /* @var $catchEmail \Swift_Message */
-        $this->assertEquals(array($email => $name), $catchEmail->getReadReceiptTo());
+        $this->assertEquals([$email => $name], $catchEmail->getReadReceiptTo());
     }
 
     /**
@@ -241,7 +241,7 @@ class DelivererTest extends \PHPUnit_Framework_TestCase
         $deliverer->deliver($mail);
 
         /* @var $catchEmail \Swift_Message */
-        $this->assertEquals(array($email => $name), $catchEmail->getFrom());
+        $this->assertEquals([$email => $name], $catchEmail->getFrom());
     }
 
     /**
@@ -280,7 +280,7 @@ class DelivererTest extends \PHPUnit_Framework_TestCase
         $deliverer->deliver($mail);
 
         /* @var $catchEmail \Swift_Message */
-        $this->assertEquals(array($email => $name), $catchEmail->getTo());
+        $this->assertEquals([$email => $name], $catchEmail->getTo());
     }
 
     /**
@@ -323,7 +323,7 @@ class DelivererTest extends \PHPUnit_Framework_TestCase
         $deliverer->deliver($mail);
 
         /* @var $catchEmail \Swift_Message */
-        $this->assertEquals(array($email => $name), $catchEmail->getReplyTo());
+        $this->assertEquals([$email => $name], $catchEmail->getReplyTo());
     }
 
     private function getEventDispatcherMock()

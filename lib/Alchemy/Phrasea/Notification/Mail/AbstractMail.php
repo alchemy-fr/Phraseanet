@@ -47,7 +47,7 @@ abstract class AbstractMail implements MailInterface
      */
     public function renderHTML()
     {
-        return $this->app['twig']->render('email-template.html.twig', array(
+        return $this->app['twig']->render('email-template.html.twig', [
             'phraseanetURL'     => $this->getPhraseanetURL(),
             'phraseanetTitle'   => $this->getPhraseanetTitle(),
             'logoUrl'           => $this->getLogoUrl(),
@@ -59,7 +59,7 @@ abstract class AbstractMail implements MailInterface
             'expiration'        => $this->getExpiration(),
             'buttonUrl'         => $this->getButtonURL(),
             'buttonText'        => $this->getButtonText(),
-        ));
+        ]);
     }
 
     /**

@@ -45,7 +45,7 @@ abstract class Bridge_Api_AbstractCollection
      *
      * @var Array
      */
-    protected $elements = array();
+    protected $elements = [];
 
     /**
      *

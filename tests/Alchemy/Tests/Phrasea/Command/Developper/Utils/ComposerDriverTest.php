@@ -19,7 +19,7 @@ class ComposerDriverTest extends \PHPUnit_Framework_TestCase
         $finder = new PhpExecutableFinder();
         $php = $finder->find();
 
-        $driver = ComposerDriver::create(array('composer.binaries' => $php));
+        $driver = ComposerDriver::create(['composer.binaries' => $php]);
         $this->assertInstanceOf('Alchemy\Phrasea\Command\Developer\Utils\ComposerDriver', $driver);
         $this->assertEquals($php, $driver->getProcessBuilderFactory()->getBinary());
     }

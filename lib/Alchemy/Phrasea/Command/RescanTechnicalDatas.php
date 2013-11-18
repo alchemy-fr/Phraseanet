@@ -55,7 +55,7 @@ class RescanTechnicalDatas extends Command
         $dialog = $this->getHelperSet()->get('dialog');
         do {
             $continue = mb_strtolower($dialog->ask($output, sprintf('Estimated duration is %s, <question>continue ? (y/N)</question>', $duration), 'N'));
-        } while ( ! in_array($continue, array('y', 'n')));
+        } while ( ! in_array($continue, ['y', 'n']));
 
         if (strtolower($continue) !== 'y') {
             $output->writeln('Aborting !');

@@ -9,8 +9,8 @@ class UnicodeServiceProvidertest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {
-        return array(
-            array('Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider', 'unicode', '\unicode'),
-        );
+        return [
+            ['Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider', 'unicode', '\unicode'],
+        ];
     }
 }

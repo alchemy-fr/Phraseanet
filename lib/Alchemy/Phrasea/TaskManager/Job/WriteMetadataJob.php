@@ -68,7 +68,7 @@ class WriteMetadataJob extends AbstractJob
 
             $connbas = $databox->get_connection();
             $subdefgroups = $databox->get_subdef_structure();
-            $metasubdefs = array();
+            $metasubdefs = [];
 
             foreach ($subdefgroups as $type => $subdefs) {
                 foreach ($subdefs as $sub) {
@@ -96,7 +96,7 @@ class WriteMetadataJob extends AbstractJob
                 $type = $record->get_type();
                 $subdefs = $record->get_subdefs();
 
-                $tsub = array();
+                $tsub = [];
 
                 foreach ($subdefs as $name => $subdef) {
                     $write_document = (($jeton & JETON_WRITE_META_DOC) && $name == 'document');
@@ -137,7 +137,7 @@ class WriteMetadataJob extends AbstractJob
                     $datas = $field->get_values();
 
                     if ($meta->is_multi()) {
-                        $values = array();
+                        $values = [];
                         foreach ($datas as $data) {
                             $values[] = $data->getValue();
                         }
@@ -167,7 +167,7 @@ class WriteMetadataJob extends AbstractJob
                 $sql = 'UPDATE record SET jeton=jeton & ~' . JETON_WRITE_META . '
                     WHERE record_id = :record_id';
                 $stmt = $connbas->prepare($sql);
-                $stmt->execute(array(':record_id' => $row['record_id']));
+                $stmt->execute([':record_id' => $row['record_id']]);
                 $stmt->closeCursor();
             }
         }

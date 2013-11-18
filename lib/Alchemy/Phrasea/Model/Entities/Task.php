@@ -198,7 +198,7 @@ class Task
      */
     public function setStatus($status)
     {
-        if (!in_array($status, array(static::STATUS_STARTED, static::STATUS_STOPPED), true)) {
+        if (!in_array($status, [static::STATUS_STARTED, static::STATUS_STOPPED], true)) {
             throw new InvalidArgumentException('Invalid status value.');
         }
 

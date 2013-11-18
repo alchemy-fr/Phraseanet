@@ -39,13 +39,13 @@ class module_console_systemClearCache extends Command
         $finder
             ->exclude('.git')
             ->exclude('.svn')
-            ->in(array(
+            ->in([
                 $this->container['root.path'] . '/tmp/cache_minify/',
                 $this->container['root.path'] . '/tmp/cache_twig/',
                 $this->container['root.path'] . '/tmp/cache/profiler/',
                 $this->container['root.path'] . '/tmp/doctrine/',
                 $this->container['root.path'] . '/tmp/serializer/',
-            ));
+            ]);
 
         $filesystem = new Filesystem();
 

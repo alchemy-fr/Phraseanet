@@ -67,13 +67,13 @@ class Export implements ControllerProviderInterface
             $request->request->get('story')
         );
 
-        return new Response($app['twig']->render('common/dialog_export.html.twig', array(
+        return new Response($app['twig']->render('common/dialog_export.html.twig', [
             'download'             => $download,
             'ssttid'               => $request->request->get('ssel'),
             'lst'                  => $download->serialize_list(),
             'default_export_title' => $app['phraseanet.registry']->get('GV_default_export_title'),
             'choose_export_title'  => $app['phraseanet.registry']->get('GV_choose_export_title')
-        )));
+        ]));
     }
 
     /**
@@ -100,10 +100,10 @@ class Export implements ControllerProviderInterface
             $msg = sprintf(_('Error while connecting to FTP'));
         }
 
-        return $app->json(array(
+        return $app->json([
             'success' => $success,
             'message' => $msg
-        ));
+        ]);
     }
 
     /**
@@ -116,7 +116,7 @@ class Export implements ControllerProviderInterface
     {
         $download = new \set_exportftp($app, $request->request->get('lst'), $request->request->get('ssttid'));
 
-        $mandatoryParameters = array('address', 'login', 'dest_folder', 'prefix_folder', 'obj');
+        $mandatoryParameters = ['address', 'login', 'dest_folder', 'prefix_folder', 'obj'];
 
         foreach ($mandatoryParameters as $parameter) {
             if (!$request->request->get($parameter)) {
@@ -125,10 +125,10 @@ class Export implements ControllerProviderInterface
         }
 
         if (count($download->get_display_ftp()) == 0) {
-            return $app->json(array(
+            return $app->json([
                 'success' => false,
                 'message' => _("You do not have required rights to send these documents over FTP")
-            ));
+            ]);
         }
 
         try {
@@ -153,15 +153,15 @@ class Export implements ControllerProviderInterface
                 $request->request->get('logfile')
             );
 
-            return $app->json(array(
+            return $app->json([
                 'success' => true,
                 'message' => _('Export saved in the waiting queue')
-            ));
+            ]);
         } catch (\Exception $e) {
-            return $app->json(array(
+            return $app->json([
                 'success' => false,
                 'message' => _('Something went wrong')
-            ));
+            ]);
         }
     }
 
@@ -197,19 +197,19 @@ class Export implements ControllerProviderInterface
         $list['export_name'] = sprintf("%s.zip", $download->getExportName());
         $list['email'] = implode(';', preg_split($separator, $request->request->get("destmail", "")));
 
-        $destMails = array();
+        $destMails = [];
         //get destination mails
         foreach (explode(";", $list['email']) as $mail) {
             if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
                 $destMails[] = $mail;
             } else {
-                $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', array(
+                $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', [
                     'usr_id' => $app['authentication']->getUser()->get_id(),
                     'lst'    => $lst,
                     'ssttid' => $ssttid,
                     'dest'   => $mail,
                     'reason' => \eventsmanager_notify_downloadmailfail::MAIL_NO_VALID
-                ));
+                ]);
             }
         }
 
@@ -228,7 +228,7 @@ class Export implements ControllerProviderInterface
 
             $remaingEmails = $destMails;
 
-            $url = $app->url('prepare_download', array('token' => $token, 'anonymous'));
+            $url = $app->url('prepare_download', ['token' => $token, 'anonymous']);
 
             $emitter = new Emitter($app['authentication']->getUser()->get_display_name(), $app['authentication']->getUser()->get_email());
 
@@ -250,30 +250,30 @@ class Export implements ControllerProviderInterface
             //some mails failed
             if (count($remaingEmails) > 0) {
                 foreach ($remaingEmails as $mail) {
-                    $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', array(
+                    $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', [
                         'usr_id' => $app['authentication']->getUser()->get_id(),
                         'lst'    => $lst,
                         'ssttid' => $ssttid,
                         'dest'   => $mail,
                         'reason' => \eventsmanager_notify_downloadmailfail::MAIL_FAIL
-                    ));
+                    ]);
                 }
             }
         } elseif (!$token && count($destMails) > 0) { //couldn't generate token
             foreach ($destMails as $mail) {
-                $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', array(
+                $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', [
                     'usr_id' => $app['authentication']->getUser()->get_id(),
                     'lst'    => $lst,
                     'ssttid' => $ssttid,
                     'dest'   => $mail,
                     'reason' => 0
-                ));
+                ]);
             }
         }
 
-        return $app->json(array(
+        return $app->json([
             'success' => true,
             'message' => ''
-        ));
+        ]);
     }
 }

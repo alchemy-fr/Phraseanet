@@ -50,9 +50,9 @@ EOF;
      */
     protected function getFormProperties()
     {
-        return array(
+        return [
             'proxy'     => static::FORM_TYPE_STRING,
             'proxyport' => static::FORM_TYPE_STRING,
-        );
+        ];
     }
 }

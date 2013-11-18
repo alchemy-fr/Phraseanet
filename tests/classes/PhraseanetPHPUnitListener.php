@@ -2,7 +2,7 @@
 
 class PhraseanetPHPUnitListener implements PHPUnit_Framework_TestListener
 {
-    private static $skipped = array();
+    private static $skipped = [];
 
     public function addError(PHPUnit_Framework_Test $test, Exception $e, $time)
     {
@@ -33,7 +33,7 @@ class PhraseanetPHPUnitListener implements PHPUnit_Framework_TestListener
 
     public static function resetSkipped()
     {
-        static::$skipped = array();
+        static::$skipped = [];
 
         return;
     }

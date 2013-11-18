@@ -17,7 +17,7 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['app'] = new Application('test');
 
         self::giveRightsToUser(self::$DI['app'], self::$DI['user']);
-        self::$DI['app']['acl']->get(self::$DI['user'])->revoke_access_from_bases(array(self::$DI['collection_no_access']->get_base_id()));
+        self::$DI['app']['acl']->get(self::$DI['user'])->revoke_access_from_bases([self::$DI['collection_no_access']->get_base_id()]);
         self::$DI['app']['acl']->get(self::$DI['user'])->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
     }
 
@@ -27,21 +27,21 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['record_2'];
         $route = '/prod/baskets/';
 
-        $records = array(
+        $records = [
             self::$DI['record_1']->get_serialize_key(),
             self::$DI['record_2']->get_serialize_key(),
             ' ',
             '42',
             self::$DI['record_no_access']->get_serialize_key()
-        );
+        ];
 
         $lst = implode(';', $records);
 
         self::$DI['client']->request(
-            'POST', $route, array(
+            'POST', $route, [
             'name' => 'panier',
             'desc' => 'mon beau panier',
-            'lst'  => $lst)
+            'lst'  => $lst]
         );
 
         $response = self::$DI['client']->getResponse();
@@ -69,14 +69,14 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['client']->request(
             'POST'
             , $route
-            , array(
+            , [
             'name' => 'panier',
             'desc' => 'mon beau panier',
-            )
-            , array()
-            , array(
+            ]
+            , []
+            , [
             "HTTP_ACCEPT" => "application/json"
-            )
+            ]
         );
 
         $response = self::$DI['client']->getResponse();
@@ -165,8 +165,8 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         );
 
         self::$DI['client']->request(
-            'POST', $route, array(), array(), array(
-            "HTTP_ACCEPT" => "application/json")
+            'POST', $route, [], [], [
+            "HTTP_ACCEPT" => "application/json"]
         );
 
         $response = self::$DI['client']->getResponse();
@@ -204,7 +204,7 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $basket = $this->insertOneBasket();
         $route = sprintf('/prod/baskets/%s/delete/', $basket->getId());
-        self::$DI['client']->request('POST', $route, array(), array(), array("HTTP_ACCEPT" => "application/json"));
+        self::$DI['client']->request('POST', $route, [], [], ["HTTP_ACCEPT" => "application/json"]);
         $response = self::$DI['client']->getResponse();
         $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM \Alchemy\Phrasea\Model\Entities\Basket b');
         $count = $query->getSingleScalarResult();
@@ -219,9 +219,9 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $route = sprintf('/prod/baskets/%s/update/', $basket->getId());
 
         self::$DI['client']->request(
-            'POST', $route, array(
+            'POST', $route, [
             'name'        => 'new_name',
-            'description' => 'new_desc')
+            'description' => 'new_desc']
         );
 
         $response = self::$DI['client']->getResponse();
@@ -236,11 +236,11 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $route = sprintf('/prod/baskets/%s/update/', $basket->getId());
 
         self::$DI['client']->request(
-            'POST', $route, array(
+            'POST', $route, [
             'name'        => 'new_name',
             'description' => 'new_desc'
-            ), array(), array(
-            "HTTP_ACCEPT" => "application/json")
+            ], [], [
+            "HTTP_ACCEPT" => "application/json"]
         );
 
         $response = self::$DI['client']->getResponse();
@@ -272,9 +272,9 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $route = sprintf('/prod/baskets/%s/update/', $basket->getId());
 
         $crawler = self::$DI['client']->request(
-            'GET', $route, array(
+            'GET', $route, [
             'name'        => 'new_name',
-            'description' => 'new_desc')
+            'description' => 'new_desc']
         );
 
         $response = self::$DI['client']->getResponse();
@@ -309,18 +309,18 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $route = sprintf('/prod/baskets/%s/archive/?archive=1', $basket->getId());
 
         self::$DI['client']->request(
-            'POST', $route, array(), array(), array(
+            'POST', $route, [], [], [
             "HTTP_ACCEPT" => "application/json"
-            )
+            ]
         );
 
         $this->assertTrue($basket->getArchived());
 
         $route = sprintf('/prod/baskets/%s/archive/?archive=0', $basket->getId());
         self::$DI['client']->request(
-            'POST', $route, array(), array(), array(
+            'POST', $route, [], [], [
             "HTTP_ACCEPT" => "application/json"
-            )
+            ]
         );
 
         $response = self::$DI['client']->getResponse();
@@ -335,18 +335,18 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = sprintf('/prod/baskets/%s/addElements/', $basket->getId());
 
-        $records = array(
+        $records = [
             self::$DI['record_1']->get_serialize_key(),
             self::$DI['record_2']->get_serialize_key(),
             ' ',
             '42',
             'abhak',
             self::$DI['record_no_access']->get_serialize_key(),
-        );
+        ];
 
         $lst = implode(';', $records);
 
-        self::$DI['client']->request('POST', $route, array('lst' => $lst));
+        self::$DI['client']->request('POST', $route, ['lst' => $lst]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -387,18 +387,18 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = sprintf('/prod/baskets/%s/addElements/', $basket->getId());
 
-        $records = array(
+        $records = [
             self::$DI['record_1']->get_serialize_key(),
             self::$DI['record_2']->get_serialize_key(),
             ' ',
             '42',
             'abhak',
             self::$DI['record_no_access']->get_serialize_key(),
-        );
+        ];
 
         $lst = implode(';', $records);
 
-        self::$DI['client']->request('POST', $route, array('lst' => $lst));
+        self::$DI['client']->request('POST', $route, ['lst' => $lst]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -414,19 +414,19 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = sprintf('/prod/baskets/%s/addElements/', $basket->getId());
 
-        $records = array(
+        $records = [
             self::$DI['record_1']->get_serialize_key(),
             self::$DI['record_2']->get_serialize_key()
-        );
+        ];
 
         $lst = implode(';', $records);
 
         self::$DI['client']->request(
-            'POST', $route, array(
+            'POST', $route, [
             'lst' => $lst
-            ), array(), array(
+            ], [], [
             "HTTP_ACCEPT" => "application/json"
-            )
+            ]
         );
 
         $response = self::$DI['client']->getResponse();
@@ -447,9 +447,9 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $route = sprintf('/prod/baskets/%s/stealElements/', $Basket_2->getId());
 
         self::$DI['client']->request(
-            'POST', $route, array(
-            'elements' => array($BasketElement->getId(), 'ufdsd')
-            ), array()
+            'POST', $route, [
+            'elements' => [$BasketElement->getId(), 'ufdsd']
+            ], []
         );
 
         $response = self::$DI['client']->getResponse();
@@ -471,12 +471,12 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $route = sprintf('/prod/baskets/%s/stealElements/', $Basket_2->getId());
 
         self::$DI['client']->request(
-            'POST', $route, array(
-            'elements' => array($BasketElement->getId())
-            ), array()
-            , array(
+            'POST', $route, [
+            'elements' => [$BasketElement->getId()]
+            ], []
+            , [
             "HTTP_ACCEPT" => "application/json"
-            )
+            ]
         );
 
         $response = self::$DI['client']->getResponse();
@@ -498,7 +498,7 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $basket = $this->insertOneBasketEnv();
 
         $route = sprintf('/prod/baskets/%s/delete/', $basket->getId());
-        self::$DI['client']->request('POST', $route, array(), array(), array("HTTP_ACCEPT" => "application/json"));
+        self::$DI['client']->request('POST', $route, [], [], ["HTTP_ACCEPT" => "application/json"]);
 
         $response = self::$DI['client']->getResponse();
 

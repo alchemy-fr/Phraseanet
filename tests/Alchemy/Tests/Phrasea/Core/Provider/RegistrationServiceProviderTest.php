@@ -14,11 +14,11 @@ class RegistrationServiceProvidertest extends \PhraseanetPHPUnitAbstract
         self::$DI['app']->register(new RegistrationServiceProvider());
 
         $conf = self::$DI['app']['configuration']->getConfig();
-        $conf['registration-fields'] = array('plop');
+        $conf['registration-fields'] = ['plop'];
         self::$DI['app']['configuration'] = $conf;
 
-        $this->assertEquals(array('plop'), self::$DI['app']['registration.fields']);
-        $this->assertEquals(array('plop'), self::$DI['app']['registration.fields']);
+        $this->assertEquals(['plop'], self::$DI['app']['registration.fields']);
+        $this->assertEquals(['plop'], self::$DI['app']['registration.fields']);
 
         $this->assertInternalType('array', self::$DI['app']['registration.optional-fields']);
     }

@@ -75,13 +75,13 @@ class Bridge_Api_Auth_OAuth2 extends Bridge_Api_Auth_Abstract implements Bridge_
      */
     public function connect($request_token)
     {
-        $post_params = array(
+        $post_params = [
             'code'          => $request_token,
             'client_id'     => $this->client_id,
             'client_secret' => $this->client_secret,
             'redirect_uri'  => $this->redirect_uri,
             'grant_type'    => 'authorization_code'
-        );
+        ];
 
         $response_json = http_query::getUrl($this->token_endpoint, $post_params);
         $response = json_decode($response_json, JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
@@ -89,7 +89,7 @@ class Bridge_Api_Auth_OAuth2 extends Bridge_Api_Auth_Abstract implements Bridge_
         if ( ! is_array($response) || ! isset($response['refresh_token']) || ! isset($response['access_token']))
             throw new Bridge_Exception_ApiConnectorAccessTokenFailed('Unable to retrieve tokens');
 
-        return array('refresh_token' => $response['refresh_token'], 'auth_token'    => $response['access_token']);
+        return ['refresh_token' => $response['refresh_token'], 'auth_token'    => $response['access_token']];
     }
 
     /**
@@ -98,12 +98,12 @@ class Bridge_Api_Auth_OAuth2 extends Bridge_Api_Auth_Abstract implements Bridge_
      */
     public function reconnect()
     {
-        $post_params = array(
+        $post_params = [
             'client_id'     => $this->client_id,
             'client_secret' => $this->client_secret,
             'refresh_token' => $this->settings->get('refresh_token'),
             'grant_type'    => 'refresh_token'
-        );
+        ];
 
         $response = http_query::getUrl($this->token_endpoint, $post_params);
         $response = json_decode($response, JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
@@ -141,9 +141,9 @@ class Bridge_Api_Auth_OAuth2 extends Bridge_Api_Auth_Abstract implements Bridge_
      */
     public function get_auth_signatures()
     {
-        return array(
+        return [
             'auth_token' => $this->settings->get('auth_token')
-        );
+        ];
     }
 
     /**
@@ -153,7 +153,7 @@ class Bridge_Api_Auth_OAuth2 extends Bridge_Api_Auth_Abstract implements Bridge_
      */
     public function set_parameters(Array $parameters)
     {
-        $avail_parameters = array(
+        $avail_parameters = [
             'client_id'
             , 'client_secret'
             , 'redirect_uri'
@@ -161,7 +161,7 @@ class Bridge_Api_Auth_OAuth2 extends Bridge_Api_Auth_Abstract implements Bridge_
             , 'response_type'
             , 'token_endpoint'
             , 'auth_endpoint'
-        );
+        ];
 
         foreach ($parameters as $parameter => $value) {
             if ( ! in_array($parameter, $avail_parameters))
@@ -177,14 +177,14 @@ class Bridge_Api_Auth_OAuth2 extends Bridge_Api_Auth_Abstract implements Bridge_
      *
      * @return string
      */
-    public function get_auth_url(Array $supp_parameters = array())
+    public function get_auth_url(Array $supp_parameters = [])
     {
-        $params = array_merge(array(
+        $params = array_merge([
             'response_type' => 'code',
             'client_id'     => $this->client_id,
             'redirect_uri'  => $this->redirect_uri,
             'scope'         => $this->scope
-            ), $supp_parameters);
+            ], $supp_parameters);
 
         return sprintf('%s?%s', $this->auth_endpoint, http_build_query($params, null, '&'));
     }

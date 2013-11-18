@@ -24,7 +24,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = array('__REGISTER_APPROVAL__');
+    public $events = ['__REGISTER_APPROVAL__'];
 
     /**
      *
@@ -44,10 +44,10 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'usr_id' => ''
-            , 'demand' => array()
-        );
+            , 'demand' => []
+        ];
 
         $params = array_merge($default, $params);
         $base_ids = $params['demand'];
@@ -56,7 +56,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
             return;
         }
 
-        $mailColl = array();
+        $mailColl = [];
 
         try {
             $sql = 'SELECT u.usr_id, b.base_id
@@ -76,7 +76,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 
             foreach ($rs as $row) {
                 if ( ! isset($mailColl[$row['usr_id']]))
-                    $mailColl[$row['usr_id']] = array();
+                    $mailColl[$row['usr_id']] = [];
 
                 $mailColl[$row['usr_id']][] = $row['base_id'];
             }
@@ -159,17 +159,17 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
         try {
             User_Adapter::getInstance($usr_id, $this->app);
         } catch (Exception $e) {
-            return array();
+            return [];
         }
 
         $sender = User_Adapter::getInstance($usr_id, $this->app)->get_display_name();
 
-        $ret = array(
+        $ret = [
             'text'  => sprintf(
-                _('%1$s demande votre approbation sur une ou plusieurs %2$scollections%3$s'), $sender, '<a href="' . $this->app->url('admin', array('section' => 'registrations')) . '" target="_blank">', '</a>'
+                _('%1$s demande votre approbation sur une ou plusieurs %2$scollections%3$s'), $sender, '<a href="' . $this->app->url('admin', ['section' => 'registrations']) . '" target="_blank">', '</a>'
             )
             , 'class' => ''
-        );
+        ];
 
         return $ret;
     }

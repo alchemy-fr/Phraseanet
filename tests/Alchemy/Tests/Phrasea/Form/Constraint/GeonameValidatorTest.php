@@ -35,10 +35,10 @@ class GeonameValidatorTest extends \PhraseanetPHPUnitAbstract
 
     public function provideData()
     {
-        return array(
-            array(true),
-            array(false),
-        );
+        return [
+            [true],
+            [false],
+        ];
     }
 
     private function getConstraint()

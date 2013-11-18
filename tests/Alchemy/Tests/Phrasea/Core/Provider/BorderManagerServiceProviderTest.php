@@ -14,25 +14,25 @@ class BorderManagerServiceProvidertest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {
-        return array(
-            array(
+        return [
+            [
                 'Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider',
                 'border-manager',
                 'Alchemy\\Phrasea\\Border\\Manager'
-            ),
-        );
+            ],
+        ];
     }
 
     public function testItLoadsWithoutXPDF()
     {
         $app = new Application();
-        $app->register(new XPDFServiceProvider(), array(
-            'xpdf.configuration' => array(
+        $app->register(new XPDFServiceProvider(), [
+            'xpdf.configuration' => [
                 'pdftotext.binaries' => '/path/to/nowhere',
-            )
-        ));
+            ]
+        ]);
         $app->register(new BorderManagerServiceProvider());
-        $app['configuration'] = array('border-manager' => array('enabled' => false));
+        $app['configuration'] = ['border-manager' => ['enabled' => false]];
 
         $this->assertInstanceOf('Alchemy\Phrasea\Border\Manager', $app['border-manager']);
         $this->assertNull($app['border-manager']->getPdfToText());
@@ -48,13 +48,13 @@ class BorderManagerServiceProvidertest extends ServiceProviderTestCase
         }
 
         $app = new Application();
-        $app->register(new XPDFServiceProvider(), array(
-            'xpdf.configuration' => array(
+        $app->register(new XPDFServiceProvider(), [
+            'xpdf.configuration' => [
                 'pdftotext.binaries' => $php,
-            )
-        ));
+            ]
+        ]);
         $app->register(new BorderManagerServiceProvider());
-        $app['configuration'] = array('border-manager' => array('enabled' => false));
+        $app['configuration'] = ['border-manager' => ['enabled' => false]];
 
         $this->assertInstanceOf('Alchemy\Phrasea\Border\Manager', $app['border-manager']);
         $this->assertInstanceOf('XPDF\PdfToText', $app['border-manager']->getPdfToText());

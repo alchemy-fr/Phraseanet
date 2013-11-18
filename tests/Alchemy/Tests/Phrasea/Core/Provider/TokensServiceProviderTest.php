@@ -9,8 +9,8 @@ class TokensServiceProvidertest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {
-        return array(
-            array('Alchemy\Phrasea\Core\Provider\TokensServiceProvider', 'tokens', '\random'),
-        );
+        return [
+            ['Alchemy\Phrasea\Core\Provider\TokensServiceProvider', 'tokens', '\random'],
+        ];
     }
 }

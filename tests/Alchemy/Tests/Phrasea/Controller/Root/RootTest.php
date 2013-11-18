@@ -15,7 +15,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $cookieJar = new CookieJar();
         $cookieJar->set(new BrowserCookie('locale', 'de_DE'));
 
-        $client = new Client(self::$DI['app'], array(), null, $cookieJar);
+        $client = new Client(self::$DI['app'], [], null, $cookieJar);
         $crawler = $client->request('GET', '/language/fr_CA/');
 
         $response = $client->getResponse();
@@ -145,7 +145,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $cookieJar = new CookieJar();
         $cookieJar->set(new BrowserCookie('persistent', $token));
 
-        $client = new Client($app, array(), null, $cookieJar);
+        $client = new Client($app, [], null, $cookieJar);
         $client->request('GET', '/unit-test-route');
 
         $this->assertTrue($boolean);

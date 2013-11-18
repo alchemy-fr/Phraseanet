@@ -28,11 +28,11 @@ class API_V1_Timer implements ServiceProviderInterface
                 $n++;
                 $name = $event->getName() . '#' . $n;
             }
-            $app['api.timers']->add(array(
+            $app['api.timers']->add([
                 'name' => $name,
                 'memory' => memory_get_usage(),
                 'time' => microtime(true) - $app['api.timers.start'],
-            ));
+            ]);
         };
 
         $app['dispatcher']->addListener(KernelEvents::CONTROLLER, $callback, -999999);

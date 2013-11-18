@@ -49,8 +49,8 @@ EOF;
      */
     protected function getFormProperties()
     {
-        return array(
+        return [
             'cleardoc' => static::FORM_TYPE_BOOLEAN,
-        );
+        ];
     }
 }

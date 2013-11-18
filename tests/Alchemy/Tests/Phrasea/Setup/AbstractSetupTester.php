@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Application;
 
 abstract class AbstractSetupTester extends \PHPUnit_Framework_TestCase
 {
-    private $tearDownHandlers = array();
+    private $tearDownHandlers = [];
 
     public function tearDown()
     {

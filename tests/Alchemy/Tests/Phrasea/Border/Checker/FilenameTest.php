@@ -55,7 +55,7 @@ class FilenameTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCheckNoFile()
     {
-        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getOriginalName'), array(self::$DI['app'], $this->media, self::$DI['collection']));
+        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', ['getOriginalName'], [self::$DI['app'], $this->media, self::$DI['collection']]);
 
         $mock
             ->expects($this->once())
@@ -78,7 +78,7 @@ class FilenameTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCheckSensitive()
     {
-        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getOriginalName'), array(self::$DI['app'], $this->media, self::$DI['collection']));
+        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', ['getOriginalName'], [self::$DI['app'], $this->media, self::$DI['collection']]);
 
         $mock
             ->expects($this->any())
@@ -92,7 +92,7 @@ class FilenameTest extends \PhraseanetPHPUnitAbstract
 
         $this->assertFalse($response->isOk());
 
-        $objectSensitive = new Filename(self::$DI['app'], array('sensitive'        => true));
+        $objectSensitive = new Filename(self::$DI['app'], ['sensitive'        => true]);
         $responseSensitive = $objectSensitive->check(self::$DI['app']['EM'], $mock);
 
         $this->assertTrue($responseSensitive->isOk());

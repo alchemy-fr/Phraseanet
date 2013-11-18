@@ -55,10 +55,10 @@ class ApiOauth2ErrorsSubscriberTest extends \PHPUnit_Framework_TestCase
 
     public function provideExceptionsAndCode()
     {
-        return array(
-            array(new HttpException(512, null, null, array('content-type' => 'application/json')), 512, 'application/json'),
-            array(new HttpException(512, null, null), 512, 'text/html; charset=UTF-8'),
-            array(new \Exception(), 500, 'text/html; charset=UTF-8'),
-        );
+        return [
+            [new HttpException(512, null, null, ['content-type' => 'application/json']), 512, 'application/json'],
+            [new HttpException(512, null, null), 512, 'text/html; charset=UTF-8'],
+            [new \Exception(), 500, 'text/html; charset=UTF-8'],
+        ];
     }
 }

@@ -18,7 +18,7 @@ class MinifierTest extends \PhraseanetPHPUnitAbstract
 
     private function clearGlobals()
     {
-        $_GET = array();
+        $_GET = [];
     }
 
     /**
@@ -35,7 +35,7 @@ class MinifierTest extends \PhraseanetPHPUnitAbstract
     {
         $groups = require __DIR__ . '/../../../../../lib/conf.d/minifyGroupsConfig.php';
 
-        return array_map(function ($group) {return array($group);}, array_keys($groups));
+        return array_map(function ($group) {return [$group];}, array_keys($groups));
     }
 
     /**
@@ -50,7 +50,7 @@ class MinifierTest extends \PhraseanetPHPUnitAbstract
 
     public function provideFilesToMinify()
     {
-        $files = array();
+        $files = [];
 
         $groups = require __DIR__ . '/../../../../../lib/conf.d/minifyGroupsConfig.php';
 
@@ -60,7 +60,7 @@ class MinifierTest extends \PhraseanetPHPUnitAbstract
             }
         }
 
-        return array_map(function ($file) {return array($file);}, array_unique($files));
+        return array_map(function ($file) {return [$file];}, array_unique($files));
     }
 
     public function testFileMinificationWithoutParamsShouldReturnA400()

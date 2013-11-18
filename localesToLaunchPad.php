@@ -22,9 +22,9 @@ $finder
     ->files()
     ->name('phraseanet.po')
     ->in(
-        array(
+        [
             __DIR__ . '/locale',
-        )
+        ]
     )
 ;
 

@@ -99,14 +99,14 @@ class p4stringTest extends PhraseanetPHPUnitAbstract
     {
         $a = new stdClass();
         $a->prout = 'pue';
-        $a->couleur = array('marron', 'jaune');
-        $a->compteur = array('incrémental' => true, 'fiente'      => 'vrai');
+        $a->couleur = ['marron', 'jaune'];
+        $a->compteur = ['incrémental' => true, 'fiente'      => 'vrai'];
         $this->assertEquals('{"prout":"pue","couleur":["marron","jaune"],"compteur":{"incr\u00e9mental":true,"fiente":"vrai"}}', p4string::jsonencode($a));
 
-        $b = array('un', 'petit' => 'tout petit', 'cul', 1       => 'qui', 10      => 'roule');
+        $b = ['un', 'petit' => 'tout petit', 'cul', 1       => 'qui', 10      => 'roule'];
         $this->assertEquals('{"0":"un","petit":"tout petit","1":"qui","10":"roule"}', p4string::jsonencode($b));
 
-        $c = array('gros', 'chien');
+        $c = ['gros', 'chien'];
         $this->assertEquals('["gros","chien"]', p4string::jsonencode($c));
     }
 

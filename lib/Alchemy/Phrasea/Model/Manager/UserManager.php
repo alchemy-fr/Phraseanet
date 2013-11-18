@@ -137,7 +137,7 @@ class UserManager
     private function cleanFtpExports(User $user)
     {
        $elements = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\FtpExport')
-               ->findBy(array('usrId' => $user->getId()));
+               ->findBy(['usrId' => $user->getId()]);
 
        foreach ($elements as $element) {
            $this->objectManager->remove($element);
@@ -152,7 +152,7 @@ class UserManager
     private function cleanOrders(User $user)
     {
        $orders = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\Order')
-               ->findBy(array('usrId' => $user->getId()));
+               ->findBy(['usrId' => $user->getId()]);
 
        foreach ($orders as $order) {
            $this->objectManager->remove($order);
@@ -166,13 +166,13 @@ class UserManager
      */
     private function cleanProperties(User $user)
     {
-        foreach(array(
+        foreach ([
             'DELETE FROM `edit_presets` WHERE usr_id = :usr_id',
             'DELETE FROM `sselnew` WHERE usr_id = :usr_id',
             'DELETE FROM `tokens` WHERE usr_id = :usr_id',
-        ) as $sql) {
+        ] as $sql) {
             $stmt = $this->appboxConnection->prepare($sql);
-            $stmt->execute(array(':usr_id' => $user->getId()));
+            $stmt->execute([':usr_id' => $user->getId()]);
             $stmt->closeCursor();
         }
 
@@ -190,12 +190,12 @@ class UserManager
      */
     private function cleanRights(User $user)
     {
-        foreach(array(
+        foreach ([
             'DELETE FROM `basusr` WHERE usr_id = :usr_id',
             'DELETE FROM `sbasusr` WHERE usr_id = :usr_id',
-        ) as $sql) {
+        ] as $sql) {
             $stmt = $this->appboxConnection->prepare($sql);
-            $stmt->execute(array(':usr_id' => $user->getId()));
+            $stmt->execute([':usr_id' => $user->getId()]);
             $stmt->closeCursor();
         }
     }

@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Exception\RuntimeException;
 
 class ConnectionFactory
 {
-    private $connections = array();
+    private $connections = [];
 
     /**
      * Returns a Redis connection.
@@ -26,9 +26,9 @@ class ConnectionFactory
      *
      * @throws RuntimeException
      */
-    public function getRedisConnection(array $options = array())
+    public function getRedisConnection(array $options = [])
     {
-        $options = array_replace(array('host' => 'localhost', 'port' => 6379), $options);
+        $options = array_replace(['host' => 'localhost', 'port' => 6379], $options);
         if (null !== $cache = $this->getConnection('redis', $options)) {
             return $cache;
         }
@@ -58,9 +58,9 @@ class ConnectionFactory
      *
      * @throws RuntimeException
      */
-    public function getMemcacheConnection(array $options = array())
+    public function getMemcacheConnection(array $options = [])
     {
-        $options = array_replace(array('host' => 'localhost', 'port' => 11211), $options);
+        $options = array_replace(['host' => 'localhost', 'port' => 11211], $options);
         if (null !== $cache = $this->getConnection('memcache', $options)) {
             return $cache;
         }
@@ -91,9 +91,9 @@ class ConnectionFactory
      *
      * @throws RuntimeException
      */
-    public function getMemcachedConnection(array $options = array())
+    public function getMemcachedConnection(array $options = [])
     {
-        $options = array_replace(array('host' => 'localhost', 'port' => 11211), $options);
+        $options = array_replace(['host' => 'localhost', 'port' => 11211], $options);
         if (null !== $cache = $this->getConnection('memcached', $options)) {
             return $cache;
         }

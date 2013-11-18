@@ -19,7 +19,7 @@ class MediaTypeTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new MediaType(self::$DI['app'], array('mediatypes' => array(MediaType::TYPE_IMAGE)));
+        $this->object = new MediaType(self::$DI['app'], ['mediatypes' => [MediaType::TYPE_IMAGE]]);
     }
 
     /**
@@ -33,7 +33,7 @@ class MediaTypeTest extends \PhraseanetPHPUnitAbstract
 
         $this->assertTrue($response->isOk());
 
-        $object = new MediaType(self::$DI['app'], array('mediatypes' => array(MediaType::TYPE_VIDEO, MediaType::TYPE_AUDIO)));
+        $object = new MediaType(self::$DI['app'], ['mediatypes' => [MediaType::TYPE_VIDEO, MediaType::TYPE_AUDIO]]);
 
         $media = self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/test001.jpg');
         $file = new File(self::$DI['app'], $media, self::$DI['collection']);
@@ -55,6 +55,6 @@ class MediaTypeTest extends \PhraseanetPHPUnitAbstract
      */
     public function testContructorInvalidArgumentException()
     {
-        new MediaType(self::$DI['app'], array(array(MediaType::TYPE_IMAGE)));
+        new MediaType(self::$DI['app'], [[MediaType::TYPE_IMAGE]]);
     }
 }

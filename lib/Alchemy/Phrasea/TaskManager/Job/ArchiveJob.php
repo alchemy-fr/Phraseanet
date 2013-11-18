@@ -81,7 +81,7 @@ class ArchiveJob extends AbstractJob
 
         $databox = $app['phraseanet.appbox']->get_databox($sbasId);
 
-        $TColls = array();
+        $TColls = [];
         $collection = null;
         foreach ($databox->get_collections() as $coll) {
             $TColls['c' . $coll->get_coll_id()] = $coll->get_coll_id();
@@ -92,8 +92,8 @@ class ArchiveJob extends AbstractJob
         $server_coll_id = $collection->get_coll_id();
 
         // mask(s) of accepted files
-        $tmask = array();
-        $tmaskgrp = array();
+        $tmask = [];
+        $tmaskgrp = [];
         $cold = min(max((int) $settings->cold, self::MINCOLD), self::MAXCOLD);
 
         $stat0 = $stat1 = "0";
@@ -123,26 +123,26 @@ class ArchiveJob extends AbstractJob
         // load masks
         if ($settings->files && $settings->files->file) {
             foreach ($settings->files->file as $ft) {
-                $tmask[] = array(
+                $tmask[] = [
                     "mask"    => (string) $ft["mask"]
                     , "caption" => (string) $ft["caption"]
                     , "accept"  => (string) $ft["accept"]
-                );
+                ];
             }
         }
         if ($settings->files && $settings->files->grouping) {
             foreach ($settings->files->grouping as $ft) {
-                $tmaskgrp[] = array(
+                $tmaskgrp[] = [
                     "mask"           => (string) $ft["mask"]
                     , "caption"        => (string) $ft["caption"]
                     , "representation" => (string) $ft["representation"]
                     , "accept"         => (string) $ft["accept"]
-                );
+                ];
             }
         }
         if (count($tmask) == 0) {
             // no mask defined : accept all kind of files
-            $tmask[] = array("mask"    => ".*", "caption" => "", "accept"  => "");
+            $tmask[] = ["mask"    => ".*", "caption" => "", "accept"  => ""];
         }
 
         while ($this->isStarted()) {
@@ -282,7 +282,7 @@ class ArchiveJob extends AbstractJob
                 $n = $node->appendChild($dom->createElement('file'));
                 $n->setAttribute('name', $file);
                 $stat = stat($path . '/' . $file);
-                foreach (array("size", "ctime", "mtime") as $k) {
+                foreach (["size", "ctime", "mtime"] as $k) {
                     $n->setAttribute($k, $stat[$k]);
                 }
                 $nnew++;
@@ -345,7 +345,7 @@ class ArchiveJob extends AbstractJob
                     $this->listFilesPhase2($app, $dom, $dnl->item(0), $path . '/' . $file, $depth + 1);
                 } else {
                     $stat = stat($path . '/' . $file);
-                    foreach (array("size", "ctime", "mtime") as $k) {
+                    foreach (["size", "ctime", "mtime"] as $k) {
                         if ($dnl->item(0)->getAttribute($k) != $stat[$k]) {
                             $this->setBranchHot($dom, $dnl->item(0));
                             break;
@@ -374,7 +374,7 @@ class ArchiveJob extends AbstractJob
             }
 
             // make xml lighter (free ram)
-            foreach (array("size", "ctime", "mtime") as $k) {
+            foreach (["size", "ctime", "mtime"] as $k) {
                 $n->removeAttribute($k);
             }
 
@@ -398,7 +398,7 @@ class ArchiveJob extends AbstractJob
                         // this group in new (to be created)
                         // do we need one (or both) linked file ? (caption or representation)
                         $err = false;
-                        $flink = array('caption'        => null, 'representation' => null);
+                        $flink = ['caption'        => null, 'representation' => null];
 
                         foreach ($flink as $linkName => $v) {
                             if (isset($grpSettings[$linkName]) && $grpSettings[$linkName] != '') {
@@ -438,7 +438,7 @@ class ArchiveJob extends AbstractJob
                             // something is missing, the whole group goes error, ...
                             $n->setAttribute('grp', 'todelete');
 
-                            $this->setAllChildren($dom, $n, array('error' => '1'));
+                            $this->setAllChildren($dom, $n, ['error' => '1']);
 
                             // bubble to the top
                             for ($nn = $n; $nn && $nn->nodeType == XML_ELEMENT_NODE; $nn = $nn->parentNode) {
@@ -498,7 +498,7 @@ class ArchiveJob extends AbstractJob
             return $ret;
         }
 
-        $nodesToDel = array();
+        $nodesToDel = [];
         for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
             usleep(10);
 
@@ -567,7 +567,7 @@ class ArchiveJob extends AbstractJob
             return;
         }
 
-        $nodesToDel = array();
+        $nodesToDel = [];
         for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
             usleep(10);
 
@@ -681,7 +681,7 @@ class ArchiveJob extends AbstractJob
             return $ret;
         }
 
-        $nodesToDel = array();
+        $nodesToDel = [];
         for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
             usleep(10);
 
@@ -1042,7 +1042,7 @@ class ArchiveJob extends AbstractJob
 
         $metadatas = $this->getIndexByFieldName($metadatasStructure, $media->getMetadatas());
 
-        $metaFields = array();
+        $metaFields = [];
         if ($captionFile !== null && true === $app['filesystem']->exists($captionFile)) {
             $metaFields = $this->readXMLForDatabox($app, $metadatasStructure, $captionFile);
             $captionStatus = $this->parseStatusBit(@simplexml_load_file($captionFile));
@@ -1096,7 +1096,7 @@ class ArchiveJob extends AbstractJob
      */
     private function archiveFilesToGrp(Application $app, \databox $databox, \DOMDocument $dom, \DOMElement $node, $path, $path_archived, $path_error, $grp_rid, $stat0, $stat1, $moveError, $moveArchived)
     {
-        $nodesToDel = array();
+        $nodesToDel = [];
         for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
             if (!$this->isStarted()) {
                 break;
@@ -1420,7 +1420,7 @@ class ArchiveJob extends AbstractJob
 
                 $metadataBag->set($meta->get_name(), new BorderAttribute\MetaField($meta, $values));
             } else {
-                $metadataBag->set($meta->get_name(), new BorderAttribute\MetaField($meta, array($field)));
+                $metadataBag->set($meta->get_name(), new BorderAttribute\MetaField($meta, [$field]));
             }
         }
 
@@ -1448,7 +1448,7 @@ class ArchiveJob extends AbstractJob
 
     private function listFolder($path)
     {
-        $list = array();
+        $list = [];
         if ($hdir = opendir($path)) {
             while (false !== $file = readdir($hdir)) {
                 $list[] = $file;
