@@ -48,7 +48,7 @@ class XSendFileFactory
      */
     public static function create(Application $app)
     {
-        $conf = $app['phraseanet.configuration']['xsendfile'];
+        $conf = $app['configuration']['xsendfile'];
 
         $mapping = array();
 

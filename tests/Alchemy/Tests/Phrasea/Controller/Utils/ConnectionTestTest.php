@@ -9,7 +9,7 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
      */
     public function testRouteMysql()
     {
-        $connexion = self::$DI['app']['phraseanet.configuration']['main']['database'];
+        $connexion = self::$DI['app']['configuration']['main']['database'];
 
         $params = array(
             "hostname" => $connexion['host'],
@@ -26,7 +26,7 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
 
     public function testRouteMysqlFailed()
     {
-        $connexion = self::$DI['app']['phraseanet.configuration']['main']['database'];
+        $connexion = self::$DI['app']['configuration']['main']['database'];
 
         $params = array(
             "hostname" => $connexion['host'],
@@ -52,7 +52,7 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
 
     public function testRouteMysqlDbFailed()
     {
-        $connexion = self::$DI['app']['phraseanet.configuration']['main']['database'];
+        $connexion = self::$DI['app']['configuration']['main']['database'];
 
         $params = array(
             "hostname" => $connexion['host'],

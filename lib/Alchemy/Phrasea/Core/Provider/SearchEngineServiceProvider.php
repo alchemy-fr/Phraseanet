@@ -24,8 +24,8 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
     {
         $app['phraseanet.SE'] = $app->share(function ($app) {
 
-            $engineClass = $app['phraseanet.configuration']['main']['search-engine']['type'];
-            $engineOptions = $app['phraseanet.configuration']['main']['search-engine']['options'];
+            $engineClass = $app['configuration']['main']['search-engine']['type'];
+            $engineOptions = $app['configuration']['main']['search-engine']['options'];
 
             if (!class_exists($engineClass) || $engineClass instanceof SearchEngineInterface) {
                 throw new InvalidArgumentException(sprintf('%s is not valid SearchEngineInterface', $engineClass));

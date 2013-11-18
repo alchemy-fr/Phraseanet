@@ -81,7 +81,7 @@ class ConfigurationTester
      */
     public function isInstalled()
     {
-        return $this->app['phraseanet.configuration']->isSetup();
+        return $this->app['configuration']->isSetup();
     }
 
     /**

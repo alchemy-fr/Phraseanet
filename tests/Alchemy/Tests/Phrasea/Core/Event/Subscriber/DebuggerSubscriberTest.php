@@ -30,7 +30,7 @@ class DebuggerSubscriberTest extends \PHPUnit_Framework_TestCase
             unlink($app['phraseanet.configuration.config-compiled-path']);
         }
 
-        $app['phraseanet.configuration']['debugger'] = array('allowed-ips' => $authorized);
+        $app['configuration']['debugger'] = array('allowed-ips' => $authorized);
         $app['dispatcher']->addSubscriber(new DebuggerSubscriber($app));
         $app->get('/', function () {
             return 'success';

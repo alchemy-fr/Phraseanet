@@ -35,16 +35,16 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         $app = new Application('test');
         $appbox = $app['phraseanet.appbox'];
 
-        $configuration = $app['phraseanet.configuration']->getConfig();
+        $configuration = $app['configuration']->getConfig();
         $configuration['main']['search-engine']['options'] = array(
             'host'    => '127.0.0.1',
             'port'    => 9312,
             'rt_host' => '127.0.0.1',
             'rt_port' => 9306,
         );
-        $app['phraseanet.configuration']->setConfig($configuration);
+        $app['configuration']->setConfig($configuration);
 
-        self::$searchEngine = SphinxSearchEngine::create($app, $app['phraseanet.configuration']['main']['search-engine']['options']);
+        self::$searchEngine = SphinxSearchEngine::create($app, $app['configuration']['main']['search-engine']['options']);
 
         self::$config = tempnam(sys_get_temp_dir(), 'tmp_sphinx.conf');
         $configuration = self::$searchEngine->getConfigurationPanel()->getConfiguration();
@@ -73,7 +73,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         self::$searchd = new Process($searchd . ' -c ' . self::$config);
         self::$searchd->run();
 
-        self::$searchEngine = SphinxSearchEngine::create($app, $app['phraseanet.configuration']['main']['search-engine']['options']);
+        self::$searchEngine = SphinxSearchEngine::create($app, $app['configuration']['main']['search-engine']['options']);
     }
 
     public function setUp()

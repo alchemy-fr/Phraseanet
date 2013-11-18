@@ -48,7 +48,7 @@ class patch_380alpha6a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $app['phraseanet.configuration']->setDefault('registration-fields');
-        $app['phraseanet.configuration']->setDefault('authentication');
+        $app['configuration']->setDefault('registration-fields');
+        $app['configuration']->setDefault('authentication');
     }
 }

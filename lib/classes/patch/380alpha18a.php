@@ -51,9 +51,9 @@ class patch_380alpha18a implements patchInterface
     {
         $finder = new ExecutableFinder();
 
-        $binaries = $app['phraseanet.configuration']['binaries'];
+        $binaries = $app['configuration']['binaries'];
         $binaries['recess_binary'] = $finder->find('recess');
-        $app['phraseanet.configuration']['binaries'] = $binaries;
+        $app['configuration']['binaries'] = $binaries;
 
         return true;
     }

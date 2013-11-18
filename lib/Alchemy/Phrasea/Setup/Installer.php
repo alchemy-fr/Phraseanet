@@ -104,7 +104,7 @@ class Installer
             $this->app['manipulator.task']->create(
                 $job->getName(),
                 $job->getJobId(),
-                $job->getEditor()->getDefaultSettings($this->app['phraseanet.configuration']),
+                $job->getEditor()->getDefaultSettings($this->app['configuration']),
                 $job->getEditor()->getDefaultPeriod()
             );
         }
@@ -152,7 +152,7 @@ class Installer
             }
         }
 
-        $this->app['phraseanet.configuration']->delete();
+        $this->app['configuration']->delete();
 
         return;
     }
@@ -176,7 +176,7 @@ class Installer
 
     private function createConfigFile($abConn, $serverName, $binaryData)
     {
-        $config = $this->app['phraseanet.configuration']->initialize();
+        $config = $this->app['configuration']->initialize();
 
         foreach ($abConn->get_credentials() as $key => $value) {
             $key = $key == 'hostname' ? 'host' : $key;
@@ -192,6 +192,6 @@ class Installer
         $config['main']['key'] = md5(mt_rand(100000000, 999999999));
 
         $this->app['phraseanet.registry']->setKey($config['main']['key']);
-        $this->app['phraseanet.configuration']->setConfig($config);
+        $this->app['configuration']->setConfig($config);
     }
 }

@@ -47,10 +47,10 @@ class registry implements registryInterface
         $this->cache = new ArrayCache();
 
         if ($app['phraseanet.configuration-tester']->isInstalled()) {
-            $this->cache->save('GV_ServerName', $app['phraseanet.configuration']['main']['servername']);
+            $this->cache->save('GV_ServerName', $app['configuration']['main']['servername']);
             $this->cache->save('GV_debug', $app['debug']);
 
-            $config = $app['phraseanet.configuration']->getConfig();
+            $config = $app['configuration']->getConfig();
 
             if (isset($config['main']['key'])) {
                 $this->cache->save('GV_sit', $config['main']['key']);

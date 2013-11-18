@@ -48,7 +48,7 @@ class patch_380alpha16a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $xsendfile = $app['phraseanet.configuration']['xsendfile'];
+        $xsendfile = $app['configuration']['xsendfile'];
 
         if (!isset($xsendfile['mapping'])) {
             $xsendfile['mapping'] = array();
@@ -63,7 +63,7 @@ class patch_380alpha16a implements patchInterface
             'mount-point' => '/download/',
         );
 
-        $app['phraseanet.configuration']['xsendfile'] = $xsendfile;
+        $app['configuration']['xsendfile'] = $xsendfile;
 
         return true;
     }

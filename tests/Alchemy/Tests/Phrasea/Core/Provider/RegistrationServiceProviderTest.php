@@ -13,9 +13,9 @@ class RegistrationServiceProvidertest extends \PhraseanetPHPUnitAbstract
     {
         self::$DI['app']->register(new RegistrationServiceProvider());
 
-        $conf = self::$DI['app']['phraseanet.configuration']->getConfig();
+        $conf = self::$DI['app']['configuration']->getConfig();
         $conf['registration-fields'] = array('plop');
-        self::$DI['app']['phraseanet.configuration'] = $conf;
+        self::$DI['app']['configuration'] = $conf;
 
         $this->assertEquals(array('plop'), self::$DI['app']['registration.fields']);
         $this->assertEquals(array('plop'), self::$DI['app']['registration.fields']);

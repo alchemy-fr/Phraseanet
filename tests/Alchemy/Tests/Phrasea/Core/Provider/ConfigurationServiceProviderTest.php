@@ -17,6 +17,11 @@ class ConfigurationServiceProvidertest extends ServiceProviderTestCase
         return array(
             array(
                 'Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider',
+                'configuration',
+                'Alchemy\\Phrasea\\Core\\Configuration\\Configuration'
+            ),
+            array(
+                'Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider',
                 'phraseanet.configuration',
                 'Alchemy\\Phrasea\\Core\\Configuration\\Configuration'
             ),

@@ -25,7 +25,7 @@ class Configuration extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->container['phraseanet.configuration']->compileAndWrite();
+        $this->container['configuration']->compileAndWrite();
         $output->writeln("Confguration compiled.");
 
         return 0;

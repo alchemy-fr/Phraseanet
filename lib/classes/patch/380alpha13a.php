@@ -51,7 +51,7 @@ class patch_380alpha13a implements patchInterface
         $xsendfilePath = $app['phraseanet.registry']->get('GV_X_Accel_Redirect');
         $xsendfileMountPoint = $app['phraseanet.registry']->get('GV_X_Accel_Redirect_mount_point');
 
-        $config = $app['phraseanet.configuration']
+        $config = $app['configuration']
             ->setDefault('xsendfile')
             ->getConfig();
 
@@ -65,7 +65,7 @@ class patch_380alpha13a implements patchInterface
             ));
         }
 
-        $app['phraseanet.configuration']->setConfig($config);
+        $app['configuration']->setConfig($config);
 
         $toRemove = array('GV_X_Accel_Redirect', 'GV_X_Accel_Redirect_mount_point', 'GV_modxsendfile');
 

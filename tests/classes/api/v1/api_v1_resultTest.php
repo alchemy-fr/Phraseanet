@@ -17,9 +17,9 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         self::$DI['app']->register(new \API_V1_Timer());
 
-        $conf = self::$DI['app']['phraseanet.configuration']->getConfig();
+        $conf = self::$DI['app']['configuration']->getConfig();
         $conf['main']['api-timers'] = true;
-        self::$DI['app']['phraseanet.configuration']->setConfig($conf);
+        self::$DI['app']['configuration']->setConfig($conf);
 
         $this->api = $this->getMock("API_V1_adapter", array("get_version"), array(), "", false);
         $this->api->expects($this->any())->method("get_version")->will($this->returnValue("my_super_version1.0"));

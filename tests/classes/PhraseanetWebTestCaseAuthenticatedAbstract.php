@@ -98,7 +98,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
     {
         $this->createDatabase();
 
-        $connexion = self::$DI['app']['phraseanet.configuration']['main']['database'];
+        $connexion = self::$DI['app']['configuration']['main']['database'];
 
         try {
             $conn = new \connection_pdo(

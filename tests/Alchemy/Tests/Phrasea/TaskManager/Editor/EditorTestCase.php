@@ -43,7 +43,7 @@ abstract class EditorTestCase extends \PhraseanetPHPUnitAbstract
         $editor = $this->getEditor();
         $dom = new \DOMDocument();
         $dom->strictErrorChecking = true;
-        $this->assertTrue(false !== $dom->loadXML($editor->getDefaultSettings(self::$DI['app']['phraseanet.configuration'])));
+        $this->assertTrue(false !== $dom->loadXML($editor->getDefaultSettings(self::$DI['app']['configuration'])));
     }
 
     public function testGetDefaultSettingsWithoutConfiguration()

@@ -34,7 +34,7 @@ class MaintenanceSubscriber implements EventSubscriberInterface
 
     public function checkForMaintenance(GetResponseEvent $event)
     {
-        if ($this->app['phraseanet.configuration']->isSetup() && $this->app['phraseanet.configuration']['main']['maintenance']) {
+        if ($this->app['configuration']->isSetup() && $this->app['configuration']['main']['maintenance']) {
             $this->app->abort(503, 'Service Temporarily Unavailable', array('Retry-After' => 3600));
         }
     }

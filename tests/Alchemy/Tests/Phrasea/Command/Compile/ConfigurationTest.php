@@ -11,8 +11,8 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
         $command = new Configuration();
         $command->setContainer(self::$DI['cli']);
 
-        self::$DI['cli']['phraseanet.configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
-        self::$DI['cli']['phraseanet.configuration']->expects($this->once())
+        self::$DI['cli']['configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
+        self::$DI['cli']['configuration']->expects($this->once())
             ->method('compileAndWrite');
 
         $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');

@@ -1057,12 +1057,12 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             }
         }
 
-        if (isset($this->app['phraseanet.configuration']['user-settings'])) {
+        if (isset($this->app['configuration']['user-settings'])) {
             $this->_prefs = array_replace(
                 $this->_prefs,
                 // remove keys that are not defined in default values
                 array_intersect_key(
-                    $this->app['phraseanet.configuration']['user-settings'],
+                    $this->app['configuration']['user-settings'],
                     self::$def_values
                 )
             );

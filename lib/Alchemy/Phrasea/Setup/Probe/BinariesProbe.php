@@ -39,6 +39,6 @@ class BinariesProbe extends BinariesRequirements implements ProbeInterface
      */
     public static function create(Application $app)
     {
-        return new static($app['phraseanet.configuration']['binaries']);
+        return new static($app['configuration']['binaries']);
     }
 }

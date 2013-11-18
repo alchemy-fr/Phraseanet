@@ -158,7 +158,7 @@ class Databoxes implements ControllerProviderInterface
 
         if ((null === $request->request->get('new_settings')) && (null !== $dataTemplate = $request->request->get('new_data_template'))) {
 
-            $configuration = $app['phraseanet.configuration'];
+            $configuration = $app['configuration'];
             $connexion = $configuration['main']['database'];
 
             $hostname = $connexion['host'];
@@ -229,7 +229,7 @@ class Databoxes implements ControllerProviderInterface
 
         if ((null === $request->request->get('new_settings'))) {
             try {
-                $configuration = $app['phraseanet.configuration'];
+                $configuration = $app['configuration'];
                 $connexion = $configuration['main']['database'];
 
                 $hostname = $connexion['host'];

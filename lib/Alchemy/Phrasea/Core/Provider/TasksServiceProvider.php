@@ -36,8 +36,8 @@ class TasksServiceProvider implements ServiceProviderInterface
         });
 
         $app['task-manager.listener.options'] = $app->share(function (Application $app) {
-            if (isset($app['phraseanet.configuration']['task-manager']) && isset($app['phraseanet.configuration']['task-manager']['listener'])) {
-                $listenerConf = $app['phraseanet.configuration']['task-manager']['listener'];
+            if (isset($app['configuration']['task-manager']) && isset($app['configuration']['task-manager']['listener'])) {
+                $listenerConf = $app['configuration']['task-manager']['listener'];
             } else {
                 $listenerConf = array();
             }
@@ -55,7 +55,7 @@ class TasksServiceProvider implements ServiceProviderInterface
         });
 
         $app['task-manager.status'] = $app->share(function (Application $app) {
-            return new TaskManagerStatus($app['phraseanet.configuration']);
+            return new TaskManagerStatus($app['configuration']);
         });
 
         $app['task-manager.live-information'] = $app->share(function (Application $app) {

@@ -56,7 +56,7 @@ $cli = new CLI("
  under certain conditions; type `about:license' for details.\n\n"
             . ' Phraseanet Developer Tools ', Version::getName() . ' ' . Version::getNumber());
 
-if ($cli['phraseanet.configuration']->isSetup()) {
+if ($cli['configuration']->isSetup()) {
     $helpers = array(
         'db' => new ConnectionHelper($cli['EM']->getConnection()),
         'em' => new EntityManagerHelper($cli['EM'])

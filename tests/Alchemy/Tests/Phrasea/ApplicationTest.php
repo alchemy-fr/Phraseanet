@@ -291,11 +291,11 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
     public function testUrlGeneratorContext()
     {
         $app = new Application('test');
-        $app['phraseanet.configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
-        $app['phraseanet.configuration']->expects($this->once())
+        $app['configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
+        $app['configuration']->expects($this->once())
             ->method('isSetup')
             ->will($this->returnValue(true));
-        $app['phraseanet.configuration']->expects($this->once())
+        $app['configuration']->expects($this->once())
             ->method('offsetGet')
             ->with('main')
             ->will($this->returnValue(array('servername' => 'https://cat.turbocat.com/')));

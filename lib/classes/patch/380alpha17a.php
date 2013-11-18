@@ -48,7 +48,7 @@ class patch_380alpha17a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $auth = $app['phraseanet.configuration']['authentication'];
+        $auth = $app['configuration']['authentication'];
 
         if (isset($auth['captcha']) && isset($auth['captcha']['trials-before-failure'])) {
             $auth['captcha']['trials-before-display'] = $auth['captcha']['trials-before-failure'];
@@ -59,7 +59,7 @@ class patch_380alpha17a implements patchInterface
             unset($auth['auto-create']['enabled']);
         }
 
-        $app['phraseanet.configuration']['authentication'] = $auth;
+        $app['configuration']['authentication'] = $auth;
 
         return true;
     }

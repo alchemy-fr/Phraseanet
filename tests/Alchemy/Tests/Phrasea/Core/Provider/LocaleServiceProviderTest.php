@@ -22,15 +22,15 @@ class LocaleServiceProvidertest extends \PhraseanetPHPUnitAbstract
     {
         $app = new Application();
         $app->register(new LocaleServiceProvider());
-        $app['phraseanet.configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
-        $app['phraseanet.configuration']->expects($this->any())
+        $app['configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
+        $app['configuration']->expects($this->any())
             ->method('offsetExist')
             ->with('main')
             ->will($this->returnValue(true));
-        $app['phraseanet.configuration']->expects($this->any())
+        $app['configuration']->expects($this->any())
             ->method('isSetup')
             ->will($this->returnValue(true));
-        $app['phraseanet.configuration']->expects($this->any())
+        $app['configuration']->expects($this->any())
             ->method('offsetGet')
             ->with('main')
             ->will($this->returnValue(array('languages' => array('fr_FR', 'en_US', 'de'))));
@@ -46,15 +46,15 @@ class LocaleServiceProvidertest extends \PhraseanetPHPUnitAbstract
     {
         $app = new Application();
         $app->register(new LocaleServiceProvider());
-        $app['phraseanet.configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
-        $app['phraseanet.configuration']->expects($this->any())
+        $app['configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
+        $app['configuration']->expects($this->any())
             ->method('offsetExist')
             ->with('main')
             ->will($this->returnValue(true));
-        $app['phraseanet.configuration']->expects($this->any())
+        $app['configuration']->expects($this->any())
             ->method('isSetup')
             ->will($this->returnValue(true));
-        $app['phraseanet.configuration']->expects($this->any())
+        $app['configuration']->expects($this->any())
             ->method('offsetGet')
             ->with('main')
             ->will($this->returnValue(array('languages' => array('en_US'))));

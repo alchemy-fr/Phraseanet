@@ -60,7 +60,7 @@ class patch_380alpha3b implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $app['phraseanet.configuration']->setDefault('main', 'search-engine');
+        $app['configuration']->setDefault('main', 'search-engine');
 
         return true;
     }
