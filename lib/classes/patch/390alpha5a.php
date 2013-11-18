@@ -63,7 +63,8 @@ class patch_390alpha5a implements patchInterface
         $stmt->closeCursor();
 
         $conn = $app['phraseanet.appbox']->get_connection();
-        $sql = 'SELECT * FROM usr_settings WHERE prop LIKE "notification_%"';
+        $sql = 'SELECT * FROM usr_settings
+                WHERE prop LIKE "notification_%"';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);

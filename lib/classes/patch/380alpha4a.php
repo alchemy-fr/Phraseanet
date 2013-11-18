@@ -59,7 +59,9 @@ class patch_380alpha4a implements patchInterface
     public function apply(base $appbox, Application $app)
     {
         $conn = $app['phraseanet.appbox']->get_connection();
-        $sql = 'SELECT date, login, ip, locked FROM badlog ORDER BY id ASC';
+        $sql = 'SELECT date, login, ip, locked
+                FROM badlog
+                ORDER BY id ASC';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);

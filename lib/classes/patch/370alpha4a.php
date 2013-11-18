@@ -77,7 +77,8 @@ class patch_370alpha4a implements patchInterface
             }
         }
 
-        $sql = 'UPDATE metadatas_structure SET src = :src WHERE id = :id';
+        $sql = 'UPDATE metadatas_structure SET src = :src
+                WHERE id = :id';
         $stmt = $databox->get_connection()->prepare($sql);
 
         foreach ($update as $row) {

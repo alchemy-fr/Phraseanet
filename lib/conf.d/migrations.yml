@@ -42,6 +42,3 @@ migrations:
   migration13:
     version: ftp-export
     class: Alchemy\Phrasea\Setup\DoctrineMigrations\FtpExportMigration
-  migration14:
-    version: aggregate-token
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\AggregateTokenMigration

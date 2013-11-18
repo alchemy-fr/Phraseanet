@@ -59,7 +59,7 @@ class patch_390alpha1a implements patchInterface
     {
         $conn = $app['phraseanet.appbox']->get_connection();
         $sql = 'SELECT usr_id, activeFTP, addrFTP, loginFTP,
-                retryFTP, passifFTP, pwdFTP, destFTP, prefixFTPfolder
+                    retryFTP, passifFTP, pwdFTP, destFTP, prefixFTPfolder
                 FROM usr';
         $stmt = $conn->prepare($sql);
         $stmt->execute();

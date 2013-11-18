@@ -59,7 +59,8 @@ class patch_320alpha6a implements patchInterface
     {
         $sql = 'UPDATE record r, subdef s
                 SET r.mime = s.mime
-                WHERE r.record_id = s.record_id AND s.name="document"';
+                WHERE r.record_id = s.record_id
+                  AND s.name="document"';
         $stmt = $databox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();

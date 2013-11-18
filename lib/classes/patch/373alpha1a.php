@@ -56,7 +56,8 @@ class patch_373alpha1a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $sql = 'SELECT * FROM registry WHERE `key` = :key';
+        $sql = 'SELECT * FROM registry
+                WHERE `key` = :key';
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
 
         $Regbinaries = [

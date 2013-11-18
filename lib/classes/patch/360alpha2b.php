@@ -72,7 +72,9 @@ class patch_360alpha2b implements patchInterface
             $sql = 'UPDATE metadatas SET updated = "0"
                     WHERE meta_struct_id IN
                     (
-                        SELECT id FROM metadatas_structure WHERE multi = "1"
+                        SELECT id
+                        FROM metadatas_structure
+                        WHERE multi = "1"
                     )';
             $stmt = $databox->get_connection()->prepare($sql);
             $stmt->execute();

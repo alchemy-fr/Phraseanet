@@ -55,7 +55,7 @@ class patch_390alpha7a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return ['feed', 'aggregate-token'];
+        return ['feed'];
     }
 
     /**
@@ -63,23 +63,9 @@ class patch_390alpha7a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $rsm = new ResultSetMapping();
-        $rsm->addScalarResult('Name', 'Name');
-
-        $backup = false;
-
-        foreach ($app['EM']->createNativeQuery('SHOW TABLE STATUS', $rsm)->getResult() as $row) {
-            if (0 === strcmp('feeds', $row['Name'])) {
-                $backup = true;
-                break;
-            }
-        }
-
-        if (false === $backup) {
+        if (false === $this->hasFeedBackup($app)) {
             return false;
         }
-
-        $app['EM']->executeQuery("RENAME TABLE `feeds` TO `feeds_backup`");
 
         $sql = 'DELETE FROM Feeds';
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
@@ -230,5 +216,27 @@ class patch_390alpha7a implements patchInterface
         $em->clear();
 
         return true;
+    }
+
+    /**
+     * Checks whether `feeds_backup` tables exists.
+     *
+     * @param Application $app
+     *
+     * @return boolean True if `feeds_backup` table exists.
+     */
+    private function hasFeedBackup(Application $app)
+    {
+        $rsm = (new ResultSetMapping())->addScalarResult('Name', 'Name');
+        $backup = false;
+
+        foreach ($app['EM']->createNativeQuery('SHOW TABLE STATUS', $rsm)->getResult() as $row) {
+            if ('feeds_backup' === $row['Name']) {
+                $backup = true;
+                break;
+            }
+        }
+
+        return $backup;
     }
 }

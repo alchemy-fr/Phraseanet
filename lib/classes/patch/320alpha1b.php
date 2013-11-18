@@ -58,11 +58,12 @@ class patch_320alpha1b implements patchInterface
     {
         $sql = 'REPLACE INTO records_rights
                 (
-                    SELECT null as id, usr_id, b.sbas_id, record_id, "1" as document, null as preview
-                    , "push" as `case`, pushFrom as pusher_usr_id
+                    SELECT null as id, usr_id, b.sbas_id, record_id, "1" as document, null as preview,
+                        "push" as `case`, pushFrom as pusher_usr_id
                     FROM sselcont c, ssel s, bas b
                     WHERE c.ssel_id = s.ssel_id
-                    AND b.base_id = c.base_id AND c.canHD = 1
+                        AND b.base_id = c.base_id
+                        AND c.canHD = 1
                  )';
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();

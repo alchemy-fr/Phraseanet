@@ -56,7 +56,8 @@ class patch_379alpha1a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $sql = 'UPDATE permalinks SET label = "untitled" WHERE label = ""';
+        $sql = 'UPDATE permalinks SET label = "untitled"
+                WHERE label = ""';
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();

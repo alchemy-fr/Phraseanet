@@ -82,7 +82,9 @@ class patch_390alpha1b implements patchInterface
 
         foreach ($rs as $row) {
 
-            $sql = 'SELECT count(id) as todo FROM order_elements WHERE deny = NULL AND order_id = :id';
+            $sql = 'SELECT count(id) as todo FROM order_elements
+                    WHERE deny = NULL
+                        AND order_id = :id';
             $stmt = $conn->prepare($sql);
             $stmt->execute([':id' => $row['id']]);
             $todo = $stmt->fetch(\PDO::FETCH_ASSOC);
