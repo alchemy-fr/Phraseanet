@@ -36,18 +36,12 @@ class TasksServiceProvider implements ServiceProviderInterface
         });
 
         $app['task-manager.listener.options'] = $app->share(function (Application $app) {
-            if (isset($app['configuration']['task-manager']) && isset($app['configuration']['task-manager']['listener'])) {
-                $listenerConf = $app['configuration']['task-manager']['listener'];
-            } else {
-                $listenerConf = [];
-            }
-
             return array_replace([
                 'protocol'  => 'tcp',
                 'host'      => '127.0.0.1',
                 'port'      => 6660,
                 'linger'    => 500,
-            ], $listenerConf);
+            ], $app['conf']->get(['task-manager', 'listener'], []));
         });
 
         $app['task-manager.job-factory'] = $app->share(function (Application $app) {
@@ -55,7 +49,7 @@ class TasksServiceProvider implements ServiceProviderInterface
         });
 
         $app['task-manager.status'] = $app->share(function (Application $app) {
-            return new TaskManagerStatus($app['configuration']);
+            return new TaskManagerStatus($app['configuration.store']);
         });
 
         $app['task-manager.live-information'] = $app->share(function (Application $app) {

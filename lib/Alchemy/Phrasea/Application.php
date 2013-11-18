@@ -240,8 +240,8 @@ class Application extends SilexApplication
                     'swftools.timeout'             => 'swftools_timeout',
                     'unoconv.timeout'              => 'unoconv_timeout',
             ] as $parameter => $key) {
-                if (isset($this['configuration']['binaries'][$key])) {
-                    $configuration[$parameter] = $this['configuration']['binaries'][$key];
+                if ($this['conf']->has(['binaries', $key])) {
+                    $configuration[$parameter] = $this['conf']->get(['binaries', $key]);
                 }
             }
 
@@ -550,8 +550,8 @@ class Application extends SilexApplication
     private function setupUrlGenerator()
     {
         $this['url_generator'] = $this->share($this->extend('url_generator', function ($urlGenerator, $app) {
-            if ($app['configuration']->isSetup()) {
-                $data = parse_url($app['configuration']['main']['servername']);
+            if ($app['configuration.store']->isSetup()) {
+                $data = parse_url($app['conf']->get(['main', 'servername']));
 
                 if (isset($data['scheme'])) {
                     $urlGenerator->getContext()->setScheme($data['scheme']);

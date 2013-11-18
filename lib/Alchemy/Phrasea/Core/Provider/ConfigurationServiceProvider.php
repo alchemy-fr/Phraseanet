@@ -59,7 +59,7 @@ class ConfigurationServiceProvider implements ServiceProviderInterface
     {
         $app['dispatcher'] = $app->share(
             $app->extend('dispatcher', function ($dispatcher, SilexApplication $app) {
-                $dispatcher->addSubscriber(new TrustedProxySubscriber($app['configuration']));
+                $dispatcher->addSubscriber(new TrustedProxySubscriber($app['configuration.store']));
 
                 return $dispatcher;
             })

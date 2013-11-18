@@ -1,6 +1,6 @@
 <?php
 
-namespace Alchemy\Tests\Phrasea\Command;
+namespace Alchemy\Tests\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Setup\XSendFileMappingGenerator;
 
@@ -30,14 +30,17 @@ class XSendFileMappingGeneratorTest extends \PhraseanetPHPUnitAbstract
         self::$DI['cli']['monolog'] = self::$DI['cli']->share(function () use ($phpunit) {
             return $phpunit->getMockBuilder('Monolog\Logger')->disableOriginalConstructor()->getMock();
         });
-        self::$DI['cli']['configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
+        self::$DI['cli']['conf'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
+            ->disableOriginalConstructor()
+            ->getMock();
         if ($option) {
-            self::$DI['cli']['configuration']->expects($this->once())
-                ->method('offsetSet')
+
+            self::$DI['cli']['conf']->expects($this->once())
+                ->method('set')
                 ->with('xsendfile');
         } else {
-            self::$DI['cli']['configuration']->expects($this->never())
-                ->method('offsetSet');
+            self::$DI['cli']['conf']->expects($this->never())
+                ->method('set');
         }
         $command->setContainer(self::$DI['cli']);
 
@@ -48,6 +51,16 @@ class XSendFileMappingGeneratorTest extends \PhraseanetPHPUnitAbstract
     {
         $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
         $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
+
+        $logger = $this->getMockBuilder('Monolog\Logger')
+                  ->disableOriginalConstructor()
+                  ->getMock();
+        $logger->expects($this->once())
+            ->method('error');
+
+        self::$DI['cli']['monolog'] = self::$DI['cli']->share(function () use ($logger) {
+            return $logger;
+        });
 
         $input->expects($this->any())
             ->method('getArgument')

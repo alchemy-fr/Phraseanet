@@ -73,9 +73,7 @@ class patch_380alpha8a implements patchInterface
         $sxe = simplexml_load_string($row['settings']);
         $indexer = $sxe->binpath . '/phraseanet_indexer';
 
-        $binaries = $app['configuration']['binaries'];
-        $binaries['phraseanet_indexer'] = $indexer;
-        $app['configuration']['binaries'] = $binaries;
+        $app['conf']->set(['binaries', 'phraseanet_indexer'], $indexer);
 
         return true;
     }

@@ -53,7 +53,7 @@ class XSendFileMappingGenerator extends Command
 
         if ($input->getOption('write')) {
             $output->write("Writing configuration ...");
-            $this->container['configuration']['xsendfile'] = $conf;
+            $this->container['conf']->set('xsendfile', $conf);
             $output->writeln(" <info>OK</info>");
             $output->writeln("");
             $output->write("It is now strongly recommended to use <info>xsendfile:dump-configuration</info> command to upgrade your virtual-host");

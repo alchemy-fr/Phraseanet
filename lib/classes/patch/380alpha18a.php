@@ -57,11 +57,7 @@ class patch_380alpha18a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $finder = new ExecutableFinder();
-
-        $binaries = $app['configuration']['binaries'];
-        $binaries['recess_binary'] = $finder->find('recess');
-        $app['configuration']['binaries'] = $binaries;
+        $app['conf']->set(['binaries', 'recess_binary'], (new ExecutableFinder())->find('recess'));
 
         return true;
     }

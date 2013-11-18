@@ -41,11 +41,8 @@ class DebuggerSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if ($this->app['configuration']->isSetup()
-            && isset($this->app['configuration']['debugger'])
-            && isset($this->app['configuration']['debugger']['allowed-ips'])) {
-
-            $allowedIps = $this->app['configuration']['debugger']['allowed-ips'];
+        if ($this->app['configuration.store']->isSetup() && $this->app['conf']->has(['debugger', 'allowed-ips'])) {
+            $allowedIps = $this->app['conf']->get(['debugger', 'allowed-ips']);
             $allowedIps = is_array($allowedIps) ? $allowedIps : [$allowedIps];
         } else {
             $allowedIps = [];

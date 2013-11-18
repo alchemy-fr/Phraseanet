@@ -142,7 +142,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             });
 
             $app['url_generator'] = $app->share($app->extend('url_generator', function ($generator, $app) {
-                $host = parse_url($app['configuration']['main']['servername'], PHP_URL_HOST);
+                $host = parse_url($app['conf']->get(['main', 'servername']), PHP_URL_HOST);
                 $generator->setContext(new RequestContext('', 'GET', $host));
 
                 return $generator;
@@ -183,7 +183,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             });
 
             $app['url_generator'] = $app->share($app->extend('url_generator', function ($generator, $app) {
-                $host = parse_url($app['configuration']['main']['servername'], PHP_URL_HOST);
+                $host = parse_url($app['conf']->get(['main', 'servername']), PHP_URL_HOST);
                 $generator->setContext(new RequestContext('', 'GET', $host));
 
                 return $generator;

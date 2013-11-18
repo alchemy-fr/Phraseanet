@@ -46,7 +46,7 @@ abstract class AbstractDelivery implements ControllerProviderInterface
                 $referrer = $_SERVER['HTTP_REFERER'];
             }
 
-            $record->log_view($log_id, $referrer, $app['configuration']['main']['key']);
+            $record->log_view($log_id, $referrer, $app['conf']->get(['main', 'key']));
         } catch (\Exception $e) {
 
         }

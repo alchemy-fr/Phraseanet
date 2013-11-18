@@ -30,7 +30,7 @@ class BorderManagerServiceProvider implements ServiceProviderInterface
 
             }
 
-            $options = $app['configuration']['border-manager'];
+            $options = $app['conf']->get('border-manager');
 
             $registeredCheckers = [];
 

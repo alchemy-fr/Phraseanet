@@ -56,9 +56,8 @@ class patch_380alpha15a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $binaries = $app['configuration']['binaries'];
-        unset($binaries['composite_binary'], $binaries['convert_binary']);
-        $app['configuration']['binaries'] = $binaries;
+        $app['conf']->remove(['binaries', 'composite_binary']);
+        $app['conf']->remove(['binaries', 'convert_binary']);
 
         return true;
     }

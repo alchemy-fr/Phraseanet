@@ -60,13 +60,13 @@ class userTest extends PhraseanetPHPUnitAbstract
 
     public function testGetPrefWithACustomizedConf()
     {
-        $data = isset(self::$DI['app']['configuration']['user-settings']) ? self::$DI['app']['configuration']['user-settings'] : null;
+        $data = self::$DI['app']['conf']->get(['user-settings']);
 
-        self::$DI['app']['configuration']['user-settings'] = [
+        self::$DI['app']['conf']->set('user-settings', [
             'images_per_page' => 42,
             'images_size'     => 666,
             'lalala'          => 'didou',
-        ];
+        ]);
 
         $user = $this->get_user();
 
@@ -76,9 +76,9 @@ class userTest extends PhraseanetPHPUnitAbstract
         $this->assertSame(\User_Adapter::$def_values['editing_top_box'], $user->getPrefs('editing_top_box'));
 
         if (null === $data) {
-            unset(self::$DI['app']['configuration']['user-settings']);
+            self::$DI['app']['conf']->remove('user-settings');
         } else {
-            self::$DI['app']['configuration']['user-settings'] = $data;
+            self::$DI['app']['conf']->set('user-settings', $data);
         }
     }
 

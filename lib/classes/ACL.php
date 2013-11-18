@@ -1478,7 +1478,7 @@ class ACL implements cache_cacheableInterface
 
         foreach ($this->get_granted_base([], [$databox->get_sbas_id()]) as $collection) {
             $stmt->execute([
-                ':site_id'  => $this->app['configuration']['main']['key'],
+                ':site_id'  => $this->app['conf']->get(['main', 'key']),
                 ':usr_id'   => $this->user->get_id(),
                 ':coll_id'  => $collection->get_coll_id(),
                 ':mask_and' => $this->get_mask_and($collection->get_base_id()),
@@ -1506,7 +1506,7 @@ class ACL implements cache_cacheableInterface
         $sql = 'DELETE FROM collusr WHERE usr_id = :usr_id AND site = :site';
         $params = [
             ':usr_id' => $this->user->get_id()
-            , ':site'   => $this->app['configuration']['main']['key']
+            , ':site'   => $this->app['conf']->get(['main', 'key'])
         ];
         $stmt = $databox->get_connection()->prepare($sql);
         $stmt->execute($params);

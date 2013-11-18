@@ -32,7 +32,7 @@ class RegenerateSqliteDb extends Command
         }
 
         try {
-            $dbParams = $this->container['configuration']->getTestConnectionParameters();
+            $dbParams = $this->container['configuration.store']->getTestConnectionParameters();
             $dbParams['path'] = $source;
 
             $this->container->register(new ORMServiceProvider());

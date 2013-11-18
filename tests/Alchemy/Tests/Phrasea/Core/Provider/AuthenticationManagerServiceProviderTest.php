@@ -87,9 +87,7 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
         $app->register(new AuthenticationManagerServiceProvider());
         $app->register(new ConfigurationServiceProvider());
 
-        $app['configuration'] = $conf = $app['configuration']->getConfig();
-        $conf['authentication']['captcha']['trials-before-display'] = 42;
-        $app['configuration'] = $conf;
+        $app['conf']->set(['authentication', 'captcha', 'trials-before-display'], 42);
 
         $app['EM'] = $this->getMockBuilder('Doctrine\Orm\EntityManager')
             ->disableOriginalConstructor()
@@ -107,11 +105,7 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
         $app = new PhraseaApplication();
         $app->register(new ConfigurationServiceProvider());
 
-        $conf = $app['configuration']->getConfig();
-        $conf['authentication']['auto-create'] = [
-            'templates' => [],
-        ];
-        $app['configuration']->setConfig($conf);
+        $app['conf']->set(['authentication', 'auto-create'], ['templates' => []]);
 
         $app['authentication.providers.account-creator'];
     }
@@ -138,11 +132,7 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
             }));
         $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];
 
-        $conf = $app['configuration']->getConfig();
-        $conf['authentication']['captcha'] = [
-            'enabled' => true,
-        ];
-        $app['configuration']->setConfig($conf);
+        $app['conf']->set(['authentication', 'captcha'], ['enabled' => true]);
 
         $app['EM'] = $this->getMockBuilder('Doctrine\Orm\EntityManager')
             ->disableOriginalConstructor()
@@ -176,11 +166,7 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
             }));
         $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];
 
-        $conf = $app['configuration']->getConfig();
-        $conf['authentication']['captcha'] = [
-            'enabled' => false,
-        ];
-        $app['configuration']->setConfig($conf);
+        $app['conf']->set(['authentication', 'captcha'], ['enabled' => false]);
 
         $app['EM'] = $this->getMockBuilder('Doctrine\Orm\EntityManager')
             ->disableOriginalConstructor()
@@ -202,14 +188,7 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
         $template2 = \User_Adapter::create(self::$DI['app'], 'template' . $random->generatePassword(), $random->generatePassword(), null, false);
         $template2->set_template(self::$DI['user']);
 
-        $conf = $app['configuration']->getConfig();
-        $conf['authentication']['auto-create'] = [
-            'templates' => [
-                $template1->get_id(),
-                $template2->get_login()
-            ]
-        ];
-        $app['configuration']->setConfig($conf);
+        $app['conf']->set(['authentication', 'auto-create'], ['templates' => [$template1->get_id(), $template2->get_login()]]);
 
         $this->assertEquals([$template1, $template2], $app['authentication.providers.account-creator']->getTemplates());
 

@@ -161,7 +161,7 @@ class PhraseaEngine implements SearchEngineInterface
             return $this;
         }
 
-        $connexion = $this->app['configuration']['main']['database'];
+        $connexion = $this->app['conf']->get(['main', 'database']);
 
         $hostname = $connexion['host'];
         $port = (int) $connexion['port'];
@@ -228,7 +228,7 @@ class PhraseaEngine implements SearchEngineInterface
     public function getConfigurationPanel()
     {
         if (!$this->configurationPanel) {
-            $this->configurationPanel = new ConfigurationPanel($this, $this->app['configuration']);
+            $this->configurationPanel = new ConfigurationPanel($this, $this->app['configuration.store']);
         }
 
         return $this->configurationPanel;
@@ -556,7 +556,7 @@ class PhraseaEngine implements SearchEngineInterface
                     , $sbas_id
                     , $this->colls[$sbas_id]
                     , $this->arrayq[$sbas_id]
-                    , $this->app['configuration']['main']['key']
+                    , $this->app['conf']->get(['main', 'key'])
                     , $this->app['session']->get('usr_id')
                     , false
                     , $this->options->getSearchType() == SearchEngineOptions::RECORD_GROUPING ? PHRASEA_MULTIDOC_REGONLY : PHRASEA_MULTIDOC_DOCONLY

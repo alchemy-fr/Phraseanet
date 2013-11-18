@@ -40,7 +40,7 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
         $params = [
             ':ses_id' => self::$DI['app']['session']->get('session_id')
             , ':usr_id' => self::$DI['app']['authentication']->getUser()->get_id()
-            , ':site'   => self::$DI['app']['configuration']['main']['key']
+            , ':site'   => self::$DI['app']['conf']->get(['main', 'key'])
         ];
 
         $stmt = $this->databox->get_connection()->prepare($sql);
@@ -59,7 +59,7 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
         $params = [
             ':ses_id' => $ses_id
             , ':usr_id' => $usr_id
-            , ':site'   => self::$DI['app']['configuration']['main']['key']
+            , ':site'   => self::$DI['app']['conf']->get(['main', 'key'])
         ];
 
         $stmt = $this->databox->get_connection()->prepare($sql);

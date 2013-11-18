@@ -199,13 +199,11 @@ class API_V1_result
 
         $this->app['dispatcher']->dispatch(PhraseaEvents::API_RESULT, new ApiResultEvent());
 
-        $conf = $this->app['configuration'];
+        $conf = $this->app['configuration.store'];
 
         if (isset($conf['main']['api-timers']) && true === $conf['main']['api-timers']) {
             $ret['timers'] = $this->app['api.timers']->toArray();
         }
-
-        $return_value = false;
 
         switch ($this->response_type) {
             case self::FORMAT_JSON:

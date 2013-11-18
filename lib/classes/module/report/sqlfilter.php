@@ -64,7 +64,7 @@ class module_report_sqlfilter
     {
         $finalfilter = '';
 
-        $params = [':log_site' => $this->app['configuration']['main']['key']];
+        $params = [':log_site' => $this->app['conf']->get(['main', 'key'])];
 
         if ($this->filter['date']) {
             $finalfilter .= $this->filter['date']['sql'] . ' AND ';
@@ -88,7 +88,7 @@ class module_report_sqlfilter
         $params = [];
 
         $sql = 'log.site = :log_site_gv_filter';
-        $params[':log_site_gv_filter'] = $this->app['configuration']['main']['key'];
+        $params[':log_site_gv_filter'] = $this->app['conf']->get(['main', 'key']);
 
         return ['sql' => $sql, 'params' => $params];
     }

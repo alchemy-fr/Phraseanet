@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
+use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Silex\Application;
 use Symfony\Component\Process\ExecutableFinder;
 use XPDF\XPDFServiceProvider;
@@ -32,7 +33,9 @@ class BorderManagerServiceProvidertest extends ServiceProviderTestCase
             ]
         ]);
         $app->register(new BorderManagerServiceProvider());
-        $app['configuration'] = ['border-manager' => ['enabled' => false]];
+        $app['root.path'] = __DIR__ . '/../../../../../..';
+        $app->register(new ConfigurationServiceProvider());
+        $app['conf']->set(['border-manager', 'enabled'], false);
 
         $this->assertInstanceOf('Alchemy\Phrasea\Border\Manager', $app['border-manager']);
         $this->assertNull($app['border-manager']->getPdfToText());
@@ -54,7 +57,9 @@ class BorderManagerServiceProvidertest extends ServiceProviderTestCase
             ]
         ]);
         $app->register(new BorderManagerServiceProvider());
-        $app['configuration'] = ['border-manager' => ['enabled' => false]];
+        $app['root.path'] = __DIR__ . '/../../../../../..';
+        $app->register(new ConfigurationServiceProvider());
+        $app['conf']->set(['border-manager', 'enabled'], false);
 
         $this->assertInstanceOf('Alchemy\Phrasea\Border\Manager', $app['border-manager']);
         $this->assertInstanceOf('XPDF\PdfToText', $app['border-manager']->getPdfToText());
