@@ -6,7 +6,7 @@
         "bin-dir" : "bin/"
     },
     "require": {
-        "php"                              : ">=5.3.3",
+        "php"                              : ">=5.4",
         "alchemy/oauth2php"                : "1.0.0",
         "alchemy/phlickr"                  : "0.2.7",
         "alchemy/task-manager"             : "~1.0",

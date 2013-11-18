@@ -45,7 +45,6 @@ before_script:
   - echo "extension=imagick.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
 
 php:
-  - 5.3
   - 5.4
   - 5.5
 
