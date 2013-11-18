@@ -47,6 +47,14 @@ class patch_390alpha3a implements patchInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrineMigrations()
+    {
+        return ['user-query'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $appbox, Application $app)
     {
         $sql = 'DELETE FROM UserQueries';
@@ -81,5 +89,7 @@ class patch_390alpha3a implements patchInterface
 
         $em->flush();
         $em->clear();
+
+        return true;
     }
 }

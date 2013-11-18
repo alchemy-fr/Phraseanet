@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Alchemy\Phrasea\Model\Entities\FeedToken;
+use Doctrine\ORM\Query\ResultSetMapping;
 
 class patch_390alpha7a implements patchInterface
 {
@@ -52,8 +53,20 @@ class patch_390alpha7a implements patchInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrineMigrations()
+    {
+        return ['feed'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $appbox, Application $app)
     {
+        if (false === $this->hasFeedBackup($app)) {
+            return false;
+        }
+
         $sql = 'DELETE FROM Feeds';
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute();
@@ -85,22 +98,6 @@ class patch_390alpha7a implements patchInterface
         $stmt->closeCursor();
 
         $conn = $app['phraseanet.appbox']->get_connection();
-
-        $sql = 'SHOW TABLE STATUS;';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        $found = false;
-        foreach ($rs as $row) {
-            if ('feeds_backup' === $row['Name']) {
-                $found = true;
-                break;
-            }
-        }
-        if (!$found) {
-            return;
-        }
 
         $sql = 'SELECT id, title, subtitle, public, created_on, updated_on, base_id FROM feeds_backup;';
         $stmt = $conn->prepare($sql);
@@ -217,5 +214,29 @@ class patch_390alpha7a implements patchInterface
 
         $em->flush();
         $em->clear();
+
+        return true;
+    }
+
+    /**
+     * Checks whether `feeds_backup` tables exists.
+     *
+     * @param Application $app
+     *
+     * @return boolean True if `feeds_backup` table exists.
+     */
+    private function hasFeedBackup(Application $app)
+    {
+        $rsm = (new ResultSetMapping())->addScalarResult('Name', 'Name');
+        $backup = false;
+
+        foreach ($app['EM']->createNativeQuery('SHOW TABLE STATUS', $rsm)->getResult() as $row) {
+            if ('feeds_backup' === $row['Name']) {
+                $backup = true;
+                break;
+            }
+        }
+
+        return $backup;
     }
 }

@@ -60,87 +60,87 @@ class PropertyAccessTest extends \PHPUnit_Framework_TestCase
 
     public function provideMergeData()
     {
-        $conf = array(
-            'key1' => array('subkey1' => 'value1'),
-        );
+        $conf = [
+            'key1' => ['subkey1' => 'value1'],
+        ];
 
-        return array(
-            array($conf, 'key1', array('subkey2' => 'valuetest'), array('subkey1' => 'value1', 'subkey2' => 'valuetest'), array('key1' => array('subkey1' => 'value1', 'subkey2' => 'valuetest'))),
-            array($conf, 'key1', array('subkey1' => 'valuetest'), array('subkey1' => 'valuetest'), array('key1' => array('subkey1' => 'valuetest'))),
-            array($conf, 'key2', array('subkey1' => 'valuetest'), array('subkey1' => 'valuetest'), array('key1' => array('subkey1' => 'value1'), 'key2' => array('subkey1' => 'valuetest'))),
-            array($conf, array('key1', 'subkey2'), array('subkey3' => 'valuetest'), array('subkey3' => 'valuetest'), array('key1' => array('subkey1' => 'value1', 'subkey2' => array('subkey3' => 'valuetest')))),
-        );
+        return [
+            [$conf, 'key1', ['subkey2' => 'valuetest'], ['subkey1' => 'value1', 'subkey2' => 'valuetest'], ['key1' => ['subkey1' => 'value1', 'subkey2' => 'valuetest']]],
+            [$conf, 'key1', ['subkey1' => 'valuetest'], ['subkey1' => 'valuetest'], ['key1' => ['subkey1' => 'valuetest']]],
+            [$conf, 'key2', ['subkey1' => 'valuetest'], ['subkey1' => 'valuetest'], ['key1' => ['subkey1' => 'value1'], 'key2' => ['subkey1' => 'valuetest']]],
+            [$conf, ['key1', 'subkey2'], ['subkey3' => 'valuetest'], ['subkey3' => 'valuetest'], ['key1' => ['subkey1' => 'value1', 'subkey2' => ['subkey3' => 'valuetest']]]],
+        ];
     }
 
     public function provideGetData()
     {
-        $conf = array(
-            'key1' => array('subkey1' => 'value1'),
-            'key2' => array('subkey1' => 'value1', 'subkey2' => array('subkey3' => 'value3')),
-        );
+        $conf = [
+            'key1' => ['subkey1' => 'value1'],
+            'key2' => ['subkey1' => 'value1', 'subkey2' => ['subkey3' => 'value3']],
+        ];
 
-        return array(
-            array($conf, 'key1', array('subkey1' => 'value1'), null),
-            array($conf, 'key1', array('subkey1' => 'value1'), 'ladada'),
-            array($conf, 'key2', array('subkey1' => 'value1', 'subkey2' => array('subkey3' => 'value3')), null),
-            array($conf, 'key2', array('subkey1' => 'value1', 'subkey2' => array('subkey3' => 'value3')), 'ladada'),
-            array($conf, array('key2', 'subkey1'), 'value1', null),
-            array($conf, array('key2', 'subkey1'), 'value1', 'ladada'),
-            array($conf, array('key2', 'subkey2', 'subkey3'), 'value3', null),
-            array($conf, array('key2', 'subkey2', 'subkey3'), 'value3', 'ladada'),
-            array($conf, array('key2', 'subkey2', 'subkey4'), null, null),
-            array($conf, array('key2', 'subkey2', 'subkey4'), 'ladada', 'ladada'),
-            array($conf, array('key', 'subkey', 'subkey'), null, null),
-            array($conf, array('key', 'subkey', 'subkey'), 'ladada', 'ladada'),
-            array($conf, 'key3', null, null),
-            array($conf, 'key3', 'ladada', 'ladada'),
-        );
+        return [
+            [$conf, 'key1', ['subkey1' => 'value1'], null],
+            [$conf, 'key1', ['subkey1' => 'value1'], 'ladada'],
+            [$conf, 'key2', ['subkey1' => 'value1', 'subkey2' => ['subkey3' => 'value3']], null],
+            [$conf, 'key2', ['subkey1' => 'value1', 'subkey2' => ['subkey3' => 'value3']], 'ladada'],
+            [$conf, ['key2', 'subkey1'], 'value1', null],
+            [$conf, ['key2', 'subkey1'], 'value1', 'ladada'],
+            [$conf, ['key2', 'subkey2', 'subkey3'], 'value3', null],
+            [$conf, ['key2', 'subkey2', 'subkey3'], 'value3', 'ladada'],
+            [$conf, ['key2', 'subkey2', 'subkey4'], null, null],
+            [$conf, ['key2', 'subkey2', 'subkey4'], 'ladada', 'ladada'],
+            [$conf, ['key', 'subkey', 'subkey'], null, null],
+            [$conf, ['key', 'subkey', 'subkey'], 'ladada', 'ladada'],
+            [$conf, 'key3', null, null],
+            [$conf, 'key3', 'ladada', 'ladada'],
+        ];
     }
 
     public function provideHasData()
     {
-        $conf = array(
-            'key1' => array('subkey1' => 'value1'),
-            'key2' => array('subkey1' => 'value1', 'subkey2' => array('subkey3' => 'value3')),
-        );
+        $conf = [
+            'key1' => ['subkey1' => 'value1'],
+            'key2' => ['subkey1' => 'value1', 'subkey2' => ['subkey3' => 'value3']],
+        ];
 
-        return array(
-            array($conf, 'key1', true),
-            array($conf, 'key2', true),
-            array($conf, array('key2', 'subkey1'), true),
-            array($conf, array('key2', 'subkey2', 'subkey3'), true),
-            array($conf, array('key2', 'subkey2', 'subkey4'), false),
-            array($conf, array('key', 'subkey', 'subkey'), false),
-            array($conf, 'key3', false),
-        );
+        return [
+            [$conf, 'key1', true],
+            [$conf, 'key2', true],
+            [$conf, ['key2', 'subkey1'], true],
+            [$conf, ['key2', 'subkey2', 'subkey3'], true],
+            [$conf, ['key2', 'subkey2', 'subkey4'], false],
+            [$conf, ['key', 'subkey', 'subkey'], false],
+            [$conf, 'key3', false],
+        ];
     }
 
     public function provideSetData()
     {
-        $conf = array(
-            'key1' => array('subkey1' => 'value1'),
-        );
+        $conf = [
+            'key1' => ['subkey1' => 'value1'],
+        ];
 
-        return array(
-            array($conf, 'key1', 'valuetest', array('key1' => 'valuetest')),
-            array($conf, 'key2', 'valuetest', array('key1' => array('subkey1' => 'value1'), 'key2' => 'valuetest')),
-            array($conf, array('key2', 'subkey1'), 'valuetest', array('key1' => array('subkey1' => 'value1'), 'key2' => array('subkey1' => 'valuetest'))),
-            array($conf, array('key1', 'subkey2'), 'valuetest', array('key1' => array('subkey1' => 'value1', 'subkey2' => 'valuetest'))),
-        );
+        return [
+            [$conf, 'key1', 'valuetest', ['key1' => 'valuetest']],
+            [$conf, 'key2', 'valuetest', ['key1' => ['subkey1' => 'value1'], 'key2' => 'valuetest']],
+            [$conf, ['key2', 'subkey1'], 'valuetest', ['key1' => ['subkey1' => 'value1'], 'key2' => ['subkey1' => 'valuetest']]],
+            [$conf, ['key1', 'subkey2'], 'valuetest', ['key1' => ['subkey1' => 'value1', 'subkey2' => 'valuetest']]],
+        ];
     }
 
     public function provideRemoveData()
     {
-        $conf = array(
-            'key1' => array('subkey1' => 'value1'),
-        );
+        $conf = [
+            'key1' => ['subkey1' => 'value1'],
+        ];
 
-        return array(
-            array($conf, 'key1', array('subkey1' => 'value1'), array()),
-            array($conf, array('key1', 'subkey1'), 'value1', array('key1' => array())),
-            array($conf, array('key1', 'subkey2'), null, $conf),
-            array($conf, 'key2', null, $conf),
-        );
+        return [
+            [$conf, 'key1', ['subkey1' => 'value1'], []],
+            [$conf, ['key1', 'subkey1'], 'value1', ['key1' => []]],
+            [$conf, ['key1', 'subkey2'], null, $conf],
+            [$conf, 'key2', null, $conf],
+        ];
     }
 }
 

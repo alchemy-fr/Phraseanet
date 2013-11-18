@@ -12,46 +12,41 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Task;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class patch_370alpha8a implements patchInterface
 {
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     private $release = '3.7.0-alpha.8';
 
-    /**
-     *
-     * @var Array
-     */
+    /** @var array */
     private $concern = [base::APPLICATION_BOX];
 
     /**
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function get_release()
     {
         return $this->release;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function require_all_upgrades()
     {
         return false;
     }
 
     /**
-     *
-     * @return Array
+     * {@inheritdoc}
      */
     public function concern()
     {
         return $this->concern;
+    }
+
+    public function getDoctrineMigrations()
+    {
+        return ['task'];
     }
 
     /**
@@ -67,7 +62,9 @@ class patch_370alpha8a implements patchInterface
     {
         $ttasks = [];
         $conn = $appbox->get_connection();
-        $sql = 'SELECT task_id, active, name, class, settings FROM task2 WHERE class=\'task_period_workflow01\'';
+        $sql = 'SELECT task_id, active, name, class, settings
+                FROM task2
+                WHERE class=\'task_period_workflow01\'';
         if (($stmt = $conn->prepare($sql)) !== FALSE) {
             $stmt->execute();
             $ttasks = $stmt->fetchAll();

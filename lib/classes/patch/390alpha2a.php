@@ -49,6 +49,14 @@ class patch_390alpha2a implements patchInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrineMigrations()
+    {
+        return ['user'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $appbox, Application $app)
     {
         $sql = 'DELETE FROM Users';
@@ -65,6 +73,8 @@ class patch_390alpha2a implements patchInterface
         $this->updateModels($em, $conn);
 
         $em->getEventManager()->addEventSubscriber(new TimestampableListener());
+
+        return true;
     }
 
     /**
@@ -73,10 +83,10 @@ class patch_390alpha2a implements patchInterface
     private function updateUsers(EntityManager $em, $conn)
     {
         $sql = 'SELECT activite, adresse, create_db, canchgftpprofil, canchgprofil, ville,
-            societe, pays, usr_mail, fax, usr_prenom, geonameid, invite, fonction, last_conn, lastModel,
-            usr_nom, ldap_created, locale, usr_login, mail_locked, mail_notifications, nonce, usr_password, push_list,
-            request_notifications, salted_password, usr_sexe, tel, timezone, cpostal, usr_creationdate, usr_modificationdate
-            FROM usr WHERE model_of = 0';
+                societe, pays, usr_mail, fax, usr_prenom, geonameid, invite, fonction, last_conn, lastModel,
+                usr_nom, ldap_created, locale, usr_login, mail_locked, mail_notifications, nonce, usr_password, push_list,
+                request_notifications, salted_password, usr_sexe, tel, timezone, cpostal, usr_creationdate, usr_modificationdate
+                FROM usr WHERE model_of = 0';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);

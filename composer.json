@@ -12,7 +12,7 @@
         "alchemy/task-manager"             : "~1.0",
         "dailymotion/sdk"                  : "~1.5",
         "data-uri/data-uri"                : "~0.1.0",
-        "doctrine/orm"                     : "~2.3.0",
+        "doctrine/orm"                     : "~2.4.0",
         "facebook/php-sdk"                 : "~3.0",
         "gedmo/doctrine-extensions"        : "~2.3.0",
         "alchemy/google-plus-api-client"   : "~0.6.2",
@@ -42,7 +42,8 @@
         "twig/twig"                        : "~1.14, >=1.14.2",
         "twig/extensions"                  : "~1.0",
         "vierbergenlars/php-semver"        : "~2.1",
-        "zend/gdata"                       : "~1.12.1"
+        "zend/gdata"                       : "~1.12.1",
+        "doctrine/migrations"              : "1.0.x-dev@dev"
     },
     "require-dev": {
         "doctrine/data-fixtures"           : "1.0.x@dev",

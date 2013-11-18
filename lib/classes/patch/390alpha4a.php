@@ -47,6 +47,14 @@ class patch_390alpha4a implements patchInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrineMigrations()
+    {
+        return ['user-setting'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $appbox, Application $app)
     {
         $sql = 'DELETE FROM UserSettings';
@@ -86,5 +94,7 @@ class patch_390alpha4a implements patchInterface
 
         $em->flush();
         $em->clear();
+
+        return true;
     }
 }

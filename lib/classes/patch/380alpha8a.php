@@ -46,18 +46,28 @@ class patch_380alpha8a implements patchInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrineMigrations()
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $appbox, Application $app)
     {
         $conn = $appbox->get_connection();
 
-        $sql = 'SELECT settings FROM task2 WHERE class="task_period_cindexer" LIMIT 1';
+        $sql = 'SELECT settings
+                FROM task2
+                WHERE class="task_period_cindexer" LIMIT 1';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         if (!$row) {
-            return;
+            return false;
         }
 
         $sxe = simplexml_load_string($row['settings']);

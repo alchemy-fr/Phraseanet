@@ -35,7 +35,7 @@ class patch_390alpha1b implements patchInterface
      */
     public function require_all_upgrades()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -44,6 +44,14 @@ class patch_390alpha1b implements patchInterface
     public function concern()
     {
         return $this->concern;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return ['order'];
     }
 
     /**
@@ -74,7 +82,9 @@ class patch_390alpha1b implements patchInterface
 
         foreach ($rs as $row) {
 
-            $sql = 'SELECT count(id) as todo FROM order_elements WHERE deny = NULL AND order_id = :id';
+            $sql = 'SELECT count(id) as todo FROM order_elements
+                    WHERE deny = NULL
+                        AND order_id = :id';
             $stmt = $conn->prepare($sql);
             $stmt->execute([':id' => $row['id']]);
             $todo = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -120,5 +130,7 @@ class patch_390alpha1b implements patchInterface
         $em->clear();
 
         $em->getEventManager()->addEventSubscriber(new TimestampableListener());
+
+        return true;
     }
 }

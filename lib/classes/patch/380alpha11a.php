@@ -48,6 +48,14 @@ class patch_380alpha11a implements patchInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrineMigrations()
+    {
+        return ['session'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $appbox, Application $app)
     {
         try {
@@ -60,7 +68,7 @@ class patch_380alpha11a implements patchInterface
             $stmt->closeCursor();
         } catch (\PDOException $e) {
             // this may fail on oldest versions
-            return;
+            return false;
         }
 
         foreach ($rs as $row) {
@@ -112,5 +120,7 @@ class patch_380alpha11a implements patchInterface
         }
 
         $app['EM']->flush();
+
+        return true;
     }
 }

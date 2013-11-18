@@ -47,10 +47,21 @@ class patch_380alpha4a implements patchInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrineMigrations()
+    {
+        return ['auth-failure'];
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $appbox, Application $app)
     {
         $conn = $app['phraseanet.appbox']->get_connection();
-        $sql = 'SELECT date, login, ip, locked FROM badlog ORDER BY id ASC';
+        $sql = 'SELECT date, login, ip, locked
+                FROM badlog
+                ORDER BY id ASC';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -78,5 +89,7 @@ class patch_380alpha4a implements patchInterface
 
         $app['EM']->flush();
         $app['EM']->clear();
+
+        return true;
     }
 }

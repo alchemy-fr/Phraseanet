@@ -11,54 +11,56 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
+
 class patch_360alpha2a implements patchInterface
 {
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     private $release = '3.6.0-alpha.2';
 
-    /**
-     *
-     * @var Array
-     */
+    /** @var array */
     private $concern = [base::APPLICATION_BOX];
 
     /**
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function get_release()
     {
         return $this->release;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function require_all_upgrades()
     {
         return true;
     }
 
     /**
-     *
-     * @return Array
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function concern()
     {
         return $this->concern;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $appbox, Application $app)
     {
 
         $sql = 'UPDATE usr SET usr_mail = NULL
-                        WHERE usr_mail IS NOT NULL AND usr_login LIKE "(#deleted%"';
-
+                WHERE usr_mail IS NOT NULL
+                  AND usr_login LIKE "(#deleted%"';
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();

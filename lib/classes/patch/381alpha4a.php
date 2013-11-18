@@ -30,6 +30,14 @@ class patch_381alpha4a implements patchInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrineMigrations()
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function require_all_upgrades()
     {
         return false;
@@ -50,14 +58,17 @@ class patch_381alpha4a implements patchInterface
     {
         $sql = "SELECT usr_id, prop, value FROM usr_settings
                 WHERE prop = 'editing_top_box'
-                  OR prop = 'editing_right_box' OR prop = 'editing_left_box'";
+                  OR prop = 'editing_right_box'
+                  OR prop = 'editing_left_box'";
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $sql = 'UPDATE usr_settings SET value = :value WHERE usr_id = :usr_id AND prop = :prop';
+        $sql = 'UPDATE usr_settings SET value = :value
+                WHERE usr_id = :usr_id
+                    AND prop = :prop';
         $stmt = $appbox->get_connection()->prepare($sql);
 
         foreach ($rows as $row) {

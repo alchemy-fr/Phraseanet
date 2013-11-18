@@ -47,6 +47,14 @@ class patch_390alpha5a implements patchInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrineMigrations()
+    {
+        return ['user-notif-setting'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $appbox, Application $app)
     {
         $sql = 'DELETE FROM UserNotificationSettings';
@@ -55,7 +63,8 @@ class patch_390alpha5a implements patchInterface
         $stmt->closeCursor();
 
         $conn = $app['phraseanet.appbox']->get_connection();
-        $sql = 'SELECT * FROM usr_settings WHERE prop LIKE "notification_%"';
+        $sql = 'SELECT * FROM usr_settings
+                WHERE prop LIKE "notification_%"';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -82,5 +91,7 @@ class patch_390alpha5a implements patchInterface
 
         $em->flush();
         $em->clear();
+
+        return true;
     }
 }
