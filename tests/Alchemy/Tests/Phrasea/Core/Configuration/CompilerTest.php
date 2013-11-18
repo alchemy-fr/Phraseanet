@@ -15,7 +15,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
         $compiled = $compiler->compile($data);
         $this->assertInternalType("string", $compiled);
-        $this->assertSame(0, strpos($compiled, "<?php\nreturn array("));
+        $this->assertSame(0, strpos($compiled, "<?php\nreturn ["));
         $result = eval('?>'.$compiled);
 
         $this->assertSame($data, $result);
@@ -35,7 +35,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
         $compiled = $compiler->compile($data);
         $this->assertInternalType("string", $compiled);
-        $this->assertSame(0, strpos($compiled, "<?php\nreturn array("));
+        $this->assertSame(0, strpos($compiled, "<?php\nreturn ["));
         $result = eval('?>'.$compiled);
 
         $this->assertSame(['key' => ['key' => 'value'], 'key2' => 'boum'], $result);

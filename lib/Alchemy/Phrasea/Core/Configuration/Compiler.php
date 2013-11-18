@@ -34,7 +34,7 @@ class Compiler
 
     private function doCompile(array $data, $offset = 0)
     {
-        $out = 'array(' . $this->addLine();
+        $out = '[' . $this->addLine();
 
         foreach ($data as $key => $value) {
             if (is_object($value)) {
@@ -50,7 +50,7 @@ class Compiler
             }
         }
 
-        $out .= $this->addIndentation($offset) . ')';
+        $out .= $this->addIndentation($offset) . ']';
 
         return $out;
     }
