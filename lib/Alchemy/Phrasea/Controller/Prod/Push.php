@@ -230,11 +230,11 @@ class Push implements ControllerProviderInterface
                     $receipt = $request->get('recept') ? $app['authentication']->getUser()->getEmail() : '';
 
                     $params = [
-                        'from'       => $app['authentication']->getUser()->get_id()
-                        , 'from_email' => $app['authentication']->getUser()->get_email()
-                        , 'to'         => $user_receiver->get_id()
-                        , 'to_email'   => $user_receiver->get_email()
-                        , 'to_name'    => $user_receiver->get_display_name()
+                        'from'       => $app['authentication']->getUser()->getId()
+                        , 'from_email' => $app['authentication']->getUser()->getEmail()
+                        , 'to'         => $user_receiver->getId()
+                        , 'to_email'   => $user_receiver->getEmail()
+                        , 'to_name'    => $user_receiver->getDisplayName()
                         , 'url'        => $url
                         , 'accuse'     => $receipt
                         , 'message'    => $request->request->get('message')
@@ -263,7 +263,7 @@ class Push implements ControllerProviderInterface
             }
 
             return $app->json($ret);
-        }]->bind('prod_push_send');
+        })->bind('prod_push_send');
 
         $controllers->post('/validate/', function (Application $app) {
             $request = $app['request'];
@@ -345,7 +345,7 @@ class Push implements ControllerProviderInterface
                 }
 
                 if (!$found) {
-                    $participants[$app['authentication']->getUser()->get_id()] = [
+                    $participants[$app['authentication']->getUser()->getId()] = [
                         'see_others' => 1,
                         'usr_id'     => $app['authentication']->getUser()->getId(),
                         'agree'      => 0,
@@ -427,11 +427,11 @@ class Push implements ControllerProviderInterface
                     $receipt = $request->get('recept') ? $app['authentication']->getUser()->getEmail() : '';
 
                     $params = [
-                        'from'       => $app['authentication']->getUser()->get_id(),
-                        'from_email' => $app['authentication']->getUser()->get_email(),
+                        'from'       => $app['authentication']->getUser()->getId(),
+                        'from_email' => $app['authentication']->getUser()->getEmail(),
                         'to'         => $participant_user->get_id(),
-                        'to_email'   => $participant_user->get_email(),
-                        'to_name'    => $participant_user->get_display_name(),
+                        'to_email'   => $participant_user->getEmail(),
+                        'to_name'    => $participant_user->getDisplayName(),
                         'url'        => $url,
                         'accuse'     => $receipt,
                         'message'    => $request->request->get('message'),
@@ -464,7 +464,7 @@ class Push implements ControllerProviderInterface
             }
 
             return $app->json($ret);
-        }]->bind('prod_push_validate');
+        })->bind('prod_push_validate');
 
         $controllers->get('/user/{usr_id}/', function (Application $app, $usr_id) use ($userFormatter) {
             $datas = null;

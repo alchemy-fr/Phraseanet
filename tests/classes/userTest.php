@@ -91,12 +91,10 @@ class userTest extends \PhraseanetTestCase
         $user = $this->get_user();
         $user->setPrefs('images_per_page', 35);
 
-        $user = new \User_Adapter($user->get_id(), self::$DI['app']);
-
-        $this->assertNull($user->getPrefs('lalala'));
-        $this->assertEquals(666, $user->getPrefs('images_size'));
-        $this->assertEquals(35, $user->getPrefs('images_per_page'));
-        $this->assertEquals(\User_Adapter::$def_values['editing_top_box'], $user->getPrefs('editing_top_box'));
+        $this->assertNull($user->getSettingValue('lalala'));
+        $this->assertSame(666, $user->getSettingValue('images_size'));
+        $this->assertSame(42, $user->getSettingValue('images_per_page'));
+        $this->assertSame(User::$defaultUserSettings['editing_top_box'], $user->getSettingValue('editing_top_box'));
 
         if (null === $data) {
             self::$DI['app']['conf']->remove('user-settings');

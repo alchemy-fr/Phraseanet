@@ -532,7 +532,8 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             try {
                 $this->app['phraseanet.appbox']->get_connection()->beginTransaction();
 
-                $user = \User_Adapter::getInstance($usr_id, $this->app);
+                $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
+
                 $this->app['acl']->get($user)->revoke_access_from_bases($delete)
                     ->give_access_to_base($create)
                     ->give_access_to_sbas($create_sbas);

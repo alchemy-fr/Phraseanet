@@ -12,11 +12,11 @@
 namespace Alchemy\Phrasea\ACL;
 
 use Alchemy\Phrasea\Model\Entities\Basket;
-use User_Adapter;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class BasketACL
 {
-    public function hasAccess(Basket $basket, User_Adapter $user)
+    public function hasAccess(Basket $basket, User $user)
     {
         if ($this->isOwner($basket, $user)) {
             return true;
@@ -24,7 +24,7 @@ class BasketACL
 
         if ($basket->getValidation()) {
             foreach ($basket->getValidation()->getParticipants() as $participant) {
-                if ($participant->getUsrId() === $user->get_id()) {
+                if ($participant->getUsrId() === $user->getId()) {
                     return true;
                 }
             }
@@ -33,8 +33,8 @@ class BasketACL
         return false;
     }
 
-    public function isOwner(Basket $basket, User_Adapter $user)
+    public function isOwner(Basket $basket, User $user)
     {
-        return $basket->getUsrId() === $user->get_id();
+        return $basket->getUsrId() === $user->getId();
     }
 }

@@ -147,13 +147,14 @@ class Dashboard implements ControllerProviderInterface
     public function addAdmins(Application $app, Request $request)
     {
         if (count($admins = $request->request->get('admins', [])) > 0) {
-
             if (!in_array($app['authentication']->getUser()->getId(), $admins)) {
                 $admins[] = $app['authentication']->getUser()->getId();
             }
 
             if ($admins > 0) {
-                \User_Adapter::set_sys_admins($app, array_filter($admins));
+                $app['manipulator.user']->promote(array_filter(array_map(function($id) use ($app) {
+                    return $app['manipulator.user']->getRepository()->find($id);
+                }, $admins)));
                 $app['manipulator.acl']->resetAdminRights($app['manipulator.user']->getRepository()->findAdmins());
             }
         }

@@ -320,7 +320,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      *
      * @return Basket
      */
-    protected function insertOneBasket(\User_Adapter $user = null)
+    protected function insertOneBasket(User $user = null)
     {
         $basket = new Basket();
         $basket->setOwner($user ?: self::$DI['user']);
@@ -616,7 +616,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      *
      * @return BasketElement
      */
-    protected function insertOneBasketElement(\User_Adapter $user = null, \record_adapter $record = null)
+    protected function insertOneBasketElement(User $user = null, \record_adapter $record = null)
     {
         $element = new BasketElement();
         $element->setRecord($record ?: self::$DI['record_1']);

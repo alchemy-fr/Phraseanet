@@ -860,7 +860,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         try {
             $sql = "UPDATE usr SET create_db='0' WHERE create_db='1' AND usr_id != :usr_id";
             $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute([':usr_id' => $app['authentication']->getUser()->get_id()]);
+            $stmt->execute([':usr_id' => $app['authentication']->getUser()->getId()]);
             $stmt->closeCursor();
 
             $sql = "UPDATE usr SET create_db='1' WHERE usr_id IN (" . implode(',', $admins) . ")";

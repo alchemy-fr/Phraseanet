@@ -267,7 +267,7 @@ class Root implements ControllerProviderInterface
             'mod_pres'          => $app['authentication']->getUser()->getSettingValue('client_view', '' ),
             'start_page'        => $app['authentication']->getUser()->getSettingValue('start_page'),
             'start_page_query'  => $app['authentication']->getUser()->getSettingValue('start_page_query', '')
-        )));
+        ]));
     }
 
     /**
@@ -480,7 +480,7 @@ class Root implements ControllerProviderInterface
         return $app['twig']->render('client/home_inter_pub_basket.html.twig', [
             'feeds'         => Aggregate::createFromUser($app, $app['authentication']->getUser()),
             'image_size'    => (int) $app['authentication']->getUser()->getSettingValue('images_size')
-        ));
+        ]);
     }
 
      /**

@@ -100,7 +100,7 @@ interface User_Interface
 
     public function set_notification_preference(Application $app, $notification_id, $value);
 
-    public function get_display_name();
+    public function getDisplayName();
 
     public function get_nonce();
 
