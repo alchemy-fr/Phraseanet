@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Core\Configuration\Configuration;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Configuration\Compiler;
 use Silex\Application as SilexApplication;
 use Silex\ServiceProviderInterface;
@@ -31,7 +32,7 @@ class ConfigurationServiceProvider implements ServiceProviderInterface
         $app['phraseanet.configuration.config-path'] = $app['root.path'] . '/config/configuration.yml';
         $app['phraseanet.configuration.config-compiled-path'] = $app['root.path'] . '/tmp/configuration-compiled.php';
 
-        $app['configuration'] = $app->share(function (SilexApplication $app) {
+        $app['configuration.store'] = $app->share(function (SilexApplication $app) {
             return new Configuration(
                 $app['phraseanet.configuration.yaml-parser'],
                 $app['phraseanet.configuration.compiler'],
@@ -41,9 +42,13 @@ class ConfigurationServiceProvider implements ServiceProviderInterface
             );
         });
 
+        $app['conf'] = $app->share(function (SilexApplication $app) {
+            return new PropertyAccess($app['configuration.store']);
+        });
+
         // Maintaining BC until 3.10
         $app['phraseanet.configuration'] = $app->share(function (SilexApplication $app) {
-            return $app['configuration'];
+            return $app['configuration.store'];
         });
     }
 
