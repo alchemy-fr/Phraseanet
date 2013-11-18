@@ -49,7 +49,7 @@ class patch_380alpha4a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return array('auth-failure');
+        return ['auth-failure'];
     }
 
 

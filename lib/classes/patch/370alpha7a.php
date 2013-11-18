@@ -21,7 +21,7 @@ class patch_370alpha7a implements patchInterface
     private $release = '3.7.0-alpha.7';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -52,7 +52,7 @@ class patch_370alpha7a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return array('lazaret');
+        return ['lazaret'];
     }
 
     /**

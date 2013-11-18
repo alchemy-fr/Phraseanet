@@ -49,7 +49,7 @@ class patch_390alpha4a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return array('user-setting');
+        return ['user-setting'];
     }
 
     /**

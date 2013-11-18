@@ -17,7 +17,7 @@ class patch_370alpha4a implements patchInterface
     private $release = '3.7.0-alpha.4';
 
     /** @var array */
-    private $concern = array(base::DATA_BOX);
+    private $concern = [base::DATA_BOX];
 
     /**
      * {@inheritdoc}
@@ -48,7 +48,7 @@ class patch_370alpha4a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -62,7 +62,7 @@ class patch_370alpha4a implements patchInterface
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $update = array();
+        $update = [];
 
         $tagDirname = new \Alchemy\Phrasea\Metadata\Tag\TfDirname();
         $tagBasename = new \Alchemy\Phrasea\Metadata\Tag\TfBasename();
@@ -70,10 +70,10 @@ class patch_370alpha4a implements patchInterface
         foreach ($rs as $row) {
 
             if (strpos(strtolower($row['src']), 'tf-parentdir') !== false) {
-                $update[] = array('id'  => $row['id'], 'src' => $tagDirname->getTagname());
+                $update[] = ['id'  => $row['id'], 'src' => $tagDirname->getTagname()];
             }
             if (strpos(strtolower($row['src']), 'tf-filename') !== false) {
-                $update[] = array('id'  => $row['id'], 'src' => $tagBasename->getTagname());
+                $update[] = ['id'  => $row['id'], 'src' => $tagBasename->getTagname()];
             }
         }
 
@@ -81,7 +81,7 @@ class patch_370alpha4a implements patchInterface
         $stmt = $databox->get_connection()->prepare($sql);
 
         foreach ($update as $row) {
-            $stmt->execute(array(':src' => $row['src'], ':id'  => $row['id']));
+            $stmt->execute([':src' => $row['src'], ':id'  => $row['id']]);
         }
 
         $stmt->closeCursor();

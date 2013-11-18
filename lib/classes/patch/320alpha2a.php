@@ -17,7 +17,7 @@ class patch_320alpha2a implements patchInterface
     private $release = '3.2.0-alpha.2';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -40,7 +40,7 @@ class patch_320alpha2a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class patch_320alpha2a implements patchInterface
         $stmt = $appbox->get_connection()->prepare($sql);
         foreach ($rs as $row) {
             $nonce = random::generatePassword(16);
-            $params = array(':usr_id' => $row['usr_id'], ':nonce'  => $nonce);
+            $params = [':usr_id' => $row['usr_id'], ':nonce'  => $nonce];
             $stmt->execute($params);
         }
         $stmt->closeCursor();
@@ -83,10 +83,10 @@ class patch_320alpha2a implements patchInterface
             if (strpos($row['class'], 'task_period_') !== false)
                 continue;
 
-            $params = array(
+            $params = [
                 ':task_id' => $row['task_id']
                 , ':class'   => str_replace('task_', 'task_period_', $row['class'])
-            );
+            ];
 
             $stmt->execute($params);
         }

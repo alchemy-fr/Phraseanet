@@ -18,7 +18,7 @@ class patch_360alpha1b implements patchInterface
     private $release = '3.6.0-alpha.1';
 
     /** @var array */
-    private $concern = array(base::DATA_BOX);
+    private $concern = [base::DATA_BOX];
 
     /**
      * {@inheritdoc}
@@ -41,7 +41,7 @@ class patch_360alpha1b implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return array();
+        return [];
     }
 
     /**

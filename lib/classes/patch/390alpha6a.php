@@ -51,7 +51,7 @@ class patch_390alpha6a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return array('ftp-export');
+        return ['ftp-export'];
     }
 
     /**

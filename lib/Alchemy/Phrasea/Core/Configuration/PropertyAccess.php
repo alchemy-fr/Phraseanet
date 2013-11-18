@@ -145,7 +145,7 @@ class PropertyAccess
             $conf[$prop] = $value;
         } else {
             if (! array_key_exists($prop, $conf)) {
-                $conf[$prop] = array();
+                $conf[$prop] = [];
             }
             $this->doSet($conf[$prop], $props, $value);
         }
@@ -165,7 +165,7 @@ class PropertyAccess
             return $conf[$prop] = $value;
         }
         if (!array_key_exists($prop, $conf)) {
-            $conf[$prop] = array();
+            $conf[$prop] = [];
         }
 
         return $this->doMerge($conf[$prop], $props, $value);
@@ -193,7 +193,7 @@ class PropertyAccess
     private function arrayize($value)
     {
         if (!is_array($value)) {
-            return array($value);
+            return [$value];
         }
 
         return $value;

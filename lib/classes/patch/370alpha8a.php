@@ -18,7 +18,7 @@ class patch_370alpha8a implements patchInterface
     private $release = '3.7.0-alpha.8';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -46,7 +46,7 @@ class patch_370alpha8a implements patchInterface
 
     public function getDoctrineMigrations()
     {
-        return array('task');
+        return ['task'];
     }
 
     /**
@@ -60,7 +60,7 @@ class patch_370alpha8a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $ttasks = array();
+        $ttasks = [];
         $conn = $appbox->get_connection();
         $sql = 'SELECT task_id, active, name, class, settings FROM task2 WHERE class=\'task_period_workflow01\'';
         if (($stmt = $conn->prepare($sql)) !== FALSE) {
@@ -69,11 +69,11 @@ class patch_370alpha8a implements patchInterface
             $stmt->closeCursor();
         }
 
-        $tdom = array();     // key = period
-        $taskstodel = array();
+        $tdom = [];     // key = period
+        $taskstodel = [];
         foreach ($ttasks as $task) {
             $active = true;
-            $warning = array();
+            $warning = [];
 
             /*
              * migrating task 'workflow01'
@@ -90,7 +90,7 @@ class patch_370alpha8a implements patchInterface
                     $ts->appendChild($dom->createElement('period'))->appendChild($dom->createTextNode(60 * $period));
                     $ts->appendChild($dom->createElement('logsql'))->appendChild($dom->createTextNode('1'));
                     $tasks = $ts->appendChild($dom->createElement('tasks'));
-                    $tdom['_' . $period] = array('dom'   => $dom, 'tasks' => $tasks);
+                    $tdom['_' . $period] = ['dom'   => $dom, 'tasks' => $tasks];
                 } else {
                     $dom = &$tdom['_' . $period]['dom'];
                     $tasks = &$tdom['_' . $period]['tasks'];

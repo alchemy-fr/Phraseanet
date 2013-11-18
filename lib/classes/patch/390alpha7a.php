@@ -55,7 +55,7 @@ class patch_390alpha7a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return array('feed', 'aggregate-token');
+        return ['feed', 'aggregate-token'];
     }
 
     /**

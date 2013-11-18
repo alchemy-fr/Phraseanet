@@ -49,7 +49,7 @@ class patch_390alpha5a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return array('user-notif-setting');
+        return ['user-notif-setting'];
     }
 
     /**

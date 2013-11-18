@@ -40,7 +40,7 @@ class patch_381alpha2a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return array();
+        return [];
     }
 
     /**

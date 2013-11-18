@@ -49,7 +49,7 @@ class patch_390alpha1a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return array('ftp-credential');
+        return ['ftp-credential'];
     }
 
     /**

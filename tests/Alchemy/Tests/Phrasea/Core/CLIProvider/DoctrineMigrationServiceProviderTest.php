@@ -6,12 +6,12 @@ class DoctrineMigrationServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {
-        return array(
-            array(
+        return [
+            [
                 'Alchemy\Phrasea\Core\CLIProvider\DoctrineMigrationServiceProvider',
                 'doctrine-migration.configuration',
                 'Doctrine\DBAL\Migrations\Configuration\YamlConfiguration'
-            )
-        );
+            ]
+        ];
     }
 }

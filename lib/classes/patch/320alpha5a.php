@@ -17,7 +17,7 @@ class patch_320alpha5a implements patchInterface
     private $release = '3.2.0-alpha.5';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -40,7 +40,7 @@ class patch_320alpha5a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -67,10 +67,10 @@ class patch_320alpha5a implements patchInterface
         $stmt = $appbox->get_connection()->prepare($sql);
 
         foreach ($rs as $row) {
-            $params = array(
+            $params = [
                 ':base_id' => $row['base_id'],
                 ':usr_id'  => $row['usr_id']
-            );
+            ];
             $stmt->execute($params);
         }
 

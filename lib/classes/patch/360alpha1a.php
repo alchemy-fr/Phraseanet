@@ -20,7 +20,7 @@ class patch_360alpha1a implements patchInterface
     private $release = '3.6.0-alpha.1';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -51,7 +51,7 @@ class patch_360alpha1a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return array('workzone', 'session');
+        return ['workzone', 'session'];
     }
 
     /**
@@ -59,7 +59,7 @@ class patch_360alpha1a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $tables = array('StoryWZ', 'ValidationDatas', 'ValidationParticipants', 'ValidationSessions', 'BasketElements', 'Baskets');
+        $tables = ['StoryWZ', 'ValidationDatas', 'ValidationParticipants', 'ValidationSessions', 'BasketElements', 'Baskets'];
 
         foreach ($tables as $table) {
             $sql = 'DELETE FROM ' . $table;
@@ -68,7 +68,7 @@ class patch_360alpha1a implements patchInterface
             $stmt->closeCursor();
         }
 
-        $stories = array();
+        $stories = [];
 
         $sql = 'SELECT sbas_id, rid as record_id, usr_id
                 FROM ssel
@@ -79,7 +79,7 @@ class patch_360alpha1a implements patchInterface
         $rs_s = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $current = array();
+        $current = [];
 
         foreach ($rs_s as $row_story) {
             $serial = $row_story['sbas_id'] . '_' . $row_story['usr_id'] . '_' . $row_story['record_id'];
@@ -98,11 +98,11 @@ class patch_360alpha1a implements patchInterface
         $stmt = $appbox->get_connection()->prepare($sql);
 
         foreach ($stories as $row) {
-            $params = array(
+            $params = [
                 ':usr_id'    => $row['usr_id'],
                 ':sbas_id'   => $row['sbas_id'],
                 ':record_id' => $row['record_id']
-            );
+            ];
             $stmt->execute($params);
         }
 
@@ -137,7 +137,7 @@ class patch_360alpha1a implements patchInterface
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $sselcont_ids = array();
+        $sselcont_ids = [];
 
         foreach ($rs as $row) {
             $sql = 'SELECT c.sselcont_id, c.record_id, b.sbas_id
@@ -146,11 +146,11 @@ class patch_360alpha1a implements patchInterface
                     AND c.ssel_id = :ssel_id AND s.ssel_id = c.ssel_id';
 
             $stmt = $appbox->get_connection()->prepare($sql);
-            $stmt->execute(array(':ssel_id' => $row['ssel_id']));
+            $stmt->execute([':ssel_id' => $row['ssel_id']]);
             $rs_be = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
-            $current = array();
+            $current = [];
 
             foreach ($rs_be as $row_sselcont) {
                 $serial = $row_sselcont['sbas_id'] . '_' . $row_sselcont['record_id'];
@@ -167,7 +167,7 @@ class patch_360alpha1a implements patchInterface
         $stmt = $appbox->get_connection()->prepare($sql);
 
         foreach ($sselcont_ids as $sselcont_id) {
-            $stmt->execute(array(':sselcont_id' => $sselcont_id));
+            $stmt->execute([':sselcont_id' => $sselcont_id]);
         }
 
         $stmt->closeCursor();
@@ -236,11 +236,11 @@ class patch_360alpha1a implements patchInterface
             )';
         $stmt = $appbox->get_connection()->prepare($sql);
         foreach ($rs as $row) {
-            $params = array(
+            $params = [
                 ':participant_id' => $row['participant_id'],
                 ':basket_id'      => $row['basket_id'],
                 ':usr_id'         => $row['usr_id'],
-            );
+            ];
             $stmt->execute($params);
         }
 

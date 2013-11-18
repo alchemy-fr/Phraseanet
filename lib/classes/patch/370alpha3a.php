@@ -18,7 +18,7 @@ class patch_370alpha3a implements patchInterface
     private $release = '3.7.0-alpha.3';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      *
@@ -42,7 +42,7 @@ class patch_370alpha3a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return array();
+        return [];
     }
 
     /**

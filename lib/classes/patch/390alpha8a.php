@@ -49,7 +49,7 @@ class patch_390alpha8a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return array('task');
+        return ['task'];
     }
 
     /**
