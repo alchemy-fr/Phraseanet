@@ -812,7 +812,7 @@ class Users implements ControllerProviderInterface
                         $NewUser = $app['manipulator.user']->createUser($curUser['usr_login'], $curUser['usr_password'], $curUser['usr_mail']);
 
                         $ftpCredential = new FtpCredential();
-                        $ftpCredential->setUsrId($NewUser->getId());
+                        $ftpCredential->setUser($NewUser);
 
                         if (isset($curUser['activeFTP'])) {
                             $ftpCredential->setActive((int) $curUser['activeFTP']);

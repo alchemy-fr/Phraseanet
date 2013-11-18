@@ -43,9 +43,12 @@ class Basket
     private $description;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $usr_id;
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *
+     * @return User
+     **/
+    private $user;
 
     /**
      * @ORM\Column(type="boolean")
@@ -155,38 +158,23 @@ class Basket
     }
 
     /**
-     * Set usr_id
+     * @param User $user
      *
-     * @param  integer $usrId
      * @return Basket
      */
-    public function setUsrId($usrId)
+    public function setUser(User $user)
     {
-        $this->usr_id = $usrId;
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get usr_id
-     *
-     * @return integer
+     * @return User
      */
-    public function getUsrId()
+    public function getUser()
     {
-        return $this->usr_id;
-    }
-
-    public function setOwner(\User_Adapter $user)
-    {
-        $this->setUsrId($user->getId());
-    }
-
-    public function getOwner(Application $app)
-    {
-        if ($this->getUsrId()) {
-            return \User_Adapter::getInstance($this->getUsrId(), $app);
-        }
+        return $this->user;
     }
 
     /**

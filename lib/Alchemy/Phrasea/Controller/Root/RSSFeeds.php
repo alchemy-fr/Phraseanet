@@ -64,7 +64,7 @@ class RSSFeeds implements ControllerProviderInterface
         $controllers->get('/userfeed/aggregated/{token}/{format}/', function (Application $app, $token, $format) {
             $token = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')->findOneBy(["value" => $token]);
 
-            $user = $app['manipulator.user']->getRepository()->find($token->getUsrId());
+            $user = $token->getUser();
 
             $feeds = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser($app['acl']->get($user));
 

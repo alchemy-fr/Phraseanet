@@ -141,7 +141,7 @@ class BasketRepository extends EntityRepository
             throw new NotFoundHttpException(_('Basket is not found'));
         }
 
-        if ($basket->getOwner($app)->getId() != $user->getId()) {
+        if ($basket->getUser()->getId() != $user->getId()) {
             $participant = false;
 
             if ($basket->getValidation() && !$requireOwner) {

@@ -84,7 +84,7 @@ class StoryWZRepository extends EntityRepository
                 throw new NotFoundHttpException('Story not found');
             }
 
-            if ($story->getUser($app)->getId() !== $user->getId()) {
+            if ($story->getUser()->getId() !== $user->getId()) {
                 throw new AccessDeniedHttpException('You have not access to ths story');
             }
         } else {

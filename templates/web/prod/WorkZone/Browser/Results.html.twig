@@ -84,8 +84,8 @@
                     {% set list_participants = list_participants ~ ', ' %}
                   {% endif %}
 
-                  {% set list_participants = list_participants ~ '<a class="UserTips" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : Participant.getUser(app).getId() }) ~ '"  href="/user/' ~ Participant.getUser(app).getId() ~ '/">' %}
-                  {% set list_participants = list_participants ~ Participant.getUser(app).getDisplayName %}
+                  {% set list_participants = list_participants ~ '<a class="UserTips" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : Participant.getUser().getId() }) ~ '"  href="/user/' ~ Participant.getUser().getId() ~ '/">' %}
+                  {% set list_participants = list_participants ~ Participant.getUser().getDisplayName %}
                   {% set list_participants = list_participants ~ '</a>' %}
                 {% endfor %}
                 {% trans with {'%list_participants%' : list_participants} %}Sent for validation to %list_participants%{% endtrans %}

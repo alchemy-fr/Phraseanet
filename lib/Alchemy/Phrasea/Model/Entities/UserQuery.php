@@ -28,11 +28,6 @@ class UserQuery
     private $id;
 
     /**
-     * @ORM\Column(type="integer", name="usr_id")
-     */
-    private $usrId;
-
-    /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="queries")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      **/
@@ -55,22 +50,6 @@ class UserQuery
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getUsrId()
-    {
-        return $this->usrId;
-    }
-
-    /**
-     * @param integer $usrId
-     */
-    public function setUsrId($usrId)
-    {
-        $this->usrId = $usrId;
     }
 
     /**

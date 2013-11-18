@@ -659,7 +659,7 @@ class API_V1_adapter extends API_V1_Abstract
         }
 
         $session = new Alchemy\Phrasea\Model\Entities\LazaretSession();
-        $session->setUsrId($app['authentication']->getUser()->getId());
+        $session->setUser($app['authentication']->getUser());
 
         $app['EM']->persist($session);
         $app['EM']->flush();
@@ -784,8 +784,8 @@ class API_V1_adapter extends API_V1_Abstract
         }
 
         $usr_id = null;
-        if ($file->getSession()->getUser($this->app)) {
-            $usr_id = $file->getSession()->getUser($this->app)->getId();
+        if ($file->getSession()->getUser()) {
+            $usr_id = $file->getSession()->getUser()->getId();
         }
 
         $session = [
@@ -877,7 +877,7 @@ class API_V1_adapter extends API_V1_Abstract
         $search_result = $this->app['phraseanet.SE']->query($query, $offsetStart, $perPage, $options);
 
         $userQuery = new UserQuery();
-        $userQuery->setUsrId($this->app['authentication']->getUser()->getId());
+        $userQuery->setUser($this->app['authentication']->getUser());
         $userQuery->setQuery($query);
 
         $this->app['EM']->persist($userQuery);
@@ -1272,7 +1272,7 @@ class API_V1_adapter extends API_V1_Abstract
         }
 
         $Basket = new Basket();
-        $Basket->setOwner($this->app['authentication']->getUser());
+        $Basket->setUser($this->app['authentication']->getUser());
         $Basket->setName($name);
 
         $this->app['EM']->persist($Basket);
@@ -1369,7 +1369,7 @@ class API_V1_adapter extends API_V1_Abstract
 
             foreach ($basket_element->getValidationDatas() as $validation_datas) {
                 $participant = $validation_datas->getParticipant();
-                $user = $participant->getUser($this->app);
+                $user = $participant->getUser();
                 /* @var $validation_datas ValidationData */
                 $choices[] = [
                     'validation_user' => [
@@ -1814,7 +1814,7 @@ class API_V1_adapter extends API_V1_Abstract
 
             foreach ($basket->getValidation()->getParticipants() as $participant) {
                 /* @var $participant ValidationParticipant */
-                $user = $participant->getUser($this->app);
+                $user = $participant->getUser();
 
                 $users[] = [
                     'usr_id'         => $user->getId(),

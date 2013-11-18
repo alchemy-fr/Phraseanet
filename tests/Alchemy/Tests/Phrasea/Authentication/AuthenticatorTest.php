@@ -35,7 +35,7 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $app['session'] = $session = $this->getSessionMock();
 
         $sessionEntity = new Session();
-        $sessionEntity->setUsrId($user->getId());
+        $sessionEntity->setUser($user);
         $sessionEntity->setUserAgent('');
         $app['EM']->persist($sessionEntity);
         $app['EM']->flush();
@@ -133,11 +133,10 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $app['session'] = $SFsession = $this->getSessionMock();
         $app['EM'] = $em = $this->getEntityManagerMock();
 
-        $usrId = $user->getId();
         $sessionId = 4224242;
 
         $session = new Session();
-        $session->setUsrId($usrId);
+        $session->setUser($user);
 
         $ref = new \ReflectionObject($session);
         $prop = $ref->getProperty('id');
@@ -175,11 +174,10 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $app['session'] = $SFsession = $this->getSessionMock();
         $app['EM'] = $em = $this->getEntityManagerMock();
 
-        $usrId = $user->getId();
         $sessionId = 4224242;
 
         $session = new Session();
-        $session->setUsrId($usrId);
+        $session->setUser($user);
 
         $ref = new \ReflectionObject($session);
         $prop = $ref->getProperty('id');
@@ -246,7 +244,7 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $app['session'] = $session = $this->getSessionMock();
 
         $sessionEntity = new Session();
-        $sessionEntity->setUsrId($user->getId());
+        $sessionEntity->setUser($user);
         $sessionEntity->setUserAgent('');
         $app['EM']->persist($sessionEntity);
         $app['EM']->flush();

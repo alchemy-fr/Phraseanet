@@ -323,7 +323,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     protected function insertOneBasket(User $user = null)
     {
         $basket = new Basket();
-        $basket->setOwner($user ?: self::$DI['user']);
+        $basket->setUser($user ?: self::$DI['user']);
         $basket->setName('test');
         $basket->setDescription('description test');
 
@@ -525,7 +525,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      *
      * @return UsrListOwner
      */
-    protected function insertOneUsrListOwner(\User_Adapter $user = null)
+    protected function insertOneUsrListOwner(User $user = null)
     {
         $user = $user ?: self::$DI['user'];
 
@@ -691,8 +691,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $basket = new Basket();
         $basket->setName('test');
         $basket->setDescription('description');
-        $basket->setOwner(self::$DI['user']);
-
+        $basket->setUser(self::$DI['user']);
         self::$DI['app']['EM']->persist($basket);
 
         foreach ([self::$DI['record_1'], self::$DI['record_2']] as $record) {
@@ -1157,7 +1156,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $app['session']->clear();
         $app['session']->set('usr_id', self::$DI['user']->get_id());
         $session = new Session();
-        $session->setUsrId(self::$DI['user']->get_id());
+        $session->setUser(self::$DI['user']);
         $session->setUserAgent('');
         self::$DI['app']['EM']->persist($session);
         self::$DI['app']['EM']->flush();

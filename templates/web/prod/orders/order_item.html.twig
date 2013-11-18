@@ -1,5 +1,5 @@
 {% import 'common/thumbnail.html.twig' as thumbnail %}
-{% set displayName = order.getUser(app).getDisplayName() %}
+{% set displayName = order.getUser().getDisplayName() %}
 
 <div class="page-header">
   <h1>{% trans with {'%displayName%' : displayName} %}%displayName% wants to place an order{% endtrans %}</h1>
@@ -29,7 +29,7 @@
         <table class="table" style="color:#333;">
             <tr>
                 <td>{{ 'Destinataire' | trans }}</td>
-                <td>{{ displayName }}({{ order.getUser(app).getEmail() }})</td>
+                <td>{{ displayName }}({{ order.getUser().getEmail() }})</td>
             </tr>
             <tr>
                 <td>{{ 'Date de commande' | trans }}</td>

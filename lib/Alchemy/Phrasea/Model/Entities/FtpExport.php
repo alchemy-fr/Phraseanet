@@ -90,9 +90,12 @@ class FtpExport
     private $textMailReceiver;
 
     /**
-     * @ORM\Column(type="integer", name="usr_id")
-     */
-    private $usrId;
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *
+     * @return User
+     **/
+    private $user;
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -139,6 +142,26 @@ class FtpExport
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return FtpExport
+     */
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 
     /**
@@ -439,54 +462,6 @@ class FtpExport
     public function getTextMailReceiver()
     {
         return $this->textMailReceiver;
-    }
-
-    /**
-     * Set usrId
-     *
-     * @param integer $usrId
-     *
-     * @return FtpExport
-     */
-    public function setUsrId($usrId)
-    {
-        $this->usrId = $usrId;
-
-        return $this;
-    }
-
-    /**
-     * Get usrId
-     *
-     * @return integer
-     */
-    public function getUsrId()
-    {
-        return $this->usrId;
-    }
-
-    /**
-     * Get user
-     *
-     * @return \User_Adapter
-     */
-    public function getUser(Application $app)
-    {
-        return \User_Adapter::getInstance($this->getUsr_id(), $app);
-    }
-
-    /**
-     * Set user
-     *
-     * @param User $user
-     *
-     * @return FtpExport
-     */
-    public function setUser(\User_Adapter $user)
-    {
-        $this->setUsrId($user->getId());
-
-        return $this;
     }
 
     /**

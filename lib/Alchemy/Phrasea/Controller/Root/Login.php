@@ -309,7 +309,7 @@ class Login implements ControllerProviderInterface
                     ->findWithProviderAndId($token->getProvider()->getId(), $token->getId());
 
                 if (null !== $userAuthProvider) {
-                    $this->postAuthProcess($app, $userAuthProvider->getUser($app));
+                    $this->postAuthProcess($app, $userAuthProvider->getUser());
 
                     if (null !== $redirect = $request->query->get('redirect')) {
                         $redirection = '../' . $redirect;
@@ -466,7 +466,7 @@ class Login implements ControllerProviderInterface
         $usrAuthProvider = new UsrAuthProvider();
         $usrAuthProvider->setDistantId($provider->getToken()->getId());
         $usrAuthProvider->setProvider($provider->getId());
-        $usrAuthProvider->setUsrId($user->getId());
+        $usrAuthProvider->setUser($user);
 
         try {
             $provider->logout();
@@ -856,7 +856,7 @@ class Login implements ControllerProviderInterface
             /* @var $participant ValidationParticipant */
 
             $validationSession = $participant->getSession();
-            $participantId = $participant->getUsrId();
+            $participantId = $participant->getUser()->getId();
             $basketId = $validationSession->getBasket()->getId();
 
             try {
@@ -927,7 +927,7 @@ class Login implements ControllerProviderInterface
             ->findWithProviderAndId($token->getProvider()->getId(), $token->getId());
 
         if (null !== $userAuthProvider) {
-            $this->postAuthProcess($app, $userAuthProvider->getUser($app));
+            $this->postAuthProcess($app, $userAuthProvider->getUser());
 
             if (null !== $redirect = $request->query->get('redirect')) {
                 $redirection = '../' . $redirect;
@@ -1058,7 +1058,7 @@ class Login implements ControllerProviderInterface
                     $baskets = $repo->findBy(['usr_id' => $inviteUsrId]);
 
                     foreach ($baskets as $basket) {
-                        $basket->setUsrId($user->getId());
+                        $basket->setUser($user);
                         $app['EM']->persist($basket);
                     }
                 }

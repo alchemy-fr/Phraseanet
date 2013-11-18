@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="UsrListOwners", uniqueConstraints={@ORM\UniqueConstraint(name="unique_owner", columns={"usr_id", "id"})})
+ * @ORM\Table(name="UsrListOwners", uniqueConstraints={@ORM\UniqueConstraint(name="unique_owner", columns={"user_id", "id"})})
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\UsrListOwnerRepository")
  */
 class UsrListOwner
@@ -33,9 +33,12 @@ class UsrListOwner
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $usr_id;
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *
+     * @return User
+     **/
+    private $user;
 
     /**
      * @ORM\Column(type="string")
@@ -71,36 +74,23 @@ class UsrListOwner
     }
 
     /**
-     * Set usr_id
+     * @param User $user
      *
-     * @param  integer      $usrId
-     * @return UsrListOwner
+     * @return UsrListowner
      */
-    public function setUsrId($usrId)
+    public function setUser(User $user)
     {
-        $this->usr_id = $usrId;
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get usr_id
-     *
-     * @return integer
+     * @return User
      */
-    public function getUsrId()
+    public function getUser()
     {
-        return $this->usr_id;
-    }
-
-    public function setUser(\User_Adapter $user)
-    {
-        return $this->setUsrId($user->getId());
-    }
-
-    public function getUser(Application $app)
-    {
-        return \User_Adapter::getInstance($this->getUsrId(), $app);
+        return $this->user;
     }
 
     /**

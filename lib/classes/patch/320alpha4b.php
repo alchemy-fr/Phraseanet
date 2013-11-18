@@ -201,7 +201,7 @@ class patch_320alpha4b implements patchInterface
             $feed->addPublisher($publisher);
             $publisher->setFeed($feed);
             $publisher->setOwner(true);
-            $publisher->setUsrId($user->getId());
+            $publisher->setUser($user);
 
             if ($homelink) {
                 $feed->setPublic(true);

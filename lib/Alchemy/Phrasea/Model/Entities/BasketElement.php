@@ -283,7 +283,7 @@ class BasketElement
     public function getUserValidationDatas(\User_Adapter $user, Application $app)
     {
         foreach ($this->validation_datas as $validationData) {
-            if ($validationData->getParticipant($app)->getUser($app)->getId() == $user->getId()) {
+            if ($validationData->getParticipant($app)->getUser()->getId() == $user->getId()) {
                 return $validationData;
             }
         }

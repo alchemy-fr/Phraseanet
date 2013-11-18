@@ -35,7 +35,7 @@ class userTest extends \PhraseanetTestCase
         $provider = new Alchemy\Phrasea\Model\Entities\UsrAuthProvider();
         $provider->setDistantId(12345);
         $provider->setProvider('custom-one');
-        $provider->setUsrId($user->getId());
+        $provider->setUser($user);
 
         self::$DI['app']['EM']->persist($provider);
         self::$DI['app']['EM']->flush();

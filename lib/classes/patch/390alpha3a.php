@@ -73,9 +73,11 @@ class patch_390alpha3a implements patchInterface
         $em = $app['EM'];
 
         foreach ($rs as $row) {
+            $user = $app['manipulator.user']->getRepository()->find($row['usr_id']);
+
             $userQuery = new UserQuery();
             $userQuery->setQuery($row['query']);
-            $userQuery->setUsrId($row['usr_id']);
+            $userQuery->setUser($user);
 
             $em->persist($userQuery);
 

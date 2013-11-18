@@ -55,7 +55,7 @@ class UsrListRepository extends EntityRepository
      * @param  type          $list_id
      * @return UsrList
      */
-    public function findUserListByUserAndId(Application $app, User $user, $list_id)
+    public function findUserListByUserAndId(User $user, $list_id)
     {
         $list = $this->find($list_id);
 
@@ -64,7 +64,7 @@ class UsrListRepository extends EntityRepository
             throw new NotFoundHttpException('List is not found.');
         }
 
-        if ( ! $list->hasAccess($user, $app)) {
+        if ( ! $list->hasAccess($user)) {
             throw new AccessDeniedHttpException('You have not access to this list.');
         }
 

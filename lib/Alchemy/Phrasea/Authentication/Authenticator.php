@@ -70,7 +70,7 @@ class Authenticator
             ->setBrowserVersion($this->browser->getVersion())
             ->setPlatform($this->browser->getPlatform())
             ->setUserAgent($this->browser->getUserAgent())
-            ->setUsrId($user->getId());
+            ->setUser($user);
 
         $this->em->persist($session);
         $this->em->flush();
@@ -105,7 +105,7 @@ class Authenticator
             throw new RuntimeException('Unable to refresh the session, it does not exist anymore');
         }
 
-        if (null === $user = $this->app['manipulator.user']->getRepository()->find($session->getUsrId())) {
+        if (null === $user = $session->getUser()) {
             throw new RuntimeException('Unable to refresh the session');
         }
 

@@ -94,7 +94,7 @@ class Order implements ControllerProviderInterface
 
         if (!$records->isEmpty()) {
             $order = new OrderEntity();
-            $order->setUsrId($app['authentication']->getUser()->getId());
+            $order->setUser($app['authentication']->getUser());
             $order->setDeadline((null !== $deadLine = $request->request->get('deadline')) ? new \DateTime($deadLine) : $deadLine);
             $order->setOrderUsage($request->request->get('use', ''));
             foreach ($records as $key => $record) {
@@ -144,7 +144,7 @@ class Order implements ControllerProviderInterface
             try {
                 $app['events-manager']->trigger('__NEW_ORDER__', [
                     'order_id' => $order->getId(),
-                    'usr_id'   => $order->getUsrId()
+                    'usr_id'   => $order->getUser()->getId()
                 ]);
                 $success = true;
 
@@ -237,19 +237,15 @@ class Order implements ControllerProviderInterface
     public function sendOrder(Application $app, Request $request, $order_id)
     {
         $success = false;
-        $order = $app['EM']->getRepository('Phraseanet:Order')->find($order_id);
-        if (null === $order) {
+        if (null === $order = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->find($order_id)) {
             throw new NotFoundHttpException('Order not found');
         }
-
-        $dest_user = $app['manipulator.user']->getRepository()->find($order->getUsrId());
-
         $basket = $order->getBasket();
 
         if (null === $basket) {
             $basket = new Basket();
             $basket->setName($app->trans('Commande du %date%', ['%date%' => $order->getCreatedOn()->format('Y-m-d')]));
-            $basket->setOwner($dest_user);
+            $basket->setUser($order->getUser());
             $basket->setPusher($app['authentication']->getUser());
 
             $app['EM']->persist($basket);
@@ -274,7 +270,7 @@ class Order implements ControllerProviderInterface
                 $basket->addElement($basketElement);
 
                 $n++;
-                $app['acl']->get($dest_user)->grant_hd_on($record, $app['authentication']->getUser(), 'order');
+                $app['acl']->get($basket->getUser())->grant_hd_on($record, $app['authentication']->getUser(), 'order');
             }
         }
 
@@ -285,7 +281,7 @@ class Order implements ControllerProviderInterface
                 $app['events-manager']->trigger('__ORDER_DELIVER__', [
                     'ssel_id' => $order->getBasket()->getId(),
                     'from'    => $app['authentication']->getUser()->getId(),
-                    'to'      => $dest_user->getId(),
+                    'to'      => $order->getUser()->getId(),
                     'n'       => $n
                 ]);
             }
@@ -347,7 +343,7 @@ class Order implements ControllerProviderInterface
 
                 $app['events-manager']->trigger('__ORDER_NOT_DELIVERED__', [
                     'from' => $app['authentication']->getUser()->getId(),
-                    'to'   => $order->getUsrId(),
+                    'to'   => $order->getUser()->getId(),
                     'n'    => $n
                 ]);
             }

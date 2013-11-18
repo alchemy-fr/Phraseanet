@@ -77,10 +77,12 @@ class patch_390alpha4a implements patchInterface
                 continue;
             }
 
+            $user = $app['manipulator.user']->getRepository()->find($row['usr_id']);
+
             $userSetting = new UserSetting();
             $userSetting->setName($row['prop']);
             $userSetting->setValue($row['value']);
-            $userSetting->setUsrId($row['usr_id']);
+            $userSetting->setUser($user);
 
             $em->persist($userSetting);
 

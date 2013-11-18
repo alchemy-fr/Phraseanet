@@ -70,6 +70,8 @@ class patch_390alpha1a implements patchInterface
         $em = $app['EM'];
 
         foreach ($rs as $row) {
+            $user = $app['manipulator.user']->getRepository()->find($row['usr_id']);
+
             $credential = new FtpCredential();
             $credential->setActive($row['activeFTP']);
             $credential->setAddress($row['addrFTP']);
@@ -79,7 +81,7 @@ class patch_390alpha1a implements patchInterface
             $credential->setPassword($row['pwdFTP']);
             $credential->setReceptionFolder($row['destFTP']);
             $credential->setRepositoryPrefixName($row['prefixFTPfolder']);
-            $credential->setUsrId($row['usr_id']);
+            $credential->setUser($user);
 
             $em->persist($credential);
 

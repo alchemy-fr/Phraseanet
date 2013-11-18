@@ -111,8 +111,10 @@ class patch_370alpha7a implements patchInterface
 
                 $borderFile = new \Alchemy\Phrasea\Border\File($app, $media, $collection);
 
+                $user = $app['manipulator.user']->getRepository()->find($row['usr_id']);
+
                 $lazaretSession = new LazaretSession();
-                $lazaretSession->setUsrId($row['usr_id']);
+                $lazaretSession->setUser($user);
 
                 $lazaretFile = new LazaretFile();
                 $lazaretFile->setBaseId($row['base_id']);

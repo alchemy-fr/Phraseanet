@@ -187,7 +187,7 @@ class UserManipulator implements ManipulatorInterface
     public function addUserSetting(User $user, $name, $value)
     {
         $userSetting = new UserSetting();
-        $userSetting->setUsrId($user->getId());
+        $userSetting->setUser($user);
         $userSetting->setName($name);
         $userSetting->setValue($value);
         $user->addSetting($userSetting);
@@ -207,7 +207,7 @@ class UserManipulator implements ManipulatorInterface
         $notifSetting = new UserNotificationSetting();
         $notifSetting->setName($name);
         $notifSetting->setValue($value);
-        $notifSetting->setUsrId($user->getId());
+        $notifSetting->setUsrId($user);
         $user->addNotificationSettings($notifSetting);
 
         $this->manager->update($user);
@@ -224,7 +224,7 @@ class UserManipulator implements ManipulatorInterface
         $userQuery = new UserQuery();
         $userQuery->setUser($user);
         $userQuery->setQuery($query);
-        $userQuery->setUsrId($user->getId());
+        $userQuery->setUser($user);
 
         $user->addQuery($userQuery);
 

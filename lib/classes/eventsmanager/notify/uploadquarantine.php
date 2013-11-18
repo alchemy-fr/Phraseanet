@@ -72,7 +72,7 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
             $datas = $domXML->saveXml();
 
             //Sender
-            if (null !== $user = $lazaretFile->getSession()->getUser($this->app)) {
+            if (null !== $user = $lazaretFile->getSession()->getUser()) {
                 $sender = $domXML->createElement('sender');
                 $sender->appendChild($domXML->createTextNode($user->getDisplayName()));
                 $root->appendChild($sender);

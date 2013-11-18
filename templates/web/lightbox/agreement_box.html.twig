@@ -16,7 +16,7 @@
         <div>{{ basket.getValidation().getValidationString(app, app['authentication'].getUser()) }}</div>
         <ul>
             {% for choice in basket_element.getValidationDatas() %}
-              {% if basket.getValidation().getParticipant(app['authentication'].getUser(), app).getCanSeeOthers() or choice.getParticipant().getUser(app) == app['authentication'].getUser() %}
+              {% if basket.getValidation().getParticipant(app['authentication'].getUser(), app).getCanSeeOthers() or choice.getParticipant().getUser() == app['authentication'].getUser() %}
                 {% if choice.getAgreement() == true %}
                     {% set classuser = 'agree' %}
                 {% elseif choice.getAgreement() is null %}
@@ -24,7 +24,7 @@
                 {% else %}
                     {% set classuser = 'disagree' %}
                 {% endif %}
-                {% set participant = choice.getParticipant().getUser(app) %}
+                {% set participant = choice.getParticipant().getUser() %}
                 <li class="{% if participant.getId() == app['authentication'].getUser().getId() %}me{% endif %} {{classuser}} userchoice">{{participant.getDisplayName()}}</li>
               {% endif %}
             {% endfor %}

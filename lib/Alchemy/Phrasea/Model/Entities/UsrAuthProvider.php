@@ -17,7 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="UsrAuthProviders", uniqueConstraints={
- *          @ORM\UniqueConstraint(name="unique_provider_per_user", columns={"usr_id", "provider"}),
+ *          @ORM\UniqueConstraint(name="unique_provider_per_user", columns={"user_id", "provider"}),
  *          @ORM\UniqueConstraint(name="provider_ids", columns={"provider", "distant_id"})
  * })
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\UsrAuthProviderRepository")
@@ -32,9 +32,12 @@ class UsrAuthProvider
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $usr_id;
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *
+     * @return User
+     **/
+    private $user;
 
     /**
      * @ORM\Column(type="string", length=32)
@@ -69,31 +72,23 @@ class UsrAuthProvider
     }
 
     /**
-     * Set usr_id
+     * @param User $user
      *
-     * @param  integer         $usrId
-     * @return UsrAuthProvider
+     * @return usrAuthprovider
      */
-    public function setUsrId($usrId)
+    public function setUser(User $user)
     {
-        $this->usr_id = $usrId;
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get usr_id
-     *
-     * @return integer
+     * @return User
      */
-    public function getUsrId()
+    public function getUser()
     {
-        return $this->usr_id;
-    }
-
-    public function getUser(Application $app)
-    {
-        return \User_Adapter::getInstance($this->usr_id, $app);
+        return $this->user;
     }
 
     /**

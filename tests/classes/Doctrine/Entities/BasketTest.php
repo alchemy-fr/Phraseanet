@@ -44,22 +44,6 @@ class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertEquals('une jolie description pour mon super panier', $this->basket->getDescription());
     }
 
-    public function testGetUsrId()
-    {
-        $this->basket->setUsrId(1);
-        $this->em->persist($this->basket);
-        $this->em->flush();
-        $this->assertEquals(1, $this->basket->getUsrId());
-    }
-
-    public function testGetPusherId()
-    {
-        $this->basket->setPusherId(1);
-        $this->em->persist($this->basket);
-        $this->em->flush();
-        $this->assertEquals(1, $this->basket->getPusherId());
-    }
-
     public function testGetArchived()
     {
         $this->basket->setArchived(true);
@@ -117,10 +101,10 @@ class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGetOwner()
     {
-        $this->assertNotNull($this->basket->getOwner(self::$DI['app'])); //no owner
-        $this->basket->setUsrId(self::$DI['user']->get_id());
-        $this->assertInstanceOf('\User_Adapter', $this->basket->getOwner(self::$DI['app']));
-        $this->assertEquals($this->basket->getOwner(self::$DI['app'])->get_id(), self::$DI['user']->get_id());
+        $this->assertNotNull($this->basket->getUser()); //no owner
+        $this->basket->setUser(self::$DI['user']);
+        $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\User', $this->basket->getUser());
+        $this->assertEquals($this->basket->getUser()->getId(), self::$DI['user']->getId());
     }
 
     public function testGetValidation()

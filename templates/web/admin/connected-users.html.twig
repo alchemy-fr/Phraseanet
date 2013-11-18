@@ -1,6 +1,6 @@
 {% macro tooltip_connected_users(row) %}
 
-{% set user = row.getUser(app) %}
+{% set user = row.getUser() %}
 <span id="tooltip-usr">
     <table id="tabledescexp" cellpadding="0" cellspacing="0">
         <tr>
@@ -102,9 +102,9 @@
             <tr title="{{ _self.tooltip_connected_users(row) | e }}" class="{% if loop.index is odd %}odd{% else %}even{% endif %} usrTips" id="TREXP_{{ row.getId()}}">
 
                 {% if row.getId() == app['session'].get('session_id') %}
-                    <td style="color:#ff0000"><i>{{ row.getUser(app).getDisplayName() }}</i></td>
+                    <td style="color:#ff0000"><i>{{ row.getUser().getDisplayName() }}</i></td>
                 {% else %}
-                    <td>{{ row.getUser(app).getDisplayName() }}</td>
+                    <td>{{ row.getUser().getDisplayName() }}</td>
                 {% endif %}
 
                 <td>

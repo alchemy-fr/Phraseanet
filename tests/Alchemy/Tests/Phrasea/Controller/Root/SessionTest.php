@@ -92,8 +92,8 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
         $session = $this->getMock('Alchemy\Phrasea\Model\Entities\Session');
 
         $session->expects($this->once())
-            ->method('getUsrId')
-            ->will($this->returnValue(self::$DI['app']['authentication']->getUser()->getId()));
+            ->method('getUser')
+            ->will($this->returnValue(self::$DI['app']['authentication']->getUser()));
 
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()

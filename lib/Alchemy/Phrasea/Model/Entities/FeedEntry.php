@@ -313,16 +313,16 @@ class FeedEntry
     }
 
     /**
-     * Returns a boolean indicating whether the given User_Adapter is the publisher of the entry.
+     * Returns a boolean indicating whether the given User is the publisher of the entry.
      *
      * @param User $user
      *
      * @return boolean
      */
-    public function isPublisher(\User_Adapter $user)
+    public function isPublisher(User $user)
     {
         if ($this->publisher) {
-            if ($this->publisher->getUsrId() === $user->getId()) {
+            if ($this->publisher->getUser()->getId() === $user->getId()) {
                 return true;
             }
         }

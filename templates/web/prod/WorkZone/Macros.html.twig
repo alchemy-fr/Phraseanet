@@ -353,9 +353,9 @@
                   <td style="width:100%;">
                       <table style=width:100%>
                           {% for choice in basket_element.getValidationDatas() %}
-                              {% if basket.getValidation().getParticipant(app['authentication'].getUser(), app).getCanSeeOthers() or choice.getParticipant().getUser(app) == app['authentication'].getUser() %}
+                              {% if basket.getValidation().getParticipant(app['authentication'].getUser(), app).getCanSeeOthers() or choice.getParticipant().getUser() == app['authentication'].getUser() %}
                               <tr>
-                                  <td> {{ choice.getParticipant().getUser(app).getDisplayName() }} </td>
+                                  <td> {{ choice.getParticipant().getUser().getDisplayName() }} </td>
                                   <td>
                                   {% if choice.getParticipant().getCanAgree() %}
                                         {% if choice.getAgreement() == true %}

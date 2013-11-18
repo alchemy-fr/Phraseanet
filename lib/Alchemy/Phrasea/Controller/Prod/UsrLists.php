@@ -195,7 +195,7 @@ class UsrLists implements ControllerProviderInterface
     {
         $repository = $app['EM']->getRepository('Phraseanet:UsrList');
 
-        $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
+        $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
 
         $entries = new ArrayCollection();
         $owners = new ArrayCollection();
@@ -253,7 +253,7 @@ class UsrLists implements ControllerProviderInterface
 
             $repository = $app['EM']->getRepository('Phraseanet:UsrList');
 
-            $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
+            $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
 
             if ($list->getOwner($app['authentication']->getUser(), $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
                 throw new ControllerException($app->trans('You are not authorized to do this'));
@@ -284,9 +284,9 @@ class UsrLists implements ControllerProviderInterface
         try {
             $repository = $app['EM']->getRepository('Phraseanet:UsrList');
 
-            $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
+            $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
 
-            if ($list->getOwner($app['authentication']->getUser(), $app)->getRole() < UsrListOwner::ROLE_ADMIN) {
+            if ($list->getOwner($app['authentication']->getUser())->getRole() < UsrListOwner::ROLE_ADMIN) {
                 throw new ControllerException($app->trans('You are not authorized to do this'));
             }
 
@@ -318,10 +318,10 @@ class UsrLists implements ControllerProviderInterface
         try {
             $repository = $app['EM']->getRepository('Phraseanet:UsrList');
 
-            $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
+            $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
             /* @var $list UsrList */
 
-            if ($list->getOwner($app['authentication']->getUser(), $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
+            if ($list->getOwner($app['authentication']->getUser())->getRole() < UsrListOwner::ROLE_EDITOR) {
                 throw new ControllerException($app->trans('You are not authorized to do this'));
             }
 
@@ -360,10 +360,10 @@ class UsrLists implements ControllerProviderInterface
 
             $repository = $app['EM']->getRepository('Phraseanet:UsrList');
 
-            $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
+            $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
             /* @var $list UsrList */
 
-            if ($list->getOwner($app['authentication']->getUser(), $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
+            if ($list->getOwner($app['authentication']->getUser())->getRole() < UsrListOwner::ROLE_EDITOR) {
                 throw new ControllerException($app->trans('You are not authorized to do this'));
             }
 
@@ -424,10 +424,10 @@ class UsrLists implements ControllerProviderInterface
         try {
             $repository = $app['EM']->getRepository('Phraseanet:UsrList');
 
-            $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
+            $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
             /* @var $list UsrList */
 
-            if ($list->getOwner($app['authentication']->getUser(), $app)->getRole() < UsrListOwner::ROLE_ADMIN) {
+            if ($list->getOwner($app['authentication']->getUser())->getRole() < UsrListOwner::ROLE_ADMIN) {
                 $list = null;
                 throw new \Exception($app->trans('You are not authorized to do this'));
             }
@@ -454,21 +454,21 @@ class UsrLists implements ControllerProviderInterface
         try {
             $repository = $app['EM']->getRepository('Phraseanet:UsrList');
 
-            $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
+            $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
             /* @var $list UsrList */
 
-            if ($list->getOwner($app['authentication']->getUser(), $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
+            if ($list->getOwner($app['authentication']->getUser())->getRole() < UsrListOwner::ROLE_EDITOR) {
                 throw new ControllerException($app->trans('You are not authorized to do this'));
             }
 
             $new_owner = $app['manipulator.user']->getRepository()->find($usr_id);
 
-            if ($list->hasAccess($new_owner, $app)) {
+            if ($list->hasAccess($new_owner)) {
                 if ($new_owner->getId() == $app['authentication']->getUser()->getId()) {
                     throw new ControllerException('You can not downgrade your Admin right');
                 }
 
-                $owner = $list->getOwner($new_owner, $app);
+                $owner = $list->getOwner($new_owner);
             } else {
                 $owner = new UsrListOwner();
                 $owner->setList($list);
@@ -510,10 +510,10 @@ class UsrLists implements ControllerProviderInterface
         try {
             $repository = $app['EM']->getRepository('Phraseanet:UsrList');
 
-            $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
+            $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
             /* @var $list UsrList */
 
-            if ($list->getOwner($app['authentication']->getUser(), $app)->getRole() < UsrListOwner::ROLE_ADMIN) {
+            if ($list->getOwner($app['authentication']->getUser())->getRole() < UsrListOwner::ROLE_ADMIN) {
                 throw new \Exception($app->trans('You are not authorized to do this'));
             }
 

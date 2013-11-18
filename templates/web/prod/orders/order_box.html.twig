@@ -42,7 +42,7 @@
                 {% for order in orders %}
                     {% set deadline = app['date-formatter'].getPrettyString(order.getDeadline()) %}
                     <tr id="order_{{ order.getId() }}" class="order_row" {{ current_date > order.getDeadline() ? "style=color:#777": "" }}>
-                        <td>{{ order.getUser(app).getDisplayName() }}</td>
+                        <td>{{ order.getUser().getDisplayName() }}</td>
                         <td>{{ app['date-formatter'].getPrettyString(order.getCreatedOn()) }}</td>
                         <td>
                             {% if deadline != '' %}

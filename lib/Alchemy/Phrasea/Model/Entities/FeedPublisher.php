@@ -29,9 +29,12 @@ class FeedPublisher
     private $id;
 
     /**
-     * @ORM\Column(type="integer", name="usr_id")
-     */
-    private $usrId;
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *
+     * @return User
+     **/
+    private $user;
 
     /**
      * @ORM\Column(type="boolean")
@@ -61,26 +64,23 @@ class FeedPublisher
     }
 
     /**
-     * Set usr_id
+     * @param User $user
      *
-     * @param  integer       $usrId
      * @return FeedPublisher
      */
-    public function setUsrId($usrId)
+    public function setUser(User $user)
     {
-        $this->usrId = $usrId;
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get usr_id
-     *
-     * @return integer
+     * @return User
      */
-    public function getUsrId()
+    public function getUser()
     {
-        return $this->usrId;
+        return $this->user;
     }
 
     /**
@@ -127,18 +127,6 @@ class FeedPublisher
     public function getFeed()
     {
         return $this->feed;
-    }
-
-    /**
-     * Get user
-     *
-     * @return \User_Adapter
-     */
-    public function getUser(Application $app)
-    {
-        $user = \User_Adapter::getInstance($this->getUsrId(), $app);
-
-        return $user;
     }
 
     /**

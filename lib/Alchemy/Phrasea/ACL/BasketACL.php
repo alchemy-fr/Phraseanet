@@ -24,7 +24,7 @@ class BasketACL
 
         if ($basket->getValidation()) {
             foreach ($basket->getValidation()->getParticipants() as $participant) {
-                if ($participant->getUsrId() === $user->getId()) {
+                if ($participant->getUser()->getId() === $user->getId()) {
                     return true;
                 }
             }
@@ -35,6 +35,6 @@ class BasketACL
 
     public function isOwner(Basket $basket, User $user)
     {
-        return $basket->getUsrId() === $user->getId();
+        return $basket->getUser()->getId() === $user->getId();
     }
 }

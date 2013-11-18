@@ -284,7 +284,7 @@ class ValidationSession
     public function getParticipant(\User_Adapter $user, Application $app)
     {
         foreach ($this->getParticipants() as $participant) {
-            if ($participant->getUser($app)->getId() == $user->getId()) {
+            if ($participant->getUser()->getId() == $user->getId()) {
                 return $participant;
             }
         }

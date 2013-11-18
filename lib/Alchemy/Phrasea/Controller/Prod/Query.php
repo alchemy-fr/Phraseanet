@@ -73,7 +73,7 @@ class Query implements ControllerProviderInterface
         $result = $app['phraseanet.SE']->query($query, (($page - 1) * $perPage), $perPage, $options);
 
         $userQuery = new UserQuery();
-        $userQuery->setUsrId($app['authentication']->getUser()->getId());
+        $userQuery->setUser($app['authentication']->getUser());
         $userQuery->setQuery($result->getQuery());
 
         $app['EM']->persist($userQuery);

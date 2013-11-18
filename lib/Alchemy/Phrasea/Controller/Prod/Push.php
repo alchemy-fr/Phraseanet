@@ -57,7 +57,7 @@ class Push implements ControllerProviderInterface
                 /* @var $entry UsrListEntry */
                 $entries[] = [
                     'Id'   => $entry->getId(),
-                    'User' => $userFormatter($entry->getUser($app))
+                    'User' => $userFormatter($entry->getUser())
                 ];
             }
 
@@ -185,7 +185,7 @@ class Push implements ControllerProviderInterface
                     $Basket = new Basket();
                     $Basket->setName($push_name);
                     $Basket->setDescription($push_description);
-                    $Basket->setOwner($user_receiver);
+                    $Basket->setUser($user_receiver);
                     $Basket->setPusher($app['authentication']->getUser());
                     $Basket->setIsRead(false);
 
@@ -299,7 +299,7 @@ class Push implements ControllerProviderInterface
                     $Basket = new Basket();
                     $Basket->setName($validation_name);
                     $Basket->setDescription($validation_description);
-                    $Basket->setOwner($app['authentication']->getUser());
+                    $Basket->setUser($app['authentication']->getUser());
                     $Basket->setIsRead(false);
 
                     $app['EM']->persist($Basket);
@@ -495,7 +495,7 @@ class Push implements ControllerProviderInterface
 
             $repository = $app['EM']->getRepository('Phraseanet:UsrList');
 
-            $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
+            $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
 
             if ($list) {
                 $datas = $listFormatter($list);
@@ -617,7 +617,7 @@ class Push implements ControllerProviderInterface
 
             $repository = $app['EM']->getRepository('Phraseanet:UsrList');
 
-            $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
+            $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
 
             $query = new \User_Query($app);
 

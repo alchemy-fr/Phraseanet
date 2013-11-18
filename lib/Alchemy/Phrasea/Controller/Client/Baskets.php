@@ -111,7 +111,7 @@ class Baskets implements ControllerProviderInterface
         try {
             $basket = new Basket();
             $basket->setName($request->request->get('p0'));
-            $basket->setOwner($app['authentication']->getUser());
+            $basket->setuser($app['authentication']->getUser());
 
             $app['EM']->persist($basket);
             $app['EM']->flush();

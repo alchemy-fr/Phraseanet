@@ -1,5 +1,5 @@
 {% for validationDatas in basket_element.getValidationDatas() %}
-  {% set is_mine = validationDatas.getParticipant().getUser(app).getId() == app['authentication'].getUser().getId() %}
+  {% set is_mine = validationDatas.getParticipant().getUser().getId() == app['authentication'].getUser().getId() %}
   {% if validationDatas.getNote() != '' or (validationDatas.getAgreement() is not null and is_mine)  %}
   <li>
     <h3 style="text-align:left;">
@@ -7,7 +7,7 @@
       <img style="vertical-align:middle;"
            src="/skins/lightbox/{% if validationDatas.getAgreement() == true %}agree.png{% else %}disagree.png{% endif %}" />
       {% endif %}
-      {{ validationDatas.getParticipant().getUser(app).getDisplayName() }}
+      {{ validationDatas.getParticipant().getUser().getDisplayName() }}
     </h3>
     {% if validationDatas.getNote() != '' %}
     <p style="text-align:left;">{{ 'validation:: note' | trans }} : {{ validationDatas.getNote()|nl2br }}</p>

@@ -92,8 +92,10 @@ class patch_390alpha1b implements patchInterface
             $todo = $stmt->fetch(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
+            $user = $app['manipulator.user']->getRepository()->find($row['usr_id']);
+
             $order = new Order();
-            $order->setUsrId($row['usr_id'])
+            $order->setUser($user)
                 ->setTodo($todo['todo'])
                 ->setOrderUsage($row['usage'])
                 ->setDeadline(new \DateTime($row['deadline']))
