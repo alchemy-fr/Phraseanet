@@ -83,10 +83,10 @@ class patch_390alpha2a implements patchInterface
     private function updateUsers(EntityManager $em, $conn)
     {
         $sql = 'SELECT activite, adresse, create_db, canchgftpprofil, canchgprofil, ville,
-                societe, pays, usr_mail, fax, usr_prenom, geonameid, invite, fonction, last_conn, lastModel,
-                usr_nom, ldap_created, locale, usr_login, mail_locked, mail_notifications, nonce, usr_password, push_list,
-                request_notifications, salted_password, usr_sexe, tel, timezone, cpostal, usr_creationdate, usr_modificationdate
-                FROM usr WHERE model_of = 0';
+                    societe, pays, usr_mail, fax, usr_prenom, geonameid, invite, fonction, last_conn, lastModel,
+                    usr_nom, ldap_created, locale, usr_login, mail_locked, mail_notifications, nonce, usr_password, push_list,
+                    request_notifications, salted_password, usr_sexe, tel, timezone, cpostal, usr_creationdate, usr_modificationdate
+                FROM usr';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -188,13 +188,15 @@ class patch_390alpha2a implements patchInterface
         $repository = $em->getRepository('Alchemy\Phrasea\Model\Entities\User');
 
         foreach ($rows as $row) {
-            $user = $repository->findOneByLogin($row['usr_login']);
+            $template = $repository->findOneByLogin($row['usr_login']);
 
-            if (null === $template = $repository->find($row['model_of'])) {
-                $em->remove($user);
+            if (null === $loginOwner = $this->getLoginFromId($conn, $row['model_of'])) {
+                // remove template with no owner
+                $em->remove($template);
             } else {
-                $user->setModelOf($template);
-                $em->persist($user);
+                $owner = $repository->findOneByLogin($loginOwner);
+                $template->setModelOf($owner);
+                $em->persist($owner);
             }
 
             $n++;
@@ -207,5 +209,26 @@ class patch_390alpha2a implements patchInterface
 
         $em->flush();
         $em->clear();
+    }
+
+    /**
+     * Returns user login from its id.
+     */
+    private function getLoginFromId($conn, $id)
+    {
+        $sql = "SELECT usr_login
+                FROM usr
+                WHERE usr_id = :id";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([':id' => $id]);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        if (count($row) === 0) {
+            return null;
+        }
+
+        return $row['usr_login'];
     }
 }
