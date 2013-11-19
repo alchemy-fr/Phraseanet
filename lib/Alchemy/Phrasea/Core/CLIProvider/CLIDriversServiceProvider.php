@@ -36,12 +36,12 @@ class CLIDriversServiceProvider implements ServiceProviderInterface
                 $extraDirs[] = $app['root.path'] . '/node_modules/.bin';
             }
 
-            if (!$app['configuration']->isSetup()) {
+            if (!$app['configuration.store']->isSetup()) {
                 return $app['executable-finder']->find($name, null, $extraDirs);
             }
 
-            if (isset($app['configuration']['binaries'][$configName])) {
-                return $app['configuration']['binaries'][$configName];
+            if ($app['conf']->has(['binaries', $configName])) {
+                return $app['conf']->get(['binaries', $configName]);
             }
 
             return $app['executable-finder']->find($name, null, $extraDirs);

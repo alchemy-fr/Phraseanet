@@ -17,8 +17,13 @@ class ConfigurationServiceProvidertest extends ServiceProviderTestCase
         return [
             [
                 'Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider',
-                'configuration',
+                'configuration.store',
                 'Alchemy\\Phrasea\\Core\\Configuration\\Configuration'
+            ],
+            [
+                'Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider',
+                'conf',
+                'Alchemy\\Phrasea\\Core\\Configuration\\PropertyAccess'
             ],
             [
                 'Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider',

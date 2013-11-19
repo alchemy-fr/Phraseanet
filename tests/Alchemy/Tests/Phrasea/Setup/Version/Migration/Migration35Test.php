@@ -62,7 +62,7 @@ class Migration35Test extends AbstractSetupTester
         $app = $app ? : new Application('test');
 
         if ($this->specifications) {
-            $app['configuration'] = $this->specifications;
+            $app['configuration.store'] = $this->specifications;
         }
 
         return new Migration35($app);

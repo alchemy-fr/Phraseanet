@@ -11,6 +11,11 @@
 
 use Alchemy\Phrasea\Application;
 
+/**
+ *
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
 class patch_380alpha2a implements patchInterface
 {
     /** @var string */
@@ -56,14 +61,8 @@ class patch_380alpha2a implements patchInterface
      */
     public function apply(base $databox, Application $app)
     {
-        $config = $app['configuration']->getConfig();
-
-        if (isset($config['main']['database-test'])) {
-            $config['main']['database-test']['path'] = '/tmp/db.sqlite';
+        if ($app['conf']->has(['main', 'database-test'])) {
+            $app['conf']->set(['main', 'database-test', 'path'], '/tmp/db.sqlite');
         }
-
-        $app['configuration']->setConfig($config);
-
-        return true;
-    }
+   }
 }

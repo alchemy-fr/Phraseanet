@@ -167,7 +167,7 @@ class module_console_checkExtension extends Command
                 , $base["sbas_id"]
                 , $base["searchcoll"]
                 , $base["arrayq"]
-                , $this->container['configuration']['main']['key']
+                , $this->container['conf']->get(['main', 'key'])
                 , $usrId
                 , false
                 , PHRASEA_MULTIDOC_DOCONLY

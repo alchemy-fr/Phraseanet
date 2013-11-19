@@ -21,7 +21,7 @@ class RegistrationServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['registration.fields'] = $app->share(function (Application $app) {
-            return isset($app['configuration']['registration-fields']) ? $app['configuration']['registration-fields'] : [];
+            return $app['conf']->get('registration-fields', []);
         });
 
         $app['registration.enabled'] = $app->share(function (Application $app) {

@@ -175,7 +175,7 @@ class SphinxSearchEngine implements SearchEngineInterface
     public function getConfigurationPanel()
     {
         if (!$this->configurationPanel) {
-            $this->configurationPanel = new ConfigurationPanel($this, $this->app['configuration']);
+            $this->configurationPanel = new ConfigurationPanel($this, $this->app['configuration.store']);
         }
 
         return $this->configurationPanel;

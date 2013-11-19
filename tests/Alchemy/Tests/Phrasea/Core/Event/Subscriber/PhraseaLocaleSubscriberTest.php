@@ -110,7 +110,7 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetPHPUnitAbstract
         $app['phraseanet.registry'] = $this->getMockBuilder('\registry')
             ->disableOriginalConstructor()
             ->getmock();
-        $app['configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
+        $app['configuration.store'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
 
         $app['dispatcher']->addSubscriber(new PhraseaLocaleSubscriber($app));
 

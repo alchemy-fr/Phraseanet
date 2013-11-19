@@ -79,7 +79,7 @@ class PhraseanetIndexerJob extends AbstractJob
 
     private function getPhraseanetIndexerPath(Application $app)
     {
-        $binaries = $app['configuration']['binaries'];
+        $binaries = $app['conf']->get('binaries');
 
         if (isset($binaries['phraseanet_indexer'])) {
             $path = $binaries['phraseanet_indexer'];

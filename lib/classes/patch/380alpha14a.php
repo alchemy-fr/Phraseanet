@@ -56,7 +56,7 @@ class patch_380alpha14a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $app['configuration']->setDefault('plugins');
+        $app['configuration.store']->setDefault('plugins');
 
         return true;
     }

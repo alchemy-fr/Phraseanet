@@ -48,7 +48,7 @@ class XSendFileFactory
      */
     public static function create(Application $app)
     {
-        $conf = $app['configuration']['xsendfile'];
+        $conf = $app['conf']->get('xsendfile');
 
         $mapping = [];
 

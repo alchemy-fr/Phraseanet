@@ -157,9 +157,7 @@ class Databoxes implements ControllerProviderInterface
         }
 
         if ((null === $request->request->get('new_settings')) && (null !== $dataTemplate = $request->request->get('new_data_template'))) {
-
-            $configuration = $app['configuration'];
-            $connexion = $configuration['main']['database'];
+            $connexion = $app['conf']->get(['main', 'database']);
 
             $hostname = $connexion['host'];
             $port = $connexion['port'];
@@ -229,8 +227,7 @@ class Databoxes implements ControllerProviderInterface
 
         if ((null === $request->request->get('new_settings'))) {
             try {
-                $configuration = $app['configuration'];
-                $connexion = $configuration['main']['database'];
+                $connexion = $app['conf']->get(['main', 'database']);
 
                 $hostname = $connexion['host'];
                 $port = $connexion['port'];

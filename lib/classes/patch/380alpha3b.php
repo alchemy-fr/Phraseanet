@@ -56,7 +56,7 @@ class patch_380alpha3b implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $app['configuration']->setDefault('main', 'search-engine');
+        $app['configuration.store']->setDefault('main', 'search-engine');
 
         return true;
     }

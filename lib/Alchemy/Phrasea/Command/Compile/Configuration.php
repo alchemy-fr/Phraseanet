@@ -25,7 +25,7 @@ class Configuration extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->container['configuration']->compileAndWrite();
+        $this->container['configuration.store']->compileAndWrite();
         $output->writeln("Confguration compiled.");
 
         return 0;

@@ -56,7 +56,7 @@ class patch_380alpha16a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $xsendfile = $app['configuration']['xsendfile'];
+        $xsendfile = $app['conf']->get('xsendfile');
 
         if (!isset($xsendfile['mapping'])) {
             $xsendfile['mapping'] = [];
@@ -71,7 +71,7 @@ class patch_380alpha16a implements patchInterface
             'mount-point' => '/download/',
         ];
 
-        $app['configuration']['xsendfile'] = $xsendfile;
+        $app['conf']->set('xsendfile', $xsendfile);
 
         return true;
     }

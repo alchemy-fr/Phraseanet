@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\LocaleServiceProvider;
 
 /**
@@ -22,18 +23,9 @@ class LocaleServiceProvidertest extends \PhraseanetPHPUnitAbstract
     {
         $app = new Application();
         $app->register(new LocaleServiceProvider());
-        $app['configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
-        $app['configuration']->expects($this->any())
-            ->method('offsetExist')
-            ->with('main')
-            ->will($this->returnValue(true));
-        $app['configuration']->expects($this->any())
-            ->method('isSetup')
-            ->will($this->returnValue(true));
-        $app['configuration']->expects($this->any())
-            ->method('offsetGet')
-            ->with('main')
-            ->will($this->returnValue(['languages' => ['fr_FR', 'en_US', 'de']]));
+        $app['root.path'] = __DIR__ . '/../../../../../..';
+        $app->register(new ConfigurationServiceProvider());
+        $app['conf']->set(['main', 'languages'], ['fr_FR', 'en_US', 'de']);
 
         $original = Application::getAvailableLanguages();
         unset($original['en_GB']);
@@ -46,18 +38,11 @@ class LocaleServiceProvidertest extends \PhraseanetPHPUnitAbstract
     {
         $app = new Application();
         $app->register(new LocaleServiceProvider());
-        $app['configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
-        $app['configuration']->expects($this->any())
-            ->method('offsetExist')
-            ->with('main')
-            ->will($this->returnValue(true));
-        $app['configuration']->expects($this->any())
-            ->method('isSetup')
-            ->will($this->returnValue(true));
-        $app['configuration']->expects($this->any())
-            ->method('offsetGet')
-            ->with('main')
-            ->will($this->returnValue(['languages' => ['en_US']]));
+        $app['root.path'] = __DIR__ . '/../../../../../..';
+        $app->register(new ConfigurationServiceProvider());
+
+        $app['conf']->set(['main', 'languages'], ['en_US']);
+
         $app['monolog'] = $this->getMock('Psr\Log\LoggerInterface');
         $app['monolog']->expects($this->once())
             ->method('error');

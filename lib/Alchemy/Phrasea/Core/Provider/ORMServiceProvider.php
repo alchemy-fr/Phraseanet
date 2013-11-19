@@ -100,17 +100,17 @@ class ORMServiceProvider implements ServiceProviderInterface
         });
 
         $app['EM.opcode-cache-type'] = $app->share(function (Application $app) {
-            return $app['configuration']['main']['opcodecache']['type'];
+            return $app['conf']->get(['main', 'opcodecache', 'type']);
         });
         $app['EM.opcode-cache-options'] = $app->share(function (Application $app) {
-            return $app['configuration']['main']['opcodecache']['options'];
+            return $app['conf']->get(['main', 'opcodecache', 'options']);
         });
 
         $app['EM.cache-type'] = $app->share(function (Application $app) {
-            return $app['configuration']['main']['cache']['type'];
+            return $app['conf']->get(['main', 'cache', 'type']);
         });
         $app['EM.cache-options'] = $app->share(function (Application $app) {
-            return $app['configuration']['main']['cache']['options'];
+            return $app['conf']->get(['main', 'cache', 'options']);
         });
         $app['EM.events-manager'] = $app->share(function (Application $app) {
             $evm = new EventManager();
@@ -121,10 +121,10 @@ class ORMServiceProvider implements ServiceProviderInterface
 
         $app['EM.dbal-conf'] = $app->share(function (Application $app) {
             if ('test' === $app->getEnvironment()) {
-                return $app['configuration']['main']['database-test'];
+                return $app['conf']->get(['main', 'database-test']);
             }
 
-            return $app['configuration']['main']['database'];
+            return $app['conf']->get(['main', 'database']);
         });
 
         $app['EM'] = $app->share(function (Application $app) {

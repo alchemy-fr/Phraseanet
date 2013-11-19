@@ -196,7 +196,7 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $this->assertEquals($value, $response->headers->get($name));
         }
 
-        $this->assertEquals(rtrim(self::$DI['app']['configuration']['main']['servername'], '/') . "/permalink/v1/1/". self::$DI['record_1']->get_record_id()."/caption/?token=".$token, $response->headers->get("Link"));
+        $this->assertEquals(rtrim(self::$DI['app']['conf']->get(['main', 'servername']), '/') . "/permalink/v1/1/". self::$DI['record_1']->get_record_id()."/caption/?token=".$token, $response->headers->get("Link"));
         $this->assertEquals(200, $response->getStatusCode());
     }
 
@@ -238,7 +238,7 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $this->assertEquals($value, $response->headers->get($name));
         }
 
-        $this->assertEquals(rtrim(self::$DI['app']['configuration']['main']['servername'], '/') . "/permalink/v1/1/". self::$DI['record_1']->get_record_id()."/caption/?token=".$token, $response->headers->get("Link"));
+        $this->assertEquals(rtrim(self::$DI['app']['conf']->get(['main', 'servername']), '/') . "/permalink/v1/1/". self::$DI['record_1']->get_record_id()."/caption/?token=".$token, $response->headers->get("Link"));
         $this->assertEquals(200, $response->getStatusCode());
     }
 

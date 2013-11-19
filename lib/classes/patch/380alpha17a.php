@@ -56,7 +56,7 @@ class patch_380alpha17a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $auth = $app['configuration']['authentication'];
+        $auth = $app['conf']->get('authentication');
 
         if (isset($auth['captcha']) && isset($auth['captcha']['trials-before-failure'])) {
             $auth['captcha']['trials-before-display'] = $auth['captcha']['trials-before-failure'];
@@ -67,7 +67,7 @@ class patch_380alpha17a implements patchInterface
             unset($auth['auto-create']['enabled']);
         }
 
-        $app['configuration']['authentication'] = $auth;
+        $app['conf']->set('authentication', $auth);
 
         return true;
     }

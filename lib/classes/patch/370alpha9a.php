@@ -56,7 +56,7 @@ class patch_370alpha9a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $app['configuration']->setDefault('border-manager');
+        $app['configuration.store']->setDefault('border-manager');
 
         return true;
     }

@@ -141,7 +141,7 @@ class module_report_connexion extends module_report
         $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
         $params = array_merge([
-                ':site_id' => $app['configuration']['main']['key']
+                ':site_id' => $app['conf']->get(['main', 'key'])
             ],
             $datefilter['params'],
             $collfilter['params']

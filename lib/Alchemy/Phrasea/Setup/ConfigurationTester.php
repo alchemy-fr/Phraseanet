@@ -81,7 +81,7 @@ class ConfigurationTester
      */
     public function isInstalled()
     {
-        return $this->app['configuration']->isSetup();
+        return $this->app['configuration.store']->isSetup();
     }
 
     /**

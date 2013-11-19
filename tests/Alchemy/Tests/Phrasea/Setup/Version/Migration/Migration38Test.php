@@ -30,17 +30,17 @@ class Migration38Test extends AbstractSetupTester
     public function testMigrate()
     {
         $app = new Application();
-        $app['configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
+        $app['configuration.store'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
         $app['root.path'] = __DIR__ . '/../Probe/fixtures-3807';
 
-        $app['configuration']->expects($this->once())
+        $app['configuration.store']->expects($this->once())
             ->method('initialize');
 
-        $app['configuration']->expects($this->once())
+        $app['configuration.store']->expects($this->once())
             ->method('getConfig')
             ->will($this->returnValue($this->getCurrent()));
 
-        $app['configuration']->expects($this->once())
+        $app['configuration.store']->expects($this->once())
             ->method('setConfig')
             ->with($this->getModified());
 
