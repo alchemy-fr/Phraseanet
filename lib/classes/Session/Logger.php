@@ -165,7 +165,7 @@ class Session_Logger
             WHERE site = :site AND sit_session = :ses_id';
 
         $params = [
-            ':site'   => $app['conf']->get(['main', 'key']),
+            ':site'   => $app['conf']->get(['main', 'key'])
             , ':ses_id' => $app['session']->get('session_id')
         ];
 
