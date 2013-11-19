@@ -149,7 +149,7 @@ class FtpExport
      *
      * @return FtpExport
      */
-    public function setUser(User $user)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 

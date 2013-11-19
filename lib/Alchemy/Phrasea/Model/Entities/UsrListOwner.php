@@ -78,7 +78,7 @@ class UsrListOwner
      *
      * @return UsrListowner
      */
-    public function setUser(User $user)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 

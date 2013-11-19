@@ -94,7 +94,7 @@ class ValidationParticipant
      *
      * @return AggregateToken
      */
-    public function setUser(User $user)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 

@@ -93,6 +93,8 @@ class Basket
      */
     private $order;
 
+    private $pusher;
+
     /**
      * Constructor
      */
@@ -162,7 +164,7 @@ class Basket
      *
      * @return Basket
      */
-    public function setUser(User $user)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 
@@ -223,15 +225,16 @@ class Basket
         return $this->pusher_id;
     }
 
-    public function setPusher(\User_Adapter $user)
+    public function setPusher(User $user)
     {
         $this->setPusherId($user->getId());
+        $this->pusher = $user;
     }
 
     public function getPusher(Application $app)
     {
         if ($this->getPusherId()) {
-            return \User_Adapter::getInstance($this->getPusherId(), $app);
+            return $this->pusher;
         }
     }
 

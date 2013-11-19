@@ -103,12 +103,12 @@ class ValidationSession
         return $this->initiator_id;
     }
 
-    public function isInitiator(\User_Adapter $user)
+    public function isInitiator(User $user)
     {
         return $this->getInitiatorId() == $user->getId();
     }
 
-    public function setInitiator(\User_Adapter $user)
+    public function setInitiator(User $user)
     {
         $this->initiator_id = $user->getId();
 
@@ -118,7 +118,7 @@ class ValidationSession
     public function getInitiator(Application $app)
     {
         if ($this->initiator_id) {
-            return \User_Adapter::getInstance($this->initiator_id, $app);
+            return $app['manipulator.user']->getRepository()->find($this->initiator_id);
         }
     }
 
@@ -258,9 +258,8 @@ class ValidationSession
         return $date_obj > $this->getExpires();
     }
 
-    public function getValidationString(Application $app, \User_Adapter $user)
+    public function getValidationString(Application $app, User $user)
     {
-
         if ($this->isInitiator($user)) {
             if ($this->isFinished()) {
                 return $app->trans('Vous aviez envoye cette demande a %n% utilisateurs', ['%n%' => count($this->getParticipants()) - 1]);
@@ -281,7 +280,7 @@ class ValidationSession
      *
      * @return ValidationParticipant
      */
-    public function getParticipant(\User_Adapter $user, Application $app)
+    public function getParticipant(User $user, Application $app)
     {
         foreach ($this->getParticipants() as $participant) {
             if ($participant->getUser()->getId() == $user->getId()) {

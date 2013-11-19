@@ -242,7 +242,7 @@ class UsrList
      * @param  \User_Adapter $user
      * @return boolean
      */
-    public function has(\User_Adapter $user, Application $app)
+    public function has(User $user, Application $app)
     {
         return $this->entries->exists(
             function ($key, $entry) use ($user, $app) {

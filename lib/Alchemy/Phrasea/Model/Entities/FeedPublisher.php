@@ -68,7 +68,7 @@ class FeedPublisher
      *
      * @return FeedPublisher
      */
-    public function setUser(User $user)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 

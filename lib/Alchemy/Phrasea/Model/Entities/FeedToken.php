@@ -60,7 +60,7 @@ class FeedToken
      *
      * @return FeedToken
      */
-    public function setUser(User $user)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 

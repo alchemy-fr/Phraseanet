@@ -77,7 +77,7 @@ class LazaretSession
      *
      * @return LazaretSession
      */
-    public function setUser(User $user)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 

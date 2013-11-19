@@ -96,7 +96,7 @@ class OrderElement
     public function getOrderMasterName(Application $app)
     {
         if (isset($this->orderMasterId) && null !== $this->orderMasterId) {
-            $user = \User_Adapter::getInstance($this->orderMasterId, $app);
+            $user = $app['manipulator.user']->getRepository()->find($this->orderMasterId);
 
             return $user->getFirstName();
         }
