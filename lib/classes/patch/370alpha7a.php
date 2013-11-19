@@ -36,7 +36,7 @@ class patch_370alpha7a implements patchInterface
      */
     public function require_all_upgrades()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -52,7 +52,7 @@ class patch_370alpha7a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return ['lazaret'];
+        return ['user', 'lazaret'];
     }
 
     /**

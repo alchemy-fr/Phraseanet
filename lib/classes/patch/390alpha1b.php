@@ -51,7 +51,7 @@ class patch_390alpha1b implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return ['order'];
+        return ['user', 'order'];
     }
 
     /**

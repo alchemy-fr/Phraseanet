@@ -50,7 +50,7 @@ class patch_380alpha11a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return ['session'];
+        return ['user', 'session'];
     }
 
     /**

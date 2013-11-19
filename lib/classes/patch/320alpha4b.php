@@ -38,7 +38,7 @@ class patch_320alpha4b implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return ['feed'];
+        return ['user', 'feed'];
     }
 
     /**

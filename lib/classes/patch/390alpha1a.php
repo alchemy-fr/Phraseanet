@@ -33,7 +33,7 @@ class patch_390alpha1a implements patchInterface
      */
     public function require_all_upgrades()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -49,7 +49,7 @@ class patch_390alpha1a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return ['ftp-credential'];
+        return ['user', 'ftp-credential'];
     }
 
     /**
