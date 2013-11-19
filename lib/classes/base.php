@@ -834,11 +834,14 @@ abstract class base implements cache_cacheableInterface
                 $version = $app['doctrine-migration.configuration']->getVersion($doctrineVersion);
                 $version->getMigration()->setEntityManager($app['EM']);
                 if (false === $version->isMigrated()) {
+                    echo "Before executing Patch ".$patch->get_release()." \n";
+                    echo "Executing migration ".$version->getversion()." \n";
                     $version->execute('up');
                 }
             }
 
             if (false === $patch->apply($this, $app)) {
+                echo "Executing Patch ".$patch->get_release()." \n";
                 $success = false;
             }
 

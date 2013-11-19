@@ -146,14 +146,7 @@ class Manage extends Helper
             throw new \Exception_InvalidArgument('Invalid mail address');
         }
 
-        $conn = $this->app['phraseanet.appbox']->get_connection();
-        $sql = 'SELECT usr_id FROM usr WHERE usr_mail = :email';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([':email' => $email]);
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $count = count($row);
-
-        if (!is_array($row) || $count == 0) {
+        if (null === $createdUser = $this->app['manipulator.user']->getRepository()->findByEmail($email)) {
             $sendCredentials = !!$this->request->get('send_credentials', false);
             $validateMail = !!$this->request->get('validate_mail', false);
 
@@ -189,12 +182,9 @@ class Manage extends Helper
                     $this->app['notification.deliverer']->deliver($mail);
                 }
             }
-
-            $this->usr_id = $createdUser->getId();
-        } else {
-            $this->usr_id = $row['usr_id'];
-            $createdUser = $this->app['manipulator.user']->getRepository()->find($this->usr_id);
         }
+
+        $this->usr_id = $createdUser->getId();
 
         return $createdUser;
     }

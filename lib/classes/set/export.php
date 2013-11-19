@@ -230,33 +230,33 @@ class set_export extends set_abstract
             $lst_base_id = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base());
 
             if ($hasadminright) {
-                $sql = "SELECT usr.usr_id,usr_login,usr.usr_mail, FtpCredential.*
+                $sql = "SELECT Users.id AS usr_id ,Users.login AS usr_login ,Users.mail AS usr_mail, FtpCredential.*
                   FROM (
-                    FtpCredential INNER JOIN usr ON (
-                        FtpCredential.active = 1 AND FtpCredential.usrId = usr.usr_id
+                    FtpCredential INNER JOIN Users ON (
+                        FtpCredential.active = 1 AND FtpCredential.user_id = Users.id
                     ) INNER JOIN basusr ON (
-                        usr.usr_id=basusr.usr_id
+                        Users.id=basusr.usr_id
                         AND (basusr.base_id=
                         '" . implode("' OR basusr.base_id='", $lst_base_id) . "'
                             )
                          )
                       )
-                  GROUP BY usr_id  ";
+                  GROUP BY Users.id  ";
                 $params = [];
             } elseif ($this->app['conf']->get(['registry', 'ftp', 'ftp-user-access'])) {
-                $sql = "SELECT usr.usr_id,usr_login,usr.usr_mail, FtpCredential.*
+                $sql = "SELECT Users.id AS usr_id ,Users.login AS usr_login ,Users.mail AS usr_mail, FtpCredential.*
                   FROM (
-                    FtpCredential INNER JOIN usr ON (
-                        FtpCredential.active = 1 AND FtpCredential.usrId = usr.usr_id
+                    FtpCredential INNER JOIN Users ON (
+                        FtpCredential.active = 1 AND FtpCredential.id = Users.id
                     ) INNER JOIN basusr ON (
-                        usr.usr_id=basusr.usr_id
-                        AND usr.usr_id = :usr_id
+                        Users.id=basusr.usr_id
+                        AND Users.id = :usr_id
                         AND (basusr.base_id=
                         '" . implode("' OR basusr.base_id='", $lst_base_id) . "'
                           )
                         )
                       )
-                  GROUP BY usr_id  ";
+                  GROUP BY Users.id  ";
                 $params = [':usr_id' => $app['authentication']->getUser()->getId()];
             }
 

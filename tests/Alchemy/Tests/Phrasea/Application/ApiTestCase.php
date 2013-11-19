@@ -7,6 +7,7 @@ use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Model\Entities\Task;
+use Doctrine\Common\Collections\ArrayCollection;
 use Guzzle\Common\Exception\GuzzleException;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
@@ -893,7 +894,16 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testRecordsSearchRouteWithQuery($method)
     {
         $this->setToken(self::$token);
+        $searchEngine = $this->getMockBuilder('Alchemy\Phrasea\SearchEngine\SearchEngineResult')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $searchEngine->expects($this->any())
+            ->method('getSuggestions')
+            ->will($this->returnValue(new ArrayCollection()));
+
         self::$DI['app']['phraseanet.SE'] = $this->getMock('Alchemy\Phrasea\SearchEngine\SearchEngineInterface');
+
         self::$DI['app']['phraseanet.SE']->expects($this->once())
                 ->method('query')
                 ->with('koala', 0, 10)
@@ -1908,6 +1918,25 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $this->evaluateGoodQuarantineItem($content['response']['quarantine_item']);
         $this->assertEquals($quarantineItemId, $content['response']['quarantine_item']['id']);
+    }
+
+    protected function getQuarantineItem()
+    {
+        $lazaretSession = new \Alchemy\Phrasea\Model\Entities\LazaretSession();
+        self::$DI['app']['EM']->persist($lazaretSession);
+
+        $quarantineItem = null;
+        $callback = function ($element, $visa, $code) use (&$quarantineItem) {
+                $quarantineItem = $element;
+            };
+
+        $tmpname = tempnam(sys_get_temp_dir(), 'test_quarantine');
+        copy(__DIR__ . '/../../../../files/iphone_pic.jpg', $tmpname);
+
+        $file = File::buildFromPathfile($tmpname, self::$DI['collection'], self::$DI['app']);
+        self::$DI['app']['border-manager']->process($lazaretSession, $file, $callback, Manager::FORCE_LAZARET);
+
+        return $quarantineItem;
     }
 
     protected function evaluateGoodQuarantineItem($item)

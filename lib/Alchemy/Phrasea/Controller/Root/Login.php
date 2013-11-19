@@ -376,9 +376,13 @@ class Login implements ControllerProviderInterface
                         'job'       => 'setJob',
                         'company'   => 'setCompany',
                         'position'  => 'setActivity',
-                        'geonameid' => 'setGeonanameId',
+                        'geonameid' => 'setGeonameId',
                     ] as $property => $method) {
                         if (isset($data[$property])) {
+                            if ($property === 'geonameid') {
+                                $app['manipulator.user']->setGeonameId($user, $data[$property]);
+                                continue;
+                            }
                             call_user_func([$user, $method], $data[$property]);
                         }
                     }
@@ -490,9 +494,7 @@ class Login implements ControllerProviderInterface
             $app->abort(400, 'Missing usr_id parameter.');
         }
 
-        try {
-            $user = $app['manipulator.user']->getRepository()->find((int) $usrId);
-        } catch (\Exception $e) {
+        if (null === $user = $app['manipulator.user']->getRepository()->find((int) $usrId)) {
             $app->addFlash('error', $app->trans('Invalid link.'));
 
             return $app->redirectPath('homepage');
@@ -558,7 +560,7 @@ class Login implements ControllerProviderInterface
         try {
             $user = $app['manipulator.user']->getRepository()->find((int) $datas['usr_id']);
         } catch (\Exception $e) {
-            $app->addFlash('error', $app->trans('Invalid unlock link.'));
+            $app->addFlash('error', _('Invalid unlock link.'));
 
             return $app->redirectPath('homepage');
         }
@@ -621,7 +623,7 @@ class Login implements ControllerProviderInterface
                     $datas = $app['tokens']->helloToken($token);
 
                     $user = $app['manipulator.user']->getRepository()->find($datas['usr_id']);
-                    $user->setPassword($data['password']);
+                    $app['manipulator.user']->setPassword($user, $data['password']);
 
                     $app['tokens']->removeToken($token);
 
@@ -661,7 +663,7 @@ class Login implements ControllerProviderInterface
                     try {
                         $user = $app['manipulator.user']->getRepository()->findByEmail($data['email']);
                     } catch (\Exception $e) {
-                        throw new FormProcessingException($app->trans('phraseanet::erreur: Le compte n\'a pas ete trouve'));
+                        throw new FormProcessingException(_('phraseanet::erreur: Le compte n\'a pas ete trouve'));
                     }
 
                     try {
@@ -806,8 +808,7 @@ class Login implements ControllerProviderInterface
         $context = new Context(Context::CONTEXT_GUEST);
         $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
 
-        $password = \random::generatePassword(24);
-        $invite_user = $app['manipulator.user']->createUser('invite', $password);
+        $invite_user = $app['manipulator.user']->createUser('invite', \random::generatePassword(24));
 
         $usr_base_ids = array_keys($app['acl']->get($user)->get_granted_base());
         $app['acl']->get($user)->revoke_access_from_bases($usr_base_ids);
@@ -1051,7 +1052,7 @@ class Login implements ControllerProviderInterface
         $response->headers->clearCookie('invite-usr-id');
 
         if ($request->cookies->has('postlog') && $request->cookies->get('postlog') == '1') {
-            if (!$user->is_guest() && $request->cookies->has('invite-usr_id')) {
+            if (!$user->isGuest() && $request->cookies->has('invite-usr_id')) {
                 if ($user->getId() != $inviteUsrId = $request->cookies->get('invite-usr_id')) {
 
                     $repo = $app['EM']->getRepository('Phraseanet:Basket');

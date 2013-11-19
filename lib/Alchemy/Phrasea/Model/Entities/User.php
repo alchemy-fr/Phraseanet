@@ -291,6 +291,8 @@ class User
     public function setLogin($login)
     {
         $this->login = $login;
+
+        return $this;
     }
 
     /**
@@ -307,6 +309,8 @@ class User
     public function setEmail($email)
     {
         $this->email = $email;
+
+        return $this;
     }
 
     /**
@@ -324,6 +328,8 @@ class User
     public function setPassword($password)
     {
         $this->password = $password;
+
+        return $this;
     }
 
     /**
@@ -340,6 +346,8 @@ class User
     public function setNonce($nonce)
     {
         $this->nonce = $nonce;
+
+        return $this;
     }
 
     /**
@@ -356,6 +364,8 @@ class User
     public function setSaltedPassword($saltedPassword)
     {
         $this->saltedPassword = (Boolean) $saltedPassword;
+
+        return $this;
     }
 
     /**
@@ -372,6 +382,8 @@ class User
     public function setFirstName($firstName)
     {
         $this->firstName = $firstName;
+
+        return $this;
     }
 
     /**
@@ -389,6 +401,8 @@ class User
     public function setLastName($lastName)
     {
         $this->lastName = $lastName;
+
+        return $this;
     }
 
     /**
@@ -415,6 +429,8 @@ class User
         }
 
         $this->gender = $gender;
+
+        return $this;
     }
 
     /**
@@ -431,6 +447,8 @@ class User
     public function setAddress($address)
     {
         $this->address = $address;
+
+        return $this;
     }
 
     /**
@@ -447,6 +465,8 @@ class User
     public function setCity($city)
     {
         $this->city = $city;
+
+        return $this;
     }
 
     /**
@@ -463,6 +483,8 @@ class User
     public function setCountry($country)
     {
         $this->country = $country;
+
+        return $this;
     }
 
     /**
@@ -479,6 +501,8 @@ class User
     public function setZipCode($zipCode)
     {
         $this->zipCode = $zipCode;
+
+        return $this;
     }
 
     /**
@@ -499,6 +523,8 @@ class User
         }
 
         $this->geonameId = $geonameId;
+
+        return $this;
     }
 
     /**
@@ -521,6 +547,8 @@ class User
         }
 
         $this->locale = $locale;
+
+        return $this;
     }
 
     /**
@@ -537,6 +565,8 @@ class User
     public function setTimezone($timezone)
     {
         $this->timezone = $timezone;
+
+        return $this;
     }
 
     /**
@@ -553,6 +583,8 @@ class User
     public function setJob($job)
     {
         $this->job = $job;
+
+        return $this;
     }
 
     /**
@@ -569,6 +601,8 @@ class User
     public function setActivity($activity)
     {
         $this->activity = $activity;
+
+        return $this;
     }
 
     /**
@@ -585,6 +619,8 @@ class User
     public function setCompany($company)
     {
         $this->company = $company;
+
+        return $this;
     }
 
     /**
@@ -601,6 +637,8 @@ class User
     public function setPhone($phone)
     {
         $this->phone = $phone;
+
+        return $this;
     }
 
     /**
@@ -617,6 +655,8 @@ class User
     public function setFax($fax)
     {
         $this->fax = $fax;
+
+        return $this;
     }
 
     /**
@@ -633,6 +673,8 @@ class User
     public function setAdmin($admin)
     {
         $this->admin = (Boolean) $admin;
+
+        return $this;
     }
 
     /**
@@ -649,6 +691,8 @@ class User
     public function setGuest($guest)
     {
         $this->guest = (Boolean) $guest;
+
+        return $this;
     }
 
     /**
@@ -665,6 +709,8 @@ class User
     public function setMailNotificationsActivated($mailNotifications)
     {
         $this->mailNotificationsActivated = (Boolean) $mailNotifications;
+
+        return $this;
     }
 
     /**
@@ -681,6 +727,8 @@ class User
     public function setRequestNotificationsActivated($requestNotifications)
     {
         $this->requestNotificationsActivated = (Boolean) $requestNotifications;
+
+        return $this;
     }
 
     /**
@@ -697,6 +745,8 @@ class User
     public function setLdapCreated($ldapCreated)
     {
         $this->ldapCreated = (Boolean) $ldapCreated;
+
+        return $this;
     }
 
     /**
@@ -713,6 +763,8 @@ class User
     public function setModelOf(User $owner)
     {
         $this->modelOf = $owner;
+
+        return $this;
     }
 
     /**
@@ -729,6 +781,8 @@ class User
     public function setLastModel($lastModel)
     {
         $this->lastModel = $lastModel;
+
+        return $this;
     }
 
     /**
@@ -745,6 +799,8 @@ class User
     public function setPushList($pushList)
     {
         $this->pushList = $pushList;
+
+        return $this;
     }
 
     /**
@@ -761,6 +817,8 @@ class User
     public function setCanChangeProfil($canChangeProfil)
     {
         $this->canChangeProfil = (Boolean) $canChangeProfil;
+
+        return $this;
     }
 
     /**
@@ -777,6 +835,8 @@ class User
     public function setCanChangeFtpProfil($canChangeFtpProfil)
     {
         $this->canChangeFtpProfil = (Boolean) $canChangeFtpProfil;
+
+        return $this;
     }
 
     /**
@@ -793,6 +853,8 @@ class User
     public function setLastConnection(\DateTime $lastConnection)
     {
         $this->lastConnection = $lastConnection;
+
+        return $this;
     }
 
     /**
@@ -809,6 +871,8 @@ class User
     public function setMailLocked($mailLocked)
     {
         $this->mailLocked = (Boolean) $mailLocked;
+
+        return $this;
     }
 
     /**
@@ -853,6 +917,8 @@ class User
     public function setCreated(\Datetime $created)
     {
         $this->created = $created;
+
+        return $this;
     }
 
     /**
@@ -861,6 +927,8 @@ class User
     public function setUpdated(\Datetime $updated)
     {
         $this->updated = $updated;
+
+        return $this;
     }
 
     /**

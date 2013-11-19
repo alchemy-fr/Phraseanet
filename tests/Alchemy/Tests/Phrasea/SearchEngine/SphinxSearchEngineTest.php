@@ -18,14 +18,9 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
     public function bootTestCase()
     {
         $binaryFinder = new ExecutableFinder();
-        $indexer = $binaryFinder->find('indexer');
 
-        $searchd = $binaryFinder->find('searchd');
-
-        if (!$indexer || !$searchd) {
+        if (null !== self::$indexerBinary = $binaryFinder->find('indexer') || null !== self::$searchdBinary = $binaryFinder->find('searchd')) {
             self::$skipped = true;
-
-            return;
         }
 
         $app = self::$DI['app'];
@@ -74,6 +69,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
     public function setUp()
     {
         parent::setUp();
+
         if (self::$skipped) {
             $this->markTestSkipped('SphinxSearch is not present on system');
         }
@@ -90,16 +86,55 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
 
     public function initialize()
     {
+        if (!self::$searchEngine) {
+            self::$DI['app']['conf']->set(['main', 'search-engine', 'options'], [
+                'host'    => '127.0.0.1',
+                'port'    => 9312,
+                'rt_host' => '127.0.0.1',
+                'rt_port' => 9306,
+            ]);
+
+            self::$searchEngine = SphinxSearchEngine::create(self::$DI['app'], self::$DI['app']['conf']->get(['main', 'search-engine', 'options']));
+
+            self::$config = tempnam(sys_get_temp_dir(), 'tmp_sphinx.conf');
+
+            $configuration = self::$searchEngine->getConfigurationPanel()->getConfiguration();
+            $configuration['date_fields'] = [];
+
+            foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+                foreach ($databox->get_meta_structure() as $databox_field) {
+                    if ($databox_field->get_type() != \databox_field::TYPE_DATE) {
+                        continue;
+                    }
+                    $configuration['date_fields'][] = $databox_field->get_name();
+                }
+            }
+
+            $configuration['date_fields'] = array_unique($configuration['date_fields']);
+
+            self::$searchEngine->getConfigurationPanel()->saveConfiguration($configuration);
+
+            $configFile = self::$searchEngine->getConfigurationPanel()->generateSphinxConf(self::$DI['app']['phraseanet.appbox']->get_databoxes(), $configuration);
+
+            file_put_contents(self::$config, $configFile);
+
+            $binaryFinder = new ExecutableFinder();
+
+            $process = new Process(self::$indexerBinary . ' --all -c ' . self::$config);
+            $process->run();
+
+            self::$searchdProcess = new Process(self::$searchdBinary . ' -c ' . self::$config);
+            self::$searchd->run();
+
+            self::$searchEngine = SphinxSearchEngine::create(self::$DI['app'], self::$DI['app']['configuration']['main']['search-engine']['options']);
+        }
     }
 
     public static function tearDownAfterClass()
     {
         if (!self::$skipped) {
-            $binaryFinder = new ExecutableFinder();
-            $searchd = $binaryFinder->find('searchd');
-
-            self::$searchd = new Process($searchd . ' --stop -c ' . self::$config);
-            self::$searchd->run();
+            self::$searchdProcess = new Process(self::$searchdBinary . ' --stop -c ' . self::$config);
+            self::$searchdProcess->run();
 
             unlink(self::$config);
         }

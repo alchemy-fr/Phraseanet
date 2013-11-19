@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Notification\Receiver;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Alchemy\Phrasea\Notification\Mail\MailInfoUserRegistered;
 
 class eventsmanager_notify_register extends eventsmanager_notifyAbstract
@@ -52,27 +53,33 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 
         $mailColl = [];
 
-        try {
-            $sql = 'SELECT u.usr_id, b.base_id
-      FROM usr u, basusr b
-      WHERE u.usr_id = b.usr_id
-      AND b.base_id
-      IN (' . implode(', ', array_keys($base_ids)) . ')
-      AND model_of="0"
-      AND b.canadmin="1"
-      AND b.actif="1"
-          AND u.usr_login NOT LIKE "(#deleted%"';
+        $rsm = new ResultSetMappingBuilder($this->app['EM']);
+        $rsm->addScalarResult('base_id', 'base_id');
+        $selectClause = $rsm->generateSelectClause([
+            'u' => 't1'
+        ]);
 
-            $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute();
-            $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+        $query = $this->app['EM']->createNativeQuery('
+            SELECT b.base_id, '.$selectClause.' FROM Users u, basusr b
+            WHERE u.id = b.usr_id
+                AND b.base_id IN (' . implode(', ', array_keys($base_ids)) . ')
+                AND u.model_of="0"
+                AND b.actif="1"
+                AND b.canadmin="1"
+                AND u.deleted="0"'
+        );
+
+        try {
+            $rs = $query->getResult();
 
             foreach ($rs as $row) {
-                if ( ! isset($mailColl[$row['usr_id']]))
-                    $mailColl[$row['usr_id']] = [];
+                $user = $row[0];
 
-                $mailColl[$row['usr_id']][] = $row['base_id'];
+                if (!isset($mailColl[$user->getId()])) {
+                    $mailColl[$user->getId()] = [];
+                }
+
+                $mailColl[$user->getId()][] = $row['base_id'];
             }
         } catch (Exception $e) {
 

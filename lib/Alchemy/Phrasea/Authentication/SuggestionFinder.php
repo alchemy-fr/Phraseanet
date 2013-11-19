@@ -40,16 +40,7 @@ class SuggestionFinder
         $infos = $token->getIdentity();
 
         if ($infos->has(Identity::PROPERTY_EMAIL)) {
-
-            $sql = 'SELECT usr_id FROM usr WHERE usr_mail = :email';
-            $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute([':email' => $infos->get(Identity::PROPERTY_EMAIL)]);
-            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-
-            if ($row) {
-                return $this->app['manipulator.user']->getRepository()->find($row['usr_id']);
-            }
+           return $this->app['manipulator.user']->getRepository()->findByEmail($infos->get(Identity::PROPERTY_EMAIL));
         }
 
         return null;

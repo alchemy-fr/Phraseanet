@@ -399,7 +399,7 @@ class Feed implements FeedInterface
     public function getPublisher(User $user)
     {
         foreach ($this->getPublishers() as $publisher) {
-            if ($publisher->gteUser()->getId() == $user->getId()) {
+            if ($publisher->getUser()->getId() == $user->getId()) {
                 return $publisher;
             }
         }

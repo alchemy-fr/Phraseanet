@@ -101,12 +101,12 @@ class ACL implements cache_cacheableInterface
     /**
      * Constructor
      *
-     * @param User_Interface $user
+     * @param User $user
      * @param Application    $app
      *
      * @return \ACL
      */
-    public function __construct(User_Interface $user, Application $app)
+    public function __construct(User $user, Application $app)
     {
         $this->user = $user;
         $this->app = $app;
@@ -263,11 +263,11 @@ class ACL implements cache_cacheableInterface
     /**
      * Apply a template on user
      *
-     * @param  User_Interface $template_user
+     * @param  User $template_user
      * @param  array          $base_ids
      * @return ACL
      */
-    public function apply_model(User_Interface $template_user, Array $base_ids)
+    public function apply_model(User $template_user, Array $base_ids)
     {
         if (count($base_ids) == 0) {
             return $this;
@@ -397,7 +397,7 @@ class ACL implements cache_cacheableInterface
         return $this;
     }
 
-    private function apply_template_time_limits(User_Interface $template_user, Array $base_ids)
+    private function apply_template_time_limits(User $template_user, Array $base_ids)
     {
         foreach ($base_ids as $base_id) {
             $limited = $this->app['acl']->get($template_user)->get_limits($base_id);
@@ -752,25 +752,12 @@ class ACL implements cache_cacheableInterface
 
     public function is_admin()
     {
-        $this->load_is_admin();
-
-        return $this->is_admin;
+        return $this->user->isAdmin();
     }
 
     public function set_admin($boolean)
     {
-        $sql = 'UPDATE usr SET create_db = :create_db WHERE usr_id = :usr_id';
-
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute([
-            ':create_db' => $boolean ? '1' : '0',
-            ':usr_id'    => $this->user->getId()
-        ]);
-        $stmt->closeCursor();
-
-        $this->delete_data_from_cache(self::CACHE_IS_ADMIN);
-
-        $this->is_admin = null;
+        $this->app['manipulator.user']->promote($this->user);
 
         return $this;
     }
@@ -821,34 +808,6 @@ class ACL implements cache_cacheableInterface
         ];
 
         $this->set_data_to_cache($datas, self::CACHE_RIGHTS_RECORDS);
-
-        return $this;
-    }
-
-    protected function load_is_admin()
-    {
-        if (null !== $this->is_admin) {
-            return $this;
-        }
-
-        try {
-            $this->is_admin = $this->get_data_from_cache(self::CACHE_IS_ADMIN);
-
-            return $this;
-        } catch (Exception $e) {
-
-        }
-        $sql = 'SELECT create_db
-            FROM usr WHERE usr_id = :usr_id';
-
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id'       => $this->user->getId()]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-        unset($stmt);
-        $this->is_admin = !!$row['create_db'];
-
-        $this->set_data_to_cache($this->is_admin, self::CACHE_IS_ADMIN);
 
         return $this;
     }

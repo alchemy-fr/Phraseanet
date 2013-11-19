@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class appbox_register
 {
@@ -36,11 +37,11 @@ class appbox_register
     /**
      * Add a registration request for a user on a collection
      *
-     * @param  User_Interface  $user
+     * @param  User  $user
      * @param  collection      $collection
      * @return appbox_register
      */
-    public function add_request(User_Interface $user, collection $collection)
+    public function add_request(User $user, collection $collection)
     {
         $sql = "INSERT INTO demand (date_modif, usr_id, base_id, en_cours, refuser)
       VALUES (now(), :usr_id , :base_id, 1, 0)";
@@ -56,11 +57,11 @@ class appbox_register
      * user is waiting for approbation
      *
      * @param Application    $app
-     * @param User_Interface $user
+     * @param User $user
      *
      * @return array
      */
-    public function get_collection_awaiting_for_user(Application $app, User_Interface $user)
+    public function get_collection_awaiting_for_user(Application $app, User $user)
     {
         $sql = 'SELECT base_id FROM demand WHERE usr_id = :usr_id AND en_cours="1" ';
         $stmt = $this->appbox->get_connection()->prepare($sql);

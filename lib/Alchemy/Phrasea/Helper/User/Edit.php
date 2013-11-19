@@ -125,12 +125,12 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
             sum(mask_and + mask_xor) as masks
 
-            FROM (usr u, bas b, sbas s)
+            FROM (Users u, bas b, sbas s)
               LEFT JOIN (basusr bu)
-                ON (bu.base_id = b.base_id AND u.usr_id = bu.usr_id)
+                ON (bu.base_id = b.base_id AND u.id = bu.usr_id)
               LEFT join  sbasusr sbu
-                ON (sbu.sbas_id = b.sbas_id AND u.usr_id = sbu.usr_id)
-            WHERE ( (u.usr_id = " . implode(' OR u.usr_id = ', $this->users) . " )
+                ON (sbu.sbas_id = b.sbas_id AND u.id = sbu.usr_id)
+            WHERE ( (u.id = " . implode(' OR u.id = ', $this->users) . " )
                     AND b.sbas_id = s.sbas_id
                     AND (b.base_id = '" . implode("' OR b.base_id = '", $list) . "'))
             GROUP BY b.base_id
@@ -192,8 +192,8 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $this->base_id = (int) $this->request->get('base_id');
 
         $sql = "SELECT u.usr_id, restrict_dwnld, remain_dwnld, month_dwnld_max
-      FROM (usr u INNER JOIN basusr bu ON u.usr_id = bu.usr_id)
-      WHERE (u.usr_id = " . implode(' OR u.usr_id = ', $this->users) . ")
+      FROM (Users u INNER JOIN basusr bu ON u.id = bu.usr_id)
+      WHERE (u.id = " . implode(' OR u.id = ', $this->users) . ")
       AND bu.base_id = :base_id";
 
         $conn = \connection::getPDOConnection($this->app);
@@ -315,8 +315,8 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $this->base_id = (int) $this->request->get('base_id');
 
         $sql = "SELECT u.usr_id, time_limited, limited_from, limited_to
-      FROM (usr u INNER JOIN basusr bu ON u.usr_id = bu.usr_id)
-      WHERE (u.usr_id = " . implode(' OR u.usr_id = ', $this->users) . ")
+      FROM (Users u INNER JOIN basusr bu ON u.id = bu.usr_id)
+      WHERE (u.id = " . implode(' OR u.id = ', $this->users) . ")
       AND bu.base_id = :base_id";
 
         $conn = \connection::getPDOConnection($this->app);
@@ -369,10 +369,10 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $sbas_id = (int) $this->request->get('sbas_id');
 
         $sql = "SELECT u.usr_id, time_limited, limited_from, limited_to
-            FROM (usr u
-              INNER JOIN basusr bu ON u.usr_id = bu.usr_id
+            FROM (Users u
+              INNER JOIN basusr bu ON u.id = bu.usr_id
               INNER JOIN bas b ON b.base_id = bu.base_id)
-            WHERE (u.usr_id = " . implode(' OR u.usr_id = ', $this->users) . ")
+            WHERE (u.id = " . implode(' OR u.id = ', $this->users) . ")
               AND b.sbas_id = :sbas_id";
 
         $conn = \connection::getPDOConnection($this->app);
@@ -602,12 +602,13 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             ->setEmail($parm['email'])
             ->setAddress($parm['address'])
             ->setZipCode($parm['zip'])
-            ->setGeonanameId($parm['geonameid'])
             ->setActivity($parm['function'])
             ->setJob($parm['activite'])
             ->setCompany($parm['company'])
             ->setPhone($parm['telephone'])
             ->setFax($parm['fax']);
+
+        $this->app['manipulator.user']->setGeonameId($user, $parm['geonameid']);
 
         $new_email = $user->getEmail();
 

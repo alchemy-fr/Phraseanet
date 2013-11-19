@@ -31,18 +31,25 @@ class Bridge_Api_AbstractTest extends \PhraseanetWebTestCase
             self::$api = Bridge_Api::create($application, 'apitest');
         }
 
-        try {
-            self::$account = Bridge_Account::load_account_from_distant_id($application, self::$api, self::$DI['user'], 'kirikoo');
-        } catch (Bridge_Exception_AccountNotFound $e) {
-            self::$account = Bridge_Account::create($application, self::$api, self::$DI['user'], 'kirikoo', 'coucou');
+        self::$DI['user'];
+
+        if (!self::$account) {
+            self::$account = Bridge_Account::create(self::$DI['app'], self::$api, self::$DI['user'], 'kirikoo', 'coucou');
         }
+
+        $this->auth = $this->getMock("Bridge_Api_Auth_Interface");
+        $this->bridgeApi = $this->getMock('Bridge_Api_Abstract', ["is_configured", "initialize_transport", "set_auth_params", "set_transport_authentication_params"], [self::$DI['app']['url_generator'], self::$DI['app']['phraseanet.registry'], $this->auth, "Mock_Bridge_Api_Abstract"]);
     }
 
     public static function tearDownAfterClass()
     {
-        self::$api->delete();
-        if (self::$account instanceof Bridge_Account) {
+        if (self::$api) {
+            self::$api->delete();
+            self::$api = null;
+        }
+        if (self::$account) {
             self::$account->delete();
+            self::$account = null;
         }
         self::$api = self::$account = null;
         parent::tearDownAfterClass();

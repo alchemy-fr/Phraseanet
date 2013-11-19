@@ -14,6 +14,8 @@ namespace Alchemy\Phrasea\Controller\Admin;
 use Alchemy\Phrasea\Helper\User as UserHelper;
 use Alchemy\Phrasea\Model\Entities\FtpCredential;
 use Alchemy\Phrasea\Model\Entities\User;
+use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -353,51 +355,53 @@ class Users implements ControllerProviderInterface
         })->bind('admin_users_export_csv');
 
         $controllers->get('/demands/', function (Application $app) {
-
             $lastMonth = time() - (3 * 4 * 7 * 24 * 60 * 60);
             $sql = "DELETE FROM demand WHERE date_modif < :date";
             $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
             $stmt->execute([':date' => date('Y-m-d', $lastMonth)]);
             $stmt->closeCursor();
 
-            $baslist = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['canadmin']));
+            $basList = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['canadmin']));
+            $models = $app['manipulator.user']->getRepository()->findModelOf($app['authentication']->getUser());
 
-            $sql = 'SELECT usr_id, usr_login FROM usr WHERE model_of = :usr_id';
+            $rsm = new ResultSetMappingBuilder($app['EM']);
+            $rsm->addScalarResult('date_demand', 'date_demand');
+            $rsm->addScalarResult('base_demand', 'base_demand');
 
-            $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute([':usr_id' => $app['authentication']->getUser()->getId()]);
-            $models = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $selectClause = $rsm->generateSelectClause([
+                'u' => 't1'
+            ]);
 
-            $sql = "
-            SELECT demand.date_modif,demand.base_id, usr.usr_id , usr.usr_login ,usr.usr_nom,usr.usr_prenom,
-            usr.societe, usr.fonction, usr.usr_mail, usr.tel, usr.activite,
-            usr.adresse, usr.cpostal, usr.ville, usr.pays, CONCAT(usr.usr_nom,' ',usr.usr_prenom,'\n',fonction,' (',societe,')') AS info
-            FROM (demand INNER JOIN usr on demand.usr_id=usr.usr_id AND demand.en_cours=1 AND usr.usr_login NOT LIKE '(#deleted%' )
-            WHERE (base_id='" . implode("' OR base_id='", $baslist) . "') ORDER BY demand.usr_id DESC,demand.base_id ASC
-        ";
-
-            $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute();
-            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $query = $app['EM']->createNativeQuery("
+                SELECT d.date_modif AS date_demand, d.base_id AS base_demand, " . $selectClause . "
+                FROM (demand d INNER JOIN Users t1 ON d.usr_id=t1.id
+                    AND d.en_cours=1
+                    AND t1.deleted=0
+                )
+                WHERE (base_id='" . implode("' OR base_id='", $basList) . "')
+                ORDER BY d.usr_id DESC, d.base_id ASC
+            ", $rsm);
 
             $currentUsr = null;
-            $table = ['user' => [], 'coll' => []];
+            $table = ['users' => [], 'coll' => []];
 
-            foreach ($rs as $row) {
-                if ($row['usr_id'] != $currentUsr) {
-                    $currentUsr = $row['usr_id'];
-                    $row['date_modif'] = new \DateTime($row['date_modif']);
-                    $table['user'][$row['usr_id']] = $row;
+            foreach ($query->getResult() as $row) {
+                $user = $row[0];
+
+                if ($user->getId() !== $currentUsr) {
+                    $currentUsr = $user->getId();
+                    $table['users'][$currentUsr] = [
+                        'user' => $user,
+                        'date_demand' => new \DateTime($row['date_demand']),
+                    ];
                 }
 
-                if (!isset($table['coll'][$row['usr_id']])) {
-                    $table['coll'][$row['usr_id']] = [];
+                if (!isset($table['coll'][$user->getId()])) {
+                    $table['coll'][$user->getId()] = [];
                 }
 
-                if (!in_array($row['base_id'], $table['coll'][$row['usr_id']])) {
-                    $table['coll'][$row['usr_id']][] = $row['base_id'];
+                if (!in_array($row['base_demand'], $table['coll'][$user->getId()])) {
+                    $table['coll'][$user->getId()][] = $row['base_demand'];
                 }
             }
 
@@ -543,17 +547,9 @@ class Users implements ControllerProviderInterface
                 }
 
                 foreach ($done as $usr => $bases) {
-                    $sql = 'SELECT usr_mail FROM usr WHERE usr_id = :usr_id';
-
-                    $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-                    $stmt->execute([':usr_id' => $usr]);
-                    $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-                    $stmt->closeCursor();
-
                     $acceptColl = $denyColl = [];
-
-                    if ($row) {
-                        if (\Swift_Validate::email($row['usr_mail'])) {
+                    if (null === $user = $app['manipulator.user']->getRepository()->find($usr)) {
+                        if (\Swift_Validate::email($user.getEmail())) {
                             foreach ($bases as $bas => $isok) {
                                 if ($isok) {
                                     $acceptColl[] = \phrasea::bas_labels($bas, $app);
@@ -715,20 +711,23 @@ class Users implements ControllerProviderInterface
                 ]);
             }
 
-            $sql = "
-            SELECT usr.usr_id,usr.usr_login
-            FROM usr
-              INNER JOIN basusr
-                ON (basusr.usr_id=usr.usr_id)
-            WHERE usr.model_of = :usr_id
-              AND base_id in(" . implode(', ', array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['manage']))) . ")
-              AND usr_login not like '(#deleted_%)'
-            GROUP BY usr_id";
+            $rsm = new ResultSetMappingBuilder($app['EM']);
 
-            $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute([':usr_id' => $app['authentication']->getUser()->getId()]);
-            $models = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $selectClause = $rsm->generateSelectClause([
+                'u' => 't1'
+            ]);
+
+            $query = $app['EM']->createNativeQuery("
+                SELECT " . $selectClause . "
+                FROM Users t1
+                    INNER JOIN basusr b ON (b.usr_id=t1.id)
+                WHERE t1.model_of = :user_id
+                  AND b.base_id IN (" . implode(', ', array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['manage']))) . ")
+                  AND t1.deleted='0'
+                GROUP BY t1.id"
+            );
+            $query->setParameter(':user_id', $app['authentication']->getUser()->getId());
+            $models = $query->getResult();
 
             return $app['twig']->render('/admin/user/import/view.html.twig', [
                 'nb_user_to_add'   => $nbUsrToAdd,

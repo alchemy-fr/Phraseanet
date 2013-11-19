@@ -11,8 +11,8 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
     {
         $request = new Request([
                 'lst' => implode(';', [
-                    self::$DI['record_3']->get_serialize_key(),
-                    self::$DI['record_3']->get_serialize_key(),
+                    self::$DI['record_24']->get_serialize_key(),
+                    self::$DI['record_24']->get_serialize_key(),
                     self::$DI['record_2']->get_serialize_key(),
                     self::$DI['record_story_2']->get_serialize_key(),
                     self::$DI['record_no_access']->get_serialize_key(),
@@ -49,10 +49,10 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
     public function testSimpleSimple()
     {
         $request = new Request([
-                'lst' => implode(';', [
-                    self::$DI['record_2']->get_serialize_key(),
-                ])
-            ]);
+            'lst' => implode(';', [
+                self::$DI['record_2']->get_serialize_key(),
+            ])
+        ]);
 
         $records = RecordsRequest::fromRequest(self::$DI['app'], $request);
 
@@ -77,10 +77,10 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
             ->update_rights_to_sbas(self::$DI['record_2']->get_sbas_id(), ['bas_chupub' => 0]);
 
         $request = new Request([
-                'lst' => implode(';', [
-                    self::$DI['record_2']->get_serialize_key(),
-                ])
-            ]);
+            'lst' => implode(';', [
+                self::$DI['record_2']->get_serialize_key(),
+            ])
+        ]);
 
         $records = RecordsRequest::fromRequest(self::$DI['app'], $request, false, [], ['bas_chupub']);
 
@@ -103,10 +103,10 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
             ->update_rights_to_base(self::$DI['record_2']->get_base_id(), ['chgstatus' => 0]);
 
         $request = new Request([
-                'lst' => implode(';', [
-                    self::$DI['record_2']->get_serialize_key(),
-                ])
-            ]);
+            'lst' => implode(';', [
+                self::$DI['record_2']->get_serialize_key(),
+            ])
+        ]);
 
         $records = RecordsRequest::fromRequest(self::$DI['app'], $request, false, ['chgstatus']);
 
@@ -127,8 +127,8 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
     {
         $request = new Request([
                 'lst' => implode(';', [
-                    self::$DI['record_3']->get_serialize_key(),
-                    self::$DI['record_3']->get_serialize_key(),
+                    self::$DI['record_24']->get_serialize_key(),
+                    self::$DI['record_24']->get_serialize_key(),
                     self::$DI['record_2']->get_serialize_key(),
                     self::$DI['record_story_2']->get_serialize_key(),
                     self::$DI['record_no_access']->get_serialize_key(),

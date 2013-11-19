@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Symfony\Component\Filesystem\Filesystem;
+use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -967,10 +968,10 @@ class databox extends base
 
     /**
      *
-     * @param  User_Interface $user
+     * @param  User $user
      * @return databox
      */
-    public function registerAdmin(User_Interface $user)
+    public function registerAdmin(User $user)
     {
         $conn = connection::getPDOConnection($this->app);
 

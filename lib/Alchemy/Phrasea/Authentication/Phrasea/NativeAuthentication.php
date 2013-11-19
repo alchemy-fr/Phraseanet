@@ -13,20 +13,22 @@ namespace Alchemy\Phrasea\Authentication\Phrasea;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
+use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
+use Alchemy\Phrasea\Model\Entities\User;
 use Symfony\Component\HttpFoundation\Request;
 
 class NativeAuthentication implements PasswordAuthenticationInterface
 {
-    /** @var \connection_interface */
-    private $conn;
+    /** @var UserManipulator */
+    private $userManipulator;
     /** @var PasswordEncoder */
     private $encoder;
     /** @var OldPasswordEncoder */
     private $oldEncoder;
 
-    public function __construct(PasswordEncoder $encoder, OldPasswordEncoder $oldEncoder, \connection_interface $conn)
+    public function __construct(PasswordEncoder $encoder, OldPasswordEncoder $oldEncoder, UserManipulator $userManipulator)
     {
-        $this->conn = $conn;
+        $this->userManipulator = $userManipulator;
         $this->encoder = $encoder;
         $this->oldEncoder = $oldEncoder;
     }
@@ -36,55 +38,32 @@ class NativeAuthentication implements PasswordAuthenticationInterface
      */
     public function getUsrId($username, $password, Request $request)
     {
-        if (in_array($username, ['invite', 'autoregister'])) {
+        if (null === $user = $this->userManipulator->getRepository()->findRealUserByLogin($username)) {
             return null;
         }
 
-        $sql = 'SELECT nonce, salted_password, mail_locked, usr_id, usr_login, usr_password
-                FROM usr
-                WHERE usr_login = :login
-                  AND usr_login NOT LIKE "(#deleted_%"
-                  AND model_of="0" AND invite="0"
-                LIMIT 0, 1';
-
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([':login' => $username]);
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if (!$row) {
+        if ($user->isSpecial()) {
             return null;
         }
 
         // check locked account
-        if ('1' == $row['mail_locked']) {
-            throw new AccountLockedException('The account is locked', $row['usr_id']);
+        if ($user->isMailLocked()) {
+            throw new AccountLockedException('The account is locked', $user->getId());
         }
 
-        if ('0' == $row['salted_password']) {
+        if (false === $user->isSaltedPassword()) {
             // we need a quick update and continue
-            if ($this->oldEncoder->isPasswordValid($row['usr_password'], $password, $row['nonce'])) {
-
-                $row['nonce'] = \random::generatePassword(8, \random::LETTERS_AND_NUMBERS);
-                $row['usr_password'] = $this->encoder->encodePassword($password, $row['nonce']);
-
-                $sql = 'UPDATE usr SET usr_password = :password, nonce = :nonce
-                        WHERE usr_id = :usr_id';
-                $stmt = $this->conn->prepare($sql);
-                $stmt->execute([
-                    ':password' => $row['usr_password'],
-                    ':nonce' => $row['nonce'],
-                    ':usr_id' => $row['usr_id'],
-                ]);
-                $stmt->closeCursor();
+            if ($this->oldEncoder->isPasswordValid($user->getPassword(), $password, $user->getNonce())) {
+                $user->setSaltedPassword(true);
+                $this->userManipulator->setPassword($user, $user->getPassword());
             }
         }
 
-        if (!$this->encoder->isPasswordValid($row['usr_password'], $password, $row['nonce'])) {
+        if (false === $this->encoder->isPasswordValid($user->getPassword(), $password, $user->getNonce())) {
             return null;
         }
 
-        return $row['usr_id'];
+        return $user->getId();
     }
 
     /**

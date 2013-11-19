@@ -67,4 +67,36 @@ class UserRepository extends EntityRepository
 
         return $qb->getQuery()->getOneOrNullResult();
     }
+
+    /**
+     * Finds a user that is not deleted, not a model and not a guest.
+     *
+     * @param $login
+     *
+     * @return null|User
+     */
+    public function findRealUserByLogin($login)
+    {
+        $qb = $this->createQueryBuilder('u');
+
+        $qb->where($qb->expr()->eq('u.login', $qb->expr()->literal($login)))
+            ->andWhere($qb->expr()->isNotNull('u.email'))
+            ->andWhere($qb->expr()->eq('u.modelOf', $qb->expr()->literal('0')))
+            ->andWhere($qb->expr()->eq('u.guest', $qb->expr()->literal('0')))
+            ->andWhere($qb->expr()->eq('u.deleted', $qb->expr()->literal(false)));
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
+
+    /**
+     * Finds model of given user.
+     *
+     * @param User $user
+     *
+     * @return array
+     */
+    public function findModelOf(User $user)
+    {
+        return $this->findBy(['modelOf' => $user->getId()]);
+    }
 }

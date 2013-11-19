@@ -275,7 +275,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             '_token'  => 'token',
         ]);
         $response = self::$DI['client']->getResponse();
-
         $this->assertFalse($response->isRedirect());
         $this->assertFlashMessage($crawler, 'error', 1);
     }
@@ -594,7 +593,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                         'password' => 'password',
                         'confirm'  => 'password'
                     ],
-                    "accept-tou"      => '1',
                     "collections"     => null,
                 ], [], 1],
             [[//required extra-field missing
@@ -603,7 +601,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                         'confirm'  => 'password'
                     ],
                     "email"           => $this->generateEmail(),
-                    "accept-tou"      => '1',
                     "collections"     => null
                 ], [
                     [
@@ -617,7 +614,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                         'confirm'  => 'passwordMismatch'
                     ],
                     "email"           => $this->generateEmail(),
-                    "accept-tou"      => '1',
                     "collections"     => null
                 ], [], 1],
             [[//password tooshort
@@ -626,7 +622,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                         'confirm'  => 'min'
                     ],
                     "email"           => $this->generateEmail(),
-                    "accept-tou"      => '1',
                     "collections"     => null
                 ], [], 1],
             [[//email invalid
@@ -635,7 +630,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                         'confirm'  => 'password'
                     ],
                     "email"           => 'invalid.email',
-                    "accept-tou"      => '1',
                     "collections"     => null
                 ], [], 1],
             [[//login exists
@@ -645,7 +639,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                         'confirm'  => 'password'
                     ],
                     "email"           => $this->generateEmail(),
-                    "accept-tou"      => '1',
                     "collections"     => null
                 ], [
                     [
@@ -659,7 +652,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                         'confirm'  => 'password'
                     ],
                     "email"           => null,
-                    "accept-tou"      => '1',
                     "collections"     => null
                 ], [], 1],
             [[//tou declined
@@ -668,7 +660,8 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                         'confirm'  => 'password'
                     ],
                     "email"           => $this->generateEmail(),
-                    "collections"     => null
+                    "collections"     => null,
+                    "accept-tou"      => '1'
                 ], [], 1]
         ];
     }
@@ -682,7 +675,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                         'confirm'  => 'password'
                     ],
                     "email"           => $this->generateEmail(),
-                    "accept-tou"      => '1',
                     "collections"     => null,
                 ], []],
             [[
@@ -691,7 +683,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                         'confirm'  => 'password'
                     ],
                     "email"           => $this->generateEmail(),
-                    "accept-tou"      => '1',
                     "collections"     => null
                 ], [
                     [
@@ -705,7 +696,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                         'confirm'  => 'password'
                     ],
                     "email"           => $this->generateEmail(),
-                    "accept-tou"      => '1',
                     "collections"     => null
                 ], [
                     [
@@ -763,7 +753,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                         'confirm'  => 'password'
                     ],
                     "email"           => $this->generateEmail(),
-                    "accept-tou"      => '1',
                     "collections"     => null,
                     "login" => 'login-'.\random::generatePassword(),
                     "gender" => '1',
@@ -1136,7 +1125,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $password = \random::generatePassword();
 
         $login = self::$DI['app']['authentication']->getUser()->getLogin();
-        self::$DI['app']['authentication']->getUser()->setPassword($password);
+        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
         self::$DI['app']['authentication']->getUser()->setMailLocked(false);
 
         $this->logout(self::$DI['app']);
@@ -1161,7 +1150,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $password = \random::generatePassword();
 
         $login = self::$DI['app']['authentication']->getUser()->getLogin();
-        self::$DI['app']['authentication']->getUser()->setPassword($password);
+        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
         self::$DI['app']['authentication']->getUser()->setMailLocked(false);
 
         $this->logout(self::$DI['app']);
@@ -1208,7 +1197,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $password = \random::generatePassword();
 
         $login = self::$DI['app']['authentication']->getUser()->getLogin();
-        self::$DI['app']['authentication']->getUser()->setPassword($password);
+        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
 
         $this->logout(self::$DI['app']);
 
@@ -1516,7 +1505,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
 
         $ret = self::$DI['app']['EM']->getRepository('\Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
-            ->findBy(['usr_id' => self::$DI['user']->getId(), 'provider' => 'provider-test']);
+            ->findBy(['user' => self::$DI['user']->getId(), 'provider' => 'provider-test']);
 
         $this->assertCount(1, $ret);
 
@@ -1587,7 +1576,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
 
         $ret = self::$DI['app']['EM']->getRepository('\Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
-            ->findBy(['usr_id' => $user->getId(), 'provider' => 'provider-test']);
+            ->findBy(['user' => $user->getId(), 'provider' => 'provider-test']);
 
         $this->assertCount(1, $ret);
 

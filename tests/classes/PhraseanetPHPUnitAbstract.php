@@ -70,7 +70,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      * @var float
      */
     protected static $time_start;
-    public $app;
     protected $start;
 
     /**
@@ -101,18 +100,15 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             self::updateTablesSchema($application);
 
-            self::createSetOfUserTests($application);
-
-            self::setCollection($application);
-
-            self::generateRecords($application);
-
-            self::$DI['user']->setEmail('valid@phraseanet.com');
-
             self::$updated = true;
         }
     }
 
+    /**
+     * Restores SQLite database to its initial state.
+     *
+     * @param string $path
+     */
     public static function initializeSqliteDB($path = '/tmp/db.sqlite')
     {
         if (is_file($path)) {
@@ -121,21 +117,12 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         copy(__DIR__ . '/../db-ref.sqlite', $path);
     }
 
+    /**
+     * @{inheritdoc}
+     */
     public function createApplication()
     {
 
-    }
-
-    /**
-     * Delete all ressources created during the test
-     */
-    public function __destruct()
-    {
-        self::deleteResources();
-
-        if (self::$time_start) {
-            self::$time_start = null;
-        }
     }
 
     public function setUp()
@@ -225,6 +212,142 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             ->will($this->returnCallback(function () {
                 $this->fail('Notification deliverer must be mocked');
             }));
+    }
+
+
+    /**
+     * Sets self::$DI['app'] with a new API application.
+     */
+    public function createAPIApplication()
+    {
+        self::deleteResources();
+        self::$DI['app'] = self::$DI->share(function () {
+            $environment = 'test';
+            $app = require __DIR__ . '/../../lib/Alchemy/Phrasea/Application/Api.php';
+
+            $app['debug'] = true;
+
+            $app['EM'] = $app->share($app->extend('EM', function ($em) {
+                $this::initializeSqliteDB();
+
+                return $em;
+            }));
+
+            return $app;
+        });
+
+        self::createSetOfUserTests(self::$DI['app']);
+        self::setCollection(self::$DI['app']);
+        self::generateRecords(self::$DI['app']);
+    }
+
+    /**
+     * Sets self::$DI['app'] with a new Phraseanet application.
+     */
+    public function createRootApplication()
+    {
+        self::$DI['app'] = self::$DI->share(function ($DI) {
+            $environment = 'test';
+            $app = require __DIR__ . '/../../lib/Alchemy/Phrasea/Application/Root.php';
+
+            $app['form.csrf_provider'] = $app->share(function () {
+                return new CsrfTestProvider();
+            });
+
+            $app['url_generator'] = $app->share($app->extend('url_generator', function ($generator, $app) {
+                $host = parse_url($app['conf']->get(['main', 'servername']), PHP_URL_HOST);
+                $generator->setContext(new RequestContext('', 'GET', $host));
+
+                return $generator;
+            }));
+
+            $app['debug'] = true;
+
+            $app['EM'] = $app->share($app->extend('EM', function ($em) {
+                $this::initializeSqliteDB();
+
+                return $em;
+            }));
+
+            $app['browser'] = $app->share($app->extend('browser', function ($browser) {
+
+                $browser->setUserAgent(PhraseanetPHPUnitAbstract::USER_AGENT_FIREFOX8MAC);
+
+                return $browser;
+            }));
+
+            $app['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+                ->disableOriginalConstructor()
+                ->getMock();
+            $app['notification.deliverer']->expects($this->any())
+                ->method('deliver')
+                ->will($this->returnCallback(function () {
+                    $this->fail('Notification deliverer must be mocked');
+                }));
+
+            return $app;
+        });
+
+        self::createSetOfUserTests(self::$DI['app']);
+        self::setCollection(self::$DI['app']);
+        self::generateRecords(self::$DI['app']);
+    }
+
+    /**
+     * Sets self::$DI['app'] with a new CLI application.
+     */
+    public function createCLIApplication()
+    {
+        self::$DI['cli'] = self::$DI->share(function ($DI) {
+            $app = new CLI('cli test', null, 'test');
+
+            $app['form.csrf_provider'] = $app->share(function () {
+                return new CsrfTestProvider();
+            });
+
+            $app['url_generator'] = $app->share($app->extend('url_generator', function ($generator, $app) {
+                $host = parse_url($app['conf']->get(['main', 'servername']), PHP_URL_HOST);
+                $generator->setContext(new RequestContext('', 'GET', $host));
+
+                return $generator;
+            }));
+
+            $app['debug'] = true;
+
+            $app['EM'] = $app->share($app->extend('EM', function ($em) {
+                $this::initializeSqliteDb();
+
+                return $em;
+            }));
+
+            $app['browser'] = $app->share($app->extend('browser', function ($browser) {
+
+                $browser->setUserAgent(PhraseanetPHPUnitAbstract::USER_AGENT_FIREFOX8MAC);
+
+                return $browser;
+            }));
+
+            $app['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+                ->disableOriginalConstructor()
+                ->getMock();
+            $app['notification.deliverer']->expects($this->any())
+                ->method('deliver')
+                ->will($this->returnCallback(function () {
+                    $this->fail('Notification deliverer must be mocked');
+                }));
+
+            return $app;
+        });
+    }
+
+    /**
+     * Sets self::$DI['client'] with a new browser client.
+     */
+    public function createNewClient()
+    {
+        self::$DI['client'] = self::$DI->share(function ($DI) {
+            return new Client($DI['app'], []);
+        });
     }
 
     public function tearDown()
@@ -384,6 +507,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $entry->setAuthorName('user');
         $entry->setAuthorEmail('user@email.com');
 
+
         $publisher = $feed->getPublisher($user ?: self::$DI['user']);
 
         if ($publisher !== null) {
@@ -449,20 +573,15 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     /**
      * Inserts one feed item.
      *
-     * @param User_Adapter   $user
-     * @param boolean        $public
-     * @param integer        $qty
-     * @param record_adapter $record
-     *
-     * @return FeedItem
+     * @return \Alchemy\Phrasea\Model\Entities\FeedItem
      */
     protected function insertOneFeedItem(\User_Adapter $user = null, $public = false, $qty = 1, \record_adapter $record = null)
     {
         $entry = $this->insertOneFeedEntry($user, $public);
 
-        for ($i = 0; $i < $qty; $i++) {
-            $item = new FeedItem();
-            $item->setEntry($entry);
+            for ($i = 0; $i < $qty; $i++) {
+                $item = new \Alchemy\Phrasea\Model\Entities\FeedItem();
+                $item->setEntry($entry);
 
             if (null === $record) {
                 $actual = self::$DI['record_'.($i+1)];
@@ -561,6 +680,28 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     }
 
     /**
+     * Inserts one user list.
+     *
+     * @param User_Adapter $user
+     *
+     * @return UsrListOwner
+     */
+    protected function insertOneUsrList(\User_Adapter $user = null)
+    {
+        $owner = $this->insertOneUsrListOwner($user);
+        $list = new UsrList();
+        $list->setName('new list');
+        $list->addOwner($owner);
+        $owner->setList($list);
+
+        self::$DI['app']['EM']->persist($list);
+        self::$DI['app']['EM']->flush();
+
+        return $list;
+    }
+
+
+    /**
      * Insert one user list entry.
      *
      * @param User_adapter $owner
@@ -592,20 +733,20 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      */
     protected function insertFiveBasket()
     {
-        $baskets = [];
+        try {
+            $basketFixture = new PhraseaFixture\Basket\LoadFiveBaskets();
 
-        for ($i = 0; $i < 5; $i ++) {
-            $basket = new Basket();
-            $basket->setName('test ' . $i);
-            $basket->setDescription('description');
-            $basket->setOwner(self::$DI['user']);
+            $basketFixture->setUser(self::$DI['user']);
 
-            self::$DI['app']['EM']->persist($basket);
-            $baskets[] = $basket;
+            $loader = new Loader();
+            $loader->addFixture($basketFixture);
+
+            $this->insertFixtureInDatabase($loader);
+
+            return $basketFixture->baskets;
+        } catch (\Exception $e) {
+            $this->fail('Fail load five Basket : ' . $e->getMessage());
         }
-        self::$DI['app']['EM']->flush();
-
-        return $baskets;
     }
 
     /**
@@ -996,7 +1137,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $DI['user'] = $DI->share(
                 $DI->extend('user', function ($user, $DI) use ($collection_no_acces) {
                     $DI['app']['acl']->get($user)->revoke_access_from_bases([$collection_no_acces->get_base_id()]);
-                    $DI['client'] = new Client($DI['app'], []);
 
                     return $user;
                 })
@@ -1032,10 +1172,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     /**
      * Generates a set of records for the current tests suites.
      */
-    private static function generateRecords(Application $app)
+    protected static function generateRecords(Application $app)
     {
         if (self::$recordsInitialized === false) {
-
             $logger = new \Monolog\Logger('tests');
             $logger->pushHandler(new \Monolog\Handler\NullHandler());
             self::$recordsInitialized = [];
@@ -1056,13 +1195,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             foreach (range(1, 24) as $i) {
                 self::$DI['record_' . $i] = self::$DI->share(function ($DI) use ($logger, $resolvePathfile, $i) {
-
                     PhraseanetPHPUnitAbstract::$recordsInitialized[] = $i;
-
                     $file = new File($DI['app'], $DI['app']['mediavorus']->guess($resolvePathfile($i)->getPathname()), $DI['collection']);
-
                     $record = record_adapter::createFromFile($file, $DI['app']);
-
                     $record->generate_subdefs($record->get_databox(), $DI['app']);
 
                     return $record;
@@ -1071,7 +1206,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             foreach (range(1, 2) as $i) {
                 self::$DI['record_story_' . $i] = self::$DI->share(function ($DI) use ($i) {
-
                     PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'story_' . $i;
 
                     return record_adapter::createStory($DI['app'], $DI['collection']);
@@ -1079,40 +1213,18 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             }
 
             self::$DI['record_no_access'] = self::$DI->share(function ($DI) {
-
                 PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access';
-
                 $file = new File($DI['app'], $DI['app']['mediavorus']->guess(__DIR__ . '/../files/cestlafete.jpg'), $DI['collection_no_access']);
 
                 return \record_adapter::createFromFile($file, $DI['app']);
             });
 
             self::$DI['record_no_access_by_status'] = self::$DI->share(function ($DI) {
-
                 PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access_by_status';
-
                 $file = new File($DI['app'], $DI['app']['mediavorus']->guess(__DIR__ . '/../files/cestlafete.jpg'), $DI['collection_no_access']);
 
                 return \record_adapter::createFromFile($file, $DI['app']);
             });
-
-            self::$DI['user'] = self::$DI->share(
-                self::$DI->extend('user', function ($user, $DI) use ($app) {
-                    PhraseanetPHPUnitAbstract::giveRightsToUser($app, $user);
-                    $app['acl']->get($user)->set_admin(true);
-
-                    return $user;
-                })
-            );
-
-            self::$DI['user_notAdmin'] = self::$DI->share(
-                self::$DI->extend('user_notAdmin', function ($user, $DI) use ($app) {
-                    PhraseanetPHPUnitAbstract::giveRightsToUser($app, $user);
-                    $app['acl']->get($user)->set_admin(false);
-
-                    return $user;
-                })
-            );
         }
 
         return;
@@ -1158,12 +1270,12 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $session = new Session();
         $session->setUser(self::$DI['user']);
         $session->setUserAgent('');
-        self::$DI['app']['EM']->persist($session);
-        self::$DI['app']['EM']->flush();
+        $app['EM']->persist($session);
+        $app['EM']->flush();
 
         $app['session']->set('session_id', $session->getId());
 
-        self::$DI['app']['authentication']->reinitUser();
+        $app['authentication']->reinitUser();
     }
 
     /**
@@ -1174,7 +1286,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     protected function logout(Application $app)
     {
         $app['session']->clear();
-        self::$DI['app']['authentication']->reinitUser();
+        $app['authentication']->reinitUser();
     }
 
     protected function assertXMLHTTPBadJsonResponse(Response $response)

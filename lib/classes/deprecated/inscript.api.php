@@ -21,18 +21,20 @@ function giveMeBases(Application $app, $usr = null)
 
     if ($usr != null) {
 
-        $sqlU = 'SELECT sbas.dbname, time_limited, UNIX_TIMESTAMP( limited_from ) AS limited_from,
-               UNIX_TIMESTAMP( limited_to ) AS limited_to, bas.server_coll_id,
-               usr.usr_id, basusr.actif, demand.en_cours, demand.refuser
-             FROM (usr, bas, sbas)
-              LEFT JOIN basusr
-                ON ( usr.usr_id = basusr.usr_id
-                  AND bas.base_id = basusr.base_id )
-              LEFT JOIN demand
-                ON ( demand.usr_id = usr.usr_id
-                  AND bas.base_id = demand.base_id )
-             WHERE bas.active >0 AND bas.sbas_id = sbas.sbas_id
-             AND usr.usr_id = :usr_id AND model_of = 0';
+        $sqlU = '
+            SELECT sbas.dbname, time_limited, UNIX_TIMESTAMP( limited_from ) AS limited_from,
+                UNIX_TIMESTAMP( limited_to ) AS limited_to, bas.server_coll_id,
+                u.id, basusr.actif, demand.en_cours, demand.refuser
+            FROM (Users u, bas, sbas)
+            LEFT JOIN basusr ON ( u.id = basusr.usr_id
+                AND bas.base_id = basusr.base_id )
+            LEFT JOIN demand ON ( demand.usr_id = u.id
+                AND bas.base_id = demand.base_id )
+            WHERE bas.active >0
+                AND bas.sbas_id = sbas.sbas_id
+                AND u.id = :usr_id
+                AND u.model_of = 0
+        ';
 
         $stmt = $conn->prepare($sqlU);
         $stmt->execute([':usr_id' => $usr]);

@@ -253,7 +253,7 @@ class Root implements ControllerProviderInterface
         }
 
         return new Response($app['twig']->render('client/index.html.twig', [
-            'last_action'       => !$app['authentication']->getUser()->is_guest() && false !== $request->cookies->has('last_act') ? $request->cookies->has('last_act') : null,
+            'last_action'       => !$app['authentication']->getUser()->isGuest() && false !== $request->cookies->has('last_act') ? $request->cookies->has('last_act') : null,
             'phrasea_home'      => $this->getDefaultClientStartPage($app),
             'render_topics'     => $renderTopics,
             'grid_properties'   => $this->getGridProperty(),

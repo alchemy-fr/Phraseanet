@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Controller\Root;
 use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Entities\FtpCredential;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate;
 use Alchemy\Phrasea\Form\Login\PhraseaRenewPasswordForm;
@@ -75,13 +76,6 @@ class Account implements ControllerProviderInterface
         return $controllers;
     }
 
-    /**
-     * Reset Password
-     *
-     * @param  Application $app
-     * @param  Request     $request
-     * @return Response
-     */
     public function resetPassword(Application $app, Request $request)
     {
         $form = $app->form(new PhraseaRenewPasswordForm());
@@ -94,7 +88,7 @@ class Account implements ControllerProviderInterface
                 $user = $app['authentication']->getUser();
 
                 if ($app['auth.password-encoder']->isPasswordValid($user->getPassword(), $data['oldPassword'], $user->getNonce())) {
-                    $user->setPassword($data['password']);
+                    $app['manipulator.user']->setPassword($user, $data['password']);
                     $app->addFlash('success', $app->trans('login::notification: Mise a jour du mot de passe avec succes'));
 
                     return $app->redirectPath('account');
@@ -267,8 +261,8 @@ class Account implements ControllerProviderInterface
      */
     public function accountSessionsAccess(Application $app, Request $request)
     {
-        $dql = 'SELECT s FROM Phraseanet:Session s
-            WHERE s.usr_id = :usr_id
+        $dql = 'SELECT s FROM Alchemy\Phrasea\Model\Entities\Session s
+            WHERE s.user = :usr_id
             ORDER BY s.created DESC';
 
         $query = $app['EM']->createQuery($dql);
@@ -386,9 +380,15 @@ class Account implements ControllerProviderInterface
                     ->setCompany($request->request->get("form_company"))
                     ->setActivity($request->request->get("form_function"))
                     ->setGeonanameId($request->request->get("form_geonameid"))
-                    ->set_mail_notifications((bool) $request->request->get("mail_notifications"));
+                    ->set_mail_notifications((Boolean) $request->request->get("mail_notifications"));
+
+                $app['manipulator.user']->setGeonameId($app['authentication']->getUser(), $request->request->get("form_geonameid"));
 
                 $ftpCredential = $app['authentication']->getUser()->getFtpCredential();
+
+                if (null === $ftpCredential) {
+                    $ftpCredential = new FtpCredential();
+                }
 
                 $ftpCredential->setActive($request->request->get("form_activeFTP"));
                 $ftpCredential->setAddress($request->request->get("form_addressFTP"));

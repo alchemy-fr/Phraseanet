@@ -765,10 +765,10 @@ class Thesaurus implements ControllerProviderInterface
                     sbasusr.bas_modify_struct AS bas_modify_struct,
                     sbasusr.bas_modif_th AS bas_edit_thesaurus
                 FROM
-                    (usr INNER JOIN sbasusr
-                        ON usr.usr_id = :usr_id
-                        AND usr.usr_id = sbasusr.usr_id
-                        AND model_of = 0)
+                    (Users u INNER JOIN sbasusr
+                        ON u.id = :usr_id
+                        AND u.id = sbasusr.usr_id
+                        AND u.model_of = 0)
                 INNER JOIN
                     sbas ON sbas.sbas_id = sbasusr.sbas_id
                 HAVING bas_edit_thesaurus > 0

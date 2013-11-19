@@ -107,7 +107,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['auth.password-checker'] = $app->share(function (Application $app) {
-            return new NativeAuthentication($app['auth.password-encoder'], $app['auth.old-password-encoder'], $app['phraseanet.appbox']->get_connection());
+            return new NativeAuthentication($app['auth.password-encoder'], $app['auth.old-password-encoder'], $app['manipulator.user']);
         });
 
         $app['auth.native'] = $app->share(function (Application $app) {

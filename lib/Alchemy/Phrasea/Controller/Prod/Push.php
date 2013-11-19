@@ -557,7 +557,7 @@ class Push implements ControllerProviderInterface
                     if ($request->request->get('job'))
                         $user->setCompany($request->request->get('job'));
                     if ($request->request->get('form_geonameid'))
-                        $user->setGeonanameId($request->request->get('form_geonameid'));
+                        $app['manipulator.user']->setGeonameId($user, $request->request->get('form_geonameid'));
 
                     $result['message'] = $app->trans('User successfully created');
                     $result['success'] = true;

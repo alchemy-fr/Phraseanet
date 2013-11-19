@@ -62,11 +62,13 @@ class module_console_systemUpgrade extends Command
 
             try {
                 $upgrader = new Setup_Upgrade($this->container, $input->getOption('force'));
+                $queries = $this->getService('phraseanet.appbox')->forceUpgrade($upgrader, $this->container);
             } catch (\Exception_Setup_FixBadEmailAddresses $e) {
                 return $output->writeln(sprintf('<error>You have to fix your database before upgrade with the system:mailCheck command </error>'));
+            } catch (\Exception $e) {
+                echo $e->getTraceAsString() . "\n";
             }
 
-            $queries = $this->getService('phraseanet.appbox')->forceUpgrade($upgrader, $this->container);
 
             if ($input->getOption('dump') || $input->getOption('stderr')) {
                 if (0 < count($queries)) {
