@@ -282,7 +282,7 @@ class module_console_checkExtension extends Command
                     , $rid                      // record_id
                     , $q                        // query parsed
                     , ""                        // lng for stemmed
-                    , false                     // verbose output (chrono, sql...)
+                    , true                     // verbose output (chrono, sql...)
                     );
 
                 $output->writeln(sprintf("\n-- phrasea_highlight(%d, %d,...) --", $sbid, $rid));
@@ -296,7 +296,7 @@ class module_console_checkExtension extends Command
 
                     $output->writeln( sprintf("<info>Succes ! </info> sbid=%d, rid=%d (%d spots)",
                         $sbid,
-                        $ret["results"][0]["rid"],
+                        $h["results"][0]["rid"],
                         count($h["results"][0]["spots"]))
                     );
                 } else {
