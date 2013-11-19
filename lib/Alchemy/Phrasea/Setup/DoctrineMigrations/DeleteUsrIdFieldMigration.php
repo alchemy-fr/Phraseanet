@@ -2,7 +2,6 @@
 
 namespace Alchemy\Phrasea\Setup\DoctrineMigrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
 /**
@@ -10,11 +9,8 @@ use Doctrine\DBAL\Schema\Schema;
  */
 class DeleteUsrIdFieldMigration extends AbstractMigration
 {
-    public function up(Schema $schema)
+    public function doUpSql(Schema $schema)
     {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
-        
         $this->addSql("DROP INDEX unique_owner ON UsrListOwners");
         $this->addSql("ALTER TABLE UsrListOwners DROP usr_id");
         $this->addSql("CREATE UNIQUE INDEX unique_owner ON UsrListOwners (user_id, id)");
@@ -43,11 +39,8 @@ class DeleteUsrIdFieldMigration extends AbstractMigration
         $this->addSql("CREATE UNIQUE INDEX unique_usr_per_list ON UsrListsContent (user_id, list_id)");
     }
 
-    public function down(Schema $schema)
+    public function doDownSql(Schema $schema)
     {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
-        
         $this->addSql("ALTER TABLE AggregateTokens ADD usr_id INT NOT NULL");
         $this->addSql("ALTER TABLE Baskets ADD usr_id INT NOT NULL");
         $this->addSql("ALTER TABLE FeedPublishers ADD usr_id INT NOT NULL");

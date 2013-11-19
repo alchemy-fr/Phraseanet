@@ -11,9 +11,6 @@ class UserFieldMigration extends AbstractMigration
 {
     public function doUpSql(Schema $schema)
     {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
-        
         $this->addSql("ALTER TABLE UsrListOwners ADD user_id INT DEFAULT NULL");
         $this->addSql("ALTER TABLE UsrListOwners ADD CONSTRAINT FK_54E9FE23A76ED395 FOREIGN KEY (user_id) REFERENCES Users (id)");
         $this->addSql("CREATE INDEX IDX_54E9FE23A76ED395 ON UsrListOwners (user_id)");
@@ -57,9 +54,6 @@ class UserFieldMigration extends AbstractMigration
 
     public function doDownSql(Schema $schema)
     {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
-        
         $this->addSql("ALTER TABLE AggregateTokens DROP FOREIGN KEY FK_4232BC51A76ED395");
         $this->addSql("DROP INDEX IDX_4232BC51A76ED395 ON AggregateTokens");
         $this->addSql("ALTER TABLE AggregateTokens DROP user_id");
