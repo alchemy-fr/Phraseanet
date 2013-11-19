@@ -282,7 +282,7 @@ class module_console_checkExtension extends Command
                     , $rid                      // record_id
                     , $q                        // query parsed
                     , ""                        // lng for stemmed
-                    , true                     // verbose output (chrono, sql...)
+                    , false                     // verbose output (chrono, sql...)
                     );
 
                 $output->writeln(sprintf("\n-- phrasea_highlight(%d, %d,...) --", $sbid, $rid));
