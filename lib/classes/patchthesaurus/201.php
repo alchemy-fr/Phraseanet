@@ -20,7 +20,6 @@ class patchthesaurus_201 implements patchthesaurus_interface
             $xp = new DOMXPath($domth);
             $te = $xp->query("/thesaurus//te");
             for ($i = 0; $i < $te->length; $i ++) {
-                // $id  = "S" . substr($te->item($i)->getAttribute("id"), 1);
                 $id = $te->item($i)->getAttribute("id");
                 $nid = (int) ($te->item($i)->getAttribute("nextid"));
                 for ($n = $te->item($i)->firstChild; $n; $n = $n->nextSibling) {

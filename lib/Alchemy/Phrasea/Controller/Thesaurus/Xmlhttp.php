@@ -577,7 +577,6 @@ class Xmlhttp implements ControllerProviderInterface
                             $t = $n2->getAttribute("v");
                             $ksy = $n2->getAttribute("w");
                             if ($k = $n2->getAttribute("k")) {
-                                //          $t .= " ($k)";
                                 $ksy .= " ($k)";
                             }
                             if (!$firstksy) {
@@ -1379,7 +1378,6 @@ class Xmlhttp implements ControllerProviderInterface
             try {
                 $databox = $appbox->get_databox($sbas['sbas_id']);
                 $connbas = $databox->get_connection();
-                // $domth = $databox->get_dom_thesaurus();
                 $tsbas[$ksbas]['domct'] = $databox->get_dom_cterms();
             } catch (\Exception $e) {
                 continue;

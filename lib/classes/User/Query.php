@@ -638,17 +638,7 @@ class User_Query implements User_QueryInterface
      */
     public function like($like_field, $like_value)
     {
-
-//    if ($like_field == self::LIKE_NAME)
-//    {
-//      $this->like_field[self::LIKE_FIRSTNAME] = trim($like_value);
-//      $this->like_field[self::LIKE_LASTNAME] = trim($like_value);
-//    }
-//    else
-//    {
         $this->like_field[trim($like_field)] = trim($like_value);
-//    }
-
         $this->total = $this->page = $this->total_page = null;
 
         return $this;

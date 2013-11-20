@@ -136,7 +136,6 @@ class patchthesaurus_204 implements patchthesaurus_interface
             if ($pid != "") {
                 $id = $node->getAttribute("id");
                 if (substr($id, 1, strlen($pid)) != substr($pid, "1") . ".") {
-                    //printf("pid='%s', id='%s'\n", $pid, $id);
                     $nid = $node->parentNode->getAttribute("nextid");
                     $node->parentNode->setAttribute("nextid", $nid + 1);
                     $node->setAttribute("id", $newid = ($pid . "." . $nid));

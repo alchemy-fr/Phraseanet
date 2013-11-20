@@ -256,9 +256,6 @@ class ftpclient
                 echo $e;
             }
             $ret = $this->nb_get($localfile, $remotefile, 0);
-
-//      if($this->debug)
-//        echo "On doit avoir a la fin $remotefile de size ".filesize($localfile)."\n<br>";
         }
         if ($ret != FTP_FINISHED) {
             throw new Exception('Erreur lors du transfert de fichier');

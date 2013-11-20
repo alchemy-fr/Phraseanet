@@ -32,7 +32,6 @@ class patchthesaurus_100 implements patchthesaurus_interface
                 foreach ($te1 as $tei) {
                     $th->appendChild($tei);
                     $this->fixThesaurus2($domth, $tei, 0, $unicode);
-                    // $tei->parentNode->removeChild($tei);
                 }
                 $te0->parentNode->removeChild($te0);
             }
@@ -58,9 +57,9 @@ class patchthesaurus_100 implements patchthesaurus_interface
         $tenode->removeAttribute("v");
         $tenode->removeAttribute("w");
         $tenode->removeAttribute("k");
-        if ($tenode->getAttribute("nextid") == "")
+        if ($tenode->getAttribute("nextid") == "") {
             $tenode->setAttribute("nextid", "0");
-        // $tenode->setAttribute("id", "0.".$tenode->getAttribute("id"));
+        }
         $todel = [];
         for ($n = $tenode->firstChild; $n; $n = $n->nextSibling) {
             if ($n->nodeName == "ta")
