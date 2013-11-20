@@ -296,7 +296,7 @@ class module_console_checkExtension extends Command
 
                     $output->writeln( sprintf("<info>Succes ! </info> sbid=%d, rid=%d (%d spots)",
                         $sbid,
-                        $ret["results"][0]["rid"],
+                            $h["results"][0]["rid"],
                         count($h["results"][0]["spots"]))
                     );
                 } else {
