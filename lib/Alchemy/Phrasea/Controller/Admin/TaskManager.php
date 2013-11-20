@@ -343,7 +343,9 @@ class TaskManager implements ControllerProviderInterface
         set_time_limit(0);
         ignore_user_abort(true);
 
-        $app['task-manager']->getSchedulerProcess()->run();
+        $process = $app['task-manager']->getSchedulerProcess();
+        $process->setTimeout(0);
+        $process->run();
 
         return $app->json(array('success' => true));
     }
