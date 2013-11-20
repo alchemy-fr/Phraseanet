@@ -11,7 +11,7 @@
   </li>
   {% else %}
   <li>
-    <span>{{ app['phraseanet.registry'].get('GV_ServerName') }}</span>
+    <span>{{ app['conf'].get('servername') }}</span>
   </li>
   {% endif %}
 

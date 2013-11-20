@@ -116,19 +116,6 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
         $app['root.path'] = __DIR__ . '/../../../../../../';
         $app->register(new AuthenticationManagerServiceProvider());
         $app->register(new ConfigurationServiceProvider());
-        $app['phraseanet.registry'] = $this->getMockBuilder('registry')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $app['phraseanet.registry']->expects($this->any())
-            ->method('get')
-            ->will($this->returnCallback(function ($key) {
-                switch ($key) {
-                    case 'GV_sit':
-                        return mt_rand();
-                    default:
-                        $this->fail(sprintf('Unknown key %s', $key));
-                }
-            }));
         $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];
 
         $app['conf']->set(['authentication', 'captcha'], ['enabled' => true]);
@@ -149,19 +136,6 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
         $app['root.path'] = __DIR__ . '/../../../../../../';
         $app->register(new AuthenticationManagerServiceProvider());
         $app->register(new ConfigurationServiceProvider());
-        $app['phraseanet.registry'] = $this->getMockBuilder('registry')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $app['phraseanet.registry']->expects($this->any())
-            ->method('get')
-            ->will($this->returnCallback(function ($key) {
-                switch ($key) {
-                    case 'GV_sit':
-                        return mt_rand();
-                    default:
-                        $this->fail(sprintf('Unknown key %s', $key));
-                }
-            }));
         $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];
 
         $app['conf']->set(['authentication', 'captcha'], ['enabled' => false]);

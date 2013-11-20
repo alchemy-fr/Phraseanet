@@ -117,7 +117,7 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         }
 
         $databox = \databox::create(
-                self::$DI['app'], $conn, new \SplFileInfo(self::$DI['app']['root.path'] . '/lib/conf.d/data_templates/fr-simple.xml'), self::$DI['app']['phraseanet.registry']
+                self::$DI['app'], $conn, new \SplFileInfo(self::$DI['app']['root.path'] . '/lib/conf.d/data_templates/fr-simple.xml')
         );
 
         self::$createdDataboxes[] = $databox;

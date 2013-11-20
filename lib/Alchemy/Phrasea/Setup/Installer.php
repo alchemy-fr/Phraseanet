@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Setup;
 
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Tools\SchemaTool;
+use Symfony\Component\HttpFoundation\Request;
 
 class Installer
 {
@@ -52,32 +53,21 @@ class Installer
 
     private function populateRegistryData($serverName, $dataPath)
     {
-        // required to load GV template
-        $app = $this->app;
-        $GV = require __DIR__ . '/../../../../lib/conf.d/_GV_template.inc';
-
-        foreach ($GV as $section) {
-            foreach ($section['vars'] as $var) {
-                if (isset($var['default'])) {
-                    $this->app['phraseanet.registry']->set($var['name'], $var['default'], $var['type']);
-                }
-            }
-        }
-
         if (null === realpath($dataPath)) {
             throw new \InvalidArgumentException(sprintf('Path %s does not exist.', $dataPath));
         }
 
         $dataPath = realpath($dataPath) . DIRECTORY_SEPARATOR;
 
-        $this->app['phraseanet.registry']->set('GV_base_datapath_noweb', $dataPath, \registry::TYPE_STRING);
-        $this->app['phraseanet.registry']->set('GV_ServerName', $serverName, \registry::TYPE_STRING);
+        $this->app['conf']->set(['main', 'storage', 'subdefs', 'default-dir'], $dataPath);
+        $this->app['conf']->set('servername', $serverName);
+        $this->app['conf']->set('registry', $this->app['registry.manipulator']->getRegistryData());
     }
 
     private function createDB(\connection_interface $dbConn = null, $template)
     {
         $template = new \SplFileInfo(__DIR__ . '/../../../conf.d/data_templates/' . $template . '-simple.xml');
-        $databox = \databox::create($this->app, $dbConn, $template, $this->app['phraseanet.registry']);
+        $databox = \databox::create($this->app, $dbConn, $template);
         $this->app['acl']->get($this->app['authentication']->getUser())
             ->give_access_to_sbas([$databox->get_sbas_id()])
             ->update_rights_to_sbas(
@@ -170,8 +160,6 @@ class Installer
             $tool->dropSchema($metadatas);
             $tool->createSchema($metadatas);
         }
-
-        $this->app['phraseanet.registry'] = new \registry($this->app);
     }
 
     private function createConfigFile($abConn, $serverName, $binaryData)
@@ -191,7 +179,6 @@ class Installer
         $config['servername'] = $serverName;
         $config['main']['key'] = md5(mt_rand(100000000, 999999999));
 
-        $this->app['phraseanet.registry']->setKey($config['main']['key']);
         $this->app['configuration.store']->setConfig($config);
     }
 }

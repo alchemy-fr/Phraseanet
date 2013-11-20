@@ -168,7 +168,7 @@ class Databoxes implements ControllerProviderInterface
             }
 
             try {
-                $base = \databox::create($app, $connbas, $dataTemplate, $app['phraseanet.registry']);
+                $base = \databox::create($app, $connbas, $dataTemplate);
                 $base->registerAdmin($app['authentication']->getUser());
                 $app['acl']->get($app['authentication']->getUser())->delete_data_from_cache();
 
@@ -190,7 +190,7 @@ class Databoxes implements ControllerProviderInterface
                 $data_template = new \SplFileInfo($app['root.path'] . '/lib/conf.d/data_templates/' . $dataTemplate . '.xml');
                 $connbas = new \connection_pdo('databox_creation', $hostname, $port, $userDb, $passwordDb, $dbName, [], $app['debug']);
                 try {
-                    $base = \databox::create($app, $connbas, $data_template, $app['phraseanet.registry']);
+                    $base = \databox::create($app, $connbas, $data_template);
                     $base->registerAdmin($app['authentication']->getUser());
 
                     return $app->redirectPath('admin_database', ['databox_id' => $base->get_sbas_id(), 'success' => 1, 'reload-tree' => 1]);
@@ -230,7 +230,7 @@ class Databoxes implements ControllerProviderInterface
                 $password = $connexion['password'];
 
                 $app['phraseanet.appbox']->get_connection()->beginTransaction();
-                $base = \databox::mount($app, $hostname, $port, $user, $password, $dbName, $app['phraseanet.registry']);
+                $base = \databox::mount($app, $hostname, $port, $user, $password, $dbName);
                 $base->registerAdmin($app['authentication']->getUser());
                 $app['phraseanet.appbox']->get_connection()->commit();
 
@@ -251,7 +251,7 @@ class Databoxes implements ControllerProviderInterface
 
             try {
                 $app['phraseanet.appbox']->get_connection()->beginTransaction();
-                $base = \databox::mount($app, $hostname, $port, $userDb, $passwordDb, $dbName, $app['phraseanet.registry']);
+                $base = \databox::mount($app, $hostname, $port, $userDb, $passwordDb, $dbName);
                 $base->registerAdmin($app['authentication']->getUser());
                 $app['phraseanet.appbox']->get_connection()->commit();
 

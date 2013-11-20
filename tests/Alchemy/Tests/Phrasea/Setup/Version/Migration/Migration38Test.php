@@ -55,7 +55,7 @@ class Migration38Test extends AbstractSetupTester
         $modified['main']['key'] = '1234567890';
         $modified['main']['servername'] = 'http://sub.domain.tld/';
         $modified['main']['maintenance'] = true;
-        $modified['binaries']['test_binary'] = '/path/to/test/binary/file';
+        $modified['main']['binaries']['test_binary'] = '/path/to/test/binary/file';
         $modified['main']['database'] = array_replace($modified['main']['database'], [
             'host' => 'sql-host',
             'port' => '13306',

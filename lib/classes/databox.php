@@ -491,7 +491,7 @@ class databox extends base
         return;
     }
 
-    public static function create(Application $app, connection_pdo $connection, \SplFileInfo $data_template, registryInterface $registry)
+    public static function create(Application $app, connection_pdo $connection, \SplFileInfo $data_template)
     {
         if ( ! file_exists($data_template->getRealPath())) {
             throw new \InvalidArgumentException($data_template->getRealPath() . " does not exist");
@@ -569,7 +569,7 @@ class databox extends base
         $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
         $databox->insert_datas();
         $databox->setNewStructure(
-            $data_template, $registry->get('GV_base_datapath_noweb')
+            $data_template, $app['conf']->get(['main', 'storage', 'subdefs', 'default-dir'])
         );
 
         return $databox;
@@ -586,7 +586,7 @@ class databox extends base
      * @param  registry    $registry
      * @return databox
      */
-    public static function mount(Application $app, $host, $port, $user, $password, $dbname, registry $registry)
+    public static function mount(Application $app, $host, $port, $user, $password, $dbname)
     {
         new connection_pdo('test', $host, $port, $user, $password, $dbname, [], $app['debug']);
 

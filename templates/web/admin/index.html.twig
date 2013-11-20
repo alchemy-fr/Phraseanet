@@ -23,7 +23,7 @@
     var bodySize = {x:0,y:0};
 
     var language = {
-        serverName: '{{ app['phraseanet.registry'].get('GV_ServerName') | e('js') }}',
+        serverName: '{{ app['conf'].get('servername') | e('js') }}',
         serverError: '{{ 'phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, contactez le support technique' | trans | e('js') }}',
         serverTimeout:  '{{ 'phraseanet::erreur: La connection au serveur Phraseanet semble etre indisponible' | trans | e('js') }}',
         serverDisconnected: '{{ 'phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier' | trans | e('js') }}',

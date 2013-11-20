@@ -33,7 +33,7 @@
             {% endif %}
           </li>
 
-          {% if app['browser'].isNewGeneration and app['phraseanet.registry'].get('GV_thesaurus') == true and app['acl'].get(app['authentication'].getUser()).has_access_to_module('thesaurus') %}
+          {% if app['browser'].isNewGeneration and app['conf'].get(['registry', 'modules', 'thesaurus']) == true and app['acl'].get(app['authentication'].getUser()).has_access_to_module('thesaurus') %}
           <li>
             <a target="_blank" href="{{ path('thesaurus') }}">
               <span class="{% if module is defined and module == "thesaurus" %}selected{% endif %}">

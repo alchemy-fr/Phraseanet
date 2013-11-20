@@ -14,7 +14,7 @@ class TaskManagerStatusTest extends \PhraseanetTestCase
     {
         $conf = new ConfigurationTest($initialData);
         $expected = $conf->getConfig();
-        $expected['task-manager']['status'] = TaskManagerStatus::STATUS_STARTED;
+        $expected['main']['task-manager']['status'] = TaskManagerStatus::STATUS_STARTED;
 
         $status = new TaskManagerStatus($conf);
         $status->start();
@@ -25,14 +25,14 @@ class TaskManagerStatusTest extends \PhraseanetTestCase
     public function provideInitialData()
     {
         return [
-            [[]],
-            [['task-manager' => []]],
-            [['task-manager' => ['status' => TaskManagerStatus::STATUS_STARTED]]],
-            [['task-manager' => ['status' => TaskManagerStatus::STATUS_STOPPED]]],
-            [['key1' => 'value1']],
-            [['task-manager' => [], 'key2' => 'value2']],
-            [['task-manager' => ['status' => TaskManagerStatus::STATUS_STARTED, 'key3' => 'value3'], 'key4' => 'value4']],
-            [['task-manager' => ['status' => TaskManagerStatus::STATUS_STOPPED, 'key5' => 'value5'], 'key6' => 'value6']],
+            [['main' => []]],
+            [['main' => ['task-manager' => []]]],
+            [['main' => ['task-manager' => ['status' => TaskManagerStatus::STATUS_STARTED]]]],
+            [['main' => ['task-manager' => ['status' => TaskManagerStatus::STATUS_STOPPED]]]],
+            [['main' => ['key1' => 'value1']]],
+            [['main' => ['task-manager' => [], 'key2' => 'value2']]],
+            [['main' => ['task-manager' => ['status' => TaskManagerStatus::STATUS_STARTED, 'key3' => 'value3'], 'key4' => 'value4']]],
+            [['main' => ['task-manager' => ['status' => TaskManagerStatus::STATUS_STOPPED, 'key5' => 'value5'], 'key6' => 'value6']]],
         ];
     }
 
@@ -43,7 +43,7 @@ class TaskManagerStatusTest extends \PhraseanetTestCase
     {
         $conf = new ConfigurationTest($initialData);
         $expected = $conf->getConfig();
-        $expected['task-manager']['status'] = TaskManagerStatus::STATUS_STOPPED;
+        $expected['main']['task-manager']['status'] = TaskManagerStatus::STATUS_STOPPED;
 
         $status = new TaskManagerStatus($conf);
         $status->stop();
@@ -64,11 +64,11 @@ class TaskManagerStatusTest extends \PhraseanetTestCase
     public function provideConfAndStatusData()
     {
         return [
-            [[], TaskManagerStatus::STATUS_STARTED, true],
-            [['task-manager' => []], TaskManagerStatus::STATUS_STARTED, true],
-            [['task-manager' => ['status' => TaskManagerStatus::STATUS_STOPPED]], TaskManagerStatus::STATUS_STOPPED, false],
-            [['task-manager' => ['status' => TaskManagerStatus::STATUS_STARTED]], TaskManagerStatus::STATUS_STARTED, true],
-            [['task-manager' => ['status' => 'unknown']], TaskManagerStatus::STATUS_STARTED, true],
+            [['main' => []], TaskManagerStatus::STATUS_STARTED, true],
+            [['main' => ['task-manager' => []]], TaskManagerStatus::STATUS_STARTED, true],
+            [['main' => ['task-manager' => ['status' => TaskManagerStatus::STATUS_STOPPED]]], TaskManagerStatus::STATUS_STOPPED, false],
+            [['main' => ['task-manager' => ['status' => TaskManagerStatus::STATUS_STARTED]]], TaskManagerStatus::STATUS_STARTED, true],
+            [['main' => ['task-manager' => ['status' => 'unknown']]], TaskManagerStatus::STATUS_STARTED, true],
         ];
     }
 

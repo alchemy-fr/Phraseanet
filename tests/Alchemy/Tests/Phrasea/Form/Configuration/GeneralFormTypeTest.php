@@ -11,17 +11,13 @@
 
 namespace Alchemy\Tests\Phrasea\Form\Configuration;
 
-use Alchemy\Phrasea\Form\Configuration\PushFormType;
-use Alchemy\Phrasea\Model\Entities\Task;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints as Assert;
+use Alchemy\Phrasea\Form\Configuration\GeneralFormType;
 use Alchemy\Tests\Phrasea\Form\FormTestCase;
 
-class PushFormTypeTest extends FormTestCase
+class GeneralFormTypeTest extends FormTestCase
 {
     public function getForm()
     {
-        return new PushFormType();
+        return new GeneralFormType(['fr' => 'french']);
     }
 }

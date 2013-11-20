@@ -35,12 +35,6 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
     /**
      *
-     * @var registryInterface
-     */
-    protected $registry;
-
-    /**
-     *
      * @var DailymotionWithoutOauth2
      */
     protected $_api;
@@ -272,7 +266,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
                 break;
 
             default:
-                throw new Bridge_Exception_ElementUnknown('Unknown element ' . $type);
+                throw new Bridge_Exception_ElementUnknown('Unknown element ' . $object);
                 break;
         }
     }
@@ -372,7 +366,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
                 $this->_api->call($url, $params, $this->oauth_token);
                 break;
             default:
-                throw new Bridge_Exception_ElementUnknown('Unknown element ' . $type);
+                throw new Bridge_Exception_ElementUnknown('Unknown element ' . $object);
                 break;
         }
 
@@ -396,7 +390,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
                 return $playlist["id"];
                 break;
             default:
-                throw new Bridge_Exception_ElementUnknown('Unknown element ' . $type);
+                throw new Bridge_Exception_ElementUnknown('Unknown element ' . $container_type);
                 break;
         }
     }
@@ -431,7 +425,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
                         return $this->get_container_from_id(self::CONTAINER_TYPE_PLAYLIST, $container_id);
                         break;
                     default:
-                        throw new Bridge_Exception_ContainerUnknown('Unknown element ' . $container);
+                        throw new Bridge_Exception_ContainerUnknown('Unknown element ' . $destination);
                         break;
                 }
                 break;
@@ -658,15 +652,15 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
     public function is_configured()
     {
-        if ( ! $this->registry->get('GV_dailymotion_api')) {
+        if (!$this->conf->get(['main', 'bridge', 'dailymotion', 'enabled'])) {
             return false;
         }
 
-        if (trim($this->registry->get('GV_dailymotion_client_id')) === '') {
+        if ('' === trim($this->conf->get(['main', 'bridge', 'dailymotion', 'client_id']))) {
             return false;
         }
 
-        if (trim($this->registry->get('GV_dailymotion_client_secret')) === '') {
+        if ('' === trim($this->conf->get(['main', 'bridge', 'dailymotion', 'client_secret']))) {
             return false;
         }
 
@@ -681,8 +675,8 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
     {
         $this->_auth->set_parameters(
             [
-                'client_id'      => $this->registry->get('GV_dailymotion_client_id')
-                , 'client_secret'  => $this->registry->get('GV_dailymotion_client_secret')
+                'client_id'      => $this->conf->get(['main', 'bridge', 'dailymotion', 'client_id'])
+                , 'client_secret'  => $this->conf->get(['main', 'bridge', 'dailymotion', 'client_secret'])
                 , 'redirect_uri'   => Bridge_Api::generate_callback_url($this->generator, $this->get_name())
                 , 'scope'          => ''
                 , 'response_type'  => 'code'

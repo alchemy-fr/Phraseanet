@@ -450,9 +450,8 @@ class Bridge_Api
     }
 
     /**
-     *
-     * @param  registryInterface $registry
-     * @param  string            $api_name
+     * @param  UrlGenerator $generator
+     * @param  string       $api_name
      * @return string
      */
     public static function generate_callback_url(UrlGenerator $generator, $api_name)
@@ -461,9 +460,8 @@ class Bridge_Api
     }
 
     /**
-     *
-     * @param  registryInterface $registry
-     * @param  string            $api_name
+     * @param  UrlGenerator $generator
+     * @param  string       $api_name
      * @return string
      */
     public static function generate_login_url(UrlGenerator $generator, $api_name)
@@ -489,7 +487,7 @@ class Bridge_Api
         $auth_classname = 'Bridge_Api_Auth_' . $classname::AUTH_TYPE;
         $auth = new $auth_classname;
 
-        return new $classname($app['url_generator'], $app['phraseanet.registry'], $auth, $app['translator']);
+        return new $classname($app['url_generator'], $app['conf'], $auth, $app['translator']);
     }
 
     public static function get_by_api_name(Application $app, $name)

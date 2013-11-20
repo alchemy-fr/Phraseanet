@@ -24,10 +24,6 @@ class PhraseanetServiceProvider implements ServiceProviderInterface
             return new \appbox($app);
         });
 
-        $app['phraseanet.registry'] = $app->share(function (SilexApplication $app) {
-            return new \registry($app);
-        });
-
         $app['firewall'] = $app->share(function (SilexApplication $app) {
             return new Firewall($app);
         });

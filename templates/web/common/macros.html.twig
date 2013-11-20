@@ -51,7 +51,7 @@
             </div>
         </div>
     </div>
-    {% set public_key = app['phraseanet.registry'].get('GV_captcha_public_key') %}
+    {% set public_key = app["conf"].get(['registry', 'webservices', 'recaptcha-public-key']) %}
     <script type="text/javascript" src="https://www.google.com/recaptcha/api/challenge?k={{ app['recaptcha'].getPublicKey() }}"></script>
     <noscript>
        <iframe src="https://www.google.com/recaptcha/api/noscript?k={{ app['recaptcha'].getPublicKey() }}" height="300" width="500" frameborder="0"></iframe><br>

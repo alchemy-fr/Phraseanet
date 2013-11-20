@@ -67,7 +67,7 @@ abstract class AbstractMail implements MailInterface
      */
     public function getPhraseanetTitle()
     {
-        return $this->app['phraseanet.registry']->get('GV_homeTitle');
+        return $this->app['conf']->get(['registry', 'general', 'title']);
     }
 
     /**

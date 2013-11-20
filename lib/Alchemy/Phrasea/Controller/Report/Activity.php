@@ -763,7 +763,7 @@ class Activity implements ControllerProviderInterface
      */
     private function doReport(Application $app, Request $request, \module_report $report, $conf, $what = false)
     {
-        if ($app['phraseanet.registry']->get('GV_anonymousReport') == true) {
+        if ($app['conf']->get(['registry', 'modules', 'anonymous-report'])) {
             if (isset($conf['user'])) {
                 unset($conf['user']);
             }

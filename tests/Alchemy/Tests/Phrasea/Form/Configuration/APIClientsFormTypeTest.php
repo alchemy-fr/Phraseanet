@@ -11,17 +11,13 @@
 
 namespace Alchemy\Tests\Phrasea\Form\Configuration;
 
-use Alchemy\Phrasea\Form\Configuration\RobotsFormType;
-use Alchemy\Phrasea\Model\Entities\Task;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints as Assert;
+use Alchemy\Phrasea\Form\Configuration\APIClientsFormType;
 use Alchemy\Tests\Phrasea\Form\FormTestCase;
 
-class RobotsFormTypeTest extends FormTestCase
+class APIClientsFormTypeTest extends FormTestCase
 {
     public function getForm()
     {
-        return new RobotsFormType();
+        return new APIClientsFormType();
     }
 }

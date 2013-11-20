@@ -12,12 +12,6 @@
 namespace Alchemy\Tests\Phrasea\Form\Configuration;
 
 use Alchemy\Phrasea\Form\Configuration\ModulesFormType;
-use Alchemy\Phrasea\Model\Entities\Task;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Routing\Generator\UrlGenerator;
-use Symfony\Component\Routing\Exception\RouteNotFoundException;
-use Symfony\Component\Validator\Constraints as Assert;
 use Alchemy\Tests\Phrasea\Form\FormTestCase;
 
 class ModulesFormTypeTest extends FormTestCase

@@ -12,16 +12,12 @@
 namespace Alchemy\Tests\Phrasea\Form\Configuration;
 
 use Alchemy\Phrasea\Form\Configuration\WebservicesFormType;
-use Alchemy\Phrasea\Model\Entities\Task;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 use Alchemy\Tests\Phrasea\Form\FormTestCase;
 
 class WebservicesFormTypeTest extends FormTestCase
 {
     public function getForm()
     {
-        return new WebservicesFormType();
+        return new WebservicesFormType(self::$DI['app']['translator']);
     }
 }

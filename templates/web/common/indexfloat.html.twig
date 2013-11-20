@@ -2,7 +2,7 @@
 <html lang="{{ app['locale'] }}">
   <head>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>{% if local_title is defined%}{{local_title}} | {% endif %}{{ app['phraseanet.registry'].get('GV_homeTitle') }} - {{ module_name }} </title>
+    <title>{% if local_title is defined%}{{local_title}} | {% endif %}{{ app['conf'].get(['registry', 'general', 'title']) }} - {{ module_name }} </title>
     <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/common/main.css' }) }}">
     {% block stylesheet %}{% endblock %}
     {% block icon %}{% endblock %}

@@ -57,7 +57,7 @@
                         </a>
                     </li>
                 {% endif %}
-                {% if selectionLength == 1 and (app['phraseanet.registry'].get('GV_seeOngChgDoc') or app['phraseanet.registry'].get('GV_seeNewThumb')) %}
+                {% if selectionLength == 1 and (app['conf'].get(['registry', 'modules', 'doc-substitution']) or app['conf'].get(['registry', 'modules', 'thumb-substitution'])) %}
                     <li>
                         <a href="#substitution">
                             {{ "substitution" | trans }}
@@ -269,14 +269,14 @@
     {% endif %}
 
     {# hd sub section #}
-    {% if selectionLength == 1 and (app['phraseanet.registry'].get('GV_seeOngChgDoc') or app['phraseanet.registry'].get('GV_seeNewThumb')) %}
+    {% if selectionLength == 1 and (app['conf'].get(['registry', 'modules', 'doc-substitution']) or app['conf'].get(['registry', 'modules', 'thumb-substitution'])) %}
       {% for record in records %}
         <div id="substitution" class="tabBox">
 
          {% if "unknown" == record.get_type() %}
             <i class="icon-warning-sign icon-white"></i>{{ "Substitution is not possible for this kind of record" | trans }}
          {% else %}
-            {% if app['phraseanet.registry'].get('GV_seeOngChgDoc') %}
+            {% if app['conf'].get(['registry', 'modules', 'doc-substitution']) %}
                 <div id="substitution-hd">
                   <form
                     name ="formchgHD"
@@ -309,7 +309,7 @@
                 </div>
               {% endif %}
 
-              {% if app['phraseanet.registry'].get('GV_seeNewThumb') %}
+              {% if app['conf'].get(['registry', 'modules', 'thumb-substitution']) %}
                 <div id="substitution-sd">
                   <form
                     name="formchgHD"

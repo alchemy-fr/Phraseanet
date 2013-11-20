@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Core\Configuration\Configuration;
 use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Configuration\Compiler;
+use Alchemy\Phrasea\Core\Configuration\RegistryManipulator;
 use Silex\Application as SilexApplication;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\Yaml\Yaml;
@@ -41,6 +42,10 @@ class ConfigurationServiceProvider implements ServiceProviderInterface
                 $app['phraseanet.configuration.config-compiled-path'],
                 $app['debug']
             );
+        });
+
+        $app['registry.manipulator'] = $app->share(function (SilexApplication $app) {
+            return new RegistryManipulator($app['form.factory'], $app['translator'], $app['locales.available']);
         });
 
         $app['conf'] = $app->share(function (SilexApplication $app) {

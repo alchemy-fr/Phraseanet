@@ -38,9 +38,7 @@ class PropertyAccess
      */
     public function get($props, $default = null)
     {
-        $conf = $this->conf->getConfig();
-
-        return $this->doGet($conf, $this->arrayize($props), $default);
+        return \igorw\get_in($this->conf->getConfig(), $this->arrayize($props), $default);
     }
 
     /**
@@ -52,9 +50,18 @@ class PropertyAccess
      */
     public function has($props)
     {
-        $conf = $this->conf->getConfig();
+        $current = $this->conf->getConfig();
+        $props = $this->arrayize($props);
 
-        return $this->doHas($conf, $this->arrayize($props));
+        foreach ($props as $prop) {
+            if (!isset($current[$prop])) {
+                return false;
+            }
+
+            $current = $current[$prop];
+        }
+
+        return true;
     }
 
     /**
@@ -67,9 +74,7 @@ class PropertyAccess
      */
     public function set($props, $value)
     {
-        $conf = $this->conf->getConfig();
-        $this->doSet($conf, $this->arrayize($props), $value);
-        $this->conf->setConfig($conf);
+        $this->conf->setConfig(\igorw\assoc_in($this->conf->getConfig(), $this->arrayize($props), $value));
 
         return $value;
     }
@@ -107,48 +112,6 @@ class PropertyAccess
         $this->conf->setConfig($conf);
 
         return $value;
-    }
-
-    private function doGet(array $conf, array $props, $default)
-    {
-        $prop = array_shift($props);
-        if (!array_key_exists($prop, $conf)) {
-            return $default;
-        }
-        if (count($props) === 0) {
-            return $conf[$prop];
-        }
-        if (!is_array($conf[$prop])) {
-            return $default;
-        }
-
-        return $this->doGet($conf[$prop], $props, $default);
-    }
-
-    private function doHas(array $conf, array $props)
-    {
-        $prop = array_shift($props);
-        if (! array_key_exists($prop, $conf)) {
-            return false;
-        }
-        if (count($props) === 0) {
-            return true;
-        }
-
-        return $this->doHas($conf[$prop], $props);
-    }
-
-    private function doSet(array &$conf, array $props, $value)
-    {
-        $prop = array_shift($props);
-        if (count($props) === 0) {
-            $conf[$prop] = $value;
-        } else {
-            if (! array_key_exists($prop, $conf)) {
-                $conf[$prop] = [];
-            }
-            $this->doSet($conf[$prop], $props, $value);
-        }
     }
 
     private function doMerge(array &$conf, array $props, array $value)

@@ -1586,10 +1586,10 @@ class PhraseaEngineQueryParser
             for ($i = 0; $i < $length; $i++) {
                 $c = substr($w, $i, 1);
                 if ($c == "?" || $c == "*") {
-                    if ($nok < $this->app['phraseanet.registry']->get('GV_min_letters_truncation')) {
+                    if ($nok < $this->app['conf']->get(['registry', 'searchengine', 'min-letters-truncation'])) {
                         if ($this->errmsg != "")
                             $this->errmsg .= sprintf("\\n");
-                        $this->errmsg .= $this->app->trans('qparser:: Formulation incorrecte, necessite plus de caractere :') . "<br>" . $this->app['phraseanet.registry']->get('GV_min_letters_truncation');
+                        $this->errmsg .= $this->app->trans('qparser:: Formulation incorrecte, necessite plus de caractere :') . "<br>" . $this->app['conf']->get(['registry', 'searchengine', 'min-letters-truncation']);
 
                         return(null);
                     }

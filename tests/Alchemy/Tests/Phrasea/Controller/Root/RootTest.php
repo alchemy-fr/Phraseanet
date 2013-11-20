@@ -55,9 +55,9 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRouteRobots()
     {
-        $original_value = self::$DI['app']['phraseanet.registry']->get('GV_allow_search_engine');
+        $original_value = self::$DI['app']['conf']->get(['registry', 'general', 'allow-indexation']);
 
-        self::$DI['app']['phraseanet.registry']->set('GV_allow_search_engine', false, \registry::TYPE_BOOLEAN);
+        self::$DI['app']['conf']->set(['registry', 'general', 'allow-indexation'], false);
 
         $crawler = self::$DI['client']->request('GET', '/robots.txt');
         $response = self::$DI['client']->getResponse();
@@ -67,7 +67,7 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertRegExp('/^Disallow: \/$/m', $response->getContent());
 
-        self::$DI['app']['phraseanet.registry']->set('GV_allow_search_engine', true, \registry::TYPE_BOOLEAN);
+        self::$DI['app']['conf']->set(['registry', 'general', 'allow-indexation'], true);
 
         $crawler = self::$DI['client']->request('GET', '/robots.txt');
         $response = self::$DI['client']->getResponse();
@@ -77,7 +77,7 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertRegExp('/^Allow: \/$/m', $response->getContent());
 
-        self::$DI['app']['phraseanet.registry']->set('GV_allow_search_engine', $original_value, \registry::TYPE_BOOLEAN);
+        self::$DI['app']['conf']->set(['registry', 'general', 'allow-indexation'], $original_value);
     }
 
     public function testNoPersistentCookie()

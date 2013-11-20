@@ -66,10 +66,10 @@ class Login implements ControllerProviderInterface
 
         return [
             'last_publication_items' => $items,
-            'instance_title' => $app['phraseanet.registry']->get('GV_homeTitle'),
+            'instance_title' => $app['conf']->get(['registry', 'general', 'title']),
             'has_terms_of_use' => $app->hasTermsOfUse(),
-            'meta_description' =>  $app['phraseanet.registry']->get('GV_metaDescription'),
-            'meta_keywords' => $app['phraseanet.registry']->get('GV_metakeywords'),
+            'meta_description' =>  $app['conf']->get(['registry', 'general', 'description']),
+            'meta_keywords' => $app['conf']->get(['registry', 'general', 'keywords']),
             'browser_name' => $app['browser']->getBrowser(),
             'browser_version' => $app['browser']->getVersion(),
             'available_language' => $app['locales.available'],
@@ -80,7 +80,7 @@ class Login implements ControllerProviderInterface
             'unlock_usr_id' => $app->getUnlockAccountData(),
             'guest_allowed' => $app->isGuestAllowed(),
             'register_enable' => $app['registration.enabled'],
-            'display_layout' => $app['phraseanet.registry']->get('GV_home_publi'),
+            'display_layout' => $app['conf']->get(['registry', 'general', 'home-presentation-mode']),
             'authentication_providers' => $app['authentication.providers'],
             'registration_fields' => $app['registration.fields'],
             'registration_optional_fields' => $app['registration.optional-fields']
@@ -302,13 +302,13 @@ class Login implements ControllerProviderInterface
                 if ($form->isValid()) {
                     $captcha = $app['recaptcha']->bind($request);
 
-                    if ($app['phraseanet.registry']->get('GV_captchas') && !$captcha->isValid()) {
+                    if ($app['conf']->get(['registry', 'webservices', 'captcha-enabled']) && !$captcha->isValid()) {
                         throw new FormProcessingException($app->trans('Invalid captcha answer.'));
                     }
 
                     require_once $app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
 
-                    if ($app['phraseanet.registry']->get('GV_autoselectDB')) {
+                    if ($app['conf']->get(['registry', 'registration', 'auto-select-collections'])) {
                         $selected = null;
                     } else {
                         $selected = isset($data['collections']) ? $data['collections'] : null;
@@ -367,7 +367,7 @@ class Login implements ControllerProviderInterface
 
                     $demandOK = [];
 
-                    if ($app['phraseanet.registry']->get('GV_autoregister')) {
+                    if ($app['conf']->get(['registry', 'registration', 'auto-register-enabled'])) {
 
                         $template_user_id = \User_Adapter::get_usr_id_from_login($app, 'autoregister');
 
@@ -829,7 +829,7 @@ class Login implements ControllerProviderInterface
     // move this in an event
     public function postAuthProcess(PhraseaApplication $app, \User_Adapter $user)
     {
-        $date = new \DateTime('+' . (int) $app['phraseanet.registry']->get('GV_validation_reminder') . ' days');
+        $date = new \DateTime('+' . (int) $app['conf']->get(['registry', 'actions', 'validation-reminder-days']) . ' days');
 
         foreach ($app['EM']
             ->getRepository('Alchemy\Phrasea\Model\Entities\ValidationParticipant')

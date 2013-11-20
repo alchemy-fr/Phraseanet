@@ -107,7 +107,7 @@ class PhraseaRegisterForm extends AbstractType
             }
         }
 
-        if (!$this->app['phraseanet.registry']->get('GV_autoselectDB')) {
+        if (!$this->app['conf']->get(['registry', 'registration', 'auto-select-collections'])) {
             $builder->add('collections', 'choice', [
                 'choices'     => $choices,
                 'multiple'    => true,

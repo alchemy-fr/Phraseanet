@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\CLIProvider;
 
 use Alchemy\Phrasea\Command\Developer\Utils\ConstraintExtractor;
+use Alchemy\Phrasea\Command\Developer\Utils\HelpMessageExtractor;
 use Doctrine\Common\Annotations\DocParser;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Gedmo\SoftDeleteable\Mapping\Driver\Annotation;
@@ -53,6 +54,7 @@ class TranslationExtractorServiceProvider implements ServiceProviderInterface
                 new DefaultPhpFileExtractor($app['translation-extractor.doc-parser']),
                 new TwigFileExtractor($app['twig']),
                 new FormExtractor($app['translation-extractor.doc-parser']),
+                new HelpMessageExtractor($app['translation-extractor.doc-parser']),
             ];
         });
         $app['translation-extractor.file-extractor'] = $app->share(function (Application $app) {

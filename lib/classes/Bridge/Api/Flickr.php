@@ -19,12 +19,6 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
      */
     protected $_api;
 
-    /**
-     *
-     * @var registryInterface
-     */
-    protected $registry;
-
     const ELEMENT_TYPE_PHOTO = 'photo';
     const CONTAINER_TYPE_PHOTOSET = 'photoset';
     const AUTH_TYPE = 'Flickr';
@@ -199,9 +193,9 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
                     throw new Bridge_Exception_ApiConnectorRequestFailed('Unable to retrieve photoset infos for ' . $object);
 
                 $xml = $response->getXml();
-                $primary_photo = $this->get_element_from_id((string) $child['primary'], self::ELEMENT_TYPE_PHOTO);
+                $primary_photo = $this->get_element_from_id((string) $xml['primary'], self::ELEMENT_TYPE_PHOTO);
 
-                return new Bridge_Api_Flickr_Container($xml, $this->get_user_id(), $type, $primary_photo->get_thumbnail());
+                return new Bridge_Api_Flickr_Container($xml, $this->get_user_id(), $object, $primary_photo->get_thumbnail());
                 break;
             default:
                 throw new Bridge_Exception_ElementUnknown('Unknown element ' . $object);
@@ -282,7 +276,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
                 break;
             default:
-                throw new Bridge_Exception_ElementUnknown('Unknown element ' . $type);
+                throw new Bridge_Exception_ElementUnknown('Unknown element ' . $object);
                 break;
         }
 
@@ -621,16 +615,13 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
     public function is_configured()
     {
-
-        if ( ! $this->registry->get('GV_flickr_api')) {
+        if (!$this->conf->get(['main', 'bridge', 'flickr', 'enabled'])) {
             return false;
         }
-
-        if (trim($this->registry->get('GV_flickr_client_id')) === '') {
+        if ('' === trim($this->conf->get(['main', 'bridge', 'flickr', 'client_id']))) {
             return false;
         }
-
-        if (trim($this->registry->get('GV_flickr_client_secret')) === '') {
+        if ('' === trim($this->conf->get(['main', 'bridge', 'flickr', 'client_secret']))) {
             return false;
         }
 
@@ -644,8 +635,8 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
     protected function initialize_transport()
     {
         $this->_api = new Phlickr_Api(
-                $this->registry->get('GV_flickr_client_id'),
-                $this->registry->get('GV_flickr_client_secret')
+            $this->conf->get(['main', 'bridge', 'flickr', 'client_id']),
+            $this->conf->get(['main', 'bridge', 'flickr', 'client_secret'])
         );
 
         return $this;
@@ -673,8 +664,8 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
     {
         $this->_auth->set_parameters(
             [
-                'flickr_client_id'     => $this->registry->get('GV_flickr_client_id')
-                , 'flickr_client_secret' => $this->registry->get('GV_flickr_client_secret')
+                'flickr_client_id'     => $this->conf->get(['main', 'bridge', 'flickr', 'client_id'])
+                , 'flickr_client_secret' => $this->conf->get(['main', 'bridge', 'flickr', 'client_secret'])
                 , 'permissions'          => 'delete'
             ]
         );

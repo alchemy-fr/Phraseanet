@@ -77,11 +77,11 @@ class Root implements ControllerProviderInterface
             return $app['twig']->render('report/report_layout_child.html.twig', [
                 'ajax_dash'   => true,
                 'dashboard'   => $dashboard,
-                'home_title'  => $app['phraseanet.registry']->get('GV_homeTitle'),
+                'home_title'  => $app['conf']->get(['registry', 'general', 'title']),
                 'module'      => 'report',
                 'module_name' => 'Report',
-                'anonymous'   => $app['phraseanet.registry']->get('GV_anonymousReport'),
-                'g_anal'      => $app['phraseanet.registry']->get('GV_googleAnalytics'),
+                'anonymous'   => $app['conf']->get(['registry', 'modules', 'anonymous-report']),
+                'g_anal'      => $app['conf']->get(['registry', 'general', 'analytics']),
                 'ajax'        => false,
                 'ajax_chart'  => false
             ]);
@@ -144,7 +144,7 @@ class Root implements ControllerProviderInterface
 
         return $app['twig']->render('report/ajax_report_content.html.twig', [
             'selection' => $selection,
-            'anonymous' => $app['phraseanet.registry']->get('GV_anonymousReport'),
+            'anonymous' => $app['conf']->get(['registry', 'modules', 'anonymous-report']),
             'ajax'      => true,
             'dmin'      => $dmin->format('Y-m-d H:i:s'),
             'dmax'      => $dmax->format('Y-m-d H:i:s'),
@@ -514,7 +514,7 @@ class Root implements ControllerProviderInterface
      */
     private function doReport(Application $app, Request $request, \module_report $report, $conf, $what = false)
     {
-        if ($app['phraseanet.registry']->get('GV_anonymousReport') == true) {
+        if ($app['conf']->get(['registry', 'modules', 'anonymous-report']) == true) {
             if (isset($conf['user'])) {
                 unset($conf['user']);
             }

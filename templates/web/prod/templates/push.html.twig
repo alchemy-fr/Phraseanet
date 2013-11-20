@@ -126,13 +126,13 @@
     <div class="Feedback" style="display:none;">
         <label for="PushSendFormDuration">{% trans %}Time for feedback (days){% endtrans %}</label>
         <select id="PushSendFormDuration" name="duration" class="input-block-level">
-            <option {% if 20 == app['phraseanet.registry'].get('GV_val_expiration') %}selected="selected"{% endif %} value="20">20</option>
-            <option {% if 15 == app['phraseanet.registry'].get('GV_val_expiration') %}selected="selected"{% endif %} value="15">15</option>
-            <option {% if 10 == app['phraseanet.registry'].get('GV_val_expiration') %}selected="selected"{% endif %} value="10">10</option>
-            <option {% if 5 == app['phraseanet.registry'].get('GV_val_expiration') %}selected="selected"{% endif %} value="5">5</option>
-            <option {% if 3 == app['phraseanet.registry'].get('GV_val_expiration') %}selected="selected"{% endif %} value="3">3</option>
-            <option {% if 2 == app['phraseanet.registry'].get('GV_val_expiration') %}selected="selected"{% endif %} value="2">2</option>
-            <option {% if 1 == app['phraseanet.registry'].get('GV_val_expiration') %}selected="selected"{% endif %} value="1">1</option>
+            <option {% if 20 == app['conf'].get(['registry', 'actions', 'validation-expiration-days']) %}selected="selected"{% endif %} value="20">20</option>
+            <option {% if 15 == app['conf'].get(['registry', 'actions', 'validation-expiration-days']) %}selected="selected"{% endif %} value="15">15</option>
+            <option {% if 10 == app['conf'].get(['registry', 'actions', 'validation-expiration-days']) %}selected="selected"{% endif %} value="10">10</option>
+            <option {% if 5 == app['conf'].get(['registry', 'actions', 'validation-expiration-days']) %}selected="selected"{% endif %} value="5">5</option>
+            <option {% if 3 == app['conf'].get(['registry', 'actions', 'validation-expiration-days']) %}selected="selected"{% endif %} value="3">3</option>
+            <option {% if 2 == app['conf'].get(['registry', 'actions', 'validation-expiration-days']) %}selected="selected"{% endif %} value="2">2</option>
+            <option {% if 1 == app['conf'].get(['registry', 'actions', 'validation-expiration-days']) %}selected="selected"{% endif %} value="1">1</option>
         </select>
     </div>
     <div>

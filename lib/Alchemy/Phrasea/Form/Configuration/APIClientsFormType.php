@@ -11,22 +11,21 @@
 
 namespace Alchemy\Phrasea\Form\Configuration;
 
-use Alchemy\Phrasea\Model\Entities\Task;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Routing\Generator\UrlGenerator;
-use Symfony\Component\Routing\Exception\RouteNotFoundException;
-use Symfony\Component\Validator\Constraints as Assert;
 
-class ReportFormType extends AbstractType
+class APIClientsFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('GV_anonymousReport', 'checkbox', array(
-            'label'        => _('Anonymous report'),
-            'data'         => false,
-            'help_message' => _('Hide information about users'),
-        ));
+        $builder->add('navigator-enabled', 'checkbox', [
+            'label'        => 'Authorize *Phraseanet Navigator*',
+            'help_message' => '*Phraseanet Navigator* is a smartphone application that allow user to connect on this instance',
+        ]);
+
+        $builder->add('office-enabled', 'checkbox', [
+            'label'        => 'Authorize Microsoft Office Plugin to connect.',
+        ]);
     }
 
     public function getName()

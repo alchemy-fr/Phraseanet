@@ -20,14 +20,18 @@ class LocaleServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['locale'] = $app->share(function (Application $app) {
-            return $app['phraseanet.registry']->get('GV_default_lng', 'en');
+            if (!$app['configuration.store']->isSetup()) {
+                return 'en';
+            }
+
+            return $app['conf']->get(['languages', 'default'], 'en');
         });
 
         $app['locales.available'] = $app->share(function (Application $app) {
             $availableLanguages = PhraseaApplication::getAvailableLanguages();
 
-            if ($app['configuration.store']->isSetup() && 0 < count((array) $app['conf']->get('languages', []))) {
-                $languages = $app['conf']->get('languages');
+            if ($app['configuration.store']->isSetup() && 0 < count((array) $app['conf']->get(['languages', 'available']))) {
+                $languages = $app['conf']->get(['languages', 'available']);
                 $enabledLanguages = $availableLanguages;
 
                 foreach ($enabledLanguages as $code => $language) {

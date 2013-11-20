@@ -22,13 +22,13 @@ class NotificationDelivererServiceProvider implements ServiceProviderInterface
     {
         $app['notification.default.emitter'] = $app->share(function (Application $app) {
             return new Emitter(
-                $app['phraseanet.registry']->get('GV_homeTitle', 'Phraseanet'),
-                $app['phraseanet.registry']->get('GV_defaulmailsenderaddr', 'no-reply@phraseanet.com')
+                $app['conf']->get(['registry', 'general', 'title']),
+                $app['conf']->get(['registry', 'email', 'emitter-email'], 'no-reply@phraseanet.com')
             );
         });
 
         $app['notification.prefix'] = $app->share(function (Application $app) {
-            return $app['phraseanet.registry']->get('GV_email_prefix');
+            return $app['conf']->get(['registry', 'email', 'prefix']);
         });
 
         $app['notification.deliverer'] = $app->share(function ($app) {

@@ -46,7 +46,7 @@ class MailInfoValidationReminder extends AbstractMailWithLink
     public function getMessage()
     {
         return $this->app->trans('Il ne vous reste plus que %quantity% jours pour terminer votre validation', [
-            '%quantity%' => $this->app['phraseanet.registry']->get('GV_validation_reminder')
+            '%quantity%' => $this->app['conf']->get(['registry', 'actions', 'validation-reminder-days'])
         ]);
     }
 

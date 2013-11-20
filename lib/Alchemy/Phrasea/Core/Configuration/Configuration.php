@@ -27,7 +27,7 @@ class Configuration implements ConfigurationInterface
     private $autoReload;
 
     /**
-     * @param Yaml $yaml The Yaml Parser
+     * @param Yaml     $yaml     The Yaml Parser
      * @param Compiler $compiler The PHP Compiler
      * @param $config The path to the yaml configuration path
      * @param $compiled The path to the compiled configuration path

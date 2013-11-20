@@ -93,7 +93,7 @@ class Informations implements ControllerProviderInterface
             $app->abort(400);
         }
 
-        if ('' !== $on && $app['phraseanet.registry']->get('GV_anonymousReport') == true) {
+        if ('' !== $on && $app['conf']->get(['registry', 'modules', 'anonymous-report']) == true) {
             $conf['conf'] = [
                  $on   => [$on, 0, 0, 0, 0],
                 'nb'   => [$app->trans('report:: nombre'), 0, 0, 0, 0]
@@ -220,7 +220,7 @@ class Informations implements ControllerProviderInterface
             $on
         );
 
-        if (false == $app['phraseanet.registry']->get('GV_anonymousReport')) {
+        if (false == $app['conf']->get(['registry', 'modules', 'anonymous-report'])) {
             $html_info = $app['twig']->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($infoArray['report']) ? $infoArray['report'] : $infoArray,
                 'is_infouser' => false,
@@ -456,7 +456,7 @@ class Informations implements ControllerProviderInterface
             ]);
         }
 
-        if ($app['phraseanet.registry']->get('GV_anonymousReport') == false && $from !== 'DOC' && $from !== 'DASH' && $from !== 'GEN' && $from !== 'PUSHDOC') {
+        if ($app['conf']->get(['registry', 'modules', 'anonymous-report']) == false && $from !== 'DOC' && $from !== 'DASH' && $from !== 'GEN' && $from !== 'PUSHDOC') {
             $conf = [
                 'identifiant'   => [$app->trans('report:: identifiant'), 0, 0, 0, 0],
                 'nom'           => [$app->trans('report:: nom'), 0, 0, 0, 0],

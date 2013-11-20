@@ -25,7 +25,7 @@ class LocaleServiceProvidertest extends \PhraseanetTestCase
         $app->register(new LocaleServiceProvider());
         $app['root.path'] = __DIR__ . '/../../../../../..';
         $app->register(new ConfigurationServiceProvider());
-        $app['conf']->set(['main', 'languages'], ['fr', 'zh', 'de']);
+        $app['conf']->set(['languages', 'available'], ['fr', 'zh', 'de']);
 
         $original = Application::getAvailableLanguages();
         unset($original['en']);
@@ -41,7 +41,7 @@ class LocaleServiceProvidertest extends \PhraseanetTestCase
         $app['root.path'] = __DIR__ . '/../../../../../..';
         $app->register(new ConfigurationServiceProvider());
 
-        $app['conf']->set(['main', 'languages'], ['en_US']);
+        $app['conf']->set(['languages', 'available'], ['en_US']);
 
         $app['monolog'] = $this->getMock('Psr\Log\LoggerInterface');
         $app['monolog']->expects($this->once())
@@ -56,12 +56,12 @@ class LocaleServiceProvidertest extends \PhraseanetTestCase
     {
         $app = $this->loadApp();
         $app->register(new LocaleServiceProvider());
-        $app['phraseanet.registry'] = $this->getMockBuilder('registry')
+        $app['conf'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
             ->disableOriginalConstructor()
             ->getMock();
-        $app['phraseanet.registry']->expects($this->once())
+        $app['conf']->expects($this->once())
             ->method('get')
-            ->with('GV_default_lng', 'en')
+            ->with(['languages', 'default'], 'en')
             ->will($this->returnValue('fr'));
 
         $this->assertEquals('fr', $app['locale']);

@@ -28,7 +28,7 @@ class Language implements ControllerProviderInterface
             $out['thesaurusBasesChanged'] = $app->trans('prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee.');
             $out['confirmDel'] = $app->trans('paniers::Vous etes sur le point de supprimer ce panier. Cette action est irreversible. Souhaitez-vous continuer ?');
             $out['serverError'] = $app->trans('phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, contactez le support technique');
-            $out['serverName'] = $app['phraseanet.registry']->get('GV_ServerName');
+            $out['serverName'] = $app['conf']->get('servername');
             $out['serverTimeout'] = $app->trans('phraseanet::erreur: La connection au serveur Phraseanet semble etre indisponible');
             $out['serverDisconnected'] = $app->trans('phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier');
             $out['hideMessage'] = $app->trans('phraseanet::Ne plus afficher ce message');

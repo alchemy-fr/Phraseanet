@@ -669,8 +669,7 @@ class collection implements cache_cacheableInterface
             if (is_file($app['root.path'] . '/config/minilogos/' . $base_id)) {
                 $name = phrasea::bas_labels($base_id, $app);
                 self::$_logos[$base_id_key] = '<img title="' . $name
-                    . '" src="' . $app['phraseanet.registry']->get('GV_STATIC_URL')
-                    . '/custom/minilogos/' . $base_id . '" />';
+                    . '" src="/custom/minilogos/' . $base_id . '" />';
             } elseif ($printname) {
                 self::$_logos[$base_id_key] = phrasea::bas_labels($base_id, $app);
             }

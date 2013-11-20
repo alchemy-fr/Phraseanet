@@ -80,7 +80,7 @@ define('GV_autoselectDB', true);
 define('GV_autoregister', false);
 define('GV_validation_reminder', '2');
 define('GV_val_expiration', '10');
-define('GV_homeTitle', 'Phraseanet');
+define('GV_homeTitle', 'SuperPhraseanet');
 define('GV_metaKeywords', '');
 define('GV_metaDescription', '');
 define('GV_googleAnalytics', '');

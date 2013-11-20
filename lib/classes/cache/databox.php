@@ -56,7 +56,7 @@ class cache_databox
 
         $sql = 'SELECT type, value FROM memcached WHERE site_id = :site_id';
         $stmt = $connsbas->prepare($sql);
-        $stmt->execute([':site_id' => $app['phraseanet.registry']->get('GV_ServerName')]);
+        $stmt->execute([':site_id' => $app['conf']->get('servername')]);
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -84,7 +84,7 @@ class cache_databox
               WHERE site_id = :site_id AND type="record" AND value = :value';
 
                     $params = [
-                        ':site_id' => $app['phraseanet.registry']->get('GV_ServerName')
+                        ':site_id' => $app['conf']->get('servername')
                         , ':value'   => $row['value']
                     ];
 
@@ -108,7 +108,7 @@ class cache_databox
               WHERE site_id = :site_id AND type="structure" AND value = :value';
 
                     $params = [
-                        ':site_id' => $app['phraseanet.registry']->get('GV_ServerName')
+                        ':site_id' => $app['conf']->get('servername')
                         , ':value'   => $row['value']
                     ];
 
@@ -152,7 +152,7 @@ class cache_databox
             WHERE site_id != :site_id';
 
         $stmt = $connbas->prepare($sql);
-        $stmt->execute([':site_id' => $app['phraseanet.registry']->get('GV_ServerName')]);
+        $stmt->execute([':site_id' => $app['conf']->get('servername')]);
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -176,7 +176,7 @@ class cache_databox
 
         $sql = 'SELECT site_id FROM clients WHERE site_id = :site_id';
         $stmt = $connbas->prepare($sql);
-        $stmt->execute([':site_id' => $app['phraseanet.registry']->get('GV_ServerName')]);
+        $stmt->execute([':site_id' => $app['conf']->get('servername')]);
         $rowCount = $stmt->rowCount();
         $stmt->closeCursor();
 
@@ -186,7 +186,7 @@ class cache_databox
 
         $sql = 'INSERT INTO clients (site_id) VALUES (:site_id)';
         $stmt = $connbas->prepare($sql);
-        $stmt->execute([':site_id' => $app['phraseanet.registry']->get('GV_ServerName')]);
+        $stmt->execute([':site_id' => $app['conf']->get('servername')]);
         $stmt->closeCursor();
 
         return;

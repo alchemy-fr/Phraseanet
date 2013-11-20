@@ -13,7 +13,7 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
     public function tearDown()
     {
         if (self::$GV_activeFTP) {
-            self::$DI['app']['phraseanet.registry']->set('GV_activeFTP', true, \registry::TYPE_BOOLEAN);
+            self::$DI['app']['conf']->set(['registry', 'ftp', 'ftp-enabled'], true);
         }
 
         self::$GV_activeFTP = null;
@@ -127,8 +127,8 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testExportFtp()
     {
-        if (!self::$DI['app']['phraseanet.registry']->get('GV_activeFTP')) {
-           self::$DI['app']['phraseanet.registry']->set('GV_activeFTP', true, \registry::TYPE_BOOLEAN);
+        if (!self::$DI['app']['conf']->get(['registry', 'ftp', 'ftp-enabled'])) {
+           self::$DI['app']['conf']->set(['registry', 'ftp', 'ftp-enabled'], true);
            self::$GV_activeFTP = true;
         }
         //inserted rows from this function are deleted in tearDownAfterClass

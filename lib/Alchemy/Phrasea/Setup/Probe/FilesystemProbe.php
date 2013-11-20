@@ -12,11 +12,12 @@
 namespace Alchemy\Phrasea\Setup\Probe;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Setup\Requirements\FilesystemRequirements;
 
 class FilesystemProbe extends FilesystemRequirements implements ProbeInterface
 {
-    public function __construct(\registryInterface $registry)
+    public function __construct(PropertyAccess $conf)
     {
         parent::__construct();
 
@@ -34,10 +35,8 @@ class FilesystemProbe extends FilesystemRequirements implements ProbeInterface
             );
         }
 
-        $path = [];
-
-        if ($registry->is_set('GV_base_datapath_noweb')) {
-            $paths[] = $registry->get('GV_base_datapath_noweb');
+        if ($conf->has(['main', 'storage', 'subdefs', 'default-dir'])) {
+            $paths[] = $conf->get(['main', 'storage', 'subdefs', 'default-dir']);
         }
 
         foreach ($paths as $path) {
@@ -56,6 +55,6 @@ class FilesystemProbe extends FilesystemRequirements implements ProbeInterface
      */
     public static function create(Application $app)
     {
-        return new static($app['phraseanet.registry']);
+        return new static($app['conf']);
     }
 }

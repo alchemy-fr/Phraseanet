@@ -17,7 +17,7 @@
       {% endif %}
 
       {% set tooltip = '' %}
-      {% if app['phraseanet.registry'].get('GV_rollover_reg_preview') %}
+      {% if app['conf'].get(['registry', 'classic', 'stories-preview']) %}
         {% set tooltip = 'tooltipsrc="' ~ path('prod_tooltip_caption', { 'sbas_id' : child.getRecord(app).get_sbas_id(), 'record_id' : child.getRecord(app).get_record_id(), 'context' : 'basket' }) ~ '"' %}
       {% endif %}
 

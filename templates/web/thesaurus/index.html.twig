@@ -2,7 +2,7 @@
 <html lang="{{ app['locale'] }}">
     <head>
         <meta http-equiv="X-UA-Compatible" content="chrome=1">
-        <title>{{ app['phraseanet.registry'].get('GV_homeTitle') }} - {{ 'phraseanet:: thesaurus' | trans }}</title>
+        <title>{{ app['conf'].get(['registry', 'general', 'title']) }} - {{ 'phraseanet:: thesaurus' | trans }}</title>
         <link rel="shortcut icon" type="image/x-icon" href="/skins/thesaurus/favicon.ico">
         <link REL="stylesheet" TYPE="text/css" href="{{ path('minifier', { 'f' : 'skins/thesaurus/thesaurus.css' }) }}" />
     </head>

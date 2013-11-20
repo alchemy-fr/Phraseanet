@@ -67,12 +67,12 @@ class V1 implements ControllerProviderInterface
             /* @var $oAuth2App \API_OAuth2_Application */
 
             if ($oAuth2App->get_client_id() == \API_OAuth2_Application_Navigator::CLIENT_ID
-                && !$app['phraseanet.registry']->get('GV_client_navigator')) {
+                && !$app['conf']->get(['registry', 'api-clients', 'navigator-enabled'])) {
                 throw new \API_V1_exception_forbidden('The use of phraseanet Navigator is not allowed');
             }
 
             if ($oAuth2App->get_client_id() == \API_OAuth2_Application_OfficePlugin::CLIENT_ID
-                && ! $app['phraseanet.registry']->get('GV_client_officeplugin')) {
+                && ! $app['conf']->get(['registry', 'api-clients', 'office-enabled'])) {
                 throw new \API_V1_exception_forbidden('The use of Office Plugin is not allowed.');
             }
 

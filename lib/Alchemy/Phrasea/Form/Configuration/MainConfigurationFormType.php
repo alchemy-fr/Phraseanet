@@ -11,105 +11,69 @@
 
 namespace Alchemy\Phrasea\Form\Configuration;
 
-use Alchemy\Phrasea\Model\Entities\Task;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Routing\Generator\UrlGenerator;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class MainConfigurationFormType extends AbstractType
 {
     private $languages;
-    private $generator;
+    private $translator;
 
-    public function __construct(array $languages, UrlGenerator $generator)
+    public function __construct(TranslatorInterface $translator, array $languages)
     {
         $this->languages = $languages;
-        $this->generator = $generator;
+        $this->translator = $translator;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('http', new HttpServerFormType($this->languages), array(
-            'label'    => _('HTTP Server'),
+        $builder->add('general', new GeneralFormType($this->languages), [
+            'label'    => 'General configuration',
+        ]);
+        $builder->add('modules', new ModulesFormType(), [
+            'label' => 'Additionnal modules',
+        ]);
+        $builder->add('actions', new ActionsFormType(), [
+            'label' => 'Push configuration',
+        ]);
+        $builder->add('ftp', new FtpExportFormType(), [
+            'label' => 'FTP Export',
+        ]);
+        $builder->add('registration', new RegistrationFormType(), [
+            'label' => 'Registration',
+        ]);
+        $builder->add('classic', new ClassicFormType(), [
+            'label' => 'Client',
+        ]);
+        $builder->add('maintenance', new MaintenanceFormType(), [
+            'label' => 'Maintenance state',
+        ]);
+        $builder->add('api-clients', new APIClientsFormType(), [
+            'label' => 'Phraseanet client API',
+        ]);
+        $builder->add('webservices', new WebservicesFormType($this->translator), [
+            'label' => 'Webservices connectivity',
+        ]);
+        $builder->add('executables', new ExecutablesFormType($this->translator), [
+            'label' => 'Executables settings',
+        ]);
+        $builder->add('searchengine', new SearchEngineFormType(), [
+            'label' => 'Search engine',
+        ]);
+        $builder->add('email', new EmailFormType(), [
+            'label' => 'Emails',
+        ]);
+    }
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
             'required' => false,
-        ));
-        $builder->add('maintenance', new MaintenanceFormType(), array(
-            'label' => _('Maintenance state'),
-            'required' => false,
-        ));
-        $builder->add('webservices', new WebservicesFormType(), array(
-            'label' => _('Webservices connectivity'),
-            'required' => false,
-        ));
-        $builder->add('youtube-api', new YoutubeFormType($this->generator), array(
-            'label' => _('Youtube connectivity'),
-            'required' => false,
-        ));
-        $builder->add('flickr-api', new FlickrFormType($this->generator), array(
-            'label' => _('FlickR connectivity'),
-            'required' => false,
-        ));
-        $builder->add('dailymotion-api', new DailymotionFormType($this->generator), array(
-            'label' => _('Dailymotion connectivity'),
-            'required' => false,
-        ));
-        $builder->add('phraseanet-client', new PhraseanetClientAPIFormType(), array(
-            'label' => _('Phraseanet client API'),
-            'required' => false,
-        ));
-        $builder->add('storage', new StorageFormType(), array(
-            'label' => _('Documents storage'),
-            'required' => false,
-        ));
-        $builder->add('executables', new ExecutablesFormType(), array(
-            'label' => _('Executables settings'),
-            'required' => false,
-        ));
-        $builder->add('homepage', new HomepageFormType(), array(
-            'label' => _('Main configuration'),
-            'required' => false,
-        ));
-        $builder->add('display', new DisplayFormType(), array(
-            'label' => _('Homepage'),
-            'required' => false,
-        ));
-        $builder->add('searchengine', new SearchEngineFormType(), array(
-            'label' => _('Search engine'),
-            'required' => false,
-        ));
-        $builder->add('report', new ReportFormType(), array(
-            'label' => _('Report'),
-            'required' => false,
-        ));
-        $builder->add('modules', new ModulesFormType(), array(
-            'label' => _('Additionnal modules'),
-            'required' => false,
-        ));
-        $builder->add('email', new EmailFormType(), array(
-            'label' => _('Emails'),
-            'required' => false,
-        ));
-        $builder->add('client', new FtpExportFormType(), array(
-            'label' => _('FTP Export'),
-            'required' => false,
-        ));
-        $builder->add('client', new ClientFormType(), array(
-            'label' => _('Client'),
-            'required' => false,
-        ));
-        $builder->add('registration', new RegistrationFormType(), array(
-            'label' => _('Registration'),
-            'required' => false,
-        ));
-        $builder->add('push', new PushFormType(), array(
-            'label' => _('Push configuration'),
-            'required' => false,
-        ));
-        $builder->add('robots', new RobotsFormType(), array(
-            'label' => _('Robot indexing'),
-            'required' => false,
-        ));
+        ]);
     }
 
     public function getName()

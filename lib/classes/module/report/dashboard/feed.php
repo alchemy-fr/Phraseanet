@@ -141,7 +141,7 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
             $this->report['nb_conn'] = module_report_connexion::getNbConn(
                     $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
             );
-            if ($this->app['phraseanet.registry']->get('GV_anonymousReport') == false) {
+            if ($this->app['conf']->get(['registry', 'modules', 'anonymous-report']) == false) {
                 /**
                  * get Top ten user of
                  * number of dl doc, prev
@@ -176,7 +176,7 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
             $this->report['top_dl_preview'] = $topdl['preview'];
             $this->report['top_dl_document'] = $topdl['document'];
 
-            if ($this->app['phraseanet.registry']->get('GV_anonymousReport') == false) {
+            if ($this->app['conf']->get(['registry', 'modules', 'anonymous-report']) == false) {
                 // get users that ask the most questions
                 $this->report['ask'] = module_report_activity::activityQuestion(
                         $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
@@ -200,7 +200,7 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
             $this->report['activity_edited'] = module_report_activity::activiteEditedDocument(
                     $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
             );
-            if ($this->app['phraseanet.registry']->get('GV_anonymousReport') == false) {
+            if ($this->app['conf']->get(['registry', 'modules', 'anonymous-report']) == false) {
                 //get users that add the most documents
                 $this->report['top_ten_added'] = module_report_activity::activiteAddedTopTenUser(
                         $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection

@@ -88,7 +88,7 @@ abstract class PhraseanetTestCase extends WebTestCase
         });
 
         self::$DI['local-guzzle'] = self::$DI->share(function ($DI) {
-            return new Guzzle(self::$DI['app']['phraseanet.registry']->get('GV_ServerName'));
+            return new Guzzle(self::$DI['app']['conf']->get('servername'));
         });
 
         self::$DI['client'] = self::$DI->share(function ($DI) {

@@ -11,17 +11,13 @@
 
 namespace Alchemy\Tests\Phrasea\Form\Configuration;
 
-use Alchemy\Phrasea\Form\Configuration\StorageFormType;
-use Alchemy\Phrasea\Model\Entities\Task;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints as Assert;
+use Alchemy\Phrasea\Form\Configuration\ClassicFormType;
 use Alchemy\Tests\Phrasea\Form\FormTestCase;
 
-class StorageFormTypeTest extends FormTestCase
+class ClassicFormTypeTest extends FormTestCase
 {
     public function getForm()
     {
-        return new StorageFormType();
+        return new ClassicFormType();
     }
 }

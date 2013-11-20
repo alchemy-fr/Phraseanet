@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -26,19 +27,22 @@ abstract class Bridge_Api_Abstract
      */
     protected $locale = 'en_US';
     protected $generator;
+    /** @var PropertyAccess */
+    protected $conf;
     protected $translator;
 
     /**
+     * @param UrlGenerator              $generator
+     * @param PropertyAccess            $conf
+     * @param TranslatorInterface       $translator
      *
-     * @param  registryInterface         $registry
-     * @param  Bridge_Api_Auth_Interface $auth
-     * @return Bridge_Api_Abstract
+     * @param Bridge_Api_Auth_Interface $auth
      */
-    public function __construct(UrlGenerator $generator, registryInterface $registry, Bridge_Api_Auth_Interface $auth, TranslatorInterface $translator)
+    public function __construct(UrlGenerator $generator, PropertyAccess $conf, Bridge_Api_Auth_Interface $auth, TranslatorInterface $translator)
     {
         $this->translator = $translator;
+        $this->conf = $conf;
         $this->generator = $generator;
-        $this->registry = $registry;
         $this->_auth = $auth;
         $this->initialize_transport();
         $this->set_auth_params();

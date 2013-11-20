@@ -11,38 +11,43 @@
 
 namespace Alchemy\Phrasea\Form\Configuration;
 
-use Alchemy\Phrasea\Model\Entities\Task;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class WebservicesFormType extends AbstractType
 {
+    private $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $recaptchaDoc = '<a href="http://www.google.com/recaptcha">http://www.google.com/recaptcha</a>';
 
-        $builder->add('GV_google_api', 'checkbox', array(
-            'label'        => _('Use Google Chart API'),
-            'data'         => true,
-        ));
-        $builder->add('GV_i18n_service', 'text', array(
-            'label'       => _('Geonames server address'),
-            'data'        => 'https://geonames.alchemyasp.com/',
-        ));
-        $builder->add('GV_captchas', 'checkbox', array(
-            'label'        => _('Use recaptcha API'),
-            'data'         => false,
-            'help_message' => _(sprintf('See documentation at %s', $recaptchaDoc)),
-        ));
-        $builder->add('GV_captcha_public_key', 'text', array(
-            'label'       => _('Recaptcha public key'),
-            'data'        => '',
-        ));
-        $builder->add('GV_captcha_private_key', 'text', array(
-            'label'       => _('Recaptcha private key'),
-            'data'        => '',
-        ));
+        $builder->add('google-charts-enabled', 'checkbox', [
+            'label'        => 'Use Google Chart API',
+        ]);
+        $builder->add('geonames-server', 'text', [
+            'label'       => 'Geonames server address',
+        ]);
+
+        $help = $this->translator->trans('See documentation at %url%', ['%url%' => $recaptchaDoc]);
+
+        $builder->add('captchas-enabled', 'checkbox', [
+            'label'        => 'Use recaptcha API',
+            /** @Ignore */
+            'help_message' => $help
+        ]);
+        $builder->add('recaptcha-public-key', 'text', [
+            'label'       => 'Recaptcha public key',
+        ]);
+        $builder->add('recaptcha-private-key', 'text', [
+            'label'       => 'Recaptcha private key',
+        ]);
     }
 
     public function getName()
