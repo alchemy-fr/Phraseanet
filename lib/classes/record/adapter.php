@@ -23,12 +23,6 @@ use Monolog\Logger;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 use Symfony\Component\Filesystem\Filesystem;
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class record_adapter implements record_Interface, cache_cacheableInterface
 {
     /**

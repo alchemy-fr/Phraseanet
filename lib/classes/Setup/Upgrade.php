@@ -12,15 +12,6 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Setup\Version\MailChecker;
 
-/**
- * UpgradeManager for Phraseanet.
- * Datas are written in a lock file.
- * If lock file exists, it contains YAML datas about the current process.
- *
- * @package     Setup
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Setup_Upgrade
 {
     /**

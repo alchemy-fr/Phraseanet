@@ -12,12 +12,6 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Basket;
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class set_selection extends set_abstract
 {
     protected $app;

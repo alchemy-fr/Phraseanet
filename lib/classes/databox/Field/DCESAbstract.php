@@ -9,12 +9,6 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @package     Databox DCES
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 abstract class databox_Field_DCESAbstract
 {
 

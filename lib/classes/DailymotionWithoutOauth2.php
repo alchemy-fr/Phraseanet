@@ -1,15 +1,5 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- * Description of Api
- *
- * @author nicolas
- */
 class DailymotionWithoutOauth2 extends Dailymotion
 {
 

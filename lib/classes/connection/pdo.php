@@ -9,12 +9,6 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @package     connection
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class connection_pdo extends connection_abstract implements connection_interface
 {
     protected $debug;

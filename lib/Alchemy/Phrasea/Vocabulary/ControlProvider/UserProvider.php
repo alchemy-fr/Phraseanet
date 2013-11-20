@@ -15,12 +15,6 @@ use Alchemy\Phrasea\Application;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Vocabulary\Term;
 
-/**
- * User Provider
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class UserProvider implements ControlProviderInterface
 {
 

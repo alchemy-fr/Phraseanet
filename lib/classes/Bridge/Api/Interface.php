@@ -11,12 +11,6 @@
 
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
-/**
- *
- * @package     Bridge
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 interface Bridge_Api_Interface
 {
     const OBJECT_CLASS_ELEMENT = 'element';

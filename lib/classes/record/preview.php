@@ -14,12 +14,6 @@ use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class record_preview extends record_adapter
 {
     /**

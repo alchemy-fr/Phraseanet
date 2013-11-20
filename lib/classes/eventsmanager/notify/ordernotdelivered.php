@@ -14,11 +14,6 @@ use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Emitter;
 use Alchemy\Phrasea\Notification\Mail\MailInfoOrderCancelled;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstract
 {
     /**

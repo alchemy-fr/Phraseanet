@@ -9,12 +9,6 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-
 namespace PhraseaFixture\UsrLists;
 
 use Alchemy\Phrasea\Model\Entities\UsrList as UsrListEntity;
@@ -22,11 +16,6 @@ use Alchemy\Phrasea\Model\Entities\UsrListEntry as UsrListEntryEntity;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class UsrListEntry extends ListAbstract implements FixtureInterface
 {
     /**

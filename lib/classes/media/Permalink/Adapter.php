@@ -12,12 +12,6 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\RuntimeException;
 
-/**
- *
- * @package     subdefs
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class media_Permalink_Adapter implements media_Permalink_Interface, cache_cacheableInterface
 {
     /**

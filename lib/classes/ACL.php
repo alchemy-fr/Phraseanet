@@ -11,12 +11,6 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- * Access Control List class
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class ACL implements cache_cacheableInterface
 {
     /**

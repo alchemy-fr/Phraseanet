@@ -12,12 +12,6 @@
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailInfoSomebodyAutoregistered;
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
 {
     /**

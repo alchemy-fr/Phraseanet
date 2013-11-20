@@ -14,15 +14,6 @@ namespace Alchemy\Phrasea\Helper;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Model\Entities\Basket as BasketEntity;
 
-/**
- *
- * WorkZone provides methods for working with the working zone of Phraseanet
- * Production. This zones handles Non-Archived baskets, stories and Validation
- * people are waiting from me.
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class WorkZone extends Helper
 {
     const BASKETS = 'baskets';

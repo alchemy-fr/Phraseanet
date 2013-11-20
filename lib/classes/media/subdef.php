@@ -14,12 +14,6 @@ use MediaAlchemyst\Alchemyst;
 use MediaVorus\MediaVorus;
 use MediaVorus\Media\MediaInterface;
 
-/**
- *
- * @package     subdefs
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class media_subdef extends media_abstract implements cache_cacheableInterface
 {
     protected $app;

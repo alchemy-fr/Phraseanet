@@ -14,11 +14,6 @@ namespace Alchemy\Phrasea\Helper;
 use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Helper
 {
     /**

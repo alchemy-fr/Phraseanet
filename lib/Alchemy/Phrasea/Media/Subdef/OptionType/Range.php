@@ -11,12 +11,6 @@
 
 namespace Alchemy\Phrasea\Media\Subdef\OptionType;
 
-/**
- * Range Subdef Option
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Range implements OptionType
 {
     protected $name;

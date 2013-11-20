@@ -11,11 +11,6 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 use Alchemy\Phrasea\Application;
 use Silex\Application as SilexApplication;
 use Silex\ControllerProviderInterface;
@@ -23,11 +18,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Setup implements ControllerProviderInterface
 {
     public function connect(SilexApplication $app)

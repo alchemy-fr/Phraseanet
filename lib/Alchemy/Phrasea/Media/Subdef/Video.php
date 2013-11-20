@@ -11,12 +11,6 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
-/**
- * Video Subdef
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Video extends Audio
 {
     const OPTION_SIZE = 'size';

@@ -16,11 +16,6 @@ use Alchemy\Phrasea\Http\DeliverDataInterface;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 abstract class AbstractDelivery implements ControllerProviderInterface
 {
     public function deliverContent(Request $request, \record_adapter $record, $subdef, $watermark, $stamp, Application $app)

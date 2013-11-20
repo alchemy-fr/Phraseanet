@@ -13,11 +13,6 @@ namespace Alchemy\Phrasea\Cache;
 
 use Doctrine\Common\Cache\WincacheCache as DoctrineWinCache;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class WinCacheCache extends DoctrineWinCache implements Cache
 {
 

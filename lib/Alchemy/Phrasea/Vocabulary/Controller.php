@@ -14,14 +14,6 @@ namespace Alchemy\Phrasea\Vocabulary;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
 
-/**
- * Vocabulary Controller
- *
- * Various methods fro controlling vocabularies inside Phraseanet
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Controller
 {
     /**

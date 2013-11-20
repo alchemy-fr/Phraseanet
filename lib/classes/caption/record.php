@@ -13,12 +13,6 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Symfony\Component\Yaml\Dumper as YamlDumper;
 
-/**
- *
- * @package     caption
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class caption_record implements caption_interface, cache_cacheableInterface
 {
     /**

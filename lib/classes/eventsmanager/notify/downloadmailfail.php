@@ -9,12 +9,6 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
 {
     const MAIL_NO_VALID = 1;

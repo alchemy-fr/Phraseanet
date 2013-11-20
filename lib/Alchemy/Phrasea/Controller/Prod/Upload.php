@@ -24,14 +24,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-/**
- * Upload controller collection
- *
- * Defines routes related to the Upload process in phraseanet
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Upload implements ControllerProviderInterface
 {
     /**

@@ -18,12 +18,6 @@ use Symfony\Component\Console\Command\Command as SymfoCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Abstract command which represents a Phraseanet base command
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 abstract class Command extends SymfoCommand implements CommandInterface
 {
     /**
