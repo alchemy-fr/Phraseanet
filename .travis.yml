@@ -6,6 +6,7 @@ env:
 
 services:
   - mysql
+  - memcached
   - redis
 
 before_script:
