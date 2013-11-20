@@ -11,12 +11,6 @@
 
 use JMS\Serializer\Annotation\SerializedName;
 
-/**
- *
- * @package     Databox DCES
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class databox_Field_DCES_Relation extends databox_Field_DCESAbstract
 {
     /**

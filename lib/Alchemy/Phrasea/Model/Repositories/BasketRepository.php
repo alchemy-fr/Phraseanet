@@ -14,11 +14,6 @@ namespace Alchemy\Phrasea\Model\Repositories;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Doctrine\ORM\EntityRepository;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class BasketRepository extends EntityRepository
 {
     const MYBASKETS = 'my baskets';

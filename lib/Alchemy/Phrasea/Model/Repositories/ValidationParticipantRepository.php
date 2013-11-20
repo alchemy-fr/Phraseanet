@@ -14,11 +14,6 @@ namespace Alchemy\Phrasea\Model\Repositories;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\DBAL\Types\Type;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class ValidationParticipantRepository extends EntityRepository
 {
 

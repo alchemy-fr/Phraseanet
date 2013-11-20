@@ -11,11 +11,6 @@
 
 namespace Alchemy\Phrasea\Helper;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Prod extends Helper
 {
 

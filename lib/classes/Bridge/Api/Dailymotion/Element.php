@@ -1,15 +1,5 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- * Description of Element
- *
- * @author nicolas
- */
 class Bridge_Api_Dailymotion_Element implements Bridge_Api_ElementInterface
 {
     /**

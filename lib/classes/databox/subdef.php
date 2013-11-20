@@ -17,11 +17,6 @@ use Alchemy\Phrasea\Media\Subdef\Gif;
 use Alchemy\Phrasea\Media\Subdef\Subdef as SubdefSpecs;
 use Alchemy\Phrasea\Media\Type\Type as SubdefType;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class databox_subdef
 {
     /**

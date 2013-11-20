@@ -20,11 +20,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Finder\Finder;
 use Alchemy\Phrasea\Helper;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Root implements ControllerProviderInterface
 {
     public function connect(SilexApplication $app)

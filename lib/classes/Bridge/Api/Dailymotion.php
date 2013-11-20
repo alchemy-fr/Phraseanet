@@ -13,12 +13,6 @@ require_once __DIR__ . "/../../../classes/DailymotionWithoutOauth2.php";
 
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- *
- * @package     Bridge
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_Interface
 {
     const OAUTH2_TOKEN_ENDPOINT = "https://api.dailymotion.com/oauth/token";

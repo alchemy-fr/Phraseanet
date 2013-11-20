@@ -13,11 +13,6 @@ use Alchemy\Phrasea\Model\Entities\Basket;
 use Symfony\Component\HttpFoundation\Request;
 use Silex\Application;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 interface API_V1_Interface
 {
 

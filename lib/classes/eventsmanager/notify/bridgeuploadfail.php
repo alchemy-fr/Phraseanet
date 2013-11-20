@@ -12,12 +12,6 @@
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailInfoBridgeUploadFailed;
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
 {
     /**

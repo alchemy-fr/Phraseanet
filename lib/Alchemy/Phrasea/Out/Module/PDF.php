@@ -14,12 +14,6 @@ namespace Alchemy\Phrasea\Out\Module;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Out\Tool\PhraseaPDF;
 
-/**
- * Creates a PDF
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class PDF
 {
     protected $app;

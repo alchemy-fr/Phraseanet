@@ -13,11 +13,6 @@ use Alchemy\Phrasea\Application;
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class collection implements cache_cacheableInterface
 {
     protected $base_id;

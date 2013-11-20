@@ -11,11 +11,6 @@
 
 namespace Alchemy\Phrasea\Core;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Version
 {
     protected static $number = '3.9.0-alpha.8';

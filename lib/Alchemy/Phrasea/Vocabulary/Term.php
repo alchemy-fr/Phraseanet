@@ -11,15 +11,6 @@
 
 namespace Alchemy\Phrasea\Vocabulary;
 
-/**
- * Vocabulary Term
- *
- * A Term of vocabulary has a Value, and optionnal context, ControllerProvider
- * and an Id
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Term
 {
     /**

@@ -14,11 +14,6 @@ namespace Alchemy\Phrasea\Controller\Utils;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class ConnectionTest implements ControllerProviderInterface
 {
     public function connect(Application $app)

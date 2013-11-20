@@ -19,13 +19,6 @@ use PHPExiftool\Exception\TagUnknown;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- *
- * @todo        disable the ability to change from multi to mono from admin
- *              panel ; propose an alternative to copy/update
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class databox_field implements cache_cacheableInterface
 {
     /**

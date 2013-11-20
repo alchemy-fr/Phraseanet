@@ -9,12 +9,6 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @package     APIv1
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class API_V1_exception_forbidden extends API_V1_exception_abstract
 {
     protected static $details = 'Access to the requested ressource is forbidden';

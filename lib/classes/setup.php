@@ -12,16 +12,6 @@ use Alchemy\Phrasea\Application;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\ExecutableFinder;
 
-/**
- *
- * This file MUST NOT contains any default PHP function as
- * mb_*, curl_*, bind_text_domain, _
- *
- * This file is intended to be loaded on setup test
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class setup
 {
     public static function create_global_values(Application $app, $datas = [])

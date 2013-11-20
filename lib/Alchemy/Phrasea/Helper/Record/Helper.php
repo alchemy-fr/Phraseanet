@@ -15,11 +15,6 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Helper extends \Alchemy\Phrasea\Helper\Helper
 {
     /**
