@@ -517,7 +517,6 @@ class Thesaurus implements ControllerProviderInterface
 
             foreach ($t_sort as $i => $query) {
                 $topic = $topics->appendChild($dom->createElement('topic'));
-                // $topic->setAttribute('id', $n->getAttribute('id'));
                 if ($opened_display != '' && in_array($t_node[$i]['node']->getAttribute('id'), $obr)) {
                     $topic->setAttribute('view', $opened_display);
                 }
@@ -902,10 +901,8 @@ class Thesaurus implements ControllerProviderInterface
 
                     if (in_array($fieldname, $request->get('field', [])) != $ck) {
                         if ($ck) {
-                            // print("il etait lie a la branche, il ne l'est plus<br/>\n");
                             unset($tids[$request->get('tid')]);
                         } else {
-                            // print("il n'etait pas lie a la branche, il l'est maintenant<br/>\n");
                             $tids[$request->get('tid')] = $xpathth->query("/thesaurus//te[@id='" . \thesaurus::xquery_escape($request->get('tid')) . "']")->item(0);
                         }
                         $newtbranch = "";
@@ -1782,7 +1779,6 @@ class Thesaurus implements ControllerProviderInterface
 
                     $delsy = $delte->appendChild($domct->createElement("sy"));
                     $delsy->setAttribute("id", $newid = ($delid . "." . $delteid . ".0"));
-                    // $delsy->setAttribute("id", $newid = ($delid . "." . $delteid));
                     $delsy->setAttribute("lng", $sy0->getAttribute("lng"));
                     $delsy->setAttribute("v", $sy0->getAttribute("v"));
                     $delsy->setAttribute("w", $sy0->getAttribute("w"));
@@ -2127,7 +2123,6 @@ class Thesaurus implements ControllerProviderInterface
                     $fp = $root->appendchild($ret->createElement("fullpath_html"));
                     $fp->appendChild($ret->createTextNode($fullpath_html));
 
-                    // $id = "S" . str_replace(".", "d", substr($nodes->item(0)->getAttribute("id"), 1)) . "d";
                     $id = str_replace(".", "d", $nodes->item(0)->getAttribute("id")) . "d";
                     $hits = "0";
 
@@ -2251,10 +2246,6 @@ class Thesaurus implements ControllerProviderInterface
                                                 $lng = $n2->getAttribute("lng");
                                                 $t = $n2->getAttribute("v");
                                                 $ksy = $n2->getAttribute("w");
-                                                if ($k = $n2->getAttribute("k")) {
-                                                    //        $t .= " ($k)";
-                                                    //        $ksy .= " ($k)";
-                                                }
                                                 if (! $firstksy) {
                                                     $firstksy = $ksy;
                                                 }
@@ -2314,7 +2305,6 @@ class Thesaurus implements ControllerProviderInterface
                                 $sy->setAttribute("lng", $lng = $n->getAttribute("lng"));
                                 if (($k = $n->getAttribute("k"))) {
                                     $sy->setAttribute("k", $k);
-                                    //        $t .= " (" . $k . ")";
                                 }
                                 $sy->setAttribute("t", $t);
                                 if ($n->getAttribute("id") == $sel) {
@@ -3005,7 +2995,6 @@ class Thesaurus implements ControllerProviderInterface
                     }
                     $q = "/cterms//te[./sy[$q]]";
 
-                    // $root->appendChild($ret->createCDATASection( $q ));
                     $nodes = $xpathct->query($q);
                     // le terme peut etre present dans plusieurs candidats
                     for ($i = 0; $i < $nodes->length; $i ++) {

@@ -364,7 +364,6 @@ class phraseadate
                 break;
             default:
                 $n = 0;
-                // printf("format de date inconnu : %s\n", $format);
                 break;
         }
         if ($n > 0) {

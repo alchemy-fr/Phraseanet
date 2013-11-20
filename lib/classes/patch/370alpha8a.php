@@ -104,7 +104,6 @@ class patch_370alpha8a implements patchInterface
                 if ($task['class'] === 'task_period_workflow01') {
                     $t = $tasks->appendChild($dom->createElement('task'));
                     $t->setAttribute('active', '0');
-//                        $t->setAttribute('name', 'imported from \'' . $task->getTitle() . '\'');
                     $t->setAttribute('name', 'imported from \'' . $task['name'] . '\'');
                     $t->setAttribute('action', 'update');
 
