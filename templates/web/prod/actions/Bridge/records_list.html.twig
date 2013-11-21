@@ -81,11 +81,11 @@
         {% if element.get_status is constant('Bridge_Element::STATUS_DONE') %}
           OK
         {% elseif element.get_status is constant('Bridge_Element::STATUS_PENDING') %}
-          {% trans 'En attente' %}
+          {{ 'En attente' | trans }}
         {% elseif element.get_status is constant('Bridge_Element::STATUS_PROCESSING') %}
-          {% trans 'En cours d\'envoi' %}
+          {{ 'En cours d\'envoi' | trans }}
         {% elseif element.get_status is constant('Bridge_Element::STATUS_PROCESSING_SERVER') %}
-          {% trans 'En cours d\'encodage' %}
+          {{ 'En cours d\'encodage' | trans }}
         {% else %}
           {{ account.get_api().get_error_message_from_status(element.get_connector_status()) }}
         {% endif %}

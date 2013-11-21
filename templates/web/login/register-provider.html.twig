@@ -3,7 +3,7 @@
 {% import "login/common/macros.html.twig" as auth_macro %}
 
 {% block title %}
-    {% trans "Register" %}
+    {{ "Register" | trans }}
 {% endblock %}
 
 {% block sidebar %}
@@ -12,7 +12,7 @@
         <div class="row-fluid">
             <div class="span12">
                 <div class="text-title">
-                    {% trans "Completion of your registration" %}
+                    {{ "Completion of your registration" | trans }}
                 </div>
             </div>
         </div>
@@ -25,7 +25,7 @@
 
         <div class="row-fluid">
             <div class="span12 sidebar-hint">
-                {% trans "Please complete the information to complete your registration" %}
+                {{ "Please complete the information to complete your registration" | trans }}
             </div>
         </div>
 
@@ -57,7 +57,7 @@
                     {% endfor %}
 
                     <div class="sidebar-hint">
-                        * {% trans "Mandatory fields" %}
+                        * {{ "Mandatory fields" | trans }}
                     </div>
 
                     {%  if has_terms_of_use %}
@@ -65,7 +65,7 @@
                             <div class="span12">
                                 {% set label %}
                                     <a href="{{ path("login_cgus") }}">
-                                        {% trans "I have read the terms of use" %}
+                                        {{ "I have read the terms of use" | trans }}
                                     </a>
                                 {% endset %}
 
@@ -79,7 +79,7 @@
                     <div class="row-fluid">
                         <div class="span12">
                             <button type="submit" class="btn btn-success btn-trigger">
-                                {% trans "Resquest access" %}
+                                {{ "Resquest access" | trans }}
                             </button>
                         </div>
                     </div>

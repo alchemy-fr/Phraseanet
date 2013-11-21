@@ -13,24 +13,24 @@
 
             {{ form_rest(form) }}
 
-            <a href="{{ path('admin_tasks_list') }}">{% trans 'Cancel' %}</a>
+            <a href="{{ path('admin_tasks_list') }}">{{ 'Cancel' | trans }}</a>
             <button type="submit" class="btn btn-success btn-trigger " id="taskSaveButton">
-                {% trans "Save" %}
+                {{ "Save" | trans }}
             </button>
         </form>
 
         <div>
-            {% trans 'admin::tasks: Nombre de crashes : ' %} <span id="crash-counter">{{ task.getCrashed() }}</span>
+            {{ 'admin::tasks: Nombre de crashes : ' | trans }} <span id="crash-counter">{{ task.getCrashed() }}</span>
             <button class="btn btn-success" id="taskResetCrashCounterButton">
-                {% trans 'admin::tasks: reinitialiser el compteur de crashes' %}
+                {{ 'admin::tasks: reinitialiser el compteur de crashes' | trans }}
             </button>
         </div>
     </div>
 
     <div id="taskTabs">
         <ul>
-            <li><a href="#taskXmlTab">{% trans 'boutton::vue xml' %}</a></li>
-            <li><a href="#taskGuiTab">{% trans 'boutton::vue graphique' %}</a></li>
+            <li><a href="#taskXmlTab">{{ 'boutton::vue xml' | trans }}</a></li>
+            <li><a href="#taskGuiTab">{{ 'boutton::vue graphique' | trans }}</a></li>
         </ul>
 
         <div id="taskGuiTab" >

@@ -1,4 +1,4 @@
-{% extends "prod/actions/Bridge/wrapper.html.twig"%}
+{% extends "prod/actions/Bridge/wrapper.html.twig" %}
 
 {% set n_element = elements|length %}
 
@@ -7,14 +7,14 @@
 
 {% block response %}
   <div style="text-align:center;margin:10px 0;">
-    {% trans 'Oups ! something went wrong !' %}
+    {{ 'Oups ! something went wrong !' | trans }}
   </div>
   <div style="text-align:center;margin:10px 0;">
     <form method="{{r_method}}" action="{{r_action}}">
       {% for key, value in r_parameters %}
         <input type="hidden" name="{{key}}" value="{{value}}" />
       {% endfor %}
-      <button class="form_submitter" >{% trans 'boutton::retry' %}</button>
+      <button class="form_submitter" >{{ 'boutton::retry' | trans }}</button>
     </form>
   </div>
 

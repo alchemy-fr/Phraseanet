@@ -5,9 +5,9 @@
     <tr>
       <td>
         {% if Total == 0 %}
-          {% trans 'No results' %}
+          {{ 'No results' | trans }}
         {% elseif Total == 1 %}
-          {% trans '1 result' %}
+          {{ '1 result' | trans }}
         {% else %}
           {% trans %}{{ Total }} results{% endtrans %}
         {% endif %}
@@ -112,9 +112,9 @@
       <tr>
         <td>
           {% if Total == 0 %}
-            {% trans 'No results' %}
+            {{ 'No results' | trans }}
           {% elseif Total == 1 %}
-            {% trans '1 result' %}
+            {{ '1 result' | trans }}
           {% else %}
             {% trans %}{{ Total }} results{% endtrans %}
           {% endif %}

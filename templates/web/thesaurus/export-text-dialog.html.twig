@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="{{ app['locale.I18n'] }}">
     <head>
-        <title>{% trans 'thesaurus:: export au format texte' %}</title>
+        <title>{{ 'thesaurus:: export au format texte' | trans }}</title>
 
         <link REL="stylesheet" TYPE="text/css" href="{{ path('minifier', { 'f' : 'skins/thesaurus/thesaurus.css' }) }}" />
         <script type="text/javascript">
@@ -68,8 +68,8 @@
             <table>
                 <thead>
                     <tr>
-                        <th>{% trans 'thesaurus:: options d\'export : ' %}</th>
-                        <th>{% trans 'thesaurus:: example' %}</th>
+                        <th>{{ 'thesaurus:: options d\'export : ' | trans }}</th>
+                        <th>{{ 'thesaurus:: example' | trans }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -77,28 +77,28 @@
                         <td valign="top" style="padding:5px">
                             <div style="white-space:nowrap">
                                 <input type='radio' name='ofm' checked value='text'>
-                                {% trans 'thesaurus:: export au format texte' %}
+                                {{ 'thesaurus:: export au format texte' | trans }}
                             </div>
                             <div id='subform_text' style="margin-left:10px;">
                                 <div style="white-space:nowrap">
                                     <input type='radio' name='osl' checked value='1' onclick="chgFormat();">
-                                    {% trans 'thesaurus:: exporter avec les synonymes sur la meme ligne' %}
+                                    {{ 'thesaurus:: exporter avec les synonymes sur la meme ligne' | trans }}
                                 </div>
                                 <div style="white-space:nowrap">
                                     <input type='radio' name='osl' value='0' onclick="chgFormat();">
-                                    {% trans 'thesaurus:: exporter avec une ligne par synonyme' %}
+                                    {{ 'thesaurus:: exporter avec une ligne par synonyme' | trans }}
                                 </div>
                                 <div style="white-space:nowrap">
                                     <input type='checkbox' name='iln' value='1' onclick="chgFormat();">
-                                    {% trans 'thesaurus:: export : numeroter les lignes ' %}
+                                    {{ 'thesaurus:: export : numeroter les lignes ' | trans }}
                                 </div>
                                 <div style="white-space:nowrap">
                                     <input type='checkbox' name='ilg' value='1' onclick="chgFormat();">
-                                    {% trans 'thesaurus:: export : inclure la langue' %}
+                                    {{ 'thesaurus:: export : inclure la langue' | trans }}
                                 </div>
                                 <div style="white-space:nowrap">
                                     <input type='checkbox' name='hit' value='1' onclick="chgFormat();">
-                                    {% trans 'thesaurus:: export : inclure les hits' %}
+                                    {{ 'thesaurus:: export : inclure les hits' | trans }}
                                 </div>
                             </div>
                         </td>
@@ -110,9 +110,9 @@
             </table>
             <br/>
             <br/>
-            <input type="button" id="cancel_button" value="{% trans 'boutton::annuler' %}" onclick="clkBut('cancel');" style="width:100px;">
+            <input type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');" style="width:100px;">
             &nbsp;&nbsp;&nbsp;
-            <input type="button" id="submit_button" value="{% trans 'boutton::valider' %}" onclick="clkBut('submit');" style="width:100px;">
+            <input type="button" id="submit_button" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');" style="width:100px;">
         </form>
     </center>
 </body>

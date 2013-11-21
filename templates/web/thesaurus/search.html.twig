@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="{{ app['locale.I18n'] }}">
     <head>
-        <title>{% trans 'Chercher' %}</title>
+        <title>{{ 'Chercher' | trans }}</title>
         <link REL="stylesheet" TYPE="text/css" href="{{ path('minifier', { 'f' : 'skins/thesaurus/thesaurus.css' }) }}" />
         <script type="text/javascript">
             function clkBut(button)
@@ -38,16 +38,16 @@
         <form onsubmit="clkBut('submit');return(false);">
             <table>
                 <tr>
-                    <td>{% trans 'thesaurus:: le terme' %}</td>
-                    <td><input type="radio" name="m" value="equal">{% trans 'thesaurus:: est egal a ' %}</td>
+                    <td>{{ 'thesaurus:: le terme' | trans }}</td>
+                    <td><input type="radio" name="m" value="equal">{{ 'thesaurus:: est egal a ' | trans }}</td>
                 </tr>
                 <tr>
                     <td />
-                    <td><input type="radio" checked name="m" value="begins">{% trans 'thesaurus:: commence par' %}</td>
+                    <td><input type="radio" checked name="m" value="begins">{{ 'thesaurus:: commence par' | trans }}</td>
                 </tr>
                 <tr>
                     <td />
-                    <td><input type="radio" name="m" value="contains">{% trans 'thesaurus:: contient' %}</td>
+                    <td><input type="radio" name="m" value="contains">{{ 'thesaurus:: contient' | trans }}</td>
                 </tr>
             </table>
             <br/>
@@ -55,9 +55,9 @@
             <br/>
             <br/>
             <br/>
-            <input type="button" id="cancel_button" value="{% trans 'boutton::annuler' %}" onclick="clkBut('cancel');" style="width:80px;">
+            <input type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');" style="width:80px;">
             &nbsp;&nbsp;&nbsp;
-            <input type="button" id="submit_button" value="{% trans 'boutton::chercher' %}" onclick="clkBut('submit');" disabled style="width:80px;">
+            <input type="button" id="submit_button" value="{{ 'boutton::chercher' | trans }}" onclick="clkBut('submit');" disabled style="width:80px;">
         </form>
     </center>
 </body>

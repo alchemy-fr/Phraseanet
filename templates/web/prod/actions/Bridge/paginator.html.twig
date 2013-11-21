@@ -1,5 +1,5 @@
 {% macro paginator(npages, page, url) %}
-  {% trans 'Page' %}
+  {{ 'Page' | trans }}
   {% if npages > 1 %}
     {% set d2top = (npages - page) %}
     {% set d2bottom = (page -1 ) %}

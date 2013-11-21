@@ -6,7 +6,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="{{ app['locale.I18n'] }}">
     <head>
-        <title>{% trans 'thesaurus:: Proprietes' %}</title>
+        <title>{{ 'thesaurus:: Proprietes' | trans }}</title>
         <link REL="stylesheet" TYPE="text/css" href="{{ path('minifier', { 'f' : 'skins/thesaurus/thesaurus.css' }) }}" />
         <style type="text/css">
             a
@@ -45,8 +45,8 @@
             {% endfor %}
         </div>
         <div class="menu" id="syMenu" style="z-index:50">
-            <a href="javascript:void(0)" id="delete_sy">{% trans 'thesaurus::menu: supprimer' %}</a>
-            <a href="javascript:void(0)" id="replace_sy" class="disabled">{% trans 'thesaurus:: remplacer' %}</a>
+            <a href="javascript:void(0)" id="delete_sy">{{ 'thesaurus::menu: supprimer' | trans }}</a>
+            <a href="javascript:void(0)" id="replace_sy" class="disabled">{{ 'thesaurus:: remplacer' | trans }}</a>
         </div>
 
         <div style='text-align:right'>
@@ -75,9 +75,9 @@
                         <tr>
                             <th>&nbsp;</th>
                             <th>&nbsp;</th>
-                            <th>{% trans 'thesaurus:: synonymes' %}</th>
-                            <th>{% trans 'thesaurus:: hits' %}</th>
-                            <th>{% trans 'thesaurus:: ids' %}</th>
+                            <th>{{ 'thesaurus:: synonymes' | trans }}</th>
+                            <th>{{ 'thesaurus:: hits' | trans }}</th>
+                            <th>{{ 'thesaurus:: ids' | trans }}</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -120,7 +120,7 @@
         </div>
     <center>
         <form onsubmit="return(false);">
-            <input style="position:relative; z-index:2" type="button" id="close_button" value="{% trans 'boutton::fermer' %}" onclick="self.close();">
+            <input style="position:relative; z-index:2" type="button" id="close_button" value="{{ 'boutton::fermer' | trans }}" onclick="self.close();">
         </form>
     </center>
     <script type="text/javascript">

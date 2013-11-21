@@ -40,19 +40,19 @@
                                 <input type="hidden" name="{{key}}" value="{{value}}">
                             {% endfor %}
                             {% if errorMessage is defined %}
-                                <p class="login_error">{% trans 'Erreur de login / mot de passe' %}</p>
+                                <p class="login_error">{{ 'Erreur de login / mot de passe' | trans }}</p>
                             {% endif %}
                             <p class="login_hello">
                                 {% trans %}
                                 Bonjour, veuillez vous identifier sur {{home_title}} :
                                 {% endtrans %}
                             </p>
-                            <input id="myLogin" name="login" class="span6" type="text" placeholder="{% trans 'admin::compte-utilisateur identifiant' %}" />
-                            <input id="myPass" name="password" class="span6" type="password" placeholder="{% trans 'admin::compte-utilisateur mot de passe' %}" />
-                            <input id="button_login" name="action_login" class="btn btn-inverse btn-large span6" type="submit" value="{% trans 'Se connecter' %}" />
+                            <input id="myLogin" name="login" class="span6" type="text" placeholder="{{ 'admin::compte-utilisateur identifiant' | trans }}" />
+                            <input id="myPass" name="password" class="span6" type="password" placeholder="{{ 'admin::compte-utilisateur mot de passe' | trans }}" />
+                            <input id="button_login" name="action_login" class="btn btn-inverse btn-large span6" type="submit" value="{{ 'Se connecter' | trans }}" />
                         </form>
                         <p>
-                            <a href="#">{% trans 'Probl&egrave;mes de connexion ?' %}</a>
+                            <a href="#">{{ 'Probl&egrave;mes de connexion ?' | trans }}</a>
                         </p>
                     </div>
                 {% else %}
@@ -87,14 +87,14 @@
                                 <input type="hidden" name="{{key}}" value="{{value}}">
                             {% endfor %}
                             <input type="hidden" name="action_accept" value="1">
-                            <input id="button_access" class="btn btn-inverse btn-large span3" type="submit" value="{% trans 'Autoriser' %}" />
+                            <input id="button_access" class="btn btn-inverse btn-large span3" type="submit" value="{{ 'Autoriser' | trans }}" />
                         </form>
                         <form method="post" class="access-deny">
                             {% for key,value in auth.getParams %}
                                 <input type="hidden" name="{{key}}" value="{{value}}">
                             {% endfor %}
                             <input type="hidden" name="action_accept" value="0">
-                            <input id="button_deny" class="btn btn-inverse btn-large span3" type="submit" value="{% trans 'Ne pas autoriser' %}" />
+                            <input id="button_deny" class="btn btn-inverse btn-large span3" type="submit" value="{{ 'Ne pas autoriser' | trans }}" />
                         </form>
                     </div>
                  {% endif %}

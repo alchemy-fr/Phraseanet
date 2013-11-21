@@ -1,5 +1,5 @@
 <div class="page-header">
-    <h1>{{ databox.get_serialized_server_info() }}<small style="font-size:16px;">{% trans "Details" %}</small></h1>
+    <h1>{{ databox.get_serialized_server_info() }}<small style="font-size:16px;">{{ "Details" | trans }}</small></h1>
 </div>
 
 <table class="table table-bordered detail-table">
@@ -9,18 +9,18 @@
                 {% if app['request'].query.get('sort') == 'col' %}
                     <img src="/skins/icons/tsort_desc.gif">
                 {% endif %}
-                {% trans 'Collection' %}
+                {{ 'Collection' | trans }}
             </th>
 
             <th class="obj">
                 {% if app['request'].query.get('sort') == 'obj' %}
                     <img src="/skins/icons/tsort_desc.gif">
                 {% endif %}
-                {% trans 'Subdef' %}
+                {{ 'Subdef' | trans }}
             </th>
 
-            <th>{% trans 'Number' %}</th>
-            <th>{% trans 'Weight' %}</th>
+            <th>{{ 'Number' | trans }}</th>
+            <th>{{ 'Weight' | trans }}</th>
         </tr>
     </thead>
     <tbody>
@@ -61,5 +61,5 @@
 </table>
 
 <div>
-    <a style="text-decoration:none" class="btn" href="{{ path('admin_database', { 'databox_id' : databox.get_sbas_id() }) }}">{% trans 'boutton::retour' %}</a>
+    <a style="text-decoration:none" class="btn" href="{{ path('admin_database', { 'databox_id' : databox.get_sbas_id() }) }}">{{ 'boutton::retour' | trans }}</a>
 </div>

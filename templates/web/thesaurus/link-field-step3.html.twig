@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="{{ app['locale.I18n'] }}">
     <head>
-        <title>{% trans 'thesaurus:: Lier la branche de thesaurus' %}</title>
+        <title>{{ 'thesaurus:: Lier la branche de thesaurus' | trans }}</title>
         <link REL="stylesheet" TYPE="text/css" href="{{ path('minifier', { 'f' : 'skins/thesaurus/thesaurus.css' }) }}" />
     </head>
     <body  class="dialog">
@@ -32,7 +32,7 @@
                 {% endfor %}
 
                 {% if ctchanged %}
-                    {% trans 'thesaurus:: enregistrement de la liste modifiee des mots candidats.' %}
+                    {{ 'thesaurus:: enregistrement de la liste modifiee des mots candidats.' | trans }}
                     <br/>
                 {% endif %}
 
@@ -44,12 +44,12 @@
                 {% endfor %}
 
                 {% if reindexed %}
-                    {% trans 'thesaurus:: reindexer tous les enregistrements' %}
+                    {{ 'thesaurus:: reindexer tous les enregistrements' | trans }}
                     <br/>
                 {% endif %}
             </div>
             <br/>
-            <input type="button" value="{% trans 'boutton::fermer' %}" onclick="self.close();">
+            <input type="button" value="{{ 'boutton::fermer' | trans }}" onclick="self.close();">
         </form>
     </center>
 </body>

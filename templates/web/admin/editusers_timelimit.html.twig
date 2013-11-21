@@ -1,4 +1,4 @@
-<h1>{% trans 'Limite temporelle' %}</h1>
+<h1>{{ 'Limite temporelle' | trans }}</h1>
 <div>
 {% set base = collection.get_databox().get_label(app['locale.I18n']) %}
 {% trans %}Base {{base}}{% endtrans %}
@@ -16,18 +16,18 @@
         </div>
       </td>
       <td>
-        {% trans 'Activer' %}
+        {{ 'Activer' | trans }}
       </td>
     </tr>
     <tr>
       <td colspan="2">
-        {% trans 'De' %}
+        {{ 'De' | trans }}
         <input type="text" class="dmin datepicker" name="dmin" {% if datas.time_limited == 0 %}readonly="readonly"{% endif %} value="{{datas.limited_from}}" />
       </td>
     </tr>
     <tr>
       <td colspan="2">
-        {% trans 'A' %}
+        {{ 'A' | trans }}
         <input type="text" class="dmax datepicker" name="dmax" {% if datas.time_limited == 0 %}readonly="readonly"{% endif %} value="{{datas.limited_to}}" />
       </td>
     </tr>

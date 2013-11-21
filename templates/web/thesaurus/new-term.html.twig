@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="{{ app['locale.I18n'] }}">
     <head>
-        <title>{% if typ == "TS" %}{% trans 'thesaurus:: Nouveau terme specifique' %}{% else %}{% trans 'thesaurus:: Nouveau synonyme' %}{% endif %}</title>
+        <title>{% if typ == "TS" %}{{ 'thesaurus:: Nouveau terme specifique' | trans }}{% else %}{{ 'thesaurus:: Nouveau synonyme' | trans }}{% endif %}</title>
         <link REL="stylesheet" TYPE="text/css" href="{{ path('minifier', { 'f' : 'skins/thesaurus/thesaurus.css' }) }}" />
         <script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/thesaurus/xmlhttp.js' }) }}"></script>
     </head>
@@ -52,9 +52,9 @@
                     {{ 'thesaurus:: selectionner la provenance a accepter' | trans }}
                 {% endif %}
                 <br/>
-                <input type="button" id="cancel_button" value="{% trans 'boutton::annuler' %}" onclick="clkBut('cancel');" style="width:100px;">
+                <input type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');" style="width:100px;">
                 &nbsp;&nbsp;&nbsp;
-                <input type="button" id="submit_button" value="{% trans 'boutton::valider' %}" onclick="clkBut('submit');" style="width:100px;">
+                <input type="button" id="submit_button" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');" style="width:100px;">
             </form>
         </center>
         {% else %}
@@ -70,7 +70,7 @@
                     {% set prop_label = 'thesaurus:: n\'est pas present dans les candidats' | trans %}
                 {% endif %}
         <br/>
-        <h3>{% trans 'thesaurus:: attention :' %}</h3>
+        <h3>{{ 'thesaurus:: attention :' | trans }}</h3>
         <br/>
         <br/>
         {{ zterm }}
@@ -81,14 +81,14 @@
         <form>
             <center>
                 <div class='x3Dbox' style='margin:15px; height:90px; overflow:auto;'>
-                    <input type="radio" name="reindex" value="0" id="rad0" checked><label for="rad0">{% trans 'thesaurus:: Ajouter le terme dans reindexer' %}</label><br/>
+                    <input type="radio" name="reindex" value="0" id="rad0" checked><label for="rad0">{{ 'thesaurus:: Ajouter le terme dans reindexer' | trans }}</label><br/>
                     <br/>
-                    <input type="radio" name="reindex" value="1" id="rad1"><label for="rad1">{% trans 'thesaurus:: ajouter le terme et reindexer' %}</label><br/>
+                    <input type="radio" name="reindex" value="1" id="rad1"><label for="rad1">{{ 'thesaurus:: ajouter le terme et reindexer' | trans }}</label><br/>
                 </div>
             </center>
-            <input type="button" id="cancel_button" value="{% trans 'boutton::annuler' %}" onclick="clkBut('cancel');" style="width:100px;">
+            <input type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');" style="width:100px;">
             &nbsp;&nbsp;&nbsp;
-            <input type="button" id="submit_button" value="{% trans 'boutton::valider' %}" onclick="clkBut('submit');" style="width:100px;">
+            <input type="button" id="submit_button" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');" style="width:100px;">
         </form>
         {% endif %}
 </body>

@@ -1,7 +1,7 @@
 {% extends "login/layout/middle-bar-layout.html.twig" %}
 
 {% block title %}
-    {% trans "Authorization Access" %}
+    {{ "Authorization Access" | trans }}
 {% endblock %}
 
 {% block content %}
@@ -18,7 +18,7 @@
         <div class="row-fluid">
             <div class="span12">
                 <div class="text-title">
-                    {% trans "Authorization Access" %}
+                    {{ "Authorization Access" | trans }}
                 </div>
                 <div>
                     {% set application_name %}
@@ -36,10 +36,10 @@
                 <table class="authorize-panel fixed-table">
                     <tr>
                         <td class="span8">
-                            <a href="#" class="btn btn-trigger btn-success full-width">{% trans "Authorize" %}</a>
+                            <a href="#" class="btn btn-trigger btn-success full-width">{{ "Authorize" | trans }}</a>
                         </td>
                         <td class="text-right span4">
-                            <a href="#" >{% trans "Deny" %}</a>
+                            <a href="#" >{{ "Deny" | trans }}</a>
                         </td>
                     </tr>
                 </table>

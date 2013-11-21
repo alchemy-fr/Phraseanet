@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="{{ app['locale.I18n'] }}">
     <head>
-        <title>{{ app['phraseanet.registry'].get('GV_homeTitle') }} - {% trans 'phraseanet:: thesaurus' %}</title>
+        <title>{{ app['phraseanet.registry'].get('GV_homeTitle') }} - {{ 'phraseanet:: thesaurus' | trans }}</title>
         <style id="STYLES">
             DIV.glossaire DIV.r1_
             {
@@ -63,7 +63,7 @@
 
                 f = document.forms["fBase"];
 
-                document.getElementById("T0").innerHTML = document.getElementById("T1").innerHTML = "{% trans 'phraseanet::chargement' %}";
+                document.getElementById("T0").innerHTML = document.getElementById("T1").innerHTML = "{{ 'phraseanet::chargement' | trans }}";
 
                 f.target = "IFR0";
                 f.submit();
@@ -135,32 +135,32 @@
             {% endfor %}
         </div>
         <div class="menu" id="kctermMenu" style="z-index:50; width:240px;">
-            <a href="javascript:void(0)" class=""         id="kcterm_properties" style="font-weight:700">{% trans 'thesaurus::menu: proprietes' %}</a>
-            <a href="javascript:void(0)" class=""         id="kcterm_reject">{% trans 'thesaurus::menu: refuser' %}</a>
-            <a href="javascript:void(0)" class="disabled" id="kcterm_accept">{% trans 'thesaurus::menu: accepter' %}</a>
+            <a href="javascript:void(0)" class=""         id="kcterm_properties" style="font-weight:700">{{ 'thesaurus::menu: proprietes' | trans }}</a>
+            <a href="javascript:void(0)" class=""         id="kcterm_reject">{{ 'thesaurus::menu: refuser' | trans }}</a>
+            <a href="javascript:void(0)" class="disabled" id="kcterm_accept">{{ 'thesaurus::menu: accepter' | trans }}</a>
             <div class="line"></div>
-            <a href="javascript:void(0)" class=""         id="kcterm_delete">{% trans 'thesaurus::menu: supprimer' %}</a>
-            <a href="javascript:void(0)" class=""         id="kcterm_delete0hits">{% trans 'thesaurus::menu: supprimer les candidats a 0 hits' %}</a>
+            <a href="javascript:void(0)" class=""         id="kcterm_delete">{{ 'thesaurus::menu: supprimer' | trans }}</a>
+            <a href="javascript:void(0)" class=""         id="kcterm_delete0hits">{{ 'thesaurus::menu: supprimer les candidats a 0 hits' | trans }}</a>
             <div class="line"></div>
-            <a href="javascript:void(0)" class=""         id="kcterm_search">{% trans 'thesaurus::menu: chercher' %}</a>
-            <a href="javascript:void(0)" class=""         id="kcterm_export">{% trans 'thesaurus::menu: exporter' %}</a>
+            <a href="javascript:void(0)" class=""         id="kcterm_search">{{ 'thesaurus::menu: chercher' | trans }}</a>
+            <a href="javascript:void(0)" class=""         id="kcterm_export">{{ 'thesaurus::menu: exporter' | trans }}</a>
         </div>
 
         <div class="menu" id="kThMenu" style="z-index:50; width:200px;">
-            <a href="javascript:void(0)" class="" id="kth_import">{% trans 'thesaurus::menu: importer' %}</a>
+            <a href="javascript:void(0)" class="" id="kth_import">{{ 'thesaurus::menu: importer' | trans }}</a>
         </div>
 
         <div class="menu" id="ktermMenu" style="z-index:50; width:200px;">
-            <a href="javascript:void(0)" class="" id="kterm_properties" style="font-weight:700">{% trans 'thesaurus::menu: proprietes' %}</a>
-            <a href="javascript:void(0)" class="" id="kterm_newts">{% trans 'thesaurus::menu: Nouveau terme' %}</a>
-            <a href="javascript:void(0)" class="" id="kterm_newsy">{% trans 'thesaurus::menu: Nouveau synonyme' %}</a>
-            <a href="javascript:void(0)" class="" id="kterm_delete">{% trans 'thesaurus::menu: supprimer' %}</a>
+            <a href="javascript:void(0)" class="" id="kterm_properties" style="font-weight:700">{{ 'thesaurus::menu: proprietes' | trans }}</a>
+            <a href="javascript:void(0)" class="" id="kterm_newts">{{ 'thesaurus::menu: Nouveau terme' | trans }}</a>
+            <a href="javascript:void(0)" class="" id="kterm_newsy">{{ 'thesaurus::menu: Nouveau synonyme' | trans }}</a>
+            <a href="javascript:void(0)" class="" id="kterm_delete">{{ 'thesaurus::menu: supprimer' | trans }}</a>
             <div class="line"></div>
-            <a href="javascript:void(0)" class="" id="kterm_search">{% trans 'thesaurus::menu: chercher' %}</a>
-            <a href="javascript:void(0)" class="" id="kterm_export">{% trans 'thesaurus::menu: exporter' %}</a>
-            <a href="javascript:void(0)" class="" id="kterm_topics">{% trans 'thesaurus::menu: export topics' %}</a>
+            <a href="javascript:void(0)" class="" id="kterm_search">{{ 'thesaurus::menu: chercher' | trans }}</a>
+            <a href="javascript:void(0)" class="" id="kterm_export">{{ 'thesaurus::menu: exporter' | trans }}</a>
+            <a href="javascript:void(0)" class="" id="kterm_topics">{{ 'thesaurus::menu: export topics' | trans }}</a>
             <div class="line"></div>
-            <a href="javascript:void(0)" class="" id="kterm_link">{% trans 'thesaurus::menu: lier au champ' %}</a>
+            <a href="javascript:void(0)" class="" id="kterm_link">{{ 'thesaurus::menu: lier au champ' | trans }}</a>
         </div>
 
         <form name="fBase" action="{{ path('thesaurus_loadth') }}" method="post" target="?">
@@ -185,7 +185,7 @@
             <div id="id_thbox_bck" class="thbox" style="position:absolute; top:28px; left:8px; right:8px; bottom:8px; background-color:#f4f4f4; xoverflow:hidden">
 
                 <div class="onglet" style="background-color:#f0f0f0; border-bottom:1px solid #f4f4f4">
-                    <span id="baseName">{% trans 'phraseanet:: thesaurus' %}</span>
+                    <span id="baseName">{{ 'phraseanet:: thesaurus' | trans }}</span>
                     <a href="javascript:void();" onclick="fixTh();return(false);" style="visibility:hidden;">X</a>
                 </div>
 
@@ -193,10 +193,10 @@
                 <div id="TabT0" style="position:absolute; top:28px; left:0px; bottom:0px; width:40%;">
 
                     <div class="thbox" style="position:absolute; top:0px; bottom:8px; left:6px; right:3px;">
-                        <div class="onglet">{% trans 'thesaurus:: onglet stock' %} <a href="javascript:void();" onclick="test('T0');return(false);" style="visibility:hidden;">X</a>
+                        <div class="onglet">{{ 'thesaurus:: onglet stock' | trans }} <a href="javascript:void();" onclick="test('T0');return(false);" style="visibility:hidden;">X</a>
                         </div>
                         <div style="width:100%; overflow:hidden">
-                            <input type="checkbox" name="ckShowRejected" onClick="return(chgCkShowRejected());" /><span style="white-space:nowrap; overflow:hidden">{% trans 'thesaurus:: afficher les termes refuses' %}</span>
+                            <input type="checkbox" name="ckShowRejected" onClick="return(chgCkShowRejected());" /><span style="white-space:nowrap; overflow:hidden">{{ 'thesaurus:: afficher les termes refuses' | trans }}</span>
                         </div>
                         <div id="TabT0k" style="position:absolute; top:20px; bottom:0px; left:0px; right:0px; overflow:scroll; border:0px #000000 none">
                             <div id="T0" style="position:absolute; top:0px; left:0px;">
@@ -207,7 +207,7 @@
 
                 <div id="TabT1" style="position:absolute; top:28px; right:0px; bottom:0px; width:60%;">
                     <div class="thbox"  style="position:absolute; top:0px; bottom:8px; left:3px; right:6px;">
-                        <div class="onglet"><span id='TabT1Title' style="cursor:pointer">{% trans 'thesaurus:: onglet thesaurus' %}</span>
+                        <div class="onglet"><span id='TabT1Title' style="cursor:pointer">{{ 'thesaurus:: onglet thesaurus' | trans }}</span>
                             &nbsp;
                             <a href="javascript:void();" onclick="test('T1');return(false);" style="visibility:hidden;">X</a>
                         </div>
@@ -403,9 +403,9 @@
                             allhits = ret.getElementsByTagName("allhits").item(0).firstChild.nodeValue;
 
                             if(allhits==0)
-                                msg = "{% trans 'thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)' %}";
+                                msg = "{{ 'thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)' | trans }}";
                             else
-                                msg = "{% trans 'thesaurus:: Des reponses sont retournees par cette branche. &#10;Supprimer quand meme ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)' %}";
+                                msg = "{{ 'thesaurus:: Des reponses sont retournees par cette branche. &#10;Supprimer quand meme ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)' | trans }}";
 
                             if(confirm(msg))
                             {

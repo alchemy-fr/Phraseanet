@@ -1,7 +1,7 @@
 {% extends "account/base.html.twig" %}
 
 {% block title %}
-    {% trans "Granted third party applications" %}
+    {{ "Granted third party applications" | trans }}
 {% endblock %}
 
 {% set selected = "applications" %}
@@ -10,15 +10,15 @@
     <div class="row-fluid">
         <div class="span6">
             <div id="content-apps">
-                <h3>{% trans "Vous avez autorise ces applications a acceder a votre compte" %}</h3>
+                <h3>{{ "Vous avez autorise ces applications a acceder a votre compte" | trans }}</h3>
                 {% if applications|length > 0 %}
                     <ul class="unstyled app-list">
                         {% for application in applications %}
                             <li id="app_{{ application.get_id() }}">
                                 <div>
                                     {% set account = application.get_user_account(app["authentication"].getUser()) %}
-                                    <a href="{{ path("grant_app_access", {"application_id" : application.get_id()}) }}" class="revoke app-btn btn btn-small pull-right {% if account.is_revoked() %}hidden{% endif %}" value="{{application.get_id()}}">{% trans "Revoquer l\'access" %}</a>
-                                    <a href="{{ path("grant_app_access", {"application_id" : application.get_id()}) }}"  class="authorize app-btn btn btn-small pull-right {% if not account.is_revoked() %}hidden{% endif %}" value="{{application.get_id()}}">{% trans "Authoriser l\'access" %}</a>
+                                    <a href="{{ path("grant_app_access", {"application_id" : application.get_id()}) }}" class="revoke app-btn btn btn-small pull-right {% if account.is_revoked() %}hidden{% endif %}" value="{{application.get_id()}}">{{ "Revoquer l\'access" | trans }}</a>
+                                    <a href="{{ path("grant_app_access", {"application_id" : application.get_id()}) }}"  class="authorize app-btn btn btn-small pull-right {% if not account.is_revoked() %}hidden{% endif %}" value="{{application.get_id()}}">{{ "Authoriser l\'access" | trans }}</a>
                                     <p class="app-row">
                                         <a href="{{ application.get_website() }}" target="_blank">
                                             <strong>{{ application.get_name() }}</strong>
@@ -33,8 +33,8 @@
                                         {% endif%}
                                     </p>
                                     <p class="app-row">
-                                        <span class="status text-error {% if account.is_revoked() == false %}hidden{% endif %}">{% trans "Not Allowed"%}</span>
-                                        <span class="status text-success {% if account.is_revoked() == true %}hidden{% endif %}">{% trans "Allowed"%}</span>
+                                        <span class="status text-error {% if account.is_revoked() == false %}hidden{% endif %}">{{ "Not Allowed" | trans }}</span>
+                                        <span class="status text-success {% if account.is_revoked() == true %}hidden{% endif %}">{{ "Allowed" | trans }}</span>
                                     </p>
                                     <p class="app-row">{{ application.get_description()|truncate(120, true, "...") }}</p>
                                 </div>
@@ -43,23 +43,23 @@
                     </ul>
                  {% else %}
                     <div>
-                        {% trans "Aucune application n\'a accés à vos données." %}
+                        {{ "Aucune application n\'a accés à vos données." | trans }}
                     </div>
                  {% endif %}
             </div>
         </div>
         <div class="span6">
             <div class="well well-small">
-                <h3>{% trans "Third-party applications" %}</h3>
+                <h3>{{ "Third-party applications" | trans }}</h3>
                 <p>
-                  {% trans "A third-party application is a product developed apart from Phraseanet and that would access Phraseanet data." %}
+                  {{ "A third-party application is a product developed apart from Phraseanet and that would access Phraseanet data." | trans }}
                 </p>
             </div>
 
             <div class="well well-small">
-                <h3>{% trans "Developpeurs" %}</h3>
+                <h3>{{ "Developpeurs" | trans }}</h3>
                 <p>
-                    {% trans "Les developpeurs peuvent editer l\'enregistrement de leurs application grace a l\'onglet 'developpeurs' ci-dessus" %}
+                    {{ "Les developpeurs peuvent editer l\'enregistrement de leurs application grace a l\'onglet 'developpeurs' ci-dessus" | trans }}
                 </p>
             </div>
         </div>

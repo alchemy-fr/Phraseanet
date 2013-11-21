@@ -2,20 +2,20 @@
 <div id="reorder_box">
     <div id="reorder_options" class="row-fluid">
         <form class="form-inline span10">
-        <label for="auto_order">{% trans 'Reordonner automatiquement' %}</label>
+        <label for="auto_order">{{ 'Reordonner automatiquement' | trans }}</label>
         <select id="auto_order">
-            <option value="">{% trans 'Choisir' %}</option>
-            <option value="default">{% trans 'Re-initialiser' %}</option>
-            <option value="title">{% trans 'Titre' %}</option>
+            <option value="">{{ 'Choisir' | trans }}</option>
+            <option value="default">{{ 'Re-initialiser' | trans }}</option>
+            <option value="title">{{ 'Titre' | trans }}</option>
         </select>
-        <button type="button" class="autoorder btn btn-inverse">{% trans 'Re-ordonner' %}</button>
-        <button type="button" class="reverseorder btn btn-inverse">{% trans 'Inverser' %}</button>
+        <button type="button" class="autoorder btn btn-inverse">{{ 'Re-ordonner' | trans }}</button>
+        <button type="button" class="reverseorder btn btn-inverse">{{ 'Inverser' | trans }}</button>
         </form>
         <form class="form-inline span2" name="reorder" method="POST" action="{{ path('prod_baskets_basket_reorder', { 'basket' : basket.getId() }) }}">
         {% for element in basket.getElements() %}
                 <input type="hidden" name="element[{{ element.getId() }}]" value="{{ element.getOrd() }}"/>
         {% endfor %}
-        <input type="submit" class="btn btn-inverse" value="{% trans 'boutton::valider' %}" />
+        <input type="submit" class="btn btn-inverse" value="{{ 'boutton::valider' | trans }}" />
         </form>
     </div>
     <div class="elements row-fluid">

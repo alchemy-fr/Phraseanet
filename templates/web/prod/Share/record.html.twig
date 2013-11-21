@@ -1,9 +1,9 @@
 {% set preview = record.get_preview()%}
 
 {% if preview is iterable %}
-    <p>{% trans 'No preview available.' %}</p>
+    <p>{{ 'No preview available.' | trans }}</p>
 {% elseif preview.get_permalink() is none %}
-    <p>{% trans 'No permalink available.' %}</p>
+    <p>{{ 'No permalink available.' | trans }}</p>
 {% else %}
     {% set type = record.get_type() %}
     {% set url = preview.get_permalink().get_url() %}
@@ -52,7 +52,7 @@
             });
         </script>
     {% else %}
-        <div><{% trans 'No URL available' %}</div>
+        <div><{{ 'No URL available' | trans }}</div>
     {% endif %}
 {% endif %}
 

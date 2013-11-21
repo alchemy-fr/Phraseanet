@@ -1,5 +1,5 @@
 <div class="page-header">
-    <h1>{% trans 'Upload a csv file for users creation' %}</h1>
+    <h1>{{ 'Upload a csv file for users creation' | trans }}</h1>
 </div>
 
 {% if app['request'].query.get('error') is not none %}
@@ -7,15 +7,15 @@
     <div class="alert alert-error">
         <button class="close" data-dismiss="alert" type="button">×</button>
         {% if error == 'file-invalid' %}
-            {% trans 'An error occured while upload the file. Please retry' %}
+            {{ 'An error occured while upload the file. Please retry' | trans }}
         {% elseif error == 'row-login' %}
-            {% trans 'Row login is missing, script has stopped' %}
+            {{ 'Row login is missing, script has stopped' | trans }}
         {% elseif error == 'row-pwd' %}
-            {% trans 'Row password is missing, script has stopped' %}
+            {{ 'Row password is missing, script has stopped' | trans }}
         {% elseif error == 'row-mail' %}
-            {% trans 'Row mail is missing, script has stopped' %}
+            {{ 'Row mail is missing, script has stopped' | trans }}
         {% elseif error == 'no-user' %}
-            {% trans 'The file does not contains any user to add' %}
+            {{ 'The file does not contains any user to add' | trans }}
         {% endif %}
     </div>
 {% endif %}
@@ -33,17 +33,17 @@
 
 <div>
     <div class="well well-small">
-        <a target="_blank" href="{{ path('users_import_csv') }}" class="no-ajax"> <i class="icon-share"></i> {% trans  'You can  download an example by clicking here' %}</a>
+        <a target="_blank" href="{{ path('users_import_csv') }}" class="no-ajax"> <i class="icon-share"></i> {{ 'You can  download an example by clicking here' | trans }}</a>
     </div>
     <div class="well well-small">
-        <a target="_blank" href="{{ path('users_import_rtf') }}" class="no-ajax"> <i class="icon-share"></i> {% trans 'You can download the documentation here' %}</a>
+        <a target="_blank" href="{{ path('users_import_rtf') }}" class="no-ajax"> <i class="icon-share"></i> {{ 'You can download the documentation here' | trans }}</a>
     </div>
     <span class="btn btn-success fileinput-button">
         <i class="icon-plus icon-white"></i>
         <span>{% trans %}Select files...{% endtrans %}</span>
         <input id="fileupload" type="file" name="files" data-url="/admin/users/import/file/" accept="text/csv, text/rtf">
     </span>
-    <a href="{{ path('admin_users_search') }}" class="btn ajax">{% trans 'boutton::retour' %}</a>
+    <a href="{{ path('admin_users_search') }}" class="btn ajax">{{ 'boutton::retour' | trans }}</a>
 </div>
 
 <script>

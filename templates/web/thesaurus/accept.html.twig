@@ -6,7 +6,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="{{ app['locale.I18n'] }}">
     <head>
-        <title>{% trans 'thesaurus:: accepter...' %}</title>
+        <title>{{ 'thesaurus:: accepter...' | trans }}</title>
         <link REL="stylesheet" TYPE="text/css" href="{{ path('minifier', { 'f' : 'skins/thesaurus/thesaurus.css' }) }}" />
         <style type="text/css">
             .path_separator
@@ -102,32 +102,32 @@
                 <br/>
                 <br/>
                 <br/>
-                {% trans 'thesaurus:: removed_src' %}
+                {{ 'thesaurus:: removed_src' | trans }}
                 <br/>
                 <br/>
-                {% trans 'thesaurus:: refresh' %}
+                {{ 'thesaurus:: refresh' | trans }}
                 <br/>
                 <br/>
                 <br/>
                 <br/>
                 <br/>
-                <input style="position:relative; z-index:2; width:100px" type="button" id="cancel_button" value="{% trans 'boutton::fermer' %}" onclick="self.close();">
+                <input style="position:relative; z-index:2; width:100px" type="button" id="cancel_button" value="{{ 'boutton::fermer' | trans }}" onclick="self.close();">
         {% else %}
             {% if not term_found %}
                 <center>
                     <br/>
                     <br/>
                     <br/>
-                    {% trans 'thesaurus:: removed tgt' %}
+                    {{ 'thesaurus:: removed tgt' | trans }}
                     <br/>
                     <br/>
-                    {% trans 'thesaurus:: refresh' %}
+                    {{ 'thesaurus:: refresh' | trans }}
                     <br/>
                     <br/>
                     <br/>
                     <br/>
                     <br/>
-                    <input style="position:relative; z-index:2; width:100px" type="button" id="cancel_button" value="{% trans 'boutton::fermer' %}" onclick="self.close();">
+                    <input style="position:relative; z-index:2; width:100px" type="button" id="cancel_button" value="{{ 'boutton::fermer' | trans }}" onclick="self.close();">
             {% else %}
                 {% if acceptable %}
                     <center>
@@ -139,10 +139,10 @@
                             <input type="hidden" name="tgt" value="{{ tgt | url_encode }}">
                             <input type="hidden" name="tgt" value="{{ tgt | url_encode }}">
                     {% if nts == 0 %}
-                        {% trans 'thesaurus:: Accepter le terme comme' %}
+                        {{ 'thesaurus:: Accepter le terme comme' | trans }}
                         <br/><br/><h4>{{ fullpath_src | raw }}</h4><br/><br/>
                         <br/>
-                        <input type='radio' name='as' value='TS' checked>{% trans 'thesaurus:: comme terme specifique' %}
+                        <input type='radio' name='as' value='TS' checked>{{ 'thesaurus:: comme terme specifique' | trans }}
                         <br/><br/>
                         <input type='radio' name='as' value='SY'>
                         {% set fullpath_tgt_raw = fullpath_tgt | raw %}
@@ -152,16 +152,16 @@
                         <br/>
                     {% else %}
                         <br/><br/><h4>{{ fullpath_src | raw }}</h4><br/><br/>
-                        {% trans 'thesaurus:: Accepter la branche comme' %}
-                        &nbsp;{% trans 'thesaurus:: comme terme specifique' %}
+                        {{ 'thesaurus:: Accepter la branche comme' | trans }}
+                        &nbsp;{{ 'thesaurus:: comme terme specifique' | trans }}
                         <br/><br/><h4>{{ fullpath_tgt | raw }}</h4><br/><br/>
                         <input type='hidden' name='as' value='TS'>
                     {% endif %}
                             <br/>
                             <br/>
-                            <input style="position:relative; z-index:2; width:100px" type="button" id="ok_button" value="{% trans 'boutton::valider' %}" onclick="ok();">
+                            <input style="position:relative; z-index:2; width:100px" type="button" id="ok_button" value="{{ 'boutton::valider' | trans }}" onclick="ok();">
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <input style="position:relative; z-index:2; width:100px" type="button" id="cancel_button" value="{% trans 'boutton::annuler' %}" onclick="self.close();">
+                            <input style="position:relative; z-index:2; width:100px" type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="self.close();">
                         </form>
                     </center>
                 {% else %}
@@ -179,7 +179,7 @@
                         <br/>
                         <br/>
                         <br/>
-                        <input style="position:relative; z-index:2; width:100px" type="button" id="cancel_button" value="{% trans 'boutton::annuler' %}" onclick="self.close();">
+                        <input style="position:relative; z-index:2; width:100px" type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="self.close();">
                 {% endif %}
             {% endif %}
         {% endif %}

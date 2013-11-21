@@ -21,10 +21,10 @@
         <td style="width:60px;text-align:right;">
           {% if entry.getFeed().isOwner(app['authentication'].getUser()) or entry.isPublisher(app['authentication'].getUser()) %}
           <a class="tools options feed_edit" href="{{ path('prod_feeds_entry_update', { 'id' : entry.getId() }) }}">
-            <img src="/skins/icons/file-edit.png" title="{% trans 'boutton::editer' %}"/>
+            <img src="/skins/icons/file-edit.png" title="{{ 'boutton::editer' | trans }}"/>
           </a>
           <a class="tools feed_delete" href="{{ path('prod_feeds_entry_delete', { 'id' : entry.getId() }) }}">
-            <img src="/skins/icons/delete.png" title="{% trans 'boutton::supprimer' %}"/>
+            <img src="/skins/icons/delete.png" title="{{ 'boutton::supprimer' | trans }}"/>
           </a>
           {% endif %}
         </td>

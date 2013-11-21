@@ -55,12 +55,12 @@
                     <td><input type="text" style="width:250px;" name="term"></td>
                 </tr>
                 <tr>
-                    <td style="text-align:right">{% trans 'thesaurus:: contexte' %} : </td>
+                    <td style="text-align:right">{{ 'thesaurus:: contexte' | trans }} : </td>
                     <td><b>(</b>&nbsp;</td>
                     <td><input type="text" style="width:250px;" name="context">&nbsp;<b>)</b></td>
                 </tr>
                 <tr>
-                    <td valign="bottom" style="text-align:right">{% trans 'phraseanet:: language' %} :&nbsp;</td>
+                    <td valign="bottom" style="text-align:right">{{ 'phraseanet:: language' | trans }} :&nbsp;</td>
                     <td></td>
                     <td valign="bottom">
                         {% for code, language in languages %}
@@ -75,9 +75,9 @@
             </table>
             <br/>
             <div style="position:absolute; left:0px; bottom:0px; width:100%; text-align:center">
-                <input type="button" style="width:80px;" id="cancel_button" value="{% trans 'boutton::annuler' %}" onclick="clkBut('cancel');" style="width:80px">
+                <input type="button" style="width:80px;" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');" style="width:80px">
                 &nbsp;&nbsp;
-                <input type="button" style="width:80px;" id="submit_button" value="{% trans 'boutton::valider' %}" onclick="clkBut('submit');" style="width:80px">
+                <input type="button" style="width:80px;" id="submit_button" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');" style="width:80px">
                 <br/>
                 <br/>
             </div>

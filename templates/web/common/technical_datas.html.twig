@@ -1,7 +1,7 @@
 {% if record.is_grouping() %}
-  {% trans 'Story_id' %} : {{ record.get_record_id() }}<br/>
+  {{ 'Story_id' | trans }} : {{ record.get_record_id() }}<br/>
 {% else %}
-  {% trans 'Record_id' %} : {{ record.get_record_id() }}<br/>
+  {{ 'Record_id' | trans }} : {{ record.get_record_id() }}<br/>
 {% endif %}
 
 {% if record.is_grouping() == false %}
@@ -9,7 +9,7 @@
     {% set document = record.get_subdef('document') %}
 
 {% block td_original_name %}
-    {% trans 'Nom Original' %} :
+    {{ 'Nom Original' | trans }} :
     {{ record.get_original_name() }}
 {% endblock %}
     <br/>
@@ -27,7 +27,7 @@
 
 {% block td_size %}
     {% if document and document.get_width() and document.get_height() %}
-        {% trans 'Size' %} :
+        {{ 'Size' | trans }} :
         {{document.get_width()}} x {{document.get_height()}} px
         <br/>
         {% if record.get_type() == 'image' and document.get_width() and document.get_height() %}
@@ -43,116 +43,116 @@
     <hr/>
 {% block td_camera_model %}
     {% if record.get_technical_infos(constant('media_subdef::TC_DATA_CAMERAMODEL')) is not empty %}
-      {% trans 'Camera Model' %} :
+      {{ 'Camera Model' | trans }} :
       {{ record.get_technical_infos(constant('media_subdef::TC_DATA_CAMERAMODEL')) }}
       <br />
     {% endif %}
 {% endblock %}
 {% block td_color_space %}
     {% if record.get_technical_infos(constant('media_subdef::TC_DATA_COLORSPACE')) is not empty %}
-      {% trans 'Color space' %} :
+      {{ 'Color space' | trans }} :
       {{ record.get_technical_infos(constant('media_subdef::TC_DATA_COLORSPACE')) }}
       <br />
     {% endif %}
 {% endblock %}
 {% block td_channels %}
     {% if record.get_technical_infos(constant('media_subdef::TC_DATA_CHANNELS')) is not empty %}
-      {% trans 'Channels' %} :
+      {{ 'Channels' | trans }} :
       {{ record.get_technical_infos(constant('media_subdef::TC_DATA_CHANNELS')) }}
       <br />
     {% endif %}
 {% endblock %}
 {% block td_color_depth %}
     {% if record.get_technical_infos(constant('media_subdef::TC_DATA_COLORDEPTH')) is not empty %}
-      {% trans 'Color Depth' %} :
+      {{ 'Color Depth' | trans }} :
       {{ record.get_technical_infos(constant('media_subdef::TC_DATA_COLORDEPTH')) }} bits
       <br />
     {% endif %}
 {% endblock %}
 {% block td_iso_sensibility %}
     {% if record.get_technical_infos(constant('media_subdef::TC_DATA_ISO')) is not empty %}
-      {% trans 'ISO sensibility' %} :
+      {{ 'ISO sensibility' | trans }} :
       {{ record.get_technical_infos(constant('media_subdef::TC_DATA_ISO')) }}
       <br />
     {% endif %}
 {% endblock %}
 {% block td_flash %}
     {% if record.get_technical_infos(constant('media_subdef::TC_DATA_FLASHFIRED')) is not empty %}
-      {% trans 'Flash' %} :
+      {{ 'Flash' | trans }} :
       {% if record.get_technical_infos(constant('media_subdef::TC_DATA_FLASHFIRED')) %}
-        {% trans 'yes' %}
+        {{ 'yes' | trans }}
       {% else %}
-        {% trans 'no' %}
+        {{ 'no' | trans }}
       {% endif %}
       <br />
     {% endif %}
 {% endblock %}
 {% block td_shutter_speed %}
     {% if record.get_technical_infos(constant('media_subdef::TC_DATA_SHUTTERSPEED')) is not empty %}
-        {% trans 'Shutter speed' %} :
+        {{ 'Shutter speed' | trans }} :
         {{ record.get_technical_infos(constant('media_subdef::TC_DATA_SHUTTERSPEED')) }} s.
         <br />
     {% endif %}
 {% endblock %}
 {% block td_apeture %}
     {% if record.get_technical_infos(constant('media_subdef::TC_DATA_APERTURE')) is not empty %}
-      {% trans 'Aperture' %} :
+      {{ 'Aperture' | trans }} :
       {{ record.get_technical_infos(constant('media_subdef::TC_DATA_APERTURE')) | round(2) }}
       <br />
     {% endif %}
 {% endblock %}
 {% block td_focal_length %}
     {% if record.get_technical_infos(constant('media_subdef::TC_DATA_FOCALLENGTH')) is not empty %}
-        {% trans 'Focal length' %} :
+        {{ 'Focal length' | trans }} :
         {{ record.get_technical_infos(constant('media_subdef::TC_DATA_FOCALLENGTH')) }} mm
         <br />
     {% endif %}
 {% endblock %}
 {% block td_hyperfocal_distance %}
     {% if record.get_technical_infos(constant('media_subdef::TC_DATA_HYPERFOCALDISTANCE')) is not empty %}
-      {% trans 'Hyperfocal distance' %} :
+      {{ 'Hyperfocal distance' | trans }} :
       {{ record.get_technical_infos(constant('media_subdef::TC_DATA_HYPERFOCALDISTANCE')) | round(2) }} mm
       <br />
     {% endif %}
 {% endblock %}
 {% block td_light_value %}
     {% if record.get_technical_infos(constant('media_subdef::TC_DATA_LIGHTVALUE')) is not empty %}
-      {% trans 'Light Value' %} :
+      {{ 'Light Value' | trans }} :
       {{ record.get_technical_infos(constant('media_subdef::TC_DATA_LIGHTVALUE')) | round(2) }}
       <br />
     {% endif %}
 {% endblock %}
 {% block td_duration %}
     {% if record.get_formated_duration() %}
-      {% trans 'Duree' %} :
+      {{ 'Duree' | trans }} :
       {{ record.get_formated_duration() }}
       <br />
     {% endif %}
 {% endblock %}
 {% block td_framerate %}
     {% if record.get_technical_infos(constant('media_subdef::TC_DATA_FRAMERATE')) is not empty %}
-      {% trans 'Images par secondes' %} :
+      {{ 'Images par secondes' | trans }} :
       {{ record.get_technical_infos(constant('media_subdef::TC_DATA_FRAMERATE')) | round(2) }} ips
       <br />
     {% endif %}
 {% endblock %}
 {% block td_codec_audio %}
     {% if record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOCODEC'))  %}
-      {% trans 'Codec Audio' %} :
+      {{ 'Codec Audio' | trans }} :
       {{ record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOCODEC')) }}
       <br />
     {% endif %}
 {% endblock %}
 {% block td_codec_video %}
     {% if record.get_technical_infos(constant('media_subdef::TC_DATA_VIDEOCODEC'))  %}
-      {% trans 'Codec Video' %} :
+      {{ 'Codec Video' | trans }} :
       {{ record.get_technical_infos(constant('media_subdef::TC_DATA_VIDEOCODEC')) }}
       <br />
     {% endif %}
 {% endblock %}
 {% block td_audio_rate %}
     {% if record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOSAMPLERATE'))  %}
-      {% trans 'Frequence d\'echantillonage' %} :
+      {{ 'Frequence d\'echantillonage' | trans }} :
       {{ record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOSAMPLERATE')) | round(2) }} kHz
       <br />
     {% endif %}

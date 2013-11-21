@@ -15,7 +15,7 @@
                     {% if value.id == "false" %}
                         <td>{{ value.lib|e }}</td>
                     {% else %}
-                        {% if sbasid == "true"%}
+                        {% if sbasid == "true" %}
                             <td><a href="#" id= "id_{{ value.id }}_{{ value.sbasid }}" class ="hasSbas">{{ value.lib|e }}</a></td>
                         {% else %}
                             <td><a href="#" id= "id_{{ value.id }}" >{{ value.lib|e }}</a></td>

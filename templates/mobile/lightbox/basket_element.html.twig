@@ -39,14 +39,14 @@
       {% if basket_element.getBasket().getValidation().getParticipant(app['authentication'].getUser(), app).getCanAgree() %}
         <fieldset data-role="controlgroup" data-type="horizontal" style="text-align:center;">
           <input {% if basket_element.getUserValidationDatas(app['authentication'].getUser(), app).getAgreement() == true%}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-yes_{{basket_element.getId()}}" value="yes"  />
-            <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-yes_{{basket_element.getId()}}">{% trans 'validation:: OUI' %}</label>
+            <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-yes_{{basket_element.getId()}}">{{ 'validation:: OUI' | trans }}</label>
           <input {% if basket_element.getUserValidationDatas(app['authentication'].getUser(), app).getAgreement() == false and basket_element.getUserValidationDatas(app['authentication'].getUser(), app).getAgreement() is not null %}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-no_{{basket_element.getId()}}" value="no"  />
-            <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-no_{{basket_element.getId()}}">{% trans 'validation:: NON' %}</label>
+            <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-no_{{basket_element.getId()}}">{{ 'validation:: NON' | trans }}</label>
         </fieldset>
       {% endif %}
       <div style="text-align:center;margin:0 0 1em 0">
         <a href="{{ path('lightbox_ajax_note_form', { 'sselcont_id' : basket_element.getId() }) }}" data-role="button" data-inline="true" data-rel="dialog" data-transition="slidedown">
-          {% trans 'validation:: editer ma note' %}
+          {{ 'validation:: editer ma note' | trans }}
         </a>
       </div>
       <div>

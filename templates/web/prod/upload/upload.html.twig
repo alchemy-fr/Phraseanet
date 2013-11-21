@@ -5,14 +5,14 @@
         <ul>
             <li>
                 <a href="#tab-upload">
-                    {% trans 'Upload' %}
+                    {{ 'Upload' | trans }}
                 </a>
             </li>
             <li>
                 {# template prod/upload/lazaret.html.twig loaded via ajax #}
                 <a href="{{ path('lazaret_elements') }}">
                     {# <span>&nbsp;</span> element is required for the jQuery loading spinner appears && disappears properly #}
-                    {% trans 'Quarantine' %}<span>&nbsp;</span>
+                    {{ 'Quarantine' | trans }}<span>&nbsp;</span>
                 </a>
             </li>
         </ul>
@@ -28,7 +28,7 @@
                             <tr>
                                 <td class='uploader-button'>
                                     <span class="btn btn-inverse fileinput-button input-medium">
-                                        <span>{% trans 'Select files...' %}</span>
+                                        <span>{{ 'Select files...' | trans }}</span>
                                         <input type="file" name="files[]" multiple>
                                     </span>
                                         <br />
@@ -37,23 +37,23 @@
                                     </span>
                                 </td>
                                 <td class='uploader-icon'>
-                                    <img src='/skins/icons/html5-logo.png' width="32px" heigh="32px"  title="{% trans 'You are using the HTML5 uploader.'%}"/>
+                                    <img src='/skins/icons/html5-logo.png' width="32px" heigh="32px"  title="{{ 'You are using the HTML5 uploader.' | trans }}"/>
                                 </td>
                                 <td class="uploader-info">
                                     <p>
-                                        {% trans 'You are using the HTML5 uploader.' %}
+                                        {{ 'You are using the HTML5 uploader.' | trans }}
                                         {% if not app['browser'].supportFileAPI() %}
-                                            {% trans 'Your browser does not support all HTML5 features properly.' %}
+                                            {{ 'Your browser does not support all HTML5 features properly.' | trans }}
                                         {% endif %}
                                     </p>
-                                    <a href="{{ path('upload_flash_form') }}" class="dialog full-dialog">{% trans 'Use the Flash uploader' %}</a>
+                                    <a href="{{ path('upload_flash_form') }}" class="dialog full-dialog">{{ 'Use the Flash uploader' | trans }}</a>
                                 </td>
                             </tr>
                         </table>
 
                         {# settings box #}
                         <div class='settings-box'>
-                            <h5>{% trans 'upload:: Destination (collection) :' %} :</h5>
+                            <h5>{{ 'upload:: Destination (collection) :' | trans }} :</h5>
                             {# collections list #}
                             <select name="base_id" class="span3" style="margin-left: 10px;">
                             {% for  sbasId, availableCollections in collections %}
@@ -68,7 +68,7 @@
                             {% for availableCollections in collections %}
                                 {% for collection in availableCollections['databox_collections'] %}
                                     <div id="status-{{ collection.get_base_id() }}" class='collection-status' style='{{ loop.parent.loop.first and loop.first ? "display:block" :"display:none" }}'>
-                                        <h5>{% trans 'upload:: Status :' %} :</h5>
+                                        <h5>{{ 'upload:: Status :' | trans }} :</h5>
                                         <table class="status-tab">
                                             <tbody>
                                             {% for bit, status in availableCollections['databox'].get_statusbits() %}
@@ -100,8 +100,8 @@
                         <div class='upload-box' style="display: none;">
                             {% set quantity = '<span class="number-files">0</span>' %}
                             <h5>{% trans %}{{ quantity }}selected files{% endtrans %}</h5>
-                            <button type="button" class="clear-queue btn btn-inverse input-medium" style="margin-bottom: 10px;">{% trans 'Clear list' %}</button>
-                            <button type="button" class="upload-submitter btn btn-inverse input-medium" style="margin-bottom: 10px;">{% trans 'Send' %}</button>
+                            <button type="button" class="clear-queue btn btn-inverse input-medium" style="margin-bottom: 10px;">{{ 'Clear list' | trans }}</button>
+                            <button type="button" class="upload-submitter btn btn-inverse input-medium" style="margin-bottom: 10px;">{{ 'Send' | trans }}</button>
                             <div class="clear"></div>
                             <div class='upload-box-addedfiles'></div>
                             <div class="clear"></div>
@@ -110,7 +110,7 @@
 
                     <div id="uploadBoxRight" class="well">
                         <div>
-                            <h5 style="margin-top: 10px;">{% trans 'Transmited files' %} :
+                            <h5 style="margin-top: 10px;">{{ 'Transmited files' | trans }} :
                                 <span class='bitrate-box'></span>
                                 <span class="transmit-box pull-right" style="display: none;">
                                     <span class="number-files-transmited">0</span>
@@ -119,7 +119,7 @@
                                 </span>
                             </h5>
                             <button id="cancel-all" class="btn" type="button" disabled="disabled">
-                                {% trans "Cancel all" %}
+                                {{ "Cancel all" | trans }}
                             </button>
                         </div>
                         <div class="progress progress-striped active">
@@ -132,7 +132,7 @@
 
                 </form>
             {% else %}
-                {% trans 'You can not upload files' %}
+                {{ 'You can not upload files' | trans }}
             {% endif %}
          </div>
     </div>

@@ -1,6 +1,6 @@
 <div id="authentication-sidebar-language" class="text-right well-small clearfix">
     <div class="pull-left">
-        <a href="{{ path("homepage") }}" title="{% trans "Home" %}"><i class="icon-home icon-white"></i></a>
+        <a href="{{ path("homepage") }}" title="{{ "Home" | trans }}"><i class="icon-home icon-white"></i></a>
     </div>
     <div class="pull-right btn-group">
         <button id="language-button" class="btn btn-mini btn-flat dropdown-toggle" data-toggle="dropdown" type="button">
@@ -13,5 +13,5 @@
             {% endfor %}
         </ul>
     </div>
-    <div class="language pull-right">{% trans "language" %}</div>
+    <div class="language pull-right">{{ "language" | trans }}</div>
 </div>

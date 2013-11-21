@@ -3,61 +3,61 @@
   <div class="PNB10 Browser">
     <div class="PNB10" style="width:190px;right:auto;">
       <form name="BasketBrowser" method="GET" action="{{ path('prod_workzone_search') }}">
-        <input name="Query" class="Query search" placeholder="{% trans 'Search baskets' %}" type="text"/>
+        <input name="Query" class="Query search" placeholder="{{ 'Search baskets' | trans }}" type="text"/>
 
-        <h1>{% trans 'See' %}</h1>
+        <h1>{{ 'See' | trans }}</h1>
         <ul class="unstyled">
           <li class="first">
             <input id="basket_browse_all" type="radio" name="Type" value="" checked="checked" />
             <label class="selected" for="basket_browse_all">
-              {% trans 'All' %}
+              {{ 'All' | trans }}
             </label>
           </li>
           <li>
             <input id="basket_browse_my_bask" type="radio" name="Type" value="{{ constant('Alchemy\\Phrasea\\Model\\Repositories\\BasketRepository::MYBASKETS') }}" />
             <label for="basket_browse_my_bask">
-              {% trans 'My baskets' %}
+              {{ 'My baskets' | trans }}
             </label>
           </li>
           <li>
             <input id="basket_browse_received" type="radio" name="Type" value="{{ constant('Alchemy\\Phrasea\\Model\\Repositories\\BasketRepository::RECEIVED') }}" />
             <label for="basket_browse_received">
-              {% trans 'Received baskets' %}
+              {{ 'Received baskets' | trans }}
             </label>
           </li>
           <li>
             <input id="basket_browse_valid_sent" type="radio" name="Type" value="{{ constant('Alchemy\\Phrasea\\Model\\Repositories\\BasketRepository::VALIDATION_SENT') }}" />
             <label for="basket_browse_valid_sent">
-              {% trans 'Validations sent' %}
+              {{ 'Validations sent' | trans }}
             </label>
           </li>
           <li>
             <input id="basket_browse_valid_done" type="radio" name="Type" value="{{ constant('Alchemy\\Phrasea\\Model\\Repositories\\BasketRepository::VALIDATION_DONE') }}" />
             <label for="basket_browse_valid_done">
-              {% trans 'Validations received' %}
+              {{ 'Validations received' | trans }}
             </label>
           </li>
         </ul>
-        <h1>{% trans 'When' %}</h1>
+        <h1>{{ 'When' | trans }}</h1>
         <ul class="unstyled">
           <li class="first">
             <input id="basket_browse_all_time" type="radio" name="Year" value="" checked="checked" />
             <label for="basket_browse_all_time">
-              {% trans 'Any time' %}
+              {{ 'Any time' | trans }}
             </label>
           </li>
           {% set CurrentYear = current_date.format('Y') %}
           <li>
             <input id="basket_browse_this_year" type="radio" name="Year" value="{{ CurrentYear }}" />
             <label for="basket_browse_this_year">
-              {% trans 'This year' %}
+              {{ 'This year' | trans }}
             </label>
           </li>
           {% set CurrentYear = CurrentYear - 1 %}
           <li>
             <input id="basket_browse_last_year" type="radio" name="Year" value="{{ CurrentYear }}" />
             <label for="basket_browse_last_year">
-              {% trans 'Past year' %}
+              {{ 'Past year' | trans }}
             </label>
           </li>
           {% set CurrentYear = CurrentYear - 1 %}

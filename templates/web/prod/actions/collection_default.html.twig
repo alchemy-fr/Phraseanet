@@ -3,15 +3,15 @@
     <form onsubmit="return false" action="{{ path('prod_move_collection_apply') }}" method="post">
         {% if records.databoxes() | length > 1 %}
             <div class="well-small">
-                {% trans 'prod::Les enregistrements ne provienent pas tous de la meme base et ne peuvent donc etre traites ensemble' %}
+                {{ 'prod::Les enregistrements ne provienent pas tous de la meme base et ne peuvent donc etre traites ensemble' | trans }}
             </div>
         {% elseif records | length == 0 %}
             <div class="well-small">
-                {% trans 'prod::Vous n\'avez le droit d\'effectuer l\'operation sur aucun document' %}
+                {{ 'prod::Vous n\'avez le droit d\'effectuer l\'operation sur aucun document' | trans }}
             </div>
         {% elseif collections | length == 0 %}
             <div class="well-small">
-                {% trans 'erreur : Vous n\'avez pas les droits' %}
+                {{ 'erreur : Vous n\'avez pas les droits' | trans }}
             </div>
         {% else %}
             {% set canValid = true %}
@@ -55,7 +55,7 @@
             {% if records.stories() | length > 0 %}
                 <div class="well-small">
                     <label class="checkbox text-info">
-                        <input type="checkbox" value="1" name="chg_coll_son"> {% trans 'prod::collection deplacer egalement les documents rattaches a ce(s) regroupement(s)' %}
+                        <input type="checkbox" value="1" name="chg_coll_son"> {{ 'prod::collection deplacer egalement les documents rattaches a ce(s) regroupement(s)' | trans }}
                     </label>
                 </div>
             {% endif %}

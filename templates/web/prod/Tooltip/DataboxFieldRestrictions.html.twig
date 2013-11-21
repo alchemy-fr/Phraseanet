@@ -1,4 +1,4 @@
-{% extends 'prod/Tooltip/Tooltip.html.twig'%}
+{% extends 'prod/Tooltip/Tooltip.html.twig' %}
 
 {% set title %} {{ field.get_label(app['locale.I18n']) }} ({{ field.get_tag().getTagname() }}) {% endset %}
 {% set width = 600 %}
@@ -23,8 +23,8 @@
     <div>
         <blockquote>
             <small>
-                {% trans 'Les indications donnees ci dessous sont a titre informatif.' %}<br/>
-                {% trans 'Si vous ne les respectez pas, les documents seront correctement indexes, mais les metadonnees inscrites risquent d\'etre erronnees' %}<br/>
+                {{ 'Les indications donnees ci dessous sont a titre informatif.' | trans }}<br/>
+                {{ 'Si vous ne les respectez pas, les documents seront correctement indexes, mais les metadonnees inscrites risquent d\'etre erronnees' | trans }}<br/>
                 {% set norm_name = '<span style="font-style:normal;font-weight:bold;">' ~ field.get_tag().getGroupName() ~ '</span>' %}
                 {% trans %}
                     Ces informations sont directement fournies par la norme de metadonnees de ce champ : {{ norm_name }}

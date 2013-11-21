@@ -99,7 +99,7 @@ function T_replaceBy2(f)
   trees.C._toReplace = { 'sbas':sbas, 'cid':cid, 'replaceby':f };
 
   {% set message %}
-   {% trans 'prod::thesaurusTab:dlg:Remplacement du candidat "%(from)s" par "%(to)s"' %}
+   {{ 'prod::thesaurusTab:dlg:Remplacement du candidat "%(from)s" par "%(to)s"' | trans }}
   {% endset %}
 
   var msg = $.sprintf("{{ message | e('js') }}", {'from':term, 'to':f});
@@ -224,7 +224,7 @@ function T_filter_delayed2(f, delay, mode)
 function T_replaceCandidates_OK()
 {
   {% set replaceing_msg %}
-    {% trans 'prod::thesaurusTab:dlg:Remplacement en cours.' %}
+    {{ 'prod::thesaurusTab:dlg:Remplacement en cours.' | trans }}
   {% endset %}
 
   var replacingBox = p4.Dialog.Create({
@@ -277,7 +277,7 @@ function T_replaceCandidates_OK()
 function T_acceptCandidates_OK()
 {
   {% set accepting_msg %}
-    {% trans 'prod::thesaurusTab:dlg:Acceptation en cours.' %}
+    {{ 'prod::thesaurusTab:dlg:Acceptation en cours.' | trans }}
   {% endset %}
 
   var acceptingBox = p4.Dialog.Create({
@@ -360,7 +360,7 @@ function T_acceptCandidates_OK()
 function C_deleteCandidates_OK()
 {
   {% set deleting_msg %}
-    {% trans 'prod::thesaurusTab:dlg:Suppression en cours.' %}
+    {{ 'prod::thesaurusTab:dlg:Suppression en cours.' | trans }}
   {% endset %}
 
   var deletingBox = p4.Dialog.Create({
@@ -424,10 +424,10 @@ function T_acceptCandidates(menuItem, menu, type)
     return;
 
   {% set messageOne %}
-   {% trans 'prod::thesaurusTab:dlg:accepter le terme candidat "%s" ?' %}
+   {{ 'prod::thesaurusTab:dlg:accepter le terme candidat "%s" ?' | trans }}
   {% endset %}
   {% set messageMany %}
-   {% trans 'prod::thesaurusTab:dlg:accepter les %d termes candidats ?' %}
+   {{ 'prod::thesaurusTab:dlg:accepter les %d termes candidats ?' | trans }}
   {% endset %}
 
   var msg;
@@ -523,10 +523,10 @@ function C_MenuOption(menuItem, menu, option, parm)
       var msg;
 
       {% set messageOne %}
-        {% trans 'prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat "%s"' %}
+        {{ 'prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat "%s"' | trans }}
       {% endset %}
       {% set messageMany %}
-        {% trans "prod::thesaurusTab:wizard:clic-droit / accepter les %s termes candidats" %}
+        {{ "prod::thesaurusTab:wizard:clic-droit / accepter les %s termes candidats" | trans }}
       {% endset %}
 
       if(trees.C._selInfos.n == 1)
@@ -551,10 +551,10 @@ function C_MenuOption(menuItem, menu, option, parm)
       var msg;
 
       {% set messageOne %}
-        {% trans "prod::thesaurusTab:dlg:remplacer le terme \"%s\" des fiches par :" %}
+        {{ "prod::thesaurusTab:dlg:remplacer le terme \"%s\" des fiches par :" | trans }}
       {% endset %}
       {% set messageMany %}
-        {% trans "prod::thesaurusTab:dlg:remplacer les %d termes des fiches par :" %}
+        {{ "prod::thesaurusTab:dlg:remplacer les %d termes des fiches par :" | trans }}
       {% endset %}
 
       if(trees.C._selInfos.n == 1)
@@ -581,10 +581,10 @@ function C_MenuOption(menuItem, menu, option, parm)
       // display helpful message into the thesaurus box...
 
       {% set messageOne %}
-        {% trans 'prod::thesaurusTab:dlg:supprimer le terme "%s" des fiches ?' %}
+        {{ 'prod::thesaurusTab:dlg:supprimer le terme "%s" des fiches ?' | trans }}
       {% endset %}
       {% set messageMany %}
-        {% trans 'prod::thesaurusTab:dlg:supprimer les %d termes des fiches ?' %}
+        {{ 'prod::thesaurusTab:dlg:supprimer les %d termes des fiches ?' | trans }}
       {% endset %}
 
      var msg;
@@ -637,9 +637,9 @@ function Xclick(e)
             var oldField = ul.attr('field');
             ul.remove();
             if(oldField)
-              li.append('<ul field="'+oldField+'">{% trans 'prod::thesaurusTab:tree:loading' %}</ul>');
+              li.append('<ul field="'+oldField+'">{{ 'prod::thesaurusTab:tree:loading' | trans }}</ul>');
             else
-              li.append('<ul>{% trans 'prod::thesaurusTab:tree:loading' %}</ul>');
+              li.append('<ul>{{ 'prod::thesaurusTab:tree:loading' | trans }}</ul>');
             li.removeAttr('loaded');
           }
 
@@ -890,7 +890,7 @@ function thesau_thesaurus_ow(id)	// on ouvre ou ferme une branche de thesaurus
     // on ferme
     o.className = "c";
     document.getElementById("TH_P."+id).innerHTML = "+";
-    document.getElementById("TH_K."+id).innerHTML = "{% trans 'prod::thesaurusTab:tree:loading' %}";
+    document.getElementById("TH_K."+id).innerHTML = "{{ 'prod::thesaurusTab:tree:loading' | trans }}";
   }
   else if(o.className=="c" || o.className=="h")
   {
@@ -1221,21 +1221,21 @@ function startThesaurus(){
   trees.T.tree.contextMenu(
   [
     {
-      label:'{% trans 'boutton::chercher' %}',
+      label:'{{ 'boutton::chercher' | trans }}',
       onclick:function(menuItem, menu, cmenu, e, label)
       {
         T_search(menuItem, menu, cmenu, e, label);
       }
     },
     {
-      label:'{% trans 'prod::thesaurusTab:tmenu:Accepter comme terme specifique' %}',
+      label:'{{ 'prod::thesaurusTab:tmenu:Accepter comme terme specifique' | trans }}',
       onclick:function(menuItem, menu)
       {
         T_acceptCandidates(menuItem, menu, 'TS');
       }
     },
     {
-      label:'{% trans 'prod::thesaurusTab:tmenu:Accepter comme synonyme' %}',
+      label:'{{ 'prod::thesaurusTab:tmenu:Accepter comme synonyme' | trans }}',
       onclick:function(menuItem, menu)
       {
         T_acceptCandidates(menuItem, menu, 'SY');
@@ -1318,7 +1318,7 @@ function startThesaurus(){
     ,
     {% endfor %}
     {
-      label:'{% trans 'prod::thesaurusTab:cmenu:Remplacer par...' %}',
+      label:'{{ 'prod::thesaurusTab:cmenu:Remplacer par...' | trans }}',
 //      disabled:true,
       onclick:function(menuItem, menu)
       {
@@ -1326,7 +1326,7 @@ function startThesaurus(){
       }
     },
     {
-      label:'{% trans 'boutton::supprimer' %}',
+      label:'{{ 'boutton::supprimer' | trans }}',
 //      disabled:true,
       onclick:function(menuItem, menu)
       {

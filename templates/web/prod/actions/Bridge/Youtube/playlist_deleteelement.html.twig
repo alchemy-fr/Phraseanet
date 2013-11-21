@@ -1,4 +1,4 @@
-{% extends "prod/actions/Bridge/wrapper.html.twig"%}
+{% extends "prod/actions/Bridge/wrapper.html.twig" %}
 
 {% set n_element = elements|length %}
 
@@ -20,7 +20,7 @@
         <input type="hidden" name="elements_list[]" value="{{id}}"/>
       {% endfor %}
       <input type="hidden" name="destination" value="{{ destination }}" />
-      <button class="form_submitter btn btn-inverse">{% trans 'boutton::valider' %}</button>
-      <button class="back_link btn btn-inverse">{% trans 'boutton::retour' %}</button>
+      <button class="form_submitter btn btn-inverse">{{ 'boutton::valider' | trans }}</button>
+      <button class="back_link btn btn-inverse">{{ 'boutton::retour' | trans }}</button>
     </form>
 {% endblock %}

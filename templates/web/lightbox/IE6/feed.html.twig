@@ -72,7 +72,7 @@
                         <tr>
                             <td>
                                 <img class="collapsed" src="/skins/lightbox/collapsedie6.gif"/>
-                                <span class="caption">{% trans 'notice'%}</span>
+                                <span class="caption">{{ 'notice' | trans }}</span>
                             </td>
                         </tr>
                     </table>
@@ -106,7 +106,7 @@
                         <td style="width:20px;">
                         </td>
                         <td style="width:40px;">
-                            <button class="ui-corner-all basket_downloader" title="{% trans 'boutton::telecharger tous les documents' %}">
+                            <button class="ui-corner-all basket_downloader" title="{{ 'boutton::telecharger tous les documents' | trans }}">
                                 <img src="/skins/lightbox/save.png"/>
                             </button>
                         </td>
@@ -128,7 +128,7 @@
     </div>
     <div id="report" style="display:none;">
     </div>
-    <div id="dialog_dwnl" title="{% trans 'action : exporter' %}" style="display:none;"></div>
+    <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
 
 {% endblock %}
 

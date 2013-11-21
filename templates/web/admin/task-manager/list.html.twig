@@ -28,7 +28,7 @@
 </style>
 
 <div class="page-header">
-    <h1>{% trans 'admin::tasks: planificateur de taches' %}
+    <h1>{{ 'admin::tasks: planificateur de taches' | trans }}
         <small style="font-size:16px;">
             {% set updateTime %}
                 <span id="pingTime"></span>
@@ -45,10 +45,10 @@
         <tr>
             <th class="menu"></th>
             <th class="id">ID</th>
-            <th class="information">{% trans 'Informations' %}</th>
-            <th class="status">{% trans 'admin::tasks: statut de la tache' %}</th>
-            <th class="process-id">{% trans 'admin::tasks: process_id de la tache' %}</th>
-            <th class="taskname">{% trans 'admin::tasks: nom de la tache' %}</th>
+            <th class="information">{{ 'Informations' | trans }}</th>
+            <th class="status">{{ 'admin::tasks: statut de la tache' | trans }}</th>
+            <th class="process-id">{{ 'admin::tasks: process_id de la tache' | trans }}</th>
+            <th class="taskname">{{ 'admin::tasks: nom de la tache' | trans }}</th>
         </tr>
     </thead>
     <tbody>
@@ -60,13 +60,13 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a method="POST" href="{{ path ('admin_tasks_scheduler_start') }}">{% trans 'Start' %}</a>
+                            <a method="POST" href="{{ path ('admin_tasks_scheduler_start') }}">{{ 'Start' | trans }}</a>
                         </li>
                         <li>
-                            <a method="POST" href="{{ path ('admin_tasks_scheduler_stop') }}">{% trans 'Stop' %}</a>
+                            <a method="POST" href="{{ path ('admin_tasks_scheduler_stop') }}">{{ 'Stop' | trans }}</a>
                         </li>
                         <li>
-                            <a href="{{ path ('admin_tasks_scheduler_log') }}">{% trans 'Logs' %}</a>
+                            <a href="{{ path ('admin_tasks_scheduler_log') }}">{{ 'Logs' | trans }}</a>
                         </li>
                     </ul>
                 </div>
@@ -75,7 +75,7 @@
             <td class="information"></td>
             <td class="status"></td>
             <td class="process-id"></td>
-            <td class="taskname" style="font-weight:bold;">{% trans 'admin::tasks: planificateur de taches' %}</td>
+            <td class="taskname" style="font-weight:bold;">{{ 'admin::tasks: planificateur de taches' | trans }}</td>
         </tr>
         {% for task in tasks %}
         <tr id="task_{{ task.getId() }}" class="{% if loop.index is odd %}odd{% else %}even{% endif %}">
@@ -87,27 +87,27 @@
                     <ul class="dropdown-menu">
                         <li>
                             <a href="{{ path('admin_tasks_task_show', { 'task' : task.getId() }) }}">
-                                {% trans 'Edit' %}
+                                {{ 'Edit' | trans }}
                             </a>
                         </li>
                         <li>
                             <a method="POST" href="{{ path('admin_tasks_task_start', { 'task' : task.getId() }) }}">
-                                {% trans 'Start' %}
+                                {{ 'Start' | trans }}
                             </a>
                         </li>
                         <li>
                             <a method="POST" href="{{ path('admin_tasks_task_stop', { 'task' : task.getId() }) }}">
-                                {% trans 'Stop' %}
+                                {{ 'Stop' | trans }}
                             </a>
                         </li>
                         <li>
                             <a method="POST" href="{{ path('admin_tasks_task_delete', { 'task' : task.getId() }) }}">
-                                {% trans 'Delete' %}
+                                {{ 'Delete' | trans }}
                             </a>
                         </li>
                         <li>
                             <a href="{{ path('admin_tasks_task_log', { 'task' : task.getId() }) }}">
-                                {% trans 'Logs' %}
+                                {{ 'Logs' | trans }}
                             </a>
                         </li>
                     </ul>
@@ -126,7 +126,7 @@
 <form id="form-create-task" method="post" name="form-create-task" action="{{ path('admin_tasks_task_create') }}">
     <select name="job-name">
         <option value="">
-            {% trans 'admin::tasks: Nouvelle tache' %}
+            {{ 'admin::tasks: Nouvelle tache' | trans }}
         </option>
         {% for job in available_jobs %}
             <option value="{{ job.getJobId() }}">{{ job.getName() }}</option>

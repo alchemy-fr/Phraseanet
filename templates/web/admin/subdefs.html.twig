@@ -166,11 +166,11 @@
 {% endblock %}
 
 {% block content %}
-<button id="create-subdef" class="btn btn-warning">{% trans 'Create new subdef' %}</button>
-<div id="dialog-delete-subdef" title="{% trans 'Delete the subdef ?' %}" style="display:none;">
+<button id="create-subdef" class="btn btn-warning">{{ 'Create new subdef' | trans }}</button>
+<div id="dialog-delete-subdef" title="{{ 'Delete the subdef ?' | trans }}" style="display:none;">
     <p>
         <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
-        {% trans 'These subdef will be permanently deleted and cannot be recovered. Are you sure?' %}
+        {{ 'These subdef will be permanently deleted and cannot be recovered. Are you sure?' | trans }}
     </p>
 </div>
 
@@ -178,13 +178,13 @@
     <p class="validateTips"></p>
     <form>
         <fieldset>
-            <label for="name">{% trans 'Subdef name' %}</label>
+            <label for="name">{{ 'Subdef name' | trans }}</label>
             <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" value=""/><br/>
-            <label for="accessclass">{% trans 'classe d\'acces' %}</label>
+            <label for="accessclass">{{ 'classe d\'acces' | trans }}</label>
             <select name="accessclass" id="accessclass">
-                <option value="document">{% trans 'document' %}</option>
-                <option value="preview" selected="selected">{% trans 'preview' %}</option>
-                <option value="thumbnail">{% trans 'tout le monde' %}</option>
+                <option value="document">{{ 'document' | trans }}</option>
+                <option value="preview" selected="selected">{{ 'preview' | trans }}</option>
+                <option value="thumbnail">{{ 'tout le monde' | trans }}</option>
             </select>
         </fieldset>
     </form>
@@ -207,7 +207,7 @@
                     <tbody>
                         <tr>
                             <td style="width:120px;">
-                                <h2>{{subdefname}}</h2><button class="subdef_deleter">{% trans 'boutton::supprimer' %}</button>
+                                <h2>{{subdefname}}</h2><button class="subdef_deleter">{{ 'boutton::supprimer' | trans }}</button>
                                 <input type="hidden" name="subdef" value="{{subdefgroup}}_{{subdefname}}"/>
                             </td>
                             <td style="width:250px;"></td>
@@ -222,20 +222,20 @@
                             </tr>
                         {% endfor %}
                         <tr>
-                            <td>{% trans 'Telechargeable' %}</td>
+                            <td>{{ 'Telechargeable' | trans }}</td>
                             <td><input type="checkbox" name="{{subdefgroup}}_{{subdefname}}_downloadable" {% if subdef.is_downloadable() %}checked="checked"{% endif %} value="1" /></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>
-                                {% trans 'classe' %}
+                                {{ 'classe' | trans }}
                             </td>
                             <td>
                                 <select name="{{subdefgroup}}_{{subdefname}}_class">
-                                    <option>{% trans 'classe' %}</option>
-                                    <option value="document" {% if subdef.get_class() == "document" %}selected="selected"{% endif %}>{% trans 'document' %}</option>
-                                    <option value="preview" {% if subdef.get_class() == "preview" %}selected="selected"{% endif %}>{% trans 'preview' %}</option>
-                                    <option value="thumbnail" {% if subdef.get_class() == "thumbnail" %}selected="selected"{% endif %}>{% trans 'tout le monde' %}</option>
+                                    <option>{{ 'classe' | trans }}</option>
+                                    <option value="document" {% if subdef.get_class() == "document" %}selected="selected"{% endif %}>{{ 'document' | trans }}</option>
+                                    <option value="preview" {% if subdef.get_class() == "preview" %}selected="selected"{% endif %}>{{ 'preview' | trans }}</option>
+                                    <option value="thumbnail" {% if subdef.get_class() == "thumbnail" %}selected="selected"{% endif %}>{{ 'tout le monde' | trans }}</option>
                                 </select>
                             </td>
                             <td></td>
@@ -251,7 +251,7 @@
                         </tr>
                         <tr>
                             <td>
-                                {% trans 'Write Metas' %}
+                                {{ 'Write Metas' | trans }}
                             </td>
                             <td>
                                 <input type="checkbox" value="yes" {% if subdef.meta_writeable() %}checked="checked"{% endif %} name="{{subdefgroup}}_{{subdefname}}_meta"/>
@@ -260,11 +260,11 @@
                         </tr>
                         <tr>
                             <td>
-                                {% trans 'mediatype' %}
+                                {{ 'mediatype' | trans }}
                             </td>
                             <td>
                                 <select onchange="select_mediatype('{{subdefgroup}}{{subdefname}}', this);" name="{{subdefgroup}}_{{subdefname}}_mediatype">
-                                    <option>{% trans 'Choisir' %}</option>
+                                    <option>{{ 'Choisir' | trans }}</option>
                                     {% for subdefType in subdef.getAvailableSubdefTypes() %}
                                         <option value="{{ subdefType.getType() }}" {% if subdef.getSubdefType.getType() == subdefType.getType() %}selected="selected"{% endif %}>{{ subdefType.getType() }}</option>
                                     {% endfor %}
@@ -304,14 +304,14 @@
                                     </script>
                                 {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_ENUM') %}
                                     <select name="{{varname}}">
-                                        <option value="">{% trans 'Choisir' %}</option>
+                                        <option value="">{{ 'Choisir' | trans }}</option>
                                         {% for pot_value in option.getAvailableValues() %}
                                             <option value="{{ pot_value }}" {% if pot_value == option.getValue() %}selected="selected"{% endif %}>{{ pot_value }}</option>
                                         {% endfor %}
                                     </select>
                                 {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_BOOLEAN') %}
-                                    <input name="{{varname}}" type="radio" value="yes" {% if option.getValue() %}checked="checked"{% endif %} /> {% trans 'yes' %}
-                                    <input name="{{varname}}" type="radio" value="no" {% if option.getValue() is empty %}checked="checked"{% endif %}/> {% trans 'no' %}
+                                    <input name="{{varname}}" type="radio" value="yes" {% if option.getValue() %}checked="checked"{% endif %} /> {{ 'yes' | trans }}
+                                    <input name="{{varname}}" type="radio" value="no" {% if option.getValue() is empty %}checked="checked"{% endif %}/> {{ 'no' | trans }}
                                 {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_MULTI') %}
                                     {% for pot_value, selected in option.Value(true) %}
                                         <input type="checkbox" name="{{varname}}[]" value="{{ pot_value }}" {% if selected %}checked="checked"{% endif %}/><label>{{ pot_value }}</label>
@@ -337,7 +337,7 @@
     <input type="hidden" name="add_subdef[group]" value=""/>
     <input type="hidden" name="add_subdef[name]" value=""/>
     <input type="hidden" name="add_subdef[class]" value=""/>
-    <button type="submit" class="btn btn-primary">{% trans 'boutton::valider' %}</button>
+    <button type="submit" class="btn btn-primary">{{ 'boutton::valider' | trans }}</button>
 </form>
 
 <div style="display:none;">

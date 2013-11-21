@@ -32,25 +32,25 @@
             return false;
           });
           var language = {
-            ajaxError        : "{% trans 'Erreur lors du contact avec le serveur WEB' %}",
-            ajaxTimeout        : "{% trans 'Delai depasse lors du contact avec le serveur WEB' %}",
-            requiredField      : "{% trans 'Required' %}",
-            validateEmail      : "{% trans 'forms::merci d\'entrer une adresse e-mail valide' %}",
-            validatePassword    : "{% trans 'forms::ce champ est requis' %}",
-            validatePasswordConfirm  : "{% trans 'forms::ce champ est requis' %}",
-            validatePasswordEqual  : "{% trans 'forms::les mots de passe ne correspondent pas' %}",
-            wrongCredentials    : "{% trans 'Vous devez specifier une adresse email et un mot de passe valides' %}",
-            wrongDatabasename    : "{% trans 'Le nom de base de donnee est incorrect' %}",
-            someErrors        : "{% trans 'Il y a des erreurs, merci de les corriger avant de continuer' %}"
+            ajaxError        : "{{ 'Erreur lors du contact avec le serveur WEB' | trans }}",
+            ajaxTimeout        : "{{ 'Delai depasse lors du contact avec le serveur WEB' | trans }}",
+            requiredField      : "{{ 'Required' | trans }}",
+            validateEmail      : "{{ 'forms::merci d\'entrer une adresse e-mail valide' | trans }}",
+            validatePassword    : "{{ 'forms::ce champ est requis' | trans }}",
+            validatePasswordConfirm  : "{{ 'forms::ce champ est requis' | trans }}",
+            validatePasswordEqual  : "{{ 'forms::les mots de passe ne correspondent pas' | trans }}",
+            wrongCredentials    : "{{ 'Vous devez specifier une adresse email et un mot de passe valides' | trans }}",
+            wrongDatabasename    : "{{ 'Le nom de base de donnee est incorrect' | trans }}",
+            someErrors        : "{{ 'Il y a des erreurs, merci de les corriger avant de continuer' | trans }}"
           }
 
           $.validator.passwordRating.messages = {
-            "similar-to-username": "{% trans 'forms::le mot de passe est trop similaire a l\'identifiant' %}",
-            "too-short": "{% trans 'forms::la valeur donnee est trop courte' %}",
-            "very-weak": "{% trans 'forms::le mot de passe est trop simple' %}",
-            "weak": "{% trans 'forms::le mot de passe est trop simple' %}",
-            "good": "{% trans 'forms::le mot de passe est bon' %}",
-            "strong": "{% trans 'forms::le mot de passe est tres bon' %}"
+            "similar-to-username": "{{ 'forms::le mot de passe est trop similaire a l\'identifiant' | trans }}",
+            "too-short": "{{ 'forms::la valeur donnee est trop courte' | trans }}",
+            "very-weak": "{{ 'forms::le mot de passe est trop simple' | trans }}",
+            "weak": "{{ 'forms::le mot de passe est trop simple' | trans }}",
+            "good": "{{ 'forms::le mot de passe est bon' | trans }}",
+            "strong": "{{ 'forms::le mot de passe est tres bon' | trans }}"
           };
 
           $("#create_admin").validate({
@@ -93,7 +93,7 @@
             var $current = $(this).closest('.steps');
             if($('input.field_error, input.error', $current).length > 0)
             {
-              alert('{% trans "Veuillez corriger les erreurs avant de poursuivre" %}');
+              alert('{{ "Veuillez corriger les erreurs avant de poursuivre" | trans }}');
 
               return false;
             }
@@ -235,10 +235,10 @@
                 if(datas.connection === true && datas.database === true)
                 {
                   el_status.attr('src','/skins/icons/ok.png').show();
-                  el_message.empty().append("{% trans 'Successfull connection' %}");
+                  el_message.empty().append("{{ 'Successfull connection' | trans }}");
                   if(!datas.is_empty)
                   {
-                    el_message.append("<br>{% trans 'Warning, this database is not empty' %}");
+                    el_message.append("<br>{{ 'Warning, this database is not empty' | trans }}");
                     el_status.attr('src','/skins/icons/alert.png').show();
                   }
                   if(typeof callback == 'function')
@@ -248,11 +248,11 @@
                 }
                 if(datas.connection === true)
                 {
-                  el_message.empty().append("{% trans 'Connection is OK but database does not exists or can not be accessed' %}");
+                  el_message.empty().append("{{ 'Connection is OK but database does not exists or can not be accessed' | trans }}");
                 }
                 else
                 {
-                  el_message.empty().append("{% trans 'Unable to connect to MySQL server' %}");
+                  el_message.empty().append("{{ 'Unable to connect to MySQL server' | trans }}");
                 }
                 el_status.attr('src', '/skins/icons/delete.png').show();
 
@@ -261,12 +261,12 @@
               timeout:function(){
                 el_loader.css('visibility', 'hidden');
                 el_status.attr('src', '/skins/icons/delete.png').show();
-                el_message.empty().append("{% trans 'Unable to connect to MySQL server' %}");
+                el_message.empty().append("{{ 'Unable to connect to MySQL server' | trans }}");
               },
               error:function(datas){
                 el_loader.css('visibility', 'hidden');
                 el_status.attr('src', '/skins/icons/delete.png').show();
-                el_message.empty().append("{% trans 'Unable to connect to MySQL server' %}");
+                el_message.empty().append("{{ 'Unable to connect to MySQL server' | trans }}");
               }
             });
           }
@@ -335,7 +335,7 @@
                                 {% if warnings is not empty %}
                                     <tr>
                                         <td>
-                                            <a href="{{ path('install_root') }}">{% trans 'Review system configuration' %}</a>
+                                            <a href="{{ path('install_root') }}">{{ 'Review system configuration' | trans }}</a>
                                         </td>
                                     </tr>
                                 {% endif %}
@@ -352,7 +352,7 @@
                           <td>
                             <p>
                               <a href="https://docs.phraseanet.com/3.8/Admin/" target="_blank">
-                                {% trans 'Prerequisite and Configuration' %}
+                                {{ 'Prerequisite and Configuration' | trans }}
                               </a>
                             </p>
                           </td>
@@ -367,7 +367,7 @@
                       <td>
                       </td>
                       <td style="text-align:right;">
-                        <button class="next">{% trans 'boutton::suivant' %}</button>
+                        <button class="next">{{ 'boutton::suivant' | trans }}</button>
                       </td>
                     </tr>
                   </table>
@@ -380,7 +380,7 @@
                   <div class="PNB10 wrapper_left">
                     <div class="PNB10 section_title">
                       <h2>
-                        1/5 {% trans 'Executables externes' %}
+                        1/5 {{ 'Executables externes' | trans }}
                       </h2>
                     </div>
                     <div class="PNB10" style="top:50px;overflow-x:hidden;">
@@ -395,7 +395,7 @@
                                 {% endif %}
                               <tr>
                                 <td><label>{{ binary['name'] }}</label> </td>
-                                <td><input autocomplete="off" name="binary_{{key}}" class="path_to_test test_executable {% if required == "1" %}required{% endif %}" type="text" value="{{ binary['binary'] }}" /> {% if required == "1" %}{% trans 'Required field' %}{% endif %}</td>
+                                <td><input autocomplete="off" name="binary_{{key}}" class="path_to_test test_executable {% if required == "1" %}required{% endif %}" type="text" value="{{ binary['binary'] }}" /> {% if required == "1" %}{{ 'Required field' | trans }}{% endif %}</td>
                               </tr>
                               {% endfor %}
                             </table>
@@ -410,13 +410,13 @@
                         <tr>
                           <td>
                             <p>
-                              {% trans 'Phraseanet may require many binaries.' %}
+                              {{ 'Phraseanet may require many binaries.' | trans }}
                             </p>
                             <p>
-                              {% trans 'Some of them are required, like the indexer, Exiftool or ImageMagick components, some others are optionnal, like FFmpeg which is used to preview video files.' %}
+                              {{ 'Some of them are required, like the indexer, Exiftool or ImageMagick components, some others are optionnal, like FFmpeg which is used to preview video files.' | trans }}
                             </p>
                             <p>
-                              {% trans 'Don\'t worry, You can modify your configuration later' %}
+                              {{ 'Don\'t worry, You can modify your configuration later' | trans }}
                             </p>
                           </td>
                         </tr>
@@ -428,10 +428,10 @@
                   <table>
                     <tr>
                       <td>
-                        <button class="previous">{% trans 'boutton::precedent' %}</button>
+                        <button class="previous">{{ 'boutton::precedent' | trans }}</button>
                       </td>
                       <td style="text-align:right;">
-                        <button class="next">{% trans 'boutton::suivant' %}</button>
+                        <button class="next">{{ 'boutton::suivant' | trans }}</button>
                       </td>
                     </tr>
                   </table>
@@ -446,7 +446,7 @@
                   <div class="PNB10 wrapper_left">
                     <div class="PNB10 section_title">
                       <h2>2/5
-                          {% trans 'Creation de votre compte' %}
+                          {{ 'Creation de votre compte' | trans }}
                       </h2>
                     </div>
                     <div class="PNB10" style="top:50px;overflow-x:hidden;">
@@ -455,11 +455,11 @@
                           <td>
                             <table class="main_content_table">
                               <tr>
-                                <td style="width:200px;"><label>{% trans 'Votre adresse email' %}</label></td>
+                                <td style="width:200px;"><label>{{ 'Votre adresse email' | trans }}</label></td>
                                 <td><input class="error" type="text" name="email" value="" /></td>
                               </tr>
                               <tr>
-                                <td style="width:200px;"><label>{% trans 'Votre mot de passe' %}</label></td>
+                                <td style="width:200px;"><label>{{ 'Votre mot de passe' | trans }}</label></td>
                                 <td><input autocomplete="off" type="password" name="password" value="" /></td>
                               </tr>
                               <tr>
@@ -475,20 +475,20 @@
                                 </td>
                               </tr>
                               <tr>
-                                <td style="width:200px;"><label>{% trans 'Confirmation de votre mot de passe' %}</label></td>
+                                <td style="width:200px;"><label>{{ 'Confirmation de votre mot de passe' | trans }}</label></td>
                                 <td><input autocomplete="off" type="password" name="password_confirm" value="" /></td>
                               </tr>
                               <tr>
                               <tr>
                                 <td colspan="2">
                                   <div style="border:1px solid #404040;padding:0 10px;margin:20px 0">
-                                    <h3>{% trans 'admin::compte-utilisateur A propos de la securite des mots de passe :' %}</h3>
-                                    <p>{% trans 'admin::compte-utilisateur Les mots de passe doivent etre clairement distincts du login et contenir au moins deux types parmis les caracteres suivants :' %}</p>
+                                    <h3>{{ 'admin::compte-utilisateur A propos de la securite des mots de passe :' | trans }}</h3>
+                                    <p>{{ 'admin::compte-utilisateur Les mots de passe doivent etre clairement distincts du login et contenir au moins deux types parmis les caracteres suivants :' | trans }}</p>
                                     <dl style="border:none;float:none;">
-                                      <dt>{% trans 'admin::compte-utilisateur::securite caracteres speciaux' %}</dt>
-                                      <dt>{% trans 'admin::compte-utilisateur::securite caracteres majuscules' %}</dt>
-                                      <dt>{% trans 'admin::compte-utilisateur::securite caracteres minuscules' %}</dt>
-                                      <dt>{% trans 'admin::compte-utilisateur::securite caracteres numeriques' %}</dt>
+                                      <dt>{{ 'admin::compte-utilisateur::securite caracteres speciaux' | trans }}</dt>
+                                      <dt>{{ 'admin::compte-utilisateur::securite caracteres majuscules' | trans }}</dt>
+                                      <dt>{{ 'admin::compte-utilisateur::securite caracteres minuscules' | trans }}</dt>
+                                      <dt>{{ 'admin::compte-utilisateur::securite caracteres numeriques' | trans }}</dt>
                                     </dl>
                                   </div>
                                 </td>
@@ -505,8 +505,8 @@
                         <tr>
                           <td>
                             <p>
-                              {% trans 'Your email will be used to log in the application.'%} <br/><br/>
-                              {% trans 'Please be sure it is still valid and you can access it' %}
+                              {{ 'Your email will be used to log in the application.' | trans }} <br/><br/>
+                              {{ 'Please be sure it is still valid and you can access it' | trans }}
                             </p>
                           </td>
                         </tr>
@@ -518,10 +518,10 @@
                   <table>
                     <tr>
                       <td>
-                        <button class="previous">{% trans 'boutton::precedent' %}</button>
+                        <button class="previous">{{ 'boutton::precedent' | trans }}</button>
                       </td>
                       <td style="text-align:right;">
-                        <button class="next">{% trans 'boutton::suivant' %}</button>
+                        <button class="next">{{ 'boutton::suivant' | trans }}</button>
                       </td>
                     </tr>
                   </table>
@@ -554,32 +554,32 @@
                             <table class="main_content_table">
                               <tr>
                                 <td colspan="2">
-                                  <h3>{% trans 'MySQL database connection parameters' %}</h3>
+                                  <h3>{{ 'MySQL database connection parameters' | trans }}</h3>
                                 </td>
                               </tr>
                               <tr class="optional_ab_datas">
-                                <td style="width:200px;"><label>{% trans 'phraseanet:: adresse' %}</label></td>
+                                <td style="width:200px;"><label>{{ 'phraseanet:: adresse' | trans }}</label></td>
                                 <td><input autocomplete="off" type="text" name="ab_hostname" value="localhost" /></td>
                               </tr>
                               <tr>
-                                <td style="width:200px;"><label>{% trans 'Database user' %}</label></td>
+                                <td style="width:200px;"><label>{{ 'Database user' | trans }}</label></td>
                                 <td><input type="text" name="ab_user" value=""  /></td>
                               </tr>
                               <tr>
-                                <td style="width:200px;"><label>{% trans 'admin::compte-utilisateur mot de passe' %}</label></td>
+                                <td style="width:200px;"><label>{{ 'admin::compte-utilisateur mot de passe' | trans }}</label></td>
                                 <td><input type="password" name="ab_password" value="" autocomplete="off" /></td>
                               </tr>
                               <tr class="optional_ab_datas">
-                                <td style="width:200px;"><label>{% trans 'phraseanet:: port' %}</label></td>
+                                <td style="width:200px;"><label>{{ 'phraseanet:: port' | trans }}</label></td>
                                 <td><input autocomplete="off" type="text" name="ab_port" value="3306" /></td>
                               </tr>
                               <tr>
-                                <td style="width:200px;"><label>{% trans 'Database' %}</label></td>
+                                <td style="width:200px;"><label>{{ 'Database' | trans }}</label></td>
                                 <td><input type="text" name="ab_name" value="" /></td>
                               </tr>
                               <tr style="height:40px;">
                                 <td style="text-align:center;">
-                                  <button class="ab_tester error">{% trans 'boutton::tester' %}</button>
+                                  <button class="ab_tester error">{{ 'boutton::tester' | trans }}</button>
                                   <img class="tester_loader" style="visibility:hidden;" src="/skins/icons/loader-black.gif"/>
                                   <img class="tester_status" style="display:none;" src="/skins/icons/delete.png"/>
                                 </td>
@@ -610,10 +610,10 @@
                         <tr>
                           <td>
                             <p>
-                              {% trans 'ApplicationBox is a Mysql database.' %}
+                              {{ 'ApplicationBox is a Mysql database.' | trans }}
                             </p>
                             <p>
-                              {% trans 'It stores users datas, rights, and references to DataBoxes where records are stored.' %}
+                              {{ 'It stores users datas, rights, and references to DataBoxes where records are stored.' | trans }}
                             </p>
                             <p>
                               {% set link_start = '<a href="https://mariadb.org/" target="_blank">' %}
@@ -637,10 +637,10 @@
                   <table>
                     <tr>
                       <td>
-                        <button class="previous">{% trans 'boutton::precedent' %}</button>
+                        <button class="previous">{{ 'boutton::precedent' | trans }}</button>
                       </td>
                       <td style="text-align:right;">
-                        <button class="next">{% trans 'boutton::suivant' %}</button>
+                        <button class="next">{{ 'boutton::suivant' | trans }}</button>
                       </td>
                     </tr>
                   </table>
@@ -655,7 +655,7 @@
                   <div class="PNB10 wrapper_left">
                     <div class="PNB10 section_title">
                       <h2>4/5
-                        {% trans 'setup::Configuration des repertoires de stockage' %}
+                        {{ 'setup::Configuration des repertoires de stockage' | trans }}
                       </h2>
                     </div>
                     <div class="PNB10" style="top:50px;overflow-x:hidden;">
@@ -664,7 +664,7 @@
                           <td>
                             <table class="main_content_table">
                               <tr>
-                                <td><label>{% trans 'Repertoire de stockage des fichiers' %}</label></td>
+                                <td><label>{{ 'Repertoire de stockage des fichiers' | trans }}</label></td>
                                 <td><input class="path_to_test test_writeable required" type="text" name="datapath_noweb" value="" /></td>
                               </tr>
                             </table>
@@ -679,13 +679,13 @@
                         <tr>
                           <td>
                             <p>
-                              {% trans 'Your medias and their subdefinitions (previews, thumbnails..) will be stored in these directories.' %}
+                              {{ 'Your medias and their subdefinitions (previews, thumbnails..) will be stored in these directories.' | trans }}
                             </p>
                             <p>
-                              {% trans 'Thumbnails directory is mounted to be accessible via HTTP, while other files are not.' %}
+                              {{ 'Thumbnails directory is mounted to be accessible via HTTP, while other files are not.' | trans }}
                             </p>
                             <p>
-                              {% trans 'If you plan to store large files, be sure it will fit in these directories.' %}
+                              {{ 'If you plan to store large files, be sure it will fit in these directories.' | trans }}
                             </p>
                           </td>
                         </tr>
@@ -697,10 +697,10 @@
                   <table>
                     <tr>
                       <td>
-                        <button class="previous">{% trans 'boutton::precedent' %}</button>
+                        <button class="previous">{{ 'boutton::precedent' | trans }}</button>
                       </td>
                       <td style="text-align:right;">
-                        <button class="next">{% trans 'boutton::suivant' %}</button>
+                        <button class="next">{{ 'boutton::suivant' | trans }}</button>
                       </td>
                     </tr>
                   </table>
@@ -725,21 +725,21 @@
                           <td>
                             <table class="main_content_table">
                               <tr>
-                                <td colspan="2"><h3>{% trans 'MySQL database connection parameters' %}</h3></td>
+                                <td colspan="2"><h3>{{ 'MySQL database connection parameters' | trans }}</h3></td>
                               </tr>
 
                               <tr>
-                                <td style="width:200px;"><label>{% trans 'Ne pas creer de DataBox maintenant' %}</label></td>
+                                <td style="width:200px;"><label>{{ 'Ne pas creer de DataBox maintenant' | trans }}</label></td>
                                 <td><input type="checkbox" class="databox_create" /></td>
                               </tr>
 
                               <tr>
-                                <td style="width:200px;"><label>{% trans 'Database' %}</label></td>
+                                <td style="width:200px;"><label>{{ 'Database' | trans }}</label></td>
                                 <td><input class="databox_creation_input" type="text" name="db_name" value="" /></td>
                               </tr>
                               <tr style="height:40px;">
                                 <td style="text-align:center;">
-                                  <button class="db_tester error">{% trans 'boutton::tester' %}</button>
+                                  <button class="db_tester error">{{ 'boutton::tester' | trans }}</button>
                                   <img class="tester_loader" style="visibility:hidden;" src="/skins/icons/loader-black.gif"/>
                                   <img class="tester_status" style="display:none;" src="/skins/icons/delete.png"/>
                                 </td>
@@ -748,7 +748,7 @@
                                 </td>
                               </tr>
                               <tr>
-                                <td><label>{% trans 'Modele de donnees' %}</label></td>
+                                <td><label>{{ 'Modele de donnees' | trans }}</label></td>
                                 <td>
                                   <select name="db_template" class="databox_creation_input">
                                   {% for template in available_templates %}
@@ -766,7 +766,7 @@
                                       Creation des taches
                                     {% endtrans %}
                                   </h3>
-                                  {% trans 'Phraseanet embarque un moteur de taches pour la lecture / ecriture des metadonnes, et autre operations' %}
+                                  {{ 'Phraseanet embarque un moteur de taches pour la lecture / ecriture des metadonnes, et autre operations' | trans }}
                                   <br/><br/>
                                 </td>
                               </tr>
@@ -774,19 +774,19 @@
                                 <td style="width:100px;text-align:right;">
                                   <input  type="checkbox" name="create_task[]" value="writemeta" checked />
                                 </td>
-                                <td><label>{% trans 'Creer la tache d\'ecriture des metadonnees' %}</label></td>
+                                <td><label>{{ 'Creer la tache d\'ecriture des metadonnees' | trans }}</label></td>
                               </tr>
                               <tr>
                                 <td style="width:100px;text-align:right;">
                                   <input  type="checkbox" name="create_task[]" value="subdef" checked />
                                 </td>
-                                <td><label>{% trans 'Creer la tache de creation des sous-definitions' %}</label></td>
+                                <td><label>{{ 'Creer la tache de creation des sous-definitions' | trans }}</label></td>
                               </tr>
                               <tr>
                                 <td style="width:100px;text-align:right;">
                                   <input  type="checkbox" name="create_task[]" value="cindexer" checked />
                                 </td>
-                                <td><label>{% trans 'Creer la tache d\'indexation' %}</label></td>
+                                <td><label>{{ 'Creer la tache d\'indexation' | trans }}</label></td>
                               </tr>
                             </table>
                           </td>
@@ -800,8 +800,8 @@
                         <tr>
                           <td>
                             <p>
-                              {% trans 'Phraseanet DataBoxes are MySQL databases, queryable by Phraseanet ApplicationBox.' %}<br/><br/>
-                              {% trans 'Databoxes store records, metadatas and their classifications' %}
+                              {{ 'Phraseanet DataBoxes are MySQL databases, queryable by Phraseanet ApplicationBox.' | trans }}<br/><br/>
+                              {{ 'Databoxes store records, metadatas and their classifications' | trans }}
                             </p>
                           </td>
                         </tr>
@@ -813,17 +813,17 @@
                   <table>
                     <tr>
                       <td>
-                        <button class="previous">{% trans 'boutton::precedent' %}</button>
+                        <button class="previous">{{ 'boutton::precedent' | trans }}</button>
                       </td>
                       <td style="text-align:right;">
-                        <button class="next install" type="submit">{% trans 'button::Install' %}</button>
+                        <button class="next install" type="submit">{{ 'button::Install' | trans }}</button>
                       </td>
                     </tr>
                   </table>
                 </div>
               </div>
             </form>
-        <div id="install_wait" style="display:none;" title="{% trans 'Install in progess' %}">
+        <div id="install_wait" style="display:none;" title="{{ 'Install in progess' | trans }}">
           <p>
             <img src="/skins/icons/loader111111.gif"/>
             {% trans %}

@@ -1,4 +1,4 @@
-{% extends "prod/actions/Bridge/wrapper.html.twig"%}
+{% extends "prod/actions/Bridge/wrapper.html.twig" %}
 {% import "prod/actions/Bridge/macro_error_form.html.twig" as error_form %}
 
 {% block menu %}
@@ -12,12 +12,12 @@
 {% set elements_received_length = route.get_count_element_received() %}
 
 {% if elements_received_length == 0 %}
-  {% trans 'Vous n\'avez selectionne aucun element' %}
+  {{ 'Vous n\'avez selectionne aucun element' | trans }}
 {% elseif elements_length == 0 %}
-  {% trans 'Les elements ne peuvent etre uploades (problemes de type ou de droit)' %}
-  {% trans 'Le bridge Youtube ne prend en charge que les videos' %}
+  {{ 'Les elements ne peuvent etre uploades (problemes de type ou de droit)' | trans }}
+  {{ 'Le bridge Youtube ne prend en charge que les videos' | trans }}
 {% elseif elements_length > 1 %}
-  {% trans 'Vous ne pouvez uploader des elements sur Youtube qu\'un par un' %}
+  {{ 'Vous ne pouvez uploader des elements sur Youtube qu\'un par un' | trans }}
 {% else %}
   {% for record in route.get_elements() %}
     {% set caption = record.get_caption() %}
@@ -28,9 +28,9 @@
         <tr>
           <td>
             {% set name = "title_" ~ record.get_serialize_key() %}
-              <label for='{{name}}'>{% trans 'Titre' %}</label>
+              <label for='{{name}}'>{{ 'Titre' | trans }}</label>
               <div style="font-size:9px; font-weight:200">
-                {% trans "100 caracteres maximum" %}
+                {{ "100 caracteres maximum" | trans }}
               </div>
           </td>
           <td>
@@ -43,9 +43,9 @@
         <tr>
           <td>
             {% set name = "description_" ~ record.get_serialize_key() %}
-            <label for='{{ name }}'>{% trans 'Description' %}</label>
+            <label for='{{ name }}'>{{ 'Description' | trans }}</label>
             <div style="font-size:9px; font-weight:200">
-              {% trans "2000 caracteres maximum" %}
+              {{ "2000 caracteres maximum" | trans }}
             </div>
           </td>
           <td class='column_right'>
@@ -57,7 +57,7 @@
         <tr>
           <td>
             {% set name = "category_" ~ record.get_serialize_key() %}
-            <label for='{{ name }}'>{% trans 'Categorie' %}</label>
+            <label for='{{ name }}'>{{ 'Categorie' | trans }}</label>
           </td>
           <td class='column_right'>
               <select name='{{ name }}'>
@@ -70,11 +70,11 @@
         <tr>
           <td>
             {% set name = "tags_" ~ record.get_serialize_key() %}
-            <label for='{{ name }}'>{% trans 'Tags' %}</label>
+            <label for='{{ name }}'>{{ 'Tags' | trans }}</label>
             <br/>
             <div style="font-size:9px; font-weight:200">
-              {% trans "500 caracteres maximum" %} <br/>
-              {% trans "separe par un espace" %}
+              {{ "500 caracteres maximum" | trans }} <br/>
+              {{ "separe par un espace" | trans }}
             </div>
           </td>
           <td>
@@ -86,21 +86,21 @@
         <tr>
           <td>
             {% set name = "privacy_" ~ record.get_serialize_key() %}
-            <label for='{{ name }}'>{% trans 'Confidentialite' %}</label>
+            <label for='{{ name }}'>{{ 'Confidentialite' | trans }}</label>
           </td>
           <td>
             <div style='float:left'>
-          <label for="input_private">{% trans 'prive' %}</label>
+          <label for="input_private">{{ 'prive' | trans }}</label>
           <input id="input_private" type="radio" name="{{ name }}" value="private" checked='checked' />
           </div>
           <div style='float:left'>
-          <label for="input_public">{% trans 'public' %}</label>
+          <label for="input_public">{{ 'public' | trans }}</label>
           <input id="input_public" type="radio" name="{{ name }}"  value="public "/>
           </div>
           </td>
         </tr>
       </table>
-      <button class="form_submitter">{% trans 'Upload' %}</button>
+      <button class="form_submitter">{{ 'Upload' | trans }}</button>
     </form>
   {% endfor %}
   <p>
@@ -123,6 +123,6 @@
   </script>
 {% endif %}
 <p>
-  <button class="back_link btn btn-inverse">&lt; {% trans 'Retour' %}</button>
+  <button class="back_link btn btn-inverse">&lt; {{ 'Retour' | trans }}</button>
 </p>
 {% endblock %}

@@ -25,7 +25,7 @@
 </script>
 
 {% set tooltip_html %}
-    <div>{% trans "client::answers: rapport de questions par bases" %}</div>
+    <div>{{ "client::answers: rapport de questions par bases" | trans }}</div>
 {% endset %}
 
 {% set txt %}
@@ -183,13 +183,13 @@
                         <div class="buttons">
                             <div class="minilogos">{{ data['mini_logo']|raw }}</div>
                             {% if data['can_download'] %}
-                                <div class="downloader" title="{% trans 'action : exporter' %}" onclick="evt_dwnl('{{ record.get_serialize_key() }}');"></div>
+                                <div class="downloader" title="{{ 'action : exporter' | trans }}" onclick="evt_dwnl('{{ record.get_serialize_key() }}');"></div>
                             {% endif %}
 
-                            <div class="printer" title="{% trans 'action : print' %}" onClick="evt_print('{{ record.get_serialize_key() }}');"></div>
+                            <div class="printer" title="{{ 'action : print' | trans }}" onClick="evt_print('{{ record.get_serialize_key() }}');"></div>
 
                             {% if data['can_add_to_basket'] %}
-                                <div class="baskAdder" title="{% trans 'action : ajouter au panier' %}" onClick="evt_add_in_chutier({{ record.get_sbas_id() }}, {{ record.get_record_id() }});"></div>
+                                <div class="baskAdder" title="{{ 'action : ajouter au panier' | trans }}" onClick="evt_add_in_chutier({{ record.get_sbas_id() }}, {{ record.get_record_id() }});"></div>
                             {% endif %}
 
                             {% if mod_col != 1 %}

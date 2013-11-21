@@ -36,7 +36,7 @@
             <ul>
                 <li>
                     <a href="#subdefs">
-                        {% trans "regeneration of sub-definitions" %}
+                        {{ "regeneration of sub-definitions" | trans }}
                     </a>
                 </li>
                 {% if selectionLength == 1%}
@@ -44,7 +44,7 @@
                         {% if record.get_type() == 'video' %}
                             <li>
                                 <a href="#thumbExtractor">
-                                    {% trans "video tool" %}
+                                    {{ "video tool" | trans }}
                                 </a>
                             </li>
                         {% endif %}
@@ -53,21 +53,21 @@
                 {% if allowRotate == 1%}
                     <li>
                         <a href="#image">
-                            {% trans "image tool"%}
+                            {{ "image tool" | trans }}
                         </a>
                     </li>
                 {% endif %}
                 {% if selectionLength == 1 and (app['phraseanet.registry'].get('GV_seeOngChgDoc') or app['phraseanet.registry'].get('GV_seeNewThumb')) %}
                     <li>
                         <a href="#substitution">
-                            {% trans "substitution" %}
+                            {{ "substitution" | trans }}
                         </a>
                     </li>
                 {% endif %}
                 {% if metadatas %}
                     <li>
                         <a href="#exiftool">
-                            {% trans "meta-datas" %}
+                            {{ "meta-datas" | trans }}
                         </a>
                     </li>
                 {% endif %}
@@ -77,14 +77,14 @@
         <div id="subdefs" class="tabBox">
             <form id="new-img-form" action="{{ path('prod_tools_image') }}" method="post">
                 <fieldset style='border:1px solid #999; padding:20px;'>
-                    <legend style='color:#EEE'>&nbsp;<b>{% trans "Reconstruire les sous definitions" %}</b>&nbsp;</legend>
+                    <legend style='color:#EEE'>&nbsp;<b>{{ "Reconstruire les sous definitions" | trans }}</b>&nbsp;</legend>
                     {% if nbThumbSubstitute > 0 %}
                         <div style="color:#A00;">
-                            {% trans "Attention, certain documents ont des sous-definitions substituees"%}
+                            {{ "Attention, certain documents ont des sous-definitions substituees" | trans }}
                         </div>
                         <label for="FTS" class="checkbox">
                             <input type="checkbox" name="ForceThumbSubstit" value="1" id="FTS" />
-                            {% trans "Forcer la reconstruction sur les enregistrements ayant des thumbnails substituees" %}
+                            {{ "Forcer la reconstruction sur les enregistrements ayant des thumbnails substituees" | trans }}
                         </label>
                         <br/>
                     {% else %}
@@ -93,10 +93,10 @@
                     <div>
                         <select name="rebuild">
                             <option selected="selected" value="none">
-                                {% trans "recreer aucune sous-definitions" %}
+                                {{ "recreer aucune sous-definitions" | trans }}
                             </option>
                             <option value="all">
-                                {% trans "recreer toutes les sous-definitions" %}
+                                {{ "recreer toutes les sous-definitions" | trans }}
                             </option>
                         </select>
                     </div>
@@ -104,8 +104,8 @@
                     <input type="hidden" name="lst" value="{{records.serializedList()}}" />
                 </fieldset>
                 <div style='text-align:right;padding-top:10px;'>
-                    <button class="action_submiter btn btn-inverse" type="button">{% trans "validate" %}</button>
-                    <button class="action_cancel btn btn-inverse" type="button">{% trans "cancel" %}</button>
+                    <button class="action_submiter btn btn-inverse" type="button">{{ "validate" | trans }}</button>
+                    <button class="action_cancel btn btn-inverse" type="button">{{ "cancel" | trans }}</button>
                 </div>
             </form>
         </div>
@@ -116,7 +116,7 @@
           <div id="thumbExtractor"  class="tabBox">
             <div class="PNB10 main_title">
               <img src='/skins/prod/ThumbExtractor/camera_title.png'/>
-              {% trans "screenshot video" %}
+              {{ "screenshot video" | trans }}
             </div>
             <hr style='margin-top:25px;'/>
             <div class="PNB part_title_left"></div>
@@ -140,7 +140,7 @@
                 {% for subdef in previewHtml5 %}
                 <source type="{{ subdef.get_mime() }}" src="{{ subdef.get_url() }}" />
                 {% endfor %}
-                {% trans 'No preview available' %}
+                {{ 'No preview available' | trans }}
               </video>
             </div>
 
@@ -148,7 +148,7 @@
             </div>
 
             <div id="thumb_camera_button" class="PNB">
-              <img src="/skins/prod/ThumbExtractor/camera_button.png" alt="{% trans 'take a screenshot' %}" />
+              <img src="/skins/prod/ThumbExtractor/camera_button.png" alt="{{ 'take a screenshot' | trans }}" />
             </div>
 
             <div class="PNB part_title_right">
@@ -161,7 +161,7 @@
               <div id="thumb_delete_button">
                 <img src="/skins/prod/ThumbExtractor/delete.png" />
               </div>
-              <p id='thumb_info'>{% trans 'To take a screenshot click on camera' %}</p>
+              <p id='thumb_info'>{{ 'To take a screenshot click on camera' | trans }}</p>
               <canvas id="thumb_canvas">
               </canvas>
             </div>
@@ -188,7 +188,7 @@
             <div id="action_frame_brightness" class="PNB action_frame" style='background-color:#3B3D3B;z-index: 5;top:295px;left:380px;width:325px;height:125px;display: none;'>
               <div class='close_action_frame PNB' style='background: url("/skins/prod/Push/close_badge.png") #141616 no-repeat center center; top:5px;left:310px;width:10px;height:10px;'></div>
               <div>
-                {% trans 'brightness settings' %}
+                {{ 'brightness settings' | trans }}
                 <hr style='color:#141616' />
               </div>
               <table style="table-layout:fixed; width:100%">
@@ -204,7 +204,7 @@
                 </tbody>
               </table>
               <div class='PNB' style="top:80px;left:220px;width:90px;height:30px;">
-                <button class="apply-brightness btn btn-inverse">{% trans 'validate'%}</button>
+                <button class="apply-brightness btn btn-inverse">{{ 'validate' | trans }}</button>
               </div>
             </div>
 
@@ -212,7 +212,7 @@
               <div class='close_action_frame PNB' style='background: url("/skins/prod/Push/close_badge.png") #141616 no-repeat center center; top:5px;left:310px;width:10px;height:10px;'>
               </div>
               <div>
-                {% trans 'contrast settings' %}
+                {{ 'contrast settings' | trans }}
                 <hr style='color:#141616' />
               </div>
               <table style="table-layout:fixed;width:100%">
@@ -228,14 +228,14 @@
                 </tbody>
               </table>
               <div class='PNB' style="top:80px;left:220px;width:90px;height:30px;">
-                <button class="apply-contrast btn btn-inverse">{% trans 'validate'%}</button>
+                <button class="apply-contrast btn btn-inverse">{{ 'validate' | trans }}</button>
               </div>
             </div>
 
             <div id="thumb_validate_button" class="PNB">
               <input type="hidden" value='{{record.get_sbas_id()}}' name='sbas_id'>
               <input type="hidden" value='{{record.get_record_id()}}' name='record_id'>
-              <img src="/skins/prod/ThumbExtractor/validate_button.png" alt="{% trans 'take a screenshot' %}" />
+              <img src="/skins/prod/ThumbExtractor/validate_button.png" alt="{{ 'take a screenshot' | trans }}" />
             </div>
           </div>
         {% endif %}
@@ -246,23 +246,23 @@
         <div id="image" class="tabBox">
           <form name="formpushdoc" action="{{ path('prod_tools_rotate') }}" method="post">
             <fieldset style='border:1px solid #999;padding:20px;'>
-              <legend style='color:#EEE'>&nbsp;<b>{% trans "image rotation" %}</b>&nbsp;</legend>
+              <legend style='color:#EEE'>&nbsp;<b>{{ "image rotation" | trans }}</b>&nbsp;</legend>
                 <label for="ROTA_90" class="radio">
                     <input type="radio" name="rotation" id="ROTA_90" value="90" checked="checked">
-                    {% trans "rotation 90 degres horaire"%}
+                    {{ "rotation 90 degres horaire" | trans }}
                 </label>
                 <br />
                 <label for="ROTA_C90" class="radio">
                     <input type="radio" name="rotation" id="ROTA_C90" value="-90">
-                    {% trans "rotation 90 degres anti-horaires"%}
+                    {{ "rotation 90 degres anti-horaires" | trans }}
                 </label>
                 <input type="hidden" name="lst" value="{{records.serializedList()}}" />
                 <input type="hidden" name="element" value="" />
                 <input type="hidden" name="cchd" value="" />
             </fieldset>
             <div style='text-align:right;padding-top:10px;'>
-              <button class="action_submiter btn btn-inverse">{% trans "validate" %}</button>
-              <button class="action_cancel btn btn-inverse">{% trans "cancel" %}</button>
+              <button class="action_submiter btn btn-inverse">{{ "validate" | trans }}</button>
+              <button class="action_cancel btn btn-inverse">{{ "cancel" | trans }}</button>
             </div>
           </form>
         </div>
@@ -274,7 +274,7 @@
         <div id="substitution" class="tabBox">
 
          {% if "unknown" == record.get_type() %}
-            <i class="icon-warning-sign icon-white"></i>{% trans "Substitution is not possible for this kind of record" %}
+            <i class="icon-warning-sign icon-white"></i>{{ "Substitution is not possible for this kind of record" | trans }}
          {% else %}
             {% if app['phraseanet.registry'].get('GV_seeOngChgDoc') %}
                 <div id="substitution-hd">
@@ -286,13 +286,13 @@
                     target="uploadHdsub">
 
                     <fieldset style='border:1px solid #999;padding:20px;'>
-                      <legend style='color:#EEE'>&nbsp;<b>{% trans "substitution HD" %}</b>&nbsp;</legend>
+                      <legend style='color:#EEE'>&nbsp;<b>{{ "substitution HD" | trans }}</b>&nbsp;</legend>
                       <div>
                         <input id='new-hd-file' name="newHD" type="file"/>
                         <br />
                         <label for="CCFNALP" class="checkbox">
                             <input type="checkbox" name="ccfilename" id="CCFNALP" value="1">
-                            {% trans "mettre a jour le nom original de fichier apres substitution"%}
+                            {{ "mettre a jour le nom original de fichier apres substitution" | trans }}
                         </label>
                         <input type="hidden" name="ACT" value="SEND" />
                         <input type="hidden" name="sbas_id" value="{{record.get_sbas_id()}}"/>
@@ -301,8 +301,8 @@
                       </div>
                     </fieldset>
                     <div style='text-align:right;padding-top:10px;'>
-                      <button class="iframe_submiter btn btn-inverse">{% trans "validate" %}</button>
-                      <button class="action_cancel btn btn-inverse">{% trans "cancel" %}</button>
+                      <button class="iframe_submiter btn btn-inverse">{{ "validate" | trans }}</button>
+                      <button class="action_cancel btn btn-inverse">{{ "cancel" | trans }}</button>
                     </div>
                   </form>
                   <div class='resultAction'></div>
@@ -318,7 +318,7 @@
                     method="post"
                     target="uploadHdsub">
                     <fieldset style='border:1px solid #999;padding:20px;'>
-                      <legend style='color:#EEE'>&nbsp;<b>{% trans "substitution SD" %}</b>&nbsp;</legend>
+                      <legend style='color:#EEE'>&nbsp;<b>{{ "substitution SD" | trans }}</b>&nbsp;</legend>
                       <div>
                         <input id='new-sd-file' name="newThumb" type="file" />
                         <input type="hidden" name="sbas_id" value="{{record.get_sbas_id()}}" />
@@ -327,8 +327,8 @@
                       </div>
                     </fieldset>
                     <div style='text-align:right;padding-top:10px;'>
-                      <button class="iframe_submiter btn btn-inverse">{% trans "validate" %}</button>
-                      <button class="action_cancel btn btn-inverse">{% trans "cancel" %}</button>
+                      <button class="iframe_submiter btn btn-inverse">{{ "validate" | trans }}</button>
+                      <button class="action_cancel btn btn-inverse">{{ "cancel" | trans }}</button>
                     </div>
                   </form>
                   <div class='resultAction'></div>
@@ -596,7 +596,7 @@ $(document).ready(function(){
             {
                 var dialog = p4.Dialog.Create({
                     size:'Alert',
-                    title: '{% trans "alert" %}',
+                    title: '{{ "alert" | trans }}',
                     closeOnEscape:true
                 }, 3);
 
@@ -604,7 +604,7 @@ $(document).ready(function(){
                     'text-align':'center',
                     'width': '100%',
                     'font-size':'14px'
-                }).append('{% trans "no image selected" %}');
+                }).append('{{ "no image selected" | trans }}');
                 dialog.setContent(content);
 
                 return;
@@ -657,7 +657,7 @@ $(document).ready(function(){
                     },
                     beforeSend: function(){
                         disableConfirmButton(dialog);
-                        loadingDiv.empty().addClass('loading').append('{% trans "processing" %}');
+                        loadingDiv.empty().addClass('loading').append('{{ "processing" | trans }}');
                     },
                     success: function(data){
                         loadingDiv.empty().removeClass('loading');
@@ -669,7 +669,7 @@ $(document).ready(function(){
                         }
                         else
                         {
-                            //var content = $("<div />").css({'color':'#a00'}).append("{% trans "an error occured" %} " + data.message);
+                            //var content = $("<div />").css({'color':'#a00'}).append("{{ "an error occured" | trans }} " + data.message);
                             loadingDiv.append(content);
                             enableConfirmButton(dialog);
                         }
@@ -680,7 +680,7 @@ $(document).ready(function(){
             //show confirm box, content is loaded here /prod/tools/thumb-extractor/confirm-box/
             var dialog = p4.Dialog.Create({
                 size:'Small',
-                title:"{% trans 'thumbnail validation' %}",
+                title:"{{ 'thumbnail validation' | trans }}",
                 cancelButton:true,
                 buttons: buttons
             }, 2);

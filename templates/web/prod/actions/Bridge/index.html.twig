@@ -13,7 +13,7 @@
         </div>
         <form name="upload_form" method="GET" action="{{ path('prod_bridge_upload') }}">
             <div class="PNB10 record_actions" style="top:auto; height:30px; text-align:right;">
-                <button class="single_menu act_upload btn btn-inverse">{% trans 'Upload' %}</button>
+                <button class="single_menu act_upload btn btn-inverse">{{ 'Upload' | trans }}</button>
             </div>
             <input name="lst" type="hidden" value=""/>
             <input name="account_id" type="hidden" value=""/>
@@ -38,14 +38,14 @@
                     </li>
                 {% endfor %}
                 <li>
-                    <a href="#tabs-new-account"> + {% trans 'nouveau' %}</a>
+                    <a href="#tabs-new-account"> + {{ 'nouveau' | trans }}</a>
                 </li>
             </ul>
             <div id='tabs-new-account' class="PNB" >
                 <div class="PNB">
                     <div class="PNB10 container">
                         <div class="PNB10">
-                            <div>{% trans 'Vers quel API voulez vous vous connecter ?' %}</div>
+                            <div>{{ 'Vers quel API voulez vous vous connecter ?' | trans }}</div>
                             {% if available_apis|length > 0 %}
                                 {% for api in available_apis %}
                                     {% if api.get_connector().is_configured() %}
@@ -69,7 +69,7 @@
                                     {% endif %}
                                 {% endfor %}
                             {% else %}
-                                {% trans 'Aucun bridge disponible. Veuillez contacter un administrateur.' %}
+                                {{ 'Aucun bridge disponible. Veuillez contacter un administrateur.' | trans }}
                             {% endif %}
                         </div>
                     </div>

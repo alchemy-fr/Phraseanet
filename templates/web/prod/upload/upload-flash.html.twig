@@ -5,14 +5,14 @@
         <ul>
             <li>
                 <a href="#tab-upload">
-                    {% trans 'Upload' %}
+                    {{ 'Upload' | trans }}
                 </a>
             </li>
             <li>
                 {# template prod/upload/lazaret.html.twig loaded via ajax #}
                 <a href="{{ path('lazaret_elements') }}">
                     {# <span>&nbsp;</span> element is required for the jQuery loading spinner appears && disappears properly #}
-                    {% trans 'Quarantine' %}<span>&nbsp;</span>
+                    {{ 'Quarantine' | trans }}<span>&nbsp;</span>
                 </a>
             </li>
         </ul>
@@ -22,7 +22,7 @@
 
                 <div id="uploadBoxLeft" class="well">
 
-                    {# <h5 style="margin-top: 10px;">{% trans 'Choose files to add' %} :</h5> #}
+                    {# <h5 style="margin-top: 10px;">{{ 'Choose files to add' | trans }} :</h5> #}
                     {# action bar #}
                     <table id="addFileList">
                         <tr>
@@ -34,20 +34,20 @@
                                 </span>
                             </td>
                             <td class='uploader-icon'>
-                                <img src='/skins/icons/logo-flash.png' width="32px" heigh="32px" title="{% trans 'You are using the Flash uploader.'%}"/>
+                                <img src='/skins/icons/logo-flash.png' width="32px" heigh="32px" title="{{ 'You are using the Flash uploader.' | trans }}"/>
                             </td>
                             <td class='uploader-info'>
                                 <p>
-                                    {% trans 'You are using the Flash uploader.'%}
-                                    {% trans 'This version does not allow you to access all the features offered by the HTML5 uploader' %}
+                                    {{ 'You are using the Flash uploader.' | trans }}
+                                    {{ 'This version does not allow you to access all the features offered by the HTML5 uploader' | trans }}
                                 </p>
-                                <a href="{{ path('upload_form') }}" class="dialog full-dialog">{% trans 'Use the HTML5 uploader' %}</a>
+                                <a href="{{ path('upload_form') }}" class="dialog full-dialog">{{ 'Use the HTML5 uploader' | trans }}</a>
                             </td>
                         </tr>
                      </table>
                     {# settings box #}
                     <div class='settings-box'>
-                        <h5>{% trans 'upload:: Destination (collection) :' %} :</h5>
+                        <h5>{{ 'upload:: Destination (collection) :' | trans }} :</h5>
                         {# collections list #}
                         {% if collections|length > 0 %}
                             <select name="base_id" class="span3" style="margin-left: 10px;">
@@ -63,7 +63,7 @@
                             {% for availableCollections in collections %}
                                 {% for collection in availableCollections['databox_collections'] %}
                                     <div id="status-{{ collection.get_base_id() }}" class='collection-status' style='{{ loop.parent.loop.first and loop.first ? "display:block" :"display:none" }}'>
-                                        <h5>{% trans 'upload:: Status :' %} :</h5>
+                                        <h5>{{ 'upload:: Status :' | trans }} :</h5>
                                         <table class="status-tab">
                                             <tbody>
                                             {% for bit, status in availableCollections['databox'].get_statusbits() %}
@@ -90,15 +90,15 @@
                                 {% endfor %}
                             {% endfor %}
                         {% else %}
-                            {% trans 'You can not upload files' %}
+                            {{ 'You can not upload files' | trans }}
                         {% endif %}
                     </div>
 
                     {# upload box #}
                     <div class='upload-box' style="display: none;">
-                        <h5>{% trans 'Selected files' %} :</h5>
-                        <button type="button" class="clear-queue btn btn-inverse input-medium" style="margin-bottom: 10px;">{% trans 'Clear list' %}</button>
-                        <button type="button" class="upload-submitter btn btn-inverse input-medium" style="margin-bottom: 10px;">{% trans 'Send' %}</button>
+                        <h5>{{ 'Selected files' | trans }} :</h5>
+                        <button type="button" class="clear-queue btn btn-inverse input-medium" style="margin-bottom: 10px;">{{ 'Clear list' | trans }}</button>
+                        <button type="button" class="upload-submitter btn btn-inverse input-medium" style="margin-bottom: 10px;">{{ 'Send' | trans }}</button>
                         <div class="clear"></div>
                         <div class='upload-box-addedfiles flash-box'></div>
                         <div class="clear"></div>
@@ -106,10 +106,10 @@
                 </div>
 
                 <div id="uploadBoxRight" class="well">
-                    <h5 style="margin-top: 10px;">{% trans 'Transmited files' %} : </h5>
+                    <h5 style="margin-top: 10px;">{{ 'Transmited files' | trans }} : </h5>
                     <div class='well-small'>
                         <button id="cancel-all" class="btn disabled" type="button" disabled="disabled">
-                            {% trans "Cancel all" %}
+                            {{ "Cancel all" | trans }}
                         </button>
                     </div>
                     {# download box #}
@@ -181,7 +181,7 @@
             button_image_url : "/skins/icons/theme_button_background.png",
             button_width : 170,
             button_height : 40,
-            button_text : "<span class='btn'>{% trans 'Select files...' %}</span>",
+            button_text : "<span class='btn'>{{ 'Select files...' | trans }}</span>",
             button_text_style :
                 ".btn {"
                 + "font-family: verdana, Helvetica Neue, Helvetica, Arial, sans-serif; "
@@ -223,25 +223,25 @@
                 }
 
                 if (errorCode === SWFUpload.QUEUE_ERROR.QUEUE_LIMIT_EXCEEDED) {
-                    alert(" {% trans "You have attempted to queue too many files" %}");
+                    alert(" {{ "You have attempted to queue too many files" | trans }}");
                     return false;
                 }
 
-                var error = "{% trans "Unknow Error" %}";
+                var error = "{{ "Unknow Error" | trans }}";
 
                 switch (errorCode) {
                   case SWFUpload.QUEUE_ERROR.FILE_EXCEEDS_SIZE_LIMIT:
                     error = language.errorFileApiTooBig;
                     break;
                   case SWFUpload.QUEUE_ERROR.ZERO_BYTE_FILE:
-                      error = "{% trans "Cannot upload Zero Byte files" %}";
+                      error = "{{ "Cannot upload Zero Byte files" | trans }}";
                     break;
                   case SWFUpload.QUEUE_ERROR.INVALID_FILETYPE:
-                      error = "{% trans "Invalid file type" %}";
+                      error = "{{ "Invalid file type" | trans }}";
                     break;
                   default:
                     if (file !== null) {
-                      error = "{% trans "Unhandled Error" %}";
+                      error = "{{ "Unhandled Error" | trans }}";
                     }
                     break;
                 }
@@ -271,42 +271,42 @@
             },
             upload_error_handler : function(file, errorCode, message) {
 
-                var reasons = "{% trans "Unknow reason" %}";
+                var reasons = "{{ "Unknow reason" | trans }}";
 
                 switch (errorCode) {
                     case SWFUpload.UPLOAD_ERROR.HTTP_ERROR:
-                        reasons = "{% trans "Bad request, please contact an admin" %}";
+                        reasons = "{{ "Bad request, please contact an admin" | trans }}";
                     break;
                     case SWFUpload.UPLOAD_ERROR.MISSING_UPLOAD_URL:
-                        reasons = "{% trans "Upload URL is not set, please contact an admin" %}";
+                        reasons = "{{ "Upload URL is not set, please contact an admin" | trans }}";
                     break;
                     case SWFUpload.UPLOAD_ERROR.IO_ERROR:
-                        reasons = "{% trans "Connection terminates unexpetecdly, please retry" %}";
+                        reasons = "{{ "Connection terminates unexpetecdly, please retry" | trans }}";
                     break;
                     case SWFUpload.UPLOAD_ERROR.SECURITY_ERROR:
-                        reasons = "{% trans "The upload violates a security restriction, please retry" %}";
+                        reasons = "{{ "The upload violates a security restriction, please retry" | trans }}";
                     break;
                     case SWFUpload.UPLOAD_ERROR.UPLOAD_LIMIT_EXCEEDED:
                         reasons = "{% trans  %} File upload limit ({{ maxFileSizeReadable }}) has been reached {% endtrans %}";
                     break;
                     case SWFUpload.UPLOAD_ERROR.UPLOAD_FAILED:
-                        reasons = "{% trans "Could not initiate upload, please retry" %}";
+                        reasons = "{{ "Could not initiate upload, please retry" | trans }}";
                     break;
                     case SWFUpload.UPLOAD_ERROR.SPECIFIED_FILE_ID_NOT_FOUND:
-                        reasons = "{% trans "Could not retrieve the file ID, please retry or contact an admin if problem persist" %}";
+                        reasons = "{{ "Could not retrieve the file ID, please retry or contact an admin if problem persist" | trans }}";
                     break;
                     case SWFUpload.UPLOAD_ERROR.FILE_VALIDATION_FAILED:
-                        reasons = "{% trans "File validation failed" %}";
+                        reasons = "{{ "File validation failed" | trans }}";
                     break;
                     case SWFUpload.UPLOAD_ERROR.FILE_CANCELLED:
-                        reasons = "{% trans "File upload has been cancelled" %}";
+                        reasons = "{{ "File upload has been cancelled" | trans }}";
                     break;
                     case SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED:
-                        reasons = "{% trans "File upload has been stopped" %}";
+                        reasons = "{{ "File upload has been stopped" | trans }}";
                     break;
                 }
 
-                var html = _.template($("#download_finish_tpl").html(), {heading:"{% trans "Error while uploading" %}", reasons: [reasons]});
+                var html = _.template($("#download_finish_tpl").html(), {heading:"{{ "Error while uploading" | trans }}", reasons: [reasons]});
                 $("#"+file.id, UploaderManager.getDownloadBox()).find('p.error').append(html).show();
 
             },
@@ -397,7 +397,7 @@
             $("button.upload-submitter", UploaderManager.getContainer()).attr("disabled", true).addClass('disabled');
 
             if (nbElements === 0) {
-                alert("{% trans 'Please select at least one valid file' %}");
+                alert("{{ 'Please select at least one valid file' | trans }}");
             }
         });
 

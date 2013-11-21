@@ -1,14 +1,14 @@
 <div class="header">
-    <h1>{{ collection.get_label(app['locale.I18n']) }} <small style="font-size:16px">{% trans "Details" %}</small></h1>
+    <h1>{{ collection.get_label(app['locale.I18n']) }} <small style="font-size:16px">{{ "Details" | trans }}</small></h1>
 </div>
 
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>{% trans 'admin::base: objet' %}</th>
-            <th>{% trans 'admin::base: nombre' %}</th>
-            <th>{% trans 'admin::base: poids' %} (Mo)</th>
-            <th>{% trans 'admin::base: poids' %} (Go)</th>
+            <th>{{ 'admin::base: objet' | trans }}</th>
+            <th>{{ 'admin::base: nombre' | trans }}</th>
+            <th>{{ 'admin::base: poids' | trans }} (Mo)</th>
+            <th>{{ 'admin::base: poids' | trans }} (Go)</th>
         </tr>
     </thead>
     <tbody>
@@ -24,7 +24,7 @@
         <tfoot>
             <tr>
                 <th>
-                    {% trans 'Total' %}
+                    {{ 'Total' | trans }}
                 </th>
                 <th>
                     {{ totals['totobj'] }}
@@ -41,5 +41,5 @@
 </table>
 
 <div>
-    <a style="text-decoration:none" class="btn" href="{{ path('admin_display_collection', { 'bas_id' : collection.get_base_id() }) }}">{% trans 'boutton::retour' %}</a>
+    <a style="text-decoration:none" class="btn" href="{{ path('admin_display_collection', { 'bas_id' : collection.get_base_id() }) }}">{{ 'boutton::retour' | trans }}</a>
 </div>

@@ -55,8 +55,8 @@
 
     {% if is_plot %}
         <script type="text/javascript">
-                $("table:visible:first thead tr").prepend("<th>{% trans 'report::Heures' %}</th>");
-                $("table:visible:first tbody tr:first").prepend("<th>{% trans 'report:: Connexion' %}</th>");
+                $("table:visible:first thead tr").prepend("<th>{{ 'report::Heures' | trans }}</th>");
+                $("table:visible:first tbody tr:first").prepend("<th>{{ 'report:: Connexion' | trans }}</th>");
                 $colspan = $("table:visible:first tfoot tr:first td").attr("colspan");
                 $colspan++;
                 $("table:visible:first tfoot tr:first td").attr("colspan", $colspan);
@@ -105,7 +105,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                    <th>{% trans "report:: Connexion" %}</th>
+                    <th>{{ "report:: Connexion" | trans }}</th>
                     {% if result.result.0|length > 1 %}
                         {% for key, value in result.result.0 %}
                             <td>{{ value }}</td>

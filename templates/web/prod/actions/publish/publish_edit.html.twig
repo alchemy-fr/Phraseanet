@@ -31,19 +31,19 @@
   <div class="PNB" style="top:200px;bottom:50px;">
     <div class="PNB" style="width:50%;right:auto;">
       <div class="PNB10 fields">
-        <div><label for="feed_add_title">{% trans 'publication : titre' %}</label></div>
+        <div><label for="feed_add_title">{{ 'publication : titre' | trans }}</label></div>
         <div><input class="required_text" type="text" name="title" id="feed_add_title" value="{{ entry.getTitle() }}" /></div>
-        <div><label for="feed_add_subtitle">{% trans 'publication : sous titre' %}</label></div>
+        <div><label for="feed_add_subtitle">{{ 'publication : sous titre' | trans }}</label></div>
         <div><textarea id="feed_add_subtitle" name="subtitle">{{ entry.getSubtitle() }}</textarea></div>
-        <div><label for="feed_add_author_name">{% trans 'publication : autheur' %}</label></div>
+        <div><label for="feed_add_author_name">{{ 'publication : autheur' | trans }}</label></div>
         <div><input class="required_text" type="text" name="author_name" id="feed_add_author_name" value="{{ entry.getAuthorName() }}" /></div>
-        <div><label for="feed_add_author_mail">{% trans 'publication : email autheur' %}</label></div>
+        <div><label for="feed_add_author_mail">{{ 'publication : email autheur' | trans }}</label></div>
         <div><input class="required_text" type="text" name="author_mail" id="feed_add_author_mail" value="{{ entry.getAuthorEmail() }}" /></div>
       </div>
     </div>
     <div class="PNB" style="width:50%;left:auto;">
       <div class="PNB10 feeds">
-        <h1>{% trans 'Fils disponibles' %}</h1>
+        <h1>{{ 'Fils disponibles' | trans }}</h1>
         <div class="list">
           {% set feed_id = entry.getFeed().getId() %}
           {% for feed in feeds %}
@@ -63,8 +63,8 @@
   </div>
   <div class="PNB" style="top:auto;height:50px;text-align:center;">
     <div class="PNB10">
-      <button class="valid_form btn btn-inverse">{% trans 'boutton::mettre a jour' %}</button>
-      <button class="close_dialog btn btn-inverse">{% trans 'boutton::annuler' %}</button>
+      <button class="valid_form btn btn-inverse">{{ 'boutton::mettre a jour' | trans }}</button>
+      <button class="close_dialog btn btn-inverse">{{ 'boutton::annuler' | trans }}</button>
     </div>
   </div>
 </form>

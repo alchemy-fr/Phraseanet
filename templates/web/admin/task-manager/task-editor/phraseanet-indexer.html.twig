@@ -2,63 +2,63 @@
 
 {% block form %}
 <div class="control-group">
-    <label class="control-label">{% trans 'MySQL Host' %}</label>
+    <label class="control-label">{{ 'MySQL Host' | trans }}</label>
     <div class="controls">
         <input type="text" name="host" value="">
     </div>
-    <label class="control-label">{% trans 'MySQL Port' %}</label>
+    <label class="control-label">{{ 'MySQL Port' | trans }}</label>
     <div class="controls">
         <input type="text" name="port" value="">
     </div>
-    <label class="control-label">{% trans 'MySQL Database' %}</label>
+    <label class="control-label">{{ 'MySQL Database' | trans }}</label>
     <div class="controls">
         <input type="text" name="base" value="">
     </div>
-    <label class="control-label">{% trans 'MySQL Login' %}</label>
+    <label class="control-label">{{ 'MySQL Login' | trans }}</label>
     <div class="controls">
         <input type="text" name="user" value="">
     </div>
-    <label class="control-label">{% trans 'MySQL password' %}</label>
+    <label class="control-label">{{ 'MySQL password' | trans }}</label>
     <div class="controls">
         <input type="password" name="password" value="">
     </div>
-    <label class="control-label">{% trans 'MySQL connection charset' %}</label>
+    <label class="control-label">{{ 'MySQL connection charset' | trans }}</label>
     <div class="controls">
         <input type="text" name="charset" class="input-small" value="">
     </div>
 </div>
 <div class="control-group">
-    <label class="control-label">{% trans 'Socket port' %}</label>
+    <label class="control-label">{{ 'Socket port' | trans }}</label>
     <div class="controls">
         <input type="text" name="socket" class="input-small" value="">
     </div>
 </div>
 <div class="control-group">
-    <label class="control-label">{% trans 'Debug binary mask' %}</label>
+    <label class="control-label">{{ 'Debug binary mask' | trans }}</label>
     <div class="controls">
         <input type="text" name="debugmask" class="input-small" value="">
     </div>
 </div>
 <div class="control-group">
-    <label class="control-label">{% trans 'Default language for thesaurus candidates' %}</label>
+    <label class="control-label">{{ 'Default language for thesaurus candidates' | trans }}</label>
     <div class="controls">
         <input type="text" name="clng" class="input-small" value="">
     </div>
 </div>
 <div class="control-group">
-    <label class="control-label">{% trans 'Enable stemming languages' %}</label>
+    <label class="control-label">{{ 'Enable stemming languages' | trans }}</label>
     <div class="controls">
         <input type="text" name="stem" class="input-small" value="">
-        <span class="help-inline">{% trans 'example : fr,en' %}</span>
+        <span class="help-inline">{{ 'example : fr,en' | trans }}</span>
     </div>
 </div>
 <div class="control-group">
-    <label class="control-label">{% trans 'Sort records with an empty field' %}</label>
+    <label class="control-label">{{ 'Sort records with an empty field' | trans }}</label>
     <div class="controls">
         <select name="sortempty">
-            <option value="">{% trans 'Hide records' %}</option>
-            <option value="A">{% trans 'At the beginning' %}</option>
-            <option value="Z">{% trans 'At the end' %}</option>
+            <option value="">{{ 'Hide records' | trans }}</option>
+            <option value="A">{{ 'At the beginning' | trans }}</option>
+            <option value="Z">{{ 'At the end' | trans }}</option>
         </select>
     </div>
 </div>
@@ -66,7 +66,7 @@
     <div class="controls">
         <label class="checkbox">
             <input type="checkbox" name="nolog">
-            {% trans 'Do not log, output to console' %}
+            {{ 'Do not log, output to console' | trans }}
         </label>
     </div>
 </div>
@@ -74,8 +74,8 @@
     <div class="controls">
         <label class="checkbox">
             <input type="checkbox" name="winsvc_run">
-            {% trans 'Run as application, not as service' %}
-        <span class="help-inline">({% trans 'Windows specific' %})</span>
+            {{ 'Run as application, not as service' | trans }}
+        <span class="help-inline">({{ 'Windows specific' | trans }})</span>
         </label>
     </div>
 </div>

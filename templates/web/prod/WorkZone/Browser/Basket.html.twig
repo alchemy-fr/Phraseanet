@@ -5,7 +5,7 @@
         <td style="width:230px;">
           <a href="#" class="back">
             <img src="/skins/prod/Basket/Browser/BASKET_LIST.png"/>
-            {% trans 'Back to basket list' %}
+            {{ 'Back to basket list' | trans }}
           </a>
         </td>
         <td>
@@ -79,9 +79,9 @@
     <div class="PNB10">
     {% set ElementsCount = Basket.getElements().count() %}
     {% if ElementsCount == 0 %}
-      {% trans 'No records' %}
+      {{ 'No records' | trans }}
     {% elseif ElementsCount == 1 %}
-      {% trans '1 record' %}
+      {{ '1 record' | trans }}
     {% else %}
       {% trans %}{{ ElementsCount }} records{% endtrans %}
     {% endif %}

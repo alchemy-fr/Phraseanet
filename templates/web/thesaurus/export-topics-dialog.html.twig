@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="{{ app['locale.I18n'] }}">
     <head>
-        <title>{% trans 'thesaurus:: export en topics' %}</title>
+        <title>{{ 'thesaurus:: export en topics' | trans }}</title>
         <link REL="stylesheet" TYPE="text/css" href="{{ path('minifier', { 'f' : 'skins/thesaurus/thesaurus.css' }) }}" />
         <script type="text/javascript">
             var format = '???';
@@ -68,10 +68,10 @@
 
             <div style="padding:10px;">
                 <div class="x3Dbox">
-                    <span class="title">{% trans 'thesaurus:: exporter' %}</span>
+                    <span class="title">{{ 'thesaurus:: exporter' | trans }}</span>
                     <div style="white-space:nowrap">
                         <input type='radio' name='ofm' checked value='tofiles' onclick="chgFormat();">
-                        {% trans 'thesaurus:: exporter vers topics pour toutes les langues' %}
+                        {{ 'thesaurus:: exporter vers topics pour toutes les langues' | trans }}
                     </div>
                     <div style="white-space:nowrap">
                         <input type='radio' name='ofm' value='toscreen' onclick="chgFormat();">
@@ -84,60 +84,60 @@
                 <br/>
 
                 <div class="x3Dbox">
-                    <span class="title">{% trans 'phraseanet:: tri' %}</span>
+                    <span class="title">{{ 'phraseanet:: tri' | trans }}</span>
                     <div style="white-space:nowrap">
                         <input type='checkbox' name='srt' checked onclick="chgFormat();">
-                        {% trans 'phraseanet:: tri par date' %}
+                        {{ 'phraseanet:: tri par date' | trans }}
                     </div>
                 </div>
 
                 <br/>
 
                 <div class="x3Dbox">
-                    <span class="title">{% trans 'thesaurus:: recherche' %}</span>
+                    <span class="title">{{ 'thesaurus:: recherche' | trans }}</span>
                     <div style="white-space:nowrap">
                         <input type='radio' name='sth' value="1" checked onclick="chgFormat();">
-                        {% trans 'thesaurus:: recherche thesaurus *:"query"' %}
+                        {{ 'thesaurus:: recherche thesaurus *:"query"' | trans }}
                     </div>
                     <div style="white-space:nowrap">
                         <input type='radio' name='sth' value="0" onclick="chgFormat();">
-                        {% trans 'thesaurus:: recherche fulltext' %}
+                        {{ 'thesaurus:: recherche fulltext' | trans }}
                     </div>
                     <div style="white-space:nowrap">
                         <input type='checkbox' name='sand' onclick="chgFormat();">
-                        {% trans 'thesaurus:: question complete (avec operateurs)' %}
+                        {{ 'thesaurus:: question complete (avec operateurs)' | trans }}
                     </div>
                 </div>
 
                 <br/>
 
                 <div class="x3Dbox">
-                    <span class="title">{% trans 'thesaurus:: presentation' %}</span>
+                    <span class="title">{{ 'thesaurus:: presentation' | trans }}</span>
                     <div style="white-space:nowrap">
                         <input type='radio' name='obrf' value="from_itf_closable" checked onclick="chgFormat();">
-                        {% trans 'thesaurus:: presentation : branches refermables' %}
+                        {{ 'thesaurus:: presentation : branches refermables' | trans }}
                     </div>
                     <div style="white-space:nowrap">
                         <input type='radio' name='obrf' value="from_itf_static" onclick="chgFormat();">
-                        {% trans 'thesaurus:: presentation : branche ouvertes' %}
+                        {{ 'thesaurus:: presentation : branche ouvertes' | trans }}
                     </div>
                     <div style="white-space:nowrap">
                         <input type='radio' name='obrf' value="all_opened_closable" onclick="chgFormat();">
-                        {% trans 'thesaurus:: tout deployer - refermable' %}
+                        {{ 'thesaurus:: tout deployer - refermable' | trans }}
                     </div>
                     <div style="white-space:nowrap">
                         <input type='radio' name='obrf' value="all_opened_static" onclick="chgFormat();">
-                        {% trans 'thesaurus:: tout deployer - statique' %}
+                        {{ 'thesaurus:: tout deployer - statique' | trans }}
                     </div>
                     <div style="white-space:nowrap">
                         <input type='radio' name='obrf' value="all_closed" onclick="chgFormat();">
-                        {% trans 'thesaurus:: tout fermer' %}
+                        {{ 'thesaurus:: tout fermer' | trans }}
                     </div>
                 </div>
             </div>
-            <input type="button" id="cancel_button" value="{% trans 'boutton::annuler' %}" onclick="clkBut('cancel');" style="width:100px;">
+            <input type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');" style="width:100px;">
             &nbsp;&nbsp;&nbsp;
-            <input type="button" id="submit_button" value="{% trans 'boutton::valider' %}" onclick="clkBut('submit');" style="width:100px;">
+            <input type="button" id="submit_button" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');" style="width:100px;">
         </form>
     </center>
 </body>

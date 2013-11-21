@@ -21,7 +21,7 @@
                             <div class="text-title">
                                 {% block main_title %}{% endblock %}
                             </div>
-                            <a class="visible-phone text-right" data-toggle="collapse" data-target="#headerDetail">{% trans "More" %} ...</a>
+                            <a class="visible-phone text-right" data-toggle="collapse" data-target="#headerDetail">{{ "More" | trans }} ...</a>
                             <p id="headerDetail" class="collapse">
                                 {% block short_presentation %}{% endblock %}
                             </p>

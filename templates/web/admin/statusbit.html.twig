@@ -2,16 +2,16 @@
 {% set databox_id = databox.get_sbas_id() %}
 
 <h1>
-    {% trans 'phraseanet::status bit' %}
+    {{ 'phraseanet::status bit' | trans }}
 </h1>
 
 <table class="table table-striped table-condensed">
     <thead>
-        <th style="width:30px;">{% trans 'status:: numero de bit' %}</th>
+        <th style="width:30px;">{{ 'status:: numero de bit' | trans }}</th>
         <th style="width:60px;" colspan='2'></th>
-        <th>{% trans 'status:: nom' %}</th>
-        <th>{% trans 'status:: cherchable par tous' %}</th>
-        <th>{% trans 'status:: Affichable pour tous' %}</th>
+        <th>{{ 'status:: nom' | trans }}</th>
+        <th>{{ 'status:: cherchable par tous' | trans }}</th>
+        <th>{{ 'status:: Affichable pour tous' | trans }}</th>
     </thead>
     <tbody>
         {% for bit in range(4, 31) %}
@@ -78,7 +78,7 @@
                     if (data.success) {
                         $(".treeview li.selected a").trigger("click");
                     } else {
-                        alert('{% trans 'An error occurred' %}');
+                        alert('{{ 'An error occurred' | trans }}');
                     }
                 }
             });

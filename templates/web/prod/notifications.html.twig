@@ -2,11 +2,11 @@
 
 {% if notifications|length == 0%}
 <div class="notification_title">
-  <span>{% trans 'Aucune notification' %}</span>
+  <span>{{ 'Aucune notification' | trans }}</span>
 </div>
 {% else %}
 <div class="notification_title">
-  <a href="#" onclick="print_notifications(0);return false;">{% trans 'toutes les notifications' %}</a>
+  <a href="#" onclick="print_notifications(0);return false;">{{ 'toutes les notifications' | trans }}</a>
 </div>
 {% endif %}
 

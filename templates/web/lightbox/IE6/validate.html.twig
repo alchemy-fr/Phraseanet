@@ -78,12 +78,12 @@
                         <tr>
                             <td>
                                 <img class="collapsed" src="/skins/lightbox/collapsedie6.gif"/>
-                                <span class="caption">{% trans 'notice'%}</span>
+                                <span class="caption">{{ 'notice' | trans }}</span>
                             </td>
               {% if basket.getValidation() %}
                             <td>
                                 <img class="collapsed" src="/skins/lightbox/collapsedie6.gif"/>
-                                <span class="validate highlight">{% trans 'Validation'%}</span>
+                                <span class="validate highlight">{{ 'Validation' | trans }}</span>
                             </td>
               {% endif %}
                         </tr>
@@ -125,7 +125,7 @@
                     <tr>
                         <td>
                             <select id="navigation">
-                                <optgroup label="{% trans 'Validations'%}">
+                                <optgroup label="{{ 'Validations' | trans }}">
                                 {% for item in baskets_collection %}
                                     {% if item.getValidation() %}
                                         <option {% if basket.getId() == item.getId() %} selected="selected" {% endif %}
@@ -133,7 +133,7 @@
                                     {% endif %}
                                 {% endfor %}
                                 </optgroup>
-                                <optgroup label="{% trans 'Paniers'%}">
+                                <optgroup label="{{ 'Paniers' | trans }}">
                                 {% for item in baskets_collection %}
                                   {% if item.getValidation() is null %}
                                       <option {% if basket.getId() == item.getId() %} selected="selected" {% endif %}
@@ -142,7 +142,7 @@
                                 {% endfor %}
                                 </optgroup>
                             </select>
-                            <button class="ui-corner-all basket_downloader" title="{% trans 'boutton::telecharger tous les documents' %}">
+                            <button class="ui-corner-all basket_downloader" title="{{ 'boutton::telecharger tous les documents' | trans }}">
                                 <img src="/skins/lightbox/save.png"/>
                             </button>
                         </td>
@@ -161,7 +161,7 @@
     </div>
     <div id="report" style="display:none;">
     </div>
-    <div id="dialog_dwnl" title="{% trans 'action : exporter' %}" style="display:none;"></div>
+    <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
 
 {% endblock %}
 
