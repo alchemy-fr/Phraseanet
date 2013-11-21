@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "1197e4d303891bac50509b3d1722da6d",
+    "hash": "497dac520803f292e346f4a00cfd97ba",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -2898,12 +2898,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "8d8574543002c2387baec45d22f9ac12b57fce39"
+                "reference": "95b2d02ce90d22b5c8a457d2a5d6f2b3fc8f0b37"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/8d8574543002c2387baec45d22f9ac12b57fce39",
-                "reference": "8d8574543002c2387baec45d22f9ac12b57fce39",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/95b2d02ce90d22b5c8a457d2a5d6f2b3fc8f0b37",
+                "reference": "95b2d02ce90d22b5c8a457d2a5d6f2b3fc8f0b37",
                 "shasum": ""
             },
             "require": {
@@ -3003,7 +3003,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2013-11-19 18:29:47"
+            "time": "2013-11-21 07:05:43"
         },
         {
             "name": "themattharris/tmhoauth",
@@ -3011,12 +3011,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/themattharris/tmhOAuth.git",
-                "reference": "47dcee2ac74f8c032d2a1afb836e65108bf582b7"
+                "reference": "0.8.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/themattharris/tmhOAuth/zipball/47dcee2ac74f8c032d2a1afb836e65108bf582b7",
-                "reference": "47dcee2ac74f8c032d2a1afb836e65108bf582b7",
+                "url": "https://api.github.com/repos/themattharris/tmhOAuth/zipball/0.8.3",
+                "reference": "0.8.3",
                 "shasum": ""
             },
             "require": {
@@ -3631,61 +3631,6 @@
             "time": "2013-06-02 19:09:45"
         },
         {
-            "name": "doctrine/data-fixtures",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/doctrine/data-fixtures.git",
-                "reference": "dfc0dc9a3f6258c878768218fe49cc092ea8a8d1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/data-fixtures/zipball/dfc0dc9a3f6258c878768218fe49cc092ea8a8d1",
-                "reference": "dfc0dc9a3f6258c878768218fe49cc092ea8a8d1",
-                "shasum": ""
-            },
-            "require": {
-                "doctrine/common": ">=2.2,<2.5-dev",
-                "php": ">=5.3.2"
-            },
-            "require-dev": {
-                "doctrine/orm": ">=2.2,<2.5-dev"
-            },
-            "suggest": {
-                "doctrine/mongodb-odm": "For loading MongoDB ODM fixtures",
-                "doctrine/orm": "For loading ORM fixtures",
-                "doctrine/phpcr-odm": "For loading PHPCR ODM fixtures"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Doctrine\\Common\\DataFixtures": "lib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jonathan Wage",
-                    "email": "jonwage@gmail.com",
-                    "homepage": "http://www.jwage.com/"
-                }
-            ],
-            "description": "Data Fixtures for all Doctrine Object Managers",
-            "homepage": "http://www.doctrine-project.org",
-            "keywords": [
-                "database"
-            ],
-            "time": "2013-10-16 14:26:38"
-        },
-        {
             "name": "fabpot/goutte",
             "version": "v1.0.3",
             "source": {
@@ -4176,7 +4121,6 @@
         "silex/silex": 20,
         "symfony/symfony": 20,
         "doctrine/migrations": 20,
-        "doctrine/data-fixtures": 20,
         "behat/behat": 20,
         "behat/gherkin": 20
     },
