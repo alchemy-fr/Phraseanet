@@ -22,6 +22,7 @@ use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Alchemy\Phrasea\Model\Entities\UsrListOwner;
 use Alchemy\Phrasea\Model\Entities\UsrList;
 use Alchemy\Phrasea\Model\Entities\UsrListEntry;
+use Alchemy\Phrasea\Model\Entities\StoryWZ;
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
@@ -521,13 +522,13 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     }
 
     /**
-     * Inserts one user list.
+     * Inserts one user list owner.
      *
      * @param User_Adapter $user
      *
      * @return UsrListOwner
      */
-    protected function insertOneUsrList(\User_Adapter $user = null)
+    protected function insertOneUsrListOwner(\User_Adapter $user = null)
     {
         $user = $user ?: self::$DI['user'];
 
@@ -542,6 +543,27 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     }
 
     /**
+     * Inserts one user list.
+     *
+     * @param User_Adapter $user
+     *
+     * @return UsrListOwner
+     */
+    protected function insertOneUsrList(\User_Adapter $user = null)
+    {
+        $owner = $this->insertOneUsrListOwner($user);
+        $list = new UsrList();
+        $list->setName('new list');
+        $list->addOwner($owner);
+        $owner->setList($list);
+
+        self::$DI['app']['EM']->persist($list);
+        self::$DI['app']['EM']->flush();
+
+        return $list;
+    }
+
+    /**
      * Insert one user list entry.
      *
      * @param User_adapter $owner
@@ -551,14 +573,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      */
     protected function insertOneUsrListEntry(\User_adapter $owner, \User_adapter $user)
     {
-        $listOwner = new UsrListOwner();
-        $listOwner->setRole(UsrListOwner::ROLE_ADMIN);
-        $listOwner->setUser($owner);
-
-        $list = new UsrList();
-        $list->addOwner($listOwner);
-
-        $listOwner->setList($list);
+        $list = $this->insertOneUsrList($owner);
 
         $entry = new UsrListEntry();
         $entry->setUser($user);
@@ -568,7 +583,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         self::$DI['app']['EM']->persist($entry);
         self::$DI['app']['EM']->persist($list);
-        self::$DI['app']['EM']->persist($listOwner);
         self::$DI['app']['EM']->flush();
 
         return $entry;
@@ -779,7 +793,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      */
     protected function insertOneUser($login, $email = null, $admin = false)
     {
-        return self::$DI['app']['manipulator.user']->create($login, uniqid('pass'), $email, $admin);
+        return self::$DI['app']['manipulator.user']->createUser($login, uniqid('pass'), $email, $admin);
     }
 
     /**

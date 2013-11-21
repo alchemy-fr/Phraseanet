@@ -23,7 +23,7 @@ class UserRepositoryTest extends \PhraseanetPHPUnitAbstract
     public function testFindAdminsWithOneAdminButTemplate()
     {
         $user = $this->insertOneUser('login');
-        $template = $this->insertOneUser('login', null, true);
+        $template = $this->insertOneUser('login2', null, true);
 
         $template->setModelOf($user);
 

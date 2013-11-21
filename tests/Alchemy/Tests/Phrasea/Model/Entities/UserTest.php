@@ -117,10 +117,10 @@ class UserTest extends \PhraseanetPHPUnitAbstract
 
     public function testSetModelOf()
     {
-        $user1 = $this->insertOneUser('login');
-        $user2 = $this->insertOneUser('login2');
-        $user1->setModelOf($user2);
-        $this->assertEquals('login3', $user1->getModelOf()->getLogin());
+        $template = $this->insertOneUser('login');
+        $user = $this->insertOneUser('login2');
+        $template->setModelOf($user);
+        $this->assertEquals('login2', $template->getModelOf()->getLogin());
     }
 
     public function genderProvider()
