@@ -1309,7 +1309,7 @@ function startThesaurus(){
   [
     {% for lng_code, lng in thesau_languages %}
     {
-      label:'{% trans %}prod::thesaurusTab:cmenu:Accepter en {{lng_code}}{% endtrans %}',
+      label:'{% trans with {'%lng_code%' : lng_code} %}prod::thesaurusTab:cmenu:Accepter en %lng_code%{% endtrans %}',
       onclick:function(menuItem, menu)
       {
         C_MenuOption(menuItem, menu, "ACCEPT", {'lng':'{{lng_code}}'});

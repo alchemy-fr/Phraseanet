@@ -2,12 +2,12 @@
   <li>
     {% set nb_view = element.get_view_count|default(0) %}
     {% if nb_view <= 1 %}
-      {% trans %}
-        {{ nb_view }} vue
+      {% trans with {'%nb_view%' : nb_view} %}
+        %nb_view% vue
       {% endtrans %}
     {% else %}
-      {% trans %}
-        {{ nb_view }} vues
+      {% trans with {'%nb_view%' : nb_view} %}
+        %nb_view% vues
       {% endtrans %}
     {% endif %}
   </li>
@@ -15,12 +15,12 @@
     {% if value > 0 %}
         <li>
             {% if value <= 1 %}
-                {% trans %}
-                    {{ value }} like
+                {% trans with {'%value%' : value} %}
+                    %value% like
                 {% endtrans %}
             {% else %}
-                {% trans %}        
-                    {{ value }} likes
+                {% trans with {'%value%' : value} %}
+                    %value% likes
                 {% endtrans %}
             {% endif %}
         </li>

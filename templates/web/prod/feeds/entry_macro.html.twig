@@ -15,7 +15,7 @@
             {% endif %}
             {{ entry.getTitle() }}
             {% set author = entry.getAuthorName() %}
-            <span class="author">{% trans %}Par {{ author }}{% endtrans %}</span>
+            <span class="author">{% trans with {'%author%' : author} %}Par %author%{% endtrans %}</span>
           </h1>
         </td>
         <td style="width:60px;text-align:right;">
@@ -39,8 +39,8 @@
       {% if created_on != updated_on %}
       <span class="updated_on">
         (
-        {% trans %}
-          Derniere mise a jour le {{ updated_on }}
+        {% trans with {'%updated_on%' : updated_on} %}
+          Derniere mise a jour le %updated_on%
         {% endtrans %}
         )
       </span>
@@ -48,8 +48,8 @@
       {% if feed.isAggregated() %}
         <a class="ajax_answers" href="{{ path('prod_feeds_feed', { 'id' : entry.getFeed().getId() }) }}">
         {% set feed_name = entry.getFeed().getTitle() %}
-        {% trans %}
-          dans {{feed_name}}
+        {% trans with {'%feed_name%' : feed_name} %}
+          dans %feed_name%
         {% endtrans %}
         <img style="height:16px;" src="{% if entry.getFeed().getIconUrl() == false %}
                                  /skins/icons/rss32.gif

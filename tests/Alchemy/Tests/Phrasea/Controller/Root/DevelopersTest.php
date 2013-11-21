@@ -23,7 +23,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $crawler = self::$DI['client']->request('GET', '/developers/application/new/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $form = $crawler->selectButton(_('boutton::valider'))->form();
+        $form = $crawler->selectButton(self::$DI['app']['translator']->trans('boutton::valider'))->form();
         $this->assertEquals('/developers/application/', $form->getFormNode()->getAttribute('action'));
         $this->assertEquals('POST', $form->getMethod());
     }
@@ -44,7 +44,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $form = $crawler->selectButton(_('boutton::valider'))->form();
+        $form = $crawler->selectButton(self::$DI['app']['translator']->trans('boutton::valider'))->form();
         $this->assertEquals('okok', $form['description']->getValue());
         $this->assertEquals('my.website.com', $form['website']->getValue());
         $this->assertEquals('my.callback.com', $form['callback']->getValue());

@@ -247,7 +247,7 @@
     <div class="modal-body">
         <p>
             {% set supported_file_types = ['jpg', 'jpeg', 'pjpg', 'gif', 'png']|join(' | ') %}
-            {% trans %} Invalid file type, only ({{ supported_file_types }}) file formats are supported {% endtrans %}
+            {% trans with {'%supported_file_types%' : supported_file_types} %}Invalid file type, only (%supported_file_types%) file formats are supported'{% endtrans %}
         </p>
     </div>
     <div class="modal-footer">

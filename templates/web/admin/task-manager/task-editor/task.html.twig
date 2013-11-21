@@ -163,7 +163,7 @@
                             if (window.console) {
                                 console.log(data.message);
                             }
-                            alert("{% trans %}An error occured{% endtrans %} "+data.message);
+                            alert("{{ 'An error occured' | trans | e('js') }}" + data.message);
                         }
                     }
                     , error:function(jqXHR, textStatus, errorThrown) {

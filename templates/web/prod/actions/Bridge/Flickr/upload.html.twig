@@ -20,14 +20,14 @@
 {% else %}
   {% if elements_length != elements_received_length %}
     {% set n_elements = elements_received_length - elements_length %}
-    {% trans %}
-      {{n_elements}} elements ne peuvent etre uploades
+    {% trans with {'%n_elements%' : n_elements} %}
+      %n_elements% elements ne peuvent etre uploades
     {% endtrans %}
   {% endif %}
 
   <form class='bridge_form' name="upload_form" action="{{ path('prod_bridge_do_upload') }}" method="post">
-    {% trans %}
-      Upload sur Flickr de {{ elements_length }} elements
+    {% trans with {'%elements_length%' : elements_length} %}
+      Upload sur Flickr de %elements_length% elements
     {% endtrans %}
     <input type="hidden" name="lst" value="{{ route.get_serialize_list() }}" />
     <input type="hidden" name="account_id" value="{{ account.get_id() }}" />

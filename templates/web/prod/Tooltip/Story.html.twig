@@ -11,8 +11,8 @@
     <div style="margin:5px 0;text-align:right;font-style:italic;position:relative;">
         {% set nb_records = Story.get_children().get_elements()|length %}
         {% set date = app['date-formatter'].getPrettyString(Story.get_modification_date()) %}
-        {% trans %}
-        {{ nb_records }} records
+        {% trans with {'%nb_records%' : nb_records} %}
+        %nb_records% records
         {% endtrans %}
         - {{ date }}
         <hr/>

@@ -25,7 +25,7 @@
             <thead>
                 <tr>
                     <th>
-                        {% trans %}Page {{page}}{% endtrans %}
+                        {% trans with {'%page%' : page} %}Page %page%{% endtrans %}
                     </th>
                 </tr>
             </thead>

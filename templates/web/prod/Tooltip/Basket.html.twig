@@ -14,8 +14,8 @@
     <div style="margin:5px 0;text-align:right;font-style:italic;position:relative;">
         {% set nb_records = basket.getElements()|length %}
         {% set date = app['date-formatter'].getPrettyString(basket.getUpdated()) %}
-        {% trans %}
-        {{ nb_records }} records
+        {% trans with {'%nb_records%' : nb_records} %}
+        %nb_records% records
         {% endtrans %}
         - {{ date }}
         <hr/>

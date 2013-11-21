@@ -1,11 +1,11 @@
 <h1>{{ 'Limite temporelle' | trans }}</h1>
 <div>
 {% set base = collection.get_databox().get_label(app['locale.I18n']) %}
-{% trans %}Base {{base}}{% endtrans %}
+{% trans with {'%base%' : base} %}Base %base%{% endtrans %}
 </div>
 <div>
 {% set collection = base_id|bas_labels(app) %}
-{% trans %}Collection {{collection}}{% endtrans %}
+{% trans with {'%collection%' : collection} %}Collection %collection%{% endtrans %}
 </div>
 <form>
   <table>

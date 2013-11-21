@@ -37,8 +37,8 @@
                                     1 result
                                 {% endtrans %}
                             {% else %}
-                                {% trans %}
-                                    {{ total_count }} results
+                                {% trans with {'%total_count%' : total_count} %}
+                                    %total_count% results
                                 {% endtrans %}
                             {% endif %}
 

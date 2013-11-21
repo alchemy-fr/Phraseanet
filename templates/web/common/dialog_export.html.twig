@@ -151,8 +151,8 @@
                                     <input type="checkbox" name="TOU_accept" id="TOU_acceptDL" value="1"  />
                                     {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
                                     {% set end_link = '</a>' %}
-                                    {% trans %}
-                                        By checking this box, you accept {{ beginning_link }} Terms of Use {{ end_link }}
+                                    {% trans with {'%beginning_link%' : beginning_link, '%end_link%' : end_link} %}
+                                        By checking this box, you accept %beginning_link% Terms of Use %end_link%
                                     {% endtrans %}
                                 </label>
                             </div>
@@ -177,7 +177,7 @@
                             {% if my_email != '' %}
                                 <label class="checkbox">
                                     <input type="checkbox" name="reading_confirm" value="1" />
-                                    {% trans %}Recevoir un accuse de reception a {{my_email}}{% endtrans %}
+                                    {% trans with {'%my_email%' : my_email} %}Recevoir un accuse de reception a %my_email%{% endtrans %}
                                 </label>
                             {% else %}
                                 <label class="checkbox">
@@ -234,8 +234,8 @@
                                     <input type="checkbox" name="TOU_accept" id="TOU_acceptMail" value="1"  />
                                     {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
                                     {% set end_link = '</a>' %}
-                                    {% trans %}
-                                        By checking this box, you accept {{ beginning_link }} Terms of Use {{ end_link }}
+                                    {% trans with {'%beginning_link%' : beginning_link, '%end_link%' : end_link} %}
+                                        By checking this box, you accept %beginning_link% Terms of Use %end_link%
                                     {% endtrans %}
                                 </label>
                             </div>
@@ -258,14 +258,14 @@
                                 {% if docs_orderable <= 1 %}
                                     {% trans %}Un document commande{% endtrans %}
                                 {% else %}
-                                    {% trans %}{{docs_orderable}} documents commandes{% endtrans %}
+                                    {% trans with {'%docs_orderable%' : docs_orderable} %}%docs_orderable% documents commandes{% endtrans %}
                                 {% endif %}
                             {% set docs_not_orderable = values.total - values.available %}
                             {% if docs_not_orderable > 0%}
                                 {% if docs_not_orderable == 1 %}
                                     {% trans %}Un document ne peut etre commande{% endtrans %}
                                 {% else %}
-                                    {% trans %}{{docs_not_orderable}} documents ne peuvent pas etre commandes{% endtrans %}
+                                    {% trans with {'%docs_not_orderable%' : docs_not_orderable} %}%docs_not_orderable% documents ne peuvent pas etre commandes{% endtrans %}
                                 {% endif %}
                             {% endif %}
                             {% if values.refused|length > 0 %}
@@ -389,8 +389,8 @@
                                 <input type="checkbox" name="TOU_accept" id="TOU_acceptOrder" value="1"  />
                                 {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
                                 {% set end_link = '</a>' %}
-                                {% trans %}
-                                    By checking this box, you accept {{ beginning_link }} Terms of Use {{ end_link }}
+                                {% trans with {'%beginning_link%' : beginning_link, '%end_link%' : end_link} %}
+                                    By checking this box, you accept %beginning_link% Terms of Use %end_link%
                                 {% endtrans %}
                             </label>
                         </div>
@@ -472,8 +472,8 @@
                                     <input type="checkbox" name="TOU_accept" id="TOU_acceptFTP" value="1"  />
                                     {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
                                     {% set end_link = '</a>' %}
-                                    {% trans %}
-                                        By checking this box, you accept {{ beginning_link }} Terms of Use {{ end_link }}
+                                    {% trans with {'%beginning_link%' : beginning_link, '%end_link%' : end_link} %}
+                                        By checking this box, you accept %beginning_link% Terms of Use %end_link%
                                     {% endtrans %}
                                 </label>
                             </div>
@@ -649,7 +649,7 @@
 
                 {% set max_download = app['phraseanet.registry'].get('GV_download_max', 120) %}
                 {% set alert_too_big_one %}
-                        {% trans %} You can not directly download more than {{max_download}} Mo ; time to package all documents is too long{% endtrans %}
+                        {% trans with {'%max_download%' : max_download} %} You can not directly download more than %max_download% Mo ; time to package all documents is too long{% endtrans %}
                 {% endset %}
                 {% set alert_too_big_two %}
                         {{ 'You can alternatively receive an email when the download is ready.' | trans }}

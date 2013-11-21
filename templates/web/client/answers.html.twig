@@ -32,8 +32,8 @@
     <b>
         {{ query_string[0:36] }}{% if query_string|length > 36 %}...{% endif %}
     </b>
-    {% trans %}
-        client::answers: {{ available_results }} reponses
+    {% trans with {'%available_results%' : available_results} %}
+        client::answers: %available_results% reponses
     {% endtrans %}
 
     <a style="float:none;display:inline-block;padding:2px 3px" class="infoTips" title="{{ tooltip_html }}">&nbsp;</a>

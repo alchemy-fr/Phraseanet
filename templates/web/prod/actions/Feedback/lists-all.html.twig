@@ -20,8 +20,8 @@
                   <img src="/skins/icons/SHARE16.png" />
                 {% endif %}
                 {{ list.getName() }}
-                {% trans %}
-                  ({{ length }})
+                {% trans with {'%length%' : length} %}
+                  (%length%)
                 {% endtrans %}
               </a>
             </li>

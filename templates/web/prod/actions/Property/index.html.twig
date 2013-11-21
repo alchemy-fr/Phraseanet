@@ -21,8 +21,8 @@
                         You have selected one record.
                     {% endtrans %}
                 {% else %}
-                    {% trans %}
-                        You have selected {{ nbReceivedDocuments }} records.
+                    {% trans with {'%nbReceivedDocuments%' : nbReceivedDocuments} %}
+                        You have selected %nbReceivedDocuments% records.
                     {% endtrans %}
                 {% endif %}
 
@@ -35,8 +35,8 @@
                                 Only one record can be modified.
                             {% endtrans %}
                         {% else %}
-                            {% trans %}
-                                Only {{ nbEditableDocuments }} records can be modified.
+                            {% trans with {'%nbEditableDocuments%' : nbEditableDocuments} %}
+                                Only %nbEditableDocuments% records can be modified.
                             {% endtrans %}
                         {% endif %}
                   {% endif %}

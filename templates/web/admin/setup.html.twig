@@ -73,8 +73,8 @@
                                 {% else %}
                                     <p class="alert">
                                         {% set name = value['name'] %}
-                                        {% trans %}
-                                            erreur avec la valeur {{ name }}
+                                        {% trans with {'%name%' : name} %}
+                                            erreur avec la valeur %name%
                                         {% endtrans %}
                                     </p>
                                 {% endif %}
@@ -90,8 +90,8 @@
                                 <div class="controls">
                                 <p class='alert'>
                                     {% set name = value['name'] %}
-                                    {% trans %}
-                                        erreur avec la valeur {{ name }}
+                                    {% trans with {'%name%' : name} %}
+                                        erreur avec la valeur %name%
                                     {% endtrans %}
                                 </p>
                             {% endif %}

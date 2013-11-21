@@ -53,7 +53,7 @@ $(function () {
         add: function(e, data) {
             if( ! /(\.|\/)(csv|rtf)$/i.test(data.files[0].type)) {
                 {% set supported_file_types = ['csv', 'rtf']|join(' | ') %}
-                alert("{% trans %} Invalid file type, only ({{ supported_file_types }}) file formats are supported {% endtrans %}");
+                alert("{{ 'Invalid file type, only (%supported_file_types%) file formats are supported' | trans({'%supported_file_types%' : supported_file_types}) | e('js') }}");
 
                 return false;
             }

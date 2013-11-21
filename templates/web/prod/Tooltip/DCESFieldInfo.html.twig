@@ -13,8 +13,8 @@
         {% set element_name = field.get_dces_element().get_label() %}
         <div>
             <p>
-            {% trans %}
-                Ce champ est decrit comme l'element DublinCore {{element_name}}
+            {% trans with {'%element_name%' : element_name} %}
+                Ce champ est decrit comme l'element DublinCore %element_name%
             {% endtrans %}
             </p>
             <p>
@@ -22,8 +22,8 @@
             </p>
             <p>
                 {% set lien = '<a href="' ~ field.get_dces_element().get_documentation_link() ~ '" target="_blank">' ~ field.get_dces_element().get_documentation_link() ~ '</a>' %}
-                {% trans %}
-                Pour davantage d'informations, consulter le lien suivant {{ lien }}
+                {% trans with {'%lien%' : lien} %}
+                Pour davantage d'informations, consulter le lien suivant %lien%
                 {% endtrans %}
             </p>
         </div>

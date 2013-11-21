@@ -106,8 +106,8 @@
   <p>
           {# see http://code.google.com/intl/en/apis/youtube/terms.html#}
           {% set lien_term_youtube = '<a target="_blank" href="http://www.youtube.com/t/terms">http://www.youtube.com/t/terms</a>' %}
-          {% trans %}
-          En cliquant sur "ajouter" vous certifiez que vous possedez les droits pour le contenu ou que vous etes autorisé par le proprietaire à rendre le contenu accessible au public sur YouTube, et qu'il est autrement conforme aux Conditions d'utilisation de YouTubesitue a {{lien_term_youtube}}
+          {% trans with {'%lien_term_youtube%' : lien_term_youtube} %}
+          En cliquant sur "ajouter" vous certifiez que vous possedez les droits pour le contenu ou que vous etes autorisé par le proprietaire à rendre le contenu accessible au public sur YouTube, et qu'il est autrement conforme aux Conditions d'utilisation de YouTubesitue a %lien_term_youtube%
           {% endtrans %}
   </p>
   <script type="text/javascript">

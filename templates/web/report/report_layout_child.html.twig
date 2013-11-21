@@ -95,7 +95,7 @@
             {% include "report/form_date_and_base.html.twig" %}
             {% block form_telechargement %}
                 <div  class="form3">
-                    <div class="form_titre">{%trans "report:: 3 - Type de report" %}</div>
+                    <div class="form_titre">{% trans %}report:: 3 - Type de report{% endtrans %}</div>
                     {% if anonymous %}
                         <div>
                             <input name="tbl" type="radio" value="USR" data-action="{{ path('report_activity_users_downloads') }}" id="USR-dl" class="formsubmiter" />

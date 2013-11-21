@@ -26,8 +26,8 @@
                                         {% if application.get_creator() is not none %}
                                             <small>
                                                 {% set user_name = application.get_creator().get_display_name() %}
-                                                {% trans %}
-                                                    par {{ user_name }}
+                                                {% trans with {'%user_name%' : user_name} %}
+                                                    par %user_name%
                                                 {% endtrans %}
                                             </small>
                                         {% endif%}

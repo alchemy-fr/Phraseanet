@@ -43,8 +43,8 @@
                                 <p class="login_error">{{ 'Erreur de login / mot de passe' | trans }}</p>
                             {% endif %}
                             <p class="login_hello">
-                                {% trans %}
-                                Bonjour, veuillez vous identifier sur {{home_title}} :
+                                {% trans with {'%home_title%' : home_title} %}
+                                Bonjour, veuillez vous identifier sur %home_title% :
                                 {% endtrans %}
                             </p>
                             <input id="myLogin" name="login" class="span6" type="text" placeholder="{{ 'admin::compte-utilisateur identifiant' | trans }}" />
@@ -60,8 +60,8 @@
                         {% set username = '<b>' ~ app['authentication'].getUser().get_display_name() ~ '</b>' %}
                         <div id="hello-box" class="span6 offset3">
                             <p class="login_hello">
-                                {% trans %}
-                                Hello {{username}}
+                                {% trans with {'%username%' : username} %}
+                                Hello %username%
                                 {% endtrans %}
                             </p>
                         </div>
@@ -69,13 +69,13 @@
                     {% if auth.getClient() is not none %}
                     <div id="text-box" class="span6 offset3">
                         <div id="top-text-box">
-                            <h4>{% trans %}Autorisation d'acc&egrave;s{% endtrans %}</h4>
+                            <h4>{% trans %}Autorisation d'acces{% endtrans %}</h4>
                         </div>
                         <div id="main-text-box">
-                            {% set application_name = auth.getClient.get_name() %}
+                            {% set application_name = "<span>" ~ auth.getClient.get_name() ~ "</span>" %}
                             <p>
-                                {% trans %}
-                                Autorisez-vous l'application "<span>{{application_name}}</span>" &agrave; acc&eacute;der &agrave; votre contenu sur {{home_title}} ?
+                                {% trans with {'%application_name%' : application_name, '%home_title%' : home_title} %}
+                                Autorisez-vous l'application %application_name% a acceder a votre contenu sur %home_title% ?
                                 {% endtrans %}
                             </p>
                         </div>

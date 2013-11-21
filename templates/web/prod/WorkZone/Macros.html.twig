@@ -115,7 +115,7 @@
                                 {% set pusher = basket.getPusher(app).get_display_name() %}
                                 <img
                                     class="basketTips"
-                                    title="{% trans %}paniers:: panier recu de {{pusher}}{% endtrans %}"
+                                    title="{% trans with {'%pusher%' : pusher} %}paniers:: panier recu de %pusher%{% endtrans %}"
                                     src="/skins/icons/push16.png"/>
                             </td>
                         {% endif %}

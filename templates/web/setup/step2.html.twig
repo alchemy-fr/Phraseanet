@@ -592,8 +592,8 @@
                                   <p style="margin:10px 0;">
                                     {% set debut_lien = '<a href="#" class="ab_opt_toggler">' %}
                                     {% set fin_lien = '</a>' %}
-                                    {% trans %}
-                                      Si vous aviez besoin de plus de parametres, {{debut_lien}}Afficher d'avantage d'options{{fin_lien}}
+                                    {% trans with {'%debut_lien%' : debut_lien, '%fin_lien%' : fin_lien} %}
+                                      Si vous aviez besoin de plus de parametres, %debut_lien%Afficher d'avantage d'options%fin_lien%
                                     {% endtrans %}
                                   </p>
                                 </td>
@@ -618,8 +618,8 @@
                             <p>
                               {% set link_start = '<a href="https://mariadb.org/" target="_blank">' %}
                               {% set link_end = '</a>' %}
-                              {% trans %}
-                                Phraseanet strongly recommends the use of {{link_start}}MariaDB{{link_end}} as a replacement for MySQL.
+                              {% trans with {'%link_start%' : link_start, '%link_end%' : link_end} %}
+                                Phraseanet strongly recommends the use of %link_start%MariaDB%link_end% as a replacement for MySQL.
                               {% endtrans %}
                               <br/>
                               <br/>

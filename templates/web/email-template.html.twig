@@ -131,8 +131,8 @@
                         {{ phraseanetTitle }}
                     </a>
                     {% endset %}
-                    {% trans %}
-                        Pour gérer l'envoi d'email automatique, connectez-vous à {{ link }}
+                    {% trans with {'%link%' : link} %}
+                        Pour gérer l'envoi d'email automatique, connectez-vous à %link%
                     {% endtrans %}
                 </td>
             </tr>

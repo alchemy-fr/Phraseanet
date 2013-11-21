@@ -3,8 +3,8 @@
 {% set n_element = elements|length %}
 
 {% block menu %}
-  {% trans %}
-  Suppression de {{n_element}} photos
+  {% trans with {'%n_element%' : n_element} %}
+  Suppression de %n_element% photos
   {% endtrans %}
 {% endblock %}
 
@@ -12,8 +12,8 @@
     <form method="POST" action="{{ path('bridge_account_do_action', { 'account_id' : account.get_id(), 'action' : action, 'element_type' : element_type }) }}">
       <p>
         {% set number = elements|length %}
-        {% trans %}
-          Etes vous sur de supprimer {{ number }} photos ?
+        {% trans with {'%number%' : number} %}
+          Etes vous sur de supprimer %number% photos ?
         {% endtrans %}
       </p>
       {% for id in elements %}

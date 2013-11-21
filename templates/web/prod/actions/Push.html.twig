@@ -114,8 +114,8 @@
                                 {% if total > 4 %}
                                     {% set n = total - 4%}
                                     {% set and_many_more %}
-                                        {% trans %}
-                                            and {{ n }} more peoples
+                                        {% trans with {'%n%' : n} %}
+                                            and %n% more peoples
                                         {% endtrans %}
                                     {% endset %}
                                     {% set recommendation = recommendation
@@ -126,12 +126,12 @@
                                 {% if recommendation != '' %}
                                     {% set recommendation = '<br/>' ~ recommendation %}
                                     {% if context == 'Push' %}
-                                        {% trans %}
-                                            Please consider send this push to the following users : {{ recommendation }}
+                                        {% trans with {'%recommendation%' : recommendation} %}
+                                            Please consider send this push to the following users : %recommendation%
                                         {% endtrans %}
                                     {% else %}
-                                        {% trans %}
-                                            Please consider send this validation to the following users : {{ recommendation }}
+                                        {% trans with {'%recommendation%' : recommendation} %}
+                                            Please consider send this validation to the following users : %recommendation%
                                         {% endtrans %}
                                     {% endif %}
                                 {% endif %}
@@ -179,18 +179,18 @@
                                 {% if 'Push' == context %}
                                     {% set nb_push_items = push.get_count_actionable() %}
                                     {% if push.get_count_not_actionable() == 0 %}
-                                        {% trans %}You are about to push {{ nb_push_items }} records.{% endtrans %}
+                                        {% trans with {'%nb_push_items%' : nb_push_items} %}You are about to push %nb_push_items% records.{% endtrans %}
                                     {% else %}
                                         {% set nb_not_available = push.get_count_not_actionable() %}
-                                        {% trans %}You are about to push {{ nb_push_items }} records, {{ nb_not_available }} records can not be processed.{% endtrans %}
+                                        {% trans with {'%nb_push_items%' : nb_push_items, '%nb_not_available%' : nb_not_available} %}You are about to push %nb_push_items% records, %nb_not_available% records can not be processed.{% endtrans %}
                                     {% endif %}
                                 {% else %}
                                     {% set nb_push_items = push.get_count_actionable() %}
                                     {% if push.get_count_not_actionable() == 0 %}
-                                        {% trans %}You are about to ask for feedback for {{ nb_push_items }} records.{% endtrans %}
+                                        {% trans with {'%nb_push_items%' : nb_push_items} %}You are about to ask for feedback for %nb_push_items% records.{% endtrans %}
                                     {% else %}
                                         {% set nb_not_available = push.get_count_not_actionable() %}
-                                        {% trans %}You are about to ask for feedback for {{ nb_push_items }} records, {{ nb_not_available }} records can not be processed.{% endtrans %}
+                                        {% trans with {'%nb_push_items%' : nb_push_items, '%nb_not_available%' : nb_not_available} %}You are about to ask for feedback for %nb_push_items% records, %nb_not_available% records can not be processed.{% endtrans %}
                                     {% endif %}
                                 {% endif %}
                             </td>

@@ -68,7 +68,7 @@
 
 {% macro HTML_fieldlist(recordsRequest, fields) %}
     <div class="edit_field" id="EditFieldBox_status" onclick="return(edit_mdwn_status(event));" >
-        {%trans 'prod::editing::fields: status ' %}
+        {% trans %}prod::editing::fields: status{% endtrans %}
     </div>
     {% set cssfile = '000000' %}
     {% if app['authentication'].getUser().getPrefs('css') %}
@@ -410,9 +410,9 @@
         });
     {% else %}
         {% if not_actionable > 1 %}
-            alert("{% trans %}prod::editing: {{not_actionable}} documents ne peuvent etre edites car vos droits sont induffisants{% endtrans %}");
+            alert("{{ 'prod::editing: %not_actionable% documents ne peuvent etre edites car vos droits sont induffisants' | trans({'%not_actionable%' : not_actionable}) | e('js') }}");
         {% elseif not_actionable == 1 %}
-            alert("{{ 'prod::editing: 1 document ne peut etre edite car vos droits sont induffisants' | trans }}");
+            alert("{{ 'prod::editing: 1 document ne peut etre edite car vos droits sont induffisants' | trans | e('js') }}");
         {% endif %}
         startThisEditing({{ databox.get_sbas_id }},{% if recordsRequest.isSingleStory() %}'GRP'{% else %}'LST'{% endif %},"",'');
     {% endif %}

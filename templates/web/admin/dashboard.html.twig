@@ -2,7 +2,7 @@
     <h2>{{ requirements.getName() }}</h2>
     <ul class="setup unstyled">
         {% if requirements.getRequirements() is not empty %}
-            <li><strong>{% trans %}Requirements{% endtrans %}</strong></li>
+            <li><strong>{{ 'Requirements' | trans }}</strong></li>
             {% for requirement in requirements.getRequirements() %}
                 <li class="{% if not requirement.isFulfilled() %}{% if not requirement.isOptional() %}blocker{% else %}non-blocker{% endif %}{% else %}good-enough{% endif %}">
                     {{ requirement.getTestMessage }}
@@ -16,7 +16,7 @@
             {% endfor %}
         {% endif %}
         {% if requirements.getRecommendations() is not empty %}
-            <li><strong>{% trans %}Recommendations{% endtrans %}</strong></li>
+            <li><strong>{{ 'Recommendations' | trans }}</strong></li>
             {% for requirement in requirements.getRecommendations() %}
                 <li class="{% if not requirement.isFulfilled() %}{% if not requirement.isOptional() %}blocker{% else %}non-blocker{% endif %}{% else %}good-enough{% endif %}">
                     {{ requirement.getTestMessage }}
@@ -30,7 +30,7 @@
             {% endfor %}
         {% endif %}
         {% if requirements.getInformations() is not empty %}
-            <li><strong>{% trans %}Informations{% endtrans %}</strong></li>
+            <li><strong>{{ 'Informations' | trans }}</strong></li>
             {% for information in requirements.getInformations() %}
                 <li>
                     {{ information.getName() }} : {{ information.getValue() }}
@@ -89,14 +89,14 @@
 
 {% if cache_flushed %}
     <div class="well well-small">
-        {% trans %}all caches services have been flushed{% endtrans %}
+        {{ 'all caches services have been flushed' | trans }}
     </div>
 {% endif %}
 
 <div class="board_section">
     <form id="admin_adder" action="{{ path('admin_dashboard_add_admins') }}" method="post" class="form-inline">
         <fieldset>
-            <legend>{% trans %}setup:: administrateurs de l\'application{% endtrans %}</legend>
+            <legend>{{ 'setup:: administrateurs de l\'application' | trans }}</legend>
             <ul class="unstyled">
                 {% for usr_id, usr_login in admins %}
                     <li>
@@ -108,16 +108,16 @@
                 {% endfor %}
             </ul>
             <div class="input-append" style="margin-left:20px">
-                <input class="admin_adder input-large" placeholder="{% trans %}Add an admin{% endtrans %}"/>
-                <input type="submit" class="btn btn-warning" value="{% trans %}boutton::valider{% endtrans %}" />
+                <input class="admin_adder input-large" placeholder="{{ 'Add an admin' | trans }}"/>
+                <input type="submit" class="btn btn-warning" value="{{ 'boutton::valider' | trans }}" />
             </div>
             <input type="hidden" class="new" name="admins[]" />
         </fieldset>
     </form>
     <form id="admin_reset" action="{{ path('admin_dashboard_reset_admin_rights') }}" method="post" class="form-inline" style="display:inline">
         <fieldset>
-            <legend>{% trans %}setup:: Reinitialisation des droits admins{% endtrans %}</legend>
-            <input type="submit" class="btn btn-warning" value="{% trans %}boutton::reinitialiser{% endtrans %}" />
+            <legend>{{ 'setup:: Reinitialisation des droits admins' | trans }}</legend>
+            <input type="submit" class="btn btn-warning" value="{{ 'boutton::reinitialiser' | trans }}" />
         </fieldset>
     </form>
 </div>
@@ -126,10 +126,10 @@
     <div class="section">
         <form id="mail_checker" method="post" action="{{ path('admin_dashboard_test_mail') }}" target="_self" class="form-inline">
             <fieldset>
-                <legend>{% trans %}setup::Tests d\'envois d\'emails{% endtrans %}</legend>
+                <legend>{{ 'setup::Tests d\'envois d\'emails' | trans }}</legend>
                 <div class="input-append">
                     <input class="span3" id="appendedInputButton" type="text" placeholder="{% trans %}Email{% endtrans %}">
-                    <input type="submit" class="btn btn-warning" value="{% trans %}Send{% endtrans %}"/>
+                    <input type="submit" class="btn btn-warning" value="{{ 'Send' | trans }}"/>
                 </div>
             </fieldset>
         </form>

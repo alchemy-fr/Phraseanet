@@ -33,7 +33,7 @@
                                     </span>
                                         <br />
                                     <span class="comment">
-                                        ({% trans %} maximum : {{ maxFileSizeReadable }} {% endtrans %})
+                                        ({% trans with {'%maxFileSizeReadable%' : maxFileSizeReadable} %} maximum : %maxFileSizeReadable% {% endtrans %})
                                     </span>
                                 </td>
                                 <td class='uploader-icon'>
@@ -99,7 +99,7 @@
                         {# upload box #}
                         <div class='upload-box' style="display: none;">
                             {% set quantity = '<span class="number-files">0</span>' %}
-                            <h5>{% trans %}{{ quantity }}selected files{% endtrans %}</h5>
+                            <h5>{% trans with {'%quantity%' : quantity} %}%quantity% selected files{% endtrans %}</h5>
                             <button type="button" class="clear-queue btn btn-inverse input-medium" style="margin-bottom: 10px;">{{ 'Clear list' | trans }}</button>
                             <button type="button" class="upload-submitter btn btn-inverse input-medium" style="margin-bottom: 10px;">{{ 'Send' | trans }}</button>
                             <div class="clear"></div>

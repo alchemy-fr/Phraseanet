@@ -41,8 +41,8 @@
                     {% set username = '<b>' ~ app['authentication'].getUser().get_display_name() ~ '</b>' %}
                     <div id="hello-box" class="span6 offset3">
                         <p class="login_hello">
-                            {% trans %}
-                            Hello {{username}}
+                            {% trans with {'%username%' : username} %}
+                            Hello %username%
                             {% endtrans %}
                         </p>
                     </div>
@@ -67,7 +67,7 @@
                         <div id="main-text-box">
                             <p>
                                 {% trans %}
-                                Copiez le code ci-dessous, retournez dans votre application et collez-le &agrave l'endroit requis :
+                                Copiez le code ci-dessous, retournez dans votre application et collez-le a l'endroit requis :
                                 {% endtrans %}
                             </p>
                             <input type="text" class="input-large" name="access_token" value="{{token.access_token}}" size="{{token.access_token|length}}"/>

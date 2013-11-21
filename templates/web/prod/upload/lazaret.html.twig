@@ -269,8 +269,8 @@
                         {% if file.getSession().getUser(app) is not none %}
                             <p>
                                 {% set username = '<a href="#" class="username userTips" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : file.getSession().getUser(app).get_id() }) ~ '/">' ~ file.getSession().getUser(app).get_display_name() ~ '</a>' %}
-                                {% trans %}
-                                    Uploaded by : {{ username }}
+                                {% trans with {'%username%' : username} %}
+                                    Uploaded by : %username%
                                 {% endtrans %}
                             </p>
                         {% endif %}
@@ -311,8 +311,8 @@
                     A record matches the unique identifier :
                 {% endtrans %}
             {% else %}
-                {% trans %}
-                    {{ record_count }} records match the unique identifier :
+                {% trans with {'%record_count%' : record_count} %}
+                    %record_count% records match the unique identifier :
                 {% endtrans %}
             {% endif %}
             </h5>

@@ -14,14 +14,14 @@
 
         {% if context is not none %}
             {% set zterm %}
-                {% trans %}
-                    thesaurus:: le terme {{ term }} avec contexte {{ context }}
+                {% trans with {'%term%' : term, '%context%' : context} %}
+                    thesaurus:: le terme %term% avec contexte %context%
                 {% endtrans %}
             {% endset %}
         {% else %}
             {% set zterm %}
-                {% trans %}
-                    thesaurus:: le terme {{ term }} sans contexte
+                {% trans with {'%term%' : term} %}
+                    thesaurus:: le terme %term% sans contexte
                 {% endtrans %}
             {% endset %}
         {% endif %}

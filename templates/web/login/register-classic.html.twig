@@ -15,8 +15,8 @@
                     {{ "Inscription" | trans }}
                 </div>
                 <div class="sidebar-hint">
-                    {% trans %}
-                        Complete the fields below to register on {{ instance_title }}!
+                    {% trans with {'%instance_title%' : instance_title} %}
+                        Complete the fields below to register on %instance_title%!
                     {% endtrans %}
                 </div>
             </div>

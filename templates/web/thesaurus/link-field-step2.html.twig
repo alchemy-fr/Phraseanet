@@ -38,8 +38,8 @@
                 {% if branches['old_branch'] %}
                     {% set old_branch = branches['old_branch'] %}
                     <b>{{ fieldname }}</b>
-                    {% trans %}
-                        thesaurus:: Ce champ a ete modifie ; ancienne branche : {{ old_branch }}
+                    {% trans with {'%old_branch%' : old_branch} %}
+                        thesaurus:: Ce champ a ete modifie ; ancienne branche : %old_branch% }}
                     {% endtrans %}
                     <br/>
                 {% endif %}

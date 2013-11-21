@@ -25,7 +25,7 @@
     <input type="hidden" id="basket_validation_id" value="{{ basket.getId() }}">
     <p>
       {% set basket_length = basket.getElements().count() %}
-      {% trans %}{{basket_length}} documents{% endtrans %}
+      {% trans with {'%basket_length%' : basket_length} %}%basket_length% documents{% endtrans %}
     </p>
     <ul class="image_set">
     {% for basket_element in basket.getElements() %}

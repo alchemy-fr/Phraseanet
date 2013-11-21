@@ -21,9 +21,9 @@
     </p>
     <p>
       {% set author = feed_entry.getAuthorName() %}
-      <span class="author">{% trans %}Par {{ author }}{% endtrans %}</span>
+      <span class="author">{% trans with {'%author%' : author} %}Par %author%{% endtrans %}</span>
       {% set entry_length = feed_entry.getItems()|length %}
-      {% trans %}{{entry_length}} documents{% endtrans %}
+      {% trans with {'%entry_length%' : entry_length} %}%entry_length% documents{% endtrans %}
     </p>
     <ul class="image_set">
     {% for item in feed_entry.getItems() %}

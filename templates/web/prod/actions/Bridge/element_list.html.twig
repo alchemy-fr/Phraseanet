@@ -23,8 +23,8 @@
         <!--<td style="width:40px;">
         <div class="menu_nb_element">
             {% set nb_elements = elements.get_total_items() %}
-            {% trans %}
-                {{nb_elements}} elements
+            {% trans with {'%nb_elements%' : nb_elements} %}
+                %nb_elements% elements
             {% endtrans %}
         </div>
         </td>-->
@@ -87,8 +87,8 @@
 
                 {% if element.get_category != '' %}
                   {% set category = element.get_category %}
-                  {% trans %}
-                    dans {{category}}
+                  {% trans with {'%category%' : category} %}
+                    dans %category%
                   {% endtrans %}
                 {% endif %}
               </div>
