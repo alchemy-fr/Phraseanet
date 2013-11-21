@@ -108,7 +108,6 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
         });
 
         $this->locale = $this->app['locale'];
-        \phrasea::use_i18n($this->locale);
     }
 
     public function addLocaleCookie(FilterResponseEvent $event)

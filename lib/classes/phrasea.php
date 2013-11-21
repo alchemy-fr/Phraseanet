@@ -69,23 +69,6 @@ class phrasea
         return self::$_sbas_params;
     }
 
-    public static function use_i18n($locale, $textdomain = 'phraseanet')
-    {
-        $codeset = "UTF-8";
-
-        putenv('LANG=' . $locale . '.' . $codeset);
-        putenv('LANGUAGE=' . $locale . '.' . $codeset);
-        bind_textdomain_codeset($textdomain, 'UTF-8');
-
-        bindtextdomain($textdomain, __DIR__ . '/../../locale/');
-        setlocale(LC_ALL
-            , $locale . '.UTF-8'
-            , $locale . '.UTF8'
-            , $locale . '.utf-8'
-            , $locale . '.utf8');
-        textdomain($textdomain);
-    }
-
     public static function modulesName($array_modules)
     {
         $array = [];

@@ -128,11 +128,14 @@ use Silex\Application\UrlGeneratorTrait;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\SessionServiceProvider;
+use Silex\Provider\TranslationServiceProvider;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\SwiftmailerServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
+use Symfony\Bridge\Twig\Extension\TranslationExtension;
+use Symfony\Component\Translation\Loader\MoFileLoader;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
@@ -299,8 +302,22 @@ class Application extends SilexApplication
             'twig.options' => [
                 'cache'           => $this['root.path'] . '/tmp/cache_twig/',
             ],
-            'twig.form.templates' => ['login/common/form_div_layout.html.twig']
         ]);
+
+        $this->register(new TranslationServiceProvider(), [
+            'locale_fallbacks' => ['fr_FR'],
+        ]);
+
+        $this['translator'] = $this->share($this->extend('translator', function($translator, $app) {
+            $translator->addLoader('mo', new MoFileLoader());
+            $translator->addResource('mo', __DIR__.'/../../../locale/fr_FR/LC_MESSAGES/phraseanet.mo', 'fr_FR');
+            $translator->addResource('mo', __DIR__.'/../../../locale/en_GB/LC_MESSAGES/phraseanet.mo', 'en_GB');
+            $translator->addResource('mo', __DIR__.'/../../../locale/de_DE/LC_MESSAGES/phraseanet.mo', 'de_DE');
+            $translator->addResource('mo', __DIR__.'/../../../locale/nl_NL/LC_MESSAGES/phraseanet.mo', 'nl_NL');
+
+            return $translator;
+        }));
+
         $this->register(new FormServiceProvider());
 
         $this->setupTwig();
@@ -575,7 +592,7 @@ class Application extends SilexApplication
                 $twig->addExtension(new \Twig_Extension_Escaper());
 
                 // add filter trans
-                $twig->addExtension(new \Twig_Extensions_Extension_I18n());
+                $twig->addExtension(new TranslationExtension($app['translator']));
                 // add filter localizeddate
                 $twig->addExtension(new \Twig_Extensions_Extension_Intl());
                 // add filters truncate, wordwrap, nl2br
