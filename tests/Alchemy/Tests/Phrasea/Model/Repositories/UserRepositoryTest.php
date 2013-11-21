@@ -8,37 +8,27 @@ class UserRepositoryTest extends \PhraseanetPHPUnitAbstract
 {
     public function testFindAdminsWithNoAdmins()
     {
-        $user = new User();
-        $user->setLogin('login');
-        $user->setPassword('toto');
-        $this->insertOneUser($user);
+        $this->insertOneUser('login');
         $users = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\User')->findAdmins();
         $this->assertEquals(0, count($users));
     }
 
     public function testFindAdminsWithOneAdmin()
     {
-        $user = new User();
-        $user->setLogin('login');
-        $user->setPassword('toto');
-        $user->setAdmin(true);
-        $this->insertOneUser($user);
+        $this->insertOneUser('login', null, true);
         $users = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\User')->findAdmins();
         $this->assertEquals(1, count($users));
     }
 
     public function testFindAdminsWithOneAdminButTemplate()
     {
-        $user = new User();
-        $user->setLogin('login');
-        $user->setPassword('toto');
-        $user->setAdmin(true);
+        $user = $this->insertOneUser('login');
+        $template = $this->insertOneUser('login', null, true);
 
-        $template = new User();
-        $template->setLogin('logint');
-        $template->setPassword('totot');
+        $template->setModelOf($user);
 
-        $user->setModelOf($template);
+        self::$DI['app']['EM']->persist($template);
+        self::$DI['app']['EM']->flush();
 
         $users = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\User')->findAdmins();
         $this->assertEquals(0, count($users));
@@ -46,11 +36,11 @@ class UserRepositoryTest extends \PhraseanetPHPUnitAbstract
 
     public function testFindAdminsWithOneAdminButDeleted()
     {
-        $user = new User();
-        $user->setLogin('login');
-        $user->setPassword('toto');
-        $user->setAdmin(true);
+        $user = $this->insertOneUser('login', null, true);
         $user->setDeleted(true);
+
+        self::$DI['app']['EM']->persist($user);
+        self::$DI['app']['EM']->flush();
 
         $users = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\User')->findAdmins();
         $this->assertEquals(0, count($users));
@@ -58,10 +48,7 @@ class UserRepositoryTest extends \PhraseanetPHPUnitAbstract
 
     public function testFindByLogin()
     {
-        $user = new User();
-        $user->setLogin('login');
-        $user->setPassword('toto');
-        $this->insertOneUser($user);
+        $this->insertOneUser('login');
         $user = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\User')->findByLogin('login');
         $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\User', $user);
         $this->assertNull(self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\User')->findByLogin('wrong-login'));
@@ -69,36 +56,30 @@ class UserRepositoryTest extends \PhraseanetPHPUnitAbstract
 
     public function testFindUserByEmail()
     {
-        $user = new User();
-        $user->setLogin('login');
-        $user->setPassword('toto');
-        $user->setEmail('toto@toto.to');
-        $this->insertOneUser($user);
+        $this->insertOneUser('login', 'toto@toto.to');
         $user = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\User')->findByEmail('toto@toto.to');
         $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\User', $user);
     }
 
     public function testFindUserByEmailButDeleted()
     {
-        $user = new User();
-        $user->setLogin('login');
-        $user->setPassword('toto');
-        $user->setEmail('toto@toto.to');
+        $user = $this->insertOneUser('login', 'toto@toto.to');
         $user->setDeleted(true);
-        $this->insertOneUser($user);
-        $user = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\User')->findByEmail('toto@toto.to');
-        $this->assertNull($user);
+
+        self::$DI['app']['EM']->persist($user);
+        self::$DI['app']['EM']->flush();
+
+        $this->assertNull(self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\User')->findByEmail('toto@toto.to'));
     }
 
     public function testFindUserByEmailButNullEmail()
     {
-        $user = new User();
-        $user->setLogin('login');
-        $user->setPassword('toto');
-        $user->setEmail(null);
+        $user = $this->insertOneUser('login');
         $user->setDeleted(true);
-        $this->insertOneUser($user);
-        $user = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\User')->findByEmail('toto@toto.to');
-        $this->assertNull($user);
+
+        self::$DI['app']['EM']->persist($user);
+        self::$DI['app']['EM']->flush();
+
+        $this->assertNull(self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\User')->findByEmail('toto@toto.to'));
     }
 }
