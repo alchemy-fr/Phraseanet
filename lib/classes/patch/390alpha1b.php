@@ -79,12 +79,14 @@ class patch_390alpha1b implements patchInterface
         $n = 0;
         $em = $app['EM'];
         $em->getEventManager()->removeEventSubscriber(new TimestampableListener());
+        $basketRepository = $em->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
         foreach ($rs as $row) {
-
-            $sql = 'SELECT count(id) as todo FROM order_elements
+            $sql = 'SELECT count(id) as todo
+                    FROM order_elements
                     WHERE deny = NULL
                         AND order_id = :id';
+
             $stmt = $conn->prepare($sql);
             $stmt->execute([':id' => $row['id']]);
             $todo = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -96,13 +98,14 @@ class patch_390alpha1b implements patchInterface
                 ->setOrderUsage($row['usage'])
                 ->setDeadline(new \DateTime($row['deadline']))
                 ->setCreatedOn(new \DateTime($row['created_on']))
-                ->setBasket($row['ssel_id']);
+                ->setBasket($basketRepository->find($row['ssel_id']));
 
             $em->persist($order);
 
             $sql = 'SELECT base_id, record_id, order_master_id, deny
                     FROM order_elements
                     WHERE order_id = :id';
+
             $stmt = $conn->prepare($sql);
             $stmt->execute([':id' => $row['id']]);
             $elements = $stmt->fetchAll(\PDO::FETCH_ASSOC);
