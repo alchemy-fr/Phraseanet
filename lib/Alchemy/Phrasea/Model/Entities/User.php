@@ -177,8 +177,9 @@ class User
     private $ldapCreated = false;
 
     /**
-     * @ORM\Column(type="string", length=64, name="last_model", nullable=true)
-     */
+     * @ORM\OneToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="last_model", referencedColumnName="id")
+     **/
     private $lastModel;
 
     /**
@@ -768,7 +769,7 @@ class User
     }
 
     /**
-     * @return string
+     * @return User
      */
     public function getLastModel()
     {
@@ -776,9 +777,9 @@ class User
     }
 
     /**
-     * @param string $lastModel
+     * @param User $lastModel
      */
-    public function setLastModel($lastModel)
+    public function setLastModel(User $lastModel)
     {
         $this->lastModel = $lastModel;
 

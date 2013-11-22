@@ -774,7 +774,7 @@ class User extends \Alchemy\Phrasea\Model\Entities\User implements \Doctrine\ORM
     /**
      * {@inheritDoc}
      */
-    public function setLastModel($lastModel)
+    public function setLastModel(\Alchemy\Phrasea\Model\Entities\User $lastModel)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLastModel', array($lastModel));
