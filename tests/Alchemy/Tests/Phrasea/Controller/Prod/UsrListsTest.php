@@ -11,12 +11,12 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRouteSlash()
     {
-        $entry1 = $this->insertOneUsrListEntry(self::$DI['user'], self::$DI['user']);
-        $entry2 = $this->insertOneUsrListEntry(self::$DI['user'], self::$DI['user_alt1']);
-        $entry3 = $this->insertOneUsrListEntry(self::$DI['user'], self::$DI['user']);
-        $entry4 = $this->insertOneUsrListEntry(self::$DI['user'], self::$DI['user_alt1']);
-        $entry5 = $this->insertOneUsrListEntry(self::$DI['user_alt1'], self::$DI['user_alt1']);
-        $entry6 = $this->insertOneUsrListEntry(self::$DI['user_alt1'], self::$DI['user_alt2']);
+        $this->insertOneUsrListEntry(self::$DI['user'], self::$DI['user']);
+        $this->insertOneUsrListEntry(self::$DI['user'], self::$DI['user_alt1']);
+        $this->insertOneUsrListEntry(self::$DI['user'], self::$DI['user']);
+        $this->insertOneUsrListEntry(self::$DI['user'], self::$DI['user_alt1']);
+        $this->insertOneUsrListEntry(self::$DI['user_alt1'], self::$DI['user_alt1']);
+        $this->insertOneUsrListEntry(self::$DI['user_alt1'], self::$DI['user_alt2']);
 
         $route = '/prod/lists/all/';
 

@@ -46,7 +46,6 @@
         "doctrine/migrations"              : "1.0.x-dev@dev"
     },
     "require-dev": {
-        "doctrine/data-fixtures"           : "1.0.x@dev",
         "phpunit/phpunit"                  : "~3.7",
         "behat/behat"                      : "2.5.x-dev@dev",
         "behat/gherkin"                    : "2.3.x-dev@dev",
@@ -69,8 +68,7 @@
     "autoload": {
         "psr-0": {
             ""               : "lib/classes",
-            "Alchemy"        : "lib",
-            "PhraseaFixture" : "lib/conf.d"
+            "Alchemy"        : "lib"
         }
     },
     "include-path": ["vendor/zend/gdata/library"],

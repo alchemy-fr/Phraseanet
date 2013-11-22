@@ -98,10 +98,7 @@ class UserTest extends \PhraseanetPHPUnitAbstract
     public function testIsTemplate()
     {
         $this->assertFalse($this->user->isTemplate());
-        $template = new User();
-        $template->setLogin('login2');
-        $template->setPassword('toto');
-        $this->insertOneUser($template);
+        $template = $this->insertOneUser('login2');
         $this->user->setModelOf($template);
         $this->assertTrue($this->user->isTemplate());
     }
@@ -120,15 +117,10 @@ class UserTest extends \PhraseanetPHPUnitAbstract
 
     public function testSetModelOf()
     {
-        $this->user->setLogin('login');
-        $this->user->setPassword('toto');
-        $user = new User();
-        $user->setLogin('login2');
-        $user->setPassword('toto');
-        $this->insertOneUser($this->user);
-        $this->insertOneUser($user);
-        $this->user->setModelOf($user);
-        $this->assertEquals('login2', $this->user->getModelOf()->getLogin());
+        $template = $this->insertOneUser('login');
+        $user = $this->insertOneUser('login2');
+        $template->setModelOf($user);
+        $this->assertEquals('login2', $template->getModelOf()->getLogin());
     }
 
     public function genderProvider()

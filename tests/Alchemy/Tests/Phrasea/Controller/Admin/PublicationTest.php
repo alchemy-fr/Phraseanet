@@ -268,10 +268,6 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
-
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', $feed->getId());
-        if (null !== $feed) {
-            $this->fail("fail deleting feed");
-        }
+        $this->assertNull($feed->getId());
     }
 }
