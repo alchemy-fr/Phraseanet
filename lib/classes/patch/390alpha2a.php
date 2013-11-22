@@ -113,7 +113,6 @@ class patch_390alpha2a implements patchInterface
             $user->setGuest(!!$row['invite']);
             $user->setJob($row['fonction']);
             $user->setLastConnection(new \DateTime($row['last_conn']));
-            $user->setLastModel($row['lastModel']);
             $user->setLastName($row['usr_nom']);
             $user->setLdapCreated(!!$row['ldap_created']);
             try {
@@ -171,6 +170,49 @@ class patch_390alpha2a implements patchInterface
     }
 
     /**
+     * Sets last_model from usr table.
+     */
+    private function updateLastModels(EntityManager $em, $conn)
+    {
+        $sql = "SELECT lastModel, usr_login
+                FROM usr
+                WHERE lastModel > 0";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $n = 0;
+
+        $repository = $em->getRepository('Alchemy\Phrasea\Model\Entities\User');
+
+        foreach ($rows as $row) {
+            $user = $repository->findOneByLogin($row['usr_login']);
+            if (null === $lastModel = $repository->findOneByLogin($row['usr_login'])) {
+                continue;
+            }
+
+            if (false === $lastModel->isTemplate()) {
+                continue;
+            }
+
+            $user->setLastModel($row['lastModel']);
+            $em->persist($user);
+
+            $n++;
+
+            if ($n % 100 === 0) {
+                $em->flush();
+                $em->clear();
+            }
+        }
+
+        $em->flush();
+        $em->clear();
+    }
+
+    /**
      * Sets model from usr table.
      */
     private function updateModels(EntityManager $em, $conn)
@@ -209,6 +251,8 @@ class patch_390alpha2a implements patchInterface
 
         $em->flush();
         $em->clear();
+
+        $this->updateLastModels($em, $conn);
     }
 
     /**
