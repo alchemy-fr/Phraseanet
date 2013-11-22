@@ -64,10 +64,10 @@ class UsrListOwner extends \Alchemy\Phrasea\Model\Entities\UsrListOwner implemen
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'usr_id', 'role', 'created', 'updated', 'list');
+            return array('__isInitialized__', 'id', 'user', 'role', 'created', 'updated', 'list');
         }
 
-        return array('__isInitialized__', 'id', 'usr_id', 'role', 'created', 'updated', 'list');
+        return array('__isInitialized__', 'id', 'user', 'role', 'created', 'updated', 'list');
     }
 
     /**
@@ -191,29 +191,7 @@ class UsrListOwner extends \Alchemy\Phrasea\Model\Entities\UsrListOwner implemen
     /**
      * {@inheritDoc}
      */
-    public function setUsrId($usrId)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUsrId', array($usrId));
-
-        return parent::setUsrId($usrId);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getUsrId()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUsrId', array());
-
-        return parent::getUsrId();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setUser(\User_Adapter $user)
+    public function setUser(\Alchemy\Phrasea\Model\Entities\User $user = NULL)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', array($user));
@@ -224,12 +202,12 @@ class UsrListOwner extends \Alchemy\Phrasea\Model\Entities\UsrListOwner implemen
     /**
      * {@inheritDoc}
      */
-    public function getUser(\Alchemy\Phrasea\Application $app)
+    public function getUser()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', array($app));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', array());
 
-        return parent::getUser($app);
+        return parent::getUser();
     }
 
     /**

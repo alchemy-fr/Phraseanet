@@ -36,7 +36,7 @@ class BasketRepository extends EntityRepository
         $dql = 'SELECT b
             FROM Phraseanet:Basket b
             LEFT JOIN b.elements e
-            WHERE b.usr_id = :usr_id
+            WHERE b.user = :usr_id
             AND b.archived = false';
 
         if ($sort == 'date') {
@@ -66,9 +66,9 @@ class BasketRepository extends EntityRepository
             LEFT JOIN s.participants p
             WHERE b.archived = false
             AND (
-              (b.usr_id = :usr_id_owner AND b.is_read = false)
-              OR (b.usr_id != :usr_id_ownertwo
-                  AND p.usr_id = :usr_id_participant
+              (b.user = :usr_id_owner AND b.is_read = false)
+              OR (b.user != :usr_id_ownertwo
+                  AND p.user = :usr_id_participant
                   AND p.is_aware = false)
               )
             AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP())';
@@ -100,7 +100,7 @@ class BasketRepository extends EntityRepository
             JOIN e.validation_datas v
             JOIN b.validation s
             JOIN s.participants p
-            WHERE b.usr_id != ?1 AND p.usr_id = ?2
+            WHERE b.user != ?1 AND p.user = ?2
              AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP()) ';
 
         if ($sort == 'date') {
@@ -167,7 +167,7 @@ class BasketRepository extends EntityRepository
             FROM Phraseanet:Basket b
             JOIN b.elements e
             WHERE e.record_id = :record_id AND e.sbas_id = e.sbas_id
-              AND b.usr_id = :usr_id';
+              AND b.user = :usr_id';
 
         $params = [
             'record_id' => $record->get_record_id(),
@@ -189,7 +189,7 @@ class BasketRepository extends EntityRepository
                 $dql = 'SELECT b
                 FROM Phraseanet:Basket b
                 JOIN b.elements e
-                WHERE b.usr_id = :usr_id AND b.pusher_id IS NOT NULL';
+                WHERE b.user = :usr_id AND b.pusher_id IS NOT NULL';
                 $params = [
                     'usr_id' => $user->getId()
                 ];
@@ -200,7 +200,7 @@ class BasketRepository extends EntityRepository
                 JOIN b.elements e
                 JOIN b.validation s
                 JOIN s.participants p
-                WHERE b.usr_id != ?1 AND p.usr_id = ?2';
+                WHERE b.user != ?1 AND p.user = ?2';
                 $params = [
                     1       => $user->getId()
                     , 2       => $user->getId()
@@ -211,7 +211,7 @@ class BasketRepository extends EntityRepository
                 FROM Phraseanet:Basket b
                 JOIN b.elements e
                 JOIN b.validation v
-                WHERE b.usr_id = :usr_id';
+                WHERE b.user = :usr_id';
                 $params = [
                     'usr_id' => $user->getId()
                 ];
@@ -222,7 +222,7 @@ class BasketRepository extends EntityRepository
                 LEFT JOIN b.elements e
                 LEFT JOIN b.validation s
                 LEFT JOIN s.participants p
-                WHERE (b.usr_id = :usr_id OR p.usr_id = :validating_usr_id)';
+                WHERE (b.user = :usr_id OR p.user = :validating_usr_id)';
                 $params = [
                     'usr_id'            => $user->getId(),
                     'validating_usr_id' => $user->getId()
@@ -234,7 +234,7 @@ class BasketRepository extends EntityRepository
                 LEFT JOIN b.elements e
                 LEFT JOIN b.validation s
                 LEFT JOIN s.participants p
-                WHERE (b.usr_id = :usr_id)';
+                WHERE (b.user = :usr_id)';
                 $params = [
                     'usr_id' => $user->getId()
                 ];
@@ -281,8 +281,8 @@ class BasketRepository extends EntityRepository
             LEFT JOIN b.elements e
             LEFT JOIN b.validation s
             LEFT JOIN s.participants p
-            WHERE (b.usr_id = :usr_id AND b.archived = false)
-              OR (b.usr_id != :usr_id AND p.usr_id = :usr_id
+            WHERE (b.user = :usr_id AND b.archived = false)
+              OR (b.user != :usr_id AND p.user = :usr_id
                   AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP())
                   )';
 

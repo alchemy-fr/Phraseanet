@@ -172,7 +172,7 @@
         </div>
 {% endif %}
 
-{% if table['user'] | length > 0 %}
+{% if table['users'] | length > 0 %}
     <form id="accept-demand" action="{{ path('users_submit_demands') }}" method="post">
         <div class="btn-group btn-all-action">
             <button data-event="deny" class="btn deny-checker" type="button">

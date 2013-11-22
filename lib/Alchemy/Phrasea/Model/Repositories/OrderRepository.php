@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NoResultException;
 
 /**
  * OrderRepository
@@ -31,7 +32,7 @@ class OrderRepository extends EntityRepository
      */
     public function findByUser(User $user)
     {
-        return $this->findBy(['usrId' => $user->getId()]);
+        return $this->findBy(['user' => $user->getId()]);
     }
 
     /**
@@ -89,6 +90,10 @@ class OrderRepository extends EntityRepository
 
         $qb->groupBy('o.id');
 
-        return $qb->getQuery()->getSingleScalarResult();
+        try {
+            return $qb->getQuery()->getSingleScalarResult();
+        } catch (NoResultException $e) {
+            return 0;
+        }
     }
 }

@@ -37,8 +37,8 @@ class SearchEngineTest extends \PhraseanetAuthenticatedWebTestCase
         $app = $this->loadApp();
 
         return [
-            [new PhraseaEngine($app)],
-            [new SphinxSearchEngine($app, 'localhost', 9306, 'localhost', 9308)],
+            [new PhraseaEngine(new Application('test'))],
+            [new SphinxSearchEngine(new Application('test'), 'localhost', 9306, 'localhost', 9308)],
         ];
     }
 

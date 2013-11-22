@@ -278,8 +278,6 @@ class Push implements ControllerProviderInterface
             try {
                 $pusher = new RecordHelper\Push($app, $app['request']);
 
-                $repository = $app['EM']->getRepository('Phraseanet:Basket');
-
                 $validation_name = $request->request->get('name', $app->trans('Validation from %user%', ['%user%' => $app['authentication']->getUser()->getDisplayName()]));
                 $validation_description = $request->request->get('validation_description');
 
@@ -337,15 +335,15 @@ class Push implements ControllerProviderInterface
                 }
 
                 $found = false;
-                foreach ($participants as $key => $participant) {
-                    if ($participant['usr_id'] == $app['authentication']->getUser()->getId()) {
+                foreach ($participants as $participant) {
+                    if ($participant['usr_id'] === $app['authentication']->getUser()->getId()) {
                         $found = true;
                         break;
                     }
                 }
 
                 if (!$found) {
-                    $participants[$app['authentication']->getUser()->getId()] = [
+                    $participants[] = [
                         'see_others' => 1,
                         'usr_id'     => $app['authentication']->getUser()->getId(),
                         'agree'      => 0,
@@ -429,7 +427,7 @@ class Push implements ControllerProviderInterface
                     $params = [
                         'from'       => $app['authentication']->getUser()->getId(),
                         'from_email' => $app['authentication']->getUser()->getEmail(),
-                        'to'         => $participant_user->get_id(),
+                        'to'         => $participant_user->getId(),
                         'to_email'   => $participant_user->getEmail(),
                         'to_name'    => $participant_user->getDisplayName(),
                         'url'        => $url,

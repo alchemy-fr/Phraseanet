@@ -340,7 +340,6 @@ class Login implements ControllerProviderInterface
                     $inscOK = [];
 
                     foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
-
                         foreach ($databox->get_collections() as $collection) {
                             if (null !== $selected && !in_array($collection->get_base_id(), $selected)) {
                                 continue;
@@ -387,6 +386,9 @@ class Login implements ControllerProviderInterface
                         }
                     }
 
+                    $app['EM']->persist($user);
+                    $app['EM']->flush();
+
                     if (null !== $provider) {
                         $this->attachProviderToUser($app['EM'], $provider, $user);
                         $app['EM']->flush();
@@ -395,14 +397,14 @@ class Login implements ControllerProviderInterface
                     $demandOK = [];
 
                     if ($app['conf']->get(['registry', 'registration', 'auto-register-enabled'])) {
-
-                        $template_user = $app['manipulator.user']->getRepository()->findbyLogin('autoregister');
+                        $template_user = $app['manipulator.user']->getRepository()->findByLogin(User::USER_AUTOREGISTER);
 
                         $base_ids = [];
 
                         foreach (array_keys($inscOK) as $base_id) {
                             $base_ids[] = $base_id;
                         }
+
                         $app['acl']->get($user)->apply_model($template_user, $base_ids);
                     }
 
@@ -808,7 +810,8 @@ class Login implements ControllerProviderInterface
         $context = new Context(Context::CONTEXT_GUEST);
         $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
 
-        $invite_user = $app['manipulator.user']->createUser('invite', \random::generatePassword(24));
+        $user = $app['manipulator.user']->createUser(uniqid('guest'), \random::generatePassword(24));
+        $invite_user = $app['manipulator.user']->getRepository()->findByLogin(User::USER_GUEST);
 
         $usr_base_ids = array_keys($app['acl']->get($user)->get_granted_base());
         $app['acl']->get($user)->revoke_access_from_bases($usr_base_ids);

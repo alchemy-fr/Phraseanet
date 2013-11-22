@@ -54,25 +54,22 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
         $mailColl = [];
 
         $rsm = new ResultSetMappingBuilder($this->app['EM']);
+        $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\User', 'u');
         $rsm->addScalarResult('base_id', 'base_id');
-        $selectClause = $rsm->generateSelectClause([
-            'u' => 't1'
-        ]);
+        $selectClause = $rsm->generateSelectClause();
 
         $query = $this->app['EM']->createNativeQuery('
             SELECT b.base_id, '.$selectClause.' FROM Users u, basusr b
             WHERE u.id = b.usr_id
                 AND b.base_id IN (' . implode(', ', array_keys($base_ids)) . ')
-                AND u.model_of="0"
+                AND u.model_of IS NULL
                 AND b.actif="1"
                 AND b.canadmin="1"
-                AND u.deleted="0"'
-        );
+                AND u.deleted="0"',
+        $rsm);
 
         try {
-            $rs = $query->getResult();
-
-            foreach ($rs as $row) {
+            foreach ($query->getResult() as $row) {
                 $user = $row[0];
 
                 if (!isset($mailColl[$user->getId()])) {
@@ -82,7 +79,6 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
                 $mailColl[$user->getId()][] = $row['base_id'];
             }
         } catch (Exception $e) {
-
         }
 
         $dom_xml = new DOMDocument('1.0', 'UTF-8');

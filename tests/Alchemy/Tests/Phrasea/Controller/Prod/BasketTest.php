@@ -324,8 +324,7 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAddElementToValidationPost()
     {
-        $datas = self::$DI['app']['EM']->getRepository('Phraseanet:ValidationData')->findAll();
-        $countDatas = count($datas);
+        $countData = count(self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\ValidationData')->findAll());
 
         $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 4);
         $this->assertCount(2, $basket->getElements());

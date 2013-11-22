@@ -108,7 +108,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
 
             if ($readyToSend) {
                 $url = $this->app->url('lightbox_compare', [
-                    'ssel_id' => $basket->getId(),
+                    'basket' => $basket->getId(),
                     'LOG' => $this->app['tokens']->getUrlToken(
                         \random::TYPE_VIEW,
                         $user_to->getId(),

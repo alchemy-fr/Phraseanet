@@ -207,7 +207,7 @@ class UserManipulator implements ManipulatorInterface
         $notifSetting = new UserNotificationSetting();
         $notifSetting->setName($name);
         $notifSetting->setValue($value);
-        $notifSetting->setUsrId($user);
+        $notifSetting->setUser($user);
         $user->addNotificationSettings($notifSetting);
 
         $this->manager->update($user);

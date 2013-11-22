@@ -12,11 +12,11 @@ class ACLTest extends \PhraseanetAuthenticatedTestCase
     public static function tearDownAfterClass()
     {
         $application = new Application('test');
-        if (null !== $template = self::$DI['app']['manipulator.user']->findByLogin('test_phpunit2')) {
+        if (null !== $template = self::$DI['app']['manipulator.user']->getRepository()->findByLogin('test_phpunit2')) {
             self::$DI['app']['model.user-manager']->delete($template);
         }
 
-        if (null !== $template = self::$DI['app']['manipulator.user']->findByLogin('test_phpunit3')) {
+        if (null !== $template = self::$DI['app']['manipulator.user']->getRepository()->findByLogin('test_phpunit3')) {
             self::$DI['app']['model.user-manager']->delete($template);
         }
 
@@ -81,7 +81,7 @@ class ACLTest extends \PhraseanetAuthenticatedTestCase
     public function testApply_model()
     {
         $template = self::$DI['app']['manipulator.user']->createUser('test_phpunit2', 'blabla2', 'test2@example.com');
-        $template->setModel(self::$DI['user']);
+        $template->setModelOf(self::$DI['user']);
 
         $base_ids = [];
         foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
@@ -112,7 +112,7 @@ class ACLTest extends \PhraseanetAuthenticatedTestCase
     public function testApply_model_with_time_limit()
     {
         $template = self::$DI['app']['manipulator.user']->createUser('test_phpunit2', 'blabla2', 'test2@example.com');
-        $template->setModel(self::$DI['user']);
+        $template->setModelOf(self::$DI['user']);
 
         $base_ids = [];
         foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {

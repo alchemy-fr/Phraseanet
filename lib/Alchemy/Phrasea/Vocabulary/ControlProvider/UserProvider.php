@@ -94,6 +94,10 @@ class UserProvider implements ControlProviderInterface
     {
         $user = $this->app['manipulator.user']->getRepository()->find($id);
 
+        if (null === $user) {
+            throw new \Exception('User unknown');
+        }
+
         return $user->getDisplayName();
     }
 

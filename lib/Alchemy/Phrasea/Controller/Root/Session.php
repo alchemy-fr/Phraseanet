@@ -138,6 +138,10 @@ class Session implements ControllerProviderInterface
             $app->abort(404, 'Unknown session');
         }
 
+        if (null === $session->getUser()) {
+            $app->abort(403, 'Unauthorized');
+        }
+
         if ($session->getUser()->getId() !== $app['authentication']->getUser()->getId()) {
             $app->abort(403, 'Unauthorized');
         }

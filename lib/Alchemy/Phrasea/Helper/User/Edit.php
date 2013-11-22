@@ -191,7 +191,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     {
         $this->base_id = (int) $this->request->get('base_id');
 
-        $sql = "SELECT u.usr_id, restrict_dwnld, remain_dwnld, month_dwnld_max
+        $sql = "SELECT u.id, restrict_dwnld, remain_dwnld, month_dwnld_max
       FROM (Users u INNER JOIN basusr bu ON u.id = bu.usr_id)
       WHERE (u.id = " . implode(' OR u.id = ', $this->users) . ")
       AND bu.base_id = :base_id";
@@ -314,7 +314,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     {
         $this->base_id = (int) $this->request->get('base_id');
 
-        $sql = "SELECT u.usr_id, time_limited, limited_from, limited_to
+        $sql = "SELECT u.id, time_limited, limited_from, limited_to
       FROM (Users u INNER JOIN basusr bu ON u.id = bu.usr_id)
       WHERE (u.id = " . implode(' OR u.id = ', $this->users) . ")
       AND bu.base_id = :base_id";
@@ -368,7 +368,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     {
         $sbas_id = (int) $this->request->get('sbas_id');
 
-        $sql = "SELECT u.usr_id, time_limited, limited_from, limited_to
+        $sql = "SELECT u.id, time_limited, limited_from, limited_to
             FROM (Users u
               INNER JOIN basusr bu ON u.id = bu.usr_id
               INNER JOIN bas b ON b.base_id = bu.base_id)
@@ -588,7 +588,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             , 'fax'
         ];
 
-        $parm = $this->unserializedRequestData($this->app['request'], $infos, 'user_infos');
+        $parm = $this->unserializedRequestData($this->request, $infos, 'user_infos');
 
         if ($parm['email'] && !\Swift_Validate::email($parm['email'])) {
             throw new \Exception_InvalidArgument('Email addess is not valid');
@@ -644,7 +644,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     {
         $template = $this->app['manipulator.user']->getRepository()->find($this->request->get('template'));
 
-        if ($template->getLastModel()->getId() !== $this->app['authentication']->getUser()->getId()) {
+        if (null === $template->getModelOf() || $template->getModelOf()->getId() !== $this->app['authentication']->getUser()->getId()) {
             throw new AccessDeniedHttpException('You are not the owner of the template');
         }
 
@@ -736,7 +736,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             if ($user->isTemplate()) {
                 $template = $user;
 
-                if ($template->getLastModel()->getId() !== $this->app['authentication']->getUser()->getId()) {
+                if (null === $template->getModelOf() || $template->getModelOf()->getId() !== $this->app['authentication']->getUser()->getId()) {
                     continue;
                 }
             }
@@ -758,7 +758,13 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     private function unserializedRequestData(Request $request, array $indexes, $requestIndex)
     {
         $parameters = $data = [];
-        parse_str($request->get($requestIndex), $data);
+        $requestValue = $request->get($requestIndex);
+
+        if (is_array($requestValue)) {
+            $data = $requestValue;
+        } else {
+            parse_str($requestValue, $data);
+        }
 
         if (count($data) > 0) {
             foreach ($indexes as $index) {

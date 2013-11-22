@@ -92,22 +92,19 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
         $app['EM'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
-        $app['recaptcha'] = $this->getMockBuilder('Neutron\ReCaptcha\ReCaptcha')
+        self::$DI['app']['recaptcha'] = $this->getMockBuilder('Neutron\ReCaptcha\ReCaptcha')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $manager = $app['auth.native.failure-manager'];
+        $manager = self::$DI['app']['auth.native.failure-manager'];
         $this->assertEquals(42, $manager->getTrials());
     }
 
     public function testFailureAccountCreator()
     {
-        $app = new PhraseaApplication();
-        $app->register(new ConfigurationServiceProvider());
-
-        $app['conf']->set(['authentication', 'auto-create'], ['templates' => []]);
-
-        $app['authentication.providers.account-creator'];
+        self::$DI['app']->register(new ConfigurationServiceProvider());
+        self::$DI['app']['conf']->set(['authentication', 'auto-create'], ['templates' => []]);
+        self::$DI['app']['authentication.providers.account-creator'];
     }
 
     public function testAuthNativeWithCaptchaEnabled()
@@ -132,7 +129,7 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 
     public function testAuthNativeWithCaptchaDisabled()
     {
-        $app = $this->loadApp();
+        $app = new Application();
         $app['root.path'] = __DIR__ . '/../../../../../../';
         $app->register(new AuthenticationManagerServiceProvider());
         $app->register(new ConfigurationServiceProvider());
@@ -152,17 +149,14 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 
     public function testAccountCreator()
     {
-        $app = new PhraseaApplication();
+        $template1 = $user = self::$DI['app']['manipulator.user']->createTemplate('template1', self::$DI['user']);
+        $template2 = $user = self::$DI['app']['manipulator.user']->createTemplate('template2', self::$DI['user']);
 
-        $random = $app['tokens'];
-        $template1 = $user = self::$DI['app']['manipulator.user']->createUser('template' . $random->generatePassword(), $random->generatePassword());
-        $template1->setModel(self::$DI['user']);
-        $template2 = self::$DI['app']['manipulator.user']->createUser('template' . $random->generatePassword(), $random->generatePassword());
-        $template2->setModel(self::$DI['user']);
+        self::$DI['app']['conf']->set(['authentication', 'auto-create'], ['templates' => [$template1->getId(), $template2->getId()]]);
 
-        $app['conf']->set(['authentication', 'auto-create'], ['templates' => [$template1->get_id(), $template2->get_login()]]);
-
-        $this->assertEquals([$template1, $template2], $app['authentication.providers.account-creator']->getTemplates());
+        $this->assertEquals([$template1->getLogin(), $template2->getLogin()], array_map(function($u) {
+            return $u->getLogin();
+        }, self::$DI['app']['authentication.providers.account-creator']->getTemplates()));
 
         self::$DI['app']['model.user-manager']->delete($template1);
         self::$DI['app']['model.user-manager']->delete($template2);

@@ -33,7 +33,7 @@ class BasketElementRepository extends EntityRepository
             LEFT JOIN e.validation_datas vd
             LEFT JOIN b.validation s
             LEFT JOIN s.participants p
-            WHERE (b.usr_id = :usr_id OR p.usr_id = :same_usr_id)
+            WHERE (b.user = :usr_id OR p.user = :same_usr_id)
               AND e.id = :element_id';
 
         $params = [
@@ -108,7 +108,7 @@ class BasketElementRepository extends EntityRepository
             JOIN e.basket b
             LEFT JOIN b.validation s
             LEFT JOIN s.participants p
-            WHERE b.usr_id = :usr_id
+            WHERE b.user = :usr_id
             AND b.pusher_id IS NOT NULL
             AND e.record_id = :record_id
             AND e.sbas_id = :sbas_id';
@@ -132,7 +132,7 @@ class BasketElementRepository extends EntityRepository
             JOIN e.basket b
             JOIN b.validation v
             JOIN v.participants p
-            WHERE p.usr_id = :usr_id
+            WHERE p.user = :usr_id
             AND e.record_id = :record_id
             AND e.sbas_id = :sbas_id';
 

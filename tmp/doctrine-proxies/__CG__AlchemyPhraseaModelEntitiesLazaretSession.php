@@ -64,10 +64,10 @@ class LazaretSession extends \Alchemy\Phrasea\Model\Entities\LazaretSession impl
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'usr_id', 'created', 'updated', 'files');
+            return array('__isInitialized__', 'id', 'user', 'created', 'updated', 'files');
         }
 
-        return array('__isInitialized__', 'id', 'usr_id', 'created', 'updated', 'files');
+        return array('__isInitialized__', 'id', 'user', 'created', 'updated', 'files');
     }
 
     /**
@@ -191,34 +191,23 @@ class LazaretSession extends \Alchemy\Phrasea\Model\Entities\LazaretSession impl
     /**
      * {@inheritDoc}
      */
-    public function setUsrId($usrId)
+    public function setUser(\Alchemy\Phrasea\Model\Entities\User $user = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUsrId', array($usrId));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', array($user));
 
-        return parent::setUsrId($usrId);
+        return parent::setUser($user);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getUsrId()
+    public function getUser()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUsrId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', array());
 
-        return parent::getUsrId();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getUser(\Alchemy\Phrasea\Application $app)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', array($app));
-
-        return parent::getUser($app);
+        return parent::getUser();
     }
 
     /**

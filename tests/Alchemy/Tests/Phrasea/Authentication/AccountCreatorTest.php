@@ -63,18 +63,14 @@ class AccountCreatorTest extends \PhraseanetTestCase
 
     public function testCreateWithTemplates()
     {
-        $random = self::$DI['app']['tokens'];
-        $template1 = self::$DI['app']['manipulator.user']->createUser('template' . $random->generatePassword(), $random->generatePassword());
-        $template1->setModel(self::$DI['user']);
-        $template2 = self::$DI['app']['manipulator.user']->createUser('template' . $random->generatePassword(), $random->generatePassword());
-        $template2->setModel(self::$DI['user']);
-        $template3 = self::$DI['app']['manipulator.user']->createUser('template' . $random->generatePassword(), $random->generatePassword());
-        $template3->setModel(self::$DI['user']);
+        $template1 = self::$DI['app']['manipulator.user']->createTemplate('template1', self::$DI['user']);
+        $template2 = self::$DI['app']['manipulator.user']->createTemplate('template2', self::$DI['user']);
+        $template3 = self::$DI['app']['manipulator.user']->createTemplate('template3', self::$DI['user']);
 
         $templates = [$template1, $template2];
         $extra = [$template3];
 
-        $creator = new AccountCreator($random, self::$DI['app']['phraseanet.appbox'], true, $templates);
+        $creator = new AccountCreator(self::$DI['app']['tokens'], self::$DI['app']['phraseanet.appbox'], true, $templates);
         $user = $creator->create(self::$DI['app'], self::$DI['app']['tokens']->generatePassword(), null, $extra);
 
         $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\User', $user);

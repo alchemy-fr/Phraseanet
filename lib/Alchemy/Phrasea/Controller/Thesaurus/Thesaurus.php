@@ -768,7 +768,7 @@ class Thesaurus implements ControllerProviderInterface
                     (Users u INNER JOIN sbasusr
                         ON u.id = :usr_id
                         AND u.id = sbasusr.usr_id
-                        AND u.model_of = 0)
+                        AND u.model_of IS NULL)
                 INNER JOIN
                     sbas ON sbas.sbas_id = sbasusr.sbas_id
                 HAVING bas_edit_thesaurus > 0

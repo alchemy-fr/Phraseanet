@@ -6,7 +6,7 @@ class ACLManipulatorTest extends \PhraseanetTestCase
 {
     public function testResetAdminRights()
     {
-        $user = self::$DI['app']['manipulator.user']->create(uniqid('toto'), 'toto', null, true);
+        $user = self::$DI['app']['manipulator.user']->createUser(uniqid('toto'), 'toto', null, true);
         $acl = self::$DI['app']['acl']->get($user);
 
         $databoxId = null;

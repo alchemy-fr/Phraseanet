@@ -60,7 +60,7 @@ class UsrListOwnerRepository extends EntityRepository
     {
         $dql = 'SELECT o FROM Phraseanet:UsrListOwner o
               JOIN o.list l
-            WHERE l.id = :list_id AND o.usr_id = :usr_id';
+            WHERE l.id = :list_id AND o.user = :usr_id';
 
         $params = [
             'usr_id'  => $usr_id,

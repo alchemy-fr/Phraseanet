@@ -365,18 +365,17 @@ class Users implements ControllerProviderInterface
             $models = $app['manipulator.user']->getRepository()->findModelOf($app['authentication']->getUser());
 
             $rsm = new ResultSetMappingBuilder($app['EM']);
+            $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\User', 'u');
             $rsm->addScalarResult('date_demand', 'date_demand');
             $rsm->addScalarResult('base_demand', 'base_demand');
 
-            $selectClause = $rsm->generateSelectClause([
-                'u' => 't1'
-            ]);
+            $selectClause = $rsm->generateSelectClause();
 
             $query = $app['EM']->createNativeQuery("
                 SELECT d.date_modif AS date_demand, d.base_id AS base_demand, " . $selectClause . "
-                FROM (demand d INNER JOIN Users t1 ON d.usr_id=t1.id
+                FROM (demand d INNER JOIN Users u ON d.usr_id=u.id
                     AND d.en_cours=1
-                    AND t1.deleted=0
+                    AND u.deleted=0
                 )
                 WHERE (base_id='" . implode("' OR base_id='", $basList) . "')
                 ORDER BY d.usr_id DESC, d.base_id ASC
@@ -712,19 +711,18 @@ class Users implements ControllerProviderInterface
             }
 
             $rsm = new ResultSetMappingBuilder($app['EM']);
+            $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\User', 'u');
 
-            $selectClause = $rsm->generateSelectClause([
-                'u' => 't1'
-            ]);
+            $selectClause = $rsm->generateSelectClause();
 
             $query = $app['EM']->createNativeQuery("
                 SELECT " . $selectClause . "
-                FROM Users t1
-                    INNER JOIN basusr b ON (b.usr_id=t1.id)
-                WHERE t1.model_of = :user_id
+                FROM Users u
+                    INNER JOIN basusr b ON (b.usr_id=u.id)
+                WHERE u.model_of = :user_id
                   AND b.base_id IN (" . implode(', ', array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['manage']))) . ")
-                  AND t1.deleted='0'
-                GROUP BY t1.id"
+                  AND u.deleted='0'
+                GROUP BY u.id"
             );
             $query->setParameter(':user_id', $app['authentication']->getUser()->getId());
             $models = $query->getResult();

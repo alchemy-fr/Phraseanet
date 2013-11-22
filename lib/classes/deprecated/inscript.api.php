@@ -30,10 +30,10 @@ function giveMeBases(Application $app, $usr = null)
                 AND bas.base_id = basusr.base_id )
             LEFT JOIN demand ON ( demand.usr_id = u.id
                 AND bas.base_id = demand.base_id )
-            WHERE bas.active >0
+            WHERE bas.active > 0
                 AND bas.sbas_id = sbas.sbas_id
                 AND u.id = :usr_id
-                AND u.model_of = 0
+                AND u.model_of IS NULL
         ';
 
         $stmt = $conn->prepare($sqlU);

@@ -24,8 +24,6 @@ class WorkZoneTest extends \PhraseanetAuthenticatedWebTestCase
         $route = sprintf("/prod/WorkZone/attachStories/");
 
         self::$DI['client']->request('POST', $route);
-        $response = self::$DI['client']->getResponse();
-
         $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
@@ -35,7 +33,6 @@ class WorkZoneTest extends \PhraseanetAuthenticatedWebTestCase
         $route = sprintf("/prod/WorkZone/attachStories/");
         self::$DI['client']->request('POST', $route, ['stories' => [$story->get_serialize_key()]]);
         $response = self::$DI['client']->getResponse();
-
         $this->assertEquals(302, $response->getStatusCode());
 
         $em = self::$DI['app']['EM'];

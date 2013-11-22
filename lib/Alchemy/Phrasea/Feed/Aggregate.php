@@ -80,7 +80,7 @@ class Aggregate implements FeedInterface
     public static function createFromUser(Application $app, User $user)
     {
         $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['acl']->get($user));
-        $token = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')->findOneBy(['usrId' => $user->getId()]);
+        $token = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')->findOneBy(['user' => $user->getId()]);
 
         return new static($app['EM'], $feeds, $token);
     }

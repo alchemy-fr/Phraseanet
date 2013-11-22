@@ -132,12 +132,12 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
     {
         $token = $this->em
             ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
-            ->findOneBy(['usrId' => $user->getId()]);
+            ->findOneBy(['user' => $user->getId()]);
 
         if (null === $token || true === $renew) {
             if (null === $token) {
                 $token = new AggregateToken();
-                $token->setUsrId($user->getId());
+                $token->setUser($user);
             }
 
             $token->setValue($this->random->generatePassword(12, \random::LETTERS_AND_NUMBERS));

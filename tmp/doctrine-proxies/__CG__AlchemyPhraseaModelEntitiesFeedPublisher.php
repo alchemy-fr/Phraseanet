@@ -64,10 +64,10 @@ class FeedPublisher extends \Alchemy\Phrasea\Model\Entities\FeedPublisher implem
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'usrId', 'owner', 'createdOn', 'feed');
+            return array('__isInitialized__', 'id', 'user', 'owner', 'createdOn', 'feed');
         }
 
-        return array('__isInitialized__', 'id', 'usrId', 'owner', 'createdOn', 'feed');
+        return array('__isInitialized__', 'id', 'user', 'owner', 'createdOn', 'feed');
     }
 
     /**
@@ -191,23 +191,23 @@ class FeedPublisher extends \Alchemy\Phrasea\Model\Entities\FeedPublisher implem
     /**
      * {@inheritDoc}
      */
-    public function setUsrId($usrId)
+    public function setUser(\Alchemy\Phrasea\Model\Entities\User $user = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUsrId', array($usrId));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', array($user));
 
-        return parent::setUsrId($usrId);
+        return parent::setUser($user);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getUsrId()
+    public function getUser()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUsrId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', array());
 
-        return parent::getUsrId();
+        return parent::getUser();
     }
 
     /**
@@ -252,17 +252,6 @@ class FeedPublisher extends \Alchemy\Phrasea\Model\Entities\FeedPublisher implem
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFeed', array());
 
         return parent::getFeed();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getUser(\Alchemy\Phrasea\Application $app)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', array($app));
-
-        return parent::getUser($app);
     }
 
     /**

@@ -151,7 +151,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
         }
 
         $bask_link = '<a href="'
-            . $this->app->url('lightbox_validation', ['ssel_id' => (string) $sx->ssel_id])
+            . $this->app->url('lightbox_validation', ['basket' => (string) $sx->ssel_id])
             . '" target="_blank">'
             . $basket_name . '</a>';
 

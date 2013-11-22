@@ -18,14 +18,12 @@ class collectionTest extends \PhraseanetAuthenticatedTestCase
     {
         $application = self::$DI['app'];
 
-        self::$DI['user'];
-
         if (!self::$object) {
-            if (0 === count(self::$DI['app']['phraseanet.appbox']->get_databoxes())) {
+            if (0 === count($databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes())) {
                 $this->fail('No databox found for collection test');
             }
 
-            $databox = array_shift(self::$DI['app']['phraseanet.appbox']->get_databoxes());
+            $databox = array_shift($databoxes);
 
             self::$object = collection::create(
                 self::$DI['app'],

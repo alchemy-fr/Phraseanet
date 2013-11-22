@@ -14,7 +14,7 @@ class UserProviderTest extends \PhraseanetTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->object = new \Alchemy\Phrasea\Vocabulary\ControlProvider\UserProvider(self::$DI['app']);
+        $this->object = new UserProvider(self::$DI['app']);
     }
 
     /**
@@ -39,6 +39,9 @@ class UserProviderTest extends \PhraseanetTestCase
 
     public function testFind()
     {
+        $this->setConnectionEnvironment('prod');
+        self::$DI['user'];
+
         $results = $this->object->find('BABE', self::$DI['user'], self::$DI['collection']->get_databox());
 
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);

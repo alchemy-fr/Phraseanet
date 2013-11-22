@@ -44,17 +44,13 @@ class PushTest extends \PhraseanetAuthenticatedWebTestCase
             self::$DI['record_2']->get_serialize_key(),
         ];
 
-        $receivers = [
-            ['usr_id' => self::$DI['user_alt1']->getId(), 'HD'     => 1]
-            , ['usr_id' => self::$DI['user_alt2']->getId(), 'HD'     => 0]
-        ];
-
-        $params = [
-            'lst'          => implode(';', $records)
-            , 'participants' => $receivers
-        ];
-
-        self::$DI['client']->request('POST', $route, $params);
+        self::$DI['client']->request('POST', $route, [
+            'lst'          => implode(';', $records),
+            'participants' => [
+                ['usr_id' => self::$DI['user_alt1']->getId(), 'HD'     => 1],
+                ['usr_id' => self::$DI['user_alt2']->getId(), 'HD'     => 0]
+            ]
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -80,27 +76,20 @@ class PushTest extends \PhraseanetAuthenticatedWebTestCase
             self::$DI['record_2']->get_serialize_key(),
         ];
 
-        $participants = [
-            [
+        self::$DI['client']->request('POST', $route, [
+            'lst'          => implode(';', $records),
+            'participants' => [[
                 'usr_id'     => self::$DI['user_alt1']->getId(),
                 'agree'      => 0,
                 'see_others' => 1,
                 'HD'         => 0,
-            ]
-            , [
+            ], [
                 'usr_id'     => self::$DI['user_alt2']->getId(),
                 'agree'      => 1,
                 'see_others' => 0,
                 'HD'         => 1,
-            ]
-        ];
-
-        $params = [
-            'lst'          => implode(';', $records)
-            , 'participants' => $participants
-        ];
-
-        self::$DI['client']->request('POST', $route, $params);
+            ]]
+        ]);
 
         $response = self::$DI['client']->getResponse();
 

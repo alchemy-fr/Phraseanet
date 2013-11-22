@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Form\Constraint\NewLogin;
+use Alchemy\Phrasea\Model\Entities\User;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -56,9 +57,9 @@ class RegistrationServiceProvider implements ServiceProviderInterface
                     'multiple' => false,
                     'expanded' => false,
                     'choices' => [
-                        '0' => 'admin::compte-utilisateur:sexe: mademoiselle',
-                        '1' => 'admin::compte-utilisateur:sexe: madame',
-                        '2' => 'admin::compte-utilisateur:sexe: monsieur',
+                        User::GENDER_MISS => 'admin::compte-utilisateur:sexe: mademoiselle',
+                        User::GENDER_MRS => 'admin::compte-utilisateur:sexe: madame',
+                        User::GENDER_MR => 'admin::compte-utilisateur:sexe: monsieur',
                     ]
                 ],
                 'firstname' => [

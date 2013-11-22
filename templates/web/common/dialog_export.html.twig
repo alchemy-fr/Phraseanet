@@ -326,7 +326,7 @@
                     <div class="control-group">
                         <label class="control-label" for="usr_mail"> {{ 'admin::compte-utilisateur email' | trans }}</label>
                         <div class="controls">
-                            <input class="required" type="text" name="usr_mail" id="usr_mail" value="{{ app['authentication'].getUser().ggetEmail) }}"/>
+                            <input class="required" type="text" name="usr_mail" id="usr_mail" value="{{ app['authentication'].getUser().getEmail() }}"/>
                         </div>
                     </div>
 

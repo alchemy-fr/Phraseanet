@@ -1681,7 +1681,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 ':site'   => $this->app['conf']->get(['main', 'key']),
                 ':usr_id'    => $this->app['authentication']->getUser()->getId(),
                 ':record_id' => $this->get_record_id(),
-            );
+            ];
         } else {
             $sql = 'SELECT record_id
               FROM regroup g
@@ -1728,11 +1728,11 @@ class record_adapter implements record_Interface, cache_cacheableInterface
               ON (g.rid_parent = r.record_id)
             WHERE rid_child = :record_id';
 
-        $params = [
+        $params = array(
             ':GV_site'   => $this->app['conf']->get(['main', 'key'])
             , ':usr_id'    => $this->app['authentication']->getUser()->get_id()
             , ':record_id' => $this->get_record_id()
-        );
+        ];
 
         $stmt = $this->get_databox()->get_connection()->prepare($sql);
         $stmt->execute($params);

@@ -28,7 +28,6 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request('POST', '/prod/export/multi-export/', ['lst' => self::$DI['record_1']->get_serialize_key()]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
-        unset($response);
     }
 
     /**

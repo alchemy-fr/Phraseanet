@@ -234,11 +234,11 @@ class User_Query implements User_QueryInterface
             }
             $sql .= ' AND model_of = ' . $this->app['authentication']->getUser()->getId();
         } elseif ($this->include_templates === false) {
-            $sql .= ' AND model_of=0';
+            $sql .= ' AND model_of IS NULL';
         } elseif ($this->app['authentication']->getUser()) {
-            $sql .= ' AND (model_of=0 OR model_of = ' . $this->app['authentication']->getUser()->getId() . ' ) ';
+            $sql .= ' AND (model_of IS NULL OR model_of = ' . $this->app['authentication']->getUser()->getId() . ' ) ';
         } else {
-            $sql .= ' AND model_of=0';
+            $sql .= ' AND model_of IS NULL';
         }
 
         if ($this->activities) {
@@ -512,7 +512,7 @@ class User_Query implements User_QueryInterface
         $users = new ArrayCollection();
 
         foreach ($rs as $row) {
-            $users[] = $this->app['manipulator.user']->getRepository()->find($row['usr_id']);
+            $users[] = $this->app['manipulator.user']->getRepository()->find($row['id']);
         }
 
         $this->results = $users;

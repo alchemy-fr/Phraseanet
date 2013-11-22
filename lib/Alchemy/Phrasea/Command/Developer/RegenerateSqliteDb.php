@@ -145,6 +145,11 @@ class RegenerateSqliteDb extends Command
         $fs->remove($target);
         $fs->dumpFile($json, json_encode($fixtures, defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0));
 
+        $this->container['manipulator.user']->createUser('test_phpunit', 'test_phpunit', 'noone@example.com', true);
+        $this->container['manipulator.user']->createUser('test_phpunit_not_admin', 'test_phpunit_not_admin', 'noone_not_admin@example.com');
+        $this->container['manipulator.user']->createUser('test_phpunit_alt1', 'test_phpunit_alt1', 'noonealt1@example.com');
+        $this->container['manipulator.user']->createUser('test_phpunit_alt2', 'test_phpunit_alt2', 'noonealt2@example.com');
+
         return 0;
     }
 

@@ -37,7 +37,7 @@ class UsrListRepository extends EntityRepository
     {
         $dql = 'SELECT l FROM Phraseanet:UsrList l
               JOIN l.owners o
-            WHERE o.usr_id = :usr_id';
+            WHERE o.user = :usr_id';
 
         $params = [
             'usr_id' => $user->getId(),
@@ -82,7 +82,7 @@ class UsrListRepository extends EntityRepository
     {
         $dql = 'SELECT l FROM Phraseanet:UsrList l
               JOIN l.owners o
-            WHERE o.usr_id = :usr_id AND l.name LIKE :name';
+            WHERE o.user = :usr_id AND l.name LIKE :name';
 
         $params = [
             'usr_id' => $user->getId(),

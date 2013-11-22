@@ -107,6 +107,12 @@ class Installer
         return $user;
     }
 
+    private function createDefaultUsers()
+    {
+        $this->app['manipulator.user']->createUser(User::USER_AUTOREGISTER, User::USER_AUTOREGISTER);
+        $this->app['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
+    }
+
     private function rollbackInstall(\connection_interface $abConn, \connection_interface $dbConn = null)
     {
         $structure = simplexml_load_file(__DIR__ . "/../../../conf.d/bases_structure.xml");
@@ -148,8 +154,6 @@ class Installer
 
     private function createAB()
     {
-        $this->app['phraseanet.appbox']->insert_datas();
-
         $metadatas = $this->app['EM']->getMetadataFactory()->getAllMetadata();
 
         if (!empty($metadatas)) {
@@ -159,6 +163,8 @@ class Installer
             $tool->dropSchema($metadatas);
             $tool->createSchema($metadatas);
         }
+
+        $this->app['phraseanet.appbox']->insert_datas($this->app);
     }
 
     private function createConfigFile($abConn, $serverName, $binaryData)

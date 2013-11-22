@@ -12,6 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Version as PhraseaVersion;
 use vierbergenlars\SemVer\version;
+use Alchemy\Phrasea\Model\Entities\User;
 
 abstract class base implements cache_cacheableInterface
 {
@@ -834,14 +835,11 @@ abstract class base implements cache_cacheableInterface
                 $version = $app['doctrine-migration.configuration']->getVersion($doctrineVersion);
                 $version->getMigration()->setEntityManager($app['EM']);
                 if (false === $version->isMigrated()) {
-                    echo "Before executing Patch ".$patch->get_release()." \n";
-                    echo "Executing migration ".$version->getversion()." \n";
                     $version->execute('up');
                 }
             }
 
             if (false === $patch->apply($this, $app)) {
-                echo "Executing Patch ".$patch->get_release()." \n";
                 $success = false;
             }
 

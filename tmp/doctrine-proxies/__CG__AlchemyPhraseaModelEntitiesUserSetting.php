@@ -64,10 +64,10 @@ class UserSetting extends \Alchemy\Phrasea\Model\Entities\UserSetting implements
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'usrId', 'user', 'name', 'value', 'created', 'updated');
+            return array('__isInitialized__', 'id', 'user', 'name', 'value', 'created', 'updated');
         }
 
-        return array('__isInitialized__', 'id', 'usrId', 'user', 'name', 'value', 'created', 'updated');
+        return array('__isInitialized__', 'id', 'user', 'name', 'value', 'created', 'updated');
     }
 
     /**
@@ -208,28 +208,6 @@ class UserSetting extends \Alchemy\Phrasea\Model\Entities\UserSetting implements
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', array($user));
 
         return parent::setUser($user);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getUsrId()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUsrId', array());
-
-        return parent::getUsrId();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setUsrId($usrId)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUsrId', array($usrId));
-
-        return parent::setUsrId($usrId);
     }
 
     /**

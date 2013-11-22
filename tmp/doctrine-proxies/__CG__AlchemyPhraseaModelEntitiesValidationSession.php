@@ -213,7 +213,7 @@ class ValidationSession extends \Alchemy\Phrasea\Model\Entities\ValidationSessio
     /**
      * {@inheritDoc}
      */
-    public function isInitiator(\User_Adapter $user)
+    public function isInitiator(\Alchemy\Phrasea\Model\Entities\User $user)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'isInitiator', array($user));
@@ -224,7 +224,7 @@ class ValidationSession extends \Alchemy\Phrasea\Model\Entities\ValidationSessio
     /**
      * {@inheritDoc}
      */
-    public function setInitiator(\User_Adapter $user)
+    public function setInitiator(\Alchemy\Phrasea\Model\Entities\User $user)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setInitiator', array($user));
@@ -378,7 +378,7 @@ class ValidationSession extends \Alchemy\Phrasea\Model\Entities\ValidationSessio
     /**
      * {@inheritDoc}
      */
-    public function getValidationString(\Alchemy\Phrasea\Application $app, \User_Adapter $user)
+    public function getValidationString(\Alchemy\Phrasea\Application $app, \Alchemy\Phrasea\Model\Entities\User $user)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getValidationString', array($app, $user));
@@ -389,7 +389,7 @@ class ValidationSession extends \Alchemy\Phrasea\Model\Entities\ValidationSessio
     /**
      * {@inheritDoc}
      */
-    public function getParticipant(\User_Adapter $user, \Alchemy\Phrasea\Application $app)
+    public function getParticipant(\Alchemy\Phrasea\Model\Entities\User $user, \Alchemy\Phrasea\Application $app)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getParticipant', array($user, $app));

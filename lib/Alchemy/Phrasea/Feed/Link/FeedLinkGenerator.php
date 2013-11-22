@@ -140,13 +140,13 @@ class FeedLinkGenerator implements LinkGeneratorInterface
     {
         $token = $this->em
             ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
-            ->findOneBy(['usrId' => $user->getId(), 'feed' => $feed->getId()]);
+            ->findOneBy(['user' => $user->getId(), 'feed' => $feed->getId()]);
 
         if (null === $token || true === $renew) {
             if (null === $token) {
                 $token = new FeedToken();
                 $token->setFeed($feed);
-                $token->setUsrId($user->getId());
+                $token->setUser($user);
                 $feed->addToken($token);
 
                 $this->em->persist($feed);

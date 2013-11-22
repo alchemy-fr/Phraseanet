@@ -160,6 +160,21 @@ class UserManager
     }
 
     /**
+     * Removes user providers.
+     *
+     * @param User $user
+     */
+    private function cleanAuthProvider(User $user)
+    {
+        $providers = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
+            ->findBy(['user' => $user->getId()]);
+
+        foreach ($providers as $provider) {
+            $this->objectManager->remove($provider);
+        }
+    }
+
+    /**
      * Removes all user's properties.
      *
      * @param User $user
@@ -180,6 +195,7 @@ class UserManager
         $this->cleanFtpCredentials($user);
         $this->cleanOrders($user);
         $this->cleanFtpExports($user);
+        $this->cleanAuthProvider($user);
     }
 
     /**

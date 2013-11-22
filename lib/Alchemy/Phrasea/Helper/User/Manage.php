@@ -112,11 +112,11 @@ class Manage extends Helper
             ->execute();
 
         if (null === $invite = $this->app['manipulator.user']->getRepository()->findByLogin(User::USER_GUEST)) {
-            $this->app['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
+            $invite = $this->app['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
         }
 
         if (null == $autoregister = $this->app['manipulator.user']->getRepository()->findByLogin(User::USER_AUTOREGISTER)) {
-            $this->app['manipulator.user']->createUser(User::USER_AUTOREGISTER, User::USER_AUTOREGISTER);
+            $autoregister = $this->app['manipulator.user']->createUser(User::USER_AUTOREGISTER, User::USER_AUTOREGISTER);
         }
 
         foreach ($this->query_parms as $k => $v) {
@@ -198,7 +198,7 @@ class Manage extends Helper
         }
 
         $created_user = $this->app['manipulator.user']->getRepository()->find($name, \random::generatePassword(16));
-        $created_user->setModel($this->app['authentication']->getUser());
+        $created_user->setModelOf($this->app['authentication']->getUser());
         $this->usr_id = $this->app['authentication']->getUser()->getId();
 
         return $created_user;

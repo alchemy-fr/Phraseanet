@@ -225,7 +225,7 @@ class User
     private $updated;
 
     /**
-     * @ORM\OneToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="model_of", referencedColumnName="id")
      *
      * @var User

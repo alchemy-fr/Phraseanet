@@ -147,9 +147,11 @@
                         <td>
                             {{usr.getCountry()}}
                         </td>
-                        <td>
-                            {{usr.getLastModel()->getDisplayName()}}
-                        </td>
+                        {% if usr.getLastModel() is not none %}
+                            <td>
+                                {{ usr.getLastModel().getDisplayName()}}
+                            </td>
+                        {% endif %}
                         <td>
                             {{ app['date-formatter'].getDate(usr.getCreated()) }}
                         </td>

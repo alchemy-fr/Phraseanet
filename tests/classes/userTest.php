@@ -1,38 +1,29 @@
 <?php
 
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Entities\UsrAuthProvider;
 
 class userTest extends \PhraseanetTestCase
 {
     public function testMail()
     {
-        $this->assertNull(self::$DI['app']['manipulator.user']->getRepository()->findByEmail(null));
-        try {
-            self::$DI['user']->setEmail(null);
-            $this->assertNull(self::$DI['app']['manipulator.user']->getRepository()->findByEmail(null));
             self::$DI['user']->setEmail('');
-            $this->assertNull(self::$DI['app']['manipulator.user']->getRepository()->findByEmail(null));
+            $this->assertNull(self::$DI['app']['manipulator.user']->getRepository()->findByEmail(self::$DI['user']->getEmail()));
             self::$DI['user']->setEmail('noone@example.com');
             $this->assertEquals(self::$DI['user'], self::$DI['app']['manipulator.user']->getRepository()->findByEmail('noone@example.com'));
-        } catch (Exception $e) {
-            $this->fail($e->getMessage());
-        }
         try {
             self::$DI['user']->setEmail('noonealt1@example.com');
             $this->fail('A user already got this address');
         } catch (Exception $e) {
 
         }
-        $this->assertNull(self::$DI['app']['manipulator.user']->getRepository()->findByEmail(null));
     }
 
     public function testDeleteSetMailToNullAndRemovesProviders()
     {
-        if (null === $user = self::$DI['app']['manipulator.user']->getRepository()->findByLogin('test_phpunit_providers')) {
-            $user = self::$DI['app']['manipulator.user']->createUser('test_phpunit_providers', 'any');
-        }
+        $user = self::$DI['app']['manipulator.user']->createUser('test_phpunit_providers', 'any');
 
-        $provider = new Alchemy\Phrasea\Model\Entities\UsrAuthProvider();
+        $provider = new UsrAuthProvider();
         $provider->setDistantId(12345);
         $provider->setProvider('custom-one');
         $provider->setUser($user);
@@ -42,8 +33,7 @@ class userTest extends \PhraseanetTestCase
 
         self::$DI['app']['model.user-manager']->delete($user);
 
-        $repo = self::$DI['app']['EM']->getRepository('Phraseanet:UsrAuthProvider');
-        $this->assertNull($repo->findWithProviderAndId('custom-one', 12345));
+        $this->assertNull(self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider')->findWithProviderAndId('custom-one', 12345));
     }
 
     public function testDeleteSetMailToNullAndRemovesSessions()
@@ -71,7 +61,7 @@ class userTest extends \PhraseanetTestCase
 
     public function testGetPref()
     {
-        $user = $this->get_user();
+        $user = self::$DI['app']['manipulator.user']->createUser('notif_ref_test', 'pass');
 
         $this->assertNull($user->getSettingValue('lalala'));
         $this->assertSame('popo', $user->getSettingValue('lalala', 'popo'));
@@ -80,6 +70,8 @@ class userTest extends \PhraseanetTestCase
 
     public function testGetPrefWithACustomizedConf()
     {
+        $user = self::$DI['app']['manipulator.user']->createUser('notif_ref_test', 'pass');
+
         $data = self::$DI['app']['conf']->get(['user-settings']);
 
         self::$DI['app']['conf']->set('user-settings', [
@@ -105,7 +97,7 @@ class userTest extends \PhraseanetTestCase
 
     public function testSetPref()
     {
-        $user = $this->get_user();
+        $user = self::$DI['app']['manipulator.user']->createUser('notif_ref_test', 'pass');
 
         $user->setSettingValue('prout', 'pooop');
         $this->assertSame('pooop', $user->getSettingValue('prout'));
@@ -113,28 +105,19 @@ class userTest extends \PhraseanetTestCase
 
     public function testGetNotificationPref()
     {
-        $user = $this->get_user();
+        $user = self::$DI['app']['manipulator.user']->createUser('notif_ref_test', 'pass');
 
-        $this->assertSame('1', $user->getNotificationSettingValue('eventsmanager_notify_push'));
+        $this->assertTrue($user->getNotificationSettingValue('eventsmanager_notify_push'));
     }
 
     public function testNotificationPref()
     {
-        $user = $this->get_user();
+        $user = self::$DI['app']['manipulator.user']->createUser('notif_ref_test', 'pass');
 
-        $this->assertSame('1', $user->getNotificationSettingValue('eventsmanager_notify_push'));
+        $this->assertTrue($user->getNotificationSettingValue('eventsmanager_notify_push'));
         $user->setNotificationSettingValue('eventsmanager_notify_push', false);
-        $this->assertSame('0', $user->getNotificationSettingValue('eventsmanager_notify_push'));
+        $this->assertFalse($user->getNotificationSettingValue('eventsmanager_notify_push'));
         $user->setNotificationSettingValue('eventsmanager_notify_push', true);
-        $this->assertSame('1', $user->getNotificationSettingValue('eventsmanager_notify_push'));
-    }
-
-    private function get_user()
-    {
-        if (null !== $user = self::$DI['app']['manipulator.user']->getRepository()->findByLogin('notif_ref_test')) {
-            self::$DI['app']['model.user-manager']->delete($user);
-        }
-
-        return self::$DI['app']['manipulator.user']->create('notif_ref_test', mt_rand(), null, false);
+        $this->assertTrue($user->getNotificationSettingValue('eventsmanager_notify_push'));
     }
 }

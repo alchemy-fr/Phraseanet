@@ -28,7 +28,7 @@ class StoryWZRepository extends EntityRepository
 
     public function findByUser(Application $app, User $user, $sort)
     {
-        $dql = 'SELECT s FROM Phraseanet:StoryWZ s WHERE s.usr_id = :usr_id ';
+        $dql = 'SELECT s FROM Alchemy\Phrasea\Model\Entities\StoryWZ s WHERE s.user = :usr_id ';
 
         if ($sort == 'date') {
             $dql .= ' ORDER BY s.created DESC';
@@ -98,7 +98,7 @@ class StoryWZRepository extends EntityRepository
     {
         $story = $this->findOneBy(
             [
-                'usr_id'    => $user->getId(),
+                'user'    => $user->getId(),
                 'sbas_id'   => $Story->get_sbas_id(),
                 'record_id' => $Story->get_record_id(),
             ]

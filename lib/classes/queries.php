@@ -189,8 +189,8 @@ class queries
         $history = '<ul>';
 
         $queries = $app['EM']
-            ->getRepository('Phraseanet:UserQuery')
-            ->findBy(['usrId' => $usrId], ['created' => 'ASC'], 25, 0);
+            ->getRepository('Alchemy\Phrasea\Model\Entities\UserQuery')
+            ->findBy(['user' => $usrId], ['created' => 'ASC'], 25, 0);
 
         foreach ($queries as $query) {
             $history .= '<li onclick="doSpecialSearch(\'' . str_replace(["'", '"'], ["\'", '&quot;'], $query->getQuery()) . '\')">' . $query->getQuery() . '</li>';

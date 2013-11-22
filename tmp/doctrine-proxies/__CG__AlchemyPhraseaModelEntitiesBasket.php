@@ -64,10 +64,10 @@ class Basket extends \Alchemy\Phrasea\Model\Entities\Basket implements \Doctrine
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'name', 'description', 'usr_id', 'is_read', 'pusher_id', 'archived', 'created', 'updated', 'validation', 'elements', 'order');
+            return array('__isInitialized__', 'id', 'name', 'description', 'user', 'is_read', 'pusher_id', 'archived', 'created', 'updated', 'validation', 'elements', 'order', 'pusher');
         }
 
-        return array('__isInitialized__', 'id', 'name', 'description', 'usr_id', 'is_read', 'pusher_id', 'archived', 'created', 'updated', 'validation', 'elements', 'order');
+        return array('__isInitialized__', 'id', 'name', 'description', 'user', 'is_read', 'pusher_id', 'archived', 'created', 'updated', 'validation', 'elements', 'order', 'pusher');
     }
 
     /**
@@ -235,45 +235,23 @@ class Basket extends \Alchemy\Phrasea\Model\Entities\Basket implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function setUsrId($usrId)
+    public function setUser(\Alchemy\Phrasea\Model\Entities\User $user = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUsrId', array($usrId));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', array($user));
 
-        return parent::setUsrId($usrId);
+        return parent::setUser($user);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getUsrId()
+    public function getUser()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUsrId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', array());
 
-        return parent::getUsrId();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setOwner(\User_Adapter $user)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOwner', array($user));
-
-        return parent::setOwner($user);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getOwner(\Alchemy\Phrasea\Application $app)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOwner', array($app));
-
-        return parent::getOwner($app);
+        return parent::getUser();
     }
 
     /**
@@ -323,7 +301,7 @@ class Basket extends \Alchemy\Phrasea\Model\Entities\Basket implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function setPusher(\User_Adapter $user)
+    public function setPusher(\Alchemy\Phrasea\Model\Entities\User $user)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPusher', array($user));

@@ -230,7 +230,7 @@ class set_export extends set_abstract
             $lst_base_id = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base());
 
             if ($hasadminright) {
-                $sql = "SELECT Users.id AS usr_id ,Users.login AS usr_login ,Users.mail AS usr_mail, FtpCredential.*
+                $sql = "SELECT Users.id AS usr_id ,Users.login AS usr_login ,Users.email AS usr_mail, FtpCredential.*
                   FROM (
                     FtpCredential INNER JOIN Users ON (
                         FtpCredential.active = 1 AND FtpCredential.user_id = Users.id
@@ -244,7 +244,7 @@ class set_export extends set_abstract
                   GROUP BY Users.id  ";
                 $params = [];
             } elseif ($this->app['conf']->get(['registry', 'ftp', 'ftp-user-access'])) {
-                $sql = "SELECT Users.id AS usr_id ,Users.login AS usr_login ,Users.mail AS usr_mail, FtpCredential.*
+                $sql = "SELECT Users.id AS usr_id ,Users.login AS usr_login ,Users.email AS usr_mail, FtpCredential.*
                   FROM (
                     FtpCredential INNER JOIN Users ON (
                         FtpCredential.active = 1 AND FtpCredential.id = Users.id

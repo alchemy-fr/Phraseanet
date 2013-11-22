@@ -64,10 +64,10 @@ class StoryWZ extends \Alchemy\Phrasea\Model\Entities\StoryWZ implements \Doctri
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'sbas_id', 'record_id', 'usr_id', 'created');
+            return array('__isInitialized__', 'id', 'sbas_id', 'record_id', 'user', 'created');
         }
 
-        return array('__isInitialized__', 'id', 'sbas_id', 'record_id', 'usr_id', 'created');
+        return array('__isInitialized__', 'id', 'sbas_id', 'record_id', 'user', 'created');
     }
 
     /**
@@ -257,29 +257,7 @@ class StoryWZ extends \Alchemy\Phrasea\Model\Entities\StoryWZ implements \Doctri
     /**
      * {@inheritDoc}
      */
-    public function setUsrId($usrId)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUsrId', array($usrId));
-
-        return parent::setUsrId($usrId);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getUsrId()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUsrId', array());
-
-        return parent::getUsrId();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setUser(\User_Adapter $user)
+    public function setUser(\Alchemy\Phrasea\Model\Entities\User $user = NULL)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', array($user));
@@ -290,12 +268,12 @@ class StoryWZ extends \Alchemy\Phrasea\Model\Entities\StoryWZ implements \Doctri
     /**
      * {@inheritDoc}
      */
-    public function getUser(\Alchemy\Phrasea\Application $app)
+    public function getUser()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', array($app));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', array());
 
-        return parent::getUser($app);
+        return parent::getUser();
     }
 
     /**

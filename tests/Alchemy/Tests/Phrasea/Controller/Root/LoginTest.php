@@ -589,80 +589,80 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     {
         return [
             [[//required field missing
-                    "password" => [
-                        'password' => 'password',
-                        'confirm'  => 'password'
-                    ],
-                    "collections"     => null,
-                ], [], 1],
+                "password" => [
+                    'password' => 'password',
+                    'confirm'  => 'password'
+                ],
+                "collections"     => null,
+            ], [], 1],
             [[//required extra-field missing
-                    "password" => [
-                        'password' => 'password',
-                        'confirm'  => 'password'
-                    ],
-                    "email"           => $this->generateEmail(),
-                    "collections"     => null
-                ], [
-                    [
-                        'name'     => 'login',
-                        'required' => true,
-                    ]
-                ], 1],
+                "password" => [
+                    'password' => 'password',
+                    'confirm'  => 'password'
+                ],
+                "email"           => $this->generateEmail(),
+                "collections"     => null
+            ], [
+                [
+                    'name'     => 'login',
+                    'required' => true,
+                ]
+            ], 1],
             [[//password mismatch
-                    "password" => [
-                        'password' => 'password',
-                        'confirm'  => 'passwordMismatch'
-                    ],
-                    "email"           => $this->generateEmail(),
-                    "collections"     => null
-                ], [], 1],
+                "password" => [
+                    'password' => 'password',
+                    'confirm'  => 'passwordMismatch'
+                ],
+                "email"           => $this->generateEmail(),
+                "collections"     => null
+            ], [], 1],
             [[//password tooshort
-                    "password" => [
-                        'password' => 'min',
-                        'confirm'  => 'min'
-                    ],
-                    "email"           => $this->generateEmail(),
-                    "collections"     => null
-                ], [], 1],
+                "password" => [
+                    'password' => 'min',
+                    'confirm'  => 'min'
+                ],
+                "email"           => $this->generateEmail(),
+                "collections"     => null
+            ], [], 1],
             [[//email invalid
-                    "password" => [
-                        'password' => 'password',
-                        'confirm'  => 'password'
-                    ],
-                    "email"           => 'invalid.email',
-                    "collections"     => null
-                ], [], 1],
+                "password" => [
+                    'password' => 'password',
+                    'confirm'  => 'password'
+                ],
+                "email"           => 'invalid.email',
+                "collections"     => null
+            ], [], 1],
             [[//login exists
-                    "login"           => null,
-                    "password" => [
-                        'password' => 'password',
-                        'confirm'  => 'password'
-                    ],
-                    "email"           => $this->generateEmail(),
-                    "collections"     => null
-                ], [
-                    [
-                        'name'     => 'login',
-                        'required' => true,
-                    ]
-                ], 1],
+                "login"           => null,
+                "password" => [
+                    'password' => 'password',
+                    'confirm'  => 'password'
+                ],
+                "email"           => $this->generateEmail(),
+                "collections"     => null
+            ], [
+                [
+                    'name'     => 'login',
+                    'required' => true,
+                ]
+            ], 1],
             [[//mails exists
-                    "password" => [
-                        'password' => 'password',
-                        'confirm'  => 'password'
-                    ],
-                    "email"           => null,
-                    "collections"     => null
-                ], [], 1],
+                "password" => [
+                    'password' => 'password',
+                    'confirm'  => 'password'
+                ],
+                "email"           => null,
+                "collections"     => null
+            ], [], 1],
             [[//tou declined
-                    "password" => [
-                        'password' => 'password',
-                        'confirm'  => 'password'
-                    ],
-                    "email"           => $this->generateEmail(),
-                    "collections"     => null,
-                    "accept-tou"      => '1'
-                ], [], 1]
+                "password" => [
+                    'password' => 'password',
+                    'confirm'  => 'password'
+                ],
+                "email"           => $this->generateEmail(),
+                "collections"     => null,
+                "accept-tou"      => '1'
+            ], [], 1]
         ];
     }
 
@@ -670,152 +670,152 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     {
         return [
             [[
-                    "password" => [
-                        'password' => 'password',
-                        'confirm'  => 'password'
-                    ],
-                    "email"           => $this->generateEmail(),
-                    "collections"     => null,
-                ], []],
+                "password" => [
+                    'password' => 'password',
+                    'confirm'  => 'password'
+                ],
+                "email"           => $this->generateEmail(),
+                "collections"     => null,
+            ], []],
             [[
-                    "password" => [
-                        'password' => 'password',
-                        'confirm'  => 'password'
-                    ],
-                    "email"           => $this->generateEmail(),
-                    "collections"     => null
-                ], [
-                    [
-                        'name'     => 'login',
-                        'required' => false,
-                    ]
-                ]],
+                "password" => [
+                    'password' => 'password',
+                    'confirm'  => 'password'
+                ],
+                "email"           => $this->generateEmail(),
+                "collections"     => null
+            ], [
+                [
+                    'name'     => 'login',
+                    'required' => false,
+                ]
+            ]],
             [[//extra-fields are not required
-                    "password" => [
-                        'password' => 'password',
-                        'confirm'  => 'password'
-                    ],
-                    "email"           => $this->generateEmail(),
-                    "collections"     => null
-                ], [
-                    [
-                        'name' => 'login',
-                        'required' => false,
-                    ],
-                    [
-                        'name' => 'gender',
-                        'required' => false,
-                    ],
-                    [
-                        'name' => 'firstname',
-                        'required' => false,
-                    ],
-                    [
-                        'name' => 'lastname',
-                        'required' => false,
-                    ],
-                    [
-                        'name' => 'address',
-                        'required' => false,
-                    ],
-                    [
-                        'name' => 'zipcode',
-                        'required' => false,
-                    ],
-                    [
-                        'name' => 'geonameid',
-                        'required' => false,
-                    ],
-                    [
-                        'name' => 'position',
-                        'required' => false,
-                    ],
-                    [
-                        'name' => 'company',
-                        'required' => false,
-                    ],
-                    [
-                        'name' => 'job',
-                        'required' => false,
-                    ],
-                    [
-                        'name' => 'tel',
-                        'required' => false,
-                    ],
-                    [
-                        'name' => 'fax',
-                        'required' => false,
-                    ]
-                ]],
+                "password" => [
+                    'password' => 'password',
+                    'confirm'  => 'password'
+                ],
+                "email"           => $this->generateEmail(),
+                "collections"     => null
+            ], [
+                [
+                    'name' => 'login',
+                    'required' => false,
+                ],
+                [
+                    'name' => 'gender',
+                    'required' => false,
+                ],
+                [
+                    'name' => 'firstname',
+                    'required' => false,
+                ],
+                [
+                    'name' => 'lastname',
+                    'required' => false,
+                ],
+                [
+                    'name' => 'address',
+                    'required' => false,
+                ],
+                [
+                    'name' => 'zipcode',
+                    'required' => false,
+                ],
+                [
+                    'name' => 'geonameid',
+                    'required' => false,
+                ],
+                [
+                    'name' => 'position',
+                    'required' => false,
+                ],
+                [
+                    'name' => 'company',
+                    'required' => false,
+                ],
+                [
+                    'name' => 'job',
+                    'required' => false,
+                ],
+                [
+                    'name' => 'tel',
+                    'required' => false,
+                ],
+                [
+                    'name' => 'fax',
+                    'required' => false,
+                ]
+            ]],
             [[//extra-fields are required
-                    "password" => [
-                        'password' => 'password',
-                        'confirm'  => 'password'
-                    ],
-                    "email"           => $this->generateEmail(),
-                    "collections"     => null,
-                    "login" => 'login-'.\random::generatePassword(),
-                    "gender" => '1',
-                    "firstname" => 'romain',
-                    "lastname" => 'neutron',
-                    "address" => '30 place saint georges',
-                    "zipcode" => 'zip',
-                    "geonameid" => 123456,
-                    "position" => 'position',
-                    "company" => 'company',
-                    "job" => 'job',
-                    "tel" => 'tel',
-                    "fax" => 'fax',
-                ], [
-                    [
-                        'name' => 'login',
-                        'required' => true,
-                    ],
-                    [
-                        'name' => 'gender',
-                        'required' => true,
-                    ],
-                    [
-                        'name' => 'firstname',
-                        'required' => true,
-                    ],
-                    [
-                        'name' => 'lastname',
-                        'required' => true,
-                    ],
-                    [
-                        'name' => 'address',
-                        'required' => true,
-                    ],
-                    [
-                        'name' => 'zipcode',
-                        'required' => true,
-                    ],
-                    [
-                        'name' => 'geonameid',
-                        'required' => true,
-                    ],
-                    [
-                        'name' => 'position',
-                        'required' => true,
-                    ],
-                    [
-                        'name' => 'company',
-                        'required' => true,
-                    ],
-                    [
-                        'name' => 'job',
-                        'required' => true,
-                    ],
-                    [
-                        'name' => 'tel',
-                        'required' => true,
-                    ],
-                    [
-                        'name' => 'fax',
-                        'required' => true,
-                    ]
-                ]],
+                "password" => [
+                    'password' => 'password',
+                    'confirm'  => 'password'
+                ],
+                "email"           => $this->generateEmail(),
+                "collections"     => null,
+                "login" => 'login-'.\random::generatePassword(),
+                "gender" => User::GENDER_MR,
+                "firstname" => 'romain',
+                "lastname" => 'neutron',
+                "address" => '30 place saint georges',
+                "zipcode" => 'zip',
+                "geonameid" => 123456,
+                "position" => 'position',
+                "company" => 'company',
+                "job" => 'job',
+                "tel" => 'tel',
+                "fax" => 'fax',
+            ], [
+                [
+                    'name' => 'login',
+                    'required' => true,
+                ],
+                [
+                    'name' => 'gender',
+                    'required' => true,
+                ],
+                [
+                    'name' => 'firstname',
+                    'required' => true,
+                ],
+                [
+                    'name' => 'lastname',
+                    'required' => true,
+                ],
+                [
+                    'name' => 'address',
+                    'required' => true,
+                ],
+                [
+                    'name' => 'zipcode',
+                    'required' => true,
+                ],
+                [
+                    'name' => 'geonameid',
+                    'required' => true,
+                ],
+                [
+                    'name' => 'position',
+                    'required' => true,
+                ],
+                [
+                    'name' => 'company',
+                    'required' => true,
+                ],
+                [
+                    'name' => 'job',
+                    'required' => true,
+                ],
+                [
+                    'name' => 'tel',
+                    'required' => true,
+                ],
+                [
+                    'name' => 'fax',
+                    'required' => true,
+                ]
+            ]],
         ];
     }
 
@@ -830,7 +830,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $entity = $this->getMock('Alchemy\Phrasea\Model\Entities\UsrAuthProvider');
         $entity->expects($this->any())
             ->method('getUser')
-            ->with(self::$DI['app'])
             ->will($this->returnValue(self::$DI['user']));
 
         $token = new Token($provider, 42);
@@ -846,7 +845,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                 'confirm'  => 'password'
             ],
             "email"           => $this->generateEmail(),
-            "accept-tou"      => '1',
             "collections"     => null,
             "provider-id"     => 'provider-test',
         ]);
@@ -864,7 +862,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         }
 
         self::$DI['client']->request('POST', '/login/register-classic/', $parameters);
-
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertEquals('/prod/', self::$DI['client']->getResponse()->headers->get('location'));
     }
@@ -917,7 +914,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             ->will($this->throwException(new NotAuthenticatedException('Not authenticated')));
 
         $parameters = array_merge(['_token' => 'token'], [
-           "password" => [
+            "password" => [
                 'password' => 'password',
                 'confirm'  => 'password'
             ],
@@ -946,7 +943,11 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('/login/register/', self::$DI['client']->getResponse()->headers->get('location'));
     }
 
-    public function testPostRegisterWithProviderId()
+    /**
+     *
+     * @environment prod
+     */
+    public function testPostRegisterWithProviderIdAndAccountNotCreatedYet()
     {
         self::$DI['app']['registration.fields'] = [];
         $this->logout(self::$DI['app']);
@@ -965,7 +966,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                 'confirm'  => 'password'
             ],
             "email"           => $this->generateEmail(),
-            "accept-tou"      => '1',
             "collections"     => null,
             "provider-id"     => 'provider-test',
         ]);
@@ -978,6 +978,41 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $provider->expects($this->any())
             ->method('getToken')
             ->will($this->returnValue($token));
+
+        $repo = $this->getMockBuilder('Doctrine\ORM\EntityRepository\UsrAuthProviderRepository')
+            ->setMethods(['findWithProviderAndId'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $repo->expects($this->any())
+            ->method('findWithProviderAndId')
+            ->with('provider-test', $token->getId())
+            ->will($this->returnValue(null));
+
+        $em = self::$DI['app']['EM'];
+
+        self::$DI['app']['EM'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->setMethods(['getRepository', 'getClassMetadata', 'persist', 'flush', 'getConnection', 'getUnitOfWork'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        self::$DI['app']['EM']->expects($this->at(0))
+            ->method('getRepository')
+            ->with('Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
+            ->will($this->returnValue($repo));
+
+        self::$DI['app']['EM']->expects($this->any())
+            ->method('getClassMetadata')
+            ->with($this->equalTo('Alchemy\Phrasea\Model\Entities\User'))
+            ->will($this->returnValue($em->getClassMetadata('Alchemy\Phrasea\Model\Entities\User')));
+
+        self::$DI['app']['EM']->expects($this->any())
+            ->method('getConnection')
+            ->will($this->returnValue($em->getConnection()));
+
+        self::$DI['app']['EM']->expects($this->any())
+            ->method('getUnitOfWork')
+            ->will($this->returnValue($em->getUnitOfWork()));
 
         foreach ($parameters as $key => $parameter) {
             if ('collections' === $key && null === $parameter) {
@@ -996,27 +1031,23 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         }
 
         self::$DI['client']->request('POST', '/login/register-classic/', $parameters);
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
 
-        if (null === $user =  $user= self::$DI['app']['manipulator.user']->getRepository()->findByEmail($parameters['email'])) {
+        if (null === $user = self::$DI['app']['manipulator.user']->getRepository()->findByEmail($parameters['email'])) {
             $this->fail('User not created');
         }
-
-
-        $ret = self::$DI['app']['EM']->getRepository('\Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
-            ->findBy(['usr_id' => $user->getId(), 'provider' => 'provider-test']);
-        $this->assertCount(1, $ret);
 
         self::$DI['app']['model.user-manager']->delete($user);
 
         $this->assertGreaterThan(0, $emails['Alchemy\Phrasea\Notification\Mail\MailInfoUserRegistered']);
         $this->assertEquals(1, $emails['Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation']);
-        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertFlashMessagePopulated(self::$DI['app'], 'info', 1);
         $this->assertEquals('/login/', self::$DI['client']->getResponse()->headers->get('location'));
     }
 
     /**
      * @dataProvider provideRegistrationData
+     * @environment prod
      */
     public function testPostRegister($parameters, $extraParameters)
     {
@@ -1054,14 +1085,12 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         if (null === $user =  $user= self::$DI['app']['manipulator.user']->getRepository()->findByEmail($parameters['email'])) {
             $this->fail('User not created');
         }
-
-        self::$DI['app']['model.user-manager']->delete($user);
-
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertGreaterThan(0, $emails['Alchemy\Phrasea\Notification\Mail\MailInfoUserRegistered']);
         $this->assertEquals(1, $emails['Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation']);
-        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertFlashMessagePopulated(self::$DI['app'], 'info', 1);
         $this->assertEquals('/login/', self::$DI['client']->getResponse()->headers->get('location'));
+        self::$DI['app']['model.user-manager']->delete($user);
     }
 
     /**
@@ -1123,21 +1152,20 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     public function testAuthenticate()
     {
         $password = \random::generatePassword();
-
         $login = self::$DI['app']['authentication']->getUser()->getLogin();
         self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
         self::$DI['app']['authentication']->getUser()->setMailLocked(false);
+        self::$DI['app']['EM']->persist(self::$DI['app']['authentication']->getUser());
+        self::$DI['app']['EM']->flush();
 
         $this->logout(self::$DI['app']);
 
-        self::$DI['client'] = new Client(self::$DI['app'], []);
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
         self::$DI['client']->request('POST', '/login/authenticate/', [
             'login' => $login,
             'password'   => $password,
             '_token' => 'token',
         ]);
-
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertRegExp('/^\/prod\/$/', self::$DI['client']->getResponse()->headers->get('Location'));
     }
@@ -1219,18 +1247,13 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGuestAuthenticate()
     {
-        if (null === $user= self::$DI['app']['manipulator.user']->getRepository()->findByLogin(User::USER_GUEST)) {
-            $this->fail('User not created');
-        }
-
-        self::$DI['app']['acl']->get($user)->give_access_to_base([self::$DI['collection']->get_base_id()]);
+        $guest = self::$DI['app']['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
+        self::$DI['app']['acl']->get($guest)->give_access_to_base([self::$DI['collection']->get_base_id()]);
 
         $this->logout(self::$DI['app']);
 
-        self::$DI['client'] = new Client(self::$DI['app'], []);
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
         self::$DI['client']->request('POST', '/login/authenticate/guest/');
-
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertRegExp('/^\/prod\/$/', self::$DI['client']->getResponse()->headers->get('Location'));
 
@@ -1252,11 +1275,8 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             $this->assertEquals($context, $event->getContext()->getContext());
         });
 
-        if (null === $user= self::$DI['app']['manipulator.user']->getRepository()->findByLogin(User::USER_GUEST)) {
-            $this->fail('User not created');
-        }
-
-        self::$DI['app']['acl']->get($user)->give_access_to_base([self::$DI['collection']->get_base_id()]);
+        $guest = self::$DI['app']['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
+        self::$DI['app']['acl']->get($guest)->give_access_to_base([self::$DI['collection']->get_base_id()]);
 
         $this->logout(self::$DI['app']);
 
@@ -1272,12 +1292,14 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGuestAuthenticateWithGetMethod()
     {
+        $guest = self::$DI['app']['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
+        self::$DI['app']['acl']->get($guest)->give_access_to_base([self::$DI['collection']->get_base_id()]);
+
         $this->logout(self::$DI['app']);
 
         self::$DI['client'] = new Client(self::$DI['app'], []);
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
         self::$DI['client']->request('GET', '/login/authenticate/guest/');
-
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertRegExp('/^\/prod\/$/', self::$DI['client']->getResponse()->headers->get('Location'));
 
@@ -1455,7 +1477,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $entity = $this->getMock('Alchemy\Phrasea\Model\Entities\UsrAuthProvider');
         $entity->expects($this->any())
             ->method('getUser')
-            ->with(self::$DI['app'])
             ->will($this->returnValue(self::$DI['user']));
 
         $token = new Token($provider, 42);

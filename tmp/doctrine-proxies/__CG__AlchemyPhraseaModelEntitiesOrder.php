@@ -64,10 +64,10 @@ class Order extends \Alchemy\Phrasea\Model\Entities\Order implements \Doctrine\O
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'usrId', 'orderUsage', 'todo', 'deadline', 'createdOn', 'elements', 'basket');
+            return array('__isInitialized__', 'id', 'user', 'orderUsage', 'todo', 'deadline', 'createdOn', 'elements', 'basket');
         }
 
-        return array('__isInitialized__', 'id', 'usrId', 'orderUsage', 'todo', 'deadline', 'createdOn', 'elements', 'basket');
+        return array('__isInitialized__', 'id', 'user', 'orderUsage', 'todo', 'deadline', 'createdOn', 'elements', 'basket');
     }
 
     /**
@@ -191,23 +191,23 @@ class Order extends \Alchemy\Phrasea\Model\Entities\Order implements \Doctrine\O
     /**
      * {@inheritDoc}
      */
-    public function setUsrId($usrId)
+    public function setUser(\Alchemy\Phrasea\Model\Entities\User $user = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUsrId', array($usrId));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', array($user));
 
-        return parent::setUsrId($usrId);
+        return parent::setUser($user);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getUsrId()
+    public function getUser()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUsrId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', array());
 
-        return parent::getUsrId();
+        return parent::getUser();
     }
 
     /**
@@ -285,17 +285,6 @@ class Order extends \Alchemy\Phrasea\Model\Entities\Order implements \Doctrine\O
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getElements', array());
 
         return parent::getElements();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getUser(\Alchemy\Phrasea\Application $app)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', array($app));
-
-        return parent::getUser($app);
     }
 
     /**

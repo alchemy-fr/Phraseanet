@@ -33,7 +33,7 @@
               <input type="hidden" name="usr_id" value="{{ owner.getUser().getId() }}" />
             </td>
             <td style="padding-right:10px;min-width:100px;">
-              {% if app['authentication'].getUser().ggetId()== owner.getUser().gegetId()}
+              {% if app['authentication'].getUser().getId() == owner.getUser().getId() %}
                 {% if owner.getRole() == constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
                   {{ 'You are Admin' | trans }}
                 {% endif %}
@@ -53,7 +53,7 @@
               {% endif %}
             </td>
             <td style="width:15px">
-               {% if app['authentication'].getUser().getgetId() owner.getUser().getId() %}
+               {% if app['authentication'].getUser().getId() == owner.getUser().getId() %}
                   <a href="#" class="deleter">
                     <img src="/skins/prod/Push/close_badge.png" title="{{ 'Remove' | trans }}"/>
                   </a>

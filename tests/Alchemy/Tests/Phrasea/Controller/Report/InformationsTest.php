@@ -150,12 +150,11 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'from'          => 'GEN',
-            'on'            => 'usr_mail',
+            'on'            => 'email',
             'user'          => self::$DI['user']->getEmail()
         ]);
 
         $response = self::$DI['client']->getResponse();
-
         $this->assertTrue($response->isOk());
     }
 
@@ -167,7 +166,7 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'from'          => 'CNX',
-            'on'            => 'usr_mail',
+            'on'            => 'email',
             'user'          => self::$DI['user']->getEmail()
         ]);
 
@@ -184,7 +183,7 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'from'          => 'ASK',
-            'on'            => 'usr_mail',
+            'on'            => 'email',
             'user'          => self::$DI['user']->getEmail()
         ]);
 
