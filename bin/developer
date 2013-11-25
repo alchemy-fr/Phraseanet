@@ -75,6 +75,8 @@ if ($cli['configuration.store']->isSetup()) {
     }
 }
 
+$cli->command(new \Alchemy\Phrasea\Command\Developer\TranslationDumper());
+
 $cli->command(new InstallAll());
 $cli->command(new BowerInstall());
 $cli->command(new ComposerInstall());
