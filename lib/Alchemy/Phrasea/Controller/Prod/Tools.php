@@ -111,7 +111,7 @@ class Tools implements ControllerProviderInterface
 
         $controllers->post('/hddoc/', function (Application $app, Request $request) {
             $success = false;
-            $message = _('An error occured');
+            $message = $app->trans('An error occured');
 
             if ($file = $request->files->get('newHD')) {
 
@@ -153,12 +153,12 @@ class Tools implements ControllerProviderInterface
                         unlink($tempoFile);
                         rmdir($tempoDir);
                         $success = true;
-                        $message = _('Document has been successfully substitued');
+                        $message = $app->trans('Document has been successfully substitued');
                     } catch (\Exception $e) {
-                        $message = _('file is not valid');
+                        $message = $app->trans('file is not valid');
                     }
                 } else {
-                    $message = _('file is not valid');
+                    $message = $app->trans('file is not valid');
                 }
             } else {
                 $app->abort(400, 'Missing file parameter');
@@ -172,7 +172,7 @@ class Tools implements ControllerProviderInterface
 
         $controllers->post('/chgthumb/', function (Application $app, Request $request) {
             $success = false;
-            $message = _('An error occured');
+            $message = $app->trans('An error occured');
 
             if ($file = $request->files->get('newThumb')) {
 
@@ -207,12 +207,12 @@ class Tools implements ControllerProviderInterface
                         unlink($tempoFile);
                         rmdir($tempoDir);
                         $success = true;
-                        $message = _('Thumbnail has been successfully substitued');
+                        $message = $app->trans('Thumbnail has been successfully substitued');
                     } catch (\Exception $e) {
-                        $message = _('file is not valid');
+                        $message = $app->trans('file is not valid');
                     }
                 } else {
-                    $message = _('file is not valid');
+                    $message = $app->trans('file is not valid');
                 }
             } else {
                 $app->abort(400, 'Missing file parameter');
@@ -236,7 +236,7 @@ class Tools implements ControllerProviderInterface
                 ];
                 $return['datas'] = $app['twig']->render($template, $var);
             } catch (\Exception $e) {
-                $return['datas'] = _('an error occured');
+                $return['datas'] = $app->trans('an error occured');
                 $return['error'] = true;
             }
 

@@ -140,16 +140,16 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
             $checkClassName = (string) $reason->checkClassName;
 
             if (class_exists($checkClassName)) {
-                $reasons[] = $checkClassName::getMessage();
+                $reasons[] = $checkClassName::getMessage($this->app['translator']);
             }
         }
 
         $filename = (string) $sx->filename;
 
-        $text = sprintf(_('The document %s has been quarantined'), $filename);
+        $text = $this->app->trans('The document %name% has been quarantined', array('%name%' => $filename));
 
         if ( ! ! count($reasons)) {
-            $text .= ' ' . sprintf(_('for the following reasons : %s'), implode(', ', $reasons));
+            $text .= ' ' . $this->app->trans('for the following reasons : %reasons%', array('%reasons%' => implode(', ', $reasons)));
         }
 
         $ret = ['text'  => $text, 'class' => ''];
@@ -163,7 +163,7 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
      */
     public function get_name()
     {
-        return _('Quarantine notificaton');
+        return $this->app->trans('Quarantine notificaton');
     }
 
     /**
@@ -172,7 +172,7 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
      */
     public function get_description()
     {
-        return _('be notified when a document is placed in quarantine');
+        return $this->app->trans('be notified when a document is placed in quarantine');
     }
 
     /**

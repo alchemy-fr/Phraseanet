@@ -48,7 +48,7 @@ class BasketElementRepository extends EntityRepository
 
         /* @var $element BasketElement */
         if (null === $element) {
-            throw new NotFoundHttpException(_('Element is not found'));
+            throw new NotFoundHttpException('Element is not found');
         }
 
         return $element;

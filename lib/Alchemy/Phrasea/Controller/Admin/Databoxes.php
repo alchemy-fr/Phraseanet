@@ -74,7 +74,7 @@ class Databoxes implements ControllerProviderInterface
                 'version'     => 'unknown',
                 'image'       => '/skins/icons/db-remove.png',
                 'server_info' => '',
-                'name'        => _('Unreachable server')
+                'name'        => $app->trans('Unreachable server')
             ];
 
             try {
@@ -93,31 +93,31 @@ class Databoxes implements ControllerProviderInterface
 
         switch ($errorMsg = $request->query->get('error')) {
             case 'scheduler-started' :
-                $errorMsg = _('Veuillez arreter le planificateur avant la mise a jour');
+                $errorMsg = $app->trans('Veuillez arreter le planificateur avant la mise a jour');
                 break;
             case 'already-started' :
-                $errorMsg = _('The upgrade is already started');
+                $errorMsg = $app->trans('The upgrade is already started');
                 break;
             case 'unknow' :
-                $errorMsg = _('An error occured');
+                $errorMsg = $app->trans('An error occured');
                 break;
             case 'bad-email' :
-                $errorMsg = _('Please fix the database before starting');
+                $errorMsg = $app->trans('Please fix the database before starting');
                 break;
             case 'special-chars' :
-                $errorMsg = _('Database name can not contains special characters');
+                $errorMsg = $app->trans('Database name can not contains special characters');
                 break;
             case 'base-failed' :
-                $errorMsg = _('Base could not be created');
+                $errorMsg = $app->trans('Base could not be created');
                 break;
             case 'database-failed' :
-                $errorMsg = _('Database does not exists or can not be accessed');
+                $errorMsg = $app->trans('Database does not exists or can not be accessed');
                 break;
             case 'no-empty' :
-                $errorMsg = _('Database can not be empty');
+                $errorMsg = $app->trans('Database can not be empty');
                 break;
             case 'mount-failed' :
-                $errorMsg = _('Database could not be mounted');
+                $errorMsg = $app->trans('Database could not be mounted');
                 break;
         }
 

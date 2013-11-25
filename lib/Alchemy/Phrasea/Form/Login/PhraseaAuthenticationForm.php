@@ -20,7 +20,7 @@ class PhraseaAuthenticationForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('login', 'text', [
-            'label'       => _('Login'),
+            'label'       => 'Login',
             'required'    => true,
             'disabled'    => $options['disabled'],
             'constraints' => [
@@ -29,7 +29,7 @@ class PhraseaAuthenticationForm extends AbstractType
         ]);
 
         $builder->add('password', 'password', [
-            'label'       => _('Password'),
+            'label'       => 'Password',
             'required'    => true,
             'disabled'    => $options['disabled'],
             'constraints' => [
@@ -38,7 +38,7 @@ class PhraseaAuthenticationForm extends AbstractType
         ]);
 
         $builder->add('remember-me', 'checkbox', [
-            'label'    => _('Remember me'),
+            'label'    => 'Remember me',
             'mapped'   => false,
             'required' => false,
             'attr'     => [

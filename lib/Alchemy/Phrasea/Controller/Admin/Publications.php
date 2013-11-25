@@ -107,7 +107,7 @@ class Publications implements ControllerProviderInterface
             $feed = $app["EM"]->find('Alchemy\Phrasea\Model\Entities\Feed', $request->attributes->get('id'));
 
             if (!$feed->isOwner($app['authentication']->getUser())) {
-                return $app->redirectPath('admin_feeds_feed', ['id' => $request->attributes->get('id'), 'error' =>  _('You are not the owner of this feed, you can not edit it')]);
+                return $app->redirectPath('admin_feeds_feed', ['id' => $request->attributes->get('id'), 'error' =>  $app->trans('You are not the owner of this feed, you can not edit it')]);
             }
         })
             ->bind('admin_feeds_feed_update')
@@ -179,7 +179,7 @@ class Publications implements ControllerProviderInterface
 
                 $datas['success'] = true;
             } catch (\Exception $e) {
-                $datas['message'] = _('Unable to add file to Phraseanet');
+                $datas['message'] = $app->trans('Unable to add file to Phraseanet');
             }
 
             return $app->json($datas);

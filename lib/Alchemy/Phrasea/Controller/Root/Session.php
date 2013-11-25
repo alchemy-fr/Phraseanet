@@ -111,7 +111,7 @@ class Session implements ControllerProviderInterface
 
         if (in_array($app['session']->get('phraseanet.message'), ['1', null])) {
             if ($app['conf']->get(['main', 'maintenance'])) {
-                $ret['message'] .= _('The application is going down for maintenance, please logout.');
+                $ret['message'] .= $app->trans('The application is going down for maintenance, please logout.');
             }
 
             if ($app['phraseanet.registry']->get('GV_message_on')) {

@@ -4,38 +4,6 @@
 
 
 {% block menu %}
-  {#<div class="block_menu PNB" style="height:30px;bottom:auto;">
-  <table>
-    <tr>
-      <td>
-        <form name="bridge_selection">
-          <input class="bridge_all_selector" type="checkbox" value="">
-          <input type="hidden" name="elements_list" value="" />
-        </form>
-      </td>
-
-
-      {% if not elements.get_total_items is none %}
-      <td>
-        <div class="menu_nb_element">
-          {% set nb_elements = elements.get_total_items() %}
-          {% trans %}
-            {{nb_elements}} elements
-          {% endtrans %}
-        </div>
-      </td>
-      {% endif %}
-      <td>
-
-
-        {% set url = '/prod/bridge/adapter/' ~ account.get_id ~ '/' ~ adapter_action ~ '/' ~ action_type ~ '/' %}
-        {{pages.paginator(elements.get_total_page(), elements.get_current_page(), url) }}
-
-
-      </td>
-    </tr>
-  </table>
-  </div>#}
 {% endblock %}
 
 {% block response %}

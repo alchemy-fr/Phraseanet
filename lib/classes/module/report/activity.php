@@ -91,7 +91,7 @@ class module_report_activity extends module_report
     public function getActivityPerHours()
     {
         $this->result = [];
-        $this->title = _('report:: activite par heure');
+        $this->title = $this->app->trans('report:: activite par heure');
 
         $sqlBuilder = new module_report_sql($this->app, $this);
 
@@ -190,7 +190,7 @@ class module_report_activity extends module_report
             $i++;
         }
 
-        $this->title = _('report:: questions');
+        $this->title = $this->app->trans('report:: questions');
         $this->setResult($result);
 
         return $this->result;
@@ -210,7 +210,7 @@ class module_report_activity extends module_report
         $filter = $sqlBuilder->getFilters()->getReportFilter();
         $params = array_merge([], $filter['params']);
 
-        ($no_answer) ? $this->title = _('report:: questions sans reponses') : $this->title = _('report:: questions les plus posees');
+        ($no_answer) ? $this->title = $this->app->trans('report:: questions sans reponses') : $this->title = $this->app->trans('report:: questions les plus posees');
 
         $sql = "
             SELECT TRIM(tt.search) AS search, SUM(1) AS nb, ROUND(avg(tt.results)) AS nb_rep
@@ -313,7 +313,7 @@ class module_report_activity extends module_report
             $i ++;
         }
 
-        $this->title = sprintf(_('report:: Telechargement effectue par l\'utilisateur %s'), $login);
+        $this->title = $this->app->trans('report:: Telechargement effectue par l\'utilisateur %name%', array('%name%' => $login));
 
         $this->setResult($result);
 
@@ -327,7 +327,7 @@ class module_report_activity extends module_report
      */
     public function getDownloadByBaseByDay($tab = false)
     {
-        $this->title = _('report:: telechargements par jour');
+        $this->title = $this->app->trans('report:: telechargements par jour');
 
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters()->getReportFilter();
@@ -450,7 +450,7 @@ class module_report_activity extends module_report
         $i = 0;
         $total_connexion = 0;
         //set title
-        $this->title = _('report:: Detail des connexions');
+        $this->title = $this->app->trans('report:: Detail des connexions');
         //set champ
         $this->champ = [$on, 'connexion'];
         //set display
@@ -462,7 +462,7 @@ class module_report_activity extends module_report
         foreach ($rs as $row) {
             foreach ($this->champ as $key => $value) {
                 $this->result[$i][$value] = empty($row[$value]) ?
-                    "<i>" . _('report:: non-renseigne') . "</i>" : $row[$value];
+                    "<i>" . $this->app->trans('report:: non-renseigne') . "</i>" : $row[$value];
 
                 if ($value == 'connexion')
                     $total_connexion += $row['connexion'];
@@ -503,7 +503,7 @@ class module_report_activity extends module_report
         empty($on) ? $on = "user" : ""; //by default always report on user
 
         //set title
-        $this->title = _('report:: Detail des telechargements');
+        $this->title = $this->app->trans('report:: Detail des telechargements');
 
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters()->getReportFilter();
@@ -571,7 +571,7 @@ class module_report_activity extends module_report
                 $this->result[$i]['nbdoc'] = ( ! is_null($row['nb']) ? $row['nb'] : 0);
                 $this->result[$i]['poiddoc'] = ( ! is_null($row['poid']) ? $row['poid'] : 0);
                 $this->result[$i]['user'] = empty($row[$on]) ?
-                    "<i>" . _('report:: non-renseigne') . "</i>" : $row[$on];
+                    "<i>" . $this->app->trans('report:: non-renseigne') . "</i>" : $row[$on];
                 $total['nbdoc'] += $this->result[$i]['nbdoc'];
                 $total['poiddoc'] += ( ! is_null($row['poid']) ? $row['poid'] : 0);
                 $this->result[$i]['usrid'] = $row['usrid'];
@@ -585,7 +585,7 @@ class module_report_activity extends module_report
                 $this->result[$i]['poidprev'] += ( ! is_null($row['poid']) ? $row['poid'] : 0);
 
                 $this->result[$i]['user'] = empty($row[$on]) ?
-                    "<i>" . _('report:: non-renseigne') . "</i>" : $row[$on];
+                    "<i>" . $this->app->trans('report:: non-renseigne') . "</i>" : $row[$on];
                 $total['nbprev'] += ( ! is_null($row['nb']) ? $row['nb'] : 0);
                 $total['poidprev'] += ( ! is_null($row['poid']) ? $row['poid'] : 0);
                 $this->result[$i]['usrid'] = $row['usrid'];

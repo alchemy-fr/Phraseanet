@@ -302,25 +302,17 @@
                                         {{error}}
                                       </p>
                                     {% endif %}
-                                    {% trans %}
-                                      Bonjour, vous etes sur le point d'installer Phraseanet.
-                                    {% endtrans %}
+                                    {% trans %}Bonjour, vous etes sur le point d'installer Phraseanet.{% endtrans %}
                                   </p>
                                   <p>
-                                    {% trans %}
-                                      Consultez en ligne les pré-requis et la configuration du serveur web
-                                    {% endtrans %}
+                                    {% trans %}Consultez en ligne les pré-requis et la configuration du serveur web{% endtrans %}
                                   </p>
                                   <p>
-                                    {% trans %}
-                                      Vous aurez besoin de spécifier un serveur MySQL, des repertoires de stockage pour vos documents, et de configurer votre serveur web pour qu'il publie certains de ces dossiers de stockage.
-                                    {% endtrans %}
+                                    {% trans %}Vous aurez besoin de spécifier un serveur MySQL, des repertoires de stockage pour vos documents, et de configurer votre serveur web pour qu'il publie certains de ces dossiers de stockage.{% endtrans %}
                                   </p>
                                   {% if warnings|length > 0 %}
                                   <p>
-                                    {% trans %}
-                                      Avant de continuer, prenez connaissance des points ci-dessous. Vous pouvez continuer sans corriger ces problèmes.
-                                    {% endtrans %}
+                                    {% trans %}Avant de continuer, prenez connaissance des points ci-dessous. Vous pouvez continuer sans corriger ces problèmes.{% endtrans %}
                                   </p>
                                   {% endif %}
                                 </td>
@@ -542,9 +534,7 @@
                     <div class="PNB10 section_title">
                       <h2>
                         3/5
-                        {% trans %}
-                          setup::Configuration de la base de compte ApplicationBox
-                        {% endtrans %}
+                        {% trans %}setup::Configuration de la base de compte ApplicationBox{% endtrans %}
                       </h2>
                     </div>
                     <div class="PNB10" style="top:50px;overflow-x:hidden;">
@@ -592,9 +582,7 @@
                                   <p style="margin:10px 0;">
                                     {% set debut_lien = '<a href="#" class="ab_opt_toggler">' %}
                                     {% set fin_lien = '</a>' %}
-                                    {% trans with {'%debut_lien%' : debut_lien, '%fin_lien%' : fin_lien} %}
-                                      Si vous aviez besoin de plus de parametres, %debut_lien%Afficher d'avantage d'options%fin_lien%
-                                    {% endtrans %}
+                                    {% trans with {'%debut_lien%' : debut_lien, '%fin_lien%' : fin_lien} %}Si vous aviez besoin de plus de parametres, %debut_lien%Afficher d'avantage d'options%fin_lien%{% endtrans %}
                                   </p>
                                 </td>
                               </tr>
@@ -618,9 +606,7 @@
                             <p>
                               {% set link_start = '<a href="https://mariadb.org/" target="_blank">' %}
                               {% set link_end = '</a>' %}
-                              {% trans with {'%link_start%' : link_start, '%link_end%' : link_end} %}
-                                Phraseanet strongly recommends the use of %link_start%MariaDB%link_end% as a replacement for MySQL.
-                              {% endtrans %}
+                              {% trans with {'%link_start%' : link_start, '%link_end%' : link_end} %}Phraseanet strongly recommends the use of %link_start%MariaDB%link_end% as a replacement for MySQL.{% endtrans %}
                               <br/>
                               <br/>
                               <a href="https://mariadb.org/" target="_blank">
@@ -714,9 +700,7 @@
                   <div class="PNB10 wrapper_left">
                     <div class="PNB10 section_title">
                       <h2>5/5
-                          {% trans %}
-                            setup::Configuration de la base de stockage DataBox
-                          {% endtrans %}
+                          {% trans %}setup::Configuration de la base de stockage DataBox{% endtrans %}
                       </h2>
                     </div>
                     <div class="PNB10" style="top:50px;overflow-x:hidden;">
@@ -762,9 +746,7 @@
                               <tr>
                                 <td colspan="2">
                                   <h3>
-                                    {% trans %}
-                                      Creation des taches
-                                    {% endtrans %}
+                                    {% trans %}Creation des taches{% endtrans %}
                                   </h3>
                                   {{ 'Phraseanet embarque un moteur de taches pour la lecture / ecriture des metadonnes, et autre operations' | trans }}
                                   <br/><br/>
@@ -826,9 +808,7 @@
         <div id="install_wait" style="display:none;" title="{{ 'Install in progess' | trans }}">
           <p>
             <img src="/skins/icons/loader111111.gif"/>
-            {% trans %}
-              Installation is currenlty processing, please wait...
-            {% endtrans %}
+            {% trans %}Installation is currenlty processing, please wait...{% endtrans %}
           </p>
         </div>
 {% endblock %}

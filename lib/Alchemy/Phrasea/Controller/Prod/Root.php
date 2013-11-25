@@ -77,7 +77,7 @@ class Root implements ControllerProviderInterface
             $queries_topics = '';
 
             if ($app['phraseanet.registry']->get('GV_client_render_topics') == 'popups') {
-                $queries_topics = \queries::dropdown_topics($app['locale.I18n']);
+                $queries_topics = \queries::dropdown_topics($app['translator'], $app['locale.I18n']);
             } elseif ($app['phraseanet.registry']->get('GV_client_render_topics') == 'tree') {
                 $queries_topics = \queries::tree_topics($app['locale.I18n']);
             }

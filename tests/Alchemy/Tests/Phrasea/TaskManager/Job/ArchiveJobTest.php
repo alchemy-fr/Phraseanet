@@ -8,6 +8,6 @@ class ArchiveJobTest extends JobTestCase
 {
     protected function getJob()
     {
-        return new ArchiveJob();
+        return new ArchiveJob(null, null, $this->createTranslatorMock());
     }
 }

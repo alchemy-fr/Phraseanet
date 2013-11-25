@@ -215,7 +215,7 @@
 
 {# Bandeau de présentation #}
 <div class="well well-small action-block">
-    <h5>{{ 'admin::base:collection: image de presentation : ' | trans }}</h5>
+    <h5>{{ 'admin::base:collection: image de presentation :' | trans }}</h5>
     {% if collection.getPresentation(bas_id) is not empty %}
         <div class="thumbnail" style="width:650px;height:200px">{{ collection.getPresentation(bas_id)| raw }}</div>
         {% if app['acl'].get(app['authentication'].getUser()).has_right_on_base(bas_id, 'manage') %}

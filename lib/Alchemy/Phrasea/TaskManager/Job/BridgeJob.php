@@ -21,7 +21,7 @@ class BridgeJob extends AbstractJob
      */
     public function getName()
     {
-        return _('Bridge uploader');
+        return $this->translator->trans('Bridge uploader');
     }
 
     /**
@@ -37,7 +37,7 @@ class BridgeJob extends AbstractJob
      */
     public function getDescription()
     {
-        return _('Keep synchronization between bridge and client APIs.');
+        return $this->translator->trans('Keep synchronization between bridge and client APIs.');
     }
 
     /**
@@ -45,7 +45,7 @@ class BridgeJob extends AbstractJob
      */
     public function getEditor()
     {
-        return new DefaultEditor();
+        return new DefaultEditor($this->translator);
     }
 
     /**

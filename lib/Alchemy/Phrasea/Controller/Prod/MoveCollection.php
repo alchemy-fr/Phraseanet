@@ -70,13 +70,13 @@ class MoveCollection implements ControllerProviderInterface
 
         try {
             if (null === $request->request->get('base_id')) {
-                $datas['message'] = _('Missing target collection');
+                $datas['message'] = $app->trans('Missing target collection');
 
                 return $app->json($datas);
             }
 
             if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($request->request->get('base_id'), 'canaddrecord')) {
-                $datas['message'] = sprintf(_("You do not have the permission to move records to %s"), \phrasea::bas_labels($move->getBaseIdDestination(), $app));
+                $datas['message'] = $app->trans("You do not have the permission to move records to %collection%", array('%collection%', \phrasea::bas_labels($request->request->get('base_id'), $app)));
 
                 return $app->json($datas);
             }
@@ -84,7 +84,7 @@ class MoveCollection implements ControllerProviderInterface
             try {
                 $collection = \collection::get_from_base_id($app, $request->request->get('base_id'));
             } catch (\Exception_Databox_CollectionNotFound $e) {
-                $datas['message'] = _('Invalid target collection');
+                $datas['message'] = $app->trans('Invalid target collection');
 
                 return $app->json($datas);
             }
@@ -103,12 +103,12 @@ class MoveCollection implements ControllerProviderInterface
 
             $ret = [
                 'success' => true,
-                'message' => _('Records have been successfuly moved'),
+                'message' => $app->trans('Records have been successfuly moved'),
             ];
         } catch (\Exception $e) {
             $ret = [
                 'success' => false,
-                'message' => _('An error occured'),
+                'message' => $app->trans('An error occured'),
             ];
         }
 

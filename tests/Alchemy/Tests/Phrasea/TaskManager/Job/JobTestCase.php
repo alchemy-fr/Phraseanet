@@ -13,7 +13,7 @@ abstract class JobTestCase extends \PhraseanetPHPUnitAbstract
         $dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
         $logger = $this->getMock('Psr\Log\LoggerInterface');
 
-        $factory = new Factory($dispatcher, $logger);
+        $factory = new Factory($dispatcher, $logger, $this->createTranslatorMock());
         $job = $this->getJob();
         $this->assertEquals(get_class($job), get_class($factory->create($job->getJobId())));
     }
@@ -45,7 +45,7 @@ abstract class JobTestCase extends \PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
      * @expectedExceptionMessage JobData must be passed to a JobInterface::Run command.
      */
     public function testRunningTheJobWithWrongValueThrowsAnException()

@@ -24,8 +24,8 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
 
     public function __construct(Application $app, eventsmanager_broker $broker)
     {
-        $this->group = _('Commande');
         parent::__construct($app, $broker);
+        $this->group = $this->app->trans('Commande');
 
         return $this;
     }
@@ -116,9 +116,7 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
         $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
 
         $ret = [
-            'text'  => sprintf(
-                _('%1$s a refuse la livraison de %2$d document(s) pour votre commande'), $sender, $n
-            )
+            'text'  => $this->app->trans('%user% a refuse la livraison de %quantity% document(s) pour votre commande', array('%user%' => $sender, '%quantity%' => $n))
             , 'class' => ''
         ];
 
@@ -127,12 +125,12 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
 
     public function get_name()
     {
-        return _('Refus d\'elements de commande');
+        return $this->app->trans('Refus d\'elements de commande');
     }
 
     public function get_description()
     {
-        return _('Refus d\'elements de commande');
+        return $this->app->trans('Refus d\'elements de commande');
     }
 
     /**

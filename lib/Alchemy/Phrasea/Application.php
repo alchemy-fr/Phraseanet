@@ -125,6 +125,7 @@ use Neutron\ReCaptcha\ReCaptchaServiceProvider;
 use PHPExiftool\PHPExiftoolServiceProvider;
 use Silex\Application as SilexApplication;
 use Silex\Application\UrlGeneratorTrait;
+use Silex\Application\TranslationTrait;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\SessionServiceProvider;
@@ -157,6 +158,7 @@ use Symfony\Component\Form\Exception\FormException;
 class Application extends SilexApplication
 {
     use UrlGeneratorTrait;
+    use TranslationTrait;
 
     private static $availableLanguages = [
         'de_DE' => 'Deutsch',
@@ -332,7 +334,10 @@ class Application extends SilexApplication
         $this->register(new PluginServiceProvider());
 
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
-            return PhraseaExceptionHandler::register($app['debug']);
+            $handler =  PhraseaExceptionHandler::register($app['debug']);
+            $handler->setTranslator($app['translator']);
+
+            return $handler;
         });
 
         $this['swiftmailer.transport'] = $this->share(function ($app) {
@@ -617,7 +622,9 @@ class Application extends SilexApplication
                 $twig->addFilter('count', new \Twig_Filter_Function('count'));
                 $twig->addFilter('formatOctets', new \Twig_Filter_Function('p4string::format_octets'));
                 $twig->addFilter('base_from_coll', new \Twig_Filter_Function('phrasea::baseFromColl'));
-                $twig->addFilter('AppName', new \Twig_Filter_Function('Alchemy\Phrasea\Controller\Admin\ConnectedUsers::appName'));
+                $twig->addFilter(new \Twig_SimpleFilter('AppName', function ($value) use ($app) {
+                    return ConnectedUsers::appName($app['translator'], $value);
+                }));
                 $twig->addFilter(new \Twig_SimpleFilter('escapeSimpleQuote', function ($value) {
                     $ret = str_replace("'", "\'", $value);
 

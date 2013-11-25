@@ -100,20 +100,18 @@ class phraseadate
 
         if ($dayDiff == 0) {
             if ($diff < 60) {
-                return _('phraseanet::temps:: a l\'instant');
+                return $this->app->trans('phraseanet::temps:: a l\'instant');
             } elseif ($diff < 120) {
-                return _('phraseanet::temps:: il y a une minute');
+                return $this->app->trans('phraseanet::temps:: il y a une minute');
             } elseif ($diff < 3600) {
-                return sprintf(_('phraseanet::temps:: il y a %d minutes')
-                        , floor($diff / 60));
+                return $this->app->trans('phraseanet::temps:: il y a %quantity% minutes', array('%quantity%' => floor($diff / 60)));
             } elseif ($diff < 7200) {
-                return _('phraseanet::temps:: il y a une heure');
+                return $this->app->trans('phraseanet::temps:: il y a une heure');
             } elseif ($diff < 86400) {
-                return sprintf(_('phraseanet::temps:: il y a %d heures')
-                        , floor($diff / 3600));
+                return $this->app->trans('phraseanet::temps:: il y a %quantity% heures', array('%quantity%' => floor($diff / 3600)));
             }
         } elseif ($dayDiff == 1) {
-            return _('phraseanet::temps:: hier');
+            return $this->app->trans('phraseanet::temps:: hier');
         } elseif ($dayDiff < 365 && $dayDiff > 0) {
             return $date_string;
         } else {

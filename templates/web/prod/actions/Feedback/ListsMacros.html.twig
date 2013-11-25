@@ -87,9 +87,7 @@
   </div>
   <div class="PNB" style="top:auto;height:20px;text-align:right;line-height:20px;">
     {% set length = '<span class="counter current">' ~ list.getEntries().count() ~ '</span>' %}
-    {% trans with {'%length%' : length} %}
-      %length% peoples
-    {% endtrans %}
+    {% trans with {'%length%' : length} %}%length% peoples{% endtrans %}
     {% if query.get_page() > 1 %}
       <a class="prev" value="{{ query.get_page() - 1 }}" href="#">< {{ 'Previous' | trans }}</a>
     {% endif %}

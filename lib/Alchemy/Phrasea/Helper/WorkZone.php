@@ -45,7 +45,7 @@ class WorkZone extends Helper
         if (0 === count($baskets)) {
             $basket = new BasketEntity();
 
-            $basket->setName(_('Default basket'));
+            $basket->setName($this->app->trans('Default basket'));
             $basket->setOwner($this->app['authentication']->getUser());
 
             $this->app['EM']->persist($basket);

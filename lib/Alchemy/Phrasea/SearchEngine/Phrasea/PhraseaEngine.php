@@ -12,13 +12,14 @@
 namespace Alchemy\Phrasea\SearchEngine\Phrasea;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Doctrine\Common\Collections\ArrayCollection;
-use Alchemy\Phrasea\Model\Entities\FeedEntry;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class PhraseaEngine implements SearchEngineInterface
 {
@@ -109,7 +110,7 @@ class PhraseaEngine implements SearchEngineInterface
     {
         $date_fields = $this->getAvailableDateFields();
 
-        $sort = ['' => _('No sort')];
+        $sort = ['' => $this->app->trans('No sort')];
 
         foreach ($date_fields as $field) {
             $sort[$field] = $field;
@@ -134,8 +135,8 @@ class PhraseaEngine implements SearchEngineInterface
     public function getAvailableOrder()
     {
         return [
-            'desc' => _('descendant'),
-            'asc'  => _('ascendant'),
+            'desc' => $this->app->trans('descendant'),
+            'asc'  => $this->app->trans('ascendant'),
         ];
     }
 
@@ -413,7 +414,7 @@ class PhraseaEngine implements SearchEngineInterface
         );
 
         $rs = [];
-        $error = _('Unable to execute query');
+        $error = $this->app->trans('Unable to execute query');
 
         if (isset($res['results']) && is_array($res['results'])) {
             $rs = $res['results'];
@@ -469,7 +470,7 @@ class PhraseaEngine implements SearchEngineInterface
     private function getPropositions()
     {
         if ($this->qp && isset($this->qp['main'])) {
-            $proposals = self::proposalsToHTML($this->qp['main']->proposals);
+            $proposals = self::proposalsToHTML($this->app['translator'], $this->qp['main']->proposals);
             if (trim($proposals) !== '') {
                 return "<div style='height:0px; overflow:hidden'>" . $this->qp['main']->proposals["QRY"]
                     . "</div><div class='proposals'>" . $proposals . "</div>";
@@ -485,7 +486,7 @@ class PhraseaEngine implements SearchEngineInterface
      * @param  array  $proposals
      * @return string
      */
-    private static function proposalsToHTML($proposals)
+    private static function proposalsToHTML(TranslatorInterface $translator, $proposals)
     {
         $html = '';
         $b = true;
@@ -493,13 +494,13 @@ class PhraseaEngine implements SearchEngineInterface
             if ((int) (count($proposals["BASES"]) > 1) && count($zbase["TERMS"]) > 0) {
                 $style = $b ? 'style="margin-top:0px;"' : '';
                 $b = false;
-                $html .= "<h1 $style>" . sprintf(_('reponses::propositions pour la base %s'), $zbase["NAME"]) . "</h1>";
+                $html .= "<h1 $style>" . $translator->trans('reponses::propositions pour la base %name', array('%name%' => $zbase["NAME"])) . "</h1>";
             }
             $t = true;
             foreach ($zbase["TERMS"] as $path => $props) {
                 $style = $t ? 'style="margin-top:0px;"' : '';
                 $t = false;
-                $html .= "<h2 $style>" . sprintf(_('reponses::propositions pour le terme %s'), $props["TERM"]) . "</h2>";
+                $html .= "<h2 $style>" . $translator->trans('reponses::propositions pour le terme %terme%', array('%terme%' => $props["TERM"])) . "</h2>";
                 $html .= $props["HTML"];
             }
         }

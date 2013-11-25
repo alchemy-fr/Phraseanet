@@ -52,34 +52,34 @@ class Informations implements ControllerProviderInterface
     {
         $conf = [
             'config'    => [
-                'photo'     => [_('report:: document'), 0, 0, 0, 0],
-                'record_id' => [_('report:: record id'), 0, 0, 0, 0],
-                'date'      => [_('report:: date'), 0, 0, 0, 0],
-                'type'      => [_('phrseanet:: sous definition'), 0, 0, 0, 0],
-                'titre'     => [_('report:: titre'), 0, 0, 0, 0],
-                'taille'    => [_('report:: poids'), 0, 0, 0, 0]
+                'photo'     => [$app->trans('report:: document'), 0, 0, 0, 0],
+                'record_id' => [$app->trans('report:: record id'), 0, 0, 0, 0],
+                'date'      => [$app->trans('report:: date'), 0, 0, 0, 0],
+                'type'      => [$app->trans('phrseanet:: sous definition'), 0, 0, 0, 0],
+                'titre'     => [$app->trans('report:: titre'), 0, 0, 0, 0],
+                'taille'    => [$app->trans('report:: poids'), 0, 0, 0, 0]
             ],
             'conf'  => [
-                'identifiant'   => [_('report:: identifiant'), 0, 0, 0, 0],
-                'nom'           => [_('report:: nom'), 0, 0, 0, 0],
-                'mail'          => [_('report:: email'), 0, 0, 0, 0],
-                'adresse'       => [_('report:: adresse'), 0, 0, 0, 0],
-                'tel'           => [_('report:: telephone'), 0, 0, 0, 0]
+                'identifiant'   => [$app->trans('report:: identifiant'), 0, 0, 0, 0],
+                'nom'           => [$app->trans('report:: nom'), 0, 0, 0, 0],
+                'mail'          => [$app->trans('report:: email'), 0, 0, 0, 0],
+                'adresse'       => [$app->trans('report:: adresse'), 0, 0, 0, 0],
+                'tel'           => [$app->trans('report:: telephone'), 0, 0, 0, 0]
             ],
             'config_cnx'    => [
-                'ddate'     => [_('report:: date'), 0, 0, 0, 0],
-                'appli'     => [_('report:: modules'), 0, 0, 0, 0],
+                'ddate'     => [$app->trans('report:: date'), 0, 0, 0, 0],
+                'appli'     => [$app->trans('report:: modules'), 0, 0, 0, 0],
             ],
             'config_dl' => [
-                'ddate'     => [_('report:: date'), 0, 0, 0, 0],
-                'record_id' => [_('report:: record id'), 0, 1, 0, 0],
-                'final'     => [_('phrseanet:: sous definition'), 0, 0, 0, 0],
-                'coll_id'   => [_('report:: collections'), 0, 0, 0, 0],
-                'comment'   => [_('report:: commentaire'), 0, 0, 0, 0],
+                'ddate'     => [$app->trans('report:: date'), 0, 0, 0, 0],
+                'record_id' => [$app->trans('report:: record id'), 0, 1, 0, 0],
+                'final'     => [$app->trans('phrseanet:: sous definition'), 0, 0, 0, 0],
+                'coll_id'   => [$app->trans('report:: collections'), 0, 0, 0, 0],
+                'comment'   => [$app->trans('report:: commentaire'), 0, 0, 0, 0],
             ],
             'config_ask' => [
-                'search'    => [_('report:: question'), 0, 0, 0, 0],
-                'ddate'     => [_('report:: date'), 0, 0, 0, 0]
+                'search'    => [$app->trans('report:: question'), 0, 0, 0, 0],
+                'ddate'     => [$app->trans('report:: date'), 0, 0, 0, 0]
             ]
         ];
 
@@ -96,7 +96,7 @@ class Informations implements ControllerProviderInterface
         if ('' !== $on && $app['phraseanet.registry']->get('GV_anonymousReport') == true) {
             $conf['conf'] = [
                  $on   => [$on, 0, 0, 0, 0],
-                'nb'   => [_('report:: nombre'), 0, 0, 0, 0]
+                'nb'   => [$app->trans('report:: nombre'), 0, 0, 0, 0]
             ];
         }
 
@@ -109,7 +109,7 @@ class Informations implements ControllerProviderInterface
                 $request->request->get('collection'
             ));
             $conf_array = $conf['config_cnx'];
-            $title = _('report:: historique des connexions');
+            $title = $app->trans('report:: historique des connexions');
         } elseif ($from == 'USR' || $from == 'GEN') {
             $report = new \module_report_download(
                 $app,
@@ -119,7 +119,7 @@ class Informations implements ControllerProviderInterface
                 $request->request->get('collection')
             );
             $conf_array = $conf['config_dl'];
-            $title = _('report:: historique des telechargements');
+            $title = $app->trans('report:: historique des telechargements');
         } elseif ($from == 'ASK') {
             $report = new \module_report_question(
                 $app,
@@ -129,7 +129,7 @@ class Informations implements ControllerProviderInterface
                 $request->request->get('collection')
             );
             $conf_array = $conf['config_ask'];
-            $title = _('report:: historique des questions');
+            $title = $app->trans('report:: historique des questions');
         }
 
         if ($report) {
@@ -151,7 +151,7 @@ class Informations implements ControllerProviderInterface
                     return $app->json(['diag'  => $app['twig']->render('report/colFilter.html.twig', [
                         'result' => $report->colFilter($field),
                         'field'  => $field
-                    ]), 'title'  => sprintf(_('filtrer les resultats sur la colonne %s'), $field)]);
+                    ]), 'title'  => $app->trans('filtrer les resultats sur la colonne %colonne%', array('%colonne%' => $field))]);
                 }
 
                 if ($field === $value) {
@@ -252,8 +252,8 @@ class Informations implements ControllerProviderInterface
     public function doReportinformationsBrowser(Application $app, Request $request)
     {
         $conf = [
-            'version'   => [_('report::version '), 0, 0, 0, 0],
-            'nb'        => [_('report:: nombre'), 0, 0, 0, 0]
+            'version'   => [$app->trans('report::version'), 0, 0, 0, 0],
+            'nb'        => [$app->trans('report:: nombre'), 0, 0, 0, 0]
         ];
 
         $info = new \module_report_nav(
@@ -297,24 +297,24 @@ class Informations implements ControllerProviderInterface
     public function doReportInformationsDocument(Application $app, Request $request)
     {
         $config = [
-            'photo'     => [_('report:: document'), 0, 0, 0, 0],
-            'record_id' => [_('report:: record id'), 0, 0, 0, 0],
-            'date'      => [_('report:: date'), 0, 0, 0, 0],
-            'type'      => [_('phrseanet:: sous definition'), 0, 0, 0, 0],
-            'titre'     => [_('report:: titre'), 0, 0, 0, 0],
-            'taille'    => [_('report:: poids'), 0, 0, 0, 0]
+            'photo'     => [$app->trans('report:: document'), 0, 0, 0, 0],
+            'record_id' => [$app->trans('report:: record id'), 0, 0, 0, 0],
+            'date'      => [$app->trans('report:: date'), 0, 0, 0, 0],
+            'type'      => [$app->trans('phrseanet:: sous definition'), 0, 0, 0, 0],
+            'titre'     => [$app->trans('report:: titre'), 0, 0, 0, 0],
+            'taille'    => [$app->trans('report:: poids'), 0, 0, 0, 0]
         ];
 
         $config_dl = [
-            'ddate'     => [_('report:: date'), 0, 0, 0, 0],
-            'user'      => [_('report:: utilisateurs'), 0, 0, 0, 0],
-            'final'     => [_('phrseanet:: sous definition'), 0, 0, 0, 0],
-            'coll_id'   => [_('report:: collections'), 0, 0, 0, 0],
-            'comment'   => [_('report:: commentaire'), 0, 0, 0, 0],
-            'fonction'  => [_('report:: fonction'), 0, 0, 0, 0],
-            'activite'  => [_('report:: activite'), 0, 0, 0, 0],
-            'pays'      => [_('report:: pays'), 0, 0, 0, 0],
-            'societe'   => [_('report:: societe'), 0, 0, 0, 0]
+            'ddate'     => [$app->trans('report:: date'), 0, 0, 0, 0],
+            'user'      => [$app->trans('report:: utilisateurs'), 0, 0, 0, 0],
+            'final'     => [$app->trans('phrseanet:: sous definition'), 0, 0, 0, 0],
+            'coll_id'   => [$app->trans('report:: collections'), 0, 0, 0, 0],
+            'comment'   => [$app->trans('report:: commentaire'), 0, 0, 0, 0],
+            'fonction'  => [$app->trans('report:: fonction'), 0, 0, 0, 0],
+            'activite'  => [$app->trans('report:: activite'), 0, 0, 0, 0],
+            'pays'      => [$app->trans('report:: pays'), 0, 0, 0, 0],
+            'societe'   => [$app->trans('report:: societe'), 0, 0, 0, 0]
         ];
 
         //format conf according user preferences
@@ -409,7 +409,7 @@ class Informations implements ControllerProviderInterface
                     return $app->json(['diag'  => $app['twig']->render('report/colFilter.html.twig', [
                         'result' => $download->colFilter($field),
                         'field'  => $field
-                    ]), 'title'  => sprintf(_('filtrer les resultats sur la colonne %s'), $field)]);
+                    ]), 'title'  => $app->trans('filtrer les resultats sur la colonne %colonne%', array('%colonne%' => $field))]);
                 }
 
                 if ($field === $value) {
@@ -423,7 +423,7 @@ class Informations implements ControllerProviderInterface
 
             $download->setFilter($filter->getTabFilter());
             $download->setOrder('ddate', 'DESC');
-            $download->setTitle(_('report:: historique des telechargements'));
+            $download->setTitle($app->trans('report:: historique des telechargements'));
             $download->setConfig(false);
 
             $reportArray = $download->buildReport($config_dl);
@@ -458,11 +458,11 @@ class Informations implements ControllerProviderInterface
 
         if ($app['phraseanet.registry']->get('GV_anonymousReport') == false && $from !== 'DOC' && $from !== 'DASH' && $from !== 'GEN' && $from !== 'PUSHDOC') {
             $conf = [
-                'identifiant'   => [_('report:: identifiant'), 0, 0, 0, 0],
-                'nom'           => [_('report:: nom'), 0, 0, 0, 0],
-                'mail'          => [_('report:: email'), 0, 0, 0, 0],
-                'adresse'       => [_('report:: adresse'), 0, 0, 0, 0],
-                'tel'           => [_('report:: telephone'), 0, 0, 0, 0]
+                'identifiant'   => [$app->trans('report:: identifiant'), 0, 0, 0, 0],
+                'nom'           => [$app->trans('report:: nom'), 0, 0, 0, 0],
+                'mail'          => [$app->trans('report:: email'), 0, 0, 0, 0],
+                'adresse'       => [$app->trans('report:: adresse'), 0, 0, 0, 0],
+                'tel'           => [$app->trans('report:: telephone'), 0, 0, 0, 0]
             ];
 
             $info = new \module_report_nav(
@@ -475,11 +475,11 @@ class Informations implements ControllerProviderInterface
 
             $info->setPeriode('');
             $info->setConfig(false);
-            $info->setTitle(_('report:: utilisateur'));
+            $info->setTitle($app->trans('report:: utilisateur'));
 
             $reportArray = $info->buildTabGrpInfo(false, [],  $request->request->get('user'), $conf, false);
 
-            if ($request->request->get('printcsv') == 'on') {
+            if ($request->request->get('printcsv') == 'on' && isset($download)) {
                 $download->setPrettyString(false);
 
                 try {

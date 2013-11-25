@@ -658,28 +658,28 @@ class module_report
     private function setCor()
     {
         return [
-            'user'           => _('report:: utilisateur'),
-            'coll_id'        => _('report:: collections'),
-            'connexion'      => _('report:: Connexion'),
-            'comment'        => _('report:: commentaire'),
-            'search'         => _('report:: question'),
-            'date'           => _('report:: date'),
-            'ddate'          => _('report:: date'),
-            'fonction'       => _('report:: fonction'),
-            'activite'       => _('report:: activite'),
-            'pays'           => _('report:: pays'),
-            'societe'        => _('report:: societe'),
-            'nb'             => _('report:: nombre'),
-            'pourcent'       => _('report:: pourcentage'),
-            'telechargement' => _('report:: telechargement'),
-            'record_id'      => _('report:: record id'),
-            'final'          => _('report:: type d\'action'),
-//      'xml'            => _('report:: sujet'),
-            'file'           => _('report:: fichier'),
-            'mime'           => _('report:: type'),
-            'size'           => _('report:: taille'),
-            'copyright'      => _('report:: copyright'),
-            'final'          => _('phraseanet:: sous definition')
+            'user'           => $this->app->trans('report:: utilisateur'),
+            'coll_id'        => $this->app->trans('report:: collections'),
+            'connexion'      => $this->app->trans('report:: Connexion'),
+            'comment'        => $this->app->trans('report:: commentaire'),
+            'search'         => $this->app->trans('report:: question'),
+            'date'           => $this->app->trans('report:: date'),
+            'ddate'          => $this->app->trans('report:: date'),
+            'fonction'       => $this->app->trans('report:: fonction'),
+            'activite'       => $this->app->trans('report:: activite'),
+            'pays'           => $this->app->trans('report:: pays'),
+            'societe'        => $this->app->trans('report:: societe'),
+            'nb'             => $this->app->trans('report:: nombre'),
+            'pourcent'       => $this->app->trans('report:: pourcentage'),
+            'telechargement' => $this->app->trans('report:: telechargement'),
+            'record_id'      => $this->app->trans('report:: record id'),
+            'final'          => $this->app->trans('report:: type d\'action'),
+//      'xml'            => $this->app->trans('report:: sujet'),
+            'file'           => $this->app->trans('report:: fichier'),
+            'mime'           => $this->app->trans('report:: type'),
+            'size'           => $this->app->trans('report:: taille'),
+            'copyright'      => $this->app->trans('report:: copyright'),
+            'final'          => $this->app->trans('phraseanet:: sous definition')
         ];
 
         return;
@@ -692,13 +692,13 @@ class module_report
     private function setDay()
     {
         return [
-            1 => _('phraseanet::jours:: lundi'),
-            2 => _('phraseanet::jours:: mardi'),
-            3 => _('phraseanet::jours:: mercredi'),
-            4 => _('phraseanet::jours:: jeudi'),
-            5 => _('phraseanet::jours:: vendredi'),
-            6 => _('phraseanet::jours:: samedi'),
-            7 => _('phraseanet::jours:: dimanche')];
+            1 => $this->app->trans('phraseanet::jours:: lundi'),
+            2 => $this->app->trans('phraseanet::jours:: mardi'),
+            3 => $this->app->trans('phraseanet::jours:: mercredi'),
+            4 => $this->app->trans('phraseanet::jours:: jeudi'),
+            5 => $this->app->trans('phraseanet::jours:: vendredi'),
+            6 => $this->app->trans('phraseanet::jours:: samedi'),
+            7 => $this->app->trans('phraseanet::jours:: dimanche')];
     }
 
     /**
@@ -708,18 +708,18 @@ class module_report
     private function setMonth()
     {
         return [
-            _('janvier'),
-            _('fevrier'),
-            _('mars'),
-            _('avril'),
-            _('mai'),
-            _('juin'),
-            _('juillet'),
-            _('aout'),
-            _('septembre'),
-            _('octobre'),
-            _('novembre'),
-            _('decembre')
+            $this->app->trans('janvier'),
+            $this->app->trans('fevrier'),
+            $this->app->trans('mars'),
+            $this->app->trans('avril'),
+            $this->app->trans('mai'),
+            $this->app->trans('juin'),
+            $this->app->trans('juillet'),
+            $this->app->trans('aout'),
+            $this->app->trans('septembre'),
+            $this->app->trans('octobre'),
+            $this->app->trans('novembre'),
+            $this->app->trans('decembre')
         ];
     }
 

@@ -489,7 +489,7 @@ class Bridge_Api
         $auth_classname = 'Bridge_Api_Auth_' . $classname::AUTH_TYPE;
         $auth = new $auth_classname;
 
-        return new $classname($app['url_generator'], $app['phraseanet.registry'], $auth);
+        return new $classname($app['url_generator'], $app['phraseanet.registry'], $auth, $app['translator']);
     }
 
     public static function get_by_api_name(Application $app, $name)

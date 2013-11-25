@@ -269,16 +269,14 @@
                         {% if file.getSession().getUser(app) is not none %}
                             <p>
                                 {% set username = '<a href="#" class="username userTips" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : file.getSession().getUser(app).get_id() }) ~ '/">' ~ file.getSession().getUser(app).get_display_name() ~ '</a>' %}
-                                {% trans with {'%username%' : username} %}
-                                    Uploaded by : %username%
-                                {% endtrans %}
+                                {% trans with {'%username%' : username} %}Uploaded by : %username%{% endtrans %}
                             </p>
                         {% endif %}
                         <p>{{ "Collection" | trans }} : <span class="info">{{ file.getCollection(app).get_label(app['locale.I18n']) }}</span></p>
                     </div>
                     <div class="caption">
                         {% for check in file.getChecks() %}
-                            <p>{{ check.getMessage() }}</p>
+                            <p>{{ check.getMessage(app['translator']) }}</p>
                         {% endfor %}
                     </div>
                     <div class="btn-group" style="text-align:center; padding:5px;">
@@ -307,13 +305,9 @@
         <div class="lazaret-proposals span8">
             <h5>
             {% if record_count <= 1 %}
-                {% trans %}
-                    A record matches the unique identifier :
-                {% endtrans %}
+                {% trans %}A record matches the unique identifier :{% endtrans %}
             {% else %}
-                {% trans with {'%record_count%' : record_count} %}
-                    %record_count% records match the unique identifier :
-                {% endtrans %}
+                {% trans with {'%record_count%' : record_count} %}%record_count% records match the unique identifier :{% endtrans %}
             {% endif %}
             </h5>
             <ul class="thumbnails">

@@ -17,13 +17,9 @@
         <p class="header">
             <h4 style='text-align:center;'>
                 {% if nbReceivedDocuments == 1 %}
-                    {% trans %}
-                        You have selected one record.
-                    {% endtrans %}
+                    {% trans %}You have selected one record.{% endtrans %}
                 {% else %}
-                    {% trans with {'%nbReceivedDocuments%' : nbReceivedDocuments} %}
-                        You have selected %nbReceivedDocuments% records.
-                    {% endtrans %}
+                    {% trans with {'%nbReceivedDocuments%' : nbReceivedDocuments} %}You have selected %nbReceivedDocuments% records.{% endtrans %}
                 {% endif %}
 
                   {% if nbEditableDocuments == 0 %}
@@ -31,13 +27,9 @@
                   {% else %}
                     {% if nbEditableDocuments < nbReceivedDocuments %}
                         {% if nbEditableDocuments == 1 %}
-                            {% trans %}
-                                Only one record can be modified.
-                            {% endtrans %}
+                            {% trans %}Only one record can be modified.{% endtrans %}
                         {% else %}
-                            {% trans with {'%nbEditableDocuments%' : nbEditableDocuments} %}
-                                Only %nbEditableDocuments% records can be modified.
-                            {% endtrans %}
+                            {% trans with {'%nbEditableDocuments%' : nbEditableDocuments} %}Only %nbEditableDocuments% records can be modified.{% endtrans %}
                         {% endif %}
                   {% endif %}
                 {% endif %}
@@ -118,7 +110,7 @@
                                 <td colspan="6">
                                     <input type="checkbox" name="apply_to_children[{{ sbasId }}]"/>
                                     {% if nbStories == 1 %}
-                                        {% trans %}Apply status on stories children. {% endtrans %}
+                                        {% trans %}Apply status on stories children.{% endtrans %}
                                     {% elseif nbStories > 0 %}
                                         {% trans %}Apply status on story children.{% endtrans %}
                                     {% endif %}

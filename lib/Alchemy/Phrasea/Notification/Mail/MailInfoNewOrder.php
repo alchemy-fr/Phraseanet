@@ -33,10 +33,7 @@ class MailInfoNewOrder extends AbstractMail
      */
     public function getSubject()
     {
-        return sprintf(
-            _('admin::register: Nouvelle commande sur %s'),
-            $this->getPhraseanetTitle()
-        );
+        return $this->app->trans('admin::register: Nouvelle commande sur %s', array('%application%' => $this->getPhraseanetTitle()));
     }
 
     /**
@@ -48,7 +45,7 @@ class MailInfoNewOrder extends AbstractMail
             throw new LogicException('You must set a user before calling getMessage()');
         }
 
-        return sprintf(_('%s has ordered documents'),$this->user->get_display_name());
+        return $this->app->trans('%user% has ordered documents', array('%user%' => $this->user->get_display_name()));
     }
 
     /**
@@ -56,7 +53,7 @@ class MailInfoNewOrder extends AbstractMail
      */
     public function getButtonText()
     {
-        return sprintf(_('See order on %s'), $this->getPhraseanetTitle());
+        return $this->app->trans('Review order on %website%', array('%website%' => $this->getPhraseanetTitle()));
     }
 
     /**

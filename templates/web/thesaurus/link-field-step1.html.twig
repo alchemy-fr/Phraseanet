@@ -47,9 +47,7 @@
                 <input type="hidden" name="tid" value="{{ tid }}">
 
                 {% set branch = "<br/><b>" ~ fullBranch ~ "</b><br/>" %}
-                {% trans with {'%branch%' : branch} %}
-                    thesaurus:: Lier la branche de thesaurus au champ %branch%
-                {% endtrans %}
+                {% trans with {'%branch%' : branch} %}thesaurus:: Lier la branche de thesaurus au champ %branch%{% endtrans %}
 
                 <div style="width:70%; height:200px; overflow:scroll;" class="x3Dbox">
                 {% for fieldname, checked in fieldnames %}

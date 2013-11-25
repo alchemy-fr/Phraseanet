@@ -180,10 +180,10 @@ class Upload implements ControllerProviderInterface
             $reasons = [];
             $elementCreated = null;
 
-            $callback = function ($element, $visa, $code) use (&$reasons, &$elementCreated) {
+            $callback = function ($element, $visa, $code) use ($app, &$reasons, &$elementCreated) {
                     foreach ($visa->getResponses() as $response) {
                         if (!$response->isOk()) {
-                            $reasons[] = $response->getMessage();
+                            $reasons[] = $response->getMessage($app['translator']);
                         }
                     }
 
@@ -203,7 +203,7 @@ class Upload implements ControllerProviderInterface
             if ($elementCreated instanceof \record_adapter) {
                 $id = $elementCreated->get_serialize_key();
                 $element = 'record';
-                $message = _('The record was successfully created');
+                $message = $app->trans('The record was successfully created');
                 $app['phraseanet.SE']->addRecord($elementCreated);
 
                 // try to create thumbnail from data URI
@@ -235,7 +235,7 @@ class Upload implements ControllerProviderInterface
 
                 $id = $elementCreated->getId();
                 $element = 'lazaret';
-                $message = _('The file was moved to the quarantine');
+                $message = $app->trans('The file was moved to the quarantine');
             }
 
             $datas = [
@@ -247,7 +247,7 @@ class Upload implements ControllerProviderInterface
                 'id'      => $id,
             ];
         } catch (\Exception $e) {
-            $datas['message'] = _('Unable to add file to Phraseanet');
+            $datas['message'] = $app->trans('Unable to add file to Phraseanet');
         }
 
         $response = $app->json($datas);

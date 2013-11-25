@@ -12,22 +12,16 @@
         <form onsubmit="return(false);">
             <div style="width:70%; height:200px; overflow:scroll;" class="x3Dbox">
                 {% for field in field2del %}
-                    {% trans with {'%field%' : field} %}
-                        thesaurus:: suppression du lien du champ %field%
-                    {% endtrans %}
+                    {% trans with {'%field%' : field} %}thesaurus:: suppression du lien du champ %field%{% endtrans %}
                     <br/>
                 {% endfor %}
                 {% for candidate in candidates2del %}
                     {% set field = candidate2del["field"] %}
-                    {% trans with {'%field%' : field} %}
-                        thesaurus:: suppression de la branche de mot candidats pour le champ %field%
-                    {% endtrans %}
+                    {% trans with {'%field%' : field} %}thesaurus:: suppression de la branche de mot candidats pour le champ %field%{% endtrans %}
                     <br/>
                 {% endfor %}
                 {% for field in branch2del %}
-                    {% trans with {'%field%' : field} %}
-                        thesaurus:: suppression de la branche de mot candidats pour le champ %field%
-                    {% endtrans %}
+                    {% trans with {'%field%' : field} %}thesaurus:: suppression de la branche de mot candidats pour le champ %field%{% endtrans %}
                     <br/>
                 {% endfor %}
 
@@ -37,9 +31,7 @@
                 {% endif %}
 
                 {% for field in field2del %}
-                    {% trans with {'%field%' : field} %}
-                        thesaurus:: suppression des indexes vers le thesaurus pour le champ %field%
-                    {% endtrans %}
+                    {% trans with {'%field%' : field} %}thesaurus:: suppression des indexes vers le thesaurus pour le champ %field%{% endtrans %}
                     <br/>
                 {% endfor %}
 

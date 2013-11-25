@@ -14,9 +14,7 @@
 
 {% if suggestions %}
   {% set link = '<a href="#" onclick="doSpecialSearch(\'' ~ suggestions ~ '\');return false;">' ~ suggestions ~ '</a>' %}
-  {% trans with {'%link%' : link} %}
-    Voulez-vous dire %link% ?
-  {% endtrans %}
+  {% trans with {'%link%' : link} %}Voulez-vous dire %link% ?{% endtrans %}
   <br/>
 {% endif %}
 

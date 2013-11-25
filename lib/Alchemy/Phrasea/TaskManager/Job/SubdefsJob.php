@@ -21,7 +21,7 @@ class SubdefsJob extends AbstractJob
      */
     public function getName()
     {
-        return _('task::subdef:creation des sous definitions');
+        return $this->translator->trans('task::subdef:creation des sous definitions');
     }
 
     /**
@@ -37,7 +37,7 @@ class SubdefsJob extends AbstractJob
      */
     public function getDescription()
     {
-        return _("task::subdef:creation des sous definitions des documents d'origine");
+        return $this->translator->trans("task::subdef:creation des sous definitions des documents d'origine");
     }
 
     /**
@@ -45,7 +45,7 @@ class SubdefsJob extends AbstractJob
      */
     public function getEditor()
     {
-        return new SubdefsEditor();
+        return new SubdefsEditor($this->translator);
     }
 
     /**

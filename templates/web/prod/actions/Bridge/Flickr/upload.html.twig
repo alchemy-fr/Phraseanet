@@ -3,9 +3,7 @@
 {% import "prod/actions/Bridge/macro_error_form.html.twig" as error_form %}
 
 {% block menu %}
-  {% trans %}
-  Upload
-  {% endtrans %}
+  {% trans %}Upload{% endtrans %}
 {% endblock %}
 
 {% block response %}
@@ -20,15 +18,11 @@
 {% else %}
   {% if elements_length != elements_received_length %}
     {% set n_elements = elements_received_length - elements_length %}
-    {% trans with {'%n_elements%' : n_elements} %}
-      %n_elements% elements ne peuvent etre uploades
-    {% endtrans %}
+    {% trans with {'%n_elements%' : n_elements} %}%n_elements% elements ne peuvent etre uploades{% endtrans %}
   {% endif %}
 
   <form class='bridge_form' name="upload_form" action="{{ path('prod_bridge_do_upload') }}" method="post">
-    {% trans with {'%elements_length%' : elements_length} %}
-      Upload sur Flickr de %elements_length% elements
-    {% endtrans %}
+    {% trans with {'%elements_length%' : elements_length} %}Upload sur Flickr de %elements_length% elements{% endtrans %}
     <input type="hidden" name="lst" value="{{ route.get_serialize_list() }}" />
     <input type="hidden" name="account_id" value="{{ account.get_id() }}" />
     {% for record in route.get_elements() %}

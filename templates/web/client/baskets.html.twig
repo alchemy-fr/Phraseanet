@@ -6,9 +6,7 @@
             {% if selected_basket is not none  %}
                 {{ selected_basket.getName() }}
                     :
-                {% trans with {'%nb_basket_elements%' : nb_basket_elements} %}
-                    paniers:: %nb_basket_elements% documents dans le panier
-                {% endtrans %}
+                {% trans with {'%nb_basket_elements%' : nb_basket_elements} %}paniers:: %nb_basket_elements% documents dans le panier{% endtrans %}
                 {% if app['phraseanet.registry'].get('GV_viewSizeBaket') %}
                     ({{ selected_basket.getSize(app) }} Mo)
                 {% endif %}
@@ -64,9 +62,7 @@
         {% if selected_basket is not none and selected_basket.getPusher(app) is not none %}
             {% set pusher_name = selected_basket.getPusher(app).get_display_name() %}
             <div class="txtPushClient">
-                {% trans with {'%pusher_name%' : pusher_name} %}
-                    paniers:: panier emis par %pusher_name%
-                {% endtrans %}
+                {% trans with {'%pusher_name%' : pusher_name} %}paniers:: panier emis par %pusher_name%{% endtrans %}
             </div>
         {% endif %}
 
@@ -135,9 +131,7 @@
             {% if selected_basket is not none %}
                 {{ selected_basket.getName() }}
                     :
-                {% trans with {'%nb_basket_elements%' : nb_basket_elements} %}
-                    paniers:: %nb_basket_elements% documents dans le panier
-                {% endtrans %}
+                {% trans with {'%nb_basket_elements%' : nb_basket_elements} %}paniers:: %nb_basket_elements% documents dans le panier{% endtrans %}
             {% endif %}
             <span style="width:16px;height:16px;position: absolute; right: 10px;background-position:center center;" class='baskIndicator'></span></div>
     </div>

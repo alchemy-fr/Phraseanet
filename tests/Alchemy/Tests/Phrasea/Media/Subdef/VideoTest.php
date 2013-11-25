@@ -4,9 +4,12 @@ namespace Alchemy\Tests\Phrasea\Media\Subdef;
 
 use Alchemy\Phrasea\Media\Subdef\Video;
 use Alchemy\Phrasea\Media\Subdef\Subdef;
+use Alchemy\Tests\Tools\TranslatorMockTrait;
 
 class VideoTest extends \PHPUnit_Framework_TestCase
 {
+    use TranslatorMockTrait;
+
     /**
      * @var Video
      */
@@ -14,7 +17,7 @@ class VideoTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->object = new Video;
+        $this->object = new Video($this->createTranslatorMock());
     }
 
     /**

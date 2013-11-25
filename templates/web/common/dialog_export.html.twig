@@ -151,9 +151,7 @@
                                     <input type="checkbox" name="TOU_accept" id="TOU_acceptDL" value="1"  />
                                     {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
                                     {% set end_link = '</a>' %}
-                                    {% trans with {'%beginning_link%' : beginning_link, '%end_link%' : end_link} %}
-                                        By checking this box, you accept %beginning_link% Terms of Use %end_link%
-                                    {% endtrans %}
+                                    {% trans with {'%beginning_link%' : beginning_link, '%end_link%' : end_link} %}By checking this box, you accept %beginning_link% Terms of Use %end_link%{% endtrans %}
                                 </label>
                             </div>
                         {% endif %}
@@ -234,9 +232,7 @@
                                     <input type="checkbox" name="TOU_accept" id="TOU_acceptMail" value="1"  />
                                     {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
                                     {% set end_link = '</a>' %}
-                                    {% trans with {'%beginning_link%' : beginning_link, '%end_link%' : end_link} %}
-                                        By checking this box, you accept %beginning_link% Terms of Use %end_link%
-                                    {% endtrans %}
+                                    {% trans with {'%beginning_link%' : beginning_link, '%end_link%' : end_link} %}By checking this box, you accept %beginning_link% Terms of Use %end_link%{% endtrans %}
                                 </label>
                             </div>
                         {% endif %}
@@ -389,9 +385,7 @@
                                 <input type="checkbox" name="TOU_accept" id="TOU_acceptOrder" value="1"  />
                                 {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
                                 {% set end_link = '</a>' %}
-                                {% trans with {'%beginning_link%' : beginning_link, '%end_link%' : end_link} %}
-                                    By checking this box, you accept %beginning_link% Terms of Use %end_link%
-                                {% endtrans %}
+                                {% trans with {'%beginning_link%' : beginning_link, '%end_link%' : end_link} %}By checking this box, you accept %beginning_link% Terms of Use %end_link%{% endtrans %}
                             </label>
                         </div>
                     {% endif %}
@@ -472,9 +466,7 @@
                                     <input type="checkbox" name="TOU_accept" id="TOU_acceptFTP" value="1"  />
                                     {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
                                     {% set end_link = '</a>' %}
-                                    {% trans with {'%beginning_link%' : beginning_link, '%end_link%' : end_link} %}
-                                        By checking this box, you accept %beginning_link% Terms of Use %end_link%
-                                    {% endtrans %}
+                                    {% trans with {'%beginning_link%' : beginning_link, '%end_link%' : end_link} %}By checking this box, you accept %beginning_link% Terms of Use %end_link%{% endtrans %}
                                 </label>
                             </div>
                         {% endif %}
@@ -649,7 +641,7 @@
 
                 {% set max_download = app['phraseanet.registry'].get('GV_download_max', 120) %}
                 {% set alert_too_big_one %}
-                        {% trans with {'%max_download%' : max_download} %} You can not directly download more than %max_download% Mo ; time to package all documents is too long{% endtrans %}
+                        {% trans with {'%max_download%' : max_download} %}You can not directly download more than %max_download% Mo ; time to package all documents is too long{% endtrans %}
                 {% endset %}
                 {% set alert_too_big_two %}
                         {{ 'You can alternatively receive an email when the download is ready.' | trans }}

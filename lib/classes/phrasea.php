@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class phrasea
 {
@@ -69,19 +70,19 @@ class phrasea
         return self::$_sbas_params;
     }
 
-    public static function modulesName($array_modules)
+    public static function modulesName(TranslatorInterface $translator, $array_modules)
     {
         $array = [];
 
         $modules = [
-            1 => _('admin::monitor: module production'),
-            2 => _('admin::monitor: module client'),
-            3 => _('admin::monitor: module admin'),
-            4 => _('admin::monitor: module report'),
-            5 => _('admin::monitor: module thesaurus'),
-            6 => _('admin::monitor: module comparateur'),
-            7 => _('admin::monitor: module validation'),
-            8 => _('admin::monitor: module upload')
+            1 => $translator->trans('admin::monitor: module production'),
+            2 => $translator->trans('admin::monitor: module client'),
+            3 => $translator->trans('admin::monitor: module admin'),
+            4 => $translator->trans('admin::monitor: module report'),
+            5 => $translator->trans('admin::monitor: module thesaurus'),
+            6 => $translator->trans('admin::monitor: module comparateur'),
+            7 => $translator->trans('admin::monitor: module validation'),
+            8 => $translator->trans('admin::monitor: module upload')
         ];
 
         foreach ($array_modules as $a) {

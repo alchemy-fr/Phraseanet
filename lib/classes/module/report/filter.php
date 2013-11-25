@@ -17,21 +17,6 @@ class module_report_filter
     private $posting_filter = [];
     private $cor_query = [];
     private $active_column = [];
-    private $trans = [
-        'user'      => 'phraseanet::utilisateurs',
-        'ddate'     => 'report:: date',
-        'ip'        => 'report:: IP',
-        'appli'     => 'report:: modules',
-        'fonction'  => 'report::fonction',
-        'activite'  => 'report::activite',
-        'pays'      => 'report::pays',
-        'societe'   => 'report::societe',
-        'record_id' => 'report:: record id',
-        'final'     => 'phraseanet:: sous definition',
-        'coll_id'   => 'report:: collections',
-        'comment'   => 'report:: commentaire',
-        'search'    => 'report:: question',
-    ];
 
     public function __construct(Application $app, $current_filter, $correspondance)
     {
@@ -72,17 +57,57 @@ class module_report_filter
         if (sizeof($this->tab_filter) > 0) {
             foreach ($this->tab_filter as $key => $filter) {
                 if (empty($filter['v']))
-                    $value = _('report:: non-renseigne');
+                    $value = $this->app->trans('report:: non-renseigne');
                 else
                     $value = $filter['v'];
 
-                if (array_key_exists($filter['f'], $this->trans))
-                    $field = _($this->trans[$filter['f']]);
-                else
-                    $field = $filter['f'];
+                switch ($filter['f']) {
+                    case 'user':
+                        $field = $this->app->trans('phraseanet::utilisateurs');
+                        break;
+                    case 'ddate':
+                        $field = $this->app->trans('report:: date');
+                        break;
+                    case 'ip':
+                        $field = $this->app->trans('report:: IP');
+                        break;
+                    case 'appli':
+                        $field = $this->app->trans('report:: modules');
+                        break;
+                    case 'fonction':
+                        $field = $this->app->trans('report::fonction');
+                        break;
+                    case 'activite':
+                        $field = $this->app->trans('report::activite');
+                        break;
+                    case 'pays':
+                        $field = $this->app->trans('report::pays');
+                        break;
+                    case 'societe':
+                        $field = $this->app->trans('report::societe');
+                        break;
+                    case 'record_id':
+                        $field = $this->app->trans('report:: record id');
+                        break;
+                    case 'final':
+                        $field = $this->app->trans('phraseanet:: sous definition');
+                        break;
+                    case 'coll_id':
+                        $field = $this->app->trans('report:: collections');
+                        break;
+                    case 'comment':
+                        $field = $this->app->trans('report:: commentaire');
+                        break;
+                    case 'search':
+                        $field = $this->app->trans('report:: question');
+                        break;
+                    default:
+                        $field = $filter['f'];
+                        break;
+                }
 
                 if ($filter['f'] == 'appli') {
-                    $value = implode(' ', phrasea::modulesName(@unserialize($value)));
+                    $value = implode(' ', phrasea::modulesName($this->app['translator'], @unserialize($value)));
                 } elseif ($filter['f'] == "ddate") {
                     $value = $this->app['date-formatter']->getPrettyString(new DateTime($value));
                 }

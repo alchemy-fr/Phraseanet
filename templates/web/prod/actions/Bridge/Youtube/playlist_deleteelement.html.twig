@@ -3,18 +3,14 @@
 {% set n_element = elements|length %}
 
 {% block menu %}
-  {% trans with {'%n_element%' : n_element} %}
-  Suppression de %n_element% playlists
-  {% endtrans %}
+  {% trans with {'%n_element%' : n_element} %}Suppression de %n_element% playlists{% endtrans %}
 {% endblock %}
 
 {% block response %}
     <form method="POST" action="{{ path('bridge_account_do_action', { 'account_id' : account.get_id(), 'action' : action, 'element_type' : element_type }) }}">
       <p>
         {% set number = elements|length %}
-        {% trans with {'%number%' : number} %}
-          Etes vous sur de supprimer %number% playlists ?
-        {% endtrans %}
+        {% trans with {'%number%' : number} %}Etes vous sur de supprimer %number% playlists ?{% endtrans %}
       </p>
       {% for id in elements %}
         <input type="hidden" name="elements_list[]" value="{{id}}"/>

@@ -15,9 +15,17 @@ use Symfony\Component\Debug\ExceptionHandler as SymfonyExceptionHandler;
 use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class PhraseaExceptionHandler extends SymfonyExceptionHandler
 {
+    private $translator;
+
+    public function setTranslator(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     public function createResponseBasedOnRequest(Request $request, $exception)
     {
         return parent::createResponse($exception);
@@ -27,22 +35,42 @@ class PhraseaExceptionHandler extends SymfonyExceptionHandler
     {
         switch (true) {
             case 404 === $exception->getStatusCode():
-                $title = _('Sorry, the page you are looking for could not be found.');
+                if (null !== $this->translator) {
+                    $title = $this->translator->trans('Sorry, the page you are looking for could not be found.');
+                } else {
+                    $title = 'Sorry, the page you are looking for could not be found.';
+                }
                 break;
             case 403 === $exception->getStatusCode():
-                $title = _('Sorry, you do have access to the page you are looking for.');
+                if (null !== $this->translator) {
+                    $title = $this->translator->trans('Sorry, you do have access to the page you are looking for.');
+                } else {
+                    $title = 'Sorry, you do have access to the page you are looking for.';
+                }
                 break;
             case 500 === $exception->getStatusCode():
-                $title = _('Whoops, looks like something went wrong.');
+                if (null !== $this->translator) {
+                    $title = $this->translator->trans('Whoops, looks like something went wrong.');
+                } else {
+                    $title = 'Whoops, looks like something went wrong.';
+                }
                 break;
             case 503 === $exception->getStatusCode():
-                $title = _('Sorry, site is currently undergoing maintenance, come back soon.');
+                if (null !== $this->translator) {
+                    $title = $this->translator->trans('Sorry, site is currently undergoing maintenance, come back soon.');
+                } else {
+                    $title = 'Sorry, site is currently undergoing maintenance, come back soon.';
+                }
                 break;
             case isset(Response::$statusTexts[$exception->getStatusCode()]):
                 $title = $exception->getStatusCode() . ' : ' . Response::$statusTexts[$exception->getStatusCode()];
                 break;
             default:
-                $title = 'Whoops, looks like something went wrong.';
+                if (null !== $this->translator) {
+                    $title = $this->translator->trans('Whoops, looks like something went wrong.');
+                } else {
+                    $title = 'Whoops, looks like something went wrong.';
+                }
         }
 
         $content = parent::getContent($exception);

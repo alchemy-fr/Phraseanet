@@ -54,9 +54,7 @@
         <hr/>
         <div>
             {% set DublinCoreElementSet = '<a href="http://dublincore.org/documents/dces/" target="_blank">DublinCore Element Set</a>' %}
-            {% trans with {'%DublinCoreElementSet%' : DublinCoreElementSet} %}
-                Ce champ est decrit comme element du %DublinCoreElementSet%
-            {% endtrans %}
+            {% trans with {'%DublinCoreElementSet%' : DublinCoreElementSet} %}Ce champ est decrit comme element du %DublinCoreElementSet%{% endtrans %}
         </div>
     {% endif %}
 

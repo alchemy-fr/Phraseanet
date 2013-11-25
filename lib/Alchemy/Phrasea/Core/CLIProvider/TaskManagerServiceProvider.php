@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Core\CLIProvider;
 
 use Alchemy\TaskManager\TaskManager;
 use Alchemy\Phrasea\TaskManager\TaskList;
-use Monolog\Logger;
 use Monolog\Handler\NullHandler;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
@@ -24,7 +23,7 @@ class TaskManagerServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['task-manager.logger'] = $app->share(function (Application $app) {
-            $logger = new Logger('task-manager logger');
+            $logger = new $app['monolog.logger.class']('task-manager logger');
             $logger->pushHandler(new NullHandler());
 
             return $logger;

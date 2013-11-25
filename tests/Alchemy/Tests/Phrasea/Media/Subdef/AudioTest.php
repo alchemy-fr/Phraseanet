@@ -4,9 +4,12 @@ namespace Alchemy\Tests\Phrasea\Media\Subdef;
 
 use Alchemy\Phrasea\Media\Subdef\Audio;
 use Alchemy\Phrasea\Media\Subdef\Subdef;
+use Alchemy\Tests\Tools\TranslatorMockTrait;
 
 class AudioTest extends \PHPUnit_Framework_TestCase
 {
+    use TranslatorMockTrait;
+
     /**
      * @var Audio
      */
@@ -14,7 +17,7 @@ class AudioTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->object = new Audio();
+        $this->object = new Audio($this->createTranslatorMock());
     }
 
     /**

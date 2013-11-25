@@ -30,7 +30,7 @@
                                 <span id="spanSWFUploadButton" class="span2"></span>
                                 <br />
                                 <span class="comment">
-                                    ({% trans with {'%maxFileSizeReadable%' : maxFileSizeReadable} %} maximum : %maxFileSizeReadable% {% endtrans %})
+                                    ({% trans with {'%maxFileSizeReadable%' : maxFileSizeReadable} %}maximum : %maxFileSizeReadable%{% endtrans %})
                                 </span>
                             </td>
                             <td class='uploader-icon'>
@@ -287,7 +287,7 @@
                         reasons = "{{ "The upload violates a security restriction, please retry" | trans }}";
                     break;
                     case SWFUpload.UPLOAD_ERROR.UPLOAD_LIMIT_EXCEEDED:
-                        reasons = "{% trans with {'%maxFileSizeReadable%' : maxFileSizeReadable} %} File upload limit (%maxFileSizeReadable%) has been reached {% endtrans %}";
+                        reasons = "{% trans with {'%maxFileSizeReadable%' : maxFileSizeReadable} %}File upload limit (%maxFileSizeReadable%) has been reached{% endtrans %}";
                     break;
                     case SWFUpload.UPLOAD_ERROR.UPLOAD_FAILED:
                         reasons = "{{ "Could not initiate upload, please retry" | trans }}";

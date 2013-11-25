@@ -134,11 +134,11 @@ class Activity implements ControllerProviderInterface
     public function doReportDownloadsByUsers(Application $app, Request $request)
     {
         $conf = [
-            'user'      => [_('report:: utilisateur'), 0, 1, 0, 0],
-            'nbdoc'     => [_('report:: nombre de documents'), 0, 0, 0, 0],
-            'poiddoc'   => [_('report:: poids des documents'), 0, 0, 0, 0],
-            'nbprev'    => [_('report:: nombre de preview'), 0, 0, 0, 0],
-            'poidprev'  => [_('report:: poids des previews'), 0, 0, 0, 0]
+            'user'      => [$app->trans('report:: utilisateur'), 0, 1, 0, 0],
+            'nbdoc'     => [$app->trans('report:: nombre de documents'), 0, 0, 0, 0],
+            'poiddoc'   => [$app->trans('report:: poids des documents'), 0, 0, 0, 0],
+            'nbprev'    => [$app->trans('report:: nombre de preview'), 0, 0, 0, 0],
+            'poidprev'  => [$app->trans('report:: poids des previews'), 0, 0, 0, 0]
         ];
 
         $activity = new \module_report_activity(
@@ -198,9 +198,9 @@ class Activity implements ControllerProviderInterface
     public function doReportBestOfQuestions(Application $app, Request $request)
     {
         $conf = [
-            'search'    => [_('report:: question'), 0, 0, 0, 0],
-            'nb'        => [_('report:: nombre'), 0, 0, 0, 0],
-            'nb_rep'    => [_('report:: nombre de reponses'), 0, 0, 0, 0]
+            'search'    => [$app->trans('report:: question'), 0, 0, 0, 0],
+            'nb'        => [$app->trans('report:: nombre'), 0, 0, 0, 0],
+            'nb_rep'    => [$app->trans('report:: nombre de reponses'), 0, 0, 0, 0]
         ];
 
         $activity = new \module_report_activity(
@@ -256,9 +256,9 @@ class Activity implements ControllerProviderInterface
     public function doReportNoBestOfQuestions(Application $app, Request $request)
     {
         $conf = [
-            'search'    => [_('report:: question'), 0, 0, 0, 0],
-            'nb'        => [_('report:: nombre'), 0, 0, 0, 0],
-            'nb_rep'    => [_('report:: nombre de reponses'), 0, 0, 0, 0]
+            'search'    => [$app->trans('report:: question'), 0, 0, 0, 0],
+            'nb'        => [$app->trans('report:: nombre'), 0, 0, 0, 0],
+            'nb_rep'    => [$app->trans('report:: nombre de reponses'), 0, 0, 0, 0]
         ];
 
         $activity = new \module_report_activity(
@@ -369,10 +369,10 @@ class Activity implements ControllerProviderInterface
     public function doReportSiteActiviyPerDays(Application $app, Request $request)
     {
         $conf = [
-            'ddate'     => [_('report:: jour'), 0, 0, 0, 0],
-            'total'     => [_('report:: total des telechargements'), 0, 0, 0, 0],
-            'preview'   => [_('report:: preview'), 0, 0, 0, 0],
-            'document'  => [_('report:: document original'), 0, 0, 0, 0]
+            'ddate'     => [$app->trans('report:: jour'), 0, 0, 0, 0],
+            'total'     => [$app->trans('report:: total des telechargements'), 0, 0, 0, 0],
+            'preview'   => [$app->trans('report:: preview'), 0, 0, 0, 0],
+            'document'  => [$app->trans('report:: document original'), 0, 0, 0, 0]
         ];
 
         $activity = new \module_report_activity(
@@ -700,7 +700,7 @@ class Activity implements ControllerProviderInterface
             'record_id' => ['', 1, 1, 1, 1],
             'file'      => ['', 1, 0, 1, 1],
             'mime'      => ['', 1, 0, 1, 1],
-            'comment'   => [_('Receiver'), 1, 0, 1, 1],
+            'comment'   => [$app->trans('Receiver'), 1, 0, 1, 1],
         ];
 
         $activity = new \module_report_sent(
@@ -792,7 +792,7 @@ class Activity implements ControllerProviderInterface
         if ($request->request->get('conf') == 'on') {
             return $app->json(['liste' => $app['twig']->render('report/listColumn.html.twig', [
                 'conf'  => $base_conf
-            ]), "title" => _("configuration")]);
+            ]), "title" => $app->trans("configuration")]);
         }
 
         //set order
@@ -819,7 +819,7 @@ class Activity implements ControllerProviderInterface
                 return $app->json(['diag'  => $app['twig']->render('report/colFilter.html.twig', [
                     'result' => $report->colFilter($field),
                     'field'  => $field
-                ]), "title"  => sprintf(_('filtrer les resultats sur la colonne %s'), $field)]);
+                ]), "title"  => $app->trans('filtrer les resultats sur la colonne %colonne%', array('%colonne%' => $field))]);
             }
 
             if ($field === $value) {
@@ -864,7 +864,7 @@ class Activity implements ControllerProviderInterface
                     'is_doc'      => false
                 ]),
                 'display_nav' => false,
-                'title'       => _(sprintf('Groupement des resultats sur le champ %s',  $groupField))
+                'title'       => $app->trans('Groupement des resultats sur le champ %name%', array('%name%' => $groupField))
             ]);
         }
 

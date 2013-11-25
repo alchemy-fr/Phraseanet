@@ -336,7 +336,7 @@
                                                 <input class="btn btn-inverse" type="button" value="{{ 'Re-initialiser' | trans }}" onclick="reset_adv_search();" />
                                             </div>
 
-                                            <span>{{ 'Trier par ' | trans }}</span>
+                                            <span>{{ 'Trier par' | trans }}</span>
                                             <select name="sort" class="input-small">
                                                 {% for sort, sort_name in app['phraseanet.SE'].getAvailableSort() %}
                                                 <option value="{{ sort }}" {% if sort == app['phraseanet.SE'].getDefaultSort() %}selected="selected" class="default-selection"{% endif %}>{{ sort_name }}</option>
@@ -743,42 +743,42 @@
     <div id="DIALOG"></div>
     <div id="keyboard-dialog" class="{% if app['authentication'].getUser().getPrefs('keyboard_infos') != '0' %}auto{% endif %}" style="display:none;" title="{{ 'raccourci :: a propos des raccourcis claviers' | trans }}">
         <div>
-            <h1>{{ 'Raccourcis claviers en cours de recherche : ' | trans }}</h1>
+            <h1>{{ 'Raccourcis claviers en cours de recherche :' | trans }}</h1>
             <ul>
-                <li>{{ 'Raccourcis:: ctrl-a : tout selectionner ' | trans }}</li>
-                <li>{{ 'Raccourcis:: ctrl-p : imprimer la selection ' | trans }}</li>
-                <li>{{ 'Raccourcis:: ctrl-e : editer la selection ' | trans }}</li>
-                <li>{{ 'Raccourcis::fleche gauche : page precedente ' | trans }}</li>
-                <li>{{ 'Raccourcis::fleche droite : page suivante ' | trans }}</li>
-                <li>{{ 'Raccourcis::fleche haut : scroll vertical ' | trans }}</li>
-                <li>{{ 'Raccourcis::fleche bas : scroll vertical ' | trans }}</li>
+                <li>{{ 'Raccourcis:: ctrl-a : tout selectionner' | trans }}</li>
+                <li>{{ 'Raccourcis:: ctrl-p : imprimer la selection' | trans }}</li>
+                <li>{{ 'Raccourcis:: ctrl-e : editer la selection' | trans }}</li>
+                <li>{{ 'Raccourcis::fleche gauche : page precedente' | trans }}</li>
+                <li>{{ 'Raccourcis::fleche droite : page suivante' | trans }}</li>
+                <li>{{ 'Raccourcis::fleche haut : scroll vertical' | trans }}</li>
+                <li>{{ 'Raccourcis::fleche bas : scroll vertical' | trans }}</li>
             </ul>
         </div>
         <div>
-            <h1>{{ 'Raccourcis claviers de la zone des paniers : ' | trans }}</h1>
+            <h1>{{ 'Raccourcis claviers de la zone des paniers :' | trans }}</h1>
             <ul>
-                <li>{{ 'Raccourcis:: ctrl-a : tout selectionner ' | trans }}</li>
-                <li>{{ 'Raccourcis:: ctrl-p : imprimer la selection ' | trans }}</li>
-                <li>{{ 'Raccourcis:: ctrl-e : editer la selection ' | trans }}</li>
+                <li>{{ 'Raccourcis:: ctrl-a : tout selectionner' | trans }}</li>
+                <li>{{ 'Raccourcis:: ctrl-p : imprimer la selection' | trans }}</li>
+                <li>{{ 'Raccourcis:: ctrl-e : editer la selection' | trans }}</li>
             </ul>
         </div>
         <div>
-            <h1>{{ 'Raccourcis claviers en cours de editing : ' | trans }}</h1>
+            <h1>{{ 'Raccourcis claviers en cours de editing :' | trans }}</h1>
             <ul>
-                <li>{{ 'Raccourcis::tab/shift-tab se ballade dans les champs ' | trans }}</li>
+                <li>{{ 'Raccourcis::tab/shift-tab se ballade dans les champs' | trans }}</li>
             </ul>
         </div>
         <div>
-            <h1>{{ 'Raccourcis claviers en cours de preview : ' | trans }}</h1>
+            <h1>{{ 'Raccourcis claviers en cours de preview :' | trans }}</h1>
             <ul>
-                <li>{{ 'Raccourcis::fleche gauche : en avant ' | trans }}</li>
-                <li>{{ 'Raccourcis::fleche gauche : en arriere ' | trans }}</li>
-                <li>{{ 'Raccourcis::espace : arreter/demarrer le diaporama ' | trans }}</li>
+                <li>{{ 'Raccourcis::fleche gauche : en avant' | trans }}</li>
+                <li>{{ 'Raccourcis::fleche gauche : en arriere' | trans }}</li>
+                <li>{{ 'Raccourcis::espace : arreter/demarrer le diaporama' | trans }}</li>
             </ul>
         </div>
         <div>
             <ul>
-                <li>{{ 'Vous pouvez quitter la plupart des fenetres survolantes via la touche echap ' | trans }}</li>
+                <li>{{ 'Vous pouvez quitter la plupart des fenetres survolantes via la touche echap' | trans }}</li>
             </ul>
         </div>
         <div>
@@ -862,14 +862,14 @@
                 </div>
                 <div class="box">
                     <div class="" style="float:left; width:49%;">
-                        <h1>{{ 'reponses:: images par pages : ' | trans }}</h1>
+                        <h1>{{ 'reponses:: images par pages :' | trans }}</h1>
                         <div class="box">
                             <div id="nperpage_slider" class="ui-corner-all" style="width:100px; display:inline-block;"></div>
                             <input type="text" readonly style="width:35px;" value="{{app['authentication'].getUser().getPrefs('images_per_page')}}" id="nperpage_value"/>
                         </div>
                     </div>
                     <div style="float:right; width:49%;">
-                        <h1>{{ 'reponses:: taille des images : ' | trans }}</h1>
+                        <h1>{{ 'reponses:: taille des images :' | trans }}</h1>
                         <div class="box">
                             <div id="sizeAns_slider" class="ui-corner-all" style="width:100px;display:inline-block;"></div>
                             <input type="hidden" value="{{app['authentication'].getUser().getPrefs('images_size')}}" id="sizeAns_value"/>

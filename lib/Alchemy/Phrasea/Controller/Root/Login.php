@@ -217,23 +217,23 @@ class Login implements ControllerProviderInterface
     public function getLanguage(Application $app, Request $request)
     {
         $response =  $app->json([
-            'validation_blank'          => _('Please provide a value.'),
-            'validation_choice_min'     => _('Please select at least %s choice.'),
-            'validation_email'          => _('Please provide a valid email address.'),
-            'validation_ip'             => _('Please provide a valid IP address.'),
-            'validation_length_min'     => _('Please provide a longer value. It should have %s character or more.'),
-            'password_match'            => _('Please provide the same passwords.'),
-            'email_match'               => _('Please provide the same emails.'),
-            'accept_tou'                => _('Please accept the terms of use to register.'),
-            'no_collection_selected'    => _('No collection selected'),
-            'one_collection_selected'   => _('%d collection selected'),
-            'collections_selected'      => _('%d collections selected'),
-            'all_collections'           => _('Select all collections'),
+            'validation_blank'          => $app->trans('Please provide a value.'),
+            'validation_choice_min'     => $app->trans('Please select at least %s choice.'),
+            'validation_email'          => $app->trans('Please provide a valid email address.'),
+            'validation_ip'             => $app->trans('Please provide a valid IP address.'),
+            'validation_length_min'     => $app->trans('Please provide a longer value. It should have %s character or more.'),
+            'password_match'            => $app->trans('Please provide the same passwords.'),
+            'email_match'               => $app->trans('Please provide the same emails.'),
+            'accept_tou'                => $app->trans('Please accept the terms of use to register.'),
+            'no_collection_selected'    => $app->trans('No collection selected'),
+            'one_collection_selected'   => $app->trans('%d collection selected'),
+            'collections_selected'      => $app->trans('%d collections selected'),
+            'all_collections'           => $app->trans('Select all collections'),
             // password strength
-            'weak'                      => _('Weak'),
-            'ordinary'                  => _('Ordinary'),
-            'good'                      => _('Good'),
-            'great'                     => _('Great'),
+            'weak'                      => $app->trans('Weak'),
+            'ordinary'                  => $app->trans('Ordinary'),
+            'good'                      => $app->trans('Good'),
+            'great'                     => $app->trans('Great'),
         ]);
 
         $response->setExpires(new \DateTime('+1 day'));
@@ -268,7 +268,7 @@ class Login implements ControllerProviderInterface
                 try {
                     $provider = $this->findProvider($app, $data['provider-id']);
                 } catch (NotFoundHttpException $e) {
-                    $app->addFlash('error', _('You tried to register with an unknown provider'));
+                    $app->addFlash('error', $app->trans('You tried to register with an unknown provider'));
 
                     return $app->redirectPath('login_register');
                 }
@@ -276,7 +276,7 @@ class Login implements ControllerProviderInterface
                 try {
                     $token = $provider->getToken();
                 } catch (NotAuthenticatedException $e) {
-                    $app->addFlash('error', _('You tried to register with an unknown provider'));
+                    $app->addFlash('error', $app->trans('You tried to register with an unknown provider'));
 
                     return $app->redirectPath('login_register');
                 }
@@ -303,7 +303,7 @@ class Login implements ControllerProviderInterface
                     $captcha = $app['recaptcha']->bind($request);
 
                     if ($app['phraseanet.registry']->get('GV_captchas') && !$captcha->isValid()) {
-                        throw new FormProcessingException(_('Invalid captcha answer.'));
+                        throw new FormProcessingException($app->trans('Invalid captcha answer.'));
                     }
 
                     require_once $app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
@@ -408,10 +408,10 @@ class Login implements ControllerProviderInterface
 
                     try {
                         $this->sendAccountUnlockEmail($app, $user);
-                        $app->addFlash('info', _('login::notification: demande de confirmation par mail envoyee'));
+                        $app->addFlash('info', $app->trans('login::notification: demande de confirmation par mail envoyee'));
                     } catch (InvalidArgumentException $e) {
                         // todo, log this failure
-                        $app->addFlash('error', _('Unable to send your account unlock email.'));
+                        $app->addFlash('error', $app->trans('Unable to send your account unlock email.'));
                     }
 
                     return $app->redirectPath('homepage');
@@ -472,17 +472,17 @@ class Login implements ControllerProviderInterface
         try {
             $user = \User_Adapter::getInstance((int) $usrId, $app);
         } catch (\Exception $e) {
-            $app->addFlash('error', _('Invalid link.'));
+            $app->addFlash('error', $app->trans('Invalid link.'));
 
             return $app->redirectPath('homepage');
         }
 
         try {
             $this->sendAccountUnlockEmail($app, $user);
-            $app->addFlash('success', _('login::notification: demande de confirmation par mail envoyee'));
+            $app->addFlash('success', $app->trans('login::notification: demande de confirmation par mail envoyee'));
         } catch (InvalidArgumentException $e) {
             // todo, log this failure
-            $app->addFlash('error', _('Unable to send your account unlock email.'));
+            $app->addFlash('error', $app->trans('Unable to send your account unlock email.'));
         }
 
         return $app->redirectPath('homepage');
@@ -521,7 +521,7 @@ class Login implements ControllerProviderInterface
     public function registerConfirm(PhraseaApplication $app, Request $request)
     {
         if (null === $code = $request->query->get('code')) {
-            $app->addFlash('error', _('Invalid unlock link.'));
+            $app->addFlash('error', $app->trans('Invalid unlock link.'));
 
             return $app->redirectPath('homepage');
         }
@@ -529,7 +529,7 @@ class Login implements ControllerProviderInterface
         try {
             $datas = $app['tokens']->helloToken($code);
         } catch (NotFoundHttpException $e) {
-            $app->addFlash('error', _('Invalid unlock link.'));
+            $app->addFlash('error', $app->trans('Invalid unlock link.'));
 
             return $app->redirectPath('homepage');
         }
@@ -537,13 +537,13 @@ class Login implements ControllerProviderInterface
         try {
             $user = \User_Adapter::getInstance((int) $datas['usr_id'], $app);
         } catch (\Exception $e) {
-            $app->addFlash('error', _('Invalid unlock link.'));
+            $app->addFlash('error', $app->trans('Invalid unlock link.'));
 
             return $app->redirectPath('homepage');
         }
 
         if (!$user->get_mail_locked()) {
-            $app->addFlash('info', _('Account is already unlocked, you can login.'));
+            $app->addFlash('info', $app->trans('Account is already unlocked, you can login.'));
 
             return $app->redirectPath('homepage');
         }
@@ -554,7 +554,7 @@ class Login implements ControllerProviderInterface
         try {
             $receiver = Receiver::fromUser($user);
         } catch (InvalidArgumentException $e) {
-            $app->addFlash('success', _('Account has been unlocked, you can now login.'));
+            $app->addFlash('success', $app->trans('Account has been unlocked, you can now login.'));
 
             return $app->redirectPath('homepage');
         }
@@ -565,12 +565,12 @@ class Login implements ControllerProviderInterface
             $mail = MailSuccessEmailConfirmationRegistered::create($app, $receiver);
             $app['notification.deliverer']->deliver($mail);
 
-            $app->addFlash('success', _('Account has been unlocked, you can now login.'));
+            $app->addFlash('success', $app->trans('Account has been unlocked, you can now login.'));
         } else {
             $mail = MailSuccessEmailConfirmationUnregistered::create($app, $receiver);
             $app['notification.deliverer']->deliver($mail);
 
-            $app->addFlash('info', _('Account has been unlocked, you still have to wait for admin approval.'));
+            $app->addFlash('info', $app->trans('Account has been unlocked, you still have to wait for admin approval.'));
         }
 
         return $app->redirectPath('homepage');
@@ -604,7 +604,7 @@ class Login implements ControllerProviderInterface
 
                     $app['tokens']->removeToken($token);
 
-                    $app->addFlash('success', _('login::notification: Mise a jour du mot de passe avec succes'));
+                    $app->addFlash('success', $app->trans('login::notification: Mise a jour du mot de passe avec succes'));
 
                     return $app->redirectPath('homepage');
                 }
@@ -640,13 +640,13 @@ class Login implements ControllerProviderInterface
                     try {
                         $user = \User_Adapter::getInstance(\User_Adapter::get_usr_id_from_email($app, $data['email']), $app);
                     } catch (\Exception $e) {
-                        throw new FormProcessingException(_('phraseanet::erreur: Le compte n\'a pas ete trouve'));
+                        throw new FormProcessingException($app->trans('phraseanet::erreur: Le compte n\'a pas ete trouve'));
                     }
 
                     try {
                         $receiver = Receiver::fromUser($user);
                     } catch (InvalidArgumentException $e) {
-                        throw new FormProcessingException(_('Invalid email address'));
+                        throw new FormProcessingException($app->trans('Invalid email address'));
                     }
 
                     $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), new \DateTime('+1 day'));
@@ -662,7 +662,7 @@ class Login implements ControllerProviderInterface
                     $mail->setButtonUrl($url);
 
                     $app['notification.deliverer']->deliver($mail);
-                    $app->addFlash('info', _('phraseanet:: Un email vient de vous etre envoye'));
+                    $app->addFlash('info', $app->trans('phraseanet:: Un email vient de vous etre envoye'));
 
                     return $app->redirectPath('login_forgot_password');
                 }
@@ -710,7 +710,7 @@ class Login implements ControllerProviderInterface
         $app['dispatcher']->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($app));
         $app['authentication']->closeAccount();
 
-        $app->addFlash('info', _('Vous etes maintenant deconnecte. A bientot.'));
+        $app->addFlash('info', $app->trans('Vous etes maintenant deconnecte. A bientot.'));
 
         $response = $app->redirectPath('homepage', [
             'redirect' => $request->query->get("redirect")
@@ -737,7 +737,7 @@ class Login implements ControllerProviderInterface
         try {
             $app['phraseanet.appbox']->get_connection();
         } catch (\Exception $e) {
-            $app->addFlash('error', _('login::erreur: No available connection - Please contact sys-admin'));
+            $app->addFlash('error', $app->trans('login::erreur: No available connection - Please contact sys-admin'));
         }
 
         $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(['public' => true], ['updatedOn' => 'DESC']);
@@ -779,7 +779,7 @@ class Login implements ControllerProviderInterface
     public function authenticateAsGuest(PhraseaApplication $app, Request $request)
     {
         if (!$app->isGuestAllowed()) {
-            $app->abort(403, _('Phraseanet guest-access is disabled'));
+            $app->abort(403, $app->trans('Phraseanet guest-access is disabled'));
         }
 
         $context = new Context(Context::CONTEXT_GUEST);
@@ -899,7 +899,7 @@ class Login implements ControllerProviderInterface
             $provider->onCallback($request);
             $token = $provider->getToken();
         } catch (NotAuthenticatedException $e) {
-            $app['session']->getFlashBag()->add('error', sprintf(_('Unable to authenticate with %s'), $provider->getName()));
+            $app['session']->getFlashBag()->add('error', $app->trans('Unable to authenticate with %provider_name%', array('%provider_name%' => $provider->getName())));
 
             return $app->redirectPath('homepage');
         }
@@ -923,7 +923,7 @@ class Login implements ControllerProviderInterface
         try {
             $user = $app['authentication.suggestion-finder']->find($token);
         } catch (NotAuthenticatedException $e) {
-            $app->addFlash('error', _('Unable to retrieve provider identity'));
+            $app->addFlash('error', $app->trans('Unable to retrieve provider identity'));
 
             return $app->redirectPath('homepage');
         }
@@ -962,7 +962,7 @@ class Login implements ControllerProviderInterface
             return $app->redirectPath('login_register_classic', ['providerId' => $providerId]);
         }
 
-        $app->addFlash('error', _('Your identity is not recognized.'));
+        $app->addFlash('error', $app->trans('Your identity is not recognized.'));
 
         return $app->redirectPath('homepage');
     }
@@ -994,7 +994,7 @@ class Login implements ControllerProviderInterface
 
         $form->bind($request);
         if (!$form->isValid()) {
-            $app->addFlash('error', _('An unexpected error occured during authentication process, please contact an admin'));
+            $app->addFlash('error', $app->trans('An unexpected error occured during authentication process, please contact an admin'));
 
             throw new AuthenticationException(call_user_func($redirector));
         }
@@ -1009,18 +1009,18 @@ class Login implements ControllerProviderInterface
             $usr_id = $app['auth.native']->getUsrId($request->request->get('login'), $request->request->get('password'), $request);
         } catch (RequireCaptchaException $e) {
             $app->requireCaptcha();
-            $app->addFlash('warning', _('Please fill the captcha'));
+            $app->addFlash('warning', $app->trans('Please fill the captcha'));
 
             throw new AuthenticationException(call_user_func($redirector, $params));
         } catch (AccountLockedException $e) {
-            $app->addFlash('warning', _('login::erreur: Vous n\'avez pas confirme votre email'));
+            $app->addFlash('warning', $app->trans('login::erreur: Vous n\'avez pas confirme votre email'));
             $app->addUnlockAccountData($e->getUsrId());
 
             throw new AuthenticationException(call_user_func($redirector, $params));
         }
 
         if (null === $usr_id) {
-            $app['session']->getFlashBag()->set('error', _('login::erreur: Erreur d\'authentification'));
+            $app['session']->getFlashBag()->set('error', $app->trans('login::erreur: Erreur d\'authentification'));
 
             throw new AuthenticationException(call_user_func($redirector, $params));
         }

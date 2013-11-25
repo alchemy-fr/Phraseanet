@@ -8,13 +8,9 @@
     <button class="close" data-dismiss="alert" type="button">×</button>
     {% set user_count = app['request'].get('user-updated') %}
     {% if user_count == 1 %}
-        {% trans %}
-            The user has been created.
-        {% endtrans %}
+        {% trans %}The user has been created.{% endtrans %}
     {% else %}
-        {% trans with {'%user_count%' : user_count} %}
-            %user_count% users have been created.
-        {% endtrans %}
+        {% trans with {'%user_count%' : user_count} %}%user_count% users have been created.{% endtrans %}
     {% endif %}
     </div>
 {% endif %}
@@ -203,11 +199,11 @@
                 {% endif %}
                 <select name="per_page" class="input-medium">
                     {% set n_par_page = 10 %}
-                    <option value="10" {% if parm['per_page'] == 10%}selected="selected"{% endif %}>{% trans with {'%n_par_page%' : n_par_page} %}%n_par_page% par page {% endtrans %}</option>
+                    <option value="10" {% if parm['per_page'] == 10%}selected="selected"{% endif %}>{% trans with {'%n_par_page%' : n_par_page} %}%n_par_page% par page{% endtrans %}</option>
                     {% set n_par_page = 20 %}
-                    <option value="20" {% if parm['per_page'] == 20%}selected="selected"{% endif %}>{% trans with {'%n_par_page%' : n_par_page} %}%n_par_page% par page {% endtrans %}</option>
+                    <option value="20" {% if parm['per_page'] == 20%}selected="selected"{% endif %}>{% trans with {'%n_par_page%' : n_par_page} %}%n_par_page% par page{% endtrans %}</option>
                     {% set n_par_page = 50 %}
-                    <option value="50" {% if parm['per_page'] == 50%}selected="selected"{% endif %}>{% trans with {'%n_par_page%' : n_par_page} %}%n_par_page% par page {% endtrans %}</option>
+                    <option value="50" {% if parm['per_page'] == 50%}selected="selected"{% endif %}>{% trans with {'%n_par_page%' : n_par_page} %}%n_par_page% par page{% endtrans %}</option>
                 </select>
                 <button class="user_modifier btn">{{ 'boutton::modifier' | trans }}</button>
                 <button class="user_deleter btn">{{ 'Supprimer' | trans }}</button>

@@ -187,7 +187,7 @@ class Feed implements ControllerProviderInterface
                 $app->abort(404, 'Entry not found');
             }
             if (!$entry->isPublisher($app['authentication']->getUser()) && $entry->getFeed()->isOwner($app['authentication']->getUser()) === false) {
-                $app->abort(403, _('Action Forbidden : You are not the publisher'));
+                $app->abort(403, $app->trans('Action Forbidden : You are not the publisher'));
             }
 
             $app['EM']->remove($entry);
@@ -245,10 +245,10 @@ class Feed implements ControllerProviderInterface
             );
 
             $output = [
-                'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')
-                . '</p><p>' . _('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
+                'texte' => '<p>' . $app->trans('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')
+                . '</p><p>' . $app->trans('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
             <div><input type="text" readonly="readonly" class="input_select_copy" value="' . $link->getURI() . '"/></div>',
-                'titre' => _('publications::votre rss personnel')
+                'titre' => $app->trans('publications::votre rss personnel')
             ];
 
             return $app->json($output);
@@ -264,10 +264,10 @@ class Feed implements ControllerProviderInterface
             $link = $app['feed.user-link-generator']->generate($feed, $app['authentication']->getUser(), FeedLinkGenerator::FORMAT_RSS, null, $renew);
 
             $output = [
-                'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')
-                . '</p><p>' . _('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
+                'texte' => '<p>' . $app->trans('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')
+                . '</p><p>' . $app->trans('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
             <div><input type="text" style="width:100%" value="' . $link->getURI() . '"/></div>',
-                'titre' => _('publications::votre rss personnel')
+                'titre' => $app->trans('publications::votre rss personnel')
             ];
 
             return $app->json($output);

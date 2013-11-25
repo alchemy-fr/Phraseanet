@@ -11,13 +11,15 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
+use Symfony\Component\Translation\TranslatorInterface;
+
 class FlexPaper extends Provider
 {
     protected $options = [];
 
-    public function __construct()
+    public function __construct(TranslatorInterface $translator)
     {
-
+        $this->translator = $translator;
     }
 
     public function getType()
@@ -27,7 +29,7 @@ class FlexPaper extends Provider
 
     public function getDescription()
     {
-        return _('Generates a flexpaper flash file');
+        return $this->translator->trans('Generates a flexpaper flash file');
     }
 
     public function getMediaAlchemystSpec()

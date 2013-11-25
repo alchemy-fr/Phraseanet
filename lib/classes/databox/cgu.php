@@ -29,12 +29,12 @@ class databox_cgu
             if (trim($term['terms']) == '') {
                 continue;
             }
-            $out .= '<div style="display:none;" class="cgu-dialog" title="' . str_replace('"', '&quot;', sprintf(_('cgus:: CGUs de la base %s'), $name)) . '">';
+            $out .= '<div style="display:none;" class="cgu-dialog" title="' . str_replace('"', '&quot;', $app->trans('cgus:: CGUs de la base %s', $name)) . '">';
 
             $out .= '<blockquote>' . $term['terms'] . '</blockquote>';
-            $out .= '<div>' . _('cgus:: Pour continuer a utiliser lapplication, vous devez accepter les conditions precedentes') . '
-                <input id="terms_of_use_' . $term['sbas_id'] . '" type="button" date="' . $term['date'] . '" class="cgus-accept" value="' . _('cgus :: accepter') . '"/>
-                <input id="sbas_' . $term['sbas_id'] . '" type="button" class="cgus-cancel" value="' . _('cgus :: refuser') . '"/>
+            $out .= '<div>' . $app->trans('cgus:: Pour continuer a utiliser lapplication, vous devez accepter les conditions precedentes') . '
+                <input id="terms_of_use_' . $term['sbas_id'] . '" type="button" date="' . $term['date'] . '" class="cgus-accept" value="' . $app->trans('cgus :: accepter') . '"/>
+                <input id="sbas_' . $term['sbas_id'] . '" type="button" class="cgus-cancel" value="' . $app->trans('cgus :: refuser') . '"/>
                 </div>';
             $out .= '</div>';
         }
@@ -88,7 +88,7 @@ class databox_cgu
             if ($out != '')
                 $out .= '<hr/>';
 
-            $out .= '<div><h1 style="text-align:center;">' . str_replace('"', '&quot;', sprintf(_('cgus:: CGUs de la base %s'), $name)) . '</h1>';
+            $out .= '<div><h1 style="text-align:center;">' . str_replace('"', '&quot;', $app->trans('cgus:: CGUs de la base %databox_name%', array('%databox_name%' => $name))) . '</h1>';
 
             $out .= '<blockquote>' . $term['terms'] . '</blockquote>';
 

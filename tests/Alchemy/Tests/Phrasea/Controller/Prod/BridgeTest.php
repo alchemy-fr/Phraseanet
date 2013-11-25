@@ -55,7 +55,7 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testLogin()
     {
         self::$DI['client']->request('GET', '/prod/bridge/login/Apitest/');
-        $test = new \Bridge_Api_Apitest(self::$DI['app']['url_generator'], self::$DI['app']['phraseanet.registry'], new \Bridge_Api_Auth_None());
+        $test = new \Bridge_Api_Apitest(self::$DI['app']['url_generator'], self::$DI['app']['phraseanet.registry'], new \Bridge_Api_Auth_None(), self::$DI['app']['translator']);
         $this->assertTrue(self::$DI['client']->getResponse()->getStatusCode() == 302);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect($test->get_auth_url()));
     }

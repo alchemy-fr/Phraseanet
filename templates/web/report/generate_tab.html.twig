@@ -33,13 +33,9 @@
                     {% if total_count > 0 and total_count != 0 %}
                         <i>
                             {% if total_count == 1 %}
-                                {% trans %}
-                                    1 result
-                                {% endtrans %}
+                                {% trans %}1 result{% endtrans %}
                             {% else %}
-                                {% trans with {'%total_count%' : total_count} %}
-                                    %total_count% results
-                                {% endtrans %}
+                                {% trans with {'%total_count%' : total_count} %}%total_count% results{% endtrans %}
                             {% endif %}
 
                         </i>

@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\Translation\TranslatorInterface;
+
 class databox_subdefsStructure implements IteratorAggregate, Countable
 {
     /**
@@ -16,6 +18,11 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
      * @var Array
      */
     protected $AvSubdefs = [];
+
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
 
     /**
      *
@@ -41,9 +48,10 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
      * @param  databox $databox
      * @return Array
      */
-    public function __construct(databox $databox)
+    public function __construct(databox $databox, TranslatorInterface $translator)
     {
         $this->databox = $databox;
+        $this->translator = $translator;
 
         $this->load_subdefs();
 
@@ -116,7 +124,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
                         break;
                 }
 
-                $AvSubdefs[$subdefgroup_name][$subdef_name] = new databox_subdef($type, $sd);
+                $AvSubdefs[$subdefgroup_name][$subdef_name] = new databox_subdef($type, $sd, $this->translator);
             }
         }
         $this->AvSubdefs = $AvSubdefs;

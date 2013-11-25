@@ -43,7 +43,7 @@ class module_report_validate extends module_report
     public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
         parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
-        $this->title = _('report:: validated documents');
+        $this->title = $this->app->trans('report:: validated documents');
     }
 
     /**
@@ -117,7 +117,7 @@ class module_report_validate extends module_report
                     if ($value == 'comment') {
                         $this->result[$i][$value] = '&nbsp;';
                     } else {
-                        $this->result[$i][$value] = '<i>' . _('report:: non-renseigne') . '</i>';
+                        $this->result[$i][$value] = '<i>' . $this->app->trans('report:: non-renseigne') . '</i>';
                     }
                 }
             }

@@ -119,15 +119,11 @@
                   {% endif %}
                 {% else %}
                   {% set display_name = main_user.get_display_name() %}
-                  {% trans with {'%display_name%' : display_name} %}
-                    Edition des droits de %display_name%
-                  {% endtrans %}
+                  {% trans with {'%display_name%' : display_name} %}Edition des droits de %display_name%{% endtrans %}
                 {% endif %}
               {% else %}
                 {% set number = users|length %}
-                {% trans with {'%number%' : number} %}
-                  Edition des droits de %number% utilisateurs
-                {% endtrans %}
+                {% trans with {'%number%' : number} %}Edition des droits de %number% utilisateurs{% endtrans %}
               {% endif %}
             </td>
             <td style="text-align:right;">

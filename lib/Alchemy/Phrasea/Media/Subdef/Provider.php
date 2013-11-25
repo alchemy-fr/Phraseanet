@@ -15,6 +15,7 @@ abstract class Provider implements Subdef
 {
     protected $options = [];
     protected $spec;
+    protected $translator;
 
     public function registerOption(OptionType\OptionType $option)
     {

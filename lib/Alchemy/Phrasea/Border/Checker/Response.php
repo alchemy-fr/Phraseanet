@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Border\Checker;
 
+use Symfony\Component\Translation\TranslatorInterface;
+
 /**
  * The response of a check
  */
@@ -54,9 +56,9 @@ class Response
      *
      * @return string
      */
-    public function getMessage()
+    public function getMessage(TranslatorInterface $translator)
     {
-        return $this->checker->getMessage();
+        return $this->checker->getMessage($translator);
     }
 
     /**

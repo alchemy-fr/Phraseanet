@@ -28,8 +28,8 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
      */
     public function __construct(Application $app, eventsmanager_broker $broker)
     {
-        $this->group = _('Validation');
         parent::__construct($app, $broker);
+        $this->group = $this->app->trans('Validation');
 
         return $this;
     }
@@ -147,9 +147,9 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
 
         try {
             $basket = $this->app['converter.basket']->convert($ssel_id);
-            $basket_name = trim($basket->getName()) ? : _('Une selection');
+            $basket_name = trim($basket->getName()) ? : $this->app->trans('Une selection');
         } catch (Exception $e) {
-            $basket_name = _('Une selection');
+            $basket_name = $this->app->trans('Une selection');
         }
 
         $bask_link = '<a href="'
@@ -158,10 +158,10 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
             . $basket_name . '</a>';
 
         $ret = [
-            'text'  => sprintf(
-                _('%1$s vous demande de valider %2$s')
-                , $sender, $bask_link
-            )
+            'text'  => $this->app->trans('%user% vous demande de valider %title%', array(
+                '%user%' => $sender,
+                '%title%' => $bask_link,
+            ))
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
         ];
 
@@ -174,7 +174,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
      */
     public function get_name()
     {
-        return _('Validation');
+        return $this->app->trans('Validation');
     }
 
     /**
@@ -183,7 +183,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
      */
     public function get_description()
     {
-        return _('Recevoir des notifications lorsqu\'on me demande une validation');
+        return $this->app->trans('Recevoir des notifications lorsqu\'on me demande une validation');
     }
 
     /**

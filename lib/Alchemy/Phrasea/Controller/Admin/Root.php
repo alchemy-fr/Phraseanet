@@ -160,15 +160,15 @@ class Root implements ControllerProviderInterface
         $controllers->get('/test-paths/', function (Application $app, Request $request) {
 
             if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-                $app->abort(400, _('Bad request format, only JSON is allowed'));
+                $app->abort(400, $app->trans('Bad request format, only JSON is allowed'));
             }
 
             if (0 !== count($tests = $request->query->get('tests', []))) {
-                $app->abort(400, _('Missing tests parameter'));
+                $app->abort(400, $app->trans('Missing tests parameter'));
             }
 
             if (null !== $path = $request->query->get('path')) {
-                $app->abort(400, _('Missing path parameter'));
+                $app->abort(400, $app->trans('Missing path parameter'));
             }
 
             foreach ($tests as $test) {
@@ -198,7 +198,7 @@ class Root implements ControllerProviderInterface
 
             $databox = $app['phraseanet.appbox']->get_databox((int) $databox_id);
             $structure = $databox->get_structure();
-            $errors = \databox::get_structure_errors($structure);
+            $errors = \databox::get_structure_errors($app['translator'], $structure);
 
             if ($updateOk = !!$request->query->get('success', false)) {
                 $updateOk = true;
@@ -224,10 +224,10 @@ class Root implements ControllerProviderInterface
             }
 
             if (null === $structure = $request->request->get('structure')) {
-                $app->abort(400, _('Missing "structure" parameter'));
+                $app->abort(400, $app->trans('Missing "structure" parameter'));
             }
 
-            $errors = \databox::get_structure_errors($structure);
+            $errors = \databox::get_structure_errors($app['translator'], $structure);
 
             $domst = new \DOMDocument('1.0', 'UTF-8');
             $domst->preserveWhiteSpace = false;
@@ -266,19 +266,19 @@ class Root implements ControllerProviderInterface
 
             switch ($errorMsg = $request->query->get('error')) {
                 case 'rights':
-                    $errorMsg = _('You do not enough rights to update status');
+                    $errorMsg = $app->trans('You do not enough rights to update status');
                     break;
                 case 'too-big':
-                    $errorMsg = _('File is too big : 64k max');
+                    $errorMsg = $app->trans('File is too big : 64k max');
                     break;
                 case 'upload-error':
-                    $errorMsg = _('Status icon upload failed : upload error');
+                    $errorMsg = $app->trans('Status icon upload failed : upload error');
                     break;
                 case 'wright-error':
-                    $errorMsg = _('Status icon upload failed : can not write on disk');
+                    $errorMsg = $app->trans('Status icon upload failed : can not write on disk');
                     break;
                 case 'unknow-error':
-                    $errorMsg = _('Something wrong happend');
+                    $errorMsg = $app->trans('Something wrong happend');
                     break;
             }
 
@@ -312,7 +312,7 @@ class Root implements ControllerProviderInterface
 
         $controllers->post('/statusbit/{databox_id}/status/{bit}/delete/', function (Application $app, Request $request, $databox_id, $bit) {
             if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-                $app->abort(400, _('Bad request format, only JSON is allowed'));
+                $app->abort(400, $app->trans('Bad request format, only JSON is allowed'));
             }
 
             if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_sbas($databox_id, 'bas_modify_struct')) {

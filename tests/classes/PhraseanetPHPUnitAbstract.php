@@ -30,8 +30,11 @@ use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfProviderInterface;
 use Symfony\Component\Routing\RequestContext;
 
+use Alchemy\Tests\Tools\TranslatorMockTrait;
+
 abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 {
+    use TranslatorMockTrait;
     /**
      * Define some user agents
      */
@@ -154,6 +157,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
                 return $generator;
             }));
+            $app['translator'] = $this->createTranslatorMock();
 
             $app['debug'] = true;
 

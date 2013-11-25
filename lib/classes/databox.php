@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Application;
 use Symfony\Component\Filesystem\Filesystem;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class databox extends base
 {
@@ -675,7 +676,7 @@ class databox extends base
     public function get_subdef_structure()
     {
         if (! $this->subdef_struct) {
-            $this->subdef_struct = new databox_subdefsStructure($this);
+            $this->subdef_struct = new databox_subdefsStructure($this, $this->app['translator']);
         }
 
         return $this->subdef_struct;
@@ -1304,7 +1305,7 @@ class databox extends base
      * @param  string $structure
      * @return Array
      */
-    public static function get_structure_errors($structure)
+    public static function get_structure_errors(TranslatorInterface $translator, $structure)
     {
         $sx_structure = simplexml_load_string($structure);
 
@@ -1317,7 +1318,7 @@ class databox extends base
             $subdefgroup_name = trim((string) $subdefs->attributes()->name);
 
             if ($subdefgroup_name == '') {
-                $errors[] = _('ERREUR : TOUTES LES BALISES subdefgroup necessitent un attribut name');
+                $errors[] = $translator->trans('ERREUR : TOUTES LES BALISES subdefgroup necessitent un attribut name');
                 continue;
             }
 
@@ -1328,11 +1329,11 @@ class databox extends base
                 $sd_name = trim(mb_strtolower((string) $sd->attributes()->name));
                 $sd_class = trim(mb_strtolower((string) $sd->attributes()->class));
                 if ($sd_name == '' || isset($AvSubdefs[$subdefgroup_name][$sd_name])) {
-                    $errors[] = _('ERREUR : Les name de subdef sont uniques par groupe de subdefs et necessaire');
+                    $errors[] = $translator->trans('ERREUR : Les name de subdef sont uniques par groupe de subdefs et necessaire');
                     continue;
                 }
                 if ( ! in_array($sd_class, ['thumbnail', 'preview', 'document'])) {
-                    $errors[] = _('ERREUR : La classe de subdef est necessaire et egal a "thumbnail","preview" ou "document"');
+                    $errors[] = $translator->trans('ERREUR : La classe de subdef est necessaire et egal a "thumbnail","preview" ou "document"');
                     continue;
                 }
                 $AvSubdefs[$subdefgroup_name][$sd_name] = $sd;

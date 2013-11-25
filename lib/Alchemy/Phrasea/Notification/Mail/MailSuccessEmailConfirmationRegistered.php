@@ -18,7 +18,7 @@ class MailSuccessEmailConfirmationRegistered extends AbstractMailWithLink
      */
     public function getSubject()
     {
-        return _('Email successfully confirmed');
+        return $this->app->trans('Email successfully confirmed');
     }
 
     /**
@@ -26,7 +26,7 @@ class MailSuccessEmailConfirmationRegistered extends AbstractMailWithLink
      */
     public function getMessage()
     {
-        return _('login::register: merci d\'avoir confirme votre adresse email');
+        return $this->app->trans('login::register: merci d\'avoir confirme votre adresse email');
     }
 
     /**
@@ -34,7 +34,7 @@ class MailSuccessEmailConfirmationRegistered extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return sprintf(_('Your access on %s'), $this->app['phraseanet.registry']->get('GV_homeTile'));
+        return $this->app->trans('Your access on %application%', array('%application%' => $this->app['phraseanet.registry']->get('GV_homeTile')));
     }
 
     /**

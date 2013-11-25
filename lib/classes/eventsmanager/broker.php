@@ -181,7 +181,7 @@ class eventsmanager_broker
         }
 
         if (((int) $page + 1) * $n < $total) {
-            $data['next'] = '<a href="#" onclick="print_notifications(' . ((int) $page + 1) . ');return false;">' . _('charger d\'avantages de notifications') . '</a>';
+            $data['next'] = '<a href="#" onclick="print_notifications(' . ((int) $page + 1) . ');return false;">' . $this->app->trans('charger d\'avantages de notifications') . '</a>';
         }
 
         return $data;
@@ -291,7 +291,7 @@ class eventsmanager_broker
                 continue;
             }
             $group = $this->pool_classes[$notification]->get_group();
-            $group = $group === null ? _('Notifications globales') : $group;
+            $group = $group === null ? $this->app->trans('Notifications globales') : $group;
 
             $personnal_notifications[$group][] = [
                 'name'             => $this->pool_classes[$notification]->get_name()

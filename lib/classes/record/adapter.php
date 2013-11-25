@@ -910,7 +910,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $title = trim($this->get_original_name($removeExtension));
         }
 
-        $title = $title != "" ? $title : _('reponses::document sans titre');
+        $title = $title != "" ? $title : $this->app->trans('reponses::document sans titre');
 
         if ($cache) {
             $this->set_data_to_cache(self::CACHE_TITLE, $title);

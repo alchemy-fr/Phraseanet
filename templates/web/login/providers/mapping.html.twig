@@ -16,9 +16,7 @@
                 </div>
                 <div class="match-hint">
                     {% set provider_name = provider.getName() %}
-                    {% trans with {'%provider_name%' : provider_name} %}
-                       Your %provider_name% account matchs a Phraseanet account
-                    {% endtrans %}
+                    {% trans with {'%provider_name%' : provider_name} %}Your %provider_name% account matchs a Phraseanet account{% endtrans %}
                 </div>
             </div>
         </div>

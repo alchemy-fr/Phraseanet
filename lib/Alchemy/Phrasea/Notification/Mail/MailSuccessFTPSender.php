@@ -37,10 +37,10 @@ class MailSuccessFTPSender extends AbstractMail
             throw new LogicException('You must set server before calling getSubject');
         }
 
-        return sprintf(
-            _('task::ftp:Status about your FTP transfert from %1$s to %2$s'),
-            $this->getPhraseanetTitle(), $this->server
-        );
+        return $this->app->trans('task::ftp:Status about your FTP transfert from %application% to %server%', array(
+            '%application%' => $this->getPhraseanetTitle(),
+            '%server%'      => $this->server,
+        ));
     }
 
     /**

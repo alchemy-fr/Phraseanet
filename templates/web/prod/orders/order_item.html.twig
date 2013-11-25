@@ -2,7 +2,7 @@
 {% set displayName = order.getUser(app).get_display_name() %}
 
 <div class="page-header">
-  <h1>{% trans with {'%displayName%' : displayName} %} %displayName% wants to place an order {% endtrans %}</h1>
+  <h1>{% trans with {'%displayName%' : displayName} %}%displayName% wants to place an order{% endtrans %}</h1>
 </div>
 
 <div id="order_manager">
@@ -63,7 +63,7 @@
                             {% set name = element.getOrderMasterName(app) %}
                             {% if element.getDeny() == true %}
                                 {% set title %}
-                                     {% trans with {'%name%' : name} %}Document refuse par %name% {% endtrans %}
+                                     {% trans with {'%name%' : name} %}Document refuse par %name%{% endtrans %}
                                 {% endset %}
                                 {% set title_send %}
                                     {% trans %}Forcer l'envoi du document{% endtrans %}
@@ -72,7 +72,7 @@
                                 <img style="cursor:pointer;" class="force_sender" src="/skins/icons/reload.png" title="{% spaceless %}{{title_send|e}}{% endspaceless %}" />
                             {% else %}
                                 {% set title %}
-                                    {% trans with {'%name%' : name} %}Document envoye par %name% {% endtrans %}
+                                    {% trans with {'%name%' : name} %}Document envoye par %name%{% endtrans %}
                                 {% endset %}
                                 <img style="cursor:help;" src="/skins/icons/ok.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
                             {% endif %}
@@ -90,7 +90,7 @@
     </div>
 
     <div class="form-actions" style="color:#333;">
-        {{ 'Selectionnez des documents et ' | trans }}
+        {{ 'Selectionnez des documents et' | trans }}
         <button class="btn btn-primary send">{{ 'Send' | trans }}</button>
         <button class="btn deny">{{ 'Deny' | trans }}</button>
         <button class="order_launcher btn">{{ 'Retour aux commandes' | trans }}</button>

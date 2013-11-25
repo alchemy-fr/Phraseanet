@@ -293,20 +293,20 @@ class appbox extends base
         /**
          * Step 1
          */
-        $upgrader->set_current_message(_('Flushing cache'));
+        $upgrader->set_current_message($this->app->trans('Flushing cache'));
 
         $app['phraseanet.cache-service']->flushAll();
 
         $upgrader->add_steps_complete(1);
 
-        $upgrader->set_current_message(_('Creating new tables'));
+        $upgrader->set_current_message($this->app->trans('Creating new tables'));
 
         $upgrader->add_steps_complete(1);
 
         /**
          * Step 2
          */
-        $upgrader->set_current_message(_('Purging directories'));
+        $upgrader->set_current_message($this->app->trans('Purging directories'));
 
         $finder = new Finder();
         $finder->in([
@@ -329,7 +329,7 @@ class appbox extends base
         /**
          * Step 5
          */
-        $upgrader->set_current_message(_('Copying files'));
+        $upgrader->set_current_message($this->app->trans('Copying files'));
 
         foreach ([
         'config/custom_files/' => 'www/custom/',
@@ -348,7 +348,7 @@ class appbox extends base
         /**
          * Step 6
          */
-        $upgrader->set_current_message(_('Upgrading appbox'));
+        $upgrader->set_current_message($this->app->trans('Upgrading appbox'));
         $advices = $this->upgradeDB(true, $upgrader, $app);
         $upgrader->add_steps_complete(1);
 
@@ -356,7 +356,7 @@ class appbox extends base
          * Step 7
          */
         foreach ($this->get_databoxes() as $s) {
-            $upgrader->set_current_message(sprintf(_('Upgrading %s'), $s->get_label($this->app['locale.I18n'])));
+            $upgrader->set_current_message($this->app->trans('Upgrading %databox_name%', array('%databox_name%' => $s->get_label($this->app['locale.I18n']))));
             $advices = array_merge($advices, $s->upgradeDB(true, $upgrader, $app));
             $upgrader->add_steps_complete(1);
         }
@@ -364,14 +364,14 @@ class appbox extends base
         /**
          * Step 8
          */
-        $upgrader->set_current_message(_('Post upgrade'));
+        $upgrader->set_current_message($this->app->trans('Post upgrade'));
         $this->post_upgrade($upgrader, $app);
         $upgrader->add_steps_complete(1);
 
         /**
          * Step 9
          */
-        $upgrader->set_current_message(_('Flushing cache'));
+        $upgrader->set_current_message($this->app->trans('Flushing cache'));
 
         $app['phraseanet.cache-service']->flushAll();
 
@@ -384,14 +384,14 @@ class appbox extends base
         $upgrader->add_steps_complete(1);
 
         if (version::lt($from_version, '3.1')) {
-            $upgrader->addRecommendation(_('Your install requires data migration, please execute the following command'), 'bin/setup system:upgrade-datas --from=3.1');
+            $upgrader->addRecommendation($app->trans('Your install requires data migration, please execute the following command'), 'bin/setup system:upgrade-datas --from=3.1');
         } elseif (version::lt($from_version, '3.5')) {
-            $upgrader->addRecommendation(_('Your install requires data migration, please execute the following command'), 'bin/setup system:upgrade-datas --from=3.5');
+            $upgrader->addRecommendation($app->trans('Your install requires data migration, please execute the following command'), 'bin/setup system:upgrade-datas --from=3.5');
         }
 
         if (version::lt($from_version, '3.7')) {
-            $upgrader->addRecommendation(_('Your install might need to re-read technical datas'), 'bin/console records:rescan-technical-datas');
-            $upgrader->addRecommendation(_('Your install might need to build some sub-definitions'), 'bin/console records:build-missing-subdefs');
+            $upgrader->addRecommendation($app->trans('Your install might need to re-read technical datas'), 'bin/console records:rescan-technical-datas');
+            $upgrader->addRecommendation($app->trans('Your install might need to build some sub-definitions'), 'bin/console records:build-missing-subdefs');
         }
 
         return $advices;

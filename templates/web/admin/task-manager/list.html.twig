@@ -33,9 +33,7 @@
             {% set updateTime %}
                 <span id="pingTime"></span>
             {% endset %}
-            {% trans with {'%updateTime%' : updateTime} %}
-                Last update on %updateTime%
-            {% endtrans %}
+            {% trans with {'%updateTime%' : updateTime} %}Last update on %updateTime%{% endtrans %}
         </small>
     </h1>
 </div>

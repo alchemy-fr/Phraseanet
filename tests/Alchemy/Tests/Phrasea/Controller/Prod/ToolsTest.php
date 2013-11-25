@@ -40,7 +40,7 @@ class ControllerToolsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
         $message = trim($crawler->filterXPath('//div')->text());
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(_('Document has been successfully substitued'), $message);
+        $this->assertEquals(self::$DI['app']['translator']->trans('Document has been successfully substitued'), $message);
     }
 
     public function testRouteChangeThumb()
@@ -59,6 +59,6 @@ class ControllerToolsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
         $message = trim($crawler->filterXPath('//div')->text());
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(_('Thumbnail has been successfully substitued'), $message);
+        $this->assertEquals(self::$DI['app']['translator']->trans('Thumbnail has been successfully substitued'), $message);
     }
 }

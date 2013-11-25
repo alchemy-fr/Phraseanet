@@ -22,7 +22,7 @@ class EmptyCollectionJob extends AbstractJob
      */
     public function getName()
     {
-        return _("Vidage de collection");
+        return $this->translator->trans("Vidage de collection");
     }
 
     /**
@@ -38,7 +38,7 @@ class EmptyCollectionJob extends AbstractJob
      */
     public function getDescription()
     {
-        return _("Empty a collection");
+        return $this->translator->trans("Empty a collection");
     }
 
     /**
@@ -46,7 +46,7 @@ class EmptyCollectionJob extends AbstractJob
      */
     public function getEditor()
     {
-        return new DefaultEditor();
+        return new DefaultEditor($this->translator);
     }
 
     /**

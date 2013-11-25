@@ -21,7 +21,7 @@ class RecordMoverJob extends AbstractJob
      */
     public function getName()
     {
-        return _("Record Mover");
+        return $this->translator->trans("Record Mover");
     }
 
     /**
@@ -37,7 +37,7 @@ class RecordMoverJob extends AbstractJob
      */
     public function getDescription()
     {
-        return _("Moves records");
+        return $this->translator->trans("Moves records");
     }
 
     /**
@@ -45,7 +45,7 @@ class RecordMoverJob extends AbstractJob
      */
     public function getEditor()
     {
-        return new RecordMoverEditor();
+        return new RecordMoverEditor($this->translator);
     }
 
     /**

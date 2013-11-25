@@ -19,13 +19,13 @@
     <form class="form-horizontal" method='post' action='{{ path('admin_database_submit_collection', {'databox_id': app['request'].get('databox_id')}) }}'>
         <fieldset>
             <div class="control-group">
-                <label class="control-label" for="cnm">{{ 'admin::base:collection: Nom de la nouvelle collection : ' | trans }}</label>
+                <label class="control-label" for="cnm">{{ 'admin::base:collection: Nom de la nouvelle collection :' | trans }}</label>
                 <div class="controls">
                     <input id="cnm" name="name" class="input-xlarge" type="text">
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="ccusrothercoll">{{ "admin::base:collection: Vous pouvez choisir une collection de reference pour donenr des acces " | trans }}</label>
+                <label class="control-label" for="ccusrothercoll">{{ "admin::base:collection: Vous pouvez choisir une collection de reference pour donenr des acces" | trans }}</label>
                 <div class="controls">
                     <input type="checkbox" id="ccusrothercoll" name="ccusrothercoll">
                 </div>

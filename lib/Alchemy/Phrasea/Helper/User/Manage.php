@@ -148,7 +148,7 @@ class Manage extends Helper
         $email = $this->request->get('value');
 
         if ( ! \Swift_Validate::email($email)) {
-            throw new \Exception_InvalidArgument(_('Invalid mail address'));
+            throw new \Exception_InvalidArgument('Invalid mail address');
         }
 
         $conn = $this->app['phraseanet.appbox']->get_connection();
@@ -210,7 +210,7 @@ class Manage extends Helper
         $name = $this->request->get('value');
 
         if (trim($name) === '') {
-            throw new \Exception_InvalidArgument(_('Invalid template name'));
+            throw new \Exception_InvalidArgument('Invalid template name');
         }
 
         $created_user = \User_Adapter::create($this->app, $name, \random::generatePassword(16), null, false, false);

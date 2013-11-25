@@ -20,7 +20,7 @@ class PhraseaForgotPasswordForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('email', 'email', [
-            'label' => _('E-mail'),
+            'label' => ('E-mail'),
             'required' => true,
             'constraints' => [
                 new Assert\NotBlank(),

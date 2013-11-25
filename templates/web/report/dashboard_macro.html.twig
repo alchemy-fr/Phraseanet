@@ -38,7 +38,7 @@
 {% macro top_ten_question(home_title, title_left, title_right, item, dmin, dmax)%}
     {% if item|length > 0 %}
         <table style="margin:0 auto; margin-bottom:30px;">
-            <caption>{% trans with {'%home_title%' : home_title} %} report:: Volumetrie des questions posees sur %home_title% {% endtrans %}</caption>
+            <caption>{% trans with {'%home_title%' : home_title} %}report:: Volumetrie des questions posees sur %home_title%{% endtrans %}</caption>
             <thead>
                 <tr>
                     <th>{{ title_left }}</th>

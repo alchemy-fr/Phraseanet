@@ -43,7 +43,7 @@ class module_report_sent extends module_report
     public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
         parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
-        $this->title = _('Sent documents (mail)');
+        $this->title = $this->app->trans('Sent documents (mail)');
     }
 
     /**
@@ -117,7 +117,7 @@ class module_report_sent extends module_report
                     if ($value == 'comment') {
                         $this->result[$i][$value] = '&nbsp;';
                     } else {
-                        $this->result[$i][$value] = '<i>' . _('report:: non-renseigne') . '</i>';
+                        $this->result[$i][$value] = '<i>' . $this->app->trans('report:: non-renseigne') . '</i>';
                     }
                 }
             }

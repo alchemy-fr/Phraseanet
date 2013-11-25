@@ -2,9 +2,7 @@
 {% import "prod/actions/Bridge/macro_error_form.html.twig" as error_form %}
 
 {% block menu %}
-  {% trans %}
-  Upload
-  {% endtrans %}
+  {% trans %}Upload{% endtrans %}
 {% endblock %}
 
 {% block response %}
@@ -92,9 +90,7 @@
     </form>
   {% endfor %}
   <p>
-    {% trans %}
-    Nous vous rappelons qu'il est de votre responsabilité de vous assurer que le contenu de la vidéo que vous allez mettre en ligne est conforme aux conditions d'utilisations
-    {% endtrans %}
+    {% trans %}Nous vous rappelons qu'il est de votre responsabilité de vous assurer que le contenu de la vidéo que vous allez mettre en ligne est conforme aux conditions d'utilisations{% endtrans %}
   </p>
 {% endif %}
 {% endblock %}

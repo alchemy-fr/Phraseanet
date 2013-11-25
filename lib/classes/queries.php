@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class queries
 {
@@ -69,7 +70,7 @@ class queries
         return false;
     }
 
-    public static function dropdown_topics($I18n)
+    public static function dropdown_topics(TranslatorInterface $translator, $I18n)
     {
         $out = '';
 
@@ -160,11 +161,11 @@ class queries
                         <form name="pops" onsubmit="return(false);" style="margin:0px; margin-left:5px; margin-right:5px">
                             <table>
                                 <tr>
-                                    <td colspan="2">' . _('boutton::chercher') . ' :
+                                    <td colspan="2">' . $translator->trans('boutton::chercher') . ' :
                                     <input style="width:180px" type="text" name="qry"></td>
                                 </tr>
                             </table>
-                            ' . _('client::recherche: dans les categories') . '<br/>';
+                            ' . $translator->trans('client::recherche: dans les categories') . '<br/>';
 
         for ($i = 0; $i <= $maxdepth; $i ++) {
             $out .= '<p id="divTopic_' . $i . '" style="margin:0px;margin-bottom:5px;" >
@@ -173,7 +174,7 @@ class queries
                                 </p>';
         }
         $out .= '<div style="text-align:right;">
-                                <input type="submit" value="' . _('boutton::chercher') . '" onclick="doSearchTopPop();" />
+                                <input type="submit" value="' . $translator->trans('boutton::chercher') . '" onclick="doSearchTopPop();" />
                             </div>
                         </form>
                     </div>

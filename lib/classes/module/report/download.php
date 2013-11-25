@@ -45,7 +45,7 @@ class module_report_download extends module_report
     public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
         parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
-        $this->title = _('report:: telechargements');
+        $this->title = $this->app->trans('report:: telechargements');
     }
 
     /**
@@ -153,7 +153,7 @@ class module_report_download extends module_report
 
     private function formatEmptyValue()
     {
-        return '<i>' . _('report:: non-renseigne') . '</i>';
+        return '<i>' . $this->app->trans('report:: non-renseigne') . '</i>';
     }
 
     private function formatDateValue($value)

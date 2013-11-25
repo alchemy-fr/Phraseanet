@@ -113,7 +113,7 @@ class Lazaret implements ControllerProviderInterface
 
         /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {
-            $ret['message'] = _('File is not present in quarantine anymore, please refresh');
+            $ret['message'] = $app->trans('File is not present in quarantine anymore, please refresh');
 
             return $app->json($ret);
         }
@@ -157,7 +157,7 @@ class Lazaret implements ControllerProviderInterface
 
         //Mandatory parameter
         if (null === $request->request->get('bas_id')) {
-            $ret['message'] = _('You must give a destination collection');
+            $ret['message'] = $app->trans('You must give a destination collection');
 
             return $app->json($ret);
         }
@@ -166,7 +166,7 @@ class Lazaret implements ControllerProviderInterface
 
         /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {
-            $ret['message'] = _('File is not present in quarantine anymore, please refresh');
+            $ret['message'] = $app->trans('File is not present in quarantine anymore, please refresh');
 
             return $app->json($ret);
         }
@@ -246,7 +246,7 @@ class Lazaret implements ControllerProviderInterface
 
             $ret['success'] = true;
         } catch (\Exception $e) {
-            $ret['message'] = _('An error occured');
+            $ret['message'] = $app->trans('An error occured');
         }
 
         try {
@@ -274,7 +274,7 @@ class Lazaret implements ControllerProviderInterface
         $lazaretFile = $app['EM']->find('Alchemy\Phrasea\Model\Entities\LazaretFile', $file_id);
         /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {
-            $ret['message'] = _('File is not present in quarantine anymore, please refresh');
+            $ret['message'] = $app->trans('File is not present in quarantine anymore, please refresh');
 
             return $app->json($ret);
         }
@@ -330,7 +330,7 @@ class Lazaret implements ControllerProviderInterface
             $ret['success'] = true;
         } catch (\Exception $e) {
             $app['EM']->rollback();
-            $ret['message'] = _('An error occured');
+            $ret['message'] = $app->trans('An error occured');
         }
 
         return $app->json($ret);
@@ -351,7 +351,7 @@ class Lazaret implements ControllerProviderInterface
 
         //Mandatory parameter
         if (null === $recordId = $request->request->get('record_id')) {
-            $ret['message'] = _('You must give a destination record');
+            $ret['message'] = $app->trans('You must give a destination record');
 
             return $app->json($ret);
         }
@@ -360,7 +360,7 @@ class Lazaret implements ControllerProviderInterface
 
         /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {
-            $ret['message'] = _('File is not present in quarantine anymore, please refresh');
+            $ret['message'] = $app->trans('File is not present in quarantine anymore, please refresh');
 
             return $app->json($ret);
         }
@@ -378,7 +378,7 @@ class Lazaret implements ControllerProviderInterface
         }
 
         if (!$found) {
-            $ret['message'] = _('The destination record provided is not allowed');
+            $ret['message'] = $app->trans('The destination record provided is not allowed');
 
             return $app->json($ret);
         }
@@ -404,7 +404,7 @@ class Lazaret implements ControllerProviderInterface
 
             $ret['success'] = true;
         } catch (\Exception $e) {
-            $ret['message'] = _('An error occured');
+            $ret['message'] = $app->trans('An error occured');
         }
 
         try {

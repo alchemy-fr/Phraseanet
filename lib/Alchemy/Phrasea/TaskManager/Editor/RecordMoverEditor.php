@@ -38,7 +38,7 @@ class RecordMoverEditor extends AbstractEditor
     public function facility(Application $app, Request $request)
     {
         $ret = ['tasks' => []];
-        $job = new RecordMoverJob();
+        $job = new RecordMoverJob(null, null, $this->translator);
         switch ($request->get('ACT')) {
             case 'CALCTEST':
                 $sxml = simplexml_load_string($request->get('xml'));

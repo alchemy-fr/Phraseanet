@@ -135,7 +135,7 @@ class Order implements ControllerProviderInterface
                 });
 
             if ($noAdmins) {
-                $msg = _('There is no one to validate orders, please contact an administrator');
+                $msg = $app->trans('There is no one to validate orders, please contact an administrator');
             }
 
             $order->setTodo($order->getElements()->count());
@@ -154,12 +154,12 @@ class Order implements ControllerProviderInterface
             }
 
             if ($success) {
-                $msg = _('The records have been properly ordered');
+                $msg = $app->trans('The records have been properly ordered');
             } else {
-                $msg = _('An error occured');
+                $msg = $app->trans('An error occured');
             }
         } else {
-            $msg = _('There is no record eligible for an order');
+            $msg = $app->trans('There is no record eligible for an order');
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
@@ -247,7 +247,7 @@ class Order implements ControllerProviderInterface
 
         if (null === $basket) {
             $basket = new Basket();
-            $basket->setName(sprintf(_('Commande du %s'), $order->getCreatedOn()->format('Y-m-d')));
+            $basket->setName($app->trans('Commande du %date%', array('%date%' => $order->getCreatedOn()->format('Y-m-d'))));
             $basket->setOwner($dest_user);
             $basket->setPusher($app['authentication']->getUser());
 
@@ -301,7 +301,7 @@ class Order implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
             return $app->json([
                 'success'  => $success,
-                'msg'      => $success ? _('Order has been sent') : _('An error occured while sending, please retry  or contact an admin if problem persists'),
+                'msg'      => $success ? $app->trans('Order has been sent') : $app->trans('An error occured while sending, please retry  or contact an admin if problem persists'),
                 'order_id' => $order_id
             ]);
         }
@@ -361,7 +361,7 @@ class Order implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
             return $app->json([
                 'success'  => $success,
-                'msg'      => $success ? _('Order has been denied') : _('An error occured while denying, please retry  or contact an admin if problem persists'),
+                'msg'      => $success ? $app->trans('Order has been denied') : $app->trans('An error occured while denying, please retry  or contact an admin if problem persists'),
                 'order_id' => $order_id
             ]);
         }

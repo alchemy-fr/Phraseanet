@@ -11,10 +11,11 @@
 
 namespace Alchemy\Phrasea\Model\Manipulator;
 
+use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\TaskManager\Job\EmptyCollectionJob;
 use Alchemy\Phrasea\TaskManager\Notifier;
 use Doctrine\Common\Persistence\ObjectManager;
-use Alchemy\Phrasea\Model\Entities\Task;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class TaskManipulator implements ManipulatorInterface
 {
@@ -22,11 +23,14 @@ class TaskManipulator implements ManipulatorInterface
     private $notifier;
     /** @var Objectmanager */
     private $om;
+    /** @var TranslatorInterface */
+    private $translator;
 
-    public function __construct(ObjectManager $om, Notifier $notifier)
+    public function __construct(ObjectManager $om, Notifier $notifier, TranslatorInterface $translator)
     {
         $this->om = $om;
         $this->notifier = $notifier;
+        $this->translator = $translator;
     }
 
     /**
@@ -64,7 +68,7 @@ class TaskManipulator implements ManipulatorInterface
      */
     public function createEmptyCollectionJob(\collection $collection)
     {
-        $job = new EmptyCollectionJob();
+        $job = new EmptyCollectionJob(null, null, $this->translator);
         $settings = simplexml_load_string($job->getEditor()->getDefaultSettings());
         $settings->bas_id = $collection->get_base_id();
 

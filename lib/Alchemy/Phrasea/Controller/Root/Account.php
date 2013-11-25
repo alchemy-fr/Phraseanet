@@ -97,11 +97,11 @@ class Account implements ControllerProviderInterface
 
                 if ($app['auth.password-encoder']->isPasswordValid($user->get_password(), $data['oldPassword'], $user->get_nonce())) {
                     $user->set_password($data['password']);
-                    $app->addFlash('success', _('login::notification: Mise a jour du mot de passe avec succes'));
+                    $app->addFlash('success', $app->trans('login::notification: Mise a jour du mot de passe avec succes'));
 
                     return $app->redirectPath('account');
                 } else {
-                    $app->addFlash('error', _('Invalid password provided'));
+                    $app->addFlash('error', $app->trans('Invalid password provided'));
                 }
             }
         }
@@ -123,25 +123,25 @@ class Account implements ControllerProviderInterface
     {
         if (null === ($password = $request->request->get('form_password')) || null === ($email = $request->request->get('form_email')) || null === ($emailConfirm = $request->request->get('form_email_confirm'))) {
 
-            $app->abort(400, _('Could not perform request, please contact an administrator.'));
+            $app->abort(400, $app->trans('Could not perform request, please contact an administrator.'));
         }
 
         $user = $app['authentication']->getUser();
 
         if (!$app['auth.password-encoder']->isPasswordValid($user->get_password(), $password, $user->get_nonce())) {
-            $app->addFlash('error', _('admin::compte-utilisateur:ftp: Le mot de passe est errone'));
+            $app->addFlash('error', $app->trans('admin::compte-utilisateur:ftp: Le mot de passe est errone'));
 
             return $app->redirectPath('account_reset_email');
         }
 
         if (!\Swift_Validate::email($email)) {
-            $app->addFlash('error', _('forms::l\'email semble invalide'));
+            $app->addFlash('error', $app->trans('forms::l\'email semble invalide'));
 
             return $app->redirectPath('account_reset_email');
         }
 
         if ($email !== $emailConfirm) {
-            $app->addFlash('error', _('forms::les emails ne correspondent pas'));
+            $app->addFlash('error', $app->trans('forms::les emails ne correspondent pas'));
 
             return $app->redirectPath('account_reset_email');
         }
@@ -153,7 +153,7 @@ class Account implements ControllerProviderInterface
         try {
             $receiver = Receiver::fromUser($app['authentication']->getUser());
         } catch (InvalidArgumentException $e) {
-            $app->addFlash('error', _('phraseanet::erreur: echec du serveur de mail'));
+            $app->addFlash('error', $app->trans('phraseanet::erreur: echec du serveur de mail'));
 
             return $app->redirectPath('account_reset_email');
         }
@@ -164,7 +164,7 @@ class Account implements ControllerProviderInterface
 
         $app['notification.deliverer']->deliver($mail);
 
-        $app->addFlash('info', _('admin::compte-utilisateur un email de confirmation vient de vous etre envoye. Veuillez suivre les instructions contenue pour continuer'));
+        $app->addFlash('info', $app->trans('admin::compte-utilisateur un email de confirmation vient de vous etre envoye. Veuillez suivre les instructions contenue pour continuer'));
 
         return $app->redirectPath('account');
     }
@@ -185,11 +185,11 @@ class Account implements ControllerProviderInterface
                 $user->set_email($datas['datas']);
                 $app['tokens']->removeToken($token);
 
-                $app->addFlash('success', _('admin::compte-utilisateur: L\'email a correctement ete mis a jour'));
+                $app->addFlash('success', $app->trans('admin::compte-utilisateur: L\'email a correctement ete mis a jour'));
 
                 return $app->redirectPath('account');
             } catch (\Exception $e) {
-                $app->addFlash('error', _('admin::compte-utilisateur: erreur lors de la mise a jour'));
+                $app->addFlash('error', $app->trans('admin::compte-utilisateur: erreur lors de la mise a jour'));
 
                 return $app->redirectPath('account');
             }
@@ -210,7 +210,7 @@ class Account implements ControllerProviderInterface
     public function grantAccess(Application $app, Request $request, $application_id)
     {
         if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
+            $app->abort(400, $app->trans('Bad request format, only JSON is allowed'));
         }
 
         $error = false;
@@ -344,7 +344,7 @@ class Account implements ControllerProviderInterface
             foreach ($demands as $baseId) {
                 try {
                     $register->add_request($app['authentication']->getUser(), \collection::get_from_base_id($app, $baseId));
-                    $app->addFlash('success', _('login::notification: Vos demandes ont ete prises en compte'));
+                    $app->addFlash('success', $app->trans('login::notification: Vos demandes ont ete prises en compte'));
                 } catch (\Exception $e) {
 
                 }
@@ -403,9 +403,9 @@ class Account implements ControllerProviderInterface
                 $app['phraseanet.appbox']->get_connection()->commit();
                 $app['EM']->persist($ftpCredential);
                 $app['EM']->flush();
-                $app->addFlash('success', _('login::notification: Changements enregistres'));
+                $app->addFlash('success', $app->trans('login::notification: Changements enregistres'));
             } catch (\Exception $e) {
-                $app->addFlash('error', _('forms::erreurs lors de l\'enregistrement des modifications'));
+                $app->addFlash('error', $app->trans('forms::erreurs lors de l\'enregistrement des modifications'));
                 $app['phraseanet.appbox']->get_connection()->rollBack();
             }
         }

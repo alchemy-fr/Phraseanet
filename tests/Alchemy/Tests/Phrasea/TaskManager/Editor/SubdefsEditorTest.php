@@ -40,6 +40,6 @@ class SubdefsEditorTest extends EditorTestCase
 
     protected function getEditor()
     {
-        return new SubdefsEditor();
+        return new SubdefsEditor($this->createTranslatorMock());
     }
 }

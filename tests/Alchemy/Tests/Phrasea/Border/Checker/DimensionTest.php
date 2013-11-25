@@ -111,7 +111,7 @@ class DimensionTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetMessage()
     {
-        $this->assertInternalType('string', Dimension::getMessage());
+        $this->assertInternalType('string', Dimension::getMessage($this->createTranslatorMock()));
     }
 
      /**

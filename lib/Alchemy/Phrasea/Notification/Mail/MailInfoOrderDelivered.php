@@ -50,9 +50,7 @@ class MailInfoOrderDelivered extends AbstractMail
             throw new LogicException('You must set a basket before calling getSubject');
         }
 
-        return sprintf(
-            _('push::mail:: Reception de votre commande %s'), $this->basket->getName()
-        );
+        return $this->app->trans('push::mail:: Reception de votre commande %title%', array('%title%' => $this->basket->getName()));
     }
 
     /**
@@ -64,10 +62,7 @@ class MailInfoOrderDelivered extends AbstractMail
             throw new LogicException('You must set a deliverer before calling getMessage');
         }
 
-        return sprintf(
-            _('%s vous a delivre votre commande, consultez la en ligne a l\'adresse suivante'),
-            $this->deliverer->get_display_name()
-        );
+        return $this->app->trans('%user% vous a delivre votre commande, consultez la en ligne a l\'adresse suivante', array('%user%' => $this->deliverer->get_display_name()));
     }
 
     /**
@@ -75,7 +70,7 @@ class MailInfoOrderDelivered extends AbstractMail
      */
     public function getButtonText()
     {
-        return _('See my order');
+        return $this->app->trans('See my order');
     }
 
     /**

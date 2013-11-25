@@ -429,13 +429,13 @@ class Thesaurus implements ControllerProviderInterface
                     $dom->formatOutput = true;
                     $root = $dom->appendChild($dom->createElementNS('www.phraseanet.com', 'phraseanet:topics'));
 
-                    $root->appendChild($dom->createComment(sprintf(_('thesaurus:: fichier genere le %s'), $now)));
+                    $root->appendChild($dom->createComment($app->trans('thesaurus:: fichier genere le %date%', array('%date%' => $now))));
 
                     $root->appendChild($dom->createElement('display'))
                         ->appendChild($dom->createElement('defaultview'))
                         ->appendChild($dom->createTextNode($default_display));
 
-                    $this->export0Topics($xpathth->query($q)->item(0), $dom, $root, $lng, $request->get("srt"), $request->get("sth"), $request->get("sand"), $opened_display, $obr);
+                    $this->export0Topics($app, $xpathth->query($q)->item(0), $dom, $root, $lng, $request->get("srt"), $request->get("sth"), $request->get("sand"), $opened_display, $obr);
 
                     if ($request->get("ofm") == 'toscreen') {
                         $lngs[$lng] = str_replace(['&', '<', '>'], ['&amp;', '&lt;', '&gt;'], $dom->saveXML());
@@ -445,9 +445,9 @@ class Thesaurus implements ControllerProviderInterface
                         @rename($app['root.path'] . '/config/topics/' . $fname, $app['root.path'] . '/config/topics/topics_' . $lng . '_BKP_' . $now . '.xml');
 
                         if ($dom->save($app['root.path'] . '/config/topics/' . $fname)) {
-                            $lngs[$lng] = \p4string::MakeString(sprintf(_('thesaurus:: fichier genere : %s'), $fname));
+                            $lngs[$lng] = \p4string::MakeString($app->trans('thesaurus:: fichier genere : %filename%', array('%filename%' => $fname)));
                         } else {
-                            $lngs[$lng] = \p4string::MakeString(_('thesaurus:: erreur lors de l\'enregsitrement du fichier'));
+                            $lngs[$lng] = \p4string::MakeString($app->trans('thesaurus:: erreur lors de l\'enregsitrement du fichier'));
                         }
                     }
                 }
@@ -462,13 +462,13 @@ class Thesaurus implements ControllerProviderInterface
         ]);
     }
 
-    private function export0Topics($znode, \DOMDocument $dom, \DOMNode $root, $lng, $srt, $sth, $sand, $opened_display, $obr)
+    private function export0Topics(Application $app, $znode, \DOMDocument $dom, \DOMNode $root, $lng, $srt, $sth, $sand, $opened_display, $obr)
     {
         $topics = $root->appendChild($dom->createElement('topics'));
-        $this->doExportTopics($znode, $dom, $topics, '', $lng, $srt, $sth, $sand, $opened_display, $obr, 0);
+        $this->doExportTopics($app, $znode, $dom, $topics, '', $lng, $srt, $sth, $sand, $opened_display, $obr, 0);
     }
 
-    private function doExportTopics($node, \DOMDocument $dom, \DOMNode $topics, $prevQuery, $lng, $srt, $sth, $sand, $opened_display, $obr, $depth = 0)
+    private function doExportTopics(Application $app, $node, \DOMDocument $dom, \DOMNode $topics, $prevQuery, $lng, $srt, $sth, $sand, $opened_display, $obr, $depth = 0)
     {
         $ntopics = 0;
         if ($node->nodeType == XML_ELEMENT_NODE) {
@@ -506,7 +506,11 @@ class Thesaurus implements ControllerProviderInterface
                     }
 
                     $t_sort[$i] = $query; // tri sur w
-                    $t_node[$i] = ['label' => $label, 'node'  => $n];
+                    $t_node[$i] = [
+                        /** @Ignore */
+                        'label' => $label,
+                        'node'  => $n
+                    ];
 
                     $i ++;
                 }
@@ -531,14 +535,14 @@ class Thesaurus implements ControllerProviderInterface
                 }
 
                 if ($sand && $prevQuery != '') {
-                    $query = $prevQuery . ' ' . _('phraseanet::technique:: et') . ' ' . $query . '';
+                    $query = $prevQuery . ' ' . $app->trans('phraseanet::technique:: et') . ' ' . $query . '';
                 }
 
                 $topic->appendChild($dom->createElement('query'))->appendChild($dom->createTextNode('' . $query . ''));
 
                 $topics2 = $dom->createElement('topics');
 
-                if ($this->doExportTopics($t_node[$i]['node'], $dom, $topics2, $query, $lng, $srt, $sth, $sand, $opened_display, $obr, $depth + 1) > 0) {
+                if ($this->doExportTopics($app, $t_node[$i]['node'], $dom, $topics2, $query, $lng, $srt, $sth, $sand, $opened_display, $obr, $depth + 1) > 0) {
                     $topic->appendChild($topics2);
                 }
             }
@@ -604,20 +608,20 @@ class Thesaurus implements ControllerProviderInterface
                                 $line = substr($line, 1);
                             }
                             if ($depth > $curdepth + 1) {
-                                $err = sprintf(_("over-indent at line %s"), $iline);
+                                $err = $app->trans("over-indent at line %line%", array('%line%' => $iline));
                                 continue;
                             }
 
                             $line = trim($line);
 
                             if ( ! $this->checkEncoding($line, 'UTF-8')) {
-                                $err = sprintf(_("bad encoding at line %s"), $iline);
+                                $err = $app->trans("bad encoding at line %line%", array('%line%' => $iline));
                                 continue;
                             }
 
                             $line = str_replace($cbad, $cok, ($oldline = $line));
                             if ($line != $oldline) {
-                                $err = sprintf(_("bad character at line %s"), $iline);
+                                $err = $app->trans("bad character at line %line%", array('%line%' => $iline));
                                 continue;
                             }
 
@@ -1751,7 +1755,7 @@ class Thesaurus implements ControllerProviderInterface
                         $domct->documentElement->setAttribute("nextid", (int) ($id) + 1);
                         $del = $domct->documentElement->appendChild($domct->createElement("te"));
                         $del->setAttribute("id", "C" . $id);
-                        $del->setAttribute("field", _('thesaurus:: corbeille'));
+                        $del->setAttribute("field", $app->trans('thesaurus:: corbeille'));
                         $del->setAttribute("nextid", "0");
                         $del->setAttribute("delbranch", "1");
 
@@ -1881,7 +1885,7 @@ class Thesaurus implements ControllerProviderInterface
                             $domct->documentElement->setAttribute("nextid", (int) ($id) + 1);
                             $ct = $domct->documentElement->appendChild($domct->createElement("te"));
                             $ct->setAttribute("id", "C" . $id);
-                            $ct->setAttribute("field", _('thesaurus:: corbeille'));
+                            $ct->setAttribute("field", $app->trans('thesaurus:: corbeille'));
                             $ct->setAttribute("nextid", "0");
                             $ct->setAttribute("delbranch", "1");
 
@@ -2978,7 +2982,7 @@ class Thesaurus implements ControllerProviderInterface
                 }
                 // on considere que la source 'deleted' est toujours valide
                 $fields["[deleted]"] = [
-                    "name"     => _('thesaurus:: corbeille'),
+                    "name"     => $app->trans('thesaurus:: corbeille'),
                     "tbranch"  => null,
                     "cid"      => null,
                     "sourceok" => true

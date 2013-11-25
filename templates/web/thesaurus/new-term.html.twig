@@ -14,23 +14,19 @@
 
         {% if context is not none %}
             {% set zterm %}
-                {% trans with {'%term%' : term, '%context%' : context} %}
-                    thesaurus:: le terme %term% avec contexte %context%
-                {% endtrans %}
+                {% trans with {'%term%' : term, '%context%' : context} %}thesaurus:: le terme %term% avec contexte %context%{% endtrans %}
             {% endset %}
         {% else %}
             {% set zterm %}
-                {% trans with {'%term%' : term} %}
-                    thesaurus:: le terme %term% sans contexte
-                {% endtrans %}
+                {% trans with {'%term%' : term} %}thesaurus:: le terme %term% sans contexte{% endtrans %}
             {% endset %}
         {% endif %}
 
         {% if nb_candidates_ok > 0 %}
             {% if nb_candidates_ok == 1 %}
-                {% set prop_label = 'thesaurus:: est deja candidat en provenance du champ acceptable : ' | trans %}
+                {% set prop_label = 'thesaurus:: est deja candidat en provenance du champ acceptable :' | trans %}
             {% else %}
-                {% set prop_label = 'thesaurus:: est deja candidat en provenance des champs acceptables : ' | trans %}
+                {% set prop_label = 'thesaurus:: est deja candidat en provenance des champs acceptables :' | trans %}
             {% endif %}
             <br/>
             <br/>

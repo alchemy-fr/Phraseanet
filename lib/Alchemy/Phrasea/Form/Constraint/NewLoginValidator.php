@@ -22,7 +22,7 @@ class NewLoginValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if ($constraint->isAlreadyRegistered($value)) {
-            $this->context->addViolation(_('This login is already registered'));
+            $this->context->addViolation($constraint->message);
         }
     }
 }

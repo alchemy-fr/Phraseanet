@@ -95,7 +95,7 @@ class TOU implements ControllerProviderInterface
 
         return new Response($app['twig']->render('/prod/TOU.html.twig', [
             'TOUs'        => $data,
-            'local_title' => _('Terms of use')
+            'local_title' => $app->trans('Terms of use')
         ]));
     }
 }

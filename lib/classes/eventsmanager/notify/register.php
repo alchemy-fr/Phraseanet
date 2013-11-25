@@ -159,9 +159,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
         $sender = User_Adapter::getInstance($usr_id, $this->app)->get_display_name();
 
         $ret = [
-            'text'  => sprintf(
-                _('%1$s demande votre approbation sur une ou plusieurs %2$scollections%3$s'), $sender, '<a href="' . $this->app->url('admin', ['section' => 'registrations']) . '" target="_blank">', '</a>'
-            )
+            'text'  => $this->app->trans('%user% demande votre approbation sur une ou plusieurs %before_link% collections %after_link%', array('%user%' => $sender, '%before_link%' => '<a href="' . $this->app->url('admin', ['section' => 'registrations']) . '" target="_blank">', '%after_link%' => '</a>'))
             , 'class' => ''
         ];
 
@@ -174,7 +172,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
      */
     public function get_name()
     {
-        return _('Register approbation');
+        return $this->app->trans('Register approbation');
     }
 
     /**
@@ -183,7 +181,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
      */
     public function get_description()
     {
-        return _('Recevoir des notifications lorsqu\'un utilisateur demande une inscription necessitant mon approbation');
+        return $this->app->trans('Recevoir des notifications lorsqu\'un utilisateur demande une inscription necessitant mon approbation');
     }
 
     /**

@@ -35,7 +35,7 @@ class ArchiveJob extends AbstractJob
      */
     public function getName()
     {
-        return _('task::archive:Archivage');
+        return $this->translator->trans('task::archive:Archivage');
     }
 
     /**
@@ -51,7 +51,7 @@ class ArchiveJob extends AbstractJob
      */
     public function getDescription()
     {
-        return _("task::archive:Archiving files found into a 'hotfolder'");
+        return $this->translator->trans("task::archive:Archiving files found into a 'hotfolder'");
     }
 
     /**
@@ -59,7 +59,7 @@ class ArchiveJob extends AbstractJob
      */
     public function getEditor()
     {
-        return new ArchiveEditor();
+        return new ArchiveEditor($this->translator);
     }
 
     /**
@@ -1356,7 +1356,7 @@ class ArchiveJob extends AbstractJob
     /**
      * Return a LazaretSession
      *
-     * @return \Entities\LazaretSession
+     * @return LazaretSession
      */
     protected function getLazaretSession(Application $app)
     {

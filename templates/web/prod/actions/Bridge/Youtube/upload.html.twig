@@ -2,9 +2,7 @@
 {% import "prod/actions/Bridge/macro_error_form.html.twig" as error_form %}
 
 {% block menu %}
-  {% trans %}
-  Upload
-  {% endtrans %}
+  {% trans %}Upload{% endtrans %}
 {% endblock %}
 
 {% block response %}
@@ -106,9 +104,7 @@
   <p>
           {# see http://code.google.com/intl/en/apis/youtube/terms.html#}
           {% set lien_term_youtube = '<a target="_blank" href="http://www.youtube.com/t/terms">http://www.youtube.com/t/terms</a>' %}
-          {% trans with {'%lien_term_youtube%' : lien_term_youtube} %}
-          En cliquant sur "ajouter" vous certifiez que vous possedez les droits pour le contenu ou que vous etes autorisé par le proprietaire à rendre le contenu accessible au public sur YouTube, et qu'il est autrement conforme aux Conditions d'utilisation de YouTubesitue a %lien_term_youtube%
-          {% endtrans %}
+          {% trans with {'%lien_term_youtube%' : lien_term_youtube} %}En cliquant sur "ajouter" vous certifiez que vous possedez les droits pour le contenu ou que vous etes autorisé par le proprietaire à rendre le contenu accessible au public sur YouTube, et qu'il est autrement conforme aux Conditions d'utilisation de YouTubesitue a %lien_term_youtube%{% endtrans %}
   </p>
   <script type="text/javascript">
     $(document).ready(function(){

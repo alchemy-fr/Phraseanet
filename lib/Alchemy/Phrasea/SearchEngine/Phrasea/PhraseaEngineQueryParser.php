@@ -123,7 +123,7 @@ class PhraseaEngineQueryParser
                 $this->errmsg .= sprintf("\\n");
             }
 
-            $this->errmsg .= _('qparser::la question est vide');
+            $this->errmsg .= $this->app->trans('qparser::la question est vide');
 
             return(null);
         }
@@ -895,7 +895,7 @@ class PhraseaEngineQueryParser
                     // un op. arith. doit étre précédé d'un seul nom de champ
                     if ($this->errmsg != "")
                         $this->errmsg .= sprintf("\\n");
-                    $this->errmsg .= sprintf(_('qparser::Formulation incorrecte, un nom de champs est attendu avant l operateur %s'), $tree["VALUE"]);
+                    $this->errmsg .= $this->app->trans('qparser::Formulation incorrecte, un nom de champs est attendu avant l operateur %token%', array('%token%' => $tree["VALUE"]));
 
                     return(false);
                 }
@@ -903,7 +903,7 @@ class PhraseaEngineQueryParser
                     // un op. arith. doit étre suivi d'une valeur
                     if ($this->errmsg != "")
                         $this->errmsg .= sprintf("\\n");
-                    $this->errmsg .= sprintf(_('qparser::Formulation incorrecte, une valeur est attendue apres l operateur %s'), $tree["VALUE"]);
+                    $this->errmsg .= $this->app->trans('qparser::Formulation incorrecte, une valeur est attendue apres l operateur %token%', array('%token%' => $tree["VALUE"]));
 
                     return(false);
                 }
@@ -1359,7 +1359,7 @@ class PhraseaEngineQueryParser
                         if ($depth <= 0) {  // ')' : retour de récursivité
                             if ($this->errmsg != "")
                                 $this->errmsg .= sprintf("\\n");
-                            $this->errmsg .= _('qparser:: erreur : trop de parentheses fermantes');
+                            $this->errmsg .= $this->app->trans('qparser:: erreur : trop de parentheses fermantes');
 
                             return(null);
                         }
@@ -1456,7 +1456,7 @@ class PhraseaEngineQueryParser
         if (($tree["CLASS"] == "OPS" || $tree["CLASS"] == "OPK") && $tree["RB"] == null) {
             if ($this->errmsg != "")
                 $this->errmsg .= sprintf("\\n");
-            $this->errmsg .= sprintf(_('qparser::Formulation incorrecte, une valeur est attendu apres %s'), $tree["VALUE"]);
+            $this->errmsg .= $this->app->trans('qparser::Formulation incorrecte, une valeur est attendu apres %token%', array('%token%' => $tree["VALUE"]));
             $tree = $tree["LB"];
         }
 
@@ -1505,14 +1505,14 @@ class PhraseaEngineQueryParser
                 if (!$tree) {
                     if ($this->errmsg != "")
                         $this->errmsg .= "\\n";
-                    $this->errmsg .= sprintf(_('qparser::erreur : une question ne peut commencer par %s'), $t["VALUE"]);
+                    $this->errmsg .= $this->app->trans('qparser::erreur : une question ne peut commencer par %token%', array('%token%' => $tree["VALUE"]));
 
                     return(null);
                 }
                 if (($tree["CLASS"] == "OPS" || $tree["CLASS"] == "OPK") && $tree["RB"] == null) {
                     if ($this->errmsg != "")
                         $this->errmsg .= "\\n";
-                    $this->errmsg .= sprintf(_('qparser::Formulation incorrecte, ne peut suivre un operateur :  %s'), $t["VALUE"]);
+                    $this->errmsg .= $this->app->trans('qparser::Formulation incorrecte, ne peut suivre un operateur : %token%', array('%token%' => $tree["VALUE"]));
 
                     return(null);
                 }
@@ -1525,7 +1525,7 @@ class PhraseaEngineQueryParser
                     if (!$tree) {
                         if ($this->errmsg != "")
                             $this->errmsg .= "\\n";
-                        $this->errmsg .= sprintf(_('qparser::erreur : une question ne peut commencer par %s'), $t["VALUE"]);
+                        $this->errmsg .= $this->app->trans('qparser::erreur : une question ne peut commencer par %token%', array('%token%' => $tree["VALUE"]));
 
                         return(null);
                     }
@@ -1533,7 +1533,7 @@ class PhraseaEngineQueryParser
 
                         if ($this->errmsg != "")
                             $this->errmsg .= "\\n";
-                        $this->errmsg .= sprintf(_('qparser::Formulation incorrecte, %s ne peut suivre un operateur'), $t["VALUE"]);
+                        $this->errmsg .= $this->app->trans('qparser::Formulation incorrecte, %token% ne peut suivre un operateur', array('%token%' => $t["VALUE"]));
 
                         return(null);
                     }
@@ -1589,7 +1589,7 @@ class PhraseaEngineQueryParser
                     if ($nok < $this->app['phraseanet.registry']->get('GV_min_letters_truncation')) {
                         if ($this->errmsg != "")
                             $this->errmsg .= sprintf("\\n");
-                        $this->errmsg .= _('qparser:: Formulation incorrecte, necessite plus de caractere : ') . "<br>" . $this->app['phraseanet.registry']->get('GV_min_letters_truncation');
+                        $this->errmsg .= $this->app->trans('qparser:: Formulation incorrecte, necessite plus de caractere :') . "<br>" . $this->app['phraseanet.registry']->get('GV_min_letters_truncation');
 
                         return(null);
                     }

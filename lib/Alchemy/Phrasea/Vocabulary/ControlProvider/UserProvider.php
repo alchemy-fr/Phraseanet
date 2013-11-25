@@ -37,9 +37,9 @@ class UserProvider implements ControlProviderInterface
      *
      * @return type
      */
-    public static function getName()
+    public function getName()
     {
-        return _('Users');
+        return $this->app['translator']->trans('Users');
     }
 
     /**

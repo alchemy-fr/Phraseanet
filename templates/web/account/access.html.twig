@@ -27,7 +27,7 @@
                             {% set base_id = sbasId |base_from_coll(collId, app) %}
                             <tr>
                                 <td colspan="3" style="text-align:center;">
-                                    {{ "login::register: acces authorise sur la collection " | trans }}{{ sbasId |sbas_labels(app) }}
+                                    {{ "login::register: acces authorise sur la collection" | trans }}{{ sbasId |sbas_labels(app) }}
                                     {% if isTrue | trim != "" %}
                                         <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{{ "login::register::CGU: lire les CGU" | trans }}</a>
                                     {% endif %}
@@ -46,7 +46,7 @@
                         {% set base_id = sbasId |base_from_coll(collId, app) %}
                         <tr>
                             <td colspan="3" style="text-align: center;">
-                                <span style="color: red;">{{ "login::register: acces refuse sur la collection " | trans }}{{ sbasId |sbas_labels(app) }}</span>
+                                <span style="color: red;">{{ "login::register: acces refuse sur la collection" | trans }}{{ sbasId |sbas_labels(app) }}</span>
                                 {% if isTrue | trim != "" %}
                                     <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{{ "login::register::CGU: lire les CGU" | trans }}</a>
                                 {% endif %}
@@ -94,7 +94,7 @@
                         {% set base_id = sbasId |base_from_coll(collId, app) %}
                         <tr>
                             <td colspan="3" style="text-align: center;">
-                                <span style="color:red;">{{ "login::register: acces temporaire termine sur " | trans }}{{ sbasId |sbas_labels(app) }}</span>
+                                <span style="color:red;">{{ "login::register: acces temporaire termine sur" | trans }}{{ sbasId |sbas_labels(app) }}</span>
                                 {% if isTrue |trim != "" %}
                                     <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{{ "login::register::CGU: lire les CGU" | trans }}</a>
                                 {% endif %}

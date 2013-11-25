@@ -41,6 +41,6 @@ class FtpEditorTest extends EditorTestCase
 
     protected function getEditor()
     {
-        return new FtpEditor();
+        return new FtpEditor($this->createTranslatorMock());
     }
 }

@@ -301,7 +301,7 @@ abstract class base implements cache_cacheableInterface
         foreach ($rs as $row) {
             $tname = $row["Name"];
             if (isset($allTables[$tname])) {
-                $upgrader->set_current_message(sprintf(_('Updating table %s'), $tname));
+                $upgrader->set_current_message($app->trans('Updating table %table_name%', array('%table_name%' => $tname)));
 
                 $engine = strtolower(trim($allTables[$tname]->engine));
                 $ref_engine = strtolower($row['Engine']);
@@ -314,7 +314,7 @@ abstract class base implements cache_cacheableInterface
                         $stmt->closeCursor();
                     } catch (Exception $e) {
                         $recommends[] = [
-                            'message' => sprintf(_('Erreur lors de la tentative ; errreur : %s'), $e->getMessage()),
+                            'message' => $app->trans('Erreur lors de la tentative ; errreur : %message%', array('%message%' => $e->getMessage())),
                             'sql'     => $sql
                         ];
                     }
@@ -333,13 +333,13 @@ abstract class base implements cache_cacheableInterface
         }
 
         foreach ($allTables as $tname => $table) {
-            $upgrader->set_current_message(sprintf(_('Creating table %s'), $table));
+            $upgrader->set_current_message($app->trans('Creating table %table_name%', array('%table_name%' => $table)));
             $this->createTable($table);
             $upgrader->add_steps_complete(1);
         }
         $current_version = $this->get_version();
 
-        $upgrader->set_current_message(sprintf(_('Applying patches on %s'), $this->get_dbname()));
+        $upgrader->set_current_message($app->trans('Applying patches on %databox_name%', array('%databox_name%' => $this->get_dbname())));
         if ($apply_patches) {
             $this->apply_patches($current_version, $app['phraseanet.version']->getNumber(), false, $upgrader, $app);
         }
@@ -536,7 +536,7 @@ abstract class base implements cache_cacheableInterface
                 $stmt->closeCursor();
             } catch (Exception $e) {
                 $recommends[] = [
-                    'message' => sprintf(_('Erreur lors de la tentative ; errreur : %s'), $e->getMessage()),
+                    'message' => $this->app->trans('Erreur lors de la tentative ; errreur : %message%', array('%message%' => $e->getMessage())),
                     'sql'     => $def['sql']
                 ];
             }
@@ -750,7 +750,7 @@ abstract class base implements cache_cacheableInterface
                 $stmt->closeCursor();
             } catch (Exception $e) {
                 $return[] = [
-                    'message' => sprintf(_('Erreur lors de la tentative ; errreur : %s'), $e->getMessage()),
+                    'message' => $this->app->trans('Erreur lors de la tentative ; errreur : %message%', array('%message%' => $e->getMessage())),
                     'sql'     => $a
                 ];
             }
@@ -763,7 +763,7 @@ abstract class base implements cache_cacheableInterface
                 $stmt->closeCursor();
             } catch (Exception $e) {
                 $return[] = [
-                    'message' => sprintf(_('Erreur lors de la tentative ; errreur : %s'), $e->getMessage()),
+                    'message' => $this->app->trans('Erreur lors de la tentative ; errreur : %message%', array('%message%' => $e->getMessage())),
                     'sql'     => $a
                 ];
             }
@@ -780,7 +780,7 @@ abstract class base implements cache_cacheableInterface
 
         $list_patches = [];
 
-        $upgrader->add_steps(1)->set_current_message(_('Looking for patches'));
+        $upgrader->add_steps(1)->set_current_message($app->trans('Looking for patches'));
 
         $iterator = new DirectoryIterator($this->app['root.path'] . '/lib/classes/patch/');
 
@@ -821,7 +821,7 @@ abstract class base implements cache_cacheableInterface
 
         $upgrader->add_steps_complete(1)
             ->add_steps(count($list_patches))
-            ->set_current_message(sprintf(_('Applying patches on %s'), $this->get_dbname()));
+            ->set_current_message($app->trans('Applying patches on %databox_name%', array('%databox_name%' => $this->get_dbname())));
         ksort($list_patches);
 
         $success = true;

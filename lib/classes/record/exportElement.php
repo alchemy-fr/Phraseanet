@@ -132,13 +132,13 @@ class record_exportElement extends record_adapter
                     $this->remain_hd --;
                     if ($this->remain_hd >= 0)
                         $downloadable['document'] = [
-                            'class'                   => 'document',
-                            'label'                   => _('document original')
+                            'class' => 'document',
+                            'label' => 'document original'
                         ];
                 } else
                     $downloadable['document'] = [
                         'class' => 'document',
-                        'label' => _('document original')
+                        'label' => 'document original'
                     ];
             }
             if ($go_cmd === true) {
@@ -181,16 +181,19 @@ class record_exportElement extends record_adapter
                             if ($this->remain_hd >= 0)
                                 $downloadable[$name] = [
                                     'class'              => $class,
+                                    /** @Ignore */
                                     'label'              => $subdef_label
                                 ];
                         } else
                             $downloadable[$name] = [
                                 'class' => $class,
+                                /** @Ignore */
                                 'label' => $subdef_label
                             ];
                     } else {
                         $downloadable[$name] = [
                             'class' => $class,
+                            /** @Ignore */
                             'label' => $subdef_label
                         ];
                     }
@@ -204,13 +207,13 @@ class record_exportElement extends record_adapter
 
         if ($xml) {
             $downloadable['caption'] = [
-                'class'                       => 'caption',
-                'label'                       => _('caption XML')
+                'class' => 'caption',
+                'label' => 'caption XML'
             ];
             $this->add_count('caption', strlen($xml));
             $downloadable['caption-yaml'] = [
                 'class' => 'caption',
-                'label' => _('caption YAML')
+                'label' => 'caption YAML'
             ];
             $this->add_count('caption-yaml', strlen(strip_tags($xml)));
         }

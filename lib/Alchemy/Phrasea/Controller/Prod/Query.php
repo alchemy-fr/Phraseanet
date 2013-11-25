@@ -153,16 +153,16 @@ class Query implements ControllerProviderInterface
         $explain .= "<img src=\"/skins/icons/answers.gif\" /><span><b>";
 
         if ($result->getTotal() != $result->getAvailable()) {
-            $explain .= sprintf(_('reponses:: %d Resultats rappatries sur un total de %d trouves'), $result->getAvailable(), $result->getTotal());
+            $explain .= $app->trans('reponses:: %available% Resultats rappatries sur un total de %total% trouves', array('available' => $result->getAvailable(), '%total%' => $result->getTotal()));
         } else {
-            $explain .= sprintf(_('reponses:: %d Resultats'), $result->getTotal());
+            $explain .= $app->trans('reponses:: %total% Resultats', array('%total%' => $result->getTotal()));
         }
 
         $explain .= " </b></span>";
         $explain .= '<br><div>' . $result->getDuration() . ' s</div>dans index ' . $result->getIndexes();
         $explain .= "</div>";
 
-        $infoResult = '<a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">' . sprintf(_('reponses:: %d reponses'), $result->getTotal()) . '</a> | ' . sprintf(_('reponses:: %s documents selectionnes'), '<span id="nbrecsel"></span>');
+        $infoResult = '<a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">' . $app->trans('reponses:: %total% reponses', array('%total%' => $result->getTotal())) . '</a> | ' . $app->trans('reponses:: %number% documents selectionnes', array('%number%' => '<span id="nbrecsel"></span>'));
 
         $json['infos'] = $infoResult;
         $json['navigation'] = $string;

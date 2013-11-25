@@ -10,13 +10,12 @@
  */
 
 use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\HttpFoundation\Request;
 
 interface Bridge_Api_Interface
 {
     const OBJECT_CLASS_ELEMENT = 'element';
     const OBJECT_CLASS_CONTAINER = 'container';
-
-    public function __construct(UrlGenerator $generator, registryInterface $registry, Bridge_Api_Auth_Interface $auth);
 
     /**
      *

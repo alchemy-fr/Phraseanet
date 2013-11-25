@@ -60,10 +60,10 @@ class Dashboard implements ControllerProviderInterface
     {
         switch ($emailStatus = $request->query->get('email')) {
             case 'sent';
-                $emailStatus = _('Mail sent');
+                $emailStatus = $app->trans('Mail sent');
                 break;
             case 'error':
-                $emailStatus = _('Could not send email');
+                $emailStatus = $app->trans('Could not send email');
                 break;
         }
 

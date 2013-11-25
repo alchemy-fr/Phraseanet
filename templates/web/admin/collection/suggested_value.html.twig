@@ -898,7 +898,7 @@ function view(type)
 
           break;
       case 'GRAPH':
-          if( !changeInXml || confirm("{{ 'admin::sugval: Attention, passer en mode graphique implique la perte des modifications du xml si vous n\'appliquez pas les changements avant.\nContinuer quand meme'|trans | e('js') }}"))
+          if( !changeInXml || confirm("{{ 'admin::sugval: Attention, passer en mode graphique implique la perte des modifications du xml si vous n\'appliquez pas les changements avant.' |trans | e('js') }}\n{{ 'Continuer quand meme' |trans | e('js') }}"))
           {
               if($('#divGraph').length > 0 )
                   $('#divGraph').show();

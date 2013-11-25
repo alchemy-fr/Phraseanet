@@ -39,7 +39,7 @@ class Lightbox implements ControllerProviderInterface
             }
 
             if (false === $usr_id = $app['authentication.token-validator']->isValid($request->query->get('LOG'))) {
-                $app->addFlash('error', _('The URL you used is out of date, please login'));
+                $app->addFlash('error', $app->trans('The URL you used is out of date, please login'));
 
                 return $app->redirectPath('homepage');
             }
@@ -238,7 +238,7 @@ class Lightbox implements ControllerProviderInterface
                         'basket'             => $basket,
                         'local_title'        => strip_tags($basket->getName()),
                         'module'             => 'lightbox',
-                        'module_name'        => _('admin::monitor: module validation')
+                        'module_name'        => $app->trans('admin::monitor: module validation')
                         ]
                 ));
             $response->setCharset('UTF-8');
@@ -285,7 +285,7 @@ class Lightbox implements ControllerProviderInterface
                         'basket'             => $basket,
                         'local_title'        => strip_tags($basket->getName()),
                         'module'             => 'lightbox',
-                        'module_name'        => _('admin::monitor: module validation')
+                        'module_name'        => $app->trans('admin::monitor: module validation')
                         ]
                 ));
             $response->setCharset('UTF-8');
@@ -319,7 +319,7 @@ class Lightbox implements ControllerProviderInterface
                 'first_item'  => $first,
                 'local_title' => $feed_entry->getTitle(),
                 'module'      => 'lightbox',
-                'module_name' => _('admin::monitor: module validation')
+                'module_name' => $app->trans('admin::monitor: module validation')
                 ]
             );
             $response = new Response($output, 200);
@@ -337,7 +337,7 @@ class Lightbox implements ControllerProviderInterface
             ->assert('basket', '\d+');
 
         $controllers->post('/ajax/SET_NOTE/{sselcont_id}/', function (SilexApplication $app, $sselcont_id) {
-            $output = ['error' => true, 'datas' => _('Erreur lors de l\'enregistrement des donnees')];
+            $output = ['error' => true, 'datas' => $app->trans('Erreur lors de l\'enregistrement des donnees')];
 
             $request = $app['request'];
             $note = $request->request->get('note');
@@ -390,7 +390,7 @@ class Lightbox implements ControllerProviderInterface
                 $ret = [
                     'error'      => true,
                     'releasable' => false,
-                    'datas'      => _('Erreur lors de la mise a jour des donnes ')
+                    'datas'      => $app->trans('Erreur lors de la mise a jour des donnes')
                 ];
 
                 $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
@@ -420,7 +420,7 @@ class Lightbox implements ControllerProviderInterface
 
                 $releasable = false;
                 if ($participant->isReleasable() === true) {
-                    $releasable = _('Do you want to send your report ?');
+                    $releasable = $app->trans('Do you want to send your report ?');
                 }
 
                 $ret = [
@@ -459,7 +459,7 @@ class Lightbox implements ControllerProviderInterface
                 }
 
                 if (!$agreed) {
-                    throw new ControllerException(_('You have to give your feedback at least on one document to send a report'));
+                    throw new ControllerException($app->trans('You have to give your feedback at least on one document to send a report'));
                 }
 
                 /* @var $basket Basket */
@@ -488,7 +488,7 @@ class Lightbox implements ControllerProviderInterface
                 $app['EM']->merge($participant);
                 $app['EM']->flush();
 
-                $datas = ['error' => false, 'datas' => _('Envoie avec succes')];
+                $datas = ['error' => false, 'datas' => $app->trans('Envoie avec succes')];
             } catch (ControllerException $e) {
                 $datas = ['error' => true, 'datas' => $e->getMessage()];
             }

@@ -10,6 +10,7 @@
  */
 
 use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\Translation\TranslatorInterface;
 
 abstract class Bridge_Api_Abstract
 {
@@ -25,6 +26,7 @@ abstract class Bridge_Api_Abstract
      */
     protected $locale = 'en_US';
     protected $generator;
+    protected $translator;
 
     /**
      *
@@ -32,8 +34,9 @@ abstract class Bridge_Api_Abstract
      * @param  Bridge_Api_Auth_Interface $auth
      * @return Bridge_Api_Abstract
      */
-    public function __construct(UrlGenerator $generator, registryInterface $registry, Bridge_Api_Auth_Interface $auth)
+    public function __construct(UrlGenerator $generator, registryInterface $registry, Bridge_Api_Auth_Interface $auth, TranslatorInterface $translator)
     {
+        $this->translator = $translator;
         $this->generator = $generator;
         $this->registry = $registry;
         $this->_auth = $auth;

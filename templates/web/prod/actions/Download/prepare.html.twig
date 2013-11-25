@@ -22,9 +22,7 @@
                 {% set url = path('document_download', {'token': token}) %}
                 {% set before_link = '<a href="' ~ url ~ '" target="_self">' %}
                 {% set after_link = '</a>' %}
-                {% trans with {'%before_link%' : before_link, '%after_link%' : after_link} %}
-                    Your documents are ready. If the download does not start, %before_link%click here%after_link%
-                {% endtrans %}
+                {% trans with {'%before_link%' : before_link, '%after_link%' : after_link} %}Your documents are ready. If the download does not start, %before_link%click here%after_link%{% endtrans %}
             </div>
        {% endif %}
     </div>

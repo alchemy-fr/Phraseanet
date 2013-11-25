@@ -84,15 +84,15 @@ class UserTest extends \PhraseanetPHPUnitAbstract
         $this->user->setFirstName('firstname');
         $this->user->setLastName('lastname');
         $this->user->setEmail('email@email.com');
-        $this->assertEquals($this->user->getDisplayName(), 'firstname lastname');
+        $this->assertEquals($this->user->getDisplayName(self::$DI['app']['translator']), 'firstname lastname');
         $this->user->setLastName('');
-        $this->assertEquals($this->user->getDisplayName(), 'firstname');
+        $this->assertEquals($this->user->getDisplayName(self::$DI['app']['translator']), 'firstname');
         $this->user->setFirstName('');
-        $this->assertEquals($this->user->getDisplayName(), 'email@email.com');
+        $this->assertEquals($this->user->getDisplayName(self::$DI['app']['translator']), 'email@email.com');
         $this->user->setEmail(null);
-        $this->assertEquals($this->user->getDisplayName(), 'Unnamed user');
+        $this->assertEquals($this->user->getDisplayName(self::$DI['app']['translator']), 'Unnamed user');
         $this->user->setLastName('lastname');
-        $this->assertEquals($this->user->getDisplayName(), 'lastname');
+        $this->assertEquals($this->user->getDisplayName(self::$DI['app']['translator']), 'lastname');
     }
 
     public function testIsTemplate()

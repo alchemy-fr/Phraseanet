@@ -66,6 +66,6 @@ class ArchiveEditorTest extends EditorTestCase
 
     protected function getEditor()
     {
-        return new ArchiveEditor();
+        return new ArchiveEditor($this->createTranslatorMock());
     }
 }

@@ -11,7 +11,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testWithValidClass($fqn)
     {
-        $factory = new Factory($this->createDispatcherMock(), $this->createLoggerMock());
+        $factory = new Factory($this->createDispatcherMock(), $this->createLoggerMock(), $this->createTranslatorMock());
         $this->assertInstanceOf($fqn, $factory->create($fqn));
     }
 
@@ -20,7 +20,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testWithValidId($id, $fqn)
     {
-        $factory = new Factory($this->createDispatcherMock(), $this->createLoggerMock());
+        $factory = new Factory($this->createDispatcherMock(), $this->createLoggerMock(), $this->createTranslatorMock());
         $this->assertInstanceOf($fqn, $factory->create($id));
     }
 
@@ -43,22 +43,22 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
      * @expectedExceptionMessage Class `Alchemy\Phrasea\Application` does not implement JobInterface.
      */
     public function testWithInvalidClass()
     {
-        $factory = new Factory($this->createDispatcherMock(), $this->createLoggerMock());
+        $factory = new Factory($this->createDispatcherMock(), $this->createLoggerMock(), $this->createTranslatorMock());
         $factory->create('Alchemy\Phrasea\Application');
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
      * @expectedExceptionMessage Job `I\Dont\Know\This\Class` not found.
      */
     public function testWithNonExistentClass()
     {
-        $factory = new Factory($this->createDispatcherMock(), $this->createLoggerMock());
+        $factory = new Factory($this->createDispatcherMock(), $this->createLoggerMock(), $this->createTranslatorMock());
         $factory->create('I\Dont\Know\This\Class');
     }
 
@@ -70,5 +70,10 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     private function createLoggerMock()
     {
         return $this->getMock('Psr\Log\LoggerInterface');
+    }
+
+    private function createTranslatorMock()
+    {
+        return $this->getMock('Symfony\Component\Translation\TranslatorInterface');
     }
 }

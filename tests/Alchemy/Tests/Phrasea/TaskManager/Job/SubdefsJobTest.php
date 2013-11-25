@@ -10,7 +10,7 @@ class SubdefsJobTest extends JobTestCase
 {
     protected function getJob()
     {
-        return new SubdefsJob();
+        return new SubdefsJob(null, null, $this->createTranslatorMock());
     }
 
     public function doTestRun()

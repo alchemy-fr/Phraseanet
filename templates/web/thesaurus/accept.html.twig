@@ -146,9 +146,7 @@
                         <br/><br/>
                         <input type='radio' name='as' value='SY'>
                         {% set fullpath_tgt_raw = fullpath_tgt | raw %}
-                        {% trans with {'%fullpath_tgt_raw%' : fullpath_tgt_raw} %}
-                            thesaurus:: comme synonyme de %fullpath_tgt_raw%
-                        {% endtrans %}
+                        {% trans with {'%fullpath_tgt_raw%' : fullpath_tgt_raw} %}thesaurus:: comme synonyme de %fullpath_tgt_raw%{% endtrans %}
                         <br/>
                     {% else %}
                         <br/><br/><h4>{{ fullpath_src | raw }}</h4><br/><br/>
@@ -169,9 +167,7 @@
                         <br/>
                         <br/>
                         <br/>
-                        {% trans with {'%cfield%' : cfield} %}
-                            thesaurus:: A cet emplacement du thesaurus , un candidat du champ %cfield% ne peut etre accepte
-                        {% endtrans %}
+                        {% trans with {'%cfield%' : cfield} %}thesaurus:: A cet emplacement du thesaurus , un candidat du champ %cfield% ne peut etre accepte{% endtrans %}
                         <br/>
                         <br/>
                         <br/>

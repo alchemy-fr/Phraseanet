@@ -73,9 +73,7 @@
                                 {% else %}
                                     <p class="alert">
                                         {% set name = value['name'] %}
-                                        {% trans with {'%name%' : name} %}
-                                            erreur avec la valeur %name%
-                                        {% endtrans %}
+                                        {% trans with {'%name%' : name} %}erreur avec la valeur %name%{% endtrans %}
                                     </p>
                                 {% endif %}
                             </select>
@@ -90,9 +88,7 @@
                                 <div class="controls">
                                 <p class='alert'>
                                     {% set name = value['name'] %}
-                                    {% trans with {'%name%' : name} %}
-                                        erreur avec la valeur %name%
-                                    {% endtrans %}
+                                    {% trans with {'%name%' : name} %}erreur avec la valeur %name%{% endtrans %}
                                 </p>
                             {% endif %}
                         {% elseif value['type'] == 'integer' %}

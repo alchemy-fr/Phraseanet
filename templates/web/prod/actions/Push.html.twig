@@ -114,9 +114,7 @@
                                 {% if total > 4 %}
                                     {% set n = total - 4%}
                                     {% set and_many_more %}
-                                        {% trans with {'%n%' : n} %}
-                                            and %n% more peoples
-                                        {% endtrans %}
+                                        {% trans with {'%n%' : n} %}and %n% more peoples{% endtrans %}
                                     {% endset %}
                                     {% set recommendation = recommendation
                                             ~ '<a href="#" class="recommended_users_list">'
@@ -126,13 +124,9 @@
                                 {% if recommendation != '' %}
                                     {% set recommendation = '<br/>' ~ recommendation %}
                                     {% if context == 'Push' %}
-                                        {% trans with {'%recommendation%' : recommendation} %}
-                                            Please consider send this push to the following users : %recommendation%
-                                        {% endtrans %}
+                                        {% trans with {'%recommendation%' : recommendation} %}Please consider send this push to the following users : %recommendation%{% endtrans %}
                                     {% else %}
-                                        {% trans with {'%recommendation%' : recommendation} %}
-                                            Please consider send this validation to the following users : %recommendation%
-                                        {% endtrans %}
+                                        {% trans with {'%recommendation%' : recommendation} %}Please consider send this validation to the following users : %recommendation%{% endtrans %}
                                     {% endif %}
                                 {% endif %}
                             </p>

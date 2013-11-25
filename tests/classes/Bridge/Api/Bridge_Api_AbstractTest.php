@@ -19,7 +19,7 @@ class Bridge_Api_AbstractTest extends PhraseanetWebTestCaseAbstract
     {
         parent::setUp();
         $this->auth = $this->getMock("Bridge_Api_Auth_Interface");
-        $this->bridgeApi = $this->getMock('Bridge_Api_Abstract', ["is_configured", "initialize_transport", "set_auth_params", "set_transport_authentication_params"], [self::$DI['app']['url_generator'], self::$DI['app']['phraseanet.registry'], $this->auth, "Mock_Bridge_Api_Abstract"]);
+        $this->bridgeApi = $this->getMock('Bridge_Api_Abstract', ["is_configured", "initialize_transport", "set_auth_params", "set_transport_authentication_params"], [self::$DI['app']['url_generator'], self::$DI['app']['phraseanet.registry'], $this->auth, self::$DI['app']['translator']]);
     }
 
     public static function setUpBeforeClass()

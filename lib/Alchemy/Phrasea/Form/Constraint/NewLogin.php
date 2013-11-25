@@ -16,12 +16,11 @@ use Symfony\Component\Validator\Constraint;
 
 class NewLogin extends Constraint
 {
+    public $message = 'This login is already registered';
     private $app;
-    private $message;
 
     public function __construct(Application $app)
     {
-        $this->message = _('This login is already registered');
         $this->app = $app;
         parent::__construct();
     }
@@ -31,5 +30,10 @@ class NewLogin extends Constraint
         $ret = (Boolean) \User_Adapter::get_usr_id_from_login($this->app, $login);
 
         return $ret;
+    }
+
+    public static function create(Application $app)
+    {
+        return new static($app);
     }
 }

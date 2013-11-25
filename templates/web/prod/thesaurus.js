@@ -531,11 +531,11 @@ function C_MenuOption(menuItem, menu, option, parm)
 
       if(trees.C._selInfos.n == 1)
       {
-        msg = $.sprintf("{{ messageOne | e }}", menu._srcElement.find("span").html());
+        msg = $.sprintf("{{ messageOne | e('js') }}", menu._srcElement.find("span").html());
       }
       else
       {
-        msg = $.sprintf("{{ messageMany | e }}", trees.C._selInfos.n);
+        msg = $.sprintf("{{ messageMany | e('js') }}", trees.C._selInfos.n);
       }
 
       // set the content of the wizard
@@ -560,11 +560,11 @@ function C_MenuOption(menuItem, menu, option, parm)
       if(trees.C._selInfos.n == 1)
       {
         var term = trees.C._selInfos.sel.eq(0).find("span span").html();
-        msg = $.sprintf('{{ messageOne | e }}', term);
+        msg = $.sprintf('{{ messageOne | e('js') }}', term);
       }
       else
       {
-        msg = $.sprintf('{{ messageMany |e }}', trees.C._selInfos.n);
+        msg = $.sprintf('{{ messageMany | e('js') }}', trees.C._selInfos.n);
       }
 
       p4.thesau.tabs.tabs('option', 'active', 0);

@@ -279,11 +279,7 @@ class record_preview extends record_adapter
         switch ($this->env) {
 
             case "RESULT":
-                $this->title .= sprintf(
-                    _('preview:: resultat numero %s '), '<span id="current_result_n">' . ($this->number + 1)
-                    . '</span> : '
-                );
-
+                $this->title .= $this->app->trans('preview:: resultat numero %number%', array('%number%' => '<span id="current_result_n">' . ($this->number + 1) . '</span> : '));
                 $this->title .= parent::get_title($highlight, $search_engine);
                 break;
             case "BASK":
@@ -527,21 +523,21 @@ class record_preview extends record_adapter
 
         foreach ($rs as $row) {
             if ($row['referrer'] == 'NO REFERRER')
-                $row['referrer'] = _('report::acces direct');
+                $row['referrer'] = $this->app->trans('report::acces direct');
             if ($row['referrer'] == $this->app['phraseanet.registry']->get('GV_ServerName') . 'prod/')
-                $row['referrer'] = _('admin::monitor: module production');
+                $row['referrer'] = $this->app->trans('admin::monitor: module production');
             if ($row['referrer'] == $this->app['phraseanet.registry']->get('GV_ServerName') . 'client/')
-                $row['referrer'] = _('admin::monitor: module client');
+                $row['referrer'] = $this->app->trans('admin::monitor: module client');
             if (strpos($row['referrer'], $this->app['phraseanet.registry']->get('GV_ServerName') . 'login/') !== false)
-                $row['referrer'] = _('report:: page d\'accueil');
+                $row['referrer'] = $this->app->trans('report:: page d\'accueil');
             if (strpos($row['referrer'], 'http://apps.cooliris.com/') !== false)
-                $row['referrer'] = _('report:: visualiseur cooliris');
+                $row['referrer'] = $this->app->trans('report:: visualiseur cooliris');
 
             if (strpos($row['referrer'], $this->app['phraseanet.registry']->get('GV_ServerName') . 'document/') !== false) {
-                $row['referrer'] = _('report::acces direct');
+                $row['referrer'] = $this->app->trans('report::acces direct');
             }
             if (strpos($row['referrer'], $this->app['phraseanet.registry']->get('GV_ServerName') . 'permalink/') !== false) {
-                $row['referrer'] = _('report::acces direct');
+                $row['referrer'] = $this->app->trans('report::acces direct');
             }
             if ( ! isset($referrers[$row['referrer']]))
                 $referrers[$row['referrer']] = 0;

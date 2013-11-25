@@ -57,6 +57,6 @@ class FtpPullEditorTest extends EditorTestCase
 
     protected function getEditor()
     {
-        return new FtpPullEditor();
+        return new FtpPullEditor($this->createTranslatorMock());
     }
 }

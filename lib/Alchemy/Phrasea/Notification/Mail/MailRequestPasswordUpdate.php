@@ -33,7 +33,7 @@ class MailRequestPasswordUpdate extends AbstractMailWithLink
      */
     public function getSubject()
     {
-        return _('login:: Forgot your password');
+        return $this->app->trans('login:: Forgot your password');
     }
 
     /**
@@ -45,9 +45,9 @@ class MailRequestPasswordUpdate extends AbstractMailWithLink
             throw new LogicException('You must set a login before calling getMessage');
         }
 
-        return sprintf(_('Password renewal for login "%s" has been requested'), $this->login)
+        return $this->app->trans('Password renewal for login "%login%" has been requested', array('%login%' => $this->login))
         . "\n"
-        .  _('login:: Visitez le lien suivant et suivez les instructions pour continuer, sinon ignorez cet email et il ne se passera rien');
+        .  $this->app->trans('login:: Visitez le lien suivant et suivez les instructions pour continuer, sinon ignorez cet email et il ne se passera rien');
     }
 
     /**
@@ -55,7 +55,7 @@ class MailRequestPasswordUpdate extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return _('Renew password');
+        return $this->app->trans('Renew password');
     }
 
     /**

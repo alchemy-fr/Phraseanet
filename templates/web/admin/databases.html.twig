@@ -48,9 +48,9 @@
         <h2>{{ 'admin::base: Version' | trans }}</h2>
 
         {% if not app['phraseanet.configuration-tester'].isUpToDate() %}
-            <p>{{ 'update::Votre application necessite une mise a jour vers : ' | trans }} {{ app['phraseanet.version'].getNumber() }}</p>
+            <p>{{ 'update::Votre application necessite une mise a jour vers :' | trans }} {{ app['phraseanet.version'].getNumber() }}</p>
         {% else %}
-            <p>{{ 'update::Votre version est a jour : ' | trans }} {{ app['phraseanet.version'].getNumber() }}</p>
+            <p>{{ 'update::Votre version est a jour :' | trans }} {{ app['phraseanet.version'].getNumber() }}</p>
         {% endif %}
 
         {% if recommendations | length > 0%}

@@ -56,9 +56,7 @@
         {% if typ == "CT" %}
             <br/>
         {% elseif typ == "TH" %}
-            {% trans with {'%hits%' : hits} %}
-                thesaurus:: %hits% reponses retournees
-            {% endtrans %}
+            {% trans with {'%hits%' : hits} %}thesaurus:: %hits% reponses retournees{% endtrans %}
             <br/>
             <br/>
         {% endif %}

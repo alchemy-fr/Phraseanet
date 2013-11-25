@@ -178,9 +178,9 @@ class Bridge implements ControllerProviderInterface
             $account->delete();
             $success = true;
         } catch (\Bridge_Exception_AccountNotFound $e) {
-            $message = _('Account is not found.');
+            $message = $app->trans('Account is not found.');
         } catch (\Exception $e) {
-            $message = _('Something went wrong, please contact an administrator');
+            $message = $app->trans('Something went wrong, please contact an administrator');
         }
 
         return $app->json(['success' => $success, 'message' => $message]);
@@ -274,7 +274,7 @@ class Bridge implements ControllerProviderInterface
                         'account_id' => $account_id,
                         'type'       => $element_type,
                         'page'       => '',
-                        'error'      => _('Vous ne pouvez pas editer plusieurs elements simultanement'),
+                        'error'      => $app->trans('Vous ne pouvez pas editer plusieurs elements simultanement'),
                     ]);
                 }
                 foreach ($elements as $element_id) {
@@ -295,7 +295,7 @@ class Bridge implements ControllerProviderInterface
                 break;
 
             default:
-                throw new \Exception(_('Vous essayez de faire une action que je ne connais pas !'));
+                throw new \Exception($app->trans('Vous essayez de faire une action que je ne connais pas !'));
                 break;
         }
 
@@ -333,7 +333,7 @@ class Bridge implements ControllerProviderInterface
         switch ($action) {
             case 'modify':
                 if (count($elements) != 1) {
-                    return $app->redirect('/prod/bridge/action/' . $account_id . '/' . $action . '/' . $element_type . '/?elements_list=' . implode(';', $elements) . '&error=' . _('Vous ne pouvez pas editer plusieurs elements simultanement'));
+                    return $app->redirect('/prod/bridge/action/' . $account_id . '/' . $action . '/' . $element_type . '/?elements_list=' . implode(';', $elements) . '&error=' . $app->trans('Vous ne pouvez pas editer plusieurs elements simultanement'));
                 }
                 try {
                     foreach ($elements as $element_id) {
@@ -350,7 +350,7 @@ class Bridge implements ControllerProviderInterface
                             'action'            => $action,
                             'elements'          => $elements,
                             'adapter_action'    => $action,
-                            'error_message'     => _('Request contains invalid datas'),
+                            'error_message'     => $app->trans('Request contains invalid datas'),
                             'constraint_errors' => $errors,
                             'notice_message'    => $request->request->get('notice'),
                         ];
@@ -451,7 +451,7 @@ class Bridge implements ControllerProviderInterface
             $params = [
                 'route'             => $route,
                 'account'           => $account,
-                'error_message'     => _('Request contains invalid datas'),
+                'error_message'     => $app->trans('Request contains invalid datas'),
                 'constraint_errors' => $errors,
                 'notice_message'    => $request->request->get('notice'),
                 'adapter_action'    => 'upload',
@@ -467,6 +467,6 @@ class Bridge implements ControllerProviderInterface
             \Bridge_Element::create($app, $account, $record, $title, \Bridge_Element::STATUS_PENDING, $default_type, $datas);
         }
 
-        return $app->redirect('/prod/bridge/adapter/' . $account->get_id() . '/load-records/?notice=' . sprintf(_('%d elements en attente'), count($route->get_elements())));
+        return $app->redirect('/prod/bridge/adapter/' . $account->get_id() . '/load-records/?notice=' . $app->trans('%quantity% elements en attente', array('%quantity%' => count($route->get_elements()))));
     }
 }
