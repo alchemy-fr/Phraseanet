@@ -137,6 +137,7 @@ use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Component\Translation\Loader\MoFileLoader;
+use Symfony\Component\Translation\Translator;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
@@ -310,12 +311,12 @@ class Application extends SilexApplication
             'locale_fallbacks' => ['fr_FR'],
         ]);
 
-        $this['translator'] = $this->share($this->extend('translator', function($translator, $app) {
+        $this['translator'] = $this->share($this->extend('translator', function(Translator $translator, $app) {
             $translator->addLoader('mo', new MoFileLoader());
-            $translator->addResource('mo', __DIR__.'/../../../locale/fr_FR/LC_MESSAGES/phraseanet.mo', 'fr_FR');
-            $translator->addResource('mo', __DIR__.'/../../../locale/en_GB/LC_MESSAGES/phraseanet.mo', 'en_GB');
-            $translator->addResource('mo', __DIR__.'/../../../locale/de_DE/LC_MESSAGES/phraseanet.mo', 'de_DE');
-            $translator->addResource('mo', __DIR__.'/../../../locale/nl_NL/LC_MESSAGES/phraseanet.mo', 'nl_NL');
+            $translator->addResource('mo', __DIR__.'/../../../resources/locales/messages.fr.mo', 'fr_FR', 'messages');
+            $translator->addResource('mo', __DIR__.'/../../../resources/locales/messages.en.mo', 'en_GB', 'messages');
+            $translator->addResource('mo', __DIR__.'/../../../resources/locales/messages.de.mo', 'de_DE', 'messages');
+            $translator->addResource('mo', __DIR__.'/../../../resources/locales/messages.nl.mo', 'nl_NL', 'messages');
 
             return $translator;
         }));
