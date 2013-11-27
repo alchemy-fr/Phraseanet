@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Core\Configuration\Configuration;
+use Alchemy\Phrasea\Core\Configuration\DisplaySetting;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Configuration\Compiler;
 use Silex\Application as SilexApplication;
@@ -49,6 +50,10 @@ class ConfigurationServiceProvider implements ServiceProviderInterface
         // Maintaining BC until 3.10
         $app['phraseanet.configuration'] = $app->share(function (SilexApplication $app) {
             return $app['configuration.store'];
+        });
+
+        $app['settings'] = $app->share(function (SilexApplication $app) {
+            return new DisplaySetting($app['conf']);
         });
     }
 
