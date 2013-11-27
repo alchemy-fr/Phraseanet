@@ -14,14 +14,14 @@ namespace Alchemy\Phrasea\Core\Configuration;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Entities\User;
 
-class DisplaySetting
+class DisplaySettingService
 {
     /**
-     * The default user base setting values.
+     * The default user settings.
      *
      * @var array
      */
-    private static $defaultUserBaseSettings = [
+    private static $defaultUserSettings = [
         'view'                    => 'thumbs',
         'images_per_page'         => '20',
         'images_size'             => '120',
@@ -46,11 +46,11 @@ class DisplaySetting
     ];
 
     /**
-     * A combination of default user base settings and configuration user settings.
+     * A merge of default user settings and configuration customisation.
      *
      * @var Array
      */
-    private $defaultUserSettings;
+    private $usersSettings;
 
     /** @var PropertyAccess */
     private $conf;
@@ -61,64 +61,65 @@ class DisplaySetting
     }
 
     /**
-     * Returns default user settings;
+     * Returns user settings.
      *
      * @return array
      */
-    public function getDefaultUserSettings()
+    public function getUsersSettings()
     {
-        $this->loadDefaultUserSettings();
+        $this->loadUsersSettings();
 
-        return $this->defaultUserSettings;
+        return $this->usersSettings;
     }
 
     /**
-     * Returns user setting value.
+     * Return a user setting given a user.
      *
      * @param User $user
-     * @param      $name
-     * @param null $default
+     * @param string $name
+     * @param mixed $default
      *
      * @return mixed
      */
     public function getUserSetting(User $user, $name, $default = null)
     {
-        $this->loadDefaultUserSettings();
+        if (false === $user->getSettings()->containsKey($name)) {
+            $this->loadusersSettings();
 
-        return $user->getSettingValue(
-            $name,
-            array_key_exists($name, $this->defaultUserSettings) ? $this->defaultUserSettings[$name] : $default
-        );
+            return array_key_exists($name, $this->usersSettings) ? $this->usersSettings[$name] : $default;
+        }
+
+        return $user->getSettings()->get($name)->getValue();
     }
 
     /**
      * Returns application setting value.
      *
-     * @param      $props
-     * @param null $default
+     * @param string|array $props
+     * @param mixed $default
      *
      * @return mixed
      */
     public function getApplicationSetting($props, $default = null)
     {
-        return $this->conf->get($props, $default);
+        return $this->conf->get(array_merge(['registry'], is_array($props) ? $props : [$props]), $default);
     }
 
     /**
-     * Sets defaults settings from base default values and configuration values.
+     * Merge default user settings and configuration customisation.
      */
-    private function loadDefaultUserSettings()
+    private function loadUsersSettings()
     {
-        if (null !== $this->defaultUserSettings) {
+        if (null !== $this->usersSettings) {
             return;
         }
 
-        $this->defaultUserSettings = array_replace(
-            self::$defaultUserBaseSettings,
+        $this->usersSettings = array_replace(
+            self::$defaultUserSettings,
             // removes undefined keys in default settings
             array_intersect_key(
-                $this->getApplicationSetting(['user-settings'], []),
-                self::$defaultUserBaseSettings
+                $this->conf->get(['user-settings'], []),
+                self::$defaultUserSettings
             )
         );
     }

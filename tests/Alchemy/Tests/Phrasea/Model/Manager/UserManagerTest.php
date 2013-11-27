@@ -17,24 +17,9 @@ class UserManagerTest extends \PhraseanetPHPUnitAbstract
     public function testDeleteUser()
     {
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
-        $query = new UserQuery();
-        $query->setUser($user);
-        $query->setQuery('a query');
-        $query->setUsrId(1);
-        $user->addQuery($query);
-        $setting = new UserSetting();
-        $setting->setUsrId(1);
-        $setting->setUser($user);
-        $setting->setName('setting');
-        $setting->setValue(0);
-        $user->addSetting($setting);
-        $setting = new UserNotificationSetting();
-        $setting->setUsrId(1);
-        $setting->setUser($user);
-        $setting->setName('setting');
-        $setting->setValue(0);
-        $user->addNotificationSettings($setting);
-        self::$DI['app']['model.user-manager']->update($user);
+        self::$DI['app']['manipulator.user']->logQuery($user, 'a query');
+        self::$DI['app']['manipulator.user']->addUserSetting($user, 'setting', false);
+        self::$DI['app']['manipulator.user']->addNotificationSetting($user, 'setting', false);
         self::$DI['app']['model.user-manager']->delete($user);
         $this->assertTrue($user->isDeleted());
         $this->assertNull($user->getEmail());

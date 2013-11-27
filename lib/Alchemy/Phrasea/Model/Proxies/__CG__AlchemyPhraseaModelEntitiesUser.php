@@ -64,10 +64,10 @@ class User extends \Alchemy\Phrasea\Model\Entities\User implements \Doctrine\ORM
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'defaultUserSettings', 'id', 'login', 'email', 'password', 'nonce', 'saltedPassword', 'firstName', 'lastName', 'gender', 'address', 'city', 'country', 'zipCode', 'geonameId', 'locale', 'timezone', 'job', 'activity', 'company', 'phone', 'fax', 'admin', 'guest', 'mailNotificationsActivated', 'requestNotificationsActivated', 'ldapCreated', 'lastModel', 'pushList', 'canChangeProfil', 'canChangeFtpProfil', 'lastConnection', 'mailLocked', 'deleted', 'created', 'updated', 'modelOf', 'ftpCredential', 'queries', 'settings', 'notificationSettings', 'cachedSettings');
+            return array('__isInitialized__', 'id', 'login', 'email', 'password', 'nonce', 'saltedPassword', 'firstName', 'lastName', 'gender', 'address', 'city', 'country', 'zipCode', 'geonameId', 'locale', 'timezone', 'job', 'activity', 'company', 'phone', 'fax', 'admin', 'guest', 'mailNotificationsActivated', 'requestNotificationsActivated', 'ldapCreated', 'lastModel', 'pushList', 'canChangeProfil', 'canChangeFtpProfil', 'lastConnection', 'mailLocked', 'deleted', 'created', 'updated', 'modelOf', 'ftpCredential', 'queries', 'settings', 'notificationSettings');
         }
 
-        return array('__isInitialized__', 'defaultUserSettings', 'id', 'login', 'email', 'password', 'nonce', 'saltedPassword', 'firstName', 'lastName', 'gender', 'address', 'city', 'country', 'zipCode', 'geonameId', 'locale', 'timezone', 'job', 'activity', 'company', 'phone', 'fax', 'admin', 'guest', 'mailNotificationsActivated', 'requestNotificationsActivated', 'ldapCreated', 'lastModel', 'pushList', 'canChangeProfil', 'canChangeFtpProfil', 'lastConnection', 'mailLocked', 'deleted', 'created', 'updated', 'modelOf', 'ftpCredential', 'queries', 'settings', 'notificationSettings', 'cachedSettings');
+        return array('__isInitialized__', 'id', 'login', 'email', 'password', 'nonce', 'saltedPassword', 'firstName', 'lastName', 'gender', 'address', 'city', 'country', 'zipCode', 'geonameId', 'locale', 'timezone', 'job', 'activity', 'company', 'phone', 'fax', 'admin', 'guest', 'mailNotificationsActivated', 'requestNotificationsActivated', 'ldapCreated', 'lastModel', 'pushList', 'canChangeProfil', 'canChangeFtpProfil', 'lastConnection', 'mailLocked', 'deleted', 'created', 'updated', 'modelOf', 'ftpCredential', 'queries', 'settings', 'notificationSettings');
     }
 
     /**

@@ -44,35 +44,6 @@ class User
     const USER_AUTOREGISTER = 'autoregister';
 
     /**
-     * The default user setting values.
-     *
-     * @var array
-     */
-    private static $defaultUserSettings = [
-        'view'                    => 'thumbs',
-        'images_per_page'         => '20',
-        'images_size'             => '120',
-        'editing_images_size'     => '134',
-        'editing_top_box'         => '180px',
-        'editing_right_box'       => '400px',
-        'editing_left_box'        => '710px',
-        'basket_sort_field'       => 'name',
-        'basket_sort_order'       => 'ASC',
-        'warning_on_delete_story' => 'true',
-        'client_basket_status'    => '1',
-        'css'                     => '000000',
-        'start_page_query'        => 'last',
-        'start_page'              => 'QUERY',
-        'rollover_thumbnail'      => 'caption',
-        'technical_display'       => '1',
-        'doctype_display'         => '1',
-        'bask_val_order'          => 'nat',
-        'basket_caption_display'  => '0',
-        'basket_status_display'   => '0',
-        'basket_title_display'    => '0'
-    ];
-
-    /**
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -274,23 +245,18 @@ class User
     private $queries;
 
     /**
-     * @ORM\OneToMany(targetEntity="UserSetting", mappedBy="user", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="UserSetting", mappedBy="user", cascade={"all"}, indexBy="name")
      *
      * @var UserSetting[]
      **/
     private $settings;
 
     /**
-     * @ORM\OneToMany(targetEntity="UserNotificationSetting", mappedBy="user", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="UserNotificationSetting", mappedBy="user", cascade={"all"}, indexBy="name")
      *
      * @var UserNotificationSetting[]
      **/
     private $notificationSettings;
-
-    /**
-     * @var ArrayCollection
-     */
-    private $cachedSettings;
 
     /**
      * Constructor
@@ -945,42 +911,13 @@ class User
     }
 
     /**
-     * Retrieves user setting value.
-     *
-     * @param string $name
-     * @param mixed  $default
-     *
-     * @return string
-     */
-    public function getSettingValue($name, $default = null)
-    {
-        if (null === $this->cachedSettings) {
-            $settings = self::$defaultUserSettings;
-
-            foreach ($this->settings as $setting) {
-                $settings[$setting->getName()] = $setting->getValue();
-            }
-
-            $this->cachedSettings = $settings;
-        }
-
-        // checks for stored settings
-        if (array_key_exists($name, $this->cachedSettings)) {
-            return $this->cachedSettings[$name];
-        }
-
-        return $default;
-    }
-
-    /**
      * @param UserSetting $setting
      *
      * @return User
      */
     public function addSetting(UserSetting $setting)
     {
-        $this->cachedSettings = null;
-        $this->settings->add($setting);
+        $this->settings->set($setting->getName(), $setting);
 
         return $this;
     }
@@ -1000,7 +937,7 @@ class User
      */
     public function addNotificationSettings(UserNotificationSetting $notificationSetting)
     {
-        $this->notificationSettings->add($notificationSetting);
+        $this->notificationSettings->set($notificationSetting->getName(), $notificationSetting);
 
         return $this;
     }

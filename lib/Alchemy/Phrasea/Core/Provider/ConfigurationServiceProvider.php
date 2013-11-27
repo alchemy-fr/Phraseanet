@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Core\Configuration\Configuration;
-use Alchemy\Phrasea\Core\Configuration\DisplaySetting;
+use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Configuration\Compiler;
 use Silex\Application as SilexApplication;
@@ -53,7 +53,7 @@ class ConfigurationServiceProvider implements ServiceProviderInterface
         });
 
         $app['settings'] = $app->share(function (SilexApplication $app) {
-            return new DisplaySetting($app['conf']);
+            return new DisplaySettingService($app['conf']);
         });
     }
 
