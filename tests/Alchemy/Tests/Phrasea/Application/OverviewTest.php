@@ -94,6 +94,20 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $this->get_a_permaview(array("Content-Type" => "text/html; charset=UTF-8"));
     }
 
+    public function testPermalinkAuthenticatedWithDownloadQuery()
+    {
+        $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
+        $url = '/permalink/v1/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/whateverIwannt.jpg?token=' . $token . '&download=1';
+
+        self::$DI['client']->request('GET', $url);
+        $response = self::$DI['client']->getResponse();
+
+        $this->assertRegExp('/^attachment;/', $response->headers->get('content-disposition'));
+
+        $this->assertEquals(rtrim(self::$DI['app']['phraseanet.configuration']['main']['servername'], '/') . "/permalink/v1/1/". self::$DI['record_1']->get_record_id()."/caption/?token=".$token, $response->headers->get("Link"));
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
     public function testPermalinkNotAuthenticated()
     {
         $this->logout(self::$DI['app']);
@@ -244,6 +258,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $crawler = self::$DI['client']->request('GET', $url);
         $response = self::$DI['client']->getResponse();
 
+        $this->assertRegExp('/^inline;/', $response->headers->get('content-disposition'));
         foreach ($headers as $name => $value) {
             $this->assertEquals($value, $response->headers->get($name));
         }
