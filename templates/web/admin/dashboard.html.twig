@@ -128,16 +128,16 @@
             <fieldset>
                 <legend>{% trans 'setup::Tests d\'envois d\'emails' %}</legend>
                 <div class="input-append">
-                    <input class="span3" id="appendedInputButton" type="text" placeholder="{% trans %}Email{% endtrans %}">
+                    <input name="email" class="span3" id="appendedInputButton" type="text" placeholder="{% trans %}Email{% endtrans %}">
                     <input type="submit" class="btn btn-warning" value="{% trans 'Send' %}"/>
-                </div>
-                <div>
-                    {% if email_status %}
-                        <p>{% trans %}Email test result : {{ email_status }}{% endtrans %}</p>
-                    {% endif %}
                 </div>
             </fieldset>
         </form>
+        {% if email_status %}
+            <div class="alert-info">
+                <p>{% trans %}Email test result : {{ email_status }}{% endtrans %}</p>
+            </div>
+        {% endif %}
     </div>
 
     {% if app['cache'].isServer() %}
