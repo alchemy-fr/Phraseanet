@@ -195,7 +195,8 @@ define([
                 AdminFieldApp.fieldsToDelete.push(self.model);
                 AdminFieldApp.fieldListView.collection.remove(self.model);
                 self._selectModelView(index);
-                AdminFieldApp.saveView.updateStateButton();
+                // Enable state button, models is out of sync
+                AdminFieldApp.saveView.updateStateButton(false);
             });
 
             return this;
