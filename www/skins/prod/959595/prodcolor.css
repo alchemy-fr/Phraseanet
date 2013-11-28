@@ -1814,6 +1814,11 @@ H4 {
     margin: 0 0 0 10px;
 }
 
+#searchForm input.input-small.datepicker::-webkit-input-placeholder { font-size:12px; }
+#searchForm input.input-small.datepicker::-moz-placeholder { font-size:12px; } /* firefox 19+ */
+#searchForm input.input-small.datepicker:-ms-input-placeholder { font-size:12px; } /* ie */
+#searchForm input.input-small.datepicker:-moz-placeholder { font-size:12px; }
+
 #adv_search .sbasglob hr,
 .adv_options .sbasglob hr,
 .adv_options #sbasfiltercont hr {
