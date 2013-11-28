@@ -23,4 +23,6 @@ final class PhraseaEvents
     const API_LOAD_START = 'api.load.start';
     const API_LOAD_END = 'api.load.end';
     const API_RESULT = 'api.result';
+
+    const COLLECTION_CREATE = 'collection.create';
 }

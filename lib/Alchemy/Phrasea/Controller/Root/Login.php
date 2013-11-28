@@ -1034,8 +1034,6 @@ class Login implements ControllerProviderInterface
         $response = $this->generateAuthResponse($app, $app['browser'], $request->request->get('redirect'));
         $response->headers->clearCookie('invite-usr-id');
 
-        $user->ACL()->inject_rights();
-
         if ($request->cookies->has('postlog') && $request->cookies->get('postlog') == '1') {
             if (!$user->is_guest() && $request->cookies->has('invite-usr_id')) {
                 if ($user->get_id() != $inviteUsrId = $request->cookies->get('invite-usr_id')) {

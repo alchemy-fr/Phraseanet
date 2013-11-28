@@ -10,6 +10,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 {
     protected $options;
     protected static $searchEngine;
+    protected static $searchEngineClass;
     protected static $initialized = false;
 
     public function setUp()
@@ -762,6 +763,12 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         if (!$found) {
             $this->fail('Unable to build the excerpt');
         }
+    }
+
+    public function testCreateSubscriber()
+    {
+        $classname = self::$searchEngineClass;
+        $this->assertInstanceOf('Symfony\Component\EventDispatcher\EventSubscriberInterface', $classname::createSubscriber(self::$DI['app']));
     }
 
     abstract public function initialize();

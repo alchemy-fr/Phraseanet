@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use Alchemy\Phrasea\Core\Event\CollectionCreateEvent;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -1057,6 +1059,8 @@ class Databox implements ControllerProviderInterface
                     $n += 20;
                 }
             }
+
+            $app['dispatcher']->dispatch(PhraseaEvents::COLLECTION_CREATE, new CollectionCreateEvent($collection));
 
             return $app->redirectPath('admin_display_collection', array('bas_id' => $collection->get_base_id(), 'success' => 1, 'reload-tree' => 1));
         } catch (\Exception $e) {
