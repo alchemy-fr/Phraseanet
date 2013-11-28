@@ -72,7 +72,7 @@ class Download implements ControllerProviderInterface
             $app['authentication']->getUser(),
             $app['filesystem'],
             $subdefs,
-            $request->request->get('title') === 'title' ? true : false,
+            $request->request->get('type') === 'title' ? true : false,
             $request->request->get('businessfields')
         );
 
