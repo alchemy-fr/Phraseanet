@@ -3,7 +3,7 @@
       <ol>
         <li>
             <span class="title {% if module == "prod" %}selected{% endif %}">
-              Phraseanet
+              {%  block menu_bar_title %}Phraseanet{% endblock %}
             </span>
         </li>
         {% if module != "lightbox" and app['authentication'].isAuthenticated() %}
