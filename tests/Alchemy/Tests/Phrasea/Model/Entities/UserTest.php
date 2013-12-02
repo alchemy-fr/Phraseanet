@@ -142,16 +142,4 @@ class UserTest extends \PhraseanetPHPUnitAbstract
             ['madame']
         ];
     }
-
-    public function testGetSettingValue()
-    {
-        $setting = new UserSetting();
-        $setting->setName('titi');
-        $setting->setValue('a_value');
-        $this->user->addSetting($setting);
-
-        $this->assertEquals('a_value', $this->user->getSettingValue('titi'));
-        $this->assertEquals('000000', $this->user->getSettingValue('css'));
-        $this->assertEquals('toto', $this->user->getSettingValue('not_found', 'toto'));
-    }
 }
