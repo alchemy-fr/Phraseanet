@@ -84,8 +84,9 @@ define([
 
             return this;
         },
-        updateStateButton: function () {
-            this._disableSaveButton(!this._isModelDesync());
+        updateStateButton: function (disable) {
+            var toDisable = disable || !this._isModelDesync();
+            this._disableSaveButton(toDisable);
         },
         // check whether model has changed or not
         _isModelDesync: function () {

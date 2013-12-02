@@ -2,8 +2,8 @@
     <div class="PNB" style="right:auto;overflow:hidden;">
       <ol>
         <li>
-            <span class="title {% if module is defined and module == "prod" %}selected{% endif %}">
-              Phraseanet
+            <span class="title {% if module == "prod" %}selected{% endif %}">
+              {%  block menu_bar_title %}Phraseanet{% endblock %}
             </span>
         </li>
         {% if module is defined and module != "lightbox" and app['authentication'].isAuthenticated() %}
@@ -75,7 +75,7 @@
             </a>
           </li>
 
-          {# MODULE #}       
+          {# MODULE #}
           {% if module is defined and module == "prod" %}
               {% if app['acl'].get(app['authentication'].getUser()).has_access_to_module('upload') %}
             <li>
