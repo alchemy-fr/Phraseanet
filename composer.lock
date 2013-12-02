@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "c86f3d5cef410e011d14c7ac9749c11e",
+    "hash": "329db4f5834432a8ebc2c25c3447381d",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -1434,26 +1434,26 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.3.6",
+            "version": "0.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "86a16aab82b6e31d2e70050f61fa815a98037253"
+                "reference": "319f55c2265a9056d68f1f0e6314dce977ef47ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/86a16aab82b6e31d2e70050f61fa815a98037253",
-                "reference": "86a16aab82b6e31d2e70050f61fa815a98037253",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/319f55c2265a9056d68f1f0e6314dce977ef47ef",
+                "reference": "319f55c2265a9056d68f1f0e6314dce977ef47ef",
                 "shasum": ""
             },
             "require": {
                 "alchemy/ghostscript": "~0.4.0",
                 "imagine/imagine": "0.6.x@dev",
-                "mediavorus/mediavorus": "~0.4.0",
+                "mediavorus/mediavorus": "~0.4.2",
                 "monolog/monolog": "~1.0",
                 "neutron/temporary-filesystem": "~2.1",
                 "php": ">=5.3.3",
-                "php-ffmpeg/php-ffmpeg": "~0.3, >=0.3.4",
+                "php-ffmpeg/php-ffmpeg": "~0.4.2",
                 "php-mp4box/php-mp4box": "~0.3.0",
                 "php-unoconv/php-unoconv": "~0.3.0",
                 "pimple/pimple": "~1.0",
@@ -1503,20 +1503,20 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-10-21 12:41:18"
+            "time": "2013-12-03 17:07:51"
         },
         {
             "name": "mediavorus/mediavorus",
-            "version": "0.4.1",
+            "version": "0.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/MediaVorus.git",
-                "reference": "5d5c416353f48192f2202dd4be5c21d95f46b08d"
+                "reference": "b80ab6acd79f69b2040f7915e1393f08f68277fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/MediaVorus/zipball/5d5c416353f48192f2202dd4be5c21d95f46b08d",
-                "reference": "5d5c416353f48192f2202dd4be5c21d95f46b08d",
+                "url": "https://api.github.com/repos/romainneutron/MediaVorus/zipball/b80ab6acd79f69b2040f7915e1393f08f68277fc",
+                "reference": "b80ab6acd79f69b2040f7915e1393f08f68277fc",
                 "shasum": ""
             },
             "require": {
@@ -1564,7 +1564,7 @@
             "keywords": [
                 "metadata"
             ],
-            "time": "2013-10-21 12:36:49"
+            "time": "2013-11-28 16:41:54"
         },
         {
             "name": "monolog/monolog",
@@ -1887,16 +1887,16 @@
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
-            "version": "0.4.0",
+            "version": "0.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHP-FFmpeg.git",
-                "reference": "0d82e5ad3cb50fd78882b5e15aaf57b39a274103"
+                "reference": "554cec2bc7b76e222aeef083205ed3bd57327975"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/0d82e5ad3cb50fd78882b5e15aaf57b39a274103",
-                "reference": "0d82e5ad3cb50fd78882b5e15aaf57b39a274103",
+                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/554cec2bc7b76e222aeef083205ed3bd57327975",
+                "reference": "554cec2bc7b76e222aeef083205ed3bd57327975",
                 "shasum": ""
             },
             "require": {
@@ -1952,7 +1952,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-10-21 12:16:28"
+            "time": "2013-12-02 13:48:20"
         },
         {
             "name": "php-mp4box/php-mp4box",
