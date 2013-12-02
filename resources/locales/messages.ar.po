@@ -57,14 +57,11 @@ msgid "ERREUR : TOUTES LES BALISES subdefgroup necessitent un attribut name"
 msgstr ""
 
 #: lib/classes/databox.class.php:1264
-msgid ""
-"ERREUR : Les name de subdef sont uniques par groupe de subdefs et necessaire"
+msgid "ERREUR : Les name de subdef sont uniques par groupe de subdefs et necessaire"
 msgstr ""
 
 #: lib/classes/databox.class.php:1268
-msgid ""
-"ERREUR : La classe de subdef est necessaire et egal a \"thumbnail\",\"preview"
-"\" ou \"document\""
+msgid "ERREUR : La classe de subdef est necessaire et egal a \"thumbnail\",\"preview\" ou \"document\""
 msgstr ""
 
 #: lib/classes/mail.class.php:11
@@ -85,9 +82,7 @@ msgid "export::vous avez recu des documents"
 msgstr ""
 
 #: lib/classes/mail.class.php:47
-msgid ""
-"Vous avez recu des documents, vous pourrez les telecharger a ladresse "
-"suivante "
+msgid "Vous avez recu des documents, vous pourrez les telecharger a ladresse suivante"
 msgstr ""
 
 #: lib/classes/mail.class.php:52
@@ -100,18 +95,12 @@ msgid "login:: Forgot your password"
 msgstr "نسيت كلمة السر؟"
 
 #: lib/classes/mail.class.php:69
-msgid ""
-"login:: Quelqu'un a demande a reinitialiser le mode passe correspondant au "
-"login suivant : "
-msgstr "أحدهم طلب إعادة تعيين كلمة المرور الخاصة بالدخول الآتي "
+msgid "login:: Quelqu'un a demande a reinitialiser le mode passe correspondant au login suivant :"
+msgstr "أحدهم طلب إعادة تعيين كلمة المرور الخاصة بالدخول الآتي"
 
 #: lib/classes/mail.class.php:70
-msgid ""
-"login:: Visitez le lien suivant et suivez les instructions pour continuer, "
-"sinon ignorez cet email et il ne se passera rien"
-msgstr ""
-"قم بزيارة الرابط التالي واتبع التعليمات للاستمرار ، و إلا يمكن تجاهل هذه "
-"الرسالة الإلكترونية ، ولن يحدث شيئ ."
+msgid "login:: Visitez le lien suivant et suivez les instructions pour continuer, sinon ignorez cet email et il ne se passera rien"
+msgstr "قم بزيارة الرابط التالي واتبع التعليمات للاستمرار ، و إلا يمكن تجاهل هذه الرسالة الإلكترونية ، ولن يحدث شيئ ."
 
 #: lib/classes/mail.class.php:81 lib/classes/mail.class.php:100
 #, php-format
@@ -119,40 +108,31 @@ msgid "login::register:email: Votre compte %s"
 msgstr ""
 
 #: lib/classes/mail.class.php:83
-msgid ""
-"login::register:email: Voici un compte rendu du traitement de vos demandes "
-"d'acces :"
+msgid "login::register:email: Voici un compte rendu du traitement de vos demandes d'acces :"
 msgstr "اليك ملخصا لمعالجة طلبات الحصول على حق الدخول"
 
 #: lib/classes/mail.class.php:86
-msgid ""
-"login::register:email: Vous avez ete accepte sur les collections suivantes : "
-msgstr "تم قبولك في المجموعات التالية : "
+msgid "login::register:email: Vous avez ete accepte sur les collections suivantes :"
+msgstr "تم قبولك في المجموعات التالية :"
 
 #: lib/classes/mail.class.php:89
-msgid ""
-"login::register:email: Vous avez ete refuse sur les collections suivantes : "
-msgstr "تم رفضك في المجموعات التالية : "
+msgid "login::register:email: Vous avez ete refuse sur les collections suivantes :"
+msgstr "تم رفضك في المجموعات التالية :"
 
 #: lib/classes/mail.class.php:102
 msgid "login::register:Votre inscription a ete prise en compte"
 msgstr "قد تم أخذ تسجيلك بالاعتبار"
 
 #: lib/classes/mail.class.php:105
-msgid ""
-"login::register: vous avez des a present acces aux collections suivantes : "
-msgstr "لديك إمكانية الوصول المباشر إلى المجموعات التالية "
+msgid "login::register: vous avez des a present acces aux collections suivantes :"
+msgstr "لديك إمكانية الوصول المباشر إلى المجموعات التالية"
 
 #: lib/classes/mail.class.php:109
-msgid ""
-"login::register: vos demandes concernat les collections suivantes sont "
-"sujettes a approbation d'un administrateur"
+msgid "login::register: vos demandes concernat les collections suivantes sont sujettes a approbation d'un administrateur"
 msgstr "طلباتك بخصوص المجموعات التالية تخضع للموافقة من مشرف"
 
 #: lib/classes/mail.class.php:110 lib/classes/mail.class.php:213
-msgid ""
-"login::register : vous serez avertis par email lorsque vos demandes seront "
-"traitees"
+msgid "login::register : vous serez avertis par email lorsque vos demandes seront traitees"
 msgstr "سيتم اشعارك عن طريق البريد الإلكتروني بعد معالجة طلباتك"
 
 #: lib/classes/mail.class.php:126 lib/classes/mail.class.php:195
@@ -161,15 +141,8 @@ msgid "login::register: sujet email : confirmation de votre adresse email"
 msgstr "تأكيد بريدك الإلكتروني"
 
 #: lib/classes/mail.class.php:128
-msgid ""
-"admin::compte-utilisateur: email changement de mot d'email Bonjour, nous "
-"avons bien recu votre demande de changement d'adresse e-mail. Pour la "
-"confirmer, veuillez suivre le lien qui suit. SI vous recevez ce mail sans "
-"l'avoir sollicite, merci de le detruire et de l'ignorer."
-msgstr ""
-"مرحبا ، لقد تلقينا طلبك لتغيير البريد الإلكتروني. للتأكيد ، يرجى اتباع "
-"الوصلة أدناه. إذا كنت تتلقى هذا البريد دون الحاجة لتطبيقها ، نشكركم على حذفه "
-"وتجاهله."
+msgid "admin::compte-utilisateur: email changement de mot d'email Bonjour, nous avons bien recu votre demande de changement d'adresse e-mail. Pour la confirmer, veuillez suivre le lien qui suit. SI vous recevez ce mail sans l'avoir sollicite, merci de le detruire et de l'ignorer."
+msgstr "مرحبا ، لقد تلقينا طلبك لتغيير البريد الإلكتروني. للتأكيد ، يرجى اتباع الوصلة أدناه. إذا كنت تتلقى هذا البريد دون الحاجة لتطبيقها ، نشكركم على حذفه وتجاهله."
 
 #: lib/classes/mail.class.php:139
 #, php-format
@@ -229,39 +202,24 @@ msgid "login::register: merci d'avoir confirme votre adresse email"
 msgstr "شكرا لتأكيد البريد الإلكتروني الخاص بك"
 
 #: lib/classes/mail.class.php:198
-msgid ""
-"login::register: vous pouvez maintenant vous connecter a l'adresse "
-"suivante : "
-msgstr "يمكنك الآن الاتصال باستخدام العنوان التالي "
+msgid "login::register: vous pouvez maintenant vous connecter a l'adresse suivante :"
+msgstr "يمكنك الآن الاتصال باستخدام العنوان التالي"
 
 #: lib/classes/mail.class.php:212
-msgid ""
-"login::register: vous devez attendre la confirmation d'un administrateur ; "
-"vos demandes sur les collections suivantes sont toujours en attente : "
-msgstr ""
-"عليك الانتظار تأكيد مشرف؛ طلباتك على المجموعات التالية لا تزال في الانتظار: "
+msgid "login::register: vous devez attendre la confirmation d'un administrateur ; vos demandes sur les collections suivantes sont toujours en attente :"
+msgstr "عليك الانتظار تأكيد مشرف؛ طلباتك على المجموعات التالية لا تزال في الانتظار:"
 
 #: lib/classes/mail.class.php:228
-msgid ""
-"login::register: email confirmation email Pour valider votre inscription a "
-"la base de donnees, merci de confirmer votre e-mail en suivant le lien ci-"
-"dessous."
-msgstr ""
-"للتحقق من صحة التسجيل في قاعدة البيانات ، رجاءا تأكيد البريد الإلكتروني "
-"الخاص بك عن طريق اتباع الرابط أدناه."
+msgid "login::register: email confirmation email Pour valider votre inscription a la base de donnees, merci de confirmer votre e-mail en suivant le lien ci-dessous."
+msgstr "للتحقق من صحة التسجيل في قاعدة البيانات ، رجاءا تأكيد البريد الإلكتروني الخاص بك عن طريق اتباع الرابط أدناه."
 
 #: lib/classes/mail.class.php:256
-msgid ""
-"si cet email contient des liens non cliquables copiez/collez ces liens dans "
-"votre navigateur."
+msgid "si cet email contient des liens non cliquables copiez/collez ces liens dans votre navigateur."
 msgstr ""
 
 #: lib/classes/mail.class.php:258
-msgid ""
-"phraseanet::signature automatique des notifications par mail, infos a l'url "
-"suivante"
-msgstr ""
-"PhraseanetVI رسالة آلية لإدارة الإرسال التلقائيا للبريد الإلكتروني, ارتبط ب"
+msgid "phraseanet::signature automatique des notifications par mail, infos a l'url suivante"
+msgstr "PhraseanetVI رسالة آلية لإدارة الإرسال التلقائيا للبريد الإلكتروني, ارتبط ب"
 
 #: lib/classes/setup.class.php:313
 msgid "mod_auth_token correctement configure"
@@ -272,21 +230,15 @@ msgid "mod_auth_token mal configure"
 msgstr ""
 
 #: lib/classes/setup.class.php:328
-msgid ""
-"Attention, seul le test de l'activation des mods est effectue, leur bon "
-"fonctionnement ne l'est pas "
+msgid "Attention, seul le test de l'activation des mods est effectue, leur bon fonctionnement ne l'est pas"
 msgstr ""
 
 #: lib/classes/setup.class.php:342
-msgid ""
-"Attention, veuillez verifier la configuration xsendfile, actuellement "
-"activee dans le setup"
+msgid "Attention, veuillez verifier la configuration xsendfile, actuellement activee dans le setup"
 msgstr ""
 
 #: lib/classes/setup.class.php:350 lib/classes/setup.class.php:358
-msgid ""
-"Attention, veuillez verifier la configuration h264_streaming, actuellement "
-"activee dans le setup"
+msgid "Attention, veuillez verifier la configuration h264_streaming, actuellement activee dans le setup"
 msgstr ""
 
 #: lib/classes/setup.class.php:548
@@ -308,16 +260,12 @@ msgid "Many opcode cache load is forbidden"
 msgstr ""
 
 #: lib/classes/setup.class.php:586
-msgid ""
-"No opcode cache were detected. Phraseanet strongly recommends the use of "
-"XCache or APC."
+msgid "No opcode cache were detected. Phraseanet strongly recommends the use of XCache or APC."
 msgstr ""
 
 #: lib/classes/setup.class.php:598
 #, php-format
-msgid ""
-"setup::Configuration mauvaise : pour la variable %1$s, configuration "
-"donnee : %2$s ; attendue : %3$s"
+msgid "setup::Configuration mauvaise : pour la variable %1$s, configuration donnee : %2$s ; attendue : %3$s"
 msgstr ""
 
 #: lib/classes/setup.class.php:648
@@ -362,8 +310,7 @@ msgid "Post upgrade"
 msgstr ""
 
 #: lib/classes/appbox.class.php:385 lib/classes/appbox.class.php:387
-msgid ""
-"Your install requires data migration, please execute the following command"
+msgid "Your install requires data migration, please execute the following command"
 msgstr ""
 
 #: lib/classes/appbox.class.php:391 lib/classes/appbox.class.php:392
@@ -375,9 +322,7 @@ msgid "Nom de base de donnee incorrect"
 msgstr ""
 
 #: lib/classes/appbox.class.php:506
-msgid ""
-"setup::la base de donnees existe deja et vous n'avez pas les droits ou vous "
-"n'avez pas les droits de la creer"
+msgid "setup::la base de donnees existe deja et vous n'avez pas les droits ou vous n'avez pas les droits de la creer"
 msgstr ""
 
 #: lib/classes/phrasea.class.php:228
@@ -481,32 +426,23 @@ msgid "export:: aucun document n'est disponible au telechargement"
 msgstr "لا توجد وثائق متوفرة للتنزيل"
 
 #: lib/classes/module/client.class.php:28
-msgid ""
-"invite:: Redirection vers la zone d'authentification, cliquez sur OK pour "
-"continuer ou annulez"
+msgid "invite:: Redirection vers la zone d'authentification, cliquez sur OK pour continuer ou annulez"
 msgstr "إعادة التوجيه إلى صفحة التوثيق، انقر فوق موافق للاستمرار أو إلغي"
 
 #: lib/classes/module/client.class.php:30
-msgid ""
-"phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, "
-"contactez le support technique"
+msgid "phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, contactez le support technique"
 msgstr "لقد حدث خطأ ما، وإذا استمرت المشكلة، اتصل بالدعم التقني"
 
 #: lib/classes/module/client.class.php:31
-msgid ""
-"phraseanet::erreur: La connection au serveur Phraseanet semble etre "
-"indisponible"
+msgid "phraseanet::erreur: La connection au serveur Phraseanet semble etre indisponible"
 msgstr "Phraseanet  الاتصال بموزع يبدو الآن غير متوفر من"
 
 #: lib/classes/module/client.class.php:32
-msgid ""
-"phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier"
+msgid "phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier"
 msgstr "تم إغلاق وصلة العمل الخاصة بك ، الرجاء اعادة الدخول"
 
 #: lib/classes/module/client.class.php:33
-msgid ""
-"paniers::Vous etes sur le point de supprimer ce panier. Cette action est "
-"irreversible. Souhaitez-vous continuer ?"
+msgid "paniers::Vous etes sur le point de supprimer ce panier. Cette action est irreversible. Souhaitez-vous continuer ?"
 msgstr "أنت على وشك حذف سلة. هذه العملية لا رجعة فيها ، هل تريد الإستمرار؟"
 
 #: lib/classes/module/client.class.php:34
@@ -864,9 +800,7 @@ msgid "Erreur la requête a été mal formée ou contenait des données valides.
 msgstr ""
 
 #: lib/classes/Bridge/Api/Youtube.class.php:546
-msgid ""
-"Erreur lors de l'authentification au service Youtube, Veuillez vous "
-"déconnecter, puis vous reconnecter."
+msgid "Erreur lors de l'authentification au service Youtube, Veuillez vous déconnecter, puis vous reconnecter."
 msgstr ""
 
 #: lib/classes/Bridge/Api/Youtube.class.php:549
@@ -882,15 +816,11 @@ msgid "Erreur YouTube a rencontré une erreur lors du traitement de la requête.
 msgstr ""
 
 #: lib/classes/Bridge/Api/Youtube.class.php:558
-msgid ""
-"Erreur vous avez essayé d'exécuter une requête non prise en charge par "
-"Youtube"
+msgid "Erreur vous avez essayé d'exécuter une requête non prise en charge par Youtube"
 msgstr ""
 
 #: lib/classes/Bridge/Api/Youtube.class.php:561
-msgid ""
-"Erreur le service Youtube n'est pas accessible pour le moment. Veuillez "
-"réessayer plus tard."
+msgid "Erreur le service Youtube n'est pas accessible pour le moment. Veuillez réessayer plus tard."
 msgstr ""
 
 #: lib/classes/Bridge/Api/Youtube.class.php:579
@@ -914,31 +844,23 @@ msgid "A value exceeds the maximum allowable length"
 msgstr ""
 
 #: lib/classes/Bridge/Api/Youtube.class.php:594
-msgid ""
-"The Youtube servers have received too many calls from the same caller in a "
-"short amount of time."
+msgid "The Youtube servers have received too many calls from the same caller in a short amount of time."
 msgstr ""
 
 #: lib/classes/Bridge/Api/Youtube.class.php:597
-msgid ""
-"You are attempting to exceed the storage limit on your account and must "
-"delete existing entries before inserting new entries"
+msgid "You are attempting to exceed the storage limit on your account and must delete existing entries before inserting new entries"
 msgstr ""
 
 #: lib/classes/Bridge/Api/Youtube.class.php:600
-msgid ""
-"The authentication token specified in the Authorization header is invalid"
+msgid "The authentication token specified in the Authorization header is invalid"
 msgstr ""
 
 #: lib/classes/Bridge/Api/Youtube.class.php:603
-msgid ""
-"The authentication token specified in the Authorization header has expired."
+msgid "The authentication token specified in the Authorization header has expired."
 msgstr ""
 
 #: lib/classes/Bridge/Api/Youtube.class.php:606
-msgid ""
-"Current operations cannot be executed because the site is temporarily in "
-"maintenance mode. Wait a few minutes and try your request again"
+msgid "Current operations cannot be executed because the site is temporarily in maintenance mode. Wait a few minutes and try your request again"
 msgstr ""
 
 #: lib/classes/Bridge/Api/Youtube.class.php:614
@@ -973,8 +895,7 @@ msgid "Le poids maximum d'un fichier est de %s"
 msgstr ""
 
 #: lib/classes/Bridge/Api/Flickr.class.php:141
-msgid ""
-"Ce produit utilise l'API Flickr mais n'est ni soutenu, ni certifie par Flickr"
+msgid "Ce produit utilise l'API Flickr mais n'est ni soutenu, ni certifie par Flickr"
 msgstr ""
 
 #: lib/classes/Bridge/Api/Flickr.class.php:605
@@ -1086,9 +1007,7 @@ msgid "task::cindexer:killing the cindexer"
 msgstr "سيتوقف Cindexer"
 
 #: lib/classes/task/period/writemeta.class.php:28
-msgid ""
-"task::writemeta:(re)ecriture des metadatas dans les documents (et subdefs "
-"concernees)"
+msgid "task::writemeta:(re)ecriture des metadatas dans les documents (et subdefs concernees)"
 msgstr "إعادة كتابة الميتاداتا من الوثيقة و من الجودة المنخفضة"
 
 #: lib/classes/task/period/writemeta.class.php:39
@@ -1136,11 +1055,8 @@ msgstr ""
 
 #: lib/classes/task/period/ftp.class.php:323
 #, php-format
-msgid ""
-"task::ftp:Etat d'envoi FTP vers le serveur \"%1$s\" avec le compte \"%2$s\" "
-"et pour destination le dossier : \"%3$s\""
-msgstr ""
-"Transfer status to %1$s server to %3$s recipient folder using %2$s account"
+msgid "task::ftp:Etat d'envoi FTP vers le serveur \"%1$s\" avec le compte \"%2$s\" et pour destination le dossier : \"%3$s\""
+msgstr "Transfer status to %1$s server to %3$s recipient folder using %2$s account"
 
 #: lib/classes/task/period/ftp.class.php:334
 #, php-format
@@ -1149,12 +1065,8 @@ msgstr ""
 
 #: lib/classes/task/period/ftp.class.php:472
 #, php-format
-msgid ""
-"task::ftp:File \"%1$s\" (record %2$s) de la base \"%3$s\" (Export du "
-"Document) : Transfert cancelled (le document n'existe plus)"
-msgstr ""
-"File \"%1$s\" (record %2$s) from database \"%3$s\" (Preview dowload) : "
-"Transfer cancelled (document deleted)"
+msgid "task::ftp:File \"%1$s\" (record %2$s) de la base \"%3$s\" (Export du Document) : Transfert cancelled (le document n'existe plus)"
+msgstr "File \"%1$s\" (record %2$s) from database \"%3$s\" (Preview dowload) : Transfer cancelled (document deleted)"
 
 #: lib/classes/task/period/ftp.class.php:614
 msgid "task::ftp:Tous les documents ont ete transferes avec succes"
@@ -1220,9 +1132,7 @@ msgid "task::archive:deplacer les fichiers non-archives dans _error"
 msgstr "_error نقل الوثائق غير المؤرشفة الى"
 
 #: lib/classes/task/period/archive.class.php:248
-msgid ""
-"task::archive:copier les fichiers '.phrasea.xml' et '.grouping.xml' dans "
-"_archived"
+msgid "task::archive:copier les fichiers '.phrasea.xml' et '.grouping.xml' dans _archived"
 msgstr "Copy '.phrasea.xml' and 'groupin.xml' files to _archive"
 
 #: lib/classes/task/period/archive.class.php:250
@@ -1266,8 +1176,8 @@ msgstr "قبل"
 
 #: lib/classes/task/period/outofdate.class.php:358
 #: lib/classes/task/period/outofdate.class.php:370
-msgid "admin::taskoutofdate: days "
-msgstr "ايام "
+msgid "admin::taskoutofdate: days"
+msgstr "ايام"
 
 #: lib/classes/task/period/outofdate.class.php:361
 msgid "task::outofdate:between"
@@ -1324,12 +1234,12 @@ msgid "caption YAML"
 msgstr ""
 
 #: lib/classes/record/preview.class.php:118
-msgid "preview:: regroupement "
-msgstr "ريبورتاج "
+msgid "preview:: regroupement"
+msgstr "ريبورتاج"
 
 #: lib/classes/record/preview.class.php:271
 #, php-format
-msgid "preview:: resultat numero %s "
+msgid "preview:: resultat numero %s"
 msgstr ""
 
 #: lib/classes/record/preview.class.php:530
@@ -1371,15 +1281,12 @@ msgstr "السؤال فارغ"
 
 #: lib/classes/searchEngine/adapter/phrasea/queryParser.class.php:1012
 #, php-format
-msgid ""
-"qparser::Formulation incorrecte, un nom de champs est attendu avant l "
-"operateur %s"
+msgid "qparser::Formulation incorrecte, un nom de champs est attendu avant l operateur %s"
 msgstr "%s السؤال صيغ بشكل غير صحيح اسم مجال منتظر قبل العامل"
 
 #: lib/classes/searchEngine/adapter/phrasea/queryParser.class.php:1020
 #, php-format
-msgid ""
-"qparser::Formulation incorrecte, une valeur est attendue apres l operateur %s"
+msgid "qparser::Formulation incorrecte, une valeur est attendue apres l operateur %s"
 msgstr "%s قيمة متوقعة بعد المعامل"
 
 #: lib/classes/searchEngine/adapter/phrasea/queryParser.class.php:1483
@@ -1408,8 +1315,8 @@ msgid "qparser::Formulation incorrecte, %s ne peut suivre un operateur"
 msgstr "%s  السؤال صيغ بشكل غير صحيح لايمكنك اتباع العامل ب"
 
 #: lib/classes/searchEngine/adapter/phrasea/queryParser.class.php:1733
-msgid "qparser:: Formulation incorrecte, necessite plus de caractere : "
-msgstr "صياغة غير صحيحة، تحتاج الى مزيد من الحروف "
+msgid "qparser:: Formulation incorrecte, necessite plus de caractere :"
+msgstr "صياغة غير صحيحة، تحتاج الى مزيد من الحروف"
 
 #: lib/classes/searchEngine/adapter/sphinx/engine.class.php:205
 #: lib/classes/searchEngine/adapter/sphinx/engine.class.php:333
@@ -1482,9 +1389,7 @@ msgstr ""
 #: lib/classes/eventsmanager/notify/validationreminder.class.php:218
 #: lib/classes/eventsmanager/notify/push.class.php:183
 #: lib/classes/eventsmanager/notify/validate.class.php:203
-msgid ""
-"push::atention: ce lien est unique et son contenu confidentiel, ne divulguez "
-"pas"
+msgid "push::atention: ce lien est unique et son contenu confidentiel, ne divulguez pas"
 msgstr "تحذير، هذا الرابط فريد من نوعه ومحتوياته سرية، لا تكشف عنه"
 
 #: lib/classes/eventsmanager/notify/uploadquarantine.class.php:147
@@ -1583,8 +1488,7 @@ msgid "AutoRegister information"
 msgstr ""
 
 #: lib/classes/eventsmanager/notify/autoregister.class.php:185
-msgid ""
-"Recevoir des notifications lorsqu'un utilisateur s'inscrit sur une collection"
+msgid "Recevoir des notifications lorsqu'un utilisateur s'inscrit sur une collection"
 msgstr ""
 
 #: lib/classes/eventsmanager/notify/autoregister.class.php:198
@@ -1649,9 +1553,7 @@ msgid "admin::register: l'utilisateur s'est inscrit sur les bases suivantes"
 msgstr ""
 
 #: lib/classes/eventsmanager/notify/autoregister.class.php:250
-msgid ""
-"admin::register: vous pourrez consulter son compte en ligne via l'interface "
-"d'administration"
+msgid "admin::register: vous pourrez consulter son compte en ligne via l'interface d'administration"
 msgstr ""
 
 #: lib/classes/eventsmanager/notify/order.class.php:148
@@ -1715,9 +1617,7 @@ msgid "Register approbation"
 msgstr ""
 
 #: lib/classes/eventsmanager/notify/register.class.php:185
-msgid ""
-"Recevoir des notifications lorsqu'un utilisateur demande une inscription "
-"necessitant mon approbation"
+msgid "Recevoir des notifications lorsqu'un utilisateur demande une inscription necessitant mon approbation"
 msgstr ""
 
 #: lib/classes/eventsmanager/notify/register.class.php:198
@@ -1730,15 +1630,11 @@ msgid "admin::register: un utilisateur a fait une demande d'inscription"
 msgstr "مستخدم طلب التسجيل"
 
 #: lib/classes/eventsmanager/notify/register.class.php:239
-msgid ""
-"admin::register: les demandes de l'utilisateur portent sur les bases "
-"suivantes"
+msgid "admin::register: les demandes de l'utilisateur portent sur les bases suivantes"
 msgstr "تسجيل المستخدم على قواعد البيانات التالية :"
 
 #: lib/classes/eventsmanager/notify/register.class.php:254
-msgid ""
-"admin::register: vous pourrez traiter ses demandes en ligne via l'interface "
-"d'administration"
+msgid "admin::register: vous pourrez traiter ses demandes en ligne via l'interface d'administration"
 msgstr "Phraseanet ادارة طلبات المستخدمين من مواجهة"
 
 #: lib/classes/eventsmanager/notify/push.class.php:124
@@ -1755,9 +1651,7 @@ msgid "push::mail:: Reception de documents"
 msgstr ""
 
 #: lib/classes/eventsmanager/notify/push.class.php:173
-msgid ""
-"push::Vous pouvez vous connecter a l'adresse suivante afin de retrouver "
-"votre panier, voir les previews, les descriptions, le telecharger, etc."
+msgid "push::Vous pouvez vous connecter a l'adresse suivante afin de retrouver votre panier, voir les previews, les descriptions, le telecharger, etc."
 msgstr "انقر فوق الرابط التالي للعرض و المقارنة وحمل الوثائق المتلقاة"
 
 #: lib/classes/eventsmanager/notify/orderdeliver.class.php:150
@@ -1780,8 +1674,7 @@ msgstr ""
 
 #: lib/classes/eventsmanager/notify/orderdeliver.class.php:205
 #, php-format
-msgid ""
-"%s vous a delivre votre commande, consultez la en ligne a l'adresse suivante"
+msgid "%s vous a delivre votre commande, consultez la en ligne a l'adresse suivante"
 msgstr ""
 
 #: lib/classes/eventsmanager/notify/bridgeuploadfail.class.php:140
@@ -1829,8 +1722,8 @@ msgid "%s a rendu son rapport, consulter le en ligne a l'adresse suivante"
 msgstr ""
 
 #: lib/classes/deprecated/inscript.api.php:194
-msgid "login::register: acces authorise sur la collection "
-msgstr "دخول مسموح الى الجموعة "
+msgid "login::register: acces authorise sur la collection"
+msgstr "دخول مسموح الى الجموعة"
 
 #: lib/classes/deprecated/inscript.api.php:196
 #: lib/classes/deprecated/inscript.api.php:206
@@ -1842,8 +1735,8 @@ msgid "login::register::CGU: lire les CGU"
 msgstr "اطلع على ش ا ع"
 
 #: lib/classes/deprecated/inscript.api.php:204
-msgid "login::register: acces refuse sur la collection "
-msgstr "دخول غير مسموح الى الجموعة "
+msgid "login::register: acces refuse sur la collection"
+msgstr "دخول غير مسموح الى الجموعة"
 
 #: lib/classes/deprecated/inscript.api.php:214
 msgid "login::register: en attente d'acces sur"
@@ -1854,8 +1747,8 @@ msgid "login::register: acces temporaire sur"
 msgstr "دخول مؤقت"
 
 #: lib/classes/deprecated/inscript.api.php:234
-msgid "login::register: acces temporaire termine sur "
-msgstr "انتهى الدخول المؤقت للمجموعة "
+msgid "login::register: acces temporaire termine sur"
+msgstr "انتهى الدخول المؤقت للمجموعة"
 
 #: lib/classes/deprecated/inscript.api.php:244
 msgid "login::register: acces supendu sur"
@@ -1865,9 +1758,7 @@ msgstr "حق الوصول معلق"
 #: lib/classes/deprecated/inscript.api.php:278
 #: lib/classes/deprecated/inscript.api.php:360
 #: lib/classes/deprecated/inscript.api.php:388
-msgid ""
-"login::register: L'acces aux bases ci-dessous implique l'acceptation des "
-"Conditions Generales d'Utilisation (CGU) suivantes"
+msgid "login::register: L'acces aux bases ci-dessous implique l'acceptation des Conditions Generales d'Utilisation (CGU) suivantes"
 msgstr "الوصول إلى قواعد البيانات أدناه يعني قبولا للشروط الاستخدام التالية"
 
 #: lib/classes/deprecated/inscript.api.php:269
@@ -1878,12 +1769,11 @@ msgid "login::register: Faire une demande d'acces"
 msgstr "طلب للحصول على حق الوصول"
 
 #: lib/classes/deprecated/inscript.api.php:310
-msgid "admin::compte-utilisateur actuellement, acces aux bases suivantes : "
-msgstr "الوصول إلى قواعد البيانات : "
+msgid "admin::compte-utilisateur actuellement, acces aux bases suivantes :"
+msgstr "الوصول إلى قواعد البيانات :"
 
 #: lib/classes/deprecated/inscript.api.php:326
-msgid ""
-"login::register: Vous avez acces a toutes les collections de toutes les bases"
+msgid "login::register: Vous avez acces a toutes les collections de toutes les bases"
 msgstr "لديك حق الوصول إلى جميع مجموعات من جميع قواعد البيانات"
 
 #: lib/classes/deprecated/inscript.api.php:328
@@ -1905,9 +1795,7 @@ msgid "cgus:: CGUs de la base %s"
 msgstr "%s  شروط الاستخدام العامة لقاعدة البيانات"
 
 #: lib/classes/databox/cgu.class.php:38
-msgid ""
-"cgus:: Pour continuer a utiliser lapplication, vous devez accepter les "
-"conditions precedentes"
+msgid "cgus:: Pour continuer a utiliser lapplication, vous devez accepter les conditions precedentes"
 msgstr "للاستمرار، يجب عليك أن تقبل الشروط العامة للاستخدام"
 
 #: lib/classes/databox/cgu.class.php:39
@@ -1997,9 +1885,7 @@ msgstr ""
 
 #: lib/conf.d/_GV_template.inc.php:180
 #, php-format
-msgid ""
-"reglages:: Utiliser l'api youtube, voir %s, <br/> mettre la callback a "
-"WEBSITE_URL/prod/bridge/callback/youtube"
+msgid "reglages:: Utiliser l'api youtube, voir %s, <br/> mettre la callback a WEBSITE_URL/prod/bridge/callback/youtube"
 msgstr ""
 
 #: lib/conf.d/_GV_template.inc.php:187
@@ -2038,8 +1924,7 @@ msgstr ""
 
 #: lib/conf.d/_GV_template.inc.php:232
 #, php-format
-msgid ""
-"reglages:: Utiliser l api dailymotion, voir %s, puis set la callback a %s"
+msgid "reglages:: Utiliser l api dailymotion, voir %s, puis set la callback a %s"
 msgstr ""
 
 #: lib/conf.d/_GV_template.inc.php:239
@@ -2055,9 +1940,7 @@ msgid "GV::section:: Client Phraseanet API"
 msgstr ""
 
 #: lib/conf.d/_GV_template.inc.php:255
-msgid ""
-"reglages:: Authoriser l'application smartphone *Phraseanet Navigator* à se "
-"connecter sur cette instance"
+msgid "reglages:: Authoriser l'application smartphone *Phraseanet Navigator* à se connecter sur cette instance"
 msgstr ""
 
 #: lib/conf.d/_GV_template.inc.php:261
@@ -2129,9 +2012,7 @@ msgid "reglages:: Point de montage pour X-Accel-Redirect (NginX Uniquement)"
 msgstr ""
 
 #: lib/conf.d/_GV_template.inc.php:365
-msgid ""
-"reglages:: activation du stream h264 via mod_token - attention, necessite "
-"les modules apache mod_h264_streaming et mod_auth_token"
+msgid "reglages:: activation du stream h264 via mod_token - attention, necessite les modules apache mod_h264_streaming et mod_auth_token"
 msgstr ""
 
 #: lib/conf.d/_GV_template.inc.php:372
@@ -2143,9 +2024,7 @@ msgid "reglages:: path complet du dossier protege via auth_token"
 msgstr ""
 
 #: lib/conf.d/_GV_template.inc.php:385
-msgid ""
-"reglages:: passphrase du mod_auth_token (definie dans le fichier de "
-"configuration apache)"
+msgid "reglages:: passphrase du mod_auth_token (definie dans le fichier de configuration apache)"
 msgstr ""
 
 #: lib/conf.d/_GV_template.inc.php:391
@@ -2273,8 +2152,7 @@ msgid "GV::section:: Report"
 msgstr ""
 
 #: lib/conf.d/_GV_template.inc.php:591
-msgid ""
-"reglages:: report anonyme (masque les infos concernant les utilisateurs)"
+msgid "reglages:: report anonyme (masque les infos concernant les utilisateurs)"
 msgstr ""
 
 #: lib/conf.d/_GV_template.inc.php:597
@@ -2290,7 +2168,7 @@ msgid "reglages:: Activation du Mode MultiDOC"
 msgstr "تفعيل نظام الريبورتجات"
 
 #: lib/conf.d/_GV_template.inc.php:613
-msgid "reglages:: Substitution de HD d'un record "
+msgid "reglages:: Substitution de HD d'un record"
 msgstr ""
 
 #: lib/conf.d/_GV_template.inc.php:618
@@ -2338,14 +2216,11 @@ msgid "GV::section:: Exports FTP"
 msgstr ""
 
 #: lib/conf.d/_GV_template.inc.php:681
-msgid ""
-"reglages:: active la possibilite d'exports FTP ou non (onglet dans "
-"multiexports)"
+msgid "reglages:: active la possibilite d'exports FTP ou non (onglet dans multiexports)"
 msgstr "FTP  اتاحة امكانية تصدير أو عدمها ب"
 
 #: lib/conf.d/_GV_template.inc.php:687
-msgid ""
-"reglages:: Donne ou non export FTP aux utilisateurs ou e l'admin uniquement"
+msgid "reglages:: Donne ou non export FTP aux utilisateurs ou e l'admin uniquement"
 msgstr "تمكين المستخدمين  من الإستصدار اذا لا = الادارة فقط"
 
 #: lib/conf.d/_GV_template.inc.php:692
@@ -2353,9 +2228,7 @@ msgid "GV::section:: Configuration du client"
 msgstr ""
 
 #: lib/conf.d/_GV_template.inc.php:697
-msgid ""
-"Maximum megabytes allowed in download (if request is bigger, then mail is "
-"still available)"
+msgid "Maximum megabytes allowed in download (if request is bigger, then mail is still available)"
 msgstr ""
 
 #: lib/conf.d/_GV_template.inc.php:703
@@ -2395,14 +2268,11 @@ msgid "reglages:: Voir taille HD total des doc d'un chutiers"
 msgstr "إظهار الحجم الكلي للسلة أي مجموع أحجام الوثائق في السلة"
 
 #: lib/conf.d/_GV_template.inc.php:759
-msgid ""
-"reglages:: Afficher automatiquement l'onglet des propositions s'il y'en a"
+msgid "reglages:: Afficher automatiquement l'onglet des propositions s'il y'en a"
 msgstr "عرض تبويب المقترحات تلقائيا من القاموس إن وجد"
 
 #: lib/conf.d/_GV_template.inc.php:765
-msgid ""
-"reglages:: Il est necessaire d'etre connecte pour pouvoir telecharger en "
-"compte invite"
+msgid "reglages:: Il est necessaire d'etre connecte pour pouvoir telecharger en compte invite"
 msgstr "توجيه لامستخدمين الضيوف الذين يرغبون في التنزيل الى المصادقة"
 
 #: lib/conf.d/_GV_template.inc.php:770
@@ -2410,36 +2280,24 @@ msgid "GV::section:: Parametrage de l'inscription"
 msgstr ""
 
 #: lib/conf.d/_GV_template.inc.php:775
-msgid ""
-"reglages:: A true, cette option descative le choix de selection des bases "
-"sur lesquelles on s'inscrit, et l'inscription se fait sur toutes les bases "
-"ou jai le droit de m'inscrire"
-msgstr ""
-"إخفاء قائمة المجموعات للمستخدم في استمارة التسجيل الذي سيتم على كافة "
-"المجموعات المؤهلة"
+msgid "reglages:: A true, cette option descative le choix de selection des bases sur lesquelles on s'inscrit, et l'inscription se fait sur toutes les bases ou jai le droit de m'inscrire"
+msgstr "إخفاء قائمة المجموعات للمستخدم في استمارة التسجيل الذي سيتم على كافة المجموعات المؤهلة"
 
 #: lib/conf.d/_GV_template.inc.php:781
 msgid "reglages:: Activation de l'autoinscription"
-msgstr ""
-"تمكين القبول الذاتي للمستخدمين الذين لديهم تصديق على جميع مراحل التسجيل"
+msgstr "تمكين القبول الذاتي للمستخدمين الذين لديهم تصديق على جميع مراحل التسجيل"
 
 #: lib/conf.d/_GV_template.inc.php:786
 msgid "GV::section:: Configuration du push"
 msgstr ""
 
 #: lib/conf.d/_GV_template.inc.php:791
-msgid ""
-"reglages:: Nombre de jour avant la fin de la validation pour envoie de mail "
-"de rappel"
+msgid "reglages:: Nombre de jour avant la fin de la validation pour envoie de mail de rappel"
 msgstr ""
 
 #: lib/conf.d/_GV_template.inc.php:797
-msgid ""
-"reglages:: dure de validite des liens genere pour les  validations,  si 0 => "
-"validite permanente"
-msgstr ""
-"مدة الصلاحية بالأيام للوصلات المولدة الخاصة بعملية التحقق من الصحة ، 0 لفترة "
-"غير محدودة"
+msgid "reglages:: dure de validite des liens genere pour les  validations,  si 0 => validite permanente"
+msgstr "مدة الصلاحية بالأيام للوصلات المولدة الخاصة بعملية التحقق من الصحة ، 0 لفترة غير محدودة"
 
 #: lib/conf.d/_GV_template.inc.php:802
 msgid "GV::section:: Indexation par les robots"
@@ -2450,8 +2308,7 @@ msgid "reglages :: Titre de l'installation"
 msgstr ""
 
 #: lib/conf.d/_GV_template.inc.php:813
-msgid ""
-"reglages:: Mots clefs pour l'indexation des robots de moteurs de recherche"
+msgid "reglages:: Mots clefs pour l'indexation des robots de moteurs de recherche"
 msgstr ""
 
 #: lib/conf.d/_GV_template.inc.php:819
@@ -2491,7 +2348,7 @@ msgid "Erreur lors de l'enregistrement des donnees"
 msgstr ""
 
 #: lib/Alchemy/Phrasea/Application/Lightbox.php:432
-msgid "Erreur lors de la mise a jour des donnes "
+msgid "Erreur lors de la mise a jour des donnes"
 msgstr ""
 
 #: lib/Alchemy/Phrasea/Application/Lightbox.php:465
@@ -2733,7 +2590,7 @@ msgid "Entry removed from list"
 msgstr ""
 
 #: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:361
-msgid "Unable to remove entry from list "
+msgid "Unable to remove entry from list"
 msgstr ""
 
 #: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:416
@@ -2786,9 +2643,7 @@ msgid "The destination record provided is not allowed"
 msgstr ""
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:35
-msgid ""
-"prod::recherche: Attention : la liste des bases selectionnees pour la "
-"recherche a ete changee."
+msgid "prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee."
 msgstr "تحذير: قائمة قواعد البيانات التي تم اختيارها للبحث تم تغييرها"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:41
@@ -2800,9 +2655,7 @@ msgid "Supprimer egalement les documents rattaches a ces regroupements"
 msgstr "أيضا حذف الوثائق المرتبطة بهذه الريبورتاجات"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:43
-msgid ""
-"reponses:: Ces enregistrements vont etre definitivement supprimes et ne "
-"pourront etre recuperes. Etes vous sur ?"
+msgid "reponses:: Ces enregistrements vont etre definitivement supprimes et ne pourront etre recuperes. Etes vous sur ?"
 msgstr "هذه التسجلات ستحذف نهائيا و لا يمكن استردادها.تأكيد؟"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:45
@@ -2810,9 +2663,7 @@ msgid "boutton::supprimer"
 msgstr "حذف"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:46
-msgid ""
-"prod::editing valeurs heterogenes, choisir 'remplacer', 'ajouter' ou "
-"'annuler'"
+msgid "prod::editing valeurs heterogenes, choisir 'remplacer', 'ajouter' ou 'annuler'"
 msgstr "قيم غير متجانسة ،اختيار استبدال ، إضافة أو إلغاء"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:47
@@ -2864,9 +2715,7 @@ msgid "panier::Supression d'un element d'un reportage"
 msgstr "حذف عنصر من الريبورتاج"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:62
-msgid ""
-"panier::Attention, vous etes sur le point de supprimer un element du "
-"reportage. Merci de confirmer votre action."
+msgid "panier::Attention, vous etes sur le point de supprimer un element du reportage. Merci de confirmer votre action."
 msgstr "حذار، أنت على وشك حذف عنصر من الريبورتاج. شكرا لك لتأكيد ذلك."
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:63
@@ -2879,28 +2728,19 @@ msgstr "إعادة تسمية"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:65
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:74
-msgid ""
-"panier:: Un reportage ne peux recevoir que des elements provenants de la "
-"base ou il est enregistre"
-msgstr ""
-"الريبورتاج لا يمكن أن يحتوي على وثيقة من قاعدة بيانات مختلفة عن تلك "
-"المستخدمة عند إنشائه"
+msgid "panier:: Un reportage ne peux recevoir que des elements provenants de la base ou il est enregistre"
+msgstr "الريبورتاج لا يمكن أن يحتوي على وثيقة من قاعدة بيانات مختلفة عن تلك المستخدمة عند إنشائه"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:66
 msgid "phraseanet:: Erreur"
 msgstr "خطأ"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:67
-msgid ""
-"cgus :: Attention, si vous refuser les CGUs de cette base, vous n'y aures "
-"plus acces"
-msgstr ""
-"تحذير: رفض شروط الاستخدام العامة لن يؤهلك للدخول الى قاعدة البيانات هذه"
+msgid "cgus :: Attention, si vous refuser les CGUs de cette base, vous n'y aures plus acces"
+msgstr "تحذير: رفض شروط الاستخدام العامة لن يؤهلك للدخول الى قاعدة البيانات هذه"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:68
-msgid ""
-"cgus :: Vous devez vous reauthentifier pour que vos parametres soient pris "
-"en compte."
+msgid "cgus :: Vous devez vous reauthentifier pour que vos parametres soient pris en compte."
 msgstr "سيسري مفعول التغييرات عند الدخول القادم"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:69
@@ -2932,9 +2772,7 @@ msgid "Vous ne pouvez pas selectionner plus de 800 enregistrements"
 msgstr ""
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:77
-msgid ""
-"Erreur : soit les parametres sont incorrects, soit le serveur distant ne "
-"repond pas"
+msgid "Erreur : soit les parametres sont incorrects, soit le serveur distant ne repond pas"
 msgstr ""
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:78
@@ -2942,8 +2780,7 @@ msgid "Les parametres sont corrects, le serveur distant est operationnel"
 msgstr ""
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:79
-msgid ""
-"Certaines publications n'ont pu etre effectuees, verifiez vos parametres"
+msgid "Certaines publications n'ont pu etre effectuees, verifiez vos parametres"
 msgstr ""
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:80
@@ -2951,15 +2788,11 @@ msgid "Aucune publication effectuee, verifiez vos parametres"
 msgstr ""
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:81
-msgid ""
-"Attention, en supprimant ce preregalge, vous ne pourrez plus modifier ou "
-"supprimer de publications prealablement effectues avec celui-ci"
+msgid "Attention, en supprimant ce preregalge, vous ne pourrez plus modifier ou supprimer de publications prealablement effectues avec celui-ci"
 msgstr ""
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:82
-msgid ""
-"edit::certains documents possedent des champs requis non remplis. Merci de "
-"les remplir pour valider votre editing"
+msgid "edit::certains documents possedent des champs requis non remplis. Merci de les remplir pour valider votre editing"
 msgstr ""
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:83
@@ -3062,9 +2895,7 @@ msgstr ""
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:277
 #: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:299
-msgid ""
-"publication::Voici votre fil RSS personnel. Il vous permettra d'etre tenu au "
-"courrant des publications."
+msgid "publication::Voici votre fil RSS personnel. Il vous permettra d'etre tenu au courrant des publications."
 msgstr "سيمكنك اشتراكك  من الاطلاع على المنشورات RSS"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:278
@@ -3381,9 +3212,7 @@ msgid "Applications"
 msgstr ""
 
 #: tmp/cache_twig/61/52/69b425521d9568eb05b8059a5ec7.php:153
-msgid ""
-"Naviguez et gerez les applications que vous souhaitez autoriser a acceder a "
-"vos informations Phraseanet"
+msgid "Naviguez et gerez les applications que vous souhaitez autoriser a acceder a vos informations Phraseanet"
 msgstr ""
 
 #: tmp/cache_twig/61/52/69b425521d9568eb05b8059a5ec7.php:158
@@ -3391,9 +3220,7 @@ msgid "Developpeurs"
 msgstr ""
 
 #: tmp/cache_twig/61/52/69b425521d9568eb05b8059a5ec7.php:163
-msgid ""
-"Les developpeurs peuvent editer l'enregistrement de leurs application grace "
-"a l'onglet \"developpeurs\" ci-dessus"
+msgid "Les developpeurs peuvent editer l'enregistrement de leurs application grace a l'onglet \"developpeurs\" ci-dessus"
 msgstr ""
 
 #: tmp/cache_twig/43/43/5868007f54a88522d77ea42b0de4.php:55
@@ -3620,14 +3447,11 @@ msgid "Nombre total d'element commandes"
 msgstr ""
 
 #: tmp/cache_twig/21/63/3dac0827cc923eb0c612d95f4bf0.php:94
-msgid ""
-"Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  "
-"elements correspondants aux collections sur lesquelles vous gerez les "
-"commandes"
+msgid "Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes"
 msgstr ""
 
 #: tmp/cache_twig/21/63/3dac0827cc923eb0c612d95f4bf0.php:101
-msgid "Selectionnez des documents et "
+msgid "Selectionnez des documents et"
 msgstr ""
 
 #: tmp/cache_twig/21/63/3dac0827cc923eb0c612d95f4bf0.php:148
@@ -3781,15 +3605,11 @@ msgid "charger d'avantage de publications"
 msgstr ""
 
 #: tmp/cache_twig/41/6a/6099f07e28bc0006a33553536de7.php:25
-msgid ""
-"Le connecteur API requis n'est pas configure correctement, veuillez "
-"contacter un administrateur"
+msgid "Le connecteur API requis n'est pas configure correctement, veuillez contacter un administrateur"
 msgstr ""
 
 #: tmp/cache_twig/d8/5d/65be3968b3945374dfe2e29596ba.php:29
-msgid ""
-"%name% est momentanement indisponible a cause d'un trop grand nombre de "
-"requetes"
+msgid "%name% est momentanement indisponible a cause d'un trop grand nombre de requetes"
 msgstr ""
 
 #: tmp/cache_twig/d8/5d/65be3968b3945374dfe2e29596ba.php:34
@@ -4072,9 +3892,7 @@ msgid "Attention, certain documents ont des sous-definitions substituees"
 msgstr ""
 
 #: tmp/cache_twig/29/77/5103d559257026a665e007f5d8a1.php:236
-msgid ""
-"Forcer la reconstruction sur les enregistrements ayant des thumbnails "
-"substituees"
+msgid "Forcer la reconstruction sur les enregistrements ayant des thumbnails substituees"
 msgstr ""
 
 #: tmp/cache_twig/29/77/5103d559257026a665e007f5d8a1.php:252
@@ -4349,11 +4167,7 @@ msgid "prive"
 msgstr ""
 
 #: tmp/cache_twig/b2/57/c3d1a00d9a25b139040d77772249.php:317
-msgid ""
-"En cliquant sur \"ajouter\" vous certifiez que vous possedez les droits pour "
-"le contenu ou que vous etes autorisé par le proprietaire à rendre le contenu "
-"accessible au public sur YouTube, et qu'il est autrement conforme aux "
-"Conditions d'utilisation de YouTubesitue a %lien_term_youtube%"
+msgid "En cliquant sur \"ajouter\" vous certifiez que vous possedez les droits pour le contenu ou que vous etes autorisé par le proprietaire à rendre le contenu accessible au public sur YouTube, et qu'il est autrement conforme aux Conditions d'utilisation de YouTubesitue a %lien_term_youtube%"
 msgstr ""
 
 #: tmp/cache_twig/b2/57/c3d1a00d9a25b139040d77772249.php:337
@@ -4385,9 +4199,7 @@ msgid "Autorisation d'acc&egrave;s"
 msgstr ""
 
 #: tmp/cache_twig/65/dd/a8425ed4a7445e25e7eb99cb7d4b.php:161
-msgid ""
-"Autorisez-vous l'application \"<span>%application_name%</span>\" &agrave; "
-"acc&eacute;der &agrave; votre contenu sur %home_title% ?"
+msgid "Autorisez-vous l'application \"<span>%application_name%</span>\" &agrave; acc&eacute;der &agrave; votre contenu sur %home_title% ?"
 msgstr ""
 
 #: tmp/cache_twig/65/dd/a8425ed4a7445e25e7eb99cb7d4b.php:194
@@ -4447,11 +4259,8 @@ msgid "phraseanet:: a propos"
 msgstr ""
 
 #: tmp/cache_twig/38/25/731f2546dc0b22139b1767f43ffe.php:27
-msgid ""
-"prod::Les enregistrements ne provienent pas tous de la meme base et ne "
-"peuvent donc etre traites ensemble"
-msgstr ""
-"التسجيلات لا تأتي جميعها من نفس قاعدة البيانات وبالتالي لا يمكن معالجتهما معا"
+msgid "prod::Les enregistrements ne provienent pas tous de la meme base et ne peuvent donc etre traites ensemble"
+msgstr "التسجيلات لا تأتي جميعها من نفس قاعدة البيانات وبالتالي لا يمكن معالجتهما معا"
 
 #: tmp/cache_twig/38/25/731f2546dc0b22139b1767f43ffe.php:39
 msgid "prod::Vous n'avez le droit d'effectuer l'operation sur aucun document"
@@ -4472,9 +4281,7 @@ msgid "prod::collection %countable% documents a deplacer"
 msgstr ""
 
 #: tmp/cache_twig/38/25/731f2546dc0b22139b1767f43ffe.php:131
-msgid ""
-"prod::collection deplacer egalement les documents rattaches a ce(s) "
-"regroupement(s)"
+msgid "prod::collection deplacer egalement les documents rattaches a ce(s) regroupement(s)"
 msgstr "تريد أيضا نقل الوثائق ذات الصلة بهذه ريبورتاجات؟"
 
 #: tmp/cache_twig/e8/28/df3f69a439b2a004e327d7470d36.php:27
@@ -4681,9 +4488,7 @@ msgid "Code d'acc&egrave;s"
 msgstr ""
 
 #: tmp/cache_twig/30/1d/ff639028a8b72d29a009d0d1ac78.php:133
-msgid ""
-"Copiez le code ci-dessous, retournez dans votre application et collez-le "
-"&agrave l'endroit requis :"
+msgid "Copiez le code ci-dessous, retournez dans votre application et collez-le &agrave l'endroit requis :"
 msgstr ""
 
 #: tmp/cache_twig/5b/98/34f1cf8e436d1291d41bc1cc76c4.php:36
@@ -4764,14 +4569,11 @@ msgid "and %n% more peoples"
 msgstr ""
 
 #: tmp/cache_twig/3b/ea/0cbcbfc9b90b4f2bd5c3b938e1f4.php:299
-msgid ""
-"Please consider send this push to the following users : %recommendation%"
+msgid "Please consider send this push to the following users : %recommendation%"
 msgstr ""
 
 #: tmp/cache_twig/3b/ea/0cbcbfc9b90b4f2bd5c3b938e1f4.php:305
-msgid ""
-"Please consider send this validation to the following users : %recommendation"
-"%"
+msgid "Please consider send this validation to the following users : %recommendation%"
 msgstr ""
 
 #: tmp/cache_twig/3b/ea/0cbcbfc9b90b4f2bd5c3b938e1f4.php:317
@@ -4784,20 +4586,11 @@ msgstr ""
 
 #: tmp/cache_twig/3b/ea/0cbcbfc9b90b4f2bd5c3b938e1f4.php:368
 msgid "Push::unpush permet d'envoyer un lot d'image a des destinataires"
-msgstr ""
-"دفع يمكن من إرسال مجموعة من الصور للمتلقي \n"
-"المستفيدون سيتلقون بريدا مع وجود صلة تطلق صندوق عرض الصور والوثائق وطلب "
-"التعليق و/أو التحميل.\n"
-"المصادقة متوفرة على شكل سلة للمستخدمين المسجلين"
+msgstr "دفع يمكن من إرسال مجموعة من الصور للمتلقي \nالمستفيدون سيتلقون بريدا مع وجود صلة تطلق صندوق عرض الصور والوثائق وطلب التعليق و/أو التحميل.\nالمصادقة متوفرة على شكل سلة للمستخدمين المسجلين"
 
 #: tmp/cache_twig/3b/ea/0cbcbfc9b90b4f2bd5c3b938e1f4.php:374
-msgid ""
-"Push::une validation est une demande d'appreciation a d'autres personnes"
-msgstr ""
-"انقر لإرسال طلب للحصول على تعليقات على مجموعة مختارة من الوثائق للمستفيدين.\n"
-"المستفيدون سيتلقون بريدا مع وجود صلة تطلق صندوق عرض الصور والوثائق وطلب "
-"التعليق و/أو التحميل.\n"
-"المصادقة متوفرة على شكل سلة للمستخدمين المسجلين"
+msgid "Push::une validation est une demande d'appreciation a d'autres personnes"
+msgstr "انقر لإرسال طلب للحصول على تعليقات على مجموعة مختارة من الوثائق للمستفيدين.\nالمستفيدون سيتلقون بريدا مع وجود صلة تطلق صندوق عرض الصور والوثائق وطلب التعليق و/أو التحميل.\nالمصادقة متوفرة على شكل سلة للمستخدمين المسجلين"
 
 #: tmp/cache_twig/3b/ea/0cbcbfc9b90b4f2bd5c3b938e1f4.php:395
 msgid "Select all"
@@ -4836,8 +4629,8 @@ msgid "admin::tasks: lancer au demarrage du scheduler"
 msgstr "تشغيل عند بدء المجدول"
 
 #: tmp/cache_twig/b0/54/a3dcb096f4618a090c26f2a25391.php:502
-msgid "admin::tasks: Nombre de crashes : "
-msgstr "فشل "
+msgid "admin::tasks: Nombre de crashes :"
+msgstr "فشل"
 
 #: tmp/cache_twig/b0/54/a3dcb096f4618a090c26f2a25391.php:511
 msgid "admin::tasks: reinitialiser el compteur de crashes"
@@ -4860,9 +4653,7 @@ msgid "Vous etes authentifie avec succes"
 msgstr ""
 
 #: tmp/cache_twig/7e/21/ad35217e13f9737ceb1b85171b35.php:70
-msgid ""
-"Si cette fenetre ne se ferme pas automatiquement, fermez la, et "
-"raffraichissez votre compte"
+msgid "Si cette fenetre ne se ferme pas automatiquement, fermez la, et raffraichissez votre compte"
 msgstr ""
 
 #: tmp/cache_twig/3e/1d/6c004c8ac5533faaf36e1bfeb3aa.php:52
@@ -5085,8 +4876,7 @@ msgstr "%s قبول الكلمات المرشحة"
 
 #: tmp/cache_twig/39/6e/66e5402b3208cbca54915421c4aa.php:512
 #, php-format
-msgid ""
-"prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat \"%s\""
+msgid "prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat \"%s\""
 msgstr "%s قبول الكلمة المرشحة"
 
 #: tmp/cache_twig/39/6e/66e5402b3208cbca54915421c4aa.php:531
@@ -5146,9 +4936,7 @@ msgid "prod::thesaurusTab:cmenu:Remplacer par..."
 msgstr "عوض ب"
 
 #: tmp/cache_twig/93/d3/bb2281a459839068e508cafcf1aa.php:24
-msgid ""
-"Vous etes actuellement deconnecte de votre compte, vous devez vous connecter "
-"pour continuer"
+msgid "Vous etes actuellement deconnecte de votre compte, vous devez vous connecter pour continuer"
 msgstr ""
 
 #: tmp/cache_twig/93/d3/bb2281a459839068e508cafcf1aa.php:76
@@ -5177,24 +4965,19 @@ msgid "Before any upgrade, you have to fix your database."
 msgstr ""
 
 #: tmp/cache_twig/f8/8f/9bab0a35f7074ed332f8e7b607ab.php:133
-msgid ""
-"Some users have the same email address. You can fix this problem with this "
-"script :"
+msgid "Some users have the same email address. You can fix this problem with this script :"
 msgstr ""
 
 #: tmp/cache_twig/f8/8f/9bab0a35f7074ed332f8e7b607ab.php:158
-msgid ""
-"Une mise a jour de l'application est necessaire, il est vivement recommande "
-"de l'effectuer en ligne de commande via la commande :"
+msgid "Une mise a jour de l'application est necessaire, il est vivement recommande de l'effectuer en ligne de commande via la commande :"
 msgstr ""
 
 #: tmp/cache_twig/f8/8f/9bab0a35f7074ed332f8e7b607ab.php:180
-msgid ""
-"Si toutefois vous n'aviez pas acces à la console, suivez le lien suivant"
+msgid "Si toutefois vous n'aviez pas acces à la console, suivez le lien suivant"
 msgstr ""
 
 #: tmp/cache_twig/f8/8f/9bab0a35f7074ed332f8e7b607ab.php:200
-msgid "Progression de la mise a jour : "
+msgid "Progression de la mise a jour :"
 msgstr ""
 
 #: tmp/cache_twig/e2/de/12f5f10a34b853962c2522b84a9c.php:55
@@ -5249,21 +5032,15 @@ msgid "Votre recherche ne retourne aucun resultat"
 msgstr ""
 
 #: tmp/cache_twig/b3/d2/b5f191eba19f40b44bd6afc2aa60.php:84
-msgid ""
-"La recherche s'effectue grâce à la boîte de dialogue qui se trouve en haut à "
-"gauche de l'écran."
+msgid "La recherche s'effectue grâce à la boîte de dialogue qui se trouve en haut à gauche de l'écran."
 msgstr ""
 
 #: tmp/cache_twig/b3/d2/b5f191eba19f40b44bd6afc2aa60.php:87
-msgid ""
-"Sachez que vous pouvez utiliser les opérateurs ou caractères spéciaux "
-"suivants :"
+msgid "Sachez que vous pouvez utiliser les opérateurs ou caractères spéciaux suivants :"
 msgstr ""
 
 #: tmp/cache_twig/b3/d2/b5f191eba19f40b44bd6afc2aa60.php:91
-msgid ""
-"* , ? , ET , OU , SAUF , DANS , DERNIERS , TOUT (ou AND , OR , EXCEPT , "
-"LAST , ALL)"
+msgid "* , ? , ET , OU , SAUF , DANS , DERNIERS , TOUT (ou AND , OR , EXCEPT , LAST , ALL)"
 msgstr ""
 
 #: tmp/cache_twig/b3/d2/b5f191eba19f40b44bd6afc2aa60.php:96
@@ -5303,9 +5080,7 @@ msgid "LAST 20"
 msgstr ""
 
 #: tmp/cache_twig/b3/d2/b5f191eba19f40b44bd6afc2aa60.php:144
-msgid ""
-"retourne les 20 derniers enregistrements archives dans les collections "
-"selectionnees"
+msgid "retourne les 20 derniers enregistrements archives dans les collections selectionnees"
 msgstr ""
 
 #: tmp/cache_twig/b3/d2/b5f191eba19f40b44bd6afc2aa60.php:151
@@ -5313,9 +5088,7 @@ msgid "Recherche multicritères"
 msgstr ""
 
 #: tmp/cache_twig/b3/d2/b5f191eba19f40b44bd6afc2aa60.php:155
-msgid ""
-"Vous pouvez affiner votre recherche avec les opérateurs : ET, OU, SAUF ou "
-"DANS"
+msgid "Vous pouvez affiner votre recherche avec les opérateurs : ET, OU, SAUF ou DANS"
 msgstr ""
 
 #: tmp/cache_twig/b3/d2/b5f191eba19f40b44bd6afc2aa60.php:161
@@ -5351,15 +5124,11 @@ msgid "thalassa DANS titre"
 msgstr ""
 
 #: tmp/cache_twig/b3/d2/b5f191eba19f40b44bd6afc2aa60.php:197
-msgid ""
-"retourne les documents où le terme est au moins présent dans le titre, en "
-"évitant par exemple celles où le terme est uniquement cité dans la légende."
+msgid "retourne les documents où le terme est au moins présent dans le titre, en évitant par exemple celles où le terme est uniquement cité dans la légende."
 msgstr ""
 
 #: tmp/cache_twig/b3/d2/b5f191eba19f40b44bd6afc2aa60.php:209
-msgid ""
-"pour chercher une phrase contenant un des mots-clé ci-dessus, utilisez les "
-"guillemets :"
+msgid "pour chercher une phrase contenant un des mots-clé ci-dessus, utilisez les guillemets :"
 msgstr ""
 
 #: tmp/cache_twig/b3/d2/b5f191eba19f40b44bd6afc2aa60.php:213
@@ -5549,7 +5318,7 @@ msgstr ""
 
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:764
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:798
-msgid "Trier par "
+msgid "Trier par"
 msgstr ""
 
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:769
@@ -5628,72 +5397,71 @@ msgid "raccourci :: a propos des raccourcis claviers"
 msgstr "حول اختصارات لوحة المفاتيح"
 
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:1706
-msgid "Raccourcis claviers en cours de recherche : "
-msgstr "اختصارات النافذة الرئيسية "
+msgid "Raccourcis claviers en cours de recherche :"
+msgstr "اختصارات النافذة الرئيسية"
 
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:1711
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:1747
-msgid "Raccourcis:: ctrl-a : tout selectionner "
-msgstr "ctrl-a اختيار الكل "
+msgid "Raccourcis:: ctrl-a : tout selectionner"
+msgstr "ctrl-a اختيار الكل"
 
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:1715
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:1751
-msgid "Raccourcis:: ctrl-p : imprimer la selection "
-msgstr "ctrl-p طباعة المختارات "
+msgid "Raccourcis:: ctrl-p : imprimer la selection"
+msgstr "ctrl-p طباعة المختارات"
 
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:1719
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:1755
-msgid "Raccourcis:: ctrl-e : editer la selection "
-msgstr "ctrl-e تحرير المختارات "
+msgid "Raccourcis:: ctrl-e : editer la selection"
+msgstr "ctrl-e تحرير المختارات"
 
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:1723
-msgid "Raccourcis::fleche gauche : page precedente "
-msgstr "سهم لليسار : الصفحة السابقة "
+msgid "Raccourcis::fleche gauche : page precedente"
+msgstr "سهم لليسار : الصفحة السابقة"
 
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:1727
-msgid "Raccourcis::fleche droite : page suivante "
-msgstr "السهم الأيمن : الصفحة التالية "
+msgid "Raccourcis::fleche droite : page suivante"
+msgstr "السهم الأيمن : الصفحة التالية"
 
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:1731
-msgid "Raccourcis::fleche haut : scroll vertical "
-msgstr "السهم الأعلى : التمرير إلى أعلى "
+msgid "Raccourcis::fleche haut : scroll vertical"
+msgstr "السهم الأعلى : التمرير إلى أعلى"
 
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:1735
-msgid "Raccourcis::fleche bas : scroll vertical "
-msgstr "السهم الأسفل : التمرير الى الأسفل "
+msgid "Raccourcis::fleche bas : scroll vertical"
+msgstr "السهم الأسفل : التمرير الى الأسفل"
 
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:1742
-msgid "Raccourcis claviers de la zone des paniers : "
+msgid "Raccourcis claviers de la zone des paniers :"
 msgstr ""
 
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:1762
-msgid "Raccourcis claviers en cours de editing : "
-msgstr "الاختصار الى نافذة التحرير "
+msgid "Raccourcis claviers en cours de editing :"
+msgstr "الاختصار الى نافذة التحرير"
 
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:1767
-msgid "Raccourcis::tab/shift-tab se ballade dans les champs "
-msgstr "tab/shift-tab للانتقال الى مختلف المجالات "
+msgid "Raccourcis::tab/shift-tab se ballade dans les champs"
+msgstr "tab/shift-tab للانتقال الى مختلف المجالات"
 
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:1774
-msgid "Raccourcis claviers en cours de preview : "
-msgstr "الاختصار الى نافذة العرض التفصيلي "
+msgid "Raccourcis claviers en cours de preview :"
+msgstr "الاختصار الى نافذة العرض التفصيلي"
 
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:1779
-msgid "Raccourcis::fleche gauche : en avant "
-msgstr "السهم الأيمن : الوثيقة التالية "
+msgid "Raccourcis::fleche gauche : en avant"
+msgstr "السهم الأيمن : الوثيقة التالية"
 
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:1783
-msgid "Raccourcis::fleche gauche : en arriere "
-msgstr "سهم لليسار : الوثيقة السابقة "
+msgid "Raccourcis::fleche gauche : en arriere"
+msgstr "سهم لليسار : الوثيقة السابقة"
 
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:1787
-msgid "Raccourcis::espace : arreter/demarrer le diaporama "
-msgstr "بداية عرض الشرائح "
+msgid "Raccourcis::espace : arreter/demarrer le diaporama"
+msgstr "بداية عرض الشرائح"
 
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:1795
-msgid ""
-"Vous pouvez quitter la plupart des fenetres survolantes via la touche echap "
-msgstr "echap يمكنك إغلاق معظم نوافذ بالضغط على مفتاح الهروب "
+msgid "Vous pouvez quitter la plupart des fenetres survolantes via la touche echap"
+msgstr "echap يمكنك إغلاق معظم نوافذ بالضغط على مفتاح الهروب"
 
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:1806
 msgid "raccourcis :: ne plus montrer cette aide"
@@ -5764,12 +5532,12 @@ msgid "Afficher une icone"
 msgstr ""
 
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:2018
-msgid "reponses:: images par pages : "
-msgstr "النتائج بالصفحة "
+msgid "reponses:: images par pages :"
+msgstr "النتائج بالصفحة"
 
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:2032
-msgid "reponses:: taille des images : "
-msgstr "حجم الصور "
+msgid "reponses:: taille des images :"
+msgstr "حجم الصور"
 
 #: tmp/cache_twig/1a/81/4530747e611044d45f00f8ce6889.php:2047
 msgid "Couleur de selection"
@@ -5996,15 +5764,11 @@ msgid "Les indications donnees ci dessous sont a titre informatif."
 msgstr ""
 
 #: tmp/cache_twig/16/a1/8c0c9732996197f4af91d790b9c4.php:88
-msgid ""
-"Si vous ne les respectez pas, les documents seront correctement indexes, "
-"mais les metadonnees inscrites risquent d'etre erronnees"
+msgid "Si vous ne les respectez pas, les documents seront correctement indexes, mais les metadonnees inscrites risquent d'etre erronnees"
 msgstr ""
 
 #: tmp/cache_twig/16/a1/8c0c9732996197f4af91d790b9c4.php:96
-msgid ""
-"Ces informations sont directement fournies par la norme de metadonnees de ce "
-"champ : %norm_name%"
+msgid "Ces informations sont directement fournies par la norme de metadonnees de ce champ : %norm_name%"
 msgstr ""
 
 #: tmp/cache_twig/16/17/6547dd89cfdd5482f76558677364.php:41
@@ -6048,9 +5812,7 @@ msgid "Public"
 msgstr ""
 
 #: tmp/cache_twig/16/17/6547dd89cfdd5482f76558677364.php:284
-msgid ""
-"Une fois la publication supprimee, les donnees publiees seront "
-"definitivement perdues. Continuer ?"
+msgid "Une fois la publication supprimee, les donnees publiees seront definitivement perdues. Continuer ?"
 msgstr ""
 
 #: tmp/cache_twig/c6/f4/d0ca5ed8dadb48a13f56c3b18a8b.php:87
@@ -6218,9 +5980,7 @@ msgid "Garder ma session active"
 msgstr ""
 
 #: tmp/cache_twig/82/90/9f06d2ee5dbd5b408324481978e5.php:30
-msgid ""
-"Cochez les cases correspondantes aux colonnes que vous desirez voire "
-"apparaitre dans le report"
+msgid "Cochez les cases correspondantes aux colonnes que vous desirez voire apparaitre dans le report"
 msgstr ""
 
 #: tmp/cache_twig/82/90/9f06d2ee5dbd5b408324481978e5.php:36
@@ -6342,10 +6102,7 @@ msgid "Groupez 2 ou plusieurs mots avec des guillemets: \"Michael Jackson\""
 msgstr ""
 
 #: tmp/cache_twig/a1/10/94c0332f216aec1116c76d245a9f.php:277
-msgid ""
-"Nous vous rappelons qu'il est de votre responsabilité de vous assurer que le "
-"contenu de la vidéo que vous allez mettre en ligne est conforme aux "
-"conditions d'utilisations"
+msgid "Nous vous rappelons qu'il est de votre responsabilité de vous assurer que le contenu de la vidéo que vous allez mettre en ligne est conforme aux conditions d'utilisations"
 msgstr ""
 
 #: tmp/cache_twig/f9/b3/d26d0fea556adfc79109ac70ebd5.php:35
@@ -6607,16 +6364,11 @@ msgid "Consultez en ligne les pré-requis et la configuration du serveur web"
 msgstr ""
 
 #: tmp/cache_twig/06/51/ae0496eb9cd632866a7d4858d84d.php:431
-msgid ""
-"Vous aurez besoin de spécifier un serveur MySQL, des repertoires de stockage "
-"pour vos documents, et de configurer votre serveur web pour qu'il publie "
-"certains de ces dossiers de stockage."
+msgid "Vous aurez besoin de spécifier un serveur MySQL, des repertoires de stockage pour vos documents, et de configurer votre serveur web pour qu'il publie certains de ces dossiers de stockage."
 msgstr ""
 
 #: tmp/cache_twig/06/51/ae0496eb9cd632866a7d4858d84d.php:442
-msgid ""
-"Avant de continuer, prenez connaissance des points ci-dessous. Vous pouvez "
-"continuer sans corriger ces problèmes."
+msgid "Avant de continuer, prenez connaissance des points ci-dessous. Vous pouvez continuer sans corriger ces problèmes."
 msgstr ""
 
 #: tmp/cache_twig/06/51/ae0496eb9cd632866a7d4858d84d.php:511
@@ -6636,10 +6388,7 @@ msgid "Phraseanet may require many binaries."
 msgstr ""
 
 #: tmp/cache_twig/06/51/ae0496eb9cd632866a7d4858d84d.php:625
-msgid ""
-"Some of them are required, like the indexer, Exiftool or ImageMagick "
-"components, some others are optionnal, like FFmpeg which is used to preview "
-"video files."
+msgid "Some of them are required, like the indexer, Exiftool or ImageMagick components, some others are optionnal, like FFmpeg which is used to preview video files."
 msgstr ""
 
 #: tmp/cache_twig/06/51/ae0496eb9cd632866a7d4858d84d.php:631
@@ -6667,13 +6416,8 @@ msgid "admin::compte-utilisateur A propos de la securite des mots de passe :"
 msgstr "بخصوص تأمين كلمة المرور"
 
 #: tmp/cache_twig/06/51/ae0496eb9cd632866a7d4858d84d.php:722
-msgid ""
-"admin::compte-utilisateur Les mots de passe doivent etre clairement "
-"distincts du login et contenir au moins deux types parmis les caracteres "
-"suivants :"
-msgstr ""
-"كلمات المرور يجب أن تكون مختلفة بصورة واضحة عن تسجيل الدخول وتحتوي على ما لا "
-"يقل عن نوعين اثنين من بين الأحرف التالية :"
+msgid "admin::compte-utilisateur Les mots de passe doivent etre clairement distincts du login et contenir au moins deux types parmis les caracteres suivants :"
+msgstr "كلمات المرور يجب أن تكون مختلفة بصورة واضحة عن تسجيل الدخول وتحتوي على ما لا يقل عن نوعين اثنين من بين الأحرف التالية :"
 
 #: tmp/cache_twig/06/51/ae0496eb9cd632866a7d4858d84d.php:727
 msgid "admin::compte-utilisateur::securite caracteres speciaux"
@@ -6731,9 +6475,7 @@ msgid "boutton::tester"
 msgstr ""
 
 #: tmp/cache_twig/06/51/ae0496eb9cd632866a7d4858d84d.php:884
-msgid ""
-"Si vous aviez besoin de plus de parametres, %debut_lien%Afficher d'avantage "
-"d'options%fin_lien%"
+msgid "Si vous aviez besoin de plus de parametres, %debut_lien%Afficher d'avantage d'options%fin_lien%"
 msgstr ""
 
 #: tmp/cache_twig/06/51/ae0496eb9cd632866a7d4858d84d.php:903
@@ -6741,15 +6483,11 @@ msgid "ApplicationBox is a Mysql database."
 msgstr ""
 
 #: tmp/cache_twig/06/51/ae0496eb9cd632866a7d4858d84d.php:909
-msgid ""
-"It stores users datas, rights, and references to DataBoxes where records are "
-"stored."
+msgid "It stores users datas, rights, and references to DataBoxes where records are stored."
 msgstr ""
 
 #: tmp/cache_twig/06/51/ae0496eb9cd632866a7d4858d84d.php:921
-msgid ""
-"Phraseanet strongly recommends the use of %link_start%MariaDB%link_end% as a "
-"replacement for MySQL."
+msgid "Phraseanet strongly recommends the use of %link_start%MariaDB%link_end% as a replacement for MySQL."
 msgstr ""
 
 #: tmp/cache_twig/06/51/ae0496eb9cd632866a7d4858d84d.php:965
@@ -6761,20 +6499,15 @@ msgid "Repertoire de stockage des fichiers"
 msgstr ""
 
 #: tmp/cache_twig/06/51/ae0496eb9cd632866a7d4858d84d.php:995
-msgid ""
-"Your medias and their subdefinitions (previews, thumbnails..) will be stored "
-"in these directories."
+msgid "Your medias and their subdefinitions (previews, thumbnails..) will be stored in these directories."
 msgstr ""
 
 #: tmp/cache_twig/06/51/ae0496eb9cd632866a7d4858d84d.php:1001
-msgid ""
-"Thumbnails directory is mounted to be accessible via HTTP, while other files "
-"are not."
+msgid "Thumbnails directory is mounted to be accessible via HTTP, while other files are not."
 msgstr ""
 
 #: tmp/cache_twig/06/51/ae0496eb9cd632866a7d4858d84d.php:1007
-msgid ""
-"If you plan to store large files, be sure it will fit in these directories."
+msgid "If you plan to store large files, be sure it will fit in these directories."
 msgstr ""
 
 #: tmp/cache_twig/06/51/ae0496eb9cd632866a7d4858d84d.php:1045
@@ -6794,9 +6527,7 @@ msgid "Creation des taches"
 msgstr ""
 
 #: tmp/cache_twig/06/51/ae0496eb9cd632866a7d4858d84d.php:1131
-msgid ""
-"Phraseanet embarque un moteur de taches pour la lecture / ecriture des "
-"metadonnes, et autre operations"
+msgid "Phraseanet embarque un moteur de taches pour la lecture / ecriture des metadonnes, et autre operations"
 msgstr ""
 
 #: tmp/cache_twig/06/51/ae0496eb9cd632866a7d4858d84d.php:1142
@@ -6812,9 +6543,7 @@ msgid "Creer la tache d'indexation"
 msgstr ""
 
 #: tmp/cache_twig/06/51/ae0496eb9cd632866a7d4858d84d.php:1177
-msgid ""
-"Phraseanet DataBoxes are MySQL databases, queryable by Phraseanet "
-"ApplicationBox."
+msgid "Phraseanet DataBoxes are MySQL databases, queryable by Phraseanet ApplicationBox."
 msgstr ""
 
 #: tmp/cache_twig/06/51/ae0496eb9cd632866a7d4858d84d.php:1181
@@ -6922,26 +6651,19 @@ msgid "Attention, la source descriptive selectionne est multivaluee"
 msgstr ""
 
 #: tmp/cache_twig/57/41/7b35081a53f826d9f0ff2e91be55.php:395
-msgid ""
-"Attention, la source descriptive selectionne n'est pas en lecture seule, "
-"vous devriez decocher cette case"
+msgid "Attention, la source descriptive selectionne n'est pas en lecture seule, vous devriez decocher cette case"
 msgstr ""
 
 #: tmp/cache_twig/57/41/7b35081a53f826d9f0ff2e91be55.php:399
-msgid ""
-"Attention, la source descriptive selectionne est en lecture seule, vous "
-"devriez cocher cette case"
+msgid "Attention, la source descriptive selectionne est en lecture seule, vous devriez cocher cette case"
 msgstr ""
 
 #: tmp/cache_twig/57/41/7b35081a53f826d9f0ff2e91be55.php:703
-msgid ""
-"Etes vous sur de vouloir supprimer cette metadonnee ? Elle sera "
-"definitivement perdue"
+msgid "Etes vous sur de vouloir supprimer cette metadonnee ? Elle sera definitivement perdue"
 msgstr ""
 
 #: tmp/cache_twig/57/41/7b35081a53f826d9f0ff2e91be55.php:726
-msgid ""
-"Attention, deux champs ne peuvent représenter le meme element Dublin Core."
+msgid "Attention, deux champs ne peuvent représenter le meme element Dublin Core."
 msgstr ""
 
 #: tmp/cache_twig/57/41/7b35081a53f826d9f0ff2e91be55.php:728
@@ -7060,8 +6782,7 @@ msgid "Recevoir un accuse de reception a %my_email%"
 msgstr ""
 
 #: tmp/cache_twig/00/0e/ad1bbbb21c8b91cb8046c01ba740.php:305
-msgid ""
-"Accuse de reception indisponible, vous n'avez pas declare d'adresse email"
+msgid "Accuse de reception indisponible, vous n'avez pas declare d'adresse email"
 msgstr ""
 
 #: tmp/cache_twig/00/0e/ad1bbbb21c8b91cb8046c01ba740.php:313
@@ -7131,9 +6852,7 @@ msgid "Vous devez selectionner un type de sous definitions"
 msgstr ""
 
 #: tmp/cache_twig/00/0e/ad1bbbb21c8b91cb8046c01ba740.php:1142
-msgid ""
-"You can not directly download more than %max_download% Mo ; time to package "
-"all documents is too long"
+msgid "You can not directly download more than %max_download% Mo ; time to package all documents is too long"
 msgstr ""
 
 #: tmp/cache_twig/00/0e/ad1bbbb21c8b91cb8046c01ba740.php:1146
@@ -7225,8 +6944,7 @@ msgid "Aucun statut editable"
 msgstr ""
 
 #: tmp/cache_twig/c4/c0/275338dd1cd256697466d840fbe1.php:188
-msgid ""
-"Les status de certains documents ne sont pas accessibles par manque de droits"
+msgid "Les status de certains documents ne sont pas accessibles par manque de droits"
 msgstr ""
 
 #: tmp/cache_twig/c4/c0/275338dd1cd256697466d840fbe1.php:279
@@ -7310,26 +7028,19 @@ msgid "Edition impossible"
 msgstr ""
 
 #: tmp/cache_twig/c4/c0/275338dd1cd256697466d840fbe1.php:612
-msgid ""
-"prod::edit: Impossible d'editer simultanement des documents provenant de "
-"bases differentes"
+msgid "prod::edit: Impossible d'editer simultanement des documents provenant de bases differentes"
 msgstr "لا يمكن تحرير وثائق  قادمة من قواعد بيانات مختلفة في وقت واحد"
 
 #: tmp/cache_twig/c4/c0/275338dd1cd256697466d840fbe1.php:618
-msgid ""
-"prod::editing: aucun documents ne peuvent etre edites car vos droits sont "
-"induffisants"
+msgid "prod::editing: aucun documents ne peuvent etre edites car vos droits sont induffisants"
 msgstr ""
 
 #: tmp/cache_twig/c4/c0/275338dd1cd256697466d840fbe1.php:658
-msgid ""
-"prod::editing: %not_actionable% documents ne peuvent etre edites car vos "
-"droits sont induffisants"
+msgid "prod::editing: %not_actionable% documents ne peuvent etre edites car vos droits sont induffisants"
 msgstr ""
 
 #: tmp/cache_twig/c4/c0/275338dd1cd256697466d840fbe1.php:664
-msgid ""
-"prod::editing: 1 document ne peut etre edite car vos droits sont induffisants"
+msgid "prod::editing: 1 document ne peut etre edite car vos droits sont induffisants"
 msgstr "سلة لا تحتوي على أي وثيقة"
 
 #: tmp/cache_twig/c4/c0/275338dd1cd256697466d840fbe1.php:864
@@ -7341,8 +7052,8 @@ msgid "edit: chosiir limage du regroupement"
 msgstr "تعيين كصورة رئيسية"
 
 #: tmp/cache_twig/c4/c0/275338dd1cd256697466d840fbe1.php:957
-msgid "prod::editing::fields: status "
-msgstr "وضع "
+msgid "prod::editing::fields: status"
+msgstr "وضع"
 
 #: tmp/cache_twig/c4/c0/275338dd1cd256697466d840fbe1.php:1027
 msgid "Ce champ est decrit comme un element DublinCore"
@@ -7362,19 +7073,14 @@ msgstr "Phraseanet VI متصفحك يبدو غير متوافق مع"
 
 #: tmp/cache_twig/ef/5d/6a4870bd415278c66bfa5fd75ee8.php:55
 msgid "phraseanet::recommend browser"
-msgstr ""
-"من اجل فاعلية وأداء افضل، نوصي باستخدام احدث إصدار من المتصفحات التالية"
+msgstr "من اجل فاعلية وأداء افضل، نوصي باستخدام احدث إصدار من المتصفحات التالية"
 
 #: tmp/cache_twig/ef/5d/6a4870bd415278c66bfa5fd75ee8.php:138
-msgid ""
-"Phraseanet recommande l'utilisation de Google Chrome Frame pour Internet "
-"Explorer"
+msgid "Phraseanet recommande l'utilisation de Google Chrome Frame pour Internet Explorer"
 msgstr ""
 
 #: tmp/cache_twig/ef/5d/6a4870bd415278c66bfa5fd75ee8.php:142
-msgid ""
-"C'est gratuit et s'installe en quelques secondes. Pour Internet Explorer 6, "
-"7, et 8 sur Windows 7 / Vista / XP SP2."
+msgid "C'est gratuit et s'installe en quelques secondes. Pour Internet Explorer 6, 7, et 8 sur Windows 7 / Vista / XP SP2."
 msgstr ""
 
 #: tmp/cache_twig/ef/5d/6a4870bd415278c66bfa5fd75ee8.php:147
@@ -7406,9 +7112,7 @@ msgid "Delete the subdef ?"
 msgstr ""
 
 #: tmp/cache_twig/fa/fe/56e73be672d1340a03ac3dcb75f5.php:217
-msgid ""
-"These subdef will be permanently deleted and cannot be recovered. Are you "
-"sure?"
+msgid "These subdef will be permanently deleted and cannot be recovered. Are you sure?"
 msgstr ""
 
 #: tmp/cache_twig/fa/fe/56e73be672d1340a03ac3dcb75f5.php:228
@@ -7525,14 +7229,11 @@ msgid "(%length%)"
 msgstr ""
 
 #: tmp/cache_twig/e6/f1/b27b0ee40a0f001a09f9f3456409.php:75
-msgid ""
-"report::Push vers %n_user% utilisateurs depuis lapplication box %appbox%"
+msgid "report::Push vers %n_user% utilisateurs depuis lapplication box %appbox%"
 msgstr ""
 
 #: tmp/cache_twig/e6/f1/b27b0ee40a0f001a09f9f3456409.php:93
-msgid ""
-"report::Demande de validation vers %n_user% utilisateurs depuis lapplication "
-"box %appbox%"
+msgid "report::Demande de validation vers %n_user% utilisateurs depuis lapplication box %appbox%"
 msgstr ""
 
 #: tmp/cache_twig/e6/f1/b27b0ee40a0f001a09f9f3456409.php:99
@@ -7588,7 +7289,7 @@ msgid "report:: par %user_infos%"
 msgstr ""
 
 #: tmp/cache_twig/71/65/30646dd3fc908d23bf92b4ca5aa1.php:30
-msgid "About Roles : "
+msgid "About Roles :"
 msgstr ""
 
 #: tmp/cache_twig/71/65/30646dd3fc908d23bf92b4ca5aa1.php:35
@@ -7637,8 +7338,7 @@ msgstr "خطأ في محاولة التعريف"
 
 #: www/login/index.php:64
 msgid "login::erreur: Erreur de captcha"
-msgstr ""
-"أخطاء كثيرة في محاولة التعريف شكرا لملأ كلمة التحقيق للتأكد من أنك لست روبوت"
+msgstr "أخطاء كثيرة في محاولة التعريف شكرا لملأ كلمة التحقيق للتأكد من أنك لست روبوت"
 
 #: www/login/index.php:67
 msgid "login::erreur: Vous n'avez pas confirme votre email"
@@ -7657,9 +7357,7 @@ msgid "login::erreur: No available connection - Please contact sys-admin"
 msgstr ""
 
 #: www/login/index.php:78
-msgid ""
-"login::erreur: maintenance en cours, merci de nous excuser pour la gene "
-"occasionee"
+msgid "login::erreur: maintenance en cours, merci de nous excuser pour la gene occasionee"
 msgstr ""
 
 #: www/login/index.php:88
@@ -7726,9 +7424,7 @@ msgid "admin::compte-utilisateur:ftp: Le mot de passe est errone"
 msgstr "كلمة سر خاطئة"
 
 #: www/login/reset-email.php:209
-msgid ""
-"admin::compte-utilisateur un email de confirmation vient de vous etre "
-"envoye. Veuillez suivre les instructions contenue pour continuer"
+msgid "admin::compte-utilisateur un email de confirmation vient de vous etre envoye. Veuillez suivre les instructions contenue pour continuer"
 msgstr "تأكيد عبر البريد الالكتروني قد أرسل لك. يرجى اتباع التعليمات للمرسلة"
 
 #: www/login/reset-email.php:213
@@ -7736,8 +7432,7 @@ msgid "admin::compte-utilisateur retour a mon compte"
 msgstr "رجوع إلى حسابي"
 
 #: www/login/reset-email.php:219
-msgid ""
-"phraseanet::erreur : oups ! une erreur est survenue pendant l'operation !"
+msgid "phraseanet::erreur : oups ! une erreur est survenue pendant l'operation !"
 msgstr "عفوا! لقد حدث خطأ ما!"
 
 #: www/login/reset-email.php:240
@@ -7749,34 +7444,23 @@ msgid "admin::compte-utilisateur confirmer la nouvelle adresse email"
 msgstr "تأكيد البريد الإلكتروني"
 
 #: www/login/reset-email.php:254
-msgid ""
-"admin::compte-utilisateur: Pourquoi me demande-t-on mon mot de passe pour "
-"changer mon adresse email ?"
-msgstr ""
-"مشرف::حساب المستخدم: لماذا طلب مني كلمة السر لتغيير عنوان بريدي الإلكتروني؟"
+msgid "admin::compte-utilisateur: Pourquoi me demande-t-on mon mot de passe pour changer mon adresse email ?"
+msgstr "مشرف::حساب المستخدم: لماذا طلب مني كلمة السر لتغيير عنوان بريدي الإلكتروني؟"
 
 #: www/login/reset-email.php:255
-msgid ""
-"admin::compte-utilisateur: Votre adresse e-mail sera utilisee lors de la "
-"perte de votre mot de passe afin de pouvoir le reinitialiser, il est "
-"important que vous soyez la seule personne a pouvoir la changer."
-msgstr ""
-"بريدك الإلكتروني سيتستخدم في حالة فقدان كلمة السر بحيث يمكن إعادتها، فمن "
-"المهم أن تكون الشخص الوحيد القادر على تغييرها ."
+msgid "admin::compte-utilisateur: Votre adresse e-mail sera utilisee lors de la perte de votre mot de passe afin de pouvoir le reinitialiser, il est important que vous soyez la seule personne a pouvoir la changer."
+msgstr "بريدك الإلكتروني سيتستخدم في حالة فقدان كلمة السر بحيث يمكن إعادتها، فمن المهم أن تكون الشخص الوحيد القادر على تغييرها ."
 
 #: www/login/forgotpwd.php:61
 msgid "forms::la valeur donnee contient des caracteres invalides"
 msgstr "يحتوي على أحرف سيئة"
 
 #: www/login/forgotpwd.php:161
-msgid ""
-"Pour ameliorer la securite de l'application, vous devez mettre a jour votre "
-"mot de passe."
+msgid "Pour ameliorer la securite de l'application, vous devez mettre a jour votre mot de passe."
 msgstr ""
 
 #: www/login/forgotpwd.php:162
-msgid ""
-"Cette tache ne pouvant etre automatisee, merci de bien vouloir la realiser."
+msgid "Cette tache ne pouvant etre automatisee, merci de bien vouloir la realiser."
 msgstr ""
 
 #: www/login/forgotpwd.php:170
@@ -7972,9 +7656,7 @@ msgid "OPCode cache"
 msgstr ""
 
 #: www/admin/sitestruct.php:300
-msgid ""
-"Array opcode cache is activated, but phrasea strongly recommand the use of "
-"APC or Xcache in production"
+msgid "Array opcode cache is activated, but phrasea strongly recommand the use of APC or Xcache in production"
 msgstr ""
 
 #: www/admin/collorder.php:46
@@ -7999,13 +7681,8 @@ msgid "admin::base:collorder: reinitialiser en ordre alphabetique"
 msgstr "ترتيب ابجدي"
 
 #: www/admin/sugval.php:918
-msgid ""
-"admin::sugval: Attention, passer en mode graphique implique la perte des "
-"modifications du xml si vous n'appliquez pas les changements avant."
-"\\nContinuer quand meme ?"
-msgstr ""
-"حذار, الإنتقال إلى الواجهة الرسومية قذ يؤدي إلى خسارة تغيرات اكسمل إذا لم "
-"تسجل التغييرات. الاستمرار على أي حال؟"
+msgid "admin::sugval: Attention, passer en mode graphique implique la perte des modifications du xml si vous n'appliquez pas les changements avant.\\nContinuer quand meme ?"
+msgstr "حذار, الإنتقال إلى الواجهة الرسومية قذ يؤدي إلى خسارة تغيرات اكسمل إذا لم تسجل التغييرات. الاستمرار على أي حال؟"
 
 #: www/admin/sugval.php:950
 msgid "Suggested values"
@@ -8053,12 +7730,12 @@ msgid "admin::base: Version"
 msgstr ""
 
 #: www/admin/databases.php:307
-msgid "update::Votre application necessite une mise a jour vers : "
+msgid "update::Votre application necessite une mise a jour vers :"
 msgstr ""
 
 #: www/admin/databases.php:311
-msgid "update::Votre version est a jour : "
-msgstr "إصدارك الاحدث "
+msgid "update::Votre version est a jour :"
+msgstr "إصدارك الاحدث"
 
 #: www/admin/databases.php:317
 msgid "update::Verifier els tables"
@@ -8069,8 +7746,7 @@ msgid "admin::base: creer une base"
 msgstr "إنشاء قاعدة بيانات جديدة"
 
 #: www/admin/databases.php:326
-msgid ""
-"phraseanet:: Creer une base sur un serveur different de l'application box"
+msgid "phraseanet:: Creer une base sur un serveur different de l'application box"
 msgstr "عفوا ! لقد حدث خطأ ما"
 
 #: www/admin/databases.php:330 www/admin/databases.php:379
@@ -8098,9 +7774,7 @@ msgid "admin::base: Monter une base"
 msgstr "ركب قاعدة بيانات"
 
 #: www/admin/databases.php:375
-msgid ""
-"phraseanet:: Monter une base provenant d'un serveur different de "
-"l'application box"
+msgid "phraseanet:: Monter une base provenant d'un serveur different de l'application box"
 msgstr "تركيب قاعدة البيانات من مضيف بعيد"
 
 #: www/admin/databases.php:396
@@ -8175,8 +7849,8 @@ msgid "phraseanet:: details"
 msgstr "تفاصيل"
 
 #: www/admin/database.php:367
-msgid "admin::base: nombre de mots uniques sur la base : "
-msgstr "الكلمات الفريدة على قاعدة البيانات "
+msgid "admin::base: nombre de mots uniques sur la base :"
+msgstr "الكلمات الفريدة على قاعدة البيانات"
 
 #: www/admin/database.php:372
 msgid "admin::base: nombre de mots indexes sur la base"
@@ -8240,10 +7914,8 @@ msgid "admin::base:collection: Monter une collection"
 msgstr ""
 
 #: www/admin/database.php:568 www/admin/newcoll.php:137
-msgid ""
-"admin::base:collection: Vous pouvez choisir une collection de reference pour "
-"donenr des acces "
-msgstr "تطبيق الحقوق و المستخدمين من الجموعة "
+msgid "admin::base:collection: Vous pouvez choisir une collection de reference pour donenr des acces"
+msgstr "تطبيق الحقوق و المستخدمين من الجموعة"
 
 #: www/admin/database.php:582
 msgid "Monter"
@@ -8312,9 +7984,7 @@ msgid "admin::base:collection: etes vous sur de publier cette collection ?"
 msgstr "تأكيد نشر هذه المجموعة"
 
 #: www/admin/collection.php:263
-msgid ""
-"admin::base:collection: etes vous sur darreter la publication de cette "
-"collection"
+msgid "admin::base:collection: etes vous sur darreter la publication de cette collection"
 msgstr "تأكيد توقيف نشر هذه المجموعة"
 
 #: www/admin/collection.php:339
@@ -8342,9 +8012,7 @@ msgid "setup:: ajouter un administrateur des commandes"
 msgstr ""
 
 #: www/admin/collection.php:556
-msgid ""
-"admin::collection:: presentation des elements lors de la diffusion aux "
-"utilisateurs externes (publications)"
+msgid "admin::collection:: presentation des elements lors de la diffusion aux utilisateurs externes (publications)"
 msgstr "Phraseanet عرض الخيارات للوثائق المشتركة خارج"
 
 #: www/admin/collection.php:558
@@ -8364,8 +8032,8 @@ msgid "admin::base:collection: renommer la collection"
 msgstr "إعادة تسمية"
 
 #: www/admin/collection.php:572 www/admin/newcoll.php:128
-msgid "admin::base:collection: Nom de la nouvelle collection : "
-msgstr "الاسم "
+msgid "admin::base:collection: Nom de la nouvelle collection :"
+msgstr "الاسم"
 
 #: www/admin/collection.php:595
 msgid "admin::base:collection: vider la collection"
@@ -8380,8 +8048,8 @@ msgid "admin::base:collection: minilogo actuel"
 msgstr "الشعار المصغر الحالي"
 
 #: www/admin/collection.php:697
-msgid "admin::base:collection: image de presentation : "
-msgstr "صورة العرض "
+msgid "admin::base:collection: image de presentation :"
+msgstr "صورة العرض"
 
 #: www/admin/taskmanager.php:125 www/admin/taskmanager.php:472
 msgid "admin::tasks: supprimer la tache ?"
@@ -8425,8 +8093,7 @@ msgid "Preferences du TaskManager"
 msgstr ""
 
 #: www/admin/taskmanager.php:580
-msgid ""
-"Cette URL vous permet de controler le sheduler depuis un manager comme cron"
+msgid "Cette URL vous permet de controler le sheduler depuis un manager comme cron"
 msgstr ""
 
 #: www/admin/sessionwhois.php:57
@@ -8446,8 +8113,8 @@ msgid "admin::monitor: dernier access"
 msgstr ""
 
 #: www/admin/sessionwhois.php:99
-msgid "admin::monitor: bases sur lesquelles l'utilisateur est connecte : "
-msgstr "قواعد بيانات الموصولة "
+msgid "admin::monitor: bases sur lesquelles l'utilisateur est connecte :"
+msgstr "قواعد بيانات الموصولة"
 
 #: www/admin/sessionwhois.php:113
 msgid "Session persistente"
@@ -8458,8 +8125,8 @@ msgid "admin::monitor: module inconnu"
 msgstr "غير معروف"
 
 #: www/admin/sessionwhois.php:238
-msgid "admin::monitor: total des utilisateurs uniques : "
-msgstr "مستخدمون فريدون "
+msgid "admin::monitor: total des utilisateurs uniques :"
+msgstr "مستخدمون فريدون"
 
 #: www/admin/adminFeedback.php:64
 msgid "Base empty successful"
@@ -8498,8 +8165,8 @@ msgid "phraseanet::status bit"
 msgstr "اوضاع"
 
 #: www/admin/statbits.php:151
-msgid "admin::status: nom du status : "
-msgstr "الاسم "
+msgid "admin::status: nom du status :"
+msgstr "الاسم"
 
 #: www/admin/statbits.php:154
 msgid "admin::status: case A"
@@ -8534,12 +8201,8 @@ msgid "admin::status:: aucun symbole"
 msgstr "موافق"
 
 #: www/admin/statbits.php:178
-msgid ""
-"status:: Afficher le status dans les feuilles de reponses pour tous les "
-"utilisateurs"
-msgstr ""
-"عرض رموز الوضع فوق المصغرات لجميع المستخدمين و إن لم يكن محددا سوف يكون "
-"مرئيا فقط للمستخدمين الذين يتمتعون بالحق في تعديل الوضع"
+msgid "status:: Afficher le status dans les feuilles de reponses pour tous les utilisateurs"
+msgstr "عرض رموز الوضع فوق المصغرات لجميع المستخدمين و إن لم يكن محددا سوف يكون مرئيا فقط للمستخدمين الذين يتمتعون بالحق في تعديل الوضع"
 
 #: www/admin/statbits.php:181
 msgid "status:: retrouver sous forme de filtre dans la recherche"
@@ -8582,8 +8245,7 @@ msgid "Mettre a jour"
 msgstr "تحديث"
 
 #: www/admin/cgus.php:85
-msgid ""
-"admin::CGU Les utilisateurs doivent imperativement revalider ces conditions"
+msgid "admin::CGU Les utilisateurs doivent imperativement revalider ces conditions"
 msgstr "المستخدمون المسجلون عليهم إعادة قبول شروط الاستخدام العامة المعدلة"
 
 #: www/admin/demand.php:340
@@ -8615,13 +8277,11 @@ msgid "admin::collection"
 msgstr "مجموعة"
 
 #: www/admin/demand.php:450
-msgid "admin:: appliquer le modele  "
-msgstr "تطبيق النموذج  "
+msgid "admin:: appliquer le modele "
+msgstr "تطبيق النموذج "
 
 #: www/admin/newcoll.php:39
-msgid ""
-"admin:: La collection n'a pas ete creee : vous devez donner un nom a votre "
-"collection"
+msgid "admin:: La collection n'a pas ete creee : vous devez donner un nom a votre collection"
 msgstr "مجموعة لم تنشأ يجب إعطاء اسم للمجموعة"
 
 #: www/admin/newcoll.php:159
@@ -8637,9 +8297,7 @@ msgid "error:204::Le contenu que vous demandez n'existe pas ou a expire"
 msgstr ""
 
 #: www/include/error.php:44
-msgid ""
-"error:400::La requete que vous faites ne peut etre traitee car les "
-"parametres necessaire a son traitement, sont mauvais ou manquants."
+msgid "error:400::La requete que vous faites ne peut etre traitee car les parametres necessaire a son traitement, sont mauvais ou manquants."
 msgstr ""
 
 #: www/include/error.php:48
@@ -8647,8 +8305,7 @@ msgid "error:403::Vous avez demande une page a laquelle vous n'avez pas acces."
 msgstr ""
 
 #: www/include/error.php:49
-msgid ""
-"error:403::Soit vous n'avez pas les droits, soit vous avez ete deconnecte."
+msgid "error:403::Soit vous n'avez pas les droits, soit vous avez ete deconnecte."
 msgstr ""
 
 #: www/include/error.php:53
@@ -8660,15 +8317,11 @@ msgid "error:500::Erreur interne du serveur"
 msgstr ""
 
 #: www/include/error.php:58
-msgid ""
-"error:500::Une erreur interne est survenue. Ceci se produit lorsque la "
-"connetion a la base de donnee a ete interrompue ou lorsqu'un module "
-"rencontre un probleme."
+msgid "error:500::Une erreur interne est survenue. Ceci se produit lorsque la connetion a la base de donnee a ete interrompue ou lorsqu'un module rencontre un probleme."
 msgstr ""
 
 #: www/include/error.php:59
-msgid ""
-"error:500::Si ce probleme persiste, contactez l'administrateur du serveur"
+msgid "error:500::Si ce probleme persiste, contactez l'administrateur du serveur"
 msgstr ""
 
 #: www/include/download_anonymous.php:65
@@ -8678,17 +8331,12 @@ msgid "phraseanet:: Telechargement de documents"
 msgstr ""
 
 #: www/include/download_anonymous.php:112 www/include/download_prepare.php:139
-msgid ""
-"telechargement::Veuillez patienter, vos fichiers sont en train d'etre "
-"rassembles pour le telechargement, cette operation peut prendre quelques "
-"minutes."
+msgid "telechargement::Veuillez patienter, vos fichiers sont en train d'etre rassembles pour le telechargement, cette operation peut prendre quelques minutes."
 msgstr ""
 
 #: www/include/download_anonymous.php:117 www/include/download_prepare.php:144
 #, php-format
-msgid ""
-"telechargement::Vos documents sont prets. Si le telechargement ne demarre "
-"pas, %s cliquez ici %s"
+msgid "telechargement::Vos documents sont prets. Si le telechargement ne demarre pas, %s cliquez ici %s"
 msgstr ""
 
 #: www/include/download_anonymous.php:122 www/include/download_prepare.php:147
@@ -8756,9 +8404,7 @@ msgid "phraseanet:: collections"
 msgstr "مجموعات"
 
 #: www/client/index.php:306
-msgid ""
-"client::recherche: cliquez ici pour desactiver tous les filtres de toutes "
-"base"
+msgid "client::recherche: cliquez ici pour desactiver tous les filtres de toutes base"
 msgstr "انقر هنا لتعطيل جميع المرشحات لجميع قواعد البيانات"
 
 #: www/client/index.php:319
@@ -8766,8 +8412,7 @@ msgid "phraseanet:: historique"
 msgstr "سابق"
 
 #: www/client/index.php:346
-msgid ""
-"client::recherche: cliquez ici pour desactiver tous les filtres de cette base"
+msgid "client::recherche: cliquez ici pour desactiver tous les filtres de cette base"
 msgstr "تعطيل كافة المرشحات"
 
 #: www/client/index.php:407
@@ -8873,9 +8518,7 @@ msgid "prod::status: aucun status n'est defini sur cette base"
 msgstr "لا وضع مختار على  قاعدة البيانات"
 
 #: www/prod/docfunction.php:418
-msgid ""
-"prod::status: changer egalement le status des document rattaches aux "
-"regroupements"
+msgid "prod::status: changer egalement le status des document rattaches aux regroupements"
 msgstr "غير أيضا وضعية الوثائق المرتبطة بهذه الريبورتاجات"
 
 #: www/prod/docfunction.php:443
@@ -8884,9 +8527,7 @@ msgid "prod::status: %d documents ne peuvent avoir une edition des status"
 msgstr "%d تحرير مستحيل لأوضاع الوثائق التي عددها"
 
 #: www/prod/docfunction.php:448
-msgid ""
-"prod::status:Vous n'avez pas les droits suffisants pour changer le status "
-"des documents selectionnes"
+msgid "prod::status:Vous n'avez pas les droits suffisants pour changer le status des documents selectionnes"
 msgstr "ليس لديك إذن لتغيير حالة الوثائق المختارة"
 
 #: www/prod/docfunction.php:488
@@ -9056,7 +8697,7 @@ msgid "report:: historique des questions"
 msgstr ""
 
 #: www/report/tab.php:848 www/report/ajax_table_content.php:671
-msgid "report::version "
+msgid "report::version"
 msgstr ""
 
 #: www/thesaurus2/index.php:90
@@ -9080,8 +8721,8 @@ msgid "thesaurus:: le terme"
 msgstr "الكلمة"
 
 #: www/thesaurus2/search.php:75
-msgid "thesaurus:: est egal a "
-msgstr "تساوي "
+msgid "thesaurus:: est egal a"
+msgstr "تساوي"
 
 #: www/thesaurus2/search.php:79
 msgid "thesaurus:: commence par"
@@ -9101,29 +8742,23 @@ msgstr "ربط الفرع"
 
 #: www/thesaurus2/linkfield2.php:106
 #, php-format
-msgid "thesaurus:: Ce champ a ete modifie ; ancienne branche : %s "
-msgstr "هذا المجال قد تم تغيره ؛ الفرع القديم هو %s "
+msgid "thesaurus:: Ce champ a ete modifie ; ancienne branche : %s"
+msgstr "هذا المجال قد تم تغيره ؛ الفرع القديم هو %s"
 
 #: www/thesaurus2/linkfield2.php:129
 msgid "thesaurus:: nouvelle branche"
 msgstr "فرع جديد"
 
 #: www/thesaurus2/linkfield2.php:133
-msgid ""
-"thesaurus:: ce champ n'est plus lie au thesaurus, les termes indexes et "
-"candidats seront supprimes"
+msgid "thesaurus:: ce champ n'est plus lie au thesaurus, les termes indexes et candidats seront supprimes"
 msgstr "هذا المجال ليس مربوطا بالقاموس. الالفاظ المفهرسة و المرشحة سيتم حذفه"
 
 #: www/thesaurus2/linkfield2.php:139
-msgid ""
-"thesaurus:: ce champ doit etre lie au thesaurus. La reindexation de la base "
-"est necessaire"
+msgid "thesaurus:: ce champ doit etre lie au thesaurus. La reindexation de la base est necessaire"
 msgstr "هذا المجال يجب أن يربط بالقاموس. إعادة فهرسة قاعدة البيانات ضرورية"
 
 #: www/thesaurus2/linkfield2.php:141
-msgid ""
-"thesaurus:: le lien au thesaurus doit etre modifie, la reindexation de la "
-"base est necessaire"
+msgid "thesaurus:: le lien au thesaurus doit etre modifie, la reindexation de la base est necessaire"
 msgstr "الرابط القاموس يجب تغييره، من الضروري إعادة فهرسة قاعدة بيانات"
 
 #: www/thesaurus2/linkfield2.php:155
@@ -9402,34 +9037,23 @@ msgid "thesaurus:: onglet thesaurus"
 msgstr "قاموس"
 
 #: www/thesaurus2/thesaurus.php:508
-msgid ""
-"thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront "
-"en candidats a la prochaine indexation)"
+msgid "thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)"
 msgstr "حذف هذا الفرع؟ الكلمات المعنية ترشح للفهرسة في المرة القادمة"
 
 #: www/thesaurus2/thesaurus.php:510
-msgid ""
-"thesaurus:: Des reponses sont retournees par cette branche. &#10;Supprimer "
-"quand meme ?&#10;(les termes concernes remonteront en candidats a la "
-"prochaine indexation)"
-msgstr ""
-"هذا الفرع يقدم أجوبة.\n"
-"حذف على أي حال؟ الكلمات المعنية تصبح مرشحة للفهرسة"
+msgid "thesaurus:: Des reponses sont retournees par cette branche. &#10;Supprimer quand meme ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)"
+msgstr "هذا الفرع يقدم أجوبة.\nحذف على أي حال؟ الكلمات المعنية تصبح مرشحة للفهرسة"
 
 #: www/thesaurus2/thesaurus.php:552
 msgid "thesaurus:: Tous les termes ont des hits"
 msgstr "كل الألفاظ تعطي نتائج"
 
 #: www/thesaurus2/thesaurus.php:558
-msgid ""
-"thesaurus:: Des termes de cette branche ne renvoient pas de hits. Les "
-"supprimer ?"
+msgid "thesaurus:: Des termes de cette branche ne renvoient pas de hits. Les supprimer ?"
 msgstr "هناك الفاظ من هذا الفرع لا تعط أي نتائج.  تريد إزالتها؟"
 
 #: www/thesaurus2/thesaurus.php:647
-msgid ""
-"thesaurus:: Supprimer tous les candidats et placer toutes les fiches en "
-"reindexation-thesaurus ?"
+msgid "thesaurus:: Supprimer tous les candidats et placer toutes les fiches en reindexation-thesaurus ?"
 msgstr "إزالة جميع المفردات المرشحة، واحالة كافة الملفات الى اعادة الفهرسة"
 
 #: www/thesaurus2/thesaurus.php:1091
@@ -9437,8 +9061,8 @@ msgid "thesaurus:: deplacer le terme dans la corbeille ?"
 msgstr "انقل الكلمات الى المخزون"
 
 #: www/thesaurus2/export_text_dlg.php:134
-msgid "thesaurus:: options d'export : "
-msgstr "إصدار "
+msgid "thesaurus:: options d'export :"
+msgstr "إصدار"
 
 #: www/thesaurus2/export_text_dlg.php:135
 msgid "thesaurus:: example"
@@ -9453,8 +9077,8 @@ msgid "thesaurus:: exporter avec une ligne par synonyme"
 msgstr "سطر لكل مرادفة"
 
 #: www/thesaurus2/export_text_dlg.php:156
-msgid "thesaurus:: export : numeroter les lignes "
-msgstr "اظهار أرقام الأسطر "
+msgid "thesaurus:: export : numeroter les lignes"
+msgstr "اظهار أرقام الأسطر"
 
 #: www/thesaurus2/export_text_dlg.php:160
 msgid "thesaurus:: export : inclure la langue"
@@ -9487,21 +9111,19 @@ msgid "thesaurus:: sans contexte"
 msgstr "بدون سياق"
 
 #: www/thesaurus2/newterm.php:96
-msgid "thesaurus:: est deja candidat en provenance du champ acceptable : "
-msgstr "هو مرشح من المجال المقبول: "
+msgid "thesaurus:: est deja candidat en provenance du champ acceptable :"
+msgstr "هو مرشح من المجال المقبول:"
 
 #: www/thesaurus2/newterm.php:98
-msgid "thesaurus:: est deja candidat en provenance des champs acceptables : "
-msgstr "هو مرشح من المجالات المقبولة: "
+msgid "thesaurus:: est deja candidat en provenance des champs acceptables :"
+msgstr "هو مرشح من المجالات المقبولة:"
 
 #: www/thesaurus2/newterm.php:134
 msgid "thesaurus:: selectionner la provenance a accepter"
 msgstr "حدد مصدرا للقبول"
 
 #: www/thesaurus2/newterm.php:148 www/thesaurus2/newterm.php:150
-msgid ""
-"thesaurus:: est candidat en provenance des champs mais ne peut etre accepte "
-"a cet emplacement du thesaurus"
+msgid "thesaurus:: est candidat en provenance des champs mais ne peut etre accepte a cet emplacement du thesaurus"
 msgstr "مرشح من المجالات لكن لا يقبل كلفظ مرشح في هذا الموضع من القاموس"
 
 #: www/thesaurus2/newterm.php:154
@@ -9559,9 +9181,7 @@ msgstr "قبول الفرع ك"
 
 #: www/thesaurus2/accept.php:276
 #, php-format
-msgid ""
-"thesaurus:: A cet emplacement du thesaurus , un candidat du champ %s ne peut "
-"etre accepte"
+msgid "thesaurus:: A cet emplacement du thesaurus , un candidat du champ %s ne peut etre accepte"
 msgstr "%s في هذا المكان من القاموس، لايمكن  قبول مرشح من المجال"
 
 msgid "task::workflow02"
@@ -9603,11 +9223,8 @@ msgstr "bit.ly اسم المستخدم لواجهة برمجة التطبيقا�
 msgid "reglages:: ccle d'api pour l'api bit.ly"
 msgstr "Bit.ly مفتاح"
 
-msgid ""
-"reglages:: extensions de fichier autorisees en upload, separees par des "
-"virgules. * pour autoriser tous les fichiers"
-msgstr ""
-"امتدادات الملفات المسموح تحميلها مفصولة بفواصل و * للسماح لكافة الملفات"
+msgid "reglages:: extensions de fichier autorisees en upload, separees par des virgules. * pour autoriser tous les fichiers"
+msgstr "امتدادات الملفات المسموح تحميلها مفصولة بفواصل و * للسماح لكافة الملفات"
 
 msgid "reglages:: dossier de stockage des vignettes publiees en acces direct"
 msgstr "ملفات تخزين المصغرات المنشورة بالوصول المباشر"
@@ -9660,7 +9277,7 @@ msgstr ""
 msgid "Voici enregistrement correspondant a  cet identifiant unique"
 msgstr ""
 
-msgid "D'autres versions de ce document ont ete prealablement uploadees "
+msgid "D'autres versions de ce document ont ete prealablement uploadees"
 msgstr ""
 
 msgid "Voir/Cacher"
@@ -9675,8 +9292,7 @@ msgstr ""
 msgid "Aucun document dans la quarantaine actuellement"
 msgstr ""
 
-msgid ""
-"Document ajoute le %date% par %display_name% sur la collection %basname%"
+msgid "Document ajoute le %date% par %display_name% sur la collection %basname%"
 msgstr ""
 
 msgid "Document ajoute le %date% sur la collection %basname%"
