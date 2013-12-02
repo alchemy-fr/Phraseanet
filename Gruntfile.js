@@ -176,15 +176,6 @@ module.exports = function(grunt) {
                 "dest": "<%= path.asset %>/json2/",
                 "flatten": true
             },
-            "json3": {
-                "expand": true,
-                "src": [
-                    "<%= path.bower %>/json3/LICENSE",
-                    "<%= path.bower %>/json3/lib/json3.js"
-                ],
-                "dest": "<%= path.asset %>/json3/",
-                "flatten": true
-            },
             "mocha": {
                 "expand": true,
                 "src": [
