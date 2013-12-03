@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "497dac520803f292e346f4a00cfd97ba",
+    "hash": "30ae0f4777c4f29dc1160eefe0c0a019",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -547,7 +547,8 @@
                 {
                     "name": "Jonathan Wage",
                     "email": "jonwage@gmail.com",
-                    "homepage": "http://www.jwage.com/"
+                    "homepage": "http://www.jwage.com/",
+                    "role": "Creator"
                 },
                 {
                     "name": "Guilherme Blanco",
@@ -905,12 +906,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/migrations.git",
-                "reference": "37aacdae6507faad03c3df1624e7d3a6e6c1b388"
+                "reference": "ce2ffa17a642267d48b9df6c5eba94e9d773e22f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/migrations/zipball/37aacdae6507faad03c3df1624e7d3a6e6c1b388",
-                "reference": "37aacdae6507faad03c3df1624e7d3a6e6c1b388",
+                "url": "https://api.github.com/repos/doctrine/migrations/zipball/ce2ffa17a642267d48b9df6c5eba94e9d773e22f",
+                "reference": "ce2ffa17a642267d48b9df6c5eba94e9d773e22f",
                 "shasum": ""
             },
             "require": {
@@ -957,7 +958,7 @@
                 "database",
                 "migrations"
             ],
-            "time": "2013-11-10 05:33:50"
+            "time": "2013-12-03 00:28:34"
         },
         {
             "name": "doctrine/orm",
@@ -1646,16 +1647,16 @@
         },
         {
             "name": "mediavorus/mediavorus",
-            "version": "0.4.1",
+            "version": "0.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/MediaVorus.git",
-                "reference": "5d5c416353f48192f2202dd4be5c21d95f46b08d"
+                "reference": "b80ab6acd79f69b2040f7915e1393f08f68277fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/MediaVorus/zipball/5d5c416353f48192f2202dd4be5c21d95f46b08d",
-                "reference": "5d5c416353f48192f2202dd4be5c21d95f46b08d",
+                "url": "https://api.github.com/repos/romainneutron/MediaVorus/zipball/b80ab6acd79f69b2040f7915e1393f08f68277fc",
+                "reference": "b80ab6acd79f69b2040f7915e1393f08f68277fc",
                 "shasum": ""
             },
             "require": {
@@ -1703,7 +1704,7 @@
             "keywords": [
                 "metadata"
             ],
-            "time": "2013-10-21 12:36:49"
+            "time": "2013-11-28 16:41:54"
         },
         {
             "name": "monolog/monolog",
@@ -2108,16 +2109,16 @@
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
-            "version": "0.4.0",
+            "version": "0.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHP-FFmpeg.git",
-                "reference": "0d82e5ad3cb50fd78882b5e15aaf57b39a274103"
+                "reference": "554cec2bc7b76e222aeef083205ed3bd57327975"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/0d82e5ad3cb50fd78882b5e15aaf57b39a274103",
-                "reference": "0d82e5ad3cb50fd78882b5e15aaf57b39a274103",
+                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/554cec2bc7b76e222aeef083205ed3bd57327975",
+                "reference": "554cec2bc7b76e222aeef083205ed3bd57327975",
                 "shasum": ""
             },
             "require": {
@@ -2173,7 +2174,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-10-21 12:16:28"
+            "time": "2013-12-02 13:48:20"
         },
         {
             "name": "php-mp4box/php-mp4box",
@@ -2894,16 +2895,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "dev-master",
+            "version": "2.4.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "95b2d02ce90d22b5c8a457d2a5d6f2b3fc8f0b37"
+                "reference": "d618762956e45bb169b54ca4357690a0443f9027"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/95b2d02ce90d22b5c8a457d2a5d6f2b3fc8f0b37",
-                "reference": "95b2d02ce90d22b5c8a457d2a5d6f2b3fc8f0b37",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/d618762956e45bb169b54ca4357690a0443f9027",
+                "reference": "d618762956e45bb169b54ca4357690a0443f9027",
                 "shasum": ""
             },
             "require": {
@@ -3003,7 +3004,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2013-11-21 07:05:43"
+            "time": "2013-12-03 14:52:22"
         },
         {
             "name": "themattharris/tmhoauth",
@@ -3011,12 +3012,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/themattharris/tmhOAuth.git",
-                "reference": "0.8.3"
+                "reference": "47dcee2ac74f8c032d2a1afb836e65108bf582b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/themattharris/tmhOAuth/zipball/0.8.3",
-                "reference": "0.8.3",
+                "url": "https://api.github.com/repos/themattharris/tmhOAuth/zipball/47dcee2ac74f8c032d2a1afb836e65108bf582b7",
+                "reference": "47dcee2ac74f8c032d2a1afb836e65108bf582b7",
                 "shasum": ""
             },
             "require": {
@@ -3240,12 +3241,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/Behat.git",
-                "reference": "477c3b8eea10ec1eb839e74397e4c75742897d95"
+                "reference": "b688e3c4bd65ef867d2ec0a0cf8e621c166e259b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Behat/zipball/477c3b8eea10ec1eb839e74397e4c75742897d95",
-                "reference": "477c3b8eea10ec1eb839e74397e4c75742897d95",
+                "url": "https://api.github.com/repos/Behat/Behat/zipball/b688e3c4bd65ef867d2ec0a0cf8e621c166e259b",
+                "reference": "b688e3c4bd65ef867d2ec0a0cf8e621c166e259b",
                 "shasum": ""
             },
             "require": {
@@ -3294,7 +3295,7 @@
                 "Behat",
                 "Symfony2"
             ],
-            "time": "2013-10-01 08:34:20"
+            "time": "2013-11-24 10:17:18"
         },
         {
             "name": "behat/gherkin",
