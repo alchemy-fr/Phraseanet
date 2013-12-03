@@ -147,10 +147,10 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
         $sender = User_Adapter::getInstance($usr_id, $this->app)->get_display_name();
 
         $ret = [
-            'text'  => $this->app->trans('%user% a passe une %opening_link% commande %end_link%', array(
+            'text'  => $this->app->trans('%user% a passe une %opening_link% commande %end_link%', [
                 '%user%' => $sender,
                 '%opening_link%' => '<a href="/prod/order/'.$order_id.'/" class="dialog full-dialog" title="'.$this->app->trans('Orders manager').'">',
-                '%end_link%' => '</a>',))
+                '%end_link%' => '</a>',])
             , 'class' => ''
         ];
 

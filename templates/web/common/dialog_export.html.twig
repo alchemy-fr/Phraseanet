@@ -518,7 +518,7 @@
                     title : '{{ "Warning !" | trans }}'
                 }, 2);
 
-                alert.setContent("{{ alert_message|e }}");
+                alert.setContent("{{ alert_message | e('js') }}");
 
                 return false;
             }
@@ -558,10 +558,10 @@
                     size : 'Alert',
                     closeOnEscape : true,
                     closeButton:true,
-                    title : '{{ "Warning !" | trans }}'
+                    title : '{{ "Warning !" | trans | e('js') }}'
                 }, 2);
 
-                alert.setContent("{{ alert_message|e }}");
+                alert.setContent("{{ alert_message | e('js') }}");
 
                 return false;
             }
@@ -575,10 +575,10 @@
                     size : 'Alert',
                     closeOnEscape : true,
                     closeButton:true,
-                    title : '{{ "Warning !" | trans }}'
+                    title : '{{ "Warning !" | trans | e('js') }}'
                 }, 2);
 
-                alert.setContent("{{ alert_message|e }}");
+                alert.setContent("{{ alert_message | e('js') }}");
 
                 return false;
             }
@@ -651,7 +651,7 @@
                 {% endset %}
 
                 if(count>1 && total/1024/1024 > {{max_download}}) {
-                    if(confirm("{{alert_too_big_one|e('js') ~ "\\n" ~ alert_too_big_two ~ "\\n" ~ alert_too_big_three}}")) {
+                    if(confirm("{{alert_too_big_one|e('js') ~ "\\n" ~ alert_too_big_two|e('js') ~ "\\n" ~ alert_too_big_three|e('js')}}")) {
                         $('input[name="obj[]"]:checked', $('#download')).each(function(i,n){
                         $('input[name="obj[]"][value="'+$(n).val()+'"]', $('#sendmail')).attr('checked', true);
                         });
@@ -689,9 +689,9 @@
                         $('#order .order_button_loader').css('visibility','hidden');
 
                         if(!data.error) {
-                            var title = '{{ "Success" | trans }}';
+                            var title = '{{ "Success" | trans | e('js') }}';
                         } else {
-                            var title = '{{ "Warning !" | trans }}';
+                            var title = '{{ "Warning !" | trans | e('js') }}';
                         }
 
                         var options = {
@@ -745,7 +745,7 @@
                                 size : 'Alert',
                                 closeOnEscape : true,
                                 closeButton:true,
-                                title : '{{ "Warning !" | trans }}'
+                                title : '{{ "Warning !" | trans | e('js') }}'
                             }, 2);
 
                             alert.setContent(data.message);
@@ -769,7 +769,7 @@
                         var options = {
                           size : 'Alert',
                           closeButton: true,
-                          title : data.success ? '{{ "Success" | trans }}' : '{{ "Warning !" | trans }}'
+                          title : data.success ? '{{ "Success" | trans | e('js') }}' : '{{ "Warning !" | trans | e('js') }}'
                         };
 
                         p4.Dialog.Create(options, 2).setContent(data.message);

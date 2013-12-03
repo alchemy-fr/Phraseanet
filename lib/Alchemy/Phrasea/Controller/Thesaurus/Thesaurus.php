@@ -429,7 +429,7 @@ class Thesaurus implements ControllerProviderInterface
                     $dom->formatOutput = true;
                     $root = $dom->appendChild($dom->createElementNS('www.phraseanet.com', 'phraseanet:topics'));
 
-                    $root->appendChild($dom->createComment($app->trans('thesaurus:: fichier genere le %date%', array('%date%' => $now))));
+                    $root->appendChild($dom->createComment($app->trans('thesaurus:: fichier genere le %date%', ['%date%' => $now])));
 
                     $root->appendChild($dom->createElement('display'))
                         ->appendChild($dom->createElement('defaultview'))
@@ -445,7 +445,7 @@ class Thesaurus implements ControllerProviderInterface
                         @rename($app['root.path'] . '/config/topics/' . $fname, $app['root.path'] . '/config/topics/topics_' . $lng . '_BKP_' . $now . '.xml');
 
                         if ($dom->save($app['root.path'] . '/config/topics/' . $fname)) {
-                            $lngs[$lng] = \p4string::MakeString($app->trans('thesaurus:: fichier genere : %filename%', array('%filename%' => $fname)));
+                            $lngs[$lng] = \p4string::MakeString($app->trans('thesaurus:: fichier genere : %filename%', ['%filename%' => $fname]));
                         } else {
                             $lngs[$lng] = \p4string::MakeString($app->trans('thesaurus:: erreur lors de l\'enregsitrement du fichier'));
                         }
@@ -608,20 +608,20 @@ class Thesaurus implements ControllerProviderInterface
                                 $line = substr($line, 1);
                             }
                             if ($depth > $curdepth + 1) {
-                                $err = $app->trans("over-indent at line %line%", array('%line%' => $iline));
+                                $err = $app->trans("over-indent at line %line%", ['%line%' => $iline]);
                                 continue;
                             }
 
                             $line = trim($line);
 
                             if ( ! $this->checkEncoding($line, 'UTF-8')) {
-                                $err = $app->trans("bad encoding at line %line%", array('%line%' => $iline));
+                                $err = $app->trans("bad encoding at line %line%", ['%line%' => $iline]);
                                 continue;
                             }
 
                             $line = str_replace($cbad, $cok, ($oldline = $line));
                             if ($line != $oldline) {
-                                $err = $app->trans("bad character at line %line%", array('%line%' => $iline));
+                                $err = $app->trans("bad character at line %line%", ['%line%' => $iline]);
                                 continue;
                             }
 

@@ -26,7 +26,7 @@ class MailTest extends AbstractMail
      */
     public function getMessage()
     {
-        return sprintf("%s\n%s", $this->app->trans('Ce mail est un test d\'envoi de mail depuis %application%', array('%application%' => $this->getPhraseanetTitle())), $this->message);
+        return sprintf("%s\n%s", $this->app->trans('Ce mail est un test d\'envoi de mail depuis %application%', ['%application%' => $this->getPhraseanetTitle()]), $this->message);
     }
 
     /**

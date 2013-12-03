@@ -116,7 +116,7 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
         $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
 
         $ret = [
-            'text'  => $this->app->trans('%user% a refuse la livraison de %quantity% document(s) pour votre commande', array('%user%' => $sender, '%quantity%' => $n))
+            'text'  => $this->app->trans('%user% a refuse la livraison de %quantity% document(s) pour votre commande', ['%user%' => $sender, '%quantity%' => $n])
             , 'class' => ''
         ];
 

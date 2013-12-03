@@ -99,7 +99,7 @@ return call_user_func_array(function(Application $app) {
                     'type'     => \registry::TYPE_BOOLEAN,
                     'name'     => 'GV_captchas',
                     'comment'  => $app->trans('Use recaptcha API'),
-                    'help'     => $app->trans('See documentation at %website%', array('%website%' => $recaptchaDoc)),
+                    'help'     => $app->trans('See documentation at %website%', ['%website%' => $recaptchaDoc]),
                     'default'  => false,
                     'required' => true
                 ],
@@ -123,7 +123,7 @@ return call_user_func_array(function(Application $app) {
                     'type'     => \registry::TYPE_BOOLEAN,
                     'name'     => 'GV_youtube_api',
                     'comment'  => $app->trans('Use youtube API'),
-                    'help'     => $app->trans('Create API account at %website_url%, then use %callback_url% as callback URL value', array('%website_url%' => $youtube_console_url, '%callback_url%' => $youtube_callback)),
+                    'help'     => $app->trans('Create API account at %website_url%, then use %callback_url% as callback URL value', ['%website_url%' => $youtube_console_url, '%callback_url%' => $youtube_callback]),
                     'default'  => false,
                     'required' => true
                 ],
@@ -143,7 +143,7 @@ return call_user_func_array(function(Application $app) {
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_youtube_dev_key',
                     'comment' => $app->trans('Youtube developer key'),
-                    'help'    => $app->trans('See %url%', array('%url%' => $dashboard_youtube)),
+                    'help'    => $app->trans('See %url%', ['%url%' => $dashboard_youtube]),
                     'default' => ''
                 ]
             ]
@@ -154,7 +154,7 @@ return call_user_func_array(function(Application $app) {
                     'type'     => \registry::TYPE_BOOLEAN,
                     'name'     => 'GV_flickr_api',
                     'comment'  => $app->trans('Use Flickr API'),
-                    'help'     => $app->trans('Create API account at %website_url%, then use %callback_url% as callback URL value', array('%website_url%' => $create_api_flickr, '%callback_url%' => $flickr_callback)),
+                    'help'     => $app->trans('Create API account at %website_url%, then use %callback_url% as callback URL value', ['%website_url%' => $create_api_flickr, '%callback_url%' => $flickr_callback]),
                     'default'  => false,
                     'required' => true
                 ],
@@ -178,7 +178,7 @@ return call_user_func_array(function(Application $app) {
                     'type'     => \registry::TYPE_BOOLEAN,
                     'name'     => 'GV_dailymotion_api',
                     'comment'  => $app->trans('Use Dailymotion API'),
-                    'help'     => $app->trans('Create API account at %website_url%, then use %callback_url% as callback URL value', array('%website_url%' => $create_api_dailymotion, '%callback_url%' => $dailymotion_callback)),
+                    'help'     => $app->trans('Create API account at %website_url%, then use %callback_url% as callback URL value', ['%website_url%' => $create_api_dailymotion, '%callback_url%' => $dailymotion_callback]),
                     'default'  => false,
                     'required' => true
                 ],
@@ -269,7 +269,7 @@ return call_user_func_array(function(Application $app) {
                     'name'      => 'GV_imagine_driver',
                     'default'   => '',
                     'comment'   => $app->trans('Imagine driver'),
-                    'help'      => $app->trans('See documentation at %website%', array('%website%' => $imagineDoc)),
+                    'help'      => $app->trans('See documentation at %website%', ['%website%' => $imagineDoc]),
                     'available' => [
                         ''        => 'Auto',
                         'gmagick' => 'GraphicsMagick',

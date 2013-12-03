@@ -617,7 +617,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             }
 
             if ($oldReceiver) {
-                $mailOldAddress = MailSuccessEmailUpdate::create($this->app, $oldReceiver, null, $this->app->trans('You will now receive notifications at %new_email%', array('%new_email%' => $new_email)));
+                $mailOldAddress = MailSuccessEmailUpdate::create($this->app, $oldReceiver, null, $this->app->trans('You will now receive notifications at %new_email%', ['%new_email%' => $new_email]));
                 $this->app['notification.deliverer']->deliver($mailOldAddress);
             }
 
@@ -628,7 +628,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             }
 
             if ($newReceiver) {
-                $mailNewAddress = MailSuccessEmailUpdate::create($this->app, $newReceiver, null, $this->app->trans('You will no longer receive notifications at %old_email%', array('%old_email%' => $old_email)));
+                $mailNewAddress = MailSuccessEmailUpdate::create($this->app, $newReceiver, null, $this->app->trans('You will no longer receive notifications at %old_email%', ['%old_email%' => $old_email]));
                 $this->app['notification.deliverer']->deliver($mailNewAddress);
             }
         }

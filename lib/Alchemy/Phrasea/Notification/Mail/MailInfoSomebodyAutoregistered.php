@@ -18,7 +18,7 @@ class MailInfoSomebodyAutoregistered extends AbstractMailWithLink
      */
     public function getSubject()
     {
-        return $this->app->trans('admin::register: Inscription automatique sur %application%', array('%application%' => $this->getPhraseanetTitle()));
+        return $this->app->trans('admin::register: Inscription automatique sur %application%', ['%application%' => $this->getPhraseanetTitle()]);
     }
 
     /**

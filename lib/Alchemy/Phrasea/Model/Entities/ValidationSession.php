@@ -264,15 +264,15 @@ class ValidationSession
 
         if ($this->isInitiator($user)) {
             if ($this->isFinished()) {
-                return $app->trans('Vous aviez envoye cette demande a %n% utilisateurs', array('%n%' => count($this->getParticipants()) - 1));
+                return $app->trans('Vous aviez envoye cette demande a %n% utilisateurs', ['%n%' => count($this->getParticipants()) - 1]);
             } else {
-                return $app->trans('Vous avez envoye cette demande a %n% utilisateurs', array('%n%' => count($this->getParticipants()) - 1));
+                return $app->trans('Vous avez envoye cette demande a %n% utilisateurs', ['%n%' => count($this->getParticipants()) - 1]);
             }
         } else {
             if ($this->getParticipant($user, $app)->getCanSeeOthers()) {
-                return $app->trans('Processus de validation recu de %user% et concernant %n% utilisateurs', array('%user%' => $this->getInitiator($app)->get_display_name(), '%n%' => count($this->getParticipants()) - 1));
+                return $app->trans('Processus de validation recu de %user% et concernant %n% utilisateurs', ['%user%' => $this->getInitiator($app)->get_display_name(), '%n%' => count($this->getParticipants()) - 1]);
             } else {
-                return $app->trans('Processus de validation recu de %user%', array('%user%' => $this->getInitiator($app)->get_display_name()));
+                return $app->trans('Processus de validation recu de %user%', ['%user%' => $this->getInitiator($app)->get_display_name()]);
             }
         }
     }

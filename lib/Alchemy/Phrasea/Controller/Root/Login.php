@@ -899,7 +899,7 @@ class Login implements ControllerProviderInterface
             $provider->onCallback($request);
             $token = $provider->getToken();
         } catch (NotAuthenticatedException $e) {
-            $app['session']->getFlashBag()->add('error', $app->trans('Unable to authenticate with %provider_name%', array('%provider_name%' => $provider->getName())));
+            $app['session']->getFlashBag()->add('error', $app->trans('Unable to authenticate with %provider_name%', ['%provider_name%' => $provider->getName()]));
 
             return $app->redirectPath('homepage');
         }

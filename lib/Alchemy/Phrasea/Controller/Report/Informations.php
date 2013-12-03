@@ -151,7 +151,7 @@ class Informations implements ControllerProviderInterface
                     return $app->json(['diag'  => $app['twig']->render('report/colFilter.html.twig', [
                         'result' => $report->colFilter($field),
                         'field'  => $field
-                    ]), 'title'  => $app->trans('filtrer les resultats sur la colonne %colonne%', array('%colonne%' => $field))]);
+                    ]), 'title'  => $app->trans('filtrer les resultats sur la colonne %colonne%', ['%colonne%' => $field])]);
                 }
 
                 if ($field === $value) {
@@ -409,7 +409,7 @@ class Informations implements ControllerProviderInterface
                     return $app->json(['diag'  => $app['twig']->render('report/colFilter.html.twig', [
                         'result' => $download->colFilter($field),
                         'field'  => $field
-                    ]), 'title'  => $app->trans('filtrer les resultats sur la colonne %colonne%', array('%colonne%' => $field))]);
+                    ]), 'title'  => $app->trans('filtrer les resultats sur la colonne %colonne%', ['%colonne%' => $field])]);
                 }
 
                 if ($field === $value) {

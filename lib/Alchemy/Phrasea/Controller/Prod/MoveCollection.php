@@ -76,7 +76,7 @@ class MoveCollection implements ControllerProviderInterface
             }
 
             if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($request->request->get('base_id'), 'canaddrecord')) {
-                $datas['message'] = $app->trans("You do not have the permission to move records to %collection%", array('%collection%', \phrasea::bas_labels($request->request->get('base_id'), $app)));
+                $datas['message'] = $app->trans("You do not have the permission to move records to %collection%", ['%collection%', \phrasea::bas_labels($request->request->get('base_id'), $app)]);
 
                 return $app->json($datas);
             }

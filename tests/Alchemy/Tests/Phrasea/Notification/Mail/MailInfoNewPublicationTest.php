@@ -13,8 +13,8 @@ class MailInfoNewPublicationTest extends MailWithLinkTestCase
 
     public function testSetTitle()
     {
-        $this->assertContainsString('joli titre', $this->getMail()->getSubject());
-        $this->assertContainsString('joli titre', $this->getMail()->getMessage());
+        $this->assertEquals('Nouvelle publication : %title%', $this->getMail()->getSubject());
+        $this->assertEquals('%user% vient de publier %title%', $this->getMail()->getMessage());
     }
 
     public function testShouldThrowALogicExceptionIfNoTitleProvided()
@@ -64,7 +64,7 @@ class MailInfoNewPublicationTest extends MailWithLinkTestCase
 
     public function testSetAuthor()
     {
-        $this->assertContainsString('bel author', $this->getMail()->getMessage());
+        $this->assertEquals('%user% vient de publier %title%', $this->getMail()->getMessage());
     }
 
     public function getMail()

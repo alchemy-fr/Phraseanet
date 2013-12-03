@@ -920,7 +920,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
                         $errors[$name . '_' . $key] = $this->translator->trans("Ce champ est obligatoire");
                 } elseif ($length !== 0) {
                     if (mb_strlen($datas[$name]) > $length)
-                        $errors[$name . '_' . $key] = $this->translator->trans("Ce champ est trop long %length% caracteres max", array('%length%' => $length));
+                        $errors[$name . '_' . $key] = $this->translator->trans("Ce champ est trop long %length% caracteres max", ['%length%' => $length]);
                 }
             };
 
@@ -946,7 +946,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
                         $errors[$name] = $this->translator->trans("Ce champ est obligatoire");
                 } elseif ($length !== 0) {
                     if (mb_strlen($datas[$name]) > $length)
-                        $errors[$name] = $this->translator->trans("Ce champ est trop long %length% caracteres max", array('%length%' => $length));
+                        $errors[$name] = $this->translator->trans("Ce champ est trop long %length% caracteres max", ['%length%' => $length]);
                 }
             };
 
@@ -1021,10 +1021,10 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
             $errors["file_size_" . $key] = $this->translator->trans("Le record n'a pas de fichier physique"); //Record must rely on real file
 
         if ($record->get_duration() > self::AUTH_VIDEO_DURATION)
-            $errors["duration_" . $key] = $this->translator->trans("La taille maximale d'une video est de %duration% minutes.", array('%duration%' => self::AUTH_VIDEO_DURATION / 60));
+            $errors["duration_" . $key] = $this->translator->trans("La taille maximale d'une video est de %duration% minutes.", ['%duration%' => self::AUTH_VIDEO_DURATION / 60]);
 
         if ($record->get_technical_infos('size') > self::AUTH_VIDEO_SIZE)
-            $errors["size_" . $key] = $this->translator->trans("Le poids maximum d'un fichier est de %size%", array('%size%' => p4string::format_octets(self::AUTH_VIDEO_SIZE)));
+            $errors["size_" . $key] = $this->translator->trans("Le poids maximum d'un fichier est de %size%", ['%size%' => p4string::format_octets(self::AUTH_VIDEO_SIZE)]);
 
         return $errors;
     }

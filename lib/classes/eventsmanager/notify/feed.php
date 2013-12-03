@@ -140,7 +140,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
         }
 
         $ret = [
-            'text'  => $this->app->trans('%user% has published %title%', array('%user%' => $entry->getAuthorName(), '%title%' => '<a href="/lightbox/feeds/entry/' . $entry->getId() . '/" target="_blank">' . $entry->getTitle() . '</a>'))
+            'text'  => $this->app->trans('%user% has published %title%', ['%user%' => $entry->getAuthorName(), '%title%' => '<a href="/lightbox/feeds/entry/' . $entry->getId() . '/" target="_blank">' . $entry->getTitle() . '</a>'])
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
         ];
 

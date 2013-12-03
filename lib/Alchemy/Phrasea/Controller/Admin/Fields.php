@@ -114,7 +114,7 @@ class Fields implements ControllerProviderInterface
                 $fields[] = $field->toArray();
             } catch (\Exception $e) {
                 $connection->rollback();
-                $app->abort(500, $app->trans('Field %name% could not be saved, please try again or contact an admin.', array('%name%' => $jsonField['name'])));
+                $app->abort(500, $app->trans('Field %name% could not be saved, please try again or contact an admin.', ['%name%' => $jsonField['name']]));
                 break;
             }
         }
@@ -235,7 +235,7 @@ class Fields implements ControllerProviderInterface
             $this->updateFieldWithData($app, $field, $data);
             $field->save();
         } catch (\Exception $e) {
-            $app->abort(500, $app->trans('Field %name% could not be created, please try again or contact an admin.', array('%name%' => $data['name'])));
+            $app->abort(500, $app->trans('Field %name% could not be created, please try again or contact an admin.', ['%name%' => $data['name']]));
         }
 
         return $app->json($field->toArray(), 201, [

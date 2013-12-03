@@ -13,13 +13,13 @@ class TranslationServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['translator.cache-options'] = array();
+        $app['translator.cache-options'] = [];
 
         $app['translator'] = $app->share(function ($app) {
             $app['translator.cache-options'] = array_replace(
-                array(
+                [
                     'debug' => $app['debug'],
-                ), $app['translator.cache-options']
+                ], $app['translator.cache-options']
             );
 
             $translator = new CachedTranslator($app, $app['translator.message_selector'], $app['translator.cache-options']);
@@ -47,8 +47,8 @@ class TranslationServiceProvider implements ServiceProviderInterface
             return new MessageSelector();
         });
 
-        $app['translator.domains'] = array();
-        $app['locale_fallbacks'] = array('en');
+        $app['translator.domains'] = [];
+        $app['locale_fallbacks'] = ['en'];
     }
 
     public function boot(Application $app)

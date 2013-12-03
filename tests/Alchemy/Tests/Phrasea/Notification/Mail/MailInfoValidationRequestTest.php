@@ -12,7 +12,7 @@ class MailInfoValidationRequestTest extends MailWithLinkTestCase
 {
     public function testSetTitle()
     {
-        $this->assertContainsString('Hello World', $this->getMail()->getSubject());
+        $this->assertEquals('Validation request from %user% for \'%title%\'', $this->getMail()->getSubject());
     }
 
     public function testShouldThrowALogicExceptionIfNoUserProvided()
@@ -67,7 +67,7 @@ class MailInfoValidationRequestTest extends MailWithLinkTestCase
 
     public function testSetUser()
     {
-        $this->assertContainsString('jeanPhil', $this->getMail()->getSubject());
+        $this->assertEquals('Validation request from %user% for \'%title%\'', $this->getMail()->getSubject());
     }
 
     public function getMail()

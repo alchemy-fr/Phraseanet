@@ -1508,10 +1508,10 @@ class Xmlhttp implements ControllerProviderInterface
                     $databox->saveCterms($sbas['domct']);
                 }
             }
-            $ret['msg'] = $app->trans('prod::thesaurusTab:dlg:%number% record(s) updated', array('%number%' => $ret['nRecsUpdated']));
+            $ret['msg'] = $app->trans('prod::thesaurusTab:dlg:%number% record(s) updated', ['%number%' => $ret['nRecsUpdated']]);
         } else {
             // too many records to update
-            $ret['msg'] = $app->trans('prod::thesaurusTab:dlg:too many (%number%) records to update (limit=%maximum%)', array('%number%' => $ret['nRecsToUpdate'], '%maximum%' => self::SEARCH_REPLACE_MAXREC));
+            $ret['msg'] = $app->trans('prod::thesaurusTab:dlg:too many (%number%) records to update (limit=%maximum%)', ['%number%' => $ret['nRecsToUpdate'], '%maximum%' => self::SEARCH_REPLACE_MAXREC]);
         }
 
         return $app->json($ret);

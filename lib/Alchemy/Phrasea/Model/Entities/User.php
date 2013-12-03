@@ -965,7 +965,7 @@ class User
     public function getDisplayName(TranslatorInterface $translator)
     {
         if ($this->isTemplate()) {
-            return $translator->trans('modele %name%', array('%name%' => $this->getLogin()));
+            return $translator->trans('modele %name%', ['%name%' => $this->getLogin()]);
         }
 
         if (trim($this->lastName) !== '' || trim($this->firstName) !== '') {

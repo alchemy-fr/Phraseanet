@@ -247,7 +247,7 @@ class Order implements ControllerProviderInterface
 
         if (null === $basket) {
             $basket = new Basket();
-            $basket->setName($app->trans('Commande du %date%', array('%date%' => $order->getCreatedOn()->format('Y-m-d'))));
+            $basket->setName($app->trans('Commande du %date%', ['%date%' => $order->getCreatedOn()->format('Y-m-d')]));
             $basket->setOwner($dest_user);
             $basket->setPusher($app['authentication']->getUser());
 

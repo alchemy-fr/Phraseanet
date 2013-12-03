@@ -415,7 +415,7 @@ class module_report_nav extends module_report
         $filter_id_apbox = $filter_id_datbox = [];
         $conn = $this->app['phraseanet.appbox']->get_connection();
 
-        $this->title = $this->app->trans('report:: Information sur les utilisateurs correspondant a %critere%', array('%critere%' => $val));
+        $this->title = $this->app->trans('report:: Information sur les utilisateurs correspondant a %critere%', ['%critere%' => $val]);
 
         if ($on) {
             if ( ! empty($req)) {
@@ -471,7 +471,7 @@ class module_report_nav extends module_report
                 $this->app->trans('phraseanet::utilisateur inconnu') :
                 $this->result[0]['identifiant'];
 
-            $this->title = $this->app->trans('report:: Information sur l\'utilisateur %name%', array('%name%' => $login));
+            $this->title = $this->app->trans('report:: Information sur l\'utilisateur %name%', ['%name%' => $login]);
         }
         $this->calculatePages();
         $this->setDisplayNav();
@@ -511,7 +511,7 @@ class module_report_nav extends module_report
         ];
 
         $document = $record->get_subdef('document');
-        $this->title = $this->app->trans('report:: Information sur l\'enregistrement numero %number%', array('%number%' => (int) $rid));
+        $this->title = $this->app->trans('report:: Information sur l\'enregistrement numero %number%', ['%number%' => (int) $rid]);
 
         $x = $record->get_thumbnail();
         $this->result[] = [
@@ -534,7 +534,7 @@ class module_report_nav extends module_report
     public function buildTabInfoNav($tab = false, $navigator)
     {
         $conn = connection::getPDOConnection($this->app, $this->sbas_id);
-        $this->title = $this->app->trans('report:: Information sur le navigateur %name%', array('%name%' => $navigator));
+        $this->title = $this->app->trans('report:: Information sur le navigateur %name%', ['%name%' => $navigator]);
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters();
         $report_filter = $filter->getReportFilter();

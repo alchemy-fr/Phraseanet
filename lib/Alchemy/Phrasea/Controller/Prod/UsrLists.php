@@ -153,7 +153,7 @@ class UsrLists implements ControllerProviderInterface
 
         $datas = [
             'success' => false
-            , 'message' => $app->trans('Unable to create list %name%', array('%name%' => $list_name))
+            , 'message' => $app->trans('Unable to create list %name%', ['%name%' => $list_name])
             , 'list_id' => null
         ];
 
@@ -178,7 +178,7 @@ class UsrLists implements ControllerProviderInterface
 
             $datas = [
                 'success' => true
-                , 'message' => $app->trans('List %name% has been created', array('%name%' => $list_name))
+                , 'message' => $app->trans('List %name% has been created', ['%name%' => $list_name])
                 , 'list_id' => $List->getId()
             ];
         } catch (ControllerException $e) {
@@ -393,13 +393,13 @@ class UsrLists implements ControllerProviderInterface
             if (count($inserted_usr_ids) > 1) {
                 $datas = [
                     'success' => true
-                    , 'message' => $app->trans('%quantity% Users added to list', array('%quantity%' => count($inserted_usr_ids)))
+                    , 'message' => $app->trans('%quantity% Users added to list', ['%quantity%' => count($inserted_usr_ids)])
                     , 'result'  => $inserted_usr_ids
                 ];
             } else {
                 $datas = [
                     'success' => true
-                    , 'message' => $app->trans('%quantity% User added to list', array('%quantity%' => count($inserted_usr_ids)))
+                    , 'message' => $app->trans('%quantity% User added to list', ['%quantity%' => count($inserted_usr_ids)])
                     , 'result'  => $inserted_usr_ids
                 ];
             }

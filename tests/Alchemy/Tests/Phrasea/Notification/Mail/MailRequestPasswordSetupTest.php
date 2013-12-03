@@ -13,7 +13,7 @@ class MailRequestPasswordSetupTest extends MailWithLinkTestCase
     public function testSetLogin()
     {
         $mail = $this->getMail();
-        $this->assertTrue(false !== strpos($mail->getMessage(), 'RomainNeutron'));
+        $this->assertEquals("Your account with the login %login% as been created\nYou now have to set up your pasword", $mail->getMessage());
     }
 
     public function testThatALogicExceptionIsThrownIfNoLoginProvided()

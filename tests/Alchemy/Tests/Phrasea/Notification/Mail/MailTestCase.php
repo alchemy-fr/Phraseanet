@@ -68,9 +68,4 @@ abstract class MailTestCase extends \PhraseanetPHPUnitAbstract
      * @return MailInterface
      */
     abstract public function getMail();
-
-    public function assertContainsString($expected, $message)
-    {
-        $this->assertTrue(false !== stripos($message, $expected));
-    }
 }

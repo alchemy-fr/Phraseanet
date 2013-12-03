@@ -313,7 +313,7 @@ class module_report_activity extends module_report
             $i ++;
         }
 
-        $this->title = $this->app->trans('report:: Telechargement effectue par l\'utilisateur %name%', array('%name%' => $login));
+        $this->title = $this->app->trans('report:: Telechargement effectue par l\'utilisateur %name%', ['%name%' => $login]);
 
         $this->setResult($result);
 

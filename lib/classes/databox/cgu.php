@@ -88,7 +88,7 @@ class databox_cgu
             if ($out != '')
                 $out .= '<hr/>';
 
-            $out .= '<div><h1 style="text-align:center;">' . str_replace('"', '&quot;', $app->trans('cgus:: CGUs de la base %databox_name%', array('%databox_name%' => $name))) . '</h1>';
+            $out .= '<div><h1 style="text-align:center;">' . str_replace('"', '&quot;', $app->trans('cgus:: CGUs de la base %databox_name%', ['%databox_name%' => $name])) . '</h1>';
 
             $out .= '<blockquote>' . $term['terms'] . '</blockquote>';
 

@@ -20,6 +20,7 @@ use Alchemy\Phrasea\Command\Developer\LessCompiler;
 use Alchemy\Phrasea\Command\Developer\RegenerateSqliteDb;
 use Alchemy\Phrasea\Command\Developer\RoutesDumper;
 use Alchemy\Phrasea\Command\Developer\Uninstaller;
+use Alchemy\Phrasea\Command\Developer\TranslationDumper;
 
 use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
@@ -75,7 +76,7 @@ if ($cli['configuration.store']->isSetup()) {
     }
 }
 
-$cli->command(new \Alchemy\Phrasea\Command\Developer\TranslationDumper());
+$cli->command(new TranslationDumper());
 
 $cli->command(new InstallAll());
 $cli->command(new BowerInstall());

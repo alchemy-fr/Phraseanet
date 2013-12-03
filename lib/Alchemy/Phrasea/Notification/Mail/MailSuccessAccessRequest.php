@@ -18,7 +18,7 @@ class MailSuccessAccessRequest extends AbstractMailWithLink
      */
     public function getSubject()
     {
-        return $this->app->trans('login::register:email: Votre compte %application%', array('%application%' => $this->getPhraseanetTitle()));
+        return $this->app->trans('login::register:email: Votre compte %application%', ['%application%' => $this->getPhraseanetTitle()]);
     }
 
     /**

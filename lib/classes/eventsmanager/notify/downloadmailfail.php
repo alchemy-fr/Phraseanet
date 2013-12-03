@@ -105,7 +105,7 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
             $reason = $this->app->trans('an error occured while exporting records');
         }
 
-        $text = $this->app->trans("The delivery to %email% failed for the following reason : %reason%", array('%email%' => $dest, '%reason%' => $reason));
+        $text = $this->app->trans("The delivery to %email% failed for the following reason : %reason%", ['%email%' => $dest, '%reason%' => $reason]);
 
         $ret = [
             'text'  => $text

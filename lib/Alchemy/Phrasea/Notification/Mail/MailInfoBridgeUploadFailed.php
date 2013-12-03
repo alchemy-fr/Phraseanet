@@ -45,7 +45,7 @@ class MailInfoBridgeUploadFailed extends AbstractMailWithLink
      */
     public function getSubject()
     {
-        return $this->app->trans('Upload failed on %application%', array('%application%' => $this->getPhraseanetTitle()));
+        return $this->app->trans('Upload failed on %application%', ['%application%' => $this->getPhraseanetTitle()]);
     }
 
     /**
@@ -60,7 +60,7 @@ class MailInfoBridgeUploadFailed extends AbstractMailWithLink
             throw new LogicException('You must set a reason before calling getMessage');
         }
 
-        return $this->app->trans('An upload on %bridge_adapter% failed, the resaon is : %reason%', array('%bridge_adapter%' => $this->adapter, '%reason%' => $this->reason));
+        return $this->app->trans('An upload on %bridge_adapter% failed, the resaon is : %reason%', ['%bridge_adapter%' => $this->adapter, '%reason%' => $this->reason]);
     }
 
     /**

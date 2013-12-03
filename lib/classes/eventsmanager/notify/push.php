@@ -128,8 +128,8 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
         $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
 
         $ret = [
-            'text'  => $this->app->trans('%user% vous a envoye un %before_link% panier %after_link%', array('%user%' => $sender, '%before_link%' => '<a href="#" onclick="openPreview(\'BASK\',1,\''
-                . (string) $sx->ssel_id . '\');return false;">', '%after_link%' => '</a>'))
+            'text'  => $this->app->trans('%user% vous a envoye un %before_link% panier %after_link%', ['%user%' => $sender, '%before_link%' => '<a href="#" onclick="openPreview(\'BASK\',1,\''
+                . (string) $sx->ssel_id . '\');return false;">', '%after_link%' => '</a>'])
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
         ];
 

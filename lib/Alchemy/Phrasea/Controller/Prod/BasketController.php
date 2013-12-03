@@ -335,7 +335,7 @@ class BasketController implements ControllerProviderInterface
 
         $data = [
             'success' => true
-            , 'message' => $app->trans('%quantity% records added', array('%quantity%' => $n))
+            , 'message' => $app->trans('%quantity% records added', ['%quantity%' => $n])
         ];
 
         if ($request->getRequestFormat() === 'json') {
@@ -367,7 +367,7 @@ class BasketController implements ControllerProviderInterface
 
         $data = [
             'success' => true
-            , 'message' => $app->trans('%quantity% records moved', array('%quantity%' => $n))
+            , 'message' => $app->trans('%quantity% records moved', ['%quantity%' => $n])
         ];
 
         if ($request->getRequestFormat() === 'json') {

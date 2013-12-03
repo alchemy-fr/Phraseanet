@@ -656,12 +656,12 @@ class Users implements ControllerProviderInterface
                     if ($sqlField === 'usr_login') {
                         $loginToAdd = $value;
                         if ($loginToAdd === "") {
-                            $out['errors'][] = $app->trans("Login line %line% is empty", array('%line%' => $nbLine + 1));
+                            $out['errors'][] = $app->trans("Login line %line% is empty", ['%line%' => $nbLine + 1]);
                         } elseif (in_array($loginToAdd, $loginNew)) {
-                            $out['errors'][] = $app->trans("Login %login% is already defined in the file at line %line%", array('%login%' => $loginToAdd, '%line%' => $nbLine));
+                            $out['errors'][] = $app->trans("Login %login% is already defined in the file at line %line%", ['%login%' => $loginToAdd, '%line%' => $nbLine]);
                         } else {
                             if (\User_Adapter::get_usr_id_from_login($app, $loginToAdd)) {
-                                $out['errors'][] = $app->trans("Login %login% already exists in database", array('%login%' => $loginToAdd));
+                                $out['errors'][] = $app->trans("Login %login% already exists in database", ['%login%' => $loginToAdd]);
                             } else {
                                 $loginValid = true;
                             }
@@ -672,9 +672,9 @@ class Users implements ControllerProviderInterface
                         $mailToAdd = $value;
 
                         if ($mailToAdd === "") {
-                            $out['errors'][] = $app->trans("Mail line %line% is empty", array('%line%' => $nbLine + 1));
+                            $out['errors'][] = $app->trans("Mail line %line% is empty", ['%line%' => $nbLine + 1]);
                         } elseif (false !== \User_Adapter::get_usr_id_from_email($app, $mailToAdd)) {
-                            $out['errors'][] = $app->trans("Email '%email%' for login '%login%' already exists in database", array('%email%' => $mailToAdd, '%login%' => $loginToAdd));
+                            $out['errors'][] = $app->trans("Email '%email%' for login '%login%' already exists in database", ['%email%' => $mailToAdd, '%login%' => $loginToAdd]);
                         } else {
                             $mailValid = true;
                         }
@@ -684,7 +684,7 @@ class Users implements ControllerProviderInterface
                         $passwordToVerif = $value;
 
                         if ($passwordToVerif === "") {
-                            $out['errors'][] = $app->trans("Password is empty at line %line%", array('%line%' => $nbLine));
+                            $out['errors'][] = $app->trans("Password is empty at line %line%", ['%line%' => $nbLine]);
                         } else {
                             $pwdValid = true;
                         }

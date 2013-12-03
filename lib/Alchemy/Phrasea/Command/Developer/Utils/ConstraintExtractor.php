@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Alchemy\Phrasea\Command\Developer\Utils;
 
 use Alchemy\Phrasea\Application;
@@ -13,13 +22,13 @@ use Symfony\Component\Validator\Constraint;
  */
 class ConstraintExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 {
-    private $messageProperties = array('message', 'minMessage', 'maxMessage', 'multipleMessage',
+    private $messageProperties = ['message', 'minMessage', 'maxMessage', 'multipleMessage',
                                        'extractFieldsMessage', 'missingFieldsMessage', 'notFoundMessage',
                                        'notReadableMessage', 'maxSizeMessage', 'mimeTypesMessage',
                                        'uplaodIniSizeErrorMessage', 'uploadFormSizeErrorMessage',
                                        'uploadErrorMessage', 'mimeTypesMessage', 'sizeNotDetectedMessage',
                                        'maxWidthMessage', 'maxWidthMessage', 'minWidthMessage', 'maxHeightMessage',
-                                       'minHeightMessage', 'invalidMessage',);
+                                       'minHeightMessage', 'invalidMessage',];
 
     private $app;
     private $traverser;

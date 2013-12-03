@@ -133,8 +133,6 @@ class API_OAuth2_Form_DevAppDesktop
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
-        // supprimer avant merge : verifier que les contraintes URL et NotBlank sont bien analysées dans le dump
-
         $metadata->addPropertyConstraint('name', new Constraints\NotBlank());
         $metadata->addPropertyConstraint('description', new Constraints\NotBlank());
         $metadata->addPropertyConstraint('urlwebsite', new Constraints\NotBlank());

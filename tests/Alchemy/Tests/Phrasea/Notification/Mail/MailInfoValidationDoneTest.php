@@ -15,7 +15,7 @@ class MailInfoValidationDoneTest extends MailWithLinkTestCase
      */
     public function testSetTitle()
     {
-        $this->assertContainsString('Hulk Hogan', $this->getMail()->getSubject());
+        $this->assertEquals('push::mail:: Rapport de validation de %user% pour %title%', $this->getMail()->getSubject());
     }
 
     /**
@@ -23,8 +23,8 @@ class MailInfoValidationDoneTest extends MailWithLinkTestCase
      */
     public function testSetUser()
     {
-        $this->assertContainsString('JeanPhil', $this->getMail()->getSubject());
-        $this->assertContainsString('JeanPhil', $this->getMail()->getMessage());
+        $this->assertEquals('push::mail:: Rapport de validation de %user% pour %title%', $this->getMail()->getSubject());
+        $this->assertEquals('%user% has just sent its validation report, you can now see it', $this->getMail()->getMessage());
     }
 
     public function testShouldThrowALogicExceptionIfNoTitleProvided()

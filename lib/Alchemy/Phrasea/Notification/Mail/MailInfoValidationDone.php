@@ -52,10 +52,10 @@ class MailInfoValidationDone extends AbstractMailWithLink
             throw new LogicException('You must set an title before calling getSubject');
         }
 
-        return $this->app->trans('push::mail:: Rapport de validation de %user% pour %title%', array(
+        return $this->app->trans('push::mail:: Rapport de validation de %user% pour %title%', [
             '%user%'  => $this->user->get_display_name(),
             '%title%' => $this->title,
-        ));
+        ]);
     }
 
     /**
@@ -67,9 +67,9 @@ class MailInfoValidationDone extends AbstractMailWithLink
             throw new LogicException('You must set an user before calling getMessage');
         }
 
-        return $this->app->trans('%user% has just sent its validation report, you can now see it', array(
+        return $this->app->trans('%user% has just sent its validation report, you can now see it', [
             '%user%' => $this->user->get_display_name(),
-        ));
+        ]);
     }
 
     /**

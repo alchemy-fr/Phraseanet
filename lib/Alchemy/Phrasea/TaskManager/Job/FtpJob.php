@@ -101,19 +101,19 @@ class FtpJob extends AbstractJob
         $ftpLog = $ftp_user_name . "@" . \p4string::addEndSlash($ftp_server) . $export->getDestfolder();
 
         if ($export->getCrash() == 0) {
-            $line = $this->translator->trans('task::ftp:Etat d\'envoi FTP vers le serveur "%server%" avec le compte "%username%" et pour destination le dossier : "%directory%"', array(
+            $line = $this->translator->trans('task::ftp:Etat d\'envoi FTP vers le serveur "%server%" avec le compte "%username%" et pour destination le dossier : "%directory%"', [
                 '%server%'    => $ftp_server,
                 '%username%'  => $ftp_user_name,
                 '%directory%' => $export->getDestfolder(),
-            )) . PHP_EOL;
+            ]) . PHP_EOL;
             $state .= $line;
             $this->log('debug', $line);
         }
 
-        $state .= $line = $this->translator->trans("task::ftp:TENTATIVE no %number%, %date%", array(
+        $state .= $line = $this->translator->trans("task::ftp:TENTATIVE no %number%, %date%", [
                 '%number%' => $export->getCrash() + 1,
                 '%date%' => "  (" . date('r') . ")"
-            )) . PHP_EOL;
+            ]) . PHP_EOL;
 
         $this->log('debug', $line);
 
@@ -242,7 +242,7 @@ class FtpJob extends AbstractJob
                     $app['EM']->flush();
                     $this->logexport($app, $record, $obj, $ftpLog);
                 } catch (\Exception $e) {
-                    $state .= $line = $this->translator->trans('task::ftp:File "%file%" (record %record_id%) de la base "%basename%" (Export du Document) : Transfert cancelled (le document n\'existe plus)', array('%file%' => basename($localfile), '%record_id%' => $record_id, '%basename%' => \phrasea::sbas_labels(\phrasea::sbasFromBas($app, $base_id), $app))) . "\n<br/>";
+                    $state .= $line = $this->translator->trans('task::ftp:File "%file%" (record %record_id%) de la base "%basename%" (Export du Document) : Transfert cancelled (le document n\'existe plus)', ['%file%' => basename($localfile), '%record_id%' => $record_id, '%basename%' => \phrasea::sbas_labels(\phrasea::sbasFromBas($app, $base_id), $app)]) . "\n<br/>";
 
                     $this->log('debug', $line);
 
@@ -340,22 +340,22 @@ class FtpJob extends AbstractJob
         foreach ($export->getElements() as $element) {
             if (!$element->isError() && $element->isDone()) {
                 $transferts[] =
-                    '<li>' . $this->translator->trans('task::ftp:Record %recordid% - %filename% de la base (%databoxname% - %collectionname%) - %subdefname%', array(
+                    '<li>' . $this->translator->trans('task::ftp:Record %recordid% - %filename% de la base (%databoxname% - %collectionname%) - %subdefname%', [
                             '%recordid%' => $element->getRecordId(),
                             '%filename%' => $element->getFilename(),
                             '%databoxname%' => \phrasea::sbas_labels(\phrasea::sbasFromBas($app, $element->getBaseId()), $app),
                             '%collectionname%' => \phrasea::bas_labels($element->getBaseId(), $app), $element->getSubdef(),
                             '%subdefname%' => $element->getSubdef(),
-                        )) . ' : ' . $this->translator->trans('Transfert OK') . '</li>';
+                        ]) . ' : ' . $this->translator->trans('Transfert OK') . '</li>';
             } else {
                 $transferts[] =
-                    '<li>' . $this->translator->trans('task::ftp:Record %recordid% - %filename% de la base (%databoxname% - %collectionname%) - %subdefname%', array(
+                    '<li>' . $this->translator->trans('task::ftp:Record %recordid% - %filename% de la base (%databoxname% - %collectionname%) - %subdefname%', [
                             '%recordid%' => $element->getRecordId(),
                             '%filename%' => $element->getFilename(),
                             '%databoxname%' => \phrasea::sbas_labels(\phrasea::sbasFromBas($app, $element->getBaseId()), $app),
                             '%collectionname%' => \phrasea::bas_labels($element->getBaseId(), $app), $element->getSubdef(),
                             '%subdefname%' => $element->getSubdef(),
-                        ))  . ' : ' . $this->translator->trans('Transfert Annule') . '</li>';
+                        ])  . ' : ' . $this->translator->trans('Transfert Annule') . '</li>';
                 $transfert_status = $this->translator->trans('task::ftp:Certains documents n\'ont pas pu etre tranferes');
             }
         }

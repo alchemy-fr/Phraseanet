@@ -180,7 +180,7 @@ class Setup implements ControllerProviderInterface
             ]);
         } catch (\Exception $e) {
             return $app->redirectPath('install_step2', [
-                'error' => $app->trans('an error occured : %message%', array('%message%' => $e->getMessage())),
+                'error' => $app->trans('an error occured : %message%', ['%message%' => $e->getMessage()]),
             ]);
         }
     }

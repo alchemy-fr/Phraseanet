@@ -159,7 +159,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
         $sender = User_Adapter::getInstance($usr_id, $this->app)->get_display_name();
 
         $ret = [
-            'text'  => $this->app->trans('%user% demande votre approbation sur une ou plusieurs %before_link% collections %after_link%', array('%user%' => $sender, '%before_link%' => '<a href="' . $this->app->url('admin', ['section' => 'registrations']) . '" target="_blank">', '%after_link%' => '</a>'))
+            'text'  => $this->app->trans('%user% demande votre approbation sur une ou plusieurs %before_link% collections %after_link%', ['%user%' => $sender, '%before_link%' => '<a href="' . $this->app->url('admin', ['section' => 'registrations']) . '" target="_blank">', '%after_link%' => '</a>'])
             , 'class' => ''
         ];
 

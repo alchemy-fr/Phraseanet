@@ -702,7 +702,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
                         $errors[$name . '_' . $key] = $this->translator->trans("Ce champ est obligatoire");
                 } elseif ($length !== 0) {
                     if (mb_strlen($datas[$name]) > $length)
-                        $errors[$name . '_' . $key] = $this->translator->trans("Ce champ est trop long %length% caracteres max", array('%length%' => $length));
+                        $errors[$name . '_' . $key] = $this->translator->trans("Ce champ est trop long %length% caracteres max", ['%length%' => $length]);
                 }
             };
 
@@ -724,7 +724,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
                         $errors[$name] = $this->translator->trans("Ce champ est obligatoire");
                 } elseif ($length !== 0) {
                     if (mb_strlen($datas[$name]) > $length)
-                        $errors[$name] = $this->translator->trans("Ce champ est trop long %length% caracteres max", array('%length%' => $length));
+                        $errors[$name] = $this->translator->trans("Ce champ est trop long %length% caracteres max", ['%length%' => $length]);
                 }
             };
 
@@ -817,7 +817,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
         if ( ! $record->get_hd_file() instanceof \SplFileInfo)
             $errors["file_size"] = $this->translator->trans("Le record n'a pas de fichier physique"); //Record must rely on real file
         if ($record->get_technical_infos('size') > self::AUTH_PHOTO_SIZE)
-            $errors["size"] = $this->translator->trans("Le poids maximum d'un fichier est de %size%", array('%size%' => p4string::format_octets(self::AUTH_VIDEO_SIZE)));
+            $errors["size"] = $this->translator->trans("Le poids maximum d'un fichier est de %size%", ['%size%' => p4string::format_octets(self::AUTH_VIDEO_SIZE)]);
 
         return $errors;
     }

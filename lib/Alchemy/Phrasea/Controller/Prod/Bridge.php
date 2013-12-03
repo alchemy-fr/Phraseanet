@@ -467,6 +467,6 @@ class Bridge implements ControllerProviderInterface
             \Bridge_Element::create($app, $account, $record, $title, \Bridge_Element::STATUS_PENDING, $default_type, $datas);
         }
 
-        return $app->redirect('/prod/bridge/adapter/' . $account->get_id() . '/load-records/?notice=' . $app->trans('%quantity% elements en attente', array('%quantity%' => count($route->get_elements()))));
+        return $app->redirect('/prod/bridge/adapter/' . $account->get_id() . '/load-records/?notice=' . $app->trans('%quantity% elements en attente', ['%quantity%' => count($route->get_elements())]));
     }
 }

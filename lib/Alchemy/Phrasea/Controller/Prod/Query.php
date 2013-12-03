@@ -153,16 +153,16 @@ class Query implements ControllerProviderInterface
         $explain .= "<img src=\"/skins/icons/answers.gif\" /><span><b>";
 
         if ($result->getTotal() != $result->getAvailable()) {
-            $explain .= $app->trans('reponses:: %available% Resultats rappatries sur un total de %total% trouves', array('available' => $result->getAvailable(), '%total%' => $result->getTotal()));
+            $explain .= $app->trans('reponses:: %available% Resultats rappatries sur un total de %total% trouves', ['available' => $result->getAvailable(), '%total%' => $result->getTotal()]);
         } else {
-            $explain .= $app->trans('reponses:: %total% Resultats', array('%total%' => $result->getTotal()));
+            $explain .= $app->trans('reponses:: %total% Resultats', ['%total%' => $result->getTotal()]);
         }
 
         $explain .= " </b></span>";
         $explain .= '<br><div>' . $result->getDuration() . ' s</div>dans index ' . $result->getIndexes();
         $explain .= "</div>";
 
-        $infoResult = '<a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">' . $app->trans('reponses:: %total% reponses', array('%total%' => $result->getTotal())) . '</a> | ' . $app->trans('reponses:: %number% documents selectionnes', array('%number%' => '<span id="nbrecsel"></span>'));
+        $infoResult = '<a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">' . $app->trans('reponses:: %total% reponses', ['%total%' => $result->getTotal()]) . '</a> | ' . $app->trans('reponses:: %number% documents selectionnes', ['%number%' => '<span id="nbrecsel"></span>']);
 
         $json['infos'] = $infoResult;
         $json['navigation'] = $string;

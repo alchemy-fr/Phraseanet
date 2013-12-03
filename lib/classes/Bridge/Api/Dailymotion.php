@@ -810,9 +810,9 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
                         $errors[$name . '_' . $key] = $this->translator->trans("Ce champ est obligatoire");
                 } else {
                     if ($length != 0 && mb_strlen($datas[$name]) > $length)
-                        $errors[$name . '_' . $key] = $this->translator->trans("Ce champ est trop long %length% caracteres max", array('%length%' => $length));
+                        $errors[$name . '_' . $key] = $this->translator->trans("Ce champ est trop long %length% caracteres max", ['%length%' => $length]);
                     if ($length_min != 0 && mb_strlen($datas[$name]) < $length_min)
-                        $errors[$name . '_' . $key] = $this->translator->trans("Ce champ est trop court %length% caracteres min", array('%length%' => $length_min));
+                        $errors[$name . '_' . $key] = $this->translator->trans("Ce champ est trop court %length% caracteres min", ['%length%' => $length_min]);
                 }
             };
 
@@ -835,9 +835,9 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
                         $errors[$name] = $this->translator->trans("Ce champ est obligatoire");
                 } else {
                     if ($length != 0 && mb_strlen($datas[$name]) > $length)
-                        $errors[$name] = $this->translator->trans("Ce champ est trop long %length% caracteres max", array('%length%' => $length));
+                        $errors[$name] = $this->translator->trans("Ce champ est trop long %length% caracteres max", ['%length%' => $length]);
                     if ($length_min != 0 && mb_strlen($datas[$name]) < $length_min)
-                        $errors[$name] = $this->translator->trans("Ce champ est trop court %length% caracteres min", array('%length%' => $length_min));
+                        $errors[$name] = $this->translator->trans("Ce champ est trop court %length% caracteres min", ['%length%' => $length_min]);
                 }
             };
 
@@ -907,10 +907,10 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
             $errors["file_size"] = $this->translator->trans("Le record n'a pas de fichier physique"); //Record must rely on real file
 
         if ($record->get_duration() > self::AUTH_VIDEO_DURATION)
-            $errors["duration"] = $this->translator->trans("La taille maximale d'une video est de %duration% minutes.", array('%duration%' => self::AUTH_VIDEO_DURATION / 60));
+            $errors["duration"] = $this->translator->trans("La taille maximale d'une video est de %duration% minutes.", ['%duration%' => self::AUTH_VIDEO_DURATION / 60]);
 
         if ($record->get_technical_infos('size') > self::AUTH_VIDEO_SIZE)
-            $errors["size"] = $this->translator->trans("Le poids maximum d'un fichier est de %size%", array('%size%' => p4string::format_octets(self::AUTH_VIDEO_SIZE)));
+            $errors["size"] = $this->translator->trans("Le poids maximum d'un fichier est de %size%", ['%size%' => p4string::format_octets(self::AUTH_VIDEO_SIZE)]);
 
         return $errors;
     }

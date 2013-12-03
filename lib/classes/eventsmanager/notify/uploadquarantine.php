@@ -146,10 +146,10 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
 
         $filename = (string) $sx->filename;
 
-        $text = $this->app->trans('The document %name% has been quarantined', array('%name%' => $filename));
+        $text = $this->app->trans('The document %name% has been quarantined', ['%name%' => $filename]);
 
         if ( ! ! count($reasons)) {
-            $text .= ' ' . $this->app->trans('for the following reasons : %reasons%', array('%reasons%' => implode(', ', $reasons)));
+            $text .= ' ' . $this->app->trans('for the following reasons : %reasons%', ['%reasons%' => implode(', ', $reasons)]);
         }
 
         $ret = ['text'  => $text, 'class' => ''];

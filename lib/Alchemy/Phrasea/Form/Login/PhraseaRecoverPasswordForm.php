@@ -44,8 +44,8 @@ class PhraseaRecoverPasswordForm extends AbstractType
             'invalid_message'   => 'Please provide the same passwords.',
             'first_name'        => 'password',
             'second_name'       => 'confirm',
-            'first_options'     => ['label' => ('New password')],
-            'second_options'    => ['label' => ('New password (confirmation)')],
+            'first_options'     => ['label' => 'New password'],
+            'second_options'    => ['label' => 'New password (confirmation)'],
             'constraints'       => [
                 new Assert\NotBlank(),
                 new Assert\Length(['min' => 5]),

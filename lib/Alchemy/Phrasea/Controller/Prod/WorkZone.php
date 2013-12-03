@@ -158,15 +158,15 @@ class WorkZone implements ControllerProviderInterface
 
         if ($alreadyFixed === 0) {
             if ($done <= 1) {
-                $message = $app->trans('%quantity% Story attached to the WorkZone', array('%quantity%' => $done));
+                $message = $app->trans('%quantity% Story attached to the WorkZone', ['%quantity%' => $done]);
             } else {
-                $message = $app->trans('%quantity% Stories attached to the WorkZone', array('%quantity%' => $done));
+                $message = $app->trans('%quantity% Stories attached to the WorkZone', ['%quantity%' => $done]);
             }
         } else {
             if ($done <= 1) {
-                $message = $app->trans('%quantity% Story attached to the WorkZone, %quantity_already% already attached', array('%quantity%' => $done, '%quantity_already%' => $alreadyFixed));
+                $message = $app->trans('%quantity% Story attached to the WorkZone, %quantity_already% already attached', ['%quantity%' => $done, '%quantity_already%' => $alreadyFixed]);
             } else {
-                $message = $app->trans('%quantity% Stories attached to the WorkZone, %quantity_already% already attached', array('%quantity%' => $done, '%quantity_already%' => $alreadyFixed));
+                $message = $app->trans('%quantity% Stories attached to the WorkZone, %quantity_already% already attached', ['%quantity%' => $done, '%quantity_already%' => $alreadyFixed]);
             }
         }
 

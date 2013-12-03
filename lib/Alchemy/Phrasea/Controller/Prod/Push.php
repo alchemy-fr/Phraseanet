@@ -160,7 +160,7 @@ class Push implements ControllerProviderInterface
             try {
                 $pusher = new RecordHelper\Push($app, $app['request']);
 
-                $push_name = $request->request->get('name', $app->trans('Push from %user%', array('%user%' => $app['authentication']->getUser()->get_display_name())));
+                $push_name = $request->request->get('name', $app->trans('Push from %user%', ['%user%' => $app['authentication']->getUser()->get_display_name()]));
                 $push_description = $request->request->get('push_description');
 
                 $receivers = $request->request->get('participants');
@@ -177,7 +177,7 @@ class Push implements ControllerProviderInterface
                     try {
                         $user_receiver = \User_Adapter::getInstance($receiver['usr_id'], $app);
                     } catch (\Exception $e) {
-                        throw new ControllerException($app->trans('Unknown user %user_id%', array('%user_id%' => $receiver['usr_id'])));
+                        throw new ControllerException($app->trans('Unknown user %user_id%', ['%user_id%' => $receiver['usr_id']]));
                     }
 
                     $Basket = new Basket();
@@ -247,10 +247,10 @@ class Push implements ControllerProviderInterface
 
                 $app['EM']->flush();
 
-                $message = $app->trans('%quantity_records% records have been sent to %quantity_users% users', array(
+                $message = $app->trans('%quantity_records% records have been sent to %quantity_users% users', [
                     '%quantity_records%' => count($pusher->get_elements()),
                     '%quantity_users%'   => count($receivers),
-                ));
+                ]);
 
                 $ret = [
                     'success' => true,
@@ -278,7 +278,7 @@ class Push implements ControllerProviderInterface
 
                 $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-                $validation_name = $request->request->get('name', $app->trans('Validation from %user%', array('%user%' => $app['authentication']->getUser()->get_display_name())));
+                $validation_name = $request->request->get('name', $app->trans('Validation from %user%', ['%user%' => $app['authentication']->getUser()->get_display_name()]));
                 $validation_description = $request->request->get('validation_description');
 
                 $participants = $request->request->get('participants');
@@ -354,13 +354,13 @@ class Push implements ControllerProviderInterface
                 foreach ($participants as $key => $participant) {
                     foreach (['see_others', 'usr_id', 'agree', 'HD'] as $mandatoryparam) {
                         if (!array_key_exists($mandatoryparam, $participant))
-                            throw new ControllerException($app->trans('Missing mandatory parameter %parameter%', array('%parameter%' => $mandatoryparam)));
+                            throw new ControllerException($app->trans('Missing mandatory parameter %parameter%', ['%parameter%' => $mandatoryparam]));
                     }
 
                     try {
                         $participant_user = \User_Adapter::getInstance($participant['usr_id'], $app);
                     } catch (\Exception $e) {
-                        throw new ControllerException($app->trans('Unknown user %usr_id%', array('%usr_id%' => $participant['usr_id'])));
+                        throw new ControllerException($app->trans('Unknown user %usr_id%', ['%usr_id%' => $participant['usr_id']]));
                     }
 
                     try {
@@ -445,10 +445,10 @@ class Push implements ControllerProviderInterface
 
                 $app['EM']->flush();
 
-                $message = $app->trans('%quantity_records% records have been sent for validation to %quantity_users% users', array(
+                $message = $app->trans('%quantity_records% records have been sent for validation to %quantity_users% users', [
                     '%quantity_records%' => count($pusher->get_elements()),
                     '%quantity_users%'   => count($request->request->get('participants')),
-                ));
+                ]);
 
                 $ret = [
                     'success' => true,

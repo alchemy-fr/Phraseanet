@@ -279,7 +279,7 @@ class record_preview extends record_adapter
         switch ($this->env) {
 
             case "RESULT":
-                $this->title .= $this->app->trans('preview:: resultat numero %number%', array('%number%' => '<span id="current_result_n">' . ($this->number + 1) . '</span> : '));
+                $this->title .= $this->app->trans('preview:: resultat numero %number%', ['%number%' => '<span id="current_result_n">' . ($this->number + 1) . '</span> : ']);
                 $this->title .= parent::get_title($highlight, $search_engine);
                 break;
             case "BASK":

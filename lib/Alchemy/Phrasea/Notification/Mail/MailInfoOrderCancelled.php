@@ -60,10 +60,10 @@ class MailInfoOrderCancelled extends AbstractMail
             throw new LogicException('You must set a deliverer before calling getMessage()');
         }
 
-        return $this->app->trans('%user% a refuse %quantity% elements de votre commande', array(
+        return $this->app->trans('%user% a refuse %quantity% elements de votre commande', [
             '%user%' => $this->deliverer->get_display_name(),
             '%quantity%' => $this->quantity,
-        ));
+        ]);
     }
 
     /**

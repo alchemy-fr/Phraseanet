@@ -1,12 +1,7 @@
 <?php
 
-/*
- * This file is part of the Silex framework.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+/**
+ * Largely inspired from Symfony Framework Bundle
  */
 
 namespace Alchemy\Phrasea\Utilities;
@@ -23,12 +18,12 @@ use Symfony\Component\Translation\MessageSelector;
 class CachedTranslator extends Translator
 {
     protected $app;
-    protected $options = array(
+    protected $options = [
         'cache_dir' => null,
         'debug'     => false,
-    );
+    ];
 
-    public function __construct(Application $app, MessageSelector $selector, array $options = array())
+    public function __construct(Application $app, MessageSelector $selector, array $options = [])
     {
         $this->app = $app;
 

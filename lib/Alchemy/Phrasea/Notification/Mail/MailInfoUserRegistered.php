@@ -33,7 +33,7 @@ class MailInfoUserRegistered extends AbstractMail
      */
     public function getSubject()
     {
-        return $this->app->trans('admin::register: demande d\'inscription sur %application%', array('%application%' => $this->getPhraseanetTitle()));
+        return $this->app->trans('admin::register: demande d\'inscription sur %application%', ['%application%' => $this->getPhraseanetTitle()]);
     }
 
     /**

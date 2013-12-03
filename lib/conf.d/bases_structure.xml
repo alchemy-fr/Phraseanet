@@ -4648,7 +4648,7 @@
           <default>
             <data key="prop">ToU</data>
             <data key="value"></data>
-            <data key="locale">ar</data>
+            <data key="locale">nl</data>
             <data key="created_on">NOW()</data>
           </default>
           <default>

@@ -494,13 +494,13 @@ class PhraseaEngine implements SearchEngineInterface
             if ((int) (count($proposals["BASES"]) > 1) && count($zbase["TERMS"]) > 0) {
                 $style = $b ? 'style="margin-top:0px;"' : '';
                 $b = false;
-                $html .= "<h1 $style>" . $translator->trans('reponses::propositions pour la base %name', array('%name%' => $zbase["NAME"])) . "</h1>";
+                $html .= "<h1 $style>" . $translator->trans('reponses::propositions pour la base %name', ['%name%' => $zbase["NAME"]]) . "</h1>";
             }
             $t = true;
             foreach ($zbase["TERMS"] as $path => $props) {
                 $style = $t ? 'style="margin-top:0px;"' : '';
                 $t = false;
-                $html .= "<h2 $style>" . $translator->trans('reponses::propositions pour le terme %terme%', array('%terme%' => $props["TERM"])) . "</h2>";
+                $html .= "<h2 $style>" . $translator->trans('reponses::propositions pour le terme %terme%', ['%terme%' => $props["TERM"]]) . "</h2>";
                 $html .= $props["HTML"];
             }
         }

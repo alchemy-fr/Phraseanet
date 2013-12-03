@@ -349,7 +349,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
 
         $this->assertInstanceOf('Alchemy\Phrasea\Utilities\CachedTranslator', $app['translator']);
 
-        $result = $app['translator']->trans($key, array(), null, $locale);
+        $result = $app['translator']->trans($key, [], null, $locale);
 
         $this->assertEquals($expected, $result);
         $this->assertFileExists($tempDir.'/catalogue.'.($locale ?: 'en').'.php');
@@ -357,10 +357,10 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
 
     public function transProvider()
     {
-        return array(
-            array('key1', 'de', 'The german translation'),
-            array('test.key', 'de', 'It works in german'),
-        );
+        return [
+            ['key1', 'de', 'The german translation'],
+            ['test.key', 'de', 'It works in german'],
+        ];
     }
 
     protected function getPreparedApp($tempDir)
@@ -371,25 +371,25 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
             'cache_dir' => $tempDir,
         ];
 
-        $app['translator.domains'] = array(
-            'messages' => array(
-                'en' => array (
+        $app['translator.domains'] = [
+            'messages' => [
+                'en' => [
                     'key1' => 'The translation',
                     'key_only_english' => 'Foo',
                     'key2' => 'One apple|%count% apples',
-                    'test' => array(
+                    'test' => [
                         'key' => 'It works'
-                    )
-                ),
-                'de' => array (
+                    ]
+                ],
+                'de' => [
                     'key1' => 'The german translation',
                     'key2' => 'One german apple|%count% german apples',
-                    'test' => array(
+                    'test' => [
                         'key' => 'It works in german'
-                    )
-                )
-            )
-        );
+                    ]
+                ]
+            ]
+        ];
 
         return $app;
     }

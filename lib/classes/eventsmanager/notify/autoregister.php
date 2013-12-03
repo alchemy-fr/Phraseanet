@@ -149,7 +149,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
         $sender = User_Adapter::getInstance($usr_id, $this->app)->get_display_name();
 
         $ret = [
-            'text'  => $this->app->trans('%user% s\'est enregistre sur une ou plusieurs %before_link% scollections %after_link%', array('%user%' => $sender, '%before_link%' => '<a href="/admin/?section=users" target="_blank">', '%after_link%' => '</a>'))
+            'text'  => $this->app->trans('%user% s\'est enregistre sur une ou plusieurs %before_link% scollections %after_link%', ['%user%' => $sender, '%before_link%' => '<a href="/admin/?section=users" target="_blank">', '%after_link%' => '</a>'])
             , 'class' => ''
         ];
 

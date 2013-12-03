@@ -15,7 +15,6 @@ use Alchemy\Phrasea\Command\Developer\Utils\ConstraintExtractor;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\DocParser;
 use Doctrine\Common\Annotations\AnnotationRegistry;
-use Doctrine\Common\Persistence\Mapping\Driver\AnnotationDriver;
 use Gedmo\SoftDeleteable\Mapping\Driver\Annotation;
 use JMS\TranslationBundle\Translation\ConfigBuilder;
 use JMS\TranslationBundle\Translation\Dumper\SymfonyDumperAdapter;
@@ -31,7 +30,6 @@ use JMS\TranslationBundle\Translation\Loader\SymfonyLoaderAdapter;
 use JMS\TranslationBundle\Translation\Loader\XliffLoader;
 use JMS\TranslationBundle\Translation\LoaderManager;
 use JMS\TranslationBundle\Translation\Updater;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Translation\Dumper\PoFileDumper;
 use Symfony\Component\Translation\Loader\PoFileLoader;
@@ -53,13 +51,13 @@ class TranslationExtractorServiceProvider implements ServiceProviderInterface
             return $parser;
         });
         $app['translation-extractor.node-visitors'] = $app->share(function (Application $app) {
-            return array(
+            return [
                 new ConstraintExtractor($app),
                 new ValidationExtractor($app['validator']->getMetadataFactory()),
                 new DefaultPhpFileExtractor($app['translation-extractor.doc-parser']),
                 new TwigFileExtractor($app['twig']),
                 new FormExtractor($app['translation-extractor.doc-parser']),
-            );
+            ];
         });
         $app['translation-extractor.file-extractor'] = $app->share(function (Application $app) {
             return new FileExtractor($app['twig'], $app['translation-extractor.logger'], $app['translation-extractor.node-visitors']);
@@ -73,20 +71,20 @@ class TranslationExtractorServiceProvider implements ServiceProviderInterface
         });
 
         $app['translation-extractor.writers'] = $app->share(function () {
-            return array(
+            return [
                 'po' => new SymfonyDumperAdapter(new PoFileDumper(), 'po'),
                 'xliff' => new XliffDumper(),
-            );
+            ];
         });
 
         $app['translation-extractor.loader-manager'] = $app->share(function (Application $app) {
             return new LoaderManager($app['translation-extractor.loaders']);
         });
         $app['translation-extractor.loaders'] = $app->share(function () {
-            return array(
+            return [
                 'po' => new SymfonyLoaderAdapter(new PoFileLoader()),
                 'xliff' => new XliffLoader()
-            );
+            ];
         });
 
         $app['translation-extractor.updater'] = $app->share(function (Application $app) {

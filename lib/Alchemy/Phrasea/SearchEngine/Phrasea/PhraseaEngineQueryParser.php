@@ -895,7 +895,7 @@ class PhraseaEngineQueryParser
                     // un op. arith. doit étre précédé d'un seul nom de champ
                     if ($this->errmsg != "")
                         $this->errmsg .= sprintf("\\n");
-                    $this->errmsg .= $this->app->trans('qparser::Formulation incorrecte, un nom de champs est attendu avant l operateur %token%', array('%token%' => $tree["VALUE"]));
+                    $this->errmsg .= $this->app->trans('qparser::Formulation incorrecte, un nom de champs est attendu avant l operateur %token%', ['%token%' => $tree["VALUE"]]);
 
                     return(false);
                 }
@@ -903,7 +903,7 @@ class PhraseaEngineQueryParser
                     // un op. arith. doit étre suivi d'une valeur
                     if ($this->errmsg != "")
                         $this->errmsg .= sprintf("\\n");
-                    $this->errmsg .= $this->app->trans('qparser::Formulation incorrecte, une valeur est attendue apres l operateur %token%', array('%token%' => $tree["VALUE"]));
+                    $this->errmsg .= $this->app->trans('qparser::Formulation incorrecte, une valeur est attendue apres l operateur %token%', ['%token%' => $tree["VALUE"]]);
 
                     return(false);
                 }
@@ -1456,7 +1456,7 @@ class PhraseaEngineQueryParser
         if (($tree["CLASS"] == "OPS" || $tree["CLASS"] == "OPK") && $tree["RB"] == null) {
             if ($this->errmsg != "")
                 $this->errmsg .= sprintf("\\n");
-            $this->errmsg .= $this->app->trans('qparser::Formulation incorrecte, une valeur est attendu apres %token%', array('%token%' => $tree["VALUE"]));
+            $this->errmsg .= $this->app->trans('qparser::Formulation incorrecte, une valeur est attendu apres %token%', ['%token%' => $tree["VALUE"]]);
             $tree = $tree["LB"];
         }
 
@@ -1505,14 +1505,14 @@ class PhraseaEngineQueryParser
                 if (!$tree) {
                     if ($this->errmsg != "")
                         $this->errmsg .= "\\n";
-                    $this->errmsg .= $this->app->trans('qparser::erreur : une question ne peut commencer par %token%', array('%token%' => $tree["VALUE"]));
+                    $this->errmsg .= $this->app->trans('qparser::erreur : une question ne peut commencer par %token%', ['%token%' => $tree["VALUE"]]);
 
                     return(null);
                 }
                 if (($tree["CLASS"] == "OPS" || $tree["CLASS"] == "OPK") && $tree["RB"] == null) {
                     if ($this->errmsg != "")
                         $this->errmsg .= "\\n";
-                    $this->errmsg .= $this->app->trans('qparser::Formulation incorrecte, ne peut suivre un operateur : %token%', array('%token%' => $tree["VALUE"]));
+                    $this->errmsg .= $this->app->trans('qparser::Formulation incorrecte, ne peut suivre un operateur : %token%', ['%token%' => $tree["VALUE"]]);
 
                     return(null);
                 }
@@ -1525,7 +1525,7 @@ class PhraseaEngineQueryParser
                     if (!$tree) {
                         if ($this->errmsg != "")
                             $this->errmsg .= "\\n";
-                        $this->errmsg .= $this->app->trans('qparser::erreur : une question ne peut commencer par %token%', array('%token%' => $tree["VALUE"]));
+                        $this->errmsg .= $this->app->trans('qparser::erreur : une question ne peut commencer par %token%', ['%token%' => $tree["VALUE"]]);
 
                         return(null);
                     }
@@ -1533,7 +1533,7 @@ class PhraseaEngineQueryParser
 
                         if ($this->errmsg != "")
                             $this->errmsg .= "\\n";
-                        $this->errmsg .= $this->app->trans('qparser::Formulation incorrecte, %token% ne peut suivre un operateur', array('%token%' => $t["VALUE"]));
+                        $this->errmsg .= $this->app->trans('qparser::Formulation incorrecte, %token% ne peut suivre un operateur', ['%token%' => $t["VALUE"]]);
 
                         return(null);
                     }

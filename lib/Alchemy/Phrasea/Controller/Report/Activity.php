@@ -819,7 +819,7 @@ class Activity implements ControllerProviderInterface
                 return $app->json(['diag'  => $app['twig']->render('report/colFilter.html.twig', [
                     'result' => $report->colFilter($field),
                     'field'  => $field
-                ]), "title"  => $app->trans('filtrer les resultats sur la colonne %colonne%', array('%colonne%' => $field))]);
+                ]), "title"  => $app->trans('filtrer les resultats sur la colonne %colonne%', ['%colonne%' => $field])]);
             }
 
             if ($field === $value) {
@@ -864,7 +864,7 @@ class Activity implements ControllerProviderInterface
                     'is_doc'      => false
                 ]),
                 'display_nav' => false,
-                'title'       => $app->trans('Groupement des resultats sur le champ %name%', array('%name%' => $groupField))
+                'title'       => $app->trans('Groupement des resultats sur le champ %name%', ['%name%' => $groupField])
             ]);
         }
 

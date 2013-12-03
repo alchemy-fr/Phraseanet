@@ -36,13 +36,13 @@ class TranslationDumper extends Command
             $config = $builder->setLocale($code)
                 ->setOutputFormat('xliff')
                 ->setTranslationsDir(__DIR__ . '/../../../../../resources/locales')
-                ->setScanDirs(array(
+                ->setScanDirs([
                     $this->container['root.path'].'/templates/web/admin/user',
                     $this->container['root.path'].'/lib',
                     $this->container['root.path'].'/templates',
                     $this->container['root.path'].'/bin',
                     $this->container['root.path'].'/www',
-                ))
+                ])
                 ->getConfig();
 
             $this->container['translation-extractor.updater']->process($config);

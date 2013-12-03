@@ -104,11 +104,11 @@ class phraseadate
             } elseif ($diff < 120) {
                 return $this->app->trans('phraseanet::temps:: il y a une minute');
             } elseif ($diff < 3600) {
-                return $this->app->trans('phraseanet::temps:: il y a %quantity% minutes', array('%quantity%' => floor($diff / 60)));
+                return $this->app->trans('phraseanet::temps:: il y a %quantity% minutes', ['%quantity%' => floor($diff / 60)]);
             } elseif ($diff < 7200) {
                 return $this->app->trans('phraseanet::temps:: il y a une heure');
             } elseif ($diff < 86400) {
-                return $this->app->trans('phraseanet::temps:: il y a %quantity% heures', array('%quantity%' => floor($diff / 3600)));
+                return $this->app->trans('phraseanet::temps:: il y a %quantity% heures', ['%quantity%' => floor($diff / 3600)]);
             }
         } elseif ($dayDiff == 1) {
             return $this->app->trans('phraseanet::temps:: hier');

@@ -158,9 +158,9 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
             return [];
         }
         $ret = [
-            'text'  => $this->app->trans('%user% vous a delivre %quantity% document(s) pour votre commande %title%', array('%user%' => $sender, '%quantity%' => $n, '%title%' => '<a href="/lightbox/compare/'
+            'text'  => $this->app->trans('%user% vous a delivre %quantity% document(s) pour votre commande %title%', ['%user%' => $sender, '%quantity%' => $n, '%title%' => '<a href="/lightbox/compare/'
                 . (string) $sx->ssel_id . '/" target="_blank">'
-                . $basket->getName() . '</a>'))
+                . $basket->getName() . '</a>'])
             , 'class' => ''
         ];
 

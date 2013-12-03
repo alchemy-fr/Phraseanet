@@ -158,10 +158,10 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
             . $basket_name . '</a>';
 
         $ret = [
-            'text'  => $this->app->trans('%user% vous demande de valider %title%', array(
+            'text'  => $this->app->trans('%user% vous demande de valider %title%', [
                 '%user%' => $sender,
                 '%title%' => $bask_link,
-            ))
+            ])
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
         ];
 
