@@ -15,11 +15,11 @@ class DisplaySettingServiceTest extends \PhraseanetPHPUnitAbstract
         parent::setUp();
 
         if (null === self::$userSettings) {
-            self::$userSettings = self::$DI['app']['conf']->get(['user-settings']);
+            self::$userSettings = self::$DI['app']['conf']->get(['user-settings'], []);
         }
 
         if (null === self::$appSettings) {
-            self::$appSettings = self::$DI['app']['conf']->get(['registry']);
+            self::$appSettings = self::$DI['app']['conf']->get(['registry'], []);
         }
     }
 
