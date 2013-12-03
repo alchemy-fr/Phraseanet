@@ -29,5 +29,3 @@ Entities\UsrList:
       targetEntity: UsrListEntry
       mappedBy: list
       cascade: ["ALL"]
-
-

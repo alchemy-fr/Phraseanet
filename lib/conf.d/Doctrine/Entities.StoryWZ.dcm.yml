@@ -22,8 +22,3 @@ Entities\StoryWZ:
       gedmo:
         timestampable:
           on: create
-
-
-
-
-

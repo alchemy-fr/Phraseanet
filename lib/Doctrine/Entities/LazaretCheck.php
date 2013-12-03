@@ -11,8 +11,6 @@
 
 namespace Entities;
 
-use Alchemy\Phrasea\Application;
-
 /**
  * LazaretCheck
  */

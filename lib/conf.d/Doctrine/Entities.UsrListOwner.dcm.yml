@@ -33,6 +33,3 @@ Entities\UsrListOwner:
         name: list_id
         referencedColumnName: id
       cascade: ["persist"]
-
-
-

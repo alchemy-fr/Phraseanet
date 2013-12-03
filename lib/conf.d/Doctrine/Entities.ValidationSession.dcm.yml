@@ -35,7 +35,3 @@ Entities\ValidationSession:
       targetEntity: ValidationParticipant
       mappedBy: session
       cascade: ["ALL"]
-
-
-
-

@@ -11,9 +11,6 @@
 
 namespace Alchemy\Phrasea\Core\Event;
 
-use Alchemy\Phrasea\Authentication\Context;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\EventDispatcher\Event as SfEvent;
 
 class CollectionCreateEvent extends SfEvent

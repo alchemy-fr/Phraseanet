@@ -202,11 +202,9 @@ class module_console_checkExtension extends Command
             return 1;
         }
 
-
         // test disconnected mode if available
         // prepare the test before closing session
-        if(function_exists("phrasea_public_query"))
-        {
+        if (function_exists("phrasea_public_query")) {
             // fill an array for each sbas to query
             $tbases = array();
             foreach ($phSession["bases"] as $phbase) {
@@ -231,7 +229,6 @@ class module_console_checkExtension extends Command
             }
         }
 
-
         $output->writeln("\n-- phrasea_close_session --");
 
         $rs = phrasea_close_session($sessid);
@@ -244,11 +241,8 @@ class module_console_checkExtension extends Command
             return 1;
         }
 
-
-
         // session is closed, test disconnected mode if available
-        if(function_exists("phrasea_public_query"))
-        {
+        if (function_exists("phrasea_public_query")) {
             $output->writeln("\n-- phrasea_public_query(...0, 5,...) --");
 
             $ret = phrasea_public_query(
@@ -262,7 +256,7 @@ class module_console_checkExtension extends Command
                 , true                          // verbose output (chrono, sql...)
             );
 
-            if(is_array($ret) && array_key_exists("results", $ret) && is_array($ret["results"])) {
+            if (is_array($ret) && array_key_exists("results", $ret) && is_array($ret["results"])) {
                 $output->writeln( sprintf("<info>Succes ! </info> returned %d answers", count($ret["results"])) );
             } else {
                 $output->writeln("<error>Failed ! </error>");
@@ -270,9 +264,7 @@ class module_console_checkExtension extends Command
                 return 1;
             }
 
-
-            foreach($ret['results'] as $result)
-            {
+            foreach ($ret['results'] as $result) {
                 $sbid = $result["sbid"];
                 $rid  = $result["rid"];
                 $q = $tbases["S".$sbid]["arrayq"];  // query tree

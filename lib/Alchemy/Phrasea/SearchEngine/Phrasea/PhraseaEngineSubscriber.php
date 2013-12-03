@@ -15,7 +15,6 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\CollectionCreateEvent;
 use Alchemy\Phrasea\Core\Event\PostAuthenticate;
 use Alchemy\Phrasea\Core\PhraseaEvents;
-use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PhraseaEngineSubscriber implements EventSubscriberInterface
