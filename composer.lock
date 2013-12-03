@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "daac732f5ff830bcaf81da6ecf16f9e2",
+    "hash": "c8348e356ce79bc133510a11279d48c9",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -1574,26 +1574,26 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.3.6",
+            "version": "0.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "86a16aab82b6e31d2e70050f61fa815a98037253"
+                "reference": "319f55c2265a9056d68f1f0e6314dce977ef47ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/86a16aab82b6e31d2e70050f61fa815a98037253",
-                "reference": "86a16aab82b6e31d2e70050f61fa815a98037253",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/319f55c2265a9056d68f1f0e6314dce977ef47ef",
+                "reference": "319f55c2265a9056d68f1f0e6314dce977ef47ef",
                 "shasum": ""
             },
             "require": {
                 "alchemy/ghostscript": "~0.4.0",
                 "imagine/imagine": "0.6.x@dev",
-                "mediavorus/mediavorus": "~0.4.0",
+                "mediavorus/mediavorus": "~0.4.2",
                 "monolog/monolog": "~1.0",
                 "neutron/temporary-filesystem": "~2.1",
                 "php": ">=5.3.3",
-                "php-ffmpeg/php-ffmpeg": "~0.3, >=0.3.4",
+                "php-ffmpeg/php-ffmpeg": "~0.4.2",
                 "php-mp4box/php-mp4box": "~0.3.0",
                 "php-unoconv/php-unoconv": "~0.3.0",
                 "pimple/pimple": "~1.0",
@@ -1643,7 +1643,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-10-21 12:41:18"
+            "time": "2013-12-03 17:07:51"
         },
         {
             "name": "mediavorus/mediavorus",

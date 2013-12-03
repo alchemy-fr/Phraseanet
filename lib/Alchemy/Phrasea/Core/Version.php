@@ -15,6 +15,8 @@ class Version
 {
     protected static $number = '3.9.0-alpha.9';
     protected static $name = 'Epanterias';
+    protected static $number = '3.8.3-alpha.1';
+    protected static $name = 'Diplodocus';
 
     public static function getNumber()
     {
