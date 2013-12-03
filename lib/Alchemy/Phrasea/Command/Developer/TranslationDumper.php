@@ -31,20 +31,22 @@ class TranslationDumper extends Command
      */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $builder = new ConfigBuilder();
-        $config = $builder->setLocale('fr')
-            ->setOutputFormat('po')
-            ->setTranslationsDir(__DIR__ . '/../../../../../translations')
-            ->setScanDirs(array(
-                $this->container['root.path'].'/lib',
-                $this->container['root.path'].'/templates',
-                $this->container['root.path'].'/bin',
-                $this->container['root.path'].'/www',
-            ))
-            ->getConfig();
+        foreach (array_keys($this->container->getAvailableLanguages()) as $code) {
+            $builder = new ConfigBuilder();
+            $config = $builder->setLocale($code)
+                ->setOutputFormat('xliff')
+                ->setTranslationsDir(__DIR__ . '/../../../../../resources/locales')
+                ->setScanDirs(array(
+                    $this->container['root.path'].'/templates/web/admin/user',
+                    $this->container['root.path'].'/lib',
+                    $this->container['root.path'].'/templates',
+                    $this->container['root.path'].'/bin',
+                    $this->container['root.path'].'/www',
+                ))
+                ->getConfig();
 
-        $this->container['translation-extractor.updater']->process($config);
-//        var_dump($this->container['translation-extractor.updater']->getChangeSet($config));
+            $this->container['translation-extractor.updater']->process($config);
+        }
 
         return 0;
     }

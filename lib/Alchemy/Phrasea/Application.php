@@ -162,7 +162,7 @@ class Application extends SilexApplication
     use UrlGeneratorTrait;
     use TranslationTrait;
 
-    private static $availableLanguages = [
+    protected static $availableLanguages = [
         'de' => 'Deutsch',
         'en' => 'English',
         'fr' => 'Français',

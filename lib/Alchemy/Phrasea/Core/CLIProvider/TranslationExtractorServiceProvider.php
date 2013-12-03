@@ -19,6 +19,7 @@ use Doctrine\Common\Persistence\Mapping\Driver\AnnotationDriver;
 use Gedmo\SoftDeleteable\Mapping\Driver\Annotation;
 use JMS\TranslationBundle\Translation\ConfigBuilder;
 use JMS\TranslationBundle\Translation\Dumper\SymfonyDumperAdapter;
+use JMS\TranslationBundle\Translation\Dumper\XliffDumper;
 use JMS\TranslationBundle\Translation\Extractor\File\DefaultPhpFileExtractor;
 use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
 use JMS\TranslationBundle\Translation\Extractor\File\TwigFileExtractor;
@@ -27,6 +28,7 @@ use JMS\TranslationBundle\Translation\Extractor\FileExtractor;
 use JMS\TranslationBundle\Translation\ExtractorManager;
 use JMS\TranslationBundle\Translation\FileWriter;
 use JMS\TranslationBundle\Translation\Loader\SymfonyLoaderAdapter;
+use JMS\TranslationBundle\Translation\Loader\XliffLoader;
 use JMS\TranslationBundle\Translation\LoaderManager;
 use JMS\TranslationBundle\Translation\Updater;
 use Symfony\Component\Console\Input\InputInterface;
@@ -71,7 +73,10 @@ class TranslationExtractorServiceProvider implements ServiceProviderInterface
         });
 
         $app['translation-extractor.writers'] = $app->share(function () {
-            return array('po' => new SymfonyDumperAdapter(new PoFileDumper(), 'po'));
+            return array(
+                'po' => new SymfonyDumperAdapter(new PoFileDumper(), 'po'),
+                'xliff' => new XliffDumper(),
+            );
         });
 
         $app['translation-extractor.loader-manager'] = $app->share(function (Application $app) {
@@ -79,7 +84,8 @@ class TranslationExtractorServiceProvider implements ServiceProviderInterface
         });
         $app['translation-extractor.loaders'] = $app->share(function () {
             return array(
-                'po' => new SymfonyLoaderAdapter(new PoFileLoader())
+                'po' => new SymfonyLoaderAdapter(new PoFileLoader()),
+                'xliff' => new XliffLoader()
             );
         });
 
