@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\Command;
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Core\Event\CollectionCreateEvent;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -62,5 +64,7 @@ class CreateCollection extends Command
         $this->container['manipulator.acl']->resetAdminRights(array_map(function ($id) use ($app) {
             return \User_Adapter::getInstance($id, $app);
         }, array_keys(\User_Adapter::get_sys_admins($this->container))));
+
+        $this->container['dispatcher']->dispatch(PhraseaEvents::COLLECTION_CREATE, new CollectionCreateEvent($new_collection));
     }
 }

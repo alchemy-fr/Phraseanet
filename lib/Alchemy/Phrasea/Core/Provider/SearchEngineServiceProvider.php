@@ -23,24 +23,38 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['phraseanet.SE'] = $app->share(function ($app) {
-
-            $engineClass = $app['conf']->get(['main', 'search-engine', 'type']);
             $engineOptions = $app['conf']->get(['main', 'search-engine', 'options']);
 
-            if (!class_exists($engineClass) || $engineClass instanceof SearchEngineInterface) {
-                throw new InvalidArgumentException(sprintf('%s is not valid SearchEngineInterface', $engineClass));
-            }
-
-            return $engineClass::create($app, $engineOptions);
+            return $app['phraseanet.SE.engine-class']::create($app, $engineOptions);
         });
 
         $app['phraseanet.SE.logger'] = $app->share(function (Application $app) {
             return new SearchEngineLogger($app);
         });
+
+        $app['phraseanet.SE.engine-class'] = $app->share(function ($app) {
+            $engineClass = $app['conf']->get(['main', 'search-engine', 'type']);
+
+            if (!class_exists($engineClass) || $engineClass instanceof SearchEngineInterface) {
+                throw new InvalidArgumentException(sprintf('%s is not valid SearchEngineInterface', $engineClass));
+            }
+
+            return $engineClass;
+        });
+
+        $app['phraseanet.SE.subscriber'] = $app->share(function ($app) {
+            return $app['phraseanet.SE.engine-class']::createSubscriber($app);
+        });
     }
 
     public function boot(Application $app)
     {
-    }
+        $app['dispatcher'] = $app->share(
+            $app->extend('dispatcher', function ($dispatcher, Application $app) {
+                $dispatcher->addSubscriber($app['phraseanet.SE.subscriber']);
 
+                return $dispatcher;
+            })
+        );
+    }
 }

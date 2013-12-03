@@ -511,6 +511,16 @@ class PhraseaEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      *
+     * @return PhraseaEngineSubscriber
+     */
+    public static function createSubscriber(Application $app)
+    {
+        return new PhraseaEngineSubscriber($app);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
      * @return PhraseaEngine
      */
     public static function create(Application $app, array $options = [])

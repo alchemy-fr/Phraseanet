@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\SearchEngine\SphinxSearch;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\SearchEngine\Phrasea\SphinxSearchEngineSubscriber;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
@@ -571,6 +572,16 @@ class SphinxSearchEngine implements SearchEngineInterface
     public function resetCache()
     {
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return SphinxSearchEngineSubscriber
+     */
+    public static function createSubscriber(Application $app)
+    {
+        return new SphinxSearchEngineSubscriber();
     }
 
     /**

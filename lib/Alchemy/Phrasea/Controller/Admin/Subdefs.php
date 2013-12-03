@@ -56,7 +56,7 @@ class Subdefs implements ControllerProviderInterface
 
             if ($delete_subdef) {
 
-                $delete_subef = explode('_', $delete_subdef);
+                $delete_subef = explode('_', $delete_subdef, 2);
                 $group = $delete_subef[0];
                 $name = $delete_subef[1];
                 $subdefs = $databox->get_subdef_structure();
@@ -78,10 +78,10 @@ class Subdefs implements ControllerProviderInterface
 
                     $options = [];
 
-                    $post_sub_ex = explode('_', $post_sub);
+                    $post_sub_ex = explode('_', $post_sub, 2);
 
-                    $group = array_shift($post_sub_ex);
-                    $name = implode('_', $post_sub_ex);
+                    $group = $post_sub_ex[0];
+                    $name = $post_sub_ex[1];
 
                     $class = $request->request->get($post_sub . '_class');
                     $downloadable = $request->request->get($post_sub . '_downloadable');

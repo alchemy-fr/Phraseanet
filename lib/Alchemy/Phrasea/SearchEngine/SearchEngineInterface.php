@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 
@@ -231,6 +232,13 @@ interface SearchEngineInterface
      * @return SearchEngineInterface
      */
     public function clearAllCache(\DateTime $date = null);
+
+    /**
+     * Returns a subscriber
+     *
+     * @return EventSubscriberInterface
+     */
+    public static function createSubscriber(Application $app);
 
     /**
      * Creates the adapter.

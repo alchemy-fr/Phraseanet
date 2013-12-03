@@ -72,6 +72,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         self::$searchd->run();
 
         self::$searchEngine = SphinxSearchEngine::create($app, $app['conf']->get(['main', 'search-engine', 'options']));
+        self::$searchEngineClass = 'Alchemy\Phrasea\SearchEngine\SphinxSearch\SphinxSearchEngine';
     }
 
     public function setUp()
