@@ -111,6 +111,7 @@ use Alchemy\Phrasea\Twig\JSUniqueID;
 use Alchemy\Phrasea\Twig\Camelize;
 use Alchemy\Phrasea\Twig\BytesConverter;
 use FFMpeg\FFMpegServiceProvider;
+use JMS\TranslationBundle\Translation\Loader\Symfony\XliffLoader;
 use Neutron\Silex\Provider\ImagineServiceProvider;
 use MediaVorus\MediaVorusServiceProvider;
 use MediaVorus\Utils\RawImageMimeTypeGuesser;
@@ -313,11 +314,15 @@ class Application extends SilexApplication
         ]);
 
         $this['translator'] = $this->share($this->extend('translator', function(Translator $translator, $app) {
-            $translator->addLoader('po', new PoFileLoader());
-            $translator->addResource('po', __DIR__.'/../../../resources/locales/messages.fr.po', 'fr', 'messages');
-            $translator->addResource('po', __DIR__.'/../../../resources/locales/messages.en.po', 'en', 'messages');
-            $translator->addResource('po', __DIR__.'/../../../resources/locales/messages.de.po', 'de', 'messages');
-            $translator->addResource('po', __DIR__.'/../../../resources/locales/messages.nl.po', 'nl', 'messages');
+            $translator->addLoader('xliff', new XliffLoader());
+                    $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.fr.xliff', 'fr', 'messages');
+                    $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.fr.xliff', 'fr', 'validators');
+                    $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.en.xliff', 'en', 'messages');
+                    $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.en.xliff', 'en', 'validators');
+                    $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.de.xliff', 'de', 'messages');
+                    $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.de.xliff', 'de', 'validators');
+                    $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.nl.xliff', 'nl', 'messages');
+                    $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.nl.xliff', 'nl', 'validators');
 
             return $translator;
         }));
