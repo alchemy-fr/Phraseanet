@@ -12,11 +12,9 @@
 namespace Alchemy\Phrasea\Core\CLIProvider;
 
 use Alchemy\Phrasea\Command\Developer\Utils\ConstraintExtractor;
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\DocParser;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Gedmo\SoftDeleteable\Mapping\Driver\Annotation;
-use JMS\TranslationBundle\Translation\ConfigBuilder;
 use JMS\TranslationBundle\Translation\Dumper\SymfonyDumperAdapter;
 use JMS\TranslationBundle\Translation\Dumper\XliffDumper;
 use JMS\TranslationBundle\Translation\Extractor\File\DefaultPhpFileExtractor;
@@ -30,12 +28,10 @@ use JMS\TranslationBundle\Translation\Loader\SymfonyLoaderAdapter;
 use JMS\TranslationBundle\Translation\Loader\XliffLoader;
 use JMS\TranslationBundle\Translation\LoaderManager;
 use JMS\TranslationBundle\Translation\Updater;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Translation\Dumper\PoFileDumper;
 use Symfony\Component\Translation\Loader\PoFileLoader;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
-use Symfony\Component\Process\PhpExecutableFinder;
 
 class TranslationExtractorServiceProvider implements ServiceProviderInterface
 {

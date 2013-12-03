@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Setup\Requirements;
 
 use Alchemy\Phrasea\Setup\RequirementCollection;
-use Alchemy\Phrasea\Application as PhraseaApplication;
 
 class LocalesRequirements extends RequirementCollection implements RequirementInterface
 {

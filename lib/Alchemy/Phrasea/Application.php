@@ -314,7 +314,7 @@ class Application extends SilexApplication
             ],
         ]);
 
-        $this['translator'] = $this->share($this->extend('translator', function(CachedTranslator $translator, $app) {
+        $this['translator'] = $this->share($this->extend('translator', function (CachedTranslator $translator, $app) {
             $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.fr.xliff', 'fr', 'messages');
             $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.fr.xliff', 'fr', 'validators');
             $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.en.xliff', 'en', 'messages');

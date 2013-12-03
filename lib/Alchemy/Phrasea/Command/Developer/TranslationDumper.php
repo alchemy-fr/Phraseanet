@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Command\Developer;
 
 use Alchemy\Phrasea\Command\Command;
-use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Translation\ConfigBuilder;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

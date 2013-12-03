@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Model\Entities\Task;
 
 class patch_390alpha9a implements patchInterface
 {

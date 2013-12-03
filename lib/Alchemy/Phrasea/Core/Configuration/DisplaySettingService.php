@@ -75,9 +75,9 @@ class DisplaySettingService
     /**
      * Return a user setting given a user.
      *
-     * @param User $user
+     * @param User   $user
      * @param string $name
-     * @param mixed $default
+     * @param mixed  $default
      *
      * @return mixed
      */
@@ -96,7 +96,7 @@ class DisplaySettingService
      * Returns application setting value.
      *
      * @param string|array $props
-     * @param mixed $default
+     * @param mixed        $default
      *
      * @return mixed
      */

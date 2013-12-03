@@ -789,9 +789,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     /**
      * Inserts one user.
      *
-     * @param string    $login
-     * @param null      $email
-     * @param bool      $admin
+     * @param string $login
+     * @param null   $email
+     * @param bool   $admin
      *
      * @return User
      */
@@ -806,7 +806,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      * @param string $method     The request method
      * @param string $uri        The URI to fetch
      * @param array  $parameters The Request parameters
-     * @param string  $httpAccept Contents of the Accept header
+     * @param string $httpAccept Contents of the Accept header
      *
      * @return Crawler
      */

@@ -2,10 +2,6 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
-use Alchemy\Phrasea\Model\Entities\UserNotificationSetting;
-use Alchemy\Phrasea\Model\Entities\UserQuery;
-use Alchemy\Phrasea\Model\Entities\UserSetting;
-
 class UserManagerTest extends \PhraseanetPHPUnitAbstract
 {
     public function testNewUser()

@@ -4,7 +4,6 @@ namespace Alchemy\Tests\Phrasea\Model\Entities;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Model\Entities\UserSetting;
 
 class UserTest extends \PhraseanetPHPUnitAbstract
 {

@@ -41,7 +41,7 @@ interface CheckerInterface
     /**
      * Get a localized message about the Checker
      *
-     * @param  TranslatorInterface    $translator A translator
+     * @param TranslatorInterface $translator A translator
      *
      * @return string
      */
