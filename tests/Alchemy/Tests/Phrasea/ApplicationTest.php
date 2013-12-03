@@ -337,6 +337,76 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->assertInstanceOf('MediaAlchemyst\Alchemyst', $app['media-alchemyst']);
     }
 
+    /**
+     * @dataProvider transProvider
+     */
+    public function testCachedTranslator($key, $locale, $expected)
+    {
+        $tempDir = __DIR__ . '/temp-trans';
+        $this->cleanupTempDir($tempDir);
+
+        $app = $this->getPreparedApp($tempDir);
+
+        $this->assertInstanceOf('Alchemy\Phrasea\Utilities\CachedTranslator', $app['translator']);
+
+        $result = $app['translator']->trans($key, array(), null, $locale);
+
+        $this->assertEquals($expected, $result);
+        $this->assertFileExists($tempDir.'/catalogue.'.($locale ?: 'en').'.php');
+    }
+
+    public function transProvider()
+    {
+        return array(
+            array('key1', 'de', 'The german translation'),
+            array('test.key', 'de', 'It works in german'),
+        );
+    }
+
+    protected function getPreparedApp($tempDir)
+    {
+        $app = new Application('test');
+        $app['translator.cache-options'] = [
+            'debug' => false,
+            'cache_dir' => $tempDir,
+        ];
+
+        $app['translator.domains'] = array(
+            'messages' => array(
+                'en' => array (
+                    'key1' => 'The translation',
+                    'key_only_english' => 'Foo',
+                    'key2' => 'One apple|%count% apples',
+                    'test' => array(
+                        'key' => 'It works'
+                    )
+                ),
+                'de' => array (
+                    'key1' => 'The german translation',
+                    'key2' => 'One german apple|%count% german apples',
+                    'test' => array(
+                        'key' => 'It works in german'
+                    )
+                )
+            )
+        );
+
+        return $app;
+    }
+
+    private function cleanupTempDir($dir)
+    {
+        if (!is_dir($dir)) {
+            return;
+        }
+
+        foreach (new \DirectoryIterator($dir) as $fileinfo) {
+            if ($fileinfo->isFile()) {
+                unlink($fileinfo->getPathname());
+            }
+        }
+    }
+
     private function getAppThatReturnLocale()
     {
         $app = new Application('test');

@@ -110,8 +110,8 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Twig\JSUniqueID;
 use Alchemy\Phrasea\Twig\Camelize;
 use Alchemy\Phrasea\Twig\BytesConverter;
+use Alchemy\Phrasea\Utilities\CachedTranslator;
 use FFMpeg\FFMpegServiceProvider;
-use JMS\TranslationBundle\Translation\Loader\Symfony\XliffLoader;
 use Neutron\Silex\Provider\ImagineServiceProvider;
 use MediaVorus\MediaVorusServiceProvider;
 use MediaVorus\Utils\RawImageMimeTypeGuesser;
@@ -130,7 +130,7 @@ use Silex\Application\TranslationTrait;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\SessionServiceProvider;
-use Silex\Provider\TranslationServiceProvider;
+use Alchemy\Phrasea\Core\Provider\TranslationServiceProvider;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\SwiftmailerServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
@@ -138,8 +138,6 @@ use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Component\Translation\Loader\MoFileLoader;
-use Symfony\Component\Translation\Loader\PoFileLoader;
-use Symfony\Component\Translation\Translator;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
@@ -311,18 +309,21 @@ class Application extends SilexApplication
 
         $this->register(new TranslationServiceProvider(), [
             'locale_fallbacks' => ['fr'],
+            'translator.cache-options' => [
+                'debug' => $this['debug'],
+                'cache_dir' => $this['root.path'].'/tmp/translations'
+            ],
         ]);
 
-        $this['translator'] = $this->share($this->extend('translator', function(Translator $translator, $app) {
-            $translator->addLoader('xliff', new XliffLoader());
-                    $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.fr.xliff', 'fr', 'messages');
-                    $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.fr.xliff', 'fr', 'validators');
-                    $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.en.xliff', 'en', 'messages');
-                    $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.en.xliff', 'en', 'validators');
-                    $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.de.xliff', 'de', 'messages');
-                    $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.de.xliff', 'de', 'validators');
-                    $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.nl.xliff', 'nl', 'messages');
-                    $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.nl.xliff', 'nl', 'validators');
+        $this['translator'] = $this->share($this->extend('translator', function(CachedTranslator $translator, $app) {
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.fr.xliff', 'fr', 'messages');
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.fr.xliff', 'fr', 'validators');
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.en.xliff', 'en', 'messages');
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.en.xliff', 'en', 'validators');
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.de.xliff', 'de', 'messages');
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.de.xliff', 'de', 'validators');
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.nl.xliff', 'nl', 'messages');
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.nl.xliff', 'nl', 'validators');
 
             return $translator;
         }));

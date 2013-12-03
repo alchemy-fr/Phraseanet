@@ -37,6 +37,7 @@ class module_console_systemClearCache extends Command
             ->in([
                 $this->container['root.path'] . '/tmp/cache_minify/',
                 $this->container['root.path'] . '/tmp/cache_twig/',
+                $this->container['root.path'] . '/tmp/translations/',
                 $this->container['root.path'] . '/tmp/cache/profiler/',
                 $this->container['root.path'] . '/tmp/doctrine/',
                 $this->container['root.path'] . '/tmp/serializer/',
