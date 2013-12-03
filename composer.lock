@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "30ae0f4777c4f29dc1160eefe0c0a019",
+    "hash": "bdd3d36f118f024ac51b2466a8e11d09",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -294,16 +294,16 @@
         },
         {
             "name": "alchemy/task-manager",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/task-manager.git",
-                "reference": "3f8c8cf07668575c26b8c9e8370132f6d1fd6687"
+                "reference": "58cc74d41e89cabf1f76c81fdc4e477569e709df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/task-manager/zipball/3f8c8cf07668575c26b8c9e8370132f6d1fd6687",
-                "reference": "3f8c8cf07668575c26b8c9e8370132f6d1fd6687",
+                "url": "https://api.github.com/repos/alchemy-fr/task-manager/zipball/58cc74d41e89cabf1f76c81fdc4e477569e709df",
+                "reference": "58cc74d41e89cabf1f76c81fdc4e477569e709df",
                 "shasum": ""
             },
             "require": {
@@ -312,7 +312,7 @@
                 "neutron/signal-handler": "~1.0",
                 "php": ">=5.3.3",
                 "symfony/event-dispatcher": "~2.0",
-                "symfony/process": "2.4.x-dev@dev"
+                "symfony/process": "~2.4"
             },
             "require-dev": {
                 "monolog/monolog": "~1.0",
@@ -353,7 +353,7 @@
                 "parallel",
                 "process"
             ],
-            "time": "2013-10-29 11:33:12"
+            "time": "2013-12-03 18:53:49"
         },
         {
             "name": "dailymotion/sdk",
@@ -1300,12 +1300,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/avalanche123/Imagine.git",
-                "reference": "237ccf205dd5ece7a00a574b4f18bd118aa08a5d"
+                "reference": "016e17fd2469690abc9c015cf07b4898dff1471d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/avalanche123/Imagine/zipball/237ccf205dd5ece7a00a574b4f18bd118aa08a5d",
-                "reference": "237ccf205dd5ece7a00a574b4f18bd118aa08a5d",
+                "url": "https://api.github.com/repos/avalanche123/Imagine/zipball/016e17fd2469690abc9c015cf07b4898dff1471d",
+                "reference": "016e17fd2469690abc9c015cf07b4898dff1471d",
                 "shasum": ""
             },
             "require": {
@@ -1349,7 +1349,7 @@
                 "image manipulation",
                 "image processing"
             ],
-            "time": "2013-10-26 10:53:02"
+            "time": "2013-12-03 16:47:33"
         },
         {
             "name": "jms/metadata",
@@ -1815,15 +1815,15 @@
         },
         {
             "name": "neutron/process-manager",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/ProcessManager.git",
-                "reference": "a867278f6be7b718752c0d1dbd5f4d3b37166dcc"
+                "reference": "0f44ac5e5b855b24646d692762f77c988d48f4a4"
             },
             "require": {
                 "php": ">=5.3.3",
-                "symfony/process": "2.4.x-dev@dev"
+                "symfony/process": "~2.4"
             },
             "require-dev": {
                 "phpunit/phpunit": "~3.7",
@@ -1845,7 +1845,7 @@
                     "homepage": "http://www.lickmychip.com/"
                 }
             ],
-            "time": "2013-10-01 09:53:03"
+            "time": "2013-12-03 18:48:00"
         },
         {
             "name": "neutron/recaptcha",
@@ -2619,12 +2619,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/silexphp/Silex.git",
-                "reference": "d12b41779f0b37b6b661aedc8bf67bb17f57b876"
+                "reference": "5633f1b652a6cbc0c0ed4b6b86c0560c4560731a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/silexphp/Silex/zipball/d12b41779f0b37b6b661aedc8bf67bb17f57b876",
-                "reference": "d12b41779f0b37b6b661aedc8bf67bb17f57b876",
+                "url": "https://api.github.com/repos/silexphp/Silex/zipball/5633f1b652a6cbc0c0ed4b6b86c0560c4560731a",
+                "reference": "5633f1b652a6cbc0c0ed4b6b86c0560c4560731a",
                 "shasum": ""
             },
             "require": {
@@ -2695,7 +2695,7 @@
             "keywords": [
                 "microframework"
             ],
-            "time": "2013-11-01 12:34:49"
+            "time": "2013-12-03 18:11:54"
         },
         {
             "name": "silex/web-profiler",
@@ -2895,16 +2895,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "2.4.x-dev",
+            "version": "v2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "d618762956e45bb169b54ca4357690a0443f9027"
+                "reference": "2e47d2edd45080c046bc32dd2ca5c64f31086366"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/d618762956e45bb169b54ca4357690a0443f9027",
-                "reference": "d618762956e45bb169b54ca4357690a0443f9027",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/2e47d2edd45080c046bc32dd2ca5c64f31086366",
+                "reference": "2e47d2edd45080c046bc32dd2ca5c64f31086366",
                 "shasum": ""
             },
             "require": {
@@ -3004,7 +3004,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2013-12-03 14:52:22"
+            "time": "2013-12-03 15:23:03"
         },
         {
             "name": "themattharris/tmhoauth",
@@ -4120,7 +4120,6 @@
     "stability-flags": {
         "imagine/imagine": 20,
         "silex/silex": 20,
-        "symfony/symfony": 20,
         "doctrine/migrations": 20,
         "behat/behat": 20,
         "behat/gherkin": 20
