@@ -140,11 +140,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
         }
 
         $ret = [
-            'text'  => sprintf(
-                _('%1$s has published %2$s')
-                , $entry->getAuthorName()
-                , '<a href="/lightbox/feeds/entry/' . $entry->getId() . '/" target="_blank">' . $entry->getTitle() . '</a>'
-            )
+            'text'  => $this->app->trans('%user% has published %title%', ['%user%' => $entry->getAuthorName(), '%title%' => '<a href="/lightbox/feeds/entry/' . $entry->getId() . '/" target="_blank">' . $entry->getTitle() . '</a>'])
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
         ];
 
@@ -157,7 +153,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
      */
     public function get_name()
     {
-        return _('Feeds');
+        return $this->app->trans('Feeds');
     }
 
     /**
@@ -166,7 +162,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
      */
     public function get_description()
     {
-        return _('Receive notification when a publication is available');
+        return $this->app->trans('Receive notification when a publication is available');
     }
 
     /**

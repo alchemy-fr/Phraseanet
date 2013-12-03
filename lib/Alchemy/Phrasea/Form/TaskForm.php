@@ -22,14 +22,14 @@ class TaskForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('name', 'text', [
-            'label'       => _('Task name'),
+            'label'       => 'Task name',
             'required'    => true,
             'constraints' => [
                 new Assert\NotBlank(),
             ],
         ]);
         $builder->add('period', 'integer', [
-            'label'       => _('Task period (in seconds)'),
+            'label'       => 'Task period (in seconds)',
             'required'    => true,
             'constraints' => [
                 new Assert\NotBlank(),
@@ -37,7 +37,7 @@ class TaskForm extends AbstractType
             ],
         ]);
         $builder->add('status', 'choice', [
-            'label'       => _('The task status'),
+            'label'       => 'The task status',
             'choices'   => [
                 Task::STATUS_STARTED   => 'Started',
                 Task::STATUS_STOPPED   => 'Stopped',

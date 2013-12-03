@@ -3,7 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Core\CLIProvider;
 
 /**
- * @covers Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider
+ * @covers Alchemy\Phrasea\Core\CLIProvider\TaskManagerServiceProvider
  */
 class TaskManagerServiceProvidertest extends ServiceProviderTestCase
 {

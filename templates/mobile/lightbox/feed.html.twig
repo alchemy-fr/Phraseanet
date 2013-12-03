@@ -13,7 +13,7 @@
 <div id="home" data-role="page">
     <div data-role="header">
     <h1>{{feed_entry.getTitle()}}</h1>
-    <a rel="external" href="{{ path('lightbox') }}" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">{% trans 'Home' %}</a>
+    <a rel="external" href="{{ path('lightbox') }}" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">{{ 'Home' | trans }}</a>
   </div>
     <div data-role="content">
     <p>
@@ -21,9 +21,9 @@
     </p>
     <p>
       {% set author = feed_entry.getAuthorName() %}
-      <span class="author">{% trans %}Par {{ author }}{% endtrans %}</span>
+      <span class="author">{% trans with {'%author%' : author} %}Par %author%{% endtrans %}</span>
       {% set entry_length = feed_entry.getItems()|length %}
-      {% trans %}{{entry_length}} documents{% endtrans %}
+      {% trans with {'%entry_length%' : entry_length} %}%entry_length% documents{% endtrans %}
     </p>
     <ul class="image_set">
     {% for item in feed_entry.getItems() %}

@@ -115,7 +115,7 @@
     <div style="position:absolute; top:0; left:0; right:0; bottom:0; background-color:#1a1a1a; z-index:32766;">
         <div id="loader" style="top:200px; margin:0 auto; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; background-color:#CCCCCC; position:relative; margin:0 auto; text-align:center; width:400px; height:100px; padding:20px; z-index:32767;">
             <div style="margin:0 10px 10px; font-family:Helvetica,Arial,sans-serif; font-size:18px; color:#1A1A1A; text-align:left;">Phraseanet</div>
-            <div style="text-align:center;">{% trans 'Chargement' %}</div>
+            <div style="text-align:center;">{{ 'Chargement' | trans }}</div>
             <div style="width:220px; height:19px; margin:20px auto;">
                 <div id="loader_bar" style="height:19px;width:10%;background-image:url(/skins/icons/main-loader.gif)"></div>
             </div>
@@ -141,19 +141,19 @@
                         {% if GV_thesaurus %}
                         <li class="proposals_WZ">
                             <a href="#proposals" class="WZtabs">
-                                <img class="proposals_off" src="/skins/icons/proposition_off32.png" title="{% trans 'phraseanet:: propositions' %}"/>
-                                <img class="proposals_on" src="/skins/icons/proposition_on32.png" title="{% trans 'phraseanet:: propositions' %}"/>
+                                <img class="proposals_off" src="/skins/icons/proposition_off32.png" title="{{ 'phraseanet:: propositions' | trans }}"/>
+                                <img class="proposals_on" src="/skins/icons/proposition_on32.png" title="{{ 'phraseanet:: propositions' | trans }}"/>
                             </a>
                         </li>
                         <li>
                             <a href="#thesaurus_tab" class="WZtabs">
-                                <img src="/skins/icons/thesaurus_32.png" title="{% trans 'phraseanet:: thesaurus' %}"/>
+                                <img src="/skins/icons/thesaurus_32.png" title="{{ 'phraseanet:: thesaurus' | trans }}"/>
                             </a>
                         </li>
                         {% endif %}
                         <li style="float:right;">
                             <a href="#" class="escamote" style="margin:8px 0;">
-                                <img src="/skins/icons/workzoneEscamote.png" title="{% trans 'Close the WorkZone' %}"/>
+                                <img src="/skins/icons/workzoneEscamote.png" title="{{ 'Close the WorkZone' | trans }}"/>
                             </a>
                         </li>
                     </ul>
@@ -168,9 +168,9 @@
                     <div id="thesaurus_tab" class="PNB" style="top:52px;">
                         <div id="THPD_tabs">
                             <ul>
-                                <li class="th_tab"><a href="#THPD_T"><span>{% trans 'prod::thesaurusTab:thesaurus' %}</span></a></li>
+                                <li class="th_tab"><a href="#THPD_T"><span>{{ 'prod::thesaurusTab:thesaurus' | trans }}</span></a></li>
                                 {% if app['acl'].get(app['authentication'].getUser()).has_access_to_module('thesaurus') %}
-                                    <li class="th_tab"><a href="#THPD_C"><span>{% trans 'prod::thesaurusTab:candidats' %}</span></a></li>
+                                    <li class="th_tab"><a href="#THPD_C"><span>{{ 'prod::thesaurusTab:candidats' | trans }}</span></a></li>
                                 {% endif %}
                             </ul>
                             <div class="ui-tabs-panels-container">
@@ -180,16 +180,16 @@
                                             <!-- empty wizard -->
                                         </div>
                                         <div class="wizard wiz_1" style="display:none">
-                                            <div class="txt">{% trans 'prod::thesaurusTab:wizard:accepter le terme candidat' %}</div>
+                                            <div class="txt">{{ 'prod::thesaurusTab:wizard:accepter le terme candidat' | trans }}</div>
                                         </div>
                                         <div class="wizard wiz_2" style="display:none">
-                                            <div class="txt">{% trans 'prod::thesaurusTab:wizard:remplacer par le terme' %}</div>
+                                            <div class="txt">{{ 'prod::thesaurusTab:wizard:remplacer par le terme' | trans }}</div>
                                         </div>
                                         <form class="gform form-inline" onsubmit="T_Gfilter(this);return(false);">
                                             <div class="input-append">
                                                 <input type="text" name="search_value" class="input-medium" onkeyup="T_Gfilter_delayed(this.value, 300);" />
-                                                <input type="submit" class="th_ok btn" value="{% trans 'boutton::rechercher' %}" />
-                                                <input type="button" class="th_cancel btn" value="{% trans 'boutton::annuler' %}" onclick="thesauCancelWizard();return(false);"/>
+                                                <input type="submit" class="th_ok btn" value="{{ 'boutton::rechercher' | trans }}" />
+                                                <input type="button" class="th_cancel btn" value="{{ 'boutton::annuler' | trans }}" onclick="thesauCancelWizard();return(false);"/>
                                              </div>
                                         </form>
                                     </div>
@@ -201,7 +201,7 @@
                                                     <li id="TX_P.{{base['sbas_id']}}.T" class="expandable{% if loop.last %} last{% endif %}">
                                                         <div class="hitarea expandable-hitarea"></div>
                                                         <span>{{base['sbas_id']|sbas_labels(app)}}</span>
-                                                        <ul style="display:none">{% trans 'chargement' %}</ul>
+                                                        <ul style="display:none">{{ 'chargement' | trans }}</ul>
                                                     </li>
                                                     {% endif %}
                                                 {% endfor %}
@@ -219,7 +219,7 @@
                                                     <li id="CX_P.{{base['sbas_id']}}.C" class="expandable{% if loop.last %} last{% endif %}">
                                                         <div class="hitarea expandable-hitarea"></div>
                                                         <span>{{base['sbas_id']|sbas_labels(app)}}</span>
-                                                        <ul style="display:none">{% trans 'chargement' %}</ul>
+                                                        <ul style="display:none">{{ 'chargement' | trans }}</ul>
                                                     </li>
                                                     {% endif %}
                                                 {% endfor %}
@@ -238,40 +238,40 @@
                 <ul style="list-style-type:none;margin:0;padding:0">
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner">
-                            <a title="{% trans 'action:: nouveau panier' %}" class="dialog small-dialog" href="{{ path('prod_baskets_create') }}">
-                                <img style="cursor:pointer;" src="/skins/icons/mtadd_0.gif" title="{% trans 'action:: nouveau panier' %}" />
-                                {% trans 'action:: nouveau panier' %}
+                            <a title="{{ 'action:: nouveau panier' | trans }}" class="dialog small-dialog" href="{{ path('prod_baskets_create') }}">
+                                <img style="cursor:pointer;" src="/skins/icons/mtadd_0.gif" title="{{ 'action:: nouveau panier' | trans }}" />
+                                {{ 'action:: nouveau panier' | trans }}
                             </a>
                         </div>
                         <div class="context-menu-item-inner">
-                            <a title="{% trans 'Browse Baskets' %}" class="dialog" href="{{ path('prod_workzone_browse') }}">
-                                {% trans 'Browse Baskets' %}
+                            <a title="{{ 'Browse Baskets' | trans }}" class="dialog" href="{{ path('prod_workzone_browse') }}">
+                                {{ 'Browse Baskets' | trans }}
                             </a>
                         </div>
                         {% if app['phraseanet.registry'].get('GV_multiAndReport') and app['acl'].get(app['authentication'].getUser()).has_right('addrecord') %}
                             <div class="context-menu-item-inner">
-                                <a title="{% trans 'action:: nouveau reportage' %}" class="dialog small-dialog" href="{{ path('prod_stories_create') }}">
-                                    <img style="cursor:pointer;" src="/skins/icons/mtadd_0.gif" title="{% trans 'action:: nouveau reportage' %}" />
-                                    {% trans 'action:: nouveau reportage' %}
+                                <a title="{{ 'action:: nouveau reportage' | trans }}" class="dialog small-dialog" href="{{ path('prod_stories_create') }}">
+                                    <img style="cursor:pointer;" src="/skins/icons/mtadd_0.gif" title="{{ 'action:: nouveau reportage' | trans }}" />
+                                    {{ 'action:: nouveau reportage' | trans }}
                                 </a>
                             </div>
                        {% endif %}
                     </li>
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner" onclick="return p4.WorkZone.refresh('current','date');">
-                            <img style="cursor:pointer;" src="/skins/icons/cal.png" title="{% trans 'phraseanet:: tri par date' %}" />
-                            {% trans 'phraseanet:: tri par date' %}
+                            <img style="cursor:pointer;" src="/skins/icons/cal.png" title="{{ 'phraseanet:: tri par date' | trans }}" />
+                            {{ 'phraseanet:: tri par date' | trans }}
                         </div>
                     </li>
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner" onclick="return p4.WorkZone.refresh('current','name');">
-                            <img style="cursor:pointer;" src="/skins/icons/alpha.png" title="{% trans 'phraseanet:: tri par nom' %}" />
-                            {% trans 'phraseanet:: tri par nom' %}
+                            <img style="cursor:pointer;" src="/skins/icons/alpha.png" title="{{ 'phraseanet:: tri par nom' | trans }}" />
+                            {{ 'phraseanet:: tri par nom' | trans }}
                         </div>
                     </li>
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner" onclick="basketPrefs();">
-                            {% trans 'Preferences' %}
+                            {{ 'Preferences' | trans }}
                         </div>
                     </li>
                 </ul>
@@ -285,31 +285,31 @@
                         <div class="input-append">
                             <input autocomplete="off" class="search query" id="EDIT_query" name="qry" type="text" name="qry" value="{{app['authentication'].getUser().getPrefs('start_page_query')}}">
                             <a href="#" class="btn btn-inverse adv_trigger adv_search_button">
-                                <img src="/skins/icons/settings.png" title="{% trans 'Advanced Search' %}"/>
+                                <img src="/skins/icons/settings.png" title="{{ 'Advanced Search' | trans }}"/>
                             </a>
-                            <button type="submit" class="btn btn-inverse" style="font-size:14px">{% trans 'boutton::rechercher' %}</button>
+                            <button type="submit" class="btn btn-inverse" style="font-size:14px">{{ 'boutton::rechercher' | trans }}</button>
                         </div>
                         <div class="control-group" style="margin:5px;">
                             <div class="controls">
                                 {% if GV_multiAndReport %}
                                     <label for="mode_type_doc" class="radio inline">
                                         <input type="radio" value="0" class="mode_type_doc_reg" name="search_type" {% if GV_defaultQuery_type == 0 %}checked="checked"{% endif %} id="mode_type_doc"/>
-                                        {% trans 'phraseanet::type:: documents' %}
+                                        {{ 'phraseanet::type:: documents' | trans }}
                                     </label>
                                     <label for="mode_type_reg" class="radio inline">
                                         <input type="radio" value="1" class="mode_type_doc_reg" name="search_type" {% if GV_defaultQuery_type != 0 %}checked="checked"{% endif %} id="mode_type_reg"/>
-                                        {% trans 'phraseanet::type:: reportages' %}
+                                        {{ 'phraseanet::type:: reportages' | trans }}
                                     </label>
                                 {% else %}
                                     <input type="hidden" value="0" name="search_type" />
                                 {% endif %}
                                 <select name="record_type" id="recordtype_sel" class="input-small">
-                                    <option value="">{% trans 'Tout type' %}</option>
-                                    <option value="image">{% trans 'Image' %}</option>
-                                    <option value="video">{% trans 'Video' %}</option>
-                                    <option value="audio">{% trans 'Audio' %}</option>
-                                    <option value="document">{% trans 'Document' %}</option>
-                                    <option value="flash">{% trans 'Flash' %}</option>
+                                    <option value="">{{ 'Tout type' | trans }}</option>
+                                    <option value="image">{{ 'Image' | trans }}</option>
+                                    <option value="video">{{ 'Video' | trans }}</option>
+                                    <option value="audio">{{ 'Audio' | trans }}</option>
+                                    <option value="document">{{ 'Document' | trans }}</option>
+                                    <option value="flash">{{ 'Flash' | trans }}</option>
                                 </select>
                             </div>
                         </div>
@@ -323,9 +323,9 @@
                                         <div class="sbasglob">
                                             <div class="btn-toolbar">
                                                 <input class="btn btn-inverse" type="button"
-                                                    value="{% trans 'boutton:: selectionner toutes les bases' %}" onclick="checkBases(true);" />
+                                                    value="{{ 'boutton:: selectionner toutes les bases' | trans }}" onclick="checkBases(true);" />
                                                 <input class="btn btn-inverse" type="button"
-                                                    value="{% trans 'boutton:: selectionner aucune base' %}" onclick="checkBases(false);" />
+                                                    value="{{ 'boutton:: selectionner aucune base' | trans }}" onclick="checkBases(false);" />
                                             </div>
                                             {{_self.bas_list(module_prod, search_datas)}}
                                         </div>
@@ -333,10 +333,10 @@
                                     <td style="width:50%; vertical-align:top;">
                                         <div id="sbasfiltercont">
                                             <div  class="btn-toolbar">
-                                                <input class="btn btn-inverse" type="button" value="{% trans 'Re-initialiser' %}" onclick="reset_adv_search();" />
+                                                <input class="btn btn-inverse" type="button" value="{{ 'Re-initialiser' | trans }}" onclick="reset_adv_search();" />
                                             </div>
 
-                                            <span>{% trans 'Trier par ' %}</span>
+                                            <span>{{ 'Trier par' | trans }}</span>
                                             <select name="sort" class="input-small">
                                                 {% for sort, sort_name in app['phraseanet.SE'].getAvailableSort() %}
                                                 <option value="{{ sort }}" {% if sort == app['phraseanet.SE'].getDefaultSort() %}selected="selected" class="default-selection"{% endif %}>{{ sort_name }}</option>
@@ -350,14 +350,14 @@
                                             {% if app['phraseanet.SE'].hasStemming() and app['phraseanet.SE'].isStemmingEnabled() %}
                                             <div>
                                                 <label class="checkbox">
-                                                     <input type="checkbox" checked="checked" name="stemme" /> {% trans 'rechercher par stemme' %}
+                                                     <input type="checkbox" checked="checked" name="stemme" /> {{ 'rechercher par stemme' | trans }}
                                                 </label>
                                             </div>
                                             {% endif %}
                                             <div class="field_filter">
-                                                <span>{% trans 'Les termes apparaissent dans le(s) champs' %}</span>
+                                                <span>{{ 'Les termes apparaissent dans le(s) champs' | trans }}</span>
                                                 <select size="8" multiple onchange="checkFilters(true);" name="fields[]" style="vertical-align:middle; width:99%;">
-                                                    <option value="phraseanet--all--fields">{% trans 'rechercher dans tous les champs' %}</option>
+                                                    <option value="phraseanet--all--fields">{{ 'rechercher dans tous les champs' | trans }}</option>
                                                     {% for field_id, field in search_datas['fields'] %}
                                                         {% if field['type'] != 'date' %}
                                                             <option class="field_switch field_{{field['sbas']|join(' field_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
@@ -370,31 +370,31 @@
                                             {% if status_length > 0 %}
                                                 <hr />
                                                 <div class="status_filter">
-                                                    <span>{% trans 'Status des documents a rechercher' %}</span>
+                                                    <span>{{ 'Status des documents a rechercher' | trans }}</span>
                                                     <table style="width: 100%;">
                                                         {% for n, stat in search_status %}
                                                             {% for s in stat %}
                                                             <tr>
                                                                 <td>
                                                                     {% if s['imgoff'] %}
-                                                                        <img src="{{s['imgoff']}}" title="{{s['labels_off_i18n'][app['locale.I18n']]}}" />
+                                                                        <img src="{{s['imgoff']}}" title="{{s['labels_off_i18n'][app['locale']]}}" />
                                                                     {% endif %}
                                                                     <label class="checkbox inline">
                                                                         <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|join(' field_')}}"
                                                                         type="checkbox" value="{{s['sbas']|join(' field_')}}"
                                                                         n="{{n}}" name="status[{{n}}][off][]" />
-                                                                        {{s['labels_off_i18n'][app['locale.I18n']]}}
+                                                                        {{s['labels_off_i18n'][app['locale']]}}
                                                                     </label>
                                                                 </td>
                                                                 <td>
                                                                     {% if s['imgoff'] %}
-                                                                        <img src="{{s['imgon']}}" title="{{s['labels_on_i18n'][app['locale.I18n']]}}" />
+                                                                        <img src="{{s['imgon']}}" title="{{s['labels_on_i18n'][app['locale']]}}" />
                                                                     {% endif %}
                                                                     <label class="checkbox inline">
                                                                         <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|join(' field_')}}"
                                                                         type="checkbox" value="{{s['sbas']|join(' field_')}}"
                                                                         n="{{n}}" name="status[{{n}}][on][]"/>
-                                                                        {{s['labels_on_i18n'][app['locale.I18n']]}}
+                                                                        {{s['labels_on_i18n'][app['locale']]}}
                                                                     </label>
                                                                 </td>
                                                             </tr>
@@ -409,7 +409,7 @@
                                                 <div class="date_filter">
                                                     <table>
                                                         <tr>
-                                                            <td colspan="2">{% trans 'Rechercher dans un champ date' %}</td>
+                                                            <td colspan="2">{{ 'Rechercher dans un champ date' | trans }}</td>
                                                             <td colspan="2">
                                                                 <select name="date_field" class="input-medium">
                                                                     {% for field in app['phraseanet.SE'].getAvailableDateFields() %}
@@ -417,20 +417,20 @@
                                                                             class="" value="{{ field }}">{{ field }}</option>
                                                                     {% endfor %}
                                                                     <option value="{{ app['phraseanet.SE'].getAvailableDateFields()|join('|') }}" selected="selected">
-                                                                        {% trans 'rechercher dans tous les champs' %}
+                                                                        {{ 'rechercher dans tous les champs' | trans }}
                                                                     </option>
                                                                 </select>
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td>{% trans 'phraseanet::time:: de' %}</td>
+                                                            <td>{{ 'phraseanet::time:: de' | trans }}</td>
                                                             <td style="padding-right: 5px;">
                                                                 <div class="input-prepend">
                                                                     <span class="add-on"><i class="icon-calendar"></i></span>
                                                                     <input onchange="checkFilters(true);" class="datepicker input-small" type="text" name="date_min" placeholder="YYYY/MM/DD" style="margin: 0;position: relative; z-index: 10001;" />
                                                                 </div>
                                                             </td>
-                                                            <td>{% trans 'phraseanet::time:: a' %}</td>
+                                                            <td>{{ 'phraseanet::time:: a' | trans }}</td>
                                                             <td>
                                                                 <div class="input-prepend">
                                                                     <span class="add-on"><i class="icon-calendar"></i></span>
@@ -476,37 +476,37 @@
                             <ul class="dropdown-menu">
                                 <li>
                                     <a class="answer_selector all_selector">
-                                        {% trans 'reponses:: selectionner tout' %}
+                                        {{ 'reponses:: selectionner tout' | trans }}
                                     </a>
                                 </li>
                                 <li class="divider"></li>
                                 <li>
                                     <a class="answer_selector none_selector">
-                                        {% trans 'reponses:: selectionner rien' %}
+                                        {{ 'reponses:: selectionner rien' | trans }}
                                     </a>
                                 </li>
                                 <li class="divider"></li>
                                 <li>
                                     <a class="answer_selector image_selector">
-                                        {% trans 'phraseanet::type:: images' %}
+                                        {{ 'phraseanet::type:: images' | trans }}
                                     </a>
                                 </li>
                                 <li class="divider"></li>
                                 <li>
                                     <a class="answer_selector document_selector">
-                                        {% trans 'phraseanet::type:: documents' %}
+                                        {{ 'phraseanet::type:: documents' | trans }}
                                     </a>
                                 </li>
                                 <li class="divider"></li>
                                 <li>
                                     <a class="answer_selector video_selector">
-                                        {% trans 'phraseanet::type:: videos' %}
+                                        {{ 'phraseanet::type:: videos' | trans }}
                                     </a>
                                 </li>
                                 <li class="divider"></li>
                                 <li>
                                     <a class="answer_selector audio_selector">
-                                        {% trans 'phraseanet::type:: audios' %}
+                                        {{ 'phraseanet::type:: audios' | trans }}
                                     </a>
                                 </li>
                             </ul>
@@ -516,14 +516,14 @@
                     <span class="dropdownButton">
                         <div class="btn-group">
                             <button class="default_action TOOL_disktt_btn results_window btn btn-inverse">
-                                <img src="/skins/prod/000000/images/disktt_history.gif" height="16" width="16" /> {% trans 'action : exporter' %}
+                                <img src="/skins/prod/000000/images/disktt_history.gif" height="16" width="16" /> {{ 'action : exporter' | trans }}
                             </button>
                             <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                             <ul class="dropdown-menu">
                                 <li>
                                     <a class="TOOL_print_btn results_window">
                                         <img src="/skins/prod/000000/images/print_history.gif" height="16" width="16" />
-                                        {% trans 'action : print' %}
+                                        {{ 'action : print' | trans }}
                                     </a>
                                 </li>
                             </ul>
@@ -533,19 +533,19 @@
                     {% set actions = {} %}
                     {% if app['acl'].get(app['authentication'].getUser()).has_right('modifyrecord') %}
                         {% set label %}
-                            {% trans 'action : editer' %}
+                            {{ 'action : editer' | trans }}
                         {% endset %}
                         {% set actions = actions|merge( { 'edit' : {'icon': "/skins/prod/000000/images/ppen_history.gif", 'class':'TOOL_ppen_btn', 'label' : label} }) %}
                     {% endif %}
                     {% if app['acl'].get(app['authentication'].getUser()).has_right('changestatus') %}
                         {% set label %}
-                            {% trans 'action : status' %}
+                            {{ 'action : status' | trans }}
                         {% endset %}
                         {% set actions = actions|merge( { 'status' : {'icon': "/skins/prod/000000/images/chgstatus_history.gif", 'class':'TOOL_chgstatus_btn', 'label' : label} }) %}
                     {% endif %}
                     {% if app['acl'].get(app['authentication'].getUser()).has_right('deleterecord') and app['acl'].get(app['authentication'].getUser()).has_right('addrecord') %}
                         {% set label %}
-                            {% trans 'action : collection' %}
+                            {{ 'action : collection' | trans }}
                         {% endset %}
                         {% set actions = actions|merge( { 'move' : {'icon': "/skins/prod/000000/images/chgcoll_history.gif", 'class':'TOOL_chgcoll_btn', 'label' : label} }) %}
                     {% endif %}
@@ -595,28 +595,28 @@
                         <span class="dropdownButton">
                             <div class="btn-group">
                                 <button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse">
-                                    <img src="/skins/icons/push16.png" height="16" width="16" /> {% trans 'action : push' %}
+                                    <img src="/skins/icons/push16.png" height="16" width="16" /> {{ 'action : push' | trans }}
                                 </button>
                                 <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                                 <ul class="dropdown-menu">
                                     <li>
                                         <a class="TOOL_feedback_btn results_window">
                                             <img src="/skins/icons/feedback16.png" height="16" width="16" />
-                                            {% trans 'Feedback' %}
+                                            {{ 'Feedback' | trans }}
                                         </a>
                                     </li>
                                     <li class="divider"></li>
                                     <li>
                                         <a class="TOOL_bridge_btn results_window">
                                             <img src="/skins/icons/door.png" height="16" width="16" />
-                                            {% trans 'action : bridge' %}
+                                            {{ 'action : bridge' | trans }}
                                         </a>
                                     </li>
                                     <li class="divider"></li>
                                     <li>
                                         <a class="TOOL_publish_btn results_window">
                                             <img src="/skins/icons/rss16.png" height="16" width="16" />
-                                            {% trans 'action : publier' %}
+                                            {{ 'action : publier' | trans }}
                                         </a>
                                     </li>
                                 </ul>
@@ -626,14 +626,14 @@
                         <span class="dropdownButton">
                             <div class="btn-group">
                                 <button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse" >
-                                    <img src="/skins/icons/push16.png" height="16" width="16" /> {% trans 'action : push' %}
+                                    <img src="/skins/icons/push16.png" height="16" width="16" /> {{ 'action : push' | trans }}
                                 </button>
                                 <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                                 <ul class="submenu dropdown-menu">
                                     <li>
                                         <a class="TOOL_feedback_btn results_window">
                                             <img src="/skins/icons/feedback16.png" height="16" width="16" />
-                                            {% trans 'Feedback' %}
+                                            {{ 'Feedback' | trans }}
                                         </a>
                                     </li>
                                 </ul>
@@ -643,14 +643,14 @@
                         <span class="dropdownButton">
                             <div class="btn-group">
                                 <button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse" >
-                                    <img src="/skins/icons/door.png" height="16" width="16" /> {% trans 'action : bridge' %}
+                                    <img src="/skins/icons/door.png" height="16" width="16" /> {{ 'action : bridge' | trans }}
                                 </button>
                                 <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                                 <ul class="submenu dropdown-menu">
                                     <li>
                                         <a class="TOOL_publish_btn results_window">
                                             <img src="/skins/icons/rss16.png" height="16" width="16" />
-                                            {% trans 'action : publier' %}
+                                            {{ 'action : publier' | trans }}
                                         </a>
                                     </li>
                                 </ul>
@@ -662,7 +662,7 @@
                         <span class="classicButton">
                             <div class="btn-group">
                                 <button class="TOOL_imgtools_btn results_window btn btn-inverse" >
-                                    <img src="/skins/prod/000000/images/imgtools_history.gif" height="16" width="16" /> {% trans 'action : outils' %}
+                                    <img src="/skins/prod/000000/images/imgtools_history.gif" height="16" width="16" /> {{ 'action : outils' | trans }}
                                 </button>
                             </div>
                         </span>
@@ -671,7 +671,7 @@
                         <span class="classicButton">
                             <div class="btn-group">
                                 <button class="TOOL_trash_btn results_window btn btn-inverse" >
-                                    <img src="/skins/icons/delete.png" height="16" width="16" /> {% trans 'action : supprimer' %}
+                                    <img src="/skins/icons/delete.png" height="16" width="16" /> {{ 'action : supprimer' | trans }}
                                 </button>
                             </div>
                         </span>
@@ -694,7 +694,7 @@
                     <table>
                         <tr>
                             <td class="infos">
-                                <a href="#" onclick="lookBox(this,event);return false;">{% trans 'Preferences' %} </a>
+                                <a href="#" onclick="lookBox(this,event);return false;">{{ 'Preferences' | trans }} </a>
                                 |
                                 <span id="tool_results">
 
@@ -741,44 +741,44 @@
     <div id="MESSAGE-push"></div>
     <div id="MESSAGE-publi"></div>
     <div id="DIALOG"></div>
-    <div id="keyboard-dialog" class="{% if app['authentication'].getUser().getPrefs('keyboard_infos') != '0' %}auto{% endif %}" style="display:none;" title="{% trans 'raccourci :: a propos des raccourcis claviers' %}">
+    <div id="keyboard-dialog" class="{% if app['authentication'].getUser().getPrefs('keyboard_infos') != '0' %}auto{% endif %}" style="display:none;" title="{{ 'raccourci :: a propos des raccourcis claviers' | trans }}">
         <div>
-            <h1>{% trans 'Raccourcis claviers en cours de recherche : ' %}</h1>
+            <h1>{{ 'Raccourcis claviers en cours de recherche :' | trans }}</h1>
             <ul>
-                <li>{% trans 'Raccourcis:: ctrl-a : tout selectionner ' %}</li>
-                <li>{% trans 'Raccourcis:: ctrl-p : imprimer la selection ' %}</li>
-                <li>{% trans 'Raccourcis:: ctrl-e : editer la selection ' %}</li>
-                <li>{% trans 'Raccourcis::fleche gauche : page precedente ' %}</li>
-                <li>{% trans 'Raccourcis::fleche droite : page suivante ' %}</li>
-                <li>{% trans 'Raccourcis::fleche haut : scroll vertical ' %}</li>
-                <li>{% trans 'Raccourcis::fleche bas : scroll vertical ' %}</li>
+                <li>{{ 'Raccourcis:: ctrl-a : tout selectionner' | trans }}</li>
+                <li>{{ 'Raccourcis:: ctrl-p : imprimer la selection' | trans }}</li>
+                <li>{{ 'Raccourcis:: ctrl-e : editer la selection' | trans }}</li>
+                <li>{{ 'Raccourcis::fleche gauche : page precedente' | trans }}</li>
+                <li>{{ 'Raccourcis::fleche droite : page suivante' | trans }}</li>
+                <li>{{ 'Raccourcis::fleche haut : scroll vertical' | trans }}</li>
+                <li>{{ 'Raccourcis::fleche bas : scroll vertical' | trans }}</li>
             </ul>
         </div>
         <div>
-            <h1>{% trans 'Raccourcis claviers de la zone des paniers : ' %}</h1>
+            <h1>{{ 'Raccourcis claviers de la zone des paniers :' | trans }}</h1>
             <ul>
-                <li>{% trans 'Raccourcis:: ctrl-a : tout selectionner ' %}</li>
-                <li>{% trans 'Raccourcis:: ctrl-p : imprimer la selection ' %}</li>
-                <li>{% trans 'Raccourcis:: ctrl-e : editer la selection ' %}</li>
+                <li>{{ 'Raccourcis:: ctrl-a : tout selectionner' | trans }}</li>
+                <li>{{ 'Raccourcis:: ctrl-p : imprimer la selection' | trans }}</li>
+                <li>{{ 'Raccourcis:: ctrl-e : editer la selection' | trans }}</li>
             </ul>
         </div>
         <div>
-            <h1>{% trans 'Raccourcis claviers en cours de editing : ' %}</h1>
+            <h1>{{ 'Raccourcis claviers en cours de editing :' | trans }}</h1>
             <ul>
-                <li>{% trans 'Raccourcis::tab/shift-tab se ballade dans les champs ' %}</li>
+                <li>{{ 'Raccourcis::tab/shift-tab se ballade dans les champs' | trans }}</li>
             </ul>
         </div>
         <div>
-            <h1>{% trans 'Raccourcis claviers en cours de preview : ' %}</h1>
+            <h1>{{ 'Raccourcis claviers en cours de preview :' | trans }}</h1>
             <ul>
-                <li>{% trans 'Raccourcis::fleche gauche : en avant ' %}</li>
-                <li>{% trans 'Raccourcis::fleche gauche : en arriere ' %}</li>
-                <li>{% trans 'Raccourcis::espace : arreter/demarrer le diaporama ' %}</li>
+                <li>{{ 'Raccourcis::fleche gauche : en avant' | trans }}</li>
+                <li>{{ 'Raccourcis::fleche gauche : en arriere' | trans }}</li>
+                <li>{{ 'Raccourcis::espace : arreter/demarrer le diaporama' | trans }}</li>
             </ul>
         </div>
         <div>
             <ul>
-                <li>{% trans 'Vous pouvez quitter la plupart des fenetres survolantes via la touche echap ' %}</li>
+                <li>{{ 'Vous pouvez quitter la plupart des fenetres survolantes via la touche echap' | trans }}</li>
             </ul>
         </div>
         <div>
@@ -786,7 +786,7 @@
                 <li>
                     <label class="checkbox" for="keyboard-stop">
                         <input id="keyboard-stop" type="checkbox"/>
-                        {% trans 'raccourcis :: ne plus montrer cette aide' %}
+                        {{ 'raccourcis :: ne plus montrer cette aide' | trans }}
                     </label>
                 </li>
             </ul>
@@ -795,81 +795,81 @@
 
     {{cgus_agreement|raw}}
 
-    <div style="display:none;position:relative;" id="look_box" title="{% trans 'Preferences' %}" >
+    <div style="display:none;position:relative;" id="look_box" title="{{ 'Preferences' | trans }}" >
         <div class="tabs">
             <ul>
-                <li><a href="#look_box_screen">{% trans 'Affichage' %}</a></li>
-                <li><a href="#look_box_settings">{% trans 'Configuration' %}</a></li>
+                <li><a href="#look_box_screen">{{ 'Affichage' | trans }}</a></li>
+                <li><a href="#look_box_settings">{{ 'Configuration' | trans }}</a></li>
             </ul>
             <div id="look_box_screen">
                 <div class="box">
                     <div class="" style="float:left; width:49%;">
-                        <h1>{% trans 'Mode de presentation' %}</h1>
+                        <h1>{{ 'Mode de presentation' | trans }}</h1>
                         {% set mod = app['authentication'].getUser().getPrefs('view') %}
                         <label class="radio inline" for="thumbs_view">
                             <input onchange="setPref('view',$(this).val());" name="view_type" type="radio" style="margin: 3px 0 0 -18px;" class="radio" value="thumbs" id="thumbs_view" {% if mod == 'thumbs' %}checked="checked"{% endif %}/>
-                            {% trans 'reponses:: mode vignettes' %}
+                            {{ 'reponses:: mode vignettes' | trans }}
                         </label>
                         <label class="radio inline" for="list_view">
                             <input onchange="setPref('view',$(this).val());" name="view_type" type="radio" style="margin: 3px 0 0 -18px;" class="radio" value="list" id="list_view" {% if mod == 'list' %}checked="checked"{% endif %}/>
-                            {% trans 'reponses:: mode liste' %}
+                            {{ 'reponses:: mode liste' | trans }}
                         </label>
                     </div>
                     <div style="float:right; width:49%;">
-                        <h1>{% trans 'Theme' %}</h1>
+                        <h1>{{ 'Theme' | trans }}</h1>
                         {% for color, file in css %}
-                            <div title="{% trans 'Selecteur de theme' %}" class="colorpicker_box"
+                            <div title="{{ 'Selecteur de theme' | trans }}" class="colorpicker_box"
                                 onclick="setCss('{{color}}');" style="width:16px;height:16px;background-color:{{ '#' ~ color ~ ';' }}">&nbsp;</div>
                         {% endfor %}
                     </div>
                 </div>
                 <div class="box">
                     {% set rollover_thumbnail = app['authentication'].getUser().getPrefs('rollover_thumbnail') %}
-                    <h1>{% trans 'Presentation de vignettes' %}</h1>
+                    <h1>{{ 'Presentation de vignettes' | trans }}</h1>
                     <label class="radio" for="rollover_caption">
                         <input onchange="setPref('rollover_thumbnail',$(this).val());" name="rollover_thumbnail" type="radio" class="radio" value="caption" id="rollover_caption" {% if rollover_thumbnail == 'caption' %}checked="checked" {% endif %}/>
-                        {% trans 'Iconographe (description au rollover)' %}
+                        {{ 'Iconographe (description au rollover)' | trans }}
                     </label>
                     <label class="radio" for="rollover_preview">
                         <input onchange="setPref('rollover_thumbnail',$(this).val());" name="rollover_thumbnail" type="radio" class="radio" value="preview" id="rollover_preview" {% if rollover_thumbnail == 'preview' %}checked="checked" {% endif %}/>
-                        {% trans 'Graphiste (preview au rollover)' %}
+                        {{ 'Graphiste (preview au rollover)' | trans }}
                     </label>
                 </div>
                 <div class="box">
                     {% set technical_display = app['authentication'].getUser().getPrefs('technical_display') %}
-                    <h1>{% trans 'Informations techniques' %}</h1>
+                    <h1>{{ 'Informations techniques' | trans }}</h1>
                     <label class="radio" for="technical_show">
                         <input onchange="setPref('technical_display',$(this).val());" name="technical_display" type="radio" class="radio" value="1" id="technical_show" {% if technical_display == '1' %}checked="checked"{% endif %}/>
-                        {% trans 'Afficher' %}
+                        {{ 'Afficher' | trans }}
                     </label>
                     <label class="radio" for="technical_group">
                         <input onchange="setPref('technical_display',$(this).val());" name="technical_display" type="radio" class="radio" value="group" id="technical_group" {% if technical_display == 'group' %}checked="checked"{% endif %}/>
-                        {% trans 'Afficher dans la notice' %}
+                        {{ 'Afficher dans la notice' | trans }}
                     </label>
                     <label class="radio" for="technical_hide">
                         <input onchange="setPref('technical_display',$(this).val());" name="technical_display" type="radio" class="radio" value="0" id="technical_hide" {% if technical_display == '0' %}checked="checked"{% endif %}/>
-                        {% trans 'Ne pas afficher' %}
+                        {{ 'Ne pas afficher' | trans }}
                     </label>
                 </div>
                 <div class="box">
                     {% set doctype_display = app['authentication'].getUser().getPrefs('doctype_display') %}
-                    <h1>{% trans 'Type de documents' %}</h1>
+                    <h1>{{ 'Type de documents' | trans }}</h1>
                     <label class="checkbox" for="doctype_display_show">
                         <input onchange="setPref('doctype_display',($(this).attr('checked') ? '1' :'0'));" name="doctype_display" type="checkbox" class="checkbox" value="1" id="doctype_display_show" {% if doctype_display != '0' %}checked="checked"{% endif %}/>
-                        {% trans 'Afficher une icone' %}
+                        {{ 'Afficher une icone' | trans }}
                     </label>
 
                 </div>
                 <div class="box">
                     <div class="" style="float:left; width:49%;">
-                        <h1>{% trans 'reponses:: images par pages : ' %}</h1>
+                        <h1>{{ 'reponses:: images par pages :' | trans }}</h1>
                         <div class="box">
                             <div id="nperpage_slider" class="ui-corner-all" style="width:100px; display:inline-block;"></div>
                             <input type="text" readonly style="width:35px;" value="{{app['authentication'].getUser().getPrefs('images_per_page')}}" id="nperpage_value"/>
                         </div>
                     </div>
                     <div style="float:right; width:49%;">
-                        <h1>{% trans 'reponses:: taille des images : ' %}</h1>
+                        <h1>{{ 'reponses:: taille des images :' | trans }}</h1>
                         <div class="box">
                             <div id="sizeAns_slider" class="ui-corner-all" style="width:100px;display:inline-block;"></div>
                             <input type="hidden" value="{{app['authentication'].getUser().getPrefs('images_size')}}" id="sizeAns_value"/>
@@ -877,34 +877,34 @@
                     </div>
                 </div>
                 <div class="box">
-                    <h1>{% trans 'Couleur de selection' %}</h1>
+                    <h1>{{ 'Couleur de selection' | trans }}</h1>
                     <div id="backcolorpickerHolder" class="colorpickerbox">
-                        <div class="submiter">{% trans 'choisir' %}</div>
+                        <div class="submiter">{{ 'choisir' | trans }}</div>
                     </div>
                 </div>
             </div>
             <div id="look_box_settings">
                 <div class="row-fluid">
                     <div class="box">
-                        <h1>{% trans 'Affichage au demarrage' %}</h1>
+                        <h1>{{ 'Affichage au demarrage' | trans }}</h1>
                         <form class="form-inline">
                             {% set start_page_pref = app['authentication'].getUser().getPrefs('start_page') %}
                             <select class="span4" name="start_page" onchange="start_page_selector();">
                                 <option value="LAST_QUERY" {% if start_page_pref == 'LAST_QUERY' %}selected="selected"{% endif %} >
-                                    {% trans 'Ma derniere question' %}
+                                    {{ 'Ma derniere question' | trans }}
                                 </option>
                                 <option value="QUERY" {% if start_page_pref == 'QUERY' %}selected="selected"{% endif %} >
-                                    {% trans 'Une question personnelle' %}
+                                    {{ 'Une question personnelle' | trans }}
                                 </option>
                                 <option value="PUBLI" {% if start_page_pref == 'PUBLI' %}selected="selected"{% endif %} >
-                                    {% trans 'Publications' %}
+                                    {{ 'Publications' | trans }}
                                 </option>
                                 <option value="HELP" {% if start_page_pref == 'HELP' %}selected="selected"{% endif %} >
-                                    {% trans 'Aide' %}
+                                    {{ 'Aide' | trans }}
                                 </option>
                             </select>
                             <input type="text" class="span4" name="start_page_value" value="{{app['authentication'].getUser().getPrefs('start_page_query')}}" style="display:{% if start_page_pref == 'QUERY' %}inline{% else %}none{% endif %}" />
-                            <input type="button" class="btn btn-inverse" value="{% trans 'boutton::valider' %}" onclick="set_start_page();" />
+                            <input type="button" class="btn btn-inverse" value="{{ 'boutton::valider' | trans }}" onclick="set_start_page();" />
                         </form>
                     </div>
                 </div>
@@ -932,10 +932,10 @@
                 <div id="PREVIEWRIGHT" class="preview_col PNB" style="top:7px;left:60%;overflow:hidden;">
                     <div id="PREVIEWIMGDESC" class="PNB10">
                         <ul class="PNB" style="height:30px;bottom:auto;">
-                            <li><a href="#PREVIEWIMGDESCINNER-BOX">{% trans 'preview:: Description' %}</a></li>
-                            <li><a href="#HISTORICOPS-BOX">{% trans 'preview:: Historique' %}</a></li>
+                            <li><a href="#PREVIEWIMGDESCINNER-BOX">{{ 'preview:: Description' | trans }}</a></li>
+                            <li><a href="#HISTORICOPS-BOX">{{ 'preview:: Historique' | trans }}</a></li>
                             {% if GV_google_api is not empty %}
-                            <li><a href="#popularity-BOX">{% trans 'preview:: Popularite' %}</a></li>
+                            <li><a href="#popularity-BOX">{{ 'preview:: Popularite' | trans }}</a></li>
                             {% endif %}
                         </ul>
                         <div id="PREVIEWIMGDESCINNER-BOX" class="descBoxes PNB">
@@ -956,7 +956,7 @@
         <div class="PNB" style="width:180px;left:auto;">
             <div class="PNB10 ui-corner-all" style="height:20px;">
                 <div onclick="closePreview();" style="cursor:pointer;color:#CCCCCC;font-size:14px;font-weight:bold;text-align:center;text-decoration:underline;">
-                    {% trans 'boutton::fermer' %}
+                    {{ 'boutton::fermer' | trans }}
                 </div>
             </div>
             <div id="PREVIEWOTHERS" style="top:40px;" class="PNB10 ui-corner-all">
@@ -971,14 +971,14 @@
 
     <div id="basket_preferences" style="display:none;">
         <div class="box">
-            <h1>{% trans 'Presentation de vignettes de panier' %}</h1>
+            <h1>{{ 'Presentation de vignettes de panier' | trans }}</h1>
             <div>
                 {% set basket_status_display = app['authentication'].getUser().getPrefs('basket_status_display') %}
                 <label for="basket_status_display" class="checkbox">
                     <input onchange="setPref('basket_status_display',($(this).attr('checked') ? '1' :'0'));"
                     name="basket_status_display" type="checkbox" class="checkbox" value="1"
                     id="basket_status_display" {% if basket_status_display == '1' %}checked="checked"{% endif %} />
-                    {% trans 'Afficher les status' %}
+                    {{ 'Afficher les status' | trans }}
                 </label>
             </div>
             <div>
@@ -987,7 +987,7 @@
                     <input onchange="setPref('basket_caption_display',($(this).attr('checked') ? '1' :'0'));"
                     name="basket_caption_display" type="checkbox" class="checkbox" value="1"
                     id="basket_caption_display" {% if basket_caption_display == '1' %}checked="checked"{% endif %} />
-                    {% trans 'Afficher la fiche descriptive' %}
+                    {{ 'Afficher la fiche descriptive' | trans }}
                 </label>
             </div>
             <div>
@@ -996,19 +996,19 @@
                     <input onchange="setPref('basket_title_display',($(this).attr('checked') ? '1' :'0'));"
                     name="basket_title_display" type="checkbox" class="checkbox" value="1"
                     id="basket_title_display" {% if basket_title_display == '1' %}checked="checked"{% endif %} />
-                    {% trans 'Afficher le titre' %}
+                    {{ 'Afficher le titre' | trans }}
                 </label>
             </div>
         </div>
     </div>
 
-    <div id="dialog_publicator" title="{% trans 'action : bridge' %}" style="display:none;"></div>
+    <div id="dialog_publicator" title="{{ 'action : bridge' | trans }}" style="display:none;"></div>
 
-    <div id="modal_feed" title="{% trans 'action : publier' %}" style="display:none;"></div>
-    <div id="dialog_dwnl" title="{% trans 'action : exporter' %}" style="display:none;"></div>
+    <div id="modal_feed" title="{{ 'action : publier' | trans }}" style="display:none;"></div>
+    <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
 
     <script type="text/javascript">
-        {% include "prod/thesaurus.js" %}
+        {% include "prod/thesaurus.js.twig" %}
     </script>
     <script type="text/javascript" src="{{ path('minifier', { 'g' : 'prod' }) }}"></script>
     <script type="text/javascript">

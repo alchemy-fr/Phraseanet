@@ -146,6 +146,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
             'sbas_id'   => $this->media_subdef->get_sbas_id(),
             'record_id' => $this->media_subdef->get_record_id(),
             'subdef'    => $this->media_subdef->get_name(),
+            /** @Ignore */
             'label'     => $label,
             'token'     => $this->get_token(),
         ]);
@@ -277,12 +278,13 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
         $this->label = $row['label'];
 
         $datas = [
-            'id'            => $this->id
-            , 'token'         => $this->token
-            , 'is_activated'  => $this->is_activated
-            , 'created_on'    => $this->created_on
-            , 'last_modified' => $this->last_modified
-            , 'label'         => $this->label
+            'id'            => $this->id,
+            'token'         => $this->token,
+            'is_activated'  => $this->is_activated,
+            'created_on'    => $this->created_on,
+            'last_modified' => $this->last_modified,
+            /** @Ignore */
+            'label'         => $this->label,
         ];
 
         $this->set_data_to_cache($datas);

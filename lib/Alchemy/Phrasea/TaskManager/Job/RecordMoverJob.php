@@ -21,7 +21,7 @@ class RecordMoverJob extends AbstractJob
      */
     public function getName()
     {
-        return _("Record Mover");
+        return $this->translator->trans("Record Mover");
     }
 
     /**
@@ -37,7 +37,7 @@ class RecordMoverJob extends AbstractJob
      */
     public function getDescription()
     {
-        return _("Moves records");
+        return $this->translator->trans("Moves records");
     }
 
     /**
@@ -45,7 +45,7 @@ class RecordMoverJob extends AbstractJob
      */
     public function getEditor()
     {
-        return new RecordMoverEditor();
+        return new RecordMoverEditor($this->translator);
     }
 
     /**
@@ -204,7 +204,7 @@ class RecordMoverJob extends AbstractJob
         try {
             $dbox = $app['phraseanet.appbox']->get_databox($sbas_id);
 
-            $ret['basename'] = $dbox->get_label($app['locale.I18n']);
+            $ret['basename'] = $dbox->get_label($app['locale']);
             $ret['basename_htmlencoded'] = htmlentities($ret['basename']);
             switch ($ret['action']) {
                 case 'UPDATE':

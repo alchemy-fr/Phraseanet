@@ -40,7 +40,7 @@ class RecordMoverEditorTest extends EditorTestCase
 
     protected function getEditor()
     {
-        return new RecordMoverEditor();
+        return new RecordMoverEditor($this->createTranslatorMock());
     }
 
     /**

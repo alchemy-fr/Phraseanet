@@ -21,7 +21,7 @@ class FtpPullJob extends AbstractJob
      */
     public function getName()
     {
-        return _("task::ftp:FTP Pull");
+        return $this->translator->trans("task::ftp:FTP Pull");
     }
 
     /**
@@ -37,7 +37,7 @@ class FtpPullJob extends AbstractJob
      */
     public function getDescription()
     {
-        return _('Periodically fetches an FTP repository content locally');
+        return $this->translator->trans('Periodically fetches an FTP repository content locally');
     }
 
     /**
@@ -45,7 +45,7 @@ class FtpPullJob extends AbstractJob
      */
     public function getEditor()
     {
-        return new FtpPullEditor();
+        return new FtpPullEditor($this->translator);
     }
 
     /**

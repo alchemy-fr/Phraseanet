@@ -158,29 +158,15 @@ class WorkZone implements ControllerProviderInterface
 
         if ($alreadyFixed === 0) {
             if ($done <= 1) {
-                $message = sprintf(
-                    _('%d Story attached to the WorkZone')
-                    , $done
-                );
+                $message = $app->trans('%quantity% Story attached to the WorkZone', ['%quantity%' => $done]);
             } else {
-                $message = sprintf(
-                    _('%d Stories attached to the WorkZone')
-                    , $done
-                );
+                $message = $app->trans('%quantity% Stories attached to the WorkZone', ['%quantity%' => $done]);
             }
         } else {
             if ($done <= 1) {
-                $message = sprintf(
-                    _('%1$d Story attached to the WorkZone, %2$d already attached')
-                    , $done
-                    , $alreadyFixed
-                );
+                $message = $app->trans('%quantity% Story attached to the WorkZone, %quantity_already% already attached', ['%quantity%' => $done, '%quantity_already%' => $alreadyFixed]);
             } else {
-                $message = sprintf(
-                    _('%1$d Stories attached to the WorkZone, %2$d already attached')
-                    , $done
-                    , $alreadyFixed
-                );
+                $message = $app->trans('%quantity% Stories attached to the WorkZone, %quantity_already% already attached', ['%quantity%' => $done, '%quantity_already%' => $alreadyFixed]);
             }
         }
 
@@ -200,7 +186,6 @@ class WorkZone implements ControllerProviderInterface
 
         $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\StoryWZ');
 
-        /* @var $repository Alchemy\Phrasea\Model\Repositories\StoryWZRepository */
         $StoryWZ = $repository->findUserStory($app, $app['authentication']->getUser(), $Story);
 
         if (!$StoryWZ) {
@@ -213,7 +198,7 @@ class WorkZone implements ControllerProviderInterface
         if ($request->getRequestFormat() == 'json') {
             return $app->json([
                 'success' => true
-                , 'message' => _('Story detached from the WorkZone')
+                , 'message' => $app->trans('Story detached from the WorkZone')
             ]);
         }
 

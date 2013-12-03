@@ -177,7 +177,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
      */
     public function get_element_types()
     {
-        return [self::ELEMENT_TYPE_VIDEO => _('Videos')];
+        return [self::ELEMENT_TYPE_VIDEO => $this->translator->trans('Videos')];
     }
 
     /**
@@ -186,7 +186,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
      */
     public function get_container_types()
     {
-        return [self::CONTAINER_TYPE_PLAYLIST => _('Playlists')];
+        return [self::CONTAINER_TYPE_PLAYLIST => $this->translator->trans('Playlists')];
     }
 
     public function get_oauth_token()
@@ -528,22 +528,22 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
     {
         switch ($connector_status) {
             case self::UPLOAD_STATE_DELETED:
-                return _('La video a ete supprimee');
+                return $this->translator->trans('La video a ete supprimee');
                 break;
             case self::UPLOAD_STATE_REJECTED:
-                return _('La video a ete rejetee');
+                return $this->translator->trans('La video a ete rejetee');
                 break;
             case self::UPLOAD_STATE_ENCODING_ERROR:
-                return _('Erreur d\'encodage');
+                return $this->translator->trans('Erreur d\'encodage');
                 break;
             case self::UPLOAD_STATE_PROCESSING:
-                return _('En cours d\'encodage');
+                return $this->translator->trans('En cours d\'encodage');
                 break;
             default:
                 return '';
                 break;
             case self::UPLOAD_STATE_DONE:
-                return _('OK');
+                return $this->translator->trans('OK');
                 break;
         }
     }
@@ -807,12 +807,12 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
                 if ( ! isset($datas[$name]) || trim($datas[$name]) === '') {
                     if ($required)
-                        $errors[$name . '_' . $key] = _("Ce champ est obligatoire");
+                        $errors[$name . '_' . $key] = $this->translator->trans("Ce champ est obligatoire");
                 } else {
                     if ($length != 0 && mb_strlen($datas[$name]) > $length)
-                        $errors[$name . '_' . $key] = sprintf(_("Ce champ est trop long %s caracteres max"), $length);
+                        $errors[$name . '_' . $key] = $this->translator->trans("Ce champ est trop long %length% caracteres max", ['%length%' => $length]);
                     if ($length_min != 0 && mb_strlen($datas[$name]) < $length_min)
-                        $errors[$name . '_' . $key] = sprintf(_("Ce champ est trop court %s caracteres min"), $length_min);
+                        $errors[$name . '_' . $key] = $this->translator->trans("Ce champ est trop court %length% caracteres min", ['%length%' => $length_min]);
                 }
             };
 
@@ -832,12 +832,12 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
                 if ( ! isset($datas[$name]) || trim($datas[$name]) === '') {
                     if ($required)
-                        $errors[$name] = _("Ce champ est obligatoire");
+                        $errors[$name] = $this->translator->trans("Ce champ est obligatoire");
                 } else {
                     if ($length != 0 && mb_strlen($datas[$name]) > $length)
-                        $errors[$name] = sprintf(_("Ce champ est trop long %s caracteres max"), $length);
+                        $errors[$name] = $this->translator->trans("Ce champ est trop long %length% caracteres max", ['%length%' => $length]);
                     if ($length_min != 0 && mb_strlen($datas[$name]) < $length_min)
-                        $errors[$name] = sprintf(_("Ce champ est trop court %s caracteres min"), $length_min);
+                        $errors[$name] = $this->translator->trans("Ce champ est trop court %length% caracteres min", ['%length%' => $length_min]);
                 }
             };
 
@@ -904,13 +904,13 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
     {
         $errors = [];
         if ( ! $record->get_hd_file() instanceof \SplFileInfo)
-            $errors["file_size"] = _("Le record n'a pas de fichier physique"); //Record must rely on real file
+            $errors["file_size"] = $this->translator->trans("Le record n'a pas de fichier physique"); //Record must rely on real file
 
         if ($record->get_duration() > self::AUTH_VIDEO_DURATION)
-            $errors["duration"] = sprintf(_("La taille maximale d'une video est de %d minutes."), self::AUTH_VIDEO_DURATION / 60);
+            $errors["duration"] = $this->translator->trans("La taille maximale d'une video est de %duration% minutes.", ['%duration%' => self::AUTH_VIDEO_DURATION / 60]);
 
         if ($record->get_technical_infos('size') > self::AUTH_VIDEO_SIZE)
-            $errors["size"] = sprintf(_("Le poids maximum d'un fichier est de %s"), p4string::format_octets(self::AUTH_VIDEO_SIZE));
+            $errors["size"] = $this->translator->trans("Le poids maximum d'un fichier est de %size%", ['%size%' => p4string::format_octets(self::AUTH_VIDEO_SIZE)]);
 
         return $errors;
     }

@@ -18,7 +18,7 @@ class MailRequestEmailUpdate extends AbstractMailWithLink
      */
     public function getSubject()
     {
-        return _('login::register: sujet email : confirmation de votre adresse email');
+        return $this->app->trans('login::register: sujet email : confirmation de votre adresse email');
     }
 
     /**
@@ -26,7 +26,7 @@ class MailRequestEmailUpdate extends AbstractMailWithLink
      */
     public function getMessage()
     {
-        return _('admin::compte-utilisateur: email changement de mot d\'email Bonjour, nous avons bien recu votre demande de changement d\'adresse e-mail. Pour la confirmer, veuillez suivre le lien qui suit. SI vous recevez ce mail sans l\'avoir sollicite, merci de le detruire et de l\'ignorer.');
+        return $this->app->trans('admin::compte-utilisateur: email changement de mot d\'email Bonjour, nous avons bien recu votre demande de changement d\'adresse e-mail. Pour la confirmer, veuillez suivre le lien qui suit. SI vous recevez ce mail sans l\'avoir sollicite, merci de le detruire et de l\'ignorer.');
     }
 
     /**
@@ -34,7 +34,7 @@ class MailRequestEmailUpdate extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return _('Confirm new email address');
+        return $this->app->trans('Confirm new email address');
     }
 
     /**

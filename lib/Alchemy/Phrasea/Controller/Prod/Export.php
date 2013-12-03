@@ -94,10 +94,10 @@ class Export implements ControllerProviderInterface
             $ftpClient = $app['phraseanet.ftp.client']($request->request->get('address', ''), 21, 90, !!$request->request->get('ssl'));
             $ftpClient->login($request->request->get('login', 'anonymous'), $request->request->get('password', 'anonymous'));
             $ftpClient->close();
-            $msg = _('Connection to FTP succeed');
+            $msg = $app->trans('Connection to FTP succeed');
             $success = true;
         } catch (\Exception $e) {
-            $msg = sprintf(_('Error while connecting to FTP'));
+            $msg = $app->trans('Error while connecting to FTP');
         }
 
         return $app->json([
@@ -127,7 +127,7 @@ class Export implements ControllerProviderInterface
         if (count($download->get_display_ftp()) == 0) {
             return $app->json([
                 'success' => false,
-                'message' => _("You do not have required rights to send these documents over FTP")
+                'message' => $app->trans("You do not have required rights to send these documents over FTP")
             ]);
         }
 
@@ -155,12 +155,12 @@ class Export implements ControllerProviderInterface
 
             return $app->json([
                 'success' => true,
-                'message' => _('Export saved in the waiting queue')
+                'message' => $app->trans('Export saved in the waiting queue')
             ]);
         } catch (\Exception $e) {
             return $app->json([
                 'success' => false,
-                'message' => _('Something went wrong')
+                'message' => $app->trans('Something went wrong')
             ]);
         }
     }

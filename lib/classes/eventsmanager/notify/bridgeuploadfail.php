@@ -125,8 +125,11 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
         }
 
         $ret = [
-            'text'  => sprintf("L'upload concernant le record %s sur le comptre %s a echoue pour les raisons suivantes : %s"
-                , $record->get_title(), $account->get_api()->get_connector()->get_name(), $reason)
+            'text'  => $this->app->trans("L'upload concernant le record %title% sur le compte %bridge_name% a echoue pour les raisons suivantes : %reason%", [
+                '%title%' => $record->get_title(),
+                '%bridge_name%' => $account->get_api()->get_connector()->get_name(),
+                '%reason%' => $reason
+            ])
             , 'class' => ''
         ];
 
@@ -139,7 +142,7 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
      */
     public function get_name()
     {
-        return _('Bridge upload fail');
+        return $this->app->trans('Bridge upload fail');
     }
 
     /**
@@ -148,8 +151,7 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
      */
     public function get_description()
     {
-        return _('Recevoir des notifications lorsqu\'un'
-                . ' upload echoue sur un bridge');
+        return $this->app->trans('Recevoir des notifications lorsqu\'un upload echoue sur un bridge');
     }
 
     /**

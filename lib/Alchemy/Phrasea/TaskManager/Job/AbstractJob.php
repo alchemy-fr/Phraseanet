@@ -14,11 +14,21 @@ namespace Alchemy\Phrasea\TaskManager\Job;
 use Alchemy\TaskManager\AbstractJob as AbstractTMJob;
 use Alchemy\TaskManager\JobDataInterface;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 abstract class AbstractJob extends AbstractTMJob implements JobInterface
 {
     /** @var float */
     protected $period = 0.05;
+    protected $translator;
+
+    public function __construct(EventDispatcherInterface $dispatcher = null, LoggerInterface $logger = null, TranslatorInterface $translator)
+    {
+        parent::__construct($dispatcher, $logger);
+        $this->translator = $translator;
+    }
 
     /**
      * {@inheritdoc}

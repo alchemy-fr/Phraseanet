@@ -41,8 +41,7 @@ class ControllerSubdefsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ]]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
 
-        $subdefs = new \databox_subdefsStructure(new \databox(self::$DI['app'], $this->databox->get_sbas_id()));
-        $subdef = $subdefs->get_subdef("image", $name);
+        $subdefs = new \databox_subdefsStructure(new \databox(self::$DI['app'], $this->databox->get_sbas_id()), self::$DI['app']['translator']);
         $subdefs->delete_subdef('image', $name);
     }
 
@@ -82,7 +81,7 @@ class ControllerSubdefsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         );
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        $subdefs = new \databox_subdefsStructure(new \databox(self::$DI['app'], $this->databox->get_sbas_id()));
+        $subdefs = new \databox_subdefsStructure(new \databox(self::$DI['app'], $this->databox->get_sbas_id()), self::$DI['app']['translator']);
         $subdef = $subdefs->get_subdef("image", $name);
 
         /* @var $subdef \databox_subdef */

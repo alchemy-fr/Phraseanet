@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html lang="{{ app['locale.I18n'] }}">
+<html lang="{{ app['locale'] }}">
     <head>
-        <title>{% trans 'thesaurus:: Lier la branche de thesaurus' %}</title>
+        <title>{{ 'thesaurus:: Lier la branche de thesaurus' | trans }}</title>
 
         <link REL="stylesheet" TYPE="text/css" href="{{ path('minifier', { 'f' : 'skins/thesaurus/thesaurus.css' }) }}" />
 
@@ -38,24 +38,22 @@
                 {% if branches['old_branch'] %}
                     {% set old_branch = branches['old_branch'] %}
                     <b>{{ fieldname }}</b>
-                    {% trans %}
-                        thesaurus:: Ce champ a ete modifie ; ancienne branche : {{ old_branch }}
-                    {% endtrans %}
+                    {% trans with {'%old_branch%' : old_branch} %}thesaurus:: Ce champ a ete modifie ; ancienne branche : %old_branch% }}{% endtrans %}
                     <br/>
                 {% endif %}
-                {% trans 'thesaurus:: nouvelle branche' %} : {{ branches['new_branch'] }}
+                {{ 'thesaurus:: nouvelle branche' | trans }} : {{ branches['new_branch'] }}
                 <br/>
 
                 {% if branches['old_branch'] is not none and '' == branches['new_branch'] %}
-                    <b>{{ fieldname }}</b>{% trans 'thesaurus:: ce champ n\'est plus lie au thesaurus, les termes indexes et candidats seront supprimes' %}
+                    <b>{{ fieldname }}</b>{{ 'thesaurus:: ce champ n\'est plus lie au thesaurus, les termes indexes et candidats seront supprimes' | trans }}
                     <br/>
                     <input type="hidden" name="f2unlk[]" value="{{ fieldname }}">
                 {% endif %}
                 {% if '' != branches['new_branch'] %}
                     {% if '' == branches['old_branch'] %}
-                        <b>{{ fieldname }}</b>{% trans 'thesaurus:: ce champ doit etre lie au thesaurus. La reindexation de la base est necessaire' %}
+                        <b>{{ fieldname }}</b>{{ 'thesaurus:: ce champ doit etre lie au thesaurus. La reindexation de la base est necessaire' | trans }}
                     {% else %}
-                        <b>{{ fieldname }}</b>{% trans 'thesaurus:: le lien au thesaurus doit etre modifie, la reindexation de la base est necessaire' %}
+                        <b>{{ fieldname }}</b>{{ 'thesaurus:: le lien au thesaurus doit etre modifie, la reindexation de la base est necessaire' | trans }}
                     {% endif %}
                     <br/>
                     <input type="hidden" name="fbranch[]" value="{{fieldname}}<{{ branches['new_branch'] }}"/>
@@ -65,14 +63,14 @@
 
             {% if need_reindex %}
                 <input type="hidden" name="reindex" value="1">
-                <div style='position:absolute; top:5px; left:0px; width:100%; text-align:center; color:red'>{% trans 'thesaurus:: reindexation necessaire' %}</div>
+                <div style='position:absolute; top:5px; left:0px; width:100%; text-align:center; color:red'>{{ 'thesaurus:: reindexation necessaire' | trans }}</div>
             {% else %}
-                <div style='position:absolute; top:5px; left:0px; width:100%; text-align:center; color:green'>{% trans 'thesaurus:: pas de reindexation' %}</div>
+                <div style='position:absolute; top:5px; left:0px; width:100%; text-align:center; color:green'>{{ 'thesaurus:: pas de reindexation' | trans }}</div>
             {% endif %}
             <br/>
-            <input type="button" id="submit_button" value="{% trans 'boutton::valider' %}" onclick="clkBut('submit');">
+            <input type="button" id="submit_button" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');">
             &nbsp;&nbsp;&nbsp;
-            <input type="button" id="cancel_button" value="{% trans 'boutton::annuler' %}" onclick="clkBut('cancel');">
+            <input type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');">
         </form>
     </center>
 </body>

@@ -96,7 +96,7 @@ class Setup implements ControllerProviderInterface
         }
 
         if ($request->getScheme() == 'http') {
-            $warnings[] = _('It is not recommended to install Phraseanet without HTTPS support');
+            $warnings[] = $app->trans('It is not recommended to install Phraseanet without HTTPS support');
         }
 
         return $app['twig']->render('/setup/step2.html.twig', [
@@ -131,7 +131,7 @@ class Setup implements ControllerProviderInterface
             $abConn = new \connection_pdo('appbox', $hostname, $port, $user_ab, $ab_password, $appbox_name, [], $app['debug']);
         } catch (\Exception $e) {
             return $app->redirectPath('install_step2', [
-                'error' => _('Appbox is unreachable'),
+                'error' => $app->trans('Appbox is unreachable'),
             ]);
         }
 
@@ -141,7 +141,7 @@ class Setup implements ControllerProviderInterface
             }
         } catch (\Exception $e) {
             return $app->redirectPath('install_step2', [
-                'error' => _('Databox is unreachable'),
+                'error' => $app->trans('Databox is unreachable'),
             ]);
         }
 
@@ -180,7 +180,7 @@ class Setup implements ControllerProviderInterface
             ]);
         } catch (\Exception $e) {
             return $app->redirectPath('install_step2', [
-                'error' => sprintf(_('an error occured : %s'), $e->getMessage()),
+                'error' => $app->trans('an error occured : %message%', ['%message%' => $e->getMessage()]),
             ]);
         }
     }

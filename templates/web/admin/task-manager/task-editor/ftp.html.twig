@@ -2,13 +2,13 @@
 
 {% block form %}
 <div class="control-group">
-    <label class="control-label">{% trans 'task::ftp:proxy' %}</label>
+    <label class="control-label">{{ 'task::ftp:proxy' | trans }}</label>
     <div class="controls">
         <input class="formElem" type="text" name="proxy" />
     </div>
 </div>
 <div class="control-group">
-    <label class="control-label">{% trans 'task::ftp:proxy port' %}</label>
+    <label class="control-label">{{ 'task::ftp:proxy port' | trans }}</label>
     <div class="controls">
         <input class="formElem" type="text" name="proxyport" />
     </div>

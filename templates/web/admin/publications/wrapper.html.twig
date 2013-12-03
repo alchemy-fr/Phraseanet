@@ -1,5 +1,5 @@
 <div class="page-header">
-     <h1>{% trans 'Publications' %}</h1>
+     <h1>{{ 'Publications' | trans }}</h1>
 </div>
 
 <div>
@@ -26,7 +26,7 @@
 
         if(error === true)
         {
-          alert('{% trans 'Vous devez remplir les champs requis' %}');
+          alert('{{ 'Vous devez remplir les champs requis' | trans }}');
           return false;
         }
 

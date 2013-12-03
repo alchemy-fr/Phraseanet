@@ -6,9 +6,7 @@
             {% if selected_basket is not none  %}
                 {{ selected_basket.getName() }}
                     :
-                {% trans %}
-                    paniers:: {{ nb_basket_elements }} documents dans le panier
-                {% endtrans %}
+                {% trans with {'%nb_basket_elements%' : nb_basket_elements} %}paniers:: %nb_basket_elements% documents dans le panier{% endtrans %}
                 {% if app['phraseanet.registry'].get('GV_viewSizeBaket') %}
                     ({{ selected_basket.getSize(app) }} Mo)
                 {% endif %}
@@ -21,14 +19,14 @@
                 <td>
                     {% if total_baskets > 0 %}
                         <select id="chutier_name" name="chutier_name" onChange="chg_chu();" style="width:120px;">
-                            <optgroup label="{% trans 'paniers::categories: mes paniers' %}">
+                            <optgroup label="{{ 'paniers::categories: mes paniers' | trans }}">
                                 {% for basket in user_baskets %}
                                     <option class="chut_choice" {% if basket.getId() == selected_basket.getId() %}selected{% endif %} value="{{ basket.getId() }}">
                                         {{ basket.getName() }}
                                     </option>
                                 {% endfor %}
                             </optgroup>
-                            <optgroup label="{% trans 'paniers::categories: paniers recus' %}">
+                            <optgroup label="{{ 'paniers::categories: paniers recus' | trans }}">
                                 {% for basket in recept_user_basket %}
                                     <option class="chut_choice" {% if basket.getId() == selected_basket.getId() %}selected{% endif %} value="{{ basket.getId() }}">
                                         {{ basket.getName() }}
@@ -40,21 +38,21 @@
                 </td>
                 <td style="width:40%">
                     {% if total_baskets > 0 %}
-                        <div class="baskDel" title="{% trans 'action : supprimer' %}" onclick="evt_chutier('DELSSEL');"/></div>
+                        <div class="baskDel" title="{{ 'action : supprimer' | trans }}" onclick="evt_chutier('DELSSEL');"/></div>
                     {% endif %}
-                    <div class="baskCreate" title="{% trans 'action:: nouveau panier' %}" onclick="newBasket();"></div>
+                    <div class="baskCreate" title="{{ 'action:: nouveau panier' | trans }}" onclick="newBasket();"></div>
                     <div style="float:right;position:relative;width:3px;height:16px;"></div>
 
                     {% if total_baskets > 0 and (app['acl'].get(app['authentication'].getUser()).has_right("candwnldhd") or app['acl'].get(app['authentication'].getUser()).has_right("candwnldpreview") or app['acl'].get(app['authentication'].getUser()).has_right("cancmd") > 0) %}
-                        <div class="baskDownload" title="{% trans 'action : exporter' %}" onclick="evt_dwnl();"></div>
+                        <div class="baskDownload" title="{{ 'action : exporter' | trans }}" onclick="evt_dwnl();"></div>
                     {% endif %}
 
                     {% if total_baskets > 0%}
-                        <div class="baskPrint" title="{% trans 'action : print' %}" onclick="evt_print();"></div>
+                        <div class="baskPrint" title="{{ 'action : print' | trans }}" onclick="evt_print();"></div>
                     {% endif %}
 
                     {% if total_baskets > 0 %}
-                        <div class="baskComparator" onclick="openCompare({{ selected_basket.getId() }})" title="{% trans 'action : ouvrir dans le comparateur' %}"></div>
+                        <div class="baskComparator" onclick="openCompare({{ selected_basket.getId() }})" title="{{ 'action : ouvrir dans le comparateur' | trans }}"></div>
                     {% endif %}
                 </td>
             </tr>
@@ -64,9 +62,7 @@
         {% if selected_basket is not none and selected_basket.getPusher(app) is not none %}
             {% set pusher_name = selected_basket.getPusher(app).get_display_name() %}
             <div class="txtPushClient">
-                {% trans %}
-                    paniers:: panier emis par {{ pusher_name }}
-                {% endtrans %}
+                {% trans with {'%pusher_name%' : pusher_name} %}paniers:: panier emis par %pusher_name%{% endtrans %}
             </div>
         {% endif %}
 
@@ -115,13 +111,13 @@
                     <div
                         class="baskOneDel"
                         onclick="evt_del_in_chutier({{ element.getId() }});"
-                        title="{% trans 'action : supprimer' %}">
+                        title="{{ 'action : supprimer' | trans }}">
                     </div>
                     {% if app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'candwnldhd')
                             or app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'candwnldpreview')
                             or app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'cancmd')
                             or app['acl'].get(app['authentication'].getUser()).has_preview_grant(record) %}
-                        <div class="baskOneDownload" onclick="evt_dwnl('{{ record.get_serialize_key() }}');" title="{% trans 'action : exporter' %}"></div>
+                        <div class="baskOneDownload" onclick="evt_dwnl('{{ record.get_serialize_key() }}');" title="{{ 'action : exporter' | trans }}"></div>
                     {% endif %}
                 </div>
             </div>
@@ -135,9 +131,7 @@
             {% if selected_basket is not none %}
                 {{ selected_basket.getName() }}
                     :
-                {% trans %}
-                    paniers:: {{ nb_basket_elements }} documents dans le panier
-                {% endtrans %}
+                {% trans with {'%nb_basket_elements%' : nb_basket_elements} %}paniers:: %nb_basket_elements% documents dans le panier{% endtrans %}
             {% endif %}
             <span style="width:16px;height:16px;position: absolute; right: 10px;background-position:center center;" class='baskIndicator'></span></div>
     </div>
@@ -148,6 +142,6 @@
     p4.nbNoview = 0;
 
     if(p4.nbNoview > oldNoview) {
-        alert('{% trans 'paniers:: vous avez de nouveaux paniers non consultes' %}');
+        alert('{{ 'paniers:: vous avez de nouveaux paniers non consultes' | trans }}');
     }
 </script>

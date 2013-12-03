@@ -4,27 +4,27 @@
 
 <form style="max-width:500px" class="no-ajax form_publication form-horizontal" method="post" action="{{ path('admin_feeds_create') }}">
     <fieldset>
-        <legend>{% trans 'Ajouter une publication' %}</legend>
+        <legend>{{ 'Ajouter une publication' | trans }}</legend>
         <div class="control-group">
-            <label class="control-label" for="add_pub_titre">{% trans 'Titre' %}</label>
+            <label class="control-label" for="add_pub_titre">{{ 'Titre' | trans }}</label>
             <div class="controls">
-                <input type="text" id="add_pub_titre" class="required_text input-large" placeholder="{% trans 'Feed name' %}" maxlength="128" name="title" />
+                <input type="text" id="add_pub_titre" class="required_text input-large" placeholder="{{ 'Feed name' | trans }}" maxlength="128" name="title" />
             </div>
         </div>
 
         <div class="control-group">
-            <label class="control-label" for="add_pub_subtitre">{% trans 'Sous-titre' %}</label>
+            <label class="control-label" for="add_pub_subtitre">{{ 'Sous-titre' | trans }}</label>
             <div class="controls">
-                <input type="text" id="add_pub_subtitre" class="input-large" placeholder="{% trans 'Short description' %}" maxlength="512" name="subtitle" />
+                <input type="text" id="add_pub_subtitre" class="input-large" placeholder="{{ 'Short description' | trans }}" maxlength="512" name="subtitle" />
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label" for="add_pub_base_id">{% trans 'Etendue de la publication' %}</label>
+            <label class="control-label" for="add_pub_base_id">{{ 'Etendue de la publication' | trans }}</label>
             <div class="controls">
                 <select id="add_pub_base_id" class="input-large" name="base_id">
-                    <option value="">{% trans 'Non-Restreinte (publique)' %}</option>
+                    <option value="">{{ 'Non-Restreinte (publique)' | trans }}</option>
                     {% for databox in app['acl'].get(app['authentication'].getUser()).get_granted_sbas('bas_chupub') %}
-                        <optgroup label="{{ databox.get_label(app['locale.I18n']) }}">
+                        <optgroup label="{{ databox.get_label(app['locale']) }}">
                             {% for collection in databox.get_collections() %}
                                 <option value="{{ collection.get_base_id() }}">{{ collection.get_name() }}</option>
                             {% endfor %}
@@ -37,12 +37,12 @@
             <div class="controls">
                 <label class="checkbox" for="add_pub_public">
                     <input type="checkbox" id="add_pub_public" name="public" value="1" />
-                    {% trans 'Publique' %}
+                    {{ 'Publique' | trans }}
                 </label>
             </div>
         </div>
         <div class="form-actions">
-            <button type="submit" class="btn btn-warning">{% trans 'boutton::valider' %}</button>
+            <button type="submit" class="btn btn-warning">{{ 'boutton::valider' | trans }}</button>
         </div>
     </fieldset>
 </form>
@@ -51,10 +51,10 @@
     <thead>
         <tr>
             <th style="width:40px;"></th>
-            <th>{% trans 'Titre' %}</th>
-            <th style="width:150px; text-align: center;">{% trans 'Date Creation' %}</th>
-            <th style="width:220px; text-align: center;">{% trans 'Restriction' %}</th>
-            <th style="width:80px; text-align: center;">{% trans 'Public' %}</th>
+            <th>{{ 'Titre' | trans }}</th>
+            <th style="width:150px; text-align: center;">{{ 'Date Creation' | trans }}</th>
+            <th style="width:220px; text-align: center;">{{ 'Restriction' | trans }}</th>
+            <th style="width:80px; text-align: center;">{{ 'Public' | trans }}</th>
             <th style="width:80px;"></th>
         </tr>
     </thead>
@@ -80,19 +80,19 @@
                 </td>
                 <td valign="center" align="center">
                     {% if feed.getCollection() != null %}
-                        {{ feed.getCollection().get_databox().get_label(app['locale.I18n']) }} /
+                        {{ feed.getCollection().get_databox().get_label(app['locale']) }} /
                         {{ feed.getCollection().get_name() }}
                     {% endif %}
                 </td>
                 <td valign="center" align="center">
                     {% if feed.isPublic() %}
-                        <img src="/skins/icons/ligth-on.png" title="{% trans 'This feed is public' %}"/>
+                        <img src="/skins/icons/ligth-on.png" title="{{ 'This feed is public' | trans }}"/>
                     {% endif %}
                 </td>
                 <td valign="center" align="center">
                     {% if feed.isOwner(app['authentication'].getUser()) %}
                         <form class="no-ajax form_publication" action="{{ path('admin_feeds_feed_delete', { 'id' : feed.getId() }) }}" method="post" style="margin:0;">
-                            <button class="feed_remover btn btn-mini">{% trans 'boutton::supprimer' %}</button>
+                            <button class="feed_remover btn btn-mini">{{ 'boutton::supprimer' | trans }}</button>
                         </form>
                     {% endif %}
                 </td>
@@ -104,7 +104,7 @@
 <script type="text/javascript">
   $(document).ready(function(){
     $('button.feed_remover').bind('click', function(event){
-      if(!confirm('{% trans 'Une fois la publication supprimee, les donnees publiees seront definitivement perdues. Continuer ?' %}'))
+      if(!confirm('{{ 'Une fois la publication supprimee, les donnees publiees seront definitivement perdues. Continuer ?' | trans }}'))
       {
         event.stopPropagation();
         return false;

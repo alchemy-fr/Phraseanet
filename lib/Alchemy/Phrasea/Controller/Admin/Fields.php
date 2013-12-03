@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Metadata\TagProvider;
 use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
+use JMS\TranslationBundle\Annotation\Ignore;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -113,7 +114,7 @@ class Fields implements ControllerProviderInterface
                 $fields[] = $field->toArray();
             } catch (\Exception $e) {
                 $connection->rollback();
-                $app->abort(500, _(sprintf('Field %s could not be saved, please try again or contact an admin.', $jsonField['name'])));
+                $app->abort(500, $app->trans('Field %name% could not be saved, please try again or contact an admin.', ['%name%' => $jsonField['name']]));
                 break;
             }
         }
@@ -126,16 +127,16 @@ class Fields implements ControllerProviderInterface
     public function getLanguage(Application $app, Request $request)
     {
         return $app->json([
-            'something_wrong'           => _('Something wrong happened, please try again or contact an admin.'),
-            'created_success'           => _('%s field has been created with success.'),
-            'deleted_success'           => _('%s field has been deleted with success.'),
-            'are_you_sure_delete'       => _('Do you really want to delete the field %s ?'),
-            'validation_blank'          => _('Field can not be blank.'),
-            'validation_name_exists'    => _('Field name already exists.'),
-            'validation_name_invalid'   => _('Field name is not valid.'),
-            'validation_tag_invalid'    => _('Field source is not valid.'),
-            'field_error'               => _('Field %s contains errors.'),
-            'fields_save'               => _('Your configuration has been successfuly saved.'),
+            'something_wrong'           => $app->trans('Something wrong happened, please try again or contact an admin.'),
+            'created_success'           => $app->trans('%s field has been created with success.'),
+            'deleted_success'           => $app->trans('%s field has been deleted with success.'),
+            'are_you_sure_delete'       => $app->trans('Do you really want to delete the field %s ?'),
+            'validation_blank'          => $app->trans('Field can not be blank.'),
+            'validation_name_exists'    => $app->trans('Field name already exists.'),
+            'validation_name_invalid'   => $app->trans('Field name is not valid.'),
+            'validation_tag_invalid'    => $app->trans('Field source is not valid.'),
+            'field_error'               => $app->trans('Field %s contains errors.'),
+            'fields_save'               => $app->trans('Your configuration has been successfuly saved.'),
         ]);
     }
 
@@ -201,6 +202,7 @@ class Fields implements ControllerProviderInterface
 
                     $res[] = [
                         'id'    => $namespace . '/' . $tagname,
+                        /** @Ignore */
                         'label' => $datas['namespace'] . ' / ' . $datas['tagname'],
                         'value' => $datas['namespace'] . ':' . $datas['tagname'],
                     ];
@@ -233,7 +235,7 @@ class Fields implements ControllerProviderInterface
             $this->updateFieldWithData($app, $field, $data);
             $field->save();
         } catch (\Exception $e) {
-            $app->abort(500, _(sprintf('Field %s could not be created, please try again or contact an admin.', $data['name'])));
+            $app->abort(500, $app->trans('Field %name% could not be created, please try again or contact an admin.', ['%name%' => $data['name']]));
         }
 
         return $app->json($field->toArray(), 201, [
@@ -371,7 +373,7 @@ class Fields implements ControllerProviderInterface
     private function validateNameField(\databox_descriptionStructure $metaStructure, array $field)
     {
         if (null !== $metaStructure->get_element_by_name($field['name'])) {
-            throw new BadRequestHttpException(_(sprintf('Field %s already exists.', $field['name'])));
+            throw new BadRequestHttpException(sprintf('Field %s already exists.', $field['name']));
         }
     }
 
@@ -380,7 +382,7 @@ class Fields implements ControllerProviderInterface
         try {
             \databox_field::loadClassFromTagName($field['tag'], true);
         } catch (\Exception_Databox_metadataDescriptionNotFound $e) {
-            throw new BadRequestHttpException(_(sprintf('Provided tag %s is unknown.', $field['tag'])));
+            throw new BadRequestHttpException(sprintf('Provided tag %s is unknown.', $field['tag']));
         }
     }
 

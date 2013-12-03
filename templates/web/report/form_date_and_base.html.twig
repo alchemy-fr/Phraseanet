@@ -1,15 +1,15 @@
 
 {% block form_date_and_base %}
     <div class="form1">
-        <div class="form_titre">{% trans "report:: 1 - Periode" %}</div>
+        <div class="form_titre">{{ "report:: 1 - Periode" | trans }}</div>
         <div class="control-group">
-            <label for="dmin">{% trans "report:: Du (date)" %}</label>
+            <label for="dmin">{{ "report:: Du (date)" | trans }}</label>
             <div class="controls" style="display:inline-block">
                 <input class= "dmin" name="dmin" type="text" value="{{ dashboard.dmin}}" size="10" style='width:100px'/>
             </div>
         </div>
         <div class="control-group">
-             <label for="dmax">{% trans "report:: Au (date)" %}</label>
+             <label for="dmax">{{ "report:: Au (date)" | trans }}</label>
             <div class="controls" style="display:inline-block">
                 <input class="dmax" name="dmax" type="text" value="{{dashboard.dmax}}" size="10" style='width:100px'/>
             </div>
@@ -17,7 +17,7 @@
     </div>
  {% set all_coll = dashboard.getAllColl() %}
     <div class="form2">
-        <div class="form_titre">{% trans "report:: 2 - Bases" %}</div>
+        <div class="form_titre">{{ "report:: 2 - Bases" | trans }}</div>
         <div id="select_one">
             <ul class="multiselect" style="max-height: 150px; overflow-y: auto; overflow-x: hidden;">
                 <li>

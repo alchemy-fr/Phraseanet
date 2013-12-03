@@ -17,14 +17,17 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Debug\ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class ApiOauth2ErrorsSubscriber implements EventSubscriberInterface
 {
     private $handler;
+    private $translator;
 
-    public function __construct(ExceptionHandler $handler)
+    public function __construct(ExceptionHandler $handler, TranslatorInterface $translator)
     {
         $this->handler = $handler;
+        $this->translator = $translator;
     }
 
     public static function getSubscribedEvents()
@@ -45,7 +48,7 @@ class ApiOauth2ErrorsSubscriber implements EventSubscriberInterface
         $e = $event->getException();
 
         $code = 500;
-        $msg = _('Whoops, looks like something went wrong.');
+        $msg = $this->translator->trans('Whoops, looks like something went wrong.');
         $headers = [];
 
         if ($e instanceof HttpExceptionInterface) {

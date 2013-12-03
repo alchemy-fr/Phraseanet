@@ -1,3 +1,7 @@
+{% if form is defined %}
+{% form_theme form 'login/common/fields.html.twig' %}
+{% endif %}
+
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
@@ -96,15 +100,15 @@
                                                <div class="footer-block">
                                                    <ul class="inline footer-list unstyled">
                                                        <li class="item-first" >
-                                                          <a href="{{ path("homepage") }}">{% trans "Home" %}</a>
+                                                          <a href="{{ path("homepage") }}">{{ "Home" | trans }}</a>
                                                        </li>
                                                        <li>
-                                                          <a href="#">{% trans "Help" %}</a>
+                                                          <a href="#">{{ "Help" | trans }}</a>
                                                        </li>
                                                        {% if has_terms_of_use %}
                                                            <li>
                                                                {% block tou_link %}
-                                                                   <a href="{{ path("login_cgus") }}">{% trans "Terms of use" %}</a>
+                                                                   <a href="{{ path("login_cgus") }}">{{ "Terms of use" | trans }}</a>
                                                                {% endblock tou_link %}
                                                            </li>
                                                        {% endif %}

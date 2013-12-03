@@ -77,6 +77,6 @@ class PhraseanetIndexerEditorTest extends EditorTestCase
 
     protected function getEditor()
     {
-        return new PhraseanetIndexerEditor();
+        return new PhraseanetIndexerEditor($this->createTranslatorMock());
     }
 }

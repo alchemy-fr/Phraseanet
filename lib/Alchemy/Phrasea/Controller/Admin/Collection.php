@@ -142,16 +142,16 @@ class Collection implements ControllerProviderInterface
 
         switch ($errorMsg = $request->query->get('error')) {
             case 'file-error':
-                $errorMsg = _('Error while sending the file');
+                $errorMsg = $app->trans('Error while sending the file');
                 break;
             case 'file-invalid':
-                $errorMsg = _('Invalid file format');
+                $errorMsg = $app->trans('Invalid file format');
                 break;
             case 'file-file-too-big':
-                $errorMsg = _('The file is too big');
+                $errorMsg = $app->trans('The file is too big');
                 break;
             case 'collection-not-empty':
-                $errorMsg = _('Empty the collection before removing');
+                $errorMsg = $app->trans('Empty the collection before removing');
                 break;
         }
 
@@ -227,17 +227,17 @@ class Collection implements ControllerProviderInterface
     public function emptyCollection(Application $app, Request $request, $bas_id)
     {
         $success = false;
-        $msg = _('An error occurred');
+        $msg = $app->trans('An error occurred');
 
         $collection = \collection::get_from_base_id($app, $bas_id);
         try {
 
             if ($collection->get_record_amount() <= 500) {
                 $collection->empty_collection(500);
-                $msg = _('Collection empty successful');
+                $msg = $app->trans('Collection empty successful');
             } else {
                 $app['manipulator.task']->createEmptyCollectionJob($collection);
-                $msg = _('A task has been creted, please run it to complete empty collection');
+                $msg = $app->trans('A task has been creted, please run it to complete empty collection');
             }
 
             $success = true;
@@ -283,7 +283,7 @@ class Collection implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
             return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful removal') : _('An error occured'),
+                'msg'     => $success ? $app->trans('Successful removal') : $app->trans('An error occured'),
                 'bas_id'  => $collection->get_base_id()
             ]);
         }
@@ -318,7 +318,7 @@ class Collection implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
             return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful removal') : _('An error occured'),
+                'msg'     => $success ? $app->trans('Successful removal') : $app->trans('An error occured'),
                 'bas_id'  => $collection->get_base_id()
             ]);
         }
@@ -353,7 +353,7 @@ class Collection implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
             return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful removal') : _('An error occured'),
+                'msg'     => $success ? $app->trans('Successful removal') : $app->trans('An error occured'),
                 'bas_id'  => $collection->get_base_id()
             ]);
         }
@@ -389,7 +389,7 @@ class Collection implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
             return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful removal') : _('An error occured'),
+                'msg'     => $success ? $app->trans('Successful removal') : $app->trans('An error occured'),
                 'bas_id'  => $collection->get_base_id()
             ]);
         }
@@ -609,18 +609,18 @@ class Collection implements ControllerProviderInterface
     public function delete(Application $app, Request $request, $bas_id)
     {
         $success = false;
-        $msg = _('An error occured');
+        $msg = $app->trans('An error occured');
 
         $collection = \collection::get_from_base_id($app, $bas_id);
 
         try {
             if ($collection->get_record_amount() > 0) {
-                $msg = _('Empty the collection before removing');
+                $msg = $app->trans('Empty the collection before removing');
             } else {
                 $collection->unmount_collection($app);
                 $collection->delete();
                 $success = true;
-                $msg = _('Successful removal');
+                $msg = $app->trans('Successful removal');
             }
         } catch (\Exception $e) {
 
@@ -679,7 +679,7 @@ class Collection implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
             return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('The publication has been stopped') : _('An error occured')
+                'msg'     => $success ? $app->trans('The publication has been stopped') : $app->trans('An error occured')
             ]);
         }
 
@@ -700,7 +700,7 @@ class Collection implements ControllerProviderInterface
     public function rename(Application $app, Request $request, $bas_id)
     {
         if (trim($name = $request->request->get('name')) === '') {
-            $app->abort(400, _('Missing name parameter'));
+            $app->abort(400, $app->trans('Missing name parameter'));
         }
 
         $success = false;
@@ -717,7 +717,7 @@ class Collection implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
             return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful update') : _('An error occured')
+                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured')
             ]);
         }
 
@@ -731,17 +731,17 @@ class Collection implements ControllerProviderInterface
     public function labels(Application $app, Request $request, $bas_id)
     {
         if (null === $labels = $request->request->get('labels')) {
-            $app->abort(400, _('Missing labels parameter'));
+            $app->abort(400, $app->trans('Missing labels parameter'));
         }
         if (false === is_array($labels)) {
-            $app->abort(400, _('Invalid labels parameter'));
+            $app->abort(400, $app->trans('Invalid labels parameter'));
         }
 
         $collection = \collection::get_from_base_id($app, $bas_id);
         $success = true;
 
         try {
-            foreach ($app['locales.I18n.available'] as $code => $language) {
+            foreach ($app['locales.available'] as $code => $language) {
                 if (!isset($labels[$code])) {
                     continue;
                 }
@@ -755,7 +755,7 @@ class Collection implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
             return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful update') : _('An error occured')
+                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured')
             ]);
         }
 
@@ -794,7 +794,7 @@ class Collection implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
             return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful update') : _('An error occured')
+                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured')
             ]);
         }
 
@@ -828,7 +828,7 @@ class Collection implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
             return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful update') : _('An error occured')
+                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured')
             ]);
         }
 
@@ -862,7 +862,7 @@ class Collection implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
             return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful update') : _('An error occured')
+                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured')
             ]);
         }
 
@@ -961,7 +961,7 @@ class Collection implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
             return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful update') : _('An error occured'),
+                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured'),
                 'bas_id'  => $collection->get_base_id()
             ]);
         }

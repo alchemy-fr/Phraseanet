@@ -248,13 +248,13 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
             $sbas_id = $databox->get_sbas_id();
             if ( ! isset($all_coll[$sbas_id])) {
                 $all_coll[$sbas_id] = [];
-                $all_coll[$sbas_id]['name_sbas'] = $databox->get_label($this->app['locale.I18n']);
+                $all_coll[$sbas_id]['name_sbas'] = $databox->get_label($this->app['locale']);
             }
             $all_coll[$sbas_id]['sbas_collections'][] = [
                 'base_id' => $base_id,
                 'sbas_id' => $sbas_id,
                 'coll_id' => $collection->get_base_id(),
-                'name'    => $collection->get_label($this->app['locale.I18n'])
+                'name'    => $collection->get_label($this->app['locale'])
             ];
         }
 

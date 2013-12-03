@@ -133,13 +133,10 @@ class API_OAuth2_Form_DevAppDesktop
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
-        $blank = ['message' => _('Cette valeur ne peut être vide')];
-        $url = ['message' => _('Url non valide')];
-
-        $metadata->addPropertyConstraint('name', new Constraints\NotBlank($blank));
-        $metadata->addPropertyConstraint('description', new Constraints\NotBlank($blank));
-        $metadata->addPropertyConstraint('urlwebsite', new Constraints\NotBlank($blank));
-        $metadata->addPropertyConstraint('urlwebsite', new Constraints\Url($url));
+        $metadata->addPropertyConstraint('name', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('description', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('urlwebsite', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('urlwebsite', new Constraints\Url());
 
         return;
     }

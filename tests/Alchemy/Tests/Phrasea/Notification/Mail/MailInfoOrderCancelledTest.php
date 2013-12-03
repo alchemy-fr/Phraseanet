@@ -12,12 +12,12 @@ class MailInfoOrderCancelledTest extends MailTestCase
 {
     public function testSetQuantity()
     {
-        $this->assertContainsString('42', $this->getMail()->getMessage());
+        $this->assertEquals('%user% a refuse %quantity% elements de votre commande', $this->getMail()->getMessage());
     }
 
     public function testSetDeliverer()
     {
-        $this->assertContainsString('JeanPhil', $this->getMail()->getMessage());
+        $this->assertEquals('%user% a refuse %quantity% elements de votre commande', $this->getMail()->getMessage());
     }
 
     public function testShouldThrowALogicExceptionIfNoQuantityProvided()

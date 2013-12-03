@@ -486,7 +486,7 @@ class Xmlhttp implements ControllerProviderInterface
                 <h1 style="position:relative; top:0px; left:0px; width:100%; height:auto;">
                     <a class="triangle" href="#"><span class='triRight'>&#x25BA;</span><span class='triDown'>&#x25BC;</span></a>
                     <a class="title" href="#"><?php echo $row['title'] ?></a>
-                    <a class="delete" style="position:absolute;right:0px;" href="#"><?php echo _('boutton::supprimer') ?></a>
+                    <a class="delete" style="position:absolute;right:0px;" href="#"><?php echo $app->trans('boutton::supprimer') ?></a>
                 </h1>
                 <div>
             <?php echo $desc ?>
@@ -963,6 +963,7 @@ class Xmlhttp implements ControllerProviderInterface
                                 }
                             }
                             $tts[$key0 . '_' . $uniq] = [
+                                /** @Ignore */
                                 'label' => $label,
                                 'nts'   => $nts0,
                                 'n'     => $n
@@ -1507,10 +1508,10 @@ class Xmlhttp implements ControllerProviderInterface
                     $databox->saveCterms($sbas['domct']);
                 }
             }
-            $ret['msg'] = sprintf(_('prod::thesaurusTab:dlg:%d record(s) updated'), $ret['nRecsUpdated']);
+            $ret['msg'] = $app->trans('prod::thesaurusTab:dlg:%number% record(s) updated', ['%number%' => $ret['nRecsUpdated']]);
         } else {
             // too many records to update
-            $ret['msg'] = sprintf(_('prod::thesaurusTab:dlg:too many (%1$d) records to update (limit=%2$d)'), $ret['nRecsToUpdate'], self::SEARCH_REPLACE_MAXREC);
+            $ret['msg'] = $app->trans('prod::thesaurusTab:dlg:too many (%number%) records to update (limit=%maximum%)', ['%number%' => $ret['nRecsToUpdate'], '%maximum%' => self::SEARCH_REPLACE_MAXREC]);
         }
 
         return $app->json($ret);
@@ -1659,7 +1660,12 @@ class Xmlhttp implements ControllerProviderInterface
                         if (!isset($tts[$key0 . '_' . $uniq]))
                             break;
                     }
-                    $tts[$key0 . '_' . $uniq] = ['label' => $label, 'nts'   => $nts0, 'n'     => $n];
+                    $tts[$key0 . '_' . $uniq] = [
+                        /** @Ignore */
+                        'label' => $label,
+                        'nts'   => $nts0,
+                        'n'     => $n
+                    ];
                     $ntsopened++;
                 }
                 $nts++;

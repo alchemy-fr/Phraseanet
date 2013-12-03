@@ -105,6 +105,6 @@ class FilenameTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetMessage()
     {
-        $this->assertInternalType('string', $this->object->getMessage());
+        $this->assertInternalType('string', $this->object->getMessage($this->createTranslatorMock()));
     }
 }

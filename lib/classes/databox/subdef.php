@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Media\Subdef\FlexPaper;
 use Alchemy\Phrasea\Media\Subdef\Gif;
 use Alchemy\Phrasea\Media\Subdef\Subdef as SubdefSpecs;
 use Alchemy\Phrasea\Media\Type\Type as SubdefType;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class databox_subdef
 {
@@ -33,6 +34,7 @@ class databox_subdef
     protected $labels = [];
     protected $write_meta;
     protected $downloadable;
+    protected $translator;
     protected static $mediaTypeToSubdefTypes = [
         SubdefType::TYPE_AUDIO => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_AUDIO],
         SubdefType::TYPE_DOCUMENT => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_FLEXPAPER],
@@ -58,10 +60,11 @@ class databox_subdef
      *
      * @return databox_subdef
      */
-    public function __construct(SubdefType $type, SimpleXMLElement $sd)
+    public function __construct(SubdefType $type, SimpleXMLElement $sd, TranslatorInterface $translator)
     {
         $this->subdef_group = $type;
         $this->class = (string) $sd->attributes()->class;
+        $this->translator = $translator;
 
         foreach ($sd->devices as $device) {
             $this->devices[] = (string) $device;
@@ -209,19 +212,19 @@ class databox_subdef
                 } else {
                     switch ($subdefType) {
                         case SubdefSpecs::TYPE_ANIMATION:
-                            $mediatype_obj = new Gif();
+                            $mediatype_obj = new Gif($this->translator);
                             break;
                         case SubdefSpecs::TYPE_AUDIO:
-                            $mediatype_obj = new Audio();
+                            $mediatype_obj = new Audio($this->translator);
                             break;
                         case SubdefSpecs::TYPE_FLEXPAPER:
-                            $mediatype_obj = new FlexPaper();
+                            $mediatype_obj = new FlexPaper($this->translator);
                             break;
                         case SubdefSpecs::TYPE_IMAGE:
-                            $mediatype_obj = new Image();
+                            $mediatype_obj = new Image($this->translator);
                             break;
                         case SubdefSpecs::TYPE_VIDEO:
-                            $mediatype_obj = new Video();
+                            $mediatype_obj = new Video($this->translator);
                             break;
                         default:
                             continue;
@@ -229,7 +232,7 @@ class databox_subdef
                     }
                 }
 
-                $mediatype_obj->registerOption(new \Alchemy\Phrasea\Media\Subdef\OptionType\Multi(_('Target Device'), 'devices', $availableDevices, $this->devices));
+                $mediatype_obj->registerOption(new \Alchemy\Phrasea\Media\Subdef\OptionType\Multi($this->translator->trans('Target Device'), 'devices', $availableDevices, $this->devices));
 
                 $subdefTypes[] = $mediatype_obj;
             }
@@ -286,7 +289,7 @@ class databox_subdef
      */
     protected function buildImageSubdef(SimpleXMLElement $sd)
     {
-        $image = new Image();
+        $image = new Image($this->translator);
 
         if ($sd->size) {
             $image->setOptionValue(Image::OPTION_SIZE, (int) $sd->size);
@@ -312,7 +315,7 @@ class databox_subdef
      */
     protected function buildAudioSubdef(SimpleXMLElement $sd)
     {
-        $audio = new Audio();
+        $audio = new Audio($this->translator);
 
         if ($sd->acodec) {
             $audio->setOptionValue(Audio::OPTION_ACODEC, (string) $sd->acodec);
@@ -335,7 +338,7 @@ class databox_subdef
      */
     protected function buildFlexPaperSubdef(SimpleXMLElement $sd)
     {
-        return new FlexPaper();
+        return new FlexPaper($this->translator);
     }
 
     /**
@@ -346,7 +349,7 @@ class databox_subdef
      */
     protected function buildGifSubdef(SimpleXMLElement $sd)
     {
-        $gif = new Gif();
+        $gif = new Gif($this->translator);
 
         if ($sd->size) {
             $gif->setOptionValue(Gif::OPTION_SIZE, (int) $sd->size);
@@ -366,7 +369,7 @@ class databox_subdef
      */
     protected function buildVideoSubdef(SimpleXMLElement $sd)
     {
-        $video = new Video();
+        $video = new Video($this->translator);
 
         if ($sd->size) {
             $video->setOptionValue(Video::OPTION_SIZE, (int) $sd->size);

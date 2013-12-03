@@ -111,7 +111,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCookieLocale()
     {
-        foreach (['fr_FR', 'en_GB', 'de_DE'] as $locale) {
+        foreach (array_keys(Application::getAvailableLanguages()) as $locale) {
             $client = $this->getClientWithCookie( $this->getAppThatReturnLocale(), $locale);
             $client->request('GET', '/');
 
@@ -243,7 +243,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
      */
     public function testAddSetFlashWithInvalidArgument()
     {
@@ -335,6 +335,76 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
 
         $this->assertSame($app['monolog'], $app['media-alchemyst.logger']);
         $this->assertInstanceOf('MediaAlchemyst\Alchemyst', $app['media-alchemyst']);
+    }
+
+    /**
+     * @dataProvider transProvider
+     */
+    public function testCachedTranslator($key, $locale, $expected)
+    {
+        $tempDir = __DIR__ . '/temp-trans';
+        $this->cleanupTempDir($tempDir);
+
+        $app = $this->getPreparedApp($tempDir);
+
+        $this->assertInstanceOf('Alchemy\Phrasea\Utilities\CachedTranslator', $app['translator']);
+
+        $result = $app['translator']->trans($key, [], null, $locale);
+
+        $this->assertEquals($expected, $result);
+        $this->assertFileExists($tempDir.'/catalogue.'.($locale ?: 'en').'.php');
+    }
+
+    public function transProvider()
+    {
+        return [
+            ['key1', 'de', 'The german translation'],
+            ['test.key', 'de', 'It works in german'],
+        ];
+    }
+
+    protected function getPreparedApp($tempDir)
+    {
+        $app = new Application('test');
+        $app['translator.cache-options'] = [
+            'debug' => false,
+            'cache_dir' => $tempDir,
+        ];
+
+        $app['translator.domains'] = [
+            'messages' => [
+                'en' => [
+                    'key1' => 'The translation',
+                    'key_only_english' => 'Foo',
+                    'key2' => 'One apple|%count% apples',
+                    'test' => [
+                        'key' => 'It works'
+                    ]
+                ],
+                'de' => [
+                    'key1' => 'The german translation',
+                    'key2' => 'One german apple|%count% german apples',
+                    'test' => [
+                        'key' => 'It works in german'
+                    ]
+                ]
+            ]
+        ];
+
+        return $app;
+    }
+
+    private function cleanupTempDir($dir)
+    {
+        if (!is_dir($dir)) {
+            return;
+        }
+
+        foreach (new \DirectoryIterator($dir) as $fileinfo) {
+            if ($fileinfo->isFile()) {
+                unlink($fileinfo->getPathname());
+            }
+        }
     }
 
     private function getAppThatReturnLocale()

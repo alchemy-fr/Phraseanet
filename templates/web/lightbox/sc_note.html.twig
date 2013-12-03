@@ -3,7 +3,7 @@
     <div class="notes_overlay"></div>
     <div class="notes well-small">
         <div class="well-small">
-            <h2 class="title15">{% trans 'validation:: votre note' %}</h2>
+            <h2 class="title15">{{ 'validation:: votre note' | trans }}</h2>
         </div>
         <hr/>
         {% for validationDatas in basket_element.getValidationDatas() %}
@@ -20,10 +20,10 @@
             <textarea>{{basket_element.getUserValidationDatas(app['authentication'].getUser(), app).getNote()}}</textarea>
             <div class="buttons">
                 <button class="note_closer ui-corner-all">
-                  {% trans 'boutton::fermer' %}
+                  {{ 'boutton::fermer' | trans }}
                 </button>
                 <button class="note_saver ui-corner-all" id="note_saver_{{basket_element.getId()}}">
-                  {% trans 'boutton::enregistrer' %}
+                  {{ 'boutton::enregistrer' | trans }}
                 </button>
             </div>
         </form>

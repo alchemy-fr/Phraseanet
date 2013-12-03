@@ -25,7 +25,7 @@ class PhraseanetIndexerJob extends AbstractJob
      */
     public function getName()
     {
-        return _("Phrasea indexation task");
+        return $this->translator->trans("Phrasea indexation task");
     }
 
     /**
@@ -41,7 +41,7 @@ class PhraseanetIndexerJob extends AbstractJob
      */
     public function getDescription()
     {
-        return _("This task is used to index records for Phrasea engine.");
+        return $this->translator->trans("This task is used to index records for Phrasea engine.");
     }
 
     /**
@@ -49,7 +49,7 @@ class PhraseanetIndexerJob extends AbstractJob
      */
     public function getEditor()
     {
-        return new PhraseanetIndexerEditor();
+        return new PhraseanetIndexerEditor($this->translator);
     }
 
     /**

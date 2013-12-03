@@ -22,10 +22,9 @@ class ConnectedUserTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAppName()
     {
-        $appNameResult = ConnectedUsers::appName(1000);
+        $appNameResult = ConnectedUsers::appName(self::$DI['app']['translator'], 1000);
         $this->assertNull($appNameResult);
-        $appNameResult = ConnectedUsers::appName(0);
+        $appNameResult = ConnectedUsers::appName(self::$DI['app']['translator'], 0);
         $this->assertTrue(is_string($appNameResult));
     }
-
 }

@@ -14,7 +14,7 @@ class MailInfoBridgeUploadFailedTest extends MailWithLinkTestCase
     {
         $mail = $this->getMail();
 
-        $this->assertContainsString('dailymotion', $mail->getMessage());
+        $this->assertEquals('An upload on %bridge_adapter% failed, the resaon is : %reason%', $mail->getMessage());
     }
 
     public function testSHouldThrowALogicExceptionIfNoAdapterProvided()
@@ -63,7 +63,7 @@ class MailInfoBridgeUploadFailedTest extends MailWithLinkTestCase
     {
         $mail = $this->getMail();
 
-        $this->assertContainsString('you\'re too fat', $mail->getMessage());
+        $this->assertEquals('An upload on %bridge_adapter% failed, the resaon is : %reason%', $mail->getMessage());
     }
 
     public function getMail()

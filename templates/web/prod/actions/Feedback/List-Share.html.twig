@@ -1,22 +1,22 @@
 {% if list is empty %}
-  {% trans 'You are not authorized to do this' %}
+  {{ 'You are not authorized to do this' | trans }}
 {% else %}
   <div id="ListShare">
     <div>
-      <h2 style="font-size:14px; margin-bottom:10px;"><b>{% trans 'About Roles : ' %}</b></h2>
+      <h2 style="font-size:14px; margin-bottom:10px;"><b>{{ 'About Roles :' | trans }}</b></h2>
       <p>
-        - {% trans 'Admin can edit shares, modify content' %}
+        - {{ 'Admin can edit shares, modify content' | trans }}
       </p>
       <p>
-        - {% trans 'Editor can modify content' %}
+        - {{ 'Editor can modify content' | trans }}
       </p>
       <p>
-        - {% trans 'Access user have readonly access' %}
+        - {{ 'Access user have readonly access' | trans }}
       </p>
     </div>
     <div style="margin-top:10px;">
       <form name="list_share_user">
-        <label for="use">{% trans 'Find a user' %} : </label>
+        <label for="use">{{ 'Find a user' | trans }} : </label>
         <input type="text" class="search" name="user" value="" style="width:180px" />
       </form>
     </div>
@@ -35,19 +35,19 @@
             <td style="padding-right:10px;min-width:100px;">
               {% if app['authentication'].getUser().get_id() == owner.getUser(app).get_id() %}
                 {% if owner.getRole() == constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
-                  {% trans 'You are Admin' %}
+                  {{ 'You are Admin' | trans }}
                 {% endif %}
               {% else %}
-              <label>{% trans 'Role' %}</label>
+              <label>{{ 'Role' | trans }}</label>
               <select name="role">
                 <option {% if owner.getRole() == constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_USER') %}selected {% endif %} value="{{ constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_USER') }}">
-                  {% trans 'Access' %}
+                  {{ 'Access' | trans }}
                 </option>
                 <option {% if owner.getRole() == constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}selected {% endif %} value="{{ constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') }}">
-                  {% trans 'Editor' %}
+                  {{ 'Editor' | trans }}
                 </option>
                 <option {% if owner.getRole() == constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}selected {% endif %} value="{{ constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') }}">
-                  {% trans 'Admin' %}
+                  {{ 'Admin' | trans }}
                 </option>
               </select>
               {% endif %}
@@ -55,11 +55,11 @@
             <td style="width:15px">
                {% if app['authentication'].getUser().get_id() != owner.getUser(app).get_id() %}
                   <a href="#" class="deleter">
-                    <img src="/skins/prod/Push/close_badge.png" title="{% trans 'Remove' %}"/>
+                    <img src="/skins/prod/Push/close_badge.png" title="{{ 'Remove' | trans }}"/>
                   </a>
                 {% endif %}
               <a href="#" class="notifier">
-                <img src="/skins/prod/Push/Notify.png" title="{% trans 'Notify' %}"/>
+                <img src="/skins/prod/Push/Notify.png" title="{{ 'Notify' | trans }}"/>
               </a>
             </td>
           </tr>

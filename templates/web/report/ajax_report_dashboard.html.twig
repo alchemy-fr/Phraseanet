@@ -2,11 +2,11 @@
 {% block alldash %}
     <div style="margin-top:15px;">
         <div style="float:left;">
-            <label for="dmin">{% trans "report:: Du (date)" %}</label>
+            <label for="dmin">{{ "report:: Du (date)" | trans }}</label>
             <input class= "dminDash" name="dmin" type="text" value="{{ dashboard_array.date.date.dmin}}" size="10" />
         </div>
         <div style="float:left;">
-            <label for="dmax">{% trans "report:: Au (date)" %}</label>
+            <label for="dmax">{{ "report:: Au (date)" | trans }}</label>
             <input class="dmaxDash" name="dmax" type="text" value="{{dashboard_array.date.date.dmax}}" size="10" />
         </div>
     </div>
@@ -18,7 +18,7 @@
         {% endfor %}
         </select>
     </div>
-    <div id="title_dash" class="center" style="clear:left;">{% trans "report:: Dashboard" %}</div>
+    <div id="title_dash" class="center" style="clear:left;">{{ "report:: Dashboard" | trans }}</div>
     <div id="periode_dash" class="center" >{{ dashboard_array.date.title.dmin }} - {{ dashboard_array.date.title.dmax }}</div>
     <div id="liste_dash"  class="center">{{ dashboard_array.listeStringBase }}</div>
     <div id="dashboard-table" >

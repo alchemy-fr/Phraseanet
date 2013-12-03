@@ -35,7 +35,7 @@ class PhraseaRegisterForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('email', 'email', [
-            'label'       => _('E-mail'),
+            'label'       => 'E-mail',
             'required'    => true,
             'constraints' => [
                 new Assert\NotBlank(),
@@ -47,11 +47,11 @@ class PhraseaRegisterForm extends AbstractType
         $builder->add('password', 'repeated', [
             'type'              => 'password',
             'required'          => true,
-            'invalid_message'   => _('Please provide the same passwords.'),
+            'invalid_message'   => 'Please provide the same passwords.',
             'first_name'        => 'password',
             'second_name'       => 'confirm',
-            'first_options'     => ['label' => _('Password')],
-            'second_options'    => ['label' => _('Password (confirmation)')],
+            'first_options'     => ['label' => 'Password'],
+            'second_options'    => ['label' => 'Password (confirmation)'],
             'constraints'       => [
                 new Assert\NotBlank(),
                 new Assert\Length(['min' => 5]),
@@ -60,11 +60,11 @@ class PhraseaRegisterForm extends AbstractType
 
         if ($this->app->hasTermsOfUse()) {
             $builder->add('accept-tou', 'checkbox', [
-                'label'         => _('Terms of Use'),
+                'label'         => 'Terms of Use',
                 'mapped'        => false,
                 "constraints"   => [
                     new Assert\True([
-                        "message" => _("Please accept the Terms and conditions in order to register.")
+                        "message" => "Please accept the Terms and conditions in order to register."
                     ])],
             ]);
         }
@@ -115,7 +115,7 @@ class PhraseaRegisterForm extends AbstractType
                 'constraints' => [
                     new Assert\Choice([
                         'choices' => $baseIds,
-                        'minMessage' => _('You must select at least %s collection.'),
+                        'minMessage' => 'You must select at least %s collection.',
                         'multiple' => true,
                         'min'      => 1,
                     ]),

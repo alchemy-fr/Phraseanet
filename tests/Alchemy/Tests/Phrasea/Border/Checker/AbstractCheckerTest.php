@@ -6,6 +6,7 @@ use Alchemy\Phrasea\Border\Checker\AbstractChecker;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
 {
@@ -203,7 +204,7 @@ class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
 class AbstractCheckerTester extends AbstractChecker
 {
 
-    public static function getMessage()
+    public static function getMessage(TranslatorInterface $translator)
     {
 
     }

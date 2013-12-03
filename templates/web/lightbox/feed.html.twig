@@ -76,7 +76,7 @@
             </div>
             <div id="right_column" class="PNB">
                 <div class="right_column_title title15 unselectable">
-                    {% trans 'notice'%}
+                    {{ 'notice' | trans }}
                 </div>
                 <div class="right_column_wrapper caption right_column_wrapper_caption PNB">
                     <div id="record_infos" class="PNB">
@@ -97,7 +97,7 @@
                         <td style="width:20px;">
                         </td>
                         <td style="width:40px;">
-                            <button class="ui-corner-all basket_downloader" title="{% trans 'boutton::telecharger tous les documents' %}">
+                            <button class="ui-corner-all basket_downloader" title="{{ 'boutton::telecharger tous les documents' | trans }}">
                                 <img src="/skins/lightbox/save.png"/>
                             </button>
                         </td>
@@ -120,7 +120,7 @@
             </div>
         </div>
     </div>
-    <div id="dialog_dwnl" title="{% trans 'action : exporter' %}" style="display:none;"></div>
+    <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
 {% endblock %}
 
 

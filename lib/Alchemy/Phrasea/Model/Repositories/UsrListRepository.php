@@ -60,11 +60,11 @@ class UsrListRepository extends EntityRepository
 
         /* @var $list UsrList */
         if (null === $list) {
-            throw new NotFoundHttpException(_('List is not found'));
+            throw new NotFoundHttpException('List is not found.');
         }
 
         if ( ! $list->hasAccess($user, $app)) {
-            throw new AccessDeniedHttpException(_('You have not access to this list'));
+            throw new AccessDeniedHttpException('You have not access to this list.');
         }
 
         return $list;

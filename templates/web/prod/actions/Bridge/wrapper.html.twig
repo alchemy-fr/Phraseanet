@@ -21,14 +21,14 @@
                             {% if not loop.last %} - {% endif %}
                         {% endfor %}
                         <a class="{% if adapter_action == 'load-records' %} selected {% endif %} bridge_action bridge_title" href="{{ path('prod_bridge_account_loadrecords', { 'account_id' : account.get_id() }) }}">
-                            {% trans 'Fichiers envoyes' %}
+                            {{ 'Fichiers envoyes' | trans }}
                         </a>
                     {% endif %}
                     </td>
                     <td style="text-align:right;">
                     {% if account is not none %}
                         <a class="bridge_action bridge_logout" href="{{ path('prod_bridge_account_logout', { 'account_id' : account.get_id() }) }}">
-                            {% trans 'phraseanet:: deconnection' %}
+                            {{ 'phraseanet:: deconnection' | trans }}
                         </a>
                     {% endif %}
                     </td>
@@ -63,7 +63,7 @@
                             {% if account is not none %}
                                 {% if account.get_api().get_connector().get_terms_url() %}
                                     <a href="{{ account.get_api().get_connector().get_terms_url() }}" target="_blank">
-                                        {% trans 'Terms of service' %}
+                                        {{ 'Terms of service' | trans }}
                                     </a>
                                 {% endif %}
                             {% endif %}

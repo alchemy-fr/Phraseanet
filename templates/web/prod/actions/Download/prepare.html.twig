@@ -10,21 +10,19 @@
 {% endblock %}
 
 {% block content %}
-    <h1 style="text-align:center">{% trans "Download of documents" %}</h1>
+    <h1 style="text-align:center">{{ "Download of documents" | trans }}</h1>
 
     <div class="well-small">
        {% if (list['complete'] is not defined or not list['complete']) and list['count'] > 1%}
             <div class="alert alert-info">
-                {% trans "Please wait while your files are being gathered for the download, this operation may take a few minutes." %}
+                {{ "Please wait while your files are being gathered for the download, this operation may take a few minutes." | trans }}
             </div>
        {% elseif list['complete'] is defined and list['complete'] %}
             <div class="alert alert-success">
                 {% set url = path('document_download', {'token': token}) %}
                 {% set before_link = '<a href="' ~ url ~ '" target="_self">' %}
                 {% set after_link = '</a>' %}
-                {% trans %}
-                    Your documents are ready. If the download does not start, {{ before_link }}click here{{ after_link }}
-                {% endtrans %}
+                {% trans with {'%before_link%' : before_link, '%after_link%' : after_link} %}Your documents are ready. If the download does not start, %before_link%click here%after_link%{% endtrans %}
             </div>
        {% endif %}
     </div>
@@ -32,15 +30,15 @@
     <div class="well-small">
         <table class="table table-bordered table-condensed">
             <caption>
-                <h3>{% trans "The file contains the following elements" %}</h3>
+                <h3>{{ "The file contains the following elements" | trans }}</h3>
             </caption>
             <thead>
                 <tr>
-                    <th>{% trans "Base" %}</th>
-                    <th>{% trans "Name" %}</th>
-                    <th>{% trans "Sub definition" %}</th>
-                    <th>{% trans "Size" %}</th>
-                    <th>{% trans "Thumbnail" %}</th>
+                    <th>{{ "Base" | trans }}</th>
+                    <th>{{ "Name" | trans }}</th>
+                    <th>{{ "Sub definition" | trans }}</th>
+                    <th>{{ "Size" | trans }}</th>
+                    <th>{{ "Thumbnail" | trans }}</th>
                 </tr>
             </thead>
 

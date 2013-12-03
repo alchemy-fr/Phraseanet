@@ -28,8 +28,8 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
      */
     public function __construct(Application $app, eventsmanager_broker $broker)
     {
-        $this->group = _('Validation');
         parent::__construct($app, $broker);
+        $this->group = $this->app->trans('Validation');
 
         return $this;
     }
@@ -146,11 +146,10 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
         }
 
         $ret = [
-            'text'  => sprintf(
-                _('%1$s a envoye son rapport de validation de %2$s'), $sender, '<a href="/lightbox/validate/'
+            'text'  => $this->app->trans('%user% a envoye son rapport de validation de %title%', ['%user%' => $sender, '%title%' => '<a href="/lightbox/validate/'
                 . (string) $sx->ssel_id . '/" target="_blank">'
                 . $basket->getName() . '</a>'
-            )
+            ])
             , 'class' => ''
         ];
 
@@ -163,7 +162,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
      */
     public function get_name()
     {
-        return _('Rapport de Validation');
+        return $this->app->trans('Rapport de Validation');
     }
 
     /**
@@ -172,7 +171,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
      */
     public function get_description()
     {
-        return _('Reception d\'un rapport de validation');
+        return $this->app->trans('Reception d\'un rapport de validation');
     }
 
     /**

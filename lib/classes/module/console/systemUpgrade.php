@@ -50,7 +50,7 @@ class module_console_systemUpgrade extends Command
             $dialog = $this->getHelperSet()->get('dialog');
 
             do {
-                $continue = mb_strtolower($dialog->ask($output, '<question>' . _('Continuer ?') . ' (Y/n)</question>', 'Y'));
+                $continue = mb_strtolower($dialog->ask($output, '<question>' . $this->container->trans('Continuer ?') . ' (Y/n)</question>', 'Y'));
             } while (!in_array($continue, ['y', 'n']));
         } else {
             $continue = 'y';

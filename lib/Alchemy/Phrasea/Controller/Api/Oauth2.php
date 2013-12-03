@@ -81,7 +81,7 @@ class Oauth2 implements ControllerProviderInterface
                         $usr_id = $app['auth.native']->getUsrId($request->get("login"), $request->get("password"), $request);
 
                         if (null === $usr_id) {
-                            $app['session']->getFlashBag()->set('error', _('login::erreur: Erreur d\'authentification'));
+                            $app['session']->getFlashBag()->set('error', $app->trans('login::erreur: Erreur d\'authentification'));
 
                             return $app->redirectPath('oauth2_authorize');
                         }

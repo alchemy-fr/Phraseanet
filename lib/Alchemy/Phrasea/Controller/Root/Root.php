@@ -70,6 +70,6 @@ class Root implements ControllerProviderInterface
 
     public function getAvailableLanguages(Application $app, Request $request)
     {
-        return $app->json($app['locales.I18n.available']);
+        return $app->json($app['locales.available']);
     }
 }

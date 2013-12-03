@@ -2,7 +2,7 @@
 {% set displayName = order.getUser(app).get_display_name() %}
 
 <div class="page-header">
-  <h1>{% trans %} {{ displayName }} wants to place an order {% endtrans %}</h1>
+  <h1>{% trans with {'%displayName%' : displayName} %}%displayName% wants to place an order{% endtrans %}</h1>
 </div>
 
 <div id="order_manager">
@@ -13,44 +13,44 @@
         <div class="alert alert-success">
             <button type="button" class="close" data-dismiss="alert">×</button>
              {% if action == 'send' %}
-                {% trans 'Order has been sent' %}
+                {{ 'Order has been sent' | trans }}
             {% elseif action == 'deny' %}
-                {% trans 'Order has been denied' %}
+                {{ 'Order has been denied' | trans }}
             {% endif %}
         </div>
-    {% elseif   success == '0'%}
+    {% elseif   success == '0' %}
         <div class="alert alert-error">
             <button type="button" class="close" data-dismiss="alert">×</button>
-            {% trans 'An error occured, please retry or contact an admin if problem persists' %}
+            {{ 'An error occured, please retry or contact an admin if problem persists' | trans }}
         </div>
     {% endif %}
 
     <div class="well">
         <table class="table" style="color:#333;">
             <tr>
-                <td>{% trans 'Destinataire' %}</td>
+                <td>{{ 'Destinataire' | trans }}</td>
                 <td>{{ displayName }}({{ order.getUser(app).get_email() }})</td>
             </tr>
             <tr>
-                <td>{% trans 'Date de commande' %}</td>
+                <td>{{ 'Date de commande' | trans }}</td>
                 <td>{{ app['date-formatter'].getPrettyString(order.getCreatedOn()) }}</td>
             </tr>
             <tr>
-                <td>{% trans 'Deadline' %}</td>
+                <td>{{ 'Deadline' | trans }}</td>
                 <td>{{ app['date-formatter'].getPrettyString(order.getDeadline()) }}</td>
             </tr>
             <tr>
-                <td>{% trans 'Utilisation prevue' %}</td>
+                <td>{{ 'Utilisation prevue' | trans }}</td>
                 <td>{{ order.getOrderUsage() | nl2br }}</td>
             </tr>
             <tr>
-                <td>{% trans 'Nombre total d\'element commandes' %}</td>
+                <td>{{ 'Nombre total d\'element commandes' | trans }}</td>
                 <td>{{ order.getTotal() }}</td>
             </tr>
         </table>
     </div>
     <div class="alert">
-        {% trans 'Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes' %}
+        {{ 'Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes' | trans }}
     </div>
 
     <div class="order_list well-small">
@@ -63,7 +63,7 @@
                             {% set name = element.getOrderMasterName(app) %}
                             {% if element.getDeny() == true %}
                                 {% set title %}
-                                     {% trans %}Document refuse par {{name}} {% endtrans %}
+                                     {% trans with {'%name%' : name} %}Document refuse par %name%{% endtrans %}
                                 {% endset %}
                                 {% set title_send %}
                                     {% trans %}Forcer l'envoi du document{% endtrans %}
@@ -72,7 +72,7 @@
                                 <img style="cursor:pointer;" class="force_sender" src="/skins/icons/reload.png" title="{% spaceless %}{{title_send|e}}{% endspaceless %}" />
                             {% else %}
                                 {% set title %}
-                                    {% trans %}Document envoye par {{name}} {% endtrans %}
+                                    {% trans with {'%name%' : name} %}Document envoye par %name%{% endtrans %}
                                 {% endset %}
                                 <img style="cursor:help;" src="/skins/icons/ok.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
                             {% endif %}
@@ -90,10 +90,10 @@
     </div>
 
     <div class="form-actions" style="color:#333;">
-        {% trans 'Selectionnez des documents et ' %}
-        <button class="btn btn-primary send">{% trans 'Send' %}</button>
-        <button class="btn deny">{% trans 'Deny' %}</button>
-        <button class="order_launcher btn">{% trans 'Retour aux commandes' %}</button>
+        {{ 'Selectionnez des documents et' | trans }}
+        <button class="btn btn-primary send">{{ 'Send' | trans }}</button>
+        <button class="btn deny">{{ 'Deny' | trans }}</button>
+        <button class="order_launcher btn">{{ 'Retour aux commandes' | trans }}</button>
         <img src="/skins/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
         <input name="order_id" type="hidden" value="{{ order.getId() }}" />
     </div>

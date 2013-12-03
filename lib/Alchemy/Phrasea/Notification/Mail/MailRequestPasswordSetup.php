@@ -33,7 +33,7 @@ class MailRequestPasswordSetup extends AbstractMailWithLink
      */
     public function getSubject()
     {
-        return sprintf(_('Your account on %s'), $this->getPhraseanetTitle());
+        return $this->app->trans('Your account on %application%', ['%application%' => $this->getPhraseanetTitle()]);
     }
 
     /**
@@ -45,9 +45,9 @@ class MailRequestPasswordSetup extends AbstractMailWithLink
             throw new LogicException('You must set a login before calling getMessage');
         }
 
-        return sprintf(_('Your account with the login %s as been created'), $this->login)
+        return $this->app->trans('Your account with the login %login% as been created', ['%login%' => $this->login])
             . "\n"
-            . _('You now have to set up your pasword');
+            . $this->app->trans('You now have to set up your pasword');
     }
 
     /**
@@ -55,7 +55,7 @@ class MailRequestPasswordSetup extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return _('Setup my password');
+        return $this->app->trans('Setup my password');
     }
 
     /**

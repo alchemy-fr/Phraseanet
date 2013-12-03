@@ -43,7 +43,7 @@ class FtpJob extends AbstractJob
      */
     public function getDescription()
     {
-        return _('Periodically push data to FTP servers.');
+        return $this->translator->trans('Periodically push data to FTP servers.');
     }
 
     /**
@@ -51,7 +51,7 @@ class FtpJob extends AbstractJob
      */
     public function getEditor()
     {
-        return new FtpEditor();
+        return new FtpEditor($this->translator);
     }
 
     /**
@@ -101,22 +101,19 @@ class FtpJob extends AbstractJob
         $ftpLog = $ftp_user_name . "@" . \p4string::addEndSlash($ftp_server) . $export->getDestfolder();
 
         if ($export->getCrash() == 0) {
-            $line = sprintf(
-                _('task::ftp:Etat d\'envoi FTP vers le serveur' .
-                    ' "%1$s" avec le compte "%2$s" et pour destination le dossier : "%3$s"') . PHP_EOL
-                , $ftp_server
-                , $ftp_user_name
-                , $export->getDestfolder()
-            );
+            $line = $this->translator->trans('task::ftp:Etat d\'envoi FTP vers le serveur "%server%" avec le compte "%username%" et pour destination le dossier : "%directory%"', [
+                '%server%'    => $ftp_server,
+                '%username%'  => $ftp_user_name,
+                '%directory%' => $export->getDestfolder(),
+            ]) . PHP_EOL;
             $state .= $line;
             $this->log('debug', $line);
         }
 
-        $state .= $line = sprintf(
-                _("task::ftp:TENTATIVE no %s, %s")
-                , $export->getCrash() + 1
-                , "  (" . date('r') . ")"
-            ) . PHP_EOL;
+        $state .= $line = $this->translator->trans("task::ftp:TENTATIVE no %number%, %date%", [
+                '%number%' => $export->getCrash() + 1,
+                '%date%' => "  (" . date('r') . ")"
+            ]) . PHP_EOL;
 
         $this->log('debug', $line);
 
@@ -245,10 +242,7 @@ class FtpJob extends AbstractJob
                     $app['EM']->flush();
                     $this->logexport($app, $record, $obj, $ftpLog);
                 } catch (\Exception $e) {
-                    $state .= $line = sprintf(_('task::ftp:File "%1$s" (record %2$s) de la base "%3$s"' .
-                                ' (Export du Document) : Transfert cancelled (le document n\'existe plus)')
-                            , basename($localfile), $record_id
-                            , \phrasea::sbas_labels(\phrasea::sbasFromBas($app, $base_id), $app)) . "\n<br/>";
+                    $state .= $line = $this->translator->trans('task::ftp:File "%file%" (record %record_id%) de la base "%basename%" (Export du Document) : Transfert cancelled (le document n\'existe plus)', ['%file%' => basename($localfile), '%record_id%' => $record_id, '%basename%' => \phrasea::sbas_labels(\phrasea::sbasFromBas($app, $base_id), $app)]) . "\n<br/>";
 
                     $this->log('debug', $line);
 
@@ -341,29 +335,35 @@ class FtpJob extends AbstractJob
     private function send_mails(Application $app, FtpExport $export)
     {
         $transferts = [];
-        $transfert_status = _('task::ftp:Tous les documents ont ete transferes avec succes');
+        $transfert_status = $this->translator->trans('task::ftp:Tous les documents ont ete transferes avec succes');
 
         foreach ($export->getElements() as $element) {
             if (!$element->isError() && $element->isDone()) {
                 $transferts[] =
-                    '<li>' . sprintf(_('task::ftp:Record %1$s - %2$s de la base (%3$s - %4$s) - %5$s')
-                        , $element->getRecordId(), $element->getFilename()
-                        , \phrasea::sbas_labels(\phrasea::sbasFromBas($app, $element->getBaseId()), $app)
-                        , \phrasea::bas_labels($element->getBaseId(), $app), $element->getSubdef()) . ' : ' . _('Transfert OK') . '</li>';
+                    '<li>' . $this->translator->trans('task::ftp:Record %recordid% - %filename% de la base (%databoxname% - %collectionname%) - %subdefname%', [
+                            '%recordid%' => $element->getRecordId(),
+                            '%filename%' => $element->getFilename(),
+                            '%databoxname%' => \phrasea::sbas_labels(\phrasea::sbasFromBas($app, $element->getBaseId()), $app),
+                            '%collectionname%' => \phrasea::bas_labels($element->getBaseId(), $app), $element->getSubdef(),
+                            '%subdefname%' => $element->getSubdef(),
+                        ]) . ' : ' . $this->translator->trans('Transfert OK') . '</li>';
             } else {
                 $transferts[] =
-                    '<li>' . sprintf(_('task::ftp:Record %1$s - %2$s de la base (%3$s - %4$s) - %5$s')
-                        , $element->getRecordId(), $element->getFilename()
-                        , \phrasea::sbas_labels(\phrasea::sbasFromBas($app, $element->getBaseId()), $app), \phrasea::bas_labels($element->getBaseId(), $app)
-                        , $element->getSubdef()) . ' : ' . _('Transfert Annule') . '</li>';
-                $transfert_status = _('task::ftp:Certains documents n\'ont pas pu etre tranferes');
+                    '<li>' . $this->translator->trans('task::ftp:Record %recordid% - %filename% de la base (%databoxname% - %collectionname%) - %subdefname%', [
+                            '%recordid%' => $element->getRecordId(),
+                            '%filename%' => $element->getFilename(),
+                            '%databoxname%' => \phrasea::sbas_labels(\phrasea::sbasFromBas($app, $element->getBaseId()), $app),
+                            '%collectionname%' => \phrasea::bas_labels($element->getBaseId(), $app), $element->getSubdef(),
+                            '%subdefname%' => $element->getSubdef(),
+                        ])  . ' : ' . $this->translator->trans('Transfert Annule') . '</li>';
+                $transfert_status = $this->translator->trans('task::ftp:Certains documents n\'ont pas pu etre tranferes');
             }
         }
 
         if ($export->getCrash() >= $export->getNbretry()) {
-            $connection_status = _('Des difficultes ont ete rencontres a la connection au serveur distant');
+            $connection_status = $this->translator->trans('Des difficultes ont ete rencontres a la connection au serveur distant');
         } else {
-            $connection_status = _('La connection vers le serveur distant est OK');
+            $connection_status = $this->translator->trans('La connection vers le serveur distant est OK');
         }
 
         $text_mail_sender = $export->getTextMailSender();
@@ -374,7 +374,7 @@ class FtpJob extends AbstractJob
         $message = "\n\n----------------------------------------\n\n";
         $message =  $connection_status . "\n";
         $message .= $transfert_status . "\n";
-        $message .= _("task::ftp:Details des fichiers") . "\n\n";
+        $message .= $this->translator->trans("task::ftp:Details des fichiers") . "\n\n";
 
         $message .= implode("\n", $transferts);
 

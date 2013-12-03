@@ -87,7 +87,7 @@ class Story implements ControllerProviderInterface
             if ($request->getRequestFormat() == 'json') {
                 $data = [
                     'success'  => true
-                    , 'message'  => _('Story created')
+                    , 'message'  => $app->trans('Story created')
                     , 'WorkZone' => $StoryWZ->getId()
                     , 'story'    => [
                         'sbas_id'   => $Story->get_sbas_id(),
@@ -136,7 +136,7 @@ class Story implements ControllerProviderInterface
 
             $data = [
                 'success' => true
-                , 'message' => sprintf(_('%d records added'), $n)
+                , 'message' => $app->trans('%quantity% records added', ['%quantity%' => $n])
             ];
 
             if ($request->getRequestFormat() == 'json') {
@@ -158,7 +158,7 @@ class Story implements ControllerProviderInterface
 
             $data = [
                 'success' => true
-                , 'message' => _('Record removed from story')
+                , 'message' => $app->trans('Record removed from story')
             ];
 
             if ($request->getRequestFormat() == 'json') {
@@ -195,7 +195,7 @@ class Story implements ControllerProviderInterface
             ->assert('record_id', '\d+');
 
         $controllers->post('/{sbas_id}/{record_id}/reorder/', function (Application $app, $sbas_id, $record_id) {
-            $ret = ['success' => false, 'message' => _('An error occured')];
+            $ret = ['success' => false, 'message' => $app->trans('An error occured')];
             try {
 
                 $story = new \record_adapter($app, $sbas_id, $record_id);
@@ -205,7 +205,7 @@ class Story implements ControllerProviderInterface
                 }
 
                 if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($story->get_base_id(), 'canmodifrecord')) {
-                    throw new ControllerException(_('You can not edit this story'));
+                    throw new ControllerException($app->trans('You can not edit this story'));
                 }
 
                 $sql = 'UPDATE regroup SET ord = :ord
@@ -223,7 +223,7 @@ class Story implements ControllerProviderInterface
 
                 $stmt->closeCursor();
 
-                $ret = ['success' => true, 'message' => _('Story updated')];
+                $ret = ['success' => true, 'message' => $app->trans('Story updated')];
             } catch (ControllerException $e) {
                 $ret = ['success' => false, 'message' => $e->getMessage()];
             } catch (\Exception $e) {

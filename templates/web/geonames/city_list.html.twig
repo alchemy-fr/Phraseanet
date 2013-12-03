@@ -5,5 +5,5 @@
   </div>
 {% endfor %}
 {% if geonames|length == 0 %}
-  <div class='box boxI unselectable'>  <div>{% trans 'No matches found' %}</div></div>
+  <div class='box boxI unselectable'>  <div>{{ 'No matches found' | trans }}</div></div>
 {% endif %}

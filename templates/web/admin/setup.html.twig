@@ -1,5 +1,5 @@
 <div class="page-header">
-    <h1>{% trans 'Setup' %}</h1>
+    <h1>{{ 'Setup' | trans }}</h1>
 </div>
 
 {% if update_post_datas is not none %}
@@ -73,9 +73,7 @@
                                 {% else %}
                                     <p class="alert">
                                         {% set name = value['name'] %}
-                                        {% trans %}
-                                            erreur avec la valeur {{ name }}
-                                        {% endtrans %}
+                                        {% trans with {'%name%' : name} %}erreur avec la valeur %name%{% endtrans %}
                                     </p>
                                 {% endif %}
                             </select>
@@ -90,9 +88,7 @@
                                 <div class="controls">
                                 <p class='alert'>
                                     {% set name = value['name'] %}
-                                    {% trans %}
-                                        erreur avec la valeur {{ name }}
-                                    {% endtrans %}
+                                    {% trans with {'%name%' : name} %}erreur avec la valeur %name%{% endtrans %}
                                 </p>
                             {% endif %}
                         {% elseif value['type'] == 'integer' %}
@@ -134,7 +130,7 @@
     {% endfor %}
     <div class="well well-large">
         <div style="max-width: 400px;margin: 0 auto 10px;">
-            <input type="submit" class="btn btn-warning btn-block btn-large" value="{% trans 'boutton::valider' %}"/>
+            <input type="submit" class="btn btn-warning btn-block btn-large" value="{{ 'boutton::valider' | trans }}"/>
         </div>
     </div>
 </form>

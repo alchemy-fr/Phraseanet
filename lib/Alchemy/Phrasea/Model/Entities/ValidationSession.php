@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Model\Entities;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -263,27 +264,15 @@ class ValidationSession
 
         if ($this->isInitiator($user)) {
             if ($this->isFinished()) {
-                return sprintf(
-                        _('Vous aviez envoye cette demande a %d utilisateurs')
-                        , (count($this->getParticipants()) - 1)
-                );
+                return $app->trans('Vous aviez envoye cette demande a %n% utilisateurs', ['%n%' => count($this->getParticipants()) - 1]);
             } else {
-                return sprintf(
-                        _('Vous avez envoye cette demande a %d utilisateurs')
-                        , (count($this->getParticipants()) - 1)
-                );
+                return $app->trans('Vous avez envoye cette demande a %n% utilisateurs', ['%n%' => count($this->getParticipants()) - 1]);
             }
         } else {
             if ($this->getParticipant($user, $app)->getCanSeeOthers()) {
-                return sprintf(
-                        _('Processus de validation recu de %s et concernant %d utilisateurs')
-                        , $this->getInitiator($app)->get_display_name()
-                        , (count($this->getParticipants()) - 1));
+                return $app->trans('Processus de validation recu de %user% et concernant %n% utilisateurs', ['%user%' => $this->getInitiator($app)->get_display_name(), '%n%' => count($this->getParticipants()) - 1]);
             } else {
-                return sprintf(
-                        _('Processus de validation recu de %s')
-                        , $this->getInitiator($app)->get_display_name()
-                );
+                return $app->trans('Processus de validation recu de %user%', ['%user%' => $this->getInitiator($app)->get_display_name()]);
             }
         }
     }
@@ -291,7 +280,7 @@ class ValidationSession
     /**
      * Get a participant
      *
-     * @return Alchemy\Phrasea\Model\Entities\ValidationParticipant
+     * @return ValidationParticipant
      */
     public function getParticipant(\User_Adapter $user, Application $app)
     {

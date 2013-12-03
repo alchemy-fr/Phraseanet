@@ -1,9 +1,7 @@
-{% extends "prod/actions/Bridge/wrapper.html.twig"%}
+{% extends "prod/actions/Bridge/wrapper.html.twig" %}
 
 {% block menu %}
-  {% trans %}
-  Creer une playlist
-  {% endtrans %}
+  {% trans %}Creer une playlist{% endtrans %}
 {% endblock %}
 
 {% block response %}
@@ -12,7 +10,7 @@
   <table>
     <tr>
       <td class='column_left'>
-        <label for='f_container_title'> *{% trans 'Titre' %}
+        <label for='f_container_title'> *{{ 'Titre' | trans }}
           <br/>
           <span class='form_error'>&nbsp;</span>
         </label>
@@ -23,7 +21,7 @@
     </tr>
     <tr>
       <td class='column_left'>
-        <label for='f_container_description'> {% trans 'Description' %}
+        <label for='f_container_description'> {{ 'Description' | trans }}
           <br/>
           <span class='form_error'>&nbsp;</span>
         </label>
@@ -35,8 +33,8 @@
     <tr>
       <td></td>
       <td class='column_right'>
-        <button class="form_submitter btn btn-inverse">{% trans 'boutton::valider' %}</button>
-        <button class="back_link btn btn-inverse">{% trans 'boutton::retour' %}</button>
+        <button class="form_submitter btn btn-inverse">{{ 'boutton::valider' | trans }}</button>
+        <button class="back_link btn btn-inverse">{{ 'boutton::retour' | trans }}</button>
       </td>
     </tr>
   </table>

@@ -4,7 +4,7 @@
 {% block javascript %}
   <script type="text/javascript">
     {% if basket.getValidation() %}
-    var releasable = {% if basket.getValidation().getParticipant(app['authentication'].getUser(), app).isReleasable() %}"{% trans 'Do you want to send your report ?' %}"{% else %}false{% endif %}
+    var releasable = {% if basket.getValidation().getParticipant(app['authentication'].getUser(), app).isReleasable() %}"{{ 'Do you want to send your report ?' | trans }}"{% else %}false{% endif %}
     {% endif %}
   </script>
   <script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/lightbox/jquery.validator.mobile.js' }) }}"></script>
@@ -17,15 +17,15 @@
 {% block content %}
 <div id="home" data-role="page">
     <div data-role="header">
-    <a href="{{ path('lightbox') }}{% if basket.getValidation() %}#validation{% else %}#baskets{% endif %}" data-rel="back" data-icon="arrow-l">{% trans 'Back' %}</a>
+    <a href="{{ path('lightbox') }}{% if basket.getValidation() %}#validation{% else %}#baskets{% endif %}" data-rel="back" data-icon="arrow-l">{{ 'Back' | trans }}</a>
     <h1>{{basket.getName()}}</h1>
-    <a rel="external" href="{{ path('lightbox') }}" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">{% trans 'Home' %}</a>
+    <a rel="external" href="{{ path('lightbox') }}" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">{{ 'Home' | trans }}</a>
   </div>
     <div data-role="content">
     <input type="hidden" id="basket_validation_id" value="{{ basket.getId() }}">
     <p>
       {% set basket_length = basket.getElements().count() %}
-      {% trans %}{{basket_length}} documents{% endtrans %}
+      {% trans with {'%basket_length%' : basket_length} %}%basket_length% documents{% endtrans %}
     </p>
     <ul class="image_set">
     {% for basket_element in basket.getElements() %}
@@ -44,8 +44,8 @@
   </div>
     <div data-role="footer">
         {% if basket.getValidation() and basket.getValidation().getParticipant(app['authentication'].getUser(), app).getCanAgree() %}
-            <button class="confirm_report" style="width:100%;" title="{% trans 'validation::envoyer mon rapport'%}">
-                {% trans 'validation::envoyer mon rapport'%}
+            <button class="confirm_report" style="width:100%;" title="{{ 'validation::envoyer mon rapport' | trans }}">
+                {{ 'validation::envoyer mon rapport' | trans }}
                 <img src="/skins/icons/loader1F1E1B.gif" style="visibility:hidden;" class="loader"/>
             </button>
         {% endif %}

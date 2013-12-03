@@ -73,7 +73,7 @@ class Developers implements ControllerProviderInterface
     public function deleteApp(Application $app, Request $request, $id)
     {
         if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
+            $app->abort(400, 'Bad request format, only JSON is allowed');
         }
 
         $error = false;
@@ -99,7 +99,7 @@ class Developers implements ControllerProviderInterface
     public function renewAppCallback(Application $app, Request $request, $id)
     {
         if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
+            $app->abort(400, 'Bad request format, only JSON is allowed');
         }
 
         $error = false;
@@ -130,7 +130,7 @@ class Developers implements ControllerProviderInterface
     public function renewAccessToken(Application $app, Request $request, $id)
     {
         if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
+            $app->abort(400, 'Bad request format, only JSON is allowed');
         }
 
         $error = false;
@@ -167,7 +167,7 @@ class Developers implements ControllerProviderInterface
     public function authorizeGrantpassword(Application $app, Request $request, $id)
     {
         if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
+            $app->abort(400, 'Bad request format, only JSON is allowed');
         }
 
         $error = false;

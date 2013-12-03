@@ -8,6 +8,6 @@ class PhraseanetIndexerJobTest extends JobTestCase
 {
     protected function getJob()
     {
-        return new PhraseanetIndexerJob();
+        return new PhraseanetIndexerJob(null, null, $this->createTranslatorMock());
     }
 }

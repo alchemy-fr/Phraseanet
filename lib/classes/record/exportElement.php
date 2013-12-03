@@ -130,16 +130,22 @@ class record_exportElement extends record_adapter
             if ($go_dl['document'] === true) {
                 if ($this->app['acl']->get($this->app['authentication']->getUser())->is_restricted_download($this->base_id)) {
                     $this->remain_hd --;
-                    if ($this->remain_hd >= 0)
+                    if ($this->remain_hd >= 0) {
+                        $localizedLabel = $this->app->trans('document original');
                         $downloadable['document'] = [
-                            'class'                   => 'document',
-                            'label'                   => _('document original')
+                            'class' => 'document',
+                            /** @Ignore */
+                            'label' => $localizedLabel,
                         ];
-                } else
+                    }
+                } else {
+                    $localizedLabel = $this->app->trans('document original');
                     $downloadable['document'] = [
                         'class' => 'document',
-                        'label' => _('document original')
+                        /** @Ignore */
+                        'label' => $localizedLabel
                     ];
+                }
             }
             if ($go_cmd === true) {
                 $orderable['document'] = true;
@@ -157,7 +163,7 @@ class record_exportElement extends record_adapter
                 if (trim($label) == '')
                     continue;
 
-                if ($lang == $this->app['locale.I18n']) {
+                if ($lang == $this->app['locale']) {
                     $subdef_label = $label;
                     break;
                 }
@@ -181,16 +187,19 @@ class record_exportElement extends record_adapter
                             if ($this->remain_hd >= 0)
                                 $downloadable[$name] = [
                                     'class'              => $class,
+                                    /** @Ignore */
                                     'label'              => $subdef_label
                                 ];
                         } else
                             $downloadable[$name] = [
                                 'class' => $class,
+                                /** @Ignore */
                                 'label' => $subdef_label
                             ];
                     } else {
                         $downloadable[$name] = [
                             'class' => $class,
+                            /** @Ignore */
                             'label' => $subdef_label
                         ];
                     }
@@ -203,14 +212,19 @@ class record_exportElement extends record_adapter
         $xml = $this->get_caption()->serialize(caption_record::SERIALIZE_XML);
 
         if ($xml) {
+            $localizedLabel = $this->app->trans('caption XML');
             $downloadable['caption'] = [
-                'class'                       => 'caption',
-                'label'                       => _('caption XML')
+                'class' => 'caption',
+                /** @Ignore */
+                'label' => $localizedLabel,
             ];
             $this->add_count('caption', strlen($xml));
+
+            $localizedLabel = $this->app->trans('caption YAML');
             $downloadable['caption-yaml'] = [
                 'class' => 'caption',
-                'label' => _('caption YAML')
+                /** @Ignore */
+                'label' => $localizedLabel,
             ];
             $this->add_count('caption-yaml', strlen(strip_tags($xml)));
         }

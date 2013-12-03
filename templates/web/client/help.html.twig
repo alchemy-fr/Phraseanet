@@ -1,7 +1,7 @@
-{% if app['locale.I18n'] not in ['fr', 'en', 'us'] %}
+{% if app['locale'] not in ['fr', 'en', 'us'] %}
     {% set lng = 'fr' %}
 {% else  %}
-    {% set lng = app['locale.I18n'] %}
+    {% set lng = app['locale'] %}
 {% endif %}
 
 {% if lng == 'fr' %}

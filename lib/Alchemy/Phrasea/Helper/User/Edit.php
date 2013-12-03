@@ -259,11 +259,11 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         foreach ($status as $bit => $datas) {
             $tbits_left[$bit]["nset"] = 0;
-            $tbits_left[$bit]["name"] = $datas['labels_off_i18n'][$this->app['locale.I18n']];
+            $tbits_left[$bit]["name"] = $datas['labels_off_i18n'][$this->app['locale']];
             $tbits_left[$bit]["icon"] = $datas["img_off"];
 
             $tbits_right[$bit]["nset"] = 0;
-            $tbits_right[$bit]["name"] = $datas['labels_on_i18n'][$this->app['locale.I18n']];
+            $tbits_right[$bit]["name"] = $datas['labels_on_i18n'][$this->app['locale']];
             $tbits_right[$bit]["icon"] = $datas["img_on"];
         }
 
@@ -589,7 +589,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $parm = $this->unserializedRequestData($this->app['request'], $infos, 'user_infos');
 
         if ($parm['email'] && !\Swift_Validate::email($parm['email'])) {
-            throw new \Exception_InvalidArgument(_('Email addess is not valid'));
+            throw new \Exception_InvalidArgument('Email addess is not valid');
         }
 
         $old_email = $user->get_email();
@@ -617,7 +617,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             }
 
             if ($oldReceiver) {
-                $mailOldAddress = MailSuccessEmailUpdate::create($this->app, $oldReceiver, null, sprintf(_('You will now receive notifications at %s'), $new_email));
+                $mailOldAddress = MailSuccessEmailUpdate::create($this->app, $oldReceiver, null, $this->app->trans('You will now receive notifications at %new_email%', ['%new_email%' => $new_email]));
                 $this->app['notification.deliverer']->deliver($mailOldAddress);
             }
 
@@ -628,7 +628,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             }
 
             if ($newReceiver) {
-                $mailNewAddress = MailSuccessEmailUpdate::create($this->app, $newReceiver, null, sprintf(_('You will no longer receive notifications at %s'), $old_email));
+                $mailNewAddress = MailSuccessEmailUpdate::create($this->app, $newReceiver, null, $this->app->trans('You will no longer receive notifications at %old_email%', ['%old_email%' => $old_email]));
                 $this->app['notification.deliverer']->deliver($mailNewAddress);
             }
         }

@@ -6,16 +6,16 @@
 {% endif %}
 
 <h1 style='padding-left:30px;'>
-    {% trans 'status:: numero de bit' %} {{ app['request'].get('bit') }}
+    {{ 'status:: numero de bit' | trans }} {{ app['request'].get('bit') }}
 </h1>
 
 <form id="fileupload" class="form-horizontal" target="_self" enctype="multipart/form-data" method="post" action="{{ path('database_submit_statusbit', { 'databox_id' : app['request'].get('databox_id'), 'bit' : app['request'].get('bit') }) }}">
     <div class="row-fluid">
         <div class="span12 well">
-            <span class="label">{% trans'admin::status: case A'%}</span>
+            <span class="label">{{ 'admin::status: case A' | trans }}</span>
             <div class="row-fluid">
                 <label class="control-label" for="label_off">
-                    {% trans'admin::status: texte a afficher'%}
+                    {{ 'admin::status: texte a afficher' | trans }}
                 </label>
                 <div class="controls">
                     <input id="label_off" name="label_off" class="input-xlarge" type="text" value="{{ status['labeloff'] }}">
@@ -25,7 +25,7 @@
                 <label class="control-label">
                 </label>
                 <div class="controls">
-                    {% for code, language in app['locales.I18n.available'] %}
+                    {% for code, language in app['locales.available'] %}
                     <div class="span2">
                         <h6>{{ language }}</h6>
                     </div>
@@ -34,10 +34,10 @@
             </div>
             <div class="row-fluid">
                 <label class="control-label">
-                    {% trans 'Labels'%}
+                    {{ 'Labels' | trans }}
                 </label>
                 <div class="controls">
-                {% for code, language in app['locales.I18n.available'] %}
+                {% for code, language in app['locales.available'] %}
                 <div class="span2">
                     <input name="labels_off[{{ code }}]" value="{{ status['labels_off'][code] }}" class="span12" type="text">
                 </div>
@@ -64,7 +64,7 @@
             </div>
             <div class="row-fluid">
                 <label class="control-label" for="delete_icon_off">
-                    {% trans'admin::status:: aucun symbole'%}
+                    {{ 'admin::status:: aucun symbole' | trans }}
                 </label>
                 <div class="controls">
                     <label class="checkbox">
@@ -76,10 +76,10 @@
     </div>
     <div class="row-fluid">
         <div class="span12 well">
-            <span class="label">{% trans'admin::status: case B'%}</span>
+            <span class="label">{{ 'admin::status: case B' | trans }}</span>
             <div class="row-fluid">
                 <label class="control-label" for="label_on">
-                    {% trans'admin::status: texte a afficher'%}
+                    {{ 'admin::status: texte a afficher' | trans }}
                 </label>
                 <div class="controls">
                     <input id="label_on" name="label_on" class="input-xlarge" type="text" value="{{ status['labelon'] }}">
@@ -89,7 +89,7 @@
                 <label class="control-label">
                 </label>
                 <div class="controls">
-                    {% for code, language in app['locales.I18n.available'] %}
+                    {% for code, language in app['locales.available'] %}
                     <div class="span2">
                         <h6>{{ language }}</h6>
                     </div>
@@ -98,10 +98,10 @@
             </div>
             <div class="row-fluid">
                 <label class="control-label">
-                    {% trans 'Labels'%}
+                    {{ 'Labels' | trans }}
                 </label>
                 <div class="controls">
-                {% for code, language in app['locales.I18n.available'] %}
+                {% for code, language in app['locales.available'] %}
                 <div class="span2">
                     <input name="labels_on[{{ code }}]" value="{{ status['labels_on'][code] }}" class="span12" type="text">
                 </div>
@@ -128,7 +128,7 @@
             </div>
             <div class="row-fluid">
                 <label class="control-label" for="delete_icon_on">
-                    {% trans'admin::status:: aucun symbole'%}
+                    {{ 'admin::status:: aucun symbole' | trans }}
                 </label>
                 <div class="controls">
                     <label class="checkbox">
@@ -142,11 +142,11 @@
         <div class="span12">
             <label class="checkbox">
                 <input id="printable" name="printable" type="checkbox" {{ status['printable'] is defined and status['printable'] == '1' ? "checked" : "" }}>
-                        {% trans'status:: Afficher le status dans les feuilles de reponses pour tous les utilisateurs' %}
+                        {{ 'status:: Afficher le status dans les feuilles de reponses pour tous les utilisateurs' | trans }}
             </label>
             <label class="checkbox">
                 <input id="searchable" name="searchable" type="checkbox" {{ status['searchable'] is defined and status['searchable'] == '1' ? "checked" : "" }}>
-                            {% trans'status:: retrouver sous forme de filtre dans la recherche' %}
+                            {{ 'status:: retrouver sous forme de filtre dans la recherche' | trans }}
             </label>
         </div>
     </div>
@@ -154,10 +154,10 @@
         <div  class=" span12">
             <div class="form-actions">
                 <button id="form_submitter" class="btn btn-primary" type="button">
-                    {% trans 'boutton::valider' %}
+                    {{ 'boutton::valider' | trans }}
                 </button>
                 <a style='text-decoration:none;' target='right' class="btn" href="{{ path('database_display_statusbit', { 'databox_id' : app['request'].get('databox_id') }) }}">
-                    {% trans 'boutton::retour' %}
+                    {{ 'boutton::retour' | trans }}
                 </a>
             </div>
         </div>
@@ -177,7 +177,7 @@ $(document).ready(function(){
             $.each(data.files, function(i, file) {
                 {% set supported_file_types = ['png', 'jpg', 'gif']|join(' | ') %}
                 if( ! /(\image|\/)(png|jpeg|jpg|pjpg|gif)$/i.test(file.type)) {
-                    alert("{% trans %} Invalid file type, only ({{ supported_file_types }}) file formats are supported {% endtrans %}");
+                    alert("{{ 'Invalid file type, only (%supported_file_types%) file formats are supported' | trans({'%supported_file_types%' : supported_file_types}) | e('js') }}");
 
                     return false;
                 }

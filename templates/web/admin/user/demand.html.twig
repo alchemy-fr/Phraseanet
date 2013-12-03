@@ -179,13 +179,13 @@
 </script>
 
 <div class="page-header">
-     <h1>{% trans 'admin:: demandes en cours' %}</h1>
+     <h1>{{ 'admin:: demandes en cours' | trans }}</h1>
 </div>
 
 {% if app['request'].query.get('success') == '1' %}
         <div class="alert alert-success">
             <a class="close" data-dismiss="alert" href="#">×</a>
-            {% trans 'Requests for the application registrations were recorded successfully' %}
+            {{ 'Requests for the application registrations were recorded successfully' | trans }}
         </div>
 {% endif %}
 
@@ -193,25 +193,25 @@
     <form id="accept-demand" action="{{ path('users_submit_demands') }}" method="post">
         <div class="btn-group btn-all-action">
             <button data-event="deny" class="btn deny-checker" type="button">
-                <img title="{% trans 'admin:: refuser l\'acces' %}" src="/skins/icons/delete.gif"/>
+                <img title="{{ 'admin:: refuser l\'acces' | trans }}" src="/skins/icons/delete.gif"/>
             </button>
             <button data-event="accept" class="btn accept-checker" type="button">
-                <img title="{% trans 'admin:: donner les droits de telechargement et consultation de previews' %}" src="/skins/icons/cmdok.gif"/>
+                <img title="{{ 'admin:: donner les droits de telechargement et consultation de previews' | trans }}" src="/skins/icons/cmdok.gif"/>
             </button>
             <button data-event="hd" class="btn accept-hd-checker" type="button">
-                <span title="{% trans 'admin:: donner les droits de telechargements de preview et hd' %}">HD</span>
+                <span title="{{ 'admin:: donner les droits de telechargements de preview et hd' | trans }}">HD</span>
             </button>
             <button data-event="watermark" class="btn accept-watermark-checker" type="button">
-                <span title="{% trans 'admin:: watermarquer les documents' %}">W</span>
+                <span title="{{ 'admin:: watermarquer les documents' | trans }}">W</span>
             </button></td>
         </div>
 
         <table class="table table-condensed" style="margin:0; table-layout:fixed;">
             <thead>
                 <tr>
-                    <th>{% trans 'Informations' %}</th>
-                    <th>{% trans 'admin::collection' %}</th>
-                    <th>{% trans 'Models' %}</th>
+                    <th>{{ 'Informations' | trans }}</th>
+                    <th>{{ 'admin::collection' | trans }}</th>
+                    <th>{{ 'Models' | trans }}</th>
                 </tr>
             </thead>
         </table>
@@ -230,21 +230,21 @@
                             <td>
                                 {% set colls = tableColls[row['usr_id']] %}
                                 <dl class="dl-horizontal">
-                                    <dt>{% trans 'admin::compte-utilisateur identifiant' %}</dt>
+                                    <dt>{{ 'admin::compte-utilisateur identifiant' | trans }}</dt>
                                     <dd>{{ row['usr_login'] }}</dd>
-                                    <dt>{% trans 'admin::compte-utilisateur nom' %} / {% trans 'admin::compte-utilisateur prenom' %}</dt>
+                                    <dt>{{ 'admin::compte-utilisateur nom' | trans }} / {{ 'admin::compte-utilisateur prenom' | trans }}</dt>
                                     <dd>{{ row['usr_nom'] }}  {{ row['usr_prenom'] }}</dd>
-                                    <dt>{% trans 'admin::compte-utilisateur email' %}</dt>
+                                    <dt>{{ 'admin::compte-utilisateur email' | trans }}</dt>
                                     <dd>{{ row['usr_mail'] }}</dd>
-                                    <dt>{% trans 'admin::compte-utilisateur societe' %}</dt>
+                                    <dt>{{ 'admin::compte-utilisateur societe' | trans }}</dt>
                                     <dd>{{ row['societe'] }}</dd>
-                                    <dt>{% trans 'admin::compte-utilisateur poste' %}</dt>
+                                    <dt>{{ 'admin::compte-utilisateur poste' | trans }}</dt>
                                     <dd>{{ row['fonction'] }}</dd>
-                                    <dt>{% trans 'admin::compte-utilisateur activite' %}</dt>
+                                    <dt>{{ 'admin::compte-utilisateur activite' | trans }}</dt>
                                     <dd>{{ row['activite'] }}</dd>
-                                    <dt>{% trans 'admin::compte-utilisateur telephone' %}</dt>
+                                    <dt>{{ 'admin::compte-utilisateur telephone' | trans }}</dt>
                                     <dd>{{ row['tel'] }}</dd>
-                                    <dt>{% trans 'admin::compte-utilisateur adresse' %}</dt>
+                                    <dt>{{ 'admin::compte-utilisateur adresse' | trans }}</dt>
                                     <dd>{{ row['adresse'] }}</dd>
                                     <dd>{{ row['cpostal'] }}</dd>
                                     <dd>{{ row['ville'] }}</dd>
@@ -258,25 +258,25 @@
                                     </h1>
                                     {% set btn_value = row['usr_id'] ~ "_" ~  basId %}
                                     <div class="btn-group btn-single-action" style="margin:auto auto 5px 0;">
-                                        <button data-event="deny" value="{{ btn_value }}" type="button" name="deny[]" class="btn deny-checker" title="{% trans 'admin:: refuser l\'acces' %}">
-                                            <img title="{% trans 'admin:: refuser l\'acces' %}" src='/skins/icons/delete.gif' />
+                                        <button data-event="deny" value="{{ btn_value }}" type="button" name="deny[]" class="btn deny-checker" title="{{ 'admin:: refuser l\'acces' | trans }}">
+                                            <img title="{{ 'admin:: refuser l\'acces' | trans }}" src='/skins/icons/delete.gif' />
                                         </button>
-                                        <button data-event="accept" value="{{ btn_value }}" type="button" name="accept[]" class="btn accept-checker" title="{% trans 'admin:: donner les droits de telechargement et consultation de previews' %}">
-                                            <img title="{% trans 'admin:: donner les droits de telechargement et consultation de previews' %}" src='/skins/icons/cmdok.gif' />
+                                        <button data-event="accept" value="{{ btn_value }}" type="button" name="accept[]" class="btn accept-checker" title="{{ 'admin:: donner les droits de telechargement et consultation de previews' | trans }}">
+                                            <img title="{{ 'admin:: donner les droits de telechargement et consultation de previews' | trans }}" src='/skins/icons/cmdok.gif' />
                                         </button>
-                                        <button data-event="hd" value="{{ btn_value }}" type="button" name="accept_hd[]" class="btn accept-hd-checker" title="{% trans 'admin:: donner les droits de telechargements de preview et hd' %}">
-                                            <span title="{% trans 'admin:: donner les droits de telechargements de preview et hd' %}">HD</span>
+                                        <button data-event="hd" value="{{ btn_value }}" type="button" name="accept_hd[]" class="btn accept-hd-checker" title="{{ 'admin:: donner les droits de telechargements de preview et hd' | trans }}">
+                                            <span title="{{ 'admin:: donner les droits de telechargements de preview et hd' | trans }}">HD</span>
                                         </button>
-                                        <button data-event="watermark" value="{{ btn_value }}" type="button" name="watermark[]" class="btn accept-watermark-checker" title="{% trans 'admin:: watermarquer les documents' %}">
-                                            <span title="{% trans 'admin:: watermarquer les documents' %}">W</span>
+                                        <button data-event="watermark" value="{{ btn_value }}" type="button" name="watermark[]" class="btn accept-watermark-checker" title="{{ 'admin:: watermarquer les documents' | trans }}">
+                                            <span title="{{ 'admin:: watermarquer les documents' | trans }}">W</span>
                                         </button>
                                     </div>
                                 {% endfor %}
                             </td>
                             <td>
-                                <div>{% trans 'admin:: appliquer le modele' %}</div>
+                                <div>{{ 'admin:: appliquer le modele' | trans }}</div>
                                 <select name="template[]" id="model_{{ row['usr_id'] }}" onchange="modelChecker('{{ row['usr_id'] }}')">
-                                    <option value="">{% trans 'None' %}</option>
+                                    <option value="">{{ 'None' | trans }}</option>
                                     {% for model in models %}
                                         <option value="{{ row['usr_id'] }}_{{ model['usr_id'] }}">{{ model['usr_login'] }}</option>
                                     {% endfor %}
@@ -289,9 +289,9 @@
         </div>
 
         <div class="form-actions">
-            <button type="button" class="btn btn-primary submit">{% trans 'boutton::valider' %}</button>
+            <button type="button" class="btn btn-primary submit">{{ 'boutton::valider' | trans }}</button>
         </div>
     </form>
  {% else %}
-    {% trans 'No application for registration has been recorded' %}
+    {{ 'No application for registration has been recorded' | trans }}
  {% endif %}

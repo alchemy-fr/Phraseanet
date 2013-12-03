@@ -40,27 +40,27 @@
                     {% set desc = publishing.basket().getDescription() %}
                 {% endif %}
                 <input class="required_text checkbox" checked="checked" type="checkbox" name="notify" id="feed_add_notify" value="1" />
-                <label for="feed_add_notify">{% trans 'Notify users about this publication' %}</label><br/>
-                <label for="feed_add_title">{% trans 'publication : titre' %}</label>
+                <label for="feed_add_notify">{{ 'Notify users about this publication' | trans }}</label><br/>
+                <label for="feed_add_title">{{ 'publication : titre' | trans }}</label>
                 <input class="required_text" type="text" name="title" id="feed_add_title" value="{{title}}" />
-                <label for="feed_add_subtitle">{% trans 'publication : sous titre' %}</label>
+                <label for="feed_add_subtitle">{{ 'publication : sous titre' | trans }}</label>
                 <textarea id="feed_add_subtitle" name="subtitle">{{desc}}</textarea>
-                <label for="feed_add_author_name">{% trans 'publication : autheur' %}</label>
+                <label for="feed_add_author_name">{{ 'publication : autheur' | trans }}</label>
                 <input class="required_text" type="text" name="author_name" id="feed_add_author_name" value="{{ app['authentication'].getUser().get_display_name() }}" />
-                <label for="feed_add_author_mail">{% trans 'publication : email autheur' %}</label>
+                <label for="feed_add_author_mail">{{ 'publication : email autheur' | trans }}</label>
                 <input class="required_text" type="text" name="author_mail" id="feed_add_author_mail" value="{{ app['authentication'].getUser().get_email() }}" />
             </div>
         </div>
         <div class="PNB" style="width:50%;left:auto;">
             <div class="PNB10 feeds">
-                <h1>{% trans 'Fils disponibles' %}</h1>
+                <h1>{{ 'Fils disponibles' | trans }}</h1>
                 <div class="list">
                     {% for feed in feeds %}
                         {% if feed.isPublisher(app['authentication'].getUser()) %}
                             <div class="feed {% if loop.index is odd%}odd{% endif %}">
                                 <span>{{ feed.getTitle() }}</span>
                                 {% if feed.isPublic() %}
-                                    <img src="/skins/icons/ligth-on.png" title="{% trans 'This feed is public' %}"/>
+                                    <img src="/skins/icons/ligth-on.png" title="{{ 'This feed is public' | trans }}"/>
                                 {% endif %}
                                 <input type="hidden" name="feed_proposal[]" value="{{ feed.getId() }}"/>
                             </div>
@@ -73,8 +73,8 @@
     </div>
     <div class="PNB" style="top:auto; height:50px; text-align:center;">
         <div class="PNB10">
-            <button class="valid_form btn btn-inverse">{% trans 'boutton::publier' %}</button>
-            <button class="close_dialog btn btn-inverse">{% trans 'boutton::annuler' %}</button>
+            <button class="valid_form btn btn-inverse">{{ 'boutton::publier' | trans }}</button>
+            <button class="close_dialog btn btn-inverse">{{ 'boutton::annuler' | trans }}</button>
         </div>
     </div>
 </form>

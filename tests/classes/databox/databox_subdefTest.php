@@ -34,7 +34,7 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
                 </subdef>';
 
         $type = new \Alchemy\Phrasea\Media\Type\Image();
-        $object = new databox_subdef($type, simplexml_load_string($xml));
+        $object = new databox_subdef($type, simplexml_load_string($xml), $this->getMock('Symfony\Component\Translation\TranslatorInterface'));
 
         $this->assertEquals(databox_subdef::CLASS_PREVIEW, $object->get_class());
         $this->assertEquals('/home/datas/noweb/db_alch_phrasea/subdefs/', $object->get_path());
@@ -103,7 +103,7 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
                 </subdef>';
 
         $type = new \Alchemy\Phrasea\Media\Type\Video();
-        $object = new databox_subdef($type, simplexml_load_string($xml));
+        $object = new databox_subdef($type, simplexml_load_string($xml), $this->getMock('Symfony\Component\Translation\TranslatorInterface'));
 
         $this->assertEquals(databox_subdef::CLASS_THUMBNAIL, $object->get_class());
         $this->assertEquals('/home/datas/noweb/db_alch_phrasea/video/', $object->get_path());
@@ -154,7 +154,7 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
                 </subdef>';
 
         $type = new \Alchemy\Phrasea\Media\Type\Video();
-        $object = new databox_subdef($type, simplexml_load_string($xml));
+        $object = new databox_subdef($type, simplexml_load_string($xml), $this->getMock('Symfony\Component\Translation\TranslatorInterface'));
 
         $this->assertInstanceOf('\\MediaAlchemyst\\Specification\\Animation', $object->getSpecs());
 
@@ -181,7 +181,7 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
                 </subdef>';
 
         $type = new \Alchemy\Phrasea\Media\Type\Audio();
-        $object = new databox_subdef($type, simplexml_load_string($xml));
+        $object = new databox_subdef($type, simplexml_load_string($xml), $this->getMock('Symfony\Component\Translation\TranslatorInterface'));
 
         $this->assertInstanceOf('\\MediaAlchemyst\\Specification\\Audio', $object->getSpecs());
 
@@ -208,7 +208,7 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
                 </subdef>';
 
         $type = new \Alchemy\Phrasea\Media\Type\Flash();
-        $object = new databox_subdef($type, simplexml_load_string($xml));
+        $object = new databox_subdef($type, simplexml_load_string($xml), $this->getMock('Symfony\Component\Translation\TranslatorInterface'));
 
         $this->assertInstanceOf('\\MediaAlchemyst\\Specification\\Flash', $object->getSpecs());
 
@@ -246,9 +246,9 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
         $typeVideo = new \Alchemy\Phrasea\Media\Type\Video();
 
         return [
-            [new databox_subdef($typeAudio, simplexml_load_string($xmlImage))],
-            [new databox_subdef($typeDocument, simplexml_load_string($xmlImage))],
-            [new databox_subdef($typeVideo, simplexml_load_string($xmlImage))],
+            [new databox_subdef($typeAudio, simplexml_load_string($xmlImage), $this->getMock('Symfony\Component\Translation\TranslatorInterface'))],
+            [new databox_subdef($typeDocument, simplexml_load_string($xmlImage), $this->getMock('Symfony\Component\Translation\TranslatorInterface'))],
+            [new databox_subdef($typeVideo, simplexml_load_string($xmlImage), $this->getMock('Symfony\Component\Translation\TranslatorInterface'))],
         ];
     }
 }

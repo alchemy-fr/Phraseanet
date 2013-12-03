@@ -48,16 +48,16 @@ class downloadReportTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testBuildReport()
     {
         $conf = [
-            'user' => [_('report:: utilisateurs'), 1, 1, 1, 1],
-            'ddate' => [_('report:: date'), 1, 0, 1, 1],
-            'record_id' => [_('report:: record id'), 1, 1, 1, 1],
-            'final' => [_('phrseanet:: sous definition'), 1, 0, 1, 1],
-            'coll_id' => [_('report:: collections'), 1, 0, 1, 1],
-            'comment' => [_('report:: commentaire'), 1, 0, 0, 0],
-            'fonction' => [_('report:: fonction'), 1, 1, 1, 1],
-            'activite' => [_('report:: activite'), 1, 1, 1, 1],
-            'pays' => [_('report:: pays'), 1, 1, 1, 1],
-            'societe' => [_('report:: societe'), 1, 1, 1, 1]
+            'user' => [self::$DI['app']['translator']->trans('report:: utilisateurs'), 1, 1, 1, 1],
+            'ddate' => [self::$DI['app']['translator']->trans('report:: date'), 1, 0, 1, 1],
+            'record_id' => [self::$DI['app']['translator']->trans('report:: record id'), 1, 1, 1, 1],
+            'final' => [self::$DI['app']['translator']->trans('phrseanet:: sous definition'), 1, 0, 1, 1],
+            'coll_id' => [self::$DI['app']['translator']->trans('report:: collections'), 1, 0, 1, 1],
+            'comment' => [self::$DI['app']['translator']->trans('report:: commentaire'), 1, 0, 0, 0],
+            'fonction' => [self::$DI['app']['translator']->trans('report:: fonction'), 1, 1, 1, 1],
+            'activite' => [self::$DI['app']['translator']->trans('report:: activite'), 1, 1, 1, 1],
+            'pays' => [self::$DI['app']['translator']->trans('report:: pays'), 1, 1, 1, 1],
+            'societe' => [self::$DI['app']['translator']->trans('report:: societe'), 1, 1, 1, 1]
         ];
 
         foreach ($this->ret as $sbasid => $collections) {

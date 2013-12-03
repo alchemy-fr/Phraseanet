@@ -132,7 +132,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
      */
     public function get_infos()
     {
-        return _('Ce produit utilise l\'API Flickr mais n\'est ni soutenu, ni certifie par Flickr');
+        return $this->translator->trans('Ce produit utilise l\'API Flickr mais n\'est ni soutenu, ni certifie par Flickr');
     }
 
     /**
@@ -489,7 +489,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
     {
         switch ($connector_status) {
             case self::UPLOAD_STATE_FAILED:
-                return _('L\'upload a echoue');
+                return $this->translator->trans('L\'upload a echoue');
                 break;
             default:
             case self::UPLOAD_STATE_DONE:
@@ -595,7 +595,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
      */
     public function get_element_types()
     {
-        return [self::ELEMENT_TYPE_PHOTO => _('Photos')];
+        return [self::ELEMENT_TYPE_PHOTO => $this->translator->trans('Photos')];
     }
 
     /**
@@ -604,7 +604,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
      */
     public function get_container_types()
     {
-        return [self::CONTAINER_TYPE_PHOTOSET => _('Photosets')];
+        return [self::CONTAINER_TYPE_PHOTOSET => $this->translator->trans('Photosets')];
     }
 
     /**
@@ -699,10 +699,10 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
                 if ( ! isset($datas[$name]) || trim($datas[$name]) === '') {
                     if ($required)
-                        $errors[$name . '_' . $key] = _("Ce champ est obligatoire");
+                        $errors[$name . '_' . $key] = $this->translator->trans("Ce champ est obligatoire");
                 } elseif ($length !== 0) {
                     if (mb_strlen($datas[$name]) > $length)
-                        $errors[$name . '_' . $key] = sprintf(_("Ce champ est trop long %s caracteres max"), $length);
+                        $errors[$name . '_' . $key] = $this->translator->trans("Ce champ est trop long %length% caracteres max", ['%length%' => $length]);
                 }
             };
 
@@ -721,10 +721,10 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
                 if ( ! isset($datas[$name]) || trim($datas[$name]) === '') {
                     if ($required)
-                        $errors[$name] = _("Ce champ est obligatoire");
+                        $errors[$name] = $this->translator->trans("Ce champ est obligatoire");
                 } elseif ($length !== 0) {
                     if (mb_strlen($datas[$name]) > $length)
-                        $errors[$name] = sprintf(_("Ce champ est trop long %s caracteres max"), $length);
+                        $errors[$name] = $this->translator->trans("Ce champ est trop long %length% caracteres max", ['%length%' => $length]);
                 }
             };
 
@@ -815,9 +815,9 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
     {
         $errors = [];
         if ( ! $record->get_hd_file() instanceof \SplFileInfo)
-            $errors["file_size"] = _("Le record n'a pas de fichier physique"); //Record must rely on real file
+            $errors["file_size"] = $this->translator->trans("Le record n'a pas de fichier physique"); //Record must rely on real file
         if ($record->get_technical_infos('size') > self::AUTH_PHOTO_SIZE)
-            $errors["size"] = sprintf(_("Le poids maximum d'un fichier est de %s"), p4string::format_octets(self::AUTH_PHOTO_SIZE));
+            $errors["size"] = $this->translator->trans("Le poids maximum d'un fichier est de %size%", ['%size%' => p4string::format_octets(self::AUTH_VIDEO_SIZE)]);
 
         return $errors;
     }

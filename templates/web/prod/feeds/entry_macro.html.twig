@@ -15,16 +15,16 @@
             {% endif %}
             {{ entry.getTitle() }}
             {% set author = entry.getAuthorName() %}
-            <span class="author">{% trans %}Par {{ author }}{% endtrans %}</span>
+            <span class="author">{% trans with {'%author%' : author} %}Par %author%{% endtrans %}</span>
           </h1>
         </td>
         <td style="width:60px;text-align:right;">
           {% if entry.getFeed().isOwner(app['authentication'].getUser()) or entry.isPublisher(app['authentication'].getUser()) %}
           <a class="tools options feed_edit" href="{{ path('prod_feeds_entry_update', { 'id' : entry.getId() }) }}">
-            <img src="/skins/icons/file-edit.png" title="{% trans 'boutton::editer' %}"/>
+            <img src="/skins/icons/file-edit.png" title="{{ 'boutton::editer' | trans }}"/>
           </a>
           <a class="tools feed_delete" href="{{ path('prod_feeds_entry_delete', { 'id' : entry.getId() }) }}">
-            <img src="/skins/icons/delete.png" title="{% trans 'boutton::supprimer' %}"/>
+            <img src="/skins/icons/delete.png" title="{{ 'boutton::supprimer' | trans }}"/>
           </a>
           {% endif %}
         </td>
@@ -39,18 +39,14 @@
       {% if created_on != updated_on %}
       <span class="updated_on">
         (
-        {% trans %}
-          Derniere mise a jour le {{ updated_on }}
-        {% endtrans %}
+        {% trans with {'%updated_on%' : updated_on} %}Derniere mise a jour le %updated_on%{% endtrans %}
         )
       </span>
       {% endif %}
       {% if feed.isAggregated() %}
         <a class="ajax_answers" href="{{ path('prod_feeds_feed', { 'id' : entry.getFeed().getId() }) }}">
         {% set feed_name = entry.getFeed().getTitle() %}
-        {% trans %}
-          dans {{feed_name}}
-        {% endtrans %}
+        {% trans with {'%feed_name%' : feed_name} %}dans %feed_name%{% endtrans %}
         <img style="height:16px;" src="{% if entry.getFeed().getIconUrl() == false %}
                                  /skins/icons/rss32.gif
                                  {% else %}

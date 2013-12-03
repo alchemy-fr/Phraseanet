@@ -39,7 +39,7 @@ class module_report_connexion extends module_report
     public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
         parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
-        $this->title = _('report::Connexions');
+        $this->title = $this->app->trans('report::Connexions');
     }
 
     /**
@@ -78,7 +78,7 @@ class module_report_connexion extends module_report
         foreach ($rs as $row) {
             $value = $row['val'];
             if ($field == "appli")
-                $caption = implode(' ', phrasea::modulesName(@unserialize($value)));
+                $caption = implode(' ', phrasea::modulesName($this->app['translator'], @unserialize($value)));
             elseif ($field == 'ddate')
                 $caption = $this->app['date-formatter']->getPrettyString(new DateTime($value));
             else
@@ -106,7 +106,7 @@ class module_report_connexion extends module_report
 
             foreach ($this->champ as $key => $value) {
                 if ( ! isset($row[$value])) {
-                    $this->result[$i][$value] = '<i>' . _('report:: non-renseigne') . '</i>';
+                    $this->result[$i][$value] = '<i>' . $this->app->trans('report:: non-renseigne') . '</i>';
                     continue;
                 }
 
@@ -114,12 +114,12 @@ class module_report_connexion extends module_report
                     $applis = false;
                     if (($applis = @unserialize($row[$value])) !== false) {
                         if (empty($applis)) {
-                            $this->result[$i][$value] = '<i>' . _('report:: non-renseigne') . '</i>';
+                            $this->result[$i][$value] = '<i>' . $this->app->trans('report:: non-renseigne') . '</i>';
                         } else {
-                            $this->result[$i][$value] = implode(' ', phrasea::modulesName($applis));
+                            $this->result[$i][$value] = implode(' ', phrasea::modulesName($this->app['translator'], $applis));
                         }
                     } else {
-                        $this->result[$i][$value] = '<i>' . _('report:: non-renseigne') . '</i>';
+                        $this->result[$i][$value] = '<i>' . $this->app->trans('report:: non-renseigne') . '</i>';
                     }
                 } elseif ($value == 'ddate') {
                     $this->result[$i][$value] = $this->pretty_string ?

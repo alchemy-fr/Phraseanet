@@ -12,7 +12,7 @@
 <form style="padding:15px;" name="change-records-type" action="{{ path('change_type') }}" method="POST">
     <div class="well-small" style="text-align:center;">
         <select name="force_types" class="input-xxlarge">
-            <option value="">{% trans "Apply to all selected documents" %}</option>
+            <option value="">{{ "Apply to all selected documents" | trans }}</option>
             {% for option in typesEnum %}
                 <option value="{{ option }}">{{ option }}</option>
             {% endfor %}
@@ -45,8 +45,8 @@
     {% endfor %}
 
     <div class="form-actions" style="background-color:transparent;">
-        <button type="button" class="btn btn-primary submiter">{% trans "Apply changes" %}</button>
-        <button type="button" class="btn cancel">{% trans "Cancel" %}</button>
+        <button type="button" class="btn btn-primary submiter">{{ "Apply changes" | trans }}</button>
+        <button type="button" class="btn cancel">{{ "Cancel" | trans }}</button>
         <span class="form-action-loader" style="display:none;">
             <img src="../skins/icons/loader414141.gif" />
         </span>

@@ -154,30 +154,30 @@ class Push implements ControllerProviderInterface
 
             $ret = [
                 'success' => false,
-                'message' => _('Unable to send the documents')
+                'message' => $app->trans('Unable to send the documents')
             ];
 
             try {
                 $pusher = new RecordHelper\Push($app, $app['request']);
 
-                $push_name = $request->request->get('name', sprintf(_('Push from %s'), $app['authentication']->getUser()->get_display_name()));
+                $push_name = $request->request->get('name', $app->trans('Push from %user%', ['%user%' => $app['authentication']->getUser()->get_display_name()]));
                 $push_description = $request->request->get('push_description');
 
                 $receivers = $request->request->get('participants');
 
                 if (!is_array($receivers) || count($receivers) === 0) {
-                    throw new ControllerException(_('No receivers specified'));
+                    throw new ControllerException($app->trans('No receivers specified'));
                 }
 
                 if (!is_array($pusher->get_elements()) || count($pusher->get_elements()) === 0) {
-                    throw new ControllerException(_('No elements to push'));
+                    throw new ControllerException($app->trans('No elements to push'));
                 }
 
                 foreach ($receivers as $receiver) {
                     try {
                         $user_receiver = \User_Adapter::getInstance($receiver['usr_id'], $app);
                     } catch (\Exception $e) {
-                        throw new ControllerException(sprintf(_('Unknown user %d'), $receiver['usr_id']));
+                        throw new ControllerException($app->trans('Unknown user %user_id%', ['%user_id%' => $receiver['usr_id']]));
                     }
 
                     $Basket = new Basket();
@@ -247,11 +247,10 @@ class Push implements ControllerProviderInterface
 
                 $app['EM']->flush();
 
-                $message = sprintf(
-                    _('%1$d records have been sent to %2$d users')
-                    , count($pusher->get_elements())
-                    , count($receivers)
-                );
+                $message = $app->trans('%quantity_records% records have been sent to %quantity_users% users', [
+                    '%quantity_records%' => count($pusher->get_elements()),
+                    '%quantity_users%'   => count($receivers),
+                ]);
 
                 $ret = [
                     'success' => true,
@@ -269,7 +268,7 @@ class Push implements ControllerProviderInterface
 
             $ret = [
                 'success' => false,
-                'message' => _('Unable to send the documents')
+                'message' => $app->trans('Unable to send the documents')
             ];
 
             $app['EM']->beginTransaction();
@@ -279,17 +278,17 @@ class Push implements ControllerProviderInterface
 
                 $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-                $validation_name = $request->request->get('name', sprintf(_('Validation from %s'), $app['authentication']->getUser()->get_display_name()));
+                $validation_name = $request->request->get('name', $app->trans('Validation from %user%', ['%user%' => $app['authentication']->getUser()->get_display_name()]));
                 $validation_description = $request->request->get('validation_description');
 
                 $participants = $request->request->get('participants');
 
                 if (!is_array($participants) || count($participants) === 0) {
-                    throw new ControllerException(_('No participants specified'));
+                    throw new ControllerException($app->trans('No participants specified'));
                 }
 
                 if (!is_array($pusher->get_elements()) || count($pusher->get_elements()) === 0) {
-                    throw new ControllerException(_('No elements to validate'));
+                    throw new ControllerException($app->trans('No elements to validate'));
                 }
 
                 if ($pusher->is_basket()) {
@@ -355,13 +354,13 @@ class Push implements ControllerProviderInterface
                 foreach ($participants as $key => $participant) {
                     foreach (['see_others', 'usr_id', 'agree', 'HD'] as $mandatoryparam) {
                         if (!array_key_exists($mandatoryparam, $participant))
-                            throw new ControllerException(sprintf(_('Missing mandatory parameter %s'), $mandatoryparam));
+                            throw new ControllerException($app->trans('Missing mandatory parameter %parameter%', ['%parameter%' => $mandatoryparam]));
                     }
 
                     try {
                         $participant_user = \User_Adapter::getInstance($participant['usr_id'], $app);
                     } catch (\Exception $e) {
-                        throw new ControllerException(sprintf(_('Unknown user %d'), $receiver['usr_id']));
+                        throw new ControllerException($app->trans('Unknown user %usr_id%', ['%usr_id%' => $participant['usr_id']]));
                     }
 
                     try {
@@ -446,11 +445,10 @@ class Push implements ControllerProviderInterface
 
                 $app['EM']->flush();
 
-                $message = sprintf(
-                    _('%1$d records have been sent for validation to %2$d users')
-                    , count($pusher->get_elements())
-                    , count($request->request->get('participants'))
-                );
+                $message = $app->trans('%quantity_records% records have been sent for validation to %quantity_users% users', [
+                    '%quantity_records%' => count($pusher->get_elements()),
+                    '%quantity_users%'   => count($request->request->get('participants')),
+                ]);
 
                 $ret = [
                     'success' => true,
@@ -511,19 +509,19 @@ class Push implements ControllerProviderInterface
 
             try {
                 if (!$app['acl']->get($app['authentication']->getUser())->has_right('manageusers'))
-                    throw new ControllerException(_('You are not allowed to add users'));
+                    throw new ControllerException($app->trans('You are not allowed to add users'));
 
                 if (!$request->request->get('firstname'))
-                    throw new ControllerException(_('First name is required'));
+                    throw new ControllerException($app->trans('First name is required'));
 
                 if (!$request->request->get('lastname'))
-                    throw new ControllerException(_('Last name is required'));
+                    throw new ControllerException($app->trans('Last name is required'));
 
                 if (!$request->request->get('email'))
-                    throw new ControllerException(_('Email is required'));
+                    throw new ControllerException($app->trans('Email is required'));
 
                 if (!\Swift_Validate::email($request->request->get('email')))
-                    throw new ControllerException(_('Email is invalid'));
+                    throw new ControllerException($app->trans('Email is invalid'));
             } catch (ControllerException $e) {
                 $result['message'] = $e->getMessage();
 
@@ -537,7 +535,7 @@ class Push implements ControllerProviderInterface
                 $usr_id = \User_Adapter::get_usr_id_from_email($app, $email);
                 $user = \User_Adapter::getInstance($usr_id, $app);
 
-                $result['message'] = _('User already exists');
+                $result['message'] = $app->trans('User already exists');
                 $result['success'] = true;
                 $result['user'] = $userFormatter($user);
             } catch (\Exception $e) {
@@ -560,11 +558,11 @@ class Push implements ControllerProviderInterface
                     if ($request->request->get('form_geonameid'))
                         $user->set_geonameid($request->request->get('form_geonameid'));
 
-                    $result['message'] = _('User successfully created');
+                    $result['message'] = $app->trans('User successfully created');
                     $result['success'] = true;
                     $result['user'] = $userFormatter($user);
                 } catch (\Exception $e) {
-                    $result['message'] = _('Error while creating user');
+                    $result['message'] = $app->trans('Error while creating user');
                 }
             }
 

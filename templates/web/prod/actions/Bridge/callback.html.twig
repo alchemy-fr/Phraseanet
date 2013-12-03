@@ -15,17 +15,17 @@
   <body>
     {% if error_message %}
       <div>
-        {% trans 'Erreur lors de votre authentification' %}
+        {{ 'Erreur lors de votre authentification' | trans }}
       </div>
       <div  class = 'error_auth'>
       {{ error_message }}
       </div>
     {% else %}
       <div>
-      {% trans 'Vous etes authentifie avec succes' %}
+      {{ 'Vous etes authentifie avec succes' | trans }}
       </div>
       <div>
-      {% trans 'Si cette fenetre ne se ferme pas automatiquement, fermez la, et raffraichissez votre compte' %}
+      {{ 'Si cette fenetre ne se ferme pas automatiquement, fermez la, et raffraichissez votre compte' | trans }}
       </div>
     {% endif %}
   </body>

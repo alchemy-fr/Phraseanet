@@ -166,13 +166,13 @@ class Databox implements ControllerProviderInterface
 
         switch ($errorMsg = $request->query->get('error')) {
             case 'file-error':
-                $errorMsg = _('Error while sending the file');
+                $errorMsg = $app->trans('Error while sending the file');
                 break;
             case 'file-invalid':
-                $errorMsg = _('Invalid file format');
+                $errorMsg = $app->trans('Invalid file format');
                 break;
             case 'file-too-big':
-                $errorMsg = _('The file is too big');
+                $errorMsg = $app->trans('The file is too big');
                 break;
         }
 
@@ -212,18 +212,18 @@ class Databox implements ControllerProviderInterface
     public function deleteBase(Application $app, Request $request, $databox_id)
     {
         $success = false;
-        $msg = _('An error occured');
+        $msg = $app->trans('An error occured');
         try {
             $databox = $app['phraseanet.appbox']->get_databox($databox_id);
 
             if ($databox->get_record_amount() > 0) {
-                $msg = _('admin::base: vider la base avant de la supprimer');
+                $msg = $app->trans('admin::base: vider la base avant de la supprimer');
             } else {
                 $databox->unmount_databox();
                 $app['phraseanet.appbox']->write_databox_pic($app['media-alchemyst'], $app['filesystem'], $databox, null, \databox::PIC_PDF);
                 $databox->delete();
                 $success = true;
-                $msg = _('Successful removal');
+                $msg = $app->trans('Successful removal');
             }
         } catch (\Exception $e) {
 
@@ -252,17 +252,17 @@ class Databox implements ControllerProviderInterface
     public function setLabels(Application $app, Request $request, $databox_id)
     {
         if (null === $labels = $request->request->get('labels')) {
-            $app->abort(400, _('Missing labels parameter'));
+            $app->abort(400, $app->trans('Missing labels parameter'));
         }
         if (false === is_array($labels)) {
-            $app->abort(400, _('Invalid labels parameter'));
+            $app->abort(400, $app->trans('Invalid labels parameter'));
         }
 
         $databox = $app['phraseanet.appbox']->get_databox($databox_id);
         $success = true;
 
         try {
-            foreach ($app['locales.I18n.available'] as $code => $language) {
+            foreach ($app['locales.available'] as $code => $language) {
                 if (!isset($labels[$code])) {
                     continue;
                 }
@@ -276,7 +276,7 @@ class Databox implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
             return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful update') : _('An error occured')
+                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured')
             ]);
         }
 
@@ -305,7 +305,7 @@ class Databox implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
             return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful update') : _('An error occured'),
+                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured'),
                 'sbas_id' => $databox_id
             ]);
         }
@@ -338,7 +338,7 @@ class Databox implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
             return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful update') : _('An error occured'),
+                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured'),
                 'sbas_id' => $databox_id
             ]);
         }
@@ -493,7 +493,7 @@ class Databox implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
             return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful removal') : _('An error occured'),
+                'msg'     => $success ? $app->trans('Successful removal') : $app->trans('An error occured'),
                 'sbas_id' => $databox_id
             ]);
         }
@@ -526,7 +526,7 @@ class Databox implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
             return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful update') : _('An error occured'),
+                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured'),
                 'sbas_id' => $databox_id
             ]);
         }
@@ -548,7 +548,7 @@ class Databox implements ControllerProviderInterface
     public function changeViewName(Application $app, Request $request, $databox_id)
     {
         if (null === $viewName = $request->request->get('viewname')) {
-            $app->abort(400, _('Missing view name parameter'));
+            $app->abort(400, $app->trans('Missing view name parameter'));
         }
 
         $success = false;
@@ -563,7 +563,7 @@ class Databox implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
             return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful update') : _('An error occured'),
+                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured'),
                 'sbas_id' => $databox_id
             ]);
         }
@@ -598,7 +598,7 @@ class Databox implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
             return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('The publication has been stopped') : _('An error occured'),
+                'msg'     => $success ? $app->trans('The publication has been stopped') : $app->trans('An error occured'),
                 'sbas_id' => $databox_id
             ]);
         }
@@ -618,7 +618,7 @@ class Databox implements ControllerProviderInterface
      */
     public function emptyDatabase(Application $app, Request $request, $databox_id)
     {
-        $msg = _('An error occurred');
+        $msg = $app->trans('An error occurred');
         $success = false;
         $taskCreated = false;
 
@@ -633,11 +633,11 @@ class Databox implements ControllerProviderInterface
                 }
             }
 
-            $msg = _('Base empty successful');
+            $msg = $app->trans('Base empty successful');
             $success = true;
 
             if ($taskCreated) {
-                $msg = _('A task has been created, please run it to complete empty collection');
+                $msg = $app->trans('A task has been created, please run it to complete empty collection');
             }
         } catch (\Exception $e) {
 
@@ -668,14 +668,14 @@ class Databox implements ControllerProviderInterface
     public function progressBarInfos(Application $app, Request $request, $databox_id)
     {
         if (!$app['request']->isXmlHttpRequest() || 'json' !== $app['request']->getRequestFormat()) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
+            $app->abort(400, $app->trans('Bad request format, only JSON is allowed'));
         }
 
         $app['phraseanet.appbox'] = $app['phraseanet.appbox'];
 
         $ret = [
             'success'           => false,
-            'msg'               => _('An error occured'),
+            'msg'               => $app->trans('An error occured'),
             'sbas_id'           => null,
             'indexable'         => false,
             'records'           => 0,
@@ -690,7 +690,7 @@ class Databox implements ControllerProviderInterface
             $datas = $databox->get_indexed_record_amount();
 
             $ret['indexable'] = $app['phraseanet.appbox']->is_databox_indexable($databox);
-            $ret['viewname'] = (($databox->get_dbname() == $databox->get_viewname()) ? _('admin::base: aucun alias') : $databox->get_viewname());
+            $ret['viewname'] = (($databox->get_dbname() == $databox->get_viewname()) ? $app->trans('admin::base: aucun alias') : $databox->get_viewname());
             $ret['records'] = $databox->get_record_amount();
             $ret['sbas_id'] = $databox_id;
             $ret['xml_indexed'] = $datas['xml_indexed'];
@@ -701,7 +701,7 @@ class Databox implements ControllerProviderInterface
             }
 
             $ret['success'] = true;
-            $ret['msg'] = _('Successful update');
+            $ret['msg'] = $app->trans('Successful update');
         } catch (\Exception $e) {
 
         }
@@ -747,7 +747,7 @@ class Databox implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
             return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful update') : _('An error occured'),
+                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured'),
                 'sbas_id' => $databox_id
             ]);
         }

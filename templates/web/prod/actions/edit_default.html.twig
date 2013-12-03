@@ -17,7 +17,7 @@
     {% if width > height %}
         {% set top = 50 - ( (ratio / 2) * height / width ) %}
         {% set left = 50 - ( (ratio * height / (2 * width)) * width / height ) %}
-        {% set width = ratio ~ "%"  %}
+        {% set width = ratio ~ "%" %}
         {% set height = "auto" %}
     {% else %}
         {% set top = (100 - ratio) / 2 %}
@@ -37,7 +37,7 @@
         </div>
         <img class="edit_IMGT" id="idEditDiapoImg_{{ i }}" style="position:absolute; top:{{ top|round }}%; width:{{ width }}; height:{{ height }}; left:{{ left|round }}%;" onclick="edit_clk_editimg(event, {{ i }});" src="{{ thumbnail }}" />
         <div style='position:absolute; top:0px; left:0px; height:20px'>
-            <img class="require_alert" src="/skins/icons/alert.png" style="display:none;cursor:help;" title="{% trans 'edit::Certains champs doivent etre remplis pour valider cet editing' %}">
+            <img class="require_alert" src="/skins/icons/alert.png" style="display:none;cursor:help;" title="{{ 'edit::Certains champs doivent etre remplis pour valider cet editing' | trans }}">
         </div>
         <div style='position:absolute; bottom:0px; left:0px; height:20px'>
             <div class="previewTips" tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}"></div>
@@ -51,7 +51,7 @@
                         <td>
                             <div class="context-menu context-menu-theme-vista">
                                 <div title="" class="context-menu-item">
-                                    <div class="context-menu-item-inner" onclick="setRegDefault('{{i}}','{{record.get_record_id()}}');">{% trans 'edit: chosiir limage du regroupement' %}</div>
+                                    <div class="context-menu-item-inner" onclick="setRegDefault('{{i}}','{{record.get_record_id()}}');">{{ 'edit: chosiir limage du regroupement' | trans }}</div>
                                 </div>
                             </div>
                         </td>
@@ -68,7 +68,7 @@
 
 {% macro HTML_fieldlist(recordsRequest, fields) %}
     <div class="edit_field" id="EditFieldBox_status" onclick="return(edit_mdwn_status(event));" >
-        {%trans 'prod::editing::fields: status ' %}
+        {% trans %}prod::editing::fields: status{% endtrans %}
     </div>
     {% set cssfile = '000000' %}
     {% if app['authentication'].getUser().getPrefs('css') %}
@@ -81,13 +81,13 @@
                 <img id="editSGtri_{{i}}" style="visibility:hidden;" src="/skins/prod/{{cssfile}}/images/suggested.gif" />
                 <img src="/skins/icons/info.gif" tooltipsrc="{{ path('prod_tooltip_metadata', { 'sbas_id' : field.get_databox().get_sbas_id(), 'field_id' : field.get_id() }) }}" class="fieldTips" alt=""/>
                 {% if field.get_dces_element %}
-                    <img src="/skins/icons/dublincore.png" tooltipsrc="{{ path('prod_tooltip_dces', { 'sbas_id' : field.get_databox().get_sbas_id(), 'field_id' : field.get_id() }) }}" alt="{% trans 'Ce champ est decrit comme un element DublinCore' %}" class="DCESTips" />
+                    <img src="/skins/icons/dublincore.png" tooltipsrc="{{ path('prod_tooltip_dces', { 'sbas_id' : field.get_databox().get_sbas_id(), 'field_id' : field.get_id() }) }}" alt="{{ 'Ce champ est decrit comme un element DublinCore' | trans }}" class="DCESTips" />
                 {% endif %}
                 {% if field.get_thumbtitle %}
-                    <img src="/skins/icons/titre16.png" title="{% trans 'This field represents the title of the document' %}" />
+                    <img src="/skins/icons/titre16.png" title="{{ 'This field represents the title of the document' | trans }}" />
                 {% endif %}
                 <span id="spanidEditFieldBox_{{i}}">
-                    {{field.get_label(app['locale.I18n'])}} {% if field.is_required() %}<span style="font-weight:bold;font-size:16px;"> * </span>{% endif %} :
+                    {{field.get_label(app['locale'])}} {% if field.is_required() %}<span style="font-weight:bold;font-size:16px;"> * </span>{% endif %} :
                 </span>
                 <span class="fieldvalue" id="idEditField_{{i}}" >???</span>
             </div>
@@ -189,10 +189,10 @@
                     </div>
                     <div id="ZTextStatus">
                         <div class="nostatus">
-                            {% trans 'Aucun statut editable' %}
+                            {{ 'Aucun statut editable' | trans }}
                         </div>
                         <div class="somestatus">
-                            {% trans'Les status de certains documents ne sont pas accessibles par manque de droits' %}
+                            {{ 'Les status de certains documents ne sont pas accessibles par manque de droits' | trans }}
                         </div>
                         <div class="displaystatus">
                             <table>
@@ -223,9 +223,9 @@
                     </div>
                 </div>
                 <div id="idDivButtons" class="PNB">
-                    <input id="ok"     type="button" value="{% trans 'boutton::remplacer' %}" class="btn btn-inverse" onclick="edit_validField(event, 'ok');return(false);">
-                    <input id="fusion" type="button" value="{% trans 'boutton::ajouter' %}" class="btn btn-inverse" onclick="edit_validField(event, 'fusion');return(false);">
-                    <input id="cancel" type="button" value="{% trans 'boutton::annuler' %}" class="btn btn-inverse" onclick="edit_validField(event, 'cancel');return(false);">
+                    <input id="ok"     type="button" value="{{ 'boutton::remplacer' | trans }}" class="btn btn-inverse" onclick="edit_validField(event, 'ok');return(false);">
+                    <input id="fusion" type="button" value="{{ 'boutton::ajouter' | trans }}" class="btn btn-inverse" onclick="edit_validField(event, 'fusion');return(false);">
+                    <input id="cancel" type="button" value="{{ 'boutton::annuler' | trans }}" class="btn btn-inverse" onclick="edit_validField(event, 'cancel');return(false);">
                 </div>
                 <div id="idExplain" class="PNB"></div>
             </div>
@@ -234,20 +234,20 @@
             <div style='position:absolute; top:0; left:0; right:0; bottom:0;' class='tabs'>
                 <ul>
                     {% if thesaurus %}
-                        <li><a href="#TH_Ofull">{% trans 'phraseanet:: thesaurus' %}</a></li>
+                        <li><a href="#TH_Ofull">{{ 'phraseanet:: thesaurus' | trans }}</a></li>
                     {% endif %}
-                    <li><a href="#TH_Oclipboard">{% trans 'phraseanet:: presse-papier' %}</a></li>
-                    <li><a href="#TH_Opreview">{% trans 'phraseanet:: preview' %}</a></li>
-                    <li><a href="#TH_Oreplace">{% trans 'prod::editing: rechercher-remplacer' %}</a></li>
-                    <li><a href="#TH_Opresets">{% trans 'prod::editing: modeles de fiches' %}</a></li>
+                    <li><a href="#TH_Oclipboard">{{ 'phraseanet:: presse-papier' | trans }}</a></li>
+                    <li><a href="#TH_Opreview">{{ 'phraseanet:: preview' | trans }}</a></li>
+                    <li><a href="#TH_Oreplace">{{ 'prod::editing: rechercher-remplacer' | trans }}</a></li>
+                    <li><a href="#TH_Opresets">{{ 'prod::editing: modeles de fiches' | trans }}</a></li>
                 </ul>
                 {% if thesaurus %}
                     <div id='TH_Ofull'>
                         <div class='thesaurus' ondblclick='return(edit_dblclickThesaurus(event));' onclick='return(edit_clickThesaurus(event));'>
                             <p id='TH_T.{{ databox.get_sbas_id() }}.T'>
-                                <u id='TH_P.{{ databox.get_sbas_id() }}.T'>+</u><a id='GL_W.{{ databox.get_sbas_id() }}.T' style='FONT-WEIGHT: bold;'>{{ databox.get_label(app['locale.I18n']) }}</a>
+                                <u id='TH_P.{{ databox.get_sbas_id() }}.T'>+</u><a id='GL_W.{{ databox.get_sbas_id() }}.T' style='FONT-WEIGHT: bold;'>{{ databox.get_label(app['locale']) }}</a>
                             </p>
-                            <div id='TH_K.{{ databox.get_sbas_id() }}.T' class='c'>{% trans 'phraseanet::chargement' %}</div>
+                            <div id='TH_K.{{ databox.get_sbas_id() }}.T' class='c'>{{ 'phraseanet::chargement' | trans }}</div>
                         </div>
                         <img style="position:absolute; margin:auto" id="TH_searching" src="/skins/icons/ftp-loader-blank.gif" />
                     </div>
@@ -263,69 +263,69 @@
                 <div id='TH_Oreplace'>
                     <table style="position:relative; left:0; width:100%;">
                         <tr>
-                            <td width="100">{% trans 'prod::editing::replace: remplacer dans le champ' %}</td>
+                            <td width="100">{{ 'prod::editing::replace: remplacer dans le champ' | trans }}</td>
                             <td>
                                 <select id="EditSRField" class="input-xlarge">
-                                    <option value="">{% trans 'prod::editing::replace: remplacer dans tous les champs' %}</option>
+                                    <option value="">{{ 'prod::editing::replace: remplacer dans tous les champs' | trans }}</option>
                                     {% for field in fields %}
-                                        <option value="{{ field.get_id() }}">{{ field.get_label(app['locale.I18n']) }}</option>
+                                        <option value="{{ field.get_id() }}">{{ field.get_label(app['locale']) }}</option>
                                     {% endfor %}
                                 </select>
                             </td>
                         </tr>
                         <tr>
-                            <td valign="top">{% trans 'prod::editing:replace: chaine a rechercher' %}</td>
+                            <td valign="top">{{ 'prod::editing:replace: chaine a rechercher' | trans }}</td>
                             <td>
                                 <textarea id="EditSearch"></textarea>
                             </td>
                         </tr>
                         <tr>
-                            <td valign="top">{% trans 'prod::editing:remplace: chaine remplacante' %}</td>
+                            <td valign="top">{{ 'prod::editing:remplace: chaine remplacante' | trans }}</td>
                             <td>
                                 <textarea id="EditReplace"></textarea>
                             </td>
                         </tr>
                         <tr>
-                            <td valign="top">{% trans 'prod::editing:remplace: options de remplacement' %}</td>
+                            <td valign="top">{{ 'prod::editing:remplace: options de remplacement' | trans }}</td>
                             <td>
                                 <input type="checkbox" class="checkbox" id="EditSROptionRX" value="regexp" onchange="changeReplaceMode(this);">
-                                {% trans 'prod::editing:remplace::option : utiliser une expression reguliere' %}
+                                {{ 'prod::editing:remplace::option : utiliser une expression reguliere' | trans }}
                                 {% set help_link = 'https://secure.wikimedia.org/wikipedia/en/wiki/Regular_expression' %}
-                                {% if app['locale.I18n'] == 'de' %}
+                                {% if app['locale'] == 'de' %}
                                     {% set help_link = 'https://secure.wikimedia.org/wikipedia/de/wiki/Regul%C3%A4rer_Ausdruck' %}
-                                {% elseif app['locale.I18n'] == 'fr' %}
+                                {% elseif app['locale'] == 'fr' %}
                                     {% set help_link = 'https://secure.wikimedia.org/wikipedia/fr/wiki/Expression_rationnelle' %}
-                                {% elseif app['locale.I18n'] == 'ar' %}
+                                {% elseif app['locale'] == 'ar' %}
                                     {% set help_link = 'https://secure.wikimedia.org/wikipedia/ar/wiki/%D8%AA%D8%B9%D8%A7%D8%A8%D9%8A%D8%B1_%D9%86%D9%85%D8%B7%D9%8A%D8%A9' %}
                                 {% endif %}
                                 <a href="{{help_link}}" target="_blank">
-                                    <img src="/skins/icons/help.png" title="{% trans 'Aide sur les expressions regulieres' %}"/>
+                                    <img src="/skins/icons/help.png" title="{{ 'Aide sur les expressions regulieres' | trans }}"/>
                                 </a>
                                 <br/>
                                 <br/>
                                 <div id="EditSR_RX" style="display:none">
                                     <input type="checkbox" class="checkbox" id="EditSR_RXG">
-                                    {% trans 'prod::editing:remplace::option: remplacer toutes les occurences' %}
+                                    {{ 'prod::editing:remplace::option: remplacer toutes les occurences' | trans }}
                                     <br/>
                                     <input type="checkbox" class="checkbox" id="EditSR_RXI">
-                                    {% trans 'prod::editing:remplace::option: rester insensible a la casse' %}
+                                    {{ 'prod::editing:remplace::option: rester insensible a la casse' | trans }}
                                 </div>
                                 <div id="EditSR_TX" style="display:block">
                                     <input type="radio" class="checkbox" name="EditSR_Where" value="exact">
-                                    {% trans 'prod::editing:remplace::option la valeur du cahmp doit etre exacte' %}
+                                    {{ 'prod::editing:remplace::option la valeur du cahmp doit etre exacte' | trans }}
                                     <br />
                                     <input type="radio" class="checkbox" name="EditSR_Where" value="inside" checked>
-                                    {% trans 'prod::editing:remplace::option la valeur est comprise dans le champ' %}
+                                    {{ 'prod::editing:remplace::option la valeur est comprise dans le champ' | trans }}
                                     <br />
                                     <input type="checkbox" class="checkbox" id="EditSR_case">
-                                    {% trans 'prod::editing:remplace::option respecter la casse' %}
+                                    {{ 'prod::editing:remplace::option respecter la casse' | trans }}
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2" align="center">
                             <br />
-                            <input type="button" class='btn btn-inverse' value="{% trans 'boutton::valider' %}" onclick="replace(); return(false);" />
+                            <input type="button" class='btn btn-inverse' value="{{ 'boutton::valider' | trans }}" onclick="replace(); return(false);" />
                             <br />
                             </td>
                         </tr>
@@ -333,7 +333,7 @@
                 </div>
                 <div id='TH_Opresets'>
                     <div class="PNB10">
-                        <button class="adder btn btn-inverse">{% trans 'boutton::ajouter' %}</button>
+                        <button class="adder btn btn-inverse">{{ 'boutton::ajouter' | trans }}</button>
                     </div>
                     <ul style="top:50px;" class="PNB10 EDIT_presets_list"></ul>
                 </div>
@@ -342,8 +342,8 @@
     </div>
 
     <div id="buttonEditing">
-        <input type='button' value="{% trans 'boutton::valider' %}" class="btn btn-inverse btn-small" onclick="edit_applyMultiDesc(event);" />
-        <input type='button' value="{% trans 'boutton::annuler' %}" class="btn btn-inverse btn-small" onclick="edit_cancelMultiDesc(event);" />
+        <input type='button' value="{{ 'boutton::valider' | trans }}" class="btn btn-inverse btn-small" onclick="edit_applyMultiDesc(event);" />
+        <input type='button' value="{{ 'boutton::annuler' | trans }}" class="btn btn-inverse btn-small" onclick="edit_cancelMultiDesc(event);" />
     </div>
 
 </div>
@@ -354,35 +354,35 @@
         <br/>
         <br/>
         <br/>
-        <b><h4>{% trans 'prod::editing:indexation en cours' %}</h4></b>
+        <b><h4>{{ 'prod::editing:indexation en cours' | trans }}</h4></b>
         <span id='saveeditPbarI'></span> / <span id='saveeditPbarN'></span>
         <br/>
         <br/>
         <br/>
         <input type="hidden" name="edit-lst" id="edit_lst" value="{{ recordsRequest.serializedList() }}" />
         <input type='button' class='btn btn-inverse'
-            value="{% trans 'boutton::fermer' %}"
+            value="{{ 'boutton::fermer' | trans }}"
             onClick="$('#EDITWINDOW').fadeOut();hideOverlay(2);return(false);" />
     </center>
 </div>
 
-<div id="EDIT_CLOSEDIALOG" style="display:none;" title="{% trans 'boutton::fermer' %}">
-  {% trans 'prod::editing: valider ou annuler les modifications' %}
+<div id="EDIT_CLOSEDIALOG" style="display:none;" title="{{ 'boutton::fermer' | trans }}">
+  {{ 'prod::editing: valider ou annuler les modifications' | trans }}
 </div>
 
 <div style="display:none" id="Edit_copyPreset_dlg">
     <form onsubmit="return false;">
-        <span>{% trans 'edit::preset:: titre' %} :</span>
+        <span>{{ 'edit::preset:: titre' | trans }} :</span>
         <input class="EDIT_presetTitle" type="text" name="name" style="width:300px;">
         <div class="Edit_preset_item"></div>
     </form>
 </div>
 
-<div id="dialog-edit-many-sbas" title="{% trans 'Edition impossible' %}" style="display:none;">
+<div id="dialog-edit-many-sbas" title="{{ 'Edition impossible' | trans }}" style="display:none;">
     <p>
         <span class="ui-icon ui-icon-alert " style="float:left; margin:0 7px 50px 0;"></span>
         {% if multipleDataboxes %}
-            {% trans 'prod::edit: Impossible d\'editer simultanement des documents provenant de bases differentes' %}
+            {{ 'prod::edit: Impossible d\'editer simultanement des documents provenant de bases differentes' | trans }}
         {% elseif actionable == 0 %}
             {% trans %}prod::editing: aucun documents ne peuvent etre edites car vos droits sont induffisants{% endtrans %}
         {% endif %}
@@ -410,9 +410,9 @@
         });
     {% else %}
         {% if not_actionable > 1 %}
-            alert("{% trans %}prod::editing: {{not_actionable}} documents ne peuvent etre edites car vos droits sont induffisants{% endtrans %}");
+            alert("{{ 'prod::editing: %not_actionable% documents ne peuvent etre edites car vos droits sont induffisants' | trans({'%not_actionable%' : not_actionable}) | e('js') }}");
         {% elseif not_actionable == 1 %}
-            alert("{% trans 'prod::editing: 1 document ne peut etre edite car vos droits sont induffisants' %}");
+            alert("{{ 'prod::editing: 1 document ne peut etre edite car vos droits sont induffisants' | trans | e('js') }}");
         {% endif %}
         startThisEditing({{ databox.get_sbas_id }},{% if recordsRequest.isSingleStory() %}'GRP'{% else %}'LST'{% endif %},"",'');
     {% endif %}

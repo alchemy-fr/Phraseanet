@@ -4,9 +4,9 @@
         <meta charset="utf-8" />
         <title>
         {% if error is defined %}
-            {% trans 'Fail' %}
+            {{ 'Fail' | trans }}
         {% else %}
-            {% trans 'Success' %}
+            {{ 'Success' | trans }}
         {% endif %}
             </title>
         <meta name="author" content="Alchemy" />
@@ -41,9 +41,7 @@
                     {% set username = '<b>' ~ app['authentication'].getUser().get_display_name() ~ '</b>' %}
                     <div id="hello-box" class="span6 offset3">
                         <p class="login_hello">
-                            {% trans %}
-                            Hello {{username}}
-                            {% endtrans %}
+                            {% trans with {'%username%' : username} %}Hello %username%{% endtrans %}
                         </p>
                     </div>
                 {% endif %}
@@ -54,9 +52,7 @@
                         </div>
                         <div id="main-text-box">
                             <p>
-                                {% trans %}
                                 {{error}}
-                                {% endtrans %}
                             </p>
                             <input type="text" class="input-large" name="access_token" value="{{token.access_token}}" size="{{token.access_token|length}}"/>
                         </div>
@@ -66,9 +62,7 @@
                         </div>
                         <div id="main-text-box">
                             <p>
-                                {% trans %}
-                                Copiez le code ci-dessous, retournez dans votre application et collez-le &agrave l'endroit requis :
-                                {% endtrans %}
+                                {% trans %}Copiez le code ci-dessous, retournez dans votre application et collez-le a l'endroit requis :{% endtrans %}
                             </p>
                             <input type="text" class="input-large" name="access_token" value="{{token.access_token}}" size="{{token.access_token|length}}"/>
                         </div>

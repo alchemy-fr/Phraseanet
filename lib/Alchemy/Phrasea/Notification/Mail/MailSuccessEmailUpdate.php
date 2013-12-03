@@ -18,7 +18,7 @@ class MailSuccessEmailUpdate extends AbstractMail
      */
     public function getSubject()
     {
-        return sprintf(_('Update of your email address on %s'), $this->getPhraseanetTitle());
+        return $this->app->trans('Update of your email address on %application%', ['%application%' => $this->getPhraseanetTitle()]);
     }
 
     /**
@@ -27,8 +27,8 @@ class MailSuccessEmailUpdate extends AbstractMail
     public function getMessage()
     {
         return sprintf("%s\n%s\n%s",
-            sprintf(_('Dear %s,'), $this->receiver->getName()),
-            _('Your contact email address has been updated'),
+            $this->app->trans('Dear %user%,', ['%user%' => $this->receiver->getName()]),
+            $this->app->trans('Your contact email address has been updated'),
             $this->message
         );
     }

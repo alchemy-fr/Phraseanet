@@ -219,8 +219,8 @@
                     <td><label for="thumbtitle">{% trans %}Display thumbnails{% endtrans %}</label></td>
                     <td>
                         <select id="thumbtitle">
-                            <option value="1" <%= field.thumbtitle == "1" ? "selected" : "" %> >{% trans 'Tous' %}</option>
-                            <option value="0" <%= field.thumbtitle == "0" ? "selected" : "" %> >{% trans 'Aucun' %}</option>
+                            <option value="1" <%= field.thumbtitle == "1" ? "selected" : "" %> >{{ 'Tous' | trans }}</option>
+                            <option value="0" <%= field.thumbtitle == "0" ? "selected" : "" %> >{{ 'Aucun' | trans }}</option>
                             {% for code, language in languages %}
                                 <option value="{{ code }}" <%= field.thumbtitle == "{{ code }}" ? "selected" : "" %> >{{ language}}</option>
                             {% endfor %}

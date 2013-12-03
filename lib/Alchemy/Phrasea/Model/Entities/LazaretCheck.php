@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Model\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @ORM\Table(name="LazaretChecks")
@@ -98,14 +99,14 @@ class LazaretCheck
      *
      * @return string
      */
-    public function getMessage()
+    public function getMessage(TranslatorInterface $translator)
     {
         $className = $this->getCheckClassname();
 
         if (method_exists($className, "getMessage")) {
-            return $className::getMessage();
-        } else {
-            return '';
+            return $className::getMessage($translator);
         }
+
+        return '';
     }
 }

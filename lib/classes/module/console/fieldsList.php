@@ -32,7 +32,7 @@ class module_console_fieldsList extends Command
             $output->writeln(
                 sprintf(
                     "\n ---------------- \nOn databox %s (sbas_id %d) :\n"
-                    , $databox->get_label($this->container['locale.I18n'])
+                    , $databox->get_label($this->container['locale'])
                     , $databox->get_sbas_id()
                 )
             );

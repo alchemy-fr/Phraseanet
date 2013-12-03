@@ -4,7 +4,7 @@
     <div class="edit_button" style="text-align:right">
       <a href="#" onclick="editThis('IMGT','{{record.get_serialize_key()}}');">
         <img style="vertical-align:middle" src="/skins/prod/000000/images/ppen_history.gif" />
-        {% trans 'action : editer' %}
+        {{ 'action : editer' | trans }}
       </a>
     </div>
   {% endif %}

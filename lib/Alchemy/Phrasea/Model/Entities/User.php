@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @ORM\Table(name="Users",
@@ -961,10 +962,10 @@ class User
     /**
      * @return string
      */
-    public function getDisplayName()
+    public function getDisplayName(TranslatorInterface $translator)
     {
         if ($this->isTemplate()) {
-            return sprintf(_('modele %s'), $this->getLogin());
+            return $translator->trans('modele %name%', ['%name%' => $this->getLogin()]);
         }
 
         if (trim($this->lastName) !== '' || trim($this->firstName) !== '') {
@@ -975,6 +976,6 @@ class User
             return $this->email;
         }
 
-        return _('Unnamed user');
+        return $translator->trans('Unnamed user');
     }
 }

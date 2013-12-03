@@ -15,7 +15,7 @@ class TaskManipulatorTest extends \PhraseanetPHPUnitAbstract
                 ->method('notify')
                 ->with(Notifier::MESSAGE_CREATE);
 
-        $manipulator = new TaskManipulator(self::$DI['app']['EM'], $notifier);
+        $manipulator = new TaskManipulator(self::$DI['app']['EM'], $notifier, self::$DI['app']['translator']);
         $this->assertCount(0, $this->findAllTasks());
         $task = $manipulator->create('prout', 'bla bla', 'super settings', 0);
         $this->assertEquals('prout', $task->getName());
@@ -34,7 +34,7 @@ class TaskManipulatorTest extends \PhraseanetPHPUnitAbstract
                 ->method('notify')
                 ->with(Notifier::MESSAGE_UPDATE);
 
-        $manipulator = new TaskManipulator(self::$DI['app']['EM'], $notifier);
+        $manipulator = new TaskManipulator(self::$DI['app']['EM'], $notifier, self::$DI['app']['translator']);
         $task = $this->loadTask();
         $task->setName('new name');
         $this->assertSame($task, $manipulator->update($task));
@@ -49,7 +49,7 @@ class TaskManipulatorTest extends \PhraseanetPHPUnitAbstract
                 ->method('notify')
                 ->with(Notifier::MESSAGE_DELETE);
 
-        $manipulator = new TaskManipulator(self::$DI['app']['EM'], $notifier);
+        $manipulator = new TaskManipulator(self::$DI['app']['EM'], $notifier, self::$DI['app']['translator']);
         $task = $this->loadTask();
         $manipulator->delete($task);
         $this->assertEquals([], $this->findAllTasks());
@@ -62,7 +62,7 @@ class TaskManipulatorTest extends \PhraseanetPHPUnitAbstract
                 ->method('notify')
                 ->with(Notifier::MESSAGE_UPDATE);
 
-        $manipulator = new TaskManipulator(self::$DI['app']['EM'], $notifier);
+        $manipulator = new TaskManipulator(self::$DI['app']['EM'], $notifier, self::$DI['app']['translator']);
         $task = $this->loadTask();
         $task->setStatus(Task::STATUS_STOPPED);
         self::$DI['app']['EM']->persist($task);
@@ -78,7 +78,7 @@ class TaskManipulatorTest extends \PhraseanetPHPUnitAbstract
                 ->method('notify')
                 ->with(Notifier::MESSAGE_UPDATE);
 
-        $manipulator = new TaskManipulator(self::$DI['app']['EM'], $notifier);
+        $manipulator = new TaskManipulator(self::$DI['app']['EM'], $notifier, self::$DI['app']['translator']);
         $task = $this->loadTask();
         $task->setStatus(Task::STATUS_STARTED);
         self::$DI['app']['EM']->persist($task);
@@ -94,7 +94,7 @@ class TaskManipulatorTest extends \PhraseanetPHPUnitAbstract
                 ->method('notify')
                 ->with(Notifier::MESSAGE_UPDATE);
 
-        $manipulator = new TaskManipulator(self::$DI['app']['EM'], $notifier);
+        $manipulator = new TaskManipulator(self::$DI['app']['EM'], $notifier, self::$DI['app']['translator']);
         $task = $this->loadTask();
         $task->setCrashed(42);
         $manipulator->resetCrashes($task);
@@ -103,7 +103,7 @@ class TaskManipulatorTest extends \PhraseanetPHPUnitAbstract
 
     public function testGetRepository()
     {
-        $manipulator = new TaskManipulator(self::$DI['app']['EM'], $this->createNotifierMock());
+        $manipulator = new TaskManipulator(self::$DI['app']['EM'], $this->createNotifierMock(), self::$DI['app']['translator']);
         $this->assertSame(self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Task'), $manipulator->getRepository());
     }
 
@@ -116,7 +116,7 @@ class TaskManipulatorTest extends \PhraseanetPHPUnitAbstract
                 ->method('get_base_id')
                 ->will($this->returnValue(42));
 
-        $manipulator = new TaskManipulator(self::$DI['app']['EM'], $this->createNotifierMock());
+        $manipulator = new TaskManipulator(self::$DI['app']['EM'], $this->createNotifierMock(), self::$DI['app']['translator']);
         $task = $manipulator->createEmptyCollectionJob($collection);
 
         $tasks = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Task')->findAll();

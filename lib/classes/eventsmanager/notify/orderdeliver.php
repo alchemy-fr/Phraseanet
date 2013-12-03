@@ -28,8 +28,8 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
      */
     public function __construct(Application $app, eventsmanager_broker $broker)
     {
-        $this->group = _('Commande');
         parent::__construct($app, $broker);
+        $this->group = $this->app->trans('Commande');
 
         return $this;
     }
@@ -158,11 +158,9 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
             return [];
         }
         $ret = [
-            'text'  => sprintf(
-                _('%1$s vous a delivre %2$d document(s) pour votre commande %3$s'), $sender, $n, '<a href="/lightbox/compare/'
+            'text'  => $this->app->trans('%user% vous a delivre %quantity% document(s) pour votre commande %title%', ['%user%' => $sender, '%quantity%' => $n, '%title%' => '<a href="/lightbox/compare/'
                 . (string) $sx->ssel_id . '/" target="_blank">'
-                . $basket->getName() . '</a>'
-            )
+                . $basket->getName() . '</a>'])
             , 'class' => ''
         ];
 
@@ -175,7 +173,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
      */
     public function get_name()
     {
-        return _('Reception de commande');
+        return $this->app->trans('Reception de commande');
     }
 
     /**
@@ -184,7 +182,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
      */
     public function get_description()
     {
-        return _('Reception d\'une commande');
+        return $this->app->trans('Reception d\'une commande');
     }
 
     /**

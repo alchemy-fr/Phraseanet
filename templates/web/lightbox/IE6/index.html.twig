@@ -20,10 +20,10 @@
             <thead>
                 <tr>
                     <th class="title">
-                        <h1>{% trans 'Validations' %}</h1>
+                        <h1>{{ 'Validations' | trans }}</h1>
                     </th>
                     <th>
-                        <i>{% trans 'Voici vos validations en cours' %}</i>
+                        <i>{{ 'Voici vos validations en cours' | trans }}</i>
                     </th>
                 </tr>
             </thead>
@@ -53,15 +53,15 @@
                                                       {{basket.getName()}}
                                                   </h2>
                                                   {% if basket.getValidation().isFinished() %}
-                                                      {% trans '(validation) session terminee' %}
+                                                      {{ '(validation) session terminee' | trans }}
                                                   {% elseif basket.getValidation().getParticipant(app['authentication'].getUser(), app).getIsConfirmed() %}
-                                                      {% trans '(validation) envoyee' %}
+                                                      {{ '(validation) envoyee' | trans }}
                                                   {% else %}
-                                                      {% trans '(validation) a envoyer' %}
+                                                      {{ '(validation) a envoyer' | trans }}
                                                   {% endif %}
                                               </td>
                                               <td class="right">
-                                                  ({% trans %}{{basket_length}} documents{% endtrans %})
+                                                  ({% trans with {'%basket_length%' : basket_length} %}%basket_length% documents{% endtrans %})
                                               </td>
                                           </tr>
                                           <tr style="height:20px;">
@@ -87,10 +87,10 @@
                 {% endfor %}
                 <tr>
                     <th class="title">
-                        <h1>{% trans 'Paniers'%}</h1>
+                        <h1>{{ 'Paniers' | trans }}</h1>
                     </th>
                     <th>
-                        <i>{% trans 'Voici vos paniers' %}</i>
+                        <i>{{ 'Voici vos paniers' | trans }}</i>
                     </th>
                 </tr>
                 {% for basket in baskets_collection %}
@@ -119,7 +119,7 @@
                                                   </h2>
                                               </td>
                                               <td class="right">
-                                                  ({% trans %}{{basket_length}} documents{% endtrans %})
+                                                  ({% trans with {'%basket_length%' : basket_length} %}%basket_length% documents{% endtrans %})
                                               </td>
                                           </tr>
                                           <tr style="height:20px;">

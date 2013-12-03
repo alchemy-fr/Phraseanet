@@ -14,16 +14,19 @@ namespace Alchemy\Phrasea\TaskManager\Job;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class Factory
 {
     private $dispatcher;
     private $logger;
+    private $translator;
 
-    public function __construct(EventDispatcherInterface $dispatcher, LoggerInterface $logger)
+    public function __construct(EventDispatcherInterface $dispatcher, LoggerInterface $logger, TranslatorInterface $translator)
     {
         $this->dispatcher = $dispatcher;
         $this->logger = $logger;
+        $this->translator = $translator;
     }
 
     public function create($fqn)
@@ -40,6 +43,6 @@ class Factory
             throw new InvalidArgumentException(sprintf('Class `%s` does not implement JobInterface.', $fqn));
         }
 
-        return new $fqn($this->dispatcher, $this->logger);
+        return new $fqn($this->dispatcher, $this->logger, $this->translator);
     }
 }

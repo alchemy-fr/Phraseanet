@@ -22,7 +22,7 @@ class NewEmailValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if ($constraint->isAlreadyRegistered($value)) {
-            $this->context->addViolation(_('There is already an account bound to this email address'));
+            $this->context->addViolation($constraint->message);
         }
     }
 }

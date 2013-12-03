@@ -258,7 +258,7 @@ class set_export extends set_abstract
             }
 
             $datas[] = [
-                'name'              => _('export::ftp: reglages manuels'),
+                'name'              => $app->trans('export::ftp: reglages manuels'),
                 'usr_id'            => '0',
                 'address'           => '',
                 'login'             => '',

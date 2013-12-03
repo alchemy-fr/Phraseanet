@@ -1,7 +1,7 @@
 {% extends "account/base.html.twig" %}
 
 {% block title %}
-    {% trans "Client applications" %}
+    {{ "Client applications" | trans }}
 {% endblock %}
 
 {% set selected = "developer" %}
@@ -11,13 +11,13 @@
         <div class="span7">
             <div id="content-apps">
                 <h1>Phraseanet Developer Center</h1>
-                <h3>{% trans "Mes applications" %}</h3>
+                <h3>{{ "Mes applications" | trans }}</h3>
                 {% if applications|length > 0 %}
                     <ul class="app-list unstyled">
                         {% for application in applications %}
                               <li id="app_{{ application.get_id() }}">
                                     <a href="#appModal-{{ loop.index }}" role="button" data-toggle="modal" class="pull-right btn btn-danger btn-small" type="button">
-                                        {% trans  "button::supprimer" %}
+                                        {{ "button::supprimer" | trans }}
                                     </a>
                                     <!-- Modal -->
                                     <div id="appModal-{{ loop.index }}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -26,11 +26,11 @@
                                             <h3 id="myModalLabel">{{ application.get_name() }}</h3>
                                         </div>
                                         <div class="modal-body">
-                                            <p>{% trans "Are you sure you want to delete this application?" %} </p>
+                                            <p>{{ "Are you sure you want to delete this application?" | trans }} </p>
                                         </div>
                                         <div class="modal-footer">
-                                            <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "No" %}</button>
-                                            <a href="{{ path("delete_developers_application", {"id" : application.get_id()}) }}" class="delete-app btn btn-info">{% trans "Yes" %}</a>
+                                            <button class="btn" data-dismiss="modal" aria-hidden="true">{{ "No" | trans }}</button>
+                                            <a href="{{ path("delete_developers_application", {"id" : application.get_id()}) }}" class="delete-app btn btn-info">{{ "Yes" | trans }}</a>
                                         </div>
                                     </div>
                                     <p class="app-row">
@@ -46,22 +46,22 @@
                     </ul>
                 {% else %}
                     <div>
-                      {% trans "Aucune application creee." %}
+                      {{ "Aucune application creee." | trans }}
                     </div>
                 {% endif %}
             </div>
         </div>
         <div class="span5">
             <div class="well well-small">
-                <p>{% trans "Decouvrez la documentation" %}</p>
+                <p>{{ "Decouvrez la documentation" | trans }}</p>
                 <a href="http://developer.phraseanet.com/" target="_blank" class="btn btn-large text-center input-block-level">
-                    {% trans "Demarrer avec l\'API Phraseanet" %}
+                    {{ "Demarrer avec l\'API Phraseanet" | trans }}
                 </a>
             </div>
             <div class="well well-small">
-                <p>{% trans "Creez une application pour commencer a utiliser l\'API Phraseanet" %}</p>
+                <p>{{ "Creez une application pour commencer a utiliser l\'API Phraseanet" | trans }}</p>
                 <a href="{{ path("developers_application_new") }}" class="btn-info btn btn-large text-center input-block-level">
-                    {% trans "Creer une nouvelle applications" %}
+                    {{ "Creer une nouvelle applications" | trans }}
                 </a>
             </div>
         </div>

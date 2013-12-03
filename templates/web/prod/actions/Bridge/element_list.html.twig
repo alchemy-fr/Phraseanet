@@ -19,16 +19,6 @@
 
         {% include actiontemplate %}
 
-        {% if not elements.get_total_items is none %}
-        <!--<td style="width:40px;">
-        <div class="menu_nb_element">
-            {% set nb_elements = elements.get_total_items() %}
-            {% trans %}
-                {{nb_elements}} elements
-            {% endtrans %}
-        </div>
-        </td>-->
-        {% endif %}
         <td style="text-align:right;padding-right:2%">
             {% set url = '/prod/bridge/adapter/' ~ account.get_id ~ '/' ~ adapter_action ~ '/' ~ action_type ~ '/' %}
             {{pages.paginator(elements.get_total_page(), elements.get_current_page(), url) }}
@@ -56,7 +46,7 @@
                   {% endif %}
                 </div>
               {% else %}
-                <span>{% trans 'Imagette indisponible' %}</span>
+                <span>{{ 'Imagette indisponible' | trans }}</span>
               {% endif %}
             </td>
             <td class="informations">
@@ -77,7 +67,7 @@
                 {% if element.get_description is not empty %}
                   {{element.get_description}}
                 {% else %}
-                  {% trans 'Aucune description.' %}
+                  {{ 'Aucune description.' | trans }}
                 {% endif %}
                 </p>
               </div>
@@ -87,17 +77,15 @@
 
                 {% if element.get_category != '' %}
                   {% set category = element.get_category %}
-                  {% trans %}
-                    dans {{category}}
-                  {% endtrans %}
+                  {% trans with {'%category%' : category} %}dans %category%{% endtrans %}
                 {% endif %}
               </div>
               {% if not element.is_private is none %}
               <div>
                 {% if element.is_private %}
-                  {% trans 'Confidentialite : privee' %}
+                  {{ 'Confidentialite : privee' | trans }}
                 {% else %}
-                  {% trans 'Confidentialite : publique' %}
+                  {{ 'Confidentialite : publique' | trans }}
                 {% endif %}
               </div>
               {% endif %}

@@ -53,6 +53,7 @@ class Uninstaller extends Command
         foreach ([
             $root.'/tmp/serializer',
             $root.'/tmp/cache_twig',
+            $root.'/tmp/translations',
             $root.'/tmp/cache_minify',
             $root.'/tmp/download',
             $root.'/tmp/locks',

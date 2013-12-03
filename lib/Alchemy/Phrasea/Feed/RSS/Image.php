@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Feed\RSS;
 
-class Image implements FeedRSSImageInterface
+class Image implements ImageInterface
 {
     /**
      *

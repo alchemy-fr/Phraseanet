@@ -43,11 +43,11 @@ class phraseadate
     {
         switch ($this->app['locale']) {
             default:
-            case 'fr_FR':
-            case 'de_DE':
+            case 'fr':
+            case 'de':
                 $time = $date->format('H:i');
                 break;
-            case 'en_GB':
+            case 'en':
                 $time = $date->format('h:iA');
                 break;
         }
@@ -100,20 +100,18 @@ class phraseadate
 
         if ($dayDiff == 0) {
             if ($diff < 60) {
-                return _('phraseanet::temps:: a l\'instant');
+                return $this->app->trans('phraseanet::temps:: a l\'instant');
             } elseif ($diff < 120) {
-                return _('phraseanet::temps:: il y a une minute');
+                return $this->app->trans('phraseanet::temps:: il y a une minute');
             } elseif ($diff < 3600) {
-                return sprintf(_('phraseanet::temps:: il y a %d minutes')
-                        , floor($diff / 60));
+                return $this->app->trans('phraseanet::temps:: il y a %quantity% minutes', ['%quantity%' => floor($diff / 60)]);
             } elseif ($diff < 7200) {
-                return _('phraseanet::temps:: il y a une heure');
+                return $this->app->trans('phraseanet::temps:: il y a une heure');
             } elseif ($diff < 86400) {
-                return sprintf(_('phraseanet::temps:: il y a %d heures')
-                        , floor($diff / 3600));
+                return $this->app->trans('phraseanet::temps:: il y a %quantity% heures', ['%quantity%' => floor($diff / 3600)]);
             }
         } elseif ($dayDiff == 1) {
-            return _('phraseanet::temps:: hier');
+            return $this->app->trans('phraseanet::temps:: hier');
         } elseif ($dayDiff < 365 && $dayDiff > 0) {
             return $date_string;
         } else {
@@ -143,7 +141,7 @@ class phraseadate
 
         switch ($locale) {
             default:
-            case 'fr_FR':
+            case 'fr':
                 switch ($format) {
                     default:
                     case 'DAY_MONTH':
@@ -154,7 +152,7 @@ class phraseadate
                         break;
                 }
                 break;
-            case 'en_GB':
+            case 'en':
                 switch ($format) {
                     default:
                     case 'DAY_MONTH':
@@ -165,7 +163,7 @@ class phraseadate
                         break;
                 }
                 break;
-            case 'de_DE':
+            case 'de':
                 switch ($format) {
                     default:
                     case 'DAY_MONTH':

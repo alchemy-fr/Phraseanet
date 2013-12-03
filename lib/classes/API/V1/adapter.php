@@ -656,7 +656,7 @@ class API_V1_adapter extends API_V1_Abstract
         $collection = \collection::get_from_base_id($this->app, $request->get('base_id'));
 
         if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($request->get('base_id'), 'canaddrecord')) {
-            throw new API_V1_exception_forbidden(sprintf('You do not have access to collection %s', $collection->get_label($this->app['locale.I18n'])));
+            throw new API_V1_exception_forbidden(sprintf('You do not have access to collection %s', $collection->get_label($this->app['locale'])));
         }
 
         $media = $app['mediavorus']->guess($file->getPathname());
@@ -675,12 +675,12 @@ class API_V1_adapter extends API_V1_Abstract
 
         $reasons = $output = null;
 
-        $callback = function ($element, $visa, $code) use (&$reasons, &$output) {
+        $callback = function ($element, $visa, $code) use ($app, &$reasons, &$output) {
                     if (!$visa->isValid()) {
                         $reasons = [];
 
                         foreach ($visa->getResponses() as $response) {
-                            $reasons[] = $response->getMessage();
+                            $reasons[] = $response->getMessage($app['translator']);
                         }
                     }
 
@@ -788,7 +788,7 @@ class API_V1_adapter extends API_V1_Abstract
         if ($file->getChecks()) {
             foreach ($file->getChecks() as $checker) {
 
-                $checks[] = $checker->getMessage();
+                $checks[] = $checker->getMessage($this->app['translator']);
             }
         }
 
@@ -1096,7 +1096,7 @@ class API_V1_adapter extends API_V1_Abstract
             $record->set_metadatas($metadatas);
             $result->set_datas(["record_metadatas" => $this->list_record_caption($record->get_caption())]);
         } catch (Exception $e) {
-            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('An error occured'));
+            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, $this->app->trans('An error occured'));
         }
 
         return $result;
@@ -1142,7 +1142,7 @@ class API_V1_adapter extends API_V1_Abstract
                     ]
             );
         } catch (Exception $e) {
-            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('An error occured'));
+            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, $this->app->trans('An error occured'));
         }
 
         return $result;
@@ -1190,9 +1190,9 @@ class API_V1_adapter extends API_V1_Abstract
             $record = $databox->get_record($record_id);
             $result->set_datas(['record' => $this->list_record($record)]);
         } catch (NotFoundHttpException $e) {
-            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('Record Not Found'));
+            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, $this->app->trans('Record Not Found'));
         } catch (Exception $e) {
-            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('An error occured'));
+            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, $this->app->trans('An error occured'));
         }
 
         return $result;
@@ -1214,9 +1214,9 @@ class API_V1_adapter extends API_V1_Abstract
             $story = $databox->get_record($story_id);
             $result->set_datas(['story' => $this->list_story($story)]);
         } catch (NotFoundHttpException $e) {
-            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('Story Not Found'));
+            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, $this->app->trans('Story Not Found'));
         } catch (Exception $e) {
-            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('An error occured'));
+            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, $this->app->trans('An error occured'));
         }
 
         return $result;
@@ -1703,6 +1703,7 @@ class API_V1_adapter extends API_V1_Abstract
             'created_on'   => $permalink->get_created_on()->format(DATE_ATOM),
             'id'           => $permalink->get_id(),
             'is_activated' => $permalink->get_is_activated(),
+            /** @Ignore */
             'label'        => $permalink->get_label(),
             'updated_on'   => $permalink->get_last_modified()->format(DATE_ATOM),
             'page_url'     => $permalink->get_page(),

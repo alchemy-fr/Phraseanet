@@ -124,9 +124,9 @@ class SphinxSearchEngine implements SearchEngineInterface
     public function getAvailableSort()
     {
         return [
-            'relevance'  => _('pertinence'),
-            'created_on' => _('date dajout'),
-            'random'     => _('aleatoire'),
+            'relevance'  => $this->app->trans('pertinence'),
+            'created_on' => $this->app->trans('date dajout'),
+            'random'     => $this->app->trans('aleatoire'),
         ];
     }
 
@@ -136,8 +136,8 @@ class SphinxSearchEngine implements SearchEngineInterface
     public function getAvailableOrder()
     {
         return [
-            'desc' => _('descendant'),
-            'asc'  => _('ascendant'),
+            'desc' => $this->app->trans('descendant'),
+            'asc'  => $this->app->trans('ascendant'),
         ];
     }
 
@@ -155,11 +155,11 @@ class SphinxSearchEngine implements SearchEngineInterface
     public function getStatus()
     {
         if (false === $this->sphinx->Status()) {
-            throw new RuntimeException(_('Sphinx server is offline'));
+            throw new RuntimeException($this->app->trans('Sphinx server is offline'));
         }
 
         if (false === $this->suggestionClient->Status()) {
-            throw new RuntimeException(_('Sphinx server is offline'));
+            throw new RuntimeException($this->app->trans('Sphinx server is offline'));
         }
 
         if (null === $this->rt_conn) {
@@ -475,7 +475,7 @@ class SphinxSearchEngine implements SearchEngineInterface
 
         if ($res === false) {
             if ($this->sphinx->IsConnectError() === true) {
-                $error = _('Sphinx server is offline');
+                $error = $this->app->trans('Sphinx server is offline');
             } else {
                 $error = $this->sphinx->GetLastError();
             }

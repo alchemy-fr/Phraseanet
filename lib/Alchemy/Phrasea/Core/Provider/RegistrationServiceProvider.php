@@ -43,7 +43,7 @@ class RegistrationServiceProvider implements ServiceProviderInterface
         $app['registration.optional-fields'] = $app->share(function (Application $app) {
             return [
                 'login'=> [
-                    'label'       => _('admin::compte-utilisateur identifiant'),
+                    'label'       => 'admin::compte-utilisateur identifiant',
                     'type'        => 'text',
                     'constraints' => [
                         new Assert\NotBlank(),
@@ -51,81 +51,81 @@ class RegistrationServiceProvider implements ServiceProviderInterface
                     ]
                 ],
                 'gender' => [
-                    'label'   => _('admin::compte-utilisateur sexe'),
+                    'label'   => 'admin::compte-utilisateur sexe',
                     'type'    => 'choice',
                     'multiple' => false,
                     'expanded' => false,
                     'choices' => [
-                        '0' => _('admin::compte-utilisateur:sexe: mademoiselle'),
-                        '1' => _('admin::compte-utilisateur:sexe: madame'),
-                        '2' => _('admin::compte-utilisateur:sexe: monsieur'),
+                        '0' => 'admin::compte-utilisateur:sexe: mademoiselle',
+                        '1' => 'admin::compte-utilisateur:sexe: madame',
+                        '2' => 'admin::compte-utilisateur:sexe: monsieur',
                     ]
                 ],
                 'firstname' => [
-                    'label' => _('admin::compte-utilisateur prenom'),
+                    'label' => 'admin::compte-utilisateur prenom',
                     'type' => 'text',
                     'constraints' => [
                         new Assert\NotBlank(),
                     ]
                 ],
                 'lastname' => [
-                    'label' => _('admin::compte-utilisateur nom'),
+                    'label' => 'admin::compte-utilisateur nom',
                     'type' => 'text',
                     'constraints' => [
                         new Assert\NotBlank(),
                     ]
                 ],
                 'address' => [
-                    'label' => _('admin::compte-utilisateur adresse'),
+                    'label' => 'admin::compte-utilisateur adresse',
                     'type' => 'textarea',
                     'constraints' => [
                         new Assert\NotBlank(),
                     ]
                 ],
                 'zipcode' => [
-                    'label' => _('admin::compte-utilisateur code postal'),
+                    'label' => 'admin::compte-utilisateur code postal',
                     'type' => 'text',
                     'constraints' => [
                         new Assert\NotBlank(),
                     ]
                 ],
                 'geonameid' => [
-                    'label' => _('admin::compte-utilisateur ville'),
+                    'label' => 'admin::compte-utilisateur ville',
                     'type' => new \Alchemy\Phrasea\Form\Type\GeonameType(),
                     'constraints' => [
                         new Assert\NotBlank(),
                     ]
                 ],
                 'position' => [
-                    'label' => _('admin::compte-utilisateur poste'),
+                    'label' => 'admin::compte-utilisateur poste',
                     'type' => 'text',
                     'constraints' => [
                         new Assert\NotBlank(),
                     ]
                 ],
                 'company' => [
-                    'label' => _('admin::compte-utilisateur societe'),
+                    'label' => 'admin::compte-utilisateur societe',
                     'type' => 'text',
                     'constraints' => [
                         new Assert\NotBlank(),
                     ]
                 ],
                 'job' => [
-                    'label' => _('admin::compte-utilisateur activite'),
+                    'label' => 'admin::compte-utilisateur activite',
                     'type' => 'text',
                     'constraints' => [
                         new Assert\NotBlank(),
                     ]
                 ],
                 'tel' => [
-                    'label' => _('admin::compte-utilisateur tel'),
+                    'label' => 'admin::compte-utilisateur tel',
                     'type' => 'text',
                     'constraints' => [
                         new Assert\NotBlank(),
                     ]
                 ],
                 'fax' => [
-                    'label' => _('admin::compte-utilisateur fax'),
+                    'label' => 'admin::compte-utilisateur fax',
                     'type' => 'text',
                     'constraints' => [
                         new Assert\NotBlank(),

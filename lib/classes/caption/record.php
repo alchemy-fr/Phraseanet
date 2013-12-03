@@ -304,13 +304,14 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
             $value = preg_replace(
                 "(([^']{1})((https?|file):((/{2,4})|(\\{2,4}))[\w:#%/;$()~_?/\-=\\\.&]*)([^']{1}))"
-                , '$1 $2 <a title="' . _('Open the URL in a new window') . '" class="ui-icon ui-icon-extlink" href="$2" style="display:inline;padding:2px 5px;margin:0 4px 0 2px;" target="_blank"> &nbsp;</a>$7'
+                , '$1 $2 <a title="' . $this->app->trans('Open the URL in a new window') . '" class="ui-icon ui-icon-extlink" href="$2" style="display:inline;padding:2px 5px;margin:0 4px 0 2px;" target="_blank"> &nbsp;</a>$7'
                 , $highlight ? $field->highlight_thesaurus() : $field->get_serialized_values(false, false)
             );
 
             $fields[$field->get_name()] = [
                 'value'     => $value,
-                'label'     => $field->get_databox_field()->get_label($this->app['locale.I18n']),
+                /** @Ignore */
+                'label'     => $field->get_databox_field()->get_label($this->app['locale']),
                 'separator' => $field->get_databox_field()->get_separator(),
             ];
         }

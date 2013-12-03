@@ -44,7 +44,7 @@ class NullJob extends AbstractJob
      */
     public function getEditor()
     {
-        return new DefaultEditor();
+        return new DefaultEditor($this->translator);
     }
 
     /**

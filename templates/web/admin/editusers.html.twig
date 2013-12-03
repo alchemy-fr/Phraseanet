@@ -95,11 +95,11 @@
   <div class="tabs PNB" style="bottom:40px;">
     <ul>
       <li>
-        <a href="#rights_tab">{% trans 'Rights' %}</a>
+        <a href="#rights_tab">{{ 'Rights' | trans }}</a>
       </li>
       {% if main_user is not empty and main_user.is_template is empty and main_user.is_special is empty %}
       <li>
-        <a href="#user_infos_tab">{% trans 'Infos' %}</a>
+        <a href="#user_infos_tab">{{ 'Infos' | trans }}</a>
       </li>
       {% endif %}
     </ul>
@@ -113,32 +113,28 @@
 
                 {% if main_user.is_special is not empty %}
                   {% if main_user.get_login() == 'invite' %}
-                    {% trans 'Reglages:: reglages d acces guest' %}
+                    {{ 'Reglages:: reglages d acces guest' | trans }}
                   {% elseif main_user.get_login() == 'autoregister' %}
-                    {% trans 'Reglages:: reglages d inscitpition automatisee' %}
+                    {{ 'Reglages:: reglages d inscitpition automatisee' | trans }}
                   {% endif %}
                 {% else %}
                   {% set display_name = main_user.get_display_name() %}
-                  {% trans %}
-                    Edition des droits de {{ display_name }}
-                  {% endtrans %}
+                  {% trans with {'%display_name%' : display_name} %}Edition des droits de %display_name%{% endtrans %}
                 {% endif %}
               {% else %}
                 {% set number = users|length %}
-                {% trans %}
-                  Edition des droits de {{ number }} utilisateurs
-                {% endtrans %}
+                {% trans with {'%number%' : number} %}Edition des droits de %number% utilisateurs{% endtrans %}
               {% endif %}
             </td>
             <td style="text-align:right;">
-              {% trans 'Apply a template' %}
+              {{ 'Apply a template' | trans }}
               <select name="template">
-                <option value="">{% trans 'boutton::choisir' %}</option>
+                <option value="">{{ 'boutton::choisir' | trans }}</option>
                 {% for template in templates %}
                 <option value="{{ template.get_id() }}">{{ template.get_display_name() }}</option>
                 {% endfor %}
               </select>
-               <button class="btn" type='button' id='reset_rights'>{% trans 'Delete all users rights' %}</button>
+               <button class="btn" type='button' id='reset_rights'>{{ 'Delete all users rights' | trans }}</button>
             </td>
           </tr>
         </table>
@@ -149,7 +145,7 @@
 
               </th>
               <th colspan="26">
-                <img src="/skins/lng/inclin-{{app['locale.I18n']}}.png" style="width:698px"/>
+                <img src="/skins/lng/inclin-{{app['locale']}}.png" style="width:698px"/>
               </th>
             </tr>
           </thead>
@@ -172,7 +168,7 @@
 
                 </th>
                 <th colspan="26">
-                  <img src="/skins/lng/inclin-{{app['locale.I18n']}}.gif" >
+                  <img src="/skins/lng/inclin-{{app['locale']}}.gif" >
                 </th>
               </tr>
             </thead>-->
@@ -325,16 +321,16 @@
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
-                <td style="text-align:center;width:19px;" title="{% trans 'Allowed to publish' %}">
+                <td style="text-align:center;width:19px;" title="{{ 'Allowed to publish' | trans }}">
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'bas_chupub', users, 'sbas')}}
                 </td>
-                <td style="text-align:center;width:19px;" title="{% trans 'Manage Thesaurus' %}">
+                <td style="text-align:center;width:19px;" title="{{ 'Manage Thesaurus' | trans }}">
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'bas_modif_th', users, 'sbas')}}
                 </td>
-                <td style="text-align:center;width:19px;" title="{% trans 'Manage Database' %}">
+                <td style="text-align:center;width:19px;" title="{{ 'Manage Database' | trans }}">
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'bas_manage', users, 'sbas')}}
                 </td>
-                <td style="text-align:center;width:19px;" title="{% trans 'Manage DB fields' %}">
+                <td style="text-align:center;width:19px;" title="{{ 'Manage DB fields' | trans }}">
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'bas_modify_struct', users, 'sbas')}}
                 </td>
                 <td style="text-align:center;width:48px;"></td>
@@ -344,28 +340,28 @@
                 <td style="overflow:hidden;white-space:nowrap;">
                   {{rights['base_id']|bas_labels(app)}}
                 </td>
-                <td class="users_col case_right_access" title="{% trans 'Access' %}">
+                <td class="users_col case_right_access" title="{{ 'Access' | trans }}">
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'access', users, 'base')}}
                 </td>
-                <td class="users_col case_right_actif" title="{% trans 'Active' %}">
+                <td class="users_col case_right_actif" title="{{ 'Active' | trans }}">
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'actif', users, 'base')}}
                 </td>
-                <td class="users_col case_right_canputinalbum" title="{% trans 'Allowed to add in basket' %}">
+                <td class="users_col case_right_canputinalbum" title="{{ 'Allowed to add in basket' | trans }}">
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'canputinalbum', users, 'base')}}
                 </td>
-                <td class="users_col case_right_candwnldpreview" title="{% trans 'Access to preview' %}">
+                <td class="users_col case_right_candwnldpreview" title="{{ 'Access to preview' | trans }}">
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'candwnldpreview', users, 'base')}}
                 </td>
-                <td class="users_col case_right_nowatermark" title="{% trans 'Remove watermark' %}">
+                <td class="users_col case_right_nowatermark" title="{{ 'Remove watermark' | trans }}">
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'nowatermark', users, 'base')}}
                 </td>
-                <td class="users_col case_right_candwnldhd" title="{% trans 'Access to HD' %}">
+                <td class="users_col case_right_candwnldhd" title="{{ 'Access to HD' | trans }}">
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'candwnldhd', users, 'base')}}
                 </td>
-                <td class="users_col case_right_cancmd" title="{% trans 'Allowed to order' %}">
+                <td class="users_col case_right_cancmd" title="{{ 'Allowed to order' | trans }}">
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'cancmd', users, 'base')}}
                 </td>
-                <td class="users_col case_right_quota" title="{% trans 'Set download quotas' %}">
+                <td class="users_col case_right_quota" title="{{ 'Set download quotas' | trans }}">
                   <div class="quota_trigger quota_{{rights['base_id']}} base_{{rights['base_id']}}">
                     {% if rights['restrict_dwnld'] > 0 %}
                     <img src="/skins/icons/user_details_on.png" />
@@ -375,7 +371,7 @@
                     <input type="hidden" name="quota_base_id" value="{{rights['base_id']}}"/>
                   </div>
                 </td>
-                <td class="users_col case_right_time" title="{% trans 'Set time restrictions' %}">
+                <td class="users_col case_right_time" title="{{ 'Set time restrictions' | trans }}">
                   <div class="time_trigger time_{{rights['base_id']}} base_{{rights['base_id']}}">
                     {% if rights['time_limited'] > 0 %}
                     <img src="/skins/icons/user_details_on.png" />
@@ -385,7 +381,7 @@
                     <input type="hidden" name="time_base_id" value="{{rights['base_id']}}"/>
                   </div>
                 </td>
-                <td class="users_col case_right_masks" title="{% trans 'Set statuses restrictions' %}">
+                <td class="users_col case_right_masks" title="{{ 'Set statuses restrictions' | trans }}">
                   <div class="masks_trigger quotatime_{{rights['base_id']}} base_{{rights['base_id']}}">
                     {% if rights['masks'] > 0 %}
                     <img src="/skins/icons/user_details_on.png" />
@@ -398,34 +394,34 @@
 
                 <td style="text-align:center;width:100px;"></td>
 
-                <td class="users_col case_right_canaddrecord" title="{% trans 'Allowed to add' %}">
+                <td class="users_col case_right_canaddrecord" title="{{ 'Allowed to add' | trans }}">
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'canaddrecord', users, 'base')}}
                 </td>
-                <td class="users_col case_right_canmodifrecord" title="{% trans 'Allowed to edit' %}">
+                <td class="users_col case_right_canmodifrecord" title="{{ 'Allowed to edit' | trans }}">
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'canmodifrecord', users, 'base')}}
                 </td>
-                <td class="users_col case_right_chgstatus" title="{% trans 'Allowed to change statuses' %}">
+                <td class="users_col case_right_chgstatus" title="{{ 'Allowed to change statuses' | trans }}">
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'chgstatus', users, 'base')}}
                 </td>
-                <td class="users_col case_right_candeleterecord" title="{% trans 'Allowed to delete' %}">
+                <td class="users_col case_right_candeleterecord" title="{{ 'Allowed to delete' | trans }}">
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'candeleterecord', users, 'base')}}
                 </td>
-                <td class="users_col case_right_imgtools" title="{% trans 'Access to image tools' %}">
+                <td class="users_col case_right_imgtools" title="{{ 'Access to image tools' | trans }}">
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'imgtools', users, 'base')}}
                 </td>
-                <td class="users_col case_right_canadmin" title="{% trans 'Manage users' %}">
+                <td class="users_col case_right_canadmin" title="{{ 'Manage users' | trans }}">
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'canadmin', users, 'base')}}
                 </td>
-                <td class="users_col case_right_canreport" title="{% trans 'Allowed to access report' %}">
+                <td class="users_col case_right_canreport" title="{{ 'Allowed to access report' | trans }}">
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'canreport', users, 'base')}}
                 </td>
-                <td class="users_col case_right_canpush" title="{% trans 'Allowed to push' %}">
+                <td class="users_col case_right_canpush" title="{{ 'Allowed to push' | trans }}">
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'canpush', users, 'base')}}
                 </td>
-                <td class="users_col case_right_manage" title="{% trans 'Manage collection' %}">
+                <td class="users_col case_right_manage" title="{{ 'Manage collection' | trans }}">
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'manage', users, 'base')}}
                 </td>
-                <td class="users_col case_right_modify" title="{% trans 'Manage values lists' %}">
+                <td class="users_col case_right_modify" title="{{ 'Manage values lists' | trans }}">
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'modify_struct', users, 'base')}}
                 </td>
                 <td colspan="5">
@@ -445,7 +441,7 @@
         <table>
           <tr>
             <td>
-              {% trans 'admin::compte-utilisateur identifiant' %}
+              {{ 'admin::compte-utilisateur identifiant' | trans }}
             </td>
             <td>
               <input type="text" value="{{main_user.get_login()}}" readonly="readonly" />
@@ -453,19 +449,19 @@
           </tr>
           <tr>
             <td>
-              {% trans 'admin::compte-utilisateur sexe' %}
+              {{ 'admin::compte-utilisateur sexe' | trans }}
             </td>
             <td>
               <select name="gender">
-                <option {% if main_user.get_gender() == 0 %}selected="selected"{% endif %} value="0" >{% trans 'admin::compte-utilisateur:sexe: mademoiselle' %}</option>
-                <option {% if main_user.get_gender() == 1 %}selected="selected"{% endif %} value="1" >{% trans 'admin::compte-utilisateur:sexe: madame' %}</option>
-                <option {% if main_user.get_gender() == 2 %}selected="selected"{% endif %} value="2" >{% trans 'admin::compte-utilisateur:sexe: monsieur' %}</option>
+                <option {% if main_user.get_gender() == 0 %}selected="selected"{% endif %} value="0" >{{ 'admin::compte-utilisateur:sexe: mademoiselle' | trans }}</option>
+                <option {% if main_user.get_gender() == 1 %}selected="selected"{% endif %} value="1" >{{ 'admin::compte-utilisateur:sexe: madame' | trans }}</option>
+                <option {% if main_user.get_gender() == 2 %}selected="selected"{% endif %} value="2" >{{ 'admin::compte-utilisateur:sexe: monsieur' | trans }}</option>
               </select>
             </td>
           </tr>
           <tr>
             <td>
-              {% trans 'admin::compte-utilisateur prenom' %}
+              {{ 'admin::compte-utilisateur prenom' | trans }}
             </td>
             <td>
               <input type="text" name="first_name" value="{{main_user.get_firstname()}}"/>
@@ -473,7 +469,7 @@
           </tr>
           <tr>
             <td>
-              {% trans 'admin::compte-utilisateur nom' %}
+              {{ 'admin::compte-utilisateur nom' | trans }}
             </td>
             <td>
               <input type="text" name="last_name" value="{{main_user.get_lastname()}}"/>
@@ -481,7 +477,7 @@
           </tr>
           <tr>
             <td>
-              {% trans 'admin::compte-utilisateur email' %}
+              {{ 'admin::compte-utilisateur email' | trans }}
             </td>
             <td>
               <input type="text" name="email" value="{{main_user.get_email()}}"/>
@@ -489,7 +485,7 @@
           </tr>
           <tr>
             <td>
-              {% trans 'admin::compte-utilisateur adresse' %}
+              {{ 'admin::compte-utilisateur adresse' | trans }}
             </td>
             <td>
               <input type="text" name="address" value="{{main_user.get_address()}}"/>
@@ -497,7 +493,7 @@
           </tr>
           <tr>
             <td>
-              {% trans 'admin::compte-utilisateur code postal' %}
+              {{ 'admin::compte-utilisateur code postal' | trans }}
             </td>
             <td>
               <input type="text" name="zip" value="{{main_user.get_zipcode()}}"/>
@@ -505,7 +501,7 @@
           </tr>
           <tr>
             <td>
-              {% trans 'admin::compte-utilisateur ville' %}
+              {{ 'admin::compte-utilisateur ville' | trans }}
             </td>
             <td>
               <input type="text" value="{{ main_user.get_geonameid() }}" class="geoname_field" name="geonameid" />
@@ -513,7 +509,7 @@
           </tr>
           <tr>
             <td>
-              {% trans 'admin::compte-utilisateur poste' %}
+              {{ 'admin::compte-utilisateur poste' | trans }}
             </td>
             <td>
               <input type="text" name="function" value="{{main_user.get_position()}}"/>
@@ -521,7 +517,7 @@
           </tr>
           <tr>
             <td>
-              {% trans 'admin::compte-utilisateur societe' %}
+              {{ 'admin::compte-utilisateur societe' | trans }}
             </td>
             <td>
               <input type="text" name="company" value="{{main_user.get_company()}}"/>
@@ -529,7 +525,7 @@
           </tr>
           <tr>
             <td>
-              {% trans 'admin::compte-utilisateur activite' %}
+              {{ 'admin::compte-utilisateur activite' | trans }}
             </td>
             <td>
               <input type="text" name="activite" value="{{main_user.get_job()}}"/>
@@ -538,7 +534,7 @@
 
           <tr>
             <td>
-              {% trans 'admin::compte-utilisateur telephone' %}
+              {{ 'admin::compte-utilisateur telephone' | trans }}
             </td>
             <td>
               <input type="text" name="telephone" value="{{main_user.get_tel()}}"/>
@@ -546,7 +542,7 @@
           </tr>
           <tr>
             <td>
-              {% trans 'admin::compte-utilisateur fax' %}
+              {{ 'admin::compte-utilisateur fax' | trans }}
             </td>
             <td>
               <input type="text" name="fax" value="{{main_user.get_fax()}}"/>
@@ -558,8 +554,8 @@
     {% endif %}
   </div>
   <div class="PNB10" style="top:auto;height:20px;">
-    <button class="users_rights_valid btn">{% trans 'boutton::valider' %}</button>
-    <a href="{{ path('admin_users_search') }}" class="users_rights_cancel btn" style="text-decoration:none">{% trans 'boutton::retour' %}</a>
+    <button class="users_rights_valid btn">{{ 'boutton::valider' | trans }}</button>
+    <a href="{{ path('admin_users_search') }}" class="users_rights_cancel btn" style="text-decoration:none">{{ 'boutton::retour' | trans }}</a>
   </div>
 </div>
 
@@ -576,7 +572,7 @@
     $('div.tabs').tabs();
 
     $('#users_rights_form button#reset_rights').bind('click', function(){
-        if(confirm("{% trans 'Are you sure you want to reset rights?' %}"))
+        if(confirm("{{ 'Are you sure you want to reset rights?' | trans }}"))
         {
           var users = $('#users_rights_form input[name="users"]').val();
 

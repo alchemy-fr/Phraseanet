@@ -25,7 +25,7 @@ interface ControlProviderInterface
     /**
      * @return stringa simple i18n word to reprsent this vocabullary
      */
-    public static function getName();
+    public function getName();
 
     /**
      * @return boolean validate an $id in the vocabulary

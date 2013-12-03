@@ -24,7 +24,6 @@ use Doctrine\ORM\Configuration as ORMConfiguration;
 use Doctrine\DBAL\Types\Type;
 use Gedmo\DoctrineExtensions;
 use Gedmo\Timestampable\TimestampableListener;
-use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
@@ -37,7 +36,7 @@ class ORMServiceProvider implements ServiceProviderInterface
         $app['EM.sql-logger.max-files'] = 5;
 
         $app['EM.sql-logger'] = $app->share(function (Application $app) {
-            $logger = new Logger('doctrine-logger');
+            $logger = new $app['monolog.logger.class']('doctrine-logger');
             $logger->pushHandler(new RotatingFileHandler($app['EM.sql-logger.file'], $app['EM.sql-logger.max-files']));
 
             return new MonologSQLLogger($logger, 'yaml');

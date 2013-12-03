@@ -15,12 +15,12 @@
             var usrId = '{{ dashboard.usr.get_id() }}' ;
 
             var language = {
-                valider : '{% trans "boutton::valider" %}',
-                choix_collection : '{% trans "veuillez choisir au minimum une collection" %}',
-                annuler : '{% trans "boutton::annuler" %}',
-                fermer : '{% trans "boutton::fermer" %}',
-        connexion : '{% trans "report:: Connexion" %}',
-        heure : '{% trans "report::Heures" %}'
+                valider : '{{ "boutton::valider" | trans }}',
+                choix_collection : '{{ "veuillez choisir au minimum une collection" | trans }}',
+                annuler : '{{ "boutton::annuler" | trans }}',
+                fermer : '{{ "boutton::fermer" | trans }}',
+        connexion : '{{ "report:: Connexion" | trans }}',
+        heure : '{{ "report::Heures" | trans }}'
             };
 
             var date = {
@@ -29,11 +29,11 @@
             };
 
             var dashboard ={
-                title_connexion : '{% trans "report::Nombre de connexions" %}',
-                title_jour : '{% trans "report:: jour" %}',
-                title_heure : '{% trans "report:: Heures" %}',
-                title_doc_add: '{% trans "report::Nombre de document ajoute" %}',
-                title_doc_edit:'{% trans "report::Nombre de document edite" %}'
+                title_connexion : '{{ "report::Nombre de connexions" | trans }}',
+                title_jour : '{{ "report:: jour" | trans }}',
+                title_heure : '{{ "report:: Heures" | trans }}',
+                title_doc_add: '{{ "report::Nombre de document ajoute" | trans }}',
+                title_doc_edit:'{{ "report::Nombre de document edite" | trans }}'
             }
 
     </script>

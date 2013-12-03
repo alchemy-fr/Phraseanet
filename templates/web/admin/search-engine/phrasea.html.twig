@@ -1,14 +1,14 @@
 <div class="page-header">
-    <h1>{% trans 'Phrasea search-engine configuration' %}</h1>
+    <h1>{{ 'Phrasea search-engine configuration' | trans }}</h1>
 </div>
 
 <form method="post" action="{{ path('admin_searchengine_post') }}">
     <fieldset>
-        <legend>{% trans 'Stemming' %}</legend>
-        {% trans 'Enable stemming' %} <input type="checkbox" name="stemming_enabled" value="1" {% if configuration['stemming_enabled'] %}checked="checked"{% endif %} />
+        <legend>{{ 'Stemming' | trans }}</legend>
+        {{ 'Enable stemming' | trans }} <input type="checkbox" name="stemming_enabled" value="1" {% if configuration['stemming_enabled'] %}checked="checked"{% endif %} />
     </fieldset>
     <fieldset>
-        <legend>{% trans 'Default sort' %}</legend>
+        <legend>{{ 'Default sort' | trans }}</legend>
         <select name="default_sort">
             {% for sort, sort_name in available_sort %}
                 <option value="{{ sort }}" {%if configuration['default_sort'] == sort %}selected="selected"{% endif %}>{{ sort_name }}</option>
@@ -16,6 +16,6 @@
         </select>
     </fieldset>
     <div class="form-actions">
-        <button type="submit" class="btn btn-warning">{% trans 'boutton::valider' %}</button>
+        <button type="submit" class="btn btn-warning">{{ 'boutton::valider' | trans }}</button>
     </div>
 </form>

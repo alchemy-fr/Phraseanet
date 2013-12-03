@@ -2760,7 +2760,7 @@
           </field>
           <field>
             <name>locale</name>
-            <type>enum('fr_FR','en_GB','en_US','ar_SA','de_DE','es_LA','zh_CN','nb_NO')</type>
+            <type>enum('fr','en','ar','de','es','zh','nb','nl')</type>
             <null>YES</null>
             <extra></extra>
             <default></default>
@@ -4642,25 +4642,25 @@
           <default>
             <data key="prop">ToU</data>
             <data key="value"></data>
-            <data key="locale">fr_FR</data>
+            <data key="locale">fr</data>
             <data key="created_on">NOW()</data>
           </default>
           <default>
             <data key="prop">ToU</data>
             <data key="value"></data>
-            <data key="locale">ar_SA</data>
+            <data key="locale">nl</data>
             <data key="created_on">NOW()</data>
           </default>
           <default>
             <data key="prop">ToU</data>
             <data key="value"></data>
-            <data key="locale">de_DE</data>
+            <data key="locale">de</data>
             <data key="created_on">NOW()</data>
           </default>
           <default>
             <data key="prop">ToU</data>
             <data key="value"></data>
-            <data key="locale">en_GB</data>
+            <data key="locale">en</data>
             <data key="created_on">NOW()</data>
           </default>
         </defaults>

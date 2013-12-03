@@ -331,7 +331,7 @@ class PDF
                 $str = $databox->get_sxml_structure();
                 $vn = (string) ($str->pdfPrintLogo);
                 if (($vn * 1) == 1) {
-                    $LEFT__TEXT = $databox->get_label($this->app['locale.I18n']);
+                    $LEFT__TEXT = $databox->get_label($this->app['locale']);
                 }
             }
 

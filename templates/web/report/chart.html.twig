@@ -3,7 +3,7 @@
     {% if rs|length > 0 %}
         <div class="aroundTable">
             <table class="center imgdash" id="mytableday">
-                <caption>{% trans "report:: activite par jour" %}</caption>
+                <caption>{{ "report:: activite par jour" | trans }}</caption>
                 <thead>
                     <tr>
                         <th></th>
@@ -14,7 +14,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <th>{% trans "report:: Connexion" %} {{  sbas_id|sbas_labels(app) }}</th>
+                        <th>{{ "report:: Connexion" | trans }} {{  sbas_id|sbas_labels(app) }}</th>
                         {% for key, value in rs %}
                             <td>{{ value }}</td>
                         {% endfor %}
@@ -27,7 +27,7 @@
     {% if dashboard_array.dashboard.activity_day|length > 0 %}
         <div class="aroundTable">
             <table class="center imgdash" id="mytableday">
-                <caption>{% trans "report:: activite par jour" %}</caption>
+                <caption>{{ "report:: activite par jour" | trans }}</caption>
                 <thead>
                     <tr>
                         <th></th>
@@ -40,7 +40,7 @@
                 {% for key, value in dashboard_array.dashboard.activity_day %}
                     {% if loop.index == 1 %}
                         <tr>
-                            <th>{% trans "report:: Connexion" %} {{ key|sbas_labels(app)}}</th>
+                            <th>{{ "report:: Connexion" | trans }} {{ key|sbas_labels(app)}}</th>
                             {% if value|length > 0 %}
                                 {% for k, v in value %}
                                     <td>{{ v }}</td>

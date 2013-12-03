@@ -4,32 +4,32 @@
         <div style="padding:10px;">
             {% if printer.get_count_actionable() > 0 %}
                 {% if printer.get_count_preview() > 0 %}
-                <h4>{% trans 'phraseanet:: preview' %}</h4>
+                <h4>{{ 'phraseanet:: preview' | trans }}</h4>
                 <div style="margin: 10px 0 20px 0; padding: 0 10px;">
                     <label for="RADI_PRE_LAB" class="radio">
                         <input type="radio" name="lay" value="preview" id="RADI_PRE_LAB" />
-                            {% trans 'print:: image de choix seulement' %}
+                            {{ 'print:: image de choix seulement' | trans }}
                     </label>
                     <label for="RADI_PRE_CAP" class="radio">
                         <input type="radio" name="lay" value="previewCaption" id="RADI_PRE_CAP" />
-                            {% trans 'print:: image de choix et description' %}
+                            {{ 'print:: image de choix et description' | trans }}
                     </label>
                     <label for="RADI_PRE_TDM" class="radio">
                         <input type="radio" name="lay" value="previewCaptionTdm" id="RADI_PRE_TDM" />
-                            {% trans 'print:: image de choix et description avec planche contact' %}
+                            {{ 'print:: image de choix et description avec planche contact' | trans }}
                     </label>
                 </div>
                 {% endif %}
                 {% if printer.get_count_thumbnail() > 0 %}
-                <h4>{% trans 'print:: imagette' %}</h4>
+                <h4>{{ 'print:: imagette' | trans }}</h4>
                 <div style="margin: 10px 0 20px 0; padding: 0 10px;">
                     <label for="RADI_PRE_THUM" class="radio">
                         <input type="radio" name="lay" value="thumbnailList" id="RADI_PRE_THUM" />
-                            {% trans 'print:: liste d\'imagettes' %}
+                            {{ 'print:: liste d\'imagettes' | trans }}
                     </label>
                     <label for="RADI_PRE_THUMGRI" class="radio">
                         <input type="radio" name="lay" checked value="thumbnailGrid" id="RADI_PRE_THUMGRI" />
-                            {% trans 'print:: planche contact (mosaique)' %}
+                            {{ 'print:: planche contact (mosaique)' | trans }}
                     </label>
                 </div>
                 {% endif %}
@@ -37,13 +37,13 @@
                 {% if printer.get_count_thumbnail() > 0 or printer.get_count_preview() > 0 %}
                     <div style="margin-bottom: 10px; text-align: center;">
                         <input type="hidden" name="lst" value="{{ printer.get_serialize_list }}" />
-                        <button type="submit" class="btn btn-inverse">{% trans 'boutton::imprimer' %}</button>
+                        <button type="submit" class="btn btn-inverse">{{ 'boutton::imprimer' | trans }}</button>
                     </div>
                 {% endif %}
             {% elseif printer.get_count_element_received() > 0 %}
-                {% trans 'None of the selected records can be printed' %}
+                {{ 'None of the selected records can be printed' | trans }}
             {% else %}
-                {% trans 'export:: erreur : aucun document selectionne' %}
+                {{ 'export:: erreur : aucun document selectionne' | trans }}
             {% endif %}
             </div>
         </div>

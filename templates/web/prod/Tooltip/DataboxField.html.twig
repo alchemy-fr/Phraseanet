@@ -1,14 +1,14 @@
-{% extends 'prod/Tooltip/Tooltip.html.twig'%}
+{% extends 'prod/Tooltip/Tooltip.html.twig' %}
 
 {% set title %}
-    {{ field.get_label(app['locale.I18n']) }}
+    {{ field.get_label(app['locale']) }}
 
     {% if field.get_type() == 'text' %}
-        ({% trans 'Type texte' %})
+        ({{ 'Type texte' | trans }})
     {% elseif field.get_type() == 'number' %}
-        ({% trans 'Type nombre' %})
+        ({{ 'Type nombre' | trans }})
     {% elseif field.get_type() == 'date' %}
-        ({% trans 'Type date' %})
+        ({{ 'Type date' | trans }})
     {% endif %}
 {% endset %}
 {% set width = 300 %}
@@ -16,37 +16,37 @@
 
 {% block content %}
     <div>
-        {% trans 'Source' %} : {{ field.get_tag().getGroupName() }} / {{ field.get_tag().getName() }}
+        {{ 'Source' | trans }} : {{ field.get_tag().getGroupName() }} / {{ field.get_tag().getName() }}
     </div>
 
     {% if field.is_indexable() is empty %}
         <div>
-            {% trans 'Ce champ n\'est pas indexe' %}
+            {{ 'Ce champ n\'est pas indexe' | trans }}
         </div>
         {% endif %}
     {% if field.is_multi() %}
         <div>
-            {% trans 'Ce champ est multivalue' %}
+            {{ 'Ce champ est multivalue' | trans }}
         </div>
     {% endif %}
     {% if field.is_readonly() %}
         <div>
-            {% trans 'Ce champ est en lecture seule' %}
+            {{ 'Ce champ est en lecture seule' | trans }}
         </div>
     {% endif %}
     {% if field.get_tbranch() %}
         <div>
-            {% trans 'Ce champ est relie a une branche de thesaurus' %}
+            {{ 'Ce champ est relie a une branche de thesaurus' | trans }}
         </div>
         {% endif %}
     {% if field.get_thumbtitle() %}
         <div>
-            {% trans 'Ce champ est utilise en titre a l\'affichage' %}
+            {{ 'Ce champ est utilise en titre a l\'affichage' | trans }}
         </div>
     {% endif %}
     {% if field.is_required() %}
         <div>
-            {% trans 'Ce champ est requis' %}
+            {{ 'Ce champ est requis' | trans }}
         </div>
     {% endif %}
 
@@ -54,9 +54,7 @@
         <hr/>
         <div>
             {% set DublinCoreElementSet = '<a href="http://dublincore.org/documents/dces/" target="_blank">DublinCore Element Set</a>' %}
-            {% trans %}
-                Ce champ est decrit comme element du {{ DublinCoreElementSet }}
-            {% endtrans %}
+            {% trans with {'%DublinCoreElementSet%' : DublinCoreElementSet} %}Ce champ est decrit comme element du %DublinCoreElementSet%{% endtrans %}
         </div>
     {% endif %}
 

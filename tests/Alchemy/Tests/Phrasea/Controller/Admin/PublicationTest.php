@@ -18,7 +18,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
         foreach ($feeds as $feed) {
             $this->assertRegExp('/\/admin\/publications\/feed\/' . $feed->getId() . '/', $pageContent);
             if ($feed->getCollection() != null) {
-                $this->assertRegExp('/' . $feed->getCollection()->get_label(self::$DI['app']['locale.I18n']) . '/', $pageContent);
+                $this->assertRegExp('/' . $feed->getCollection()->get_label(self::$DI['app']['locale']) . '/', $pageContent);
             }
             if ($feed->isOwner(self::$DI['user'])) {
                 $this->assertEquals(1, $crawler->filterXPath("//form[@action='/admin/publications/feed/" . $feed->getId() . "/delete/']")->count());

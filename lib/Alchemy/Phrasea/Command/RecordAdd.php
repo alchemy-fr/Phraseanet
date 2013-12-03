@@ -61,7 +61,7 @@ class RecordAdd extends Command
 
         if (!$input->getOption('yes')) {
             do {
-                $continue = strtolower($dialog->ask($output, sprintf("Will add record <info>%s</info> (%s) on collection <info>%s</info>\n<question>Continue ? (y/N)</question>", $file, $media->getType(), $collection->get_label($this->container['locale.I18n'])), 'N'));
+                $continue = strtolower($dialog->ask($output, sprintf("Will add record <info>%s</info> (%s) on collection <info>%s</info>\n<question>Continue ? (y/N)</question>", $file, $media->getType(), $collection->get_label($this->container['locale'])), 'N'));
             } while ( ! in_array($continue, ['y', 'n']));
 
             if (strtolower($continue) !== 'y') {
@@ -113,7 +113,7 @@ class RecordAdd extends Command
         if ($elementCreated instanceof \record_adapter) {
             $output->writeln(
                 sprintf(
-                    "Record id <info>%d</info> on collection `%s` (databox `%s`) has been created", $elementCreated->get_record_id(), $elementCreated->get_collection()->get_label($this->container['locale.I18n']), $elementCreated->get_databox()->get_label($this->container['locale.I18n'])
+                    "Record id <info>%d</info> on collection `%s` (databox `%s`) has been created", $elementCreated->get_record_id(), $elementCreated->get_collection()->get_label($this->container['locale']), $elementCreated->get_databox()->get_label($this->container['locale'])
                 )
             );
             $this->container['phraseanet.SE']->addRecord($elementCreated);

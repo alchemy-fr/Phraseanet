@@ -1,4 +1,4 @@
-{% extends "prod/actions/Bridge/wrapper.html.twig"%}
+{% extends "prod/actions/Bridge/wrapper.html.twig" %}
 {% import "prod/actions/Bridge/macro_error_form.html.twig" as error_form %}
 
 {% block menu %}
@@ -10,7 +10,7 @@
             {% trans %}Edition de 1 element{% endtrans %} :
         </td>
         <td style="text-align:right;">
-            <a class="back_link" style="cursor: pointer;">{% trans 'boutton::annuler' %}</a>
+            <a class="back_link" style="cursor: pointer;">{{ 'boutton::annuler' | trans }}</a>
         </td>
         <td style="width:10px;">
         </td>
@@ -21,28 +21,28 @@
 {% block response %}
 <form class="form_add_container bridge_form form-horizontal" action="{{ path('bridge_account_do_action', { 'account_id' : account.get_id(), 'action' : action, 'element_type' : element_type }) }}" method="post">
     <div class="control-group">
-        <label class="control-label" for="modif_title">{% trans 'Titre' %}</label>
+        <label class="control-label" for="modif_title">{{ 'Titre' | trans }}</label>
         <div class="controls">
             <input name="modif_title" type="text" value="{{ element.get_title }}" />
             <p>{{ error_form.display_errors('title', constraint_errors) }}</p>
         </div>
     </div>
     <div class="control-group">
-        <label class="control-label" for="modif_description">{% trans 'Description' %}</label>
+        <label class="control-label" for="modif_description">{{ 'Description' | trans }}</label>
         <div class="controls">
             <textarea name="modif_description" rows="3" >{{ element.get_description|default("") }}</textarea>
             <p>{{ error_form.display_errors('description', constraint_errors) }}</p>
         </div>
     </div>
     <div class="control-group">
-        <label class="control-label" for="modif_tags">{% trans 'Tags' %}</label>
+        <label class="control-label" for="modif_tags">{{ 'Tags' | trans }}</label>
         <div class="controls">
             <textarea name="modif_tags" rows="3" >{{ element.get_tags()|default("") }}</textarea>
             <p>{{ error_form.display_errors('tags', constraint_errors) }}</p>
         </div>
     </div>
     <div class="control-group">
-        <label class="control-label" for="modif_category">{% trans 'Categorie' %}</label>
+        <label class="control-label" for="modif_category">{{ 'Categorie' | trans }}</label>
         <div class="controls">
             {% set categorie = account.get_api().get_connector.get_category_list() %}
             <select name="modif_category">
@@ -53,22 +53,22 @@
         </div>
     </div>
     <div class="control-group">
-        <label class="control-label">{% trans 'Confidentialite' %}</label>
+        <label class="control-label">{{ 'Confidentialite' | trans }}</label>
         <div class="controls">
             <label class="radio inline bridge_fleft">
                 <input  type="radio" name="modif_privacy" value="private" {{ element.is_private ? "checked='checked'" : "" }} />
-                {% trans 'privé' %}
+                {{ 'privé' | trans }}
             </label>
             <label class="radio inline bridge_fleft">
                 <input type="radio" name="modif_privacy"  value="public" {{ element.is_private ? "" : "checked='checked'" }} />
-                {% trans 'public' %}
+                {{ 'public' | trans }}
             </label>
         </div>
     </div>
     <div class="form-actions">
         <input type="hidden" name="elements_list[]" value="{{ element.get_id }}" />
-        <button class="form_submitter btn btn-inverse">{% trans 'boutton::valider' %}</button>
-        <button class="back_link btn btn-inverse">{% trans 'boutton::annuler' %}</button>
+        <button class="form_submitter btn btn-inverse">{{ 'boutton::valider' | trans }}</button>
+        <button class="back_link btn btn-inverse">{{ 'boutton::annuler' | trans }}</button>
     </div>
 </form>
 {% endblock %}

@@ -12,7 +12,7 @@ class MailInfoNewOrderTest extends MailTestCase
 {
     public function testSetUser()
     {
-        $this->assertContainsString('JeanPhil', $this->getMail()->getMessage());
+        $this->assertEquals('%user% has ordered documents', $this->getMail()->getMessage());
     }
 
     public function testShouldThrowALogicExceptionIfNoUserProvided()

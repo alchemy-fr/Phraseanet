@@ -2,36 +2,36 @@
 
 {% block form %}
 <div class="control-group">
-    <label class="control-label">{% trans 'task::archive:archivage sur base/collection/' %}</label>
+    <label class="control-label">{{ 'task::archive:archivage sur base/collection/' | trans }}</label>
     <div class="controls">
         <select class="formElem" name="base_id">
             <option value="">...</option>
             {% for databox in app['phraseanet.appbox'].get_databoxes() %}
                 {% for collection in databox.get_collections() %}
-                    <option value="{{ collection.get_base_id() }}">{{ databox.get_label(app['locale.I18n']) }} / {{ collection.get_label(app['locale.I18n']) }}</option>
+                    <option value="{{ collection.get_base_id() }}">{{ databox.get_label(app['locale']) }} / {{ collection.get_label(app['locale']) }}</option>
                 {% endfor %}
             {% endfor %}
         </select>
     </div>
 </div>
 <div class="control-group">
-    <label class="control-label">{% trans 'task::_common_:hotfolder' %}</label>
+    <label class="control-label">{{ 'task::_common_:hotfolder' | trans }}</label>
     <div class="controls">
         <input class="formElem" type="text" name="hotfolder" value="">
     </div>
 </div>
 <div class="control-group">
-    <label class="control-label">{% trans 'task::archive:delai de \'repos\' avant traitement' %}</label>
+    <label class="control-label">{{ 'task::archive:delai de \'repos\' avant traitement' | trans }}</label>
     <div class="controls">
         <input class="formElem input-small" type="text" name="cold" value="">
-        <span class="help-inline">{% trans 'task::_common_:secondes (unite temporelle)' %}</span>
+        <span class="help-inline">{{ 'task::_common_:secondes (unite temporelle)' | trans }}</span>
     </div>
 </div>
 <div class="control-group">
     <div class="controls">
         <label class="checkbox">
             <input class="formElem" type="checkbox" name="move_archived">
-            {% trans 'task::archive:deplacer les fichiers archives dans _archived' %}
+            {{ 'task::archive:deplacer les fichiers archives dans _archived' | trans }}
         </label>
     </div>
 </div>
@@ -39,7 +39,7 @@
     <div class="controls">
         <label class="checkbox">
             <input class="formElem" type="checkbox" name="move_error">
-            {% trans 'task::archive:deplacer les fichiers non-archives dans _error' %}
+            {{ 'task::archive:deplacer les fichiers non-archives dans _error' | trans }}
         </label>
     </div>
 </div>
@@ -47,7 +47,7 @@
     <div class="controls">
         <label class="checkbox">
             <input class="formElem" type="checkbox" name="copy_spe">
-            {% trans 'task::archive:copier les fichiers \'.phrasea.xml\' et \'.grouping.xml\' dans _archived' %}
+            {{ 'task::archive:copier les fichiers \'.phrasea.xml\' et \'.grouping.xml\' dans _archived' | trans }}
         </label>
     </div>
 </div>
@@ -55,7 +55,7 @@
     <div class="controls">
         <label class="checkbox">
             <input class="formElem" type="checkbox" name="delfolder">
-            {% trans 'task::archive:supprimer les repertoires apres archivage' %}
+            {{ 'task::archive:supprimer les repertoires apres archivage' | trans }}
         </label>
     </div>
 </div>

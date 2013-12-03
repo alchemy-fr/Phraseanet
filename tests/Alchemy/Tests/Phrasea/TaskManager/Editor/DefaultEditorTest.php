@@ -30,6 +30,6 @@ class DefaultEditorTest extends EditorTestCase
 
     protected function getEditor()
     {
-        return new DefaultEditor();
+        return new DefaultEditor($this->createTranslatorMock());
     }
 }

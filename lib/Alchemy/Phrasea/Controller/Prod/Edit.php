@@ -55,25 +55,27 @@ class Edit implements ControllerProviderInterface
 
                     $separator = $meta->get_separator();
 
+                    /** @Ignore */
                     $JSFields[$meta->get_id()] = [
-                        'meta_struct_id' => $meta->get_id()
-                        , 'name'           => $meta->get_name()
-                        , '_status'        => 0
-                        , '_value'         => ''
-                        , '_sgval'         => []
-                        , 'required'             => $meta->is_required()
-                        , 'label'                => $meta->get_label($app['locale.I18n'])
-                        , 'readonly'             => $meta->is_readonly()
-                        , 'type'                 => $meta->get_type()
-                        , 'format'               => ''
-                        , 'explain'              => ''
-                        , 'tbranch'              => $meta->get_tbranch()
-                        , 'maxLength'            => $meta->get_tag()->getMaxLength()
-                        , 'minLength'            => $meta->get_tag()->getMinLength()
-                        , 'multi'                => $meta->is_multi()
-                        , 'separator'            => $separator
-                        , 'vocabularyControl'    => $meta->getVocabularyControl() ? $meta->getVocabularyControl()->getType() : null
-                        , 'vocabularyRestricted' => $meta->getVocabularyControl() ? $meta->isVocabularyRestricted() : false
+                        'meta_struct_id' => $meta->get_id(),
+                        'name'           => $meta->get_name(),
+                        '_status'        => 0,
+                        '_value'         => '',
+                        '_sgval'         => [],
+                        'required'             => $meta->is_required(),
+                        /** @Ignore */
+                        'label'                => $meta->get_label($app['locale']),
+                        'readonly'             => $meta->is_readonly(),
+                        'type'                 => $meta->get_type(),
+                        'format'               => '',
+                        'explain'              => '',
+                        'tbranch'              => $meta->get_tbranch(),
+                        'maxLength'            => $meta->get_tag()->getMaxLength(),
+                        'minLength'            => $meta->get_tag()->getMinLength(),
+                        'multi'                => $meta->is_multi(),
+                        'separator'            => $separator,
+                        'vocabularyControl'    => $meta->getVocabularyControl() ? $meta->getVocabularyControl()->getType() : null,
+                        'vocabularyRestricted' => $meta->getVocabularyControl() ? $meta->isVocabularyRestricted() : false,
                     ];
 
                     if (trim($meta->get_tbranch()) !== '') {
@@ -120,8 +122,8 @@ class Edit implements ControllerProviderInterface
                     if (isset($dbstatus[$databox->get_sbas_id()])) {
                         foreach ($dbstatus[$databox->get_sbas_id()] as $n => $statbit) {
                             $status[$n] = [];
-                            $status[$n]['label0'] = $statbit['labels_off_i18n'][$app['locale.I18n']];
-                            $status[$n]['label1'] = $statbit['labels_on_i18n'][$app['locale.I18n']];
+                            $status[$n]['label0'] = $statbit['labels_off_i18n'][$app['locale']];
+                            $status[$n]['label1'] = $statbit['labels_on_i18n'][$app['locale']];
                             $status[$n]['img_off'] = $statbit['img_off'];
                             $status[$n]['img_on'] = $statbit['img_on'];
                             $status[$n]['_value'] = 0;
@@ -237,7 +239,7 @@ class Edit implements ControllerProviderInterface
                 $VC = VocabularyController::get($app, $vocabulary);
                 $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
             } catch (\Exception $e) {
-                $datas['message'] = _('Vocabulary not found');
+                $datas['message'] = $app->trans('Vocabulary not found');
 
                 return $app->json($datas);
             }

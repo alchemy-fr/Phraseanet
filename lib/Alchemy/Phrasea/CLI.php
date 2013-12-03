@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Phrasea\Command\CommandInterface;
+use Alchemy\Phrasea\Core\CLIProvider\TranslationExtractorServiceProvider;
 use Symfony\Component\Console;
 use Alchemy\Phrasea\Core\CLIProvider\CLIDriversServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\ComposerSetupServiceProvider;
@@ -58,6 +59,7 @@ class CLI extends Application
         $this->register(new LessBuilderServiceProvider());
         $this->register(new SignalHandlerServiceProvider());
         $this->register(new TaskManagerServiceProvider());
+        $this->register(new TranslationExtractorServiceProvider());
 
         $this->bindRoutes();
     }

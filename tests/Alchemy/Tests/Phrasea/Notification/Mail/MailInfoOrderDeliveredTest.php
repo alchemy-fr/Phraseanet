@@ -12,12 +12,12 @@ class MailInfoOrderDeliveredTest extends MailTestCase
 {
     public function testSetBasket()
     {
-        $this->assertContainsString('Hello basket', $this->getMail()->getSubject());
+        $this->assertEquals('push::mail:: Reception de votre commande %title%', $this->getMail()->getSubject());
     }
 
     public function testSetDeliverer()
     {
-        $this->assertContainsString('JeanPhil', $this->getMail()->getMessage());
+        $this->assertEquals('%user% vous a delivre votre commande, consultez la en ligne a l\'adresse suivante', $this->getMail()->getMessage());
     }
 
     public function testShouldThrowALogicExceptionIfNoDelivererProvided()

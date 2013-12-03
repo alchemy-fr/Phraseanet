@@ -30,14 +30,14 @@ class filterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function initFilter()
     {
         $conf = [
-            'user' => [_('phraseanet::utilisateurs'), 1, 1, 1, 1],
-            'ddate' => [_('report:: date'), 1, 0, 1, 1],
-            'ip' => [_('report:: IP'), 1, 0, 0, 0],
-            'appli' => [_('report:: modules'), 1, 0, 0, 0],
-            'fonction' => [_('report::fonction'), 1, 1, 1, 1],
-            'activite' => [_('report::activite'), 1, 1, 1, 1],
-            'pays' => [_('report::pays'), 1, 1, 1, 1],
-            'societe' => [_('report::societe'), 1, 1, 1, 1]
+            'user' => [self::$DI['app']['translator']->trans('phraseanet::utilisateurs'), 1, 1, 1, 1],
+            'ddate' => [self::$DI['app']['translator']->trans('report:: date'), 1, 0, 1, 1],
+            'ip' => [self::$DI['app']['translator']->trans('report:: IP'), 1, 0, 0, 0],
+            'appli' => [self::$DI['app']['translator']->trans('report:: modules'), 1, 0, 0, 0],
+            'fonction' => [self::$DI['app']['translator']->trans('report::fonction'), 1, 1, 1, 1],
+            'activite' => [self::$DI['app']['translator']->trans('report::activite'), 1, 1, 1, 1],
+            'pays' => [self::$DI['app']['translator']->trans('report::pays'), 1, 1, 1, 1],
+            'societe' => [self::$DI['app']['translator']->trans('report::societe'), 1, 1, 1, 1]
         ];
 
         foreach ($this->ret as $sbasid => $collections) {

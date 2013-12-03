@@ -36,21 +36,21 @@
 <div id="home" data-role="page">
     <div data-role="header">
     <h1>{{module_name}}</h1>
-    <a href="#about" class="ui-btn-right">{% trans 'a propos'%}</a>
+    <a href="#about" class="ui-btn-right">{{ 'a propos' | trans }}</a>
   </div>
     <div data-role="content">
     <ul data-role="listview" style="width:100%;margin: 0;">
       <li>
-        <a href="#validation">{% trans 'Validations'%}</a>
+        <a href="#validation">{{ 'Validations' | trans }}</a>
         <span class="ui-li-count">{{_self.valid_baskets_length(baskets_collection)}}</span>
       </li>
       <li>
-        <a href="#baskets">{% trans 'Paniers'%}</a>
+        <a href="#baskets">{{ 'Paniers' | trans }}</a>
         <span class="ui-li-count">{{_self.baskets_length(baskets_collection)}}</span>
       </li>
     </ul>
     <div style="margin:2em 0 0 0">
-      <a href="{{ path ('logout') }}" data-role="button" rel="external">{% trans 'Deconnexion' %}</a>
+      <a href="{{ path ('logout') }}" data-role="button" rel="external">{{ 'Deconnexion' | trans }}</a>
     </div>
   </div>
     <div data-role="footer">
@@ -60,7 +60,7 @@
 
 <div id="about" data-role="page">
     <div data-role="header">
-    <h1>{% trans 'a propos'%}</h1>
+    <h1>{{ 'a propos' | trans }}</h1>
   </div>
     <div data-role="content">
     <p>Phraseanet Version {{ app['phraseanet.version'].getName() }} - {{ app['phraseanet.version'].getNumber() }}</p>
@@ -79,12 +79,12 @@
 
 <div id="validation" data-role="page">
     <div data-role="header">
-     <a href="#home" data-rel="back" data-icon="arrow-l">{% trans 'Back' %}</a>
-     <h1>{% trans 'Validations'%}</h1>
+     <a href="#home" data-rel="back" data-icon="arrow-l">{{ 'Back' | trans }}</a>
+     <h1>{{ 'Validations' | trans }}</h1>
   </div>
     <div data-role="content">
     <p>
-      {% trans 'Voici vos validations en cours' %}
+      {{ 'Voici vos validations en cours' | trans }}
     </p>
     <ul data-role="listview"  style="width:100%;margin: 0;">
             {% for basket in baskets_collection %}
@@ -109,11 +109,11 @@
 
 <div id="baskets" data-role="page">
     <div data-role="header">
-     <h1>{% trans 'Paniers'%}</h1>
+     <h1>{{ 'Paniers' | trans }}</h1>
   </div>
     <div data-role="content">
     <p>
-      {% trans 'Voici vos paniers' %}
+      {{ 'Voici vos paniers' | trans }}
     </p>
     <ul data-role="listview"  style="width:100%;margin: 0;">
             {% for basket in baskets_collection %}

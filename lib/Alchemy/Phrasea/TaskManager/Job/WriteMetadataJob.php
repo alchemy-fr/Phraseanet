@@ -25,7 +25,7 @@ class WriteMetadataJob extends AbstractJob
      */
     public function getName()
     {
-        return _('task::writemeta:ecriture des metadatas');
+        return $this->translator->trans('task::writemeta:ecriture des metadatas');
     }
 
     /**
@@ -41,7 +41,7 @@ class WriteMetadataJob extends AbstractJob
      */
     public function getDescription()
     {
-        return _("task::writemeta:(re)ecriture des metadatas dans les documents (et subdefs concernees)");
+        return $this->translator->trans("task::writemeta:(re)ecriture des metadatas dans les documents (et subdefs concernees)");
     }
 
     /**
@@ -49,7 +49,7 @@ class WriteMetadataJob extends AbstractJob
      */
     public function getEditor()
     {
-        return new WriteMetadataEditor();
+        return new WriteMetadataEditor($this->translator);
     }
 
     /**

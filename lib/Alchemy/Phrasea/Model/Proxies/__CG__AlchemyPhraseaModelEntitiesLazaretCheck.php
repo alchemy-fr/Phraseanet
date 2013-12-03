@@ -235,12 +235,12 @@ class LazaretCheck extends \Alchemy\Phrasea\Model\Entities\LazaretCheck implemen
     /**
      * {@inheritDoc}
      */
-    public function getMessage()
+    public function getMessage(\Symfony\Component\Translation\TranslatorInterface $translator)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMessage', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMessage', array($translator));
 
-        return parent::getMessage();
+        return parent::getMessage($translator);
     }
 
 }

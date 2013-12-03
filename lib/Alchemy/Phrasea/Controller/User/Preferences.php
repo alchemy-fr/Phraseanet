@@ -57,12 +57,12 @@ class Preferences implements ControllerProviderInterface
         $prop = $request->request->get('prop');
         $value = $request->request->get('value');
         $success = false;
-        $msg = _('Error while saving preference');
+        $msg = $app->trans('Error while saving preference');
 
         if ($prop && $value) {
             $app['session']->set('phraseanet.' . $prop, $value);
             $success = true;
-            $msg = _('Preference saved !');
+            $msg = $app->trans('Preference saved !');
         }
 
         return new JsonResponse(['success' => $success, 'message' => $msg]);
@@ -81,7 +81,7 @@ class Preferences implements ControllerProviderInterface
             $app->abort(400);
         }
 
-        $msg = _('Error while saving preference');
+        $msg = $app->trans('Error while saving preference');
         $prop = $request->request->get('prop');
         $value = $request->request->get('value');
 
@@ -89,7 +89,7 @@ class Preferences implements ControllerProviderInterface
         if (null !== $prop && null !== $value) {
             $app['authentication']->getUser()->setPrefs($prop, $value);
             $success = true;
-            $msg = _('Preference saved !');
+            $msg = $app->trans('Preference saved !');
         }
 
         return new JsonResponse(['success' => $success, 'message' => $msg]);

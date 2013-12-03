@@ -147,10 +147,10 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
         $sender = User_Adapter::getInstance($usr_id, $this->app)->get_display_name();
 
         $ret = [
-            'text'  => sprintf(_('%1$s a passe une %2$scommande%3$s')
-                , $sender
-                , '<a href="/prod/order/'.$order_id.'/" class="dialog full-dialog" title="'._('Orders manager').'">'
-                , '</a>')
+            'text'  => $this->app->trans('%user% a passe une %opening_link% commande %end_link%', [
+                '%user%' => $sender,
+                '%opening_link%' => '<a href="/prod/order/'.$order_id.'/" class="dialog full-dialog" title="'.$this->app->trans('Orders manager').'">',
+                '%end_link%' => '</a>',])
             , 'class' => ''
         ];
 
@@ -163,7 +163,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
      */
     public function get_name()
     {
-        return _('Nouvelle commande');
+        return $this->app->trans('Nouvelle commande');
     }
 
     /**
@@ -172,7 +172,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
      */
     public function get_description()
     {
-        return _('Recevoir des notifications lorsqu\'un utilisateur commande des documents');
+        return $this->app->trans('Recevoir des notifications lorsqu\'un utilisateur commande des documents');
     }
 
     /**

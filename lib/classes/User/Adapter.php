@@ -27,12 +27,12 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
      * @var Array
      */
     public static $locales = [
-        'ar_SA' => 'العربية'
-        , 'de_DE' => 'Deutsch'
-        , 'nl_NL' => 'Dutch'
-        , 'en_GB' => 'English'
-        , 'es_ES' => 'Español'
-        , 'fr_FR' => 'Français'
+        'ar' => 'العربية'
+        , 'de' => 'Deutsch'
+        , 'nl' => 'Dutch'
+        , 'en' => 'English'
+        , 'es' => 'Español'
+        , 'fr' => 'Français'
     ];
 
     /**
@@ -378,7 +378,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $test_user = User_Adapter::get_usr_id_from_email($this->app, $email);
 
         if ($test_user && $test_user != $this->get_id()) {
-            throw new Exception_InvalidArgument(sprintf(_('A user already exists with email addres %s'), $email));
+            throw new Exception_InvalidArgument($this->app->trans('A user already exists with email addres %email%', ['%email%' => $email]));
         }
 
         $sql = 'UPDATE usr SET usr_mail = :new_email WHERE usr_id = :usr_id';
@@ -1112,13 +1112,13 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     public function get_display_name()
     {
         if ($this->is_template())
-            $display_name = sprintf(_('modele %s'), $this->get_login());
+            $display_name = $this->app->trans('modele %name%', ['%name%' => $this->get_login()]);
         elseif (trim($this->lastname) !== '' || trim($this->firstname) !== '')
             $display_name = $this->firstname . ' ' . $this->lastname;
         elseif (trim($this->email) !== '')
             $display_name = $this->email;
         else
-            $display_name = _('phraseanet::utilisateur inconnu');
+            $display_name = $this->app->trans('phraseanet::utilisateur inconnu');
 
         return $display_name;
     }
@@ -1242,7 +1242,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     public function get_locale()
     {
-        return $this->locale ?: $this->app['phraseanet.registry']->get('GV_default_lng', 'en_GB');
+        return $this->locale ?: $this->app['phraseanet.registry']->get('GV_default_lng', 'en');
     }
 
     public function set_locale($locale)

@@ -4,7 +4,7 @@
 {% if nbEligibleDocuments > 0 %}
     {% if nbReceived != records.count() %}
         <div class="well-small" style="text-align:center;">
-            <span class="label label-info">{% trans "You do not have rights to remove all selected documents. Are you sure ?" %}</span>
+            <span class="label label-info">{{ "You do not have rights to remove all selected documents. Are you sure ?" | trans }}</span>
         </div>
     {% endif %}
 
@@ -12,16 +12,16 @@
         <input type="hidden" value="{{ records.serializedList() }}" name="lst" />
         <div class="well-small label-important" style="background-color: red;color:#000;padding:5px;display:block;word-wrap:break-word;font-weight: bold;">
             <span class="ui-icon ui-icon-alert" ></span>
-            {% trans "These records will be definitely deleted and can not be recovered" %}
+            {{ "These records will be definitely deleted and can not be recovered" | trans }}
         </div>
         {% if records.stories().count() %}
             <label class="checkbox">
-            <input type="checkbox" id="del_children" name="del_children" value="1"> {% trans "Also delete records that rely on groupings." %}
+            <input type="checkbox" id="del_children" name="del_children" value="1"> {{ "Also delete records that rely on groupings." | trans }}
           </label>
         {% endif %}
         <div class="form-actions" style="background-color:transparent;">
-            <button type="button" class="btn btn-danger submiter">{% trans "Delete" %} ({{ nbEligibleDocuments }})</button>
-            <button type="button" class="btn cancel">{% trans "Cancel" %}</button>
+            <button type="button" class="btn btn-danger submiter">{{ "Delete" | trans }} ({{ nbEligibleDocuments }})</button>
+            <button type="button" class="btn cancel">{{ "Cancel" | trans }}</button>
             <span class="form-action-loader" style="display:none;">
                 <img src="../skins/icons/loader000.gif" />
             </span>
@@ -88,10 +88,10 @@
     </script>
 {% elseif nbReceived == 0 %}
     <div class="well-small" style="text-align:center;">
-        <span class="label label-important">{% trans "No document selected" %}</span>
+        <span class="label label-important">{{ "No document selected" | trans }}</span>
     </div>
 {% else %}
     <div class="well-small" style="text-align:center;">
-        <span class="label label-info">{% trans "You do not have rights to remove selected documents" %}</span>
+        <span class="label label-info">{{ "You do not have rights to remove selected documents" | trans }}</span>
     </div>
 {% endif %}

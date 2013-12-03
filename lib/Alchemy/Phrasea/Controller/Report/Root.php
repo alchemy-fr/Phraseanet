@@ -169,14 +169,14 @@ class Root implements ControllerProviderInterface
         );
 
         $conf = [
-            'user'      => [_('phraseanet::utilisateurs'), 1, 1, 1, 1],
-            'ddate'     => [_('report:: date'), 1, 0, 1, 1],
-            'ip'        => [_('report:: IP'), 1, 0, 0, 0],
-            'appli'     => [_('report:: modules'), 1, 0, 0, 0],
-            'fonction'  => [_('report::fonction'), 1, 1, 1, 1],
-            'activite'  => [_('report::activite'), 1, 1, 1, 1],
-            'pays'      => [_('report::pays'), 1, 1, 1, 1],
-            'societe'   => [_('report::societe'), 1, 1, 1, 1]
+            'user'      => [$app->trans('phraseanet::utilisateurs'), 1, 1, 1, 1],
+            'ddate'     => [$app->trans('report:: date'), 1, 0, 1, 1],
+            'ip'        => [$app->trans('report:: IP'), 1, 0, 0, 0],
+            'appli'     => [$app->trans('report:: modules'), 1, 0, 0, 0],
+            'fonction'  => [$app->trans('report::fonction'), 1, 1, 1, 1],
+            'activite'  => [$app->trans('report::activite'), 1, 1, 1, 1],
+            'pays'      => [$app->trans('report::pays'), 1, 1, 1, 1],
+            'societe'   => [$app->trans('report::societe'), 1, 1, 1, 1]
         ];
 
         if ($request->request->get('printcsv') == 'on') {
@@ -235,13 +235,13 @@ class Root implements ControllerProviderInterface
         );
 
         $conf = [
-            'user'      => [_('report:: utilisateur'), 1, 1, 1, 1],
-            'search'    => [_('report:: question'), 1, 0, 1, 1],
-            'ddate'     => [_('report:: date'), 1, 0, 1, 1],
-            'fonction'  => [_('report:: fonction'), 1, 1, 1, 1],
-            'activite'  => [_('report:: activite'), 1, 1, 1, 1],
-            'pays'      => [_('report:: pays'), 1, 1, 1, 1],
-            'societe'   => [_('report:: societe'), 1, 1, 1, 1]
+            'user'      => [$app->trans('report:: utilisateur'), 1, 1, 1, 1],
+            'search'    => [$app->trans('report:: question'), 1, 0, 1, 1],
+            'ddate'     => [$app->trans('report:: date'), 1, 0, 1, 1],
+            'fonction'  => [$app->trans('report:: fonction'), 1, 1, 1, 1],
+            'activite'  => [$app->trans('report:: activite'), 1, 1, 1, 1],
+            'pays'      => [$app->trans('report:: pays'), 1, 1, 1, 1],
+            'societe'   => [$app->trans('report:: societe'), 1, 1, 1, 1]
         ];
 
         if ($request->request->get('printcsv') == 'on') {
@@ -306,16 +306,16 @@ class Root implements ControllerProviderInterface
         }
 
         $conf = array_merge([
-            'user'      => [_('report:: utilisateurs'), 1, 1, 1, 1],
-            'ddate'     => [_('report:: date'), 1, 0, 1, 1],
-            'record_id' => [_('report:: record id'), 1, 1, 1, 1],
-            'final'     => [_('phrseanet:: sous definition'), 1, 0, 1, 1],
-            'coll_id'   => [_('report:: collections'), 1, 0, 1, 1],
-            'comment'   => [_('report:: commentaire'), 1, 0, 0, 0],
-            'fonction'  => [_('report:: fonction'), 1, 1, 1, 1],
-            'activite'  => [_('report:: activite'), 1, 1, 1, 1],
-            'pays'      => [_('report:: pays'), 1, 1, 1, 1],
-            'societe'   => [_('report:: societe'), 1, 1, 1, 1]
+            'user'      => [$app->trans('report:: utilisateurs'), 1, 1, 1, 1],
+            'ddate'     => [$app->trans('report:: date'), 1, 0, 1, 1],
+            'record_id' => [$app->trans('report:: record id'), 1, 1, 1, 1],
+            'final'     => [$app->trans('phrseanet:: sous definition'), 1, 0, 1, 1],
+            'coll_id'   => [$app->trans('report:: collections'), 1, 0, 1, 1],
+            'comment'   => [$app->trans('report:: commentaire'), 1, 0, 0, 0],
+            'fonction'  => [$app->trans('report:: fonction'), 1, 1, 1, 1],
+            'activite'  => [$app->trans('report:: activite'), 1, 1, 1, 1],
+            'pays'      => [$app->trans('report:: pays'), 1, 1, 1, 1],
+            'societe'   => [$app->trans('report:: societe'), 1, 1, 1, 1]
         ], $conf_pref);
 
         if ($request->request->get('printcsv') == 'on') {
@@ -380,12 +380,12 @@ class Root implements ControllerProviderInterface
         }
 
         $conf = array_merge([
-            'telechargement'    => [_('report:: telechargements'), 1, 0, 0, 0],
-            'record_id'         => [_('report:: record id'), 1, 1, 1, 0],
-            'final'             => [_('phraseanet:: sous definition'), 1, 0, 1, 1],
-            'file'              => [_('report:: fichier'), 1, 0, 0, 1],
-            'mime'              => [_('report:: type'), 1, 0, 1, 1],
-            'size'              => [_('report:: taille'), 1, 0, 1, 1]
+            'telechargement'    => [$app->trans('report:: telechargements'), 1, 0, 0, 0],
+            'record_id'         => [$app->trans('report:: record id'), 1, 1, 1, 0],
+            'final'             => [$app->trans('phraseanet:: sous definition'), 1, 0, 1, 1],
+            'file'              => [$app->trans('report:: fichier'), 1, 0, 0, 1],
+            'mime'              => [$app->trans('report:: type'), 1, 0, 1, 1],
+            'size'              => [$app->trans('report:: taille'), 1, 0, 1, 1]
         ], $conf_pref);
 
         if ($request->request->get('printcsv') == 'on') {
@@ -444,30 +444,30 @@ class Root implements ControllerProviderInterface
         );
 
         $conf_nav = [
-            'nav'       => [_('report:: navigateur'), 0, 1, 0, 0],
-            'nb'        => [_('report:: nombre'), 0, 0, 0, 0],
-            'pourcent'  => [_('report:: pourcentage'), 0, 0, 0, 0]
+            'nav'       => [$app->trans('report:: navigateur'), 0, 1, 0, 0],
+            'nb'        => [$app->trans('report:: nombre'), 0, 0, 0, 0],
+            'pourcent'  => [$app->trans('report:: pourcentage'), 0, 0, 0, 0]
         ];
 
         $conf_combo = [
-            'combo'     => [_('report:: navigateurs et plateforme'), 0, 0, 0, 0],
-            'nb'        => [_('report:: nombre'), 0, 0, 0, 0],
-            'pourcent'  => [_('report:: pourcentage'), 0, 0, 0, 0]
+            'combo'     => [$app->trans('report:: navigateurs et plateforme'), 0, 0, 0, 0],
+            'nb'        => [$app->trans('report:: nombre'), 0, 0, 0, 0],
+            'pourcent'  => [$app->trans('report:: pourcentage'), 0, 0, 0, 0]
         ];
         $conf_os = [
-            'os'        => [_('report:: plateforme'), 0, 0, 0, 0],
-            'nb'        => [_('report:: nombre'), 0, 0, 0, 0],
-            'pourcent'  => [_('report:: pourcentage'), 0, 0, 0, 0]
+            'os'        => [$app->trans('report:: plateforme'), 0, 0, 0, 0],
+            'nb'        => [$app->trans('report:: nombre'), 0, 0, 0, 0],
+            'pourcent'  => [$app->trans('report:: pourcentage'), 0, 0, 0, 0]
         ];
         $conf_res = [
-            'res'       => [_('report:: resolution'), 0, 0, 0, 0],
-            'nb'        => [_('report:: nombre'), 0, 0, 0, 0],
-            'pourcent'  => [_('report:: pourcentage'), 0, 0, 0, 0]
+            'res'       => [$app->trans('report:: resolution'), 0, 0, 0, 0],
+            'nb'        => [$app->trans('report:: nombre'), 0, 0, 0, 0],
+            'pourcent'  => [$app->trans('report:: pourcentage'), 0, 0, 0, 0]
         ];
         $conf_mod = [
-            'appli'     => [_('report:: module'), 0, 0, 0, 0],
-            'nb'        => [_('report:: nombre'), 0, 0, 0, 0],
-            'pourcent'  => [_('report:: pourcentage'), 0, 0, 0, 0]
+            'appli'     => [$app->trans('report:: module'), 0, 0, 0, 0],
+            'nb'        => [$app->trans('report:: nombre'), 0, 0, 0, 0],
+            'pourcent'  => [$app->trans('report:: pourcentage'), 0, 0, 0, 0]
         ];
 
         $report = [
@@ -543,7 +543,7 @@ class Root implements ControllerProviderInterface
         if ($request->request->get('conf') == 'on') {
             return $app->json(['liste' => $app['twig']->render('report/listColumn.html.twig', [
                 'conf'  => $base_conf
-            ]), 'title' => _('configuration')]);
+            ]), 'title' => $app->trans('configuration')]);
         }
 
         //set order
@@ -570,7 +570,7 @@ class Root implements ControllerProviderInterface
                 return $app->json(['diag'  => $app['twig']->render('report/colFilter.html.twig', [
                     'result' => $report->colFilter($field),
                     'field'  => $field
-                ]), 'title'  => sprintf(_('filtrer les resultats sur la colonne %s'), $field)]);
+                ]), 'title'  => $app->trans('filtrer les resultats sur la colonne %colonne%', ['%colonne%' => $field])]);
             }
 
             if ($field === $value) {
@@ -615,7 +615,7 @@ class Root implements ControllerProviderInterface
                     'is_doc'      => false
                 ]),
                 'display_nav' => false,
-                'title'       => _(sprintf('Groupement des resultats sur le champ %s',  $groupField))
+                'title'       => $app->trans('Groupement des resultats sur le champ %name%', ['%name%' => $groupField])
             ]);
         }
 

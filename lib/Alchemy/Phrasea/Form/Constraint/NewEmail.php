@@ -16,12 +16,11 @@ use Symfony\Component\Validator\Constraint;
 
 class NewEmail extends Constraint
 {
+    public $message = 'This email is already bound to an account';
     private $app;
-    private $message;
 
     public function __construct(Application $app)
     {
-        $this->message = _('This email is already bound to an account');
         $this->app = $app;
         parent::__construct();
     }
@@ -31,5 +30,10 @@ class NewEmail extends Constraint
         $ret = (Boolean) \User_Adapter::get_usr_id_from_email($this->app, $email);
 
         return $ret;
+    }
+
+    public static function create(Application $app)
+    {
+        return new static($app);
     }
 }

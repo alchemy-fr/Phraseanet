@@ -424,11 +424,11 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 $status .= '<img style="margin:1px;' . $style1 . '" ' .
                     'class="STAT_' . $this->base_id . '_'
                     . $this->record_id . '_' . $n . '_1" ' .
-                    'src="' . $source1 . '" title="' . $statbit['labels_on_i18n'][$this->app['locale.I18n']] . '"/>';
+                    'src="' . $source1 . '" title="' . $statbit['labels_on_i18n'][$this->app['locale']] . '"/>';
                 $status .= '<img style="margin:1px;' . $style0 . '" ' .
                     'class="STAT_' . $this->base_id . '_'
                     . $this->record_id . '_' . $n . '_0" ' .
-                    'src="' . $source0 . '" title="' . $statbit['labels_off_i18n'][$this->app['locale.I18n']] . '"/>';
+                    'src="' . $source0 . '" title="' . $statbit['labels_off_i18n'][$this->app['locale']] . '"/>';
             }
         }
 
@@ -890,7 +890,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $fields_to_retrieve = [];
 
         foreach ($fields as $field) {
-            if (in_array($field->get_thumbtitle(), ['1', $this->app['locale.I18n']])) {
+            if (in_array($field->get_thumbtitle(), ['1', $this->app['locale']])) {
                 $fields_to_retrieve [] = $field->get_name();
             }
         }
@@ -910,7 +910,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $title = trim($this->get_original_name($removeExtension));
         }
 
-        $title = $title != "" ? $title : _('reponses::document sans titre');
+        $title = $title != "" ? $title : $this->app->trans('reponses::document sans titre');
 
         if ($cache) {
             $this->set_data_to_cache(self::CACHE_TITLE, $title);

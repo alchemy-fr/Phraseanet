@@ -49,7 +49,7 @@ class MailInfoNewPublication extends AbstractMailWithLink
             throw new LogicException('You must set an title before calling getMessage');
         }
 
-        return sprintf(_('Nouvelle publication : %s'), $this->title);
+        return $this->app->trans('Nouvelle publication : %title%', ['%title%' => $this->title]);
     }
 
     /**
@@ -64,7 +64,7 @@ class MailInfoNewPublication extends AbstractMailWithLink
             throw new LogicException('You must set an title before calling getMessage');
         }
 
-        return sprintf('%s vient de publier %s', $this->author, $this->title);
+        return $this->app->trans('%user% vient de publier %title%', ['%user%' => $this->author, '%title%' => $this->title]);
     }
 
     /**
@@ -72,7 +72,7 @@ class MailInfoNewPublication extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return sprintf(_('View on %s'), $this->getPhraseanetTitle());
+        return $this->app->trans('View on %title%', ['%title%' => $this->getPhraseanetTitle()]);
     }
 
     /**

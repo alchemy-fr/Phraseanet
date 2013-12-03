@@ -13,7 +13,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRouteSetLocale()
     {
         $cookieJar = new CookieJar();
-        $cookieJar->set(new BrowserCookie('locale', 'de_DE'));
+        $cookieJar->set(new BrowserCookie('locale', 'de'));
 
         $client = new Client(self::$DI['app'], [], null, $cookieJar);
         $crawler = $client->request('GET', '/language/fr_CA/');
@@ -50,7 +50,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $crawler = self::$DI['client']->request('GET', '/available-languages');
         $response = self::$DI['client']->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals((array) json_decode($response->getContent()), self::$DI['app']['locales.I18n.available']);
+        $this->assertEquals((array) json_decode($response->getContent()), self::$DI['app']['locales.available']);
     }
 
     public function testRouteRobots()

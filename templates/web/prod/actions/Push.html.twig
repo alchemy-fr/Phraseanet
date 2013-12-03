@@ -8,7 +8,7 @@
     {%  endif %}
     </div>
     <div style="text-align:center;margin-top:15px;">
-        <button class="btn btn-inverse" onclick="p4.Dialog.Close(1)">{% trans "boutton::fermer" %}</button>
+        <button class="btn btn-inverse" onclick="p4.Dialog.Close(1)">{{ "boutton::fermer" | trans }}</button>
     </div>
 </div>
 {%  else  %}
@@ -24,37 +24,37 @@
             </div>
             <div class="PNB content" style="top:150px; overflow-y:auto;">
                 <div style="padding:10px">
-                    <h1>{% trans 'Grant rights' %}</h1>
+                    <h1>{{ 'Grant rights' | trans }}</h1>
                     <ul class="general_togglers">
                     {% if context == 'Feedback' %}
                         <li>
                             <button type="button" class="general_toggler btn btn-inverse" feature="agree">
-                                {% trans 'Contributor' %}
+                                {{ 'Contributor' | trans }}
                             </button>
                         </li>
                         <li>
                             <button type="button" class="general_toggler btn btn-inverse" feature="see_others">
-                                {% trans 'See others' %}
+                                {{ 'See others' | trans }}
                             </button>
                         </li>
                     {% endif %}
                         <li>
                             <button type="button" class="general_toggler btn btn-inverse" feature="HD">
-                                {% trans 'HD Download' %}
+                                {{ 'HD Download' | trans }}
                             </button>
                         </li>
                     </ul>
                 </div>
                 <div style="padding:10px;">
-                    <h1>{% trans 'Lists' %}</h1>
+                    <h1>{{ 'Lists' | trans }}</h1>
                     <span style="width:100%; display:block; text-align:center;">
                         <a href="#" class="link list_manager">
-                            <b>{% trans 'List Manager' %}</b>
+                            <b>{{ 'List Manager' | trans }}</b>
                         </a>
                     </span>
                     <form class="list_saver">
                         <div class="btn-toolbar">
-                            <input type="text" name="name" placeholder="{% trans 'Save this list' %}" />
+                            <input type="text" name="name" placeholder="{{ 'Save this list' | trans }}" />
                             <button class="btn"><img src="/skins/prod/Push/save_list_as.png" /></button>
                         </div>
                     </form>
@@ -84,12 +84,12 @@
                     <tr style="vertical-align:top;">
                         <td>
                             <div id="find-user">
-                                <input class="search" name="users-search" placeholder="{% trans 'Users' %}" type="text" style="width:210px;"/>
+                                <input class="search" name="users-search" placeholder="{{ 'Users' | trans }}" type="text" style="width:210px;"/>
                                 <br/>
-                                {% trans 'Select a user in the list'%} <br/>
+                                {{ 'Select a user in the list' | trans }} <br/>
                                 {% if app['acl'].get(app['authentication'].getUser()).has_right('manageusers') %}
-                                    {% trans 'or' %}
-                                    <a href="{{ path('prod_push_add_user') }}" class="user_adder link">{% trans 'Add user' %}</a>
+                                    {{ 'or' | trans }}
+                                    <a href="{{ path('prod_push_add_user') }}" class="user_adder link">{{ 'Add user' | trans }}</a>
                                 {% endif %}
                             </div>
                             <p id="recommanded-users">
@@ -114,9 +114,7 @@
                                 {% if total > 4 %}
                                     {% set n = total - 4%}
                                     {% set and_many_more %}
-                                        {% trans %}
-                                            and {{ n }} more peoples
-                                        {% endtrans %}
+                                        {% trans with {'%n%' : n} %}and %n% more peoples{% endtrans %}
                                     {% endset %}
                                     {% set recommendation = recommendation
                                             ~ '<a href="#" class="recommended_users_list">'
@@ -126,18 +124,14 @@
                                 {% if recommendation != '' %}
                                     {% set recommendation = '<br/>' ~ recommendation %}
                                     {% if context == 'Push' %}
-                                        {% trans %}
-                                            Please consider send this push to the following users : {{ recommendation }}
-                                        {% endtrans %}
+                                        {% trans with {'%recommendation%' : recommendation} %}Please consider send this push to the following users : %recommendation%{% endtrans %}
                                     {% else %}
-                                        {% trans %}
-                                            Please consider send this validation to the following users : {{ recommendation }}
-                                        {% endtrans %}
+                                        {% trans with {'%recommendation%' : recommendation} %}Please consider send this validation to the following users : %recommendation%{% endtrans %}
                                     {% endif %}
                                 {% endif %}
                             </p>
 
-                            <div style="display:none;" id="push_user_recommendations" title="{% trans 'Users suggestion' %}" >
+                            <div style="display:none;" id="push_user_recommendations" title="{{ 'Users suggestion' | trans }}" >
                                 <table class="users" style="width:100%;">
                                     {% for user in RecommendedUsers %}
                                         <tr>
@@ -149,7 +143,7 @@
                                                 <input type="hidden" name="usr_id" value="{{ user.get_id() }}" />
                                             </td>
                                             <td>
-                                                <a href="#" class="adder">{% trans 'Add' %}</a>
+                                                <a href="#" class="adder">{{ 'Add' | trans }}</a>
                                             </td>
                                         </tr>
                                     {% endfor %}
@@ -160,9 +154,9 @@
                         <td>
                             <p>
                                 {% if context == 'Push' %}
-                                    {% trans 'Push::unpush permet d\'envoyer un lot d\'image a des destinataires' %}
+                                    {{ 'Push::unpush permet d\'envoyer un lot d\'image a des destinataires' | trans }}
                                 {% else %}
-                                    {% trans 'Push::une validation est une demande d\'appreciation a d\'autres personnes' %}
+                                    {{ 'Push::une validation est une demande d\'appreciation a d\'autres personnes' | trans }}
                                 {% endif %}
                             </p>
                         </td>
@@ -179,24 +173,24 @@
                                 {% if 'Push' == context %}
                                     {% set nb_push_items = push.get_count_actionable() %}
                                     {% if push.get_count_not_actionable() == 0 %}
-                                        {% trans %}You are about to push {{ nb_push_items }} records.{% endtrans %}
+                                        {% trans with {'%nb_push_items%' : nb_push_items} %}You are about to push %nb_push_items% records.{% endtrans %}
                                     {% else %}
                                         {% set nb_not_available = push.get_count_not_actionable() %}
-                                        {% trans %}You are about to push {{ nb_push_items }} records, {{ nb_not_available }} records can not be processed.{% endtrans %}
+                                        {% trans with {'%nb_push_items%' : nb_push_items, '%nb_not_available%' : nb_not_available} %}You are about to push %nb_push_items% records, %nb_not_available% records can not be processed.{% endtrans %}
                                     {% endif %}
                                 {% else %}
                                     {% set nb_push_items = push.get_count_actionable() %}
                                     {% if push.get_count_not_actionable() == 0 %}
-                                        {% trans %}You are about to ask for feedback for {{ nb_push_items }} records.{% endtrans %}
+                                        {% trans with {'%nb_push_items%' : nb_push_items} %}You are about to ask for feedback for %nb_push_items% records.{% endtrans %}
                                     {% else %}
                                         {% set nb_not_available = push.get_count_not_actionable() %}
-                                        {% trans %}You are about to ask for feedback for {{ nb_push_items }} records, {{ nb_not_available }} records can not be processed.{% endtrans %}
+                                        {% trans with {'%nb_push_items%' : nb_push_items, '%nb_not_available%' : nb_not_available} %}You are about to ask for feedback for %nb_push_items% records, %nb_not_available% records can not be processed.{% endtrans %}
                                     {% endif %}
                                 {% endif %}
                             </td>
                             <td class="options">
-                                <button class="select-all btn btn-inverse">{% trans 'Select all' %}</button>
-                                <button class="unselect-all btn btn-inverse">{% trans 'Deselect all' %}</button>
+                                <button class="select-all btn btn-inverse">{{ 'Select all' | trans }}</button>
+                                <button class="unselect-all btn btn-inverse">{{ 'Deselect all' | trans }}</button>
                             </td>
                         </tr>
                     </table>
@@ -217,7 +211,7 @@
                     <div class="PNB badges"></div>
                 </form>
                 <div class="PNB10 footer">
-                    <button class="FeedbackSend btn btn-inverse">{% trans "Send" %}</button>
+                    <button class="FeedbackSend btn btn-inverse">{{ "Send" | trans }}</button>
                 </div>
             </div>
         </div>
@@ -230,13 +224,13 @@
             <button class="back_link btn btn-inverse" style="margin-right: 5px;">
                 &lt;
                 {% if context == 'Push' %}
-                    {% trans 'Back to Push' %}
+                    {{ 'Back to Push' | trans }}
                 {% else %}
-                    {% trans 'Back to Feedback' %}
+                    {{ 'Back to Feedback' | trans }}
                 {% endif %}
             </button>
             <span class="title">
-                {% trans 'List Manager' %}
+                {{ 'List Manager' | trans }}
             </span>
         </h1>
     </div>
@@ -248,14 +242,14 @@
         </div>
         <div class="editor PNB" style="left:320px;">
             <div class="welcome">
-                <h1>{% trans 'Welcome to the ListManager !' %}</h1>
+                <h1>{{ 'Welcome to the ListManager !' | trans }}</h1>
                 {% if lists|length == 0 %}
                     <p class="welcome">
-                        {% trans 'Start by creating one by using the "add" button on the left !' %}
+                        {{ 'Start by creating one by using the "add" button on the left !' | trans }}
                     </p>
                 {% else %}
                     <p class="welcome">
-                        {% trans 'Select a list on the left and edit it !' %}
+                        {{ 'Select a list on the left and edit it !' | trans }}
                     </p>
                 {% endif %}
             </div>

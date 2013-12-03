@@ -1,14 +1,14 @@
 {% block listColumn %}
 
   <div class='modalwrapper' style="height:400px; overflow-y: auto">
-    <div class="columnjson_title">{% trans "Cochez les cases correspondantes aux colonnes que vous desirez voire apparaitre dans le report" %} </div> <br />
+    <div class="columnjson_title">{{ "Cochez les cases correspondantes aux colonnes que vous desirez voire apparaitre dans le report" | trans }} </div> <br />
         <div>
             <div class="columnjson_link_box">
-                <a class="columnjson_link" href='#' id='on'><img src ='/skins/report/img/checkbox_checked.png' />{% trans "cocher tout" %}</a>
+                <a class="columnjson_link" href='#' id='on'><img src ='/skins/report/img/checkbox_checked.png' />{{ "cocher tout" | trans }}</a>
             </div>
             &nbsp;&nbsp;
             <div class="columnjson_link_box">
-                <a class="columnjson_link" href='#' id='off'><img src ='/skins/report/img/checkbox_unchecked.png' />{% trans "tout decocher" %}</a>
+                <a class="columnjson_link" href='#' id='off'><img src ='/skins/report/img/checkbox_unchecked.png' />{{ "tout decocher" | trans }}</a>
             </div>
         </div>
         <br />
@@ -24,7 +24,7 @@
             {% if key == "date" %}
                 {% set val = "ddate" %}
             {% endif %}
-            {% if k == "true"%}
+            {% if k == "true" %}
                 <input type='checkbox' value='{{ val }}' name='{{ key }}' checked='checked' /><label style='color:yellow;'>{{ value.0 }}</label><br />
             {% else %}
                 <input type='checkbox' value='{{ val }}' name='{{ key }}' checked='checked'/><label>{{ value.0 }}</label><br />

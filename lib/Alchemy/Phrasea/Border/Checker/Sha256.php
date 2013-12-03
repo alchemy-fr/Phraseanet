@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Checks if a file with the same Sha256 checksum already exists in the
@@ -42,8 +43,8 @@ class Sha256 extends AbstractChecker
     /**
      * {@inheritdoc}
      */
-    public static function getMessage()
+    public static function getMessage(TranslatorInterface $translator)
     {
-        return _('A file with the same checksum already exists in database');
+        return $translator->trans('A file with the same checksum already exists in database');
     }
 }

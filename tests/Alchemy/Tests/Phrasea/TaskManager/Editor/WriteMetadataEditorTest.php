@@ -40,6 +40,6 @@ class WriteMetadataEditorTest extends EditorTestCase
 
     protected function getEditor()
     {
-        return new WriteMetadataEditor();
+        return new WriteMetadataEditor($this->createTranslatorMock());
     }
 }

@@ -40,7 +40,7 @@ class module_report_question extends module_report
     public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
         parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
-        $this->title = _('report:: question');
+        $this->title = $this->app->trans('report:: question');
     }
 
     /**
@@ -71,7 +71,7 @@ class module_report_question extends module_report
         foreach ($rs as $row) {
             $value = $row['val'];
             if ($field == 'appli')
-                $caption = implode(' ', phrasea::modulesName(@unserialize($row['val'])));
+                $caption = implode(' ', phrasea::modulesName($this->app['translator'], @unserialize($row['val'])));
             elseif ($field == "ddate")
                 $caption = $this->app['date-formatter']->getPrettyString(new DateTime($value));
             else
@@ -96,7 +96,7 @@ class module_report_question extends module_report
                     else
                         $this->result[$i][$value] = $row[$value];
                 } else
-                    $this->result[$i][$value] = "<i>" . _('report:: non-renseigne') . "</i>";
+                    $this->result[$i][$value] = "<i>" . $this->app->trans('report:: non-renseigne') . "</i>";
             }
             $i ++;
         }

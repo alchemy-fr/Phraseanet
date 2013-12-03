@@ -28,8 +28,8 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
      */
     public function __construct(Application $app, eventsmanager_broker $broker)
     {
-        $this->group = _('Validation');
         parent::__construct($app, $broker);
+        $this->group = $this->app->trans('Validation');
 
         return $this;
     }
@@ -146,9 +146,9 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
 
         try {
             $basket = $this->app['converter.basket']->convert($ssel_id);
-            $basket_name = trim($basket->getName()) ? : _('Une selection');
+            $basket_name = trim($basket->getName()) ? : $this->app->trans('Une selection');
         } catch (Exception $e) {
-            $basket_name = _('Une selection');
+            $basket_name = $this->app->trans('Une selection');
         }
 
         $bask_link = '<a href="#" onclick="openPreview(\'BASK\',1,\''
@@ -156,9 +156,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
             . $basket_name . '</a>';
 
         $ret = [
-            'text'  => sprintf(
-                _('Rappel : Il vous reste %1$d jours pour valider %2$s de %3$s'), $this->app['phraseanet.registry']->get('GV_validation_reminder'), $bask_link, $sender
-            )
+            'text'  => $this->app->trans('Rappel : Il vous reste %number% jours pour valider %title% de %user%', ['%number%' => $this->app['phraseanet.registry']->get('GV_validation_reminder'), '%title%' => $bask_link, '%user%' => $sender])
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
         ];
 
@@ -171,7 +169,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
      */
     public function get_name()
     {
-        return _('Validation');
+        return $this->app->trans('Validation');
     }
 
     /**
@@ -180,7 +178,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
      */
     public function get_description()
     {
-        return _('Rappel pour une demande de validation');
+        return $this->app->trans('Rappel pour une demande de validation');
     }
 
     /**

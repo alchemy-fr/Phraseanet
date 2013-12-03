@@ -1,10 +1,8 @@
-{% extends "prod/actions/Bridge/wrapper.html.twig"%}
+{% extends "prod/actions/Bridge/wrapper.html.twig" %}
 {% import "prod/actions/Bridge/macro_error_form.html.twig" as error_form %}
 
 {% block menu %}
-  {% trans %}
-  Upload
-  {% endtrans %}
+  {% trans %}Upload{% endtrans %}
 {% endblock %}
 
 {% block response %}
@@ -12,12 +10,12 @@
 {% set elements_received_length = route.get_count_element_received() %}
 
 {% if elements_received_length == 0 %}
-  {% trans 'Vous n\'avez selectionne aucun element' %}
+  {{ 'Vous n\'avez selectionne aucun element' | trans }}
 {% elseif elements_length == 0 %}
-  {% trans 'Les elements ne peuvent etre uploades (problemes de type ou de droit)' %}
-  {% trans 'Le bridge Dailymotion ne prend en charge que les videos' %}
+  {{ 'Les elements ne peuvent etre uploades (problemes de type ou de droit)' | trans }}
+  {{ 'Le bridge Dailymotion ne prend en charge que les videos' | trans }}
 {% elseif elements_length > 1 %}
-  {% trans 'Vous ne pouvez uploader des elements sur Dailymotion qu\'un par un' %}
+  {{ 'Vous ne pouvez uploader des elements sur Dailymotion qu\'un par un' | trans }}
 {% else %}
   {% for record in route.get_elements() %}
     {% set caption = record.get_caption() %}
@@ -28,9 +26,9 @@
         <tr>
           <td>
             {% set name = "title_" ~ record.get_serialize_key() %}
-            <label for='{{name}}'>{% trans 'Titre' %}</label>
+            <label for='{{name}}'>{{ 'Titre' | trans }}</label>
             <div style="font-size:9px; font-weight:200">
-              {% trans "255 caracteres maximum" %}
+              {{ "255 caracteres maximum" | trans }}
             </div>
           </td>
           <td>
@@ -42,9 +40,9 @@
         <tr>
           <td>
             {% set name = "description_" ~ record.get_serialize_key() %}
-            <label for='{{name}}'>{% trans 'Description' %}</label>
+            <label for='{{name}}'>{{ 'Description' | trans }}</label>
             <div style="font-size:9px; font-weight:200">
-              {% trans "1000 caracteres maximum" %}
+              {{ "1000 caracteres maximum" | trans }}
             </div>
           </td>
           <td class='column_right'>
@@ -56,13 +54,13 @@
         <tr>
           <td>
             {% set name = "tags_" ~ record.get_serialize_key() %}
-            <label for='{{name}}'>{% trans 'Tags' %}</label>
+            <label for='{{name}}'>{{ 'Tags' | trans }}</label>
             <br/>
             <div style="font-size:9px; font-weight:200">
-               - {% trans "250 caracteres maximum" %}<br />
-               - {% trans "10 tags maximum"%}<br />
-               - {% trans "Séparez les tags par un espace: Paris vacances restaurant"%}<br />
-               - {% trans 'Groupez 2 ou plusieurs mots avec des guillemets: "Michael Jackson"' %}
+               - {{ "250 caracteres maximum" | trans }}<br />
+               - {{ "10 tags maximum" | trans }}<br />
+               - {{ "Séparez les tags par un espace: Paris vacances restaurant" | trans }}<br />
+               - {{ 'Groupez 2 ou plusieurs mots avec des guillemets: "Michael Jackson"' | trans }}
             </div>
           </td>
           <td>
@@ -74,27 +72,25 @@
         <tr>
           <td>
             {% set name = "privacy_" ~ record.get_serialize_key() %}
-            <label for='{{name}}'>{% trans 'Confidentialite' %}</label>
+            <label for='{{name}}'>{{ 'Confidentialite' | trans }}</label>
           </td>
           <td>
             <div style='float:left'>
-          <label for="input_private">{% trans 'prive' %}</label>
+          <label for="input_private">{{ 'prive' | trans }}</label>
           <input id="input_private" type="radio" name="{{name}}" value="private" checked='checked' />
           </div>
           <div style='float:left'>
-          <label for="input_public">{% trans 'public' %}</label>
+          <label for="input_public">{{ 'public' | trans }}</label>
           <input id="input_public" type="radio" name="{{name}}"  value="public "/>
           </div>
           </td>
         </tr>
       </table>
-      <button class="form_submitter">{% trans 'Upload' %}</button>
+      <button class="form_submitter">{{ 'Upload' | trans }}</button>
     </form>
   {% endfor %}
   <p>
-    {% trans %}
-    Nous vous rappelons qu'il est de votre responsabilité de vous assurer que le contenu de la vidéo que vous allez mettre en ligne est conforme aux conditions d'utilisations
-    {% endtrans %}
+    {% trans %}Nous vous rappelons qu'il est de votre responsabilité de vous assurer que le contenu de la vidéo que vous allez mettre en ligne est conforme aux conditions d'utilisations{% endtrans %}
   </p>
 {% endif %}
 {% endblock %}

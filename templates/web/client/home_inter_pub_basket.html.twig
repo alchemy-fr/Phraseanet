@@ -1,6 +1,6 @@
 <div style="height:50px;" class="homePubTitleBox">
     <div style="float:left;width:350px;"><h1 style="font-size:20px;margin-top:15px;">
-            <h1>{% trans "publications:: dernieres publications" %}</h1>
+            <h1>{{ "publications:: dernieres publications" | trans }}</h1>
     </div>
 </div>
 
@@ -22,7 +22,7 @@
                     {% if entry.getUpdatedOn() > entry.getCreatedOn() %}
                         <br/>
                         <span style="font-style:italic;">
-                            {% trans "publications:: derniere mise a jour" %} {{ app['date-formatter'].getPrettyString(entry.getUpdatedOn()) }}
+                            {{ "publications:: derniere mise a jour" | trans }} {{ app['date-formatter'].getPrettyString(entry.getUpdatedOn()) }}
                         </span>
                         <br />
                         <br />

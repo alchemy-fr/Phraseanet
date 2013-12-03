@@ -7,7 +7,7 @@
         <div class="error alert alert-error">{{ error }}</div>
     {% endif %}
     {% if feed.isOwner(app['authentication'].getUser()) %}
-        <h2>{% trans 'Edition' %}</h2>
+        <h2>{{ 'Edition' | trans }}</h2>
         <div class="control-group">
             <div id="pub_icon">
                 <div class="thumb_wrapper">
@@ -85,24 +85,24 @@
 
         <form class="no-ajax form_publication form-vertical" name="form_publication" enctype="multipart/form-data" method="post" action="{{ path('admin_feeds_feed_update', { 'id' : feed.getId() }) }}">
             <div class="control-group">
-                <label class="control-label" for="edit_pub_titre">{% trans 'Titre' %} :</label>
+                <label class="control-label" for="edit_pub_titre">{{ 'Titre' | trans }} :</label>
                 <div class="controls">
                     <input id="edit_pub_titre" class="required_text input-large" maxlength="128" name="title" type="text" value="{{ feed.getTitle() }}" />
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="edit_pub_subtitre">{% trans 'Sous-titre' %} :</label>
+                <label class="control-label" for="edit_pub_subtitre">{{ 'Sous-titre' | trans }} :</label>
                 <div class="controls">
-                    <input placeholder="{% trans 'Short description' %}" id="edit_pub_subtitre" class="input-large" maxlength="512" name="subtitle" type="text" value="{{ feed.getSubtitle() }}" />
+                    <input placeholder="{{ 'Short description' | trans }}" id="edit_pub_subtitre" class="input-large" maxlength="512" name="subtitle" type="text" value="{{ feed.getSubtitle() }}" />
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="edit_pub_base_id">{% trans 'Etendue de la publication' %} :</label>
+                <label class="control-label" for="edit_pub_base_id">{{ 'Etendue de la publication' | trans }} :</label>
                 <div class="controls">
                     <select id="edit_pub_base_id" class="input-large" name="base_id" {% if feed.isPublic() %}disabled="disabled"{% endif %}>
-                        <option value="">{% trans 'Non-Restreinte (publique)' %}</option>
+                        <option value="">{{ 'Non-Restreinte (publique)' | trans }}</option>
                         {% for databox in app['acl'].get(app['authentication'].getUser()).get_granted_sbas('bas_chupub') %}
-                            <optgroup label="{{ databox.get_label(app['locale.I18n']) }}">
+                            <optgroup label="{{ databox.get_label(app['locale']) }}">
                                 {% for collection in databox.get_collections() %}
                                     <option {% if feed.getBaseId() and feed.getCollection(app).get_base_id() == collection.get_base_id() %}selected="selected"{% endif %} value="{{ collection.get_base_id() }}">{{ collection.get_name() }}</option>
                                 {% endfor %}
@@ -115,25 +115,25 @@
                 <div class="controls">
                 <label class="checkbox" for="edit_pub_public">
                     <input type="checkbox" id="edit_pub_public" class="input-large" name="public" value="1" {% if feed.isPublic() %}checked="checked"{% endif %} />
-                    {% trans 'Publique' %}
+                    {{ 'Publique' | trans }}
                 </label>
                 </div>
             </div>
             <div>
-                <button class="btn btn-warning" type="submit">{% trans 'boutton::valider' %}</button>
-                <a href="{{ path('admin_feeds_list') }}" class="btn" style="text-decoration:none;">{% trans 'boutton::annuler' %}</a>
+                <button class="btn btn-warning" type="submit">{{ 'boutton::valider' | trans }}</button>
+                <a href="{{ path('admin_feeds_list') }}" class="btn" style="text-decoration:none;">{{ 'boutton::annuler' | trans }}</a>
             </div>
         </form>
         <br />
         <div style="width: 500px;">
-            <h2>{% trans 'Liste des personnes habilitees a publier sur ce fil' %}</h2>
+            <h2>{{ 'Liste des personnes habilitees a publier sur ce fil' | trans }}</h2>
             <table class="admintable">
                 <thead>
                     <tr>
-                        <th valign="center" align="left">{% trans 'Id' %}</th>
+                        <th valign="center" align="left">{{ 'Id' | trans }}</th>
                         <th valign="center" align="left"></th>
-                        <th valign="center" align="left">{% trans 'Email' %}</th>
-                        <th valign="center" align="center">{% trans 'Owner' %}</th>
+                        <th valign="center" align="left">{{ 'Email' | trans }}</th>
+                        <th valign="center" align="center">{{ 'Owner' | trans }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -154,7 +154,7 @@
                             {% else %}
                                 <form class="no-ajax form_publication" method="post" action="{{ path('admin_feeds_feed_remove_publisher', { 'id' : feed.getId() }) }}" style="margin:0;">
                                     <input type="hidden" value="{{ publisher.getId() }}" name="publisher_id"/>
-                                    <button class="btn btn-mini">{% trans 'boutton::supprimer' %}</button>
+                                    <button class="btn btn-mini">{{ 'boutton::supprimer' | trans }}</button>
                                 </form>
                             {% endif %}
                         </td>
@@ -165,9 +165,9 @@
             <div>
                 <form class="no-ajax form_publication" id="publisher_adder" method="post" action="{{ path('admin_feeds_feed_add_publisher', { 'id' : feed.getId() }) }}">
                     <div class="control-group">
-                        <label class="control-label">{% trans 'Ajouter un publisher' %} :</label>
+                        <label class="control-label">{{ 'Ajouter un publisher' | trans }} :</label>
                         <div class="controls">
-                            <input placeholder="{% trans 'Name or email' %}" class="publish_adder"/>
+                            <input placeholder="{{ 'Name or email' | trans }}" class="publish_adder"/>
                             <input type="hidden" name="usr_id"/>
                         </div>
                     </div>
@@ -214,8 +214,8 @@
         </script>
 
     {% else %}
-        {% trans 'You are not the feed owner' %}
-        <a href="{{ path('admin_feeds_list') }}">{% trans 'boutton::retour' %}</a>
+        {{ 'You are not the feed owner' | trans }}
+        <a href="{{ path('admin_feeds_list') }}">{{ 'boutton::retour' | trans }}</a>
     {% endif %}
 </div>
 

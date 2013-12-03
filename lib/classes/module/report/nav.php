@@ -100,7 +100,7 @@ class module_report_nav extends module_report
 
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters();
-        $this->title = _('report:: navigateur');
+        $this->title = $this->app->trans('report:: navigateur');
 
         $this->total_pourcent = $this->setTotalPourcent();
 
@@ -159,7 +159,7 @@ class module_report_nav extends module_report
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters();
         $i = 0;
-        $this->title = _('report:: Plateforme');
+        $this->title = $this->app->trans('report:: Plateforme');
 
         $this->total_pourcent = $this->setTotalPourcent();
 
@@ -216,7 +216,7 @@ class module_report_nav extends module_report
     {
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters();
-        $this->title = _('report:: resolution');
+        $this->title = $this->app->trans('report:: resolution');
         $i = 0;
 
         $this->total_pourcent = $this->setTotalPourcent();
@@ -276,7 +276,7 @@ class module_report_nav extends module_report
     {
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters();
-        $this->title = _('report:: navigateurs et plateforme');
+        $this->title = $this->app->trans('report:: navigateurs et plateforme');
         $i = 0;
 
         $this->total_pourcent = $this->setTotalPourcent();
@@ -337,7 +337,7 @@ class module_report_nav extends module_report
         $this->initialize();
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters();
-        $this->title = _('report:: modules');
+        $this->title = $this->app->trans('report:: modules');
         $x = [];
         $tab_appli = [];
 
@@ -370,7 +370,7 @@ class module_report_nav extends module_report
         foreach ($rs as $row) {
             $applis = false;
             if (($applis = @unserialize($row['appli'])) !== false)
-                array_push($x, phrasea::modulesName($applis));
+                array_push($x, phrasea::modulesName($this->app['translator'], $applis));
             else
                 array_push($x, 'NULL');
         }
@@ -415,7 +415,7 @@ class module_report_nav extends module_report
         $filter_id_apbox = $filter_id_datbox = [];
         $conn = $this->app['phraseanet.appbox']->get_connection();
 
-        $this->title = sprintf(_('report:: Information sur les utilisateurs correspondant a %s'), $val);
+        $this->title = $this->app->trans('report:: Information sur les utilisateurs correspondant a %critere%', ['%critere%' => $val]);
 
         if ($on) {
             if ( ! empty($req)) {
@@ -463,17 +463,15 @@ class module_report_nav extends module_report
 
         foreach ($rs as $row) {
             foreach ($row as $fieldname => $value)
-                $row[$fieldname] = $value ? $value : _('report:: non-renseigne');
+                $row[$fieldname] = $value ? $value : $this->app->trans('report:: non-renseigne');
             $this->result[] = $row;
         }
         if ($on == false) {
             $login = empty($this->result[0]['identifiant']) ?
-                _('phraseanet::utilisateur inconnu') :
+                $this->app->trans('phraseanet::utilisateur inconnu') :
                 $this->result[0]['identifiant'];
 
-            $this->title = sprintf(
-                _('report:: Information sur l\'utilisateur %s'), $login
-            );
+            $this->title = $this->app->trans('report:: Information sur l\'utilisateur %name%', ['%name%' => $login]);
         }
         $this->calculatePages();
         $this->setDisplayNav();
@@ -513,8 +511,7 @@ class module_report_nav extends module_report
         ];
 
         $document = $record->get_subdef('document');
-        $this->title = sprintf(
-            _('report:: Information sur l\'enregistrement numero %d'), (int) $rid);
+        $this->title = $this->app->trans('report:: Information sur l\'enregistrement numero %number%', ['%number%' => (int) $rid]);
 
         $x = $record->get_thumbnail();
         $this->result[] = [
@@ -537,8 +534,7 @@ class module_report_nav extends module_report
     public function buildTabInfoNav($tab = false, $navigator)
     {
         $conn = connection::getPDOConnection($this->app, $this->sbas_id);
-        $this->title = sprintf(
-            _('report:: Information sur le navigateur %s'), $navigator);
+        $this->title = $this->app->trans('report:: Information sur le navigateur %name%', ['%name%' => $navigator]);
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters();
         $report_filter = $filter->getReportFilter();

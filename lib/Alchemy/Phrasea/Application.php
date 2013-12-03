@@ -110,6 +110,7 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Twig\JSUniqueID;
 use Alchemy\Phrasea\Twig\Camelize;
 use Alchemy\Phrasea\Twig\BytesConverter;
+use Alchemy\Phrasea\Utilities\CachedTranslator;
 use FFMpeg\FFMpegServiceProvider;
 use Neutron\Silex\Provider\ImagineServiceProvider;
 use MediaVorus\MediaVorusServiceProvider;
@@ -125,14 +126,17 @@ use Neutron\ReCaptcha\ReCaptchaServiceProvider;
 use PHPExiftool\PHPExiftoolServiceProvider;
 use Silex\Application as SilexApplication;
 use Silex\Application\UrlGeneratorTrait;
+use Silex\Application\TranslationTrait;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\SessionServiceProvider;
+use Alchemy\Phrasea\Core\Provider\TranslationServiceProvider;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\SwiftmailerServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
+use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
@@ -154,12 +158,13 @@ use Symfony\Component\Form\Exception\FormException;
 class Application extends SilexApplication
 {
     use UrlGeneratorTrait;
+    use TranslationTrait;
 
-    private static $availableLanguages = [
-        'de_DE' => 'Deutsch',
-        'en_GB' => 'English',
-        'fr_FR' => 'Français',
-        'nl_NL' => 'Dutch',
+    protected static $availableLanguages = [
+        'de' => 'Deutsch',
+        'en' => 'English',
+        'fr' => 'Français',
+        'nl' => 'Dutch',
     ];
     private static $flashTypes = ['warning', 'info', 'success', 'error'];
     private $environment;
@@ -299,8 +304,29 @@ class Application extends SilexApplication
             'twig.options' => [
                 'cache'           => $this['root.path'] . '/tmp/cache_twig/',
             ],
-            'twig.form.templates' => ['login/common/form_div_layout.html.twig']
         ]);
+
+        $this->register(new TranslationServiceProvider(), [
+            'locale_fallbacks' => ['fr'],
+            'translator.cache-options' => [
+                'debug' => $this['debug'],
+                'cache_dir' => $this['root.path'].'/tmp/translations'
+            ],
+        ]);
+
+        $this['translator'] = $this->share($this->extend('translator', function(CachedTranslator $translator, $app) {
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.fr.xliff', 'fr', 'messages');
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.fr.xliff', 'fr', 'validators');
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.en.xliff', 'en', 'messages');
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.en.xliff', 'en', 'validators');
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.de.xliff', 'de', 'messages');
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.de.xliff', 'de', 'validators');
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.nl.xliff', 'nl', 'messages');
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.nl.xliff', 'nl', 'validators');
+
+            return $translator;
+        }));
+
         $this->register(new FormServiceProvider());
 
         $this->setupTwig();
@@ -315,7 +341,10 @@ class Application extends SilexApplication
         $this->register(new PluginServiceProvider());
 
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
-            return PhraseaExceptionHandler::register($app['debug']);
+            $handler =  PhraseaExceptionHandler::register($app['debug']);
+            $handler->setTranslator($app['translator']);
+
+            return $handler;
         });
 
         $this['swiftmailer.transport'] = $this->share(function ($app) {
@@ -575,7 +604,7 @@ class Application extends SilexApplication
                 $twig->addExtension(new \Twig_Extension_Escaper());
 
                 // add filter trans
-                $twig->addExtension(new \Twig_Extensions_Extension_I18n());
+                $twig->addExtension(new TranslationExtension($app['translator']));
                 // add filter localizeddate
                 $twig->addExtension(new \Twig_Extensions_Extension_Intl());
                 // add filters truncate, wordwrap, nl2br
@@ -600,7 +629,9 @@ class Application extends SilexApplication
                 $twig->addFilter('count', new \Twig_Filter_Function('count'));
                 $twig->addFilter('formatOctets', new \Twig_Filter_Function('p4string::format_octets'));
                 $twig->addFilter('base_from_coll', new \Twig_Filter_Function('phrasea::baseFromColl'));
-                $twig->addFilter('AppName', new \Twig_Filter_Function('Alchemy\Phrasea\Controller\Admin\ConnectedUsers::appName'));
+                $twig->addFilter(new \Twig_SimpleFilter('AppName', function ($value) use ($app) {
+                    return ConnectedUsers::appName($app['translator'], $value);
+                }));
                 $twig->addFilter(new \Twig_SimpleFilter('escapeSimpleQuote', function ($value) {
                     $ret = str_replace("'", "\'", $value);
 

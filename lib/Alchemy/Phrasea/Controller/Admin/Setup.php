@@ -52,9 +52,9 @@ class Setup implements ControllerProviderInterface
 
         if (null !== $update = $request->query->get('update')) {
             if (!!$update) {
-                $update = _('Update succeed');
+                $update = $app->trans('Update succeed');
             } else {
-                $update = _('Update failed');
+                $update = $app->trans('Update failed');
             }
         }
 

@@ -18,10 +18,7 @@ class MailInfoSomebodyAutoregistered extends AbstractMailWithLink
      */
     public function getSubject()
     {
-        return sprintf(
-            _('admin::register: Inscription automatique sur %s'),
-            $this->getPhraseanetTitle()
-        );
+        return $this->app->trans('admin::register: Inscription automatique sur %application%', ['%application%' => $this->getPhraseanetTitle()]);
     }
 
     /**
@@ -29,7 +26,7 @@ class MailInfoSomebodyAutoregistered extends AbstractMailWithLink
      */
     public function getMessage()
     {
-        return _('admin::register: un utilisateur s\'est inscrit')."\n\n".$this->message;
+        return $this->app->trans('admin::register: un utilisateur s\'est inscrit')."\n\n".$this->message;
     }
 
     /**
@@ -37,7 +34,7 @@ class MailInfoSomebodyAutoregistered extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return _('Update the account');
+        return $this->app->trans('Update the account');
     }
 
     /**

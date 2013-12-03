@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "bdd3d36f118f024ac51b2466a8e11d09",
+    "hash": "daac732f5ff830bcaf81da6ecf16f9e2",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -3744,6 +3744,119 @@
                 "webtest"
             ],
             "time": "2013-10-04 15:03:51"
+        },
+        {
+            "name": "jms/translation-bundle",
+            "version": "1.1.0",
+            "target-dir": "JMS/TranslationBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/schmittjoh/JMSTranslationBundle.git",
+                "reference": "6f03035a38badaf8c48767c7664c3196df1eebdf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/schmittjoh/JMSTranslationBundle/zipball/6f03035a38badaf8c48767c7664c3196df1eebdf",
+                "reference": "6f03035a38badaf8c48767c7664c3196df1eebdf",
+                "shasum": ""
+            },
+            "require": {
+                "nikic/php-parser": "0.9.1",
+                "symfony/console": "*",
+                "symfony/framework-bundle": "~2.1"
+            },
+            "conflict": {
+                "twig/twig": "1.10.2"
+            },
+            "require-dev": {
+                "jms/di-extra-bundle": ">=1.1",
+                "sensio/framework-extra-bundle": "*",
+                "symfony/browser-kit": "*",
+                "symfony/class-loader": "*",
+                "symfony/css-selector": "*",
+                "symfony/finder": "*",
+                "symfony/form": "*",
+                "symfony/process": "*",
+                "symfony/security": "*",
+                "symfony/twig-bundle": "*",
+                "symfony/validator": "*",
+                "symfony/yaml": "*"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "JMS\\TranslationBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache2"
+            ],
+            "authors": [
+                {
+                    "name": "Johannes M. Schmitt",
+                    "email": "schmittjoh@gmail.com",
+                    "homepage": "http://jmsyst.com",
+                    "role": "Developer of wrapped JMSSerializerBundle"
+                }
+            ],
+            "description": "Puts the Symfony2 Translation Component on steroids",
+            "homepage": "http://jmsyst.com/bundles/JMSTranslationBundle",
+            "keywords": [
+                "extract",
+                "extraction",
+                "i18n",
+                "interface",
+                "multilanguage",
+                "translation",
+                "ui",
+                "webinterface"
+            ],
+            "time": "2013-06-08 14:08:19"
+        },
+        {
+            "name": "nikic/php-parser",
+            "version": "v0.9.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nikic/PHP-Parser.git",
+                "reference": "b1cc9ce676b4350b23d0fafc8244d08eee2fe287"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/b1cc9ce676b4350b23d0fafc8244d08eee2fe287",
+                "reference": "b1cc9ce676b4350b23d0fafc8244d08eee2fe287",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PHPParser": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD"
+            ],
+            "authors": [
+                {
+                    "name": "Nikita Popov"
+                }
+            ],
+            "description": "A PHP parser written in PHP",
+            "keywords": [
+                "parser",
+                "php"
+            ],
+            "time": "2012-04-23 22:52:11"
         },
         {
             "name": "phpunit/php-code-coverage",

@@ -98,18 +98,14 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
         $dest = (string) $sx->dest;
 
         if ($reason == self::MAIL_NO_VALID) {
-            $reason = _('email is not valid');
+            $reason = $this->app->trans('email is not valid');
         } elseif ($reason == self::MAIL_FAIL) {
-            $reason = _('failed to send mail');
+            $reason = $this->app->trans('failed to send mail');
         } else {
-            $reason = _('an error occured while exporting records');
+            $reason = $this->app->trans('an error occured while exporting records');
         }
 
-        $text = sprintf(
-            _("The delivery to %s failed for the following reason : %s")
-            , $dest
-            , $reason
-        );
+        $text = $this->app->trans("The delivery to %email% failed for the following reason : %reason%", ['%email%' => $dest, '%reason%' => $reason]);
 
         $ret = [
             'text'  => $text
@@ -125,7 +121,7 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
      */
     public function get_name()
     {
-        return _('Email export fails');
+        return $this->app->trans('Email export fails');
     }
 
     /**
@@ -134,7 +130,7 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
      */
     public function get_description()
     {
-        return _('Get a notification when a mail export fails');
+        return $this->app->trans('Get a notification when a mail export fails');
     }
 
     /**

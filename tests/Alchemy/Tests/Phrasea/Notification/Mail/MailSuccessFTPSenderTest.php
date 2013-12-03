@@ -12,7 +12,7 @@ class MailSuccessFTPSenderTest extends MailTestCase
 {
     public function testSetServer()
     {
-        $this->assertTrue(false !== stripos($this->getMail()->getSubject(), 'ftp://example.com'));
+        $this->assertEquals('task::ftp:Status about your FTP transfert from %application% to %server%', $this->getMail()->getSubject());
     }
 
     public function testThatALgicExceptionIsThrownIfNoServerSet()

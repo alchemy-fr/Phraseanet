@@ -290,20 +290,20 @@ class Users implements ControllerProviderInterface
             $buffer[] = [
                 'ID'
                 , 'Login'
-                , _('admin::compte-utilisateur nom')
-                , _('admin::compte-utilisateur prenom')
-                , _('admin::compte-utilisateur email')
+                , $app->trans('admin::compte-utilisateur nom')
+                , $app->trans('admin::compte-utilisateur prenom')
+                , $app->trans('admin::compte-utilisateur email')
                 , 'CreationDate'
                 , 'ModificationDate'
-                , _('admin::compte-utilisateur adresse')
-                , _('admin::compte-utilisateur ville')
-                , _('admin::compte-utilisateur code postal')
-                , _('admin::compte-utilisateur pays')
-                , _('admin::compte-utilisateur telephone')
-                , _('admin::compte-utilisateur fax')
-                , _('admin::compte-utilisateur poste')
-                , _('admin::compte-utilisateur societe')
-                , _('admin::compte-utilisateur activite')
+                , $app->trans('admin::compte-utilisateur adresse')
+                , $app->trans('admin::compte-utilisateur ville')
+                , $app->trans('admin::compte-utilisateur code postal')
+                , $app->trans('admin::compte-utilisateur pays')
+                , $app->trans('admin::compte-utilisateur telephone')
+                , $app->trans('admin::compte-utilisateur fax')
+                , $app->trans('admin::compte-utilisateur poste')
+                , $app->trans('admin::compte-utilisateur societe')
+                , $app->trans('admin::compte-utilisateur activite')
             ];
             do {
                 $elligible_users->limit($offset, 20);
@@ -558,10 +558,10 @@ class Users implements ControllerProviderInterface
                             if (($accept != '' || $deny != '')) {
                                 $message = '';
                                 if ($accept != '') {
-                                    $message .= "\n" . _('login::register:email: Vous avez ete accepte sur les collections suivantes : ') . implode(', ', $accept). "\n";
+                                    $message .= "\n" . $app->trans('login::register:email: Vous avez ete accepte sur les collections suivantes :') . implode(', ', $accept). "\n";
                                 }
                                 if ($deny != '') {
-                                    $message .= "\n" . _('login::register:email: Vous avez ete refuse sur les collections suivantes : ') . implode(', ', $deny) . "\n";
+                                    $message .= "\n" . $app->trans('login::register:email: Vous avez ete refuse sur les collections suivantes :') . implode(', ', $deny) . "\n";
                                 }
 
                                 $receiver = new Receiver(null, $row['usr_mail']);
@@ -656,12 +656,12 @@ class Users implements ControllerProviderInterface
                     if ($sqlField === 'usr_login') {
                         $loginToAdd = $value;
                         if ($loginToAdd === "") {
-                            $out['errors'][] = sprintf(_("Login line %d is empty"), $nbLine + 1);
+                            $out['errors'][] = $app->trans("Login line %line% is empty", ['%line%' => $nbLine + 1]);
                         } elseif (in_array($loginToAdd, $loginNew)) {
-                            $out['errors'][] = sprintf(_("Login %s is already defined in the file at line %d"), $loginToAdd, $nbLine);
+                            $out['errors'][] = $app->trans("Login %login% is already defined in the file at line %line%", ['%login%' => $loginToAdd, '%line%' => $nbLine]);
                         } else {
                             if (\User_Adapter::get_usr_id_from_login($app, $loginToAdd)) {
-                                $out['errors'][] = sprintf(_("Login %s already exists in database"), $loginToAdd);
+                                $out['errors'][] = $app->trans("Login %login% already exists in database", ['%login%' => $loginToAdd]);
                             } else {
                                 $loginValid = true;
                             }
@@ -672,9 +672,9 @@ class Users implements ControllerProviderInterface
                         $mailToAdd = $value;
 
                         if ($mailToAdd === "") {
-                            $out['errors'][] = sprintf(_("Mail line %d is empty"), $nbLine + 1);
+                            $out['errors'][] = $app->trans("Mail line %line% is empty", ['%line%' => $nbLine + 1]);
                         } elseif (false !== \User_Adapter::get_usr_id_from_email($app, $mailToAdd)) {
-                            $out['errors'][] = sprintf(_("Email '%s' for login '%s' already exists in database"), $mailToAdd, $loginToAdd);
+                            $out['errors'][] = $app->trans("Email '%email%' for login '%login%' already exists in database", ['%email%' => $mailToAdd, '%login%' => $loginToAdd]);
                         } else {
                             $mailValid = true;
                         }
@@ -684,7 +684,7 @@ class Users implements ControllerProviderInterface
                         $passwordToVerif = $value;
 
                         if ($passwordToVerif === "") {
-                            $out['errors'][] = sprintf(_("Password is empty at line %d"), $nbLine);
+                            $out['errors'][] = $app->trans("Password is empty at line %line%", ['%line%' => $nbLine]);
                         } else {
                             $pwdValid = true;
                         }

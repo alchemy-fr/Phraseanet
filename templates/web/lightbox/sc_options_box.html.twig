@@ -1,24 +1,24 @@
 <span style="padding:10px 4px 7px;">
     {% if basket_element %}
-        <button class="previous_button play btn btn-mini" title="{% trans 'boutton::precedent' %}">
+        <button class="previous_button play btn btn-mini" title="{{ 'boutton::precedent' | trans }}">
             <i class="icon-chevron-left"></i>
         </button>
-        <button class="previous_button pause btn btn-mini btn-inverse" title="{% trans 'boutton::precedent' %}">
+        <button class="previous_button pause btn btn-mini btn-inverse" title="{{ 'boutton::precedent' | trans }}">
             <i class="icon-chevron-left icon-white"></i>
         </button>
-        <button class="play_button btn btn-mini" title="{% trans 'boutton::demarrer' %}">
+        <button class="play_button btn btn-mini" title="{{ 'boutton::demarrer' | trans }}">
             <i class="icon-play"></i>
         </button>
-        <button class="pause_button btn btn-mini" title="{% trans 'boutton::pause' %}">
+        <button class="pause_button btn btn-mini" title="{{ 'boutton::pause' | trans }}">
             <i class="icon-pause"></i>
         </button>
-        <button class="next_button play btn btn-mini" title="{% trans 'boutton::suivant' %}">
+        <button class="next_button play btn btn-mini" title="{{ 'boutton::suivant' | trans }}">
             <i class="icon-chevron-right"></i>
         </button>
-        <button class="next_button pause btn btn-mini btn-inverse" title="{% trans 'boutton::suivant' %}">
+        <button class="next_button pause btn btn-mini btn-inverse" title="{{ 'boutton::suivant' | trans }}">
             <i class="icon-chevron-right icon-white"></i>
         </button>
-        <button class="download_button btn btn-mini btn-inverse" title="{% trans 'boutton::telecharger' %}">
+        <button class="download_button btn btn-mini btn-inverse" title="{{ 'boutton::telecharger' | trans }}">
             <i class="icon-download icon-white"></i>
         </button>
         <form name="download_form" style="display:none;">

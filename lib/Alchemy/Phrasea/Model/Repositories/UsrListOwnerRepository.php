@@ -39,11 +39,11 @@ class UsrListOwnerRepository extends EntityRepository
 
         /* @var $owner UsrListOwner */
         if (null === $owner) {
-            throw new NotFoundHttpException(_('Owner is not found'));
+            throw new NotFoundHttpException('Owner is not found');
         }
 
         if ( ! $owner->getList()->getid() != $list->getId()) {
-            throw new AccessDeniedHttpException(_('Owner and list mismatch'));
+            throw new AccessDeniedHttpException('Owner and list mismatch');
         }
 
         return $owner;
@@ -74,7 +74,7 @@ class UsrListOwnerRepository extends EntityRepository
 
         /* @var $owner UsrListOwner */
         if (null === $owner) {
-            throw new NotFoundHttpException(_('Owner is not found'));
+            throw new NotFoundHttpException('Owner is not found');
         }
 
         return $owner;
