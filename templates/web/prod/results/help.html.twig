@@ -20,7 +20,7 @@
 
 {% set th_size = app['authentication'].getUser().getPrefs('images_size')%}
 
-{% if app['locale.I18n'] == 'fr' %}
+{% if app['locale'] == 'fr' %}
     <div class="client_help">
     <h5>{{ 'La recherche s\'effectue grâce à la boîte de dialogue qui se trouve en haut à gauche de l\'écran.' | trans }}
     {{ 'Sachez que vous pouvez utiliser les opérateurs ou caractères spéciaux suivants :' | trans }}</h5>

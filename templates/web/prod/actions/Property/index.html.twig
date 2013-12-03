@@ -47,7 +47,7 @@
                     <thead>
                         <tr>
                             <th colspan="6">
-                                {{ databox.get_label(app['locale.I18n'])|title }}
+                                {{ databox.get_label(app['locale'])|title }}
                             </th>
                         </tr>
                     </thead>
@@ -80,7 +80,7 @@
                                 </td>
                                 <td style='text-align:right'>
                                     <label for="status-radio-{{ sbasId ~ "-" ~ bit ~ '-off'}}" {% if inverse == 2 %}style='color:#FF3333'{% endif%}>
-                                        {{ values['labels_off_i18n'][app['locale.I18n']] }}
+                                        {{ values['labels_off_i18n'][app['locale']] }}
                                     </label>
                                 </td>
                                 <td style='text-align:right'>
@@ -91,7 +91,7 @@
                                 </td>
                                 <td style='text-align:left'>
                                     <label for="status-radio-{{ sbasId ~ "-" ~ bit ~ '-on'}}" {% if inverse == 2 %}style='color:#FF3333'{% endif%}>
-                                        {{ values['labels_on_i18n'][app['locale.I18n']] }}
+                                        {{ values['labels_on_i18n'][app['locale']] }}
                                     </label>
                                 </td>
                                 <td style='text-align:left'>

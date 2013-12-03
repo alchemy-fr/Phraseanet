@@ -2,6 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Application;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Core\PhraseaEvents;
@@ -838,7 +839,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             foreach ($content['response']['termsOfUse'] as $terms) {
                 $this->assertTrue(is_array($terms), 'Une bloc cgu est un objet');
                 $this->assertArrayHasKey('locale', $terms);
-                $this->assertTrue(in_array($terms['locale'], ['fr_FR', 'nl_NL', 'en_GB', 'ar_SA', 'de_DE', 'es_ES']));
+                $this->assertTrue(in_array($terms['locale'], array_keys(Application::getAvailableLanguages())));
                 $this->assertArrayHasKey('terms', $terms);
             }
         }

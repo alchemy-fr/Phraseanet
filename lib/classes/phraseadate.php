@@ -43,11 +43,11 @@ class phraseadate
     {
         switch ($this->app['locale']) {
             default:
-            case 'fr_FR':
-            case 'de_DE':
+            case 'fr':
+            case 'de':
                 $time = $date->format('H:i');
                 break;
-            case 'en_GB':
+            case 'en':
                 $time = $date->format('h:iA');
                 break;
         }
@@ -141,7 +141,7 @@ class phraseadate
 
         switch ($locale) {
             default:
-            case 'fr_FR':
+            case 'fr':
                 switch ($format) {
                     default:
                     case 'DAY_MONTH':
@@ -152,7 +152,7 @@ class phraseadate
                         break;
                 }
                 break;
-            case 'en_GB':
+            case 'en':
                 switch ($format) {
                     default:
                     case 'DAY_MONTH':
@@ -163,7 +163,7 @@ class phraseadate
                         break;
                 }
                 break;
-            case 'de_DE':
+            case 'de':
                 switch ($format) {
                     default:
                     case 'DAY_MONTH':

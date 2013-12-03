@@ -296,7 +296,7 @@ class Root implements ControllerProviderInterface
                     "printable" => false,
                 ];
 
-                foreach ($app['locales.I18n.available'] as $code => $language) {
+                foreach ($app['locales.available'] as $code => $language) {
                     $status['labels_on'][$code] = null;
                     $status['labels_off'][$code] = null;
                 }

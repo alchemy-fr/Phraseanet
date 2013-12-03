@@ -246,9 +246,9 @@ class Root implements ControllerProviderInterface
         $renderTopics = '';
 
         if ($app['phraseanet.registry']->get('GV_client_render_topics') == 'popups') {
-            $renderTopics = \queries::dropdown_topics($app['translator'], $app['locale.I18n']);
+            $renderTopics = \queries::dropdown_topics($app['translator'], $app['locale']);
         } elseif ($app['phraseanet.registry']->get('GV_client_render_topics') == 'tree') {
-            $renderTopics = \queries::tree_topics($app['locale.I18n']);
+            $renderTopics = \queries::tree_topics($app['locale']);
         }
 
         return new Response($app['twig']->render('client/index.html.twig', [

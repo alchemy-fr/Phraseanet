@@ -38,7 +38,7 @@
 
 <h1>{{ 'Quotas' | trans }}</h1>
 <div>
-{% set base = collection.get_databox().get_label(app['locale.I18n']) %}
+{% set base = collection.get_databox().get_label(app['locale']) %}
 {% trans with {'%base%' : base} %}Base %base%{% endtrans %}
 </div>
 <div>

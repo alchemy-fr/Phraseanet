@@ -1,6 +1,6 @@
 {% extends 'prod/Tooltip/Tooltip.html.twig' %}
 
-{% set title %} {{ field.get_label(app['locale.I18n']) }} ({{ field.get_tag().getTagname() }}) {% endset %}
+{% set title %} {{ field.get_label(app['locale']) }} ({{ field.get_tag().getTagname() }}) {% endset %}
 {% set width = 600 %}
 {% set maxwidth = null %}
 

@@ -262,7 +262,7 @@ class Databox implements ControllerProviderInterface
         $success = true;
 
         try {
-            foreach ($app['locales.I18n.available'] as $code => $language) {
+            foreach ($app['locales.available'] as $code => $language) {
                 if (!isset($labels[$code])) {
                     continue;
                 }

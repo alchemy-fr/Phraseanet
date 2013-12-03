@@ -79,7 +79,7 @@
                             <select  name=usrbases id="nomchamPH" onKeyUp="javascript:write_valsug();" onChange="javascript:savenomaff();makeRestrict();maketextaffich();makeEmpty();write_valsug();"   onclick="javascript: makeRestrict();desactivall4VS(); write_valsug();" >
                                 {% for field in databox.get_meta_structure() %}
                                     {% if not field.is_readonly %}
-                                        <option value='{{ field.get_name() }}'> {{ field.get_label(app['locale.I18n']) }} </option>
+                                        <option value='{{ field.get_name() }}'> {{ field.get_label(app['locale']) }} </option>
                                     {% endif %}
                                 {% endfor %}
                             </select>

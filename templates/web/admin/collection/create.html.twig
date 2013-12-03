@@ -36,7 +36,7 @@
                         <select id="othcollsel" name="othcollsel" disabled>
                             <option>{{ "choisir" | trans }}</option>
                             {% for collection in app['acl'].get(app['authentication'].getUser()).get_granted_base(["canadmin"]) %}
-                               <option value="{{ collection.get_base_id() }}">{{ collection.get_label(app['locale.I18n']) }}</option>
+                               <option value="{{ collection.get_base_id() }}">{{ collection.get_label(app['locale']) }}</option>
                             {% endfor %}
                         </select>
                     {% endif %}

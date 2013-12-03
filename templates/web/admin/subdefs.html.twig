@@ -214,7 +214,7 @@
                             <td></td>
                         </tr>
 
-                        {% for code, language in app['locales.I18n.available'] %}
+                        {% for code, language in app['locales.available'] %}
                             <tr>
                                 <td>{{ language }}</td>
                                 <td><input type="text" name="{{subdefgroup}}_{{subdefname}}_label[{{ code }}]" value="{{ subdef.get_label(code, false) }}" /></td>

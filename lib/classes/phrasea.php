@@ -218,8 +218,8 @@ class phrasea
             }
         }
 
-        if (isset(self::$_sbas_labels[$sbas_id]) && isset(self::$_sbas_labels[$sbas_id][$app['locale.I18n']])) {
-            return self::$_sbas_labels[$sbas_id][$app['locale.I18n']];
+        if (isset(self::$_sbas_labels[$sbas_id]) && isset(self::$_sbas_labels[$sbas_id][$app['locale']])) {
+            return self::$_sbas_labels[$sbas_id][$app['locale']];
         }
 
         return 'Unknown database';
@@ -246,8 +246,8 @@ class phrasea
             }
         }
 
-        if (isset(self::$_bas_labels[$base_id]) && isset(self::$_bas_labels[$base_id][$app['locale.I18n']])) {
-            return self::$_bas_labels[$base_id][$app['locale.I18n']];
+        if (isset(self::$_bas_labels[$base_id]) && isset(self::$_bas_labels[$base_id][$app['locale']])) {
+            return self::$_bas_labels[$base_id][$app['locale']];
         }
 
         return 'Unknown collection';

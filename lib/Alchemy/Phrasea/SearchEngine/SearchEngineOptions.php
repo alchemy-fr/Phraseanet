@@ -617,7 +617,7 @@ class SearchEngineOptions
         $options = new static();
 
         $options->disallowBusinessFields();
-        $options->setLocale($app['locale.I18n']);
+        $options->setLocale($app['locale']);
 
         if (is_array($request->get('bases'))) {
             $bas = array_map(function ($base_id) use ($app) {

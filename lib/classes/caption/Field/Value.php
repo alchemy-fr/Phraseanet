@@ -367,7 +367,7 @@ class caption_Field_Value implements cache_cacheableInterface
             $nodes = $XPATH_thesaurus->cache_query($q, $DOM_branch);
             $lngfound = false;
             foreach ($nodes as $node) {
-                if ($node->getAttribute("lng") == $this->app['locale.I18n']) {
+                if ($node->getAttribute("lng") == $this->app['locale']) {
                     // le terme est dans la bonne langue, on le rend cliquable
                     list($term, $context) = $this->splitTermAndContext($fvalue);
                     $term = str_replace(["<em>", "</em>"], ["", ""], $term);
@@ -382,7 +382,7 @@ class caption_Field_Value implements cache_cacheableInterface
                     break;
                 }
 
-                $synonyms = $XPATH_thesaurus->query("sy[@lng='" . $this->app['locale.I18n'] . "']", $node->parentNode);
+                $synonyms = $XPATH_thesaurus->query("sy[@lng='" . $this->app['locale'] . "']", $node->parentNode);
                 foreach ($synonyms as $synonym) {
                     $k = $synonym->getAttribute("k");
                     if ($synonym->getAttribute("w") != $term_noacc || $k != $context_noacc) {

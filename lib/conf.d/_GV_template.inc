@@ -41,7 +41,7 @@ return call_user_func_array(function(Application $app) {
                     'type'      => \registry::TYPE_ENUM,
                     'name'      => 'GV_default_lng',
                     'comment'   => $app->trans('Default language'),
-                    'default'   => 'fr_FR',
+                    'default'   => 'fr',
                     'available' => $avLanguages,
                     'required'  => true
                 ],

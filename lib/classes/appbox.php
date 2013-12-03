@@ -356,7 +356,7 @@ class appbox extends base
          * Step 7
          */
         foreach ($this->get_databoxes() as $s) {
-            $upgrader->set_current_message($this->app->trans('Upgrading %databox_name%', array('%databox_name%' => $s->get_label($this->app['locale.I18n']))));
+            $upgrader->set_current_message($this->app->trans('Upgrading %databox_name%', array('%databox_name%' => $s->get_label($this->app['locale']))));
             $advices = array_merge($advices, $s->upgradeDB(true, $upgrader, $app));
             $upgrader->add_steps_complete(1);
         }

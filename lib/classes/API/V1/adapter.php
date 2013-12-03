@@ -656,7 +656,7 @@ class API_V1_adapter extends API_V1_Abstract
         $collection = \collection::get_from_base_id($this->app, $request->get('base_id'));
 
         if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($request->get('base_id'), 'canaddrecord')) {
-            throw new API_V1_exception_forbidden(sprintf('You do not have access to collection %s', $collection->get_label($this->app['locale.I18n'])));
+            throw new API_V1_exception_forbidden(sprintf('You do not have access to collection %s', $collection->get_label($this->app['locale'])));
         }
 
         $media = $app['mediavorus']->guess($file->getPathname());

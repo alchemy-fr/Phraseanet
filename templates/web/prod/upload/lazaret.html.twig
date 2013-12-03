@@ -272,7 +272,7 @@
                                 {% trans with {'%username%' : username} %}Uploaded by : %username%{% endtrans %}
                             </p>
                         {% endif %}
-                        <p>{{ "Collection" | trans }} : <span class="info">{{ file.getCollection(app).get_label(app['locale.I18n']) }}</span></p>
+                        <p>{{ "Collection" | trans }} : <span class="info">{{ file.getCollection(app).get_label(app['locale']) }}</span></p>
                     </div>
                     <div class="caption">
                         {% for check in file.getChecks() %}

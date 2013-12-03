@@ -311,7 +311,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
             $fields[$field->get_name()] = [
                 'value'     => $value,
                 /** @Ignore */
-                'label'     => $field->get_databox_field()->get_label($this->app['locale.I18n']),
+                'label'     => $field->get_databox_field()->get_label($this->app['locale']),
                 'separator' => $field->get_databox_field()->get_separator(),
             ];
         }

@@ -25,11 +25,11 @@ class LocaleServiceProvidertest extends \PhraseanetPHPUnitAbstract
         $app->register(new LocaleServiceProvider());
         $app['root.path'] = __DIR__ . '/../../../../../..';
         $app->register(new ConfigurationServiceProvider());
-        $app['conf']->set(['main', 'languages'], ['fr_FR', 'en_US', 'de']);
+        $app['conf']->set(['main', 'languages'], ['fr', 'zh', 'de']);
 
         $original = Application::getAvailableLanguages();
-        unset($original['en_GB']);
-        unset($original['nl_NL']);
+        unset($original['en']);
+        unset($original['nl']);
 
         $this->assertEquals($original, $app['locales.available']);
     }
@@ -52,33 +52,6 @@ class LocaleServiceProvidertest extends \PhraseanetPHPUnitAbstract
         $this->assertEquals($original, $app['locales.available']);
     }
 
-    public function testLocalesI18nAvailable()
-    {
-        $app = new Application();
-        $app->register(new LocaleServiceProvider());
-
-        $this->assertEquals(array_values(Application::getAvailableLanguages()), array_values($app['locales.I18n.available']));
-        $this->assertEquals(['de', 'en', 'fr', 'nl'], array_keys($app['locales.I18n.available']));
-    }
-
-    public function testLocaleI18n()
-    {
-        $app = new Application();
-        $app->register(new LocaleServiceProvider());
-        $app['locale'] = 'de_CA';
-
-        $this->assertEquals('de', $app['locale.I18n']);
-    }
-
-    public function testLocalel10n()
-    {
-        $app = new Application();
-        $app->register(new LocaleServiceProvider());
-        $app['locale'] = 'de_CA';
-
-        $this->assertEquals('CA', $app['locale.l10n']);
-    }
-
     public function testLocaleBeforeBoot()
     {
         $app = new Application();
@@ -88,9 +61,9 @@ class LocaleServiceProvidertest extends \PhraseanetPHPUnitAbstract
             ->getMock();
         $app['phraseanet.registry']->expects($this->once())
             ->method('get')
-            ->with('GV_default_lng', 'en_GB')
-            ->will($this->returnValue('fr_FR'));
+            ->with('GV_default_lng', 'en')
+            ->will($this->returnValue('fr'));
 
-        $this->assertEquals('fr_FR', $app['locale']);
+        $this->assertEquals('fr', $app['locale']);
     }
 }

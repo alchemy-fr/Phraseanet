@@ -81,7 +81,7 @@ function giveMeBases(Application $app, $usr = null)
         $inscriptions[$sbas_id]['CollsNonactif'] = null;
 
         foreach ($databox->get_collections() as $key => $coll) {
-            $collname[$key] = $coll->get_label($app['locale.I18n']);
+            $collname[$key] = $coll->get_label($app['locale']);
             $basname[$key] = $coll->get_coll_id();
         }
         $sbpcgu = '';
@@ -131,7 +131,7 @@ function giveMeBases(Application $app, $usr = null)
                         $cguSpec = true;
                     } else {
                         if ( ! isset($usrerRegis[$databox->get_dbname()][$collection->get_coll_id()]))
-                            $inscriptions[$sbas_id]['Colls'][$collection->get_coll_id()] = $collection->get_label($app['locale.I18n']);
+                            $inscriptions[$sbas_id]['Colls'][$collection->get_coll_id()] = $collection->get_label($app['locale']);
                     }
                 }
             }
@@ -151,9 +151,9 @@ function giveMeBases(Application $app, $usr = null)
                 elseif ($usrerRegis[$databox->get_dbname()][$collection->get_coll_id()] === true)
                     $inscriptions[$sbas_id]['CollsRegistered'][$collection->get_coll_id()] = $lacgu;
             } elseif (! $cguSpec && $collInscript) {//ne va pas.. si l'inscriptio na la coll est explicitement non autorise, je refuse'
-                $inscriptions[$sbas_id]['Colls'][$collection->get_coll_id()] = $collection->get_label($app['locale.I18n']);
+                $inscriptions[$sbas_id]['Colls'][$collection->get_coll_id()] = $collection->get_label($app['locale']);
             } elseif ($cguSpec) {
-                $inscriptions[$sbas_id]['CollsCGU'][$collection->get_coll_id()]['name'] = $collection->get_label($app['locale.I18n']);
+                $inscriptions[$sbas_id]['CollsCGU'][$collection->get_coll_id()]['name'] = $collection->get_label($app['locale']);
                 $inscriptions[$sbas_id]['CollsCGU'][$collection->get_coll_id()]['CGU'] = $cguColl;
                 $inscriptions[$sbas_id]['CollsCGU'][$collection->get_coll_id()]['CGUrelease'] = $cguCollRelease;
             }

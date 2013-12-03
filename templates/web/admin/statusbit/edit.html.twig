@@ -25,7 +25,7 @@
                 <label class="control-label">
                 </label>
                 <div class="controls">
-                    {% for code, language in app['locales.I18n.available'] %}
+                    {% for code, language in app['locales.available'] %}
                     <div class="span2">
                         <h6>{{ language }}</h6>
                     </div>
@@ -37,7 +37,7 @@
                     {{ 'Labels' | trans }}
                 </label>
                 <div class="controls">
-                {% for code, language in app['locales.I18n.available'] %}
+                {% for code, language in app['locales.available'] %}
                 <div class="span2">
                     <input name="labels_off[{{ code }}]" value="{{ status['labels_off'][code] }}" class="span12" type="text">
                 </div>
@@ -89,7 +89,7 @@
                 <label class="control-label">
                 </label>
                 <div class="controls">
-                    {% for code, language in app['locales.I18n.available'] %}
+                    {% for code, language in app['locales.available'] %}
                     <div class="span2">
                         <h6>{{ language }}</h6>
                     </div>
@@ -101,7 +101,7 @@
                     {{ 'Labels' | trans }}
                 </label>
                 <div class="controls">
-                {% for code, language in app['locales.I18n.available'] %}
+                {% for code, language in app['locales.available'] %}
                 <div class="span2">
                     <input name="labels_on[{{ code }}]" value="{{ status['labels_on'][code] }}" class="span12" type="text">
                 </div>

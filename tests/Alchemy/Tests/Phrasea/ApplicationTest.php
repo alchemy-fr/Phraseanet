@@ -111,7 +111,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCookieLocale()
     {
-        foreach (['fr_FR', 'en_GB', 'de_DE'] as $locale) {
+        foreach (array_keys(Application::getAvailableLanguages()) as $locale) {
             $client = $this->getClientWithCookie( $this->getAppThatReturnLocale(), $locale);
             $client->request('GET', '/');
 
@@ -243,7 +243,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
      */
     public function testAddSetFlashWithInvalidArgument()
     {

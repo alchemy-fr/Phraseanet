@@ -137,6 +137,7 @@ use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Component\Translation\Loader\MoFileLoader;
+use Symfony\Component\Translation\Loader\PoFileLoader;
 use Symfony\Component\Translation\Translator;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
@@ -162,10 +163,10 @@ class Application extends SilexApplication
     use TranslationTrait;
 
     private static $availableLanguages = [
-        'de_DE' => 'Deutsch',
-        'en_GB' => 'English',
-        'fr_FR' => 'Français',
-        'nl_NL' => 'Dutch',
+        'de' => 'Deutsch',
+        'en' => 'English',
+        'fr' => 'Français',
+        'nl' => 'Dutch',
     ];
     private static $flashTypes = ['warning', 'info', 'success', 'error'];
     private $environment;
@@ -308,15 +309,15 @@ class Application extends SilexApplication
         ]);
 
         $this->register(new TranslationServiceProvider(), [
-            'locale_fallbacks' => ['fr_FR'],
+            'locale_fallbacks' => ['fr'],
         ]);
 
         $this['translator'] = $this->share($this->extend('translator', function(Translator $translator, $app) {
-            $translator->addLoader('mo', new MoFileLoader());
-            $translator->addResource('mo', __DIR__.'/../../../resources/locales/messages.fr.mo', 'fr_FR', 'messages');
-            $translator->addResource('mo', __DIR__.'/../../../resources/locales/messages.en.mo', 'en_GB', 'messages');
-            $translator->addResource('mo', __DIR__.'/../../../resources/locales/messages.de.mo', 'de_DE', 'messages');
-            $translator->addResource('mo', __DIR__.'/../../../resources/locales/messages.nl.mo', 'nl_NL', 'messages');
+            $translator->addLoader('po', new PoFileLoader());
+            $translator->addResource('po', __DIR__.'/../../../resources/locales/messages.fr.po', 'fr', 'messages');
+            $translator->addResource('po', __DIR__.'/../../../resources/locales/messages.en.po', 'en', 'messages');
+            $translator->addResource('po', __DIR__.'/../../../resources/locales/messages.de.po', 'de', 'messages');
+            $translator->addResource('po', __DIR__.'/../../../resources/locales/messages.nl.po', 'nl', 'messages');
 
             return $translator;
         }));

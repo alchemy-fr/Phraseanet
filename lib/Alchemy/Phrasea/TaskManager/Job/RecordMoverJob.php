@@ -204,7 +204,7 @@ class RecordMoverJob extends AbstractJob
         try {
             $dbox = $app['phraseanet.appbox']->get_databox($sbas_id);
 
-            $ret['basename'] = $dbox->get_label($app['locale.I18n']);
+            $ret['basename'] = $dbox->get_label($app['locale']);
             $ret['basename_htmlencoded'] = htmlentities($ret['basename']);
             switch ($ret['action']) {
                 case 'UPDATE':

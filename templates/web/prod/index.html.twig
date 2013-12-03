@@ -377,24 +377,24 @@
                                                             <tr>
                                                                 <td>
                                                                     {% if s['imgoff'] %}
-                                                                        <img src="{{s['imgoff']}}" title="{{s['labels_off_i18n'][app['locale.I18n']]}}" />
+                                                                        <img src="{{s['imgoff']}}" title="{{s['labels_off_i18n'][app['locale']]}}" />
                                                                     {% endif %}
                                                                     <label class="checkbox inline">
                                                                         <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|join(' field_')}}"
                                                                         type="checkbox" value="{{s['sbas']|join(' field_')}}"
                                                                         n="{{n}}" name="status[{{n}}][off][]" />
-                                                                        {{s['labels_off_i18n'][app['locale.I18n']]}}
+                                                                        {{s['labels_off_i18n'][app['locale']]}}
                                                                     </label>
                                                                 </td>
                                                                 <td>
                                                                     {% if s['imgoff'] %}
-                                                                        <img src="{{s['imgon']}}" title="{{s['labels_on_i18n'][app['locale.I18n']]}}" />
+                                                                        <img src="{{s['imgon']}}" title="{{s['labels_on_i18n'][app['locale']]}}" />
                                                                     {% endif %}
                                                                     <label class="checkbox inline">
                                                                         <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|join(' field_')}}"
                                                                         type="checkbox" value="{{s['sbas']|join(' field_')}}"
                                                                         n="{{n}}" name="status[{{n}}][on][]"/>
-                                                                        {{s['labels_on_i18n'][app['locale.I18n']]}}
+                                                                        {{s['labels_on_i18n'][app['locale']]}}
                                                                     </label>
                                                                 </td>
                                                             </tr>

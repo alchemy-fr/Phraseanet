@@ -1,4 +1,4 @@
-<html lang="{{ app['locale.I18n'] }}">
+<html lang="{{ app['locale'] }}">
     <head>
         <title>{{ app['phraseanet.registry'].get('GV_homeTitle') }} Client</title>
         <meta http-equiv="X-UA-Compatible" content="chrome=1">
@@ -117,8 +117,8 @@
                                                                 {% set databox = databoxWrapper['databoxes'] %}
                                                                 {% set collections = databoxWrapper['collections'] %}
                                                                 {% if collections|length > 0 %}
-                                                                    <optgroup label="{{ databox.get_label(app['locale.I18n']) }}">
-                                                                        <option value="{{ collection|keys|join(';') }}">{{ databox.get_label(app['locale.I18n']) }}</option>
+                                                                    <optgroup label="{{ databox.get_label(app['locale']) }}">
+                                                                        <option value="{{ collection|keys|join(';') }}">{{ databox.get_label(app['locale']) }}</option>
                                                                         {% for collId, collection in collections %}
                                                                         <option value="{{ collId }}" checked="checked">{{ collection.get_name() }}</option>
                                                                         {% endfor %}
@@ -191,7 +191,7 @@
                                                                     <div class="basContTitle">
                                                                         <div class="basTitle">
                                                                             <input class="basChecker checkbox" id="basChecker{{ sbasId }}" type="checkbox" onclick="chkSbas({{ sbasId }},this)" />
-                                                                            <label for="basChecker{{ sbasId }}">{{ databox.get_label(app['locale.I18n']) }}</label>
+                                                                            <label for="basChecker{{ sbasId }}">{{ databox.get_label(app['locale']) }}</label>
                                                                             <img onclick="removeFilters({{ sbasId }});" id="filter_danger{{ sbasId }}" class="filter_danger" src="/skins/icons/alert.png" title="{{ "client::recherche: cliquez ici pour desactiver tous les filtres de cette base" | trans }}" style="vertical-align:bottom;width:12px;height:12px;display:none;"/>
                                                                         </div>
                                                                         {% set status_bit_filters = '' %}
@@ -202,11 +202,11 @@
                                                                                         <tr>
                                                                                             <td style="width:50%" nowrap>
                                                                                                 <input class="checkbox" db="{{ sbasId }}" onchange="checkFilters();" type="checkbox" name="status[]" id="statusfil_{{ sbasId }}_off{{ sbasId }}" value="{{ sbasId }}_of{{ sbasId }}"/>
-                                                                                                <label title="{{ data['labels_off_i18n'][app['locale.I18n']] }}" for="statusfil_{{ sbasId }}_off{{ bit }}">{% if data['img_off'] %}<img src="'{{ datas['img_off'] }}" title="{{ datas['labels_off_i18n'][app['locale.I18n']] }}" style="width:16px;height:16px;vertical-align:bottom" />{% endif %}{{ data['labels_off_i18n'][app['locale.I18n']] }}</label>
+                                                                                                <label title="{{ data['labels_off_i18n'][app['locale']] }}" for="statusfil_{{ sbasId }}_off{{ bit }}">{% if data['img_off'] %}<img src="'{{ datas['img_off'] }}" title="{{ datas['labels_off_i18n'][app['locale']] }}" style="width:16px;height:16px;vertical-align:bottom" />{% endif %}{{ data['labels_off_i18n'][app['locale']] }}</label>
                                                                                             </td>
                                                                                             <td style="width:50%" nowrap>
                                                                                                 <input class="checkbox" db="{{ sbasId }}" onchange="checkFilters();" type="checkbox" name="status[]" id="statusfil_{{ sbasId }}_on{{ sbasId }}" value="{{ sbasId }}_on{{ sbasId }}"/>
-                                                                                                <label title="{{ data['labels_on_i18n'][app['locale.I18n']] }}" for="statusfil_{{ sbasId }}_on{{ bit }}">{% if data['img_on']%}<img src="{{ datas['img_on'] }}" title="{{ datas['labels_on_i18n'][app['locale.I18n']] }}" style="width:16px;height:16px;vertical-align:bottom" />{% endif %}{{ data['labels_on_i18n'][app['locale.I18n']] }}</label>
+                                                                                                <label title="{{ data['labels_on_i18n'][app['locale']] }}" for="statusfil_{{ sbasId }}_on{{ bit }}">{% if data['img_on']%}<img src="{{ datas['img_on'] }}" title="{{ datas['labels_on_i18n'][app['locale']] }}" style="width:16px;height:16px;vertical-align:bottom" />{% endif %}{{ data['labels_on_i18n'][app['locale']] }}</label>
                                                                                             </td>
                                                                                         </tr>
                                                                                     </table>

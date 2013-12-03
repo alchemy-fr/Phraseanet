@@ -87,7 +87,7 @@
                     <img src="/skins/icons/titre16.png" title="{{ 'This field represents the title of the document' | trans }}" />
                 {% endif %}
                 <span id="spanidEditFieldBox_{{i}}">
-                    {{field.get_label(app['locale.I18n'])}} {% if field.is_required() %}<span style="font-weight:bold;font-size:16px;"> * </span>{% endif %} :
+                    {{field.get_label(app['locale'])}} {% if field.is_required() %}<span style="font-weight:bold;font-size:16px;"> * </span>{% endif %} :
                 </span>
                 <span class="fieldvalue" id="idEditField_{{i}}" >???</span>
             </div>
@@ -245,7 +245,7 @@
                     <div id='TH_Ofull'>
                         <div class='thesaurus' ondblclick='return(edit_dblclickThesaurus(event));' onclick='return(edit_clickThesaurus(event));'>
                             <p id='TH_T.{{ databox.get_sbas_id() }}.T'>
-                                <u id='TH_P.{{ databox.get_sbas_id() }}.T'>+</u><a id='GL_W.{{ databox.get_sbas_id() }}.T' style='FONT-WEIGHT: bold;'>{{ databox.get_label(app['locale.I18n']) }}</a>
+                                <u id='TH_P.{{ databox.get_sbas_id() }}.T'>+</u><a id='GL_W.{{ databox.get_sbas_id() }}.T' style='FONT-WEIGHT: bold;'>{{ databox.get_label(app['locale']) }}</a>
                             </p>
                             <div id='TH_K.{{ databox.get_sbas_id() }}.T' class='c'>{{ 'phraseanet::chargement' | trans }}</div>
                         </div>
@@ -268,7 +268,7 @@
                                 <select id="EditSRField" class="input-xlarge">
                                     <option value="">{{ 'prod::editing::replace: remplacer dans tous les champs' | trans }}</option>
                                     {% for field in fields %}
-                                        <option value="{{ field.get_id() }}">{{ field.get_label(app['locale.I18n']) }}</option>
+                                        <option value="{{ field.get_id() }}">{{ field.get_label(app['locale']) }}</option>
                                     {% endfor %}
                                 </select>
                             </td>
@@ -291,11 +291,11 @@
                                 <input type="checkbox" class="checkbox" id="EditSROptionRX" value="regexp" onchange="changeReplaceMode(this);">
                                 {{ 'prod::editing:remplace::option : utiliser une expression reguliere' | trans }}
                                 {% set help_link = 'https://secure.wikimedia.org/wikipedia/en/wiki/Regular_expression' %}
-                                {% if app['locale.I18n'] == 'de' %}
+                                {% if app['locale'] == 'de' %}
                                     {% set help_link = 'https://secure.wikimedia.org/wikipedia/de/wiki/Regul%C3%A4rer_Ausdruck' %}
-                                {% elseif app['locale.I18n'] == 'fr' %}
+                                {% elseif app['locale'] == 'fr' %}
                                     {% set help_link = 'https://secure.wikimedia.org/wikipedia/fr/wiki/Expression_rationnelle' %}
-                                {% elseif app['locale.I18n'] == 'ar' %}
+                                {% elseif app['locale'] == 'ar' %}
                                     {% set help_link = 'https://secure.wikimedia.org/wikipedia/ar/wiki/%D8%AA%D8%B9%D8%A7%D8%A8%D9%8A%D8%B1_%D9%86%D9%85%D8%B7%D9%8A%D8%A9' %}
                                 {% endif %}
                                 <a href="{{help_link}}" target="_blank">

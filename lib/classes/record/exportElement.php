@@ -157,7 +157,7 @@ class record_exportElement extends record_adapter
                 if (trim($label) == '')
                     continue;
 
-                if ($lang == $this->app['locale.I18n']) {
+                if ($lang == $this->app['locale']) {
                     $subdef_label = $label;
                     break;
                 }

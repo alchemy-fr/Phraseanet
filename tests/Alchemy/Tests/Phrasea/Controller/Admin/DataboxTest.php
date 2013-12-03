@@ -166,7 +166,7 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $collection = $this->createOneCollection();
 
         self::$DI['client']->request('POST', '/admin/databox/' . $collection->get_sbas_id() . '/cgus/', [
-            'TOU' => ['fr_FR' => 'Test update CGUS']
+            'TOU' => ['fr' => 'Test update CGUS']
         ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
@@ -187,14 +187,14 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $cgusUpdate = 'Test update CGUS';
 
         $this->XMLHTTPRequest('POST', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/cgus/', [
-            'TOU' => ['fr_FR' => $cgusUpdate]
+            'TOU' => ['fr' => $cgusUpdate]
         ]);
 
         $this->checkRedirection(self::$DI['client']->getResponse(), '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/cgus/?success=1');
 
         $databox = self::$DI['app']['phraseanet.appbox']->get_databox(self::$DI['collection']->get_sbas_id());
         $cgus = $databox->get_cgus();
-        $this->assertEquals($cgus['fr_FR']['value'], $cgusUpdate);
+        $this->assertEquals($cgus['fr']['value'], $cgusUpdate);
         unset($databox);
     }
 

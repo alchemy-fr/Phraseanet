@@ -27,12 +27,12 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
      * @var Array
      */
     public static $locales = [
-        'ar_SA' => 'العربية'
-        , 'de_DE' => 'Deutsch'
-        , 'nl_NL' => 'Dutch'
-        , 'en_GB' => 'English'
-        , 'es_ES' => 'Español'
-        , 'fr_FR' => 'Français'
+        'ar' => 'العربية'
+        , 'de' => 'Deutsch'
+        , 'nl' => 'Dutch'
+        , 'en' => 'English'
+        , 'es' => 'Español'
+        , 'fr' => 'Français'
     ];
 
     /**
@@ -1242,7 +1242,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     public function get_locale()
     {
-        return $this->locale ?: $this->app['phraseanet.registry']->get('GV_default_lng', 'en_GB');
+        return $this->locale ?: $this->app['phraseanet.registry']->get('GV_default_lng', 'en');
     }
 
     public function set_locale($locale)

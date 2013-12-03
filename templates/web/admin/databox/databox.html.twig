@@ -29,7 +29,7 @@
     </li>
 
     <li>
-        {{ 'admin::base: Alias' | trans }} : <span id="viewname">{{ databox.get_label(app['locale.I18n']) }}</span>
+        {{ 'admin::base: Alias' | trans }} : <span id="viewname">{{ databox.get_label(app['locale']) }}</span>
         {% if app['acl'].get(app['authentication'].getUser()).has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
             <img src="/skins/icons/edit_0.gif" id="show-view-name" />
             <div class="well well-small" id="change-view-name" style="display:none;">
@@ -101,14 +101,14 @@
         <form class="form-inline" method="post" action="{{ path('admin_databox_labels', { 'databox_id' : databox.get_sbas_id() }) }}" style="margin:0;">
             <div class="input-append">
                 <div class="row">
-                    {% for code, language in app['locales.I18n.available'] %}
+                    {% for code, language in app['locales.available'] %}
                     <div class="span2">
                         <h6>{{ language }}</h6>
                     </div>
                     {% endfor %}
                 </div>
                 <div class="row">
-                    {% for code, language in app['locales.I18n.available'] %}
+                    {% for code, language in app['locales.available'] %}
                     <div class="span2">
                         <input name="labels[{{ code }}]" value="{{ databox.get_label(code, false) }}" class="span2" type="text">
                     </div>
