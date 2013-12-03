@@ -49,6 +49,29 @@ class userTest extends PhraseanetPHPUnitAbstract
         $this->assertNull($repo->findWithProviderAndId('custom-one', 12345));
     }
 
+    public function testDeleteSetMailToNullAndRemovesSessions()
+    {
+        try {
+            $usrId = \User_Adapter::get_usr_id_from_login(self::$DI['app'], 'test_phpunit_sessions');
+            $user = \User_Adapter::getInstance($usrId, self::$DI['app']);
+        } catch (\Exception $e) {
+            $user = \User_Adapter::create(self::$DI['app'], 'test_phpunit_sessions', 'any', null, false);
+        }
+
+        $session = new Entities\Session();
+        $session
+            ->setUsrId($user->get_id())
+            ->setUserAgent('');
+
+        self::$DI['app']['EM']->persist($session);
+        self::$DI['app']['EM']->flush();
+
+        $user->delete();
+
+        $repo = self::$DI['app']['EM']->getRepository('Entities\Session');
+        $this->assertCount(0, $repo->findByUser($user));
+    }
+
     public function testGetPref()
     {
         $user = $this->get_user();
