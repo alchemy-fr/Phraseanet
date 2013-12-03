@@ -27,6 +27,7 @@ class PhraseaEngineTest extends SearchEngineAbstractTest
     public function initialize()
     {
         self::$searchEngine = PhraseaEngine::create(self::$DI['app']);
+        self::$searchEngineClass = 'Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine';
     }
 
     protected function updateIndex(array $stemms = array())
