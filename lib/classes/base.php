@@ -822,7 +822,10 @@ abstract class base implements cache_cacheableInterface
         $upgrader->add_steps_complete(1)
             ->add_steps(count($list_patches))
             ->set_current_message($app->trans('Applying patches on %databox_name%', ['%databox_name%' => $this->get_dbname()]));
-        ksort($list_patches);
+
+        uasort($list_patches, function (\patchInterface $patch1, \patchInterface $patch2) {
+            return version::lt($patch1->get_release(), $patch2->get_release()) ? -1 : 1;
+        });
 
         $success = true;
 
