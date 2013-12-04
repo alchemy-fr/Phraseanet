@@ -21,4 +21,15 @@ use Doctrine\ORM\EntityRepository;
  */
 class SessionRepository extends EntityRepository
 {
+    public function findByUser(\User_Adapter $user)
+    {
+        $dql = 'SELECT s
+            FROM Alchemy\Phrasea\Model\Entities\Session s
+            WHERE s.usr_id = :usr_id';
+
+        $query = $this->_em->createQuery($dql);
+        $query->setParameters(array('usr_id' => $user->get_id()));
+
+        return $query->getResult();
+    }
 }
