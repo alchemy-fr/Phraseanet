@@ -197,11 +197,12 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     }
 
     /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::registerConfirm
+     * @environment prod
      */
     public function testRegisterConfirmMail()
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationRegistered');
+        $this->mockUserNotificationSettings('eventsmanager_notify_register');
 
         $this->logout(self::$DI['app']);
         $email = $this->generateEmail();
@@ -221,11 +222,12 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     }
 
     /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::registerConfirm
+     * @environment prod
      */
     public function testRegisterConfirmMailNoCollAwait()
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationUnregistered');
+        $this->mockUserNotificationSettings('eventsmanager_notify_register');
 
         $user = self::$DI['app']['manipulator.user']->createUser(uniqid('user_'), "test", 'email-random'.mt_rand().'@phraseanet.com');
 
@@ -280,11 +282,12 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     }
 
     /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::renewPassword
+     * @environment prod
      */
     public function testRenewPasswordMail()
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestPasswordUpdate');
+        $this->mockUserNotificationSettings('eventsmanager_notify_register');
 
         $this->logout(self::$DI['app']);
         self::$DI['client']->request('POST', '/login/forgot-password/', [
@@ -457,9 +460,13 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFlashMessage($crawler, 'error', 1);
     }
 
+    /**
+     * @environment prod
+     */
     public function testForgotPasswordSubmission()
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestPasswordUpdate');
+        $this->mockUserNotificationSettings('eventsmanager_notify_register');
 
         $this->logout(self::$DI['app']);
         $crawler = self::$DI['client']->request('POST', '/login/forgot-password/', [
@@ -944,7 +951,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     }
 
     /**
-     *
      * @environment prod
      */
     public function testPostRegisterWithProviderIdAndAccountNotCreatedYet()
@@ -959,6 +965,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         ];
 
         $this->mockNotificationsDeliverer($emails);
+        $this->mockUserNotificationSettings('eventsmanager_notify_register');
 
         $parameters = array_merge(['_token' => 'token'], [
             "password" => [
@@ -1062,6 +1069,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         ];
 
         $this->mockNotificationsDeliverer($emails);
+        $this->mockUserNotificationSettings('eventsmanager_notify_register');
 
         $parameters = array_merge(['_token' => 'token'], $parameters);
         foreach ($parameters as $key => $parameter) {
@@ -1117,11 +1125,12 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     }
 
     /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::sendConfirmMail
+     * @environment prod
      */
     public function testSendConfirmMail()
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation');
+        $this->mockUserNotificationSettings('eventsmanager_notify_register');
 
         $this->logout(self::$DI['app']);
         self::$DI['client']->request('GET', '/login/send-mail-confirm/', ['usr_id' => self::$DI['user']->getId()]);

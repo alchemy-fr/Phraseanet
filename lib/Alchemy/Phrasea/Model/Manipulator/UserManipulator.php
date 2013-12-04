@@ -184,13 +184,17 @@ class UserManipulator implements ManipulatorInterface
      * @param string $name
      * @param string $value
      */
-    public function addUserSetting(User $user, $name, $value)
+    public function setUserSetting(User $user, $name, $value)
     {
-        $userSetting = new UserSetting();
-        $userSetting->setUser($user);
-        $userSetting->setName($name);
-        $userSetting->setValue($value);
-        $user->addSetting($userSetting);
+        if ($user->getSettings()->containsKey($name)) {
+            $user->getSettings()->get($name)->setValue($value);
+        } else {
+            $userSetting = new UserSetting();
+            $userSetting->setUser($user);
+            $userSetting->setName($name);
+            $userSetting->setValue($value);
+            $user->addSetting($userSetting);
+        }
 
         $this->manager->update($user);
     }
@@ -202,13 +206,17 @@ class UserManipulator implements ManipulatorInterface
      * @param string $name
      * @param string $value
      */
-    public function addNotificationSetting(User $user, $name, $value)
+    public function setNotificationSetting(User $user, $name, $value)
     {
-        $notifSetting = new UserNotificationSetting();
-        $notifSetting->setName($name);
-        $notifSetting->setValue($value);
-        $notifSetting->setUser($user);
-        $user->addNotificationSettings($notifSetting);
+        if ($user->getNotificationSettings()->containsKey($name)) {
+            $user->getNotificationSettings()->get($name)->setValue((Boolean) $value);
+        } else {
+            $userSetting = new UserNotificationSetting();
+            $userSetting->setUser($user);
+            $userSetting->setName($name);
+            $userSetting->setValue($value);
+            $user->addNotificationSettings($userSetting);
+        }
 
         $this->manager->update($user);
     }

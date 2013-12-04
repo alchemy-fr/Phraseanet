@@ -14,8 +14,8 @@ class UserManagerTest extends \PhraseanetTestCase
     {
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
         self::$DI['app']['manipulator.user']->logQuery($user, 'a query');
-        self::$DI['app']['manipulator.user']->addUserSetting($user, 'setting', false);
-        self::$DI['app']['manipulator.user']->addNotificationSetting($user, 'setting', false);
+        self::$DI['app']['manipulator.user']->setUserSetting($user, 'setting', false);
+        self::$DI['app']['manipulator.user']->setNotificationSetting($user, 'setting', false);
         self::$DI['app']['model.user-manager']->delete($user);
         $this->assertTrue($user->isDeleted());
         $this->assertNull($user->getEmail());

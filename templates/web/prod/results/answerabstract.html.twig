@@ -13,7 +13,7 @@
     {% trans with {'%link%' : link} %}Voulez-vous dire %link% ?{% endtrans %}
     <br/>
   {% endif %}
-  {% set th_size = app['authentication'].getUser().getSettingValue('images_size')%}
+  {% set th_size = app['settings'].getUserSetting(app['authentication'].getUser(), 'images_size')%}
   <div class="selectable" style="margin:10px 0; float:left;">
     {% block content %}{% endblock %}
   </div>

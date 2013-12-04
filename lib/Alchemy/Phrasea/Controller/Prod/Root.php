@@ -65,7 +65,7 @@ class Root implements ControllerProviderInterface
                 $css[$baseName] = $baseName;
             }
 
-            $cssfile = $app['authentication']->getUser()->getSettingValue('css');
+            $cssfile = $app['settings']->getUserSetting($app['authentication']->getUser(), 'css');
 
             if (!$cssfile && isset($css['000000'])) {
                 $cssfile = '000000';

@@ -63,9 +63,9 @@ class userTest extends \PhraseanetTestCase
     {
         $user = self::$DI['app']['manipulator.user']->createUser('notif_ref_test', 'pass');
 
-        $this->assertNull($user->getSettingValue('lalala'));
-        $this->assertSame('popo', $user->getSettingValue('lalala', 'popo'));
-        $this->assertSame(User::$defaultUserSettings['editing_top_box'], $user->getSettingValue('editing_top_box'));
+        $this->assertNull(self::$DI['app']['settings']->getUserSetting($user, 'lalala'));
+        $this->assertSame('popo', self::$DI['app']['settings']->getUserSetting($user, 'lalala', 'popo'));
+        $this->assertSame(self::$DI['app']['settings']->getUsersSettings()['editing_top_box'], self::$DI['app']['settings']->getUserSetting($user, 'editing_top_box'));
     }
 
     public function testGetPrefWithACustomizedConf()
@@ -83,10 +83,10 @@ class userTest extends \PhraseanetTestCase
         $user = $this->get_user();
         $user->setPrefs('images_per_page', 35);
 
-        $this->assertNull($user->getSettingValue('lalala'));
-        $this->assertSame(666, $user->getSettingValue('images_size'));
-        $this->assertSame(42, $user->getSettingValue('images_per_page'));
-        $this->assertSame(User::$defaultUserSettings['editing_top_box'], $user->getSettingValue('editing_top_box'));
+        $this->assertNull(self::$DI['app']['settings']->getUserSetting($user, 'lalala'));
+        $this->assertSame(666, self::$DI['app']['settings']->getUserSetting($user, 'images_size'));
+        $this->assertSame(42, self::$DI['app']['settings']->getUserSetting($user, 'images_per_page'));
+        $this->assertSame(self::$DI['app']['settings']->getUsersSettings()['editing_top_box'], self::$DI['app']['settings']->getUserSetting($user, 'editing_top_box'));
 
         if (null === $data) {
             self::$DI['app']['conf']->remove('user-settings');
@@ -99,25 +99,25 @@ class userTest extends \PhraseanetTestCase
     {
         $user = self::$DI['app']['manipulator.user']->createUser('notif_ref_test', 'pass');
 
-        $user->setSettingValue('prout', 'pooop');
-        $this->assertSame('pooop', $user->getSettingValue('prout'));
+        self::$DI['app']['manipulator.user']->setUserSetting($user, 'prout', 'pooop');
+        $this->assertSame('pooop', self::$DI['app']['settings']->getUserSetting($user, 'prout'));
     }
 
     public function testGetNotificationPref()
     {
         $user = self::$DI['app']['manipulator.user']->createUser('notif_ref_test', 'pass');
 
-        $this->assertTrue($user->getNotificationSettingValue('eventsmanager_notify_push'));
+        $this->assertTrue(self::$DI['app']['settings']->getUserNotificationSetting($user, 'eventsmanager_notify_push'));
     }
 
     public function testNotificationPref()
     {
         $user = self::$DI['app']['manipulator.user']->createUser('notif_ref_test', 'pass');
 
-        $this->assertTrue($user->getNotificationSettingValue('eventsmanager_notify_push'));
-        $user->setNotificationSettingValue('eventsmanager_notify_push', false);
-        $this->assertFalse($user->getNotificationSettingValue('eventsmanager_notify_push'));
-        $user->setNotificationSettingValue('eventsmanager_notify_push', true);
-        $this->assertTrue($user->getNotificationSettingValue('eventsmanager_notify_push'));
+        $this->assertTrue(self::$DI['app']['settings']->getUserNotificationSetting($user, 'eventsmanager_notify_push'));
+        self::$DI['app']['manipulator.user']->setNotificationSetting($user, 'eventsmanager_notify_push', false);
+        $this->assertFalse(self::$DI['app']['settings']->getUserNotificationSetting($user, 'eventsmanager_notify_push'));
+        self::$DI['app']['manipulator.user']->setNotificationSetting($user, 'eventsmanager_notify_push', true);
+        $this->assertTrue(self::$DI['app']['settings']->getUserNotificationSetting($user, 'eventsmanager_notify_push'));
     }
 }

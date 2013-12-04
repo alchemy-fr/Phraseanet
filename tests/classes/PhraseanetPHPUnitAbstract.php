@@ -1290,6 +1290,26 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $this->assertFalse($data['success']);
     }
 
+    protected function mockUserNotificationSettings($notificationName, $returnValue = true)
+    {
+        if (false === self::$DI['app']['settings'] instanceof \PHPUnit_Framework_MockObject_MockObject) {
+            self::$DI['app']['settings'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\DisplaySettingService')
+                ->disableOriginalConstructor()
+                ->getMock();
+        }
+
+        self::$DI['app']['settings']
+            ->expects($this->any())
+            ->method('getUserNotificationSetting')
+            ->with(
+                $this->isInstanceOf('Alchemy\Phrasea\Model\Entities\User'),
+                $this->equalTo($notificationName)
+            )
+            ->will($this->returnValue($returnValue));
+
+        self::$DI['app']['setting'] = 'toto';
+    }
+
     protected function mockNotificationDeliverer($expectedMail, $qty = 1, $receipt = null)
     {
         self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')

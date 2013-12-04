@@ -1027,17 +1027,6 @@ class User extends \Alchemy\Phrasea\Model\Entities\User implements \Doctrine\ORM
     /**
      * {@inheritDoc}
      */
-    public function setSettingValue($name, $value)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSettingValue', array($name, $value));
-
-        return parent::setSettingValue($name, $value);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getNotificationSettings()
     {
 
@@ -1055,28 +1044,6 @@ class User extends \Alchemy\Phrasea\Model\Entities\User implements \Doctrine\ORM
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'addNotificationSettings', array($notificationSetting));
 
         return parent::addNotificationSettings($notificationSetting);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setNotificationSettingValue($name, $value)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNotificationSettingValue', array($name, $value));
-
-        return parent::setNotificationSettingValue($name, $value);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getNotificationSettingValue($name)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNotificationSettingValue', array($name));
-
-        return parent::getNotificationSettingValue($name);
     }
 
     /**

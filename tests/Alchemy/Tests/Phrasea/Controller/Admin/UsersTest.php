@@ -45,6 +45,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
     public function testRouteRightsApply()
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate', 2);
+
         $user = self::$DI['app']['manipulator.user']->createUser(uniqid('user_'), 'test');
 
         self::$DI['client']->request('POST', '/admin/users/rights/apply/', [

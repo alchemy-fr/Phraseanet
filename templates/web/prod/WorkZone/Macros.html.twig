@@ -276,10 +276,10 @@
 
 {% macro element(wz_scope, container, contained, record, ord) %}
   {% set box_height = 110 %}
-  {% if app['authentication'].getUser().getSettingValue('basket_title_display') == '1' %}
+  {% if app['settings'].getUserSetting(app['authentication'].getUser(), 'basket_title_display') == '1' %}
       {% set box_height = (box_height + 20) %}
   {% endif %}
-  {% if app['authentication'].getUser().getSettingValue('basket_status_display') == '1' %}
+  {% if app['settings'].getUserSetting(app['authentication'].getUser(), 'basket_status_display') == '1' %}
       {% set box_height = (box_height + 20) %}
   {% endif %}
 
@@ -289,12 +289,12 @@
        class="CHIM diapo CHIM_{{record.get_serialize_key()}}" style="height:{{box_height}}px;"
        id="CHIM_{% if wz_scope == 'groupings' %}{{record.get_serialize_key()}}{% else %}{{ contained.getId() }}{% endif %}">
        <input type="hidden" name="id" value="{{ record.get_serialize_key() }}"/>
-      {% if app['authentication'].getUser().getSettingValue('basket_title_display') == '1' %}
+      {% if app['settings'].getUserSetting(app['authentication'].getUser(), 'basket_title_display') == '1' %}
           <div class="title">
               {{record.get_title()}}
           </div>
       {% endif %}
-      {% if app['authentication'].getUser().getSettingValue('basket_status_display') == '1' %}
+      {% if app['settings'].getUserSetting(app['authentication'].getUser(), 'basket_status_display') == '1' %}
           <div class="status" style="position:relative;height:20px;overflow-y:visible;z-index:15;">
               {{record.get_status_icons|raw}}
           </div>
@@ -317,7 +317,7 @@
             class="WorkZoneElementRemover {{ wz_scope }}" title="{{ 'delete' | trans }}" >
             X
           </a>
-          {% if app['authentication'].getUser().getSettingValue('basket_caption_display') == '1' %}
+          {% if app['settings'].getUserSetting(app['authentication'].getUser(), 'basket_caption_display') == '1' %}
               <div class="captionRolloverTips" tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id(), 'context' : 'basket', 'number' : record.get_number() }) }}"></div>
           {% endif %}
       </div>

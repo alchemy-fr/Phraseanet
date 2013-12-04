@@ -62,7 +62,7 @@ class databox_cgu
                     if ( ! $app['acl']->get($app['authentication']->getUser())->has_access_to_sbas($databox->get_sbas_id())) {
                         continue;
                     }
-                    $userValidation = ($app['authentication']->getUser()->getSettingValue('terms_of_use_' . $databox->get_sbas_id()) !== $update && trim($value) !== '');
+                    $userValidation = ($app['settings']->getUserSetting($app['authentication']->getUser(), 'terms_of_use_' . $databox->get_sbas_id()) !== $update && trim($value) !== '');
                 }
 
                 if ($userValidation)

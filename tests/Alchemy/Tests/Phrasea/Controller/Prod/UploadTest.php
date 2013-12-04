@@ -143,6 +143,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
     public function testUploadingTwiceTheSameRecordShouldSendToQuantantine()
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoRecordQuarantined');
+        $this->mockUserNotificationSettings('eventsmanager_notify_uploadquarantine');
 
         $params = [
             'base_id' => self::$DI['collection']->get_base_id()

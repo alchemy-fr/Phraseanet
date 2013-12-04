@@ -97,8 +97,8 @@ class Root implements ControllerProviderInterface
         $app['EM']->persist($userQuery);
         $app['EM']->flush();
 
-        if ($app['authentication']->getUser()->getSettingValue('start_page') === 'LAST_QUERY') {
-            $app['authentication']->getUser()->setSettingValue('start_page_query', $query);
+        if ($app['settings']->getUserSetting($app['authentication']->getUser(), 'start_page') === 'LAST_QUERY') {
+            $app['manipulator.user']->setUserSetting($app['authentication']->getUser(), 'start_page_query', $query);
         }
 
         foreach ($options->getDataboxes() as $databox) {
@@ -263,10 +263,10 @@ class Root implements ControllerProviderInterface
             'module'            => 'client',
             'menubar'           => $app['twig']->render('common/menubar.html.twig', ['module' => 'client']),
             'css_file'          => $this->getCssFile($app),
-            'basket_status'     => $app['authentication']->getUser()->getSettingValue('client_basket_status', '1'),
-            'mod_pres'          => $app['authentication']->getUser()->getSettingValue('client_view', '' ),
-            'start_page'        => $app['authentication']->getUser()->getSettingValue('start_page'),
-            'start_page_query'  => $app['authentication']->getUser()->getSettingValue('start_page_query', '')
+            'basket_status'     => $app['settings']->getUserSetting($app['authentication']->getUser(), 'client_basket_status', '1'),
+            'mod_pres'          => $app['settings']->getUserSetting($app['authentication']->getUser(), 'client_view', '' ),
+            'start_page'        => $app['settings']->getUserSetting($app['authentication']->getUser(), 'start_page'),
+            'start_page_query'  => $app['settings']->getUserSetting($app['authentication']->getUser(), 'start_page_query', '')
         ]));
     }
 
@@ -350,7 +350,7 @@ class Root implements ControllerProviderInterface
         $cssPath = __DIR__ . '/../../../../../www/skins/client/';
 
         $css = [];
-        $cssFile = $app['authentication']->getUser()->getSettingValue('client_css');
+        $cssFile = $app['settings']->getUserSetting($app['authentication']->getUser(), 'client_css');
 
         $finder = new Finder();
 
@@ -418,7 +418,7 @@ class Root implements ControllerProviderInterface
      */
     private function getDefaultClientStartPage(Application $app)
     {
-        $startPage = strtoupper($app['authentication']->getUser()->getSettingValue('start_page'));
+        $startPage = strtoupper($app['settings']->getUserSetting($app['authentication']->getUser(), 'start_page'));
 
         if ($startPage === 'PUBLI') {
             return $this->getPublicationStartPage($app);
@@ -441,7 +441,7 @@ class Root implements ControllerProviderInterface
     {
         $collections = $queryParameters = [];
 
-        $searchSet = json_decode($app['authentication']->getUser()->getSettingValue('search'));
+        $searchSet = json_decode($app['settings']->getUserSetting($app['authentication']->getUser(), 'search'));
 
         if ($searchSet && isset($searchSet->bases)) {
             foreach ($searchSet->bases as $bases) {
@@ -451,9 +451,9 @@ class Root implements ControllerProviderInterface
             $collections = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base());
         }
 
-        $queryParameters["mod"] = $app['authentication']->getUser()->getSettingValue('client_view', '3X6');
+        $queryParameters["mod"] = $app['settings']->getUserSetting($app['authentication']->getUser(), 'client_view', '3X6');
         $queryParameters["bas"] = $collections;
-        $queryParameters["qry"] = $app['authentication']->getUser()->getSettingValue('start_page_query', 'all');
+        $queryParameters["qry"] = $app['settings']->getUserSetting($app['authentication']->getUser(), 'start_page_query', 'all');
         $queryParameters["pag"] = 0;
         $queryParameters["search_type"] = SearchEngineOptions::RECORD_RECORD;
         $queryParameters["qryAdv"] = '';
@@ -479,7 +479,7 @@ class Root implements ControllerProviderInterface
     {
         return $app['twig']->render('client/home_inter_pub_basket.html.twig', [
             'feeds'         => Aggregate::createFromUser($app, $app['authentication']->getUser()),
-            'image_size'    => (int) $app['authentication']->getUser()->getSettingValue('images_size')
+            'image_size'    => (int) $app['settings']->getUserSetting($app['authentication']->getUser(), 'images_size')
         ]);
     }
 

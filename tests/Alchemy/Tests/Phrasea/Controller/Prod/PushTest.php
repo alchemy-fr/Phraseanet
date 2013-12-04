@@ -36,6 +36,7 @@ class PushTest extends \PhraseanetAuthenticatedWebTestCase
     public function testRoutePOSTsend()
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoPushReceived', 2);
+        $this->mockUserNotificationSettings('eventsmanager_notify_push');
 
         $route = '/prod/push/send/';
 
@@ -68,6 +69,7 @@ class PushTest extends \PhraseanetAuthenticatedWebTestCase
     public function testRoutePOSTvalidate()
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoValidationRequest', 3);
+        $this->mockUserNotificationSettings('eventsmanager_notify_validate');
 
         $route = '/prod/push/validate/';
 

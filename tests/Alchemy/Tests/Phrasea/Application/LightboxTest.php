@@ -321,6 +321,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
         $validationBasket = self::$DI['app']['EM']->find('Phraseanet:Basket', 4);
 
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoValidationDone');
+        $this->mockUserNotificationSettings('eventsmanager_notify_validationdone');
 
         foreach ($validationBasket->getElements() as $element) {
             $element->getUserValidationDatas(self::$DI['user'], self::$DI['app'])->setAgreement(true);

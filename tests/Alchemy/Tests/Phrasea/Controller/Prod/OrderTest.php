@@ -4,6 +4,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
+use Alchemy\Phrasea\Application as SilexApplication;
 
 class OrderTest extends \PhraseanetAuthenticatedWebTestCase
 {
@@ -102,6 +103,7 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $order = $this->createOneOrder('I need this pictures');
 
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoOrderDelivered');
+        $this->mockUserNotificationSettings('eventsmanager_notify_orderdeliver');
 
         $parameters = [];
         foreach ($order->getElements() as $element) {
@@ -122,13 +124,13 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $order = $this->createOneOrder('I need this pictures');
 
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoOrderDelivered');
+        $this->mockUserNotificationSettings('eventsmanager_notify_orderdeliver');
 
         $parameters = [];
         foreach ($order->getElements() as $element) {
             $parameters[] = $element->getId();
         }
         $this->XMLHTTPRequest('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
         $this->assertEquals('application/json', $response->headers->get('Content-Type'));
@@ -148,6 +150,7 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $order = $this->createOneOrder('I need this pictures');
 
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoOrderCancelled');
+        $this->mockUserNotificationSettings('eventsmanager_notify_ordernotdelivered');
 
         $parameters = [];
         foreach ($order->getElements() as $element) {
@@ -168,6 +171,7 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $order = $this->createOneOrder('I need this pictures');
 
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoOrderCancelled');
+        $this->mockUserNotificationSettings('eventsmanager_notify_ordernotdelivered');
 
         $parameters = [];
         foreach ($order->getElements() as $element) {
@@ -190,6 +194,7 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $order = $this->createOneOrder('I need this pictures');
 
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoOrderDelivered');
+        $this->mockUserNotificationSettings('eventsmanager_notify_orderdeliver');
 
         $parameters = [];
         foreach ($order->getElements() as $element) {
