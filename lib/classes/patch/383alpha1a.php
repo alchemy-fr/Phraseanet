@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Doctrine\ORM\Query\ResultSetMapping;
 
 class patch_383alpha1a implements patchInterface
 {
@@ -56,6 +57,10 @@ class patch_383alpha1a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
+        if (!$this->hasSessionTable($app)) {
+            return true;
+        }
+
         // Remove deleted users sessions
         $sql = 'SELECT s.id FROM `Sessions` s, usr u WHERE u.usr_login LIKE "(#deleted%" AND u.usr_id = s.usr_id';
         $stmt = $appbox->get_connection()->prepare($sql);
@@ -80,5 +85,20 @@ class patch_383alpha1a implements patchInterface
         $app['EM']->flush();
 
         return true;
+    }
+
+    private function hasSessionTable(Application $app)
+    {
+        $rsm = (new ResultSetMapping())->addScalarResult('Name', 'Name');
+        $ret = false;
+
+        foreach ($app['EM']->createNativeQuery('SHOW TABLE STATUS', $rsm)->getResult() as $row) {
+            if ('Session' === $row['Name']) {
+                $ret = true;
+                break;
+            }
+        }
+
+        return $ret;
     }
 }
