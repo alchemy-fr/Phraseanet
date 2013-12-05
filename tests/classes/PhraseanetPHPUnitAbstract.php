@@ -158,6 +158,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 return $generator;
             }));
             $app['translator'] = $this->createTranslatorMock();
+            $app['phraseanet.SE.subscriber'] = $this->getMock('Symfony\Component\EventDispatcher\EventSubscriberInterface');
+            $app['phraseanet.SE.subscriber']::staticExpects($this->any())
+                ->method('getSubscribedEvents')
+                ->will($this->returnValue([]));
 
             $app['debug'] = true;
 
