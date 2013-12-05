@@ -1168,11 +1168,10 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->logout(self::$DI['app']);
 
         $preEvent = 0;
-        $phpunit = $this;
-        self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use ($phpunit, &$preEvent, $className, $context) {
+        self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use (&$preEvent, $className, $context) {
             $preEvent++;
-            $phpunit->assertInstanceOf($className, $event);
-            $phpunit->assertEquals($context, $event->getContext()->getContext());
+            $this->assertInstanceOf($className, $event);
+            $this->assertEquals($context, $event->getContext()->getContext());
         });
 
         self::$DI['client'] = new Client(self::$DI['app'], []);
@@ -1259,11 +1258,10 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testGuestAuthenticateTriggersEvents($eventName, $className, $context)
     {
         $preEvent = 0;
-        $phpunit = $this;
-        self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use ($phpunit, &$preEvent, $className, $context) {
+        self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use (&$preEvent, $className, $context) {
             $preEvent++;
-            $phpunit->assertInstanceOf($className, $event);
-            $phpunit->assertEquals($context, $event->getContext()->getContext());
+            $this->assertInstanceOf($className, $event);
+            $this->assertEquals($context, $event->getContext()->getContext());
         });
 
         $usr_id = \User_Adapter::get_usr_id_from_login(self::$DI['app'], 'invite');

@@ -132,7 +132,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
     public function setUp()
     {
-        ini_set('memory_limit', '2048M');
+        ini_set('memory_limit', '4096M');
 
         $this->start = $start = microtime(true);
 
@@ -141,94 +141,12 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         \PHPUnit_Framework_Error_Warning::$enabled = true;
         \PHPUnit_Framework_Error_Notice::$enabled = true;
 
-        $phpunit = $this;
-
-        self::$DI['app'] = self::$DI->share(function ($DI) use ($phpunit) {
-            $environment = 'test';
-            $app = require __DIR__ . '/../../lib/Alchemy/Phrasea/Application/Root.php';
-
-            $app['form.csrf_provider'] = $app->share(function () {
-                return new CsrfTestProvider();
-            });
-
-            $app['url_generator'] = $app->share($app->extend('url_generator', function ($generator, $app) {
-                $host = parse_url($app['conf']->get(['main', 'servername']), PHP_URL_HOST);
-                $generator->setContext(new RequestContext('', 'GET', $host));
-
-                return $generator;
-            }));
-            $app['translator'] = $this->createTranslatorMock();
-            $app['phraseanet.SE.subscriber'] = $this->getMock('Symfony\Component\EventDispatcher\EventSubscriberInterface');
-            $app['phraseanet.SE.subscriber']::staticExpects($this->any())
-                ->method('getSubscribedEvents')
-                ->will($this->returnValue([]));
-
-            $app['debug'] = true;
-
-            $app['EM'] = $app->share($app->extend('EM', function ($em) use ($phpunit) {
-                $phpunit::initializeSqliteDB();
-
-                return $em;
-            }));
-
-            $app['browser'] = $app->share($app->extend('browser', function ($browser) {
-
-                $browser->setUserAgent(PhraseanetPHPUnitAbstract::USER_AGENT_FIREFOX8MAC);
-
-                return $browser;
-            }));
-
-            $app['notification.deliverer'] = $phpunit->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-                ->disableOriginalConstructor()
-                ->getMock();
-            $app['notification.deliverer']->expects($phpunit->any())
-                ->method('deliver')
-                ->will($phpunit->returnCallback(function () use ($phpunit) {
-                    $phpunit->fail('Notification deliverer must be mocked');
-                }));
-
-            return $app;
+        self::$DI['app'] = self::$DI->share(function ($DI) {
+            return $this->loadApp('/lib/Alchemy/Phrasea/Application/Root.php');
         });
 
-        self::$DI['cli'] = self::$DI->share(function ($DI) use ($phpunit) {
-            $app = new CLI('cli test', null, 'test');
-
-            $app['form.csrf_provider'] = $app->share(function () {
-                return new CsrfTestProvider();
-            });
-
-            $app['url_generator'] = $app->share($app->extend('url_generator', function ($generator, $app) {
-                $host = parse_url($app['conf']->get(['main', 'servername']), PHP_URL_HOST);
-                $generator->setContext(new RequestContext('', 'GET', $host));
-
-                return $generator;
-            }));
-
-            $app['debug'] = true;
-
-            $app['EM'] = $app->share($app->extend('EM', function ($em) use ($phpunit) {
-                $phpunit::initializeSqliteDb();
-
-                return $em;
-            }));
-
-            $app['browser'] = $app->share($app->extend('browser', function ($browser) {
-
-                $browser->setUserAgent(PhraseanetPHPUnitAbstract::USER_AGENT_FIREFOX8MAC);
-
-                return $browser;
-            }));
-
-            $app['notification.deliverer'] = $phpunit->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-                ->disableOriginalConstructor()
-                ->getMock();
-            $app['notification.deliverer']->expects($phpunit->any())
-                ->method('deliver')
-                ->will($phpunit->returnCallback(function () use ($phpunit) {
-                    $phpunit->fail('Notification deliverer must be mocked');
-                }));
-
-            return $app;
+        self::$DI['cli'] = self::$DI->share(function ($DI) {
+            return $this->loadCLI();
         });
 
         self::$DI['client'] = self::$DI->share(function ($DI) {
@@ -236,6 +154,69 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         });
 
         self::$DI['user']->purgePreferences();
+    }
+
+    protected function loadCLI($environment = Application::ENV_TEST)
+    {
+        $cli = new CLI('cli test', null, $environment);
+        $this->addMocks($cli);
+
+        return $cli;
+    }
+
+    protected function loadApp($path, $environment = Application::ENV_TEST)
+    {
+        $app = require __DIR__ . '/../../' . $path;
+        $this->addMocks($app);
+
+        return $app;
+    }
+
+    protected function addMocks(Application $app)
+    {
+        $app['debug'] = true;
+
+        $app['form.csrf_provider'] = $app->share(function () {
+            return new CsrfTestProvider();
+        });
+
+        $app['url_generator'] = $app->share($app->extend('url_generator', function ($generator, $app) {
+            $host = parse_url($app['conf']->get(['main', 'servername']), PHP_URL_HOST);
+            $generator->setContext(new RequestContext('', 'GET', $host));
+
+            return $generator;
+        }));
+
+        $app['translator'] = $this->createTranslatorMock();
+
+        $app['phraseanet.SE.subscriber'] = $this->getMock('Symfony\Component\EventDispatcher\EventSubscriberInterface');
+        $app['phraseanet.SE.subscriber']::staticExpects($this->any())
+            ->method('getSubscribedEvents')
+            ->will($this->returnValue([]));
+
+        $app['translator'] = $this->createTranslatorMock();
+
+        $app['EM'] = $app->share($app->extend('EM', function ($em) {
+            $this->initializeSqliteDB();
+
+            return $em;
+        }));
+
+        $app['browser'] = $app->share($app->extend('browser', function ($browser) {
+            $browser->setUserAgent(PhraseanetPHPUnitAbstract::USER_AGENT_FIREFOX8MAC);
+
+            return $browser;
+        }));
+
+        $app['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $app['notification.deliverer']->expects($this->any())
+            ->method('deliver')
+            ->will($this->returnCallback(function () {
+                $this->fail('Notification deliverer must be mocked');
+            }));
     }
 
     public function tearDown()
@@ -1213,12 +1194,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $phpunit = $this;
-
         self::$DI['app']['notification.deliverer']->expects($this->any())
             ->method('deliver')
-            ->will($this->returnCallback(function ($email, $receipt) use ($phpunit, &$expectedMails) {
-                $phpunit->assertTrue(isset($expectedMails[get_class($email)]));
+            ->will($this->returnCallback(function ($email, $receipt) use (&$expectedMails) {
+                $this->assertTrue(isset($expectedMails[get_class($email)]));
                 $expectedMails[get_class($email)]++;
             }));
     }

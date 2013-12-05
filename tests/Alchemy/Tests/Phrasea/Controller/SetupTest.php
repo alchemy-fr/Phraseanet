@@ -8,9 +8,10 @@ class SetupTest extends \PhraseanetWebTestCaseAbstract
 {
     public function setUp()
     {
-        // set test environment
-        $environment = 'test';
-        $this->app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Root.php';
+        $this->app = $this->loadApp('lib/Alchemy/Phrasea/Application/Root.php');
+//        // set test environment
+//        $environment = 'test';
+//        $this->app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Root.php';
 
         $this->app['phraseanet.configuration-tester'] = $this->getMockBuilder('Alchemy\Phrasea\Setup\ConfigurationTester')
             ->disableOriginalConstructor()

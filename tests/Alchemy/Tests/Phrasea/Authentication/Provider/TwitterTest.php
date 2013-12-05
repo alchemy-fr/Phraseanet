@@ -110,10 +110,9 @@ class TwitterTest extends ProviderTestCase
         $request = $this->getRequestMock();
         $this->addQueryParameter($request, ['state' => $state]);
 
-        $phpunit = $this;
         $provider->getTwitterClient()->expects($this->any())
             ->method('request')
-            ->will($this->returnCallback(function ($method) use ($provider, $phpunit) {
+            ->will($this->returnCallback(function ($method) use ($provider) {
                 switch ($method) {
                     case 'POST':
                         $provider->getTwitterClient()->response = [
@@ -125,7 +124,7 @@ class TwitterTest extends ProviderTestCase
                     case 'GET':
                         $provider->getTwitterClient()->response = [
                             'response' => json_encode([
-                                'id' => $phpunit::ID,
+                                'id' => self::ID,
                             ])
                         ];
                         break;
@@ -165,15 +164,14 @@ class TwitterTest extends ProviderTestCase
             'oauth_token_secret' => 'token secret',
         ]);
 
-        $phpunit = $this;
         $provider->getTwitterClient()->expects($this->once())
             ->method('request')
-            ->will($this->returncallback(function () use ($provider, $phpunit) {
+            ->will($this->returncallback(function () use ($provider) {
                 $provider->getTwitterClient()->response = [
                     'response' => json_encode([
-                        'screen_name' => $phpunit::USERNAME,
-                        'profile_image_url_https' => $phpunit::IMAGEURL,
-                        'id' => $phpunit::ID,
+                        'screen_name' => self::USERNAME,
+                        'profile_image_url_https' => self::IMAGEURL,
+                        'id' => self::ID,
                     ])
                 ];
 
