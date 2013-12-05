@@ -498,7 +498,7 @@ class task_period_archive extends task_abstract
                         }
                         break;
                     case 'MAXRECSDONE':
-                    case 'MAXMEMORY':
+                    case 'MAXMEGSREACHED':
                     case 'MAXLOOP':
                         if ($status == self::STATE_STARTED && $this->getRunner() !== self::RUNNER_MANUAL) {
                             $this->setState(self::STATE_TORESTART);
@@ -633,7 +633,7 @@ class task_period_archive extends task_abstract
 
             // something happened : a least one file has moved
             return 'MAXRECSDONE';
-        } elseif (memory_get_usage() >> 20 > 25) {
+        } elseif (memory_get_usage() >> 20 > 128) {
             return 'MAXMEGSREACHED';
         } else {
             return 'NORECSTODO';
@@ -1636,6 +1636,8 @@ class task_period_archive extends task_abstract
         if (!$stat1) {
             $stat1 = '0';
         }
+
+        $status = databox_status::operation_or($this->dependencyContainer, $stat0, $stat1);
 
         $media = $this->dependencyContainer['mediavorus']->guess($pathfile);
 
