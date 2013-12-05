@@ -30,8 +30,8 @@ class Prod extends Helper
             return $search_datas;
         }
 
-        $searchSet = json_decode($this->app['authentication']->getUser()->getPrefs('search'), true);
-        $saveSettings = $this->app['authentication']->getUser()->getPrefs('advanced_search_reload');
+        $searchSet = json_decode($this->app['settings']->getUserSetting($this->app['authentication']->getUser(), 'search'), true);
+        $saveSettings = $this->app['settings']->getUserSetting($this->app['authentication']->getUser(), 'advanced_search_reload');
 
         foreach ($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_sbas() as $databox) {
             $sbas_id = $databox->get_sbas_id();

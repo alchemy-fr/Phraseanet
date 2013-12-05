@@ -2,7 +2,9 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
+use Alchemy\Geonames\GeonamesServiceProvider;
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Core\Provider\ManipulatorServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
@@ -129,7 +131,7 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 
     public function testAuthNativeWithCaptchaDisabled()
     {
-        $app = new Application();
+        $app = $this->loadApp();
         $app['root.path'] = __DIR__ . '/../../../../../../';
         $app->register(new AuthenticationManagerServiceProvider());
         $app->register(new ConfigurationServiceProvider());

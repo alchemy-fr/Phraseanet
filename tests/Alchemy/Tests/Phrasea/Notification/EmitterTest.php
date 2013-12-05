@@ -54,7 +54,7 @@ class EmitterTest extends \PhraseanetTestCase
             ->method('getEmail')
             ->will($this->returnValue($this->email));
 
-        $object = Emitter::fromUser($user);
+        $object = Emitter::fromUser($user, self::$DI['app']['translator']);
         $this->assertEquals($this->email, $object->getEmail());
         $this->assertEquals($this->name, $object->getName());
     }
@@ -77,7 +77,7 @@ class EmitterTest extends \PhraseanetTestCase
             ->will($this->returnValue('wrong email'));
 
         try {
-            Emitter::fromUser($user);
+            Emitter::fromUser($user, self::$DI['app']['translator']);
             $this->fail('Should have raised an exception');
         } catch (InvalidArgumentException $e) {
 

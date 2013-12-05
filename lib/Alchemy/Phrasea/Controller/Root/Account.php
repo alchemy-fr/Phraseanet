@@ -143,7 +143,7 @@ class Account implements ControllerProviderInterface
         $url = $app->url('account_reset_email', ['token' => $token]);
 
         try {
-            $receiver = Receiver::fromUser($app['authentication']->getUser());
+            $receiver = Receiver::fromUser($app['authentication']->getUser(), $app['translator']);
         } catch (InvalidArgumentException $e) {
             $app->addFlash('error', $app->trans('phraseanet::erreur: echec du serveur de mail'));
 
@@ -331,11 +331,9 @@ class Account implements ControllerProviderInterface
         $demands = (array) $request->request->get('demand', []);
 
         if (0 !== count($demands)) {
-            $register = new \appbox_register($app['phraseanet.appbox']);
-
             foreach ($demands as $baseId) {
                 try {
-                    $register->add_request($app['authentication']->getUser(), \collection::get_from_base_id($app, $baseId));
+                    $app['phraseanet.appbox-register']->add_request($app['authentication']->getUser(), \collection::get_from_base_id($app, $baseId));
                     $app->addFlash('success', $app->trans('login::notification: Vos demandes ont ete prises en compte'));
                 } catch (\Exception $e) {
 
@@ -412,11 +410,7 @@ class Account implements ControllerProviderInterface
 
         foreach ($app['events-manager']->list_notifications_available($app['authentication']->getUser()->getId()) as $notifications) {
             foreach ($notifications as $notification) {
-                if (isset($requestedNotifications[$notification['id']])) {
-                    $app['authentication']->getUser()->set_notification_preference($app, $notification['id'], '1');
-                } else {
-                    $app['authentication']->getUser()->set_notification_preference($app, $notification['id'], '0');
-                }
+                $app['manipulator.user']->setNotificationSetting($app['authentication']->getUser(), $notification['id'], isset($requestedNotifications[$notification['id']]));
             }
         }
 

@@ -268,9 +268,9 @@ class ValidationSession
             }
         } else {
             if ($this->getParticipant($user, $app)->getCanSeeOthers()) {
-                return $app->trans('Processus de validation recu de %user% et concernant %n% utilisateurs', ['%user%' => $this->getInitiator($app)->getDisplayName(), '%n%' => count($this->getParticipants()) - 1]);
+                return $app->trans('Processus de validation recu de %user% et concernant %n% utilisateurs', ['%user%' => $this->getInitiator($app)->getDisplayName($app['translator']), '%n%' => count($this->getParticipants()) - 1]);
             } else {
-                return $app->trans('Processus de validation recu de %user%', ['%user%' => $this->getInitiator($app)->getDisplayName()]);
+                return $app->trans('Processus de validation recu de %user%', ['%user%' => $this->getInitiator($app)->getDisplayName($app['translator'])]);
             }
         }
     }
@@ -288,6 +288,6 @@ class ValidationSession
             }
         }
 
-        throw new NotFoundHttpException('Participant not found' . $user->get_email());
+        throw new NotFoundHttpException('Participant not found' . $user->getEmail());
     }
 }

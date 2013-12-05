@@ -91,24 +91,24 @@ class UsrLists implements ControllerProviderInterface
 
                 foreach ($list->getOwners() as $owner) {
                     $owners[] = [
-                        'usr_id'       => $owner->getUser($app)->getId(),
-                        'display_name' => $owner->getUser($app)->getDisplayName(),
-                        'position'     => $owner->getUser($app)->getActivity(),
-                        'job'          => $owner->getUser($app)->getJob(),
-                        'company'      => $owner->getUser($app)->getCompany(),
-                        'email'        => $owner->getUser($app)->getEmail(),
+                        'usr_id'       => $owner->getUser()->getId(),
+                        'display_name' => $owner->getUser()->getDisplayName($app['translator']),
+                        'position'     => $owner->getUser()->getActivity(),
+                        'job'          => $owner->getUser()->getJob(),
+                        'company'      => $owner->getUser()->getCompany(),
+                        'email'        => $owner->getUser()->getEmail(),
                         'role'         => $owner->getRole()
                     ];
                 }
 
                 foreach ($list->getEntries() as $entry) {
                     $entries[] = [
-                        'usr_id'       => $owner->getUser($app)->getId(),
-                        'display_name' => $owner->getUser($app)->getDisplayName(),
-                        'position'     => $owner->getUser($app)->getActivity(),
-                        'job'          => $owner->getUser($app)->getJob(),
-                        'company'      => $owner->getUser($app)->getCompany(),
-                        'email'        => $owner->getUser($app)->getEmail(),
+                        'usr_id'       => $entry->getUser()->getId(),
+                        'display_name' => $entry->getUser()->getDisplayName($app['translator']),
+                        'position'     => $entry->getUser()->getActivity(),
+                        'job'          => $entry->getUser()->getJob(),
+                        'company'      => $entry->getUser()->getCompany(),
+                        'email'        => $entry->getUser()->getEmail(),
                     ];
                 }
 
@@ -202,24 +202,24 @@ class UsrLists implements ControllerProviderInterface
 
         foreach ($list->getOwners() as $owner) {
             $owners[] = [
-                'usr_id'       => $owner->getUser($app)->getId(),
-                'display_name' => $owner->getUser($app)->getDisplayName(),
-                'position'     => $owner->getUser($app)->getActivity(),
-                'job'          => $owner->getUser($app)->getJob(),
-                'company'      => $owner->getUser($app)->getCompany(),
-                'email'        => $owner->getUser($app)->getEmail(),
-                'role'         => $owner->getRole($app)
+                'usr_id'       => $owner->getUser()->getId(),
+                'display_name' => $owner->getUser()->getDisplayName($app['translator']),
+                'position'     => $owner->getUser()->getActivity(),
+                'job'          => $owner->getUser()->getJob(),
+                'company'      => $owner->getUser()->getCompany(),
+                'email'        => $owner->getUser()->getEmail(),
+                'role'         => $owner->getRole()
             ];
         }
 
         foreach ($list->getEntries() as $entry) {
             $entries[] = [
-                'usr_id'       => $entry->getUser($app)->getId(),
-                'display_name' => $entry->getUser($app)->getDisplayName(),
-                'position'     => $entry->getUser($app)->getActivity(),
-                'job'          => $entry->getUser($app)->getJob(),
-                'company'      => $entry->getUser($app)->getCompany(),
-                'email'        => $entry->getUser($app)->getEmail(),
+                'usr_id'       => $entry->getUser()->getId(),
+                'display_name' => $entry->getUser()->getDisplayName($app['translator']),
+                'position'     => $entry->getUser()->getActivity(),
+                'job'          => $entry->getUser()->getJob(),
+                'company'      => $entry->getUser()->getCompany(),
+                'email'        => $entry->getUser()->getEmail(),
             ];
         }
 

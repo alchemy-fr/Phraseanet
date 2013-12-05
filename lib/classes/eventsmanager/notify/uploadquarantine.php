@@ -74,7 +74,7 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
             //Sender
             if (null !== $user = $lazaretFile->getSession()->getUser()) {
                 $sender = $domXML->createElement('sender');
-                $sender->appendChild($domXML->createTextNode($user->getDisplayName()));
+                $sender->appendChild($domXML->createTextNode($user->getDisplayName($this->app['translator'])));
                 $root->appendChild($sender);
 
                 $this->notifyUser($user, $datas);
@@ -109,7 +109,7 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
         if ($this->shouldSendNotificationFor($user->getId())) {
             $readyToSend = false;
             try {
-                $receiver = Receiver::fromUser($user);
+                $receiver = Receiver::fromUser($user, $this->app['translator']);
                 $readyToSend = true;
             } catch (\Exception $e) {
 

@@ -48,7 +48,7 @@ class PhraseaEngineSubscriber implements EventSubscriberInterface
         $initialized = false;
 
         foreach ($rows as $row) {
-            $user = \User_Adapter::getInstance($row['usr_id'], $this->app);
+            $user = $this->app['manipulator.user']->getRepository()->find($row['usr_id']);
             $this->app['acl']->get($user)->inject_rights();
             if (null !== $row['session_id']) {
                 if (!$initialized) {

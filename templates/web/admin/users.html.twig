@@ -60,7 +60,7 @@
                 <select name="template_chooser" class="input-medium">
                     <option value="">{{ 'boutton::choisir' | trans }}</option>
                     {% for template in templates %}
-                        <option value="{{ template.getId() }}">{{ template.getDisplayName() }}</option>
+                        <option value="{{ template.getId() }}">{{ template.getDisplayName(app['translator']) }}</option>
                     {% endfor %}
                 </select>
                 <button type="submit" class="btn">{{ 'boutton::appliquer' | trans }}</button>
@@ -149,7 +149,7 @@
                         </td>
                         {% if usr.getLastModel() is not none %}
                             <td>
-                                {{ usr.getLastModel().getDisplayName()}}
+                                {{ usr.getLastModel().getDisplayName(app['translator'])}}
                             </td>
                         {% endif %}
                         <td>

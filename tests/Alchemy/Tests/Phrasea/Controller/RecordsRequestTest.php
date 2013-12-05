@@ -10,20 +10,20 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
     public function testSimple()
     {
         $request = new Request([
-                'lst' => implode(';', [
-                    self::$DI['record_24']->get_serialize_key(),
-                    self::$DI['record_24']->get_serialize_key(),
-                    self::$DI['record_2']->get_serialize_key(),
-                    self::$DI['record_story_2']->get_serialize_key(),
-                    self::$DI['record_no_access']->get_serialize_key(),
-                    self::$DI['record_no_access_by_status']->get_serialize_key(),
-                    '',
-                    '0_490',
-                    '0_',
-                    '_490',
-                    '_',
-                ])
-            ]);
+            'lst' => implode(';', [
+                self::$DI['record_3']->get_serialize_key(),
+                self::$DI['record_3']->get_serialize_key(),
+                self::$DI['record_2']->get_serialize_key(),
+                self::$DI['record_story_2']->get_serialize_key(),
+                self::$DI['record_no_access']->get_serialize_key(),
+                self::$DI['record_no_access_by_status']->get_serialize_key(),
+                '',
+                '0_490',
+                '0_',
+                '_490',
+                '_',
+            ])
+        ]);
 
         $records = RecordsRequest::fromRequest(self::$DI['app'], $request);
 
@@ -126,15 +126,15 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
     public function testSimpleFlatten()
     {
         $request = new Request([
-                'lst' => implode(';', [
-                    self::$DI['record_24']->get_serialize_key(),
-                    self::$DI['record_24']->get_serialize_key(),
-                    self::$DI['record_2']->get_serialize_key(),
-                    self::$DI['record_story_2']->get_serialize_key(),
-                    self::$DI['record_no_access']->get_serialize_key(),
-                    self::$DI['record_no_access_by_status']->get_serialize_key(),
-                ])
-            ]);
+            'lst' => implode(';', [
+                self::$DI['record_3']->get_serialize_key(),
+                self::$DI['record_3']->get_serialize_key(),
+                self::$DI['record_2']->get_serialize_key(),
+                self::$DI['record_story_2']->get_serialize_key(),
+                self::$DI['record_no_access']->get_serialize_key(),
+                self::$DI['record_no_access_by_status']->get_serialize_key(),
+            ])
+        ]);
 
         $records = RecordsRequest::fromRequest(self::$DI['app'], $request, true);
 
@@ -204,28 +204,32 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
         $request = new Request(['story' => $story->getId()]);
         $records = RecordsRequest::fromRequest(self::$DI['app'], $request, true);
 
-        $this->assertEquals(0, count($records));
+        $this->assertEquals($story->getRecord(self::$DI['app'])->get_children()->get_count(), count($records));
         $this->assertEquals(1, count($records->received()));
         $this->assertEquals(0, count($records->stories()));
         $this->assertNull($records->singleStory());
         $this->assertFalse($records->isSingleStory());
-        $this->assertEquals([], $records->databoxes());
+        $this->assertCount(0, $records->databoxes());
 
         $serialized = $records->serializedList();
         $exploded = explode(';', $serialized);
-
-        $this->assertEquals('', $serialized);
+        $expected = '';
+        foreach($story->getRecord(self::$DI['app'])->get_children() as $record) {
+            $expected .= $expected === '' ? $record->get_serialize_key() : ';' . $record->get_serialize_key();
+        }
+        $this->assertEquals($expected, $serialized);
         $this->assertNotContains($story->getRecord(self::$DI['app'])->get_serialize_key(), $exploded);
     }
 
     public function testSimpleStoryFlattenAndPreserve()
     {
         $story = $this->getStoryWZ();
+
         $request = new Request(['story' => $story->getId()]);
 
         $records = RecordsRequest::fromRequest(self::$DI['app'], $request, RecordsRequest::FLATTEN_YES_PRESERVE_STORIES);
 
-        $this->assertEquals(1, count($records));
+        $this->assertEquals(1 + $story->getRecord(self::$DI['app'])->get_children()->get_count(), count($records));
         $this->assertEquals(1, count($records->received()));
         $this->assertEquals(1, count($records->stories()));
         $this->assertInstanceOf('\record_adapter', $records->singleStory());
@@ -233,7 +237,6 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
         $this->assertCount(1, $records->databoxes());
 
         $serialized = $records->serializedList();
-        $exploded = explode(';', $serialized);
 
         $this->assertEquals($story->getRecord(self::$DI['app'])->get_serialize_key(), $serialized);
     }

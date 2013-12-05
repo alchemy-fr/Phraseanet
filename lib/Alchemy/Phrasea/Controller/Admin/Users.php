@@ -14,8 +14,6 @@ namespace Alchemy\Phrasea\Controller\Admin;
 use Alchemy\Phrasea\Helper\User as UserHelper;
 use Alchemy\Phrasea\Model\Entities\FtpCredential;
 use Alchemy\Phrasea\Model\Entities\User;
-use Doctrine\ORM\Query\ResultSetMapping;
-use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -245,7 +243,7 @@ class Users implements ControllerProviderInterface
                 $datas[] = [
                     'email' => $user->getEmail() ? : ''
                     , 'login' => $user->getLogin() ? : ''
-                    , 'name'  => $user->getDisplayName() ? : ''
+                    , 'name'  => $user->getDisplayName($app['translator']) ? : ''
                     , 'id'    => $user->getId()
                 ];
             }
@@ -364,34 +362,17 @@ class Users implements ControllerProviderInterface
             $basList = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['canadmin']));
             $models = $app['manipulator.user']->getRepository()->findModelOf($app['authentication']->getUser());
 
-            $rsm = new ResultSetMappingBuilder($app['EM']);
-            $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\User', 'u');
-            $rsm->addScalarResult('date_demand', 'date_demand');
-            $rsm->addScalarResult('base_demand', 'base_demand');
-
-            $selectClause = $rsm->generateSelectClause();
-
-            $query = $app['EM']->createNativeQuery("
-                SELECT d.date_modif AS date_demand, d.base_id AS base_demand, " . $selectClause . "
-                FROM (demand d INNER JOIN Users u ON d.usr_id=u.id
-                    AND d.en_cours=1
-                    AND u.deleted=0
-                )
-                WHERE (base_id='" . implode("' OR base_id='", $basList) . "')
-                ORDER BY d.usr_id DESC, d.base_id ASC
-            ", $rsm);
-
             $currentUsr = null;
             $table = ['users' => [], 'coll' => []];
 
-            foreach ($query->getResult() as $row) {
+            foreach ($app['phraseanet.native-query']->getUsersRegistrationDemand($basList) as $row) {
                 $user = $row[0];
 
                 if ($user->getId() !== $currentUsr) {
                     $currentUsr = $user->getId();
                     $table['users'][$currentUsr] = [
                         'user' => $user,
-                        'date_demand' => new \DateTime($row['date_demand']),
+                        'date_demand' => $row['date_demand'],
                     ];
                 }
 
@@ -547,8 +528,8 @@ class Users implements ControllerProviderInterface
 
                 foreach ($done as $usr => $bases) {
                     $acceptColl = $denyColl = [];
-                    if (null === $user = $app['manipulator.user']->getRepository()->find($usr)) {
-                        if (\Swift_Validate::email($user.getEmail())) {
+                    if (null !== $user = $app['manipulator.user']->getRepository()->find($usr)) {
+                        if (\Swift_Validate::email($user->getEmail())) {
                             foreach ($bases as $bas => $isok) {
                                 if ($isok) {
                                     $acceptColl[] = \phrasea::bas_labels($bas, $app);
@@ -565,7 +546,7 @@ class Users implements ControllerProviderInterface
                                     $message .= "\n" . $app->trans('login::register:email: Vous avez ete refuse sur les collections suivantes : ') . implode(', ', $denyColl) . "\n";
                                 }
 
-                                $receiver = new Receiver(null, $row['usr_mail']);
+                                $receiver = new Receiver(null, $user->getEmail());
                                 $mail = MailSuccessEmailUpdate::create($app, $receiver, null, $message);
 
                                 $app['notification.deliverer']->deliver($mail);
@@ -710,22 +691,8 @@ class Users implements ControllerProviderInterface
                 ]);
             }
 
-            $rsm = new ResultSetMappingBuilder($app['EM']);
-            $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\User', 'u');
-
-            $selectClause = $rsm->generateSelectClause();
-
-            $query = $app['EM']->createNativeQuery("
-                SELECT " . $selectClause . "
-                FROM Users u
-                    INNER JOIN basusr b ON (b.usr_id=u.id)
-                WHERE u.model_of = :user_id
-                  AND b.base_id IN (" . implode(', ', array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['manage']))) . ")
-                  AND u.deleted='0'
-                GROUP BY u.id"
-            );
-            $query->setParameter(':user_id', $app['authentication']->getUser()->getId());
-            $models = $query->getResult();
+            $basList = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['manage']));
+            $models = $app['phraseanet.native-query']->getModelForUser($app['authentication']->getUser(), $basList);
 
             return $app['twig']->render('/admin/user/import/view.html.twig', [
                 'nb_user_to_add'   => $nbUsrToAdd,

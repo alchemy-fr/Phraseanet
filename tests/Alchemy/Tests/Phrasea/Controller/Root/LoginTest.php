@@ -20,6 +20,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     public static $collections;
     public static $login;
     public static $email;
+    public static $termsOfUse;
 
     public function setUp()
     {
@@ -54,7 +55,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
     public static function tearDownAfterClass()
     {
-        self::$demands = self::$collections = self::$login = self::$email = null;
+        self::$demands = self::$collections = self::$login = self::$email = self::$termsOfUse = null;
         parent::tearDownAfterClass();
     }
 
@@ -196,9 +197,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('/login/', $response->headers->get('location'));
     }
 
-    /**
-     * @environment prod
-     */
     public function testRegisterConfirmMail()
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationRegistered');
@@ -206,12 +204,11 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->logout(self::$DI['app']);
         $email = $this->generateEmail();
-        $appboxRegister = new \appbox_register(self::$DI['app']['phraseanet.appbox']);
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, self::$DI['user']->getId(), null, $email);
 
         self::$DI['user']->setMailLocked(true);
         $this->deleteRequest();
-        $appboxRegister->add_request(self::$DI['user'], self::$DI['collection']);
+        self::$DI['app']['phraseanet.appbox-register']->add_request(self::$DI['user'], self::$DI['collection']);
         self::$DI['client']->request('GET', '/login/register-confirm/', ['code'    => $token]);
         $response = self::$DI['client']->getResponse();
 
@@ -221,18 +218,14 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFalse(self::$DI['user']->isMailLocked());
     }
 
-    /**
-     * @environment prod
-     */
     public function testRegisterConfirmMailNoCollAwait()
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationUnregistered');
         $this->mockUserNotificationSettings('eventsmanager_notify_register');
-
-        $user = self::$DI['app']['manipulator.user']->createUser(uniqid('user_'), "test", 'email-random'.mt_rand().'@phraseanet.com');
-
+        ;
         $this->logout(self::$DI['app']);
         $email = $this->generateEmail();
+        $user = self::$DI['app']['manipulator.user']->createUser('test', 'test', $email);
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, $user->getId(), null, $email);
 
         $user->setMailLocked(true);
@@ -241,12 +234,10 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['client']->request('GET', '/login/register-confirm/', ['code'    => $token]);
         $response = self::$DI['client']->getResponse();
-
         $this->assertTrue($response->isRedirect());
         $this->assertFlashMessagePopulated(self::$DI['app'], 'info', 1);
         $this->assertEquals('/login/', $response->headers->get('location'));
         $this->assertFalse(self::$DI['user']->isMailLocked());
-        self::$DI['app']['model.user-manager']->delete($user);
     }
 
     /**
@@ -281,9 +272,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFlashMessage($crawler, 'error', 1);
     }
 
-    /**
-     * @environment prod
-     */
     public function testRenewPasswordMail()
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestPasswordUpdate');
@@ -460,16 +448,13 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFlashMessage($crawler, 'error', 1);
     }
 
-    /**
-     * @environment prod
-     */
     public function testForgotPasswordSubmission()
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestPasswordUpdate');
         $this->mockUserNotificationSettings('eventsmanager_notify_register');
 
         $this->logout(self::$DI['app']);
-        $crawler = self::$DI['client']->request('POST', '/login/forgot-password/', [
+        self::$DI['client']->request('POST', '/login/forgot-password/', [
             '_token' => 'token',
             'email'  => self::$DI['user']->getEmail(),
         ]);
@@ -587,9 +572,8 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->logout(self::$DI['app']);
         $crawler = self::$DI['client']->request('POST', '/login/register-classic/');
-
         $this->assertFalse(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertFormOrFlashError($crawler, self::$DI['app']['conf']->get(['registry', 'registration', 'auto-select-collections']) ? 7 : 8);
+        $this->assertFormOrFlashError($crawler, self::$DI['app']['conf']->get(['registry', 'registration', 'auto-select-collections']) ? 6 : 7);
     }
 
     public function provideInvalidRegistrationData()
@@ -950,9 +934,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('/login/register/', self::$DI['client']->getResponse()->headers->get('location'));
     }
 
-    /**
-     * @environment prod
-     */
     public function testPostRegisterWithProviderIdAndAccountNotCreatedYet()
     {
         self::$DI['app']['registration.fields'] = [];
@@ -963,6 +944,21 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             'Alchemy\Phrasea\Notification\Mail\MailInfoUserRegistered'=>0,
             'Alchemy\Phrasea\Notification\Mail\MailInfoSomebodyAutoregistered'=>0,
         ];
+
+        self::$DI['app']['phraseanet.appbox-register'] = $this->getMockBuilder('\appbox_register')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $nativeQueryMock = $this->getMockBuilder('Alchemy\Phrasea\Model\NativeQueryProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $nativeQueryMock->expects($this->once())->method('getAdminsOfBases')->will($this->returnValue([[
+            self::$DI['user'],
+            'base_id' => 1
+        ]]));
+
+        self::$DI['app']['phraseanet.native-query'] = $nativeQueryMock;
 
         $this->mockNotificationsDeliverer($emails);
         $this->mockUserNotificationSettings('eventsmanager_notify_register');
@@ -986,40 +982,14 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             ->method('getToken')
             ->will($this->returnValue($token));
 
-        $repo = $this->getMockBuilder('Doctrine\ORM\EntityRepository\UsrAuthProviderRepository')
+        $repoUsrAuthProvider = $this->getMockBuilder('Doctrine\ORM\EntityRepository\UsrAuthProviderRepository')
             ->setMethods(['findWithProviderAndId'])
-            ->disableOriginalConstructor()
             ->getMock();
 
-        $repo->expects($this->any())
+        $repoUsrAuthProvider->expects($this->any())
             ->method('findWithProviderAndId')
             ->with('provider-test', $token->getId())
             ->will($this->returnValue(null));
-
-        $em = self::$DI['app']['EM'];
-
-        self::$DI['app']['EM'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')
-            ->setMethods(['getRepository', 'getClassMetadata', 'persist', 'flush', 'getConnection', 'getUnitOfWork'])
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        self::$DI['app']['EM']->expects($this->at(0))
-            ->method('getRepository')
-            ->with('Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
-            ->will($this->returnValue($repo));
-
-        self::$DI['app']['EM']->expects($this->any())
-            ->method('getClassMetadata')
-            ->with($this->equalTo('Alchemy\Phrasea\Model\Entities\User'))
-            ->will($this->returnValue($em->getClassMetadata('Alchemy\Phrasea\Model\Entities\User')));
-
-        self::$DI['app']['EM']->expects($this->any())
-            ->method('getConnection')
-            ->will($this->returnValue($em->getConnection()));
-
-        self::$DI['app']['EM']->expects($this->any())
-            ->method('getUnitOfWork')
-            ->will($this->returnValue($em->getUnitOfWork()));
 
         foreach ($parameters as $key => $parameter) {
             if ('collections' === $key && null === $parameter) {
@@ -1054,10 +1024,24 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
     /**
      * @dataProvider provideRegistrationData
-     * @environment prod
      */
     public function testPostRegister($parameters, $extraParameters)
     {
+        self::$DI['app']['phraseanet.appbox-register'] = $this->getMockBuilder('\appbox_register')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $nativeQueryMock = $this->getMockBuilder('Alchemy\Phrasea\Model\NativeQueryProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $nativeQueryMock->expects($this->once())->method('getAdminsOfBases')->will($this->returnValue([[
+            self::$DI['user'],
+            'base_id' => 1
+        ]]));
+
+        self::$DI['app']['phraseanet.native-query'] = $nativeQueryMock;
+
         self::$DI['app']['registration.fields'] = $extraParameters;
 
         $this->logout(self::$DI['app']);
@@ -1124,9 +1108,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @environment prod
-     */
     public function testSendConfirmMail()
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation');
@@ -1256,8 +1237,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGuestAuthenticate()
     {
-        $guest = self::$DI['app']['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
-        self::$DI['app']['acl']->get($guest)->give_access_to_base([self::$DI['collection']->get_base_id()]);
+        self::$DI['app']['acl']->get(self::$DI['user_guest'])->give_access_to_base([self::$DI['collection']->get_base_id()]);
 
         $this->logout(self::$DI['app']);
 
@@ -1284,8 +1264,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             $this->assertEquals($context, $event->getContext()->getContext());
         });
 
-        $guest = self::$DI['app']['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
-        self::$DI['app']['acl']->get($guest)->give_access_to_base([self::$DI['collection']->get_base_id()]);
+        self::$DI['app']['acl']->get(self::$DI['user_guest'])->give_access_to_base([self::$DI['collection']->get_base_id()]);
 
         $this->logout(self::$DI['app']);
 
@@ -1301,9 +1280,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGuestAuthenticateWithGetMethod()
     {
-        $guest = self::$DI['app']['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
-        self::$DI['app']['acl']->get($guest)->give_access_to_base([self::$DI['collection']->get_base_id()]);
-
+        self::$DI['app']['acl']->get(self::$DI['user_guest'])->give_access_to_base([self::$DI['collection']->get_base_id()]);
         $this->logout(self::$DI['app']);
 
         self::$DI['client'] = new Client(self::$DI['app'], []);
@@ -1814,5 +1791,51 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     private function generateEmail()
     {
         return \random::generatePassword() . '_email@email.com';
+    }
+
+    private function disableTOU()
+    {
+        if (null === self::$termsOfUse) {
+            self::$termsOfUse = array();
+            foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+                self::$termsOfUse[$databox->get_sbas_id()] = $databox->get_cgus();
+
+                foreach( self::$termsOfUse[$databox->get_sbas_id()]as $lng => $tou) {
+                    $databox->update_cgus($lng, '', false);
+                }
+            }
+        }
+    }
+
+    private function enableTOU()
+    {
+        if (null === self::$termsOfUse) {
+            self::$termsOfUse = array();
+            foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+                self::$termsOfUse[$databox->get_sbas_id()] = $databox->get_cgus();
+
+                foreach( self::$termsOfUse[$databox->get_sbas_id()]as $lng => $tou) {
+                    $databox->update_cgus($lng, 'something', false);
+                }
+            }
+        }
+    }
+
+    private function resetTOU()
+    {
+        if (null === self::$termsOfUse) {
+            return;
+        }
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+            if (!isset(self::$termsOfUse[$databox->get_sbas_id()])) {
+                continue;
+            }
+            $tous = self::$termsOfUse[$databox->get_sbas_id()];
+            foreach ($tous as $lng => $tou) {
+                $databox->update_cgus($lng, $tou['value'], false);
+            }
+        }
+
+        self::$termsOfUse = null;
     }
 }

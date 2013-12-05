@@ -12,7 +12,6 @@
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailInfoSomebodyAutoregistered;
 use Alchemy\Phrasea\Model\Entities\User;
-use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
 class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
 {
@@ -50,23 +49,8 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
 
         $mailColl = [];
 
-        $rsm = new ResultSetMappingBuilder($this->app['EM']);
-        $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\User', 'u');
-        $rsm->addScalarResult('base_id', 'base_id');
-        $selectClause = $rsm->generateSelectClause();
-
-        $query = $this->app['EM']->createNativeQuery('
-            SELECT b.base_id, '.$selectClause.' FROM Users u, basusr b
-            WHERE u.id = b.usr_id
-                AND b.base_id IN (' . implode(', ', array_keys($base_ids)) . ')
-                AND u.model_of IS NULL
-                AND b.actif="1"
-                AND b.canadmin="1"
-                AND u.deleted="0"', $rsm
-        );
-
         try {
-            $rs = $query->getResult();
+            $rs = $this->app['phraseanet.native-query']->getAdminsOfBases(array_keys($base_ids));
 
             foreach ($rs as $row) {
                 $user = $row[0];
@@ -145,7 +129,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
         }
 
         $ret = [
-            'text'  => $this->app->trans('%user% s\'est enregistre sur une ou plusieurs %before_link% scollections %after_link%', ['%user%' => $user->getDisplayName(), '%before_link%' => '<a href="/admin/?section=users" target="_blank">', '%after_link%' => '</a>'])
+            'text'  => $this->app->trans('%user% s\'est enregistre sur une ou plusieurs %before_link% scollections %after_link%', ['%user%' => $user->getDisplayName($this->app['translator']), '%before_link%' => '<a href="/admin/?section=users" target="_blank">', '%after_link%' => '</a>'])
             , 'class' => ''
         ];
 
@@ -179,15 +163,16 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
      */
     public function mail(User $to, User $registeredUser)
     {
-        $body .= sprintf("Login : %s\n", $registeredUser->get_login());
-        $body .= sprintf("%s : %s\n", _('admin::compte-utilisateur nom'), $registeredUser->get_firstname());
-        $body .= sprintf("%s : %s\n", _('admin::compte-utilisateur prenom'), $registeredUser->get_lastname());
-        $body .= sprintf("%s : %s\n", _('admin::compte-utilisateur email'), $registeredUser->get_email());
-        $body .= sprintf("%s/%s\n", $registeredUser->get_job(), $registeredUser->get_company());
+        $body = '';
+        $body .= sprintf("Login : %s\n", $registeredUser->getLogin());
+        $body .= sprintf("%s : %s\n", _('admin::compte-utilisateur nom'), $registeredUser->getFirstName());
+        $body .= sprintf("%s : %s\n", _('admin::compte-utilisateur prenom'), $registeredUser->getLastName());
+        $body .= sprintf("%s : %s\n", _('admin::compte-utilisateur email'), $registeredUser->getEmail());
+        $body .= sprintf("%s/%s\n", $registeredUser->get_job(), $registeredUser->getCompany());
 
         $readyToSend = false;
         try {
-            $receiver = Receiver::fromUser($to);
+            $receiver = Receiver::fromUser($to, $this->app['translator']);
             $readyToSend = true;
         } catch (Exception $e) {
 

@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Notification\Receiver;
-use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Alchemy\Phrasea\Notification\Mail\MailInfoUserRegistered;
 
 class eventsmanager_notify_register extends eventsmanager_notifyAbstract
@@ -53,23 +52,10 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 
         $mailColl = [];
 
-        $rsm = new ResultSetMappingBuilder($this->app['EM']);
-        $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\User', 'u');
-        $rsm->addScalarResult('base_id', 'base_id');
-        $selectClause = $rsm->generateSelectClause();
-
-        $query = $this->app['EM']->createNativeQuery('
-            SELECT b.base_id, '.$selectClause.' FROM Users u, basusr b
-            WHERE u.id = b.usr_id
-                AND b.base_id IN (' . implode(', ', array_keys($base_ids)) . ')
-                AND u.model_of IS NULL
-                AND b.actif="1"
-                AND b.canadmin="1"
-                AND u.deleted="0"',
-        $rsm);
-
         try {
-            foreach ($query->getResult() as $row) {
+            $rs = $this->app['phraseanet.native-query']->getAdminsOfBases(array_keys($base_ids));
+
+            foreach ($rs as $row) {
                 $user = $row[0];
 
                 if (!isset($mailColl[$user->getId()])) {
@@ -117,7 +103,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
                 $readyToSend = false;
                 try {
                     $admin_user = $this->app['manipulator.user']->getRepository()->find($usr_id);
-                    $receiver = Receiver::fromUser($admin_user);
+                    $receiver = Receiver::fromUser($admin_user, $this->app['translator']);
                     $readyToSend = true;
                 } catch (\Exception $e) {
                     continue;
@@ -155,7 +141,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
             return [];
         }
 
-        $sender = $user->getDisplayName();
+        $sender = $user->getDisplayName($this->app['translator']);
 
         $ret = [
             'text'  => $this->app->trans('%user% demande votre approbation sur une ou plusieurs %before_link% collections %after_link%', ['%user%' => $sender, '%before_link%' => '<a href="' . $this->app->url('admin', ['section' => 'registrations']) . '" target="_blank">', '%after_link%' => '</a>'])

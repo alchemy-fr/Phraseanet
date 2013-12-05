@@ -61,7 +61,7 @@ class RegenerateSqliteDb extends Command
 
         if (is_file($source)) {
             $renamed = true;
-            $fs->rename($source, $target);
+            $fs->rename($source, $target, true);
         }
 
         try {
@@ -92,10 +92,11 @@ class RegenerateSqliteDb extends Command
             $this->insertLazaretFiles($this->container['EM'], $DI);
             $this->insertAuthFailures($this->container['EM'], $DI);
 
-            $fixtures['user']['test_phpunit'] = $DI['user']->get_id();
-            $fixtures['user']['test_phpunit_not_admin'] = $DI['user_notAdmin']->get_id();
-            $fixtures['user']['test_phpunit_alt1'] = $DI['user_alt1']->get_id();
-            $fixtures['user']['test_phpunit_alt2'] = $DI['user_alt2']->get_id();
+            $fixtures['user']['test_phpunit'] = $DI['user']->getId();
+            $fixtures['user']['test_phpunit_not_admin'] = $DI['user_notAdmin']->getId();
+            $fixtures['user']['test_phpunit_alt1'] = $DI['user_alt1']->getId();
+            $fixtures['user']['test_phpunit_alt2'] = $DI['user_alt2']->getId();
+            $fixtures['user']['user_guest'] = $DI['user_guest']->getId();
 
             $fixtures['oauth']['user'] = $DI['app-user']->get_id();
             $fixtures['oauth']['user_notAdmin'] = $DI['app-user_notAdmin']->get_id();
@@ -134,9 +135,7 @@ class RegenerateSqliteDb extends Command
         } catch (\Exception $e) {
             $output->writeln("<error>".$e->getMessage()."</error>");
             if ($renamed) {
-                if (is_file($source)) {
-                    unlink($source);
-                }
+                $fs->remove($source);
                 $fs->rename($target, $source);
             }
             throw $e;
@@ -144,11 +143,6 @@ class RegenerateSqliteDb extends Command
 
         $fs->remove($target);
         $fs->dumpFile($json, json_encode($fixtures, defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0));
-
-        $this->container['manipulator.user']->createUser('test_phpunit', 'test_phpunit', 'noone@example.com', true);
-        $this->container['manipulator.user']->createUser('test_phpunit_not_admin', 'test_phpunit_not_admin', 'noone_not_admin@example.com');
-        $this->container['manipulator.user']->createUser('test_phpunit_alt1', 'test_phpunit_alt1', 'noonealt1@example.com');
-        $this->container['manipulator.user']->createUser('test_phpunit_alt2', 'test_phpunit_alt2', 'noonealt2@example.com');
 
         return 0;
     }
@@ -210,6 +204,7 @@ class RegenerateSqliteDb extends Command
         $DI['user_alt1'] = $this->getUserAlt1();
         $DI['user_alt2'] = $this->getUserAlt2();
         $DI['user_notAdmin'] = $this->getUserNotAdmin();
+        $DI['user_guest'] = $this->getUserGuest();
 
         $user1 = $this->insertOneUser('user1');
         $user2 = $this->insertOneUser('user2', 'user2@phraseanet.com');
@@ -327,44 +322,53 @@ class RegenerateSqliteDb extends Command
 
     private function getUser()
     {
-        if (false === $usr_id = \User_Adapter::get_usr_id_from_login($this->container, 'test_phpunit')) {
-            return \User_Adapter::create($this->container, 'test_phpunit', \random::generatePassword(), 'noone@example.com', false);
+        if (null === $user = $this->container['manipulator.user']->getRepository()->findByLogin('test_phpunit')) {
+            $user = $this->container['manipulator.user']->createUser('test_phpunit', \random::generatePassword(), 'noone@example.com', true);
         }
 
-        return \User_Adapter::getInstance($usr_id, $this->container);
+        return $user;
     }
 
     private function getUserAlt1()
     {
-        if (false === $usr_id = \User_Adapter::get_usr_id_from_login($this->container, 'test_phpunit_alt1')) {
-            return \User_Adapter::create($this->container, 'test_phpunit_alt1', \random::generatePassword(), 'noonealt1@example.com', false);
+        if (null === $user = $this->container['manipulator.user']->getRepository()->findByLogin('test_phpunit_alt1')) {
+            $user = $this->container['manipulator.user']->createUser('test_phpunit_alt1', \random::generatePassword(), 'noonealt1@example.com', false);
         }
 
-        return \User_Adapter::getInstance($usr_id, $this->container);
+        return $user;
     }
 
     private function getUserAlt2()
     {
-        if (false === $usr_id = \User_Adapter::get_usr_id_from_login($this->container, 'test_phpunit_alt2')) {
-            return \User_Adapter::create($this->container, 'test_phpunit_alt2', \random::generatePassword(), 'noonealt2@example.com', false);
+        if (null === $user = $this->container['manipulator.user']->getRepository()->findByLogin('test_phpunit_alt2')) {
+            $user = $this->container['manipulator.user']->createUser('test_phpunit_alt2', \random::generatePassword(), 'noonealt2@example.com', false);
         }
 
-        return \User_Adapter::getInstance($usr_id, $this->container);
+        return $user;
     }
 
     public function getUserNotAdmin()
     {
-        if (false === $usr_id = \User_Adapter::get_usr_id_from_login($this->container, 'test_phpunit_not_admin')) {
-            return \User_Adapter::create($this->container, 'test_phpunit_not_admin', \random::generatePassword(), 'noone_not_admin@example.com', false);
+        if (null === $user = $this->container['manipulator.user']->getRepository()->findByLogin('test_phpunit_not_admin')) {
+            $user = $this->container['manipulator.user']->createUser('test_phpunit_not_admin', \random::generatePassword(), 'noone_not_admin@example.com', false);
         }
 
-        return \User_Adapter::getInstance($usr_id, $this->container);
+        return $user;
+    }
+
+    public function getUserGuest()
+    {
+        if (null === $user = $this->container['manipulator.user']->getRepository()->findByLogin(User::USER_GUEST)) {
+            $user = $this->container['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
+        }
+
+        return $user;
     }
 
     private function insertTwoBasket(EntityManager $em, \Pimple $DI)
     {
         $basket1 = new Basket();
-        $basket1->setOwner($this->getUser());
+        $basket1->setUser($this->getUser());
         $basket1->setName('test');
         $basket1->setDescription('description test');
 
@@ -374,12 +378,12 @@ class RegenerateSqliteDb extends Command
         $element->setBasket($basket1);
 
         $basket2 = new Basket();
-        $basket2->setOwner($this->getUser());
+        $basket2->setUser($this->getUser());
         $basket2->setName('test');
         $basket2->setDescription('description test');
 
         $basket3 = new Basket();
-        $basket3->setOwner($this->getUserAlt1());
+        $basket3->setUser($this->getUserAlt1());
         $basket3->setName('test');
         $basket3->setDescription('description test');
 
@@ -391,7 +395,7 @@ class RegenerateSqliteDb extends Command
         $basket4 = new Basket();
         $basket4->setName('test');
         $basket4->setDescription('description');
-        $basket4->setOwner($this->getUser());
+        $basket4->setUser($this->getUser());
 
         foreach ([$DI['record_1'], $DI['record_2']] as $record) {
             $basketElement = new BasketElement();
@@ -495,7 +499,7 @@ class RegenerateSqliteDb extends Command
 
         $user = $DI['user'];
 
-        $publisher->setUsrId($user->get_id());
+        $publisher->setUser($user);
         $publisher->setIsOwner(true);
         $publisher->setFeed($feed);
 
@@ -518,7 +522,7 @@ class RegenerateSqliteDb extends Command
 
         $user = $DI['user'];
 
-        $publisher->setUsrId($user->get_id());
+        $publisher->setUser($user);
         $publisher->setIsOwner(true);
         $publisher->setFeed($feed);
 
@@ -541,7 +545,7 @@ class RegenerateSqliteDb extends Command
 
         $user = $DI['user_alt1'];
 
-        $publisher->setUsrId($user->get_id());
+        $publisher->setUser($user);
         $publisher->setIsOwner(true);
         $publisher->setFeed($feed);
 
@@ -585,7 +589,7 @@ class RegenerateSqliteDb extends Command
         $token = new FeedToken();
         $token->setValue($this->container['tokens']->generatePassword(12));
         $token->setFeed($feed);
-        $token->setUsrId($DI['user']->get_id());
+        $token->setUser($DI['user']);
 
         $feed->addToken($token);
 
@@ -599,7 +603,7 @@ class RegenerateSqliteDb extends Command
 
         $token = new AggregateToken();
         $token->setValue($this->container['tokens']->generatePassword(12));
-        $token->setUsrId($user->get_id());
+        $token->setUser($user);
 
         $em->persist($token);
     }

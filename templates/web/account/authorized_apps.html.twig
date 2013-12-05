@@ -25,7 +25,7 @@
                                         </a>
                                         {% if application.get_creator() is not none %}
                                             <small>
-                                                {% set user_name = application.get_creator().getDisplayName() %}
+                                                {% set user_name = application.get_creator().getDisplayName(app['translator']) %}
                                                 {% trans with {'%user_name%' : user_name} %}par %user_name%{% endtrans %}
                                             </small>
                                         {% endif%}

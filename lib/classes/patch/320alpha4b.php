@@ -100,7 +100,7 @@ class patch_320alpha4b implements patchInterface
 
             $entry = new FeedEntry();
             $entry->setAuthorEmail($user->getEmail());
-            $entry->setAuthorName($user->getDisplayName());
+            $entry->setAuthorName($user->getDisplayName($app['translator']));
             $entry->setFeed($feed);
             $entry->setPublisher($publishers->first());
             $entry->setTitle($row['name']);
@@ -188,11 +188,11 @@ class patch_320alpha4b implements patchInterface
 
         if ( ! array_key_exists($user_key, self::$feeds) || ! isset(self::$feeds[$user_key][$feed_key])) {
             if ($homelink == '1')
-                $title = $user->getDisplayName() . ' - ' . 'homelink Feed';
+                $title = $user->getDisplayName($app['translator']) . ' - ' . 'homelink Feed';
             elseif ($pub_restrict == '1')
-                $title = $user->getDisplayName() . ' - ' . 'private Feed';
+                $title = $user->getDisplayName($app['translator']) . ' - ' . 'private Feed';
             else
-                $title = $user->getDisplayName() . ' - ' . 'public Feed';
+                $title = $user->getDisplayName($app['translator']) . ' - ' . 'public Feed';
 
             $feed = new Feed();
             $publisher = new FeedPublisher();

@@ -143,7 +143,7 @@
                             {{ publisher.getUser().getId() }}
                         </td>
                         <td valign="center" align="left">
-                            {{ publisher.getUser().getDisplayName() }}
+                            {{ publisher.getUser().getDisplayName(app['translator']) }}
                         </td>
                         <td valign="center" align="left">
                             {{ publisher.getUser().getEmail() }}

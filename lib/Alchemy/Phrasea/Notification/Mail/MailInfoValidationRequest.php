@@ -60,7 +60,7 @@ class MailInfoValidationRequest extends AbstractMailWithLink
             throw new LogicException('You must set a title before calling getSubject');
         }
 
-        return $this->app->trans("Validation request from %user% for '%title%'", ['%user%' => $this->user->getDisplayName(), '%title%' => $this->title]);
+        return $this->app->trans("Validation request from %user% for '%title%'", ['%user%' => $this->user->getDisplayName($this->app['translator']), '%title%' => $this->title]);
     }
 
     /**

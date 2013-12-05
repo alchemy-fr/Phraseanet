@@ -50,7 +50,7 @@ class module_console_checkExtension extends Command
         $output->writeln(
             sprintf(
                 "\nWill do the check with user <info>%s</info> (%s)\n"
-                , $TestUser->getDisplayName()
+                , $TestUser->getDisplayName($this->container['translator'])
                 , $TestUser->getEmail()
             )
         );

@@ -410,15 +410,13 @@ class Login implements ControllerProviderInterface
 
                     $autoReg = $app['acl']->get($user)->get_granted_base();
 
-                    $appbox_register = new \appbox_register($app['phraseanet.appbox']);
-
                     foreach ($inscOK as $base_id => $autorisation) {
                         if (false === $autorisation || $app['acl']->get($user)->has_access_to_base($base_id)) {
                             continue;
                         }
 
                         $collection = \collection::get_from_base_id($app, $base_id);
-                        $appbox_register->add_request($user, $collection);
+                        $app['phraseanet.appbox-register']->add_request($user, $collection);
                         $demandOK[$base_id] = true;
                     }
 
@@ -524,7 +522,7 @@ class Login implements ControllerProviderInterface
      */
     private function sendAccountUnlockEmail(PhraseaApplication $app, User $user)
     {
-        $receiver = Receiver::fromUser($user);
+        $receiver = Receiver::fromUser($user, $app['translator']);
 
         $expire = new \DateTime('+3 days');
         $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->getId(), $expire, $user->getEmail());
@@ -559,9 +557,7 @@ class Login implements ControllerProviderInterface
             return $app->redirectPath('homepage');
         }
 
-        try {
-            $user = $app['manipulator.user']->getRepository()->find((int) $datas['usr_id']);
-        } catch (\Exception $e) {
+        if (null === $user = $app['manipulator.user']->getRepository()->find((int) $datas['usr_id'])) {
             $app->addFlash('error', _('Invalid unlock link.'));
 
             return $app->redirectPath('homepage');
@@ -577,7 +573,7 @@ class Login implements ControllerProviderInterface
         $user->setMailLocked(false);
 
         try {
-            $receiver = Receiver::fromUser($user);
+            $receiver = Receiver::fromUser($user, $app['translator']);
         } catch (InvalidArgumentException $e) {
             $app->addFlash('success', $app->trans('Account has been unlocked, you can now login.'));
 
@@ -662,14 +658,12 @@ class Login implements ControllerProviderInterface
                 if ($form->isValid()) {
                     $data = $form->getData();
 
-                    try {
-                        $user = $app['manipulator.user']->getRepository()->findByEmail($data['email']);
-                    } catch (\Exception $e) {
+                    if (null === $user = $app['manipulator.user']->getRepository()->findByEmail($data['email'])) {
                         throw new FormProcessingException(_('phraseanet::erreur: Le compte n\'a pas ete trouve'));
                     }
 
                     try {
-                        $receiver = Receiver::fromUser($user);
+                        $receiver = Receiver::fromUser($user, $app['translator']);
                     } catch (InvalidArgumentException $e) {
                         throw new FormProcessingException($app->trans('Invalid email address'));
                     }

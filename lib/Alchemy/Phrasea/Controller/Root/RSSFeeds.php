@@ -55,7 +55,7 @@ class RSSFeeds implements ControllerProviderInterface
             $page = $page < 1 ? 1 : $page;
 
             return $app['feed.formatter-strategy']($format)
-                ->createResponse($app, $token->getFeed(), $page, $app['manipulator.user']->getRepository()->find($token->getUsrId()));
+                ->createResponse($app, $token->getFeed(), $page, $token->getUser());
         })
             ->bind('feed_user')
             ->assert('id', '\d+')

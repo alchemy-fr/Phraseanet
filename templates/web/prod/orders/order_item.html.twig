@@ -1,5 +1,5 @@
 {% import 'common/thumbnail.html.twig' as thumbnail %}
-{% set displayName = order.getUser().getDisplayName() %}
+{% set displayName = order.getUser().getDisplayName(app['translator']) %}
 
 <div class="page-header">
   <h1>{% trans with {'%displayName%' : displayName} %}%displayName% wants to place an order{% endtrans %}</h1>

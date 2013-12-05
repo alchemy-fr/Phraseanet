@@ -112,7 +112,7 @@
                         {% endif %}
                         {% if basket.getPusher(app) %}
                             <td>
-                                {% set pusher = basket.getPusher(app).getDisplayName() %}
+                                {% set pusher = basket.getPusher(app).getDisplayName(app['translator']) %}
                                 <img
                                     class="basketTips"
                                     title="{% trans with {'%pusher%' : pusher} %}paniers:: panier recu de %pusher%{% endtrans %}"
@@ -355,7 +355,7 @@
                           {% for choice in basket_element.getValidationDatas() %}
                               {% if basket.getValidation().getParticipant(app['authentication'].getUser(), app).getCanSeeOthers() or choice.getParticipant().getUser() == app['authentication'].getUser() %}
                               <tr>
-                                  <td> {{ choice.getParticipant().getUser().getDisplayName() }} </td>
+                                  <td> {{ choice.getParticipant().getUser().getDisplayName(app['translator']) }} </td>
                                   <td>
                                   {% if choice.getParticipant().getCanAgree() %}
                                         {% if choice.getAgreement() == true %}

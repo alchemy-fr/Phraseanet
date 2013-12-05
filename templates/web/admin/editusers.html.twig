@@ -118,7 +118,7 @@
                       {{ 'Reglages:: reglages d inscitpition automatisee' | trans }}
                   {% endif %}
                 {% else %}
-                  {% set display_name = main_user.getDisplayName() %}
+                  {% set display_name = main_user.getDisplayName(app['translator']) %}
                   {% trans with {'%display_name%' : display_name} %}Edition des droits de %display_name%{% endtrans %}
                 {% endif %}
               {% else %}
@@ -131,7 +131,7 @@
               <select name="template">
                 <option value="">{{ 'boutton::choisir' | trans }}</option>
                 {% for template in templates %}
-                <option value="{{ template.getId() }}">{{ template.getDisplayName() }}</option>
+                <option value="{{ template.getId() }}">{{ template.getDisplayName(app['translator']) }}</option>
                 {% endfor %}
               </select>
                <button class="btn" type='button' id='reset_rights'>{{ 'Delete all users rights' | trans }}</button>

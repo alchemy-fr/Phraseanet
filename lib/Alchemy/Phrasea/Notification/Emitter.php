@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Notification;
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class Emitter implements EmitterInterface
 {
@@ -54,8 +55,8 @@ class Emitter implements EmitterInterface
      *
      * @throws InvalidArgumentException In case no valid email is found for user
      */
-    public static function fromUser(User $user)
+    public static function fromUser(User $user, TranslatorInterface $translator)
     {
-        return new static($user->getDisplayName(), $user->getEmail());
+        return new static($user->getDisplayName($translator), $user->getEmail());
     }
 }

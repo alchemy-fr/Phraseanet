@@ -78,8 +78,8 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
                 $user_from = $this->app['manipulator.user']->getRepository()->find($params['from']);
                 $user_to = $this->app['manipulator.user']->getRepository()->find($params['to']);
 
-                $receiver = Receiver::fromUser($user_to);
-                $emitter = Emitter::fromUser($user_from);
+                $receiver = Receiver::fromUser($user_to, $this->app['translator']);
+                $emitter = Emitter::fromUser($user_from, $this->app['translator']);
 
                 $readyToSend = true;
             } catch (Exception $e) {
@@ -111,7 +111,7 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
             return [];
         }
 
-        $sender = $user->getDisplayName();
+        $sender = $user->getDisplayName($this->app['translator']);
 
         $ret = [
             'text'  => $this->app->trans('%user% a refuse la livraison de %quantity% document(s) pour votre commande', ['%user%' => $sender, '%quantity%' => $n])

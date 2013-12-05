@@ -347,8 +347,8 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertCount(4, $basket->getElements());
-        $datas = self::$DI['app']['EM']->getRepository('Phraseanet:ValidationData')->findAll();
-        $this->assertTrue($countDatas < count($datas), 'assert that ' . count($datas) . ' > ' . $countDatas);
+        $datas = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\ValidationData')->findAll();
+        $this->assertTrue($countData < count($datas), 'assert that ' . count($datas) . ' > ' . $countData);
     }
 
     public function testAddElementPostJSON()

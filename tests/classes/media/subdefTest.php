@@ -26,27 +26,21 @@ class media_subdefTest extends \PhraseanetTestCase
         self::$recordonbleu = record_adapter::createFromFile($file, self::$DI['app']);
         self::$DI['app']['subdef.generator']->generateSubdefs(self::$recordonbleu);
 
-            foreach (self::$recordonbleu->get_subdefs() as $subdef) {
-                if ($subdef->get_name() === 'document') {
-                    continue;
-                }
+        foreach (self::$recordonbleu->get_subdefs() as $subdef) {
 
-                if (!self::$objectPresent) {
-                    self::$objectPresent = $subdef;
-                    continue;
-                }
-                if (!self::$objectNotPresent) {
-                    self::$objectNotPresent = $subdef;
-                    continue;
-                }
+            if ($subdef->get_name() == 'document') {
+                continue;
             }
 
-            $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
-
-            self::$objectNotPresent->remove_file();
-            self::$storyPresent = $story->get_subdef('thumbnail');
+            if (! self::$objectPresent) {
+                self::$objectPresent = $subdef;
+                continue;
+            }
+            if (! self::$objectNotPresent) {
+                self::$objectNotPresent = $subdef;
+                continue;
+            }
         }
-    }
 
         self::$objectNotPresent->remove_file();
     }

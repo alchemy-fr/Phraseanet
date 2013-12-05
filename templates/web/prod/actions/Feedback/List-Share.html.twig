@@ -29,7 +29,7 @@
               <img src="/skins/icons/user.png"/>
             </td>
             <td style="width:150px;padding:5px;">
-              {{ owner.getUser().getDisplayName() }}
+              {{ owner.getUser().getDisplayName(app['translator']) }}
               <input type="hidden" name="usr_id" value="{{ owner.getUser().getId() }}" />
             </td>
             <td style="padding-right:10px;min-width:100px;">

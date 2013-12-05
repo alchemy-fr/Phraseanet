@@ -10,7 +10,7 @@
             <td colspan="2" style="height: 10px;"></td>
         </tr>
         <tr>
-            <td colspan="2"><strong>{{ 'admin::compte-utilisateur nom' | trans }} : </strong>{{ user.getDisplayName() }}</td>
+            <td colspan="2"><strong>{{ 'admin::compte-utilisateur nom' | trans }} : </strong>{{ user.getDisplayName(app['translator']) }}</td>
         </tr>
         <tr>
             <td colspan="2"><strong>{{ 'admin::compte-utilisateur societe' | trans }} : </strong>{{ user.getCompany() }}</td>
@@ -102,9 +102,9 @@
             <tr title="{{ _self.tooltip_connected_users(row) | e }}" class="{% if loop.index is odd %}odd{% else %}even{% endif %} usrTips" id="TREXP_{{ row.getId()}}">
 
                 {% if row.getId() == app['session'].get('session_id') %}
-                    <td style="color:#ff0000"><i>{{ row.getUser().getDisplayName() }}</i></td>
+                    <td style="color:#ff0000"><i>{{ row.getUser().getDisplayName(app['translator']) }}</i></td>
                 {% else %}
-                    <td>{{ row.getUser().getDisplayName() }}</td>
+                    <td>{{ row.getUser().getDisplayName(app['translator']) }}</td>
                 {% endif %}
 
                 <td>

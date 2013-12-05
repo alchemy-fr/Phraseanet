@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Model\Manager;
 use Doctrine\Common\Persistence\ObjectManager;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UserSetting;
+use Doctrine\ORM\UnitOfWork AS UOW;
 
 class UserManager
 {
@@ -160,6 +161,21 @@ class UserManager
     }
 
     /**
+     * Removes user orders.
+     *
+     * @param User $user
+     */
+    private function cleanUserSessions(User $user)
+    {
+        $sessions = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\Session')
+            ->findByUser(['user' => $user->getId()]);
+
+        foreach ($sessions as $session) {
+            $this->objectManager->remove($session);
+        }
+    }
+
+    /**
      * Removes user providers.
      *
      * @param User $user
@@ -196,6 +212,7 @@ class UserManager
         $this->cleanOrders($user);
         $this->cleanFtpExports($user);
         $this->cleanAuthProvider($user);
+        $this->cleanUserSessions($user);
     }
 
     /**

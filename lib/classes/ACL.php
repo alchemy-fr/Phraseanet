@@ -114,11 +114,6 @@ class ACL implements cache_cacheableInterface
         return $this;
     }
 
-    public function set_app(Application $app)
-    {
-        $this->app = $app;
-    }
-
     /**
      * Check if a hd grant has been received for a record
      *
@@ -195,7 +190,6 @@ class ACL implements cache_cacheableInterface
      */
     public function has_preview_grant(record_Interface $record)
     {
-
         $this->load_hd_grant();
 
         $key = $record->get_serialize_key();
@@ -757,7 +751,11 @@ class ACL implements cache_cacheableInterface
 
     public function set_admin($boolean)
     {
-        $this->app['manipulator.user']->promote($this->user);
+        if ($boolean) {
+            $this->app['manipulator.user']->promote($this->user);
+        } else {
+            $this->app['manipulator.user']->demote($this->user);
+        }
 
         return $this;
     }

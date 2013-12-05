@@ -44,7 +44,7 @@
                     <li>
                         <label for="adm_{{ user.getId() }}" class="checkbox">
                             <input name="admins[]" type="checkbox" value="{{ user.getId() }}" id="adm_{{ user.getId() }}" checked />
-                            {{ user.getDisplayName() }}
+                            {{ user.getDisplayName(app['translator']) }}
                         </label>
                     </li>
                 {% endfor %}

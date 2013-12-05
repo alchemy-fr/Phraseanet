@@ -122,7 +122,7 @@
     <div class="authentication-user-pres-phraseanet well">
         <ul class="unstyled">
             <li class="one-line">
-                <i class="icon-user"></i>{{ user.getDisplayName() }}
+                <i class="icon-user"></i>{{ user.getDisplayName(app['translator']) }}
             </li>
             {% if user.getEmail() %}
             <li class="one-line">

@@ -336,7 +336,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
         foreach ($feeds as $one_feed) {
             $path = CssSelector::toXPath("ul.submenu a[href='/prod/feeds/feed/" . $one_feed->getId() . "/']");
-            $msg = sprintf("user %s has access to feed %s", self::$DI['user']->get_id(), $one_feed->getId());
+            $msg = sprintf("user %s has access to feed %s", self::$DI['user']->getId(), $one_feed->getId());
 
             if ($one_feed->hasAccess(self::$DI['user'], self::$DI['app'])) {
                 $this->assertEquals(1, $crawler->filterXPath($path)->count(), $msg);

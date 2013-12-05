@@ -62,7 +62,7 @@ class MailInfoOrderCancelled extends AbstractMail
         }
 
         return $this->app->trans('%user% a refuse %quantity% elements de votre commande', [
-            '%user%' => $this->deliverer->getDisplayName(),
+            '%user%' => $this->deliverer->getDisplayName($this->app['translator']),
             '%quantity%' => $this->quantity,
         ]);
     }

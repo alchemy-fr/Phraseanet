@@ -54,7 +54,7 @@ class MailInfoValidationDone extends AbstractMailWithLink
         }
 
         return $this->app->trans('push::mail:: Rapport de validation de %user% pour %title%', [
-            '%user%'  => $this->user->getDisplayName(),
+            '%user%'  => $this->user->getDisplayName($this->app['translator']),
             '%title%' => $this->title,
         ]);
     }
@@ -69,7 +69,7 @@ class MailInfoValidationDone extends AbstractMailWithLink
         }
 
         return $this->app->trans('%user% has just sent its validation report, you can now see it', [
-            '%user%' => $this->user->getDisplayName(),
+            '%user%' => $this->user->getDisplayName($this->app['translator']),
         ]);
     }
 

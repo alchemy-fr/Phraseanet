@@ -102,7 +102,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
             if ($this->shouldSendNotificationFor($user->getId())) {
                 $readyToSend = false;
                 try {
-                    $receiver = Receiver::fromUser($user);
+                    $receiver = Receiver::fromUser($user, $this->app['translator']);
                     $readyToSend = true;
                 } catch (\Exception $e) {
                     continue;
@@ -140,7 +140,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
             return [];
         }
 
-        $sender = $user->getDisplayName();
+        $sender = $user->getDisplayName($this->app['translator']);
 
         $ret = [
             'text'  => $this->app->trans('%user% a passe une %opening_link% commande %end_link%', [

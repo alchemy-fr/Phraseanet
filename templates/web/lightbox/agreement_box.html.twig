@@ -25,7 +25,7 @@
                     {% set classuser = 'disagree' %}
                 {% endif %}
                 {% set participant = choice.getParticipant().getUser() %}
-                <li class="{% if participant.getId() == app['authentication'].getUser().getId() %}me{% endif %} {{classuser}} userchoice">{{participant.getDisplayName()}}</li>
+                <li class="{% if participant.getId() == app['authentication'].getUser().getId() %}me{% endif %} {{classuser}} userchoice">{{participant.getDisplayName(app['translator'])}}</li>
               {% endif %}
             {% endfor %}
         </ul>

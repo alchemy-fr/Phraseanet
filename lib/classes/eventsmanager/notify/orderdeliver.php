@@ -95,8 +95,8 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
                 $user_from = $this->app['manipulator.user']->getRepository()->find($params['from']);
                 $user_to = $this->app['manipulator.user']->getRepository()->find($params['to']);
 
-                $receiver = Receiver::fromUser($user_to);
-                $emitter = Emitter::fromUser($user_from);
+                $receiver = Receiver::fromUser($user_to, $this->app['translator']);
+                $emitter = Emitter::fromUser($user_from, $this->app['translator']);
 
                 $repository = $this->app['EM']->getRepository('Phraseanet:Basket');
                 $basket = $repository->find($params['ssel_id']);
@@ -148,7 +148,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
             return [];
         }
 
-        $sender = $user->getDisplayName();
+        $sender = $user->getDisplayName($this->app['translator']);
 
         try {
             $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');

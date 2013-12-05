@@ -47,7 +47,9 @@ class collectionTest extends \PhraseanetAuthenticatedTestCase
 
     public static function tearDownAfterClass()
     {
-        self::$object->delete();
+        if (self::$object instanceof \collection) {
+            self::$object->delete();
+        }
         self::$object = self::$objectDisable = null;
         parent::tearDownAfterClass();
     }

@@ -10,7 +10,7 @@
             {% if validationDatas.getNote() != '' %}
                 <div class="note_wrapper ui-corner-all {% if validationDatas.getParticipant().getUser().getId() == app['authentication'].getUser().getId() %}my_note{% endif %} ">
                     <span class="note_author title15">
-                      {{validationDatas.getParticipant().getUser().getDisplayName()}}
+                      {{validationDatas.getParticipant().getUser().getDisplayName(app['translator'])}}
                     </span> : {{ validationDatas.getNote()|nl2br }}
                 </div>
           {% endif %}

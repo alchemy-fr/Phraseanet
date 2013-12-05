@@ -38,22 +38,17 @@ class userTest extends \PhraseanetTestCase
 
     public function testDeleteSetMailToNullAndRemovesSessions()
     {
-        try {
-            $usrId = \User_Adapter::get_usr_id_from_login(self::$DI['app'], 'test_phpunit_sessions');
-            $user = \User_Adapter::getInstance($usrId, self::$DI['app']);
-        } catch (\Exception $e) {
-            $user = \User_Adapter::create(self::$DI['app'], 'test_phpunit_sessions', 'any', null, false);
+        if (null === $user = self::$DI['app']['manipulator.user']->getRepository()->findByLogin('test_phpunit_sessions')) {
+            $user = self::$DI['app']['manipulator.user']->createUser('test_phpunit_sessions', \random::generatePassword());
         }
 
         $session = new \Alchemy\Phrasea\Model\Entities\Session();
-        $session
-            ->setUsrId($user->get_id())
-            ->setUserAgent('');
+        $session->setUser($user)->setUserAgent('');
 
         self::$DI['app']['EM']->persist($session);
         self::$DI['app']['EM']->flush();
 
-        $user->delete();
+        self::$DI['app']['model.user-manager']->delete($user);
 
         $repo = self::$DI['app']['EM']->getRepository('Phraseanet:Session');
         $this->assertCount(0, $repo->findByUser($user));
@@ -80,12 +75,11 @@ class userTest extends \PhraseanetTestCase
             'lalala'          => 'didou',
         ]);
 
-        $user = $this->get_user();
-        $user->setPrefs('images_per_page', 35);
+        self::$DI['app']['manipulator.user']->setUserSetting($user,'images_per_page', 35);
 
         $this->assertNull(self::$DI['app']['settings']->getUserSetting($user, 'lalala'));
         $this->assertSame(666, self::$DI['app']['settings']->getUserSetting($user, 'images_size'));
-        $this->assertSame(42, self::$DI['app']['settings']->getUserSetting($user, 'images_per_page'));
+        $this->assertSame(35, self::$DI['app']['settings']->getUserSetting($user, 'images_per_page'));
         $this->assertSame(self::$DI['app']['settings']->getUsersSettings()['editing_top_box'], self::$DI['app']['settings']->getUserSetting($user, 'editing_top_box'));
 
         if (null === $data) {

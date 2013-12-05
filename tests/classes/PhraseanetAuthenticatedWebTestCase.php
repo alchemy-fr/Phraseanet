@@ -20,7 +20,7 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
 
     public function setAdmin($bool)
     {
-        $stubAuthenticatedUser = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')//, array('is_admin', 'ACL'), array(self::$DI['app']['authentication']->getUser()->getId(), self::$DI['app']))
+        $stubAuthenticatedUser = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
             ->setMethods(['getId'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -82,16 +82,6 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
             ->will($this->returnValue($this->StubbedACL));
 
         self::$DI['app']['acl'] = $aclProvider;
-
-        $stubAuthenticatedUser->expects($this->any())
-            ->method('getId')
-            ->will($this->returnValue(self::$DI['user']->getId()));
-
-        self::$DI['app']['authentication']->setUser($stubAuthenticatedUser);
-
-        self::$DI['client'] = self::$DI->share(function ($DI) {
-                return new Client($DI['app'], []);
-            });
     }
 
     public function createDatabox()

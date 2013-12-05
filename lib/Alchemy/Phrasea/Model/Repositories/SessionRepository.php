@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Model\Repositories;
 
 use Doctrine\ORM\EntityRepository;
+use Alchemy\Phrasea\Model\Entities\User;
 
 /**
  * SessionRepository
@@ -21,15 +22,4 @@ use Doctrine\ORM\EntityRepository;
  */
 class SessionRepository extends EntityRepository
 {
-    public function findByUser(\User_Adapter $user)
-    {
-        $dql = 'SELECT s
-            FROM Phraseanet:Session s
-            WHERE s.usr_id = :usr_id';
-
-        $query = $this->_em->createQuery($dql);
-        $query->setParameters(['usr_id' => $user->get_id()]);
-
-        return $query->getResult();
-    }
 }

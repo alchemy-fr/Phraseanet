@@ -1374,7 +1374,7 @@ class API_V1_adapter extends API_V1_Abstract
                 $choices[] = [
                     'validation_user' => [
                         'usr_id'         => $user->getId(),
-                        'usr_name'       => $user->getDisplayName(),
+                        'usr_name'       => $user->getDisplayName($this->app['translator']),
                         'confirmed'      => $participant->getIsConfirmed(),
                         'can_agree'      => $participant->getCanAgree(),
                         'can_see_others' => $participant->getCanSeeOthers(),
@@ -1818,7 +1818,7 @@ class API_V1_adapter extends API_V1_Abstract
 
                 $users[] = [
                     'usr_id'         => $user->getId(),
-                    'usr_name'       => $user->getDisplayName(),
+                    'usr_name'       => $user->getDisplayName($this->app['translator']),
                     'confirmed'      => $participant->getIsConfirmed(),
                     'can_agree'      => $participant->getCanAgree(),
                     'can_see_others' => $participant->getCanSeeOthers(),

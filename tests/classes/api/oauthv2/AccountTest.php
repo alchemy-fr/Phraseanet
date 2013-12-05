@@ -16,7 +16,6 @@ class api_oauthv2_AccountTest extends \PhraseanetTestCase
     public function testGettersAndSetters()
     {
         $this->assertTrue(is_int($this->object->get_id()));
-
         $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\User', $this->object->get_user());
         $this->assertEquals(self::$DI['user']->getId(), $this->object->get_user()->getId());
 

@@ -234,7 +234,7 @@ class Basket
     public function getPusher(Application $app)
     {
         if ($this->getPusherId()) {
-            return $this->pusher = $app['EM']->find('Alchemy\Phrasea\Model\Entities\User', $this->getPusherId());
+            return $app['manipulator.user']->getRepository()->find($this->getPusherId());
         }
     }
 

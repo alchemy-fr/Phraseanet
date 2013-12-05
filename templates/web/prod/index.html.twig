@@ -804,7 +804,7 @@
             <div id="look_box_screen">
                 <div class="box">
                     <div class="" style="float:left; width:100%;margin-top:20px;">
-                        {% set mod = app['authentication'].getUser().getPrefs('advanced_search_reload') %}
+                        {% set mod = app['settings'].getUserSetting(app['authentication'].getUser(), 'advanced_search_reload') %}
                         <label class="checkbox inline" for="user_settings_advanced_search_reload">
                             <input onchange="setPref('advanced_search_reload',$(this).attr('checked')?'1' : '0');" name="advanced_search_reload" type="checkbox" style="margin: 3px 0 0 -18px;" class="checkbox" value="1" id="user_settings_advanced_search_reload" {% if mod == '1' %}checked="checked"{% endif %}/>
                             {{ 'Use latest search settings on Production loading' | trans }}
@@ -833,8 +833,8 @@
                     </div>
                 </div>
                 <div class="box">
-                    {% set rollover_thumbnail = app['authentication'].getUser().getSettingValue('rollover_thumbnail') %}
-                    <h1>{% trans 'Presentation de vignettes' %}</h1>
+                    {% set rollover_thumbnail = app['settings'].getUserSetting(app['authentication'].getUser(), 'rollover_thumbnail') %}
+                    <h1>{{ 'Presentation de vignettes'  | trans }}</h1>
                     <label class="radio" for="rollover_caption">
                         <input onchange="setPref('rollover_thumbnail',$(this).val());" name="rollover_thumbnail" type="radio" class="radio" value="caption" id="rollover_caption" {% if rollover_thumbnail == 'caption' %}checked="checked" {% endif %}/>
                         {{ 'Iconographe (description au rollover)' | trans }}
@@ -845,8 +845,8 @@
                     </label>
                 </div>
                 <div class="box">
-                    {% set technical_display = app['authentication'].getUser().getSettingValue('technical_display') %}
-                    <h1>{% trans 'Informations techniques' %}</h1>
+                    {% set technical_display = app['settings'].getUserSetting(app['authentication'].getUser(), 'technical_display') %}
+                    <h1>{{'Informations techniques'  | trans }}</h1>
                     <label class="radio" for="technical_show">
                         <input onchange="setPref('technical_display',$(this).val());" name="technical_display" type="radio" class="radio" value="1" id="technical_show" {% if technical_display == '1' %}checked="checked"{% endif %}/>
                         {{ 'Afficher' | trans }}
@@ -861,8 +861,8 @@
                     </label>
                 </div>
                 <div class="box">
-                    {% set doctype_display = app['authentication'].getUser().getSettingValue('doctype_display') %}
-                    <h1>{% trans 'Type de documents' %}</h1>
+                    {% set doctype_display = app['settings'].getUserSetting(app['authentication'].getUser(), 'doctype_display') %}
+                    <h1>{{'Type de documents'  | trans }}</h1>
                     <label class="checkbox" for="doctype_display_show">
                         <input onchange="setPref('doctype_display',($(this).attr('checked') ? '1' :'0'));" name="doctype_display" type="checkbox" class="checkbox" value="1" id="doctype_display_show" {% if doctype_display != '0' %}checked="checked"{% endif %}/>
                         {{ 'Afficher une icone' | trans }}
@@ -908,12 +908,12 @@
                                 <option value="PUBLI" {% if start_page_pref == 'PUBLI' %}selected="selected"{% endif %} >
                                     {{ 'Publications' | trans }}
                                 </option>
-                                <option value="HELP" {% if start_page_pref == 'HELP' %}selected="selected"{% endif %} >
+                                <option value="HELP" {% if start_page_pref == 'HELP' %}}selected="selected"{% endif %} >
                                     {{ 'Aide' | trans }}
                                 </option>
                             </select>
-                            <input type="text" class="span4" name="start_page_value" value="{{app['authentication'].getUser().getSettingValue('start_page_query')}}" style="display:{% if start_page_pref == 'QUERY' %}inline{% else %}none{% endif %}" />
-                            <input type="button" class="btn btn-inverse" value="{% trans 'boutton::valider' %}" onclick="set_start_page();" />
+                            <input type="text" class="span4" name="start_page_value" value="{{ app['settings'].getUserSetting(app['authentication'].getUser(), 'start_page_query')}}" style="display:{% if start_page_pref == 'QUERY' %}inline{% else %}none{% endif %}" />
+                            <input type="button" class="btn btn-inverse" value="{{'boutton::valider'  | trans }}" onclick="set_start_page();" />
                         </form>
                     </div>
                 </div>

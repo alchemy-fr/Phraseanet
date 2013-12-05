@@ -39,27 +39,33 @@ class UserProviderTest extends \PhraseanetTestCase
 
     public function testFind()
     {
-        $this->setConnectionEnvironment('prod');
-        self::$DI['user'];
+        self::$DI['app']['EM'] = self::$DI['app']['EM.prod'];
+        $user = self::$DI['app']['manipulator.user']->createUser(uniqid('test'), 'a_password', uniqid('test').'@titi.tu');
+        self::giveRightsToUser(self::$DI['app'], $user);
+        $user->setFirstName('toto');
+        $user->setLastName('tata');
+        self::$DI['app']['EM']->persist($user);
+        self::$DI['app']['EM']->flush();
 
-        $results = $this->object->find('BABE', self::$DI['user'], self::$DI['collection']->get_databox());
+        $results = $this->object->find('BABE', $user, self::$DI['app']['translator'], self::$DI['collection']->get_databox());
 
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
 
-        $results = $this->object->find(self::$DI['user']->getEmail(), self::$DI['user'], self::$DI['collection']->get_databox());
+        $results = $this->object->find($user->getEmail(), $user,self::$DI['app']['translator'], self::$DI['collection']->get_databox());
+
+        $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
+        $this->assertTrue($results->count() > 0);
+
+        $results = $this->object->find($user->getFirstName(), $user, self::$DI['app']['translator'], self::$DI['collection']->get_databox());
 
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
         $this->assertTrue($results->count() > 0);
 
-        $results = $this->object->find(self::$DI['user']->getFirstName(), self::$DI['user'], self::$DI['collection']->get_databox());
+        $results = $this->object->find($user->getLastName(), $user, self::$DI['app']['translator'], self::$DI['collection']->get_databox());
 
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
         $this->assertTrue($results->count() > 0);
-
-        $results = $this->object->find(self::$DI['user']->getLastName(), self::$DI['user'], self::$DI['collection']->get_databox());
-
-        $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
-        $this->assertTrue($results->count() > 0);
+        self::$DI['app']['model.user-manager']->delete($user);
     }
 
     public function testValidate()
@@ -85,6 +91,6 @@ class UserProviderTest extends \PhraseanetTestCase
 
         }
 
-        $this->assertEquals(self::$DI['user']->getDisplayName(), $this->object->getValue(self::$DI['user']->getId()));
+        $this->assertEquals(self::$DI['user']->getDisplayName(self::$DI['app']['translator']), $this->object->getValue(self::$DI['user']->getId()));
     }
 }

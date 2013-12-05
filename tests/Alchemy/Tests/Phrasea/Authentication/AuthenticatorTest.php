@@ -15,32 +15,12 @@ class AuthenticatorTest extends \PhraseanetTestCase
     {
         $app = $this->loadApp();
 
-        $authenticator = new Authenticator(self::$DI['app'], $browser, $session, $em);
+        $app['browser'] = $browser = $this->getBrowserMock();
+        $app['session'] = $session = $this->getSessionMock();
+        $app['EM'] = $em = $this->getEntityManagerMock();
+
+        $authenticator = new Authenticator($app, $browser, $session, $em);
         $this->assertNull($authenticator->getUser());
-    }
-    /**
-     * @covers Alchemy\Phrasea\Authentication\Authenticator::getUser
-     */
-    public function testGetUserWhenAuthenticated()
-    {
-        $app = $this->loadApp();
-
-        $user = self::$DI['user'];
-
-        self::$DI['app']['browser'] = $browser = $this->getBrowserMock();
-        self::$DI['app']['session'] = $session = $this->getSessionMock();
-
-        $sessionEntity = new Session();
-        $sessionEntity->setUser($user);
-        $sessionEntity->setUserAgent('');
-        self::$DI['app']['EM']->persist($sessionEntity);
-        self::$DI['app']['EM']->flush();
-
-        $session->set('usr_id', $user->getId());
-        $session->set('session_id', $sessionEntity->getId());
-
-        $authenticator = new Authenticator(self::$DI['app'], $browser, $session, self::$DI['app']['EM']);
-        $this->assertEquals($user, $authenticator->getUser());
     }
 
     /**
@@ -50,11 +30,15 @@ class AuthenticatorTest extends \PhraseanetTestCase
     {
         $app = $this->loadApp();
 
+        $app['browser'] = $browser = $this->getBrowserMock();
+        $app['session'] = $session = $this->getSessionMock();
+        $app['EM'] = $em = $this->getEntityManagerMock();
+
         $user = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $authenticator = new Authenticator(self::$DI['app'], $browser, $session, $em);
+        $authenticator = new Authenticator($app, $browser, $session, $em);
         $authenticator->setUser($user);
         $this->assertEquals($user, $authenticator->getUser());
         $authenticator->setUser(null);
@@ -69,9 +53,9 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $app = $this->loadApp();
         $capturedSession = null;
 
-        self::$DI['app']['browser'] = $browser = $this->getBrowserMock();
-        self::$DI['app']['session'] = $session = $this->getSessionMock();
-        self::$DI['app']['EM'] = $em = $this->getEntityManagerMock();
+        $app['browser'] = $browser = $this->getBrowserMock();
+        $app['session'] = $session = $this->getSessionMock();
+        $app['EM'] = $em = $this->getEntityManagerMock();
 
         $user = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
             ->disableOriginalConstructor()
@@ -94,7 +78,7 @@ class AuthenticatorTest extends \PhraseanetTestCase
             ->method('get')
             ->will($this->returnValue($acl));
 
-        self::$DI['app']['acl'] = $aclProvider;
+        $app['acl'] = $aclProvider;
 
         $em->expects($this->at(0))
             ->method('persist')
@@ -105,7 +89,7 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $em->expects($this->at(1))
             ->method('flush');
 
-        $authenticator = new Authenticator(self::$DI['app'], $browser, $session, $em);
+        $authenticator = new Authenticator($app, $browser, $session, $em);
         $phsession = $authenticator->openAccount($user);
 
         $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\Session', $phsession);
@@ -121,9 +105,9 @@ class AuthenticatorTest extends \PhraseanetTestCase
 
         $user = self::$DI['user'];
 
-        self::$DI['app']['browser'] = $browser = $this->getBrowserMock();
-        self::$DI['app']['session'] = $SFsession = $this->getSessionMock();
-        self::$DI['app']['EM'] = $em = $this->getEntityManagerMock();
+        $app['browser'] = $browser = $this->getBrowserMock();
+        $app['session'] = $SFsession = $this->getSessionMock();
+        $app['EM'] = $em = $this->getEntityManagerMock();
 
         $sessionId = 4224242;
 
@@ -149,7 +133,7 @@ class AuthenticatorTest extends \PhraseanetTestCase
             ->with($this->equalTo('Phraseanet:Session'))
             ->will($this->returnValue($repo));
 
-        $authenticator = new Authenticator(self::$DI['app'], $browser, $SFsession, $em);
+        $authenticator = new Authenticator($app, $browser, $SFsession, $em);
         $this->assertEquals($session, $authenticator->refreshAccount($session));
     }
 
@@ -162,9 +146,9 @@ class AuthenticatorTest extends \PhraseanetTestCase
 
         $user = self::$DI['user'];
 
-        self::$DI['app']['browser'] = $browser = $this->getBrowserMock();
-        self::$DI['app']['session'] = $SFsession = $this->getSessionMock();
-        self::$DI['app']['EM'] = $em = $this->getEntityManagerMock();
+        $app['browser'] = $browser = $this->getBrowserMock();
+        $app['session'] = $SFsession = $this->getSessionMock();
+        $app['EM'] = $em = $this->getEntityManagerMock();
 
         $sessionId = 4224242;
 
@@ -190,7 +174,7 @@ class AuthenticatorTest extends \PhraseanetTestCase
             ->with($this->equalTo('Phraseanet:Session'))
             ->will($this->returnValue($repo));
 
-        $authenticator = new Authenticator(self::$DI['app'], $browser, $SFsession, $em);
+        $authenticator = new Authenticator($app, $browser, $SFsession, $em);
         try {
             $authenticator->refreshAccount($session);
             $this->fail('Should have raised an exception');
@@ -230,22 +214,40 @@ class AuthenticatorTest extends \PhraseanetTestCase
     {
         $app = $this->loadApp();
 
-        $user = self::$DI['user'];
-
-        self::$DI['app']['browser'] = $browser = $this->getBrowserMock();
-        self::$DI['app']['session'] = $session = $this->getSessionMock();
-
         $sessionEntity = new Session();
-        $sessionEntity->setUser($user);
+        $sessionEntity->setUser(self::$DI['user']);
         $sessionEntity->setUserAgent('');
-        self::$DI['app']['EM']->persist($sessionEntity);
-        self::$DI['app']['EM']->flush();
 
-        $session->set('usr_id', $user->getId());
-        $session->set('session_id', $sessionEntity->getId());
+        $app['browser'] = $browser = $this->getBrowserMock();
+        $app['session'] = $session = $this->getSessionMock();
+        $app['EM'] = $em = $this->getEntityManagerMock();
 
-        $authenticator = new Authenticator(self::$DI['app'], $browser, $session, self::$DI['app']['EM']);
+        $app['EM']->expects($this->any())->method('find')->with(
+            $this->equalTo('Alchemy\Phrasea\Model\Entities\Session'),
+            $this->equalTo(1)
+        )->will($this->returnValue($sessionEntity));
+
+        $userRepository = $this->getMockBuilder('Alchemy\Phrasea\Model\Repositories\UserRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $userRepository->expects($this->once())->method('find')->with(
+            $this->equalTo(self::$DI['user']->getId())
+        )->will($this->returnValue(self::$DI['user']));
+
+        $app['manipulator.user'] = $this
+            ->getMockBuilder('Alchemy\Phrasea\Model\Manipulator\UserManipulator')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $app['manipulator.user']->expects($this->once())->method('getRepository')->will($this->returnValue($userRepository));
+
+        $session->set('usr_id', self::$DI['user']->getId());
+        $session->set('session_id', 1);
+
+
+        $authenticator = new Authenticator($app, $browser, $session,  $app['EM']);
         $this->assertTrue($authenticator->isAuthenticated());
+        $this->assertEquals(self::$DI['user'], $authenticator->getUser());
     }
 
     /**
@@ -255,7 +257,11 @@ class AuthenticatorTest extends \PhraseanetTestCase
     {
         $app = $this->loadApp();
 
-        $authenticator = new Authenticator(self::$DI['app'], $browser, $session, $em);
+        $app['browser'] = $browser = $this->getBrowserMock();
+        $app['session'] = $session = $this->getSessionMock();
+        $app['EM'] = $em = $this->getEntityManagerMock();
+
+        $authenticator = new Authenticator($app, $browser, $session, $em);
         $this->assertFalse($authenticator->isAuthenticated());
     }
 

@@ -11,9 +11,6 @@ class SetupTest extends \PhraseanetWebTestCase
         parent::setUp();
 
         $this->app = $this->loadApp('lib/Alchemy/Phrasea/Application/Root.php');
-//        // set test environment
-//        $environment = 'test';
-//        $this->app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Root.php';
 
         $this->app['phraseanet.configuration-tester'] = $this->getMockBuilder('Alchemy\Phrasea\Setup\ConfigurationTester')
             ->disableOriginalConstructor()
@@ -73,7 +70,7 @@ class SetupTest extends \PhraseanetWebTestCase
             ->method('isBlank')
             ->will($this->returnValue(true));
 
-        $crawler = $client->request('GET', '/setup/installer/');
+        $client->request('GET', '/setup/installer/');
         $response = $client->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
     }
@@ -86,13 +83,21 @@ class SetupTest extends \PhraseanetWebTestCase
             ->method('isBlank')
             ->will($this->returnValue(true));
 
-        $crawler = $client->request('GET', '/setup/installer/step2/');
+        $client->request('GET', '/setup/installer/step2/');
         $response = $client->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
     }
 
     public function testRouteSetupInstallerInstall()
     {
+        $emMock  = $this->getMock('\Doctrine\ORM\EntityManager',
+            ['getRepository', 'find', 'persist', 'flush'], [], '', false);
+        $emMock->expects($this->any())
+            ->method('getRepository')
+            ->will($this->returnValue($this->getMock('Alchemy\Phrasea\Model\Repository\SessionRepository')));
+
+        $this->app['EM'] = $emMock;
+
         $this->app['phraseanet.configuration-tester']->expects($this->once())
             ->method('isBlank')
             ->will($this->returnValue(true));
@@ -105,7 +110,7 @@ class SetupTest extends \PhraseanetWebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $user->expects($this->exactly(1))
+        $user->expects($this->once())
             ->method('getId')
             ->will($this->returnValue(self::$DI['user']->getId()));
 
@@ -169,9 +174,8 @@ class SetupTest extends \PhraseanetWebTestCase
             'binary_phraseanet_indexer' => '/path/to/phraseanet_indexer',
         ];
 
-        $crawler = $client->request('POST', '/setup/installer/install/', $params);
+        $client->request('POST', '/setup/installer/install/', $params);
         $response = $client->getResponse();
-
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertTrue(false === strpos($response->headers->get('location'), '/setup/installer/'));
     }
@@ -183,7 +187,7 @@ class SetupTest extends \PhraseanetWebTestCase
             ->will($this->returnValue(true));
 
         $client = $this->createClient();
-        $crawler = $client->request('GET', '/setup/test/path/?path=/usr/bin/php');
+        $client->request('GET', '/setup/test/path/?path=/usr/bin/php');
         $response = $client->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('application/json', $response->headers->get('content-type'));
@@ -196,7 +200,7 @@ class SetupTest extends \PhraseanetWebTestCase
             ->will($this->returnValue(true));
 
         $client = $this->createClient();
-        $crawler = $client->request('GET', '/setup/connection_test/mysql/?user=admin&password=secret&dbname=phraseanet');
+        $client->request('GET', '/setup/connection_test/mysql/?user=admin&password=secret&dbname=phraseanet');
         $response = $client->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('application/json', $response->headers->get('content-type'));

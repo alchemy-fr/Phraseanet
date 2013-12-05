@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Vocabulary\Term;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class UserProvider implements ControlProviderInterface
 {
@@ -50,7 +51,7 @@ class UserProvider implements ControlProviderInterface
      * @param  \databox                                     $on_databox
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
-    public function find($query, User $for_user, \databox $on_databox = null)
+    public function find($query, User $for_user, TranslatorInterface $translator ,\databox $on_databox = null)
     {
         $user_query = new \User_Query($this->app);
 
@@ -68,7 +69,7 @@ class UserProvider implements ControlProviderInterface
 
         foreach ($users as $user) {
             $results->add(
-                new Term($user->getDisplayName(), '', $this, $user->getId())
+                new Term($user->getDisplayName($translator), '', $this, $user->getId())
             );
         }
 
@@ -98,7 +99,7 @@ class UserProvider implements ControlProviderInterface
             throw new \Exception('User unknown');
         }
 
-        return $user->getDisplayName();
+        return $user->getDisplayName($this->app['translator']);
     }
 
     /**

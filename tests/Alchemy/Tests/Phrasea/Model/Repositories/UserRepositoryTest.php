@@ -8,8 +8,8 @@ class UserRepositoryTest extends \PhraseanetTestCase
 {
     public function testFindAdminsWithNoAdmins()
     {
-        $users = self::$DI['app']['EM']->getRepository('Phraseanet:User')->findAdmins();
-        $this->assertEquals(1, count($users));
+        $users = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\User')->findAdmins();
+        $this->assertEquals(2, count($users));
     }
 
     public function testFindByLogin()

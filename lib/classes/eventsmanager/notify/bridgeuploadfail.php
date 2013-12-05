@@ -81,7 +81,7 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
             try {
                 $user = $this->app['manipulator.user']->getRepository()->find($params['usr_id']);
                 $account = Bridge_Account::load_account($this->app, $params['account_id']);
-                $receiver = Receiver::fromUser($user);
+                $receiver = Receiver::fromUser($user, $this->app['translator']);
                 $readyToSend = true;
             } catch (\Exception $e) {
 

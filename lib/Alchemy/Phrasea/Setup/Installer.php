@@ -34,6 +34,7 @@ class Installer
             $this->createAB();
             $this->populateRegistryData($serverName, $dataPath, $binaryData);
             $user = $this->createUser($email, $password);
+            $this->createDefaultUsers();
             if (null !== $dbConn) {
                 $this->createDB($dbConn, $template);
             }

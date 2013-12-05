@@ -61,9 +61,11 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         if (!self::$apiInitialized) {
             self::$account = \API_OAuth2_Account::load_with_user(self::$DI['app'], self::$DI['oauth2-app-user_notAdmin'], self::$DI['user_notAdmin']);
+            self::$account->set_revoked(false);
             self::$token = self::$account->get_token()->get_value();
 
             self::$adminAccount = \API_OAuth2_Account::load_with_user(self::$DI['app'], self::$DI['oauth2-app-user'], self::$DI['user']);
+            self::$adminAccount->set_revoked(false);
             self::$adminToken = self::$adminAccount->get_token()->get_value();
 
             self::$apiInitialized = true;
@@ -549,8 +551,10 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testStoryRoute()
     {
         $this->setToken(self::$token);
-        self::$DI['app']['session']->set('usr_id', self::$DI['user']->get_id());
-        self::$DI['record_story_1']->appendChild(self::$DI['record_1']);
+        self::$DI['app']['session']->set('usr_id', self::$DI['user']->getId());
+        if (false ===  self::$DI['record_story_1']->hasChild(self::$DI['record_1'])) {
+            self::$DI['record_story_1']->appendChild(self::$DI['record_1']);
+        }
 
         self::$DI['app']['session']->remove('usr_id');
 

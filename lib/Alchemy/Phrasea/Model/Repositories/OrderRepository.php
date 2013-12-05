@@ -56,7 +56,7 @@ class OrderRepository extends EntityRepository
          }
 
          if ($sort === 'user') {
-             $qb->orderBy('o.userId', 'ASC');
+             $qb->orderBy('o.user', 'ASC');
          } elseif ($sort === 'usage') {
              $qb->orderBy('o.orderUsage', 'ASC');
          } else {

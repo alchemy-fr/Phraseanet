@@ -17,9 +17,6 @@ class Bridge_AccountTest extends \PhraseanetAuthenticatedTestCase
 
     public function bootTestCase()
     {
-        try {
-            $application = self::$DI['app'];
-
         self::$DI['user'];
 
         if (!self::$object) {

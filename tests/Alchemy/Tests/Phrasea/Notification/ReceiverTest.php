@@ -54,7 +54,7 @@ class ReceiverTest extends \PhraseanetTestCase
             ->method('getEmail')
             ->will($this->returnValue($this->email));
 
-        $object = Receiver::fromUser($user);
+        $object = Receiver::fromUser($user, self::$DI['app']['translator']);
         $this->assertEquals($this->email, $object->getEmail());
         $this->assertEquals($this->name, $object->getName());
     }
@@ -77,7 +77,7 @@ class ReceiverTest extends \PhraseanetTestCase
             ->will($this->returnValue('wrong user'));
 
         try {
-            Receiver::fromUser($user);
+            Receiver::fromUser($user, self::$DI['app']['translator']);
             $this->fail('Should have raised an exception');
         } catch (InvalidArgumentException $e) {
 
