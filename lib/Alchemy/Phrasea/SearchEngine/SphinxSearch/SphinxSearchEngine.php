@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\SearchEngine\SphinxSearch;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\SearchEngine\Phrasea\SphinxSearchEngineSubscriber;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
