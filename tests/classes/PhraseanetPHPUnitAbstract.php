@@ -1096,10 +1096,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      */
     private static function setCollection(Application $application)
     {
-        if (self::$collectionsInitialized) {
-            return;
-        }
-
         $coll = $collection_no_acces = $collection_no_acces_by_status = $db = null;
 
         foreach ($application['phraseanet.appbox']->get_databoxes() as $databox) {
@@ -1165,10 +1161,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      */
     protected static function generateRecords(Application $app)
     {
-        if (self::$recordsInitialized) {
-            return;
-        }
-
         $logger = new \Monolog\Logger('tests');
         $logger->pushHandler(new \Monolog\Handler\NullHandler());
         self::$recordsInitialized = [];
@@ -1189,7 +1181,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         foreach (range(1, 24) as $i) {
             self::$DI['record_' . $i] = self::$DI->share(function ($DI) use ($logger, $resolvePathfile, $i) {
-                PhraseanetPHPUnitAbstract::$recordsInitialized[] = $i;
+//                PhraseanetPHPUnitAbstract::$recordsInitialized[] = $i;
                 $file = new File($DI['app'], $DI['app']['mediavorus']->guess($resolvePathfile($i)->getPathname()), $DI['collection']);
                 $record = record_adapter::createFromFile($file, $DI['app']);
                 $record->generate_subdefs($record->get_databox(), $DI['app']);
@@ -1200,27 +1192,25 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         foreach (range(1, 2) as $i) {
             self::$DI['record_story_' . $i] = self::$DI->share(function ($DI) use ($i) {
-                PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'story_' . $i;
+//                PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'story_' . $i;
 
                 return record_adapter::createStory($DI['app'], $DI['collection']);
             });
         }
 
         self::$DI['record_no_access'] = self::$DI->share(function ($DI) {
-            PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access';
+//            PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access';
             $file = new File($DI['app'], $DI['app']['mediavorus']->guess(__DIR__ . '/../files/cestlafete.jpg'), $DI['collection_no_access']);
 
             return \record_adapter::createFromFile($file, $DI['app']);
         });
 
         self::$DI['record_no_access_by_status'] = self::$DI->share(function ($DI) {
-            PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access_by_status';
+//            PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access_by_status';
             $file = new File($DI['app'], $DI['app']['mediavorus']->guess(__DIR__ . '/../files/cestlafete.jpg'), $DI['collection_no_access']);
 
             return \record_adapter::createFromFile($file, $DI['app']);
         });
-
-        return;
     }
 
     /**
