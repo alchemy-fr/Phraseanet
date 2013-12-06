@@ -2,6 +2,8 @@
     <h1>{{ 'Reorder collections' | trans }}</h1>
 </div>
 
+<div id="notification"></div>
+
 <table id="table-order">
     <tr>
         <td valign="center" align="center">
@@ -66,6 +68,7 @@
         });
 
         applyButton.bind('click', function() {
+
             var $this = $(this);
             var order = [];
             // clone the array
@@ -87,7 +90,7 @@
                     var html = _.template($("#alert_"+ (datas.success ? "success" : "error") +"_tpl").html(), {
                         content:datas.msg
                     });
-                    $('#table-order').insertBefore(html);
+                    $('#notification').html(html);
                 },
                 complete : function() {
                     $this.attr('disabled', false);
