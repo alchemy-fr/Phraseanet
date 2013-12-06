@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Cache;
 use Alchemy\Phrasea\Cache\ConnectionFactory;
 use Alchemy\Phrasea\Cache\Factory;
 
-class FactoryTest extends \PHPUnit_Framework_TestCase
+class FactoryTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideCacheTypes

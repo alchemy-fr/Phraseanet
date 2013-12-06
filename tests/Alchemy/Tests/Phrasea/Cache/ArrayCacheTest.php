@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Cache;
 
 use Alchemy\Phrasea\Cache\ArrayCache;
 
-class ArrayCacheTest extends \PHPUnit_Framework_TestCase
+class ArrayCacheTest extends \PhraseanetTestCase
 {
     /**
      * @var ArrayCache

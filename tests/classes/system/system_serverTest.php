@@ -1,6 +1,6 @@
 <?php
 
-class system_serverTest extends PhraseanetPHPUnitAbstract
+class system_serverTest extends \PhraseanetTestCase
 {
     /**
      * @var system_server

@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Command;
 
 use Alchemy\Phrasea\Command\MailTest;
 
-class MailTestTest extends \PhraseanetPHPUnitAbstract
+class MailTestTest extends \PhraseanetTestCase
 {
     public function testMailIsSent()
     {

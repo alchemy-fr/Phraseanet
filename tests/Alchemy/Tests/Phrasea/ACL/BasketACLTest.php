@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\ACL;
 
 use Alchemy\Phrasea\ACL\BasketACL;
 
-class BasketACLTest extends \PhraseanetPHPUnitAbstract
+class BasketACLTest extends \PhraseanetTestCase
 {
     public function testOwnerIsOwner()
     {

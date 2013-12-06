@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Media\Subdef\OptionType;
 use Alchemy\Phrasea\Media\Subdef\OptionType\Range;
 use Alchemy\Phrasea\Media\Subdef\OptionType\OptionType;
 
-class RangeTest extends \PHPUnit_Framework_TestCase
+class RangeTest extends \PhraseanetTestCase
 {
     /**
      * @var Range
@@ -16,7 +16,7 @@ class RangeTest extends \PHPUnit_Framework_TestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    public function setUp()
     {
         $this->object = new Range('Rangers', 'name', 3, 8, 6, 2);
     }

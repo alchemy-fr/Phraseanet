@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Metadata\Tag;
 
 use Alchemy\Phrasea\Metadata\Tag\TfArchivedate;
 
-class TfArchivedateTest extends \PHPUnit_Framework_TestCase
+class TfArchivedateTest extends \PhraseanetTestCase
 {
 
     /**

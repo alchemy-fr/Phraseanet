@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\Subscriber\JsonRequestSubscriber;
 use Symfony\Component\HttpKernel\Client;
 
-class JsonRequestSubscriberTest extends \PHPUnit_Framework_TestCase
+class JsonRequestSubscriberTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideRouteParameters

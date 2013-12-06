@@ -1,6 +1,6 @@
 <?php
 
-class API_OAuth2_AccountTest extends PhraseanetPHPUnitAbstract
+class API_OAuth2_AccountTest extends \PhraseanetTestCase
 {
 
     /**

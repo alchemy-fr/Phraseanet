@@ -3,7 +3,7 @@
 use Alchemy\Phrasea\CLI;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class module_console_aboutLicenseTest extends PHPUnit_Framework_TestCase
+class module_console_aboutLicenseTest extends \PhraseanetTestCase
 {
     /**
      * @var module_console_aboutLicense

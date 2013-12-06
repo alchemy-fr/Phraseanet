@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Authentication;
 
 use Alchemy\Phrasea\Authentication\AccountCreator;
 
-class AccountCreatorTest extends \PhraseanetPHPUnitAbstract
+class AccountCreatorTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideEnabledOptions
@@ -28,7 +28,7 @@ class AccountCreatorTest extends \PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
      */
     public function testCreateWithAnExistingMail()
     {
@@ -40,7 +40,7 @@ class AccountCreatorTest extends \PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\RuntimeException
+     * @expectedException \Alchemy\Phrasea\Exception\RuntimeException
      */
     public function testCreateWithDisabledCreator()
     {

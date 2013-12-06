@@ -4,7 +4,7 @@ namespace Alchemy\Phrasea\Model\Converter;
 
 use Alchemy\Phrasea\Model\Converter\BasketConverter;
 
-class BasketConverterTest extends \PhraseanetPHPUnitAbstract
+class BasketConverterTest extends \PhraseanetTestCase
 {
     public function testConvert()
     {
@@ -15,7 +15,7 @@ class BasketConverterTest extends \PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @expectedException Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      * @expectedExceptionMessage Basket prout not found.
      */
     public function testConvertFailure()

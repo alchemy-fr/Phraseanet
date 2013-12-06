@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Http\XSendFile;
 use Alchemy\Phrasea\Http\XSendFile\ApacheMode;
 use Symfony\Component\HttpFoundation\Request;
 
-class ApacheModeTest extends \PhraseanetPHPUnitAbstract
+class ApacheModeTest extends \PhraseanetTestCase
 {
     public function testGetVirtualHost()
     {
@@ -30,7 +30,7 @@ class ApacheModeTest extends \PhraseanetPHPUnitAbstract
 
     /**
      * @dataProvider provideMappings
-     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
      */
     public function testInvalidMapping($mapping)
     {

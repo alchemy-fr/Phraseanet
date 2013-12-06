@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Metadata\Tag;
 
 use Alchemy\Phrasea\Metadata\Tag\TfFilepath;
 
-class TfFilepathTest extends \PHPUnit_Framework_TestCase
+class TfFilepathTest extends \PhraseanetTestCase
 {
 
     /**

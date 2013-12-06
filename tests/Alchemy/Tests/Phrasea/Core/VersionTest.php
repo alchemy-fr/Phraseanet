@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Core;
 
 use Alchemy\Phrasea\Core\Version;
 
-class VersionTest extends \PhraseanetPHPUnitAbstract
+class VersionTest extends \PhraseanetTestCase
 {
 
     public function testGetNumber()

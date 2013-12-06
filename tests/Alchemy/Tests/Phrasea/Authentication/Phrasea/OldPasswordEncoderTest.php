@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Authentication\Phrasea;
 
 use Alchemy\Phrasea\Authentication\Phrasea\OldPasswordEncoder;
 
-class OldPasswordEncoderTest extends \PHPUnit_Framework_TestCase
+class OldPasswordEncoderTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider providePasswords

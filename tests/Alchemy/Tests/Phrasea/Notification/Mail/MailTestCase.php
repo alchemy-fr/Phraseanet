@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Notification\Mail;
 
 use Alchemy\Phrasea\Notification\Mail\MailInterface;
 
-abstract class MailTestCase extends \PhraseanetPHPUnitAbstract
+abstract class MailTestCase extends \PhraseanetTestCase
 {
     public function testGetSubject()
     {

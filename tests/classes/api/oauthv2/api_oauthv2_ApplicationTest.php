@@ -1,6 +1,6 @@
 <?php
 
-class API_OAuth2_ApplicationTest extends PhraseanetPHPUnitAbstract
+class API_OAuth2_ApplicationTest extends \PhraseanetTestCase
 {
     /**
      * @var API_OAuth2_Application
@@ -142,7 +142,7 @@ class API_OAuth2_ApplicationTest extends PhraseanetPHPUnitAbstract
         $this->assertInstanceOf('DateTime', $this->object->get_last_modified());
     }
 
-    protected function assertmd5($md5)
+    private function assertmd5($md5)
     {
         $this->assertTrue((count(preg_match('/[a-z0-9]{32}/', $md5)) === 1));
     }

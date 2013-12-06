@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Plugin\Management;
 use Alchemy\Phrasea\Plugin\Management\AssetsManager;
 use Symfony\Component\Filesystem\Exception\IOException;
 
-class AssetsManagerTest extends \PhraseanetPHPUnitAbstract
+class AssetsManagerTest extends \PhraseanetTestCase
 {
     public function testUpdate()
     {
@@ -29,7 +29,7 @@ class AssetsManagerTest extends \PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\RuntimeException
+     * @expectedException \Alchemy\Phrasea\Exception\RuntimeException
      */
     public function testUpdateWithErrors()
     {
@@ -67,7 +67,7 @@ class AssetsManagerTest extends \PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\RuntimeException
+     * @expectedException \Alchemy\Phrasea\Exception\RuntimeException
      */
     public function testRemoveWithError()
     {

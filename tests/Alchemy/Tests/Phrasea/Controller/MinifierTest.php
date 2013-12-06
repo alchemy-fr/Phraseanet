@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller;
 
-class MinifierTest extends \PhraseanetPHPUnitAbstract
+class MinifierTest extends \PhraseanetTestCase
 {
     public function setUp()
     {

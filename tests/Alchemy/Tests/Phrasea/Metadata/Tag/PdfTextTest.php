@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Metadata\Tag;
 
 use Alchemy\Phrasea\Metadata\Tag\PdfText;
 
-class PdfTextTest extends \PHPUnit_Framework_TestCase
+class PdfTextTest extends \PhraseanetTestCase
 {
 
     /**

@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Http\XSendFile;
 
 use Alchemy\Phrasea\Http\XSendFile\XSendFileFactory;
 
-class XSendFileFactoryTest extends \PhraseanetPHPUnitAbstract
+class XSendFileFactoryTest extends \PhraseanetTestCase
 {
     public function testFactoryCreation()
     {
@@ -30,7 +30,7 @@ class XSendFileFactoryTest extends \PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
      */
     public function testFactoryWithWrongTypeThrowsAnExceptionIfRequired()
     {

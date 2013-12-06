@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea;
 
 use Alchemy\Phrasea\Authentication\Phrasea\FailureHandledNativeAuthentication;
 
-class FailureHandledNativeAuthenticationTest extends \PHPUnit_Framework_TestCase
+class FailureHandledNativeAuthenticationTest extends \PhraseanetTestCase
 {
     public function testGetUsrIdWhenSuccessful()
     {

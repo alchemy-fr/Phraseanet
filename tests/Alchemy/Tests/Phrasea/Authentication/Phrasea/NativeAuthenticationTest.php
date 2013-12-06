@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Authentication\Phrasea;
 use Alchemy\Phrasea\Authentication\Phrasea\NativeAuthentication;
 use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
 
-class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
+class NativeAuthenticationTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideReservedUsernames

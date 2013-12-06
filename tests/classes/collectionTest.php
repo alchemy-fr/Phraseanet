@@ -3,16 +3,16 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 
-class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
+class collectionTest extends \PhraseanetAuthenticatedTestCase
 {
     /**
      * @var collection
      */
-    protected static $object;
+    private static $object;
     /**
      * @var collection
      */
-    protected static $objectDisable;
+    private static $objectDisable;
 
     public static function setUpBeforeClass()
     {

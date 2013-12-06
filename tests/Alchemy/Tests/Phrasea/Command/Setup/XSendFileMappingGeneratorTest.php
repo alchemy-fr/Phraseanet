@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Setup\XSendFileMappingGenerator;
 
-class XSendFileMappingGeneratorTest extends \PhraseanetPHPUnitAbstract
+class XSendFileMappingGeneratorTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideVariousOptions

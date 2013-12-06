@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Setup\Version;
 
 use Alchemy\Phrasea\Setup\Version\MailChecker;
 
-class MailCheckerTest extends \PhraseanetPHPUnitAbstract
+class MailCheckerTest extends \PhraseanetTestCase
 {
     public function testMailChecker()
     {

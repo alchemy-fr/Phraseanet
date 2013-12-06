@@ -181,7 +181,7 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    protected function get_a_caption(array $headers = [])
+    private function get_a_caption(array $headers = [])
     {
         $token = self::$DI['record_1']->get_thumbnail()->get_permalink()->get_token();
         $url = '/permalink/v1/' . self::$DI['record_1']->get_sbas_id() . "/" . self::$DI['record_1']->get_record_id() . '/caption/?token='.$token;
@@ -198,7 +198,7 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    protected function get_a_permalinkBCcompatibility(array $headers = [])
+    private function get_a_permalinkBCcompatibility(array $headers = [])
     {
         $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
         $url = '/permalink/v1/whateverIwannt/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/' . $token . '/preview/';
@@ -224,7 +224,7 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
     }
 
-    protected function get_a_permaviewBCcompatibility(array $headers = [])
+    private function get_a_permaviewBCcompatibility(array $headers = [])
     {
         $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
         $url = '/permalink/v1/whateverIwannt/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/' . $token . '/preview/';
@@ -240,7 +240,7 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    protected function get_a_permalink(array $headers = [])
+    private function get_a_permalink(array $headers = [])
     {
         $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
         $url = '/permalink/v1/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/whateverIwannt.jpg?token=' . $token . '';
@@ -257,7 +257,7 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    protected function get_a_permaview(array $headers = [])
+    private function get_a_permaview(array $headers = [])
     {
         $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
         $url = '/permalink/v1/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/?token=' . $token . '';

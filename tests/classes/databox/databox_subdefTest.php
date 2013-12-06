@@ -1,6 +1,6 @@
 <?php
 
-class databox_subdefTest extends PHPUnit_Framework_TestCase
+class databox_subdefTest extends \PhraseanetTestCase
 {
 
     /**

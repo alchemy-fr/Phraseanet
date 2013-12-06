@@ -7,14 +7,14 @@ use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\Session;
 
-class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
+class AuthenticatorTest extends \PhraseanetTestCase
 {
     /**
      * @covers Alchemy\Phrasea\Authentication\Authenticator::getUser
      */
     public function testGetUser()
     {
-        $app = new Application();
+        $app = $this->loadApp();
 
         $app['browser'] = $browser = $this->getBrowserMock();
         $app['session'] = $session = $this->getSessionMock();
@@ -28,7 +28,7 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetUserWhenAuthenticated()
     {
-        $app = new Application();
+        $app = $this->loadApp();
 
         $user = self::$DI['user'];
 
@@ -53,7 +53,7 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
      */
     public function testSetUser()
     {
-        $app = new Application();
+        $app = $this->loadApp();
 
         $app['browser'] = $browser = $this->getBrowserMock();
         $app['session'] = $session = $this->getSessionMock();
@@ -75,7 +75,7 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
      */
     public function testOpenAccount()
     {
-        $app = new Application();
+        $app = $this->loadApp();
         $capturedSession = null;
 
         $app['browser'] = $browser = $this->getBrowserMock();
@@ -126,7 +126,7 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
      */
     public function testRefreshAccount()
     {
-        $app = new Application();
+        $app = $this->loadApp();
 
         $user = self::$DI['user'];
 
@@ -168,7 +168,7 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
      */
     public function testRefreshAccountWithWrongSessionShouldThrowException()
     {
-        $app = new Application();
+        $app = $this->loadApp();
 
         $user = self::$DI['user'];
 
@@ -239,7 +239,7 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
      */
     public function testIsAuthenticated()
     {
-        $app = new Application();
+        $app = $this->loadApp();
 
         $user = self::$DI['user'];
 
@@ -264,7 +264,7 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
      */
     public function testIsNotAuthenticated()
     {
-        $app = new Application();
+        $app = $this->loadApp();
 
         $app['browser'] = $browser = $this->getBrowserMock();
         $app['session'] = $session = $this->getSessionMock();

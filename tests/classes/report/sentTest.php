@@ -1,6 +1,6 @@
 <?php
 
-class sentReportTest extends PhraseanetPHPUnitAuthenticatedAbstract
+class sentReportTest extends \PhraseanetAuthenticatedTestCase
 {
     protected $ret;
     protected $dmin;

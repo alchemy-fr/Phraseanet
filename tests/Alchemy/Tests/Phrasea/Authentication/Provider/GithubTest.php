@@ -197,7 +197,7 @@ class GithubTest extends ProviderTestCase
         ];
     }
 
-    protected function authenticate(ProviderInterface $provider)
+    protected function authenticateProvider(ProviderInterface $provider)
     {
         $provider->getSession()->set('github.provider.id', 'github-id');
     }

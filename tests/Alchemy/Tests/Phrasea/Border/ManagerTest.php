@@ -21,8 +21,8 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     protected $object;
     protected $session;
-    protected static $file1;
-    protected static $file2;
+    private static $file1;
+    private static $file2;
 
     public static function setUpBeforeClass()
     {

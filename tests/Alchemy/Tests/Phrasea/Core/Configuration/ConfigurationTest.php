@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Core\Configuration\Configuration;
 use Alchemy\Phrasea\Core\Configuration\Compiler;
 use Symfony\Component\Yaml\Yaml;
 
-class ConfigurationTest extends \PHPUnit_Framework_TestCase
+class ConfigurationTest extends \PhraseanetTestCase
 {
     private $compiled;
 
@@ -32,7 +32,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\RuntimeException
+     * @expectedException \Alchemy\Phrasea\Exception\RuntimeException
      */
     public function testGetConfigInvalidConfig()
     {
@@ -70,7 +70,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\RuntimeException
+     * @expectedException \Alchemy\Phrasea\Exception\RuntimeException
      */
     public function testInitializeWrongPath()
     {
@@ -186,7 +186,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
      */
     public function testSetdefaultInvalidKey()
     {

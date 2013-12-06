@@ -6,7 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 
-class SearchEngineResultTest extends \PhraseanetPHPUnitAbstract
+class SearchEngineResultTest extends \PhraseanetTestCase
 {
     /**
      * @covers Alchemy\Phrasea\SearchEngine\SearchEngineResult

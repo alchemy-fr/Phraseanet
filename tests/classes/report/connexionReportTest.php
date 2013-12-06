@@ -1,6 +1,6 @@
 <?php
 
-class connexionReportTest extends PhraseanetPHPUnitAuthenticatedAbstract
+class connexionReportTest extends \PhraseanetAuthenticatedTestCase
 {
     protected $ret;
     protected $dmin;

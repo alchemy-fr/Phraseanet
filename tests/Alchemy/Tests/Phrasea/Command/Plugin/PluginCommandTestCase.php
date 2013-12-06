@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Command\Plugin;
 
-class PluginCommandTestCase extends \PhraseanetPHPUnitAbstract
+class PluginCommandTestCase extends \PhraseanetTestCase
 {
     protected function createTemporaryFilesystemMock()
     {

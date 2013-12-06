@@ -2,26 +2,26 @@
 
 use Alchemy\Phrasea\Border\File;
 
-class media_subdefTest extends \PhraseanetPHPUnitAbstract
+class media_subdefTest extends \PhraseanetTestCase
 {
     /**
      * @var \media_subdef
      */
-    protected static $objectPresent;
+    private static $objectPresent;
     /**
      * @var \media_subdef
      */
-    protected static $storyPresent;
+    private static $storyPresent;
 
     /**
      * @var \media_subdef
      */
-    protected static $objectNotPresent;
+    private static $objectNotPresent;
 
     /**
      * @var \record_adapter
      */
-    protected static $recordonbleu;
+    private static $recordonbleu;
 
     /**
      * @covers media_subdef::__construct

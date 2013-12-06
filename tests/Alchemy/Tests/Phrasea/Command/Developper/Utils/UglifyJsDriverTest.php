@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Command\Developper\Utils;
 use Alchemy\Phrasea\Command\Developer\Utils\UglifyJsDriver;
 use Symfony\Component\Process\PhpExecutableFinder;
 
-class UglifyJsDriverTest extends \PHPUnit_Framework_TestCase
+class UglifyJsDriverTest extends \PhraseanetTestCase
 {
     public function testCreate()
     {

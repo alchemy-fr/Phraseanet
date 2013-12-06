@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../Bridge_datas.inc';
 
-class Bridge_Api_ElementCollectionTest extends PHPUnit_Framework_TestCase
+class Bridge_Api_ElementCollectionTest extends \PhraseanetTestCase
 {
 
     public function testAdd_element()

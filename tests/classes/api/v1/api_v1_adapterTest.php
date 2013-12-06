@@ -3,7 +3,7 @@
 use Alchemy\Phrasea\Border\File as BorderFile;
 use Symfony\Component\HttpFoundation\Request;
 
-class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
+class API_V1_adapterTest extends \PhraseanetAuthenticatedTestCase
 {
     /**
      * @var API_V1_adapter
@@ -681,7 +681,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         }
     }
 
-    protected function checkResponseField(API_V1_result $result, $field, $type)
+    private function checkResponseField(API_V1_result $result, $field, $type)
     {
         $response = json_decode($result->format(), true);
         $this->assertArrayHasKey($field, $response['response']);

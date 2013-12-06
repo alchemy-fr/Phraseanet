@@ -1,6 +1,6 @@
 <?php
 
-class uuidTest extends PhraseanetPHPUnitAbstract
+class uuidTest extends \PhraseanetTestCase
 {
     /**
      * @var uuid

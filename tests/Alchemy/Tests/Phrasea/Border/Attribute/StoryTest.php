@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Border\Attribute;
 use Alchemy\Phrasea\Border\Attribute\Story;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 
-class StoryTest extends \PhraseanetPHPUnitAbstract
+class StoryTest extends \PhraseanetTestCase
 {
     /**
      * @var Story

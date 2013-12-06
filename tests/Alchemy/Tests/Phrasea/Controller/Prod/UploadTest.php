@@ -16,7 +16,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     protected $client;
     protected $tmpFile;
-    protected static $need_records = false;
+    private static $need_records = false;
 
     public function setUp()
     {

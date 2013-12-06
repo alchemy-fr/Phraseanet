@@ -1,6 +1,6 @@
 <?php
 
-class databox_descriptionStructureTest extends PhraseanetPHPUnitAbstract
+class databox_descriptionStructureTest extends \PhraseanetTestCase
 {
     public function testToArray()
     {

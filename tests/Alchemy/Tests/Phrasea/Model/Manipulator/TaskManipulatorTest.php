@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
 use Alchemy\Phrasea\TaskManager\Notifier;
 use Alchemy\Phrasea\Model\Entities\Task;
 
-class TaskManipulatorTest extends \PhraseanetPHPUnitAbstract
+class TaskManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreate()
     {

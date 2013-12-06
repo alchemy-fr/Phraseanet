@@ -1,6 +1,6 @@
 <?php
 
-class filterTest extends PhraseanetPHPUnitAuthenticatedAbstract
+class filterTest extends \PhraseanetAuthenticatedTestCase
 {
     protected $ret;
     protected $dmin;

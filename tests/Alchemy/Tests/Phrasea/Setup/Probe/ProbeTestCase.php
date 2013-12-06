@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Setup\Probe;
 
-abstract class ProbeTestCase extends \PhraseanetPHPUnitAbstract
+abstract class ProbeTestCase extends \PhraseanetTestCase
 {
     abstract protected function getClassName();
 

@@ -1,6 +1,6 @@
 <?php
 
-class API_OAuth2_RefreshTokenTest extends PhraseanetPHPUnitAbstract
+class API_OAuth2_RefreshTokenTest extends \PhraseanetTestCase
 {
     /**
      * @var API_OAuth2_RefreshToken

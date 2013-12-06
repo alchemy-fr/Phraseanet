@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Core\Configuration;
 use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 
-class PropertyAccessTest extends \PHPUnit_Framework_TestCase
+class PropertyAccessTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideGetData

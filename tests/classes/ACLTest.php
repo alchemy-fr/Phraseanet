@@ -2,12 +2,12 @@
 
 use Alchemy\Phrasea\Application;
 
-class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
+class ACLTest extends \PhraseanetAuthenticatedTestCase
 {
     /**
      * @var ACL
      */
-    protected static $object;
+    private static $object;
 
     public static function tearDownAfterClass()
     {

@@ -2,7 +2,7 @@
 
 use Symfony\Component\Yaml\Yaml;
 
-class caption_recordTest extends PhraseanetPHPUnitAbstract
+class caption_recordTest extends \PhraseanetTestCase
 {
     /**
      * @var caption_record

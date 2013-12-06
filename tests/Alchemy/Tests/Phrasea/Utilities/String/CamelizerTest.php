@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Utilities\String;
 
 use Alchemy\Phrasea\Utilities\String\Camelizer;
 
-class CamelizerTest extends \PHPUnit_Framework_TestCase
+class CamelizerTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideStrings

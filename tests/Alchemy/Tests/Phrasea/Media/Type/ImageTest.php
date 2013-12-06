@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Media\Type;
 use Alchemy\Phrasea\Media\Type\Image;
 use Alchemy\Phrasea\Media\Type\Type;
 
-class ImageTest extends \PHPUnit_Framework_TestCase
+class ImageTest extends \PhraseanetTestCase
 {
 
     /**

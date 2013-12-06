@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Authentication;
 
 use Alchemy\Phrasea\Authentication\Context;
 
-class ContextTest extends \PHPUnit_Framework_TestCase
+class ContextTest extends \PhraseanetTestCase
 {
     public function testWithValidCOntext()
     {
@@ -17,7 +17,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
      */
     public function testWithInvalidCOntext()
     {

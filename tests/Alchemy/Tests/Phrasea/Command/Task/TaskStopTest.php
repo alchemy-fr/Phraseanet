@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Command\Task;
 use Alchemy\Phrasea\Command\Task\TaskStop;
 use Alchemy\Phrasea\Model\Entities\Task;
 
-class TaskStopTest extends \PhraseanetPHPUnitAbstract
+class TaskStopTest extends \PhraseanetTestCase
 {
     public function testRunWithoutProblems()
     {

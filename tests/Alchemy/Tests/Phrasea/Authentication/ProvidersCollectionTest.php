@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Authentication;
 use Alchemy\Phrasea\Authentication\ProvidersCollection;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
-class ProvidersCollectionTest extends \PHPUnit_Framework_TestCase
+class ProvidersCollectionTest extends \PhraseanetTestCase
 {
     /**
      * @covers Alchemy\Phrasea\Authentication\ProvidersCollection::getIterator

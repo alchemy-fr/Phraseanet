@@ -16,7 +16,7 @@ use PHPExiftool\Driver\Value\Multi;
 use PHPExiftool\Driver\Metadata\Metadata as PHPExiftoolMetadata;
 use Alchemy\Phrasea\Border\Attribute\Metadata;
 
-class FileTest extends \PhraseanetPHPUnitAbstract
+class FileTest extends \PhraseanetTestCase
 {
     /**
      * @var File
@@ -222,7 +222,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
         File::buildFromPathfile('unexistent.file', self::$DI['collection'], self::$DI['app']);
     }
 
-    protected function getMediaMock($type)
+    private function getMediaMock($type)
     {
         $mock = $this->getMockBuilder('\\MediaVorus\\Media\\Image')
             ->disableOriginalConstructor()

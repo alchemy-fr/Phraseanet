@@ -31,7 +31,7 @@ class TwitterTest extends ProviderTestCase
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException
+     * @expectedException \Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException
      */
     public function testAuthenticateWithFailure()
     {
@@ -202,7 +202,7 @@ class TwitterTest extends ProviderTestCase
         return $provider;
     }
 
-    protected function authenticate(ProviderInterface $provider)
+    protected function authenticateProvider(ProviderInterface $provider)
     {
         $provider->getSession()->set('twitter.provider.id', '12345');
     }

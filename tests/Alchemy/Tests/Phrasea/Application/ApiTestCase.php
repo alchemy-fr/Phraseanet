@@ -11,7 +11,7 @@ use Alchemy\Phrasea\Model\Entities\Task;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
-abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
+abstract class ApiTestCase extends \PhraseanetWebTestCaseAbstract
 {
     /**
      *
@@ -22,35 +22,35 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     /**
      * @var \API_OAuth2_Token
      */
-    protected static $token;
-    protected static $APIrecord;
+    private static $token;
+    private static $APIrecord;
     protected $record;
 
     /**
      * @var \API_OAuth2_Account
      */
-    protected static $account;
+    private static $account;
 
     /**
      * @var \API_OAuth2_Application
      */
-    protected static $oauthApplication;
+    private static $oauthApplication;
 
     /**
      * @var \API_OAuth2_Token
      */
-    protected static $adminToken;
+    private static $adminToken;
 
     /**
      * @var \API_OAuth2_Account
      */
-    protected static $adminAccount;
+    private static $adminAccount;
 
     /**
      * @var \API_OAuth2_Application
      */
-    protected static $adminApplication;
-    protected static $databoxe_ids = [];
+    private static $adminApplication;
+    private static $databoxe_ids = [];
 
     abstract public function getParameters(array $parameters = []);
 
@@ -87,13 +87,13 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             self::$apiInitialized = true;
         }
 
-        if (!static::$APIrecord) {
+        if (!self::$APIrecord) {
             $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../files/test024.jpg'), self::$DI['collection']);
-            static::$APIrecord = \record_adapter::createFromFile($file, self::$DI['app']);
-            static::$APIrecord->generate_subdefs(static::$APIrecord->get_databox(), self::$DI['app']);
+            self::$APIrecord = \record_adapter::createFromFile($file, self::$DI['app']);
+            self::$APIrecord->generate_subdefs(self::$APIrecord->get_databox(), self::$DI['app']);
         }
 
-        $this->record = static::$APIrecord;
+        $this->record = self::$APIrecord;
     }
 
     public static function tearDownAfterClass()
@@ -107,8 +107,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             self::$adminApplication->delete();
         }
 
-        static::$APIrecord->delete();
-        static::$APIrecord = null;
+        self::$APIrecord->delete();
+        self::$APIrecord = null;
 
         self::$apiInitialized = false;
 
@@ -191,7 +191,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $this->assertArrayHasKey('de', $databox['labels']);
             $this->assertArrayHasKey('nl', $databox['labels']);
             $this->assertArrayHasKey('version', $databox);
-            static::$databoxe_ids[] = $databox['databox_id'];
+            self::$databoxe_ids[] = $databox['databox_id'];
         }
     }
 
@@ -625,7 +625,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testDataboxCollectionRoute()
     {
         $this->setToken(self::$token);
-        foreach (static::$databoxe_ids as $databox_id) {
+        foreach (self::$databoxe_ids as $databox_id) {
             $route = '/api/v1/databoxes/' . $databox_id . '/collections/';
             $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
@@ -669,7 +669,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testDataboxStatusRoute()
     {
         $this->setToken(self::$token);
-        foreach (static::$databoxe_ids as $databox_id) {
+        foreach (self::$databoxe_ids as $databox_id) {
             $databox = self::$DI['app']['phraseanet.appbox']->get_databox($databox_id);
             $ref_status = $databox->get_statusbits();
             $route = '/api/v1/databoxes/' . $databox_id . '/status/';
@@ -723,7 +723,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testDataboxMetadatasRoute()
     {
         $this->setToken(self::$token);
-        foreach (static::$databoxe_ids as $databox_id) {
+        foreach (self::$databoxe_ids as $databox_id) {
             $databox = self::$DI['app']['phraseanet.appbox']->get_databox($databox_id);
             $ref_structure = $databox->get_meta_structure();
 
@@ -811,7 +811,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testDataboxTermsOfUseRoute()
     {
         $this->setToken(self::$token);
-        foreach (static::$databoxe_ids as $databox_id) {
+        foreach (self::$databoxe_ids as $databox_id) {
             $route = '/api/v1/databoxes/' . $databox_id . '/termsOfUse/';
             $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 

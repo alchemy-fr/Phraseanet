@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Model\Entities\Task;
 
-class TaskRepositoryTest extends \PhraseanetPHPUnitAbstract
+class TaskRepositoryTest extends \PhraseanetTestCase
 {
     public function testFindActiveTask()
     {

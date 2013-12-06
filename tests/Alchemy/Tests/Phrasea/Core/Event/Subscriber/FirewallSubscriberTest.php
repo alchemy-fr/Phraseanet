@@ -7,7 +7,7 @@ use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Client;
 
-class FirewallSubscriberTest extends \PHPUnit_Framework_TestCase
+class FirewallSubscriberTest extends \PhraseanetTestCase
 {
     public function testRedirection()
     {

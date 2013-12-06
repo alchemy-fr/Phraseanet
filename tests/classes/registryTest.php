@@ -1,6 +1,6 @@
 <?php
 
-class registryTest extends PhraseanetPHPUnitAbstract
+class registryTest extends \PhraseanetTestCase
 {
     /**
      * @var registry

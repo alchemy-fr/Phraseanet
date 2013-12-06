@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Command;
 
 use Alchemy\Phrasea\Command\Setup\Install;
 
-class InstallTest extends \PhraseanetPHPUnitAbstract
+class InstallTest extends \PhraseanetTestCase
 {
     public function testRunWithoutProblems()
     {

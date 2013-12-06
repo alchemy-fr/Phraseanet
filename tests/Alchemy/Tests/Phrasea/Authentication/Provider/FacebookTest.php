@@ -62,7 +62,7 @@ class FacebookTest extends ProviderTestCase
         return new Facebook($this->getFacebookMock(), $this->getUrlGeneratorMock());
     }
 
-    protected function authenticate(ProviderInterface $provider)
+    protected function authenticateProvider(ProviderInterface $provider)
     {
         $provider->getFacebook()->expects($this->any())
             ->method('getUser')
@@ -72,7 +72,7 @@ class FacebookTest extends ProviderTestCase
     protected function getProviderForSuccessIdentity()
     {
         $provider = $this->getProvider();
-        $this->authenticate($provider);
+        $this->authenticateProvider($provider);
 
         $facebook = $this->getMockBuilder('Facebook')
             ->disableOriginalConstructor()

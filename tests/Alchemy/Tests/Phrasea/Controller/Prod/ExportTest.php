@@ -8,7 +8,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
-    protected static $GV_activeFTP;
+    private static $GV_activeFTP;
 
     public function tearDown()
     {

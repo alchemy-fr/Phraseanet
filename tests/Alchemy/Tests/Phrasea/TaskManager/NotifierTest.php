@@ -5,7 +5,7 @@ namespace Alchemy\Phrasea\TaskManager;
 use Alchemy\Phrasea\TaskManager\Notifier;
 use Alchemy\TaskManager\TaskManager;
 
-class NotifierTest extends \PHPUnit_Framework_TestCase
+class NotifierTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideMessagesData

@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\TaskManager\Log;
 use Alchemy\Phrasea\TaskManager\Log\LogFileInterface;
 use Symfony\Component\Finder\Finder;
 
-abstract class LogFileTestCase extends \PhraseanetPHPUnitAbstract
+abstract class LogFileTestCase extends \PhraseanetTestCase
 {
     protected $root;
 

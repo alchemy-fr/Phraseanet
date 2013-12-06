@@ -1,12 +1,13 @@
 <?php
 
-class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
+class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 {
     /**
      * @var record_adapter
      */
-    protected static $grouping;
-    protected static $initialized;
+    private static $grouping;
+    private static $initialized;
+    private static $thumbtitled = false;
 
     public function setUp()
     {
@@ -19,13 +20,13 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         /**
          * Reset thumbtitle in order to have consistent tests (testGet_title)
          */
-        if (!self::$updated) {
+        if (!self::$thumbtitled) {
             foreach (self::$DI['record_1']->get_databox()->get_meta_structure() as $databox_field) {
 
                 /* @var $databox_field \databox_field */
                 $databox_field->set_thumbtitle(false)->save();
             }
-            self::$updated = true;
+            self::$thumbtitled = true;
         }
     }
 
@@ -85,11 +86,6 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             self::$DI['record_1']->get_creation_date() <= $date_obj,
             sprintf('Asserting that %s is before %s', self::$DI['record_1']->get_creation_date()->format(DATE_ATOM), $date_obj->format(DATE_ATOM))
         );
-    }
-
-    protected function assertDateAtom($date)
-    {
-        return $this->assertRegExp('/\d{4}[-]\d{2}[-]\d{2}[T]\d{2}[:]\d{2}[:]\d{2}[+]\d{2}[:]\d{2}/', $date);
     }
 
     public function testGet_uuid()

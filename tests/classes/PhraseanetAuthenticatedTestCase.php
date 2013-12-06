@@ -1,6 +1,6 @@
 <?php
 
-abstract class PhraseanetPHPUnitAuthenticatedAbstract extends PhraseanetPHPUnitAbstract
+abstract class PhraseanetAuthenticatedTestCase extends \PhraseanetTestCase
 {
 
     public function setUp()

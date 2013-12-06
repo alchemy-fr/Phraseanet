@@ -1,6 +1,6 @@
 <?php
 
-class databox_statusTest extends PhraseanetPHPUnitAbstract
+class databox_statusTest extends \PhraseanetTestCase
 {
     /**
      * @var databox_status

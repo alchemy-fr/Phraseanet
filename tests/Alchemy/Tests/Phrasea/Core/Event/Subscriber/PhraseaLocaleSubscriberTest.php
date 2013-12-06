@@ -10,7 +10,7 @@ use Symfony\Component\BrowserKit\CookieJar;
 use Symfony\Component\BrowserKit\Cookie as BrowserCookie;
 use Symfony\Component\HttpFoundation\Request;
 
-class PhraseaLocaleSubscriberTest extends \PhraseanetPHPUnitAbstract
+class PhraseaLocaleSubscriberTest extends \PhraseanetTestCase
 {
     public function testBasic()
     {

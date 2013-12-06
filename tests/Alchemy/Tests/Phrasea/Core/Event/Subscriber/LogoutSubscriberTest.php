@@ -7,7 +7,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\LogoutEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 
-class LogoutSubscriberTest extends \PHPUnit_Framework_TestCase
+class LogoutSubscriberTest extends \PhraseanetTestCase
 {
     public function testThatSearchEngineCacheIsCleaned()
     {

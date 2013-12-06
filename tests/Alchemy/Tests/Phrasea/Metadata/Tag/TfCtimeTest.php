@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Metadata\Tag;
 
 use Alchemy\Phrasea\Metadata\Tag\TfCtime;
 
-class TfCtimeTest extends \PHPUnit_Framework_TestCase
+class TfCtimeTest extends \PhraseanetTestCase
 {
 
     /**

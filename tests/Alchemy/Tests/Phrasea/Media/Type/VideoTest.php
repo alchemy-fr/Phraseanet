@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Media\Type;
 use Alchemy\Phrasea\Media\Type\Video;
 use Alchemy\Phrasea\Media\Type\Type;
 
-class VideoTest extends \PHPUnit_Framework_TestCase
+class VideoTest extends \PhraseanetTestCase
 {
 
     /**

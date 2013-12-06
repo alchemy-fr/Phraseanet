@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Http\XSendFile;
 use Alchemy\Phrasea\Http\XSendFile\NullMode;
 use Symfony\Component\HttpFoundation\Request;
 
-class NullModeTest extends \PhraseanetPHPUnitAbstract
+class NullModeTest extends \PhraseanetTestCase
 {
     public function testGetVirtualHost()
     {

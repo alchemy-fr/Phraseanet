@@ -1,6 +1,6 @@
 <?php
 
-class userTest extends PhraseanetPHPUnitAbstract
+class userTest extends \PhraseanetTestCase
 {
     public function testMail()
     {

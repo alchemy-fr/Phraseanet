@@ -271,7 +271,7 @@ class LinkedinTest extends ProviderTestCase
         return $this->getProvider();
     }
 
-    protected function authenticate(ProviderInterface $provider)
+    protected function authenticateProvider(ProviderInterface $provider)
     {
         $provider->getSession()->set('linkedin.provider.id', 'linkedin-id');
     }

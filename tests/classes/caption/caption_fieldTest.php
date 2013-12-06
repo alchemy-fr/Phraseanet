@@ -1,6 +1,6 @@
 <?php
 
-class caption_fieldTest extends \PHPUnit_Framework_TestCase
+class caption_fieldTest extends \PhraseanetTestCase
 {
     /**
      * @covers caption_field::get_multi_values

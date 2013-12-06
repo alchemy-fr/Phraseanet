@@ -1,6 +1,6 @@
 <?php
 
-class databox_Field_DCES_DCESTestCase extends PhraseanetPHPUnitAbstract
+class databox_Field_DCES_DCESTestCase extends \PhraseanetTestCase
 {
     public function testGet_label()
     {

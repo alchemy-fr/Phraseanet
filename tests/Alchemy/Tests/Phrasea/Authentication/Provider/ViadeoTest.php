@@ -262,7 +262,7 @@ class ViadeoTest extends ProviderTestCase
         ];
     }
 
-    protected function authenticate(ProviderInterface $provider)
+    protected function authenticateProvider(ProviderInterface $provider)
     {
         $provider->getSession()->set('viadeo.provider.id', 'viadeo-id');
     }

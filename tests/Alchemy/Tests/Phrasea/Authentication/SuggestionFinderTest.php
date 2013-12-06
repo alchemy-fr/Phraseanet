@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Authentication;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Authentication\SuggestionFinder;
 
-class SuggestionFinderTest extends \PhraseanetPHPUnitAbstract
+class SuggestionFinderTest extends \PhraseanetTestCase
 {
     public function testSuggestionIsFound()
     {

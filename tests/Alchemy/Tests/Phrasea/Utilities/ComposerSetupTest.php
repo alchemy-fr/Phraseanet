@@ -7,7 +7,7 @@ use Guzzle\Http\Client as Guzzle;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\ProcessBuilder;
 
-class ComposerSetupTest extends \PHPUnit_Framework_TestCase
+class ComposerSetupTest extends \PhraseanetTestCase
 {
     public function testSetup()
     {

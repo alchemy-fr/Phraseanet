@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Generator\UrlGenerator;
 /**
  * @covers Alchemy\Phrasea\Notification\Mail\AbstractMail
  */
-class AbstractMailTest extends \PHPUnit_Framework_TestCase
+class AbstractMailTest extends \PhraseanetTestCase
 {
     /**
      * @covers Alchemy\Phrasea\Notification\Mail\AbstractMail::renderHTML

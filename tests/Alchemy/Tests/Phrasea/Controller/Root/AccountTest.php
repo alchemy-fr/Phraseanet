@@ -7,7 +7,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
-    protected static $authorizedApp;
+    private static $authorizedApp;
 
     public static function setUpBeforeClass()
     {

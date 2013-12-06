@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../../Bridge_datas.inc';
 
-class Bridge_Api_Auth_AbstractTest extends PHPUnit_Framework_TestCase
+class Bridge_Api_Auth_AbstractTest extends \PhraseanetTestCase
 {
 
     public function testSet_settings()

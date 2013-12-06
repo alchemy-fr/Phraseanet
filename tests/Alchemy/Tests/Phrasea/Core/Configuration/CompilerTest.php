@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Core\Configuration;
 
 use Alchemy\Phrasea\Core\Configuration\Compiler;
 
-class CompilerTest extends \PHPUnit_Framework_TestCase
+class CompilerTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideDataToCompile

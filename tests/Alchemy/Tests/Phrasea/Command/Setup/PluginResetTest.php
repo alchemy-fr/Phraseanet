@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Setup\PluginsReset;
 
-class PluginResetTest extends \PhraseanetPHPUnitAbstract
+class PluginResetTest extends \PhraseanetTestCase
 {
     public function testRun()
     {

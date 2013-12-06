@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Command\Developper\Utils;
 use Alchemy\Phrasea\Command\Developer\Utils\GruntDriver;
 use Symfony\Component\Process\PhpExecutableFinder;
 
-class GruntDriverTest extends \PHPUnit_Framework_TestCase
+class GruntDriverTest extends \PhraseanetTestCase
 {
     public function testCreate()
     {

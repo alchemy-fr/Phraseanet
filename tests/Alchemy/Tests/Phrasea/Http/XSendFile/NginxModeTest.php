@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Http\XSendFile;
 use Alchemy\Phrasea\Http\XSendFile\NginxMode;
 use Symfony\Component\HttpFoundation\Request;
 
-class XSendFileModeNginxTest extends \PhraseanetPHPUnitAbstract
+class XSendFileModeNginxTest extends \PhraseanetTestCase
 {
     public function testGetVirtualHost()
     {
@@ -63,7 +63,7 @@ class XSendFileModeNginxTest extends \PhraseanetPHPUnitAbstract
 
     /**
      * @dataProvider provideMappings
-     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
      */
     public function testInvalidMapping($mapping)
     {

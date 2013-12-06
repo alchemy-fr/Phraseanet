@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Command\Developper;
 
 use Alchemy\Phrasea\Command\Developer\ComposerInstall;
 
-class ComposerInstallTest extends \PhraseanetPHPUnitAbstract
+class ComposerInstallTest extends \PhraseanetTestCase
 {
     public function testRunWithoutProblems()
     {

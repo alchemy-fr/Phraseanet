@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Setup;
 
 use Alchemy\Phrasea\Application;
 
-abstract class AbstractSetupTester extends \PHPUnit_Framework_TestCase
+abstract class AbstractSetupTester extends \PhraseanetTestCase
 {
     private $tearDownHandlers = [];
 

@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Vocabulary\ControllerProvider;
 
 use Alchemy\Phrasea\Vocabulary\ControlProvider\UserProvider;
 
-class UserProviderTest extends \PhraseanetPHPUnitAbstract
+class UserProviderTest extends \PhraseanetTestCase
 {
     /**
      * @var UserProvider

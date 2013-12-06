@@ -5,10 +5,10 @@ namespace Alchemy\Tests\Phrasea\TaskManager\Editor;
 use Alchemy\Phrasea\TaskManager\Editor\EditorInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-abstract class EditorTestCase extends \PhraseanetPHPUnitAbstract
+abstract class EditorTestCase extends \PhraseanetTestCase
 {
     /**
-     * @expectedException Symfony\Component\HttpKernel\Exception\BadRequestHttpException
+     * @expectedException \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
      * @expectedExceptionMessage Invalid XML data.
      */
     public function testThatUpdateXmlWithRequestThrowsABadRequestOnWrongXML()
@@ -29,7 +29,7 @@ abstract class EditorTestCase extends \PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @expectedException Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      * @expectedExceptionMessage Route not found.
      */
     public function testThatFacilityThrowsANotFoundInCaseOfFailure()

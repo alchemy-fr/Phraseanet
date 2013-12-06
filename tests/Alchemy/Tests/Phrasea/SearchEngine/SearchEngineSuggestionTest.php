@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\SearchEngine;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 
-class SearchEngineSuggestionTest extends \PhraseanetPHPUnitAbstract
+class SearchEngineSuggestionTest extends \PhraseanetTestCase
 {
     /**
      * @covers Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion

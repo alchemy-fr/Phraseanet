@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Command\Task;
 
 use Alchemy\Phrasea\Command\Task\TaskList;
 
-class TaskListTest extends \PhraseanetPHPUnitAbstract
+class TaskListTest extends \PhraseanetTestCase
 {
     public function testRunWithoutProblems()
     {

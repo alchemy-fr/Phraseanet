@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Configuration;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Collections\ArrayCollection;
 
-class DisplaySettingServiceTest extends \PhraseanetPHPUnitAbstract
+class DisplaySettingServiceTest extends \PhraseanetTestCase
 {
     private static $userSettings;
     private static $appSettings;

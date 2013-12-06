@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Media\Type;
 use Alchemy\Phrasea\Media\Type\Flash;
 use Alchemy\Phrasea\Media\Type\Type;
 
-class FlashTest extends \PHPUnit_Framework_TestCase
+class FlashTest extends \PhraseanetTestCase
 {
 
     /**

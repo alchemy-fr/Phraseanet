@@ -9,11 +9,11 @@ use Alchemy\Phrasea\Core\Provider\LocaleServiceProvider;
 /**
  * @covers Alchemy\Phrasea\Core\Provider\LocaleServiceProvider
  */
-class LocaleServiceProvidertest extends \PhraseanetPHPUnitAbstract
+class LocaleServiceProvidertest extends \PhraseanetTestCase
 {
     public function testLocalesAvailable()
     {
-        $app = new Application();
+        $app = $this->loadApp();
         $app->register(new LocaleServiceProvider());
 
         $this->assertEquals(Application::getAvailableLanguages(), $app['locales.available']);
@@ -21,7 +21,7 @@ class LocaleServiceProvidertest extends \PhraseanetPHPUnitAbstract
 
     public function testLocalesAvailableCustomized()
     {
-        $app = new Application();
+        $app = $this->loadApp();
         $app->register(new LocaleServiceProvider());
         $app['root.path'] = __DIR__ . '/../../../../../..';
         $app->register(new ConfigurationServiceProvider());
@@ -36,7 +36,7 @@ class LocaleServiceProvidertest extends \PhraseanetPHPUnitAbstract
 
     public function testLocalesCustomizedWithError()
     {
-        $app = new Application();
+        $app = $this->loadApp();
         $app->register(new LocaleServiceProvider());
         $app['root.path'] = __DIR__ . '/../../../../../..';
         $app->register(new ConfigurationServiceProvider());
@@ -54,7 +54,7 @@ class LocaleServiceProvidertest extends \PhraseanetPHPUnitAbstract
 
     public function testLocaleBeforeBoot()
     {
-        $app = new Application();
+        $app = $this->loadApp();
         $app->register(new LocaleServiceProvider());
         $app['phraseanet.registry'] = $this->getMockBuilder('registry')
             ->disableOriginalConstructor()

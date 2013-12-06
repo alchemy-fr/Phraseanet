@@ -4,10 +4,10 @@ use Silex\Application;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\DomCrawler\Crawler;
 
-abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPUnitAuthenticatedAbstract
+abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends \PhraseanetAuthenticatedTestCase
 {
     protected $StubbedACL;
-    protected static $createdDataboxes = [];
+    private static $createdDataboxes = [];
 
     public function setUp()
     {
@@ -170,7 +170,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
         ];
     }
 
-    protected function assertFormOrFlashError(Crawler $crawler, $quantity)
+    private function assertFormOrFlashError(Crawler $crawler, $quantity)
     {
         $total = $crawler->filter('.field-error')->count();
         $total += $crawler->filter('.alert')->count();
@@ -178,7 +178,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
         $this->assertEquals($quantity, $total);
     }
 
-    protected function assertFormError(Crawler $crawler, $quantity)
+    private function assertFormError(Crawler $crawler, $quantity)
     {
         $this->assertEquals($quantity, $crawler->filter('.field-error')->count());
     }

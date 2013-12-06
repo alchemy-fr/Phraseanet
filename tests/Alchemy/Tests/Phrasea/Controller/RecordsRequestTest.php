@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Request;
 
-class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
+class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
 {
 
     public static function setUpBeforeClass()
@@ -280,7 +280,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertEquals($story->getRecord(self::$DI['app'])->get_serialize_key(), $serialized);
     }
 
-    protected function getStoryWZ()
+    private function getStoryWZ()
     {
         $story = new \Alchemy\Phrasea\Model\Entities\StoryWZ();
         $story->setRecord(self::$DI['record_story_2']);

@@ -11,8 +11,8 @@ use Symfony\Component\Process\Process;
 class SphinxSearchEngineTest extends SearchEngineAbstractTest
 {
     private static $skipped = false;
-    protected static $config;
-    protected static $searchd;
+    private static $config;
+    private static $searchd;
 
     /**
      * @covers Alchemy\Phrasea\SearchEngine\SphinxSearch\SphinxSearchEngine

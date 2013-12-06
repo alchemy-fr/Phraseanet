@@ -25,19 +25,6 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         }
     }
 
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-
-        $application = new Application('test');
-
-    }
-
-    public static function tearDownAfterClass()
-    {
-        parent::tearDownAfterClass();
-    }
-
     public function testPublicFeedAggregated()
     {
         $this->insertOneFeed(self::$DI['user'], "test", true);
@@ -51,7 +38,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         $this->evaluateAtom($response);
     }
 
-    protected function evaluateAtom(Response $response)
+    private function evaluateAtom(Response $response)
     {
         $dom_doc = new \DOMDocument();
         $dom_doc->preserveWhiteSpace = false;
@@ -68,7 +55,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         $this->assertEquals(1, $xpath->query('/atom:feed/atom:subtitle')->length);
     }
 
-    protected function evaluateGoodXML(Response $response)
+    private function evaluateGoodXML(Response $response)
     {
         $dom_doc = new \DOMDocument();
         $dom_doc->loadXML($response->getContent());
@@ -76,7 +63,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         $this->assertEquals($dom_doc->saveXML(), $response->getContent());
     }
 
-    protected function evaluateResponse200(Response $response)
+    private function evaluateResponse200(Response $response)
     {
         $this->assertEquals(200, $response->getStatusCode(), 'Test status code ');
         $this->assertEquals('UTF-8', $response->getCharset(), 'Test charset response');

@@ -1,6 +1,6 @@
 <?php
 
-class sqlFilterTest extends PhraseanetPHPUnitAuthenticatedAbstract
+class sqlFilterTest extends \PhraseanetAuthenticatedTestCase
 {
     /**
      *

@@ -8,7 +8,7 @@ use Guzzle\Http\Client as Guzzle;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Filesystem\Filesystem;
 
-class ComposerInstallerTest extends \PHPUnit_Framework_TestCase
+class ComposerInstallerTest extends \PhraseanetTestCase
 {
     public function testInstall()
     {

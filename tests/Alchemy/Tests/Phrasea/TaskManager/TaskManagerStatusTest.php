@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\TaskManager;
 use Alchemy\Phrasea\TaskManager\TaskManagerStatus;
 use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
 
-class TaskManagerStatusTest extends \PHPUnit_Framework_TestCase
+class TaskManagerStatusTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideInitialData

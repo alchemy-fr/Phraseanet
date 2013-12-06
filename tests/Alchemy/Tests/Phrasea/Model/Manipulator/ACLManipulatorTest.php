@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
-class ACLManipulatorTest extends \PhraseanetPHPUnitAbstract
+class ACLManipulatorTest extends \PhraseanetTestCase
 {
     public function testResetAdminRights()
     {

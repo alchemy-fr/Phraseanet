@@ -2,7 +2,7 @@
 
 use Alchemy\Phrasea\Application;
 
-class databox_fieldTest extends PhraseanetPHPUnitAbstract
+class databox_fieldTest extends \PhraseanetTestCase
 {
     /**
      * @var databox_field
@@ -366,7 +366,7 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
      */
     public function testGetInvalidCodeLabel()
     {
@@ -374,7 +374,7 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
      */
     public function testSetNullInvalidCodeLabel()
     {
@@ -382,7 +382,7 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
      */
     public function testSetInvalidCodeLabel()
     {

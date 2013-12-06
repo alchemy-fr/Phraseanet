@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Command\Task;
 
 use Alchemy\Phrasea\Command\Task\SchedulerState;
 
-class SchedulerStateTest extends \PhraseanetPHPUnitAbstract
+class SchedulerStateTest extends \PhraseanetTestCase
 {
     public function testRunWithoutProblems()
     {

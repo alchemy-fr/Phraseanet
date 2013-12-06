@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Form\Constraint;
 
 use Alchemy\Phrasea\Form\Constraint\GeonameValidator;
 
-class GeonameValidatorTest extends \PhraseanetPHPUnitAbstract
+class GeonameValidatorTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideData

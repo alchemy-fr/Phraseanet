@@ -43,7 +43,7 @@ class TasksServiceProviderTest extends ServiceProviderTestCase
 
     public function testGetAvailableJobs()
     {
-        $app = new Application();
+        $app = $this->loadApp();
         $app['translator'] = $this->createTranslatorMock();
         $app->register(new TasksServiceProvider());
         $app->boot();

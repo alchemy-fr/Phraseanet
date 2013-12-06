@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class ApiExceptionHandlerSubscriberTest extends \PHPUnit_Framework_TestCase
+class ApiExceptionHandlerSubscriberTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideExceptionsAndCode

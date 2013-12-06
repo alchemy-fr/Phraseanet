@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Form\Constraint;
 
 use Alchemy\Phrasea\Form\Constraint\NewLoginValidator;
 
-class NewLoginValidatorTest extends \PhraseanetPHPUnitAbstract
+class NewLoginValidatorTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideValidationData

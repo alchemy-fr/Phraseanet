@@ -35,7 +35,7 @@ class SearchEngineTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function getSearchEngines()
     {
-        $app = new Application('test');
+        $app = $this->loadApp();
 
         return [
             [new PhraseaEngine($app)],

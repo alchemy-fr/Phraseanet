@@ -1,6 +1,6 @@
 <?php
 
-class p4stringTest extends PhraseanetPHPUnitAbstract
+class p4stringTest extends \PhraseanetTestCase
 {
 
     public function testAddFirstSlash()

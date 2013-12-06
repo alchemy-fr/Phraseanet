@@ -2,7 +2,7 @@
 
 use Alchemy\Phrasea\Model\Entities\UsrAuthProvider;
 
-class UsrAuthProviderRepositoryTest extends \PhraseanetPHPUnitAbstract
+class UsrAuthProviderRepositoryTest extends \PhraseanetTestCase
 {
     public function testFindWithProviderAndIdIsNullWhenNotFound()
     {

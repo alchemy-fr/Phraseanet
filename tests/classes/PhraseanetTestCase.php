@@ -32,7 +32,7 @@ use Symfony\Component\Routing\RequestContext;
 
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
-abstract class PhraseanetPHPUnitAbstract extends WebTestCase
+abstract class PhraseanetTestCase extends WebTestCase
 {
     use TranslatorMockTrait;
     /**
@@ -43,31 +43,28 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     const USER_AGENT_IPHONE = 'Mozilla/5.0 (iPod; U; CPU iPhone OS 2_1 like Mac OS X; fr-fr) AppleWebKit/525.18.1 (KHTML, like Gecko) Version/3.1.1 Mobile/5F137 Safari/525.20';
 
     /**
-     *
      * @var \Pimple
      */
-    public static $DI;
-    protected static $testsTime = [];
-    protected static $records;
-    public static $recordsInitialized = false;
+    protected static $DI;
+    private static $recordsInitialized = false;
 
     /**
      * Tell if tables were updated with new schemas
      * @var boolean
      */
-    protected static $updated;
+    private static $updated;
 
     /**
      * Test start time
      * @var float
      */
-    protected static $time_start;
+    private static $time_start;
     public $app;
-    protected $start;
+    private $start;
 
     /**
      *
-     * @var Symfony\Component\HttpKernel\Client
+     * @var \Symfony\Component\HttpKernel\Client
      */
     protected $client;
 
@@ -164,9 +161,14 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         return $cli;
     }
 
-    protected function loadApp($path, $environment = Application::ENV_TEST)
+    protected function loadApp($path = null, $environment = Application::ENV_TEST)
     {
-        $app = require __DIR__ . '/../../' . $path;
+        if (null !== $path) {
+            $app = require __DIR__ . '/../../' . $path;
+        } else {
+            $app = new Application($environment);
+        }
+
         $this->addMocks($app);
 
         return $app;
@@ -203,7 +205,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         }));
 
         $app['browser'] = $app->share($app->extend('browser', function ($browser) {
-            $browser->setUserAgent(PhraseanetPHPUnitAbstract::USER_AGENT_FIREFOX8MAC);
+            $browser->setUserAgent(PhraseanetTestCase::USER_AGENT_FIREFOX8MAC);
 
             return $browser;
         }));
@@ -1050,7 +1052,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             foreach (range(1, 24) as $i) {
                 self::$DI['record_' . $i] = self::$DI->share(function ($DI) use ($logger, $resolvePathfile, $i) {
 
-                    PhraseanetPHPUnitAbstract::$recordsInitialized[] = $i;
+                    \PhraseanetTestCase::$recordsInitialized[] = $i;
 
                     $file = new File($DI['app'], $DI['app']['mediavorus']->guess($resolvePathfile($i)->getPathname()), $DI['collection']);
 
@@ -1065,7 +1067,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             foreach (range(1, 2) as $i) {
                 self::$DI['record_story_' . $i] = self::$DI->share(function ($DI) use ($i) {
 
-                    PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'story_' . $i;
+                    \PhraseanetTestCase::$recordsInitialized[] = 'story_' . $i;
 
                     return record_adapter::createStory($DI['app'], $DI['collection']);
                 });
@@ -1073,7 +1075,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             self::$DI['record_no_access'] = self::$DI->share(function ($DI) {
 
-                PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access';
+                \PhraseanetTestCase::$recordsInitialized[] = 'no_access';
 
                 $file = new File($DI['app'], $DI['app']['mediavorus']->guess(__DIR__ . '/../files/cestlafete.jpg'), $DI['collection_no_access']);
 
@@ -1082,7 +1084,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             self::$DI['record_no_access_by_status'] = self::$DI->share(function ($DI) {
 
-                PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access_by_status';
+                \PhraseanetTestCase::$recordsInitialized[] = 'no_access_by_status';
 
                 $file = new File($DI['app'], $DI['app']['mediavorus']->guess(__DIR__ . '/../files/cestlafete.jpg'), $DI['collection_no_access']);
 
@@ -1091,7 +1093,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             self::$DI['user'] = self::$DI->share(
                 self::$DI->extend('user', function ($user, $DI) use ($app) {
-                    PhraseanetPHPUnitAbstract::giveRightsToUser($app, $user);
+                    \PhraseanetTestCase::giveRightsToUser($app, $user);
                     $app['acl']->get($user)->set_admin(true);
 
                     return $user;
@@ -1100,7 +1102,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             self::$DI['user_notAdmin'] = self::$DI->share(
                 self::$DI->extend('user_notAdmin', function ($user, $DI) use ($app) {
-                    PhraseanetPHPUnitAbstract::giveRightsToUser($app, $user);
+                    \PhraseanetTestCase::giveRightsToUser($app, $user);
                     $app['acl']->get($user)->set_admin(false);
 
                     return $user;

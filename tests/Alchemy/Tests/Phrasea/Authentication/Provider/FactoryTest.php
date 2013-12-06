@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Authentication\Provider;
 
 use Alchemy\Phrasea\Authentication\Provider\Factory;
 
-class FactoryTest extends \PHPUnit_Framework_TestCase
+class FactoryTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideNameAndOptions

@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Utilities\Compiler;
 
 use Alchemy\Phrasea\Utilities\Less\Builder;
 
-class BuilderTest extends \PHPUnit_Framework_TestCase
+class BuilderTest extends \PhraseanetTestCase
 {
     public function testBuildSuccess()
     {

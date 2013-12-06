@@ -2,7 +2,7 @@
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class randomTest extends PhraseanetPHPUnitAbstract
+class randomTest extends \PhraseanetTestCase
 {
     protected $random;
 

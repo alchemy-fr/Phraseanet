@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Metadata\Tag;
 
 use Alchemy\Phrasea\Metadata\Tag\TfChannels;
 
-class TfChannelsTest extends \PHPUnit_Framework_TestCase
+class TfChannelsTest extends \PhraseanetTestCase
 {
 
     /**

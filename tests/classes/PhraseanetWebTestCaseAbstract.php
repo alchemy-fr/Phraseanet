@@ -1,6 +1,6 @@
 <?php
 
-abstract class PhraseanetWebTestCaseAbstract extends \PhraseanetPHPUnitAbstract
+abstract class PhraseanetWebTestCaseAbstract extends \PhraseanetTestCase
 {
 
 }

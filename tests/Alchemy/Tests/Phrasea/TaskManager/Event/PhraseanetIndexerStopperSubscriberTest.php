@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\TaskManager\Event;
 
 use Alchemy\Phrasea\TaskManager\Event\PhraseanetIndexerStopperSubscriber;
 
-class PhraseanetIndexerStopperSubscriberTest extends \PHPUnit_Framework_TestCase
+class PhraseanetIndexerStopperSubscriberTest extends \PhraseanetTestCase
 {
     public function testSocketmessageIsSentOnStop()
     {

@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
-class UserManagerTest extends \PhraseanetPHPUnitAbstract
+class UserManagerTest extends \PhraseanetTestCase
 {
     public function testNewUser()
     {

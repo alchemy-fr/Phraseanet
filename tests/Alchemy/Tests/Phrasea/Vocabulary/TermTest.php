@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Vocabulary;
 use Alchemy\Phrasea\Vocabulary\Term;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\UserProvider;
 
-class TermTest extends \PhraseanetPHPUnitAbstract
+class TermTest extends \PhraseanetTestCase
 {
     /**
      * @var Term
