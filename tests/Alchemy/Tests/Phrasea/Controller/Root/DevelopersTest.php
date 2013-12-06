@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Root;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
 {
 
     /**

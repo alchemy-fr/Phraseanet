@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 /**
  * @todo Test Alchemy\Phrasea\Controller\Prod\Export::exportMail
  */
-class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class ExportTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
     private static $GV_activeFTP;

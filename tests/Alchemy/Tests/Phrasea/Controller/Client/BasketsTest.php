@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Client;
 
-class BasketsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class BasketsTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 

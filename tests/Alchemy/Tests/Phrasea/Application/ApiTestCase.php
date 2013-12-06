@@ -11,7 +11,7 @@ use Alchemy\Phrasea\Model\Entities\Task;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
-abstract class ApiTestCase extends \PhraseanetWebTestCaseAbstract
+abstract class ApiTestCase extends \PhraseanetWebTestCase
 {
     /**
      *

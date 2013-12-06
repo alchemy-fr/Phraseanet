@@ -8,7 +8,7 @@ use DataURI;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;
 
-class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class UploadTest extends \PhraseanetAuthenticatedWebTestCase
 {
     /**
      *

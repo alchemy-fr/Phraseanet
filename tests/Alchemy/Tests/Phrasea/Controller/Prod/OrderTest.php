@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
 
-class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class OrderTest extends \PhraseanetAuthenticatedWebTestCase
 {
     /**
      *

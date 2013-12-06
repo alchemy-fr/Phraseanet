@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Symfony\Component\CssSelector\CssSelector;
 
-class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public static function setUpBeforeClass()
     {

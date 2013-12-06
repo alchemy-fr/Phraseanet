@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
 use Symfony\Component\HttpKernel\Client;
 
-class SetupTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class SetupTest extends \PhraseanetAuthenticatedWebTestCase
 {
 
     /**

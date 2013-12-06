@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Controller\Admin\ConnectedUsers;
 
-class ConnectedUserTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class ConnectedUserTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 

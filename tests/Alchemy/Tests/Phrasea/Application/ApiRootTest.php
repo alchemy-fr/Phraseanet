@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Application;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
-class ApiRootTest extends \PhraseanetWebTestCaseAbstract
+class ApiRootTest extends \PhraseanetWebTestCase
 {
     /**
      *

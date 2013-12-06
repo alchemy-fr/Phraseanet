@@ -8,9 +8,9 @@ class unitTestsTest extends \PhraseanetTestCase
         $reserved = [
             "BoilerPlate.php",
             "PhraseanetTestCase.php",
-            "PhraseanetWebTestCaseAbstract.php",
+            "PhraseanetWebTestCase.php",
             "PhraseanetAuthenticatedTestCase.php",
-            "PhraseanetWebTestCaseAuthenticatedAbstract.php",
+            "PhraseanetAuthenticatedWebTestCase.php",
             "PhraseanetPHPUnitListener.php",
         ];
 

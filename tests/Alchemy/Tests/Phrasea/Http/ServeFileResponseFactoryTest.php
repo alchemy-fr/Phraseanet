@@ -7,7 +7,7 @@ use Alchemy\Phrasea\Http\XSendFile\NginxMode;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
+class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
 {
     protected $factory;
 

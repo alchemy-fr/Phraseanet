@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
     private static $createdCollections = [];

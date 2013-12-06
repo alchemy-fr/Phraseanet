@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Border\File;
 
-class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
     public static $createdCollections = [];

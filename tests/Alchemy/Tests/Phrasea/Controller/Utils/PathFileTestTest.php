@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Utils;
 
-class ControllerPathFileTestTest extends \PhraseanetWebTestCaseAbstract
+class ControllerPathFileTestTest extends \PhraseanetWebTestCase
 {
     /**
      * Default route test

@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Security;
 
 use Alchemy\Phrasea\Security\Firewall;
 
-class FirewallTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class FirewallTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 

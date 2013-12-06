@@ -14,7 +14,7 @@ use Alchemy\Phrasea\Border\Attribute\Metadata;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Attribute\Story;
 
-class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
 {
     /**
      * @var Manager

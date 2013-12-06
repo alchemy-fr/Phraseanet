@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 require_once __DIR__ . '/../../../../../classes/Bridge/Bridge_datas.inc';
 
-class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class BridgeApplication extends \PhraseanetAuthenticatedWebTestCase
 {
     public static $account = null;
     public static $api = null;

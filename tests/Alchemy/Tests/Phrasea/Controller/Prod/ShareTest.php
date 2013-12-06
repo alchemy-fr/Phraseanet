@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\Prod\Share;
 
-class ShareTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class ShareTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 

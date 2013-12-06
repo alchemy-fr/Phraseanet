@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 
-class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class ControllerTooltipTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 

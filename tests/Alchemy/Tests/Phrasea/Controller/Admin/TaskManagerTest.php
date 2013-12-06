@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Admin;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Symfony\Component\HttpFoundation\Response;
 
-class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testRouteTaskManagerRoot()
     {

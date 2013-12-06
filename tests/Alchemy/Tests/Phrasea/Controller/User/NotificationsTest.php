@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\User;
 
-class NotificationsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class NotificationsTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 
