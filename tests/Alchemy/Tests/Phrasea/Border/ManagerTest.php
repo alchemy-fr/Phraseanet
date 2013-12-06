@@ -85,23 +85,21 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $shaChecker = new Sha256(self::$DI['app']);
         $this->object->registerChecker($shaChecker);
 
-        $phpunit = $this;
-
-        $postProcess = function ($element, $visa, $code) use ($phpunit, &$records) {
-                $phpunit->assertInstanceOf('\\Alchemy\Phrasea\Model\Entities\\LazaretFile', $element);
-                $phpunit->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Visa', $visa);
-                $phpunit->assertEquals(Manager::LAZARET_CREATED, $code);
-                $records[] = $element;
-            };
+        $postProcess = function ($element, $visa, $code) use (&$records) {
+            $this->assertInstanceOf('\\Alchemy\Phrasea\Model\Entities\\LazaretFile', $element);
+            $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Visa', $visa);
+            $this->assertEquals(Manager::LAZARET_CREATED, $code);
+            $records[] = $element;
+        };
 
         $this->assertEquals(Manager::LAZARET_CREATED, $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']), $postProcess));
 
-        $postProcess = function ($element, $visa, $code) use ($phpunit, &$records) {
-                $phpunit->assertInstanceOf('\\record_adapter', $element);
-                $phpunit->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Visa', $visa);
-                $phpunit->assertEquals(Manager::RECORD_CREATED, $code);
-                $records[] = $element;
-            };
+        $postProcess = function ($element, $visa, $code) use (&$records) {
+            $this->assertInstanceOf('\\record_adapter', $element);
+            $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Visa', $visa);
+            $this->assertEquals(Manager::RECORD_CREATED, $code);
+            $records[] = $element;
+        };
 
         $this->assertEquals(Manager::RECORD_CREATED, $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']), $postProcess, Manager::FORCE_RECORD));
 
@@ -381,19 +379,18 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $file->addAttribute(new Metadata($monoData));
         $file->addAttribute(new Metadata($multiData));
 
-        $phpunit = $this;
         $application = self::$DI['app'];
 
-        $postProcess = function ($element, $visa, $code) use ($phpunit, $application) {
-                $phpunit->assertInstanceOf('\\Alchemy\Phrasea\Model\Entities\\LazaretFile', $element);
+        $postProcess = function ($element, $visa, $code) use ($application) {
+            $this->assertInstanceOf('\\Alchemy\Phrasea\Model\Entities\\LazaretFile', $element);
 
-                /* @var $element \Alchemy\Phrasea\Model\Entities\LazaretFile */
-                foreach ($element->getAttributes() as $attribute) {
-                    $phpunit->assertEquals('metadata', $attribute->getName());
-                    $value = Factory::getFileAttribute($application, $attribute->getName(), $attribute->getValue());
-                    $phpunit->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Attribute\\Metadata', $value);
-                }
-            };
+            /* @var $element \Alchemy\Phrasea\Model\Entities\LazaretFile */
+            foreach ($element->getAttributes() as $attribute) {
+                $this->assertEquals('metadata', $attribute->getName());
+                $value = Factory::getFileAttribute($application, $attribute->getName(), $attribute->getValue());
+                $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Attribute\\Metadata', $value);
+            }
+        };
 
         $this->assertEquals(Manager::LAZARET_CREATED, $this->object->process($this->session, $file, $postProcess, Manager::FORCE_LAZARET));
     }

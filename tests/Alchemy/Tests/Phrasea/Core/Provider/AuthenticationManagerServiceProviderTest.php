@@ -119,15 +119,14 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
         $app['phraseanet.registry'] = $this->getMockBuilder('registry')
             ->disableOriginalConstructor()
             ->getMock();
-        $phpunit = $this;
         $app['phraseanet.registry']->expects($this->any())
             ->method('get')
-            ->will($this->returnCallback(function ($key) use ($phpunit) {
+            ->will($this->returnCallback(function ($key) {
                 switch ($key) {
                     case 'GV_sit':
                         return mt_rand();
                     default:
-                        $phpunit->fail(sprintf('Unknown key %s', $key));
+                        $this->fail(sprintf('Unknown key %s', $key));
                 }
             }));
         $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];
@@ -153,15 +152,14 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
         $app['phraseanet.registry'] = $this->getMockBuilder('registry')
             ->disableOriginalConstructor()
             ->getMock();
-        $phpunit = $this;
         $app['phraseanet.registry']->expects($this->any())
             ->method('get')
-            ->will($this->returnCallback(function ($key) use ($phpunit) {
+            ->will($this->returnCallback(function ($key) {
                 switch ($key) {
                     case 'GV_sit':
                         return mt_rand();
                     default:
-                        $phpunit->fail(sprintf('Unknown key %s', $key));
+                        $this->fail(sprintf('Unknown key %s', $key));
                 }
             }));
         $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];

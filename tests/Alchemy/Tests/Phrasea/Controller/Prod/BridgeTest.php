@@ -72,14 +72,13 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $pageContent = self::$DI['client']->getResponse()->getContent();
         //check for errors in the crawler
-        $phpunit = $this;
         $crawler
             ->filter('div')
-            ->reduce(function ($crawler, $i) use ($phpunit) {
+            ->reduce(function ($crawler, $i) {
                 if (!$crawler->attr('class')) {
                     return false;
                 } elseif ($node->getAttribute('class') == 'error_auth') {
-                    $phpunit->fail("Erreur callback");
+                    $this->fail("Erreur callback");
                 }
             });
         $settings = self::$account->get_settings();
@@ -97,14 +96,13 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
             self::$account->delete();
         $crawler = self::$DI['client']->request('GET', '/prod/bridge/callback/apitest/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $phpunit = $this;
         $crawler
             ->filter('div')
-            ->reduce(function ($crawler, $i) use ($phpunit) {
+            ->reduce(function ($crawler, $i) {
                 if (!$crawler->attr('class')) {
                     return false;
                 } elseif ($node->getAttribute('class') == 'error_auth') {
-                    $phpunit->fail("Erreur callback");
+                    $this->fail("Erreur callback");
                 }
             });
         try {

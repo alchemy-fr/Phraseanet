@@ -89,11 +89,10 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
         $acc->set_revoked($revoked); // revoked to show form
 
         $preEvent = 0;
-        $phpunit = $this;
-        self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use ($phpunit, &$preEvent, $className) {
+        self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use (&$preEvent, $className) {
             $preEvent++;
-            $phpunit->assertInstanceOf($className, $event);
-            $phpunit->assertEquals(Context::CONTEXT_OAUTH2_NATIVE, $event->getContext()->getContext());
+            $this->assertInstanceOf($className, $event);
+            $this->assertEquals(Context::CONTEXT_OAUTH2_NATIVE, $event->getContext()->getContext());
         });
 
         self::$DI['client']->request($method, '/api/oauthv2/authorize', $this->queryParameters);

@@ -443,11 +443,10 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('flush');
 
         $called = false;
-        $phpunit = $this;
-        self::$DI['app']['phraseanet.logger'] = self::$DI['app']->protect(function () use (&$called, $phpunit) {
+        self::$DI['app']['phraseanet.logger'] = self::$DI['app']->protect(function () use (&$called) {
             $called = true;
 
-            return $phpunit->getMockBuilder('\Session_Logger')
+            return $this->getMockBuilder('\Session_Logger')
                     ->disableOriginalConstructor()
                     ->getMock();
         });

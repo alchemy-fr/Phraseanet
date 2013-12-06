@@ -58,6 +58,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
     abstract public function getAcceptMimeType();
 
+    private static $apiInitialized = false;
+
     public function tearDown()
     {
         $this->unsetToken();
@@ -68,22 +70,22 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         parent::setUp();
 
-        self::$DI['app'] = self::$DI->share(function () {
-
-            $environment = 'test';
-            $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Api.php';
-
-            $app['debug'] = true;
-
-            $app['EM'] = $app->share($app->extend('EM', function ($em) {
-                @unlink('/tmp/db.sqlite');
-                copy(__DIR__ . '/../../../../db-ref.sqlite', '/tmp/db.sqlite');
-
-                return $em;
-            }));
-
-            return $app;
+        self::$DI['app'] = self::$DI->share(function ($DI) {
+            return $this->loadApp('lib/Alchemy/Phrasea/Application/Api.php');
         });
+
+        if (!self::$apiInitialized) {
+            self::$oauthApplication = \API_OAuth2_Application::create(self::$DI['app'], self::$DI['user_notAdmin'], 'test API v1');
+            self::$account = \API_OAuth2_Account::load_with_user(self::$DI['app'], self::$oauthApplication, self::$DI['user_notAdmin']);
+            self::$token = self::$account->get_token()->get_value();
+
+            self::$adminToken = null;
+
+            self::$adminApplication = \API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test2 API v1');
+            self::$adminAccount = \API_OAuth2_Account::load_with_user(self::$DI['app'], self::$adminApplication, self::$DI['user']);
+            self::$adminToken = self::$adminAccount->get_token()->get_value();
+            self::$apiInitialized = true;
+        }
 
         if (!static::$APIrecord) {
             $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../files/test024.jpg'), self::$DI['collection']);
@@ -92,24 +94,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         }
 
         $this->record = static::$APIrecord;
-    }
-
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-
-        $environment = 'test';
-        $application = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Api.php';
-
-        self::$oauthApplication = \API_OAuth2_Application::create($application, self::$DI['user_notAdmin'], 'test API v1');
-        self::$account = \API_OAuth2_Account::load_with_user($application, self::$oauthApplication, self::$DI['user_notAdmin']);
-        self::$token = self::$account->get_token()->get_value();
-
-        self::$adminToken = null;
-
-        self::$adminApplication = \API_OAuth2_Application::create($application, self::$DI['user'], 'test2 API v1');
-        self::$adminAccount = \API_OAuth2_Account::load_with_user($application, self::$adminApplication, self::$DI['user']);
-        self::$adminToken = self::$adminAccount->get_token()->get_value();
     }
 
     public static function tearDownAfterClass()
@@ -126,6 +110,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         static::$APIrecord->delete();
         static::$APIrecord = null;
 
+        self::$apiInitialized = false;
+
         parent::tearDownAfterClass();
     }
 
@@ -135,12 +121,11 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testThatEventsAreDispatched($eventName, $className, $route, $context)
     {
         $preEvent = 0;
-        $phpunit = $this;
-        self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use ($phpunit, &$preEvent, $className, $context) {
+        self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use (&$preEvent, $className, $context) {
             $preEvent++;
-            $phpunit->assertInstanceOf($className, $event);
+            $this->assertInstanceOf($className, $event);
             if (null !== $context) {
-                $phpunit->assertEquals($context, $event->getContext()->getContext());
+                $this->assertEquals($context, $event->getContext()->getContext());
             }
         });
 
