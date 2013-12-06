@@ -139,7 +139,7 @@
         </form>
 
         <form style="display:inline;" method="post" action="{{ path('admin_database_unmount', {'databox_id': databox.get_sbas_id()}) }}">
-            <button class="btn confirm" data-confirm-msg="{% trans 'admin::base: Confirmer vous l\'arret de la publication de la base' %}">
+            <button type="button" class="btn confirm" data-confirm-msg="{% trans 'admin::base: Confirmer vous l\'arret de la publication de la base' %}">
                 <img src="/skins/icons/db-remove.png" />
                 {% trans "admin::base: arreter la publication de la base" %}
             </button>

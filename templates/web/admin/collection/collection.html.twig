@@ -116,21 +116,21 @@
     </form>
 
     <form style="display:inline; margin:0;" method="post" action="{% if collection.is_active() %}{{ path('admin_collection_disable', { 'bas_id' : bas_id }) }}{% else %}{{ path('admin_collection_enable', { 'bas_id' : bas_id }) }}{% endif %}">
-        <button class="btn confirm reload submiter" data-confirm-msg="{{ collection.is_active() ? 'admin::base:collection: etes vous sur darreter la publication de cette collection'|trans  : 'admin::base:collection: etes vous sur de publier cette collection ?'|trans }}">
+        <button type="button" class="btn confirm reload submiter" data-confirm-msg="{{ collection.is_active() ? 'admin::base:collection: etes vous sur darreter la publication de cette collection'|trans  : 'admin::base:collection: etes vous sur de publier cette collection ?'|trans }}">
             <img src="/skins/icons/db-remove.png"/>
             {{ collection.is_active() ? 'admin::base:collection: descativer la collection' | trans  : 'admin::base:collection: activer la collection'| trans }}
         </button>
     </form>
 
     <form style="display:inline; margin:0;" method="post" action="{{ path('admin_collection_empty', { 'bas_id' : bas_id }) }}">
-        <button class="btn confirm submiter" data-confirm-msg="{% trans 'admin::base:collection: etes vous sur de vider la collection ?' %}">
+        <button type="button" class="btn confirm submiter" data-confirm-msg="{% trans 'admin::base:collection: etes vous sur de vider la collection ?' %}">
             <img src="/skins/icons/trash.png" />
             {% trans 'admin::base:collection: vider la collection' %}
         </button>
     </form>
 
     <form style="display:inline; margin:0;" method="post" action="{{ path('admin_collection_delete', { 'bas_id' : bas_id }) }}">
-        <button class="btn confirm submiter reload-tree" data-confirm-msg="{% trans 'admin::collection: Confirmez vous la suppression de cette collection ?' %}">
+        <button type="button" class="btn confirm submiter reload-tree" data-confirm-msg="{% trans 'admin::collection: Confirmez vous la suppression de cette collection ?' %}">
             <img src="/skins/icons/delete.gif" />
             {% trans 'boutton::supprimer' %}
         </button>
