@@ -258,7 +258,7 @@
 
 .ui-autocomplete li.list-item {
     width:280px;
-    height:45px;
+    min-height:45px;
     display:block;
 }
 
