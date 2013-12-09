@@ -22,10 +22,9 @@ class Bridge_Api_AbstractTest extends \PhraseanetWebTestCase
         $this->bridgeApi = $this->getMock('Bridge_Api_Abstract', ["is_configured", "initialize_transport", "set_auth_params", "set_transport_authentication_params"], [self::$DI['app']['url_generator'], self::$DI['app']['phraseanet.registry'], $this->auth, self::$DI['app']['translator']]);
     }
 
-    public static function setUpBeforeClass()
+    public function bootTestCase()
     {
-        parent::setUpBeforeClass();
-        $application = new Application('test');
+        $application = self::$DI['app'];
         try {
             self::$api = Bridge_Api::get_by_api_name($application, 'apitest');
         } catch (Bridge_Exception_ApiNotFound $e) {

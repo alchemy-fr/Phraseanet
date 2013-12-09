@@ -22,14 +22,9 @@ class oauthv2_application_test extends \PhraseanetAuthenticatedWebTestCase
     protected $client;
     protected $queryParameters;
 
-    public static function setUpBeforeClass()
+    public function bootTestCase()
     {
-        parent::setUpBeforeClass();
-
-        $environment = 'test';
-        $application = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Api.php';
-
-        self::$appli = \API_OAuth2_Application::create($application, self::$DI['user'], 'test');
+        self::$appli = \API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test');
         self::$appli->set_description('une description')
             ->set_redirect_uri('http://callback.com/callback/')
             ->set_website('http://website.com/')
@@ -41,6 +36,7 @@ class oauthv2_application_test extends \PhraseanetAuthenticatedWebTestCase
         if (self::$appli !== false) {
             self::deleteInsertedRow(self::$DI['app']['phraseanet.appbox'], self::$appli);
         }
+        self::$appli = null;
         parent::tearDownAfterClass();
     }
 

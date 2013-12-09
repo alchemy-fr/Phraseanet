@@ -10,10 +10,7 @@ class TOUTest extends \PhraseanetAuthenticatedWebTestCase
 
     public static function tearDownAfterClass()
     {
-        $application = new Application('test');
-        self::giveRightsToUser($application, self::$DI['user_alt2']);
-        self::$DI['app']['acl']->get(self::$DI['user_alt2'])->revoke_access_from_bases([self::$DI['collection_no_access']->get_base_id()]);
-        self::$DI['app']['acl']->get(self::$DI['user_alt2'])->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
+        self::resetUsersRights(self::$DI['app'], self::$DI['user_alt2']);
         parent::tearDownAfterClass();
     }
 

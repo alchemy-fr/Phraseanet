@@ -14,10 +14,9 @@ class collectionTest extends \PhraseanetAuthenticatedTestCase
      */
     private static $objectDisable;
 
-    public static function setUpBeforeClass()
+    public function bootTestCase()
     {
-        parent::setUpBeforeClass();
-        $application = new Application('test');
+        $application = self::$DI['app'];
 
         $found = false;
         foreach ($application['phraseanet.appbox']->get_databoxes() as $databox) {

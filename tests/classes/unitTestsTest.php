@@ -2,7 +2,6 @@
 
 class unitTestsTest extends \PhraseanetTestCase
 {
-
     public function testFiles()
     {
         $reserved = [

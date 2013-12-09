@@ -2,14 +2,13 @@
 
 namespace Alchemy\Tests\Phrasea\Application;
 
-use Alchemy\Phrasea\Border\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testDatafilesRouteAuthenticated()
     {
-        $crawler = self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
+        self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
         $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
@@ -31,11 +30,7 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         $tmp = tempnam(sys_get_temp_dir(), 'testEtag');
         copy(__DIR__ . '/../../../../files/cestlafete.jpg', $tmp);
 
-        $media = self::$DI['app']['mediavorus']->guess($tmp);
-
-        $file = new File(self::$DI['app'], $media, self::$DI['collection']);
-        $record = \record_adapter::createFromFile($file, self::$DI['app']);
-
+        $record = self::$DI['record_1'];
         $record->generate_subdefs($record->get_databox(), self::$DI['app']);
 
         $crawler = self::$DI['client']->request('GET', '/datafiles/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/preview/');
@@ -132,7 +127,7 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         $token = "unexisting_token";
         $url = '/permalink/v1/' . self::$DI['record_1']->get_sbas_id() . "/" . self::$DI['record_1']->get_record_id() . '/caption/?token='.$token;
 
-        $crawler = self::$DI['client']->request('GET', $url);
+        self::$DI['client']->request('GET', $url);
         $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(404, $response->getStatusCode());
@@ -143,7 +138,7 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['app']['authentication']->isAuthenticated());
         $url = '/permalink/v1/unexisting_record/unexisting_id/caption/?token=unexisting_token';
 
-        $crawler = self::$DI['client']->request('GET', $url);
+        self::$DI['client']->request('GET', $url);
         $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(404, $response->getStatusCode());
@@ -186,7 +181,7 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         $token = self::$DI['record_1']->get_thumbnail()->get_permalink()->get_token();
         $url = '/permalink/v1/' . self::$DI['record_1']->get_sbas_id() . "/" . self::$DI['record_1']->get_record_id() . '/caption/?token='.$token;
 
-        $crawler = self::$DI['client']->request('GET', $url);
+        self::$DI['client']->request('GET', $url);
         $response = self::$DI['client']->getResponse();
 
         foreach ($headers as $name => $value) {
@@ -203,7 +198,7 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
         $url = '/permalink/v1/whateverIwannt/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/' . $token . '/preview/';
 
-        $crawler = self::$DI['client']->request('GET', $url);
+        self::$DI['client']->request('GET', $url);
         $response = self::$DI['client']->getResponse();
 
         foreach ($headers as $name => $value) {
@@ -230,7 +225,7 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         $url = '/permalink/v1/whateverIwannt/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/' . $token . '/preview/';
 
         $url = $url . 'view/';
-        $crawler = self::$DI['client']->request('GET', $url);
+        self::$DI['client']->request('GET', $url);
         $response = self::$DI['client']->getResponse();
 
         foreach ($headers as $name => $value) {
@@ -245,7 +240,7 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
         $url = '/permalink/v1/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/whateverIwannt.jpg?token=' . $token . '';
 
-        $crawler = self::$DI['client']->request('GET', $url);
+        self::$DI['client']->request('GET', $url);
         $response = self::$DI['client']->getResponse();
 
         $this->assertRegExp('/^inline;/', $response->headers->get('content-disposition'));
@@ -262,7 +257,7 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
         $url = '/permalink/v1/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/?token=' . $token . '';
 
-        $crawler = self::$DI['client']->request('GET', $url);
+        self::$DI['client']->request('GET', $url);
         $response = self::$DI['client']->getResponse();
 
         foreach ($headers as $name => $value) {

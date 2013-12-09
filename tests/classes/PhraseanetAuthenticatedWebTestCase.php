@@ -170,7 +170,7 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         ];
     }
 
-    private function assertFormOrFlashError(Crawler $crawler, $quantity)
+    protected function assertFormOrFlashError(Crawler $crawler, $quantity)
     {
         $total = $crawler->filter('.field-error')->count();
         $total += $crawler->filter('.alert')->count();
@@ -178,7 +178,7 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         $this->assertEquals($quantity, $total);
     }
 
-    private function assertFormError(Crawler $crawler, $quantity)
+    protected function assertFormError(Crawler $crawler, $quantity)
     {
         $this->assertEquals($quantity, $crawler->filter('.field-error')->count());
     }

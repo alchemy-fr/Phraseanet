@@ -11,18 +11,6 @@
          verbose="false"
          bootstrap="tests/bootstrap.php"
 >
-<!--
-    <logging>
-      <log type="coverage-html" target="tmp/phpunit_report/report" charset="UTF-8"
-           yui="true" highlight="false"
-           lowUpperBound="35" highLowerBound="70"/>
-      <log type="coverage-clover" target="tmp/coverage.xml"/>
-      <log type="json" target="tmp/phpunit_report/logfile.json"/>
-      <log type="junit" target="tmp/phpunit_report/logfile.xml" logIncompleteSkipped="false"/>
-      <log type="testdox-html" target="tmp/phpunit_report/testdox.html"/>
-      <log type="testdox-text" target="tmp/phpunit_report/testdox.txt"/>
-    </logging>
--->
     <php>
       <ini name="display_errors" value="on"/>
     </php>
@@ -40,10 +28,5 @@
         <directory>vendor</directory>
       </blacklist>
     </filter>
-
-  <listeners>
-    <listener class="PhraseanetPHPUnitListener" file="tests/classes/PhraseanetPHPUnitListener.php"></listener>
-  </listeners>
-
 </phpunit>
 

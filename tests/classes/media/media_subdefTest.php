@@ -23,14 +23,8 @@ class media_subdefTest extends \PhraseanetTestCase
      */
     private static $recordonbleu;
 
-    /**
-     * @covers media_subdef::__construct
-     * @covers media_subdef::create
-     */
-    public static function setUpBeforeClass()
+    public function bootTestCase()
     {
-        parent::setUpBeforeClass();
-
         $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . "/../../files/iphone_pic.jpg"), self::$DI['collection']);
 
         self::$recordonbleu = record_adapter::createFromFile($file, self::$DI['app']);

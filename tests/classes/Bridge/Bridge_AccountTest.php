@@ -15,11 +15,10 @@ class Bridge_AccountTest extends \PhraseanetAuthenticatedTestCase
     private static $named;
     private static $id;
 
-    public static function setUpBeforeClass()
+    public function bootTestCase()
     {
-        parent::setUpBeforeClass();
         try {
-            $application = new Application('test');
+            $application = self::$DI['app'];
 
             $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
             $stmt = $application['phraseanet.appbox']->get_connection()->prepare($sql);

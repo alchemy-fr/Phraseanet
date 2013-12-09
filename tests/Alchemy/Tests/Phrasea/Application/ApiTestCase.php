@@ -14,51 +14,36 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class ApiTestCase extends \PhraseanetWebTestCase
 {
     /**
-     *
-     * @var Client
-     */
-    protected $client;
-
-    /**
      * @var \API_OAuth2_Token
      */
     private static $token;
-    private static $APIrecord;
-    protected $record;
 
     /**
      * @var \API_OAuth2_Account
      */
     private static $account;
-
     /**
      * @var \API_OAuth2_Application
      */
     private static $oauthApplication;
-
     /**
      * @var \API_OAuth2_Token
      */
     private static $adminToken;
-
     /**
      * @var \API_OAuth2_Account
      */
     private static $adminAccount;
-
     /**
      * @var \API_OAuth2_Application
      */
     private static $adminApplication;
     private static $databoxe_ids = [];
+    private static $apiInitialized = false;
 
     abstract public function getParameters(array $parameters = []);
-
     abstract public function unserialize($data);
-
     abstract public function getAcceptMimeType();
-
-    private static $apiInitialized = false;
 
     public function tearDown()
     {
@@ -86,14 +71,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             self::$adminToken = self::$adminAccount->get_token()->get_value();
             self::$apiInitialized = true;
         }
-
-        if (!self::$APIrecord) {
-            $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../files/test024.jpg'), self::$DI['collection']);
-            self::$APIrecord = \record_adapter::createFromFile($file, self::$DI['app']);
-            self::$APIrecord->generate_subdefs(self::$APIrecord->get_databox(), self::$DI['app']);
-        }
-
-        $this->record = self::$APIrecord;
     }
 
     public static function tearDownAfterClass()
@@ -107,10 +84,11 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             self::$adminApplication->delete();
         }
 
-        self::$APIrecord->delete();
-        self::$APIrecord = null;
-
         self::$apiInitialized = false;
+        self::$databoxe_ids = [];
+
+        self::$token = self::$account = self::$oauthApplication = self::$adminToken
+            = self::$adminAccount = self::$adminApplication = null;
 
         parent::tearDownAfterClass();
     }
@@ -1040,9 +1018,9 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken(self::$token);
 
-        $keys = array_keys($this->record->get_subdefs());
+        $keys = array_keys(self::$DI['record_1']->get_subdefs());
 
-        $route = '/api/v1/records/' . $this->record->get_sbas_id() . '/' . $this->record->get_record_id() . '/embed/';
+        $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
         self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
@@ -1054,7 +1032,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertArrayHasKey('embed', $content['response']);
 
         foreach ($content['response']['embed'] as $embed) {
-            $this->checkEmbed($embed, $this->record);
+            $this->checkEmbed($embed, self::$DI['record_1']);
         }
         $route = '/api/v1/records/24892534/51654651553/embed/';
         $this->evaluateNotFoundRoute($route, ['GET']);
@@ -1073,11 +1051,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken(self::$token);
 
-        $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
-        $media = self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../files/cestlafete.jpg');
-        $story->substitute_subdef('preview', $media, self::$DI['app']);
-        $story->substitute_subdef('thumbnail', $media, self::$DI['app']);
-
+        $story = self::$DI['record_story_1'];
         $keys = array_keys($story->get_subdefs());
 
         $route = '/api/v1/stories/' . $story->get_sbas_id() . '/' . $story->get_record_id() . '/embed/';
@@ -1100,7 +1074,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $route = '/api/v1/stories/any_bad_id/sfsd5qfsd5/embed/';
         $this->evaluateBadRequestRoute($route, ['GET']);
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
-        $story->delete();
     }
 
     /**
@@ -1110,7 +1083,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken(self::$token);
 
-        $route = '/api/v1/records/' . $this->record->get_sbas_id() . '/' . $this->record->get_record_id() . '/embed/';
+        $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 
         self::$DI['client']->request('GET', $route, $this->getParameters(['mimes' => ['image/jpg', 'image/jpeg']]), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
@@ -1118,7 +1091,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertArrayHasKey('embed', $content['response']);
 
         foreach ($content['response']['embed'] as $embed) {
-            $this->checkEmbed($embed, $this->record);
+            $this->checkEmbed($embed, self::$DI['record_1']);
         }
     }
 
@@ -1175,8 +1148,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken(self::$token);
 
-        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../files/test001.jpg'), self::$DI['collection']);
-        $record = \record_adapter::createFromFile($file, self::$DI['app']);
+        $record = self::$DI['record_1'];
 
         $route = '/api/v1/records/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/setmetadatas/';
         $caption = $record->get_caption();
@@ -1287,6 +1259,8 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         foreach ($status_bits as $n => $datas) {
             $this->assertEquals(substr($record_status, ($n), 1), $tochange[$n]);
         }
+
+        self::$DI['record_1']->set_binary_status(str_repeat('0', 32));
     }
 
     /**
