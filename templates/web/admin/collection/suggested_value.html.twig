@@ -809,7 +809,7 @@ pref["{{ value['key']|escapeDoubleQuote|raw }}"].valsug["{{ value['value']|escap
 
 function getSruct()
 {
-    var dom = document.implementation.createDocument(null, 'baseprefs');
+    var dom = document.implementation.createDocument(null, 'baseprefs', null);
     var values = dom.createElement('sugestedValues');
 
     for (a in pref ) {
