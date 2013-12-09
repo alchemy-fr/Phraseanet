@@ -217,7 +217,7 @@ class ACL implements cache_cacheableInterface
 
     public function has_status_access_to_record(record_adapter $record)
     {
-        return (Boolean) ('Ob' . $record->get_status() ^ $this->get_mask_xor($record->get_base_id()) & $this->get_mask_and($record->get_base_id()));
+        return 0 === ((bindec($record->get_status()) ^ $this->get_mask_xor($record->get_base_id())) & $this->get_mask_and($record->get_base_id()));
     }
 
     public function has_access_to_subdef(record_Interface $record, $subdef_name)
@@ -1043,9 +1043,9 @@ class ACL implements cache_cacheableInterface
             $this->_rights_bas[$row['base_id']]['canreport']
                 = $row['canreport'] == '1';
             $this->_rights_bas[$row['base_id']]['mask_and']
-                = $row['mask_and'];
+                = (int) $row['mask_and'];
             $this->_rights_bas[$row['base_id']]['mask_xor']
-                = $row['mask_xor'];
+                = (int) $row['mask_xor'];
             $this->_rights_bas[$row['base_id']]['modify_struct']
                 = $row['modify_struct'] == '1';
             $this->_rights_bas[$row['base_id']]['manage']
@@ -1543,6 +1543,8 @@ class ACL implements cache_cacheableInterface
         $stmt->closeCursor();
 
         unset($stmt);
+
+        $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
 
         return $this;
     }

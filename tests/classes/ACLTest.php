@@ -51,14 +51,40 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertTrue(self::$object->has_status_access_to_record(self::$DI['record_1']));
     }
 
+    public function testHasAccesToRecordStatus()
+    {
+        self::$DI['record_1']->set_binary_status(str_repeat('0', 32));
+
+        self::$object->set_masks_on_base(self::$DI['record_1']->get_base_id(), '10000', '10000', '0', '0');
+
+        self::$DI['record_1']->set_binary_status('10000');
+        $this->assertFalse(self::$object->has_status_access_to_record(self::$DI['record_1']));
+
+        self::$DI['record_1']->set_binary_status('00000');
+        $this->assertTrue(self::$object->has_status_access_to_record(self::$DI['record_1']));
+
+        self::$object->set_masks_on_base(self::$DI['record_1']->get_base_id(), '10000', '10000', '10000', '10000');
+
+        $this->assertFalse(self::$object->has_status_access_to_record(self::$DI['record_1']));
+
+        self::$DI['record_1']->set_binary_status('10000');
+        $this->assertTrue(self::$object->has_status_access_to_record(self::$DI['record_1']));
+
+        self::$object->set_masks_on_base(self::$DI['record_1']->get_base_id(), '0', '0', '0', '0');
+
+        $this->assertTrue(self::$object->has_status_access_to_record(self::$DI['record_1']));
+        self::$DI['record_1']->set_binary_status(str_repeat('0', 32));
+        $this->assertTrue(self::$object->has_status_access_to_record(self::$DI['record_1']));
+    }
+
     public function testHasAccesToRecordFailsOnBase()
     {
-        $this->assertFalse(self::$object->has_status_access_to_record(self::$DI['record_no_access']));
+        $this->assertFalse(self::$object->has_access_to_record(self::$DI['record_no_access']));
     }
 
     public function testHasAccesToRecordFailsOnStatus()
     {
-        $this->assertFalse(self::$object->has_status_access_to_record(self::$DI['record_no_access_by_status']));
+        $this->assertFalse(self::$object->has_access_to_record(self::$DI['record_no_access_by_status']));
     }
 
     public function testApply_model()
