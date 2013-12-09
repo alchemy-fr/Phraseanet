@@ -17,7 +17,7 @@ class patch_383alpha2a implements patchInterface
     private $release = '3.8.3-alpha.2';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -33,6 +33,14 @@ class patch_383alpha2a implements patchInterface
     public function require_all_upgrades()
     {
         return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return [];
     }
 
     /**
@@ -56,7 +64,7 @@ class patch_383alpha2a implements patchInterface
         $stmt->closeCursor();
 
         foreach ($rows as $row) {
-            if (null !== $vsession = $app['EM']->find('Entities\ValidationSession', $row['validation_session_id'])) {
+            if (null !== $vsession = $app['EM']->find('Alchemy\Phrasea\Model\Entities\ValidationSession', $row['validation_session_id'])) {
                 $app['EM']->remove($vsession);
             }
         }

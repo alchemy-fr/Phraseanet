@@ -19,7 +19,7 @@ class SessionRepository extends EntityRepository
             WHERE s.usr_id = :usr_id';
 
         $query = $this->_em->createQuery($dql);
-        $query->setParameters(array('usr_id' => $user->get_id()));
+        $query->setParameters(['usr_id' => $user->get_id()]);
 
         return $query->getResult();
     }

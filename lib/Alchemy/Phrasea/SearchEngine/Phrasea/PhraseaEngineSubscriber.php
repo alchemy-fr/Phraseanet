@@ -41,7 +41,7 @@ class PhraseaEngineSubscriber implements EventSubscriberInterface
                   AND s.usr_id = u.usr_id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':base_id' => $event->getCollection()->get_base_id()));
+        $stmt->execute([':base_id' => $event->getCollection()->get_base_id()]);
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -63,9 +63,9 @@ class PhraseaEngineSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
-            PhraseaEvents::POST_AUTHENTICATE => array('onAuthenticate', 0),
-            PhraseaEvents::COLLECTION_CREATE => array('onCollectionCreate', 0),
-        );
+        return [
+            PhraseaEvents::POST_AUTHENTICATE => ['onAuthenticate', 0],
+            PhraseaEvents::COLLECTION_CREATE => ['onCollectionCreate', 0],
+        ];
     }
 }

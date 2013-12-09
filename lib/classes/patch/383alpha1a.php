@@ -18,7 +18,7 @@ class patch_383alpha1a implements patchInterface
     private $release = '3.8.3-alpha.1';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
