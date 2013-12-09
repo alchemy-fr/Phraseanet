@@ -9,19 +9,13 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 abstract class set_abstract implements IteratorAggregate
 {
     /**
      *
      * @var Array
      */
-    protected $elements = array();
+    protected $elements = [];
 
     /**
      *
@@ -175,7 +169,7 @@ abstract class set_abstract implements IteratorAggregate
      */
     public function serialize_list()
     {
-        $basrec = array();
+        $basrec = [];
         foreach ($this->elements as $record) {
             $basrec[] = $record->get_serialize_key();
         }

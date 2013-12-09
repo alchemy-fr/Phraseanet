@@ -12,19 +12,13 @@
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailInfoBridgeUploadFailed;
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
 {
     /**
      *
      * @var string
      */
-    public $events = array('__BRIDGE_UPLOAD_FAIL__');
+    public $events = ['__BRIDGE_UPLOAD_FAIL__'];
 
     /**
      *
@@ -44,13 +38,13 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'usr_id'     => null
             , 'reason'     => ''
             , 'account_id' => null
             , 'base_id'    => null
             , 'record_id'  => null
-        );
+        ];
 
         $params = array_merge($default, $params);
 
@@ -127,14 +121,17 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
             $account = Bridge_Account::load_account($this->app, $account_id);
             $record = new record_adapter($this->app, $sbas_id, $rid);
         } catch (Exception $e) {
-            return array();
+            return [];
         }
 
-        $ret = array(
-            'text'  => sprintf("L'upload concernant le record %s sur le comptre %s a echoue pour les raisons suivantes : %s"
-                , $record->get_title(), $account->get_api()->get_connector()->get_name(), $reason)
+        $ret = [
+            'text'  => $this->app->trans("L'upload concernant le record %title% sur le compte %bridge_name% a echoue pour les raisons suivantes : %reason%", [
+                '%title%' => $record->get_title(),
+                '%bridge_name%' => $account->get_api()->get_connector()->get_name(),
+                '%reason%' => $reason
+            ])
             , 'class' => ''
-        );
+        ];
 
         return $ret;
     }
@@ -145,7 +142,7 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
      */
     public function get_name()
     {
-        return _('Bridge upload fail');
+        return $this->app->trans('Bridge upload fail');
     }
 
     /**
@@ -154,8 +151,7 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
      */
     public function get_description()
     {
-        return _('Recevoir des notifications lorsqu\'un'
-                . ' upload echoue sur un bridge');
+        return $this->app->trans('Recevoir des notifications lorsqu\'un upload echoue sur un bridge');
     }
 
     /**

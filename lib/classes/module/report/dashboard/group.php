@@ -12,7 +12,7 @@
 class module_report_dashboard_group implements module_report_dashboard_componentInterface
 {
     public $group_dash;
-    public $dashboard = array();
+    public $dashboard = [];
     private $valid = false;
 
     /**
@@ -35,7 +35,7 @@ class module_report_dashboard_group implements module_report_dashboard_component
     {
         if ($this->valid) {
             if (is_null($this->group_dash))
-                $this->group_dash = array();
+                $this->group_dash = [];
             foreach ($this->dashboard as $key => $dash) {
                 if (is_object($dash) &&
                     $dash instanceof module_report_dashboard_feed &&

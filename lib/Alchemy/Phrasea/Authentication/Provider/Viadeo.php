@@ -85,16 +85,16 @@ class Viadeo extends AbstractProvider
 
         $this->session->set('viadeo.provider.state', $state);
 
-        return new RedirectResponse('https://secure.viadeo.com/oauth-provider/authorize2?' . http_build_query(array(
+        return new RedirectResponse('https://secure.viadeo.com/oauth-provider/authorize2?' . http_build_query([
             'client_id' => $this->key,
             'state' => $state,
             'response_type' => 'code',
             'redirect_uri' => $this->generator->generate(
                 'login_authentication_provider_callback',
-                array('providerId' => $this->getId()),
+                ['providerId' => $this->getId()],
                 UrlGenerator::ABSOLUTE_URL
             ),
-        )));
+        ]));
     }
 
     /**
@@ -138,13 +138,13 @@ class Viadeo extends AbstractProvider
         try {
             $guzzleRequest = $this->client->post('https://secure.viadeo.com/oauth-provider/access_token2');
 
-            $guzzleRequest->addPostFields(array(
+            $guzzleRequest->addPostFields([
                 'grant_type'    => 'authorization_code',
                 'code'          => $request->query->get('code'),
-                'redirect_uri'  => $this->generator->generate('login_authentication_provider_callback', array('providerId' => $this->getId()), UrlGenerator::ABSOLUTE_URL),
+                'redirect_uri'  => $this->generator->generate('login_authentication_provider_callback', ['providerId' => $this->getId()], UrlGenerator::ABSOLUTE_URL),
                 'client_id'     => $this->key,
                 'client_secret' => $this->secret,
-            ));
+            ]);
             $guzzleRequest->setHeader('Accept', 'application/json');
             $response = $guzzleRequest->send();
         } catch (GuzzleException $e) {

@@ -1,7 +1,7 @@
 {% macro make_bloc(app, WorkZone, selected_type, selected_id, srt) %}
   <div class="alert_datas_changed ui-corner-all">
-    <a title="{% trans 'rafraichir' %}" class="basket_refresher" href="#">
-      {% trans 'Vous avez recu un nouveau panier' %}
+    <a title="{{ 'rafraichir' | trans }}" class="basket_refresher" href="#">
+      {{ 'Vous avez recu un nouveau panier' | trans }}
     </a>
   </div>
   <div class="bloc">
@@ -11,12 +11,12 @@
     {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::VALIDATIONS')) %}
 
 
-        <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket_id' : basket.getId() }) }}"
+        <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}"
              id="SSTT_{{basket.getId()}}"
              class="basketTips ui-accordion-header ui-state-default
                     ui-corner-all header SSTT basket {% if not basket.getIsRead() %}unread{% endif %}
                     {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}">
-          <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket_id' : basket.getId() }) }}">
+          <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}">
             <span>
               <img src='/skins/icons/basket.gif' title=''/>
               {{basket.getName()}}
@@ -27,7 +27,7 @@
                   <tr>
                       <td>
                           <img
-                              title="{% trans  'Vous avez recu une demande de validation de document sur ce panier' %}"
+                              title="{{ 'Vous avez recu une demande de validation de document sur ce panier' | trans }}"
                               class="basketTips"
                               src="/skins/icons/valid.png"
                             />
@@ -45,25 +45,25 @@
                     <div class="context-menu context-menu-theme-vista">
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner"
-                             onclick="downloadThis('ssel={{basket.getId()}}');">{% trans 'action::exporter' %}
+                             onclick="downloadThis('ssel={{basket.getId()}}');">{{ 'action::exporter' | trans }}
                         </div>
                       </div>
                       <div title="" class="context-menu-item menu3-custom-item">
                         <div onclick="editThis('SSTT','{{basket.getId()}}');" style=""
-                             class="context-menu-item-inner">{% trans 'action::editer' %}
+                             class="context-menu-item-inner">{{ 'action::editer' | trans }}
                         </div>
                       </div>
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
-                          <a href="{{ path('lightbox_compare', { 'ssel_id' : basket.getId() }) }}" target="_blank">Lightbox</a>
+                          <a href="{{ path('lightbox_compare', { 'basket' : basket.getId() }) }}" target="_blank">Lightbox</a>
                         </div>
                       </div>
 
                       {% if basket.getValidation() %}
                         <div title="" class="context-menu-item">
-                          <a target="_blank" href="{{ path('lightbox_validation', { 'ssel_id' : basket.getId() }) }}">
+                          <a target="_blank" href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">
                             <div class="context-menu-item-inner">
-                              {% trans 'action::Valider' %}
+                              {{ 'action::Valider' | trans }}
                             </div>
                           </a>
                         </div>
@@ -86,12 +86,12 @@
     {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) %}
 
 
-        <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket_id' : basket.getId() }) }}"
+        <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}"
              id="SSTT_{{basket.getId()}}"
              class="basketTips ui-accordion-header ui-state-default
                     ui-corner-all header SSTT basket {% if not basket.getIsRead() %}unread{% endif %}
                     {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}">
-          <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket_id' : basket.getId() }) }}" style="">
+          <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}" style="">
             <span>
               <img src='/skins/icons/basket.gif' title=''/>
               {{basket.getName()}}
@@ -104,7 +104,7 @@
                             <td>
                                 <img
                                     style="display:inline;padding:0;margin:0;"
-                                    title="{% trans 'Vous avez envoye une demande de validation de document sur ce panier' %}"
+                                    title="{{ 'Vous avez envoye une demande de validation de document sur ce panier' | trans }}"
                                     class="basketTips"
                                     src="/skins/icons/myvalid.png"
                                 />
@@ -115,7 +115,7 @@
                                 {% set pusher = basket.getPusher(app).get_display_name() %}
                                 <img
                                     class="basketTips"
-                                    title="{% trans %}paniers:: panier recu de {{pusher}}{% endtrans %}"
+                                    title="{% trans with {'%pusher%' : pusher} %}paniers:: panier recu de %pusher%{% endtrans %}"
                                     src="/skins/icons/push16.png"/>
                             </td>
                         {% endif %}
@@ -135,27 +135,27 @@
                     <div class="context-menu context-menu-theme-vista">
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner"
-                             onclick="downloadThis('ssel={{basket.getId()}}');">{% trans 'action::exporter' %}
+                             onclick="downloadThis('ssel={{basket.getId()}}');">{{ 'action::exporter' | trans }}
                         </div>
                       </div>
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
-                          <a href="{{ path('lightbox_compare', { 'ssel_id' : basket.getId() }) }}" target="_blank">Lightbox</a>
+                          <a href="{{ path('lightbox_compare', { 'basket' : basket.getId() }) }}" target="_blank">Lightbox</a>
                         </div>
                       </div>
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
-                          <a class="dialog small-dialog" title="{% trans 'action::renommer' %}" href="{{ path('prod_baskets_basket_update', { 'basket_id' : basket.getId()}) }}">
-                            {% trans 'action::renommer' %}
+                          <a class="dialog small-dialog" title="{{ 'action::renommer' | trans }}" href="{{ path('prod_baskets_basket_update', { 'basket' : basket.getId()}) }}">
+                            {{ 'action::renommer' | trans }}
                           </a>
                         </div>
                       </div>
 
                       {% if basket.getValidation() %}
                         <div title="" class="context-menu-item">
-                          <a target="_blank" href="{{ path('lightbox_validation', { 'ssel_id' : basket.getId() }) }}">
+                          <a target="_blank" href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">
                             <div class="context-menu-item-inner">
-                              {% trans 'action::Valider' %}
+                              {{ 'action::Valider' | trans }}
                             </div>
                           </a>
                         </div>
@@ -164,20 +164,20 @@
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner"
                              onclick="archiveBasket({{ basket.getId() }});return false;">
-                          {% trans 'Archive' %}
+                          {{ 'Archive' | trans }}
                         </div>
                       </div>
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner" id="SSTTREMOVER_{{basket.getId()}}"
                              onclick="checkDeleteThis('SSTT',this);return false;">
-                          {% trans 'action : supprimer' %}
+                          {{ 'action : supprimer' | trans }}
                         </div>
                       </div>
 
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
-                          <a class="dialog" title="{% trans 'Re-ordonner' %}" href="{{ path('prod_baskets_basket_reorder', { 'basket_id' : basket.getId() }) }}">
-                            {% trans 'Re-ordonner' %}
+                          <a class="dialog" title="{{ 'Re-ordonner' | trans }}" href="{{ path('prod_baskets_basket_reorder', { 'basket' : basket.getId() }) }}">
+                            {{ 'Re-ordonner' | trans }}
                           </a>
                         </div>
                       </div>
@@ -229,26 +229,26 @@
                     <div class="context-menu context-menu-theme-vista">
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner"
-                             onclick="downloadThis('lst={{story.getRecord(app).get_serialize_key()}}');">{% trans 'action::exporter' %}
+                             onclick="downloadThis('lst={{story.getRecord(app).get_serialize_key()}}');">{{ 'action::exporter' | trans }}
                         </div>
                       </div>
                       <div title="" class="context-menu-item menu3-custom-item">
                         <div onclick="editThis('IMGT','{{story.getRecord(app).get_serialize_key()}}');" style=""
-                             class="context-menu-item-inner">{% trans 'action::editer' %}
+                             class="context-menu-item-inner">{{ 'action::editer' | trans }}
                         </div>
                       </div>
 
                       <div title="" class="context-menu-item menu3-custom-item">
                         <div class="context-menu-item-inner">
                           <a class="story_unfix" href="{{ path('prod_workzone_detach_story', { 'sbas_id' : story.getRecord(app).get_sbas_id(), 'record_id' : story.getRecord(app).get_record_id()}) }}">
-                            {% trans 'action::detacher' %}
+                            {{ 'action::detacher' | trans }}
                           </a>
                         </div>
                       </div>
                       <div title="" class="context-menu-item menu3-custom-item">
                         <div class="context-menu-item-inner">
-                          <a class="dialog" title="{% trans 'Re-ordonner' %}" href="{{ path('prod_stories_story_reorder', { 'sbas_id' : story.getRecord(app).get_sbas_id, 'record_id' : story.getRecord(app).get_record_id() }) }}">
-                            {% trans 'Re-ordonner' %}
+                          <a class="dialog" title="{{ 'Re-ordonner' | trans }}" href="{{ path('prod_stories_story_reorder', { 'sbas_id' : story.getRecord(app).get_sbas_id, 'record_id' : story.getRecord(app).get_record_id() }) }}">
+                            {{ 'Re-ordonner' | trans }}
                           </a>
                         </div>
                       </div>
@@ -310,11 +310,11 @@
               href="{{ path('prod_stories_story_remove_element', { 'sbas_id' : container.get_sbas_id(), 'record_id' : container.get_record_id(), 'child_sbas_id' : record.get_sbas_id(), 'child_record_id' : record.get_record_id() }) }}"
             {% elseif wz_scope == 'basket' %}
               id="WZEL_{{ container.getId() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}"
-              href="{{ path('prod_baskets_basket_element_remove', { 'basket_id' : container.getId(), 'basket_element_id' : contained.getId()}) }}"
+              href="{{ path('prod_baskets_basket_element_remove', { 'basket' : container.getId(), 'basket_element_id' : contained.getId()}) }}"
             {% elseif wz_scope == 'basket' %}
               href="#"
             {% endif %}
-            class="WorkZoneElementRemover {{ wz_scope }}" title="{% trans 'delete'%}" >
+            class="WorkZoneElementRemover {{ wz_scope }}" title="{{ 'delete' | trans }}" >
             X
           </a>
           {% if app['authentication'].getUser().getPrefs('basket_caption_display') == '1' %}
@@ -336,9 +336,9 @@
   <div style="margin:5px 0;text-align:center;">
       <form>
           <select name="valid_ord">
-              <option {% if ordre=='nat'%}selected{% endif %} value="nat">{% trans 'panier:: ordre du panier' %}</option>
-              <option {% if ordre=='desc'%}selected{% endif %} value="desc">{% trans 'panier:: ordre Validation ascendante' %}</option>
-              <option {% if ordre=='asc'%}selected{% endif %} value="asc">{% trans 'panier:: ordre Validation descendante' %}</option>
+              <option {% if ordre=='nat' %}selected{% endif %} value="nat">{{ 'panier:: ordre du panier' | trans }}</option>
+              <option {% if ordre=='desc' %}selected{% endif %} value="desc">{{ 'panier:: ordre Validation ascendante' | trans }}</option>
+              <option {% if ordre=='asc' %}selected{% endif %} value="asc">{{ 'panier:: ordre Validation descendante' | trans }}</option>
           </select>
       </form>
   </div>
@@ -359,14 +359,14 @@
                                   <td>
                                   {% if choice.getParticipant().getCanAgree() %}
                                         {% if choice.getAgreement() == true %}
-                                            <img style="cursor:help;" src='/skins/lightbox/agree.png' title="{% trans "L'utilisateur approuve ce document" %}" />
+                                            <img style="cursor:help;" src='/skins/lightbox/agree.png' title="{{ "L'utilisateur approuve ce document" | trans }}" />
                                         {% elseif choice.getAgreement() is null %}
-                                            <img style="cursor:help;" src='/skins/icons/valid.png' title="{% trans "L'utilisateur n'a pas encore donne son avis sur ce document" %}" />
+                                            <img style="cursor:help;" src='/skins/icons/valid.png' title="{{ "L'utilisateur n'a pas encore donne son avis sur ce document" | trans }}" />
                                         {% else %}
-                                            <img style="cursor:help;" src='/skins/lightbox/disagree.png' title="{% trans "L'utilisateur desapprouve ce document" %}" />
+                                            <img style="cursor:help;" src='/skins/lightbox/disagree.png' title="{{ "L'utilisateur desapprouve ce document" | trans }}" />
                                         {% endif %}
                                   {% else %}
-                                        <img style="cursor:help;" src='/skins/icons/no-valid.png' title="{% trans "This user does not participate to the validation but is only viewer." %}" />
+                                        <img style="cursor:help;" src='/skins/icons/no-valid.png' title="{{ "This user does not participate to the validation but is only viewer." | trans }}" />
                                   {% endif %}
                                   </td>
                                   <td style="width:25px;">

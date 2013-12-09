@@ -13,9 +13,6 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/GuiContext.php';
 
 use Behat\Behat\Context\BehatContext;
-use Behat\Behat\Exception\PendingException;
-use Behat\Gherkin\Node\PyStringNode;
-use Behat\Gherkin\Node\TableNode;
 
 class FeatureContext extends BehatContext
 {

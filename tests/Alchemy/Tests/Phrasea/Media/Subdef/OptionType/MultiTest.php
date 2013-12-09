@@ -14,7 +14,7 @@ class MultiTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->object = new Multi('MUMU', 'multiateur', array('un', 'dos', 'tres'), 'dos');
+        $this->object = new Multi('MUMU', 'multiateur', ['un', 'dos', 'tres'], 'dos');
     }
 
     /**
@@ -22,11 +22,11 @@ class MultiTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetValue()
     {
-        $this->assertEquals(array('dos'), $this->object->getValue());
+        $this->assertEquals(['dos'], $this->object->getValue());
         $this->object->setValue('tres');
-        $this->assertEquals(array('tres'), $this->object->getValue());
+        $this->assertEquals(['tres'], $this->object->getValue());
         $this->object->setValue('');
-        $this->assertEquals(array(), $this->object->getValue());
+        $this->assertEquals([], $this->object->getValue());
     }
 
     /**
@@ -51,7 +51,7 @@ class MultiTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetAvailableValues()
     {
-        $this->assertEquals(array('un', 'dos', 'tres'), $this->object->getAvailableValues());
+        $this->assertEquals(['un', 'dos', 'tres'], $this->object->getAvailableValues());
     }
 
     /**

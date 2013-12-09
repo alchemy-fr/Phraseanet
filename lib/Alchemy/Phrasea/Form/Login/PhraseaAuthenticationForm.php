@@ -19,37 +19,37 @@ class PhraseaAuthenticationForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('login', 'text', array(
-            'label'       => _('Login'),
+        $builder->add('login', 'text', [
+            'label'       => 'Login',
             'required'    => true,
             'disabled'    => $options['disabled'],
-            'constraints' => array(
+            'constraints' => [
                 new Assert\NotBlank(),
-            ),
-        ));
+            ],
+        ]);
 
-        $builder->add('password', 'password', array(
-            'label'       => _('Password'),
+        $builder->add('password', 'password', [
+            'label'       => 'Password',
             'required'    => true,
             'disabled'    => $options['disabled'],
-            'constraints' => array(
+            'constraints' => [
                 new Assert\NotBlank(),
-            ),
-        ));
+            ],
+        ]);
 
-        $builder->add('remember-me', 'checkbox', array(
-            'label'    => _('Remember me'),
+        $builder->add('remember-me', 'checkbox', [
+            'label'    => 'Remember me',
             'mapped'   => false,
             'required' => false,
-            'attr'     => array(
+            'attr'     => [
                 'checked' => 'checked',
                 'value'   => '1',
-            )
-        ));
+            ]
+        ]);
 
-        $builder->add('redirect', 'hidden', array(
+        $builder->add('redirect', 'hidden', [
             'required' => false,
-        ));
+        ]);
     }
 
     public function getName()

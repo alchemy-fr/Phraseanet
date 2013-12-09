@@ -9,22 +9,18 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Model\Entities\LazaretCheck;
+use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailInfoRecordQuarantined;
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
 {
     /**
      *
      * @var string
      */
-    public $events = array('__UPLOAD_QUARANTINE__');
+    public $events = ['__UPLOAD_QUARANTINE__'];
 
     /**
      *
@@ -43,8 +39,8 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        if (isset($params['lazaret_file']) && $params['lazaret_file'] instanceof \Entities\LazaretFile) {
-            /* @var $lazaretFile \Entities\LazaretFile */
+        if (isset($params['lazaret_file']) && $params['lazaret_file'] instanceof LazaretFile) {
+            /* @var $lazaretFile LazaretFile */
             $lazaretFile = $params['lazaret_file'];
 
             $domXML = new DOMDocument('1.0', 'UTF-8');
@@ -62,7 +58,7 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
             $reasons = $domXML->createElement('reasons');
 
             foreach ($lazaretFile->getChecks() as $check) {
-                /* @var $check \Entities\LazaretCheck */
+                /* @var $check LazaretCheck */
                 $reason = $domXML->createElement('checkClassName');
                 $reason->appendChild($domXML->createTextNode($check->getCheckClassname()));
                 $reasons->appendChild($reason);
@@ -85,8 +81,8 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
                 $query = new User_Query($this->app);
 
                 $users = $query
-                    ->on_base_ids(array($lazaretFile->getBaseId()))
-                    ->who_have_right(array('canaddrecord'))
+                    ->on_base_ids([$lazaretFile->getBaseId()])
+                    ->who_have_right(['canaddrecord'])
                     ->execute()
                     ->get_results();
 
@@ -138,25 +134,25 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
     {
         $sx = simplexml_load_string($datas);
 
-        $reasons = array();
+        $reasons = [];
 
         foreach ($sx->reasons as $reason) {
             $checkClassName = (string) $reason->checkClassName;
 
             if (class_exists($checkClassName)) {
-                $reasons[] = $checkClassName::getMessage();
+                $reasons[] = $checkClassName::getMessage($this->app['translator']);
             }
         }
 
         $filename = (string) $sx->filename;
 
-        $text = sprintf(_('The document %s has been quarantined'), $filename);
+        $text = $this->app->trans('The document %name% has been quarantined', ['%name%' => $filename]);
 
         if ( ! ! count($reasons)) {
-            $text .= ' ' . sprintf(_('for the following reasons : %s'), implode(', ', $reasons));
+            $text .= ' ' . $this->app->trans('for the following reasons : %reasons%', ['%reasons%' => implode(', ', $reasons)]);
         }
 
-        $ret = array('text'  => $text, 'class' => '');
+        $ret = ['text'  => $text, 'class' => ''];
 
         return $ret;
     }
@@ -167,7 +163,7 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
      */
     public function get_name()
     {
-        return _('Quarantine notificaton');
+        return $this->app->trans('Quarantine notificaton');
     }
 
     /**
@@ -176,7 +172,7 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
      */
     public function get_description()
     {
-        return _('be notified when a document is placed in quarantine');
+        return $this->app->trans('be notified when a document is placed in quarantine');
     }
 
     /**
@@ -192,6 +188,6 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
             return false;
         }
 
-        return $user->ACL()->has_right('addrecord');
+        return $this->app['acl']->get($user)->has_right('addrecord');
     }
 }

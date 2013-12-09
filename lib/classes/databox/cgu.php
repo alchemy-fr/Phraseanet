@@ -11,11 +11,6 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class databox_cgu
 {
 
@@ -34,12 +29,12 @@ class databox_cgu
             if (trim($term['terms']) == '') {
                 continue;
             }
-            $out .= '<div style="display:none;" class="cgu-dialog" title="' . str_replace('"', '&quot;', sprintf(_('cgus:: CGUs de la base %s'), $name)) . '">';
+            $out .= '<div style="display:none;" class="cgu-dialog" title="' . str_replace('"', '&quot;', $app->trans('cgus:: CGUs de la base %s', $name)) . '">';
 
             $out .= '<blockquote>' . $term['terms'] . '</blockquote>';
-            $out .= '<div>' . _('cgus:: Pour continuer a utiliser lapplication, vous devez accepter les conditions precedentes') . '
-                <input id="terms_of_use_' . $term['sbas_id'] . '" type="button" date="' . $term['date'] . '" class="cgus-accept" value="' . _('cgus :: accepter') . '"/>
-                <input id="sbas_' . $term['sbas_id'] . '" type="button" class="cgus-cancel" value="' . _('cgus :: refuser') . '"/>
+            $out .= '<div>' . $app->trans('cgus:: Pour continuer a utiliser lapplication, vous devez accepter les conditions precedentes') . '
+                <input id="terms_of_use_' . $term['sbas_id'] . '" type="button" date="' . $term['date'] . '" class="cgus-accept" value="' . $app->trans('cgus :: accepter') . '"/>
+                <input id="sbas_' . $term['sbas_id'] . '" type="button" class="cgus-cancel" value="' . $app->trans('cgus :: refuser') . '"/>
                 </div>';
             $out .= '</div>';
         }
@@ -49,7 +44,7 @@ class databox_cgu
 
     private static function getUnvalidated(Application $app, $home = false)
     {
-        $terms = array();
+        $terms = [];
 
         foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
             try {
@@ -57,21 +52,21 @@ class databox_cgu
 
                 if ( ! isset($cgus[$app['locale']]))
                     throw new Exception('No CGus for this locale');
-                $name = $databox->get_label($app['locale.I18n']);
+                $name = $databox->get_label($app['locale']);
 
                 $update = $cgus[$app['locale']]['updated_on'];
                 $value = $cgus[$app['locale']]['value'];
                 $userValidation = true;
 
                 if (! $home) {
-                    if ( ! $app['authentication']->getUser()->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
+                    if ( ! $app['acl']->get($app['authentication']->getUser())->has_access_to_sbas($databox->get_sbas_id())) {
                         continue;
                     }
                     $userValidation = ($app['authentication']->getUser()->getPrefs('terms_of_use_' . $databox->get_sbas_id()) !== $update && trim($value) !== '');
                 }
 
                 if ($userValidation)
-                    $terms[$name] = array('sbas_id' => $databox->get_sbas_id(), 'terms'   => $value, 'date'    => $update);
+                    $terms[$name] = ['sbas_id' => $databox->get_sbas_id(), 'terms'   => $value, 'date'    => $update];
             } catch (Exception $e) {
 
             }
@@ -93,7 +88,7 @@ class databox_cgu
             if ($out != '')
                 $out .= '<hr/>';
 
-            $out .= '<div><h1 style="text-align:center;">' . str_replace('"', '&quot;', sprintf(_('cgus:: CGUs de la base %s'), $name)) . '</h1>';
+            $out .= '<div><h1 style="text-align:center;">' . str_replace('"', '&quot;', $app->trans('cgus:: CGUs de la base %databox_name%', ['%databox_name%' => $name])) . '</h1>';
 
             $out .= '<blockquote>' . $term['terms'] . '</blockquote>';
 

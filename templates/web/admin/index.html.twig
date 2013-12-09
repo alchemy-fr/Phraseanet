@@ -8,14 +8,14 @@
 {% endblock %}
 
 {% block stylesheet %}
-    <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'include/jslibs/jquery-treeview/jquery.treeview.css,include/jslibs/jquery.contextmenu.css,skins/common/main.css,skins/admin/css/Main.css,skins/admin/css/Bases.css,skins/admin/css/Tables.css,skins/admin/css/fields.css,skins/geonames/geonames.css,assets/jquery-file-upload/css/jquery.fileupload-ui.css' }) }}" />
+    <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'include/jslibs/jquery-treeview/jquery.treeview.css,include/jslibs/jquery.contextmenu.css,skins/common/main.css,skins/admin/css/Main.css,skins/admin/css/Bases.css,skins/admin/css/Tables.css,skins/admin/css/fields.css,skins/geonames/geonames.css,assets/jquery-file-upload/jquery.fileupload-ui.css' }) }}" />
 {% endblock %}
 
 
 {% block javascript %}
   {% include "common/templates.html.twig" %}
   {# note: Tinymce must be include here without minify else URL resolution for tinymce plugins will fail #}
-  <script type="text/javascript" src="/include/tinymce/js/tinymce/tinymce.min.js"></script>
+  <script type="text/javascript" src="/assets/tinymce/tinymce.js"></script>
   <script type="text/javascript" src="{{ path('minifier', { 'g' : 'admin' }) }}"></script>
   <script type="text/javascript">
     var p4 = p4 || {};
@@ -113,14 +113,18 @@
             var dest = link.attr('href');
 
             if(dest && dest.indexOf('#') !== 0) {
-                $('#right-ajax').empty().addClass('loading').parent().show();
-
-                $.get(dest, function(data) {
-                    enableFormsCallback(data);
-                });
+                loadRightAjax(dest);
                 return false;
             }
 
+        });
+    }
+
+    function loadRightAjax(url)
+    {
+        $('#right-ajax').empty().addClass('loading').parent().show();
+        $.get(url, function(data) {
+            enableFormsCallback(data);
         });
     }
 
@@ -135,11 +139,8 @@
         var dest = $(this).attr('href');
 
         $(this).bind('click',function(){
-            $('#right-ajax').empty().addClass('loading').parent().show();
 
-            $.get(dest, function(data) {
-                enableFormsCallback(data);
-            });
+            loadRightAjax(dest);
             $('#tree .selected').removeClass('selected');
             $(this).parent().addClass('selected');
 
@@ -216,24 +217,24 @@
     <div id="quotas_dialog"></div>
     <div id="masks_dialog"></div>
     <div id="time_dialog"></div>
-    <div id="user_add_dialog" title="{% trans 'Ajouter un nouvel utilisateur' %}">
+    <div id="user_add_dialog" title="{{ 'Ajouter un nouvel utilisateur' | trans }}">
         <form>
-            <label for="new_user_mail">{% trans 'Adresse email du nouvel utilisateur' %}</label>
+            <label for="new_user_mail">{{ 'Adresse email du nouvel utilisateur' | trans }}</label>
             <input id="new_user_mail"  type="text" name="value" />
             <label class="checkbox" for="send_credentials">
                 <input type="checkbox" checked="checked" name="send_credentials" id="send_credentials" value="1" />
-                {% trans "Send an email to the user to setup his password" %}
+                {{ "Send an email to the user to setup his password" | trans }}
             </label>
             <label class="checkbox" for="validate_mail">
                 <input type="checkbox" checked="checked" name="validate_mail" id="validate_mail" value="1" />
-                {% trans "Require email validation to activate the account" %}
+                {{ "Require email validation to activate the account" | trans }}
             </label>
             <img src="/skins/icons/loaderFFF.gif" class="new_user_loader" style="display:none;"/>
         </form>
     </div>
-    <div id="template_add_dialog" title="{% trans 'Creer un modele' %}">
+    <div id="template_add_dialog" title="{{ 'Creer un modele' | trans }}">
         <form>
-            <label>{% trans 'Nom du nouveau modele' %}</label>
+            <label>{{ 'Nom du nouveau modele' | trans }}</label>
             <input type="text" name="value" />
             <img src="/skins/icons/loaderFFF.gif" class="new_user_loader" style="display:none;"/>
         </form>

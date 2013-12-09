@@ -25,10 +25,10 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
 
     public function provideReservedUsernames()
     {
-        return array(
-            array('autoregister'),
-            array('invite'),
-        );
+        return [
+            ['autoregister'],
+            ['invite'],
+        ];
     }
 
     public function testNotFoundIsNotValid()
@@ -52,13 +52,13 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
 
         $encoder = $this->getEncoderMock();
         $oldEncoder = $this->getOldEncoderMock();
-        $conn = $this->getConnectionMock($username, array(
+        $conn = $this->getConnectionMock($username, [
             'nonce' => 'dfqsdgqsd',
             'salted_password' => '1',
             'mail_locked' => '1',
             'usr_id' => '1',
             'usr_password' => 'qsdfsqdfqsd',
-        ));
+        ]);
         $request = $this->getRequestMock();
 
         $auth = new NativeAuthentication($encoder, $oldEncoder, $conn);
@@ -81,13 +81,13 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
 
         $encoder = $this->getEncoderMock();
         $oldEncoder = $this->getOldEncoderMock();
-        $conn = $this->getConnectionMock($username, array(
+        $conn = $this->getConnectionMock($username, [
             'nonce' => $nonce,
             'salted_password' => '1',
             'mail_locked' => '0',
             'usr_id' => $usr_id,
             'usr_password' => $encoded,
-        ));
+        ]);
         $request = $this->getRequestMock();
 
         $oldEncoder->expects($this->never())
@@ -113,13 +113,13 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
 
         $encoder = $this->getEncoderMock();
         $oldEncoder = $this->getOldEncoderMock();
-        $conn = $this->getConnectionMock($username, array(
+        $conn = $this->getConnectionMock($username, [
             'nonce' => $nonce,
             'salted_password' => '1',
             'mail_locked' => '0',
             'usr_id' => $usr_id,
             'usr_password' => $encoded,
-        ));
+        ]);
         $request = $this->getRequestMock();
 
         $oldEncoder->expects($this->never())
@@ -145,13 +145,13 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
 
         $encoder = $this->getEncoderMock();
         $oldEncoder = $this->getOldEncoderMock();
-        $conn = $this->getConnectionMock($username, array(
+        $conn = $this->getConnectionMock($username, [
             'nonce' => $nonce,
             'salted_password' => '0',
             'mail_locked' => '0',
             'usr_id' => $usr_id,
             'usr_password' => $encoded,
-        ));
+        ]);
         $request = $this->getRequestMock();
 
         $oldEncoder->expects($this->once())
@@ -186,17 +186,17 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
         $statement
             ->expects($this->once())
             ->method('execute')
-            ->with($this->equalTo(array(':login' => $username)));
+            ->with($this->equalTo([':login' => $username]));
         $statement->expects($this->once())
             ->method('fetch')
             ->with($this->equalTo(\PDO::FETCH_ASSOC))
-            ->will($this->returnValue(array(
+            ->will($this->returnValue([
             'nonce' => $nonce,
             'salted_password' => '0',
             'mail_locked' => '0',
             'usr_id' => $usr_id,
             'usr_password' => $encoded,
-        )));
+        ]));
 
         $catchParameters = $catchTestPassword = null;
 
@@ -228,11 +228,11 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
         $encoder->expects($this->once())
             ->method('isPasswordValid')
             ->will($this->returnCallback(function ($encoded, $pass, $nonce) use (&$catchTestPassword) {
-                $catchTestPassword = array(
+                $catchTestPassword = [
                     'encoded' => $encoded,
                     'pass' => $pass,
                     'nonce' => $nonce,
-                );
+                ];
 
                 return true;
             }));
@@ -255,7 +255,7 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
         $statement
             ->expects($this->once())
             ->method('execute')
-            ->with($this->equalTo(array(':login' => $username)));
+            ->with($this->equalTo([':login' => $username]));
 
         $statement->expects($this->once())
             ->method('fetch')

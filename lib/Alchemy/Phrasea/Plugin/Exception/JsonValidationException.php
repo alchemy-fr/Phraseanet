@@ -17,7 +17,7 @@ class JsonValidationException extends RuntimeException
 {
     protected $errors;
 
-    public function __construct($message, $errors = array())
+    public function __construct($message, $errors = [])
     {
         $this->errors = $errors;
         parent::__construct($message);

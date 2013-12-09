@@ -14,7 +14,7 @@ class MailInfoPushReceivedTest extends MailWithLinkTestCase
     {
         $mail = $this->getMail();
 
-        $this->assertContainsString('Hello basket', $mail->getSubject());
+        $this->assertEquals('Reception of %basket_name%', $mail->getSubject());
     }
 
     public function testShouldThrowLogicExceptionsIfBasketNotSet()
@@ -50,7 +50,7 @@ class MailInfoPushReceivedTest extends MailWithLinkTestCase
     {
         $mail = $this->getMail();
 
-        $this->assertContainsString('JeanPhil', $mail->getMessage());
+        $this->assertEquals("You just received a push containing %quantity% documents from %user%\nLorem ipsum dolor", $mail->getMessage());
     }
 
     public function testShouldThrowLogicExceptionsIfPusherNotSet()
@@ -64,7 +64,7 @@ class MailInfoPushReceivedTest extends MailWithLinkTestCase
             $this->getExpiration()
         );
 
-        $basket = $this->getMock('Entities\Basket');
+        $basket = $this->getMock('Alchemy\Phrasea\Model\Entities\Basket');
         $basket->expects($this->any())
             ->method('getName')
             ->will($this->returnValue('Hello basket'));
@@ -83,7 +83,7 @@ class MailInfoPushReceivedTest extends MailWithLinkTestCase
     {
         $mail = $this->getMail();
 
-        $this->assertContainsString('5', $mail->getMessage());
+        $this->assertEquals("You just received a push containing %quantity% documents from %user%\nLorem ipsum dolor", $mail->getMessage());
     }
 
     public function getMail()
@@ -102,7 +102,7 @@ class MailInfoPushReceivedTest extends MailWithLinkTestCase
             ->method('count')
             ->will($this->returnValue(5));
 
-        $basket = $this->getMock('Entities\Basket');
+        $basket = $this->getMock('Alchemy\Phrasea\Model\Entities\Basket');
         $basket->expects($this->any())
             ->method('getName')
             ->will($this->returnValue('Hello basket'));

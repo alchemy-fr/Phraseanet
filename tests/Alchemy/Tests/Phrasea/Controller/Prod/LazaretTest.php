@@ -29,42 +29,42 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $originalEm = self::$DI['app']['EM'];
 
-        $fileLazaret = $this->getMock('Entities\LazaretFile', array('getRecordsToSubstitute', 'getSession', 'getCollection'), array(), '', false);
+        $fileLazaret = $this->getMock('Alchemy\Phrasea\Model\Entities\LazaretFile', ['getRecordsToSubstitute', 'getSession', 'getCollection'], [], '', false);
 
         $fileLazaret
             ->expects($this->any())
             ->method('getRecordsToSubstitute')
-            ->will($this->returnValue(array(self::$DI['record_1'])));
+            ->will($this->returnValue([self::$DI['record_1']]));
 
         $fileLazaret
             ->expects($this->any())
             ->method('getSession')
-            ->will($this->returnValue($this->getMock('Entities\LazaretSession')));
+            ->will($this->returnValue($this->getMock('Alchemy\Phrasea\Model\Entities\LazaretSession')));
 
         $fileLazaret
             ->expects($this->any())
             ->method('getCollection')
             ->will($this->returnValue(self::$DI['collection']));
 
-        //mock one Repositories\LazaretFile::getFiles
-        $repo = $this->getMock('Repositories\LazaretFile', array('findPerPage'), array(), '', false);
+        //mock one Alchemy\Phrasea\Model\Repositories\LazaretFile::getFiles
+        $repo = $this->getMock('Alchemy\Phrasea\Model\Repositories\LazaretFile', ['findPerPage'], [], '', false);
 
         $repo->expects($this->once())
             ->method('findPerPage')
-            ->will($this->returnValue(array($fileLazaret)));
+            ->will($this->returnValue([$fileLazaret]));
 
         //mock Doctrine\ORM\EntityManager::getRepository
-        $em = $this->getMock('Doctrine\ORM\EntityManager', array('getRepository'), array(), '', false);
+        $em = $this->getMock('Doctrine\ORM\EntityManager', ['getRepository'], [], '', false);
 
         $em->expects($this->once())
             ->method('getRepository')
-            ->with($this->EqualTo('Entities\LazaretFile'))
+            ->with($this->EqualTo('Alchemy\Phrasea\Model\Entities\LazaretFile'))
             ->will($this->returnValue($repo));
 
         $route = '/prod/lazaret/';
 
         self::$DI['app']['EM'] = $em;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
 
         $crawler = self::$DI['client']->request(
             'GET', $route
@@ -73,7 +73,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertResponseOk(self::$DI['client']->getResponse());
 
         self::$DI['app']['EM'] = $originalEm;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
 
         $this->assertEquals(1, $crawler->filter('.records-subititution')->count());
 
@@ -87,7 +87,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $originalEm = self::$DI['app']['EM'];
 
-        $em = $this->getMock('Doctrine\ORM\EntityManager', array('find'), array(), '', false);
+        $em = $this->getMock('Doctrine\ORM\EntityManager', ['find'], [], '', false);
 
         $lazaretFile = $this->getOneLazaretFile();
 
@@ -95,11 +95,11 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $em->expects($this->any())
             ->method('find')
-            ->with($this->EqualTo('Entities\LazaretFile'), $this->EqualTo($id))
+            ->with($this->EqualTo('Alchemy\Phrasea\Model\Entities\LazaretFile'), $this->EqualTo($id))
             ->will($this->returnValue($lazaretFile));
 
         self::$DI['app']['EM'] = $em;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
 
         self::$DI['client']->request('GET', '/prod/lazaret/' . $id . '/');
 
@@ -108,7 +108,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertResponseOk($response);
 
         self::$DI['app']['EM'] = $originalEm;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
 
         $content = json_decode($response->getContent());
 
@@ -133,24 +133,24 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $originalEm = self::$DI['app']['EM'];
 
-        $em = $this->getMock('Doctrine\ORM\EntityManager', array('find'), array(), '', false);
+        $em = $this->getMock('Doctrine\ORM\EntityManager', ['find'], [], '', false);
 
         $id = 1;
 
         $em->expects($this->any())
             ->method('find')
-            ->with($this->EqualTo('Entities\LazaretFile'), $this->EqualTo($id))
+            ->with($this->EqualTo('Alchemy\Phrasea\Model\Entities\LazaretFile'), $this->EqualTo($id))
             ->will($this->returnValue(null));
 
         self::$DI['app']['EM'] = $em;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
 
         self::$DI['client']->request('GET', '/prod/lazaret/' . $id . '/');
 
         $response = self::$DI['client']->getResponse();
 
         self::$DI['app']['EM'] = $originalEm;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
 
         $this->assertResponseOk($response);
         $this->assertBadJsonContent(json_decode($response->getContent()));
@@ -166,7 +166,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $originalEm = self::$DI['app']['EM'];
 
         //mock Doctrine\ORM\EntityManager
-        $em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
+        $em = $this->getMock('Doctrine\ORM\EntityManager', [], [], '', false);
 
         $lazaretFile = $this->getOneLazaretFile();
 
@@ -177,7 +177,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         copy(__DIR__ . '/../../../../../files/cestlafete.jpg', $lazaretThumbFileName);
 
         //mock lazaret Attribute
-        $lazaretAttribute = $this->getMock('Entities\LazaretAttribute', array(), array(), '', false);
+        $lazaretAttribute = $this->getMock('Alchemy\Phrasea\Model\Entities\LazaretAttribute', [], [], '', false);
 
         //Expect to be called 3 times since we add 5 attribute to lazaretFile
         //and each one is called to verify if it is an attribute to keep
@@ -209,7 +209,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         //Expect the retrieval of the lazaret file with the provided id
         $em->expects($this->any())
             ->method('find')
-            ->with($this->EqualTo('Entities\LazaretFile'), $this->EqualTo($id))
+            ->with($this->EqualTo('Alchemy\Phrasea\Model\Entities\LazaretFile'), $this->EqualTo($id))
             ->will($this->returnValue($lazaretFile));
 
         //In any case we expect the deletion of the lazaret file
@@ -222,18 +222,18 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('flush');
 
         self::$DI['app']['EM'] = $em;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
 
-        self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/force-add/', array(
+        self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/force-add/', [
             'bas_id'          => $lazaretFile->getBaseId(),
             'keep_attributes' => 1,
-            'attributes'      => array(1, 2, 3, 4) //Check only the four first attributes
-        ));
+            'attributes'      => [1, 2, 3, 4] //Check only the four first attributes
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
         self::$DI['app']['EM'] = $originalEm;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
 
         $this->assertResponseOk($response);
         $this->assertGoodJsonContent(json_decode($response->getContent()));
@@ -251,7 +251,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $originalEm = self::$DI['app']['EM'];
 
         //mock Doctrine\ORM\EntityManager
-        $em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
+        $em = $this->getMock('Doctrine\ORM\EntityManager', [], [], '', false);
 
         $lazaretFile = $this->getOneLazaretFile();
 
@@ -260,22 +260,22 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         //Expect the retrieval of the lazaret file with the provided id
         $em->expects($this->any())
             ->method('find')
-            ->with($this->EqualTo('Entities\LazaretFile'), $this->EqualTo($id))
+            ->with($this->EqualTo('Alchemy\Phrasea\Model\Entities\LazaretFile'), $this->EqualTo($id))
             ->will($this->returnValue($lazaretFile));
 
         self::$DI['app']['EM'] = $em;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
 
         //Ommit base_id mandatory param
-        self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/force-add/', array(
+        self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/force-add/', [
             'keep_attributes' => 1,
-            'attributes'      => array(1, 2, 3, 4) //Check only the four first attributes
-        ));
+            'attributes'      => [1, 2, 3, 4] //Check only the four first attributes
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
         self::$DI['app']['EM'] = $originalEm;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
 
         $this->assertResponseOk($response);
         $this->assertBadJsonContent(json_decode($response->getContent()));
@@ -289,18 +289,18 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testAddElementException()
     {
         $originalEm = self::$DI['app']['EM'];
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
 
-        self::$DI['client']->request('POST', '/prod/lazaret/99999/force-add/', array(
+        self::$DI['client']->request('POST', '/prod/lazaret/99999/force-add/', [
             'bas_id'          => 1,
             'keep_attributes' => 1,
-            'attributes'      => array(1, 2, 3, 4) //Check only the four first attributes
-        ));
+            'attributes'      => [1, 2, 3, 4] //Check only the four first attributes
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
         self::$DI['app']['EM'] = $originalEm;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
 
         $this->assertResponseOk($response);
         $this->assertBadJsonContent(json_decode($response->getContent()));
@@ -322,7 +322,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertResponseOk($response);
         $this->assertGoodJsonContent(json_decode($response->getContent()));
 
-        $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(l.id) FROM \Entities\LazaretFile l');
+        $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(l.id) FROM \Alchemy\Phrasea\Model\Entities\LazaretFile l');
 
         $count = $query->getSingleScalarResult();
 
@@ -347,7 +347,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertGoodJsonContent(json_decode($response->getContent()));
 
         $query = self::$DI['app']['EM']->createQuery(
-            'SELECT COUNT(l.id) FROM \Entities\LazaretFile l'
+            'SELECT COUNT(l.id) FROM \Alchemy\Phrasea\Model\Entities\LazaretFile l'
         );
 
         $count = $query->getSingleScalarResult();
@@ -380,16 +380,16 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $originalEm = self::$DI['app']['EM'];
 
         //mock Doctrine\ORM\EntityManager
-        $em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
+        $em = $this->getMock('Doctrine\ORM\EntityManager', [], [], '', false);
 
-        $record = $this->getMock('record_adapter', array('substitute_subdef'), array(), '', false);
+        $record = $this->getMock('record_adapter', ['substitute_subdef'], [], '', false);
 
         //expect one call to substitute the documents
         $record->expects($this->once())
             ->method('substitute_subdef')
             ->with($this->equalTo('document'));
 
-        $databox = $this->getMock('databox', array(), array(), '', false);
+        $databox = $this->getMock('databox', [], [], '', false);
 
         //expect to fetch record
         $databox->expects($this->once())
@@ -397,19 +397,19 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->with($this->equalTo(self::$DI['record_1']->get_record_id()))
             ->will($this->returnValue($record));
 
-        $collection = $this->getMock('collection', array(), array(), '', false);
+        $collection = $this->getMock('collection', [], [], '', false);
 
         //expect to fetch databox
         $collection->expects($this->once())
             ->method('get_databox')
             ->will($this->returnValue($databox));
 
-        $lazaretFile = $this->getMock('Entities\LazaretFile', array(), array(), '', false);
+        $lazaretFile = $this->getMock('Alchemy\Phrasea\Model\Entities\LazaretFile', [], [], '', false);
 
         //expect to fetch possible records to subtitute
         $lazaretFile->expects($this->once())
             ->method('getRecordsToSubstitute')
-            ->will($this->returnValue(array(self::$DI['record_2'], self::$DI['record_1'])));
+            ->will($this->returnValue([self::$DI['record_2'], self::$DI['record_1']]));
 
         copy(__DIR__ . '/../../../../../files/cestlafete.jpg', __DIR__ . '/../../../../../../tmp/lazaret/cestlafete.jpg');
 
@@ -430,7 +430,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         //Expect the retrieval of the lazaret file with the provided id
         $em->expects($this->any())
             ->method('find')
-            ->with($this->EqualTo('Entities\LazaretFile'), $this->EqualTo($id))
+            ->with($this->EqualTo('Alchemy\Phrasea\Model\Entities\LazaretFile'), $this->EqualTo($id))
             ->will($this->returnValue($lazaretFile));
 
         //In any case we expect the deletion of the lazaret file
@@ -443,27 +443,26 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('flush');
 
         $called = false;
-        $phpunit = $this;
-        self::$DI['app']['phraseanet.logger'] = self::$DI['app']->protect(function () use (&$called, $phpunit) {
+        self::$DI['app']['phraseanet.logger'] = self::$DI['app']->protect(function () use (&$called) {
             $called = true;
 
-            return $phpunit->getMockBuilder('\Session_Logger')
+            return $this->getMockBuilder('\Session_Logger')
                     ->disableOriginalConstructor()
                     ->getMock();
         });
 
         self::$DI['app']['EM'] = $em;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
 
-        self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/accept/', array(
+        self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/accept/', [
             'record_id' => self::$DI['record_1']->get_record_id()
-        ));
+        ]);
         $this->assertTrue($called);
 
         $response = self::$DI['client']->getResponse();
 
         self::$DI['app']['EM'] = $originalEm;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
         $content = json_decode($response->getContent());
 
         $this->assertResponseOk($response);
@@ -480,9 +479,9 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $originalEm = self::$DI['app']['EM'];
 
         //mock Doctrine\ORM\EntityManager
-        $em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
+        $em = $this->getMock('Doctrine\ORM\EntityManager', [], [], '', false);
 
-        $lazaretFile = $this->getMockBuilder('Entities\LazaretFile')
+        $lazaretFile = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\LazaretFile')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -490,29 +489,29 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         //no records to subsitute
         $lazaretFile->expects($this->once())
             ->method('getRecordsToSubstitute')
-            ->will($this->returnValue(array()));
+            ->will($this->returnValue([]));
 
         $id = 1;
 
         //Expect the retrieval of the lazaret file with the provided id
         $em->expects($this->any())
             ->method('find')
-            ->with($this->EqualTo('Entities\LazaretFile'), $this->EqualTo($id))
+            ->with($this->EqualTo('Alchemy\Phrasea\Model\Entities\LazaretFile'), $this->EqualTo($id))
             ->will($this->returnValue($lazaretFile));
 
         $id = 1;
 
         self::$DI['app']['EM'] = $em;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
 
-        self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/accept/', array(
+        self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/accept/', [
             'record_id' => self::$DI['record_1']->get_record_id()
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
         self::$DI['app']['EM'] = $originalEm;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
 
         $this->assertResponseOk($response);
         $this->assertBadJsonContent(json_decode($response->getContent()));
@@ -527,7 +526,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $route = sprintf('/prod/lazaret/%s/accept/', '99999');
 
-        self::$DI['client']->request('POST', $route, array('record_id' => 1));
+        self::$DI['client']->request('POST', $route, ['record_id' => 1]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -543,7 +542,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $originalEm = self::$DI['app']['EM'];
 
         //mock Doctrine\ORM\EntityManager
-        $em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
+        $em = $this->getMock('Doctrine\ORM\EntityManager', [], [], '', false);
 
         $lazaretFile = $this->getOneLazaretFile();
 
@@ -552,11 +551,11 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         //Expect the retrieval of the lazaret file with the provided id
         $em->expects($this->any())
             ->method('find')
-            ->with($this->EqualTo('Entities\LazaretFile'), $this->EqualTo($id))
+            ->with($this->EqualTo('Alchemy\Phrasea\Model\Entities\LazaretFile'), $this->EqualTo($id))
             ->will($this->returnValue($lazaretFile));
 
         self::$DI['app']['EM'] = $em;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
 
         //Ommit record_id mandatory param
         self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/accept/');
@@ -564,7 +563,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
 
         self::$DI['app']['EM'] = $originalEm;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
 
         $this->assertResponseOk($response);
         $this->assertBadJsonContent(json_decode($response->getContent()));
@@ -580,9 +579,9 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $originalEm = self::$DI['app']['EM'];
 
         //mock Doctrine\ORM\EntityManager
-        $em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
+        $em = $this->getMock('Doctrine\ORM\EntityManager', [], [], '', false);
 
-        $lazaretFile = $this->getMock('Entities\LazaretFile', array(), array(), '', false);
+        $lazaretFile = $this->getMock('Alchemy\Phrasea\Model\Entities\LazaretFile', [], [], '', false);
 
         copy(__DIR__ . '/../../../../../files/cestlafete.jpg', __DIR__ . '/../../../../../../tmp/lazaret/cestlafete.jpg');
 
@@ -599,18 +598,18 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         //Expect the retrieval of the lazaret file with the provided id
         $em->expects($this->any())
             ->method('find')
-            ->with($this->EqualTo('Entities\LazaretFile'), $this->EqualTo($id))
+            ->with($this->EqualTo('Alchemy\Phrasea\Model\Entities\LazaretFile'), $this->EqualTo($id))
             ->will($this->returnValue($lazaretFile));
 
         self::$DI['app']['EM'] = $em;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
 
         self::$DI['client']->request('GET', '/prod/lazaret/' . $id . '/thumbnail/');
 
         $response = self::$DI['client']->getResponse();
 
         self::$DI['app']['EM'] = $originalEm;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
 
         $this->assertResponseOk($response);
 
@@ -635,13 +634,13 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     private function getOneLazaretFile()
     {
         //The lazaret session
-        $lazaretSession = new \Entities\LazaretSession();
+        $lazaretSession = new \Alchemy\Phrasea\Model\Entities\LazaretSession();
         $lazaretSession->setUsrId(self::$DI['user']->get_id());
         $lazaretSession->setUpdated(new \DateTime('now'));
         $lazaretSession->setCreated(new \DateTime('-1 day'));
 
         //The lazaret file
-        $lazaretFile = new \Entities\LazaretFile();
+        $lazaretFile = new \Alchemy\Phrasea\Model\Entities\LazaretFile();
         $lazaretFile->setOriginalName('test');
         $lazaretFile->setFilename('test001.jpg');
         $lazaretFile->setThumbFilename('test001.jpg');

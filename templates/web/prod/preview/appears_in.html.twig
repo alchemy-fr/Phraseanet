@@ -1,7 +1,7 @@
 
 {% if parents.get_count() > 0 %}
 <ul>
-  <li class="title">{% trans 'Apparait aussi dans ces reportages' %}</li>
+  <li class="title">{{ 'Apparait aussi dans ces reportages' | trans }}</li>
   {% for par in parents %}
     <li onclick="openPreview('REG',0,'{{par.get_serialize_key()}}'); return(false);"
         class="otherRegToolTip" {% if app['phraseanet.registry'].get('GV_rollover_reg_preview') %}tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : par.get_sbas_id(), 'record_id' : par.get_record_id(), 'context' : 'basket' }) }}" {% endif %}>
@@ -14,7 +14,7 @@
 
 {% if baskets|length > 0 %}
 <ul>
-  <li class="title">{% trans 'Apparait aussi dans ces paniers' %}</li>
+  <li class="title">{{ 'Apparait aussi dans ces paniers' | trans }}</li>
 {% for basket in baskets %}
   <li onclick="openPreview('BASK',0,'{{basket.getId()}}',true); return(false);"
                    class="otherBaskToolTip" title="{{basket.getDescription()}}">

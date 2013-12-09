@@ -1,7 +1,7 @@
 {% extends 'account/base.html.twig' %}
 
 {% block title %}
-    {% trans 'Access history' %}
+    {{ 'Access history' | trans }}
 {% endblock %}
 
 {% set selected = "sessions" %}
@@ -17,16 +17,16 @@
                      <tr>
                         <th></th>
                         <th>
-                            {% trans 'Date de connexion' %}
+                            {{ 'Date de connexion' | trans }}
                         </th>
                         <th>
-                            {% trans 'Dernier access' %}
+                            {{ 'Dernier access' | trans }}
                         </th>
                         <th>
-                            {% trans 'IP' %}
+                            {{ 'IP' | trans }}
                         </th>
                         <th>
-                            {% trans 'Browser' %}
+                            {{ 'Browser' | trans }}
                         </th>
                     </tr>
                 </thead>
@@ -38,7 +38,7 @@
                                 {% if app['session'].get('session_id') != row.Id() %}
                                     <a href="{{ path('delete_session', {"id": row.Id()}) }}" title="{% trans %}End Activity{% endtrans %}" class="btn btn-inverse btn-small delete-session"><i class="icon-remove"> {% trans %}End Activity{% endtrans %}</i></a>
                                 {% else  %}
-                                    {% trans 'Current session' %}
+                                    {{ 'Current session' | trans }}
                                 {% endif %}
                             </td>
                             <td>

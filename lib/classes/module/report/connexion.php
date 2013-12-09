@@ -13,7 +13,7 @@ use Alchemy\Phrasea\Application;
 
 class module_report_connexion extends module_report
 {
-    protected $cor_query = array(
+    protected $cor_query = [
         'user'        => 'log.user',
         'usrid'       => 'log.usrid',
         'ddate'       => 'log.date',
@@ -25,7 +25,7 @@ class module_report_connexion extends module_report
         'sit_session' => 'log.sit_session',
         'appli'       => 'log.appli',
         'ip'          => 'log.ip'
-    );
+    ];
 
     /**
      * constructor
@@ -39,7 +39,7 @@ class module_report_connexion extends module_report
     public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
         parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
-        $this->title = _('report::Connexions');
+        $this->title = $this->app->trans('report::Connexions');
     }
 
     /**
@@ -64,7 +64,7 @@ class module_report_connexion extends module_report
      */
     public function colFilter($field)
     {
-        $ret = array();
+        $ret = [];
         $sqlBuilder = $this->sqlBuilder('connexion');
         $var = $sqlBuilder->sqlDistinctValByField($field);
         $sql = $var['sql'];
@@ -78,12 +78,12 @@ class module_report_connexion extends module_report
         foreach ($rs as $row) {
             $value = $row['val'];
             if ($field == "appli")
-                $caption = implode(' ', phrasea::modulesName(@unserialize($value)));
+                $caption = implode(' ', phrasea::modulesName($this->app['translator'], @unserialize($value)));
             elseif ($field == 'ddate')
                 $caption = $this->app['date-formatter']->getPrettyString(new DateTime($value));
             else
                 $caption = $row['val'];
-            $ret[] = array('val'   => $caption, 'value' => $value);
+            $ret[] = ['val'   => $caption, 'value' => $value];
         }
 
         return $ret;
@@ -106,7 +106,7 @@ class module_report_connexion extends module_report
 
             foreach ($this->champ as $key => $value) {
                 if ( ! isset($row[$value])) {
-                    $this->result[$i][$value] = '<i>' . _('report:: non-renseigne') . '</i>';
+                    $this->result[$i][$value] = '<i>' . $this->app->trans('report:: non-renseigne') . '</i>';
                     continue;
                 }
 
@@ -114,12 +114,12 @@ class module_report_connexion extends module_report
                     $applis = false;
                     if (($applis = @unserialize($row[$value])) !== false) {
                         if (empty($applis)) {
-                            $this->result[$i][$value] = '<i>' . _('report:: non-renseigne') . '</i>';
+                            $this->result[$i][$value] = '<i>' . $this->app->trans('report:: non-renseigne') . '</i>';
                         } else {
-                            $this->result[$i][$value] = implode(' ', phrasea::modulesName($applis));
+                            $this->result[$i][$value] = implode(' ', phrasea::modulesName($this->app['translator'], $applis));
                         }
                     } else {
-                        $this->result[$i][$value] = '<i>' . _('report:: non-renseigne') . '</i>';
+                        $this->result[$i][$value] = '<i>' . $this->app->trans('report:: non-renseigne') . '</i>';
                     }
                 } elseif ($value == 'ddate') {
                     $this->result[$i][$value] = $this->pretty_string ?
@@ -140,9 +140,9 @@ class module_report_connexion extends module_report
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
-        $params = array_merge(array(
-                ':site_id' => $app['phraseanet.configuration']['main']['key']
-            ),
+        $params = array_merge([
+                ':site_id' => $app['conf']->get(['main', 'key'])
+            ],
             $datefilter['params'],
             $collfilter['params']
         );

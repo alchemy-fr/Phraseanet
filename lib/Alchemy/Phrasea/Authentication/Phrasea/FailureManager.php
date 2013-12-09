@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\Authentication\Phrasea;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
 use Doctrine\ORM\EntityManager;
-use Entities\AuthFailure;
+use Alchemy\Phrasea\Model\Entities\AuthFailure;
 use Neutron\ReCaptcha\ReCaptcha;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -80,7 +80,7 @@ class FailureManager
     public function checkFailures($username, Request $request)
     {
         $failures = $this->em
-            ->getRepository('Entities\AuthFailure')
+            ->getRepository('Alchemy\Phrasea\Model\Entities\AuthFailure')
             ->findLockedFailuresMatching($username, $request->getClientIp());
 
         if (0 === count($failures)) {
@@ -109,7 +109,7 @@ class FailureManager
     private function removeOldFailures()
     {
         $failures = $this->em
-            ->getRepository('Entities\AuthFailure')
+            ->getRepository('Alchemy\Phrasea\Model\Entities\AuthFailure')
             ->findOldFailures('-2 months');
 
         if (0 < count($failures)) {

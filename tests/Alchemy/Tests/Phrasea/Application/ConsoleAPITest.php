@@ -19,10 +19,10 @@ class ConsoleAPITest extends \PHPUnit_Framework_TestCase
 
     public function provideConsoleNames()
     {
-        return array(
-            array('console'),
-            array('setup'),
-            array('developer'),
-        );
+        return [
+            ['console'],
+            ['setup'],
+            ['developer'],
+        ];
     }
 }

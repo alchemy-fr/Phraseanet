@@ -11,12 +11,6 @@
 
 namespace Alchemy\Phrasea\Media\Subdef\OptionType;
 
-/**
- * Multi Subdef Option
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Multi implements OptionType
 {
     protected $name;
@@ -28,7 +22,7 @@ class Multi implements OptionType
     {
         $this->displayName = $displayName;
         $this->name = $name;
-        $this->available = array();
+        $this->available = [];
         foreach ($available as $a) {
             $this->available[$a] = false;
         }
@@ -93,7 +87,7 @@ class Multi implements OptionType
             return $this->available;
         }
 
-        $value = array();
+        $value = [];
 
         foreach ($this->available as $a => $selected) {
             if ($selected) {

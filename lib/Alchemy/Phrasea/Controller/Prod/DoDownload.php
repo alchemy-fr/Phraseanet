@@ -17,6 +17,8 @@ use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Event\PostResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 class DoDownload implements ControllerProviderInterface
 {
@@ -25,56 +27,19 @@ class DoDownload implements ControllerProviderInterface
      */
     public function connect(Application $app)
     {
+        $app['controller.prod.do-download'] = $this;
+
         $controllers = $app['controllers_factory'];
 
-        /**
-         * Prepare a set of documents for download
-         *
-         * name         : prepare_download
-         *
-         * description  : Prepare a set of documents for download
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/{token}/prepare/', $this->call('prepareDownload'))
+        $controllers->get('/{token}/prepare/', 'controller.prod.do-download:prepareDownload')
             ->bind('prepare_download')
             ->assert('token', '[a-zA-Z0-9]{8,16}');
 
-        /**
-         * Download a set of documents
-         *
-         * name         : document_download
-         *
-         * description  : Download a set of documents
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->match('/{token}/get/', $this->call('downloadDocuments'))
+        $controllers->match('/{token}/get/', 'controller.prod.do-download:downloadDocuments')
             ->bind('document_download')
             ->assert('token', '[a-zA-Z0-9]{8,16}');
 
-        /**
-         * Build a zip with all downloaded documents
-         *
-         * name         : execute_download
-         *
-         * description  :  Build a zip with all downloaded documents
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/{token}/execute/', $this->call('downloadExecute'))
+        $controllers->post('/{token}/execute/', 'controller.prod.do-download:downloadExecute')
             ->bind('execute_download')
             ->assert('token', '[a-zA-Z0-9]{8,16}');
 
@@ -98,7 +63,7 @@ class DoDownload implements ControllerProviderInterface
             $app->abort(500, 'Invalid datas');
         }
 
-        $records = array();
+        $records = [];
 
         foreach ($list['files'] as $file) {
             if (!is_array($file) || !isset($file['base_id']) || !isset($file['record_id'])) {
@@ -116,14 +81,14 @@ class DoDownload implements ControllerProviderInterface
         }
 
         return new Response($app['twig']->render(
-            '/prod/actions/Download/prepare.html.twig', array(
-            'module_name'   => _('Export'),
-            'module'        => _('Export'),
+            '/prod/actions/Download/prepare.html.twig', [
+            'module_name'   => $app->trans('Export'),
+            'module'        => $app->trans('Export'),
             'list'          => $list,
             'records'       => $records,
             'token'         => $token,
             'anonymous'     => $request->query->get('anonymous', false)
-        )));
+        ]));
     }
 
     /**
@@ -161,12 +126,12 @@ class DoDownload implements ControllerProviderInterface
             $app->abort(404, 'Download file not found');
         }
 
-        $app->finish(function ($request, $response) use ($list, $app) {
+        $app['dispatcher']->addListener(KernelEvents::TERMINATE, function (PostResponseEvent $event) use ($list, $app) {
             \set_export::log_download(
                 $app,
                 $list,
-                $request->request->get('type'),
-                (null !== $request->request->get('anonymous') ? true : false),
+                $event->getRequest()->request->get('type'),
+                (null !== $event->getRequest()->request->get('anonymous') ? true : false),
                 (isset($list['email']) ? $list['email'] : '')
             );
         });
@@ -188,17 +153,17 @@ class DoDownload implements ControllerProviderInterface
         try {
             $datas = $app['tokens']->helloToken($token);
         } catch (NotFoundHttpException $e) {
-            return $app->json(array(
+            return $app->json([
                 'success' => false,
                 'message' => 'Invalid token'
-            ));
+            ]);
         }
 
         if (false === $list = @unserialize((string) $datas['datas'])) {
-            return $app->json(array(
+            return $app->json([
                 'success' => false,
                 'message' => 'Invalid datas'
-            ));
+            ]);
         }
 
         set_time_limit(0);
@@ -213,20 +178,9 @@ class DoDownload implements ControllerProviderInterface
             sprintf($app['root.path'] . '/tmp/download/%s.zip', $datas['value']) // Dest file
         );
 
-        return $app->json(array(
+        return $app->json([
             'success' => true,
             'message' => ''
-        ));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
+        ]);
     }
 }

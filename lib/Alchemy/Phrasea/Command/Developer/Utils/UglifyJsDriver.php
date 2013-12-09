@@ -18,18 +18,27 @@ use Psr\Log\LoggerInterface;
 
 class UglifyJsDriver extends AbstractBinary
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'uglifyjs';
     }
 
-    public static function create($conf = array(), LoggerInterface $logger = null)
+    /**
+     * @param array|ConfigurationInterface $conf
+     * @param LoggerInterface              $logger
+     *
+     * @return UglifyJsDriver
+     */
+    public static function create($conf = [], LoggerInterface $logger = null)
     {
         if (!$conf instanceof ConfigurationInterface) {
             $conf = new Configuration($conf);
         }
 
-        $binaries = $conf->get('uglifyjs.binaries', array('uglifyjs'));
+        $binaries = $conf->get('uglifyjs.binaries', ['uglifyjs']);
 
         return static::load($binaries, $logger, $conf);
     }

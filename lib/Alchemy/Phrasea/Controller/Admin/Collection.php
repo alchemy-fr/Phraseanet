@@ -20,9 +20,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Collection implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.admin.collection'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
@@ -30,347 +31,87 @@ class Collection implements ControllerProviderInterface
                 ->requireRightOnBase($app['request']->attributes->get('bas_id'), 'canadmin');
         });
 
-        /**
-         * Get a collection
-         *
-         * name         : admin_display_collection
-         *
-         * description  : Display collection information page
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/{bas_id}/', $this->call('getCollection'))
+        $controllers->get('/{bas_id}/', 'controller.admin.collection:getCollection')
             ->assert('bas_id', '\d+')
             ->bind('admin_display_collection');
 
-        /**
-         * Get a collection suggested values
-         *
-         * name         : admin_collection_display_suggested_values
-         *
-         * description  : Display page to edit suggested values
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/{bas_id}/suggested-values/', $this->call('getSuggestedValues'))
+        $controllers->get('/{bas_id}/suggested-values/', 'controller.admin.collection:getSuggestedValues')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_display_suggested_values');
 
-        /**
-         * Submit suggested values
-         *
-         * name         : admin_collection_submit_suggested_values
-         *
-         * description  : Submit suggested values
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->post('/{bas_id}/suggested-values/', $this->call('submitSuggestedValues'))
+        $controllers->post('/{bas_id}/suggested-values/', 'controller.admin.collection:submitSuggestedValues')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_suggested_values');
 
-        /**
-         * Delete a collection
-         *
-         * name         : admin_collection_delete
-         *
-         * description  : Delete a collection
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/{bas_id}/delete/', $this->call('delete'))
+        $controllers->post('/{bas_id}/delete/', 'controller.admin.collection:delete')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_delete');
 
-        /**
-         * Enable a collection
-         *
-         * name         : admin_collection_enable
-         *
-         * description  : Enable a collection
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/{bas_id}/enable/', $this->call('enable'))
+        $controllers->post('/{bas_id}/enable/', 'controller.admin.collection:enable')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_enable');
 
-        /**
-         * Disable a collection
-         *
-         * name         : admin_collection_disable
-         *
-         * description  : Disable a collection
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/{bas_id}/disabled/', $this->call('disabled'))
+        $controllers->post('/{bas_id}/disabled/', 'controller.admin.collection:disabled')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_disable');
 
-        /**
-         * Set new order admin
-         *
-         * name         : admin_collection_submit_order_admins
-         *
-         * description  : Set new admins for handle items order
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
-        $controllers->post('/{bas_id}/order/admins/', $this->call('setOrderAdmins'))
+        $controllers->post('/{bas_id}/order/admins/', 'controller.admin.collection:setOrderAdmins')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_order_admins');
 
-        /**
-         * Set publication watermark
-         *
-         * name         : admin_collection_submit_publication
-         *
-         * description  : Set publication watermark
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/{bas_id}/publication/display/', $this->call('setPublicationDisplay'))
+        $controllers->post('/{bas_id}/publication/display/', 'controller.admin.collection:setPublicationDisplay')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_publication');
 
-        /**
-         * Rename a collection
-         *
-         * name         : admin_collection_rename
-         *
-         * description  : Rename a collection
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/{bas_id}/rename/', $this->call('rename'))
+        $controllers->post('/{bas_id}/rename/', 'controller.admin.collection:rename')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_rename');
 
-        $controllers->post('/{bas_id}/labels/', $this->call('labels'))
+        $controllers->post('/{bas_id}/labels/', 'controller.admin.collection:labels')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_labels');
 
-        /**
-         * Empty a collection
-         *
-         * name         : admin_collection_empty
-         *
-         * description  : Empty a collection
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/{bas_id}/empty/', $this->call('emptyCollection'))
+        $controllers->post('/{bas_id}/empty/', 'controller.admin.collection:emptyCollection')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_empty');
 
-        /**
-         * Unmount a collection
-         *
-         * name         : admin_collection_unmount
-         *
-         * description  : Unmount a collection
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/{bas_id}/unmount/', $this->call('unmount'))
+        $controllers->post('/{bas_id}/unmount/', 'controller.admin.collection:unmount')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_unmount');
 
-        /**
-         * Set a collection mini logo
-         *
-         * name         : admin_collection_submit_logo
-         *
-         * description  : Set a collection mini logo
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : REDIRECT Response
-         */
-        $controllers->post('/{bas_id}/picture/mini-logo/', $this->call('setMiniLogo'))
+        $controllers->post('/{bas_id}/picture/mini-logo/', 'controller.admin.collection:setMiniLogo')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_logo');
 
-        /**
-         * Delete the current collection mini logo
-         *
-         * name         : admin_collection_delete_logo
-         *
-         * description  : Delete the current collection mini logo
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/{bas_id}/picture/mini-logo/delete/', $this->call('deleteLogo'))
+        $controllers->post('/{bas_id}/picture/mini-logo/delete/', 'controller.admin.collection:deleteLogo')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_delete_logo');
 
-        /**
-         * Set a new logo
-         *
-         * name         : admin_collection_submit_logo
-         *
-         * description  : Set a new logo
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : REDIRECT Response
-         */
-        $controllers->post('/{bas_id}/picture/watermark/', $this->call('setWatermark'))
+        $controllers->post('/{bas_id}/picture/watermark/', 'controller.admin.collection:setWatermark')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_watermark');
 
-        /**
-         * Delete a mini logo
-         *
-         * name         : admin_collection_delete_logo
-         *
-         * description  : Delete a mini logo
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/{bas_id}/picture/watermark/delete/', $this->call('deleteWatermark'))
+        $controllers->post('/{bas_id}/picture/watermark/delete/', 'controller.admin.collection:deleteWatermark')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_delete_watermark');
 
-        /**
-         * Set a new stamp logo
-         *
-         * name         :
-         *
-         * description  : Set a new stamp
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : REDIRECT Response
-         */
-        $controllers->post('/{bas_id}/picture/stamp-logo/', $this->call('setStamp'))
+        $controllers->post('/{bas_id}/picture/stamp-logo/', 'controller.admin.collection:setStamp')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_stamp');
 
-        /**
-         * Delete a stamp logo
-         *
-         * name         : admin_collection_delete_stamp
-         *
-         * description  : Delete a stamp
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/{bas_id}/picture/stamp-logo/delete/', $this->call('deleteStamp'))
+        $controllers->post('/{bas_id}/picture/stamp-logo/delete/', 'controller.admin.collection:deleteStamp')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_delete_stamp');
 
-        /**
-         * Set a new banner
-         *
-         * name         : admin_collection_submit_banner
-         *
-         * description  : Set a new logo
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : REDIRECT Response
-         */
-        $controllers->post('/{bas_id}/picture/banner/', $this->call('setBanner'))
+        $controllers->post('/{bas_id}/picture/banner/', 'controller.admin.collection:setBanner')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_banner');
 
-        /**
-         * Delete a banner
-         *
-         * name         : admin_collection_delete_banner
-         *
-         * description  : Delete a mini logo
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : REDIRECT Response
-         */
-        $controllers->post('/{bas_id}/picture/banner/delete/', $this->call('deleteBanner'))
+        $controllers->post('/{bas_id}/picture/banner/delete/', 'controller.admin.collection:deleteBanner')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_delete_banner');
 
-        /**
-         * Get document details in the requested collection
-         *
-         * name         : admin_collection_display_document_details
-         *
-         * description  : Get documents collection details
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/{bas_id}/informations/details/', $this->call('getDetails'))
+        $controllers->get('/{bas_id}/informations/details/', 'controller.admin.collection:getDetails')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_display_document_details');
 
@@ -389,37 +130,37 @@ class Collection implements ControllerProviderInterface
     {
         $collection = \collection::get_from_base_id($app, $bas_id);
 
-        $admins = array();
+        $admins = [];
 
-        if ($app['authentication']->getUser()->ACL()->has_right_on_base($bas_id, 'manage')) {
+        if ($app['acl']->get($app['authentication']->getUser())->has_right_on_base($bas_id, 'manage')) {
             $query = new \User_Query($app);
-            $admins = $query->on_base_ids(array($bas_id))
-                ->who_have_right(array('order_master'))
+            $admins = $query->on_base_ids([$bas_id])
+                ->who_have_right(['order_master'])
                 ->execute()
                 ->get_results();
         }
 
         switch ($errorMsg = $request->query->get('error')) {
             case 'file-error':
-                $errorMsg = _('Error while sending the file');
+                $errorMsg = $app->trans('Error while sending the file');
                 break;
             case 'file-invalid':
-                $errorMsg = _('Invalid file format');
+                $errorMsg = $app->trans('Invalid file format');
                 break;
             case 'file-file-too-big':
-                $errorMsg = _('The file is too big');
+                $errorMsg = $app->trans('The file is too big');
                 break;
             case 'collection-not-empty':
-                $errorMsg = _('Empty the collection before removing');
+                $errorMsg = $app->trans('Empty the collection before removing');
                 break;
         }
 
-        return $app['twig']->render('admin/collection/collection.html.twig', array(
+        return $app['twig']->render('admin/collection/collection.html.twig', [
             'collection' => $collection,
             'admins'     => $admins,
             'errorMsg'   => $errorMsg,
             'reloadTree' => $request->query->get('reload-tree') === '1'
-        ));
+        ]);
     }
 
     /**
@@ -434,8 +175,8 @@ class Collection implements ControllerProviderInterface
     {
         $success = false;
 
-        if (count($admins = $request->request->get('admins', array())) > 0) {
-            $newAdmins = array();
+        if (count($admins = $request->request->get('admins', [])) > 0) {
+            $newAdmins = [];
 
             foreach ($admins as $admin) {
                 $newAdmins[] = $admin;
@@ -448,17 +189,17 @@ class Collection implements ControllerProviderInterface
                 try {
                     $userQuery = new \User_Query($app);
 
-                    $result = $userQuery->on_base_ids(array($bas_id))
-                            ->who_have_right(array('order_master'))
+                    $result = $userQuery->on_base_ids([$bas_id])
+                            ->who_have_right(['order_master'])
                             ->execute()->get_results();
 
                     foreach ($result as $user) {
-                        $user->ACL()->update_rights_to_base($bas_id, array('order_master' => false));
+                        $app['acl']->get($user)->update_rights_to_base($bas_id, ['order_master' => false]);
                     }
 
                     foreach (array_filter($newAdmins) as $admin) {
                         $user = \User_Adapter::getInstance($admin, $app);
-                        $user->ACL()->update_rights_to_base($bas_id, array('order_master' => true));
+                        $app['acl']->get($user)->update_rights_to_base($bas_id, ['order_master' => true]);
                     }
                     $conn->commit();
 
@@ -469,10 +210,10 @@ class Collection implements ControllerProviderInterface
             }
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $bas_id,
             'success' => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -486,20 +227,17 @@ class Collection implements ControllerProviderInterface
     public function emptyCollection(Application $app, Request $request, $bas_id)
     {
         $success = false;
-        $msg = _('An error occurred');
+        $msg = $app->trans('An error occurred');
 
         $collection = \collection::get_from_base_id($app, $bas_id);
         try {
 
             if ($collection->get_record_amount() <= 500) {
                 $collection->empty_collection(500);
-                $msg = _('Collection empty successful');
+                $msg = $app->trans('Collection empty successful');
             } else {
-                $settings = \task_period_emptyColl::getDefaultSettings($app['phraseanet.configuration'], array(
-                    'bas_id' => $collection->get_base_id()
-                ));
-                \task_period_emptyColl::create($app, $settings);
-                $msg = _('A task has been creted, please run it to complete empty collection');
+                $app['manipulator.task']->createEmptyCollectionJob($collection);
+                $msg = $app->trans('A task has been creted, please run it to complete empty collection');
             }
 
             $success = true;
@@ -508,17 +246,17 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                     'success' => $success,
                     'msg'     => $msg,
                     'bas_id'  => $collection->get_base_id()
-                ));
+                ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $collection->get_base_id(),
             'success' => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -543,17 +281,17 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful removal') : _('An error occured'),
+                'msg'     => $success ? $app->trans('Successful removal') : $app->trans('An error occured'),
                 'bas_id'  => $collection->get_base_id()
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $collection->get_base_id(),
             'success' => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -578,17 +316,17 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful removal') : _('An error occured'),
+                'msg'     => $success ? $app->trans('Successful removal') : $app->trans('An error occured'),
                 'bas_id'  => $collection->get_base_id()
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $collection->get_base_id(),
             'success' => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -613,17 +351,17 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful removal') : _('An error occured'),
+                'msg'     => $success ? $app->trans('Successful removal') : $app->trans('An error occured'),
                 'bas_id'  => $collection->get_base_id()
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $collection->get_base_id(),
             'success' => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -649,17 +387,17 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful removal') : _('An error occured'),
+                'msg'     => $success ? $app->trans('Successful removal') : $app->trans('An error occured'),
                 'bas_id'  => $collection->get_base_id()
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $collection->get_base_id(),
             'success' => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -677,19 +415,19 @@ class Collection implements ControllerProviderInterface
         }
 
         if ($file->getClientSize() > 1024 * 1024) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-too-big',
-            ));
+            ]);
         }
 
         if (!$file->isValid()) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-invalid',
-            ));
+            ]);
         }
 
         $collection = \collection::get_from_base_id($app, $bas_id);
@@ -699,17 +437,17 @@ class Collection implements ControllerProviderInterface
 
             $app['filesystem']->remove($file->getPathname());
         } catch (\Exception $e) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-error',
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $bas_id,
             'success' => 1,
-        ));
+        ]);
     }
 
     /**
@@ -727,19 +465,19 @@ class Collection implements ControllerProviderInterface
         }
 
         if ($file->getClientSize() > 1024 * 1024) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-too-big',
-            ));
+            ]);
         }
 
         if (!$file->isValid()) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-invalid',
-            ));
+            ]);
         }
 
         $collection = \collection::get_from_base_id($app, $bas_id);
@@ -749,17 +487,17 @@ class Collection implements ControllerProviderInterface
 
             $app['filesystem']->remove($file->getPathname());
         } catch (\Exception $e) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-error',
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $bas_id,
             'success' => 1,
-        ));
+        ]);
     }
 
     /**
@@ -777,19 +515,19 @@ class Collection implements ControllerProviderInterface
         }
 
         if ($file->getClientSize() > 65535) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-too-big',
-            ));
+            ]);
         }
 
         if (!$file->isValid()) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-invalid',
-            ));
+            ]);
         }
 
         $collection = \collection::get_from_base_id($app, $bas_id);
@@ -798,17 +536,17 @@ class Collection implements ControllerProviderInterface
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, $file, \collection::PIC_WM);
             $app['filesystem']->remove($file->getPathname());
         } catch (\Exception $e) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-error',
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $bas_id,
             'success' => 1,
-        ));
+        ]);
     }
 
     /**
@@ -826,19 +564,19 @@ class Collection implements ControllerProviderInterface
         }
 
         if ($file->getClientSize() > 65535) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-too-big',
-            ));
+            ]);
         }
 
         if (!$file->isValid()) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-invalid',
-            ));
+            ]);
         }
 
         $collection = \collection::get_from_base_id($app, $bas_id);
@@ -847,17 +585,17 @@ class Collection implements ControllerProviderInterface
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, $file, \collection::PIC_LOGO);
             $app['filesystem']->remove($file->getPathname());
         } catch (\Exception $e) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
                 'error'   => 'file-error',
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $bas_id,
             'success' => 1,
-        ));
+        ]);
     }
 
     /**
@@ -871,50 +609,50 @@ class Collection implements ControllerProviderInterface
     public function delete(Application $app, Request $request, $bas_id)
     {
         $success = false;
-        $msg = _('An error occured');
+        $msg = $app->trans('An error occured');
 
         $collection = \collection::get_from_base_id($app, $bas_id);
 
         try {
             if ($collection->get_record_amount() > 0) {
-                $msg = _('Empty the collection before removing');
+                $msg = $app->trans('Empty the collection before removing');
             } else {
                 $collection->unmount_collection($app);
                 $collection->delete();
                 $success = true;
-                $msg = _('Successful removal');
+                $msg = $app->trans('Successful removal');
             }
         } catch (\Exception $e) {
 
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
                 'msg'     => $msg
-            ));
+            ]);
         }
 
         if ($collection->get_record_amount() > 0) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'  => $collection->get_sbas_id(),
                 'success' => 0,
                 'error'   => 'collection-not-empty',
-            ));
+            ]);
         }
 
         if ($success) {
-            return $app->redirectPath('admin_display_collection', array(
+            return $app->redirectPath('admin_display_collection', [
                 'bas_id'      => $collection->get_sbas_id(),
                 'success'     => 1,
                 'reload-tree' => 1,
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $collection->get_sbas_id(),
             'success' => 0,
-        ));
+        ]);
     }
 
     /**
@@ -939,16 +677,16 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('The publication has been stopped') : _('An error occured')
-            ));
+                'msg'     => $success ? $app->trans('The publication has been stopped') : $app->trans('An error occured')
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $collection->get_sbas_id(),
             'success' => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -962,7 +700,7 @@ class Collection implements ControllerProviderInterface
     public function rename(Application $app, Request $request, $bas_id)
     {
         if (trim($name = $request->request->get('name')) === '') {
-            $app->abort(400, _('Missing name parameter'));
+            $app->abort(400, $app->trans('Missing name parameter'));
         }
 
         $success = false;
@@ -977,33 +715,33 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful update') : _('An error occured')
-            ));
+                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured')
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'      => $collection->get_base_id(),
             'success'     => (int) $success,
             'reload-tree' => 1,
-        ));
+        ]);
     }
 
     public function labels(Application $app, Request $request, $bas_id)
     {
         if (null === $labels = $request->request->get('labels')) {
-            $app->abort(400, _('Missing labels parameter'));
+            $app->abort(400, $app->trans('Missing labels parameter'));
         }
         if (false === is_array($labels)) {
-            $app->abort(400, _('Invalid labels parameter'));
+            $app->abort(400, $app->trans('Invalid labels parameter'));
         }
 
         $collection = \collection::get_from_base_id($app, $bas_id);
         $success = true;
 
         try {
-            foreach ($app['locales.I18n.available'] as $code => $language) {
+            foreach ($app['locales.available'] as $code => $language) {
                 if (!isset($labels[$code])) {
                     continue;
                 }
@@ -1015,17 +753,17 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful update') : _('An error occured')
-            ));
+                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured')
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'      => $collection->get_base_id(),
             'success'     => (int) $success,
             'reload-tree' => 1,
-        ));
+        ]);
     }
 
     /**
@@ -1054,16 +792,16 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful update') : _('An error occured')
-            ));
+                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured')
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'      => $collection->get_sbas_id(),
             'success'     => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -1088,16 +826,16 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful update') : _('An error occured')
-            ));
+                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured')
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'      => $collection->get_sbas_id(),
             'success'     => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -1122,16 +860,16 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful update') : _('An error occured')
-            ));
+                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured')
+            ]);
         }
 
-        return $app->redirectPath('admin_display_collection', array(
+        return $app->redirectPath('admin_display_collection', [
             'bas_id'      => $collection->get_sbas_id(),
             'success'     => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -1145,7 +883,7 @@ class Collection implements ControllerProviderInterface
     {
         $databox = $app['phraseanet.appbox']->get_databox(\phrasea::sbasFromBas($app, $bas_id));
         $collection = \collection::get_from_base_id($app, $bas_id);
-        $structFields = $suggestedValues = $basePrefs = array();
+        $structFields = $suggestedValues = $basePrefs = [];
 
         foreach ($databox->get_meta_structure() as $meta) {
             if ($meta->is_readonly()) {
@@ -1162,9 +900,9 @@ class Collection implements ControllerProviderInterface
                 foreach ($z[0] as $ki => $vi) {
                     if ($vi && isset($structFields[$ki])) {
                         foreach ($vi->value as $oneValue) {
-                            $suggestedValues[] = array(
+                            $suggestedValues[] = [
                                 'key'   => $ki, 'value' => $f, 'name'  => (string) $oneValue
-                            );
+                            ];
                             $f++;
                         }
                     }
@@ -1174,7 +912,7 @@ class Collection implements ControllerProviderInterface
             $z = $sxe->xpath('/baseprefs');
             if ($z && is_array($z)) {
                 foreach ($z[0] as $ki => $vi) {
-                    $pref = array('status' => null, 'xml'    => null);
+                    $pref = ['status' => null, 'xml'    => null];
 
                     if ($ki == 'status') {
                         $pref['status'] = $vi;
@@ -1187,13 +925,13 @@ class Collection implements ControllerProviderInterface
             }
         }
 
-        return $app['twig']->render('admin/collection/suggested_value.html.twig', array(
+        return $app['twig']->render('admin/collection/suggested_value.html.twig', [
             'collection'      => $collection,
             'databox'         => $databox,
             'suggestedValues' => $suggestedValues,
             'structFields'    => $structFields,
             'basePrefs'       => $basePrefs,
-        ));
+        ]);
     }
 
     /**
@@ -1221,17 +959,17 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => $success,
-                'msg'     => $success ? _('Successful update') : _('An error occured'),
+                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured'),
                 'bas_id'  => $collection->get_base_id()
-            ));
+            ]);
         }
 
-        return $app->redirectPath('admin_collection_display_suggested_values', array(
+        return $app->redirectPath('admin_collection_display_suggested_values', [
             'bas_id'      => $collection->get_sbas_id(),
             'success'     => (int) $success,
-        ));
+        ]);
     }
 
     /**
@@ -1246,12 +984,12 @@ class Collection implements ControllerProviderInterface
     {
         $collection = \collection::get_from_base_id($app, $bas_id);
 
-        $out = array('total' => array('totobj' => 0, 'totsiz' => 0, 'mega'   => '0', 'giga'   => '0'), 'result' => array());
+        $out = ['total' => ['totobj' => 0, 'totsiz' => 0, 'mega'   => '0', 'giga'   => '0'], 'result' => []];
 
         foreach ($collection->get_record_details() as $vrow) {
 
             $last_k1 = $last_k2 = null;
-            $outRow = array('midobj' => 0, 'midsiz' => 0);
+            $outRow = ['midobj' => 0, 'midsiz' => 0];
 
             if ($vrow['amount'] > 0 || $last_k1 !== $vrow['coll_id']) {
 
@@ -1321,20 +1059,9 @@ class Collection implements ControllerProviderInterface
             $out['total']['giga'] = $out['total']['totsiz'] / (1024 * 1024 * 1024);
         }
 
-        return $app['twig']->render('admin/collection/details.html.twig', array(
+        return $app['twig']->render('admin/collection/details.html.twig', [
             'collection' => $collection,
             'table'      => $out,
-        ));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
+        ]);
     }
 }

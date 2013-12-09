@@ -14,7 +14,7 @@ class EnumTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->object = new Enum('Numo', 'enumerateur', array('un', 'dos', 'tres'), 'dos');
+        $this->object = new Enum('Numo', 'enumerateur', ['un', 'dos', 'tres'], 'dos');
     }
 
     /**
@@ -52,7 +52,7 @@ class EnumTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetAvailableValues()
     {
-        $this->assertEquals(array('un', 'dos', 'tres'), $this->object->getAvailableValues());
+        $this->assertEquals(['un', 'dos', 'tres'], $this->object->getAvailableValues());
     }
 
     /**

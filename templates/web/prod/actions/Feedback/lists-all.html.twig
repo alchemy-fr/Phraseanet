@@ -1,12 +1,12 @@
 
       <div class="PNB10 lists">
-        <h1>{% trans 'Lists' %}</h1>
+        <h1>{{ 'Lists' | trans }}</h1>
         <span class="action">
           <a href="{{ path('prod_lists_list') }}" class="list_adder link">
-            {% trans "Add" %}
+            {{ "Add" | trans }}
           </a>
           <a href="{{ path('prod_lists_all') }}" class="list_refresh link">
-            {% trans "Refresh" %}
+            {{ "Refresh" | trans }}
           </a>
         </span>
         <ul class="lists">
@@ -14,15 +14,13 @@
             {% set length = '<span class="counter">' ~ list.getEntries().count() ~ '</span>' %}
             <li class="list" style="padding:2px;">
               <a href="{{ path('prod_push_list_edit', { 'list_id' : list.getId() }) }}" class="list_link">
-                {% if list.getOwner(app['authentication'].getUser(), app).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+                {% if list.getOwner(app['authentication'].getUser(), app).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
                   <img src="/skins/prod/Push/list-icon.png" />
                 {% else %}
                   <img src="/skins/icons/SHARE16.png" />
                 {% endif %}
                 {{ list.getName() }}
-                {% trans %}
-                  ({{ length }})
-                {% endtrans %}
+                ({{ length }})
               </a>
             </li>
           {% endfor %}

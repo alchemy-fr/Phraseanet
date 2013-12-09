@@ -1,7 +1,7 @@
 {% extends "account/base.html.twig" %}
 
 {% block title %}
-    {% trans "Client application" %}
+    {{ "Client application" | trans }}
 {% endblock %}
 
 {% set selected = "" %}
@@ -9,7 +9,7 @@
 {% block content_account %}
     <div class="row-fluid">
         <div class="span12">
-            <h1>{% trans "Application" %}</h1>
+            <h1>{{ "Application" | trans }}</h1>
             <input type="hidden" value="{{ application.get_id() }}" name="app_id"/>
 
             <div>
@@ -17,8 +17,8 @@
               <div>{{ application.get_description() }}</div>
             </div>
 
-            <h1>{% trans "settings OAuth" %}</h1>
-            <p>{% trans "Les parametres oauth de votre application." %}</p>
+            <h1>{{ "settings OAuth" | trans }}</h1>
+            <p>{{ "Les parametres oauth de votre application." | trans }}</p>
 
             <table id="app-oauth-setting" class="table table-condensed  table-bordered">
                 <tbody>
@@ -31,7 +31,7 @@
                         <td>{{ application.get_client_secret() }}</td>
                     </tr>
                     <tr>
-                        <td>{% trans "URL de callback" %}</td>
+                        <td>{{ "URL de callback" | trans }}</td>
                         {% if application.get_type() == constant("API_OAuth2_Application::DESKTOP_TYPE") %}
                             <td>
                                 <span>{{ application.get_redirect_uri() }}</span>
@@ -40,10 +40,10 @@
                             <td class="url_callback">
                                 <span class="url_callback_input">{{ application.get_redirect_uri() }}</span>
                                 <a href="{{ path("submit_application_callback", {"id" : application.get_id()}) }}" class="save_callback btn btn-small btn-info" style="display:none;">
-                                    {% trans "Save" %}
+                                    {{ "Save" | trans }}
                                 </a>
                                 <button type="button" class="modifier_callback btn btn-small">
-                                      {% trans "Modify" %}
+                                      {{ "Modify" | trans }}
                                 </button>
                             </td>
                         {%endif%}
@@ -57,7 +57,7 @@
                         <td>{{ app["phraseanet.registry"].get("GV_ServerName") }}api/oauthv2/token</td>
                     </tr>
                     <tr>
-                        <td>{% trans "Activer le grant_type de type password pour votre application" %}</td>
+                        <td>{{ "Activer le grant_type de type password pour votre application" | trans }}</td>
                         <td>
                             <input class="grant-type"
                                 type="checkbox"
@@ -70,30 +70,30 @@
                 </tbody>
             </table>
 
-            <h1>{% trans "Votre token d\'access" %}</h1>
-            <p> {% trans "Les paramétres oauth de votre application." %}</p>
+            <h1>{{ "Votre token d\'access" | trans }}</h1>
+            <p> {{ "Les paramétres oauth de votre application." | trans }}</p>
 
             <table id="app-access-token-setting table" class="table table-condensed  table-bordered">
                 <tbody>
                     <tr>
                         <td>
-                            {% trans "Token" %}
+                            {{ "Token" | trans }}
                         </td>
                         <td>
                             <span id="my_access_token">
                                 {% if not token  is none %}
                                   {{ token|default("") }}
                                 {% else %}
-                                  {% trans "Le token n\'a pas encore ete genere" %}
+                                  {{ "Le token n\'a pas encore ete genere" | trans }}
                                 {% endif %}
                             </span>
-                            <a id="generate_access" href="{{ path("submit_developers_application_token",{ "id" : application.get_id()}) }}" class="btn btn-small btn-info">{% trans "boutton::generer" %}</a>
+                            <a id="generate_access" href="{{ path("submit_developers_application_token",{ "id" : application.get_id()}) }}" class="btn btn-small btn-info">{{ "boutton::generer" | trans }}</a>
                           </td>
                     </tr>
                 </tbody>
             </table>
             <div>
-              <a class="btn btn-primary" href="{{ path("developers_applications") }}">{% trans "boutton::retour" %}</a>
+              <a class="btn btn-primary" href="{{ path("developers_applications") }}">{{ "boutton::retour" | trans }}</a>
             </div>
         </div>
     </div>

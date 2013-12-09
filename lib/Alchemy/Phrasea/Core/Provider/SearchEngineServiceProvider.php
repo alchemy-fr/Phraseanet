@@ -23,7 +23,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['phraseanet.SE'] = $app->share(function ($app) {
-            $engineOptions = $app['phraseanet.configuration']['main']['search-engine']['options'];
+            $engineOptions = $app['conf']->get(['main', 'search-engine', 'options']);
 
             return $app['phraseanet.SE.engine-class']::create($app, $engineOptions);
         });
@@ -33,7 +33,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['phraseanet.SE.engine-class'] = $app->share(function ($app) {
-            $engineClass = $app['phraseanet.configuration']['main']['search-engine']['type'];
+            $engineClass = $app['conf']->get(['main', 'search-engine', 'type']);
 
             if (!class_exists($engineClass) || $engineClass instanceof SearchEngineInterface) {
                 throw new InvalidArgumentException(sprintf('%s is not valid SearchEngineInterface', $engineClass));

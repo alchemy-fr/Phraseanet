@@ -72,7 +72,7 @@ class API_OAuth2_ApplicationTest extends PhraseanetPHPUnitAbstract
 
     public function testGet_type()
     {
-        $this->assertTrue(in_array($this->object->get_type(), array(API_OAuth2_Application::DESKTOP_TYPE, API_OAuth2_Application::WEB_TYPE)));
+        $this->assertTrue(in_array($this->object->get_type(), [API_OAuth2_Application::DESKTOP_TYPE, API_OAuth2_Application::WEB_TYPE]));
     }
 
     public function testGet_nonce()

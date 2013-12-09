@@ -95,7 +95,7 @@ class PluginValidator
         }
 
         if (is_array($data)) {
-            return array_map(array($this, 'objectToArray'), $data);
+            return array_map([$this, 'objectToArray'], $data);
         }
 
         return $data;

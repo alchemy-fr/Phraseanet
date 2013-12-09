@@ -1,7 +1,7 @@
 {% if basket.getValidation() and basket.getValidation().getParticipant(app['authentication'].getUser(), app).getCanAgree() %}
-    <button class="confirm_report" title="{% trans 'validation::envoyer mon rapport'%}">
+    <button class="confirm_report" title="{{ 'validation::envoyer mon rapport' | trans }}">
         <img src="/skins/lightbox/envoyerie6.gif"/>
-    {% trans 'validation::envoyer mon rapport'%}
+    {{ 'validation::envoyer mon rapport' | trans }}
     <img src="/skins/icons/loader1F1E1B.gif" style="visibility:hidden;" class="loader"/>
     </button>
 {% endif %}

@@ -29,7 +29,7 @@ class Migration35 implements MigrationInterface
             throw new \LogicException('Required config files not found');
         }
 
-        $config = $this->app['phraseanet.configuration']->initialize();
+        $config = $this->app['configuration.store']->initialize();
 
         foreach ($config['registration-fields'] as $key => $field) {
             $config['registration-fields'][$key]['required'] = (boolean) $field['required'];
@@ -38,13 +38,13 @@ class Migration35 implements MigrationInterface
         $retrieve_old_credentials = function () {
             require __DIR__ . '/../../../../../../config/connexion.inc';
 
-            return array(
+            return [
                 'hostname' => $hostname,
                 'port'     => $port,
                 'user'     => $user,
                 'password' => $password,
                 'dbname'   => $dbname,
-            );
+            ];
         };
 
         foreach ($retrieve_old_credentials() as $key => $value) {
@@ -55,9 +55,9 @@ class Migration35 implements MigrationInterface
         $retrieve_old_parameters = function () {
             require __DIR__ . '/../../../../../../config/config.inc';
 
-            return array(
+            return [
                 'servername' => $servername
-            );
+            ];
         };
 
         $old_parameters = $retrieve_old_parameters();
@@ -67,6 +67,6 @@ class Migration35 implements MigrationInterface
         rename(__DIR__ . '/../../../../../../config/connexion.inc', __DIR__ . '/../../../../../../config/connexion.inc.old');
         rename(__DIR__ . '/../../../../../../config/config.inc', __DIR__ . '/../../../../../../config/config.inc.old');
 
-        $this->app['phraseanet.configuration']->setConfig($config);
+        $this->app['configuration.store']->setConfig($config);
     }
 }

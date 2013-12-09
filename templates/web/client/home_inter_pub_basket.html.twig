@@ -1,28 +1,28 @@
 <div style="height:50px;" class="homePubTitleBox">
     <div style="float:left;width:350px;"><h1 style="font-size:20px;margin-top:15px;">
-            <h1>{% trans "publications:: dernieres publications" %}</h1>
+            <h1>{{ "publications:: dernieres publications" | trans }}</h1>
     </div>
 </div>
 
 <div>
-    {% for entry in feeds.get_aggregate().get_entries(0, 5).get_entries() %}
+    {% for entry in feeds.getEntries(0, 5) %}
     <div class="boxPubli">
         <div class="titlePubli">
             <h2 class="htitlePubli">
-                <a class="homePubTitle" onclick="openCompare('{{ entry.get_id() }}');">
-                    {{ entry.get_title() }}
+                <a class="homePubTitle" onclick="openCompare('{{ entry.getId() }}');">
+                    {{ entry.getTitle() }}
                 </a>
             </h2>
             <span class="publiInfos">
-                {{ app['date-formatter'].getPrettyString(entry.get_created_on()) }}
-                {% if entry.get_author_email() %}
-                    <a class="homePubLink" href="mailto:{{ entry.get_author_email() }}">
-                        {{ entry.get_author_name() }}
+                {{ app['date-formatter'].getPrettyString(entry.getCreatedOn()) }}
+                {% if entry.getAuthorEmail() %}
+                    <a class="homePubLink" href="mailto:{{ entry.getAuthorEmail() }}">
+                        {{ entry.getAuthorName() }}
                     </a>
-                    {% if entry.get_updated_on() > entry.get_created_on() %}
+                    {% if entry.getUpdatedOn() > entry.getCreatedOn() %}
                         <br/>
                         <span style="font-style:italic;">
-                            {% trans "publications:: derniere mise a jour" %} {{ app['date-formatter'].getPrettyString(entry.get_updated_on()) }}
+                            {{ "publications:: derniere mise a jour" | trans }} {{ app['date-formatter'].getPrettyString(entry.getUpdatedOn()) }}
                         </span>
                         <br />
                         <br />
@@ -32,14 +32,14 @@
         </div>
         <div class="descPubli">
             <div style="margin:10px 0 10px 20px;width:80%;">
-                {% if entry.get_subtitle()|trim is not empty %}
-                    {{ entry.get_subtitle()|nl2br }}
+                {% if entry.getSubtitle()|trim is not empty %}
+                    {{ entry.getSubtitle()|nl2br }}
                 {% endif %}
             </div>
         </div>
-        <div style="width:100%;position:relative;float:left;" id="PUBLICONT{{ entry.get_id() }}">
-            {% for item in entry.get_content() %}
-                {% set record = item.get_record() %}
+        <div style="width:100%;position:relative;float:left;" id="PUBLICONT{{ entry.getId() }}">
+            {% for item in entry.getItems() %}
+                {% set record = item.getRecord(app) %}
                 {% set thumbnail = record.get_thumbnail() %}
                 {% set docType = record.get_type() %}
                 {% set duration = "" %}
@@ -76,7 +76,7 @@
                     {% endset %}
                 {% endif %}
 
-                <div style="width:{{ wrapper_size }}px;" sbas="{{ record.get_sbas_id() }}" id="{{"IMGT_" ~ record.get_serialize_key() ~ "_PUB_" ~ entry.get_id() }}" class="IMGT diapo" onclick="openPreview('FEED','{{ item.get_ord() }}','{{ entry.get_id() }}');">
+                <div style="width:{{ wrapper_size }}px;" sbas="{{ record.get_sbas_id() }}" id="{{"IMGT_" ~ record.get_serialize_key() ~ "_PUB_" ~ entry.getId() }}" class="IMGT diapo" onclick="openPreview('FEED','{{ item.getOrd() }}','{{ entry.getId() }}');">
                     <div>
                         <div class="title" style="height:40px;">
                             {{ record.get_title() }}

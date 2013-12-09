@@ -1,23 +1,23 @@
 
-{% if (record.is_from_basket is empty) and app['authentication'].getUser().ACL().has_right_on_base(record.get_base_id(), 'canputinalbum') %}
+{% if (record.is_from_basket is empty) and app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'canputinalbum') %}
   <div sbas="{{record.get_sbas_id()}}" id="PREV_BASKADD_{{record.get_serialize_key}}"
-       class="baskAdder" title="{% trans 'action : ajouter au panier' %}"
+       class="baskAdder" title="{{ 'action : ajouter au panier' | trans }}"
        onclick="evt_add_in_chutier('{{record.get_sbas_id()}}','{{record.get_record_id()}}',false,this);return(false);"></div>
 {% endif %}
 
 {% if record.is_from_basket() %}
     <a sbas="{{record.get_sbas_id()}}" id="PREV_BASKDEL_{{record.get_serialize_key}}"
-       class="baskDeleter WorkZoneElementRemover" title="{% trans 'Remove from basket' %}"
+       class="baskDeleter WorkZoneElementRemover" title="{{ 'Remove from basket' | trans }}"
        data-context="reg_train_basket"
        onclick="remove_from_basket($(this), false);return false;"
-       href="{{ path('prod_baskets_basket_element_remove', { 'basket_id' :  record.get_container().getId(), 'basket_element_id' : record.get_original_item().getId()}) }}">
+       href="{{ path('prod_baskets_basket_element_remove', { 'basket' :  record.get_container().getId(), 'basket_element_id' : record.get_original_item().getId()}) }}">
     </a>
 {% endif %}
 
-  <div class="printer" title="'{% trans 'action : print' %}"
+  <div class="printer" title="'{{ 'action : print' | trans }}"
        onclick="evt_print('{{record.get_sbas_id()}}_{{record.get_record_id()}}');return(false);"></div>
 
-{% if app['authentication'].getUser().ACL().has_right_on_base(record.get_base_id(), 'candwnldhd') or app['authentication'].getUser().ACL().has_right_on_base(record.get_base_id(), 'candwnldpreview') %}
-    <div class="downloader" title="{% trans 'action : exporter' %}"
+{% if app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'candwnldhd') or app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'candwnldpreview') %}
+    <div class="downloader" title="{{ 'action : exporter' | trans }}"
     onclick="evt_dwnl('{{record.get_sbas_id()}}_{{record.get_record_id()}}');return(false);"></div>
 {% endif %}

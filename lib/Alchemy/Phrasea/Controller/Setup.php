@@ -26,9 +26,9 @@ class Setup implements ControllerProviderInterface
 {
     public function connect(SilexApplication $app)
     {
-        $controllers = $app['controllers_factory'];
-
         $app['controller.setup'] = $this;
+
+        $controllers = $app['controllers_factory'];
 
         $controllers->get('/', function (Application $app) {
             return $app->redirectPath('install_root');
@@ -53,37 +53,37 @@ class Setup implements ControllerProviderInterface
     {
         $requirementsCollection = $this->getRequirementsCollection();
 
-        return $app['twig']->render('/setup/index.html.twig', array(
+        return $app['twig']->render('/setup/index.html.twig', [
             'locale'                 => $app['locale'],
             'available_locales'      => Application::getAvailableLanguages(),
             'current_servername'     => $request->getScheme() . '://' . $request->getHttpHost() . '/',
             'requirementsCollection' => $requirementsCollection,
-        ));
+        ]);
     }
 
     private function getRequirementsCollection()
     {
-        return array(
+        return [
             new BinariesRequirements(),
             new FilesystemRequirements(),
             new LocalesRequirements(),
             new PhpRequirements(),
             new PhraseaRequirements(),
             new SystemRequirements(),
-        );
+        ];
     }
 
     public function displayUpgradeInstructions(Application $app, Request $request)
     {
-        return $app['twig']->render('/setup/upgrade-instructions.html.twig', array(
+        return $app['twig']->render('/setup/upgrade-instructions.html.twig', [
             'locale'              => $app['locale'],
             'available_locales'   => Application::getAvailableLanguages(),
-        ));
+        ]);
     }
 
     public function getInstallForm(Application $app, Request $request)
     {
-        $warnings = array();
+        $warnings = [];
 
         $requirementsCollection = $this->getRequirementsCollection();
 
@@ -96,19 +96,19 @@ class Setup implements ControllerProviderInterface
         }
 
         if ($request->getScheme() == 'http') {
-            $warnings[] = _('It is not recommended to install Phraseanet without HTTPS support');
+            $warnings[] = $app->trans('It is not recommended to install Phraseanet without HTTPS support');
         }
 
-        return $app['twig']->render('/setup/step2.html.twig', array(
+        return $app['twig']->render('/setup/step2.html.twig', [
             'locale'              => $app['locale'],
             'available_locales'   => Application::getAvailableLanguages(),
-            'available_templates' => array('en', 'fr'),
+            'available_templates' => ['en', 'fr'],
             'warnings'            => $warnings,
             'error'               => $request->query->get('error'),
             'current_servername'  => $request->getScheme() . '://' . $request->getHttpHost() . '/',
             'discovered_binaries' => \setup::discover_binaries(),
             'rootpath'            => realpath(__DIR__ . '/../../../../'),
-        ));
+        ]);
     }
 
     public function doInstall(Application $app, Request $request)
@@ -128,21 +128,21 @@ class Setup implements ControllerProviderInterface
         $databox_name = $request->request->get('db_name');
 
         try {
-            $abConn = new \connection_pdo('appbox', $hostname, $port, $user_ab, $ab_password, $appbox_name, array(), $app['debug']);
+            $abConn = new \connection_pdo('appbox', $hostname, $port, $user_ab, $ab_password, $appbox_name, [], $app['debug']);
         } catch (\Exception $e) {
-            return $app->redirectPath('install_step2', array(
-                'error' => _('Appbox is unreachable'),
-            ));
+            return $app->redirectPath('install_step2', [
+                'error' => $app->trans('Appbox is unreachable'),
+            ]);
         }
 
         try {
             if ($databox_name) {
-                $dbConn = new \connection_pdo('databox', $hostname, $port, $user_ab, $ab_password, $databox_name, array(), $app['debug']);
+                $dbConn = new \connection_pdo('databox', $hostname, $port, $user_ab, $ab_password, $databox_name, [], $app['debug']);
             }
         } catch (\Exception $e) {
-            return $app->redirectPath('install_step2', array(
-                'error' => _('Databox is unreachable'),
-            ));
+            return $app->redirectPath('install_step2', [
+                'error' => $app->trans('Databox is unreachable'),
+            ]);
         }
 
         $email = $request->request->get('email');
@@ -154,8 +154,8 @@ class Setup implements ControllerProviderInterface
             $installer = $app['phraseanet.installer'];
             $installer->setPhraseaIndexerPath($request->request->get('binary_phraseanet_indexer'));
 
-            $binaryData = array();
-            foreach (array(
+            $binaryData = [];
+            foreach ([
                 'php_binary'         => $request->request->get('binary_php'),
                 'phraseanet_indexer' => $request->request->get('binary_phraseanet_indexer'),
                 'swf_extract_binary' => $request->request->get('binary_swfextract'),
@@ -166,7 +166,7 @@ class Setup implements ControllerProviderInterface
                 'mp4box_binary'      => $request->request->get('binary_MP4Box'),
                 'pdftotext_binary'   => $request->request->get('binary_xpdf'),
                 'recess_binary'      => $request->request->get('binary_recess'),
-            ) as $key => $path) {
+            ] as $key => $path) {
                 $binaryData[$key] = $path;
             }
 
@@ -174,16 +174,14 @@ class Setup implements ControllerProviderInterface
 
             $app['authentication']->openAccount($user);
 
-            return $app->redirectPath('admin', array(
+            return $app->redirectPath('admin', [
                 'section' => 'taskmanager',
                 'notice'  => 'install_success',
-            ));
+            ]);
         } catch (\Exception $e) {
-
+            return $app->redirectPath('install_step2', [
+                'error' => $app->trans('an error occured : %message%', ['%message%' => $e->getMessage()]),
+            ]);
         }
-
-        return $app->redirectPath('install_step2', array(
-            'error' => sprintf(_('an error occured : %s'), $e->getMessage()),
-        ));
     }
 }

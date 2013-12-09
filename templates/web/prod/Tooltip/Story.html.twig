@@ -1,6 +1,6 @@
 {% import 'common/thumbnail.html.twig' as thumbnail %}
 
-{% extends 'prod/Tooltip/Tooltip.html.twig'%}
+{% extends 'prod/Tooltip/Tooltip.html.twig' %}
 
 {% set title %} {{ Story.get_title() }} {% endset %}
 {% set width = 300 %}
@@ -11,9 +11,7 @@
     <div style="margin:5px 0;text-align:right;font-style:italic;position:relative;">
         {% set nb_records = Story.get_children().get_elements()|length %}
         {% set date = app['date-formatter'].getPrettyString(Story.get_modification_date()) %}
-        {% trans %}
-        {{ nb_records }} records
-        {% endtrans %}
+        {% trans with {'%nb_records%' : nb_records} %}%nb_records% records{% endtrans %}
         - {{ date }}
         <hr/>
         <div style="position:relative;float:left;width:270px;">

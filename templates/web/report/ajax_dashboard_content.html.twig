@@ -1,5 +1,5 @@
 {%block dashboard_content %}
-    <div id="title_dash" class="center" style="clear:left;">{% trans "report:: Dashboard" %}</div>
+    <div id="title_dash" class="center" style="clear:left;">{{ "report:: Dashboard" | trans }}</div>
         <div id="periode_dash" class="center" >{{ dashboard.getTitleDate('dmin') }} - {{ dashboard.getTitleDate('dmax') }}</div>
         <div id="liste_dash"  class="center">
             <em id="em_all" class="selected_em" >Toutes les bases</em>

@@ -49,7 +49,7 @@ class UUIDTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCheckNoFile()
     {
-        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getUUID'), array(self::$DI['app'], $this->media, self::$DI['collection']));
+        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', ['getUUID'], [self::$DI['app'], $this->media, self::$DI['collection']]);
 
         $mock
             ->expects($this->once())
@@ -69,6 +69,6 @@ class UUIDTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetMessage()
     {
-        $this->assertInternalType('string', $this->object->getMessage());
+        $this->assertInternalType('string', $this->object->getMessage($this->createTranslatorMock()));
     }
 }

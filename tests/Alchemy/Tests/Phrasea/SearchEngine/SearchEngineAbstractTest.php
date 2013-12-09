@@ -112,7 +112,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $this->updateIndex();
 
         $options = $this->getOptions();
-        $options->setDateFields(array($date_field));
+        $options->setDateFields([$date_field]);
         $options->setMinDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2012-12-23 01:01:00'));
         self::$searchEngine->setOptions($options);
 
@@ -144,7 +144,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         if ($date_field) {
 
-            $toupdate = array();
+            $toupdate = [];
 
             try {
                 $values = $record->get_caption()->get_field($databox_field->get_name())->get_values();
@@ -154,11 +154,11 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
                 $meta_id = null;
             }
 
-            $toupdate[$databox_field->get_id()] = array(
+            $toupdate[$databox_field->get_id()] = [
                 'meta_id'        => $meta_id
                 , 'meta_struct_id' => $databox_field->get_id()
                 , 'value'          => $date
-            );
+            ];
 
             $record->set_metadatas($toupdate);
         }
@@ -183,7 +183,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $this->updateIndex();
 
         $options = $this->getOptions();
-        $options->setDateFields(array($date_field));
+        $options->setDateFields([$date_field]);
         $options->setMaxDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2012-12-20 01:01:00'));
         self::$searchEngine->setOptions($options);
 
@@ -216,7 +216,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $this->updateIndex();
 
         $options = $this->getOptions();
-        $options->setDateFields(array($date_field));
+        $options->setDateFields([$date_field]);
         $options->setMinDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2012-12-18 01:01:00'));
         $options->setMaxDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2012-12-20 01:01:00'));
         self::$searchEngine->setOptions($options);
@@ -235,7 +235,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
     protected function editRecord($string2add, \record_adapter &$record, $indexable = true, $business = false)
     {
-        $toupdate = array();
+        $toupdate = [];
         $field = null;
 
         foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field) {
@@ -252,11 +252,11 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
                 $meta_id = null;
             }
 
-            $toupdate[$field->get_id()] = array(
+            $toupdate[$field->get_id()] = [
                 'meta_id'        => $meta_id
                 , 'meta_struct_id' => $field->get_id()
                 , 'value'          => $string2add
-            );
+            ];
             break;
         }
 
@@ -358,7 +358,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $this->editRecord($index_string, $record);
 
         self::$searchEngine->addRecord($record);
-        $this->updateIndex(array($language));
+        $this->updateIndex([$language]);
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
@@ -367,14 +367,14 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
     public function provideStemmData()
     {
-        $stemms = array();
+        $stemms = [];
 
-        $examples = array(
-            'fr' => array('word' => 'chevaux', 'stemm' => 'cheval'),
-            'en' => array('word' => 'consistency', 'stemm' => 'consistent'),
-            'de' => array('word' => 'aufeinanderfolgender', 'stemm' => 'aufeinanderfolg'),
-            'nl' => array('word' => 'lichamelijk', 'stemm' => 'licham'),
-        );
+        $examples = [
+            'fr' => ['word' => 'chevaux', 'stemm' => 'cheval'],
+            'en' => ['word' => 'consistency', 'stemm' => 'consistent'],
+            'de' => ['word' => 'aufeinanderfolgender', 'stemm' => 'aufeinanderfolg'],
+            'nl' => ['word' => 'lichamelijk', 'stemm' => 'licham'],
+        ];
 
         foreach (Application::getAvailableLanguages() as $languageCode => $name) {
             $data = explode('_', $languageCode);
@@ -384,11 +384,11 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
                 $this->fail(sprintf('Missing stemm examples for language %s', $code));
             }
 
-            $stemms[] = array(
+            $stemms[] = [
                 $code,
                 $examples[$code]['word'],
                 $examples[$code]['stemm'],
-            );
+            ];
         }
 
         return $stemms;
@@ -402,7 +402,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $query_string = 'boomboklot' . $record->get_record_id() . 'onfield';
 
         $field = $this->editRecord($query_string, $record);
-        $options->setFields(array($field));
+        $options->setFields([$field]);
 
         self::$searchEngine->setOptions($options);
 
@@ -422,7 +422,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $query_string = 'boomboklot' . $record->get_record_id() . 'businessAvailable';
 
         $this->editRecord($query_string, $record, true, true);
-        $options->allowBusinessFieldsOn(array($record->get_collection()));
+        $options->allowBusinessFieldsOn([$record->get_collection()]);
         self::$searchEngine->setOptions($options);
 
         self::$searchEngine->addRecord($record);
@@ -459,7 +459,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field) {
             if ($selectedField->get_id() != $field->get_id()) {
-                $options->setFields(array($field));
+                $options->setFields([$field]);
 
                 break;
             }
@@ -509,7 +509,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $this->assertEquals(0, $results->getTotal());
 
         $options = $this->getDefaultOptions();
-        $options->setFields(array($field));
+        $options->setFields([$field]);
         self::$searchEngine->setOptions($options);
 
         self::$searchEngine->resetCache();
@@ -543,7 +543,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $results = self::$searchEngine->query($query_string, 0, 1);
         $this->assertEquals(0, $results->getTotal());
 
-        $options->setFields(array($field));
+        $options->setFields([$field]);
         self::$searchEngine->setOptions($options);
 
         self::$searchEngine->resetCache();
@@ -555,7 +555,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
     {
         $this->assertTrue(is_array(self::$searchEngine->getAvailableTypes()));
         foreach (self::$searchEngine->getAvailableTypes() as $type) {
-            $this->assertTrue(in_array($type, array(SearchEngineInterface::GEM_TYPE_ENTRY, SearchEngineInterface::GEM_TYPE_RECORD, SearchEngineInterface::GEM_TYPE_STORY)));
+            $this->assertTrue(in_array($type, [SearchEngineInterface::GEM_TYPE_ENTRY, SearchEngineInterface::GEM_TYPE_RECORD, SearchEngineInterface::GEM_TYPE_STORY]));
         }
     }
 
@@ -628,7 +628,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         self::$searchEngine->addRecord($record);
         $this->updateIndex();
 
-        $options->setStatus(array(4 => array('on' => array($record->get_databox()->get_sbas_id()))));
+        $options->setStatus([4 => ['on' => [$record->get_databox()->get_sbas_id()]]]);
         self::$searchEngine->setOptions($options);
 
         self::$searchEngine->resetCache();
@@ -643,7 +643,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $record = self::$DI['record_24'];
         $record->set_binary_status('10000');
 
-        $options->setStatus(array(4 => array('on' => array($record->get_databox()->get_sbas_id()))));
+        $options->setStatus([4 => ['on' => [$record->get_databox()->get_sbas_id()]]]);
         self::$searchEngine->setOptions($options);
 
         $query_string = 'boomboklot' . $record->get_record_id() . 'statusQueryOnOverOn';
@@ -664,7 +664,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $record = self::$DI['record_24'];
         $record->set_binary_status('10000');
 
-        $options->setStatus(array(4 => array('off' => array($record->get_databox()->get_sbas_id()))));
+        $options->setStatus([4 => ['off' => [$record->get_databox()->get_sbas_id()]]]);
         self::$searchEngine->setOptions($options);
 
         $query_string = 'boomboklot' . $record->get_record_id() . 'statusQueryOff';
@@ -685,7 +685,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $record = self::$DI['record_24'];
         $record->set_binary_status('00000');
 
-        $options->setStatus(array(4 => array('off' => array($record->get_databox()->get_sbas_id()))));
+        $options->setStatus([4 => ['off' => [$record->get_databox()->get_sbas_id()]]]);
         self::$searchEngine->setOptions($options);
 
         $query_string = 'boomboklot' . $record->get_record_id() . 'statusQueryOff';
@@ -711,7 +711,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         self::$searchEngine->addRecord($record);
         $this->updateIndex();
 
-        $options->setStatus(array(4 => array('on' => array($record->get_databox()->get_sbas_id()))));
+        $options->setStatus([4 => ['on' => [$record->get_databox()->get_sbas_id()]]]);
         self::$searchEngine->setOptions($options);
 
         self::$searchEngine->resetCache();
@@ -740,16 +740,16 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $fields = array();
+        $fields = [];
         $foundRecord = $results->getResults()->first();
 
         $this->assertInstanceOf('\record_adapter', $foundRecord);
 
         foreach ($foundRecord->get_caption()->get_fields() as $field) {
-            $fields[$field->get_name()] = array(
+            $fields[$field->get_name()] = [
                 'value'     => $field->get_serialized_values()
                 , 'separator' => ';'
-            );
+            ];
         }
 
         $found = false;
@@ -775,5 +775,5 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
     abstract public function testAutocomplete();
 
-    abstract protected function updateIndex(array $stemms = array());
+    abstract protected function updateIndex(array $stemms = []);
 }

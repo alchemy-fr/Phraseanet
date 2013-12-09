@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Alchemy\Phrasea\Core\PhraseaEvents;
@@ -9,7 +18,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class API_V1_Timer implements ServiceProviderInterface
 {
-    private $app;
     private $starting;
 
     public function __construct()
@@ -29,11 +37,11 @@ class API_V1_Timer implements ServiceProviderInterface
                 $n++;
                 $name = $event->getName() . '#' . $n;
             }
-            $app['api.timers']->add(array(
+            $app['api.timers']->add([
                 'name' => $name,
                 'memory' => memory_get_usage(),
                 'time' => microtime(true) - $app['api.timers.start'],
-            ));
+            ]);
         };
 
         $app['dispatcher']->addListener(KernelEvents::CONTROLLER, $callback, -999999);

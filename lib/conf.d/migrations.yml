@@ -1,0 +1,44 @@
+name: Phraseanet Migrations
+migrations_namespace: Alchemy\Phrasea\Setup\DoctrineMigrations
+table_name: doctrine_migration_versions
+
+migrations:
+  migration1:
+    version: feed
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\FeedMigration
+  migration2:
+    version: workzone
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\WorkzoneMigration
+  migration3:
+    version: lazaret
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\LazaretMigration
+  migration4:
+    version: task
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\TaskMigration
+  migration5:
+    version: auth-failure
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\AuthFailureMigration
+  migration6:
+    version: session
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\SessionMigration
+  migration7:
+    version: ftp-credential
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\FtpCredentialMigration
+  migration8:
+    version: order
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\OrderMigration
+  migration9:
+    version: user
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\UserMigration
+  migration10:
+    version: user-query
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\UserQueryMigration
+  migration11:
+    version: user-setting
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\UserSettingMigration
+  migration12:
+    version: user-notif-setting
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\UserNotificationSettingMigration
+  migration13:
+    version: ftp-export
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\FtpExportMigration

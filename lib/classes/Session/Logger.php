@@ -10,13 +10,9 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Exception\SessionNotFound;
+use Alchemy\Phrasea\Model\Entities\SessionModule;
 
-/**
- *
- * @package     Session
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Session_Logger
 {
     /**
@@ -78,13 +74,13 @@ class Session_Logger
 
         $stmt = $this->databox->get_connection()->prepare($sql);
 
-        $params = array(
+        $params = [
             ':log_id'    => $this->get_id()
             , ':record_id' => $record->get_record_id()
             , ':action'    => $action
             , ':final'     => $final
             , ':comm'      => $comment
-        );
+        ];
 
         $stmt->execute($params);
         $stmt->closeCursor();
@@ -102,10 +98,10 @@ class Session_Logger
      */
     public static function create(Application $app, databox $databox, Browser $browser)
     {
-        $colls = array();
+        $colls = [];
 
         if ($app['authentication']->getUser()) {
-            $bases = $app['authentication']->getUser()->ACL()->get_granted_base(array(), array($databox->get_sbas_id()));
+            $bases = $app['acl']->get($app['authentication']->getUser())->get_granted_base([], [$databox->get_sbas_id()]);
             foreach ($bases as $collection) {
                 $colls[] = $collection->get_coll_id();
             }
@@ -122,10 +118,10 @@ class Session_Logger
               , :browser, :browser_version,  :platform, :screen, :ip
               , :user_agent, :appli, :fonction, :company, :activity, :country)";
 
-        $params = array(
+        $params = [
             ':ses_id'          => $app['session']->get('session_id'),
             ':usr_login'       => $app['authentication']->getUser() ? $app['authentication']->getUser()->get_login() : null,
-            ':site_id'         => $app['phraseanet.configuration']['main']['key'],
+            ':site_id'         => $app['conf']->get(['main', 'key']),
             ':usr_id'          => $app['authentication']->isAuthenticated() ? $app['authentication']->getUser()->get_id() : null,
             ':browser'         => $browser->getBrowser(),
             ':browser_version' => $browser->getExtendedVersion(),
@@ -133,12 +129,12 @@ class Session_Logger
             ':screen'          => $browser->getScreenSize(),
             ':ip'              => $browser->getIP(),
             ':user_agent'      => $browser->getUserAgent(),
-            ':appli'           => serialize(array()),
+            ':appli'           => serialize([]),
             ':fonction' => $app['authentication']->getUser() ? $app['authentication']->getUser()->get_job() : null,
             ':company'  => $app['authentication']->getUser() ? $app['authentication']->getUser()->get_company() : null,
             ':activity' => $app['authentication']->getUser() ? $app['authentication']->getUser()->get_position() : null,
             ':country'  => $app['authentication']->getUser() ? $app['authentication']->getUser()->get_country() : null
-        );
+        ];
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
@@ -149,10 +145,10 @@ class Session_Logger
         $stmt = $conn->prepare($sql);
 
         foreach ($colls as $collId) {
-            $stmt->execute(array(
+            $stmt->execute([
                 ':log_id'  => $log_id,
                 ':coll_id' => $collId
-            ));
+            ]);
         }
 
         $stmt->closeCursor();
@@ -170,10 +166,10 @@ class Session_Logger
         $sql = 'SELECT id FROM log
             WHERE site = :site AND sit_session = :ses_id';
 
-        $params = array(
-            ':site'   => $app['phraseanet.configuration']['main']['key']
+        $params = [
+            ':site'   => $app['conf']->get(['main', 'key'])
             , ':ses_id' => $app['session']->get('session_id')
-        );
+        ];
 
         $stmt = $databox->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -184,5 +180,87 @@ class Session_Logger
             throw new Exception_Session_LoggerNotFound('Logger not found');
 
         return new self($app, $databox, $row['id']);
+    }
+
+    public static function updateClientInfos(Application $app, $appId)
+    {
+        if (!$app['authentication']->isAuthenticated()) {
+            return;
+        }
+
+        $session = $app['EM']->find('Alchemy\Phrasea\Model\Entities\Session', $app['session']->get('session_id'));
+
+        if (!$session) {
+            throw new SessionNotFound('No session found');
+        }
+
+        if (!$session->hasModuleId($appId)) {
+            $module = new SessionModule();
+
+            $module->setModuleId($appId);
+            $module->setSession($session);
+            $session->addModule($module);
+
+            $app['EM']->persist($module);
+            $app['EM']->persist($session);
+
+            $app['EM']->flush();
+        }
+
+        $usrId = $app['authentication']->getUser()->get_id();
+
+        $user = User_Adapter::getInstance($usrId, $app);
+
+        $appName = [
+            '1' => 'Prod',
+            '2' => 'Client',
+            '3' => 'Admin',
+            '4' => 'Report',
+            '5' => 'Thesaurus',
+            '6' => 'Compare',
+            '7' => 'Validate',
+            '8' => 'Upload',
+            '9' => 'API'
+        ];
+
+        if (isset($appName[$appId])) {
+            $sbas_ids = array_keys($app['acl']->get($user)->get_granted_sbas());
+
+            foreach ($sbas_ids as $sbas_id) {
+                try {
+                    $logger = $app['phraseanet.logger']($app['phraseanet.appbox']->get_databox($sbas_id));
+
+                    $connbas = connection::getPDOConnection($app, $sbas_id);
+                    $sql = 'SELECT appli FROM log WHERE id = :log_id';
+                    $stmt = $connbas->prepare($sql);
+                    $stmt->execute([':log_id' => $logger->get_id()]);
+                    $row3 = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $stmt->closeCursor();
+
+                    if (!$row3)
+                        throw new Exception('no log');
+                    $applis = unserialize($row3['appli']);
+
+                    if (!in_array($appId, $applis)) {
+                        $applis[] = $appId;
+                    }
+
+                    $sql = 'UPDATE log SET appli = :applis WHERE id = :log_id';
+
+                    $params = [
+                        ':applis' => serialize($applis)
+                        , ':log_id' => $logger->get_id()
+                    ];
+
+                    $stmt = $connbas->prepare($sql);
+                    $stmt->execute($params);
+                    $stmt->closeCursor();
+                } catch (Exception $e) {
+
+                }
+            }
+        }
+
+        return;
     }
 }

@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Entities\LazaretFile;
+use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Border;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Alchemy\Phrasea\Http\DeliverDataInterface;
@@ -21,17 +21,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Filesystem\Exception\IOException;
 
-/**
- * Lazaret controller collection
- *
- * Defines routes related to the lazaret (quarantine) functionality
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Lazaret implements ControllerProviderInterface
 {
-
     /**
      * Connect the ControllerCollection to the Silex Application
      *
@@ -40,6 +31,8 @@ class Lazaret implements ControllerProviderInterface
      */
     public function connect(Application $app)
     {
+        $app['controller.prod.lazaret'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
@@ -47,118 +40,29 @@ class Lazaret implements ControllerProviderInterface
                 ->requireRight('addrecord');
         });
 
-        /**
-         * Lazaret Elements route
-         *
-         * name         : lazaret_elements
-         *
-         * description  : List all lazaret elements
-         *
-         * method       : GET
-         *
-         * parameters   : 'offset'      int (optional)  default 0   : List offset
-         *                'limit'       int (optional)  default 10  : List limit
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/', $this->call('listElement'))
+        $controllers->get('/', 'controller.prod.lazaret:listElement')
             ->bind('lazaret_elements');
 
-        /**
-         * Lazaret Element route
-         *
-         * name         : lazaret_element
-         *
-         * descritpion  : Get one lazaret element identified by {file_id} parameter
-         *
-         * method       : GET
-         *
-         * return       : JSON Response
-         */
-        $controllers->get('/{file_id}/', $this->call('getElement'))
+        $controllers->get('/{file_id}/', 'controller.prod.lazaret:getElement')
             ->assert('file_id', '\d+')
             ->bind('lazaret_element');
 
-        /**
-         * Lazaret Force Add route
-         *
-         * name         : lazaret_force_add
-         *
-         * description  : Move a lazaret element identified by {file_id} parameter into phraseanet
-         *
-         * method       : POST
-         *
-         * parameters   : 'bas_id'            int     (mandatory) : The id of the destination collection
-         *                'keep_attributes'   boolean (optional)  : Keep all attributes attached to the lazaret element
-         *                'attributes'        array   (optional)  : Attributes id's to attach to the lazaret element
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/{file_id}/force-add/', $this->call('addElement'))
+        $controllers->post('/{file_id}/force-add/', 'controller.prod.lazaret:addElement')
             ->assert('file_id', '\d+')
             ->bind('lazaret_force_add');
 
-        /**
-         * Lazaret Deny route
-         *
-         * name         : lazaret_deny_element
-         *
-         * description  : Remove a lazaret element identified by {file_id} parameter
-         *
-         * method       : POST
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/{file_id}/deny/', $this->call('denyElement'))
+        $controllers->post('/{file_id}/deny/', 'controller.prod.lazaret:denyElement')
             ->assert('file_id', '\d+')
             ->bind('lazaret_deny_element');
 
-        /**
-         * Lazaret Empty route
-         *
-         * name         : lazaret_empty
-         *
-         * description  : Empty the lazaret
-         *
-         * method       : POST
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/empty/', $this->call('emptyLazaret'))
+        $controllers->post('/empty/', 'controller.prod.lazaret:emptyLazaret')
             ->bind('lazaret_empty');
 
-        /**
-         * Lazaret Accept Route
-         *
-         * name         : lazaret_accept
-         *
-         * description  : Substitute the phraseanet record identified by
-         *                the post parameter 'record_id'by the lazaret element identified
-         *                by {file_id} parameter
-         *
-         * method       : POST
-         *
-         * parameters   : 'record_id' int (mandatory) : The substitued record
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/{file_id}/accept/', $this->call('acceptElement'))
+        $controllers->post('/{file_id}/accept/', 'controller.prod.lazaret:acceptElement')
             ->assert('file_id', '\d+')
             ->bind('lazaret_accept');
 
-        /**
-         * Lazaret Thumbnail route
-         *
-         * name         : lazaret_thumbnail
-         *
-         * descritpion  : Get the thumbnail attached to the lazaret element
-         *                identified by {file_id} parameter
-         *
-         * method       : GET
-         *
-         * return       : JSON Response
-         */
-        $controllers->get('/{file_id}/thumbnail/', $this->call('thumbnailElement'))
+        $controllers->get('/{file_id}/thumbnail/', 'controller.prod.lazaret:thumbnailElement')
             ->assert('file_id', '\d+')
             ->bind('lazaret_thumbnail');
 
@@ -175,12 +79,12 @@ class Lazaret implements ControllerProviderInterface
      */
     public function listElement(Application $app, Request $request)
     {
-        $baseIds = array_keys($app['authentication']->getUser()->ACL()->get_granted_base(array('canaddrecord')));
+        $baseIds = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['canaddrecord']));
 
         $lazaretFiles = null;
 
         if (count($baseIds) > 0) {
-            $lazaretRepository = $app['EM']->getRepository('Entities\LazaretFile');
+            $lazaretRepository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\LazaretFile');
 
             $lazaretFiles = $lazaretRepository->findPerPage(
                 $baseIds, $request->query->get('offset', 0), $request->query->get('limit', 10)
@@ -188,7 +92,7 @@ class Lazaret implements ControllerProviderInterface
         }
 
         return $app['twig']->render(
-            'prod/upload/lazaret.html.twig', array('lazaretFiles' => $lazaretFiles)
+            'prod/upload/lazaret.html.twig', ['lazaretFiles' => $lazaretFiles]
         );
     }
 
@@ -203,18 +107,18 @@ class Lazaret implements ControllerProviderInterface
      */
     public function getElement(Application $app, Request $request, $file_id)
     {
-        $ret = array('success' => false, 'message' => '', 'result'  => array());
+        $ret = ['success' => false, 'message' => '', 'result'  => []];
 
-        $lazaretFile = $app['EM']->find('Entities\LazaretFile', $file_id);
+        $lazaretFile = $app['EM']->find('Alchemy\Phrasea\Model\Entities\LazaretFile', $file_id);
 
-        /* @var $lazaretFile \Entities\LazaretFile */
+        /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {
-            $ret['message'] = _('File is not present in quarantine anymore, please refresh');
+            $ret['message'] = $app->trans('File is not present in quarantine anymore, please refresh');
 
             return $app->json($ret);
         }
 
-        $file = array(
+        $file = [
             'filename' => $lazaretFile->getOriginalName(),
             'base_id'  => $lazaretFile->getBaseId(),
             'created'  => $lazaretFile->getCreated()->format(\DateTime::ATOM),
@@ -222,7 +126,7 @@ class Lazaret implements ControllerProviderInterface
             'pathname' => $app['root.path'] . '/tmp/lazaret/' . $lazaretFile->getFilename(),
             'sha256'   => $lazaretFile->getSha256(),
             'uuid'     => $lazaretFile->getUuid(),
-        );
+        ];
 
         $ret['result'] = $file;
         $ret['success'] = true;
@@ -237,28 +141,32 @@ class Lazaret implements ControllerProviderInterface
      * @param Request     $request The current request
      * @param int         $file_id A lazaret element id
      *
+     * parameters   : 'bas_id'            int     (mandatory) : The id of the destination collection
+     *                'keep_attributes'   boolean (optional)  : Keep all attributes attached to the lazaret element
+     *                'attributes'        array   (optional)  : Attributes id's to attach to the lazaret element
+     *
      * @return Response
      */
     public function addElement(Application $app, Request $request, $file_id)
     {
-        $ret = array('success' => false, 'message' => '', 'result'  => array());
+        $ret = ['success' => false, 'message' => '', 'result'  => []];
 
         //Optional parameter
         $keepAttributes = !!$request->request->get('keep_attributes', false);
-        $attributesToKeep = $request->request->get('attributes', array());
+        $attributesToKeep = $request->request->get('attributes', []);
 
         //Mandatory parameter
-        if (null === $baseId = $request->request->get('bas_id')) {
-            $ret['message'] = _('You must give a destination collection');
+        if (null === $request->request->get('bas_id')) {
+            $ret['message'] = $app->trans('You must give a destination collection');
 
             return $app->json($ret);
         }
 
-        $lazaretFile = $app['EM']->find('Entities\LazaretFile', $file_id);
+        $lazaretFile = $app['EM']->find('Alchemy\Phrasea\Model\Entities\LazaretFile', $file_id);
 
-        /* @var $lazaretFile \Entities\LazaretFile */
+        /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {
-            $ret['message'] = _('File is not present in quarantine anymore, please refresh');
+            $ret['message'] = $app->trans('File is not present in quarantine anymore, please refresh');
 
             return $app->json($ret);
         }
@@ -338,11 +246,11 @@ class Lazaret implements ControllerProviderInterface
 
             $ret['success'] = true;
         } catch (\Exception $e) {
-            $ret['message'] = _('An error occured');
+            $ret['message'] = $app->trans('An error occured');
         }
 
         try {
-            $app['filesystem']->remove(array($lazaretFileName, $lazaretThumbFileName));
+            $app['filesystem']->remove([$lazaretFileName, $lazaretThumbFileName]);
         } catch (IOException $e) {
 
         }
@@ -361,12 +269,12 @@ class Lazaret implements ControllerProviderInterface
      */
     public function denyElement(Application $app, Request $request, $file_id)
     {
-        $ret = array('success' => false, 'message' => '', 'result'  => array());
+        $ret = ['success' => false, 'message' => '', 'result'  => []];
 
-        $lazaretFile = $app['EM']->find('Entities\LazaretFile', $file_id);
-        /* @var $lazaretFile \Entities\LazaretFile */
+        $lazaretFile = $app['EM']->find('Alchemy\Phrasea\Model\Entities\LazaretFile', $file_id);
+        /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {
-            $ret['message'] = _('File is not present in quarantine anymore, please refresh');
+            $ret['message'] = $app->trans('File is not present in quarantine anymore, please refresh');
 
             return $app->json($ret);
         }
@@ -390,7 +298,7 @@ class Lazaret implements ControllerProviderInterface
         $app['EM']->flush();
 
         try {
-            $app['filesystem']->remove(array($lazaretFileName, $lazaretThumbFileName));
+            $app['filesystem']->remove([$lazaretFileName, $lazaretThumbFileName]);
         } catch (IOException $e) {
 
         }
@@ -408,9 +316,9 @@ class Lazaret implements ControllerProviderInterface
      */
     public function emptyLazaret(Application $app, Request $request)
     {
-        $ret = array('success' => false, 'message' => '', 'result'  => array());
+        $ret = ['success' => false, 'message' => '', 'result'  => []];
 
-        $lazaretFiles = $app['EM']->getRepository('Entities\LazaretFile')->findAll();
+        $lazaretFiles = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\LazaretFile')->findAll();
 
         $app['EM']->beginTransaction();
 
@@ -422,7 +330,7 @@ class Lazaret implements ControllerProviderInterface
             $ret['success'] = true;
         } catch (\Exception $e) {
             $app['EM']->rollback();
-            $ret['message'] = _('An error occured');
+            $ret['message'] = $app->trans('An error occured');
         }
 
         return $app->json($ret);
@@ -439,20 +347,20 @@ class Lazaret implements ControllerProviderInterface
      */
     public function acceptElement(Application $app, Request $request, $file_id)
     {
-        $ret = array('success' => false, 'message' => '', 'result'  => array());
+        $ret = ['success' => false, 'message' => '', 'result'  => []];
 
         //Mandatory parameter
         if (null === $recordId = $request->request->get('record_id')) {
-            $ret['message'] = _('You must give a destination record');
+            $ret['message'] = $app->trans('You must give a destination record');
 
             return $app->json($ret);
         }
 
-        $lazaretFile = $app['EM']->find('Entities\LazaretFile', $file_id);
+        $lazaretFile = $app['EM']->find('Alchemy\Phrasea\Model\Entities\LazaretFile', $file_id);
 
-        /* @var $lazaretFile \Entities\LazaretFile */
+        /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {
-            $ret['message'] = _('File is not present in quarantine anymore, please refresh');
+            $ret['message'] = $app->trans('File is not present in quarantine anymore, please refresh');
 
             return $app->json($ret);
         }
@@ -470,7 +378,7 @@ class Lazaret implements ControllerProviderInterface
         }
 
         if (!$found) {
-            $ret['message'] = _('The destination record provided is not allowed');
+            $ret['message'] = $app->trans('The destination record provided is not allowed');
 
             return $app->json($ret);
         }
@@ -496,11 +404,11 @@ class Lazaret implements ControllerProviderInterface
 
             $ret['success'] = true;
         } catch (\Exception $e) {
-            $ret['message'] = _('An error occured');
+            $ret['message'] = $app->trans('An error occured');
         }
 
         try {
-            $app['filesystem']->remove(array($lazaretFileName, $lazaretThumbFileName));
+            $app['filesystem']->remove([$lazaretFileName, $lazaretThumbFileName]);
         } catch (IOException $e) {
 
         }
@@ -519,9 +427,9 @@ class Lazaret implements ControllerProviderInterface
      */
     public function thumbnailElement(Application $app, Request $request, $file_id)
     {
-        $lazaretFile = $app['EM']->find('Entities\LazaretFile', $file_id);
+        $lazaretFile = $app['EM']->find('Alchemy\Phrasea\Model\Entities\LazaretFile', $file_id);
 
-        /* @var $lazaretFile \Entities\LazaretFile */
+        /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {
             return new Response(null, 404);
         }
@@ -529,16 +437,5 @@ class Lazaret implements ControllerProviderInterface
         $lazaretThumbFileName = $app['root.path'] . '/tmp/lazaret/' . $lazaretFile->getThumbFilename();
 
         return $app['phraseanet.file-serve']->deliverFile($lazaretThumbFileName, $lazaretFile->getOriginalName(), DeliverDataInterface::DISPOSITION_INLINE, 'image/jpeg', 3600);
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

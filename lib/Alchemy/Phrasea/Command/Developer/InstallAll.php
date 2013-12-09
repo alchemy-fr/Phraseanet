@@ -26,17 +26,15 @@ class InstallAll extends Command
             ->setDescription('Installs all dependencies')
             ->addOption('no-dev', 'd', InputOption::VALUE_NONE, 'Do not install dev dependencies')
             ->addOption('prefer-source', 'p', InputOption::VALUE_NONE, 'Use the --prefer-source composer option')
-            ->addOption('attempts', 'a', InputOption::VALUE_REQUIRED, 'Number of attempts to install bower dependencies.', 4);
+            ->addOption('clear-cache', null, InputOption::VALUE_NONE, 'If defined forces to clear the cache before installation');
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $ret = 0;
 
-        $ret += $this->container['console']->get('dependencies:bower')->execute($input, $output);
         $ret += $this->container['console']->get('dependencies:composer')->execute($input, $output);
-        $ret += $this->container['console']->get('assets:build-javascript')->execute($input, $output);
-        $ret += $this->container['console']->get('assets:compile-less')->execute($input, $output);
+        $ret += $this->container['console']->get('dependencies:bower')->execute($input, $output);
 
         return min($ret, 255);
     }

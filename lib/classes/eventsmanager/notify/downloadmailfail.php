@@ -9,12 +9,6 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
 {
     const MAIL_NO_VALID = 1;
@@ -24,7 +18,7 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = array('__EXPORT_MAIL_FAIL__');
+    public $events = ['__EXPORT_MAIL_FAIL__'];
 
     /**
      *
@@ -44,13 +38,13 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'usr_id' => null
             , 'lst'    => ''
             , 'ssttid' => ''
             , 'dest'   => ''
             , 'reason' => ''
-        );
+        ];
 
         $params = array_merge($default, $params);
 
@@ -82,16 +76,6 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
         $mailed = false;
 
         if ($this->shouldSendNotificationFor($params['usr_id'])) {
-            $user = User_Adapter::getInstance($params['usr_id'], $this->app);
-            $name = $user->get_display_name();
-
-            $to = array('email' => $user->get_email(), 'name'  => $name);
-
-            $from = array(
-                'email' => $this->app['phraseanet.registry']->get('GV_defaulmailsenderaddr'),
-                'name'  => $this->app['phraseanet.registry']->get('GV_homeTitle')
-            );
-
             if (parent::email())
                 $mailed = true;
         }
@@ -110,30 +94,23 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
     public function datas($datas, $unread)
     {
         $sx = simplexml_load_string($datas);
-        $usr_id = (int) $sx->usr_id;
         $reason = (int) $sx->reason;
-        $lst = (string) $sx->lst;
-        $ssttid = (int) $sx->ssttid;
         $dest = (string) $sx->dest;
 
         if ($reason == self::MAIL_NO_VALID) {
-            $reason = _('email is not valid');
+            $reason = $this->app->trans('email is not valid');
         } elseif ($reason == self::MAIL_FAIL) {
-            $reason = _('failed to send mail');
+            $reason = $this->app->trans('failed to send mail');
         } else {
-            $reason = _('an error occured while exporting records');
+            $reason = $this->app->trans('an error occured while exporting records');
         }
 
-        $text = sprintf(
-            _("The delivery to %s failed for the following reason : %s")
-            , $dest
-            , $reason
-        );
+        $text = $this->app->trans("The delivery to %email% failed for the following reason : %reason%", ['%email%' => $dest, '%reason%' => $reason]);
 
-        $ret = array(
+        $ret = [
             'text'  => $text
             , 'class' => ''
-        );
+        ];
 
         return $ret;
     }
@@ -144,7 +121,7 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
      */
     public function get_name()
     {
-        return _('Email export fails');
+        return $this->app->trans('Email export fails');
     }
 
     /**
@@ -153,7 +130,7 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
      */
     public function get_description()
     {
-        return _('Get a notification when a mail export fails');
+        return $this->app->trans('Get a notification when a mail export fails');
     }
 
     /**

@@ -13,7 +13,7 @@ class module_console_systemTemplateGeneratorTest extends PHPUnit_Framework_TestC
 
         $command = $application['console']->find('system:templateGenerator');
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array('command' => $command->getName()));
+        $commandTester->execute(['command' => $command->getName()]);
 
         $data = explode("\n", trim($commandTester->getDisplay()));
         $last_line = array_pop($data);

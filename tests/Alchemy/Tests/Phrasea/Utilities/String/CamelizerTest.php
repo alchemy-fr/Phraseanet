@@ -20,11 +20,11 @@ class CamelizerTest extends \PHPUnit_Framework_TestCase
 
     public function provideStrings()
     {
-        return array(
-            array('string-test', '-', 'stringTest', false),
-            array('string test', ' ', 'stringTest', false),
-            array('string_test', '_', 'stringTest', false),
-            array('string#test', '#', 'StringTest', true),
-        );
+        return [
+            ['string-test', '-', 'stringTest', false],
+            ['string test', ' ', 'stringTest', false],
+            ['string_test', '_', 'stringTest', false],
+            ['string#test', '#', 'StringTest', true],
+        ];
     }
 }

@@ -32,7 +32,7 @@ class Uninstaller extends Command
     {
         $root = $this->container['root.path'];
 
-        foreach (array(
+        foreach ([
             $root.'/tmp/configuration-compiled.php',
             $root.'/config/configuration.yml',
             $root.'/config/services.yml',
@@ -44,20 +44,21 @@ class Uninstaller extends Command
             $root.'/config/_GV.php.old',
             $root.'/tmp/cache_registry.php',
             $root.'/tmp/cache_registry.yml',
-            ) as $file) {
+            ] as $file) {
             if (is_file($file)) {
                 unlink($file);
             }
         }
 
-        foreach (array(
+        foreach ([
             $root.'/tmp/serializer',
             $root.'/tmp/cache_twig',
+            $root.'/tmp/translations',
             $root.'/tmp/cache_minify',
             $root.'/tmp/download',
             $root.'/tmp/locks',
             $root.'/tmp/cache',
-            ) as $dir) {
+            ] as $dir) {
             if (is_dir($dir)) {
                 $finder = new Finder();
                 foreach ($finder->files()->in($dir) as $file) {

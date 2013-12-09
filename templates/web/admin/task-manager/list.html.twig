@@ -1,0 +1,140 @@
+<style type="text/css">
+    #task-manager td,
+    #task-manager th {
+        text-align: center;
+    }
+    #task-manager td.menu {
+        width:40px;
+    }
+    #task-manager td.id {
+        width:40px;
+    }
+    #task-manager td.information {
+        width:30px;
+    }
+    #task-manager td.status {
+        width:80px;
+    }
+    #task-manager td.process-id {
+        width:60px;
+    }
+    #task-manager td.taskname {
+        text-align: left;
+        width:auto;
+    }
+    #task-manager td.id {
+        font-weight: bold;
+    }
+</style>
+
+<div class="page-header">
+    <h1>{{ 'admin::tasks: planificateur de taches' | trans }}
+        <small style="font-size:16px;">
+            {% set updateTime %}
+                <span id="pingTime"></span>
+            {% endset %}
+            {% trans with {'%updateTime%' : updateTime} %}Last update on %updateTime%{% endtrans %}
+        </small>
+    </h1>
+</div>
+
+<table id="task-manager" class="admintable table table-striped" cellpadding="0" cellSpacing="0">
+    <thead>
+        <tr>
+            <th class="menu"></th>
+            <th class="id">ID</th>
+            <th class="information">{{ 'Informations' | trans }}</th>
+            <th class="status">{{ 'admin::tasks: statut de la tache' | trans }}</th>
+            <th class="process-id">{{ 'admin::tasks: process_id de la tache' | trans }}</th>
+            <th class="taskname">{{ 'admin::tasks: nom de la tache' | trans }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr id="task_manager_status" class="even">
+            <td class="menu">
+                <div class="btn-group">
+                    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a method="POST" href="{{ path ('admin_tasks_scheduler_start') }}">{{ 'Start' | trans }}</a>
+                        </li>
+                        <li>
+                            <a method="POST" href="{{ path ('admin_tasks_scheduler_stop') }}">{{ 'Stop' | trans }}</a>
+                        </li>
+                        <li>
+                            <a href="{{ path ('admin_tasks_scheduler_log') }}">{{ 'Logs' | trans }}</a>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+            <td class="id"></td>
+            <td class="information"></td>
+            <td class="status"></td>
+            <td class="process-id"></td>
+            <td class="taskname" style="font-weight:bold;">{{ 'admin::tasks: planificateur de taches' | trans }}</td>
+        </tr>
+        {% for task in tasks %}
+        <tr id="task_{{ task.getId() }}" class="{% if loop.index is odd %}odd{% else %}even{% endif %}">
+            <td class="menu">
+                <div class="btn-group">
+                    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="{{ path('admin_tasks_task_show', { 'task' : task.getId() }) }}">
+                                {{ 'Edit' | trans }}
+                            </a>
+                        </li>
+                        <li>
+                            <a method="POST" href="{{ path('admin_tasks_task_start', { 'task' : task.getId() }) }}">
+                                {{ 'Start' | trans }}
+                            </a>
+                        </li>
+                        <li>
+                            <a method="POST" href="{{ path('admin_tasks_task_stop', { 'task' : task.getId() }) }}">
+                                {{ 'Stop' | trans }}
+                            </a>
+                        </li>
+                        <li>
+                            <a method="POST" href="{{ path('admin_tasks_task_delete', { 'task' : task.getId() }) }}">
+                                {{ 'Delete' | trans }}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ path('admin_tasks_task_log', { 'task' : task.getId() }) }}">
+                                {{ 'Logs' | trans }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+            <td class="id">{{ task.getID() }}</td>
+            <td class="information"></td>
+            <td class="status">{{ task.getStatus() }}</td>
+            <td class="process-id"></td>
+            <td class="taskname">{{ task.getName() }} [{{ task.getName() }}]</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<form id="form-create-task" method="post" name="form-create-task" action="{{ path('admin_tasks_task_create') }}">
+    <select name="job-name">
+        <option value="">
+            {{ 'admin::tasks: Nouvelle tache' | trans }}
+        </option>
+        {% for job in available_jobs %}
+            <option value="{{ job.getJobId() }}">{{ job.getName() }}</option>
+        {% endfor %}
+    </select>
+</form>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("form[name='form-create-task'] select").bind("change", function() {
+            $(this).closest('form').submit();
+        });
+    });
+</script>

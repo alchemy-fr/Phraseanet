@@ -9,20 +9,12 @@
  * file that was distributed with this source code.
  */
 
-use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\HttpFoundation\Request;
 
-/**
- *
- * @package     Bridge
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 interface Bridge_Api_Interface
 {
     const OBJECT_CLASS_ELEMENT = 'element';
     const OBJECT_CLASS_CONTAINER = 'container';
-
-    public function __construct(UrlGenerator $generator, registryInterface $registry, Bridge_Api_Auth_Interface $auth);
 
     /**
      *
@@ -152,7 +144,7 @@ interface Bridge_Api_Interface
 
     public function get_error_message_from_status($connector_status);
 
-    public function upload(record_adapter $record, array $options = array());
+    public function upload(record_adapter $record, array $options = []);
 
     public function is_valid_object_id($object_id);
 

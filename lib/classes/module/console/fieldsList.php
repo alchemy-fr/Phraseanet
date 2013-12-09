@@ -9,12 +9,6 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @package     KonsoleKomander
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Alchemy\Phrasea\Command\Command;
@@ -38,7 +32,7 @@ class module_console_fieldsList extends Command
             $output->writeln(
                 sprintf(
                     "\n ---------------- \nOn databox %s (sbas_id %d) :\n"
-                    , $databox->get_label($this->container['locale.I18n'])
+                    , $databox->get_label($this->container['locale'])
                     , $databox->get_sbas_id()
                 )
             );

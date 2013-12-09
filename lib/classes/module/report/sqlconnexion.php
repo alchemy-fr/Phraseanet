@@ -21,8 +21,8 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
 
     public function buildSql()
     {
-        $filter = $this->filter->getReportFilter() ? : array('params' => array(), 'sql' => false);
-        $this->params = array_merge(array(), $filter['params']);
+        $filter = $this->filter->getReportFilter() ? : ['params' => [], 'sql' => false];
+        $this->params = array_merge([], $filter['params']);
 
         if ($this->groupby == false) {
             $this->sql = "
@@ -76,8 +76,8 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
 
     public function sqlDistinctValByField($field)
     {
-        $filter = $this->filter->getReportFilter() ? : array('params' => array(), 'sql' => false);
-        $this->params = array_merge(array(), $filter['params']);
+        $filter = $this->filter->getReportFilter() ? : ['params' => [], 'sql' => false];
+        $this->params = array_merge([], $filter['params']);
 
         $this->sql = '
             SELECT DISTINCT(val)
@@ -88,6 +88,6 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
                 WHERE (' . $filter['sql'] . ')
             ) AS tt ORDER BY val ASC';
 
-        return array('sql' => $this->sql, 'params' => $this->params);
+        return ['sql' => $this->sql, 'params' => $this->params];
     }
 }

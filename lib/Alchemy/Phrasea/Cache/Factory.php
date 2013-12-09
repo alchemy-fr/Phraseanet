@@ -22,6 +22,13 @@ use Alchemy\Phrasea\Exception\RuntimeException;
 
 class Factory
 {
+    private $connectionFactory;
+
+    public function __construct(ConnectionFactory $connectionFactory)
+    {
+        $this->connectionFactory = $connectionFactory;
+    }
+
     /**
      * @param type $name
      * @param type $options
@@ -35,7 +42,7 @@ class Factory
         switch (strtolower($name)) {
             case 'apc':
             case 'apccache':
-                $cache = $this->createApc($options);
+                $cache = $this->createApc();
                 break;
             case 'array':
             case 'arraycache':
@@ -55,11 +62,11 @@ class Factory
                 break;
             case 'wincache':
             case 'wincachecache':
-                $cache = $this->createWincache($options);
+                $cache = $this->createWincache();
                 break;
             case 'xcache':
             case 'xcachecache':
-                $cache = $this->createXcache($options);
+                $cache = $this->createXcache();
                 break;
             default:
                 throw new RuntimeException(sprintf('Unnown cache type %s', $name));
@@ -68,7 +75,7 @@ class Factory
         return $cache;
     }
 
-    private function createXcache($options)
+    private function createXcache()
     {
         if (!extension_loaded('xcache')) {
             throw new RuntimeException('The XCache cache requires the XCache extension.');
@@ -77,7 +84,7 @@ class Factory
         return new XcacheCache();
     }
 
-    private function createWincache($options)
+    private function createWincache()
     {
         if (!extension_loaded('wincache')) {
             throw new RuntimeException('The WinCache cache requires the WinCache extension.');
@@ -88,21 +95,7 @@ class Factory
 
     private function createRedis($options)
     {
-        if (!extension_loaded('redis')) {
-            throw new RuntimeException('The Redis cache requires the Redis extension.');
-        }
-
-        $redis = new \Redis();
-
-        $host = isset($options['host']) ? $options['host'] : 'localhost';
-        $port = isset($options['port']) ? $options['port'] : 6379;
-
-        if (!$redis->connect($host, $port)) {
-            throw new RuntimeException(sprintf("Redis instance with host '%s' and port '%s' is not reachable", $host, $port));
-        }
-        if (!defined('Redis::SERIALIZER_IGBINARY') || !$redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_IGBINARY)) {
-            $redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_PHP);
-        }
+        $redis = $this->connectionFactory->getRedisConnection($options);
 
         $cache = new RedisCache();
         $cache->setRedis($redis);
@@ -112,22 +105,7 @@ class Factory
 
     private function createMemcache($options)
     {
-        if (!extension_loaded('memcache')) {
-            throw new RuntimeException('The Memcache cache requires the Memcache extension.');
-        }
-
-        $host = isset($options['host']) ? $options['host'] : 'localhost';
-        $port = isset($options['port']) ? $options['port'] : 11211;
-
-        $memcache = new \Memcache();
-        $memcache->addServer($host, $port);
-
-        $key = sprintf("%s:%s", $host, $port);
-        $stats = @$memcache->getExtendedStats();
-
-        if (!isset($stats[$key]) || false === $stats[$key]) {
-            throw new RuntimeException(sprintf("Memcache instance with host '%s' and port '%s' is not reachable", $host, $port));
-        }
+        $memcache = $this->connectionFactory->getMemcacheConnection($options);
 
         $cache = new MemcacheCache();
         $cache->setMemcache($memcache);
@@ -137,20 +115,7 @@ class Factory
 
     private function createMemcached($options)
     {
-        if (!extension_loaded('memcached')) {
-            throw new RuntimeException('The Memcached cache requires the Memcached extension.');
-        }
-
-        $host = isset($options['host']) ? $options['host'] : 'localhost';
-        $port = isset($options['port']) ? $options['port'] : 11211;
-
-        $memcached = new \Memcached();
-        $memcached->addServer($host, $port);
-        $memcached->getStats();
-
-        if (\Memcached::RES_SUCCESS !== $memcached->getResultCode()) {
-            throw new RuntimeException(sprintf("Memcached instance with host '%s' and port '%s' is not reachable", $host, $port));
-        }
+        $memcached = $this->connectionFactory->getMemcachedConnection($options);
 
         $cache = new MemcachedCache();
         $cache->setMemcached($memcached);
@@ -158,7 +123,7 @@ class Factory
         return $cache;
     }
 
-    private function createApc($options)
+    private function createApc()
     {
         if (!extension_loaded('apc')) {
             throw new RuntimeException('The APC cache requires the APC extension.');

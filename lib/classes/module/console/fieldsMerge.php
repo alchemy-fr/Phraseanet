@@ -9,12 +9,6 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @package     KonsoleKomander
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -57,7 +51,7 @@ class module_console_fieldsMerge extends Command
             return 1;
         }
 
-        $sources = array();
+        $sources = [];
 
         foreach ($input->getArgument('source') as $source_id) {
             $sources[] = $databox->get_meta_structure()->get_element($source_id);
@@ -71,7 +65,7 @@ class module_console_fieldsMerge extends Command
 
         $destination = $databox->get_meta_structure()->get_element($input->getArgument('destination'));
 
-        $types = $multis = array();
+        $types = $multis = [];
 
         foreach ($sources as $source) {
             array_push($types, $source->get_type());
@@ -97,7 +91,7 @@ class module_console_fieldsMerge extends Command
             );
         }
 
-        $field_names = array();
+        $field_names = [];
 
         foreach ($sources as $source) {
             $field_names[] = $source->get_name();
@@ -172,7 +166,7 @@ class module_console_fieldsMerge extends Command
             foreach ($results as $row) {
                 $record = $databox->get_record($row['record_id']);
 
-                $datas = array();
+                $datas = [];
 
                 foreach ($sources as $source) {
                     try {
@@ -195,11 +189,11 @@ class module_console_fieldsMerge extends Command
                 }
 
                 foreach ((array) $datas as $data) {
-                    $record->set_metadatas(array(array(
+                    $record->set_metadatas([[
                             'meta_struct_id' => $destination->get_id(),
                             'meta_id'        => null,
                             'value'          => $data,
-                        )), true);
+                        ]], true);
                 }
 
                 $this->getService('phraseanet.SE')->updateRecord($record);

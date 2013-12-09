@@ -31,26 +31,26 @@ class PhraseaRecoverPasswordForm extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('token', 'hidden', array(
+        $builder->add('token', 'hidden', [
             'required'      => true,
-            'constraints'   => array(
+            'constraints'   => [
                 new PasswordToken($this->app, $this->app['tokens'])
-            )
-        ));
+            ]
+        ]);
 
-        $builder->add('password', 'repeated', array(
+        $builder->add('password', 'repeated', [
             'type'              => 'password',
             'required'          => true,
-            'invalid_message'   => _('Please provide the same passwords.'),
+            'invalid_message'   => 'Please provide the same passwords.',
             'first_name'        => 'password',
             'second_name'       => 'confirm',
-            'first_options'     => array('label' => _('New password')),
-            'second_options'    => array('label' => _('New password (confirmation)')),
-            'constraints'       => array(
+            'first_options'     => ['label' => 'New password'],
+            'second_options'    => ['label' => 'New password (confirmation)'],
+            'constraints'       => [
                 new Assert\NotBlank(),
-                new Assert\Length(array('min' => 5)),
-            ),
-        ));
+                new Assert\Length(['min' => 5]),
+            ],
+        ]);
     }
 
     public function getName()

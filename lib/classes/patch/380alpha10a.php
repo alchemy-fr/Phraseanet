@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,7 +17,7 @@ class patch_380alpha10a implements patchInterface
     private $release = '3.8.0-alpha.10';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -25,6 +25,14 @@ class patch_380alpha10a implements patchInterface
     public function get_release()
     {
         return $this->release;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return [];
     }
 
     /**
@@ -48,22 +56,26 @@ class patch_380alpha10a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $sql = 'SELECT id, `usage` FROM `order`';
+        $sql = 'SELECT id, `usage`
+                FROM `order`';
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $sql = 'UPDATE `order` SET `usage` = :usage WHERE id = :id';
+        $sql = 'UPDATE `order` SET `usage` = :usage
+                WHERE id = :id';
         $stmt = $appbox->get_connection()->prepare($sql);
 
         foreach ($rs as $row) {
-            $stmt->execute(array(
+            $stmt->execute([
                 ':usage' => strip_tags($row['usage']),
                 ':id' => $row['id'],
-            ));
+            ]);
         }
 
         $stmt->closeCursor();
+
+        return true;
     }
 }

@@ -12,8 +12,8 @@ class TOUTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $application = new Application('test');
         self::giveRightsToUser($application, self::$DI['user_alt2']);
-        self::$DI['user_alt2']->ACL()->revoke_access_from_bases(array(self::$DI['collection_no_access']->get_base_id()));
-        self::$DI['user_alt2']->ACL()->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
+        self::$DI['app']['acl']->get(self::$DI['user_alt2'])->revoke_access_from_bases([self::$DI['collection_no_access']->get_base_id()]);
+        self::$DI['app']['acl']->get(self::$DI['user_alt2'])->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
         parent::tearDownAfterClass();
     }
 
@@ -53,7 +53,7 @@ class TOUTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         unset($response, $databoxes);
 
         foreach ($databox->get_collections() as $collection) {
-            $this->assertFalse(self::$DI['user_alt2']->ACL()->has_access_to_base($collection->get_base_id()));
+            $this->assertFalse(self::$DI['app']['acl']->get(self::$DI['user_alt2'])->has_access_to_base($collection->get_base_id()));
         }
     }
 

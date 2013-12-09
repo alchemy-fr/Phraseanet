@@ -18,18 +18,13 @@ use Alchemy\Phrasea\Notification\Receiver;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Edit extends \Alchemy\Phrasea\Helper\Helper
 {
     /**
      *
      * @var array
      */
-    protected $users = array();
+    protected $users = [];
 
     /**
      *
@@ -49,7 +44,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $this->users = explode(';', $Request->get('users'));
 
-        $users = array();
+        $users = [];
         foreach ($this->users as $usr_id) {
             $usr_id = (int) $usr_id;
 
@@ -77,11 +72,11 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     protected function delete_user(\User_Adapter $user)
     {
-        $list = array_keys($this->app['authentication']->getUser()->ACL()->get_granted_base(array('canadmin')));
+        $list = array_keys($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['canadmin']));
 
-        $user->ACL()->revoke_access_from_bases($list);
+        $this->app['acl']->get($user)->revoke_access_from_bases($list);
 
-        if ($user->ACL()->is_phantom()) {
+        if ($this->app['acl']->get($user)->is_phantom()) {
             $user->delete();
         }
 
@@ -90,7 +85,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     public function get_users_rights()
     {
-        $list = array_keys($this->app['authentication']->getUser()->ACL()->get_granted_base(array('canadmin')));
+        $list = array_keys($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['canadmin']));
 
         $sql = "SELECT
             b.sbas_id,
@@ -154,7 +149,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $access = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $base_ids = array();
+        $base_ids = [];
         foreach ($access as $acc) {
             $base_ids[$acc['base_id']] = $acc;
         }
@@ -174,14 +169,14 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
                 ->execute()->get_results();
 
         $this->users_datas = $rs;
-        $out = array(
+        $out = [
             'datas'        => $this->users_datas,
             'users'        => $this->users,
             'users_serial' => implode(';', $this->users),
             'base_id'      => $this->base_id,
             'main_user'    => null,
             'templates'    => $templates
-        );
+        ];
 
         if (count($this->users) == 1) {
             $usr_id = array_pop($this->users);
@@ -202,19 +197,19 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $conn = \connection::getPDOConnection($this->app);
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':base_id' => $this->base_id));
+        $stmt->execute([':base_id' => $this->base_id]);
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         $this->users_datas = $rs;
 
-        return array(
+        return [
             'datas'        => $this->users_datas,
             'users'        => $this->users,
             'users_serial' => implode(';', $this->users),
             'base_id'      => $this->base_id,
             'collection'   => \collection::get_from_base_id($this->app, $this->base_id),
-        );
+        ];
     }
 
     public function get_masks()
@@ -228,34 +223,35 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $conn = $this->app['phraseanet.appbox']->get_connection();
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':base_id' => $this->base_id));
+        $stmt->execute([':base_id' => $this->base_id]);
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $msk_and = null;
-        $msk_xor = null;
-        $tbits_and = array();
-        $tbits_xor = array();
+        $tbits_and = [];
+        $tbits_xor = [];
 
         $nrows = 0;
 
         for ($bit = 0; $bit < 32; $bit++)
-            $tbits_and[$bit] = $tbits_xor[$bit] = array("nset" => 0);
+            $tbits_and[$bit] = $tbits_xor[$bit] = ["nset" => 0];
 
         foreach ($rs as $row) {
             $sta_xor = strrev($row["mask_xor"]);
-            for ($bit = 0; $bit < strlen($sta_xor); $bit++)
+            $length = strlen($sta_xor);
+            for ($bit = 0; $bit < $length; $bit++) {
                 $tbits_xor[$bit]["nset"] += substr($sta_xor, $bit, 1) != "0" ? 1 : 0;
+            }
 
             $sta_and = strrev($row["mask_and"]);
-            for ($bit = 0; $bit < strlen($sta_and); $bit++)
+            $length = strlen($sta_and);
+            for ($bit = 0; $bit < $length; $bit++) {
                 $tbits_and[$bit]["nset"] += substr($sta_and, $bit, 1) != "0" ? 1 : 0;
-
+            }
             $nrows++;
         }
 
-        $tbits_left = array();
-        $tbits_right = array();
+        $tbits_left = [];
+        $tbits_right = [];
 
         $sbas_id = \phrasea::sbasFromBas($this->app, $this->base_id);
         $databox = $this->app['phraseanet.appbox']->get_databox($sbas_id);
@@ -263,11 +259,11 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         foreach ($status as $bit => $datas) {
             $tbits_left[$bit]["nset"] = 0;
-            $tbits_left[$bit]["name"] = $datas['labels_off_i18n'][$this->app['locale.I18n']];
+            $tbits_left[$bit]["name"] = $datas['labels_off_i18n'][$this->app['locale']];
             $tbits_left[$bit]["icon"] = $datas["img_off"];
 
             $tbits_right[$bit]["nset"] = 0;
-            $tbits_right[$bit]["name"] = $datas['labels_on_i18n'][$this->app['locale.I18n']];
+            $tbits_right[$bit]["name"] = $datas['labels_on_i18n'][$this->app['locale']];
             $tbits_right[$bit]["icon"] = $datas["img_on"];
         }
 
@@ -295,22 +291,22 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             }
         }
 
-        $this->users_datas = array(
+        $this->users_datas = [
             'tbits_left'  => $tbits_left,
             'tbits_right' => $tbits_right,
             'vand_and'    => $vand_and,
             'vand_or'     => $vand_or,
             'vxor_and'    => $vxor_and,
             'vxor_or'     => $vxor_or
-        );
+        ];
 
-        return array(
+        return [
             'datas'        => $this->users_datas,
             'users'        => $this->users,
             'users_serial' => implode(';', $this->users),
             'base_id'      => $this->base_id,
             'collection'   => \collection::get_from_base_id($this->app, $this->base_id),
-        );
+        ];
     }
 
     public function get_time()
@@ -324,7 +320,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $conn = \connection::getPDOConnection($this->app);
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':base_id' => $this->base_id));
+        $stmt->execute([':base_id' => $this->base_id]);
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -354,17 +350,17 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             $limited_to = $date_obj_to->format('Y-m-d');
         }
 
-        $datas = array('time_limited' => $time_limited, 'limited_from' => $limited_from, 'limited_to'   => $limited_to);
+        $datas = ['time_limited' => $time_limited, 'limited_from' => $limited_from, 'limited_to'   => $limited_to];
 
         $this->users_datas = $datas;
 
-        return array(
+        return [
             'datas'        => $this->users_datas,
             'users'        => $this->users,
             'users_serial' => implode(';', $this->users),
             'base_id'      => $this->base_id,
             'collection'   => \collection::get_from_base_id($this->app, $this->base_id),
-        );
+        ];
     }
 
     public function get_time_sbas()
@@ -380,11 +376,11 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $conn = \connection::getPDOConnection($this->app);
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':sbas_id' => $sbas_id));
+        $stmt->execute([':sbas_id' => $sbas_id]);
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $time_limited = $limited_from = $limited_to = array();
+        $time_limited = $limited_from = $limited_to = [];
 
         foreach ($rs as $row) {
             $time_limited[] = $row['time_limited'];
@@ -416,40 +412,39 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
                 $limited_to = false;
             }
 
-            $datas = array(
+            $datas = [
                 'time_limited' => array_pop($time_limited),
                 'limited_from' => $limited_from,
                 'limited_to'   => $limited_to
-            );
+            ];
         } else {
-            $datas = array(
+            $datas = [
                 'time_limited' => 2,
                 'limited_from' => '',
                 'limited_to'   => ''
-            );
+            ];
         }
 
         $this->users_datas = $datas;
 
-        return array(
+        return [
             'sbas_id'      => $sbas_id,
             'datas'        => $this->users_datas,
             'users'        => $this->users,
             'users_serial' => implode(';', $this->users),
             'databox'      => $this->app['phraseanet.appbox']->get_databox($sbas_id),
-        );
+        ];
     }
 
     public function apply_rights()
     {
-        $request = \http_request::getInstance();
-        $ACL = $this->app['authentication']->getUser()->ACL();
-        $base_ids = array_keys($ACL->get_granted_base(array('canadmin')));
+        $ACL = $this->app['acl']->get($this->app['authentication']->getUser());
+        $base_ids = array_keys($ACL->get_granted_base(['canadmin']));
 
-        $update = $create = $delete = $create_sbas = $update_sbas = array();
+        $update = $create = $delete = $create_sbas = $update_sbas = [];
 
         foreach ($base_ids as $base_id) {
-            $rights = array(
+            $rights = [
                 'access',
                 'actif',
                 'canputinalbum',
@@ -467,7 +462,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
                 'canpush',
                 'manage',
                 'modify_struct'
-            );
+            ];
             foreach ($rights as $k => $right) {
                 if (($right == 'access' && !$ACL->has_access_to_base($base_id))
                     || ($right != 'access' && !$ACL->has_right_on_base($base_id, $right))) {
@@ -476,7 +471,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
                 }
                 $rights[$k] = $right . '_' . $base_id;
             }
-            $parm = $request->get_parms_from_serialized_datas($rights, 'values');
+            $parm = $this->unserializedRequestData($this->app['request'], $rights, 'values');
 
             foreach ($parm as $p => $v) {
                 if (trim($v) == '')
@@ -503,12 +498,12 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $sbas_ids = $ACL->get_granted_sbas();
 
         foreach ($sbas_ids as $databox) {
-            $rights = array(
+            $rights = [
                 'bas_modif_th',
                 'bas_manage',
                 'bas_modify_struct',
                 'bas_chupub'
-            );
+            ];
             foreach ($rights as $k => $right) {
                 if (!$ACL->has_right_on_sbas($databox->get_sbas_id(), $right)) {
                     unset($rights[$k]);
@@ -517,7 +512,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
                 $rights[$k] = $right . '_' . $databox->get_sbas_id();
             }
 
-            $parm = $request->get_parms_from_serialized_datas($rights, 'values');
+            $parm = $this->unserializedRequestData($this->app['request'], $rights, 'values');
 
             foreach ($parm as $p => $v) {
                 if (trim($v) == '')
@@ -537,21 +532,21 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
                 $this->app['phraseanet.appbox']->get_connection()->beginTransaction();
 
                 $user = \User_Adapter::getInstance($usr_id, $this->app);
-                $user->ACL()->revoke_access_from_bases($delete)
+                $this->app['acl']->get($user)->revoke_access_from_bases($delete)
                     ->give_access_to_base($create)
                     ->give_access_to_sbas($create_sbas);
 
                 foreach ($update as $base_id => $rights) {
-                    $user->ACL()->update_rights_to_base($base_id, $rights);
+                    $this->app['acl']->get($user)->update_rights_to_base($base_id, $rights);
                 }
 
                 foreach ($update_sbas as $sbas_id => $rights) {
-                    $user->ACL()->update_rights_to_sbas($sbas_id, $rights);
+                    $this->app['acl']->get($user)->update_rights_to_sbas($sbas_id, $rights);
                 }
 
                 $this->app['phraseanet.appbox']->get_connection()->commit();
 
-                $user->ACL()->revoke_unused_sbas_rights();
+                $this->app['acl']->get($user)->revoke_unused_sbas_rights();
 
                 unset($user);
             } catch (\Exception $e) {
@@ -576,9 +571,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             return $this;
         }
 
-        $request = \http_request::getInstance();
-
-        $infos = array(
+        $infos = [
             'gender'
             , 'first_name'
             , 'last_name'
@@ -591,12 +584,12 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             , 'activite'
             , 'telephone'
             , 'fax'
-        );
+        ];
 
-        $parm = $request->get_parms_from_serialized_datas($infos, 'user_infos');
+        $parm = $this->unserializedRequestData($this->app['request'], $infos, 'user_infos');
 
         if ($parm['email'] && !\Swift_Validate::email($parm['email'])) {
-            throw new \Exception_InvalidArgument(_('Email addess is not valid'));
+            throw new \Exception_InvalidArgument('Email addess is not valid');
         }
 
         $old_email = $user->get_email();
@@ -624,7 +617,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             }
 
             if ($oldReceiver) {
-                $mailOldAddress = MailSuccessEmailUpdate::create($this->app, $oldReceiver, null, sprintf(_('You will now receive notifications at %s'), $new_email));
+                $mailOldAddress = MailSuccessEmailUpdate::create($this->app, $oldReceiver, null, $this->app->trans('You will now receive notifications at %new_email%', ['%new_email%' => $new_email]));
                 $this->app['notification.deliverer']->deliver($mailOldAddress);
             }
 
@@ -635,7 +628,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             }
 
             if ($newReceiver) {
-                $mailNewAddress = MailSuccessEmailUpdate::create($this->app, $newReceiver, null, sprintf(_('You will no longer receive notifications at %s'), $old_email));
+                $mailNewAddress = MailSuccessEmailUpdate::create($this->app, $newReceiver, null, $this->app->trans('You will no longer receive notifications at %old_email%', ['%old_email%' => $old_email]));
                 $this->app['notification.deliverer']->deliver($mailNewAddress);
             }
         }
@@ -651,7 +644,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             throw new AccessDeniedHttpException('You are not the owner of the template');
         }
 
-        $base_ids = array_keys($this->app['authentication']->getUser()->ACL()->get_granted_base(array('canadmin')));
+        $base_ids = array_keys($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['canadmin']));
 
         foreach ($this->users as $usr_id) {
             $user = \User_adapter::getInstance($usr_id, $this->app);
@@ -660,7 +653,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
                 continue;
             }
 
-            $user->ACL()->apply_model($template, $base_ids);
+            $this->app['acl']->get($user)->apply_model($template, $base_ids);
         }
 
         return $this;
@@ -673,9 +666,9 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         foreach ($this->users as $usr_id) {
             $user = \User_Adapter::getInstance($usr_id, $this->app);
             if ($this->request->get('quota'))
-                $user->ACL()->set_quotas_on_base($this->base_id, $this->request->get('droits'), $this->request->get('restes'));
+                $this->app['acl']->get($user)->set_quotas_on_base($this->base_id, $this->request->get('droits'), $this->request->get('restes'));
             else
-                $user->ACL()->remove_quotas_on_base($this->base_id);
+                $this->app['acl']->get($user)->remove_quotas_on_base($this->base_id);
         }
 
         return $this;
@@ -694,7 +687,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             foreach ($this->users as $usr_id) {
                 $user = \User_Adapter::getInstance($usr_id, $this->app);
 
-                $user->ACL()->set_masks_on_base($this->base_id, $vand_and, $vand_or, $vxor_and, $vxor_or);
+                $this->app['acl']->get($user)->set_masks_on_base($this->base_id, $vand_and, $vand_or, $vxor_and, $vxor_or);
             }
         }
 
@@ -711,16 +704,16 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $activate = !!$this->request->get('limit');
 
-        $base_ids = array_keys($this->app['authentication']->getUser()->ACL()->get_granted_base(array('canadmin')));
+        $base_ids = array_keys($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['canadmin']));
 
         foreach ($this->users as $usr_id) {
             $user = \User_Adapter::getInstance($usr_id, $this->app);
 
             if ($this->base_id > 0) {
-                $user->ACL()->set_limits($this->base_id, $activate, $dmin, $dmax);
+                $this->app['acl']->get($user)->set_limits($this->base_id, $activate, $dmin, $dmax);
             } elseif ($sbas_id > 0) {
                 foreach ($base_ids as $base_id) {
-                    $user->ACL()->set_limits($base_id, $activate, $dmin, $dmax);
+                    $this->app['acl']->get($user)->set_limits($base_id, $activate, $dmin, $dmax);
                 }
             } else {
                 $this->app->abort(400, 'No collection or databox id available');
@@ -730,11 +723,11 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     public function resetRights()
     {
-        $base_ids = array_keys($this->app['authentication']->getUser()->ACL()->get_granted_base(array('canadmin')));
+        $base_ids = array_keys($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['canadmin']));
 
         foreach ($this->users as $usr_id) {
             $user = \User_Adapter::getInstance($usr_id, $this->app);
-            $ACL = $user->ACL();
+            $ACL = $this->app['acl']->get($user);
 
             if ($user->is_template()) {
                 $template = $user;
@@ -756,5 +749,19 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             $ACL->revoke_access_from_bases($base_ids);
             $ACL->revoke_unused_sbas_rights();
         }
+    }
+
+    private function unserializedRequestData(Request $request, array $indexes, $requestIndex)
+    {
+        $parameters = $data = [];
+        parse_str($request->get($requestIndex), $data);
+
+        if (count($data) > 0) {
+            foreach ($indexes as $index) {
+                $parameters[$index] = isset($data[$index]) ? $data[$index] : null;
+            }
+        }
+
+        return $parameters;
     }
 }

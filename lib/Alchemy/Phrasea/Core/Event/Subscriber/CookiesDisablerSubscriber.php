@@ -32,10 +32,10 @@ class CookiesDisablerSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::REQUEST => array('checkRoutePattern', 512),
-            KernelEvents::RESPONSE => array('removeCookies', -512),
-        );
+        return [
+            KernelEvents::REQUEST => ['checkRoutePattern', 512],
+            KernelEvents::RESPONSE => ['removeCookies', -512],
+        ];
     }
 
     public function checkRoutePattern(GetResponseEvent $event)

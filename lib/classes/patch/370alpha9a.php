@@ -11,42 +11,40 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class patch_370alpha9a implements patchInterface
 {
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     private $release = '3.7.0-alpha.9';
 
-    /**
-     *
-     * @var Array
-     */
-    private $concern = array(base::APPLICATION_BOX);
+    /** @var array */
+    private $concern = [base::APPLICATION_BOX];
 
     /**
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function get_release()
     {
         return $this->release;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function require_all_upgrades()
     {
         return false;
     }
 
     /**
-     *
-     * @return Array
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function concern()
     {
@@ -54,12 +52,11 @@ class patch_370alpha9a implements patchInterface
     }
 
     /**
-     * @param base        $appbox
-     * @param Application $app
+     * {@inheritdoc}
      */
     public function apply(base $appbox, Application $app)
     {
-        $app['phraseanet.configuration']->setDefault('border-manager');
+        $app['configuration.store']->setDefault('border-manager');
 
         return true;
     }

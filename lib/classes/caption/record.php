@@ -13,12 +13,6 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Symfony\Component\Yaml\Dumper as YamlDumper;
 
-/**
- *
- * @package     caption
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class caption_record implements caption_interface, cache_cacheableInterface
 {
     /**
@@ -95,13 +89,13 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
     protected function toArray($includeBusinessFields)
     {
-        $buffer = array();
+        $buffer = [];
 
-        foreach ($this->get_fields(array(), $includeBusinessFields) as $field) {
+        foreach ($this->get_fields([], $includeBusinessFields) as $field) {
             $vi = $field->get_values();
 
             if ($field->is_multi()) {
-                $buffer[$field->get_name()] = array();
+                $buffer[$field->get_name()] = [];
                 foreach ($vi as $value) {
                     $val = $value->getValue();
                     $buffer[$field->get_name()][] = ctype_digit($val) ? (int) $val : $this->sanitizeSerializedValue($val);
@@ -113,7 +107,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
             }
         }
 
-        return array('record' => array('description' => $buffer));
+        return ['record' => ['description' => $buffer]];
     }
 
     protected function serializeXML($includeBusinessFields)
@@ -128,7 +122,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
         $description = $dom_doc->createElement('description');
         $record->appendChild($description);
 
-        foreach ($this->get_fields(array(), $includeBusinessFields) as $field) {
+        foreach ($this->get_fields([], $includeBusinessFields) as $field) {
             $values = $field->get_values();
 
             foreach ($values as $value) {
@@ -155,7 +149,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
     private function sanitizeSerializedValue($value)
     {
-        return str_replace(array(
+        return str_replace([
             "\x00", //null
             "\x01", //start heading
             "\x02", //start text
@@ -184,7 +178,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
             "\x1D", //group sep
             "\x1E", //record sep
             "\x1F", //unit sep
-        ), '', $value);
+        ], '', $value);
     }
 
     protected function retrieve_fields()
@@ -193,7 +187,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
             return $this->fields;
         }
 
-        $fields = array();
+        $fields = [];
         try {
             $fields = $this->get_data_from_cache();
         } catch (Exception $e) {
@@ -202,13 +196,13 @@ class caption_record implements caption_interface, cache_cacheableInterface
           WHERE m.record_id = :record_id AND s.id = m.meta_struct_id
             ORDER BY s.sorter ASC";
             $stmt = $this->databox->get_connection()->prepare($sql);
-            $stmt->execute(array(':record_id' => $this->record->get_record_id()));
+            $stmt->execute([':record_id' => $this->record->get_record_id()]);
             $fields = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
             $this->set_data_to_cache($fields);
         }
 
-        $rec_fields = array();
+        $rec_fields = [];
         foreach ($fields as $row) {
             $databox_meta_struct = databox_field::get_instance($this->app, $this->databox, $row['structure_id']);
             $metadata = new caption_field($this->app, $databox_meta_struct, $this->record);
@@ -229,7 +223,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
      */
     public function get_fields(Array $grep_fields = null, $IncludeBusiness = false)
     {
-        $fields = array();
+        $fields = [];
 
         foreach ($this->retrieve_fields() as $meta_struct_id => $field) {
             if ($grep_fields && ! in_array($field->get_name(), $grep_fields)) {
@@ -304,21 +298,22 @@ class caption_record implements caption_interface, cache_cacheableInterface
      */
     protected function highlight_fields($highlight, Array $grep_fields = null, SearchEngineInterface $searchEngine = null, $includeBusiness = false)
     {
-        $fields = array();
+        $fields = [];
 
         foreach ($this->get_fields($grep_fields, $includeBusiness) as $meta_struct_id => $field) {
 
             $value = preg_replace(
                 "(([^']{1})((https?|file):((/{2,4})|(\\{2,4}))[\w:#%/;$()~_?/\-=\\\.&]*)([^']{1}))"
-                , '$1 $2 <a title="' . _('Open the URL in a new window') . '" class="ui-icon ui-icon-extlink" href="$2" style="display:inline;padding:2px 5px;margin:0 4px 0 2px;" target="_blank"> &nbsp;</a>$7'
+                , '$1 $2 <a title="' . $this->app->trans('Open the URL in a new window') . '" class="ui-icon ui-icon-extlink" href="$2" style="display:inline;padding:2px 5px;margin:0 4px 0 2px;" target="_blank"> &nbsp;</a>$7'
                 , $highlight ? $field->highlight_thesaurus() : $field->get_serialized_values(false, false)
             );
 
-            $fields[$field->get_name()] = array(
+            $fields[$field->get_name()] = [
                 'value'     => $value,
-                'label'     => $field->get_databox_field()->get_label($this->app['locale.I18n']),
+                /** @Ignore */
+                'label'     => $field->get_databox_field()->get_label($this->app['locale']),
                 'separator' => $field->get_databox_field()->get_separator(),
-            );
+            ];
         }
 
         if ($searchEngine instanceof SearchEngineInterface) {

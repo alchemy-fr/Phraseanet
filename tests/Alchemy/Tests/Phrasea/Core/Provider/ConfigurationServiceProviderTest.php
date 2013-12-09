@@ -14,13 +14,23 @@ class ConfigurationServiceProvidertest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {
-        return array(
-            array(
+        return [
+            [
+                'Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider',
+                'configuration.store',
+                'Alchemy\\Phrasea\\Core\\Configuration\\Configuration'
+            ],
+            [
+                'Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider',
+                'conf',
+                'Alchemy\\Phrasea\\Core\\Configuration\\PropertyAccess'
+            ],
+            [
                 'Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider',
                 'phraseanet.configuration',
                 'Alchemy\\Phrasea\\Core\\Configuration\\Configuration'
-            ),
-        );
+            ],
+        ];
     }
 
     public function testRequestTrustedProxiesAreSetOnRequest()
@@ -30,7 +40,7 @@ class ConfigurationServiceProvidertest extends ServiceProviderTestCase
         $app->register(new ConfigurationServiceProvider());
         $app['phraseanet.configuration.config-path'] = __DIR__ . '/fixtures/config-proxies.yml';
         $app['phraseanet.configuration.config-compiled-path'] = __DIR__ . '/fixtures/config-proxies.php';
-        $this->assertSame(array(), Request::getTrustedProxies());
+        $this->assertSame([], Request::getTrustedProxies());
         $app->boot();
 
         $app->get('/', function () {
@@ -40,7 +50,7 @@ class ConfigurationServiceProvidertest extends ServiceProviderTestCase
         $client = new Client($app);
         $client->request('GET', '/');
 
-        $this->assertSame(array('127.0.0.1', '66.6.66.6'), Request::getTrustedProxies());
+        $this->assertSame(['127.0.0.1', '66.6.66.6'], Request::getTrustedProxies());
 
         unlink($app['phraseanet.configuration.config-compiled-path']);
     }

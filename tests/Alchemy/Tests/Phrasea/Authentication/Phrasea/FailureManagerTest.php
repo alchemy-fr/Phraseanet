@@ -3,7 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Authentication\Phrasea;
 
 use Alchemy\Phrasea\Authentication\Phrasea\FailureManager;
-use Entities\AuthFailure;
+use Alchemy\Phrasea\Model\Entities\AuthFailure;
 use Gedmo\Timestampable\TimestampableListener;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -26,10 +26,10 @@ class FailureManagerTest extends \PhraseanetPHPUnitAbstract
             ->method('getClientIp')
             ->will($this->returnValue($ip));
 
-        $oldFailures = array(
-            $this->getMock('Entities\AuthFailure'),
-            $this->getMock('Entities\AuthFailure')
-        );
+        $oldFailures = [
+            $this->getMock('Alchemy\Phrasea\Model\Entities\AuthFailure'),
+            $this->getMock('Alchemy\Phrasea\Model\Entities\AuthFailure')
+        ];
 
         $repo->expects($this->once())
             ->method('findOldFailures')
@@ -37,12 +37,12 @@ class FailureManagerTest extends \PhraseanetPHPUnitAbstract
 
         $em->expects($this->exactly(count($oldFailures)))
             ->method('remove')
-            ->with($this->isInstanceOf('Entities\AuthFailure'));
+            ->with($this->isInstanceOf('Alchemy\Phrasea\Model\Entities\AuthFailure'));
 
         $catchFailure = null;
         $em->expects($this->once())
             ->method('persist')
-            ->with($this->isInstanceOf('Entities\AuthFailure'))
+            ->with($this->isInstanceOf('Alchemy\Phrasea\Model\Entities\AuthFailure'))
             ->will($this->returnCallback(function ($failure) use (&$catchFailure) {
                 $catchFailure = $failure;
             }));
@@ -67,7 +67,7 @@ class FailureManagerTest extends \PhraseanetPHPUnitAbstract
 
         $username = 'romainneutron';
 
-        $oldFailures = array();
+        $oldFailures = [];
 
         $repo->expects($this->once())
             ->method('findLockedFailuresMatching')
@@ -89,9 +89,8 @@ class FailureManagerTest extends \PhraseanetPHPUnitAbstract
 
         $username = 'romainneutron';
 
-        $phpunit = $this;
-        $oldFailures = $this->ArrayIze(function () use ($phpunit) {
-            return $phpunit->getMock('Entities\AuthFailure');
+        $oldFailures = $this->ArrayIze(function () {
+            return $this->getMock('Alchemy\Phrasea\Model\Entities\AuthFailure');
         }, 8);
 
         $repo->expects($this->once())
@@ -114,9 +113,8 @@ class FailureManagerTest extends \PhraseanetPHPUnitAbstract
 
         $username = 'romainneutron';
 
-        $phpunit = $this;
-        $oldFailures = $this->ArrayIze(function () use ($phpunit) {
-            return $phpunit->getMock('Entities\AuthFailure');
+        $oldFailures = $this->ArrayIze(function () {
+            return $this->getMock('Alchemy\Phrasea\Model\Entities\AuthFailure');
         }, 10);
 
         $repo->expects($this->once())
@@ -139,12 +137,11 @@ class FailureManagerTest extends \PhraseanetPHPUnitAbstract
 
         $username = 'romainneutron';
 
-        $phpunit = $this;
-        $oldFailures = $this->ArrayIze(function () use ($phpunit) {
-            $failure = $phpunit->getMock('Entities\AuthFailure');
-            $failure->expects($phpunit->once())
+        $oldFailures = $this->ArrayIze(function () {
+            $failure = $this->getMock('Alchemy\Phrasea\Model\Entities\AuthFailure');
+            $failure->expects($this->once())
                 ->method('setLocked')
-                ->with($phpunit->equalTo(false));
+                ->with($this->equalTo(false));
 
             return $failure;
         }, 10);
@@ -170,9 +167,8 @@ class FailureManagerTest extends \PhraseanetPHPUnitAbstract
 
         $username = 'romainneutron';
 
-        $phpunit = $this;
-        $oldFailures = $this->ArrayIze(function () use ($phpunit) {
-            return $phpunit->getMock('Entities\AuthFailure');
+        $oldFailures = $this->ArrayIze(function () {
+            return $this->getMock('Alchemy\Phrasea\Model\Entities\AuthFailure');
         }, 10);
 
         $repo->expects($this->once())
@@ -192,9 +188,8 @@ class FailureManagerTest extends \PhraseanetPHPUnitAbstract
 
         $username = 'romainneutron';
 
-        $phpunit = $this;
-        $oldFailures = $this->ArrayIze(function () use ($phpunit) {
-            return $phpunit->getMock('Entities\AuthFailure');
+        $oldFailures = $this->ArrayIze(function () {
+            return $this->getMock('Alchemy\Phrasea\Model\Entities\AuthFailure');
         }, 2);
 
         $repo->expects($this->once())
@@ -230,9 +225,8 @@ class FailureManagerTest extends \PhraseanetPHPUnitAbstract
 
         $username = 'romainneutron';
 
-        $phpunit = $this;
-        $oldFailures = $this->ArrayIze(function () use ($phpunit) {
-            return $phpunit->getMock('Entities\AuthFailure');
+        $oldFailures = $this->ArrayIze(function () {
+            return $this->getMock('Alchemy\Phrasea\Model\Entities\AuthFailure');
         }, 3);
 
         $repo->expects($this->once())
@@ -275,17 +269,17 @@ class FailureManagerTest extends \PhraseanetPHPUnitAbstract
 
         self::$DI['app']['EM']->flush();
 
-        $this->assertCount(10, self::$DI['app']['EM']->getRepository('Entities\AuthFailure')
+        $this->assertCount(10, self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\AuthFailure')
                 ->findOldFailures());
-        $this->assertCount(12, self::$DI['app']['EM']->getRepository('Entities\AuthFailure')
+        $this->assertCount(12, self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\AuthFailure')
                 ->findAll());
 
         $manager = new FailureManager(self::$DI['app']['EM'], $recaptcha, 9);
         $manager->saveFailure($username, $request);
 
-        $this->assertCount(0, self::$DI['app']['EM']->getRepository('Entities\AuthFailure')
+        $this->assertCount(0, self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\AuthFailure')
                 ->findOldFailures());
-        $this->assertCount(3, self::$DI['app']['EM']->getRepository('Entities\AuthFailure')
+        $this->assertCount(3, self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\AuthFailure')
                 ->findAll());
 
         self::$DI['app']['EM']->getEventManager()->addEventSubscriber(new TimestampableListener());
@@ -293,7 +287,7 @@ class FailureManagerTest extends \PhraseanetPHPUnitAbstract
 
     private function ArrayIze($failure, $n)
     {
-        $failures = array();
+        $failures = [];
 
         for ($i = 0; $i != $n; $i++) {
             $failures[] = $failure();
@@ -310,7 +304,7 @@ class FailureManagerTest extends \PhraseanetPHPUnitAbstract
 
         $em->expects($this->once())
             ->method('getRepository')
-            ->with($this->equalTo('Entities\AuthFailure'))
+            ->with($this->equalTo('Alchemy\Phrasea\Model\Entities\AuthFailure'))
             ->will($this->returnValue($repo));
 
         return $em;
@@ -355,7 +349,7 @@ class FailureManagerTest extends \PhraseanetPHPUnitAbstract
 
     private function getRepo()
     {
-        return $this->getMockBuilder('Repositories\AuthFailureRepository')
+        return $this->getMockBuilder('Alchemy\Phrasea\Model\Repositories\AuthFailureRepository')
             ->disableOriginalConstructor()
             ->getMock();
     }

@@ -33,14 +33,14 @@ class ApiExceptionHandlerSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::EXCEPTION => array('onSilexError', 0),
-        );
+        return [
+            KernelEvents::EXCEPTION => ['onSilexError', 0],
+        ];
     }
 
     public function onSilexError(GetResponseForExceptionEvent $event)
     {
-        $headers = array();
+        $headers = [];
         $e = $event->getException();
 
         if ($e instanceof \API_V1_exception_methodnotallowed) {

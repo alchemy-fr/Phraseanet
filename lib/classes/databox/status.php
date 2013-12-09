@@ -14,19 +14,13 @@ use MediaAlchemyst\Specification\Image as ImageSpecification;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class databox_status
 {
     /**
      *
      * @var Array
      */
-    private static $_status = array();
+    private static $_status = [];
 
     /**
      *
@@ -38,7 +32,7 @@ class databox_status
      *
      * @var Array
      */
-    private $status = array();
+    private $status = [];
 
     /**
      *
@@ -59,7 +53,7 @@ class databox_status
      */
     private function __construct(Application $app, $sbas_id)
     {
-        $this->status = array();
+        $this->status = [];
 
         $path = $url = false;
 
@@ -86,7 +80,7 @@ class databox_status
                 $this->status[$bit]["labeloff"] = (string) $sb['labelOff'];
                 $this->status[$bit]["labelon"] = (string) $sb['labelOn'];
 
-                foreach ($app['locales.I18n.available'] as $code => $language) {
+                foreach ($app['locales.available'] as $code => $language) {
                     $this->status[$bit]['labels_on'][$code] = null;
                     $this->status[$bit]['labels_off'][$code] = null;
                 }
@@ -95,7 +89,7 @@ class databox_status
                     $this->status[$bit]['labels_'.$label['switch']][(string) $label['code']] = (string) $label;
                 }
 
-                foreach ($app['locales.I18n.available'] as $code => $language) {
+                foreach ($app['locales.available'] as $code => $language) {
                     $this->status[$bit]['labels_on_i18n'][$code] = '' !== trim($this->status[$bit]['labels_on'][$code]) ? $this->status[$bit]['labels_on'][$code] : $this->status[$bit]["labelon"];
                     $this->status[$bit]['labels_off_i18n'][$code] = '' !== trim($this->status[$bit]['labels_off'][$code]) ? $this->status[$bit]['labels_off'][$code] : $this->status[$bit]["labeloff"];
                 }
@@ -136,9 +130,9 @@ class databox_status
             return self::$_statuses;
         }
 
-        $sbas_ids = $app['authentication']->getUser()->ACL()->get_granted_sbas();
+        $sbas_ids = $app['acl']->get($app['authentication']->getUser())->get_granted_sbas();
 
-        $statuses = array();
+        $statuses = [];
 
         foreach ($sbas_ids as $databox) {
             try {
@@ -155,17 +149,17 @@ class databox_status
 
     public static function getSearchStatus(Application $app)
     {
-        $statuses = array();
+        $statuses = [];
 
-        $sbas_ids = $app['authentication']->getUser()->ACL()->get_granted_sbas();
+        $sbas_ids = $app['acl']->get($app['authentication']->getUser())->get_granted_sbas();
 
-        $see_all = array();
+        $see_all = [];
 
         foreach ($sbas_ids as $databox) {
             $see_all[$databox->get_sbas_id()] = false;
 
             foreach ($databox->get_collections() as $collection) {
-                if ($app['authentication']->getUser()->ACL()->has_right_on_base($collection->get_base_id(), 'chgstatus')) {
+                if ($app['acl']->get($app['authentication']->getUser())->has_right_on_base($collection->get_base_id(), 'chgstatus')) {
                     $see_all[$databox->get_sbas_id()] = true;
                     break;
                 }
@@ -177,13 +171,13 @@ class databox_status
             }
         }
 
-        $stats = array();
+        $stats = [];
 
         foreach ($statuses as $sbas_id => $status) {
 
             $see_this = isset($see_all[$sbas_id]) ? $see_all[$sbas_id] : false;
 
-            if ($app['authentication']->getUser()->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct')) {
+            if ($app['acl']->get($app['authentication']->getUser())->has_right_on_sbas($sbas_id, 'bas_modify_struct')) {
                 $see_this = true;
             }
 
@@ -202,31 +196,31 @@ class databox_status
                         }
                     }
                     if (! $set) {
-                        $stats[$bit][] = array(
-                            'sbas'            => array($sbas_id),
+                        $stats[$bit][] = [
+                            'sbas'            => [$sbas_id],
                             'labeloff'        => $props['labeloff'],
                             'labelon'         => $props['labelon'],
                             'labels_on_i18n'  => $props['labels_on_i18n'],
                             'labels_off_i18n' => $props['labels_off_i18n'],
                             'imgoff'          => $props['img_off'],
                             'imgon'           => $props['img_on']
-                        );
+                        ];
                         $set = true;
                     }
                 }
 
                 if (! $set) {
-                    $stats[$bit] = array(
-                        array(
-                            'sbas'            => array($sbas_id),
+                    $stats[$bit] = [
+                        [
+                            'sbas'            => [$sbas_id],
                             'labeloff'        => $props['labeloff'],
                             'labelon'         => $props['labelon'],
                             'labels_on_i18n'  => $props['labels_on_i18n'],
                             'labels_off_i18n' => $props['labels_off_i18n'],
                             'imgoff'          => $props['img_off'],
                             'imgon'           => $props['img_on']
-                        )
-                    );
+                        ]
+                    ];
                 }
             }
         }
@@ -260,7 +254,7 @@ class databox_status
             $doc = $databox->get_dom_structure();
             if ($doc) {
                 $xpath = $databox->get_xpath_structure();
-                $entries = $xpath->query($q = "/record/statbits/bit[@n=" . $bit . "]");
+                $entries = $xpath->query("/record/statbits/bit[@n=" . $bit . "]");
 
                 foreach ($entries as $sbit) {
                     if ($p = $sbit->previousSibling) {
@@ -387,7 +381,7 @@ class databox_status
     {
         $status = self::getStatus($app, $sbas_id);
 
-        $switch = in_array($switch, array('on', 'off')) ? $switch : false;
+        $switch = in_array($switch, ['on', 'off']) ? $switch : false;
 
         if (! $switch) {
             return false;
@@ -407,7 +401,7 @@ class databox_status
 
     public static function updateIcon(Application $app, $sbas_id, $bit, $switch, UploadedFile $file)
     {
-        $switch = in_array($switch, array('on', 'off')) ? $switch : false;
+        $switch = in_array($switch, ['on', 'off']) ? $switch : false;
 
         if (! $switch) {
             throw new Exception_InvalidArgument();

@@ -24,7 +24,7 @@ class Installer
         $this->app = $app;
     }
 
-    public function install($email, $password, \connection_interface $abConn, $serverName, $dataPath, \connection_interface $dbConn = null, $template = null, array $binaryData = array())
+    public function install($email, $password, \connection_interface $abConn, $serverName, $dataPath, \connection_interface $dbConn = null, $template = null, array $binaryData = [])
     {
         $this->rollbackInstall($abConn, $dbConn);
 
@@ -78,35 +78,35 @@ class Installer
     {
         $template = new \SplFileInfo(__DIR__ . '/../../../conf.d/data_templates/' . $template . '-simple.xml');
         $databox = \databox::create($this->app, $dbConn, $template, $this->app['phraseanet.registry']);
-        $this->app['authentication']->getUser()->ACL()
-            ->give_access_to_sbas(array($databox->get_sbas_id()))
+        $this->app['acl']->get($this->app['authentication']->getUser())
+            ->give_access_to_sbas([$databox->get_sbas_id()])
             ->update_rights_to_sbas(
-                $databox->get_sbas_id(), array(
+                $databox->get_sbas_id(), [
                 'bas_manage'        => 1, 'bas_modify_struct' => 1,
                 'bas_modif_th'      => 1, 'bas_chupub'        => 1
-                )
+                ]
         );
 
         $collection = \collection::create($this->app, $databox, $this->app['phraseanet.appbox'], 'test', $this->app['authentication']->getUser());
 
-        $this->app['authentication']->getUser()->ACL()->give_access_to_base(array($collection->get_base_id()));
-        $this->app['authentication']->getUser()->ACL()->update_rights_to_base($collection->get_base_id(), array(
+        $this->app['acl']->get($this->app['authentication']->getUser())->give_access_to_base([$collection->get_base_id()]);
+        $this->app['acl']->get($this->app['authentication']->getUser())->update_rights_to_base($collection->get_base_id(), [
             'canpush'         => 1, 'cancmd'          => 1
             , 'canputinalbum'   => 1, 'candwnldhd'      => 1, 'candwnldpreview' => 1, 'canadmin'        => 1
             , 'actif'           => 1, 'canreport'       => 1, 'canaddrecord'    => 1, 'canmodifrecord'  => 1
             , 'candeleterecord' => 1, 'chgstatus'       => 1, 'imgtools'        => 1, 'manage'          => 1
             , 'modify_struct'   => 1, 'nowatermark'     => 1
-            )
+            ]
         );
 
-        foreach (array('cindexer', 'subdef', 'writemeta') as $task) {
-            $className = sprintf('task_period_%s', $task);
-
-            if (!class_exists($className)) {
-                throw new \InvalidArgumentException('Unknown task class "' . $className.'"');
-            }
-
-            $className::create($this->app);
+        foreach (['PhraseanetIndexer', 'Subdefs', 'WriteMetadata'] as $jobName) {
+            $job = $this->app['task-manager.job-factory']->create($jobName);
+            $this->app['manipulator.task']->create(
+                $job->getName(),
+                $job->getJobId(),
+                $job->getEditor()->getDefaultSettings($this->app['configuration.store']),
+                $job->getEditor()->getDefaultPeriod()
+            );
         }
     }
 
@@ -152,7 +152,7 @@ class Installer
             }
         }
 
-        $this->app['phraseanet.configuration']->delete();
+        $this->app['configuration.store']->delete();
 
         return;
     }
@@ -176,7 +176,7 @@ class Installer
 
     private function createConfigFile($abConn, $serverName, $binaryData)
     {
-        $config = $this->app['phraseanet.configuration']->initialize();
+        $config = $this->app['configuration.store']->initialize();
 
         foreach ($abConn->get_credentials() as $key => $value) {
             $key = $key == 'hostname' ? 'host' : $key;
@@ -192,6 +192,6 @@ class Installer
         $config['main']['key'] = md5(mt_rand(100000000, 999999999));
 
         $this->app['phraseanet.registry']->setKey($config['main']['key']);
-        $this->app['phraseanet.configuration']->setConfig($config);
+        $this->app['configuration.store']->setConfig($config);
     }
 }

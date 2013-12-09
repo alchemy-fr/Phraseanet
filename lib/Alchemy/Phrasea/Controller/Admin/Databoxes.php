@@ -11,96 +11,41 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use Alchemy\Phrasea\TaskManager\TaskManagerStatus;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Databoxes implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.admin.databoxes'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAccessToModule('admin');
         });
 
-        /**
-         * Get Databases control panel
-         *
-         * name         : admin_databases
-         *
-         * description  : Get Databases control panel
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/', $this->call('getDatabases'))
+        $controllers->get('/', 'controller.admin.databoxes:getDatabases')
             ->bind('admin_databases');
 
-        /**
-         * Create Database
-         *
-         * name         : admin_database_new
-         *
-         * description  : Create Database
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
-        $controllers->post('/', $this->call('createDatabase'))
+        $controllers->post('/', 'controller.admin.databoxes:createDatabase')
             ->bind('admin_database_new')
             ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireAdmin();
             });
 
-        /**
-         * Mount a database
-         *
-         * name         : admin_database_mount
-         *
-         * description  : Upgrade all databases
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
-        $controllers->post('/mount/', $this->call('databaseMount'))
+        $controllers->post('/mount/', 'controller.admin.databoxes:databaseMount')
             ->bind('admin_database_mount')
             ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireAdmin();
             });
 
-        /**
-         * Upgrade all databases
-         *
-         * name         : admin_databases_upgrade
-         *
-         * description  : Upgrade all databases
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
-        $controllers->post('/upgrade/', $this->call('databasesUpgrade'))
+        $controllers->post('/upgrade/', 'controller.admin.databoxes:databasesUpgrade')
             ->bind('admin_databases_upgrade')
             ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireAdmin();
@@ -118,31 +63,29 @@ class Databoxes implements ControllerProviderInterface
      */
     public function getDatabases(Application $app, Request $request)
     {
-        $createBase = $mountBase = false;
-
         $sbasIds = array_merge(
-            array_keys($app['authentication']->getUser()->ACL()->get_granted_sbas(array('bas_manage')))
-            , array_keys($app['authentication']->getUser()->ACL()->get_granted_sbas(array('bas_modify_struct')))
+            array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_sbas(['bas_manage']))
+            , array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_sbas(['bas_modify_struct']))
         );
 
-        $sbas = array();
+        $sbas = [];
         foreach ($sbasIds as $sbasId) {
-            $sbas[$sbasId] = array(
+            $sbas[$sbasId] = [
                 'version'     => 'unknown',
                 'image'       => '/skins/icons/db-remove.png',
                 'server_info' => '',
-                'name'        => _('Unreachable server')
-            );
+                'name'        => $app->trans('Unreachable server')
+            ];
 
             try {
                 $databox = $app['phraseanet.appbox']->get_databox($sbasId);
 
-                $sbas[$sbasId] = array(
+                $sbas[$sbasId] = [
                     'version'     => $databox->get_version(),
                     'image'       => '/skins/icons/foldph20close_0.gif',
                     'server_info' => $databox->get_connection()->server_info(),
                     'name'        => \phrasea::sbas_labels($sbasId, $app)
-                );
+                ];
             } catch (\Exception $e) {
 
             }
@@ -150,44 +93,44 @@ class Databoxes implements ControllerProviderInterface
 
         switch ($errorMsg = $request->query->get('error')) {
             case 'scheduler-started' :
-                $errorMsg = _('Veuillez arreter le planificateur avant la mise a jour');
+                $errorMsg = $app->trans('Veuillez arreter le planificateur avant la mise a jour');
                 break;
             case 'already-started' :
-                $errorMsg = _('The upgrade is already started');
+                $errorMsg = $app->trans('The upgrade is already started');
                 break;
             case 'unknow' :
-                $errorMsg = _('An error occured');
+                $errorMsg = $app->trans('An error occured');
                 break;
             case 'bad-email' :
-                $errorMsg = _('Please fix the database before starting');
+                $errorMsg = $app->trans('Please fix the database before starting');
                 break;
             case 'special-chars' :
-                $errorMsg = _('Database name can not contains special characters');
+                $errorMsg = $app->trans('Database name can not contains special characters');
                 break;
             case 'base-failed' :
-                $errorMsg = _('Base could not be created');
+                $errorMsg = $app->trans('Base could not be created');
                 break;
             case 'database-failed' :
-                $errorMsg = _('Database does not exists or can not be accessed');
+                $errorMsg = $app->trans('Database does not exists or can not be accessed');
                 break;
             case 'no-empty' :
-                $errorMsg = _('Database can not be empty');
+                $errorMsg = $app->trans('Database can not be empty');
                 break;
             case 'mount-failed' :
-                $errorMsg = _('Database could not be mounted');
+                $errorMsg = $app->trans('Database could not be mounted');
                 break;
         }
 
         $upgrader = new \Setup_Upgrade($app);
 
-        return $app['twig']->render('admin/databases.html.twig', array(
+        return $app['twig']->render('admin/databases.html.twig', [
             'files'             => new \DirectoryIterator($app['root.path'] . '/lib/conf.d/data_templates'),
             'sbas'              => $sbas,
             'error_msg'         => $errorMsg,
             'recommendations'   => $upgrader->getRecommendations(),
-            'advices'           => $request->query->get('advices', array()),
+            'advices'           => $request->query->get('advices', []),
             'reloadTree'        => (Boolean) $request->query->get('reload-tree'),
-        ));
+        ]);
     }
 
     /**
@@ -201,17 +144,15 @@ class Databoxes implements ControllerProviderInterface
     public function createDatabase(Application $app, Request $request)
     {
         if ('' === $dbName = $request->request->get('new_dbname', '')) {
-            return $app->redirectPath('admin_databases', array('error' => 'no-empty'));
+            return $app->redirectPath('admin_databases', ['error' => 'no-empty']);
         }
 
         if (\p4string::hasAccent($dbName)) {
-            return $app->redirectPath('admin_databases', array('error' => 'special-chars'));
+            return $app->redirectPath('admin_databases', ['error' => 'special-chars']);
         }
 
         if ((null === $request->request->get('new_settings')) && (null !== $dataTemplate = $request->request->get('new_data_template'))) {
-
-            $configuration = $app['phraseanet.configuration'];
-            $connexion = $configuration['main']['database'];
+            $connexion = $app['conf']->get(['main', 'database']);
 
             $hostname = $connexion['host'];
             $port = $connexion['port'];
@@ -221,19 +162,19 @@ class Databoxes implements ControllerProviderInterface
             $dataTemplate = new \SplFileInfo($app['root.path'] . '/lib/conf.d/data_templates/' . $dataTemplate . '.xml');
 
             try {
-                $connbas = new \connection_pdo('databox_creation', $hostname, $port, $user, $password, $dbName, array(), $app['debug']);
+                $connbas = new \connection_pdo('databox_creation', $hostname, $port, $user, $password, $dbName, [], $app['debug']);
             } catch (\PDOException $e) {
-                return $app->redirectPath('admin_databases', array('success' => 0, 'error' => 'database-failed'));
+                return $app->redirectPath('admin_databases', ['success' => 0, 'error' => 'database-failed']);
             }
 
             try {
                 $base = \databox::create($app, $connbas, $dataTemplate, $app['phraseanet.registry']);
                 $base->registerAdmin($app['authentication']->getUser());
-                $app['authentication']->getUser()->ACL()->delete_data_from_cache();
+                $app['acl']->get($app['authentication']->getUser())->delete_data_from_cache();
 
-                return $app->redirectPath('admin_database', array('databox_id' => $base->get_sbas_id(), 'success' => 1, 'reload-tree' => 1));
+                return $app->redirectPath('admin_database', ['databox_id' => $base->get_sbas_id(), 'success' => 1, 'reload-tree' => 1]);
             } catch (\Exception $e) {
-                return $app->redirectPath('admin_databases', array('success' => 0, 'error' => 'base-failed'));
+                return $app->redirectPath('admin_databases', ['success' => 0, 'error' => 'base-failed']);
             }
         }
 
@@ -247,17 +188,17 @@ class Databoxes implements ControllerProviderInterface
 
             try {
                 $data_template = new \SplFileInfo($app['root.path'] . '/lib/conf.d/data_templates/' . $dataTemplate . '.xml');
-                $connbas = new \connection_pdo('databox_creation', $hostname, $port, $userDb, $passwordDb, $dbName, array(), $app['debug']);
+                $connbas = new \connection_pdo('databox_creation', $hostname, $port, $userDb, $passwordDb, $dbName, [], $app['debug']);
                 try {
                     $base = \databox::create($app, $connbas, $data_template, $app['phraseanet.registry']);
                     $base->registerAdmin($app['authentication']->getUser());
 
-                    return $app->redirectPath('admin_database', array('databox_id' => $base->get_sbas_id(), 'success' => 1, 'reload-tree' => 1));
+                    return $app->redirectPath('admin_database', ['databox_id' => $base->get_sbas_id(), 'success' => 1, 'reload-tree' => 1]);
                 } catch (\Exception $e) {
-                    return $app->redirectPath('admin_databases', array('success' => 0, 'error' => 'base-failed'));
+                    return $app->redirectPath('admin_databases', ['success' => 0, 'error' => 'base-failed']);
                 }
             } catch (\Exception $e) {
-                return $app->redirectPath('admin_databases', array('success' => 0, 'error' => 'database-failed'));
+                return $app->redirectPath('admin_databases', ['success' => 0, 'error' => 'database-failed']);
             }
         }
     }
@@ -272,17 +213,16 @@ class Databoxes implements ControllerProviderInterface
     public function databaseMount(Application $app, Request $request)
     {
         if ('' === $dbName = trim($request->request->get('new_dbname', ''))) {
-            return $app->redirectPath('admin_databases', array('success' => 0, 'error' => 'no-empty'));
+            return $app->redirectPath('admin_databases', ['success' => 0, 'error' => 'no-empty']);
         }
 
         if (\p4string::hasAccent($dbName)) {
-            return $app->redirectPath('admin_databases', array('success' => 0, 'error' => 'special-chars'));
+            return $app->redirectPath('admin_databases', ['success' => 0, 'error' => 'special-chars']);
         }
 
         if ((null === $request->request->get('new_settings'))) {
             try {
-                $configuration = $app['phraseanet.configuration'];
-                $connexion = $configuration['main']['database'];
+                $connexion = $app['conf']->get(['main', 'database']);
 
                 $hostname = $connexion['host'];
                 $port = $connexion['port'];
@@ -294,11 +234,11 @@ class Databoxes implements ControllerProviderInterface
                 $base->registerAdmin($app['authentication']->getUser());
                 $app['phraseanet.appbox']->get_connection()->commit();
 
-                return $app->redirectPath('admin_database', array('databox_id' => $base->get_sbas_id(), 'success' => 1, 'reload-tree' => 1));
+                return $app->redirectPath('admin_database', ['databox_id' => $base->get_sbas_id(), 'success' => 1, 'reload-tree' => 1]);
             } catch (\Exception $e) {
                 $app['phraseanet.appbox']->get_connection()->rollBack();
 
-                return $app->redirectPath('admin_databases', array('success' => 0, 'error' => 'mount-failed'));
+                return $app->redirectPath('admin_databases', ['success' => 0, 'error' => 'mount-failed']);
             }
         }
 
@@ -315,11 +255,11 @@ class Databoxes implements ControllerProviderInterface
                 $base->registerAdmin($app['authentication']->getUser());
                 $app['phraseanet.appbox']->get_connection()->commit();
 
-                return $app->redirectPath('admin_database', array('databox_id' => $base->get_sbas_id(), 'success' => 1, 'reload-tree' => 1));
+                return $app->redirectPath('admin_database', ['databox_id' => $base->get_sbas_id(), 'success' => 1, 'reload-tree' => 1]);
             } catch (\Exception $e) {
                 $app['phraseanet.appbox']->get_connection()->rollBack();
 
-                return $app->redirectPath('admin_databases', array('success' => 0, 'error' => 'mount-failed'));
+                return $app->redirectPath('admin_databases', ['success' => 0, 'error' => 'mount-failed']);
             }
         }
     }
@@ -333,32 +273,22 @@ class Databoxes implements ControllerProviderInterface
      */
     public function databasesUpgrade(Application $app, Request $request)
     {
-        if (\phrasea::is_scheduler_started($app)) {
-            return $app->redirectPath('admin_databases', array('success' => 0, 'error' => 'scheduler-started'));
+        $info = $app['task-manager.live-information']->getManager();
+        if (TaskManagerStatus::STATUS_STARTED === $info['actual']) {
+            return $app->redirectPath('admin_databases', ['success' => 0, 'error' => 'scheduler-started']);
         }
 
         try {
             $upgrader = new \Setup_Upgrade($app);
             $advices = $app['phraseanet.appbox']->forceUpgrade($upgrader, $app);
 
-            return $app->redirectPath('admin_databases', array('success' => 1, 'notice' => 'restart', 'advices' => $advices));
+            return $app->redirectPath('admin_databases', ['success' => 1, 'notice' => 'restart', 'advices' => $advices]);
         } catch (\Exception_Setup_UpgradeAlreadyStarted $e) {
-            return $app->redirectPath('admin_databases', array('success' => 0, 'error' => 'already-started'));
+            return $app->redirectPath('admin_databases', ['success' => 0, 'error' => 'already-started']);
         } catch (\Exception_Setup_FixBadEmailAddresses $e) {
-            return $app->redirectPath('admin_databases', array('success' => 0, 'error' => 'bad-email'));
+            return $app->redirectPath('admin_databases', ['success' => 0, 'error' => 'bad-email']);
         } catch (\Exception $e) {
-            return $app->redirectPath('admin_databases', array('success' => 0, 'error' => 'unknow'));
+            return $app->redirectPath('admin_databases', ['success' => 0, 'error' => 'unknow']);
         }
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

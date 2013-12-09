@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use DataURI\Parser;
 use DataURI\Exception\Exception as DataUriException;
-use Entities\LazaretSession;
+use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,17 +24,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-/**
- * Upload controller collection
- *
- * Defines routes related to the Upload process in phraseanet
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Upload implements ControllerProviderInterface
 {
-
     /**
      * Connect the ControllerCollection to the Silex Application
      *
@@ -43,6 +34,8 @@ class Upload implements ControllerProviderInterface
      */
     public function connect(Application $app)
     {
+        $app['controller.prod.upload'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
@@ -50,53 +43,13 @@ class Upload implements ControllerProviderInterface
                 ->requireRight('addrecord');
         });
 
-        /**
-         * Upload form route
-         *
-         * name         : upload_form
-         *
-         * description  : Render the html upload form
-         *
-         * method       : GET
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/', $this->call('getUploadForm'))
+        $controllers->get('/', 'controller.prod.upload:getUploadForm')
             ->bind('upload_form');
 
-        /**
-         * Flash upload form route
-         *
-         * name         : upload_flash_form
-         *
-         * description  : Render the html flash upload form
-         *
-         * method       : GET
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/flash-version/', $this->call('getFlashUploadForm'))
+        $controllers->get('/flash-version/', 'controller.prod.upload:getFlashUploadForm')
             ->bind('upload_flash_form');
 
-        /**
-         * UPLOAD route
-         *
-         * name         : upload
-         *
-         * description  : Initiate the upload process
-         *
-         * method       : POST
-         *
-         * parameters   : 'bas_id'        int     (mandatory) :   The id of the destination collection
-         *                'status'        array   (optional)  :   The status to set to new uploaded files
-         *                'attributes'    array   (optional)  :   Attributes id's to attach to the uploaded files
-         *                'forceBehavior' int     (optional)  :   Force upload behavior
-         *                      - 0 Force record
-         *                      - 1 Force lazaret
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/', $this->call('upload'))
+        $controllers->post('/', 'controller.prod.upload:upload')
             ->bind('upload');
 
         return $controllers;
@@ -115,12 +68,12 @@ class Upload implements ControllerProviderInterface
         $maxFileSize = $this->getUploadMaxFileSize();
 
         return $app['twig']->render(
-            'prod/upload/upload-flash.html.twig', array(
+            'prod/upload/upload-flash.html.twig', [
             'sessionId'           => session_id(),
-            'collections'         => $this->getGrantedCollections($app['authentication']->getUser()),
+            'collections'         => $this->getGrantedCollections($app['acl']->get($app['authentication']->getUser())),
             'maxFileSize'         => $maxFileSize,
             'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
-        ));
+        ]);
     }
 
     /**
@@ -136,11 +89,11 @@ class Upload implements ControllerProviderInterface
         $maxFileSize = $this->getUploadMaxFileSize();
 
         return $app['twig']->render(
-            'prod/upload/upload.html.twig', array(
-            'collections'         => $this->getGrantedCollections($app['authentication']->getUser()),
+            'prod/upload/upload.html.twig', [
+            'collections'         => $this->getGrantedCollections($app['acl']->get($app['authentication']->getUser())),
             'maxFileSize'         => $maxFileSize,
             'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
-        ));
+        ]);
     }
 
     /**
@@ -149,18 +102,25 @@ class Upload implements ControllerProviderInterface
      * @param Application $app     The Silex application
      * @param Request     $request The current request
      *
+     * parameters   : 'bas_id'        int     (mandatory) :   The id of the destination collection
+     *                'status'        array   (optional)  :   The status to set to new uploaded files
+     *                'attributes'    array   (optional)  :   Attributes id's to attach to the uploaded files
+     *                'forceBehavior' int     (optional)  :   Force upload behavior
+     *                      - 0 Force record
+     *                      - 1 Force lazaret
+     *
      * @return Response
      */
     public function upload(Application $app, Request $request)
     {
-        $datas = array(
+        $datas = [
             'success' => false,
             'code'    => null,
             'message' => '',
             'element' => '',
-            'reasons' => array(),
+            'reasons' => [],
             'id' => '',
-        );
+        ];
 
         if (null === $request->files->get('files')) {
             throw new BadRequestHttpException('Missing file parameter');
@@ -176,7 +136,7 @@ class Upload implements ControllerProviderInterface
             throw new BadRequestHttpException('Missing base_id parameter');
         }
 
-        if (!$app['authentication']->getUser()->ACL()->has_right_on_base($base_id, 'canaddrecord')) {
+        if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($base_id, 'canaddrecord')) {
             throw new AccessDeniedHttpException('User is not allowed to add record on this collection');
         }
 
@@ -217,13 +177,13 @@ class Upload implements ControllerProviderInterface
 
             $forceBehavior = $request->request->get('forceAction');
 
-            $reasons = array();
+            $reasons = [];
             $elementCreated = null;
 
-            $callback = function ($element, $visa, $code) use (&$reasons, &$elementCreated) {
+            $callback = function ($element, $visa, $code) use ($app, &$reasons, &$elementCreated) {
                     foreach ($visa->getResponses() as $response) {
                         if (!$response->isOk()) {
-                            $reasons[] = $response->getMessage();
+                            $reasons[] = $response->getMessage($app['translator']);
                         }
                     }
 
@@ -237,13 +197,13 @@ class Upload implements ControllerProviderInterface
             $app['filesystem']->rename($renamedFilename, $uploadedFilename);
 
             if (!!$forceBehavior) {
-                $reasons = array();
+                $reasons = [];
             }
 
             if ($elementCreated instanceof \record_adapter) {
                 $id = $elementCreated->get_serialize_key();
                 $element = 'record';
-                $message = _('The record was successfully created');
+                $message = $app->trans('The record was successfully created');
                 $app['phraseanet.SE']->addRecord($elementCreated);
 
                 // try to create thumbnail from data URI
@@ -269,25 +229,25 @@ class Upload implements ControllerProviderInterface
                     }
                 }
             } else {
-                $params = array('lazaret_file' => $elementCreated);
+                $params = ['lazaret_file' => $elementCreated];
 
                 $app['events-manager']->trigger('__UPLOAD_QUARANTINE__', $params);
 
                 $id = $elementCreated->getId();
                 $element = 'lazaret';
-                $message = _('The file was moved to the quarantine');
+                $message = $app->trans('The file was moved to the quarantine');
             }
 
-            $datas = array(
+            $datas = [
                 'success' => true,
                 'code'    => $code,
                 'message' => $message,
                 'element' => $element,
                 'reasons' => $reasons,
                 'id'      => $id,
-            );
+            ];
         } catch (\Exception $e) {
-            $datas['message'] = _('Unable to add file to Phraseanet');
+            $datas['message'] = $app->trans('Unable to add file to Phraseanet');
         }
 
         $response = $app->json($datas);
@@ -299,34 +259,24 @@ class Upload implements ControllerProviderInterface
     }
 
     /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
-    }
-
-    /**
      * Get current user's granted collections where he can upload
      *
-     * @param  \User_Adapter $user
+     * @param \ACL $acl The user's ACL.
+     *
      * @return array
      */
-    private function getGrantedCollections(\User_Adapter $user)
+    private function getGrantedCollections(\ACL $acl)
     {
-        $collections = array();
+        $collections = [];
 
-        foreach ($user->ACL()->get_granted_base(array('canaddrecord')) as $collection) {
+        foreach ($acl->get_granted_base(['canaddrecord']) as $collection) {
             $databox = $collection->get_databox();
 
             if ( ! isset($collections[$databox->get_sbas_id()])) {
-                $collections[$databox->get_sbas_id()] = array(
+                $collections[$databox->get_sbas_id()] = [
                     'databox'             => $databox,
-                    'databox_collections' => array()
-                );
+                    'databox_collections' => []
+                ];
             }
 
             $collections[$databox->get_sbas_id()]['databox_collections'][] = $collection;

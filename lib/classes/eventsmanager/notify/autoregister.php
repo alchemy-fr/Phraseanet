@@ -12,19 +12,13 @@
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailInfoSomebodyAutoregistered;
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
 {
     /**
      *
      * @var string
      */
-    public $events = array('__REGISTER_AUTOREGISTER__');
+    public $events = ['__REGISTER_AUTOREGISTER__'];
 
     /**
      *
@@ -44,10 +38,10 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'usr_id'       => ''
-            , 'autoregister' => array()
-        );
+            , 'autoregister' => []
+        ];
 
         $params = array_merge($default, $params);
         $base_ids = array_keys($params['autoregister']);
@@ -56,7 +50,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
             return;
         }
 
-        $mailColl = array();
+        $mailColl = [];
 
         $sql = 'SELECT u.usr_id, b.base_id FROM usr u, basusr b
       WHERE u.usr_id = b.usr_id
@@ -75,7 +69,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
 
             foreach ($rs as $row) {
                 if ( ! isset($mailColl[$row['usr_id']]))
-                    $mailColl[$row['usr_id']] = array();
+                    $mailColl[$row['usr_id']] = [];
 
                 $mailColl[$row['usr_id']][] = $row['base_id'];
             }
@@ -147,18 +141,17 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
 
         $usr_id = (string) $sx->usr_id;
         try {
-            $registered_user = User_Adapter::getInstance($usr_id, $this->app);
+            User_Adapter::getInstance($usr_id, $this->app);
         } catch (Exception $e) {
-            return array();
+            return [];
         }
 
         $sender = User_Adapter::getInstance($usr_id, $this->app)->get_display_name();
 
-        $ret = array(
-            'text'  => sprintf(
-                _('%1$s s\'est enregistre sur une ou plusieurs %2$scollections%3$s'), $sender, '<a href="/admin/?section=users" target="_blank">', '</a>')
+        $ret = [
+            'text'  => $this->app->trans('%user% s\'est enregistre sur une ou plusieurs %before_link% scollections %after_link%', ['%user%' => $sender, '%before_link%' => '<a href="/admin/?section=users" target="_blank">', '%after_link%' => '</a>'])
             , 'class' => ''
-        );
+        ];
 
         return $ret;
     }
@@ -169,7 +162,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
      */
     public function get_name()
     {
-        return _('AutoRegister information');
+        return $this->app->trans('AutoRegister information');
     }
 
     /**
@@ -178,8 +171,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
      */
     public function get_description()
     {
-        return _('Recevoir des notifications lorsqu\'un'
-                . ' utilisateur s\'inscrit sur une collection');
+        return $this->app->trans('Recevoir des notifications lorsqu\'un utilisateur s\'inscrit sur une collection');
     }
 
     /**
@@ -192,9 +184,9 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
     public function mail(\User_Adapter $to, \User_Adapter $registeredUser)
     {
         $body .= sprintf("Login : %s\n", $registeredUser->get_login());
-        $body .= sprintf("%s : %s\n", _('admin::compte-utilisateur nom'), $registeredUser->get_firstname());
-        $body .= sprintf("%s : %s\n", _('admin::compte-utilisateur prenom'), $registeredUser->get_lastname());
-        $body .= sprintf("%s : %s\n", _('admin::compte-utilisateur email'), $registeredUser->get_email());
+        $body .= sprintf("%s : %s\n", $this->app->trans('admin::compte-utilisateur nom'), $registeredUser->get_firstname());
+        $body .= sprintf("%s : %s\n", $this->app->trans('admin::compte-utilisateur prenom'), $registeredUser->get_lastname());
+        $body .= sprintf("%s : %s\n", $this->app->trans('admin::compte-utilisateur email'), $registeredUser->get_email());
         $body .= sprintf("%s/%s\n", $registeredUser->get_job(), $registeredUser->get_company());
 
         $readyToSend = false;
@@ -230,6 +222,6 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
             return false;
         }
 
-        return $user->ACL()->has_right('manageusers');
+        return $this->app['acl']->get($user)->has_right('manageusers');
     }
 }

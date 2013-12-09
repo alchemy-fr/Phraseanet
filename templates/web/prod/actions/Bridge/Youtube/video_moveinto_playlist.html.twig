@@ -1,20 +1,16 @@
-{% extends "prod/actions/Bridge/wrapper.html.twig"%}
+{% extends "prod/actions/Bridge/wrapper.html.twig" %}
 
 {% set n_element = elements|length %}
 
 {% block menu %}
-  {% trans %}
-  Deplacement {{n_element}} elements
-  {% endtrans %}
+  {% trans with {'%n_element%' : n_element} %}Deplacement %n_element% elements{% endtrans %}
 {% endblock %}
 
 {% block response %}
     <form method="POST" action="{{ path('bridge_account_do_action', { 'account_id' : account.get_id(), 'action' : action, 'element_type' : element_type }) }}">
       <p>
         {% set number = elements|length %}
-        {% trans %}
-          Which playlist you want to put you {{number}} elements into ?
-        {% endtrans %}
+        {% trans with {'%number%' : number} %}Which playlist you want to put you %number% elements into ?{% endtrans %}
       </p>
       {% for id in elements %}
         <input type="hidden" name="elements_list[]" value="{{id}}"/>
@@ -28,7 +24,7 @@
       {% endfor %}
       </ul>
       <input type="hidden" name="destination" value="{{ destination }}" />
-      <button class="form_submitter btn btn-inverse">{% trans 'boutton::valider' %}</button>
-      <button class="back_link btn btn-inverse">{% trans 'boutton::retour' %}</button>
+      <button class="form_submitter btn btn-inverse">{{ 'boutton::valider' | trans }}</button>
+      <button class="back_link btn btn-inverse">{{ 'boutton::retour' | trans }}</button>
     </form>
 {% endblock %}

@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,7 +17,7 @@ class patch_380alpha9a implements patchInterface
     private $release = '3.8.0-alpha.9';
 
     /** @var array */
-    private $concern = array(base::DATA_BOX);
+    private $concern = [base::DATA_BOX];
 
     /**
      * {@inheritdoc}
@@ -41,6 +41,14 @@ class patch_380alpha9a implements patchInterface
     public function concern()
     {
         return $this->concern;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return [];
     }
 
     /**
@@ -70,5 +78,7 @@ class patch_380alpha9a implements patchInterface
         $dom->loadXML($sxe->asXML());
 
         $databox->saveStructure($dom);
+
+        return true;
     }
 }

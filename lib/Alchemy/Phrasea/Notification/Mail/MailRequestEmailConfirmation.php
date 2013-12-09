@@ -18,7 +18,7 @@ class MailRequestEmailConfirmation extends AbstractMailWithLink
      */
     public function getSubject()
     {
-        return _('login::register: sujet email : confirmation de votre adresse email');
+        return $this->app->trans('login::register: sujet email : confirmation de votre adresse email');
     }
 
     /**
@@ -26,7 +26,7 @@ class MailRequestEmailConfirmation extends AbstractMailWithLink
      */
     public function getMessage()
     {
-        return _('login::register: email confirmation email Pour valider votre inscription a la base de donnees, merci de confirmer votre e-mail en suivant le lien ci-dessous.');
+        return $this->app->trans('login::register: email confirmation email Pour valider votre inscription a la base de donnees, merci de confirmer votre e-mail en suivant le lien ci-dessous.');
     }
 
     /**
@@ -34,7 +34,7 @@ class MailRequestEmailConfirmation extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return _('Validate e-mail address');
+        return $this->app->trans('Validate e-mail address');
     }
 
     /**

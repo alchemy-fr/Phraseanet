@@ -13,7 +13,7 @@ use Alchemy\Phrasea\Application;
 
 class module_report_question extends module_report
 {
-    protected $cor_query = array(
+    protected $cor_query = [
         'user'        => 'log.user',
         'usrid'       => 'log.usrid',
         'ddate'       => 'log_search.date',
@@ -26,7 +26,7 @@ class module_report_question extends module_report
         'sit_session' => 'log.sit_session',
         'appli'       => 'log.appli',
         'ip'          => 'log.ip'
-    );
+    ];
 
     /**
      * constructor
@@ -40,7 +40,7 @@ class module_report_question extends module_report
     public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
         parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
-        $this->title = _('report:: question');
+        $this->title = $this->app->trans('report:: question');
     }
 
     /**
@@ -58,7 +58,7 @@ class module_report_question extends module_report
 
     public function colFilter($field)
     {
-        $ret = array();
+        $ret = [];
         $sqlBuilder = $this->sqlBuilder('question');
         $var = $sqlBuilder->sqlDistinctValByField($field);
         $sql = $var['sql'];
@@ -71,12 +71,12 @@ class module_report_question extends module_report
         foreach ($rs as $row) {
             $value = $row['val'];
             if ($field == 'appli')
-                $caption = implode(' ', phrasea::modulesName(@unserialize($row['val'])));
+                $caption = implode(' ', phrasea::modulesName($this->app['translator'], @unserialize($row['val'])));
             elseif ($field == "ddate")
                 $caption = $this->app['date-formatter']->getPrettyString(new DateTime($value));
             else
                 $caption = $row['val'];
-            $ret[] = array('val'   => $caption, 'value' => $value);
+            $ret[] = ['val'   => $caption, 'value' => $value];
         }
 
         return $ret;
@@ -84,7 +84,6 @@ class module_report_question extends module_report
 
     protected function buildResult(Application $app, $rs)
     {
-        $tab = array();
         $i = 0;
         foreach ($rs as $row) {
             if ($this->enable_limit && ($i > $this->nb_record))
@@ -97,7 +96,7 @@ class module_report_question extends module_report
                     else
                         $this->result[$i][$value] = $row[$value];
                 } else
-                    $this->result[$i][$value] = "<i>" . _('report:: non-renseigne') . "</i>";
+                    $this->result[$i][$value] = "<i>" . $this->app->trans('report:: non-renseigne') . "</i>";
             }
             $i ++;
         }

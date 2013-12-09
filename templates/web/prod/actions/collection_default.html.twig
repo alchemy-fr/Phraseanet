@@ -3,15 +3,15 @@
     <form onsubmit="return false" action="{{ path('prod_move_collection_apply') }}" method="post">
         {% if records.databoxes() | length > 1 %}
             <div class="well-small">
-                {% trans 'prod::Les enregistrements ne provienent pas tous de la meme base et ne peuvent donc etre traites ensemble' %}
+                {{ 'prod::Les enregistrements ne provienent pas tous de la meme base et ne peuvent donc etre traites ensemble' | trans }}
             </div>
         {% elseif records | length == 0 %}
             <div class="well-small">
-                {% trans 'prod::Vous n\'avez le droit d\'effectuer l\'operation sur aucun document' %}
+                {{ 'prod::Vous n\'avez le droit d\'effectuer l\'operation sur aucun document' | trans }}
             </div>
         {% elseif collections | length == 0 %}
             <div class="well-small">
-                {% trans 'erreur : Vous n\'avez pas les droits' %}
+                {{ 'erreur : Vous n\'avez pas les droits' | trans }}
             </div>
         {% else %}
             {% set canValid = true %}
@@ -20,13 +20,9 @@
                 <div class="well-small">
                     {% set countable = records.received().count() - records.count() %}
                     {% if countable == 1 %}
-                        {% trans %}
-                            One document can not be modified.
-                        {% endtrans %}
+                        {% trans %}One document can not be modified.{% endtrans %}
                     {% else %}
-                        {% trans %}
-                            {{countable}} documents can not be modified.
-                        {% endtrans %}
+                        {% trans with {'%countable%' : countable} %}%countable% documents can not be modified.{% endtrans %}
                     {% endif %}
                 </div>
             {% endif %}
@@ -34,20 +30,16 @@
             <div class="well-small">
                 {% set countable = records | length %}
                 {% if countable == 1 %}
-                    {% trans %}
-                        Move one record to the chosen collection in the list.
-                    {% endtrans %}
+                    {% trans %}Move one record to the chosen collection in the list.{% endtrans %}
                 {% else %}
-                    {% trans %}
-                        Move {{ countable }} records to the chosen collection in the list.
-                    {% endtrans %}
+                    {% trans with {'%countable%' : countable} %}Move %countable% records to the chosen collection in the list.{% endtrans %}
                 {% endif %}
             </div>
 
             <div class="well-small">
                 <select name="base_id">
                     {% for collection in collections %}
-                        <option value="{{ collection.get_base_id() }}">{{ collection.get_label(app['locale.I18n']) }}</option>
+                        <option value="{{ collection.get_base_id() }}">{{ collection.get_label(app['locale']) }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -55,7 +47,7 @@
             {% if records.stories() | length > 0 %}
                 <div class="well-small">
                     <label class="checkbox text-info">
-                        <input type="checkbox" value="1" name="chg_coll_son"> {% trans 'prod::collection deplacer egalement les documents rattaches a ce(s) regroupement(s)' %}
+                        <input type="checkbox" value="1" name="chg_coll_son"> {{ 'prod::collection deplacer egalement les documents rattaches a ce(s) regroupement(s)' | trans }}
                     </label>
                 </div>
             {% endif %}

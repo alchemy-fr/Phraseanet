@@ -15,7 +15,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
         $compiled = $compiler->compile($data);
         $this->assertInternalType("string", $compiled);
-        $this->assertSame(0, strpos($compiled, "<?php\nreturn array("));
+        $this->assertSame(0, strpos($compiled, "<?php\nreturn ["));
         $result = eval('?>'.$compiled);
 
         $this->assertSame($data, $result);
@@ -28,27 +28,27 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $class = new \stdClass();
         $class->key = 'value';
 
-        $data = array(
+        $data = [
             'key'  => $class,
             'key2' => 'boum',
-        );
+        ];
 
         $compiled = $compiler->compile($data);
         $this->assertInternalType("string", $compiled);
-        $this->assertSame(0, strpos($compiled, "<?php\nreturn array("));
+        $this->assertSame(0, strpos($compiled, "<?php\nreturn ["));
         $result = eval('?>'.$compiled);
 
-        $this->assertSame(array('key' => array('key' => 'value'), 'key2' => 'boum'), $result);
+        $this->assertSame(['key' => ['key' => 'value'], 'key2' => 'boum'], $result);
     }
 
     public function provideDataToCompile()
     {
-        return array(
-            array(array()),
-            array(array('key' => array('value1', 'value2', 'booleantrue' => true, 'booleanfalse' => false), array('gizmo'))),
-            array(array(array(array()))),
-            array(array(null, false, array(), true)),
-            array(array('key' => 'value', "associativeint" => 12345, 34567)),
-        );
+        return [
+            [[]],
+            [['key' => ['value1', 'value2', 'booleantrue' => true, 'booleanfalse' => false], ['gizmo']]],
+            [[[[]]]],
+            [[null, false, [], true]],
+            [['key' => 'value', "associativeint" => 12345, 34567]],
+        ];
     }
 }

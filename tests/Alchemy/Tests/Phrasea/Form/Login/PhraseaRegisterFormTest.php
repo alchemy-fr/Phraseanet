@@ -10,44 +10,44 @@ class PhraseaRegisterFormTest extends FormTestCase
 {
     protected function getForm()
     {
-        $available = array(
-            'parameter' => array(
+        $available = [
+            'parameter' => [
                 'type' => 'text',
                 'label' => 'Yollah !',
-            )
-        );
-        $params = array(
-            array(
+            ]
+        ];
+        $params = [
+            [
                 'name'     => 'parameter',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         return new PhraseaRegisterForm(self::$DI['app'], $available, $params, new Camelizer());
     }
 
     public function testFormDoesRegisterValidFields()
     {
-        $available = array(
-            'parameter' => array(
+        $available = [
+            'parameter' => [
                 'type' => 'text',
                 'label' => 'Yollah !',
-            ),
-            'parameter2' => array(
+            ],
+            'parameter2' => [
                 'type' => 'text',
                 'label' => 'Yollah !',
-            )
-        );
-        $params = array(
-            array(
+            ]
+        ];
+        $params = [
+            [
                 'name'     => 'parameter',
                 'required' => true
-            ),
-            array(
+            ],
+            [
                 'name'     => 'parameter2',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form = new PhraseaRegisterForm(self::$DI['app'], $available, $params, new Camelizer());
 
@@ -56,22 +56,22 @@ class PhraseaRegisterFormTest extends FormTestCase
 
     public function testFormDoesNotRegisterNonValidFields()
     {
-        $available = array(
-            'parameter' => array(
+        $available = [
+            'parameter' => [
                 'type' => 'text',
                 'label' => 'Yollah !',
-            )
-        );
-        $params = array(
-            array(
+            ]
+        ];
+        $params = [
+            [
                 'name'     => 'parameter',
                 'required' => true
-            ),
-            array(
+            ],
+            [
                 'name'     => 'parameter2',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form = new PhraseaRegisterForm(self::$DI['app'], $available, $params, new Camelizer());
 

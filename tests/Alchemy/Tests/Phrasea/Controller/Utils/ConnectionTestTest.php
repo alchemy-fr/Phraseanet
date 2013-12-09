@@ -9,15 +9,15 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
      */
     public function testRouteMysql()
     {
-        $connexion = self::$DI['app']['phraseanet.configuration']['main']['database'];
+        $connexion = self::$DI['app']['conf']->get(['main', 'database']);
 
-        $params = array(
+        $params = [
             "hostname" => $connexion['host'],
             "port"     => $connexion['port'],
             "user"     => $connexion['user'],
             "password" => $connexion['password'],
             "dbname"   => $connexion['dbname'],
-        );
+        ];
 
         self::$DI['client']->request("GET", "/admin/tests/connection/mysql/", $params);
         $response = self::$DI['client']->getResponse();
@@ -26,15 +26,15 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
 
     public function testRouteMysqlFailed()
     {
-        $connexion = self::$DI['app']['phraseanet.configuration']['main']['database'];
+        $connexion = self::$DI['app']['conf']->get(['main', 'database']);
 
-        $params = array(
+        $params = [
             "hostname" => $connexion['host'],
             "port"     => $connexion['port'],
             "user"     => $connexion['user'],
             "password" => "fakepassword",
             "dbname"   => $connexion['dbname'],
-        );
+        ];
 
         self::$DI['client']->request("GET", "/admin/tests/connection/mysql/", $params);
         $response = self::$DI['client']->getResponse();
@@ -52,15 +52,15 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
 
     public function testRouteMysqlDbFailed()
     {
-        $connexion = self::$DI['app']['phraseanet.configuration']['main']['database'];
+        $connexion = self::$DI['app']['conf']->get(['main', 'database']);
 
-        $params = array(
+        $params = [
             "hostname" => $connexion['host'],
             "port"     => $connexion['port'],
             "user"     => $connexion['user'],
             "password" => $connexion['password'],
             "dbname"   => "fake-DTABASE-name"
-        );
+        ];
 
         self::$DI['client']->request("GET", "/admin/tests/connection/mysql/", $params);
         $response = self::$DI['client']->getResponse();

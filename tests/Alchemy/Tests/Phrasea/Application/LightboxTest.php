@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Application;
 
-class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class LightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
     protected $client;
@@ -18,22 +18,10 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
             ->disableOriginalConstructor()
             ->getMock();
-
-        self::$DI['app']['notification.deliverer']->expects($this->atLeastOnce())
-            ->method('deliver')
-            ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication'), $this->equalTo(null));
-
-        $this->feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
-        $publishers = $this->feed->get_publishers();
-        $publisher = array_shift($publishers);
-        $this->entry = \Feed_Entry_Adapter::create(self::$DI['app'], $this->feed, $publisher, 'title', "sub Titkle", " jean pierre", "jp@test.com");
-        $this->item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $this->entry, self::$DI['record_1']);
     }
 
     public function tearDown()
     {
-        if ($this->feed instanceof \Feed_Adapter)
-            $this->feed->delete();
         parent::tearDown();
     }
 
@@ -148,7 +136,10 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
     {
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
 
-        $crawler = self::$DI['client']->request('GET', '/lightbox/ajax/LOAD_FEED_ITEM/' . $this->entry->get_id() . '/' . $this->item->get_id() . '/');
+        $item = $this->insertOneFeedItem(self::$DI['user']);
+        $entry = $item->getEntry();
+
+        $crawler = self::$DI['client']->request('GET', '/lightbox/ajax/LOAD_FEED_ITEM/' . $entry->getId() . '/' . $item->getId() . '/');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         $this->assertEquals('application/json', self::$DI['client']->getResponse()->headers->get('Content-type'));
         $datas = json_decode(self::$DI['client']->getResponse()->getContent());
@@ -164,7 +155,7 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
         $this->set_user_agent(self::USER_AGENT_IE6, self::$DI['app']);
 
-        $crawler = self::$DI['client']->request('GET', '/lightbox/ajax/LOAD_FEED_ITEM/' . $this->entry->get_id() . '/' . $this->item->get_id() . '/');
+        $crawler = self::$DI['client']->request('GET', '/lightbox/ajax/LOAD_FEED_ITEM/' . $entry->getId() . '/' . $item->getId() . '/');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         $this->assertEquals('application/json', self::$DI['client']->getResponse()->headers->get('Content-type'));
         $datas = json_decode(self::$DI['client']->getResponse()->getContent());
@@ -180,7 +171,7 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
         $this->set_user_agent(self::USER_AGENT_IPHONE, self::$DI['app']);
 
-        $crawler = self::$DI['client']->request('GET', '/lightbox/ajax/LOAD_FEED_ITEM/' . $this->entry->get_id() . '/' . $this->item->get_id() . '/');
+        $crawler = self::$DI['client']->request('GET', '/lightbox/ajax/LOAD_FEED_ITEM/' . $entry->getId() . '/' . $item->getId() . '/');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         $this->assertNotEquals('application/json', self::$DI['client']->getResponse()->headers->get('Content-type'));
     }
@@ -241,19 +232,22 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
 
-        $crawler = self::$DI['client']->request('GET', '/lightbox/feeds/entry/' . $this->entry->get_id() . '/');
+        $item = $this->insertOneFeedItem(self::$DI['user']);
+        $entry = $item->getEntry();
+
+        $crawler = self::$DI['client']->request('GET', '/lightbox/feeds/entry/' . $entry->getId() . '/');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
 
         $this->set_user_agent(self::USER_AGENT_IE6, self::$DI['app']);
 
-        $crawler = self::$DI['client']->request('GET', '/lightbox/feeds/entry/' . $this->entry->get_id() . '/');
+        $crawler = self::$DI['client']->request('GET', '/lightbox/feeds/entry/' . $entry->getId() . '/');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
 
         $this->set_user_agent(self::USER_AGENT_IPHONE, self::$DI['app']);
 
-        $crawler = self::$DI['client']->request('GET', '/lightbox/feeds/entry/' . $this->entry->get_id() . '/');
+        $crawler = self::$DI['client']->request('GET', '/lightbox/feeds/entry/' . $entry->getId() . '/');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
     }
@@ -279,7 +273,7 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $crawler = self::$DI['client']->request(
             'POST'
             , '/lightbox/ajax/SET_NOTE/' . $validationBasketElement->getId() . '/'
-            , array('note' => 'une jolie note')
+            , ['note' => 'une jolie note']
         );
 
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode(), sprintf('set note to element %s ', $validationBasketElement->getId()));
@@ -305,7 +299,7 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $crawler = self::$DI['client']->request(
             'POST'
             , '/lightbox/ajax/SET_ELEMENT_AGREEMENT/' . $validationBasketElement->getId() . '/'
-            , array('agreement' => 1)
+            , ['agreement' => 1]
         );
 
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode(), sprintf('set note to element %s ', $validationBasketElement->getId()));
@@ -317,11 +311,9 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $this->assertObjectHasAttribute('error', $datas);
     }
 
-    public function testAjaxSetRelease()
+    public function testAjaxSetReleaseWithRegularBasket()
     {
         $basket = $this->insertOneBasket();
-
-        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoValidationDone');
 
         $crawler = self::$DI['client']->request('POST', '/lightbox/ajax/SET_RELEASE/' . $basket->getId() . '/');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
@@ -329,8 +321,13 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $datas = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->assertTrue(is_object($datas), 'asserting good json datas');
         $this->assertTrue($datas->error);
+    }
 
+    public function testAjaxSetReleaseWithRegularBasketWithValidation()
+    {
         $validationBasket = $this->insertOneValidationBasket();
+
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoValidationDone');
 
         foreach ($validationBasket->getElements() as $element) {
             $element->getUserValidationDatas(self::$DI['app']['authentication']->getUser(), self::$DI['app'])->setAgreement(true);

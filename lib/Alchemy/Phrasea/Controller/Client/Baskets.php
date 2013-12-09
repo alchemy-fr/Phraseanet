@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,8 +11,8 @@
 
 namespace Alchemy\Phrasea\Controller\Client;
 
-use Entities\Basket;
-use Entities\BasketElement;
+use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Doctrine\Common\Collections\ArrayCollection;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -23,107 +23,31 @@ class Baskets implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
+        $app['controller.client.baskets'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function () use ($app) {
             $app['firewall']->requireAuthentication();
         });
 
-        /**
-         * Gets client baskets
-         *
-         * name         : get_client_baskets
-         *
-         * description  : fetch current user baskets
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->match('/', $this->call('getBaskets'))
+        $controllers->match('/', 'controller.client.baskets:getBaskets')
             ->method('POST|GET')
             ->bind('get_client_baskets');
 
-        /**
-         * Creates a new basket
-         *
-         * name         : client_new_basket
-         *
-         * description  : Create a new basket
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : REDIRECT Response
-         */
-        $controllers->post('/new/', $this->call('createBasket'))
+        $controllers->post('/new/', 'controller.client.baskets:createBasket')
             ->bind('client_new_basket');
 
-        /**
-         * Deletes a basket
-         *
-         * name         : client_delete_basket
-         *
-         * description  : Delete a basket
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : REDIRECT Response
-         */
-        $controllers->post('/delete/', $this->call('deleteBasket'))
+        $controllers->post('/delete/', 'controller.client.baskets:deleteBasket')
             ->bind('client_delete_basket');
 
-       /**
-         * Checks if client basket should be updated
-         *
-         * name         : client_basket_check
-         *
-         * description  : Update basket client
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/check/', $this->call('checkBaskets'))
+        $controllers->post('/check/', 'controller.client.baskets:checkBaskets')
             ->bind('client_basket_check');
 
-       /**
-         * Adds an element to a basket
-         *
-         * name         : client_basket_add_element
-         *
-         * description  : Add an element to a basket
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : REDIRECT Response
-         */
-        $controllers->post('/add-element/', $this->call('addElementToBasket'))
+        $controllers->post('/add-element/', 'controller.client.baskets:addElementToBasket')
             ->bind('client_basket_add_element');
 
-        /**
-         * Deletes an element from a basket
-         *
-         * name         : client_basket_delete_element
-         *
-         * description  : Delete an element from a basket
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : REDIRECT Response
-         */
-        $controllers->post('/delete-element/', $this->call('deleteBasketElement'))
+        $controllers->post('/delete-element/', 'controller.client.baskets:deleteBasketElement')
             ->bind('client_basket_delete_element');
 
         return $controllers;
@@ -139,7 +63,7 @@ class Baskets implements ControllerProviderInterface
     public function deleteBasketElement(Application $app, Request $request)
     {
         try {
-            $repository = $app['EM']->getRepository('\Entities\BasketElement');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
             $basketElement = $repository->findUserElement($request->request->get('p0'), $app['authentication']->getUser());
             $app['EM']->remove($basketElement);
             $app['EM']->flush();
@@ -147,9 +71,9 @@ class Baskets implements ControllerProviderInterface
 
         }
 
-        return $app->redirectPath('get_client_baskets', array(
+        return $app->redirectPath('get_client_baskets', [
             'courChuId' => $request->request->get('courChuId', '')
-        ));
+        ]);
     }
 
     /**
@@ -162,9 +86,8 @@ class Baskets implements ControllerProviderInterface
     public function deleteBasket(Application $app, Request $request)
     {
         try {
-            $repository = $app['EM']->getRepository('\Entities\Basket');
-            /* @var $repository \Repositories\BasketRepository */
-            $basket = $repository->findUserBasket($app, $request->request->get('courChuId'), $app['authentication']->getUser(), true);
+            $basket = $app['converter.basket']->convert($request->request->get('courChuId'));
+            $app['acl.basket']->isOwner($basket, $app['authentication']->getUser());
 
             $app['EM']->remove($basket);
             $app['EM']->flush();
@@ -199,9 +122,9 @@ class Baskets implements ControllerProviderInterface
 
         }
 
-        return $app->redirectPath('get_client_baskets', array(
+        return $app->redirectPath('get_client_baskets', [
             'courChuId' => null !== $basket ? $basket->getId() : ''
-        ));
+        ]);
     }
 
     /**
@@ -213,30 +136,27 @@ class Baskets implements ControllerProviderInterface
      */
     public function addElementToBasket(Application $app, Request $request)
     {
-        $repository = $app['EM']->getRepository('\Entities\Basket');
-        /* @var $repository \Repositories\BasketRepository */
-        $basket = $repository->findUserBasket($app, $request->request->get('courChuId'), $app['authentication']->getUser(), true);
+        $basket = $app['converter.basket']->convert($request->request->get('courChuId'));
+        $app['acl.basket']->isOwner($basket, $app['authentication']->getUser());
 
-        if ($basket) {
-            try {
-                $record = new \record_adapter($app, $request->request->get('sbas'), $request->request->get('p0'));
+        try {
+            $record = new \record_adapter($app, $request->request->get('sbas'), $request->request->get('p0'));
 
-                $basketElement = new BasketElement();
-                $basketElement->setRecord($record);
-                $basketElement->setBasket($basket);
-                $basket->addElement($basketElement);
+            $basketElement = new BasketElement();
+            $basketElement->setRecord($record);
+            $basketElement->setBasket($basket);
+            $basket->addElement($basketElement);
 
-                $app['EM']->persist($basket);
+            $app['EM']->persist($basket);
 
-                $app['EM']->flush();
-            } catch (\Exception $e) {
+            $app['EM']->flush();
+        } catch (\Exception $e) {
 
-            }
         }
 
-        return $app->redirectPath('get_client_baskets', array(
+        return $app->redirectPath('get_client_baskets', [
             'courChuId' => $basket ? $basket->getId() : ''
-        ));
+        ]);
     }
 
     /**
@@ -249,7 +169,7 @@ class Baskets implements ControllerProviderInterface
     public function getBaskets(Application $app, Request $request)
     {
         $selectedBasketId = trim($request->get('courChuId', ''));
-        $baskets = new ArrayCollection($app['EM']->getRepository('\Entities\Basket')->findActiveByUser($app['authentication']->getUser()));
+        $baskets = new ArrayCollection($app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket')->findActiveByUser($app['authentication']->getUser()));
         $selectedBasket = null;
 
         if ('' === $selectedBasketId && $baskets->count() > 0) {
@@ -257,20 +177,21 @@ class Baskets implements ControllerProviderInterface
         }
 
         if ('' !== $selectedBasketId) {
-            $selectedBasket = $app['EM']->getRepository('\Entities\Basket')->findUserBasket($app, $selectedBasketId, $app['authentication']->getUser(), true);
+            $selectedBasket = $app['converter.basket']->convert($selectedBasketId);
+            $app['acl.basket']->isOwner($selectedBasket, $app['authentication']->getUser());
         }
 
         $basketCollections = $baskets->partition(function ($key, $basket) {
             return (Boolean) $basket->getPusherId();
         });
 
-        return $app['twig']->render('client/baskets.html.twig', array(
+        return $app['twig']->render('client/baskets.html.twig', [
             'total_baskets'            => $baskets->count(),
             'user_baskets'             => $basketCollections[1],
             'recept_user_basket'       => $basketCollections[0],
             'selected_basket'          => $selectedBasket,
             'selected_basket_elements' => $selectedBasket ? $selectedBasket->getElements() : new ArrayCollection()
-        ));
+        ]);
     }
 
     /**
@@ -283,9 +204,9 @@ class Baskets implements ControllerProviderInterface
     public function checkBaskets(Application $app, Request $request)
     {
         $noview = 0;
-        $repository = $app['EM']->getRepository('\Entities\Basket');
+        $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-        /* @var $repository \Repositories\BasketRepository */
+        /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
         $baskets = $repository->findActiveByUser($app['authentication']->getUser());
 
         foreach ($baskets as $basket) {
@@ -294,21 +215,10 @@ class Baskets implements ControllerProviderInterface
             }
         }
 
-        return $app->json(array(
+        return $app->json([
             'success' => true,
             'message' => '',
             'no_view' => $noview
-        ));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
+        ]);
     }
 }

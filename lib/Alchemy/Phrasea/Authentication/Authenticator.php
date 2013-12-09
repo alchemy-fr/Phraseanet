@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Browser;
 use Doctrine\ORM\EntityManager;
-use Entities\Session;
+use Alchemy\Phrasea\Model\Entities\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -78,7 +78,7 @@ class Authenticator
 
         $this->session->set('session_id', $session->getId());
 
-        foreach ($user->ACL()->get_granted_sbas() as $databox) {
+        foreach ($this->app['acl']->get($user)->get_granted_sbas() as $databox) {
             \cache_databox::insertClient($this->app, $databox);
         }
         $this->reinitUser();
@@ -88,7 +88,7 @@ class Authenticator
 
     public function refreshAccount(Session $session)
     {
-        if (!$this->em->getRepository('Entities\Session')->findOneBy(array('id' => $session->getId()))) {
+        if (!$this->em->getRepository('Alchemy\Phrasea\Model\Entities\Session')->findOneBy(['id' => $session->getId()])) {
             throw new RuntimeException('Unable to refresh the session, it does not exist anymore');
         }
 
@@ -102,7 +102,7 @@ class Authenticator
         $this->session->set('usr_id', $session->getUsrId());
         $this->session->set('session_id', $session->getId());
 
-        foreach ($user->ACL()->get_granted_sbas() as $databox) {
+        foreach ($this->app['acl']->get($user)->get_granted_sbas() as $databox) {
             \cache_databox::insertClient($this->app, $databox);
         }
 
@@ -120,7 +120,7 @@ class Authenticator
             throw new RuntimeException('No session to close.');
         }
 
-        if (null !== $session = $this->em->find('Entities\Session', $this->session->get('session_id'))) {
+        if (null !== $session = $this->em->find('Alchemy\Phrasea\Model\Entities\Session', $this->session->get('session_id'))) {
             $this->em->remove($session);
             $this->em->flush();
         }
@@ -154,7 +154,7 @@ class Authenticator
         }
 
         if ($this->session->has('session_id')) {
-            if (null !== $this->em->find('Entities\Session', $this->session->get('session_id'))) {
+            if (null !== $this->em->find('Alchemy\Phrasea\Model\Entities\Session', $this->session->get('session_id'))) {
                 return true;
             }
         }

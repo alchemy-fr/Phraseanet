@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller;
 
-use Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\Basket;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,7 +45,7 @@ class RecordsRequest extends ArrayCollection
         $this->isSingleStory = ($flatten !== self::FLATTEN_YES && 1 === count($this) && $this->first()->is_grouping());
 
         if (self::FLATTEN_NO !== $flatten) {
-            $to_remove = array();
+            $to_remove = [];
             foreach ($this as $key => $record) {
                 if ($record->is_grouping()) {
                     if (self::FLATTEN_YES === $flatten) {
@@ -77,7 +77,7 @@ class RecordsRequest extends ArrayCollection
     public function databoxes()
     {
         if (!$this->databoxes) {
-            $this->databoxes = array();
+            $this->databoxes = [];
 
             foreach ($this as $record) {
                 if (false === array_key_exists($record->get_databox()->get_sbas_id(), $this->databoxes)) {
@@ -99,7 +99,7 @@ class RecordsRequest extends ArrayCollection
     public function collections()
     {
         if (!$this->collections) {
-            $this->collections = array();
+            $this->collections = [];
 
             foreach ($this as $record) {
                 if (false === array_key_exists($record->get_base_id(), $this->collections)) {
@@ -182,7 +182,7 @@ class RecordsRequest extends ArrayCollection
             return $this->singleStory()->get_serialize_key();
         }
 
-        $basrec = array();
+        $basrec = [];
         foreach ($this as $record) {
             $basrec[] = $record->get_serialize_key();
         }
@@ -200,21 +200,20 @@ class RecordsRequest extends ArrayCollection
      * @param  array          $rightsDatabox
      * @return RecordsRequest
      */
-    public static function fromRequest(Application $app, Request $request, $flattenStories = self::FLATTEN_NO, array $rightsColl = array(), array $rightsDatabox = array())
+    public static function fromRequest(Application $app, Request $request, $flattenStories = self::FLATTEN_NO, array $rightsColl = [], array $rightsDatabox = [])
     {
-        $elements = $received = array();
+        $elements = $received = [];
         $basket = null;
 
         if ($request->get('ssel')) {
-            $repository = $app['EM']->getRepository('\Entities\Basket');
-
-            $basket = $repository->findUserBasket($app, $request->get('ssel'), $app['authentication']->getUser(), false);
+            $basket = $app['converter.basket']->convert($request->get('ssel'));
+            $app['acl.basket']->hasAccess($basket, $app['authentication']->getUser());
 
             foreach ($basket->getElements() as $basket_element) {
                 $received[$basket_element->getRecord($app)->get_serialize_key()] = $basket_element->getRecord($app);
             }
         } elseif ($request->get('story')) {
-            $repository = $app['EM']->getRepository('\Entities\StoryWZ');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\StoryWZ');
 
             $storyWZ = $repository->findByUserAndId(
                 $app, $app['authentication']->getUser()
@@ -240,24 +239,24 @@ class RecordsRequest extends ArrayCollection
 
         $elements = $received;
 
-        $to_remove = array();
+        $to_remove = [];
 
         foreach ($elements as $id => $record) {
 
-            if (!$app['authentication']->getUser()->ACL()->has_access_to_record($record)) {
+            if (!$app['acl']->get($app['authentication']->getUser())->has_access_to_record($record)) {
                 $to_remove[] = $id;
                 continue;
             }
 
             foreach ($rightsColl as $right) {
-                if (!$app['authentication']->getUser()->ACL()->has_right_on_base($record->get_base_id(), $right)) {
+                if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($record->get_base_id(), $right)) {
                     $to_remove[] = $id;
                     continue;
                 }
             }
 
             foreach ($rightsDatabox as $right) {
-                if (!$app['authentication']->getUser()->ACL()->has_right_on_sbas($record->get_sbas_id(), $right)) {
+                if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_sbas($record->get_sbas_id(), $right)) {
                     $to_remove[] = $id;
                     continue;
                 }

@@ -21,6 +21,8 @@ class Export implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
+        $app['controller.report.export'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function () use ($app) {
@@ -28,7 +30,7 @@ class Export implements ControllerProviderInterface
             $app['firewall']->requireAccessToModule('report');
         });
 
-        $controllers->post('/csv', $this->call('exportCSV'))
+        $controllers->post('/csv', 'controller.report.export:exportCSV')
             ->bind('report_export_csv');
 
         return $controllers;
@@ -52,7 +54,7 @@ class Export implements ControllerProviderInterface
         $filename = mb_strtolower('report_' . $name . '_' . date('dmY') . '.csv');
         $data = preg_replace('/[ \t\r\f]+/', '', $data);
 
-        $response = new Response($data, 200, array(
+        $response = new Response($data, 200, [
             'Expires'               => 'Mon, 26 Jul 1997 05:00:00 GMT',
             'Last-Modified'         => gmdate('D, d M Y H:i:s'). ' GMT',
             'Cache-Control'         => 'no-store, no-cache, must-revalidate',
@@ -62,20 +64,10 @@ class Export implements ControllerProviderInterface
             'Content-Length'        => strlen($data),
             'Cache-Control'         => 'max-age=3600, must-revalidate',
             'Content-Disposition'   => 'max-age=3600, must-revalidate',
-        ));
+        ]);
 
         $response->headers->set('Content-Disposition', $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename));
 
         return $response;
-    }
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

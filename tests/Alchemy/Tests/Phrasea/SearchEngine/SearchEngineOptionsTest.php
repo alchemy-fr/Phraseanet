@@ -13,13 +13,13 @@ class SearchEngineOptionsTest extends \PhraseanetPHPUnitAbstract
     public function testSerialize()
     {
         $options = new SearchEngineOptions(self::$DI['app']);
-        $options->onCollections(array(self::$DI['collection']));
+        $options->onCollections([self::$DI['collection']]);
 
-        $options->allowBusinessFieldsOn(array(self::$DI['collection']));
+        $options->allowBusinessFieldsOn([self::$DI['collection']]);
 
         foreach (self::$DI['collection']->get_databox()->get_meta_structure() as $field) {
-            $options->setFields(array($field));
-            $options->setDateFields(array($field));
+            $options->setFields([$field]);
+            $options->setDateFields([$field]);
             break;
         }
 
@@ -48,13 +48,13 @@ class SearchEngineOptionsTest extends \PhraseanetPHPUnitAbstract
 
             $options = SearchEngineOptions::fromRequest(self::$DI['app'], $httpRequest);
 
-            $this->assertEquals(array(self::$DI['collection']), $options->getCollections());
-            $this->assertEquals(array($field), $options->getFields());
+            $this->assertEquals([self::$DI['collection']], $options->getCollections());
+            $this->assertEquals([$field], $options->getFields());
             $this->assertEquals('video', $options->getRecordType());
             $this->assertEquals('1', $options->getSearchType());
             $this->assertEquals('2012/12/21', $options->getMaxDate()->format('Y/m/d'));
             $this->assertEquals('2009/04/24', $options->getMinDate()->format('Y/m/d'));
-            $this->assertEquals(array($dateField), $options->getDateFields());
+            $this->assertEquals([$dateField], $options->getDateFields());
             $this->assertEquals('asc', $options->getSortOrder());
             $this->assertEquals('topinambour', $options->getSortBy());
             $this->assertEquals(true, $options->isStemmed());
@@ -73,13 +73,13 @@ class SearchEngineOptionsTest extends \PhraseanetPHPUnitAbstract
 
             $options = SearchEngineOptions::fromRequest(self::$DI['app'], $httpRequest);
 
-            $this->assertEquals(array(), $options->getCollections());
-            $this->assertEquals(array(), $options->getFields());
+            $this->assertEquals([], $options->getCollections());
+            $this->assertEquals([], $options->getFields());
             $this->assertEquals('video', $options->getRecordType());
             $this->assertEquals('1', $options->getSearchType());
             $this->assertEquals('2012/12/21', $options->getMaxDate()->format('Y/m/d'));
             $this->assertEquals('2009/04/24', $options->getMinDate()->format('Y/m/d'));
-            $this->assertEquals(array(), $options->getDateFields());
+            $this->assertEquals([], $options->getDateFields());
             $this->assertEquals('asc', $options->getSortOrder());
             $this->assertEquals('topinambour', $options->getSortBy());
             $this->assertEquals(true, $options->isStemmed());
@@ -93,13 +93,13 @@ class SearchEngineOptionsTest extends \PhraseanetPHPUnitAbstract
     {
         $options = SearchEngineOptions::fromRequest(self::$DI['app'], new Request());
 
-        $this->assertEquals(array(), $options->getCollections());
-        $this->assertEquals(array(), $options->getFields());
+        $this->assertEquals([], $options->getCollections());
+        $this->assertEquals([], $options->getFields());
         $this->assertEquals(null, $options->getRecordType());
         $this->assertEquals('0', $options->getSearchType());
         $this->assertEquals(null, $options->getMaxDate());
         $this->assertEquals(null, $options->getMinDate());
-        $this->assertEquals(array(), $options->getDateFields());
+        $this->assertEquals([], $options->getDateFields());
         $this->assertEquals('desc', $options->getSortOrder());
         $this->assertEquals(null, $options->getSortBy());
         $this->assertEquals(false, $options->isStemmed());
@@ -123,10 +123,10 @@ class SearchEngineOptionsTest extends \PhraseanetPHPUnitAbstract
             $this->fail('Unable to get a field');
         }
 
-        $data = array(
-            'bases' => array(self::$DI['collection']->get_base_id()),
-            'status' => array('4' => array('on' => array(self::$DI['collection']->get_databox()->get_sbas_id()))),
-            'fields' => array($field->get_name()),
+        $data = [
+            'bases' => [self::$DI['collection']->get_base_id()],
+            'status' => ['4' => ['on' => [self::$DI['collection']->get_databox()->get_sbas_id()]]],
+            'fields' => [$field->get_name()],
             'record_type' => 'video',
             'search_type' => '1',
             'date_min' => '2009/04/24',
@@ -135,14 +135,14 @@ class SearchEngineOptionsTest extends \PhraseanetPHPUnitAbstract
             'ord' => 'asc',
             'sort' => 'topinambour',
             'stemme' => 'true',
-        );
+        ];
 
         $dataWithoutBases = $data;
         unset($dataWithoutBases['bases']);
 
-        return array(
-            array(array(), $data, $field, $dateField),
-            array($data, array(), $field, $dateField),
-        );
+        return [
+            [[], $data, $field, $dateField],
+            [$data, [], $field, $dateField],
+        ];
     }
 }

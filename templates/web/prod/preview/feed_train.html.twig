@@ -1,8 +1,8 @@
  <div id="PREVIEWCURRENTCONT" class="PNB10">
   <ul>
-    {% for child in record.get_container().get_content() %}
+    {% for child in record.get_container() %}
 
-      {% set thumbnail = child.get_record().get_thumbnail() %}
+      {% set thumbnail = child.getRecord(app).get_thumbnail() %}
       {% if thumbnail.is_paysage() %}
         {% set style = 'width:65px;top:' %}
         {% set top = ((66 - (65 / (thumbnail.get_width() / thumbnail.get_height()))) / 2)|round %}
@@ -14,16 +14,16 @@
 
       {% set tooltip = '' %}
       {% if app['phraseanet.registry'].get('GV_rollover_reg_preview') %}
-        {% set tooltip = 'tooltipsrc="' ~ path('prod_tooltip_preview', { 'sbas_id' : child.get_record().get_sbas_id(), 'record_id' : child.get_record().get_record_id() }) ~ '"' %}
+        {% set tooltip = 'tooltipsrc="' ~ path('prod_tooltip_preview', { 'sbas_id' : child.getRecord(app).get_sbas_id(), 'record_id' : child.get_record().get_record_id() }) ~ '"' %}
       {% endif %}
 
       {% set class = '' %}
-      {% if record.get_number() == child.get_ord() %}
+      {% if record.get_number() == child.getOrd() %}
         {% set class = ' selected' %}
       {% endif %}
 
       <li class="{{class}} prevTrainCurrent">
-        <img {{tooltip|raw}} jsargs="FEED|{{child.get_ord()}}|{{record.get_container().get_id()}}"
+        <img {{tooltip|raw}} jsargs="FEED|{{child.get_ord()}}|{{record.get_container().getId()}}"
           class="openPreview prevRegToolTip" return(false);" src="{{thumbnail.get_url()}}"
             style="{{style}}margin:7px;position:relative;"/></li>
     {% endfor %}
@@ -34,8 +34,8 @@
     <div>
       <img src="/skins/icons/light_left.gif" style="margin-right:10px;" onclick="getPrevious();"/>
       <img src="/skins/icons/light_right.gif" style="margin-left:10px;" onclick="getNext();"/><br/>
-      <span onclick="startSlide()" id="start_slide">{% trans 'preview:: demarrer le diaporama' %}</span>
-      <span onclick="stopSlide()" id="stop_slide">{% trans 'preview:: arreter le diaporama' %}</span>
+      <span onclick="startSlide()" id="start_slide">{{ 'preview:: demarrer le diaporama' | trans }}</span>
+      <span onclick="stopSlide()" id="stop_slide">{{ 'preview:: arreter le diaporama' | trans }}</span>
     </div>
   </div>
   <div id="PREVIEWTOOL">

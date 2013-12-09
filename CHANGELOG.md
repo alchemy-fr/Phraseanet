@@ -1,5 +1,13 @@
 # CHANGELOG
 
+* 3.9.0 (xxxx-xx-xx)
+
+  - Convert Orders custom adapter to Doctrine entity.
+  - Convert Feeds custom adapter to Doctrine entity.
+  - Convert Users custom adapter to Doctrine entity.
+  - Convert Ftp Export custom adapter to Doctrine entity.
+  - Convert Ftp Export custom adapter to Doctrine entity.
+
 * 3.8.2 (2013-11-15)
 
   - BugFix : Locale translation may block administration module load.

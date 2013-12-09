@@ -14,20 +14,17 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use DataURI;
+use PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Tools implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.prod.tools'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
@@ -49,7 +46,7 @@ class Tools implements ControllerProviderInterface
                         $metadatas = $app['exiftool.reader']
                                 ->files($record->get_subdef('document')->get_pathfile())
                                 ->first()->getMetadatas();
-                    } catch (\PHPExiftool\Exception\Exception $e) {
+                    } catch (PHPExiftoolException $e) {
 
                     } catch (\Exception_Media_SubdefNotFound $e) {
 
@@ -57,21 +54,21 @@ class Tools implements ControllerProviderInterface
                 }
             }
 
-            $var = array(
+            $var = [
                 'records'   => $records,
                 'record'    => $record,
                 'metadatas' => $metadatas,
-            );
+            ];
 
             return $app['twig']->render('prod/actions/Tools/index.html.twig', $var);
         });
 
         $controllers->post('/rotate/', function (Application $app, Request $request) {
-            $return = array('success'      => true, 'errorMessage' => '');
+            $return = ['success'      => true, 'errorMessage' => ''];
 
             $records = RecordsRequest::fromRequest($app, $request, false);
 
-            $rotation = in_array($request->request->get('rotation'), array('-90', '90', '180')) ? $request->request->get('rotation', 90) : 90;
+            $rotation = in_array($request->request->get('rotation'), ['-90', '90', '180']) ? $request->request->get('rotation', 90) : 90;
 
             foreach ($records as $record) {
                 foreach ($record->get_subdefs() as $name => $subdef) {
@@ -90,9 +87,9 @@ class Tools implements ControllerProviderInterface
         })->bind('prod_tools_rotate');
 
         $controllers->post('/image/', function (Application $app, Request $request) {
-            $return = array('success' => true);
+            $return = ['success' => true];
 
-            $selection = RecordsRequest::fromRequest($app, $request, false, array('canmodifrecord'));
+            $selection = RecordsRequest::fromRequest($app, $request, false, ['canmodifrecord']);
 
             foreach ($selection as $record) {
 
@@ -114,7 +111,7 @@ class Tools implements ControllerProviderInterface
 
         $controllers->post('/hddoc/', function (Application $app, Request $request) {
             $success = false;
-            $message = _('An error occured');
+            $message = $app->trans('An error occured');
 
             if ($file = $request->files->get('newHD')) {
 
@@ -156,26 +153,26 @@ class Tools implements ControllerProviderInterface
                         unlink($tempoFile);
                         rmdir($tempoDir);
                         $success = true;
-                        $message = _('Document has been successfully substitued');
+                        $message = $app->trans('Document has been successfully substitued');
                     } catch (\Exception $e) {
-                        $message = _('file is not valid');
+                        $message = $app->trans('file is not valid');
                     }
                 } else {
-                    $message = _('file is not valid');
+                    $message = $app->trans('file is not valid');
                 }
             } else {
                 $app->abort(400, 'Missing file parameter');
             }
 
-            return $app['twig']->render('prod/actions/Tools/iframeUpload.html.twig', array(
+            return $app['twig']->render('prod/actions/Tools/iframeUpload.html.twig', [
                 'success'   => $success,
                 'message'   => $message,
-            ));
+            ]);
         })->bind('prod_tools_hd_substitution');
 
         $controllers->post('/chgthumb/', function (Application $app, Request $request) {
             $success = false;
-            $message = _('An error occured');
+            $message = $app->trans('An error occured');
 
             if ($file = $request->files->get('newThumb')) {
 
@@ -210,36 +207,36 @@ class Tools implements ControllerProviderInterface
                         unlink($tempoFile);
                         rmdir($tempoDir);
                         $success = true;
-                        $message = _('Thumbnail has been successfully substitued');
+                        $message = $app->trans('Thumbnail has been successfully substitued');
                     } catch (\Exception $e) {
-                        $message = _('file is not valid');
+                        $message = $app->trans('file is not valid');
                     }
                 } else {
-                    $message = _('file is not valid');
+                    $message = $app->trans('file is not valid');
                 }
             } else {
                 $app->abort(400, 'Missing file parameter');
             }
 
-            return $app['twig']->render('prod/actions/Tools/iframeUpload.html.twig', array(
+            return $app['twig']->render('prod/actions/Tools/iframeUpload.html.twig', [
                 'success'   => $success,
                 'message'   => $message,
-            ));
+            ]);
         })->bind('prod_tools_thumbnail_substitution');
 
         $controllers->post('/thumb-extractor/confirm-box/', function (Application $app, Request $request) {
-            $return = array('error'   => false, 'datas'   => '');
+            $return = ['error'   => false, 'datas'   => ''];
             $template = 'prod/actions/Tools/confirm.html.twig';
 
             try {
                 $record = new \record_adapter($app, $request->request->get('sbas_id'), $request->request->get('record_id'));
-                $var = array(
+                $var = [
                     'video_title'    => $record->get_title()
                     , 'image'          => $request->request->get('image', '')
-                );
+                ];
                 $return['datas'] = $app['twig']->render($template, $var);
             } catch (\Exception $e) {
-                $return['datas'] = _('an error occured');
+                $return['datas'] = $app->trans('an error occured');
                 $return['error'] = true;
             }
 
@@ -247,7 +244,7 @@ class Tools implements ControllerProviderInterface
         });
 
         $controllers->post('/thumb-extractor/apply/', function (Application $app, Request $request) {
-            $return = array('success' => false, 'message' => '');
+            $return = ['success' => false, 'message' => ''];
 
             try {
                 $record = new \record_adapter($app, $request->request->get('sbas_id'), $request->request->get('record_id'));

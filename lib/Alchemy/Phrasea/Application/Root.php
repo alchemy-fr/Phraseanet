@@ -50,9 +50,9 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     $app->bindRoutes();
 
     if (PhraseaApplication::ENV_DEV === $app->getEnvironment()) {
-        $app->register($p = new WebProfilerServiceProvider(), array(
+        $app->register($p = new WebProfilerServiceProvider(), [
             'profiler.cache_dir'    => $app['root.path'] . '/tmp/cache/profiler',
-        ));
+        ]);
         $app->mount('/_profiler', $p);
     }
 

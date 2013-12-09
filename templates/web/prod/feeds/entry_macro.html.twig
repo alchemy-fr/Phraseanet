@@ -1,62 +1,66 @@
 {% macro format(feed, entry)%}
   {% import 'prod/results/record.html.twig' as record_format %}
 
-  <div class="entry ui-corner-all" id="entry_{{ entry.get_id() }}">
+  <div class="entry ui-corner-all" id="entry_{{ entry.getId() }}">
     <table class="head">
       <tr>
         <td>
           <h1 class="title">
-            {% if feed.is_aggregated() %}
-              <img style="height:16px;" src="{{ entry.get_feed().get_icon_url() }}" />
+            {% if feed.isAggregated() %}
+              <img style="height:16px;" src="{% if entry.getFeed().getIconUrl() == false %}
+                                 /skins/icons/rss32.gif
+                                 {% else %}
+                                 /custom/feed_{{ entry.getFeed().getId() }}.jpg
+                                 {% endif %}"/>
             {% endif %}
-            {{ entry.get_title() }}
-            {% set author = entry.get_author_name() %}
-            <span class="author">{% trans %}Par {{ author }}{% endtrans %}</span>
+            {{ entry.getTitle() }}
+            {% set author = entry.getAuthorName() %}
+            <span class="author">{% trans with {'%author%' : author} %}Par %author%{% endtrans %}</span>
           </h1>
         </td>
         <td style="width:60px;text-align:right;">
-          {% if entry.get_feed().is_owner(app['authentication'].getUser()) or entry.is_publisher(app['authentication'].getUser()) %}
-          <a class="tools options feed_edit" href="{{ path('feed_entry_edit', { 'id' : entry.get_id() }) }}">
-            <img src="/skins/icons/file-edit.png" title="{% trans 'boutton::editer' %}"/>
+          {% if entry.getFeed().isOwner(app['authentication'].getUser()) or entry.isPublisher(app['authentication'].getUser()) %}
+          <a class="tools options feed_edit" href="{{ path('prod_feeds_entry_update', { 'id' : entry.getId() }) }}">
+            <img src="/skins/icons/file-edit.png" title="{{ 'boutton::editer' | trans }}"/>
           </a>
-          <a class="tools feed_delete" href="{{ path('feed_entry_delete', { 'id' : entry.get_id() }) }}">
-            <img src="/skins/icons/delete.png" title="{% trans 'boutton::supprimer' %}"/>
+          <a class="tools feed_delete" href="{{ path('prod_feeds_entry_delete', { 'id' : entry.getId() }) }}">
+            <img src="/skins/icons/delete.png" title="{{ 'boutton::supprimer' | trans }}"/>
           </a>
           {% endif %}
         </td>
       </tr>
     </table>
     <div class="post_date">
-      {% set updated_on = app['date-formatter'].getPrettyString(entry.get_updated_on()) %}
-      {% set created_on = app['date-formatter'].getPrettyString(entry.get_created_on()) %}
+      {% set updated_on = app['date-formatter'].getPrettyString(entry.getUpdatedOn()) %}
+      {% set created_on = app['date-formatter'].getPrettyString(entry.getCreatedOn()) %}
       <span class="created_on">
           {{ created_on }}
       </span>
       {% if created_on != updated_on %}
       <span class="updated_on">
         (
-        {% trans %}
-          Derniere mise a jour le {{ updated_on }}
-        {% endtrans %}
+        {% trans with {'%updated_on%' : updated_on} %}Derniere mise a jour le %updated_on%{% endtrans %}
         )
       </span>
       {% endif %}
-      {% if feed.is_aggregated() %}
-        <a class="ajax_answers" href="{{ path('prod_feeds_feed', { 'id' : entry.get_feed().get_id() }) }}">
-        {% set feed_name = entry.get_feed().get_title() %}
-        {% trans %}
-          dans {{feed_name}}
-        {% endtrans %}
-        <img style="height:16px;" src="{{ entry.get_feed().get_icon_url() }}" />
+      {% if feed.isAggregated() %}
+        <a class="ajax_answers" href="{{ path('prod_feeds_feed', { 'id' : entry.getFeed().getId() }) }}">
+        {% set feed_name = entry.getFeed().getTitle() %}
+        {% trans with {'%feed_name%' : feed_name} %}dans %feed_name%{% endtrans %}
+        <img style="height:16px;" src="{% if entry.getFeed().getIconUrl() == false %}
+                                 /skins/icons/rss32.gif
+                                 {% else %}
+                                 /custom/feed_{{ entry.getFeed().getId() }}.jpg
+                                 {% endif %}"/>
         </a>
       {% endif %}
     </div>
-    <p>{{ entry.get_subtitle()|nl2br|raw }}</p>
+    <p>{{ entry.getSubtitle()|nl2br|raw }}</p>
     <div class="contents selectable">
-    {% for item in entry.get_content() %}
-      {% set record = item.get_record() %}
-      {% set prefix = 'PUBLI_' ~ item.get_id() %}
-      {{record_format.block(record, false, null, prefix, entry.get_id())}}
+    {% for item in entry.getItems() %}
+      {% set record = item.getRecord(app) %}
+      {% set prefix = 'PUBLI_' ~ item.getId() %}
+      {{record_format.block(record, false, null, prefix, entry.getId())}}
     {% endfor %}
     </div>
   </div>

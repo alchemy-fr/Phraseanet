@@ -15,10 +15,10 @@ class pushReportTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $date->modify('-6 month');
         $this->dmin = $date->format("Y-m-d H:i:s");
         $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
-        $this->ret = array();
+        $this->ret = [];
         foreach ($databoxes as $databox) {
             $colls = $databox->get_collections();
-            $rett = array();
+            $rett = [];
             foreach ($colls as $coll) {
                 $rett[$coll->get_coll_id()] = $coll->get_coll_id();
             }
@@ -39,14 +39,14 @@ class pushReportTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testBuildReport()
     {
-        $conf = array(
-            'user' => array("", 1, 0, 1, 1),
-            'getter' => array("Destinataire", 1, 0, 1, 1),
-            'date' => array("", 1, 0, 1, 1),
-            'record_id' => array("", 1, 1, 1, 1),
-            'file' => array("", 1, 0, 1, 1),
-            'mime' => array("", 1, 0, 1, 1)
-        );
+        $conf = [
+            'user' => ["", 1, 0, 1, 1],
+            'getter' => ["Destinataire", 1, 0, 1, 1],
+            'date' => ["", 1, 0, 1, 1],
+            'record_id' => ["", 1, 1, 1, 1],
+            'file' => ["", 1, 0, 1, 1],
+            'mime' => ["", 1, 0, 1, 1]
+        ];
 
         foreach ($this->ret as $sbasid => $collections) {
             $this->report = new module_report_push(

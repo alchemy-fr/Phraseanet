@@ -1,4 +1,4 @@
-<html lang="{{ app['locale.I18n'] }}">
+<html lang="{{ app['locale'] }}">
     <head>
         <title>{{ app['phraseanet.registry'].get('GV_homeTitle') }} Client</title>
         <meta http-equiv="X-UA-Compatible" content="chrome=1">
@@ -39,7 +39,7 @@
             <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/client/ie6.css' }) }}" >
     <![endif]-->
         <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/jquery/jquery.js' }) }}"></script>
-        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.10.3.js' }) }}"></script>
+        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/jquery.ui/jquery-ui.js' }) }}"></script>
         <script type="text/javascript" src="{{ path('minifier', { 'g' : 'client' }) }}"></script>
         <script type="text/javascript" src="{{ path('minifier', { 'f' : 'include/jslibs/flowplayer/flowplayer-3.2.11.min.js' }) }}"></script>
 
@@ -63,19 +63,19 @@
                                                         {% set active_tab = 'ongSearch' %}
                                                     {% endif %}
 
-                                                    <td class="bigTabs {{ tab_active }}" id="ongSearch" onclick="chgOngSearch('ongSearch');">{% trans 'client:: recherche' %}</td>
+                                                    <td class="bigTabs {{ tab_active }}" id="ongSearch" onclick="chgOngSearch('ongSearch');">{{ 'client:: recherche' | trans }}</td>
                                                 {% elseif tab == 2 %}
                                                     {% if tab_active == 'actif' %}
                                                         {% set active_tab = 'ongAdvSearch' %}
                                                     {% endif %}
 
-                                                    <td class="bigTabs {{ tab_active }}" id="ongAdvSearch" onclick="chgOngSearch('ongAdvSearch');return(false);">{% trans 'client:: recherche avancee' %}</td>
+                                                    <td class="bigTabs {{ tab_active }}" id="ongAdvSearch" onclick="chgOngSearch('ongAdvSearch');return(false);">{{ 'client:: recherche avancee' | trans }}</td>
                                                 {% elseif tab == 3 %}
                                                     {% if tab_active == 'actif' %}
                                                         {% set active_tab = 'ongTopic' %}
                                                     {% endif %}
 
-                                                    <td class="bigTabs {{ tab_active }}" id="ongTopic" onclick="chgOngSearch('ongTopic');return(false);"><{% trans 'client:: topics' %}</td>
+                                                    <td class="bigTabs {{ tab_active }}" id="ongTopic" onclick="chgOngSearch('ongTopic');return(false);"><{{ 'client:: topics' | trans }}</td>
                                                 {% endif %}
                                             {% endif %}
                                         {% endfor %}
@@ -92,33 +92,33 @@
                                             <div id="idongAdvSearch" style="display:none;">
                                                 <div>
                                                     <select name="opAdv[]" style="width:54px">
-                                                        <option value="{% trans "phraseanet::technique:: et" %}">{% trans "phraseanet::technique:: et" %}</option>
-                                                        <option value="{% trans "phraseanet::technique:: or" %}">{% trans "phraseanet::technique:: or" %}</option>
-                                                        <option value="{% trans "phraseanet::technique:: except" %}">{% trans "phraseanet::technique:: except" %}</option>
+                                                        <option value="{{ "phraseanet::technique:: et" | trans }}">{{ "phraseanet::technique:: et" | trans }}</option>
+                                                        <option value="{{ "phraseanet::technique:: or" | trans }}">{{ "phraseanet::technique:: or" | trans }}</option>
+                                                        <option value="{{ "phraseanet::technique:: except" | trans }}">{{ "phraseanet::technique:: except" | trans }}</option>
                                                     </select>
                                                     <input type="text" name="qryAdv[]" id="qryAdv1" style="width:185px">
                                                 </div>
                                                 <div>
                                                     <select name="opAdv[]" style="width:54px">
-                                                        <option value="{% trans "phraseanet::technique:: et" %}">{% trans "phraseanet::technique:: et" %}</option>
-                                                        <option value="{% trans "phraseanet::technique:: or" %}">{% trans "phraseanet::technique:: or" %}</option>
-                                                        <option value="{% trans "phraseanet::technique:: except" %}">{% trans "phraseanet::technique:: except" %}</option>
+                                                        <option value="{{ "phraseanet::technique:: et" | trans }}">{{ "phraseanet::technique:: et" | trans }}</option>
+                                                        <option value="{{ "phraseanet::technique:: or" | trans }}">{{ "phraseanet::technique:: or" | trans }}</option>
+                                                        <option value="{{ "phraseanet::technique:: except" | trans }}">{{ "phraseanet::technique:: except" | trans }}</option>
                                                     </select>
                                                     <input type="text" name="qryAdv[]" id="qryAdv2" style="width:185px">
                                                 </div>
                                             </div>
                                             {% if app['phraseanet.registry'].get('GV_client_coll_ckbox') == 'popup' %}
                                                 <div>
-                                                    {% trans "client::recherche: rechercher dans les bases :" %}
+                                                    {{ "client::recherche: rechercher dans les bases :" | trans }}
                                                     {% if app['phraseanet.appbox'].get_databoxes()|length > 0 %}
                                                         <select id="basSelector" onchange="beforeAnswer();" style="width:245px;">
-                                                            <option value="{{ storage_access['collections']|keys|join(';') }}">{% trans "client::recherche: rechercher dans toutes les bases" %}</option>
+                                                            <option value="{{ storage_access['collections']|keys|join(';') }}">{{ "client::recherche: rechercher dans toutes les bases" | trans }}</option>
                                                             {% for sbasId, databoxWrapper in storage_access['databoxes'] %}
                                                                 {% set databox = databoxWrapper['databoxes'] %}
                                                                 {% set collections = databoxWrapper['collections'] %}
                                                                 {% if collections|length > 0 %}
-                                                                    <optgroup label="{{ databox.get_label(app['locale.I18n']) }}">
-                                                                        <option value="{{ collection|keys|join(';') }}">{{ databox.get_label(app['locale.I18n']) }}</option>
+                                                                    <optgroup label="{{ databox.get_label(app['locale']) }}">
+                                                                        <option value="{{ collection|keys|join(';') }}">{{ databox.get_label(app['locale']) }}</option>
                                                                         {% for collId, collection in collections %}
                                                                         <option value="{{ collId }}" checked="checked">{{ collection.get_name() }}</option>
                                                                         {% endfor %}
@@ -130,7 +130,7 @@
                                                 </div>
                                             {% endif %}
                                             <div>
-                                                <select title="{% trans "phraseanet:: presentation des resultats" %}" name="mod" id="mod" onChange="changeModCol();" >
+                                                <select title="{{ "phraseanet:: presentation des resultats" | trans }}" name="mod" id="mod" onChange="changeModCol();" >
                                                     {% for property in grid_properties %}
                                                         {% set selected = '' %}
                                                         {% if mod_pres is empty %}
@@ -144,13 +144,13 @@
                                                         <option {{ selected }} value="{{ property['h'] ~ 'X' ~ property['w'] }}"> {{ property['name'] }}</option>
                                                     {% endfor %}
                                                 </select>
-                                                <input type="radio" value="0" class="checkbox" {% if app['phraseanet.registry'].get('GV_defaultQuery_type') == 0 %}checked="checked"{% endif %} id="search_type_docs" name="search_type" /><label for="search_type_docs">{% trans "phraseanet::type:: documents" %}</label>
-                                                <input type="radio" value="1" class="checkbox" {% if app['phraseanet.registry'].get('GV_defaultQuery_type') != 0 %}checked="checked"{% endif %} id="search_type_group" name="search_type" /><label for="search_type_group">{% trans "phraseanet::type:: reportages" %}</label>
+                                                <input type="radio" value="0" class="checkbox" {% if app['phraseanet.registry'].get('GV_defaultQuery_type') == 0 %}checked="checked"{% endif %} id="search_type_docs" name="search_type" /><label for="search_type_docs">{{ "phraseanet::type:: documents" | trans }}</label>
+                                                <input type="radio" value="1" class="checkbox" {% if app['phraseanet.registry'].get('GV_defaultQuery_type') != 0 %}checked="checked"{% endif %} id="search_type_group" name="search_type" /><label for="search_type_group">{{ "phraseanet::type:: reportages" | trans }}</label>
                                                 <input type="hidden" name="sort" value="{{ app['phraseanet.registry'].get('GV_phrasea_sort') }}"/>
                                                 <input type="hidden" name="ord" id="searchOrd" value="{{ search_order }}" />
                                             </div>
                                             <div>
-                                                <div style="text-align:center;"><input class="pointer" type="button" onclick="doSearch();" value="{% trans "boutton::rechercher" %}" /></div>
+                                                <div style="text-align:center;"><input class="pointer" type="button" onclick="doSearch();" value="{{ "boutton::rechercher" | trans }}" /></div>
                                             </div>
                                         </div>
                                         <input type="hidden" name="pag" id="formAnswerPage" value="">
@@ -159,17 +159,17 @@
                                         <div class="onglets" style="white-space: nowrap; margin-left: 5px; width: 227px;">
                                             {% if app['phraseanet.registry'].get('GV_client_coll_ckbox') == 'checkbox' %}
                                                 <span id="idOnglet1" class="actif actives" onclick="chgOng(1);">
-                                                    {% trans "phraseanet:: collections" %} <img onclick="removeFilters();" id="filter_danger" src="/skins/icons/alert.png" title="{% trans "client::recherche: cliquez ici pour desactiver tous les filtres de toutes base" %}" style="vertical-align:bottom;width:12px;height:12px;display:none;"/>
+                                                    {{ "phraseanet:: collections" | trans }} <img onclick="removeFilters();" id="filter_danger" src="/skins/icons/alert.png" title="{{ "client::recherche: cliquez ici pour desactiver tous les filtres de toutes base" | trans }}" style="vertical-align:bottom;width:12px;height:12px;display:none;"/>
                                                 </span>
                                             {% endif %}
 
                                             {% if app['phraseanet.registry'].get('GV_thesaurus') %}
                                                 <span id="idOnglet4" class="{{ app['phraseanet.registry'].get('GV_client_coll_ckbox') == 'checkbox' ? "inactif" : "actif" }} actives" onclick="chgOng(4);">
-                                                    {% trans "phraseanet:: propositions" %}
+                                                    {{ "phraseanet:: propositions" | trans }}
                                                 </span>
                                             {% endif %}
                                             <span id="idOnglet5" class="{{ not app['phraseanet.registry'].get('GV_client_coll_ckbox') == 'checkbox' and not app['phraseanet.registry'].get('GV_thesaurus') ? 'actif' : 'inactif' }} actives" onclick="chgOng(5);">
-                                                {% trans "phraseanet:: historique" %}
+                                                {{ "phraseanet:: historique" | trans }}
                                             </span>
                                         </div>
                                     </div>
@@ -178,8 +178,8 @@
                                             <div id="onglet1" style="display:block;height:100%;overflow-x: hidden; overflow-y: auto;" class="searchZone" >
                                                 <div>
                                                     <div style="text-align:center;margin:5px;">
-                                                        <input id="bases_all" class="actives" type="button" value="{% trans 'boutton:: selectionner toutes les bases' %}" onclick="checkBases(true);"/>
-                                                        <input id="bases_none" class="actives" type="button" value="{% trans 'boutton:: selectionner aucune base' %}" onclick="checkBases(false);"/>
+                                                        <input id="bases_all" class="actives" type="button" value="{{ 'boutton:: selectionner toutes les bases' | trans }}" onclick="checkBases(true);"/>
+                                                        <input id="bases_none" class="actives" type="button" value="{{ 'boutton:: selectionner aucune base' | trans }}" onclick="checkBases(false);"/>
                                                     </div>
                                                 </div>
                                                 <div>
@@ -191,8 +191,8 @@
                                                                     <div class="basContTitle">
                                                                         <div class="basTitle">
                                                                             <input class="basChecker checkbox" id="basChecker{{ sbasId }}" type="checkbox" onclick="chkSbas({{ sbasId }},this)" />
-                                                                            <label for="basChecker{{ sbasId }}">{{ databox.get_label(app['locale.I18n']) }}</label>
-                                                                            <img onclick="removeFilters({{ sbasId }});" id="filter_danger{{ sbasId }}" class="filter_danger" src="/skins/icons/alert.png" title="{% trans "client::recherche: cliquez ici pour desactiver tous les filtres de cette base" %}" style="vertical-align:bottom;width:12px;height:12px;display:none;"/>
+                                                                            <label for="basChecker{{ sbasId }}">{{ databox.get_label(app['locale']) }}</label>
+                                                                            <img onclick="removeFilters({{ sbasId }});" id="filter_danger{{ sbasId }}" class="filter_danger" src="/skins/icons/alert.png" title="{{ "client::recherche: cliquez ici pour desactiver tous les filtres de cette base" | trans }}" style="vertical-align:bottom;width:12px;height:12px;display:none;"/>
                                                                         </div>
                                                                         {% set status_bit_filters = '' %}
                                                                         {% for bit, data in databox.get_statusbits() if data['searchable'] %}
@@ -202,11 +202,11 @@
                                                                                         <tr>
                                                                                             <td style="width:50%" nowrap>
                                                                                                 <input class="checkbox" db="{{ sbasId }}" onchange="checkFilters();" type="checkbox" name="status[]" id="statusfil_{{ sbasId }}_off{{ sbasId }}" value="{{ sbasId }}_of{{ sbasId }}"/>
-                                                                                                <label title="{{ data['labels_off_i18n'][app['locale.I18n']] }}" for="statusfil_{{ sbasId }}_off{{ bit }}">{% if data['img_off'] %}<img src="'{{ datas['img_off'] }}" title="{{ datas['labels_off_i18n'][app['locale.I18n']] }}" style="width:16px;height:16px;vertical-align:bottom" />{% endif %}{{ data['labels_off_i18n'][app['locale.I18n']] }}</label>
+                                                                                                <label title="{{ data['labels_off_i18n'][app['locale']] }}" for="statusfil_{{ sbasId }}_off{{ bit }}">{% if data['img_off'] %}<img src="'{{ datas['img_off'] }}" title="{{ datas['labels_off_i18n'][app['locale']] }}" style="width:16px;height:16px;vertical-align:bottom" />{% endif %}{{ data['labels_off_i18n'][app['locale']] }}</label>
                                                                                             </td>
                                                                                             <td style="width:50%" nowrap>
                                                                                                 <input class="checkbox" db="{{ sbasId }}" onchange="checkFilters();" type="checkbox" name="status[]" id="statusfil_{{ sbasId }}_on{{ sbasId }}" value="{{ sbasId }}_on{{ sbasId }}"/>
-                                                                                                <label title="{{ data['labels_on_i18n'][app['locale.I18n']] }}" for="statusfil_{{ sbasId }}_on{{ bit }}">{% if data['img_on']%}<img src="{{ datas['img_on'] }}" title="{{ datas['labels_on_i18n'][app['locale.I18n']] }}" style="width:16px;height:16px;vertical-align:bottom" />{% endif %}{{ data['labels_on_i18n'][app['locale.I18n']] }}</label>
+                                                                                                <label title="{{ data['labels_on_i18n'][app['locale']] }}" for="statusfil_{{ sbasId }}_on{{ bit }}">{% if data['img_on']%}<img src="{{ datas['img_on'] }}" title="{{ datas['labels_on_i18n'][app['locale']] }}" style="width:16px;height:16px;vertical-align:bottom" />{% endif %}{{ data['labels_on_i18n'][app['locale']] }}</label>
                                                                                             </td>
                                                                                         </tr>
                                                                                     </table>
@@ -246,10 +246,10 @@
                                                                                                     </tr>
                                                                                                     <tr>
                                                                                                         <td style="width:50%;">
-                                                                                                            {% trans "phraseanet::time:: de" %}
+                                                                                                            {{ "phraseanet::time:: de" | trans }}
                                                                                                         </td>
                                                                                                         <td style="width:50%;">
-                                                                                                            {% trans "phraseanet::time:: a" %}
+                                                                                                            {{ "phraseanet::time:: a" | trans }}
                                                                                                         </td>
                                                                                                     </tr>
                                                                                                     <tr>
@@ -279,23 +279,23 @@
                                                                         {% if  status_bit_filters is not empty or fields_filters is not empty or date_filters is not empty %}
                                                                             <div class="filter">
                                                                                 <span class="actives" onclick="toggleFilter('Filters{{sbasId}}',this);">
-                                                                                    {% trans "client::recherche: filter sur" %}
+                                                                                    {{ "client::recherche: filter sur" | trans }}
                                                                                 </span>
                                                                             </div>
                                                                             <div id="Filters{{ sbasId }}" class="base_filter" style="display:none;">
                                                                                 {% if date_filters is not empty %}
-                                                                                    <div class="filterTitle">{% trans "client::recherche: filtrer par dates" %}</div>
+                                                                                    <div class="filterTitle">{{ "client::recherche: filtrer par dates" | trans }}</div>
                                                                                     {{ date_filters|raw }}
                                                                                 {% endif %}
                                                                                 {% if status_bit_filters is not empty %}
-                                                                                    <div class="filterTitle">{% trans "client::recherche: filtrer par status" %}</div>
+                                                                                    <div class="filterTitle">{{ "client::recherche: filtrer par status" | trans }}</div>
                                                                                     {{ status_bit_filters|raw }}
                                                                                 {% endif %}
                                                                                 {% if fields_filters is not empty %}
-                                                                                    <div class="filterTitle">{% trans "client::recherche: filtrer par champs" %}</div>
+                                                                                    <div class="filterTitle">{{ "client::recherche: filtrer par champs" | trans }}</div>
                                                                                     <div>
                                                                                         <select db="{{sbasId}}" onchange="checkFilters();" name="infield[]" style="width:165px;">
-                                                                                            <option value="" selected="selected">{% trans 'client::recherche: filtrer par champs : tous les champs' %}</option>
+                                                                                            <option value="" selected="selected">{{ 'client::recherche: filtrer par champs : tous les champs' | trans }}</option>
                                                                                             {{ fields_filters|raw }}
                                                                                         </select>
                                                                                     </div>
@@ -361,7 +361,7 @@
                         <span id="SPANTITLE" style="font-size:16px;font-weight:bold;"> </span>
                         <div style="position:absolute;right:0;top:0;">
                             <div onclick="closePreview();" style="cursor:pointer;color:#CCCCCC;font-size:12px;font-weight:bold;text-align:right;text-decoration:underline;">
-                                {% trans 'boutton::fermer' %}
+                                {{ 'boutton::fermer' | trans }}
                             </div>
                         </div>
                     </div>
@@ -377,9 +377,9 @@
                     <div style="margin-right:10px;">
                         <div id="PREVIEWIMGDESC" class="preview_col_cont" style="overflow-x:hidden;overflow-y:auto;">
                             <ul style="height:30px;overflow:hidden;">
-                                <li><a href="#PREVIEWIMGDESCINNER-BOX">{% trans 'preview:: Description' %}</a></li>
-                                <li><a href="#HISTORICOPS-BOX">{% trans 'preview:: Historique' %}</a></li>
-                                <li><a href="#popularity-BOX">{% trans 'preview:: Popularite' %}</a></li>
+                                <li><a href="#PREVIEWIMGDESCINNER-BOX">{{ 'preview:: Description' | trans }}</a></li>
+                                <li><a href="#HISTORICOPS-BOX">{{ 'preview:: Historique' | trans }}</a></li>
+                                <li><a href="#popularity-BOX">{{ 'preview:: Popularite' | trans }}</a></li>
                             </ul>
                             <div id="PREVIEWIMGDESCINNER-BOX" class="descBoxes">
                                 <div id="PREVIEWIMGDESCINNER" style="margin:10px;overflow-x:hidden;overflow-y:auto;">
@@ -405,7 +405,7 @@
             <div id="MESSAGE"></div>
         </div>
         <iframe id="MODALDL" class="modalbox" src="" name="download" frameborder="0"></iframe>
-        <div id="dialog_dwnl" title="{% trans 'action : exporter' %}" style="display:none;z-index:12000;">
+        <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;z-index:12000;">
         </div>
         <form name="formChu" id="formChu" action="{{ path('get_client_baskets') }}" method="post" style="visibility:hidden; display:none" >
             <input type="hidden" name="sbas" id="formChubas" value="">

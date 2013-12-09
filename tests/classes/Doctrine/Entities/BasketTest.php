@@ -4,7 +4,7 @@ class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
 {
     /**
      *
-     * @var \Entities\Basket
+     * @var \Alchemy\Phrasea\Model\Entities\Basket
      */
     protected $basket;
 
@@ -92,7 +92,7 @@ class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $this->assertEquals(0, $elements->count());
 
-        $basketElement = new \Entities\BasketElement();
+        $basketElement = new \Alchemy\Phrasea\Model\Entities\BasketElement();
 
         $basketElement->setRecord(self::$DI['record_1']);
 
@@ -127,7 +127,7 @@ class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         $this->assertNull($this->basket->getValidation());
 
-        $validationSession = new \Entities\ValidationSession();
+        $validationSession = new \Alchemy\Phrasea\Model\Entities\ValidationSession();
         $validationSession->setBasket($this->basket);
 
         $expires = new \DateTime();
@@ -143,7 +143,7 @@ class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $this->em->refresh($this->basket);
 
-        $this->assertInstanceOf('\Entities\ValidationSession', $this->basket->getValidation());
+        $this->assertInstanceOf('\Alchemy\Phrasea\Model\Entities\ValidationSession', $this->basket->getValidation());
     }
 
     public function testGetIsRead()

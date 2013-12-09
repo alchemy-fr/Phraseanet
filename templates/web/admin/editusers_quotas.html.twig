@@ -36,17 +36,17 @@
 {% endif %}
 
 
-<h1>{% trans 'Quotas' %}</h1>
+<h1>{{ 'Quotas' | trans }}</h1>
 <div>
-{% set base = collection.get_databox().get_label(app['locale.I18n']) %}
-{% trans %}Base {{base}}{% endtrans %}
+{% set base = collection.get_databox().get_label(app['locale']) %}
+{% trans with {'%base%' : base} %}Base %base%{% endtrans %}
 </div>
 <div>
 {% set collection = base_id|bas_labels(app) %}
-{% trans %}Collection {{collection}}{% endtrans %}
+{% trans with {'%collection%' : collection} %}Collection %collection%{% endtrans %}
 </div>
 <form>
-  <div>{% trans 'Restrictions de telechargement' %}</div>
+  <div>{{ 'Restrictions de telechargement' | trans }}</div>
 
   <table>
     <tr>
@@ -54,13 +54,13 @@
         <div class="switch_quota {{class}}"></div>
       </td>
       <td>
-        {% trans 'Restriction' %}
+        {{ 'Restriction' | trans }}
       </td>
     </tr>
   </table>
 
-  <div>{% trans 'Droits' %} <input name="droits" {% if readonly %}readonly="readonly"{% endif %} type="text" value="{{droits}}" /> {% trans 'par mois' %}</div>
-  <div>{% trans 'Reste' %} <input name="restes" {% if readonly %}readonly="readonly"{% endif %} type="text" value="{{restes}}" /></div>
+  <div>{{ 'Droits' | trans }} <input name="droits" {% if readonly %}readonly="readonly"{% endif %} type="text" value="{{droits}}" /> {{ 'par mois' | trans }}</div>
+  <div>{{ 'Reste' | trans }} <input name="restes" {% if readonly %}readonly="readonly"{% endif %} type="text" value="{{restes}}" /></div>
   <input type="hidden" name="base_id" value="{{base_id}}"/>
   <input type="hidden" name="users" value="{{users_serial}}"/>
 </form>

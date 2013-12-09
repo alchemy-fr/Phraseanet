@@ -9,15 +9,9 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-class patchthesaurus_100
+class patchthesaurus_100 implements patchthesaurus_interface
 {
-
-    public function patch($version, &$domct, &$domth, connection_pdo &$connbas)
+    public function patch($version, \DOMDocument $domct, \DOMDocument $domth, \connection_interface $connbas, \unicode $unicode)
     {
         if ($version == "") {
             $th = $domth->documentElement;
@@ -31,14 +25,13 @@ class patchthesaurus_100
                 $te0 = $te->item(0);
                 $th->setAttribute("nextid", $te0->getAttribute("nextid"));
                 $te = $xp->query("te", $te0);
-                $te1 = array();
+                $te1 = [];
                 for ($i = 0; $i < $te->length; $i ++) {
                     $te1[] = $te->item($i);
                 }
                 foreach ($te1 as $tei) {
                     $th->appendChild($tei);
-                    $this->fixThesaurus2($domth, $tei);
-                    // $tei->parentNode->removeChild($tei);
+                    $this->fixThesaurus2($domth, $tei, 0, $unicode);
                 }
                 $te0->parentNode->removeChild($te0);
             }
@@ -52,9 +45,8 @@ class patchthesaurus_100
         return($version);
     }
 
-    public function fixThesaurus2(&$domth, &$tenode, $depth = 0)
+    private function fixThesaurus2(&$domth, &$tenode, $depth, \unicode $unicode)
     {
-        $unicode = new unicode();
         $sy = $tenode->appendChild($domth->createElement("sy"));
         $sy->setAttribute("lng", $v = $tenode->getAttribute("lng"));
         $sy->setAttribute("v", $v = $tenode->getAttribute("v"));
@@ -65,15 +57,15 @@ class patchthesaurus_100
         $tenode->removeAttribute("v");
         $tenode->removeAttribute("w");
         $tenode->removeAttribute("k");
-        if ($tenode->getAttribute("nextid") == "")
+        if ($tenode->getAttribute("nextid") == "") {
             $tenode->setAttribute("nextid", "0");
-        // $tenode->setAttribute("id", "0.".$tenode->getAttribute("id"));
-        $todel = array();
+        }
+        $todel = [];
         for ($n = $tenode->firstChild; $n; $n = $n->nextSibling) {
             if ($n->nodeName == "ta")
                 $todel[] = $n;
             if ($n->nodeName == "te")
-                $this->fixThesaurus2($domth, $n, $depth + 1);
+                $this->fixThesaurus2($domth, $n, $depth + 1, $unicode);
         }
         foreach ($todel as $n) {
             $n->parentNode->removeChild($n);

@@ -17,11 +17,6 @@ use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordSetup;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Manage extends Helper
 {
     /**
@@ -49,7 +44,7 @@ class Manage extends Helper
         $offset_start = (int) $request->get('offset_start');
         $offset_start = $offset_start < 0 ? 0 : $offset_start;
 
-        $this->query_parms = array(
+        $this->query_parms = [
             'inactives'    => $request->get('inactives')
             , 'like_field'   => $request->get('like_field')
             , 'like_value'   => $request->get('like_value')
@@ -59,7 +54,7 @@ class Manage extends Helper
             , 'srt'          => $request->get("srt", \User_Query::SORT_CREATIONDATE)
             , 'ord'          => $request->get("ord", \User_Query::ORD_DESC)
             , 'offset_start' => 0
-        );
+        ];
 
         $query = new \User_Query($this->app);
 
@@ -73,7 +68,7 @@ class Manage extends Helper
             ->last_model_is($this->query_parms['last_model'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(false)
-            ->on_bases_where_i_am($this->app['authentication']->getUser()->ACL(), array('canadmin'))
+            ->on_bases_where_i_am($this->app['acl']->get($this->app['authentication']->getUser()), ['canadmin'])
             ->execute();
 
         return $this->results->get_results();
@@ -81,14 +76,12 @@ class Manage extends Helper
 
     public function search()
     {
-        $request = $this->request;
-
         $offset_start = (int) $this->request->get('offset_start');
         $offset_start = $offset_start < 0 ? 0 : $offset_start;
         $results_quantity = (int) $this->request->get('per_page');
         $results_quantity = ($results_quantity < 10 || $results_quantity > 50) ? 20 : $results_quantity;
 
-        $this->query_parms = array(
+        $this->query_parms = [
             'inactives'    => $this->request->get('inactives')
             , 'like_field'   => $this->request->get('like_field')
             , 'like_value'   => $this->request->get('like_value')
@@ -99,7 +92,7 @@ class Manage extends Helper
             , 'ord'          => $this->request->get("ord", \User_Query::ORD_DESC)
             , 'per_page'     => $results_quantity
             , 'offset_start' => $offset_start
-        );
+        ];
 
         $query = new \User_Query($this->app);
 
@@ -113,7 +106,7 @@ class Manage extends Helper
             ->last_model_is($this->query_parms['last_model'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(true)
-            ->on_bases_where_i_am($this->app['authentication']->getUser()->ACL(), array('canadmin'))
+            ->on_bases_where_i_am($this->app['acl']->get($this->app['authentication']->getUser()), ['canadmin'])
             ->limit($offset_start, $results_quantity)
             ->execute();
 
@@ -141,13 +134,13 @@ class Manage extends Helper
                 ->only_templates(true)
                 ->execute()->get_results();
 
-        return array(
+        return [
             'users'             => $this->results,
             'parm'              => $this->query_parms,
             'invite_user'       => $invite,
             'autoregister_user' => $autoregister,
             'templates'         => $templates
-        );
+        ];
     }
 
     public function create_newuser()
@@ -155,13 +148,13 @@ class Manage extends Helper
         $email = $this->request->get('value');
 
         if ( ! \Swift_Validate::email($email)) {
-            throw new \Exception_InvalidArgument(_('Invalid mail address'));
+            throw new \Exception_InvalidArgument('Invalid mail address');
         }
 
         $conn = $this->app['phraseanet.appbox']->get_connection();
         $sql = 'SELECT usr_id FROM usr WHERE usr_mail = :email';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':email' => $email));
+        $stmt->execute([':email' => $email]);
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         $count = count($row);
 
@@ -183,7 +176,7 @@ class Manage extends Helper
                 $urlToken = $this->app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $createdUser->get_id());
 
                 if ($receiver && false !== $urlToken) {
-                    $url = $this->app->url('login_renew_password', array('token' => $urlToken));
+                    $url = $this->app->url('login_renew_password', ['token' => $urlToken]);
                     $mail = MailRequestPasswordSetup::create($this->app, $receiver, null, '', $url);
                     $mail->setLogin($createdUser->get_login());
                     $this->app['notification.deliverer']->deliver($mail);
@@ -196,7 +189,7 @@ class Manage extends Helper
                 if ($receiver) {
                     $expire = new \DateTime('+3 days');
                     $token = $this->app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $createdUser->get_id(), $expire, $createdUser->get_email());
-                    $url = $this->app->url('login_register_confirm', array('code' => $token));
+                    $url = $this->app->url('login_register_confirm', ['code' => $token]);
 
                     $mail = MailRequestEmailConfirmation::create($this->app, $receiver, null, '', $url, $expire);
                     $this->app['notification.deliverer']->deliver($mail);
@@ -217,7 +210,7 @@ class Manage extends Helper
         $name = $this->request->get('value');
 
         if (trim($name) === '') {
-            throw new \Exception_InvalidArgument(_('Invalid template name'));
+            throw new \Exception_InvalidArgument('Invalid template name');
         }
 
         $created_user = \User_Adapter::create($this->app, $name, \random::generatePassword(16), null, false, false);

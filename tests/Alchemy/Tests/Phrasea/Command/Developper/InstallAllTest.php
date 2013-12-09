@@ -16,14 +16,12 @@ class InstallAllTest extends \PhraseanetPHPUnitAbstract
             ->getMock();
 
         $n = 0;
-        foreach (array(
-            'dependencies:bower',
+        foreach ([
             'dependencies:composer',
-            'assets:build-javascript',
-            'assets:compile-less',
-        ) as $name) {
+            'dependencies:bower'
+        ] as $name) {
             $command = $this->getMockBuilder('Symfony\Component\Console\Command\Command')
-                ->setMethods(array('execute'))
+                ->setMethods(['execute'])
                 ->disableOriginalConstructor()
                 ->getMock();
             $command->expects($this->once())

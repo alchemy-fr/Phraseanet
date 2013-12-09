@@ -5,19 +5,19 @@
         <td style="width:230px;">
           <a href="#" class="back">
             <img src="/skins/prod/Basket/Browser/BASKET_LIST.png"/>
-            {% trans 'Back to basket list' %}
+            {{ 'Back to basket list' | trans }}
           </a>
         </td>
         <td>
           <h1 class="title">
             <img class="loader" src="/skins/prod/Basket/Browser/loader.gif" />
             {% if Basket.getValidation() is empty or Basket.getValidation().isInitiator(app['authentication'].getUser()) %}
-            <a href="{{ path('prod_baskets_basket_archive', { 'basket_id' : Basket.getId(), 'archive' : 1 }) }}" class="archiver archive_toggler" style="display:{{ Basket.getArchived ? 'none' : '' }};">
+            <a href="{{ path('prod_baskets_basket_archive', { 'basket' : Basket.getId(), 'archive' : 1 }) }}" class="archiver archive_toggler" style="display:{{ Basket.getArchived ? 'none' : '' }};">
               <span>
                 <img src="/skins/prod/Basket/Browser/archive.png"/>
               </span>
             </a>
-            <a href="{{ path('prod_baskets_basket_archive', { 'basket_id' : Basket.getId(), 'archive' : 0 }) }}" class="unarchiver archive_toggler" style="display:{{ Basket.getArchived ? '' : 'none' }};">
+            <a href="{{ path('prod_baskets_basket_archive', { 'basket' : Basket.getId(), 'archive' : 0 }) }}" class="unarchiver archive_toggler" style="display:{{ Basket.getArchived ? '' : 'none' }};">
               <span>
                 <img src="/skins/prod/Basket/Browser/archived.png"/>
               </span>
@@ -40,9 +40,7 @@
       <div class="PNB10">
         <p>
           {% set user_name = '<a tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : Basket.getPusher(app).get_id() }) ~ '" href="/user/' ~ Basket.getPusher(app).get_id() ~ '/" class="UserTips">' ~ Basket.getPusher(app).get_display_name() ~ '</a>' %}
-          {% trans %}
-            Received from {{ user_name }}
-          {% endtrans %}
+          {% trans with {'%user_name%' : user_name} %}Received from %user_name%{% endtrans %}
         </p>
       </div>
     </div>
@@ -65,9 +63,7 @@
                                         ~ Participant.getUser(app).get_display_name
                                         ~ '</a>' %}
           {% endfor %}
-          {% trans %}
-            Sent for validation to {{ list_participants }}
-          {% endtrans %}
+          {% trans with {'%list_participants%' : list_participants} %}Sent for validation to %list_participants%{% endtrans %}
         </p>
       </div>
     </div>
@@ -79,11 +75,11 @@
     <div class="PNB10">
     {% set ElementsCount = Basket.getElements().count() %}
     {% if ElementsCount == 0 %}
-      {% trans 'No records' %}
+      {{ 'No records' | trans }}
     {% elseif ElementsCount == 1 %}
-      {% trans '1 record' %}
+      {{ '1 record' | trans }}
     {% else %}
-      {% trans %}{{ ElementsCount }} records{% endtrans %}
+      {% trans with {'%ElementsCount%' : ElementsCount} %}%ElementsCount% records{% endtrans %}
     {% endif %}
     </div>
   </div>

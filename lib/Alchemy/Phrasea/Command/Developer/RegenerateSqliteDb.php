@@ -1,11 +1,19 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Alchemy\Phrasea\Command\Developer;
 
 use Alchemy\Phrasea\Command\Command;
-use Doctrine\ORM\Tools\Setup;
+use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Doctrine\ORM\Tools\SchemaTool;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -25,23 +33,27 @@ class RegenerateSqliteDb extends Command
 
         $source = __DIR__ . '/../../../../../tests/db-ref.sqlite';
         $target = __DIR__ . '/../../../../../tests/db-ref.sqlite.bkp';
+        $renamed = false;
 
-        $fs->rename($source, $target);
+        if (is_file($source)) {
+            $renamed = true;
+            $fs->rename($source, $target);
+        }
 
         try {
-            $dbParams = $this->container['phraseanet.configuration']->getTestConnectionParameters();
+            $dbParams = $this->container['configuration.store']->getTestConnectionParameters();
             $dbParams['path'] = $source;
 
-            $config = Setup::createYAMLMetadataConfiguration(array(__DIR__ . '/../../../../conf.d/Doctrine'), true);
-            $em = EntityManager::create($dbParams, $config);
+            $this->container->register(new ORMServiceProvider());
+            $this->container['EM.dbal-conf'] = $dbParams;
 
-            $metadatas = $em->getMetadataFactory()->getAllMetadata();
-
-            $schemaTool = new SchemaTool($em);
-
+            $metadatas = $this->container['EM']->getMetadataFactory()->getAllMetadata();
+            $schemaTool = new SchemaTool($this->container['EM']);
             $schemaTool->createSchema($metadatas);
         } catch (\Exception $e) {
-            $fs->rename($target, $source);
+            if ($renamed) {
+                $fs->rename($target, $source);
+            }
             throw $e;
         }
 

@@ -9,7 +9,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
-    protected static $createdCollections = array();
+    protected static $createdCollections = [];
 
     public function setUp()
     {
@@ -63,8 +63,6 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
         $collection = \collection::create(self::$DI['app'], array_shift($databoxes), self::$DI['app']['phraseanet.appbox'], 'TESTTODELETE');
 
-        self::$DI['app']['authentication']->getUser()->ACL();
-
         self::$createdCollections[] = $collection;
 
         return $collection;
@@ -111,10 +109,10 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $collection = \collection::create(self::$DI['app'], $databox, self::$DI['app']['phraseanet.appbox'], 'TESTTODELETE');
 
-        $this->XMLHTTPRequest('POST', '/admin/databox/' . $databox->get_sbas_id() . '/collections/order/', array(
-            'order' => array(
+        $this->XMLHTTPRequest('POST', '/admin/databox/' . $databox->get_sbas_id() . '/collections/order/', [
+            'order' => [
                 2 => $collection->get_base_id()
-            )));
+            ]]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
@@ -167,9 +165,9 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $collection = $this->createOneCollection();
 
-        self::$DI['client']->request('POST', '/admin/databox/' . $collection->get_sbas_id() . '/cgus/', array(
-            'TOU' => array('fr_FR' => 'Test update CGUS')
-        ));
+        self::$DI['client']->request('POST', '/admin/databox/' . $collection->get_sbas_id() . '/cgus/', [
+            'TOU' => ['fr' => 'Test update CGUS']
+        ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
@@ -188,15 +186,15 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $cgusUpdate = 'Test update CGUS';
 
-        $this->XMLHTTPRequest('POST', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/cgus/', array(
-            'TOU' => array('fr_FR' => $cgusUpdate)
-        ));
+        $this->XMLHTTPRequest('POST', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/cgus/', [
+            'TOU' => ['fr' => $cgusUpdate]
+        ]);
 
         $this->checkRedirection(self::$DI['client']->getResponse(), '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/cgus/?success=1');
 
         $databox = self::$DI['app']['phraseanet.appbox']->get_databox(self::$DI['collection']->get_sbas_id());
         $cgus = $databox->get_cgus();
-        $this->assertEquals($cgus['fr_FR']['value'], $cgusUpdate);
+        $this->assertEquals($cgus['fr']['value'], $cgusUpdate);
         unset($databox);
     }
 
@@ -375,9 +373,9 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->XMLHTTPRequest('POST', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/indexable/', array(
+        $this->XMLHTTPRequest('POST', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/indexable/', [
             'indexable' => 1
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
@@ -429,9 +427,9 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $collection = $this->createOnecollection();
 
-        self::$DI['client']->request('POST', '/admin/databox/' . $collection->get_sbas_id() . '/view-name/', array(
+        self::$DI['client']->request('POST', '/admin/databox/' . $collection->get_sbas_id() . '/view-name/', [
             'viewname' => 'hello'
-        ));
+        ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
@@ -459,9 +457,9 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertEquals('old_databox_name', $databox->get_viewname());
 
-        $this->XMLHTTPRequest('POST', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/view-name/', array(
+        $this->XMLHTTPRequest('POST', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/view-name/', [
             'viewname' => 'new_databox_name'
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
@@ -508,9 +506,9 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $collection = $this->createOneCollection();
         $collection->unmount_collection(self::$DI['app']);
 
-        self::$DI['client']->request('POST', '/admin/databox/' . $collection->get_sbas_id() . '/collection/' . $collection->get_coll_id() . '/mount/', array(
+        self::$DI['client']->request('POST', '/admin/databox/' . $collection->get_sbas_id() . '/collection/' . $collection->get_coll_id() . '/mount/', [
             'othcollsel' => self::$DI['collection']->get_base_id()
-        ));
+        ]);
 
         $this->checkRedirection(self::$DI['client']->getResponse(), '/admin/databox/' . $collection->get_sbas_id() . '/?mount=ok');
     }
@@ -524,10 +522,10 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $target = tempnam(sys_get_temp_dir(), 'p4logo') . '.jpg';
         self::$DI['app']['filesystem']->copy(__DIR__ . '/../../../../../files/p4logo.jpg', $target);
-        $files = array(
+        $files = [
             'newLogoPdf' => new \Symfony\Component\HttpFoundation\File\UploadedFile($target, 'logo.jpg')
-        );
-        self::$DI['client']->request('POST', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/logo/', array(), $files);
+        ];
+        self::$DI['client']->request('POST', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/logo/', [], $files);
         $this->checkRedirection(self::$DI['client']->getResponse(), '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/?success=1');
         $this->assertNotEmpty(\databox::getPrintLogo(self::$DI['collection']->get_sbas_id()));
     }
@@ -616,14 +614,14 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
         $base = self::$DI['record_1']->get_databox();
-        $this->XMLHTTPRequest('POST', '/admin/databox/' . $base->get_sbas_id() . '/labels/', array(
-            'labels' => array(
+        $this->XMLHTTPRequest('POST', '/admin/databox/' . $base->get_sbas_id() . '/labels/', [
+            'labels' => [
                 'fr' => 'frenchy label',
                 'en' => '',
                 'de' => 'Jaja label',
                 'nl' => 'dutch label',
-            )
-        ));
+            ]
+        ]);
 
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         $this->assertEquals('application/json', self::$DI['client']->getResponse()->headers->get('content-type'));
@@ -659,7 +657,7 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $stmt = $base->get_connection()->prepare($sql);
         $i = 0;
         while ($i < 502) {
-            $stmt->execute(array(
+            $stmt->execute([
                 ':coll_id'          => $collection->get_coll_id(),
                 ':parent_record_id' => 0,
                 ':type'             => 'unknown',
@@ -667,7 +665,7 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 ':uuid'             => \uuid::generate_v4(),
                 ':originalname'     => null,
                 ':mime'             => null,
-            ));
+            ]);
             $i++;
         }
 
@@ -682,18 +680,7 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $json = $this->getJson(self::$DI['client']->getResponse());
         $this->assertTrue($json->success);
 
-        $taskManager = self::$DI['app']['task-manager'];
-        $tasks = $taskManager->getTasks();
-
-        $found = false;
-        foreach ($tasks as $task) {
-            if (get_class($task) === 'task_period_emptyColl') {
-                $found = true;
-                $task->delete();
-            }
-        }
-
-        if (!$found) {
+        if (count(self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Task')->findAll()) === 0) {
             $this->fail('Task for empty collection has not been created');
         }
 

@@ -34,7 +34,7 @@ class Context
 
     public function setContext($context)
     {
-        if (false === in_array($context, array(static::CONTEXT_OAUTH2_NATIVE, static::CONTEXT_OAUTH2_TOKEN, static::CONTEXT_NATIVE, static::CONTEXT_GUEST), true)) {
+        if (false === in_array($context, [static::CONTEXT_OAUTH2_NATIVE, static::CONTEXT_OAUTH2_TOKEN, static::CONTEXT_NATIVE, static::CONTEXT_GUEST], true)) {
             throw new InvalidArgumentException(sprintf('`%s` is not a valid context', $context));
         }
 

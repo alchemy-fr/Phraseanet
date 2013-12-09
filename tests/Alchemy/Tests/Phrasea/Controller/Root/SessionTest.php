@@ -24,9 +24,9 @@ class SessionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUpdSessionChangeUser()
     {
-        $this->XMLHTTPRequest('POST', '/session/update/', array(
+        $this->XMLHTTPRequest('POST', '/session/update/', [
             'usr' => self::$DI['user_alt1']->get_id()
-        ));
+        ]);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $datas = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->checkSessionReturn($datas);
@@ -40,10 +40,10 @@ class SessionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->authenticate(self::$DI['app']);
 
-        $this->XMLHTTPRequest('POST', '/session/update/', array(
+        $this->XMLHTTPRequest('POST', '/session/update/', [
             'usr' => self::$DI['user']->get_id(),
             'module' => 1
-        ));
+        ]);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $datas = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->checkSessionReturn($datas);
@@ -57,9 +57,9 @@ class SessionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->authenticate(self::$DI['app']);
 
-        $this->XMLHTTPRequest('POST', '/session/update/', array(
+        $this->XMLHTTPRequest('POST', '/session/update/', [
             'usr' => self::$DI['user']->get_id()
-        ));
+        ]);
 
         $datas = json_decode(self::$DI['client']->getResponse()->getContent());
         $datas = json_decode(self::$DI['client']->getResponse()->getContent());
@@ -89,7 +89,7 @@ class SessionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $originalEm = self::$DI['app']['EM'];
 
-        $session = $this->getMock('Entities\Session');
+        $session = $this->getMock('Alchemy\Phrasea\Model\Entities\Session');
 
         $session->expects($this->once())
             ->method('getUsrId')
@@ -110,11 +110,11 @@ class SessionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->will($this->returnValue(null));
 
         self::$DI['app']['EM'] = $em;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
         $this->XMLHTTPRequest('POST', '/session/delete/1');
         $this->assertTrue(self::$DI['client']->getResponse()->isOK());
         self::$DI['app']['EM'] = $originalEm;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
 
         $em = null;
     }
@@ -123,7 +123,7 @@ class SessionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $originalEm = self::$DI['app']['EM'];
 
-        $session = $this->getMock('Entities\Session');
+        $session = $this->getMock('Alchemy\Phrasea\Model\Entities\Session');
 
         $session->expects($this->once())
             ->method('getUsrId')
@@ -138,12 +138,12 @@ class SessionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->will($this->returnValue($session));
 
         self::$DI['app']['EM'] = $em;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
         self::$DI['client']->request('POST', '/session/delete/1');
         $this->assertFalse(self::$DI['client']->getResponse()->isOK());
         $this->assertEquals(self::$DI['client']->getResponse()->getStatusCode(), 403);
         self::$DI['app']['EM'] = $originalEm;
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
 
         $em = null;
     }

@@ -16,19 +16,13 @@ use Alchemy\Phrasea\Http\DeliverDataInterface;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 abstract class AbstractDelivery implements ControllerProviderInterface
 {
-
     public function deliverContent(Request $request, \record_adapter $record, $subdef, $watermark, $stamp, Application $app)
     {
         $file = $record->get_subdef($subdef);
 
-        $pathIn = $pathOut = $file->get_pathfile();
+        $pathOut = $file->get_pathfile();
 
         if ($watermark === true && $file->get_type() === \media_subdef::TYPE_IMAGE) {
             $pathOut = \recordutils_image::watermark($app, $file);
@@ -47,7 +41,7 @@ abstract class AbstractDelivery implements ControllerProviderInterface
                 $referrer = $_SERVER['HTTP_REFERER'];
             }
 
-            $record->log_view($log_id, $referrer, $app['phraseanet.configuration']['main']['key']);
+            $record->log_view($log_id, $referrer, $app['conf']->get(['main', 'key']));
         } catch (\Exception $e) {
 
         }

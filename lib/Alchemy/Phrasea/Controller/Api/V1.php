@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent;
 use Alchemy\Phrasea\Core\Event\ApiOAuth2EndEvent;
+use Alchemy\Phrasea\Model\Entities\Basket;
 use Silex\Application as SilexApplication;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,6 +26,8 @@ class V1 implements ControllerProviderInterface
 {
     public function connect(SilexApplication $app)
     {
+        $app['controller.api.v1'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         /**
@@ -65,7 +68,7 @@ class V1 implements ControllerProviderInterface
 
             if ($oAuth2App->get_client_id() == \API_OAuth2_Application_Navigator::CLIENT_ID
                 && !$app['phraseanet.registry']->get('GV_client_navigator')) {
-                throw new \API_V1_exception_forbidden(_('The use of phraseanet Navigator is not allowed'));
+                throw new \API_V1_exception_forbidden('The use of phraseanet Navigator is not allowed');
             }
 
             if ($oAuth2App->get_client_id() == \API_OAuth2_Application_OfficePlugin::CLIENT_ID
@@ -86,7 +89,7 @@ class V1 implements ControllerProviderInterface
             $app['dispatcher']->dispatch(PhraseaEvents::API_OAUTH2_END, new ApiOAuth2EndEvent());
 
             return;
-        }, 256);
+        });
 
         /**
          * OAuth log process
@@ -139,7 +142,7 @@ class V1 implements ControllerProviderInterface
                 }
             }
 
-            return array('ressource' => $ressource, 'general'   => $general, 'aspect'    => $aspect, 'action'    => $action);
+            return ['ressource' => $ressource, 'general'   => $general, 'aspect'    => $aspect, 'action'    => $action];
         };
 
         /**
@@ -178,7 +181,7 @@ class V1 implements ControllerProviderInterface
          */
         $mustBeAdmin = function (Request $request) use ($app) {
             $user = $app['token']->get_account()->get_user();
-            if (!$user->ACL()->is_admin()) {
+            if (!$app['acl']->get($user)->is_admin()) {
                 throw new \API_V1_exception_unauthorized('You are not authorized');
             }
         };
@@ -214,21 +217,23 @@ class V1 implements ControllerProviderInterface
         /**
          * Get task informations
          *
-         * Route : /monitor/task/{task_id}/
+         * Route : /monitor/task/{task}/
          *
          * Method : GET
          *
          * Parameters :
          *
          */
-        $controllers->get('/monitor/task/{task_id}/', function (SilexApplication $app, Request $request, $task_id) {
-            return $app['api']->get_task($app, $task_id)->get_response();
-        })->before($mustBeAdmin)->assert('task_id', '\d+');
+        $controllers->get('/monitor/task/{task}/', function (SilexApplication $app, Request $request, $task) {
+            return $app['api']->get_task($app, $task)->get_response();
+        })
+            ->convert('task', [$app['converter.task'], 'convert'])
+            ->before($mustBeAdmin)->assert('task', '\d+');
 
         /**
          * Start task
          *
-         * Route : /monitor/task/{task_id}/
+         * Route : /monitor/task/{task}/
          *
          * Method : POST
          *
@@ -236,37 +241,43 @@ class V1 implements ControllerProviderInterface
          * - name (string) change the name of the task
          * - autostart (boolean) start task when scheduler starts
          */
-        $controllers->post('/monitor/task/{task_id}/', function (SilexApplication $app, Request $request, $task_id) {
-            return $app['api']->set_task_property($app, $task_id)->get_response();
-        })->before($mustBeAdmin)->assert('task_id', '\d+');
+        $controllers->post('/monitor/task/{task}/', function (SilexApplication $app, Request $request, $task) {
+            return $app['api']->set_task_property($app, $task)->get_response();
+        })
+            ->convert('task', [$app['converter.task'], 'convert'])
+            ->before($mustBeAdmin)->assert('task', '\d+');
 
         /**
          * Start task
          *
-         * Route : /monitor/task/{task_id}/start/
+         * Route : /monitor/task/{task}/start/
          *
          * Method : POST
          *
          * Parameters :
          *
          */
-        $controllers->post('/monitor/task/{task_id}/start/', function (SilexApplication $app, Request $request, $task_id) {
-            return $app['api']->start_task($app, $task_id)->get_response();
-        })->before($mustBeAdmin);
+        $controllers->post('/monitor/task/{task}/start/', function (SilexApplication $app, Request $request, $task) {
+            return $app['api']->start_task($app, $task)->get_response();
+        })
+            ->convert('task', [$app['converter.task'], 'convert'])
+            ->before($mustBeAdmin);
 
         /**
          * Stop task
          *
-         * Route : /monitor/task/{task_id}/stop/
+         * Route : /monitor/task/{task}/stop/
          *
          * Method : POST
          *
          * Parameters :
          *
          */
-        $controllers->post('/monitor/task/{task_id}/stop/', function (SilexApplication $app, Request $request, $task_id) {
-            return $app['api']->stop_task($app, $task_id)->get_response();
-        })->before($mustBeAdmin);
+        $controllers->post('/monitor/task/{task}/stop/', function (SilexApplication $app, Request $request, $task) {
+            return $app['api']->stop_task($app, $task)->get_response();
+        })
+            ->convert('task', [$app['converter.task'], 'convert'])
+            ->before($mustBeAdmin);
 
         /**
          * Get some information about phraseanet
@@ -594,11 +605,14 @@ class V1 implements ControllerProviderInterface
          *    BASKET_ID : required INT
          *
          */
-        $controllers->get('/baskets/{basket_id}/content/', function (SilexApplication $app, $basket_id) {
-            return $app['api']->get_basket($app['request'], $basket_id)->get_response();
-        })->assert('basket_id', '\d+');
+        $controllers->get('/baskets/{basket}/content/', function (SilexApplication $app, Basket $basket) {
+            return $app['api']->get_basket($app['request'], $basket)->get_response();
+        })
+            ->before($app['middleware.basket.converter'])
+            ->before($app['middleware.basket.user-access'])
+            ->assert('basket', '\d+');
 
-        $controllers->get('/baskets/{wrong_basket_id}/content/', $bad_request_exception);
+        $controllers->get('/baskets/{wrong_basket}/content/', $bad_request_exception);
 
         /**
          * Route : /baskets/BASKET_ID/settitle/
@@ -609,13 +623,16 @@ class V1 implements ControllerProviderInterface
          *    BASKET_ID : required INT
          *
          */
-        $controllers->post('/baskets/{basket_id}/setname/', function (SilexApplication $app, $basket_id) {
+        $controllers->post('/baskets/{basket}/setname/', function (SilexApplication $app, Basket $basket) {
             return $app['api']
-                    ->set_basket_title($app['request'], $basket_id)
+                    ->set_basket_title($app['request'], $basket)
                     ->get_response();
-        })->assert('basket_id', '\d+');
+        })
+            ->before($app['middleware.basket.converter'])
+            ->before($app['middleware.basket.user-is-owner'])
+            ->assert('basket', '\d+');
 
-        $controllers->post('/baskets/{wrong_basket_id}/setname/', $bad_request_exception);
+        $controllers->post('/baskets/{wrong_basket}/setname/', $bad_request_exception);
 
         /**
          * Route : /baskets/BASKET_ID/setdescription/
@@ -626,13 +643,16 @@ class V1 implements ControllerProviderInterface
          *    BASKET_ID : required INT
          *
          */
-        $controllers->post('/baskets/{basket_id}/setdescription/', function (SilexApplication $app, $basket_id) {
+        $controllers->post('/baskets/{basket}/setdescription/', function (SilexApplication $app, Basket $basket) {
             return $app['api']
-                    ->set_basket_description($app['request'], $basket_id)
+                    ->set_basket_description($app['request'], $basket)
                     ->get_response();
-        })->assert('basket_id', '\d+');
+        })
+            ->before($app['middleware.basket.converter'])
+            ->before($app['middleware.basket.user-is-owner'])
+            ->assert('basket', '\d+');
 
-        $controllers->post('/baskets/{wrong_basket_id}/setdescription/', $bad_request_exception);
+        $controllers->post('/baskets/{wrong_basket}/setdescription/', $bad_request_exception);
 
         /**
          * Route : /baskets/BASKET_ID/delete/
@@ -643,11 +663,14 @@ class V1 implements ControllerProviderInterface
          *    BASKET_ID : required INT
          *
          */
-        $controllers->post('/baskets/{basket_id}/delete/', function (SilexApplication $app, $basket_id) {
-            return $app['api']->delete_basket($app['request'], $basket_id)->get_response();
-        })->assert('basket_id', '\d+');
+        $controllers->post('/baskets/{basket}/delete/', function (SilexApplication $app, Basket $basket) {
+            return $app['api']->delete_basket($app['request'], $basket)->get_response();
+        })
+            ->before($app['middleware.basket.converter'])
+            ->before($app['middleware.basket.user-is-owner'])
+            ->assert('basket', '\d+');
 
-        $controllers->post('/baskets/{wrong_basket_id}/delete/', $bad_request_exception);
+        $controllers->post('/baskets/{wrong_basket}/delete/', $bad_request_exception);
 
         /**
          * Route : /feeds/list/

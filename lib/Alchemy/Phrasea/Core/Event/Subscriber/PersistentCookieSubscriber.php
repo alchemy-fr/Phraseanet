@@ -27,16 +27,16 @@ class PersistentCookieSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::REQUEST => array('checkPersistentCookie', 128),
-        );
+        return [
+            KernelEvents::REQUEST => ['checkPersistentCookie', 128],
+        ];
     }
 
     public function checkPersistentCookie(GetResponseEvent $event)
     {
         $request = $event->getRequest();
 
-        if ($this->app['phraseanet.configuration']->isSetup() && $request->cookies->has('persistent') && !$this->app['authentication']->isAuthenticated()) {
+        if ($this->app['configuration.store']->isSetup() && $request->cookies->has('persistent') && !$this->app['authentication']->isAuthenticated()) {
             if (false !== $session = $this->app['authentication.persistent-manager']->getSession($request->cookies->get('persistent'))) {
                 $this->app['authentication']->refreshAccount($session);
             }

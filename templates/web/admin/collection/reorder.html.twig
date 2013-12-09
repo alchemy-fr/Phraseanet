@@ -1,6 +1,8 @@
 <div class="page-header">
-    <h1>{% trans 'Reorder collections' %}</h1>
+    <h1>{{ 'Reorder collections' | trans }}</h1>
 </div>
+
+<div id="notification"></div>
 
 <table id="table-order">
     <tr>
@@ -13,9 +15,9 @@
         </td>
          <td valign="center" align="left">
              <ul style="list-style:none;">
-                <li><button class="btn" id="upbutton" disabled><i class="icon-chevron-up"></i>{% trans 'admin::base:collorder: monter' %}</button></li>
-                <li><button class="btn" id="downbutton" disabled ><i class="icon-chevron-down"></i>{% trans 'admin::base:collorder: descendre' %}</button></li>
-                <li><a href="#" id="natcase-reorder">{% trans 'admin::base:collorder: reinitialiser en ordre alphabetique' %}</a></li>
+                <li><button class="btn" id="upbutton" disabled><i class="icon-chevron-up"></i>{{ 'admin::base:collorder: monter' | trans }}</button></li>
+                <li><button class="btn" id="downbutton" disabled ><i class="icon-chevron-down"></i>{{ 'admin::base:collorder: descendre' | trans }}</button></li>
+                <li><a href="#" id="natcase-reorder">{{ 'admin::base:collorder: reinitialiser en ordre alphabetique' | trans }}</a></li>
             </ul>
         </td>
     </tr>
@@ -26,7 +28,7 @@
         <td colspan="2" valign="center" align="left">
             <div class="form-actions">
                 <button class="btn btn-primary" id="apply">
-                    {% trans 'boutton::valider' %}
+                    {{ 'boutton::valider' | trans }}
                 </button>
             </div>
         </td>
@@ -66,6 +68,7 @@
         });
 
         applyButton.bind('click', function() {
+
             var $this = $(this);
             var order = [];
             // clone the array
@@ -87,7 +90,7 @@
                     var html = _.template($("#alert_"+ (datas.success ? "success" : "error") +"_tpl").html(), {
                         content:datas.msg
                     });
-                    $('#table-order').insertBefore(html);
+                    $('#notification').html(html);
                 },
                 complete : function() {
                     $this.attr('disabled', false);

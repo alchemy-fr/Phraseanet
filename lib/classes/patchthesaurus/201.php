@@ -9,15 +9,9 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-class patchthesaurus_201
+class patchthesaurus_201 implements patchthesaurus_interface
 {
-
-    public function patch($version, &$domct, &$domth, connection_pdo &$connbas)
+    public function patch($version, \DOMDocument $domct, \DOMDocument $domth, \connection_interface $connbas, \unicode $unicode)
     {
         if ($version == "2.0.1") {
             $th = $domth->documentElement;
@@ -26,7 +20,6 @@ class patchthesaurus_201
             $xp = new DOMXPath($domth);
             $te = $xp->query("/thesaurus//te");
             for ($i = 0; $i < $te->length; $i ++) {
-                // $id  = "S" . substr($te->item($i)->getAttribute("id"), 1);
                 $id = $te->item($i)->getAttribute("id");
                 $nid = (int) ($te->item($i)->getAttribute("nextid"));
                 for ($n = $te->item($i)->firstChild; $n; $n = $n->nextSibling) {

@@ -30,7 +30,7 @@ use Alchemy\Phrasea\Controller\Admin\Users;
 use Alchemy\Phrasea\Controller\Client\Baskets as ClientBasket;
 use Alchemy\Phrasea\Controller\Client\Root as ClientRoot;
 use Alchemy\Phrasea\Controller\Minifier;
-use Alchemy\Phrasea\Controller\Prod\Basket;
+use Alchemy\Phrasea\Controller\Prod\BasketController;
 use Alchemy\Phrasea\Controller\Prod\Bridge;
 use Alchemy\Phrasea\Controller\Prod\Download;
 use Alchemy\Phrasea\Controller\Prod\DoDownload;
@@ -77,18 +77,24 @@ use Alchemy\Phrasea\Core\Event\Subscriber\LogoutSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\MaintenanceSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\CookiesDisablerSubscriber;
+use Alchemy\Phrasea\Core\Middleware\BasketMiddlewareProvider;
+use Alchemy\Phrasea\Core\Provider\ACLServiceProvider;
 use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CacheServiceProvider;
+use Alchemy\Phrasea\Core\Provider\CacheConnectionServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
+use Alchemy\Phrasea\Core\Provider\ConvertersServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FileServeServiceProvider;
+use Alchemy\Phrasea\Core\Provider\FeedServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FtpServiceProvider;
 use Alchemy\Geonames\GeonamesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\InstallerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\JMSSerializerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\LocaleServiceProvider;
+use Alchemy\Phrasea\Core\Provider\ManipulatorServiceProvider;
 use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
@@ -96,7 +102,7 @@ use Alchemy\Phrasea\Core\Provider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
-use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
+use Alchemy\Phrasea\Core\Provider\TasksServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TemporaryFilesystemServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
@@ -104,6 +110,7 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Twig\JSUniqueID;
 use Alchemy\Phrasea\Twig\Camelize;
 use Alchemy\Phrasea\Twig\BytesConverter;
+use Alchemy\Phrasea\Utilities\CachedTranslator;
 use FFMpeg\FFMpegServiceProvider;
 use Neutron\Silex\Provider\ImagineServiceProvider;
 use MediaVorus\MediaVorusServiceProvider;
@@ -118,14 +125,18 @@ use Neutron\Silex\Provider\FilesystemServiceProvider;
 use Neutron\ReCaptcha\ReCaptchaServiceProvider;
 use PHPExiftool\PHPExiftoolServiceProvider;
 use Silex\Application as SilexApplication;
+use Silex\Application\UrlGeneratorTrait;
+use Silex\Application\TranslationTrait;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\SessionServiceProvider;
+use Alchemy\Phrasea\Core\Provider\TranslationServiceProvider;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\SwiftmailerServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
+use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
@@ -146,13 +157,16 @@ use Symfony\Component\Form\Exception\FormException;
 
 class Application extends SilexApplication
 {
-    private static $availableLanguages = array(
-        'de_DE' => 'Deutsch',
-        'en_GB' => 'English',
-        'fr_FR' => 'Français',
-        'nl_NL' => 'Dutch',
-    );
-    private static $flashTypes = array('warning', 'info', 'success', 'error');
+    use UrlGeneratorTrait;
+    use TranslationTrait;
+
+    protected static $availableLanguages = [
+        'de' => 'Deutsch',
+        'en' => 'English',
+        'fr' => 'Français',
+        'nl' => 'Dutch',
+    ];
+    private static $flashTypes = ['warning', 'info', 'success', 'error'];
     private $environment;
 
     const ENV_DEV = 'dev';
@@ -191,16 +205,22 @@ class Application extends SilexApplication
             ini_set('error_log', $this['root.path'] . '/logs/php_error.log');
         }
 
+        $this->register(new BasketMiddlewareProvider());
+
+        $this->register(new ACLServiceProvider());
         $this->register(new AuthenticationManagerServiceProvider());
         $this->register(new BorderManagerServiceProvider());
         $this->register(new BrowserServiceProvider());
         $this->register(new ConfigurationServiceProvider());
         $this->register(new ConfigurationTesterServiceProvider);
+        $this->register(new ConvertersServiceProvider());
         $this->register(new RegistrationServiceProvider());
         $this->register(new CacheServiceProvider());
+        $this->register(new CacheConnectionServiceProvider());
         $this->register(new ImagineServiceProvider());
         $this->register(new JMSSerializerServiceProvider());
         $this->register(new FFMpegServiceProvider());
+        $this->register(new FeedServiceProvider());
         $this->register(new FilesystemServiceProvider());
         $this->register(new FtpServiceProvider());
         $this->register(new GeonamesServiceProvider());
@@ -210,9 +230,9 @@ class Application extends SilexApplication
 
         $this->register(new MediaAlchemystServiceProvider());
         $this['media-alchemyst.configuration'] = $this->share(function (Application $app) {
-            $configuration = array();
+            $configuration = [];
 
-            foreach (array(
+            foreach ([
                     'swftools.pdf2swf.binaries'    => 'pdf2swf_binary',
                     'swftools.swfrender.binaries'  => 'swf_render_binary',
                     'swftools.swfextract.binaries' => 'swf_extract_binary',
@@ -227,9 +247,9 @@ class Application extends SilexApplication
                     'mp4box.timeout'               => 'mp4box_timeout',
                     'swftools.timeout'             => 'swftools_timeout',
                     'unoconv.timeout'              => 'unoconv_timeout',
-            ) as $parameter => $key) {
-                if (isset($this['phraseanet.configuration']['binaries'][$key])) {
-                    $configuration[$parameter] = $this['phraseanet.configuration']['binaries'][$key];
+            ] as $parameter => $key) {
+                if ($this['conf']->has(['binaries', $key])) {
+                    $configuration[$parameter] = $this['conf']->get(['binaries', $key]);
                 }
             }
 
@@ -253,6 +273,7 @@ class Application extends SilexApplication
         $this->register(new MP4BoxServiceProvider());
         $this->register(new NotificationDelivererServiceProvider());
         $this->register(new ORMServiceProvider());
+        $this->register(new ManipulatorServiceProvider());
         $this->register(new InstallerServiceProvider());
         $this->register(new PhraseanetServiceProvider());
         $this->register(new PhraseaVersionServiceProvider());
@@ -271,20 +292,41 @@ class Application extends SilexApplication
         });
 
         $this->register(new SearchEngineServiceProvider());
-        $this->register(new SessionServiceProvider(), array(
+        $this->register(new SessionServiceProvider(), [
             'session.test' => $this->getEnvironment() === static::ENV_TEST
-        ));
+        ]);
         $this->register(new ServiceControllerServiceProvider());
         $this->register(new SwiftmailerServiceProvider());
-        $this->register(new TaskManagerServiceProvider());
+        $this->register(new TasksServiceProvider());
         $this->register(new TemporaryFilesystemServiceProvider());
         $this->register(new TokensServiceProvider());
-        $this->register(new TwigServiceProvider(), array(
-            'twig.options' => array(
+        $this->register(new TwigServiceProvider(), [
+            'twig.options' => [
                 'cache'           => $this['root.path'] . '/tmp/cache_twig/',
-            ),
-            'twig.form.templates' => array('login/common/form_div_layout.html.twig')
-        ));
+            ],
+        ]);
+
+        $this->register(new TranslationServiceProvider(), [
+            'locale_fallbacks' => ['fr'],
+            'translator.cache-options' => [
+                'debug' => $this['debug'],
+                'cache_dir' => $this['root.path'].'/tmp/translations'
+            ],
+        ]);
+
+        $this['translator'] = $this->share($this->extend('translator', function (CachedTranslator $translator, $app) {
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.fr.xliff', 'fr', 'messages');
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.fr.xliff', 'fr', 'validators');
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.en.xliff', 'en', 'messages');
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.en.xliff', 'en', 'validators');
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.de.xliff', 'de', 'messages');
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.de.xliff', 'de', 'validators');
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.nl.xliff', 'nl', 'messages');
+            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.nl.xliff', 'nl', 'validators');
+
+            return $translator;
+        }));
+
         $this->register(new FormServiceProvider());
 
         $this->setupTwig();
@@ -295,34 +337,38 @@ class Application extends SilexApplication
         $this->register(new ValidatorServiceProvider());
         $this->register(new XPDFServiceProvider());
         $this->register(new FileServeServiceProvider());
+        $this->register(new ManipulatorServiceProvider());
         $this->register(new PluginServiceProvider());
 
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
-            return PhraseaExceptionHandler::register($app['debug']);
+            $handler =  PhraseaExceptionHandler::register($app['debug']);
+            $handler->setTranslator($app['translator']);
+
+            return $handler;
         });
 
         $this['swiftmailer.transport'] = $this->share(function ($app) {
             if ($app['phraseanet.registry']->get('GV_smtp')) {
                 $transport = new \Swift_Transport_EsmtpTransport(
                     $app['swiftmailer.transport.buffer'],
-                    array($app['swiftmailer.transport.authhandler']),
+                    [$app['swiftmailer.transport.authhandler']],
                     $app['swiftmailer.transport.eventdispatcher']
                 );
 
                 $encryption = null;
 
-                if (in_array($app['phraseanet.registry']->get('GV_smtp_secure'), array('ssl', 'tls'))) {
+                if (in_array($app['phraseanet.registry']->get('GV_smtp_secure'), ['ssl', 'tls'])) {
                     $encryption = $app['phraseanet.registry']->get('GV_smtp_secure');
                 }
 
-                $options = $app['swiftmailer.options'] = array_replace(array(
+                $options = $app['swiftmailer.options'] = array_replace([
                     'host'       => $app['phraseanet.registry']->get('GV_smtp_host'),
                     'port'       => $app['phraseanet.registry']->get('GV_smtp_port'),
                     'username'   => $app['phraseanet.registry']->get('GV_smtp_user'),
                     'password'   => $app['phraseanet.registry']->get('GV_smtp_password'),
                     'encryption' => $encryption,
                     'auth_mode'  => null,
-                ), $app['swiftmailer.options']);
+                ], $app['swiftmailer.options']);
 
                 $transport->setHost($options['host']);
                 $transport->setPort($options['port']);
@@ -386,8 +432,8 @@ class Application extends SilexApplication
 
         $this['dispatcher'] = $this->share(
             $this->extend('dispatcher', function ($dispatcher, Application $app) {
-                $dispatcher->addListener(KernelEvents::REQUEST, array($app, 'initSession'), 254);
-                $dispatcher->addListener(KernelEvents::RESPONSE, array($app, 'addUTF8Charset'), -128);
+                $dispatcher->addListener(KernelEvents::REQUEST, [$app, 'initSession'], 254);
+                $dispatcher->addListener(KernelEvents::RESPONSE, [$app, 'addUTF8Charset'], -128);
                 $dispatcher->addSubscriber(new LogoutSubscriber());
                 $dispatcher->addSubscriber(new PhraseaLocaleSubscriber($app));
                 $dispatcher->addSubscriber(new MaintenanceSubscriber($app));
@@ -397,7 +443,7 @@ class Application extends SilexApplication
             })
         );
 
-        $this['log.channels'] = array('monolog', 'task-manager.logger');
+        $this['log.channels'] = ['monolog', 'task-manager.logger'];
 
         $this->register(new LocaleServiceProvider());
 
@@ -448,22 +494,9 @@ class Application extends SilexApplication
      *
      * @throws FormException if any given option is not applicable to the given type
      */
-    public function form($type = 'form', $data = null, array $options = array(), FormBuilderInterface $parent = null)
+    public function form($type = 'form', $data = null, array $options = [], FormBuilderInterface $parent = null)
     {
         return $this['form.factory']->create($type, $data, $options, $parent);
-    }
-
-    /**
-     * Generates a path from the given parameters.
-     *
-     * @param string $route      The name of the route
-     * @param mixed  $parameters An array of parameters
-     *
-     * @return string The generated path
-     */
-    public function path($route, $parameters = array())
-    {
-        return $this['url_generator']->generate($route, $parameters, UrlGenerator::ABSOLUTE_PATH);
     }
 
     /**
@@ -474,22 +507,9 @@ class Application extends SilexApplication
      *
      * @return RedirectResponse
      */
-    public function redirectPath($route, $parameters = array())
+    public function redirectPath($route, $parameters = [])
     {
         return $this->redirect($this->path($route, $parameters));
-    }
-
-    /**
-     * Returns an absolute URL from the given parameters.
-     *
-     * @param string $route      The name of the route
-     * @param mixed  $parameters An array of parameters
-     *
-     * @return string The generated URL
-     */
-    public function url($route, $parameters = array())
-    {
-        return $this['url_generator']->generate($route, $parameters, UrlGenerator::ABSOLUTE_URL);
     }
 
     /**
@@ -500,7 +520,7 @@ class Application extends SilexApplication
      *
      * @return RedirectResponse
      */
-    public function redirectUrl($route, $parameters = array())
+    public function redirectUrl($route, $parameters = [])
     {
         return $this->redirect($this->url($route, $parameters));
     }
@@ -536,8 +556,8 @@ class Application extends SilexApplication
     private function setupUrlGenerator()
     {
         $this['url_generator'] = $this->share($this->extend('url_generator', function ($urlGenerator, $app) {
-            if ($app['phraseanet.configuration']->isSetup()) {
-                $data = parse_url($app['phraseanet.configuration']['main']['servername']);
+            if ($app['configuration.store']->isSetup()) {
+                $data = parse_url($app['conf']->get(['main', 'servername']));
 
                 if (isset($data['scheme'])) {
                     $urlGenerator->getContext()->setScheme($data['scheme']);
@@ -584,7 +604,7 @@ class Application extends SilexApplication
                 $twig->addExtension(new \Twig_Extension_Escaper());
 
                 // add filter trans
-                $twig->addExtension(new \Twig_Extensions_Extension_I18n());
+                $twig->addExtension(new TranslationExtension($app['translator']));
                 // add filter localizeddate
                 $twig->addExtension(new \Twig_Extensions_Extension_Intl());
                 // add filters truncate, wordwrap, nl2br
@@ -609,7 +629,9 @@ class Application extends SilexApplication
                 $twig->addFilter('count', new \Twig_Filter_Function('count'));
                 $twig->addFilter('formatOctets', new \Twig_Filter_Function('p4string::format_octets'));
                 $twig->addFilter('base_from_coll', new \Twig_Filter_Function('phrasea::baseFromColl'));
-                $twig->addFilter('AppName', new \Twig_Filter_Function('Alchemy\Phrasea\Controller\Admin\ConnectedUsers::appName'));
+                $twig->addFilter(new \Twig_SimpleFilter('AppName', function ($value) use ($app) {
+                    return ConnectedUsers::appName($app['translator'], $value);
+                }));
                 $twig->addFilter(new \Twig_SimpleFilter('escapeSimpleQuote', function ($value) {
                     $ret = str_replace("'", "\'", $value);
 
@@ -657,7 +679,7 @@ class Application extends SilexApplication
      *
      * @return array
      */
-    public function getFlash($type, array $default = array())
+    public function getFlash($type, array $default = [])
     {
         return $this['session']->getFlashBag()->get($type, $default);
     }
@@ -729,7 +751,7 @@ class Application extends SilexApplication
             return false;
         }
 
-        return count(\User_Adapter::getInstance($usrId, $this)->ACL()->get_granted_base()) > 0;
+        return count($this['acl']->get(\User_Adapter::getInstance($usrId, $this))->get_granted_base()) > 0;
     }
 
     /**
@@ -749,7 +771,7 @@ class Application extends SilexApplication
      */
     public function getOpenCollections()
     {
-        return array();
+        return [];
     }
 
     public function bindRoutes()
@@ -783,7 +805,7 @@ class Application extends SilexApplication
 
         $this->mount('/prod/query/', new Query());
         $this->mount('/prod/order/', new Order());
-        $this->mount('/prod/baskets', new Basket());
+        $this->mount('/prod/baskets', new BasketController());
         $this->mount('/prod/download', new Download());
         $this->mount('/prod/story', new Story());
         $this->mount('/prod/WorkZone', new WorkZone());

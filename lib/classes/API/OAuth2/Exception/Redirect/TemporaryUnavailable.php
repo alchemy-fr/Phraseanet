@@ -9,17 +9,6 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- *
- * @package     OAuth2 Connector
- *
- * @see         http://oauth.net/2/
- * @uses        http://code.google.com/p/oauth2-php/
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class API_OAuth2_Exception_Redirect_TemporaryUnavailable extends API_OAuth2_Exception_Redirect
 {
     /**

@@ -18,153 +18,44 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Developers implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.account.developers'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function () use ($app) {
             $app['firewall']->requireAuthentication();
         });
 
-        /**
-         * List of apps created by the user
-         *
-         * name         : developers_applications
-         *
-         * description  : List all user applications
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/applications/', $this->call('listApps'))
+        $controllers->get('/applications/', 'controller.account.developers:listApps')
             ->bind('developers_applications');
 
-        /**
-         * Get the form to create a new application
-         *
-         * name         : developers_application_new
-         *
-         * description  : Display form to create a new user application
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/application/new/', $this->call('displayFormApp'))
+        $controllers->get('/application/new/', 'controller.account.developers:displayFormApp')
             ->bind('developers_application_new');
 
-        /**
-         * Create a new app
-         *
-         * name         : submit_developers_application
-         *
-         * description  : POST request to create a new user app
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->post('/application/', $this->call('newApp'))
+        $controllers->post('/application/', 'controller.account.developers:newApp')
             ->bind('submit_developers_application');
 
-        /**
-         * Get application information
-         *
-         * name         : developers_application
-         *
-         * description  : Get application information
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/application/{id}/', $this->call('getApp'))
+        $controllers->get('/application/{id}/', 'controller.account.developers:getApp')
             ->assert('id', '\d+')
             ->bind('developers_application');
 
-        /**
-         * Delete application
-         *
-         * name         : delete_developers_application
-         *
-         * description  : Delete selected application
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->delete('/application/{id}/', $this->call('deleteApp'))
+        $controllers->delete('/application/{id}/', 'controller.account.developers:deleteApp')
             ->assert('id', '\d+')
             ->bind('delete_developers_application');
 
-        /**
-         * Allow authentification paswword grant method
-         *
-         * name         : submit_developers_application_authorize_grant_password
-         *
-         * description  : Authorize application to use a grant password type, which allow end user to
-         *                authenticate himself with their credentials (login/password)
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->post('/application/{id}/authorize_grant_password/', $this->call('authorizeGrantpassword'))
+        $controllers->post('/application/{id}/authorize_grant_password/', 'controller.account.developers:authorizeGrantpassword')
             ->assert('id', '\d+')
             ->bind('submit_developers_application_authorize_grant_password');
 
-        /**
-         * Renew access token
-         *
-         * name         : submit_developers_application_token
-         *
-         * description  : Regenerate an access token for the current app linked to the authenticated user
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->post('/application/{id}/access_token/', $this->call('renewAccessToken'))
+        $controllers->post('/application/{id}/access_token/', 'controller.account.developers:renewAccessToken')
             ->assert('id', '\d+')
             ->bind('submit_developers_application_token');
 
-        /**
-         * Update application callback
-         *
-         * name         : submit_application_callback
-         *
-         * description  : Change callback used by application
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->post('/application/{id}/callback/', $this->call('renewAppCallback'))
+        $controllers->post('/application/{id}/callback/', 'controller.account.developers:renewAppCallback')
             ->assert('id', '\d+')
             ->bind('submit_application_callback');
 
@@ -182,7 +73,7 @@ class Developers implements ControllerProviderInterface
     public function deleteApp(Application $app, Request $request, $id)
     {
         if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
+            $app->abort(400, 'Bad request format, only JSON is allowed');
         }
 
         $error = false;
@@ -194,7 +85,7 @@ class Developers implements ControllerProviderInterface
             $error = true;
         }
 
-        return $app->json(array('success' => !$error));
+        return $app->json(['success' => !$error]);
     }
 
     /**
@@ -208,7 +99,7 @@ class Developers implements ControllerProviderInterface
     public function renewAppCallback(Application $app, Request $request, $id)
     {
         if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
+            $app->abort(400, 'Bad request format, only JSON is allowed');
         }
 
         $error = false;
@@ -225,7 +116,7 @@ class Developers implements ControllerProviderInterface
             $error = true;
         }
 
-        return $app->json(array('success' => !$error));
+        return $app->json(['success' => !$error]);
     }
 
     /**
@@ -239,7 +130,7 @@ class Developers implements ControllerProviderInterface
     public function renewAccessToken(Application $app, Request $request, $id)
     {
         if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
+            $app->abort(400, 'Bad request format, only JSON is allowed');
         }
 
         $error = false;
@@ -262,7 +153,7 @@ class Developers implements ControllerProviderInterface
             $error = true;
         }
 
-        return $app->json(array('success' => !$error, 'token'   => $accessToken));
+        return $app->json(['success' => !$error, 'token'   => $accessToken]);
     }
 
     /**
@@ -276,7 +167,7 @@ class Developers implements ControllerProviderInterface
     public function authorizeGrantpassword(Application $app, Request $request, $id)
     {
         if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
+            $app->abort(400, 'Bad request format, only JSON is allowed');
         }
 
         $error = false;
@@ -288,7 +179,7 @@ class Developers implements ControllerProviderInterface
             $error = true;
         }
 
-        return $app->json(array('success' => !$error));
+        return $app->json(['success' => !$error]);
     }
 
     /**
@@ -316,13 +207,13 @@ class Developers implements ControllerProviderInterface
                 ->set_type($form->getType())
                 ->set_website($form->getSchemeWebsite() . $form->getWebsite());
 
-            return $app->redirectPath('developers_application', array('id' => $application->get_id()));
+            return $app->redirectPath('developers_application', ['id' => $application->get_id()]);
         }
 
-        $var = array(
+        $var = [
             "violations" => $violations,
             "form"       => $form
-        );
+        ];
 
         return $app['twig']->render('/developers/application_form.html.twig', $var);
     }
@@ -336,9 +227,9 @@ class Developers implements ControllerProviderInterface
      */
     public function listApps(Application $app, Request $request)
     {
-        return $app['twig']->render('developers/applications.html.twig', array(
+        return $app['twig']->render('developers/applications.html.twig', [
             "applications" => \API_OAuth2_Application::load_dev_app_by_user($app, $app['authentication']->getUser())
-        ));
+        ]);
     }
 
     /**
@@ -350,11 +241,11 @@ class Developers implements ControllerProviderInterface
      */
     public function displayFormApp(Application $app, Request $request)
     {
-        return $app['twig']->render('developers/application_form.html.twig', array(
+        return $app['twig']->render('developers/application_form.html.twig', [
             "violations" => null,
             'form'       => null,
             'request'    => $request
-        ));
+        ]);
     }
 
     /**
@@ -375,21 +266,10 @@ class Developers implements ControllerProviderInterface
 
         $token = $client->get_user_account($app['authentication']->getUser())->get_token()->get_value();
 
-        return $app['twig']->render('developers/application.html.twig', array(
+        return $app['twig']->render('developers/application.html.twig', [
             "application" => $client,
             "user"        => $app['authentication']->getUser(),
             "token"       => $token
-        ));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
+        ]);
     }
 }

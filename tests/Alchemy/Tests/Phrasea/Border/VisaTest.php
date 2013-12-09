@@ -27,14 +27,14 @@ class VisaTest extends \PhraseanetPHPUnitAbstract
     {
         $visa = new Visa();
 
-        $this->assertEquals(array(), $visa->getResponses());
+        $this->assertEquals([], $visa->getResponses());
 
         $response = new Response(true, new Filename(self::$DI['app']));
         $visa->addResponse($response);
         $response2 = new Response(false, new Filename(self::$DI['app']));
         $visa->addResponse($response2);
 
-        $this->assertSame(array($response, $response2), $visa->getResponses());
+        $this->assertSame([$response, $response2], $visa->getResponses());
     }
 
     /**

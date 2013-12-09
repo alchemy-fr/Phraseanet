@@ -24,12 +24,12 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
     public function provideNameAndOptions()
     {
-        return array(
-            array('github', array('client-id' => 'id', 'client-secret' => 'secret'), 'Alchemy\Phrasea\Authentication\Provider\Github'),
-            array('google-plus', array('client-id' => 'id', 'client-secret' => 'secret'), 'Alchemy\Phrasea\Authentication\Provider\GooglePlus'),
-            array('linkedin', array('client-id' => 'id', 'client-secret' => 'secret'), 'Alchemy\Phrasea\Authentication\Provider\Linkedin'),
-            array('twitter', array('consumer-key' => 'id', 'consumer-secret' => 'secret'), 'Alchemy\Phrasea\Authentication\Provider\Twitter'),
-            array('viadeo', array('client-id' => 'id', 'client-secret' => 'secret'), 'Alchemy\Phrasea\Authentication\Provider\Viadeo'),
-        );
+        return [
+            ['github', ['client-id' => 'id', 'client-secret' => 'secret'], 'Alchemy\Phrasea\Authentication\Provider\Github'],
+            ['google-plus', ['client-id' => 'id', 'client-secret' => 'secret'], 'Alchemy\Phrasea\Authentication\Provider\GooglePlus'],
+            ['linkedin', ['client-id' => 'id', 'client-secret' => 'secret'], 'Alchemy\Phrasea\Authentication\Provider\Linkedin'],
+            ['twitter', ['consumer-key' => 'id', 'consumer-secret' => 'secret'], 'Alchemy\Phrasea\Authentication\Provider\Twitter'],
+            ['viadeo', ['client-id' => 'id', 'client-secret' => 'secret'], 'Alchemy\Phrasea\Authentication\Provider\Viadeo'],
+        ];
     }
 }

@@ -73,7 +73,7 @@ class Step35 implements DatasUpgraderInterface
                 $stmt = $databox->get_connection()->prepare($sql);
 
                 foreach ($rs as $row) {
-                    $stmt->execute(array(':record_id' => $row['record_id']));
+                    $stmt->execute([':record_id' => $row['record_id']]);
 
                     try {
                         $record = new \record_adapter($this->app, $databox->get_sbas_id(), $row['record_id']);
@@ -138,7 +138,7 @@ class Step35 implements DatasUpgraderInterface
     {
         $metas = $record->get_databox()->get_meta_structure();
 
-        $datas = $metadatas = array();
+        $datas = $metadatas = [];
 
         if (false !== $sxe = simplexml_load_string($xml)) {
             $fields = $sxe->xpath('/record/description');
@@ -176,18 +176,18 @@ class Step35 implements DatasUpgraderInterface
         foreach ($datas as $meta_struct_id => $values) {
             if (is_array($values)) {
                 foreach ($values as $value) {
-                    $metadatas[] = array(
+                    $metadatas[] = [
                         'meta_struct_id' => $meta_struct_id
                         , 'meta_id'        => null
                         , 'value'          => $value
-                    );
+                    ];
                 }
             } else {
-                $metadatas[] = array(
+                $metadatas[] = [
                     'meta_struct_id' => $meta_struct_id
                     , 'meta_id'        => null
                     , 'value'          => $values
-                );
+                ];
             }
         }
 
@@ -222,7 +222,7 @@ class Step35 implements DatasUpgraderInterface
             }
         }
 
-        $stmt[$databox->get_sbas_id()]->execute(array(':originalname' => $original, ':record_id'    => $record['record_id']));
+        $stmt[$databox->get_sbas_id()]->execute([':originalname' => $original, ':record_id'    => $record['record_id']]);
     }
 
     /**

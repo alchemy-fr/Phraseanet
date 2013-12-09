@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,17 +11,13 @@
 
 namespace KonsoleKommander;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Command\Setup\Install;
 use Alchemy\Phrasea\Command\Setup\PluginsReset;
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Command\Setup\CheckEnvironment;
+use Alchemy\Phrasea\Core\CLIProvider\DoctrineMigrationServiceProvider;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -44,6 +40,8 @@ $app = new CLI("
  This is free software, and you are welcome to redistribute it
  under certain conditions; type `about:license' for details.\n\n"
             . ' SETUP', Version::getName() . ' ' . Version::getNumber());
+
+$app->register(new DoctrineMigrationServiceProvider());
 
 $app->command(new \module_console_aboutAuthors('about:authors'));
 $app->command(new \module_console_aboutLicense('about:license'));

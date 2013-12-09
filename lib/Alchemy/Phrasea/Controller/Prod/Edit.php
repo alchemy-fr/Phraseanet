@@ -18,16 +18,12 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Edit implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.prod.edit'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
@@ -38,11 +34,11 @@ class Edit implements ControllerProviderInterface
 
         $controllers->post('/', function (Application $app, Request $request) {
 
-            $records = RecordsRequest::fromRequest($app, $request, RecordsRequest::FLATTEN_YES_PRESERVE_STORIES, array('canmodifrecord'));
+            $records = RecordsRequest::fromRequest($app, $request, RecordsRequest::FLATTEN_YES_PRESERVE_STORIES, ['canmodifrecord']);
 
             $thesaurus = false;
             $status = $ids = $elements = $suggValues =
-                $fields = $JSFields = array();
+                $fields = $JSFields = [];
             $databox = null;
 
             $multipleDataboxes = count($records->databoxes()) > 1;
@@ -59,26 +55,28 @@ class Edit implements ControllerProviderInterface
 
                     $separator = $meta->get_separator();
 
-                    $JSFields[$meta->get_id()] = array(
-                        'meta_struct_id' => $meta->get_id()
-                        , 'name'           => $meta->get_name()
-                        , '_status'        => 0
-                        , '_value'         => ''
-                        , '_sgval'         => array()
-                        , 'required'             => $meta->is_required()
-                        , 'label'                => $meta->get_label($app['locale.I18n'])
-                        , 'readonly'             => $meta->is_readonly()
-                        , 'type'                 => $meta->get_type()
-                        , 'format'               => ''
-                        , 'explain'              => ''
-                        , 'tbranch'              => $meta->get_tbranch()
-                        , 'maxLength'            => $meta->get_tag()->getMaxLength()
-                        , 'minLength'            => $meta->get_tag()->getMinLength()
-                        , 'multi'                => $meta->is_multi()
-                        , 'separator'            => $separator
-                        , 'vocabularyControl'    => $meta->getVocabularyControl() ? $meta->getVocabularyControl()->getType() : null
-                        , 'vocabularyRestricted' => $meta->getVocabularyControl() ? $meta->isVocabularyRestricted() : false
-                    );
+                    /** @Ignore */
+                    $JSFields[$meta->get_id()] = [
+                        'meta_struct_id' => $meta->get_id(),
+                        'name'           => $meta->get_name(),
+                        '_status'        => 0,
+                        '_value'         => '',
+                        '_sgval'         => [],
+                        'required'             => $meta->is_required(),
+                        /** @Ignore */
+                        'label'                => $meta->get_label($app['locale']),
+                        'readonly'             => $meta->is_readonly(),
+                        'type'                 => $meta->get_type(),
+                        'format'               => '',
+                        'explain'              => '',
+                        'tbranch'              => $meta->get_tbranch(),
+                        'maxLength'            => $meta->get_tag()->getMaxLength(),
+                        'minLength'            => $meta->get_tag()->getMinLength(),
+                        'multi'                => $meta->is_multi(),
+                        'separator'            => $separator,
+                        'vocabularyControl'    => $meta->getVocabularyControl() ? $meta->getVocabularyControl()->getType() : null,
+                        'vocabularyRestricted' => $meta->getVocabularyControl() ? $meta->isVocabularyRestricted() : false,
+                    ];
 
                     if (trim($meta->get_tbranch()) !== '') {
                         $thesaurus = true;
@@ -91,7 +89,7 @@ class Edit implements ControllerProviderInterface
                 foreach ($records->collections() as $collection) {
                     /* @var $record record_adapter */
 
-                    $suggValues['b' . $collection->get_base_id()] = array();
+                    $suggValues['b' . $collection->get_base_id()] = [];
 
                     if ($sxe = simplexml_load_string($collection->get_prefs())) {
                         $z = $sxe->xpath('/baseprefs/sugestedValues');
@@ -106,7 +104,7 @@ class Edit implements ControllerProviderInterface
                                 continue;
                             }
 
-                            $suggValues['b' . $collection->get_base_id()][$field->get_id()] = array();
+                            $suggValues['b' . $collection->get_base_id()][$field->get_id()] = [];
 
                             foreach ($vi->value as $oneValue) {
                                 $suggValues['b' . $collection->get_base_id()][$field->get_id()][] = (string) $oneValue;
@@ -119,13 +117,13 @@ class Edit implements ControllerProviderInterface
                 /**
                  * generate javascript status
                  */
-                if ($app['authentication']->getUser()->ACL()->has_right('changestatus')) {
+                if ($app['acl']->get($app['authentication']->getUser())->has_right('changestatus')) {
                     $dbstatus = \databox_status::getDisplayStatus($app);
                     if (isset($dbstatus[$databox->get_sbas_id()])) {
                         foreach ($dbstatus[$databox->get_sbas_id()] as $n => $statbit) {
-                            $status[$n] = array();
-                            $status[$n]['label0'] = $statbit['labels_off_i18n'][$app['locale.I18n']];
-                            $status[$n]['label1'] = $statbit['labels_on_i18n'][$app['locale.I18n']];
+                            $status[$n] = [];
+                            $status[$n]['label0'] = $statbit['labels_off_i18n'][$app['locale']];
+                            $status[$n]['label1'] = $statbit['labels_on_i18n'][$app['locale']];
                             $status[$n]['img_off'] = $statbit['img_off'];
                             $status[$n]['img_on'] = $statbit['img_on'];
                             $status[$n]['_value'] = 0;
@@ -137,25 +135,25 @@ class Edit implements ControllerProviderInterface
                  * generate javascript elements
                  */
                 foreach ($databox->get_meta_structure() as $field) {
-                    $databox_fields[$field->get_id()] = array(
+                    $databox_fields[$field->get_id()] = [
                         'dirty'          => false,
                         'meta_struct_id' => $field->get_id(),
-                        'values'         => array()
-                    );
+                        'values'         => []
+                    ];
                 }
 
                 foreach ($records as $record) {
                     $indice = $record->get_number();
-                    $elements[$indice] = array(
+                    $elements[$indice] = [
                         'bid'         => $record->get_base_id(),
                         'rid'         => $record->get_record_id(),
                         'sselcont_id' => null,
                         '_selected'   => false,
                         'fields'      => $databox_fields
-                    );
+                    ];
 
-                    $elements[$indice]['statbits'] = array();
-                    if ($app['authentication']->getUser()->ACL()->has_right_on_base($record->get_base_id(), 'chgstatus')) {
+                    $elements[$indice]['statbits'] = [];
+                    if ($app['acl']->get($app['authentication']->getUser())->has_right_on_base($record->get_base_id(), 'chgstatus')) {
                         foreach ($status as $n => $s) {
                             $tmp_val = substr(strrev($record->get_status()), $n, 1);
                             $elements[$indice]['statbits'][$n]['value'] = ($tmp_val == '1') ? '1' : '0';
@@ -171,7 +169,7 @@ class Edit implements ControllerProviderInterface
                             continue;
                         }
 
-                        $values = array();
+                        $values = [];
                         foreach ($field->get_values() as $value) {
                             $type = $id = null;
 
@@ -180,38 +178,38 @@ class Edit implements ControllerProviderInterface
                                 $id = $value->getVocabularyId();
                             }
 
-                            $values[$value->getId()] = array(
+                            $values[$value->getId()] = [
                                 'meta_id'        => $value->getId(),
                                 'value'          => $value->getValue(),
                                 'vocabularyId'   => $id,
                                 'vocabularyType' => $type
-                            );
+                            ];
                         }
 
-                        $elements[$indice]['fields'][$meta_struct_id] = array(
+                        $elements[$indice]['fields'][$meta_struct_id] = [
                             'dirty'          => false,
                             'meta_struct_id' => $meta_struct_id,
                             'values'         => $values
-                        );
+                        ];
                     }
 
-                    $elements[$indice]['subdefs'] = array();
+                    $elements[$indice]['subdefs'] = [];
 
                     $thumbnail = $record->get_thumbnail();
 
-                    $elements[$indice]['subdefs']['thumbnail'] = array(
+                    $elements[$indice]['subdefs']['thumbnail'] = [
                         'url' => $thumbnail->get_url()
                         , 'w'   => $thumbnail->get_width()
                         , 'h'   => $thumbnail->get_height()
-                    );
+                    ];
 
-                    $elements[$indice]['preview'] = $app['twig']->render('common/preview.html.twig', array('record' => $record));
+                    $elements[$indice]['preview'] = $app['twig']->render('common/preview.html.twig', ['record' => $record]);
 
                     $elements[$indice]['type'] = $record->get_type();
                 }
             }
 
-            $params = array(
+            $params = [
                 'multipleDataboxes' => $multipleDataboxes,
                 'recordsRequest'    => $records,
                 'databox'           => $databox,
@@ -223,13 +221,13 @@ class Edit implements ControllerProviderInterface
                 'fields'            => $fields,
                 'JSonSuggValues'    => json_encode($suggValues),
                 'thesaurus'         => $thesaurus,
-            );
+            ];
 
             return $app['twig']->render('prod/actions/edit_default.html.twig', $params);
         });
 
         $controllers->get('/vocabulary/{vocabulary}/', function (Application $app, Request $request, $vocabulary) {
-            $datas = array('success' => false, 'message' => '', 'results' => array());
+            $datas = ['success' => false, 'message' => '', 'results' => []];
 
             $sbas_id = (int) $request->query->get('sbas_id');
 
@@ -241,7 +239,7 @@ class Edit implements ControllerProviderInterface
                 $VC = VocabularyController::get($app, $vocabulary);
                 $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
             } catch (\Exception $e) {
-                $datas['message'] = _('Vocabulary not found');
+                $datas['message'] = $app->trans('Vocabulary not found');
 
                 return $app->json($datas);
             }
@@ -250,15 +248,15 @@ class Edit implements ControllerProviderInterface
 
             $results = $VC->find($query, $app['authentication']->getUser(), $databox);
 
-            $list = array();
+            $list = [];
 
             foreach ($results as $Term) {
                 /* @var $Term \Alchemy\Phrasea\Vocabulary\Term */
-                $list[] = array(
+                $list[] = [
                     'id'      => $Term->getId(),
                     'context' => $Term->getContext(),
                     'value'   => $Term->getValue(),
-                );
+                ];
             }
 
             $datas['success'] = true;
@@ -269,7 +267,7 @@ class Edit implements ControllerProviderInterface
 
         $controllers->post('/apply/', function (Application $app, Request $request) {
 
-            $records = RecordsRequest::fromRequest($app, $request, RecordsRequest::FLATTEN_YES_PRESERVE_STORIES, array('canmodifrecord'));
+            $records = RecordsRequest::fromRequest($app, $request, RecordsRequest::FLATTEN_YES_PRESERVE_STORIES, ['canmodifrecord']);
 
             if (count($records->databoxes()) !== 1) {
                 throw new \Exception('Unable to edit on multiple databoxes');
@@ -288,7 +286,7 @@ class Edit implements ControllerProviderInterface
                     }
 
                     foreach ($newsubdef_reg->get_subdefs() as $name => $value) {
-                        if (!in_array($name, array('thumbnail', 'preview'))) {
+                        if (!in_array($name, ['thumbnail', 'preview'])) {
                             continue;
                         }
                         $media = $app['mediavorus']->guess($value->get_pathfile());
@@ -306,7 +304,7 @@ class Edit implements ControllerProviderInterface
             }
 
             if (!is_array($request->request->get('mds'))) {
-                return $app->json(array('message' => '', 'error'   => false));
+                return $app->json(['message' => '', 'error'   => false]);
             }
 
             $databoxes = $records->databoxes();
@@ -353,7 +351,7 @@ class Edit implements ControllerProviderInterface
                  * todo : this should not work
                  */
                 if ($write_edit_el instanceof \databox_field) {
-                    $fields = $record->get_caption()->get_fields(array($write_edit_el->get_name()), true);
+                    $fields = $record->get_caption()->get_fields([$write_edit_el->get_name()], true);
                     $field = array_pop($fields);
 
                     $meta_id = null;
@@ -363,21 +361,21 @@ class Edit implements ControllerProviderInterface
                         $meta_id = array_pop($values)->getId();
                     }
 
-                    $metas = array(
-                        array(
+                    $metas = [
+                        [
                             'meta_struct_id' => $write_edit_el->get_id(),
                             'meta_id'        => $meta_id,
                             'value'          => $date_obj->format('Y-m-d h:i:s'),
-                        )
-                    );
+                        ]
+                    ];
 
                     $record->set_metadatas($metas, true);
                 }
 
                 $newstat = $record->get_status();
                 $statbits = ltrim($statbits, 'x');
-                if (!in_array($statbits, array('', 'null'))) {
-                    $mask_and = ltrim(str_replace(array('x', '0', '1', 'z'), array('1', 'z', '0', '1'), $statbits), '0');
+                if (!in_array($statbits, ['', 'null'])) {
+                    $mask_and = ltrim(str_replace(['x', '0', '1', 'z'], ['1', 'z', '0', '1'], $statbits), '0');
                     if ($mask_and != '') {
                         $newstat = \databox_status::operation_and_not($app, $newstat, $mask_and);
                     }
@@ -406,7 +404,7 @@ class Edit implements ControllerProviderInterface
                 }
             }
 
-            return $app->json(array('success' => true));
+            return $app->json(['success' => true]);
         });
 
         return $controllers;

@@ -40,7 +40,7 @@ class Compiler
         $this->filesystem->mkdir(dirname($target));
 
         if (!$files instanceof \Traversable) {
-            $files = new \ArrayObject(is_array($files) ? $files : array($files));
+            $files = new \ArrayObject(is_array($files) ? $files : [$files]);
         }
 
         $files = (array) $files;

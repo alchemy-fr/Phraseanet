@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,7 +17,7 @@ class patch_380alpha13a implements patchInterface
     private $release = '3.8.0-alpha.13';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -25,6 +25,14 @@ class patch_380alpha13a implements patchInterface
     public function get_release()
     {
         return $this->release;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return [];
     }
 
     /**
@@ -51,30 +59,28 @@ class patch_380alpha13a implements patchInterface
         $xsendfilePath = $app['phraseanet.registry']->get('GV_X_Accel_Redirect');
         $xsendfileMountPoint = $app['phraseanet.registry']->get('GV_X_Accel_Redirect_mount_point');
 
-        $config = $app['phraseanet.configuration']
-            ->setDefault('xsendfile')
-            ->getConfig();
+        $config = $app['configuration.store']->setDefault('xsendfile')->getConfig();
 
         $config['xsendfile']['enabled'] = (Boolean) $app['phraseanet.registry']->get('GV_modxsendfile', false);
         $config['xsendfile']['type'] = $config['xsendfile']['enabled'] ? 'nginx' : '';
 
         if (null !== $xsendfilePath && null !== $xsendfileMountPoint) {
-            $config['xsendfile']['mapping'] = array(array(
+            $config['xsendfile']['mapping'] = [[
                 'directory' => $xsendfilePath,
                 'mount-point' => $xsendfileMountPoint,
-            ));
+            ]];
         }
 
-        $app['phraseanet.configuration']->setConfig($config);
+        $app['configuration.store']->setConfig($config);
 
-        $toRemove = array('GV_X_Accel_Redirect', 'GV_X_Accel_Redirect_mount_point', 'GV_modxsendfile');
+        $toRemove = ['GV_X_Accel_Redirect', 'GV_X_Accel_Redirect_mount_point', 'GV_modxsendfile'];
 
         $sql = 'DELETE FROM registry WHERE `key` = :k';
         $stmt = $appbox->get_connection()->prepare($sql);
         foreach ($toRemove as $registryKey) {
-            $stmt->execute(array(
+            $stmt->execute([
                 ':k' => $registryKey
-            ));
+            ]);
         }
         $stmt->closeCursor();
 

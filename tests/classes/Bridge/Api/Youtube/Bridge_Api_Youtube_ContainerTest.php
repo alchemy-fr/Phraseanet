@@ -20,7 +20,7 @@ class Bridge_Api_Youtube_ContainerTest extends PHPUnit_Framework_TestCase
         $entry->setTitle(new Zend_Gdata_App_Extension_Title("one title"));
         $entry->setUpdated($updated);
         $entry->setPublished($published);
-        $entry->setLink(array(new Zend_Gdata_App_Extension_link("one url", "alternate")));
+        $entry->setLink([new Zend_Gdata_App_Extension_link("one url", "alternate")]);
         $entry->setDescription(new Zend_Gdata_App_Extension_Summary("one description"));
         $this->object = new Bridge_Api_Youtube_Container($entry, 'playlist', 'my_thumbnail');
     }

@@ -4,10 +4,10 @@
     <div id="form-container" >
         <div id="mainTabs">
             <ul id="navigation">
-              <li><a href="#dash">{% trans "report:: Dashboard" %}</a></li>
-                <li><a href="#report-connexions">{% trans "report:: Connexion" %}</a></li>
-              <li><a href="#report-telechargement">{% trans "report:: telechargements" %}</a></li>
-               <li><a href="#report-activite">{% trans "report:: activite du site" %}</a></li>
+              <li><a href="#dash">{{ "report:: Dashboard" | trans }}</a></li>
+                <li><a href="#report-connexions">{{ "report:: Connexion" | trans }}</a></li>
+              <li><a href="#report-telechargement">{{ "report:: telechargements" | trans }}</a></li>
+               <li><a href="#report-activite">{{ "report:: activite du site" | trans }}</a></li>
             </ul>
 
             {% block report_dashboard_layout %}

@@ -1,8 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html lang="{{ app['locale.I18n'] }}">
+<html lang="{{ app['locale'] }}">
     <head>
         <meta http-equiv="X-UA-Compatible" content="chrome=1">
-        <title>{{ app['phraseanet.registry'].get('GV_homeTitle') }} - {% trans 'phraseanet:: thesaurus' %}</title>
+        <title>{{ app['phraseanet.registry'].get('GV_homeTitle') }} - {{ 'phraseanet:: thesaurus' | trans }}</title>
         <link rel="shortcut icon" type="image/x-icon" href="/skins/thesaurus/favicon.ico">
         <link REL="stylesheet" TYPE="text/css" href="{{ path('minifier', { 'f' : 'skins/thesaurus/thesaurus.css' }) }}" />
     </head>
@@ -15,9 +15,9 @@
     {% if count_bases > 0 %}
 
         <form name="fBase" action="{{ path('thesaurus_thesaurus') }}" method="post">
-            {% trans 'thesaurus:: Editer le thesaurus' %}
+            {{ 'thesaurus:: Editer le thesaurus' | trans }}
             <select name="bid" onchange="ckok();return(true);">
-                <option value="">{% trans 'phraseanet:: choisir' %}</option>
+                <option value="">{{ 'phraseanet:: choisir' | trans }}</option>
                 {% for sbas_id, name in bases %}
                 <option value="{{ sbas_id }}">{{ name }}</option>
                 {% endfor %}
@@ -37,7 +37,7 @@
             </script>
             <table>
                 <tr>
-                    <td>{% trans 'thesaurus:: langue pivot' %}</td>
+                    <td>{{ 'thesaurus:: langue pivot' | trans }}</td>
             {% for code, language in languages %}
                     <td style="text-align:left">
                         <input type='radio' onclick="ckok();return(true);" value='{{ code }}' name='piv'>
@@ -48,10 +48,10 @@
             </table>
             <br/>
             <br/>
-            <input disabled="disabled" id="button_ok" type="submit" style="width:80px;" value="{% trans 'boutton::valider' %}" /><br/>
+            <input disabled="disabled" id="button_ok" type="submit" style="width:80px;" value="{{ 'boutton::valider' | trans }}" /><br/>
         </form>
     {% else %}
-        {% trans 'thesaurus:: Vous n\'avez acces a aucune base' %}
+        {{ 'thesaurus:: Vous n\'avez acces a aucune base' | trans }}
     {% endif %}
     </center>
 </body>

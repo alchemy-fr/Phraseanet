@@ -1,15 +1,14 @@
 <?php
 
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
-/**
- * Description of Element
- *
- * @author nicolas
- */
 class Bridge_Api_Dailymotion_Element implements Bridge_Api_ElementInterface
 {
     /**
@@ -170,6 +169,6 @@ class Bridge_Api_Dailymotion_Element implements Bridge_Api_ElementInterface
      */
     public function get_tags()
     {
-        return implode(",", $this->get('tags', array()));
+        return implode(",", $this->get('tags', []));
     }
 }

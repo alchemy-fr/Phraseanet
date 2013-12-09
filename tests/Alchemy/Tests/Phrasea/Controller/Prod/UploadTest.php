@@ -40,8 +40,8 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['app'] = new Application('test');
 
         self::giveRightsToUser(self::$DI['app'], self::$DI['user']);
-        self::$DI['user']->ACL()->revoke_access_from_bases(array(self::$DI['collection_no_access']->get_base_id()));
-        self::$DI['user']->ACL()->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
+        self::$DI['app']['acl']->get(self::$DI['user'])->revoke_access_from_bases([self::$DI['collection_no_access']->get_base_id()]);
+        self::$DI['app']['acl']->get(self::$DI['user'])->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
     }
 
     /**
@@ -77,20 +77,20 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->disableOriginalConstructor()
             ->getMock();
 
-        $data = DataUri\Data::buildFromFile(__DIR__ . '/../../../../../files/cestlafete.jpg');
-        $params = array(
+        $data = DataURI\Data::buildFromFile(__DIR__ . '/../../../../../files/cestlafete.jpg');
+        $params = [
             'base_id' => self::$DI['collection']->get_base_id(),
-            'b64_image' => DataUri\Dumper::dump($data)
-        );
+            'b64_image' => DataURI\Dumper::dump($data)
+        ];
 
-        $files = array(
-            'files' => array(
+        $files = [
+            'files' => [
                 new UploadedFile(
                     $this->tmpFile, 'KIKOO.JPG'
                 )
-            )
-        );
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+            ]
+        ];
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -118,18 +118,18 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->disableOriginalConstructor()
             ->getMock();
 
-        $params = array(
+        $params = [
             'base_id' => self::$DI['collection']->get_base_id()
-        );
+        ];
 
-        $files = array(
-            'files' => array(
+        $files = [
+            'files' => [
                 new UploadedFile(
                     $this->tmpFile, 'KIKOO.JPG'
                 )
-            )
-        );
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+            ]
+        ];
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -156,18 +156,18 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoRecordQuarantined');
 
-        $params = array(
+        $params = [
             'base_id' => self::$DI['collection']->get_base_id()
-        );
+        ];
 
-        $files = array(
-            'files' => array(
+        $files = [
+            'files' => [
                 new UploadedFile(
                     $this->tmpFile, 'KIKOO.JPG'
                 )
-            )
-        );
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+            ]
+        ];
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -183,15 +183,15 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUploadWrongBaseId()
     {
-        $params = array('base_id' => 0);
-        $files = array(
-            'files' => array(
+        $params = ['base_id' => 0];
+        $files = [
+            'files' => [
                 new UploadedFile(
                    $this->tmpFile, 'KIKOO.JPG'
                 )
-            )
-        );
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+            ]
+        ];
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -207,15 +207,15 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUploadNoAccessBaseId()
     {
-        $params = array('base_id' => self::$DI['collection_no_access']->get_base_id());
-        $files = array(
-            'files' => array(
+        $params = ['base_id' => self::$DI['collection_no_access']->get_base_id()];
+        $files = [
+            'files' => [
                 new UploadedFile(
                     $this->tmpFile, 'KIKOO.JPG'
                 )
-            )
-        );
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+            ]
+        ];
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -235,9 +235,9 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 $this->tmpFile, 'KIKOO.JPG', 'image/jpeg', 123, UPLOAD_ERR_NO_FILE
         );
 
-        $params = array('base_id' => self::$DI['collection']->get_base_id());
-        $files = array('files' => array($file));
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+        $params = ['base_id' => self::$DI['collection']->get_base_id()];
+        $files = ['files' => [$file]];
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -253,15 +253,15 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUploadNoBaseId()
     {
-        $params = array();
-        $files = array(
-            'files' => array(
+        $params = [];
+        $files = [
+            'files' => [
                 new UploadedFile(
                     $this->tmpFile, 'KIKOO.JPG'
                 )
-            )
-        );
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+            ]
+        ];
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -277,18 +277,18 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUpload2Files()
     {
-        $params = array('base_id' => self::$DI['collection']->get_base_id());
-        $files = array(
-            'files' => array(
+        $params = ['base_id' => self::$DI['collection']->get_base_id()];
+        $files = [
+            'files' => [
                 new UploadedFile(
                     $this->tmpFile, 'KIKOO.JPG'
                 ),
                 new UploadedFile(
                     $this->tmpFile, 'KIKOO.JPG'
                 )
-            )
-        );
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+            ]
+        ];
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -304,19 +304,19 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUploadForceRecord()
     {
-        $params = array(
+        $params = [
             'base_id'     => self::$DI['collection']->get_base_id(),
             'forceAction' => Manager::FORCE_RECORD,
-        );
+        ];
 
-        $files = array(
-            'files' => array(
+        $files = [
+            'files' => [
                 new UploadedFile(
                     $this->tmpFile, 'KIKOO.JPG'
                 )
-            )
-        );
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+            ]
+        ];
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -331,7 +331,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $id = explode('_', $datas['id']);
         $record = new \record_adapter(self::$DI['app'], $id[0], $id[1]);
         $this->assertFalse($record->is_grouping());
-        $this->assertEquals(array(), $datas['reasons']);
+        $this->assertEquals([], $datas['reasons']);
     }
 
     /**
@@ -339,20 +339,20 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUploadRecordStatus()
     {
-        $params = array(
+        $params = [
             'base_id'     => self::$DI['collection']->get_base_id(),
             'forceAction' => Manager::FORCE_RECORD,
-            'status'      => array( self::$DI['collection']->get_base_id() => array( 4 => 1)),
-        );
+            'status'      => [ self::$DI['collection']->get_base_id() => [ 4 => 1]],
+        ];
 
-        $files = array(
-            'files' => array(
+        $files = [
+            'files' => [
                 new UploadedFile(
                     $this->tmpFile, 'KIKOO.JPG'
                 )
-            )
-        );
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+            ]
+        ];
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -368,7 +368,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $record = new \record_adapter(self::$DI['app'], $id[0], $id[1]);
         $this->assertFalse($record->is_grouping());
         $this->assertEquals(1, substr(strrev($record->get_status()), 4, 1));
-        $this->assertEquals(array(), $datas['reasons']);
+        $this->assertEquals([], $datas['reasons']);
     }
 
     /**
@@ -376,9 +376,9 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUploadNoFiles()
     {
-        $params = array('base_id' => self::$DI['collection']->get_base_id());
-        $files = array();
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+        $params = ['base_id' => self::$DI['collection']->get_base_id()];
+        $files = [];
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -394,7 +394,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUploadWithoutAnything()
     {
-        self::$DI['client']->request('POST', '/prod/upload/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        self::$DI['client']->request('POST', '/prod/upload/', [], [], ['HTTP_Accept' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 

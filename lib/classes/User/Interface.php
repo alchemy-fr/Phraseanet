@@ -11,12 +11,6 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- *
- * @package     User
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 interface User_Interface
 {
 
@@ -24,33 +18,13 @@ interface User_Interface
 
     public function __construct($id, Application $app);
 
-    public function ACL();
-
     public function set_password($pasword);
 
     public function set_email($email);
 
-    public function get_protected_rss_url($renew = false);
-
     public function get_country();
 
-    public function set_defaultftpdatas($datas);
-
     public function set_mail_notifications($boolean);
-
-    public function set_activeftp($boolean);
-
-    public function set_ftp_address($address);
-
-    public function set_ftp_login($login);
-
-    public function set_ftp_password($password);
-
-    public function set_ftp_passif($boolean);
-
-    public function set_ftp_dir($ftp_dir);
-
-    public function set_ftp_dir_prefix($ftp_dir_prefix);
 
     public function set_firstname($firstname);
 
@@ -78,23 +52,7 @@ interface User_Interface
 
     public function delete();
 
-    public function get_defaultftpdatas();
-
     public function get_mail_notifications();
-
-    public function get_activeftp();
-
-    public function get_ftp_address();
-
-    public function get_ftp_login();
-
-    public function get_ftp_password();
-
-    public function get_ftp_passif();
-
-    public function get_ftp_dir();
-
-    public function get_ftp_dir_prefix();
 
     public function load($id);
 
@@ -150,21 +108,15 @@ interface User_Interface
 
     public function getPrefs($prop);
 
-    public static function updateClientInfos(Application $app, $app_id);
-
     public static function get_sys_admins(Application $app);
 
     public static function set_sys_admins(Application $app, $admins);
-
-    public static function reset_sys_admins_rights(Application $app);
 
     public function get_locale();
 
     public static function create(Application $app, $login, $password, $email, $admin, $invite = false);
 
     public static function getInstance($id, Application $app);
-
-    public static function saveQuery(Application $app, $query);
 
     public static function get_usr_id_from_login(Application $app, $login);
 

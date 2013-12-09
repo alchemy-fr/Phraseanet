@@ -11,60 +11,62 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class patch_320alpha6a implements patchInterface
 {
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     private $release = '3.2.0-alpha.6';
 
-    /**
-     *
-     * @var Array
-     */
-    private $concern = array(base::DATA_BOX);
+    /** @var array */
+    private $concern = [base::DATA_BOX];
 
     /**
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function get_release()
     {
         return $this->release;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function require_all_upgrades()
     {
         return false;
     }
 
     /**
-     *
-     * @return Array
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function concern()
     {
         return $this->concern;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $databox, Application $app)
     {
         $sql = 'UPDATE record r, subdef s
-                            SET r.mime = s.mime
-                            WHERE r.record_id = s.record_id AND s.name="document"';
+                SET r.mime = s.mime
+                WHERE r.record_id = s.record_id
+                  AND s.name="document"';
         $stmt = $databox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
         $sql = 'UPDATE subdef s, record r
-                            SET s.updated_on = r.moddate, s.created_on = r.credate
-                            WHERE s.record_id = r.record_id';
+                SET s.updated_on = r.moddate, s.created_on = r.credate
+                WHERE s.record_id = r.record_id';
         $stmt = $databox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();

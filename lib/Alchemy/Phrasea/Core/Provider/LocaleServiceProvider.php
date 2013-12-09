@@ -20,36 +20,18 @@ class LocaleServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['locale'] = $app->share(function (Application $app) {
-            return $app['phraseanet.registry']->get('GV_default_lng', 'en_GB');
-        });
-
-        $app['locale.I18n'] = $app->share(function (Application $app) {
-            $data = explode('_', $app['locale']);
-
-            return $data[0];
-        });
-
-        $app['locale.l10n'] = $app->share(function (Application $app) {
-            $data = explode('_', $app['locale']);
-
-            return $data[1];
+            return $app['phraseanet.registry']->get('GV_default_lng', 'en');
         });
 
         $app['locales.available'] = $app->share(function (Application $app) {
             $availableLanguages = PhraseaApplication::getAvailableLanguages();
 
-            if ($app['phraseanet.configuration']->isSetup()
-                && isset($app['phraseanet.configuration']['main']['languages'])
-                && !empty($app['phraseanet.configuration']['main']['languages'])) {
-                $languages = $app['phraseanet.configuration']['main']['languages'];
+            if ($app['configuration.store']->isSetup() && 0 < count((array) $app['conf']->get(['main', 'languages'], []))) {
+                $languages = $app['conf']->get(['main', 'languages']);
                 $enabledLanguages = $availableLanguages;
 
                 foreach ($enabledLanguages as $code => $language) {
                     if (in_array($code, $languages)) {
-                        continue;
-                    }
-                    $data = explode('_', $code);
-                    if (in_array($data[0], $languages)) {
                         continue;
                     }
                     unset($enabledLanguages[$code]);
@@ -65,27 +47,6 @@ class LocaleServiceProvider implements ServiceProviderInterface
             } else {
                 return $availableLanguages;
             }
-        });
-
-        $app['locales.mapping'] = $app->share(function (Application $app) {
-            $codes = array();
-            foreach ($app['locales.available'] as $code => $language) {
-                $data = explode('_', $code);
-                $codes[$data[0]] = $code;
-            }
-
-            return $codes;
-        });
-
-        $app['locales.I18n.available'] = $app->share(function (Application $app) {
-            $locales = array();
-
-            foreach ($app['locales.available'] as $code => $language) {
-                $data = explode('_', $code);
-                $locales[$data[0]] = $language;
-            }
-
-            return $locales;
         });
     }
 

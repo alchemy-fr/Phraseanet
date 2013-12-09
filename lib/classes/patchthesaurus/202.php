@@ -9,15 +9,9 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-class patchthesaurus_202
+class patchthesaurus_202 implements patchthesaurus_interface
 {
-
-    public function patch($version, &$domct, &$domth, connection_pdo &$connbas)
+    public function patch($version, \DOMDocument $domct, \DOMDocument $domth, \connection_interface $connbas, \unicode $unicode)
     {
         if ($version == "2.0.2") {
             $th = $domth->documentElement;
@@ -35,7 +29,7 @@ class patchthesaurus_202
 
             $sql = "UPDATE pref SET thesaurus_moddate = :date1, cterms_moddate = :date2";
             $stmt = $connbas->prepare($sql);
-            $stmt->execute(array(':date1' => $th->getAttribute("modification_date"), ':date2' => $ct->getAttribute("modification_date")));
+            $stmt->execute([':date1' => $th->getAttribute("modification_date"), ':date2' => $ct->getAttribute("modification_date")]);
             $stmt->closeCursor();
 
             $ct->setAttribute("version", $version = "2.0.3");

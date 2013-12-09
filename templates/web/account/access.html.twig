@@ -1,7 +1,7 @@
 {% extends "account/base.html.twig" %}
 
 {% block title %}
-    {% trans "Granted bases" %}
+    {{ "Granted bases" | trans }}
 {% endblock %}
 
 {% set selected = "access" %}
@@ -27,9 +27,9 @@
                             {% set base_id = sbasId |base_from_coll(collId, app) %}
                             <tr>
                                 <td colspan="3" style="text-align:center;">
-                                    {% trans "login::register: acces authorise sur la collection " %}{{ sbasId |sbas_labels(app) }}
+                                    {{ "login::register: acces authorise sur la collection" | trans }}{{ sbasId |sbas_labels(app) }}
                                     {% if isTrue | trim != "" %}
-                                        <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{% trans "login::register::CGU: lire les CGU" %}</a>
+                                        <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{{ "login::register::CGU: lire les CGU" | trans }}</a>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -46,9 +46,9 @@
                         {% set base_id = sbasId |base_from_coll(collId, app) %}
                         <tr>
                             <td colspan="3" style="text-align: center;">
-                                <span style="color: red;">{% trans "login::register: acces refuse sur la collection " %}{{ sbasId |sbas_labels(app) }}</span>
+                                <span style="color: red;">{{ "login::register: acces refuse sur la collection" | trans }}{{ sbasId |sbas_labels(app) }}</span>
                                 {% if isTrue | trim != "" %}
-                                    <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{% trans "login::register::CGU: lire les CGU" %}</a>
+                                    <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{{ "login::register::CGU: lire les CGU" | trans }}</a>
                                 {% endif %}
                             </td>
                         </tr>
@@ -64,9 +64,9 @@
                         {% set base_id = sbasId |base_from_coll(collId, app) %}
                         <tr>
                             <td colspan="3" style="text-align: center;">
-                                <span style="color: orange;">{% trans "login::register: en attente d\'acces sur" %} {{ sbasId |sbas_labels(app) }}</span>
+                                <span style="color: orange;">{{ "login::register: en attente d\'acces sur" | trans }} {{ sbasId |sbas_labels(app) }}</span>
                                 {% if isTrue | trim != "" %}
-                                    <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{% trans "login::register::CGU: lire les CGU" %}</a>
+                                    <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{{ "login::register::CGU: lire les CGU" | trans }}</a>
                                 {% endif %}
                             </td>
                         </tr>
@@ -79,9 +79,9 @@
                         {% set base_id = sbasId |base_from_coll(collId, app) %}
                         <tr>
                             <td colspan="3" style="text-align: center;">
-                                <span>{% trans "login::register: acces temporaire sur" %} {{ sbasId |sbas_labels(app) }}</span>
+                                <span>{{ "login::register: acces temporaire sur" | trans }} {{ sbasId |sbas_labels(app) }}</span>
                                 {% if isTrue |trim != "" %}
-                                    <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{% trans "login::register::CGU: lire les CGU" %}</a>
+                                    <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{{ "login::register::CGU: lire les CGU" | trans }}</a>
                                 {% endif %}
                             </td>
                         </tr>
@@ -94,9 +94,9 @@
                         {% set base_id = sbasId |base_from_coll(collId, app) %}
                         <tr>
                             <td colspan="3" style="text-align: center;">
-                                <span style="color:red;">{% trans "login::register: acces temporaire termine sur " %}{{ sbasId |sbas_labels(app) }}</span>
+                                <span style="color:red;">{{ "login::register: acces temporaire termine sur" | trans }}{{ sbasId |sbas_labels(app) }}</span>
                                 {% if isTrue |trim != "" %}
-                                    <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{% trans "login::register::CGU: lire les CGU" %}</a>
+                                    <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{{ "login::register::CGU: lire les CGU" | trans }}</a>
                                 {% endif %}
                             </td>
                         </tr>
@@ -109,9 +109,9 @@
                         {% set base_id = sbasId |base_from_coll(collId, app) %}
                         <tr>
                             <td colspan="3" style="text-align: center;">
-                                <span style="color:red;">{% trans "login::register: acces supendu sur" %} {{ sbasId |sbas_labels(app) }}</span>
+                                <span style="color:red;">{{ "login::register: acces supendu sur" | trans }} {{ sbasId |sbas_labels(app) }}</span>
                                 {% if isTrue |trim != "" %}
-                                    <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{% trans "login::register::CGU: lire les CGU" %}</a>
+                                    <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{{ "login::register::CGU: lire les CGU" | trans }}</a>
                                 {% endif %}
                             </td>
                         </tr>
@@ -123,7 +123,7 @@
                     {% if baseInsc["Colls"] %}
                         {% if baseInsc["CGU"] %}
                             <tr>
-                                <td colspan="3" style="text-align: center;">{% trans "login::register: L\'acces aux bases ci-dessous implique l\'acceptation des Conditions Generales d\'Utilisation (CGU) suivantes" %}</td>
+                                <td colspan="3" style="text-align: center;">{{ "login::register: L\'acces aux bases ci-dessous implique l\'acceptation des Conditions Generales d\'Utilisation (CGU) suivantes" | trans }}</td>
                             </tr>
                             <tr>
                                 <td colspan="3" style="text-align: center;"><div style="width: 90%; height: 120px; text-align: left; overflow: auto;">{{ baseInsc["CGU"] }}</div></td>
@@ -136,7 +136,7 @@
                                 <td></td>
                                 <td class="TD_R" style="width: 200px;">
                                     <input style="width: 15px;" class="checkbox" type="checkbox" name="demand[]" value="{{ base_id }}" />
-                                    <span>{% trans "login::register: Faire une demande d\'acces" %}</span>
+                                    <span>{{ "login::register: Faire une demande d\'acces" | trans }}</span>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -148,7 +148,7 @@
                                 <td colspan="3" style="text-align: center;"><hr style="width: 80%"/></td>
                             </tr>
                             <tr>
-                                <td colspan="3" style="text-align: center;">{% trans "login::register: L\'acces aux bases ci-dessous implique l\'acceptation des Conditions Generales d\'Utilisation (CGU) suivantes" %}</td>
+                                <td colspan="3" style="text-align: center;">{{ "login::register: L\'acces aux bases ci-dessous implique l\'acceptation des Conditions Generales d\'Utilisation (CGU) suivantes" | trans }}</td>
                             </tr>
                             <tr>
                                 <td colspan="3" style="text-align: center;">
@@ -160,7 +160,7 @@
                                 <td></td>
                                 <td class="TD_R" style="width: 200px;">
                                     <input style="width: 15px;" class="checkbox" type="checkbox" name="demand[]" value="{{ base_id }}" />
-                                    <span>{% trans "login::register: Faire une demande d\'acces" %}</span>
+                                    <span>{{ "login::register: Faire une demande d\'acces" | trans }}</span>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -169,7 +169,7 @@
             {% endfor %}
         </table>
         <div class="form-actions">
-            <input type="submit" class="btn btn-info" value="{% trans "boutton::valider" %}">
+            <input type="submit" class="btn btn-info" value="{{ "boutton::valider" | trans }}">
         </div>
     </form>
 {% endblock %}

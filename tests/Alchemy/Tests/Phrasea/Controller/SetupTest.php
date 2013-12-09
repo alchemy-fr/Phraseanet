@@ -4,20 +4,14 @@ namespace Alchemy\Tests\Phrasea\Controller;
 
 use Symfony\Component\Yaml\Yaml;
 
-class SetupTest extends \Silex\WebTestCase
+class SetupTest extends \PhraseanetWebTestCaseAbstract
 {
-    protected $app;
-
-    public function createApplication()
-    {
-        return $this->app;
-    }
-
     public function setUp()
     {
-        // set test environment
-        $environment = 'test';
-        $this->app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Root.php';
+        $this->app = $this->loadApp('lib/Alchemy/Phrasea/Application/Root.php');
+//        // set test environment
+//        $environment = 'test';
+//        $this->app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Root.php';
 
         $this->app['phraseanet.configuration-tester'] = $this->getMockBuilder('Alchemy\Phrasea\Setup\ConfigurationTester')
             ->disableOriginalConstructor()
@@ -39,7 +33,7 @@ class SetupTest extends \Silex\WebTestCase
 
     public function testRouteSlashWhenInstalled()
     {
-        $this->app['phraseanet.configuration-tester']->expects($this->once())
+        $this->app['phraseanet.configuration-tester']->expects($this->exactly(2))
             ->method('isInstalled')
             ->will($this->returnValue(true));
         $this->app['phraseanet.configuration-tester']->expects($this->once())
@@ -55,7 +49,7 @@ class SetupTest extends \Silex\WebTestCase
 
     public function testRouteInstructionsWhenUpgradeRequired()
     {
-        $this->app['phraseanet.configuration-tester']->expects($this->once())
+        $this->app['phraseanet.configuration-tester']->expects($this->exactly(2))
             ->method('isInstalled')
             ->will($this->returnValue(false));
         $this->app['phraseanet.configuration-tester']->expects($this->once())
@@ -111,18 +105,23 @@ class SetupTest extends \Silex\WebTestCase
 
         $user->expects($this->exactly(2))
             ->method('get_id')
-            ->will($this->returnValue(4));
+            ->will($this->returnValue(self::$DI['user']->get_id()));
 
         $acl = $this->getMockBuilder('ACL')
             ->disableOriginalConstructor()
             ->getMock();
         $acl->expects($this->once())
             ->method('get_granted_sbas')
-            ->will($this->returnValue(array()));
+            ->will($this->returnValue([]));
 
-        $user->expects($this->once())
-            ->method('ACL')
+        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $aclProvider->expects($this->any())
+            ->method('get')
             ->will($this->returnValue($acl));
+
+        $this->app['acl'] = $aclProvider;
 
         $this->app['phraseanet.installer']->expects($this->once())
             ->method('install')
@@ -141,7 +140,7 @@ class SetupTest extends \Silex\WebTestCase
 
         $dataDir = sys_get_temp_dir() . '/datainstall/';
 
-        $params = array(
+        $params = [
             'email'             => 'user@example.org',
             'password'          => 'prètty%%password',
             'binary_xpdf'       => '/path/to/xpdf',
@@ -164,9 +163,9 @@ class SetupTest extends \Silex\WebTestCase
             'ab_name'           => $abName,
             'db_name'           => $dbName,
             'db_template'       => 'en-simple',
-            'create_task'       => array(),
+            'create_task'       => [],
             'binary_phraseanet_indexer' => '/path/to/phraseanet_indexer',
-        );
+        ];
 
         $crawler = $client->request('POST', '/setup/installer/install/', $params);
         $response = $client->getResponse();

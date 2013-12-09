@@ -19,9 +19,9 @@ class ComposerAutoloaderInit4ea6c38a75e30f622d666844c915395f
             return self::$loader;
         }
 
-        spl_autoload_register(array('ComposerAutoloaderInit4ea6c38a75e30f622d666844c915395f', 'loadClassLoader'), true, true);
+        spl_autoload_register(['ComposerAutoloaderInit4ea6c38a75e30f622d666844c915395f', 'loadClassLoader'], true, true);
         self::$loader = $loader = new \Composer\Autoload\ClassLoader();
-        spl_autoload_unregister(array('ComposerAutoloaderInit4ea6c38a75e30f622d666844c915395f', 'loadClassLoader'));
+        spl_autoload_unregister(['ComposerAutoloaderInit4ea6c38a75e30f622d666844c915395f', 'loadClassLoader']);
 
         $vendorDir = dirname(__DIR__);
         $baseDir = dirname($vendorDir);

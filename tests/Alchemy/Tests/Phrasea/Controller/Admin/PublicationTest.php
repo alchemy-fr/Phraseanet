@@ -13,73 +13,54 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
         $crawler = self::$DI['client']->request('GET', '/admin/publications/list/');
         $pageContent = self::$DI['client']->getResponse()->getContent();
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $feeds = \Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
+        $feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
 
-        foreach ($feeds->get_feeds() as $feed) {
-            $this->assertRegExp('/\/admin\/publications\/feed\/' . $feed->get_id() . '/', $pageContent);
-            if ($feed->get_collection() != null)
-                $this->assertRegExp('/' . $feed->get_collection()->get_label(self::$DI['app']['locale.I18n']) . '/', $pageContent);
-            if ($feed->is_owner(self::$DI['user']))
-                $this->assertEquals(1, $crawler->filterXPath("//form[@action='/admin/publications/feed/" . $feed->get_id() . "/delete/']")->count());
+        foreach ($feeds as $feed) {
+            $this->assertRegExp('/\/admin\/publications\/feed\/' . $feed->getId() . '/', $pageContent);
+            if ($feed->getCollection() != null) {
+                $this->assertRegExp('/' . $feed->getCollection()->get_label(self::$DI['app']['locale']) . '/', $pageContent);
+            }
+            if ($feed->isOwner(self::$DI['user'])) {
+                $this->assertEquals(1, $crawler->filterXPath("//form[@action='/admin/publications/feed/" . $feed->getId() . "/delete/']")->count());
+            }
         }
     }
 
     public function testCreate()
     {
-        $feeds = \Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
-        $count = sizeof($feeds->get_feeds());
+        $feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
+        $count = sizeof($feeds);
 
-        $crawler = self::$DI['client']->request('POST', '/admin/publications/create/', array("title"    => "hello", "subtitle" => "coucou", "base_id"  => self::$DI['collection']->get_base_id()));
+        $crawler = self::$DI['client']->request('POST', '/admin/publications/create/', ["title"    => "hello", "subtitle" => "coucou", "base_id"  => self::$DI['collection']->get_base_id()]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect('/admin/publications/list/'));
 
-        $feeds = \Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
-        $count_after = sizeof($feeds->get_feeds());
+        $feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
+        $count_after = sizeof($feeds);
         $this->assertGreaterThan($count, $count_after);
-
-        $all_feeds = $feeds->get_feeds();
-        $feed = array_pop($all_feeds);
-
-        $feed->delete();
     }
 
     public function testGetFeed()
     {
-        $feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
-        $crawler = self::$DI['client']->request('GET', '/admin/publications/feed/' . $feed->get_id() . '/');
+        $feed = $this->insertOneFeed(self::$DI['user'], "salut");
+        $crawler = self::$DI['client']->request('GET', '/admin/publications/feed/' . $feed->getId() . '/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $this->assertEquals(1, $crawler->filterXPath("//form[@action='/admin/publications/feed/" . $feed->get_id() . "/update/']")->count());
+        $this->assertEquals(1, $crawler->filterXPath("//form[@action='/admin/publications/feed/" . $feed->getId() . "/update/']")->count());
         $this->assertEquals(1, $crawler->filterXPath("//input[@value='salut']")->count());
-        $this->assertEquals(1, $crawler->filterXPath("//input[@value='coucou']")->count());
-
-        $feed->delete();
-    }
-
-    public function testUpdateFeedNotOwner()
-    {
-        $feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user_alt1'], "salut", 'coucou');
-        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->get_id() . "/update/");
-        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect(), 'update fails, i\'m redirected');
-        $this->assertTrue(
-            strpos(
-                self::$DI['client']->getResponse()->headers->get('Location')
-                , '/admin/publications/feed/' . $feed->get_id() . '/?'
-            ) === 0);
-        $feed->delete();
     }
 
     public function testUpdatedFeedException()
     {
 
-        $feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
+        $feed = $this->insertOneFeed(self::$DI['user']);
 
-        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->get_id() . "/update/", array(
+        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/update/", [
             'title'    => 'test'
             , 'subtitle' => 'test'
             , 'public'   => '1'
-        ));
+        ]);
 
-        $feed = new \Feed_Adapter(self::$DI['app'], $feed->get_id());
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', $feed->getId());
 
         $this->assertTrue(
             strpos(
@@ -87,24 +68,22 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
                 , '/admin/publications/list/'
             ) === 0);
 
-        $this->assertEquals('test', $feed->get_title());
-        $this->assertEquals('test', $feed->get_subtitle());
-        $this->assertTrue($feed->is_public());
-        $this->assertNull($feed->get_collection());
-
-        $feed->delete();
+        $this->assertEquals('test', $feed->getTitle());
+        $this->assertEquals('test', $feed->getSubtitle());
+        $this->assertTrue($feed->isPublic());
+        $this->assertNull($feed->getCollection(self::$DI['app']));
     }
 
     public function testUpdatedFeedOwner()
     {
-        $feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
+        $feed = $this->insertOneFeed(self::$DI['user']);
 
-        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->get_id() . "/update/", array(
+        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/update/", [
             'title'    => 'test'
             , 'subtitle' => 'test'
             , 'public'   => '1'
             , 'base_id'  => self::$DI['collection']->get_base_id()
-        ));
+        ]);
 
         $this->assertTrue(
             strpos(
@@ -112,13 +91,13 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
                 , '/admin/publications/list/'
             ) === 0);
 
-        $feed = new \Feed_Adapter(self::$DI['app'], $feed->get_id());
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', $feed->getId());
 
-        $collection = $feed->get_collection();
+        $collection = $feed->getCollection(self::$DI['app']);
 
-        $this->assertEquals('test', $feed->get_title());
-        $this->assertEquals('test', $feed->get_subtitle());
-        $this->assertFalse($feed->is_public());
+        $this->assertEquals('test', $feed->getTitle());
+        $this->assertEquals('test', $feed->getSubtitle());
+        $this->assertTrue($feed->isPublic());
         $this->assertEquals(self::$DI['collection']->get_base_id(), $collection->get_base_id());
 
         $this->assertTrue(
@@ -126,36 +105,28 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
                 self::$DI['client']->getResponse()->headers->get('Location')
                 , '/admin/publications/list/'
             ) === 0);
-
-        $feed->delete();
     }
 
     public function testIconUploadErrorOwner()
     {
-        $feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user_alt1'], "salut", 'coucou');
+        $feed = $this->insertOneFeed(self::$DI['user_alt1']);
 
-        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->get_id() . "/iconupload/", array(), array(), array('HTTP_ACCEPT' => 'application/json'));
+        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/iconupload/", [], [], ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
-        $this->assertTrue($response->isOk());
-
-        $content = json_decode($response->getContent());
-
-        $this->assertFalse($content->success);
-
-        $feed->delete();
+        $this->assertEquals(403, $response->getStatusCode());
     }
 
     public function testIconUploadErrorFileData()
     {
-        $feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
+        $feed = $this->insertOneFeed(self::$DI['user']);
 
         self::$DI['client']->request(
             "POST"
-            , "/admin/publications/feed/" . $feed->get_id() . "/iconupload/"
-            , array()
-            , array('Filedata' => array('error'   => 1))
+            , "/admin/publications/feed/" . $feed->getId() . "/iconupload/"
+            , []
+            , ['Filedata' => ['error'   => 1]]
         );
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
@@ -163,19 +134,17 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
         $content = json_decode($response->getContent());
 
         $this->assertFalse($content->success);
-
-        $feed->delete();
     }
 
     public function testIconUploadErrorFileType()
     {
-        $feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
+        $feed = $this->insertOneFeed(self::$DI['user']);
 
         self::$DI['client']->request(
             "POST"
-            , "/admin/publications/feed/" . $feed->get_id() . "/iconupload/"
-            , array()
-            , array('Filedata' => array('error'    => 0, 'tmp_name' => __DIR__ . '/../../../../../files/test007.ppt'))
+            , "/admin/publications/feed/" . $feed->getId() . "/iconupload/"
+            , []
+            , ['Filedata' => ['error'    => 0, 'tmp_name' => __DIR__ . '/../../../../../files/test007.ppt']]
         );
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
@@ -183,26 +152,24 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
         $content = json_decode($response->getContent());
 
         $this->assertFalse($content->success);
-
-        $feed->delete();
     }
 
     public function testIconUpload()
     {
-        $feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
+        $feed = $this->insertOneFeed(self::$DI['user']);
 
-        $files = array(
-            'files' => array(
+        $files = [
+            'files' => [
                 new \Symfony\Component\HttpFoundation\File\UploadedFile(
                     __DIR__ . '/../../../../../files/logocoll.gif', 'logocoll.gif'
                 )
-            )
-        );
+            ]
+        ];
 
         self::$DI['client']->request(
             "POST"
-            , "/admin/publications/feed/" . $feed->get_id() . "/iconupload/"
-            , array()
+            , "/admin/publications/feed/" . $feed->getId() . "/iconupload/"
+            , []
             , $files
         );
 
@@ -213,113 +180,94 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
         $content = json_decode($response->getContent());
 
         $this->assertTrue($content->success);
-
-        $feed = new \Feed_Adapter(self::$DI['app'], $feed->get_id());
-
-        $feed->delete();
     }
 
     public function testAddPublisher()
     {
-        $feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
+        $feed = $this->insertOneFeed(self::$DI['user']);
 
-        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->get_id() . "/addpublisher/", array(
+        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/addpublisher/", [
             'usr_id' => self::$DI['user_alt1']->get_id()
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
 
-        $feed = new \Feed_Adapter(self::$DI['app'], $feed->get_id());
-        $publishers = $feed->get_publishers();
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', $feed->getId());
+        $publishers = $feed->getPublishers();
 
-        $this->assertTrue(isset($publishers[self::$DI['user_alt1']->get_id()]));
+        $this->assertTrue($feed->isPublisher(self::$DI['user_alt1']));
         $this->assertTrue(
             strpos(
                 self::$DI['client']->getResponse()->headers->get('Location')
-                , '/admin/publications/feed/' . $feed->get_id() . '/'
+                , '/admin/publications/feed/' . $feed->getId() . '/'
             ) === 0);
-
-        $feed->delete();
     }
 
     public function testAddPublisherException()
     {
-        $feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
+        $feed = $this->insertOneFeed(self::$DI['user']);
 
-        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->get_id() . "/addpublisher/");
+        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/addpublisher/");
 
-        $feed = new \Feed_Adapter(self::$DI['app'], $feed->get_id());
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', $feed->getId());
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertTrue(
             strpos(
                 self::$DI['client']->getResponse()->headers->get('Location')
-                , '/admin/publications/feed/' . $feed->get_id() . '/?err'
+                , '/admin/publications/feed/' . $feed->getId() . '/?err'
             ) === 0);
-
-        $feed->delete();
     }
 
     public function testRemovePublisher()
     {
-        $feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
+        $feed = $this->insertOneFeed(self::$DI['user']);
 
-        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->get_id() . "/removepublisher/", array(
+        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/removepublisher/", [
             'usr_id' => self::$DI['user_alt1']->get_id()
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
 
-        $feed = new \Feed_Adapter(self::$DI['app'], $feed->get_id());
-        $publishers = $feed->get_publishers();
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', $feed->getId());
+        $publishers = $feed->getPublishers();
 
         $this->assertFalse(isset($publishers[self::$DI['user_alt1']->get_id()]));
         $this->assertTrue(
             strpos(
                 self::$DI['client']->getResponse()->headers->get('Location')
-                , '/admin/publications/feed/' . $feed->get_id() . '/'
+                , '/admin/publications/feed/' . $feed->getId() . '/'
             ) === 0);
-
-        $feed->delete();
     }
 
     public function testRemovePublisherException()
     {
-        $feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
+        $feed = $this->insertOneFeed(self::$DI['user']);
 
-        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->get_id() . "/removepublisher/");
+        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/removepublisher/");
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
 
-        $feed = new \Feed_Adapter(self::$DI['app'], $feed->get_id());
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', $feed->getId());
 
         $this->assertTrue(
             strpos(
                 self::$DI['client']->getResponse()->headers->get('Location')
-                , '/admin/publications/feed/' . $feed->get_id() . '/?err'
+                , '/admin/publications/feed/' . $feed->getId() . '/?err'
             ) === 0);
-
-        $feed->delete();
     }
 
     public function testDeleteFeed()
     {
-        $feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
+        $feed = $this->insertOneFeed(self::$DI['user']);
 
-        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->get_id() . "/delete/");
+        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/delete/");
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
-
-        try {
-            $feed = new \Feed_Adapter(self::$DI['app'], $feed->get_id());
-            $feed->delete();
-            $this->fail("fail deleting feed");
-        } catch (\Exception $e) {
-
-        }
+        $this->assertNull($feed->getId());
     }
 }

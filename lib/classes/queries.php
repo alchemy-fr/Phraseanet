@@ -9,15 +9,11 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
+use Alchemy\Phrasea\Application;
+use Symfony\Component\Translation\TranslatorInterface;
+
 class queries
 {
-
     public static function tree_topics($I18N)
     {
         $out = '';
@@ -74,7 +70,7 @@ class queries
         return false;
     }
 
-    public static function dropdown_topics($I18n)
+    public static function dropdown_topics(TranslatorInterface $translator, $I18n)
     {
         $out = '';
 
@@ -165,11 +161,11 @@ class queries
                         <form name="pops" onsubmit="return(false);" style="margin:0px; margin-left:5px; margin-right:5px">
                             <table>
                                 <tr>
-                                    <td colspan="2">' . _('boutton::chercher') . ' :
+                                    <td colspan="2">' . $translator->trans('boutton::chercher') . ' :
                                     <input style="width:180px" type="text" name="qry"></td>
                                 </tr>
                             </table>
-                            ' . _('client::recherche: dans les categories') . '<br/>';
+                            ' . $translator->trans('client::recherche: dans les categories') . '<br/>';
 
         for ($i = 0; $i <= $maxdepth; $i ++) {
             $out .= '<p id="divTopic_' . $i . '" style="margin:0px;margin-bottom:5px;" >
@@ -178,7 +174,7 @@ class queries
                                 </p>';
         }
         $out .= '<div style="text-align:right;">
-                                <input type="submit" value="' . _('boutton::chercher') . '" onclick="doSearchTopPop();" />
+                                <input type="submit" value="' . $translator->trans('boutton::chercher') . '" onclick="doSearchTopPop();" />
                             </div>
                         </form>
                     </div>
@@ -188,22 +184,16 @@ class queries
         return $out;
     }
 
-    public static function history(appbox $appbox, $usr_id)
+    public static function history(Application $app, $usrId)
     {
-        $conn = $appbox->get_connection();
-
-        $sql = "SELECT query from dsel where usr_id = :usr_id
-            ORDER BY id DESC LIMIT 0,25";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':usr_id' => $usr_id));
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
         $history = '<ul>';
 
-        foreach ($rs as $row) {
-            $history .= '<li onclick="doSpecialSearch(\'' . str_replace(array("'", '"'), array("\'", '&quot;'), $row["query"]) . '\')">' . $row["query"] . '</li>';
+        $queries = $app['EM']
+            ->getRepository('Alchemy\Phrasea\Model\Entities\UserQuery')
+            ->findBy(['usrId' => $usrId], ['created' => 'ASC'], 25, 0);
+
+        foreach ($queries as $query) {
+            $history .= '<li onclick="doSpecialSearch(\'' . str_replace(["'", '"'], ["\'", '&quot;'], $query->getQuery()) . '\')">' . $query->getQuery() . '</li>';
         }
 
         $history .= '<ul>';
@@ -231,7 +221,7 @@ class queries
             $t .= '{ ';
             $t .= 'label:"' . p4string::MakeString(utf8_decode($subtopic->label), 'js') . '"';
             if ($q = $subtopic->query) {
-                $q = str_replace(array("\\", "'", "\r", "\n"), array("\\\\", "\\'", "\\r", "\\n"), $subtopic->query);
+                $q = str_replace(["\\", "'", "\r", "\n"], ["\\\\", "\\'", "\\r", "\\n"], $subtopic->query);
                 $t .= ", query:'" . $q . "'";
             } else {
                 $t .= ', query:null';
@@ -257,7 +247,7 @@ class queries
             $l = p4string::MakeString($s, 'html');
             $l = '<span class=\'topic_' . $depth . '\'>' . $l . '</span>';
             if ($subtopic->query) {
-                $q = str_replace(array("\\", "\"", "'", "\r", "\n"), array("\\\\", "&quot;", "\\'", "\\r", "\\n"), $subtopic->query);
+                $q = str_replace(["\\", "\"", "'", "\r", "\n"], ["\\\\", "&quot;", "\\'", "\\r", "\\n"], $subtopic->query);
                 $q = '<a href="javascript:void();" onClick="doSpecialSearch(\'' . $q . '\',true);">' . $l . '</a>';
             } else {
                 $q = $l;

@@ -12,17 +12,8 @@
 namespace Alchemy\Phrasea\Helper;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Entities\Basket as BasketEntity;
+use Alchemy\Phrasea\Model\Entities\Basket as BasketEntity;
 
-/**
- *
- * WorkZone provides methods for working with the working zone of Phraseanet
- * Production. This zones handles Non-Archived baskets, stories and Validation
- * people are waiting from me.
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class WorkZone extends Helper
 {
     const BASKETS = 'baskets';
@@ -41,10 +32,10 @@ class WorkZone extends Helper
      */
     public function getContent($sort)
     {
-        /* @var $repo_baskets \Doctrine\Repositories\BasketRepository */
-        $repo_baskets = $this->app['EM']->getRepository('Entities\Basket');
+        /* @var $repo_baskets Alchemy\Phrasea\Model\Repositories\BasketRepository */
+        $repo_baskets = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-        $sort = in_array($sort, array('date', 'name')) ? $sort : 'name';
+        $sort = in_array($sort, ['date', 'name']) ? $sort : 'name';
 
         $ret = new ArrayCollection();
 
@@ -54,18 +45,18 @@ class WorkZone extends Helper
         if (0 === count($baskets)) {
             $basket = new BasketEntity();
 
-            $basket->setName(_('Default basket'));
+            $basket->setName($this->app->trans('Default basket'));
             $basket->setOwner($this->app['authentication']->getUser());
 
             $this->app['EM']->persist($basket);
             $this->app['EM']->flush();
-            $baskets = array($basket);
+            $baskets = [$basket];
         }
 
         $validations = $repo_baskets->findActiveValidationByUser($this->app['authentication']->getUser(), $sort);
 
-        /* @var $repo_stories \Doctrine\Repositories\StoryWZRepository */
-        $repo_stories = $this->app['EM']->getRepository('Entities\StoryWZ');
+        /* @var $repo_stories Alchemy\Phrasea\Model\Repositories\StoryWZRepository */
+        $repo_stories = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\StoryWZ');
 
         $stories = $repo_stories->findByUser($this->app, $this->app['authentication']->getUser(), $sort);
 
@@ -78,6 +69,5 @@ class WorkZone extends Helper
 
     protected function sortBaskets(array $baskets)
     {
-        $tmp_baskets = array();
     }
 }

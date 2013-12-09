@@ -19,11 +19,11 @@ abstract class AbstractPluginCommand extends Command
 {
     protected function validatePlugins(InputInterface $input, OutputInterface $output)
     {
-        $manifests = array();
+        $manifests = [];
 
         $output->write("Validating plugins...");
         foreach ($this->container['plugins.explorer'] as $directory) {
-            $manifests[] = $manifest = $this->container['plugins.plugins-validator']->validatePlugin($directory);
+            $manifests[] = $this->container['plugins.plugins-validator']->validatePlugin($directory);
         }
         $output->writeln(" <comment>OK</comment>");
 
@@ -38,8 +38,8 @@ abstract class AbstractPluginCommand extends Command
         $this->container['plugins.autoloader-generator']->write($manifests);
         $output->writeln(" <comment>OK</comment>");
 
-        $output->write('Building LESS assets');
-        $this->container['phraseanet.less-builder']->build($this->container['phraseanet.less-mapping.customizable'], $output);
+        $output->write('Building LESS assets ...');
+        $this->container['phraseanet.less-builder']->build($this->container['phraseanet.less-mapping.customizable']);
         $output->writeln(" <comment>OK</comment>");
     }
 }

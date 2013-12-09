@@ -11,8 +11,8 @@
 
 class module_report_dashboard_sort implements module_report_dashboard_componentInterface
 {
-    public $arrayToSort = array();
-    public $arraySorted = array();
+    public $arrayToSort = [];
+    public $arraySorted = [];
 
     public function __construct(module_report_dashboard_merge $tridash)
     {
@@ -99,7 +99,7 @@ class module_report_dashboard_sort implements module_report_dashboard_componentI
 
         foreach ($args as $n => $field) {
             if (is_string($field)) { // = clef
-                $tmp = array();
+                $tmp = [];
                 foreach ($data as $key => $row)
                     $tmp[$key] = $row[$field];
                 $args[$n] = &$tmp;
@@ -130,15 +130,15 @@ class module_report_dashboard_sort implements module_report_dashboard_componentI
     public function getTop($nbtop)
     {
         if ( ! is_int($nbtop)) {
-            return array();
+            return [];
         }
 
-        $tmp = array();
+        $tmp = [];
 
         if ($this->isValid()) {
             foreach ($this->arraySorted as $k => $v) {
                 $i = 0;
-                $tmp[$k] = array();
+                $tmp[$k] = [];
                 foreach ($v as $a) {
                     if ($i < $nbtop)
                         array_push($tmp[$k], $a);

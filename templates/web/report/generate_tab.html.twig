@@ -12,10 +12,10 @@
                 <div class="left titleleft">
                     <div class="title left">{{ result.title }}</div>
                     {% if result.config %}
-                        <a href="#" class="config left"><img title="{% trans 'report :: configurer le tableau' %}" src="/skins/report/img/config.png"/></a>
+                        <a href="#" class="config left"><img title="{{ 'report :: configurer le tableau' | trans }}" src="/skins/report/img/config.png"/></a>
                     {% endif %}
                     {% if result.print %}
-                        <a href="#" class="jqprint left"><img  title="{% trans 'report :: imprimer le tableau' %}" src="/skins/report/img/print.png"/></a>
+                        <a href="#" class="jqprint left"><img  title="{{ 'report :: imprimer le tableau' | trans }}" src="/skins/report/img/print.png"/></a>
                     {% endif %}
                     {% if result.csv %}
                         <form class="form_csv left" method="POST" action="{{ path('report_export_csv') }}" target="iframe" >
@@ -33,15 +33,11 @@
                     {% if total_count > 0 and total_count != 0 %}
                         <i>
                             {% if total_count == 1 %}
-                                {% trans %}
-                                    1 result
-                                {% endtrans %}
+                                {% trans %}1 result{% endtrans %}
                             {% else %}
-                                {% trans %}
-                                    {{ total_count }} results
-                                {% endtrans %}
+                                {% trans with {'%total_count%' : total_count} %}%total_count% results{% endtrans %}
                             {% endif %}
-                            
+
                         </i>
                     {% endif %}
                 </div>
@@ -53,8 +49,8 @@
                 <th class="{{ key }}" scope="col" >
                 {% if value.sort == 1 %}
                     <div class="orderby">
-                        <img title="{% trans "Trier" %}" style="float:left;top:0;left:0;" class="asc" src="/skins/report/img/arrow_up.png"  />
-                        <img title="{% trans "Trier" %}" style="float:left;top:0;left:0;" class="desc" src="/skins/report/img/arrow_down.png" />
+                        <img title="{{ "Trier" | trans }}" style="float:left;top:0;left:0;" class="asc" src="/skins/report/img/arrow_up.png"  />
+                        <img title="{{ "Trier" | trans }}" style="float:left;top:0;left:0;" class="desc" src="/skins/report/img/arrow_down.png" />
                 {% endif %}
 
                 <div class="title_th" style="clear:both;color:black;">{{ value.title }}</div>
@@ -66,11 +62,11 @@
                 <div style="height:8px;">
 
                 {% if value.filter == 1 %}
-                    <a href="#" title="{% trans "Filtrer" %}" style="float:left;bottom:0;left:0;font-size:8px;" class="{{ key }} filter ">{% trans "report :: filtrer" %}</a>
+                    <a href="#" title="{{ "Filtrer" | trans }}" style="float:left;bottom:0;left:0;font-size:8px;" class="{{ key }} filter ">{{ "report :: filtrer" | trans }}</a>
                 {% endif %}
 
                 {% if value.groupby == 1 %}
-                    <a href="#" title="{% trans "Grouper" %}" style="float:right;bottom:0;right:0;font-size:8px;" class="{{ key }} groupby ">{% trans "report :: grouper" %}</a>
+                    <a href="#" title="{{ "Grouper" | trans }}" style="float:right;bottom:0;right:0;font-size:8px;" class="{{ key }} groupby ">{{ "report :: grouper" | trans }}</a>
                 {% endif %}
                 </div>
                 </th>
@@ -89,7 +85,7 @@
                     {% for key , res in value %}
                        {% if key == class %}
                             {% if config.bound == 1 and "</i>" not in res %}
-                                {% if key == "user" and value.user == "<b>TOTAL</b>"%}
+                                {% if key == "user" and value.user == "<b>TOTAL</b>" %}
                                     {{ res|raw }}
                                 {% elseif is_nav or is_doc %}
                                     <a href="#" rel ="" class="{{res}} bound">{{ res|raw }}</a>
@@ -119,6 +115,6 @@
         <br />
         <img src="/skins/report/img/noresults.png" />
         <br />
-        <i>{% trans "report :: aucun resultat trouve" %}</i><br />
+        <i>{{ "report :: aucun resultat trouve" | trans }}</i><br />
     </div>
 {% endif %}

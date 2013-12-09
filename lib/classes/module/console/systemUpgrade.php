@@ -9,13 +9,6 @@
  * file that was distributed with this source code.
  */
 
-/**
- * @todo write tests
- *
- * @package     KonsoleKomander
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -57,8 +50,8 @@ class module_console_systemUpgrade extends Command
             $dialog = $this->getHelperSet()->get('dialog');
 
             do {
-                $continue = mb_strtolower($dialog->ask($output, '<question>' . _('Continuer ?') . ' (Y/n)</question>', 'Y'));
-            } while (!in_array($continue, array('y', 'n')));
+                $continue = mb_strtolower($dialog->ask($output, '<question>' . $this->container->trans('Continuer ?') . ' (Y/n)</question>', 'Y'));
+            } while (!in_array($continue, ['y', 'n']));
         } else {
             $continue = 'y';
         }
@@ -66,11 +59,11 @@ class module_console_systemUpgrade extends Command
         if ($continue == 'y') {
             $output->write('<info>Upgrading...</info>', true);
 
-            if (count(User_Adapter::get_wrong_email_users($this->container)) > 0) {
+            try {
+                $upgrader = new Setup_Upgrade($this->container, $input->getOption('force'));
+            } catch (\Exception_Setup_FixBadEmailAddresses $e) {
                 return $output->writeln(sprintf('<error>You have to fix your database before upgrade with the system:mailCheck command </error>'));
             }
-
-            $upgrader = new Setup_Upgrade($this->container, $input->getOption('force'));
 
             $queries = $this->getService('phraseanet.appbox')->forceUpgrade($upgrader, $this->container);
 

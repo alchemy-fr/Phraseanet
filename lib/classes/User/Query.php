@@ -12,12 +12,6 @@
 use Alchemy\Phrasea\Application;
 use Doctrine\Common\Collections\ArrayCollection;
 
-/**
- *
- * @package     User
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class User_Query implements User_QueryInterface
 {
     /**
@@ -30,19 +24,19 @@ class User_Query implements User_QueryInterface
      *
      * @var Array
      */
-    protected $results = array();
+    protected $results = [];
 
     /**
      *
      * @var Array
      */
-    protected $sort = array();
+    protected $sort = [];
 
     /**
      *
      * @var Array
      */
-    protected $like_field = array();
+    protected $like_field = [];
 
     /**
      *
@@ -78,13 +72,13 @@ class User_Query implements User_QueryInterface
      *
      * @var Array
      */
-    protected $active_bases = array();
+    protected $active_bases = [];
 
     /**
      *
      * @var Array
      */
-    protected $active_sbas = array();
+    protected $active_sbas = [];
 
     /**
      *
@@ -120,13 +114,13 @@ class User_Query implements User_QueryInterface
      *
      * @var Array
      */
-    protected $base_ids = array();
+    protected $base_ids = [];
 
     /**
      *
      * @var Array
      */
-    protected $sbas_ids = array();
+    protected $sbas_ids = [];
 
     /**
      *
@@ -211,7 +205,7 @@ class User_Query implements User_QueryInterface
      */
     protected function generate_sql_constraints()
     {
-        $this->sql_params = array();
+        $this->sql_params = [];
 
         $sql = '
       FROM usr LEFT JOIN basusr ON (usr.usr_id = basusr.usr_id)
@@ -265,8 +259,6 @@ class User_Query implements User_QueryInterface
         if ($this->templates) {
             $sql .= $this->generate_field_constraints('lastModel', $this->templates);
         }
-
-        $baslist = array();
 
         if (count($this->base_ids) == 0) {
             if ($this->bases_restrictions)
@@ -326,12 +318,12 @@ class User_Query implements User_QueryInterface
             $sql .= ' AND usr.lastModel = "' . mysql_real_escape_string($this->last_model) . '" ';
         }
 
-        $sql_like = array();
+        $sql_like = [];
 
         foreach ($this->like_field as $like_field => $like_value) {
             switch ($like_field) {
                 case self::LIKE_NAME:
-                    $qrys = array();
+                    $qrys = [];
                     foreach (explode(' ', $like_value) as $like_val) {
                         if (trim($like_val) === '')
                             continue;
@@ -340,9 +332,9 @@ class User_Query implements User_QueryInterface
                             ' (usr.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci
                 OR usr.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci)  '
                             , self::LIKE_FIRSTNAME
-                            , str_replace(array('"', '%'), array('\"', '\%'), $like_val)
+                            , str_replace(['"', '%'], ['\"', '\%'], $like_val)
                             , self::LIKE_LASTNAME
-                            , str_replace(array('"', '%'), array('\"', '\%'), $like_val)
+                            , str_replace(['"', '%'], ['\"', '\%'], $like_val)
                         );
                     }
 
@@ -359,7 +351,7 @@ class User_Query implements User_QueryInterface
                     $sql_like[] = sprintf(
                         ' usr.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci '
                         , $like_field
-                        , str_replace(array('"', '%'), array('\"', '\%'), $like_value)
+                        , str_replace(['"', '%'], ['\"', '\%'], $like_value)
                     );
                     break;
                 default;
@@ -376,7 +368,7 @@ class User_Query implements User_QueryInterface
     protected function generate_field_constraints($fieldName, ArrayCollection $fields)
     {
         $n = 0;
-        $constraints = array();
+        $constraints = [];
 
         foreach ($fields as $field) {
             $constraints[':' . $fieldName . $n ++] = $field;
@@ -391,7 +383,7 @@ class User_Query implements User_QueryInterface
 
     public function in(array $usr_ids)
     {
-        $tmp_usr_ids = array();
+        $tmp_usr_ids = [];
 
         foreach ($usr_ids as $usr_id) {
             $tmp_usr_ids[] = (int) $usr_id;
@@ -497,51 +489,11 @@ class User_Query implements User_QueryInterface
     public function execute()
     {
         $conn = $this->app['phraseanet.appbox']->get_connection();
-
-        $sorter = array();
-
-        foreach ($this->sort as $sort => $ord) {
-
-            $k = count($sorter);
-
-            switch ($sort) {
-                case self::SORT_FIRSTNAME:
-                case self::SORT_LASTNAME:
-                case self::SORT_COMPANY:
-                case self::SORT_LOGIN:
-                case self::SORT_EMAIL:
-                    $sorter[$k] = ' usr.`' . $sort . '` COLLATE utf8_unicode_ci ';
-                    break;
-                case self::SORT_ID:
-                case self::SORT_CREATIONDATE:
-                case self::SORT_COUNTRY:
-                case self::SORT_LASTMODEL:
-                    $sorter[$k] = ' usr.`' . $sort . '` ';
-                    break;
-                default:
-                    break;
-            }
-
-            if ( ! isset($sorter[$k]))
-                continue;
-
-            switch ($ord) {
-                case self::ORD_ASC:
-                default:
-                    $sorter[$k] .= ' ASC ';
-                    break;
-                case self::ORD_DESC:
-                    $sorter[$k] .= ' DESC ';
-                    break;
-            }
-        }
-
         $sql = 'SELECT DISTINCT usr.usr_id ' . $this->generate_sql_constraints();
 
-        $sorter = implode(', ', $sorter);
-
-        if (trim($sorter) != '')
+        if ('' !== $sorter = $this->generate_sort_constraint()) {
             $sql .= ' ORDER BY ' . $sorter;
+        }
 
         if (is_int($this->offset_start) && is_int($this->results_quantity)) {
             $sql .= sprintf(
@@ -686,17 +638,7 @@ class User_Query implements User_QueryInterface
      */
     public function like($like_field, $like_value)
     {
-
-//    if ($like_field == self::LIKE_NAME)
-//    {
-//      $this->like_field[self::LIKE_FIRSTNAME] = trim($like_value);
-//      $this->like_field[self::LIKE_LASTNAME] = trim($like_value);
-//    }
-//    else
-//    {
         $this->like_field[trim($like_field)] = trim($like_value);
-//    }
-
         $this->total = $this->page = $this->total_page = null;
 
         return $this;
@@ -931,7 +873,7 @@ class User_Query implements User_QueryInterface
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $activities = array();
+        $activities = [];
 
         foreach ($rs as $row) {
             if (trim($row['activite']) === '')
@@ -956,7 +898,7 @@ class User_Query implements User_QueryInterface
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $fonction = array();
+        $fonction = [];
 
         foreach ($rs as $row) {
             if (trim($row['fonction']) === '')
@@ -983,7 +925,7 @@ class User_Query implements User_QueryInterface
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $pays = array();
+        $pays = [];
 
         $ctry = \getCountries($this->app['locale']);
 
@@ -1011,7 +953,7 @@ class User_Query implements User_QueryInterface
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $societe = array();
+        $societe = [];
 
         foreach ($rs as $row) {
             if (trim($row['societe']) === '')
@@ -1036,7 +978,7 @@ class User_Query implements User_QueryInterface
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $lastModel = array();
+        $lastModel = [];
 
         foreach ($rs as $row) {
             if (trim($row['lastModel']) === '')
@@ -1046,5 +988,48 @@ class User_Query implements User_QueryInterface
         }
 
         return $lastModel;
+    }
+
+    private function generate_sort_constraint()
+    {
+        $sorter = [];
+
+        foreach ($this->sort as $sort => $ord) {
+
+            $k = count($sorter);
+
+            switch ($sort) {
+                case self::SORT_FIRSTNAME:
+                case self::SORT_LASTNAME:
+                case self::SORT_COMPANY:
+                case self::SORT_LOGIN:
+                case self::SORT_EMAIL:
+                    $sorter[$k] = ' usr.`' . $sort . '` COLLATE utf8_unicode_ci ';
+                    break;
+                case self::SORT_ID:
+                case self::SORT_CREATIONDATE:
+                case self::SORT_COUNTRY:
+                case self::SORT_LASTMODEL:
+                    $sorter[$k] = ' usr.`' . $sort . '` ';
+                    break;
+                default:
+                    break;
+            }
+
+            if ( ! isset($sorter[$k]))
+                continue;
+
+            switch ($ord) {
+                case self::ORD_ASC:
+                default:
+                    $sorter[$k] .= ' ASC ';
+                    break;
+                case self::ORD_DESC:
+                    $sorter[$k] .= ' DESC ';
+                    break;
+            }
+        }
+
+        return implode(', ', $sorter);
     }
 }

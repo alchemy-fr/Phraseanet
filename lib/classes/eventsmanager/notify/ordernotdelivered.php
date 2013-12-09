@@ -14,23 +14,18 @@ use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Emitter;
 use Alchemy\Phrasea\Notification\Mail\MailInfoOrderCancelled;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstract
 {
     /**
      *
      * @var string
      */
-    public $events = array('__ORDER_NOT_DELIVERED__');
+    public $events = ['__ORDER_NOT_DELIVERED__'];
 
     public function __construct(Application $app, eventsmanager_broker $broker)
     {
-        $this->group = _('Commande');
         parent::__construct($app, $broker);
+        $this->group = $this->app->trans('Commande');
 
         return $this;
     }
@@ -42,11 +37,11 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
 
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'from' => ''
             , 'to'   => ''
             , 'n'    => ''
-        );
+        ];
 
         $params = array_merge($default, $params);
 
@@ -113,31 +108,29 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
         $n = (int) $sx->n;
 
         try {
-            $registered_user = User_Adapter::getInstance($from, $this->app);
+            User_Adapter::getInstance($from, $this->app);
         } catch (Exception $e) {
-            return array();
+            return [];
         }
 
         $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
 
-        $ret = array(
-            'text'  => sprintf(
-                _('%1$s a refuse la livraison de %2$d document(s) pour votre commande'), $sender, $n
-            )
+        $ret = [
+            'text'  => $this->app->trans('%user% a refuse la livraison de %quantity% document(s) pour votre commande', ['%user%' => $sender, '%quantity%' => $n])
             , 'class' => ''
-        );
+        ];
 
         return $ret;
     }
 
     public function get_name()
     {
-        return _('Refus d\'elements de commande');
+        return $this->app->trans('Refus d\'elements de commande');
     }
 
     public function get_description()
     {
-        return _('Refus d\'elements de commande');
+        return $this->app->trans('Refus d\'elements de commande');
     }
 
     /**

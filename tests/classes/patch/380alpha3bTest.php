@@ -15,8 +15,8 @@ class patch_380alpha3bTest extends PhraseanetPHPUnitAbstract
 
         $app = self::$DI['app'];
 
-        $app['phraseanet.configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
-        $app['phraseanet.configuration']->expects($this->once())
+        $app['configuration.store'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
+        $app['configuration.store']->expects($this->once())
             ->method('setDefault')
             ->with('main', 'search-engine');
 

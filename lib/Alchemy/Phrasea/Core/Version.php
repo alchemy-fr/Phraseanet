@@ -11,15 +11,10 @@
 
 namespace Alchemy\Phrasea\Core;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Version
 {
-    protected static $number = '3.8.3-alpha.2';
-    protected static $name = 'Diplodocus';
+    protected static $number = '3.9.0-alpha.9';
+    protected static $name = 'Epanterias';
 
     public static function getNumber()
     {

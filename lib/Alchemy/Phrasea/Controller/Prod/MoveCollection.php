@@ -16,16 +16,12 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class MoveCollection implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.prod.move-collection'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
@@ -34,50 +30,53 @@ class MoveCollection implements ControllerProviderInterface
                 ->requireRight('deleterecord');
         });
 
-        $controllers->post('/', $this->call('displayForm'))->bind('prod_move_collection');
-        $controllers->post('/apply/', $this->call('apply'))->bind('prod_move_collection_apply');
+        $controllers->post('/', 'controller.prod.move-collection:displayForm')
+            ->bind('prod_move_collection');
+
+        $controllers->post('/apply/', 'controller.prod.move-collection:apply')
+            ->bind('prod_move_collection_apply');
 
         return $controllers;
     }
 
     public function displayForm(Application $app, Request $request)
     {
-        $records = RecordsRequest::fromRequest($app, $request, false, array('candeleterecord'));
+        $records = RecordsRequest::fromRequest($app, $request, false, ['candeleterecord']);
 
         $sbas_ids = array_map(function (\databox $databox) {
                 return $databox->get_sbas_id();
             }, $records->databoxes());
 
-        $collections = $app['authentication']->getUser()->ACL()
-            ->get_granted_base(array('canaddrecord'), $sbas_ids);
+        $collections = $app['acl']->get($app['authentication']->getUser())
+            ->get_granted_base(['canaddrecord'], $sbas_ids);
 
-        $parameters = array(
+        $parameters = [
             'records'     => $records,
             'message'     => '',
             'collections' => $collections,
-        );
+        ];
 
         return $app['twig']->render('prod/actions/collection_default.html.twig', $parameters);
     }
 
     public function apply(Application $app, Request $request)
     {
-        $records = RecordsRequest::fromRequest($app, $request, false, array('candeleterecord'));
+        $records = RecordsRequest::fromRequest($app, $request, false, ['candeleterecord']);
 
-        $datas = array(
+        $datas = [
             'success' => false,
             'message' => '',
-        );
+        ];
 
         try {
             if (null === $request->request->get('base_id')) {
-                $datas['message'] = _('Missing target collection');
+                $datas['message'] = $app->trans('Missing target collection');
 
                 return $app->json($datas);
             }
 
-            if (!$app['authentication']->getUser()->ACL()->has_right_on_base($request->request->get('base_id'), 'canaddrecord')) {
-                $datas['message'] = sprintf(_("You do not have the permission to move records to %s"), \phrasea::bas_labels($move->getBaseIdDestination(), $app));
+            if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($request->request->get('base_id'), 'canaddrecord')) {
+                $datas['message'] = $app->trans("You do not have the permission to move records to %collection%", ['%collection%', \phrasea::bas_labels($request->request->get('base_id'), $app)]);
 
                 return $app->json($datas);
             }
@@ -85,7 +84,7 @@ class MoveCollection implements ControllerProviderInterface
             try {
                 $collection = \collection::get_from_base_id($app, $request->request->get('base_id'));
             } catch (\Exception_Databox_CollectionNotFound $e) {
-                $datas['message'] = _('Invalid target collection');
+                $datas['message'] = $app->trans('Invalid target collection');
 
                 return $app->json($datas);
             }
@@ -95,35 +94,24 @@ class MoveCollection implements ControllerProviderInterface
 
                 if ($request->request->get("chg_coll_son") == "1") {
                     foreach ($record->get_children() as $child) {
-                        if ($app['authentication']->getUser()->ACL()->has_right_on_base($child->get_base_id(), 'candeleterecord')) {
+                        if ($app['acl']->get($app['authentication']->getUser())->has_right_on_base($child->get_base_id(), 'candeleterecord')) {
                             $child->move_to_collection($collection, $app['phraseanet.appbox']);
                         }
                     }
                 }
             }
 
-            $ret = array(
+            $ret = [
                 'success' => true,
-                'message' => _('Records have been successfuly moved'),
-            );
+                'message' => $app->trans('Records have been successfuly moved'),
+            ];
         } catch (\Exception $e) {
-            $ret = array(
+            $ret = [
                 'success' => false,
-                'message' => _('An error occured'),
-            );
+                'message' => $app->trans('An error occured'),
+            ];
         }
 
         return $app->json($ret);
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

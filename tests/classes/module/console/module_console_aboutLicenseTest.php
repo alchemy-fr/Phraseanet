@@ -20,7 +20,7 @@ class module_console_aboutLicenseTest extends PHPUnit_Framework_TestCase
 
         $command = $application['console']->find('about:license');
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array('command' => $command->getName()));
+        $commandTester->execute(['command' => $command->getName()]);
 
         $this->assertEquals(
             trim(file_get_contents(__DIR__ . '/../../../../LICENSE'))

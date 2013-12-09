@@ -11,21 +11,17 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
-/**
- * Gif Subdef
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
+use Symfony\Component\Translation\TranslatorInterface;
+
 class Gif extends Image
 {
     const OPTION_DELAY = 'delay';
 
-    public function __construct()
+    public function __construct(TranslatorInterface $translator)
     {
-        parent::__construct();
+        parent::__construct($translator);
 
-        $this->registerOption(new OptionType\Range(_('Delay'), self::OPTION_DELAY, 50, 500, 100));
+        $this->registerOption(new OptionType\Range($this->translator->trans('Delay'), self::OPTION_DELAY, 50, 500, 100));
     }
 
     public function getType()
@@ -35,7 +31,7 @@ class Gif extends Image
 
     public function getDescription()
     {
-        return _('Generates an animated Gif file');
+        return $this->translator->trans('Generates an animated Gif file');
     }
 
     public function getMediaAlchemystSpec()

@@ -41,7 +41,7 @@ class CheckEnvironment extends AbstractCheckCommand
      */
     protected function provideRequirements()
     {
-        return array(
+        return [
             new BinariesRequirements(),
             new CacheServerRequirement(),
             new FilesystemRequirements(),
@@ -50,6 +50,6 @@ class CheckEnvironment extends AbstractCheckCommand
             new PhraseaRequirements(),
             new PhpRequirements(),
             new SystemRequirements(),
-        );
+        ];
     }
 }

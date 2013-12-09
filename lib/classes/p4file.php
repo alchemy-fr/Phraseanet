@@ -17,7 +17,7 @@ class p4file
         $ret = false;
 
         if ($registry->get('GV_h264_streaming') && is_file($file)) {
-            if (($pos = mb_strpos($file, $registry->get('GV_mod_auth_token_directory_path'))) === false) {
+            if (mb_strpos($file, $registry->get('GV_mod_auth_token_directory_path')) === false) {
                 return false;
             }
 

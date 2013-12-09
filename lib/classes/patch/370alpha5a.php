@@ -11,48 +11,49 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class patch_370alpha5a implements patchInterface
 {
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     private $release = '3.7.0-alpha.5';
 
-    /**
-     *
-     * @var Array
-     */
-    private $concern = array(base::DATA_BOX);
+    /** @var array */
+    private $concern = [base::DATA_BOX];
 
     /**
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function get_release()
     {
         return $this->release;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function require_all_upgrades()
     {
         return false;
     }
 
     /**
-     *
-     * @return Array
+     * {@inheritdoc}
      */
     public function concern()
     {
         return $this->concern;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $databox, Application $app)
     {
 
@@ -62,20 +63,20 @@ class patch_370alpha5a implements patchInterface
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $update = array();
+        $update = [];
 
         foreach ($rs as $row) {
             $src = str_replace(
-                array('/rdf:RDF/rdf:Description/PHRASEANET:', '/rdf:RDF/rdf:Description/'), array('Phraseanet:', ''), $row['src']
+                ['/rdf:RDF/rdf:Description/PHRASEANET:', '/rdf:RDF/rdf:Description/'], ['Phraseanet:', ''], $row['src']
             );
-            $update[] = array('id'  => $row['id'], 'src' => $src);
+            $update[] = ['id'  => $row['id'], 'src' => $src];
         }
 
         $sql = 'UPDATE metadatas_structure SET src = :src WHERE id = :id';
         $stmt = $databox->get_connection()->prepare($sql);
 
         foreach ($update as $row) {
-            $stmt->execute(array(':src' => $row['src'], ':id'  => $row['id']));
+            $stmt->execute([':src' => $row['src'], ':id'  => $row['id']]);
         }
 
         $stmt->closeCursor();

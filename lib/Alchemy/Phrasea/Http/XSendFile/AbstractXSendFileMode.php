@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
 abstract class AbstractXSendFileMode
 {
-    protected $mapping = array();
+    protected $mapping = [];
 
     /**
      * @params array $mapping

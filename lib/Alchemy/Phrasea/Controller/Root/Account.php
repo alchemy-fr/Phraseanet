@@ -97,18 +97,18 @@ class Account implements ControllerProviderInterface
 
                 if ($app['auth.password-encoder']->isPasswordValid($user->get_password(), $data['oldPassword'], $user->get_nonce())) {
                     $user->set_password($data['password']);
-                    $app->addFlash('success', _('login::notification: Mise a jour du mot de passe avec succes'));
+                    $app->addFlash('success', $app->trans('login::notification: Mise a jour du mot de passe avec succes'));
 
                     return $app->redirectPath('account');
                 } else {
-                    $app->addFlash('error', _('Invalid password provided'));
+                    $app->addFlash('error', $app->trans('Invalid password provided'));
                 }
             }
         }
 
         return $app['twig']->render('account/change-password.html.twig', array_merge(
             Login::getDefaultTemplateVariables($app),
-            array('form' => $form->createView())
+            ['form' => $form->createView()]
         ));
     }
 
@@ -123,37 +123,37 @@ class Account implements ControllerProviderInterface
     {
         if (null === ($password = $request->request->get('form_password')) || null === ($email = $request->request->get('form_email')) || null === ($emailConfirm = $request->request->get('form_email_confirm'))) {
 
-            $app->abort(400, _('Could not perform request, please contact an administrator.'));
+            $app->abort(400, $app->trans('Could not perform request, please contact an administrator.'));
         }
 
         $user = $app['authentication']->getUser();
 
         if (!$app['auth.password-encoder']->isPasswordValid($user->get_password(), $password, $user->get_nonce())) {
-            $app->addFlash('error', _('admin::compte-utilisateur:ftp: Le mot de passe est errone'));
+            $app->addFlash('error', $app->trans('admin::compte-utilisateur:ftp: Le mot de passe est errone'));
 
             return $app->redirectPath('account_reset_email');
         }
 
         if (!\Swift_Validate::email($email)) {
-            $app->addFlash('error', _('forms::l\'email semble invalide'));
+            $app->addFlash('error', $app->trans('forms::l\'email semble invalide'));
 
             return $app->redirectPath('account_reset_email');
         }
 
         if ($email !== $emailConfirm) {
-            $app->addFlash('error', _('forms::les emails ne correspondent pas'));
+            $app->addFlash('error', $app->trans('forms::les emails ne correspondent pas'));
 
             return $app->redirectPath('account_reset_email');
         }
 
         $date = new \DateTime('1 day');
         $token = $app['tokens']->getUrlToken(\random::TYPE_EMAIL, $app['authentication']->getUser()->get_id(), $date, $app['authentication']->getUser()->get_email());
-        $url = $app->url('account_reset_email', array('token' => $token));
+        $url = $app->url('account_reset_email', ['token' => $token]);
 
         try {
             $receiver = Receiver::fromUser($app['authentication']->getUser());
         } catch (InvalidArgumentException $e) {
-            $app->addFlash('error', _('phraseanet::erreur: echec du serveur de mail'));
+            $app->addFlash('error', $app->trans('phraseanet::erreur: echec du serveur de mail'));
 
             return $app->redirectPath('account_reset_email');
         }
@@ -164,7 +164,7 @@ class Account implements ControllerProviderInterface
 
         $app['notification.deliverer']->deliver($mail);
 
-        $app->addFlash('info', _('admin::compte-utilisateur un email de confirmation vient de vous etre envoye. Veuillez suivre les instructions contenue pour continuer'));
+        $app->addFlash('info', $app->trans('admin::compte-utilisateur un email de confirmation vient de vous etre envoye. Veuillez suivre les instructions contenue pour continuer'));
 
         return $app->redirectPath('account');
     }
@@ -185,11 +185,11 @@ class Account implements ControllerProviderInterface
                 $user->set_email($datas['datas']);
                 $app['tokens']->removeToken($token);
 
-                $app->addFlash('success', _('admin::compte-utilisateur: L\'email a correctement ete mis a jour'));
+                $app->addFlash('success', $app->trans('admin::compte-utilisateur: L\'email a correctement ete mis a jour'));
 
                 return $app->redirectPath('account');
             } catch (\Exception $e) {
-                $app->addFlash('error', _('admin::compte-utilisateur: erreur lors de la mise a jour'));
+                $app->addFlash('error', $app->trans('admin::compte-utilisateur: erreur lors de la mise a jour'));
 
                 return $app->redirectPath('account');
             }
@@ -210,7 +210,7 @@ class Account implements ControllerProviderInterface
     public function grantAccess(Application $app, Request $request, $application_id)
     {
         if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
+            $app->abort(400, $app->trans('Bad request format, only JSON is allowed'));
         }
 
         $error = false;
@@ -227,7 +227,7 @@ class Account implements ControllerProviderInterface
             $error = true;
         }
 
-        return $app->json(array('success' => !$error));
+        return $app->json(['success' => !$error]);
     }
 
     /**
@@ -241,9 +241,9 @@ class Account implements ControllerProviderInterface
     {
         require_once $app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
 
-        return $app['twig']->render('account/access.html.twig', array(
+        return $app['twig']->render('account/access.html.twig', [
             'inscriptions' => giveMeBases($app, $app['authentication']->getUser()->get_id())
-        ));
+        ]);
     }
 
     /**
@@ -255,9 +255,9 @@ class Account implements ControllerProviderInterface
      */
     public function accountAuthorizedApps(Application $app, Request $request)
     {
-        return $app['twig']->render('account/authorized_apps.html.twig', array(
+        return $app['twig']->render('account/authorized_apps.html.twig', [
             "applications" => \API_OAuth2_Application::load_app_by_user($app, $app['authentication']->getUser()),
-        ));
+        ]);
     }
 
     /**
@@ -269,15 +269,15 @@ class Account implements ControllerProviderInterface
      */
     public function accountSessionsAccess(Application $app, Request $request)
     {
-        $dql = 'SELECT s FROM Entities\Session s
+        $dql = 'SELECT s FROM Alchemy\Phrasea\Model\Entities\Session s
             WHERE s.usr_id = :usr_id
             ORDER BY s.created DESC';
 
         $query = $app['EM']->createQuery($dql);
-        $query->setParameters(array('usr_id' => $app['session']->get('usr_id')));
+        $query->setParameters(['usr_id' => $app['session']->get('usr_id')]);
         $sessions = $query->getResult();
 
-        $result = array();
+        $result = [];
         foreach ($sessions as $session) {
             $info = '';
             try {
@@ -302,13 +302,13 @@ class Account implements ControllerProviderInterface
 
             }
 
-            $result[] = array(
+            $result[] = [
                 'session' => $session,
                 'info'    => $info,
-            );
+            ];
         }
 
-        return $app['twig']->render('account/sessions.html.twig', array('sessions' => $result));
+        return $app['twig']->render('account/sessions.html.twig', ['sessions' => $result]);
     }
 
     /**
@@ -320,11 +320,11 @@ class Account implements ControllerProviderInterface
      */
     public function displayAccount(Application $app, Request $request)
     {
-        return $app['twig']->render('account/account.html.twig', array(
+        return $app['twig']->render('account/account.html.twig', [
             'user'          => $app['authentication']->getUser(),
             'evt_mngr'      => $app['events-manager'],
             'notifications' => $app['events-manager']->list_notifications_available($app['authentication']->getUser()->get_id()),
-        ));
+        ]);
     }
 
     /**
@@ -336,7 +336,7 @@ class Account implements ControllerProviderInterface
      */
     public function updateAccount(PhraseaApplication $app, Request $request)
     {
-        $demands = (array) $request->request->get('demand', array());
+        $demands = (array) $request->request->get('demand', []);
 
         if (0 !== count($demands)) {
             $register = new \appbox_register($app['phraseanet.appbox']);
@@ -344,14 +344,14 @@ class Account implements ControllerProviderInterface
             foreach ($demands as $baseId) {
                 try {
                     $register->add_request($app['authentication']->getUser(), \collection::get_from_base_id($app, $baseId));
-                    $app->addFlash('success', _('login::notification: Vos demandes ont ete prises en compte'));
+                    $app->addFlash('success', $app->trans('login::notification: Vos demandes ont ete prises en compte'));
                 } catch (\Exception $e) {
 
                 }
             }
         }
 
-        $accountFields = array(
+        $accountFields = [
             'form_gender',
             'form_firstname',
             'form_lastname',
@@ -363,35 +363,21 @@ class Account implements ControllerProviderInterface
             'form_company',
             'form_activity',
             'form_geonameid',
-            'form_addrFTP',
+            'form_addressFTP',
             'form_loginFTP',
             'form_pwdFTP',
             'form_destFTP',
             'form_prefixFTPfolder',
             'form_retryFTP'
-        );
+        ];
 
         if (0 === count(array_diff($accountFields, array_keys($request->request->all())))) {
-            $defaultDatas = 0;
-
-            if ($datas = (array) $request->request->get("form_defaultdataFTP", array())) {
-                if (in_array('document', $datas)) {
-                    $defaultDatas += 4;
-                }
-
-                if (in_array('preview', $datas)) {
-                    $defaultDatas += 2;
-                }
-
-                if (in_array('caption', $datas)) {
-                    $defaultDatas += 1;
-                }
-            }
 
             try {
                 $app['phraseanet.appbox']->get_connection()->beginTransaction();
 
-                $app['authentication']->getUser()->set_gender($request->request->get("form_gender"))
+                $app['authentication']->getUser()
+                    ->set_gender($request->request->get("form_gender"))
                     ->set_firstname($request->request->get("form_firstname"))
                     ->set_lastname($request->request->get("form_lastname"))
                     ->set_address($request->request->get("form_address"))
@@ -402,25 +388,29 @@ class Account implements ControllerProviderInterface
                     ->set_company($request->request->get("form_company"))
                     ->set_position($request->request->get("form_function"))
                     ->set_geonameid($request->request->get("form_geonameid"))
-                    ->set_mail_notifications((bool) $request->request->get("mail_notifications"))
-                    ->set_activeftp($request->request->get("form_activeFTP"))
-                    ->set_ftp_address($request->request->get("form_addrFTP"))
-                    ->set_ftp_login($request->request->get("form_loginFTP"))
-                    ->set_ftp_password($request->request->get("form_pwdFTP"))
-                    ->set_ftp_passif($request->request->get("form_passifFTP"))
-                    ->set_ftp_dir($request->request->get("form_destFTP"))
-                    ->set_ftp_dir_prefix($request->request->get("form_prefixFTPfolder"))
-                    ->set_defaultftpdatas($defaultDatas);
+                    ->set_mail_notifications((bool) $request->request->get("mail_notifications"));
 
-                $app->addFlash('success', _('login::notification: Changements enregistres'));
+                $ftpCredential = $app['authentication']->getUser()->getFtpCredential();
+
+                $ftpCredential->setActive($request->request->get("form_activeFTP"));
+                $ftpCredential->setAddress($request->request->get("form_addressFTP"));
+                $ftpCredential->setLogin($request->request->get("form_loginFTP"));
+                $ftpCredential->setPassword($request->request->get("form_pwdFTP"));
+                $ftpCredential->setPassive($request->request->get("form_passifFTP"));
+                $ftpCredential->setReceptionFolder($request->request->get("form_destFTP"));
+                $ftpCredential->setRepositoryPrefixName($request->request->get("form_prefixFTPfolder"));
+
                 $app['phraseanet.appbox']->get_connection()->commit();
+                $app['EM']->persist($ftpCredential);
+                $app['EM']->flush();
+                $app->addFlash('success', $app->trans('login::notification: Changements enregistres'));
             } catch (\Exception $e) {
-                $app->addFlash('error', _('forms::erreurs lors de l\'enregistrement des modifications'));
+                $app->addFlash('error', $app->trans('forms::erreurs lors de l\'enregistrement des modifications'));
                 $app['phraseanet.appbox']->get_connection()->rollBack();
             }
         }
 
-        $requestedNotifications = (array) $request->request->get('notifications', array());
+        $requestedNotifications = (array) $request->request->get('notifications', []);
 
         foreach ($app['events-manager']->list_notifications_available($app['authentication']->getUser()->get_id()) as $notifications) {
             foreach ($notifications as $notification) {

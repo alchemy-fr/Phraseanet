@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Authentication;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Exception\RuntimeException;
-use Entities\Session;
+use Alchemy\Phrasea\Model\Entities\Session;
 
 class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
 {
@@ -94,15 +94,20 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
             ->getMock();
         $acl->expects($this->once())
             ->method('get_granted_sbas')
-            ->will($this->returnValue(array()));
+            ->will($this->returnValue([]));
 
-        $user->expects($this->once())
-            ->method('ACL')
+        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $aclProvider->expects($this->any())
+            ->method('get')
             ->will($this->returnValue($acl));
+
+        $app['acl'] = $aclProvider;
 
         $em->expects($this->at(0))
             ->method('persist')
-            ->with($this->isInstanceOf('Entities\Session'))
+            ->with($this->isInstanceOf('Alchemy\Phrasea\Model\Entities\Session'))
             ->will($this->returnCallback(function ($session) use (&$capturedSession) {
                 $capturedSession = $session;
             }));
@@ -112,7 +117,7 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
         $authenticator = new Authenticator($app, $browser, $session, $em);
         $phsession = $authenticator->openAccount($user);
 
-        $this->assertInstanceOf('Entities\Session', $phsession);
+        $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\Session', $phsession);
         $this->assertEquals($capturedSession, $phsession);
     }
 
@@ -132,7 +137,7 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
         $usrId = $user->get_id();
         $sessionId = 4224242;
 
-        $session = new \Entities\Session();
+        $session = new Session();
         $session->setUsrId($usrId);
 
         $ref = new \ReflectionObject($session);
@@ -146,12 +151,12 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
 
         $repo->expects($this->once())
             ->method('findOneBy')
-            ->with($this->equalTo(array('id' => $session->getId())))
+            ->with($this->equalTo(['id' => $session->getId()]))
             ->will($this->returnValue($session));
 
         $em->expects($this->once())
             ->method('getRepository')
-            ->with($this->equalTo('Entities\Session'))
+            ->with($this->equalTo('Alchemy\Phrasea\Model\Entities\Session'))
             ->will($this->returnValue($repo));
 
         $authenticator = new Authenticator($app, $browser, $SFsession, $em);
@@ -174,7 +179,7 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
         $usrId = $user->get_id();
         $sessionId = 4224242;
 
-        $session = new \Entities\Session();
+        $session = new Session();
         $session->setUsrId($usrId);
 
         $ref = new \ReflectionObject($session);
@@ -188,12 +193,12 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
 
         $repo->expects($this->once())
             ->method('findOneBy')
-            ->with($this->equalTo(array('id' => $session->getId())))
+            ->with($this->equalTo(['id' => $session->getId()]))
             ->will($this->returnValue(null));
 
         $em->expects($this->once())
             ->method('getRepository')
-            ->with($this->equalTo('Entities\Session'))
+            ->with($this->equalTo('Alchemy\Phrasea\Model\Entities\Session'))
             ->will($this->returnValue($repo));
 
         $authenticator = new Authenticator($app, $browser, $SFsession, $em);

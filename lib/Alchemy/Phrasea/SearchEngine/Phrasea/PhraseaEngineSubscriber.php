@@ -28,7 +28,7 @@ class PhraseaEngineSubscriber implements EventSubscriberInterface
 
     public function onAuthenticate(PostAuthenticate $event)
     {
-        $event->getUser()->ACL()->inject_rights();
+        $this->app['acl']->get($event->getUser())->inject_rights();
     }
 
     public function onCollectionCreate(CollectionCreateEvent $event)
@@ -49,7 +49,7 @@ class PhraseaEngineSubscriber implements EventSubscriberInterface
 
         foreach ($rows as $row) {
             $user = \User_Adapter::getInstance($row['usr_id'], $this->app);
-            $user->ACL()->inject_rights();
+            $this->app['acl']->get($user)->inject_rights();
             if (null !== $row['session_id']) {
                 if (!$initialized) {
                     $this->app['phraseanet.SE']->initialize();

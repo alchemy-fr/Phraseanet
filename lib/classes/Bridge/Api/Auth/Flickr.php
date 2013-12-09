@@ -9,12 +9,6 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @package     Bridge
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Bridge_Api_Auth_Flickr extends Bridge_Api_Auth_Abstract implements Bridge_Api_Auth_Interface
 {
     /**
@@ -79,7 +73,7 @@ class Bridge_Api_Auth_Flickr extends Bridge_Api_Auth_Abstract implements Bridge_
 
         $this->get_api()->setAuthToken($auth_token);
 
-        return array('auth_token' => $auth_token);
+        return ['auth_token' => $auth_token];
     }
 
     /**
@@ -117,9 +111,9 @@ class Bridge_Api_Auth_Flickr extends Bridge_Api_Auth_Abstract implements Bridge_
      */
     public function get_auth_signatures()
     {
-        return array(
+        return [
             'auth_token' => $this->settings->get('auth_token')
-        );
+        ];
     }
 
     /**
@@ -129,7 +123,7 @@ class Bridge_Api_Auth_Flickr extends Bridge_Api_Auth_Abstract implements Bridge_
      */
     public function set_parameters(Array $parameters)
     {
-        $avail_parameters = array('flickr_client_id', 'flickr_client_secret', 'permissions');
+        $avail_parameters = ['flickr_client_id', 'flickr_client_secret', 'permissions'];
         foreach ($parameters as $parameter => $value) {
             if ( ! in_array($parameter, $avail_parameters))
                 continue;
@@ -144,7 +138,7 @@ class Bridge_Api_Auth_Flickr extends Bridge_Api_Auth_Abstract implements Bridge_
      *
      * @return string
      */
-    public function get_auth_url(Array $supp_params = array())
+    public function get_auth_url(Array $supp_params = [])
     {
         $request_token = $this->get_api()->requestFrob();
 

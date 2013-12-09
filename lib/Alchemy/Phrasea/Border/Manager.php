@@ -28,9 +28,10 @@ use Alchemy\Phrasea\Metadata\Tag\TfRecordid;
 use Alchemy\Phrasea\Metadata\Tag\TfSize;
 use Alchemy\Phrasea\Metadata\Tag\TfWidth;
 use Alchemy\Phrasea\Border\Attribute\Metadata as MetadataAttr;
-use Entities\LazaretAttribute;
-use Entities\LazaretFile;
-use Entities\LazaretSession;
+use Alchemy\Phrasea\Model\Entities\LazaretAttribute;
+use Alchemy\Phrasea\Model\Entities\LazaretCheck;
+use Alchemy\Phrasea\Model\Entities\LazaretFile;
+use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use MediaAlchemyst\Specification\Image as ImageSpec;
 use PHPExiftool\Driver\Metadata\Metadata;
@@ -48,7 +49,7 @@ use XPDF\PdfToText;
  */
 class Manager
 {
-    protected $checkers = array();
+    protected $checkers = [];
     protected $app;
     protected $filesystem;
     protected $pdfToText;
@@ -278,12 +279,12 @@ class Manager
             )
         );
 
-        $metadatas = array();
+        $metadatas = [];
 
         /**
          * @todo $key is not tagname but fieldname
          */
-        $fieldToKeyMap = array();
+        $fieldToKeyMap = [];
 
         if (! $fieldToKeyMap) {
             foreach ($file->getCollection()->get_databox()->get_meta_structure() as $databox_field) {
@@ -291,7 +292,7 @@ class Manager
                 $tagname = $databox_field->get_tag()->getTagname();
 
                 if ( ! isset($fieldToKeyMap[$tagname])) {
-                    $fieldToKeyMap[$tagname] = array();
+                    $fieldToKeyMap[$tagname] = [];
                 }
 
                 $fieldToKeyMap[$tagname][] = $databox_field->get_name();
@@ -308,7 +309,7 @@ class Manager
 
             foreach ($fieldToKeyMap[$key] as $k) {
                 if ( ! isset($metadatas[$k])) {
-                    $metadatas[$k] = array();
+                    $metadatas[$k] = [];
                 }
 
                 $metadatas[$k] = array_merge($metadatas[$k], $metadata->getValue()->asArray());
@@ -327,7 +328,7 @@ class Manager
                     $key = $attribute->getField()->get_name();
 
                     if ( ! isset($metadatas[$key])) {
-                        $metadatas[$key] = array();
+                        $metadatas[$key] = [];
                     }
 
                     $metadatas[$key] = array_merge($metadatas[$key], $attribute->getValue());
@@ -343,7 +344,7 @@ class Manager
 
                     foreach ($fieldToKeyMap[$key] as $k) {
                         if ( ! isset($metadatas[$k])) {
-                            $metadatas[$k] = array();
+                            $metadatas[$k] = [];
                         }
 
                         $metadatas[$k] = array_merge($metadatas[$k], $attribute->getValue()->getValue()->asArray());
@@ -367,7 +368,7 @@ class Manager
 
         $databox = $element->get_databox();
 
-        $metas = array();
+        $metas = [];
 
         foreach ($metadatas as $fieldname => $values) {
             foreach ($databox->get_meta_structure()->get_elements() as $databox_field) {
@@ -376,7 +377,7 @@ class Manager
 
                     if ($databox_field->is_multi()) {
 
-                        $tmpValues = array();
+                        $tmpValues = [];
                         foreach ($values as $value) {
                             $tmpValues = array_merge($tmpValues, \caption_field::get_multi_values($value, $databox_field->get_separator()));
                         }
@@ -387,11 +388,11 @@ class Manager
                             if ( ! trim($value)) {
                                 continue;
                             }
-                            $metas[] = array(
+                            $metas[] = [
                                 'meta_struct_id' => $databox_field->get_id(),
                                 'meta_id'        => null,
                                 'value'          => $value,
-                            );
+                            ];
                         }
                     } else {
 
@@ -401,11 +402,11 @@ class Manager
                             continue;
                         }
 
-                        $metas[] = array(
+                        $metas[] = [
                             'meta_struct_id' => $databox_field->get_id(),
                             'meta_id'        => null,
                             'value'          => $value,
-                        );
+                        ];
                     }
                 }
             }
@@ -424,11 +425,12 @@ class Manager
     /**
      * Send a package file to lazaret
      *
-     * @param  File                  $file    The package file
-     * @param  Visa                  $visa    The visa related to the package file
-     * @param  LazaretSession        $session The current LazaretSession
-     * @param  Boolean               $forced  True if the file has been forced to quarantine
-     * @return \Entities\LazaretFile
+     * @param File           $file    The package file
+     * @param Visa           $visa    The visa related to the package file
+     * @param LazaretSession $session The current LazaretSession
+     * @param Boolean        $forced  True if the file has been forced to quarantine
+     *
+     * @return LazaretFile
      */
     protected function createLazaret(File $file, Visa $visa, LazaretSession $session, $forced)
     {
@@ -486,7 +488,7 @@ class Manager
         foreach ($visa->getResponses() as $response) {
             if ( ! $response->isOk()) {
 
-                $check = new \Entities\LazaretCheck();
+                $check = new LazaretCheck();
                 $check->setCheckClassname(get_class($response->getChecker()));
                 $check->setLazaretFile($lazaretFile);
 

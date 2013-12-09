@@ -137,11 +137,11 @@ class Step31 implements DatasUpgraderInterface
 
         $sql = 'UPDATE record SET uuid = :uuid, sha256 = :sha256 WHERE record_id = :record_id';
 
-        $params = array(
+        $params = [
             ':uuid'      => $uuid,
             'sha256'     => $sha256,
             ':record_id' => $record['record_id'],
-        );
+        ];
         $stmt = $databox->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();

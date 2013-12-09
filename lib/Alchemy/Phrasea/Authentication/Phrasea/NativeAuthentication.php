@@ -36,7 +36,7 @@ class NativeAuthentication implements PasswordAuthenticationInterface
      */
     public function getUsrId($username, $password, Request $request)
     {
-        if (in_array($username, array('invite', 'autoregister'))) {
+        if (in_array($username, ['invite', 'autoregister'])) {
             return null;
         }
 
@@ -48,7 +48,7 @@ class NativeAuthentication implements PasswordAuthenticationInterface
                 LIMIT 0, 1';
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute(array(':login' => $username));
+        $stmt->execute([':login' => $username]);
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -71,11 +71,11 @@ class NativeAuthentication implements PasswordAuthenticationInterface
                 $sql = 'UPDATE usr SET usr_password = :password, nonce = :nonce
                         WHERE usr_id = :usr_id';
                 $stmt = $this->conn->prepare($sql);
-                $stmt->execute(array(
+                $stmt->execute([
                     ':password' => $row['usr_password'],
                     ':nonce' => $row['nonce'],
                     ':usr_id' => $row['usr_id'],
-                ));
+                ]);
                 $stmt->closeCursor();
             }
         }

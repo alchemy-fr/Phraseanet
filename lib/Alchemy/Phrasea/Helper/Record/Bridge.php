@@ -13,12 +13,6 @@ namespace Alchemy\Phrasea\Helper\Record;
 
 use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper;
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Bridge extends RecordHelper
 {
     protected $flatten_groupings = true;

@@ -12,12 +12,16 @@ services:
 before_script:
   - node --version
   - npm --version
-  - npm install bower mocha-phantomjs@">=2.0 <3.0" recess@">=1.1.0 <1.1.7" uglify-js -g
+  - npm install
+  - npm install grunt-cli jake -g
   - echo '' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
   - sh -c 'if [ $(php -r "echo PHP_MINOR_VERSION;") -le 4 ]; then echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;'
   - sh -c 'if [ $(php -r "echo PHP_MINOR_VERSION;") -le 4 ]; then pecl install redis; fi;'
   - echo 'extension="memcache.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcache.ini
   - echo 'extension="memcached.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcached.ini
+  - git clone https://github.com/mkoppanen/php-zmq.git
+  - sh -c "cd php-zmq && phpize && ./configure && make --silent && sudo make install"
+  - echo "extension=zmq.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
   - composer self-update
   - composer install --dev --prefer-source
   - bin/developer system:uninstall
@@ -41,17 +45,7 @@ before_script:
   - sh -c "cd imagick-3.1.0RC2 && phpize && ./configure --with-imagick=/usr/local && make -j && sudo make install"
   - echo "extension=imagick.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
 
-notifications:
-  irc:
-    channels:
-      - "irc.freenode.org#phrasea"
-    template:
-      - "%{repository_url} %{branch} by %{author} (%{commit}) : %{message}"
-      - "Build details: %{build_url}"
-    use_notice: true
-
 php:
-  - 5.3
   - 5.4
   - 5.5
 
@@ -67,7 +61,5 @@ script:
               bin/setup system:install --email=test@phraseanet.com --password=test --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;
             fi"
   - php hudson/cleanupSubdefs.php
-  - bin/developer assets:compile-less
-  - bin/developer assets:build-javascript
-  - sh tests/js/run.sh
+  - grunt test
   - bin/phpunit

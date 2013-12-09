@@ -65,12 +65,12 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
         BinaryFileResponse::trustXSendfileTypeHeader();
         $this->factory = new ServeFileResponseFactory(new \unicode());
         $mode = new NginxMode(
-            array(
-                array(
+            [
+                [
                     'directory' => __DIR__ . '/../../../../files/',
                     'mount-point' => '/protected/'
-                )
-            )
+                ]
+            ]
         );
         $request = Request::create('/');
         $mode->setHeaders($request);
@@ -88,12 +88,12 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
         BinaryFileResponse::trustXSendfileTypeHeader();
         $this->factory = new ServeFileResponseFactory(new \unicode());
         $mode = new NginxMode(
-            array(
-                array(
+            [
+                [
                     'directory' => __DIR__ . '/../../../../files',
                     'mount-point' => '/protected'
-                )
-            )
+                ]
+            ]
         );
         $request = Request::create('/');
         $mode->setHeaders($request);
@@ -122,12 +122,12 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
         BinaryFileResponse::trustXSendfileTypeHeader();
         $this->factory = new ServeFileResponseFactory(new \unicode());
         $mode = new NginxMode(
-            array(
-                array(
+            [
+                [
                     'directory' => __DIR__ . '/../../../../files/',
                     'mount-point' => '/protected/'
-                )
-            )
+                ]
+            ]
         );
         $request = Request::create('/');
         $mode->setHeaders($request);

@@ -15,13 +15,6 @@ use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Rescan Technical Datas command : Rescan all records of all databases and
- * rescan technical datas.
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class RescanTechnicalDatas extends Command
 {
     /**
@@ -55,7 +48,7 @@ class RescanTechnicalDatas extends Command
         $dialog = $this->getHelperSet()->get('dialog');
         do {
             $continue = mb_strtolower($dialog->ask($output, sprintf('Estimated duration is %s, <question>continue ? (y/N)</question>', $duration), 'N'));
-        } while ( ! in_array($continue, array('y', 'n')));
+        } while ( ! in_array($continue, ['y', 'n']));
 
         if (strtolower($continue) !== 'y') {
             $output->writeln('Aborting !');

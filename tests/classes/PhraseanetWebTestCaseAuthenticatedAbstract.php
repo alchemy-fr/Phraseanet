@@ -7,7 +7,7 @@ use Symfony\Component\DomCrawler\Crawler;
 abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPUnitAuthenticatedAbstract
 {
     protected $StubbedACL;
-    protected static $createdDataboxes = array();
+    protected static $createdDataboxes = [];
 
     public function setUp()
     {
@@ -21,7 +21,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
     public function setAdmin($bool)
     {
         $stubAuthenticatedUser = $this->getMockBuilder('\User_Adapter')//, array('is_admin', 'ACL'), array(self::$DI['app']['authentication']->getUser()->get_id(), self::$DI['app']))
-            ->setMethods(array('ACL', 'get_id'))
+            ->setMethods(['get_id'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -67,15 +67,21 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
 
         $this->StubbedACL->expects($this->any())
             ->method('get_granted_base')
-            ->will($this->returnValue(array(self::$DI['collection'])));
+            ->will($this->returnValue([self::$DI['collection']]));
 
         $this->StubbedACL->expects($this->any())
             ->method('get_granted_sbas')
-            ->will($this->returnValue(array(self::$DI['collection']->get_databox())));
+            ->will($this->returnValue([self::$DI['collection']->get_databox()]));
 
-        $stubAuthenticatedUser->expects($this->any())
-            ->method('ACL')
+        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $aclProvider->expects($this->any())
+            ->method('get')
             ->will($this->returnValue($this->StubbedACL));
+
+        self::$DI['app']['acl'] = $aclProvider;
 
         $stubAuthenticatedUser->expects($this->any())
             ->method('get_id')
@@ -84,7 +90,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
         self::$DI['app']['authentication']->setUser($stubAuthenticatedUser);
 
         self::$DI['client'] = self::$DI->share(function ($DI) {
-                return new Client($DI['app'], array());
+                return new Client($DI['app'], []);
             });
     }
 
@@ -92,7 +98,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
     {
         $this->createDatabase();
 
-        $connexion = self::$DI['app']['phraseanet.configuration']['main']['database'];
+        $connexion = self::$DI['app']['conf']->get(['main', 'database']);
 
         try {
             $conn = new \connection_pdo(
@@ -102,7 +108,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
                 $connexion['user'],
                 $connexion['password'],
                 'unit_test_db',
-                array(),
+                [],
                 false
             );
         } catch (\PDOException $e) {
@@ -116,14 +122,14 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
 
         self::$createdDataboxes[] = $databox;
 
-        $rights = array(
+        $rights = [
             'bas_manage'        => '1'
             , 'bas_modify_struct' => '1'
             , 'bas_modif_th'      => '1'
             , 'bas_chupub'        => '1'
-        );
+        ];
 
-        self::$DI['app']['authentication']->getUser()->ACL()->update_rights_to_sbas($databox->get_sbas_id(), $rights);
+        self::$DI['app']['acl']->get(self::$DI['app']['authentication']->getUser())->update_rights_to_sbas($databox->get_sbas_id(), $rights);
 
         $databox->registerAdmin(self::$DI['app']['authentication']->getUser());
 
@@ -156,12 +162,12 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
 
     public function provideFlashMessages()
     {
-        return array(
-            array('warning', 'Be careful !'),
-            array('error', 'An error occured'),
-            array('info', 'You need to do something more'),
-            array('success', "Success operation !"),
-        );
+        return [
+            ['warning', 'Be careful !'],
+            ['error', 'An error occured'],
+            ['info', 'You need to do something more'],
+            ['success', "Success operation !"],
+        ];
     }
 
     protected function assertFormOrFlashError(Crawler $crawler, $quantity)

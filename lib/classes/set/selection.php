@@ -10,14 +10,8 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\Basket;
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class set_selection extends set_abstract
 {
     protected $app;
@@ -28,7 +22,7 @@ class set_selection extends set_abstract
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->elements = array();
+        $this->elements = [];
 
         return $this;
     }
@@ -54,35 +48,35 @@ class set_selection extends set_abstract
      *
      * @return set_selection
      */
-    public function grep_authorized(Array $rights = array(), Array $sbas_rights = array())
+    public function grep_authorized(Array $rights = [], Array $sbas_rights = [])
     {
-        $to_remove = array();
+        $to_remove = [];
 
         foreach ($this->elements as $id => $record) {
             $base_id = $record->get_base_id();
             $sbas_id = $record->get_sbas_id();
             $record_id = $record->get_record_id();
             if (! $rights) {
-                if ($this->app['authentication']->getUser()->ACL()->has_hd_grant($record)) {
+                if ($this->app['acl']->get($this->app['authentication']->getUser())->has_hd_grant($record)) {
                     continue;
                 }
 
-                if ($this->app['authentication']->getUser()->ACL()->has_preview_grant($record)) {
+                if ($this->app['acl']->get($this->app['authentication']->getUser())->has_preview_grant($record)) {
                     continue;
                 }
-                if ( ! $this->app['authentication']->getUser()->ACL()->has_access_to_base($base_id)) {
+                if ( ! $this->app['acl']->get($this->app['authentication']->getUser())->has_access_to_base($base_id)) {
                     $to_remove[] = $id;
                     continue;
                 }
             } else {
                 foreach ($rights as $right) {
-                    if ( ! $this->app['authentication']->getUser()->ACL()->has_right_on_base($base_id, $right)) {
+                    if ( ! $this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($base_id, $right)) {
                         $to_remove[] = $id;
                         continue;
                     }
                 }
                 foreach ($sbas_rights as $right) {
-                    if ( ! $this->app['authentication']->getUser()->ACL()->has_right_on_sbas($sbas_id, $right)) {
+                    if ( ! $this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_sbas($sbas_id, $right)) {
                         $to_remove[] = $id;
                         continue;
                     }
@@ -94,12 +88,12 @@ class set_selection extends set_abstract
 
                 $sql = 'SELECT record_id
                 FROM record
-                WHERE ((status ^ ' . $this->app['authentication']->getUser()->ACL()->get_mask_xor($base_id) . ')
-                        & ' . $this->app['authentication']->getUser()->ACL()->get_mask_and($base_id) . ')=0
+                WHERE ((status ^ ' . $this->app['acl']->get($this->app['authentication']->getUser())->get_mask_xor($base_id) . ')
+                        & ' . $this->app['acl']->get($this->app['authentication']->getUser())->get_mask_and($base_id) . ')=0
                 AND record_id = :record_id';
 
                 $stmt = $connsbas->prepare($sql);
-                $stmt->execute(array(':record_id' => $record_id));
+                $stmt->execute([':record_id' => $record_id]);
                 $num_rows = $stmt->rowCount();
                 $stmt->closeCursor();
 
@@ -153,7 +147,7 @@ class set_selection extends set_abstract
      */
     public function get_distinct_sbas_ids()
     {
-        $ret = array();
+        $ret = [];
         foreach ($this->elements as $record) {
             $sbas_id = phrasea::sbasFromBas($this->app, $record->get_base_id());
             $ret[$sbas_id] = $sbas_id;

@@ -23,7 +23,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $crawler = self::$DI['client']->request('GET', '/developers/application/new/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $form = $crawler->selectButton(_('boutton::valider'))->form();
+        $form = $crawler->selectButton(self::$DI['app']['translator']->trans('boutton::valider'))->form();
         $this->assertEquals('/developers/application/', $form->getFormNode()->getAttribute('action'));
         $this->assertEquals('POST', $form->getMethod());
     }
@@ -33,7 +33,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testPostNewAppInvalidArguments()
     {
-        $crawler = self::$DI['client']->request('POST', '/developers/application/', array(
+        $crawler = self::$DI['client']->request('POST', '/developers/application/', [
             'type'            => \API_OAuth2_Application::WEB_TYPE,
             'name'            => '',
             'description'     => 'okok',
@@ -41,10 +41,10 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'callback'        => 'my.callback.com',
             'scheme-website'  => 'http://',
             'scheme-callback' => 'http://'
-            ));
+            ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $form = $crawler->selectButton(_('boutton::valider'))->form();
+        $form = $crawler->selectButton(self::$DI['app']['translator']->trans('boutton::valider'))->form();
         $this->assertEquals('okok', $form['description']->getValue());
         $this->assertEquals('my.website.com', $form['website']->getValue());
         $this->assertEquals('my.callback.com', $form['callback']->getValue());
@@ -58,7 +58,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $apps = \API_OAuth2_Application::load_dev_app_by_user(self::$DI['app'], self::$DI['user']);
         $nbApp = count($apps);
 
-        self::$DI['client']->request('POST', '/developers/application/', array(
+        self::$DI['client']->request('POST', '/developers/application/', [
             'type'            => \API_OAuth2_Application::WEB_TYPE,
             'name'            => 'hello',
             'description'     => 'okok',
@@ -66,7 +66,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'callback'        => 'my.callback.com',
             'scheme-website'  => 'http://',
             'scheme-callback' => 'http://'
-        ));
+        ]);
 
         $apps = \API_OAuth2_Application::load_dev_app_by_user(self::$DI['app'], self::$DI['user']);
 
@@ -151,9 +151,9 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRenewAppCallbackError()
     {
-        $this->XMLHTTPRequest('POST', '/developers/application/0/callback/', array(
+        $this->XMLHTTPRequest('POST', '/developers/application/0/callback/', [
             'callback' => 'my.callback.com'
-            ));
+            ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $content = json_decode(self::$DI['client']->getResponse()->getContent());
@@ -181,9 +181,9 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $oauthApp = \API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test app');
 
-        $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->get_id() . '/callback/', array(
+        $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->get_id() . '/callback/', [
             'callback' => 'my.callback.com'
-            ));
+            ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $content = json_decode(self::$DI['client']->getResponse()->getContent());
@@ -207,9 +207,9 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRenewAccessTokenError()
     {
-        $this->XMLHTTPRequest('POST', '/developers/application/0/access_token/', array(
+        $this->XMLHTTPRequest('POST', '/developers/application/0/access_token/', [
             'callback' => 'my.callback.com'
-            ));
+            ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $content = json_decode(self::$DI['client']->getResponse()->getContent());
@@ -247,9 +247,9 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAuthorizeGrantpasswordError()
     {
-        $this->XMLHTTPRequest('POST', '/developers/application/0/authorize_grant_password/', array(
+        $this->XMLHTTPRequest('POST', '/developers/application/0/authorize_grant_password/', [
             'callback' => 'my.callback.com'
-            ));
+            ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $content = json_decode(self::$DI['client']->getResponse()->getContent());
@@ -263,9 +263,9 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $oauthApp = \API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test app');
 
-        $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->get_id() . '/authorize_grant_password/', array(
+        $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->get_id() . '/authorize_grant_password/', [
             'grant' => '1'
-        ));
+        ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $content = json_decode(self::$DI['client']->getResponse()->getContent());

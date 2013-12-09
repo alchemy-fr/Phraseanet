@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\LocaleServiceProvider;
 
 /**
@@ -22,22 +23,13 @@ class LocaleServiceProvidertest extends \PhraseanetPHPUnitAbstract
     {
         $app = new Application();
         $app->register(new LocaleServiceProvider());
-        $app['phraseanet.configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
-        $app['phraseanet.configuration']->expects($this->any())
-            ->method('offsetExist')
-            ->with('main')
-            ->will($this->returnValue(true));
-        $app['phraseanet.configuration']->expects($this->any())
-            ->method('isSetup')
-            ->will($this->returnValue(true));
-        $app['phraseanet.configuration']->expects($this->any())
-            ->method('offsetGet')
-            ->with('main')
-            ->will($this->returnValue(array('languages' => array('fr_FR', 'en_US', 'de'))));
+        $app['root.path'] = __DIR__ . '/../../../../../..';
+        $app->register(new ConfigurationServiceProvider());
+        $app['conf']->set(['main', 'languages'], ['fr', 'zh', 'de']);
 
         $original = Application::getAvailableLanguages();
-        unset($original['en_GB']);
-        unset($original['nl_NL']);
+        unset($original['en']);
+        unset($original['nl']);
 
         $this->assertEquals($original, $app['locales.available']);
     }
@@ -46,18 +38,11 @@ class LocaleServiceProvidertest extends \PhraseanetPHPUnitAbstract
     {
         $app = new Application();
         $app->register(new LocaleServiceProvider());
-        $app['phraseanet.configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
-        $app['phraseanet.configuration']->expects($this->any())
-            ->method('offsetExist')
-            ->with('main')
-            ->will($this->returnValue(true));
-        $app['phraseanet.configuration']->expects($this->any())
-            ->method('isSetup')
-            ->will($this->returnValue(true));
-        $app['phraseanet.configuration']->expects($this->any())
-            ->method('offsetGet')
-            ->with('main')
-            ->will($this->returnValue(array('languages' => array('en_US'))));
+        $app['root.path'] = __DIR__ . '/../../../../../..';
+        $app->register(new ConfigurationServiceProvider());
+
+        $app['conf']->set(['main', 'languages'], ['en_US']);
+
         $app['monolog'] = $this->getMock('Psr\Log\LoggerInterface');
         $app['monolog']->expects($this->once())
             ->method('error');
@@ -65,33 +50,6 @@ class LocaleServiceProvidertest extends \PhraseanetPHPUnitAbstract
         $original = Application::getAvailableLanguages();
 
         $this->assertEquals($original, $app['locales.available']);
-    }
-
-    public function testLocalesI18nAvailable()
-    {
-        $app = new Application();
-        $app->register(new LocaleServiceProvider());
-
-        $this->assertEquals(array_values(Application::getAvailableLanguages()), array_values($app['locales.I18n.available']));
-        $this->assertEquals(array('de', 'en', 'fr', 'nl'), array_keys($app['locales.I18n.available']));
-    }
-
-    public function testLocaleI18n()
-    {
-        $app = new Application();
-        $app->register(new LocaleServiceProvider());
-        $app['locale'] = 'de_CA';
-
-        $this->assertEquals('de', $app['locale.I18n']);
-    }
-
-    public function testLocalel10n()
-    {
-        $app = new Application();
-        $app->register(new LocaleServiceProvider());
-        $app['locale'] = 'de_CA';
-
-        $this->assertEquals('CA', $app['locale.l10n']);
     }
 
     public function testLocaleBeforeBoot()
@@ -103,9 +61,9 @@ class LocaleServiceProvidertest extends \PhraseanetPHPUnitAbstract
             ->getMock();
         $app['phraseanet.registry']->expects($this->once())
             ->method('get')
-            ->with('GV_default_lng', 'en_GB')
-            ->will($this->returnValue('fr_FR'));
+            ->with('GV_default_lng', 'en')
+            ->will($this->returnValue('fr'));
 
-        $this->assertEquals('fr_FR', $app['locale']);
+        $this->assertEquals('fr', $app['locale']);
     }
 }

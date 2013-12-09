@@ -38,12 +38,12 @@ class Sha256Test extends \PhraseanetPHPUnitAbstract
      */
     public function testCheck()
     {
-        $session = new \Entities\LazaretSession();
+        $session = new \Alchemy\Phrasea\Model\Entities\LazaretSession();
         self::$DI['app']['EM']->persist($session);
 
         self::$DI['app']['border-manager']->process($session, File::buildFromPathfile($this->media->getFile()->getPathname(), self::$DI['collection'], self::$DI['app']), null, Manager::FORCE_RECORD);
 
-        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getSha256'), array(self::$DI['app'], $this->media, self::$DI['collection']));
+        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', ['getSha256'], [self::$DI['app'], $this->media, self::$DI['collection']]);
 
         $mock
             ->expects($this->once())
@@ -63,7 +63,7 @@ class Sha256Test extends \PhraseanetPHPUnitAbstract
      */
     public function testCheckNoFile()
     {
-        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getSha256'), array(self::$DI['app'], $this->media, self::$DI['collection']));
+        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', ['getSha256'], [self::$DI['app'], $this->media, self::$DI['collection']]);
 
         $mock
             ->expects($this->once())
@@ -83,6 +83,6 @@ class Sha256Test extends \PhraseanetPHPUnitAbstract
      */
     public function testGetMessage()
     {
-        $this->assertInternalType('string', $this->object->getMessage());
+        $this->assertInternalType('string', $this->object->getMessage($this->createTranslatorMock()));
     }
 }

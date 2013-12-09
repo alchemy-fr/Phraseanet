@@ -15,68 +15,68 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {
-        return array(
-            array(
+        return [
+            [
                 'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
                 'authentication',
                 'Alchemy\\Phrasea\\Authentication\\Authenticator',
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
                 'authentication.token-validator',
                 'Alchemy\Phrasea\Authentication\Token\TokenValidator'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
                 'authentication.persistent-manager',
                 'Alchemy\Phrasea\Authentication\PersistentCookie\Manager'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
                 'authentication.suggestion-finder',
                 'Alchemy\Phrasea\Authentication\SuggestionFinder'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
                 'authentication.providers.factory',
                 'Alchemy\Phrasea\Authentication\Provider\Factory'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
                 'authentication.providers',
                 'Alchemy\Phrasea\Authentication\ProvidersCollection'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
                 'authentication.manager',
                 'Alchemy\Phrasea\Authentication\Manager'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
                 'auth.password-encoder',
                 'Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
                 'auth.old-password-encoder',
                 'Alchemy\Phrasea\Authentication\Phrasea\OldPasswordEncoder'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
                 'auth.native.failure-manager',
                 'Alchemy\Phrasea\Authentication\Phrasea\FailureManager'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
                 'auth.native',
                 'Alchemy\Phrasea\Authentication\Phrasea\PasswordAuthenticationInterface'
-            ),
-            array(
+            ],
+            [
                 'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
                 'authentication.providers.account-creator',
                 'Alchemy\Phrasea\Authentication\AccountCreator'
-            ),
-        );
+            ],
+        ];
     }
 
     public function testFailureManagerAttemptsConfiguration()
@@ -87,9 +87,7 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
         $app->register(new AuthenticationManagerServiceProvider());
         $app->register(new ConfigurationServiceProvider());
 
-        $app['phraseanet.configuration'] = $conf = $app['phraseanet.configuration']->getConfig();
-        $conf['authentication']['captcha']['trials-before-display'] = 42;
-        $app['phraseanet.configuration'] = $conf;
+        $app['conf']->set(['authentication', 'captcha', 'trials-before-display'], 42);
 
         $app['EM'] = $this->getMockBuilder('Doctrine\Orm\EntityManager')
             ->disableOriginalConstructor()
@@ -107,11 +105,7 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
         $app = new PhraseaApplication();
         $app->register(new ConfigurationServiceProvider());
 
-        $conf = $app['phraseanet.configuration']->getConfig();
-        $conf['authentication']['auto-create'] = array(
-            'templates' => array(),
-        );
-        $app['phraseanet.configuration']->setConfig($conf);
+        $app['conf']->set(['authentication', 'auto-create'], ['templates' => []]);
 
         $app['authentication.providers.account-creator'];
     }
@@ -125,24 +119,19 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
         $app['phraseanet.registry'] = $this->getMockBuilder('registry')
             ->disableOriginalConstructor()
             ->getMock();
-        $phpunit = $this;
         $app['phraseanet.registry']->expects($this->any())
             ->method('get')
-            ->will($this->returnCallback(function ($key) use ($phpunit) {
+            ->will($this->returnCallback(function ($key) {
                 switch ($key) {
                     case 'GV_sit':
                         return mt_rand();
                     default:
-                        $phpunit->fail(sprintf('Unknown key %s', $key));
+                        $this->fail(sprintf('Unknown key %s', $key));
                 }
             }));
         $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];
 
-        $conf = $app['phraseanet.configuration']->getConfig();
-        $conf['authentication']['captcha'] = array(
-            'enabled' => true,
-        );
-        $app['phraseanet.configuration']->setConfig($conf);
+        $app['conf']->set(['authentication', 'captcha'], ['enabled' => true]);
 
         $app['EM'] = $this->getMockBuilder('Doctrine\Orm\EntityManager')
             ->disableOriginalConstructor()
@@ -163,24 +152,19 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
         $app['phraseanet.registry'] = $this->getMockBuilder('registry')
             ->disableOriginalConstructor()
             ->getMock();
-        $phpunit = $this;
         $app['phraseanet.registry']->expects($this->any())
             ->method('get')
-            ->will($this->returnCallback(function ($key) use ($phpunit) {
+            ->will($this->returnCallback(function ($key) {
                 switch ($key) {
                     case 'GV_sit':
                         return mt_rand();
                     default:
-                        $phpunit->fail(sprintf('Unknown key %s', $key));
+                        $this->fail(sprintf('Unknown key %s', $key));
                 }
             }));
         $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];
 
-        $conf = $app['phraseanet.configuration']->getConfig();
-        $conf['authentication']['captcha'] = array(
-            'enabled' => false,
-        );
-        $app['phraseanet.configuration']->setConfig($conf);
+        $app['conf']->set(['authentication', 'captcha'], ['enabled' => false]);
 
         $app['EM'] = $this->getMockBuilder('Doctrine\Orm\EntityManager')
             ->disableOriginalConstructor()
@@ -202,16 +186,9 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
         $template2 = \User_Adapter::create(self::$DI['app'], 'template' . $random->generatePassword(), $random->generatePassword(), null, false);
         $template2->set_template(self::$DI['user']);
 
-        $conf = $app['phraseanet.configuration']->getConfig();
-        $conf['authentication']['auto-create'] = array(
-            'templates' => array(
-                $template1->get_id(),
-                $template2->get_login()
-            )
-        );
-        $app['phraseanet.configuration']->setConfig($conf);
+        $app['conf']->set(['authentication', 'auto-create'], ['templates' => [$template1->get_id(), $template2->get_login()]]);
 
-        $this->assertEquals(array($template1, $template2), $app['authentication.providers.account-creator']->getTemplates());
+        $this->assertEquals([$template1, $template2], $app['authentication.providers.account-creator']->getTemplates());
 
         $template1->delete();
         $template2->delete();

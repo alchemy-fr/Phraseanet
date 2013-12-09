@@ -14,12 +14,6 @@ namespace Alchemy\Phrasea\Out\Module;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Out\Tool\PhraseaPDF;
 
-/**
- * Creates a PDF
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class PDF
 {
     protected $app;
@@ -36,7 +30,7 @@ class PDF
     {
         $this->app = $app;
 
-        $list = array();
+        $list = [];
 
         foreach ($records as $record) {
             switch ($layout) {
@@ -166,7 +160,7 @@ class PDF
 
             $fimg = $subdef->get_pathfile();
 
-            if (!$this->app['authentication']->getUser()->ACL()->has_right_on_base($rec->get_base_id(), "nowatermark")
+            if (!$this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($rec->get_base_id(), "nowatermark")
                 && $subdef->get_type() == \media_subdef::TYPE_IMAGE) {
                 $fimg = \recordutils_image::watermark($this->app, $subdef);
             }
@@ -219,15 +213,12 @@ class PDF
         $this->pdf->AddPage();
         $oldMargins = $this->pdf->getMargins();
 
-        $tmargin = $oldMargins['top'];
         $lmargin = $oldMargins['left'];
-        $bmargin = $oldMargins['bottom'];
         $rmargin = $oldMargins['right'];
 
         $this->pdf->SetLeftMargin($lmargin + 55);
 
         $ndoc = 0;
-        $lastpage = $this->pdf->PageNo();
         foreach ($this->records as $rec) {
             /* @var $rec record_adapter */
             $subdef = $rec->get_subdef('thumbnail');
@@ -324,7 +315,6 @@ class PDF
                     $rec->set_number($this->pdf->PageNo());
             }
             $lmargin = $this->pdf->GetX();
-            $tmargin = $this->pdf->GetY();
             $himg = 0;
             $y = 0;
             $miniConv = NULL;
@@ -341,7 +331,7 @@ class PDF
                 $str = $databox->get_sxml_structure();
                 $vn = (string) ($str->pdfPrintLogo);
                 if (($vn * 1) == 1) {
-                    $LEFT__TEXT = $databox->get_label($this->app['locale.I18n']);
+                    $LEFT__TEXT = $databox->get_label($this->app['locale']);
                 }
             }
 
@@ -429,7 +419,7 @@ class PDF
 
             $f = $subdef->get_pathfile();
 
-            if (!$this->app['authentication']->getUser()->ACL()->has_right_on_base($rec->get_base_id(), "nowatermark")
+            if (!$this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($rec->get_base_id(), "nowatermark")
                 && $subdef->get_type() == \media_subdef::TYPE_IMAGE)
                 $f = \recordutils_image::watermark($this->app, $subdef);
 
@@ -462,8 +452,8 @@ class PDF
                     $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
 
                     $t = str_replace(
-                        array("&lt;", "&gt;", "&amp;")
-                        , array("<", ">", "&")
+                        ["&lt;", "&gt;", "&amp;"]
+                        , ["<", ">", "&"]
                         , strip_tags($field->get_serialized_values())
                     );
 

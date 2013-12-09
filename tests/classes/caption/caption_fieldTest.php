@@ -13,17 +13,17 @@ class caption_fieldTest extends \PHPUnit_Framework_TestCase
 
     public function getMultiValues()
     {
-        return array(
-            array(';', 'arbre;fleur-chien maison', array('arbre', 'fleur-chien maison')),
-            array('-', 'arbre;fleur-chien maison', array('arbre;fleur', 'chien maison')),
-            array(';-', 'arbre;fleur-chien maison', array('arbre','fleur', 'chien maison')),
-            array(';- ', 'arbre;fleur-chien maison', array('arbre','fleur', 'chien', 'maison')),
-            array('/', 'arbre/fleur/chien maison', array('arbre','fleur', 'chien maison')),
-            array('\\', 'arbre\fleur\chien maison', array('arbre','fleur', 'chien maison')),
-            array('|', 'arbre|fleur|chien maison', array('arbre','fleur', 'chien maison')),
-            array(' ', 'arbre|fleur|chien maison', array('arbre|fleur|chien','maison')),
-            array(' ', 'arbre\fleur|chien maison', array('arbre\fleur|chien','maison')),
-        );
+        return [
+            [';', 'arbre;fleur-chien maison', ['arbre', 'fleur-chien maison']],
+            ['-', 'arbre;fleur-chien maison', ['arbre;fleur', 'chien maison']],
+            [';-', 'arbre;fleur-chien maison', ['arbre','fleur', 'chien maison']],
+            [';- ', 'arbre;fleur-chien maison', ['arbre','fleur', 'chien', 'maison']],
+            ['/', 'arbre/fleur/chien maison', ['arbre','fleur', 'chien maison']],
+            ['\\', 'arbre\fleur\chien maison', ['arbre','fleur', 'chien maison']],
+            ['|', 'arbre|fleur|chien maison', ['arbre','fleur', 'chien maison']],
+            [' ', 'arbre|fleur|chien maison', ['arbre|fleur|chien','maison']],
+            [' ', 'arbre\fleur|chien maison', ['arbre\fleur|chien','maison']],
+        ];
     }
 
 }

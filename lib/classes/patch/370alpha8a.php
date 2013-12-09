@@ -10,47 +10,43 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\Task;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class patch_370alpha8a implements patchInterface
 {
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     private $release = '3.7.0-alpha.8';
 
-    /**
-     *
-     * @var Array
-     */
-    private $concern = array(base::APPLICATION_BOX);
+    /** @var array */
+    private $concern = [base::APPLICATION_BOX];
 
     /**
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function get_release()
     {
         return $this->release;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function require_all_upgrades()
     {
         return false;
     }
 
     /**
-     *
-     * @return Array
+     * {@inheritdoc}
      */
     public function concern()
     {
         return $this->concern;
+    }
+
+    public function getDoctrineMigrations()
+    {
+        return ['task'];
     }
 
     /**
@@ -64,25 +60,25 @@ class patch_370alpha8a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $taskManager = $app['task-manager'];
-
-        $ttasks = array();
+        $ttasks = [];
         $conn = $appbox->get_connection();
-        $sql = 'SELECT task_id, active, name, class, settings FROM task2 WHERE class=\'task_period_workflow01\' OR class=\'task_period_ftv\'';
+        $sql = 'SELECT task_id, active, name, class, settings
+                FROM task2
+                WHERE class=\'task_period_workflow01\'';
         if (($stmt = $conn->prepare($sql)) !== FALSE) {
             $stmt->execute();
-            $ttasks = $row = $stmt->fetchAll();
+            $ttasks = $stmt->fetchAll();
             $stmt->closeCursor();
         }
 
-        $tdom = array();     // key = period
-        $taskstodel = array();
+        $tdom = [];     // key = period
+        $taskstodel = [];
         foreach ($ttasks as $task) {
             $active = true;
-            $warning = array();
+            $warning = [];
 
             /*
-             * migrating task 'workflow01' or 'task_period_ftv'
+             * migrating task 'workflow01'
              */
             $x = $task['settings'];
             if (false !== $sx = simplexml_load_string($x)) {
@@ -96,7 +92,7 @@ class patch_370alpha8a implements patchInterface
                     $ts->appendChild($dom->createElement('period'))->appendChild($dom->createTextNode(60 * $period));
                     $ts->appendChild($dom->createElement('logsql'))->appendChild($dom->createTextNode('1'));
                     $tasks = $ts->appendChild($dom->createElement('tasks'));
-                    $tdom['_' . $period] = array('dom'   => $dom, 'tasks' => $tasks);
+                    $tdom['_' . $period] = ['dom'   => $dom, 'tasks' => $tasks];
                 } else {
                     $dom = &$tdom['_' . $period]['dom'];
                     $tasks = &$tdom['_' . $period]['tasks'];
@@ -108,7 +104,6 @@ class patch_370alpha8a implements patchInterface
                 if ($task['class'] === 'task_period_workflow01') {
                     $t = $tasks->appendChild($dom->createElement('task'));
                     $t->setAttribute('active', '0');
-//                        $t->setAttribute('name', 'imported from \'' . $task->getTitle() . '\'');
                     $t->setAttribute('name', 'imported from \'' . $task['name'] . '\'');
                     $t->setAttribute('action', 'update');
 
@@ -195,58 +190,6 @@ class patch_370alpha8a implements patchInterface
 
                     $taskstodel[] = $task['task_id'];
                 }
-
-                /*
-                 * migrating task 'task_period_ftv'
-                 */
-                if ($task['class'] === 'task_period_ftv') {
-                    foreach ($sx->tasks->task as $sxt) {
-                        $active = true;
-                        $warning = array();
-
-                        $t = $dom->importNode(dom_import_simplexml($sxt), true);
-                        $t->setAttribute('active', '0');
-//                            $t->setAttribute('name', 'imported from \'' . $task->getTitle() . '\'');
-                        $t->setAttribute('name', 'imported from \'' . $task['name'] . '\'');
-                        $t->setAttribute('action', 'update');
-
-                        if ($sx->sbas_id) {
-                            $sbas_id = trim($sx->sbas_id);
-                            if ($sbas_id != '' && is_numeric($sbas_id)) {
-                                $t->setAttribute('sbas_id', $sx->sbas_id);
-                            } else {
-                                $warning[] = sprintf("Bad sbas_id '%s'", $sbas_id);
-                                $active = false;
-                            }
-                        } else {
-                            $warning[] = sprintf("missing sbas_id");
-                            $active = false;
-                        }
-
-                        if ($active && $task['active'] == '1') {
-                            $t->setAttribute('active', '1');
-                        }
-                        foreach ($warning as $w) {
-                            $t->appendChild($dom->createComment($w));
-                        }
-
-                        $x = new DOMXPath($dom);
-                        $nlfrom = $x->query('from', $t);
-                        if ($nlfrom->length == 1) {
-                            $nlcoll = $x->query('colls', $nlfrom->item(0));
-                            if ($nlcoll->length > 0) {
-                                $nn = $dom->createElement('coll');
-                                $nn->setAttribute('compare', '=');
-                                $nn->setAttribute('id', $nlcoll->item(0)->getAttribute('id'));
-                                $nlfrom->item(0)->replaceChild($nn, $nlcoll->item(0));
-                            }
-
-                            $tasks->appendChild($t);
-                        }
-                    }
-
-                    $taskstodel[] = $task['task_id'];
-                }
             }
 
             if (count($taskstodel) > 0) {
@@ -258,8 +201,20 @@ class patch_370alpha8a implements patchInterface
          * save new tasks
          */
         foreach ($tdom as $newtask) {
-            $task = task_abstract::create($app, 'task_period_RecordMover', $newtask['dom']->saveXML());
+            $settings = $newtask['dom']->saveXML();
+            $sxml = simplexml_load_string($settings);
+            $period = $sxml->period ? (int) $sxml->period : 300;
+
+            $task = new Task();
+            $task
+                ->setName('Record mover')
+                ->setJobId('RecordMover')
+                ->setSettings($settings)
+                ->setPeriod($period)
+                ->setStatus(Task::STATUS_STARTED);
+            $app['EM']->persist($task);
         }
+        $app['EM']->flush();
 
         return true;
     }

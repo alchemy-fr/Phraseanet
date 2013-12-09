@@ -19,7 +19,6 @@ use Alchemy\Phrasea\Cache\Factory;
 
 class CacheServiceProvider implements ServiceProviderInterface
 {
-
     public function register(Application $app)
     {
         $app['phraseanet.cache-registry'] = $app['root.path'] . '/tmp/cache_registry.php';
@@ -28,8 +27,8 @@ class CacheServiceProvider implements ServiceProviderInterface
             return new Compiler();
         });
 
-        $app['phraseanet.cache-factory'] = $app->share(function () {
-            return new Factory();
+        $app['phraseanet.cache-factory'] = $app->share(function (Application $app) {
+            return new Factory($app['cache.connection-factory']);
         });
 
         $app['phraseanet.cache-service'] = $app->share(function (Application $app) {
@@ -42,13 +41,13 @@ class CacheServiceProvider implements ServiceProviderInterface
         });
 
         $app['cache'] = $app->share(function (Application $app) {
-            $conf = $app['phraseanet.configuration']['main']['cache'];
+            $conf = $app['conf']->get(['main', 'cache']);
 
             return $app['phraseanet.cache-service']->factory('cache', $conf['type'], $conf['options']);
         });
 
         $app['opcode-cache'] = $app->share(function (Application $app) {
-            $conf = $app['phraseanet.configuration']['main']['opcodecache'];
+            $conf = $app['conf']->get(['main', 'opcodecache']);
 
             return $app['phraseanet.cache-service']->factory('cache', $conf['type'], $conf['options']);
         });

@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Setup\RequirementCollection;
 
 class SystemRequirements extends RequirementCollection implements RequirementInterface
 {
-    const REQUIRED_PHP_VERSION = '5.3.3';
+    const REQUIRED_PHP_VERSION = '5.4.0';
 
     public function __construct()
     {
@@ -35,12 +35,6 @@ class SystemRequirements extends RequirementCollection implements RequirementInt
         );
 
         $this->addRequirement(
-            version_compare($installedPhpVersion, '5.3.16', '!='),
-            'PHP version must not be 5.3.16 as Phraseanet won\'t work properly with it',
-            'Install PHP 5.3.17 or newer (or downgrade to an earlier PHP version)'
-        );
-
-        $this->addRequirement(
             is_dir($baseDir.'/vendor/composer'),
             'Vendor libraries must be installed',
             'Vendor libraries are missing. Install composer following instructions from <a href="http://getcomposer.org/">http://getcomposer.org/</a>. ' .
@@ -54,7 +48,7 @@ class SystemRequirements extends RequirementCollection implements RequirementInt
         );
 
         if (version_compare($installedPhpVersion, self::REQUIRED_PHP_VERSION, '>=')) {
-            $timezones = array();
+            $timezones = [];
             foreach (\DateTimeZone::listAbbreviations() as $abbreviations) {
                 foreach ($abbreviations as $abbreviation) {
                     $timezones[$abbreviation['timezone_id']] = true;
@@ -153,18 +147,6 @@ class SystemRequirements extends RequirementCollection implements RequirementInt
         );
 
         $this->addRecommendation(
-            version_compare($installedPhpVersion, '5.3.4', '>='),
-            'You should use at least PHP 5.3.4 due to PHP bug #52083 in earlier versions',
-            'Your project might malfunction randomly due to PHP bug #52083 ("Notice: Trying to get property of non-object"). Install PHP 5.3.4 or newer.'
-        );
-
-        $this->addRecommendation(
-            version_compare($installedPhpVersion, '5.3.8', '>='),
-            'When using annotations you should have at least PHP 5.3.8 due to PHP bug #55156',
-            'Install PHP 5.3.8 or newer if your project uses annotations.'
-        );
-
-        $this->addRecommendation(
             version_compare($installedPhpVersion, '5.4.0', '!='),
             'You should not use PHP 5.4.0 due to the PHP bug #61453',
             'Your project might not work properly due to the PHP bug #61453 ("Cannot dump definitions which have method calls"). Install PHP 5.4.1 or newer.'
@@ -258,6 +240,12 @@ class SystemRequirements extends RequirementCollection implements RequirementInt
             extension_loaded('twig'),
             'Twig extension is strongly recommended in production',
             'Install and enable the <strong>twig</strong> extension.'
+        );
+
+        $this->addRequirement(
+            extension_loaded('zmq'),
+            'ZMQ extension is required.',
+            'Install and enable the <strong>ZMQ</strong> extension.'
         );
 
         $this->addRecommendation(

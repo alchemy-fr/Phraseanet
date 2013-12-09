@@ -27,10 +27,10 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         parent::setUp();
 
         if (null === self::$demands) {
-            self::$demands = array(self::$DI['collection']->get_coll_id());
+            self::$demands = [self::$DI['collection']->get_coll_id()];
         }
         if (null === self::$collections) {
-            self::$collections = array(self::$DI['collection']->get_base_id());
+            self::$collections = [self::$DI['collection']->get_base_id()];
 
             $sxml = simplexml_load_string(self::$DI['collection']->get_prefs());
             $sxml->caninscript = 1;
@@ -103,7 +103,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->logout(self::$DI['app']);
 
-        self::$DI['client']->request('GET', '/login/', array('postlog'  => '1', 'redirect' => 'prod'));
+        self::$DI['client']->request('GET', '/login/', ['postlog'  => '1', 'redirect' => 'prod']);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/login/logout/?redirect=prod', $response->headers->get('location'));
@@ -141,9 +141,9 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRegisterConfirmMailWrongCode()
     {
         $this->logout(self::$DI['app']);
-        self::$DI['client']->request('GET', '/login/register-confirm/', array(
+        self::$DI['client']->request('GET', '/login/register-confirm/', [
             'code'    => '34dT0k3n'
-        ));
+        ]);
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
@@ -159,9 +159,9 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->logout(self::$DI['app']);
         $email = $this->generateEmail();
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, 0, null, $email);
-        self::$DI['client']->request('GET', '/login/register-confirm/', array(
+        self::$DI['client']->request('GET', '/login/register-confirm/', [
             'code'    => $token
-        ));
+        ]);
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
@@ -180,7 +180,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         self::$DI['user']->set_mail_locked(false);
 
-        self::$DI['client']->request('GET', '/login/register-confirm/', array('code'    => $token));
+        self::$DI['client']->request('GET', '/login/register-confirm/', ['code'    => $token]);
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
@@ -203,7 +203,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['user']->set_mail_locked(true);
         $this->deleteRequest();
         $appboxRegister->add_request(self::$DI['user'], self::$DI['collection']);
-        self::$DI['client']->request('GET', '/login/register-confirm/', array('code'    => $token));
+        self::$DI['client']->request('GET', '/login/register-confirm/', ['code'    => $token]);
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
@@ -229,7 +229,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->deleteRequest();
 
-        self::$DI['client']->request('GET', '/login/register-confirm/', array('code'    => $token));
+        self::$DI['client']->request('GET', '/login/register-confirm/', ['code'    => $token]);
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
@@ -245,10 +245,10 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRenewPasswordInvalidEmail()
     {
         $this->logout(self::$DI['app']);
-        $crawler = self::$DI['client']->request('POST', '/login/forgot-password/', array(
+        $crawler = self::$DI['client']->request('POST', '/login/forgot-password/', [
             'email'    => 'invalid.email.com',
             '_token'   => 'token',
-        ));
+        ]);
         $response = self::$DI['client']->getResponse();
 
         $this->assertFalse($response->isRedirect());
@@ -262,10 +262,10 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRenewPasswordUnknowEmail()
     {
         $this->logout(self::$DI['app']);
-        $crawler = self::$DI['client']->request('POST', '/login/forgot-password/', array(
+        $crawler = self::$DI['client']->request('POST', '/login/forgot-password/', [
             'email'   => 'invalid_email@test.com',
             '_token'  => 'token',
-        ));
+        ]);
         $response = self::$DI['client']->getResponse();
 
         $this->assertFalse($response->isRedirect());
@@ -280,10 +280,10 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestPasswordUpdate');
 
         $this->logout(self::$DI['app']);
-        self::$DI['client']->request('POST', '/login/forgot-password/', array(
+        self::$DI['client']->request('POST', '/login/forgot-password/', [
             'email'    => self::$DI['user']->get_email(),
             '_token'   => 'token',
-        ));
+        ]);
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
@@ -298,11 +298,11 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->logout(self::$DI['app']);
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_PASSWORD, self::$DI['user']->get_id());
-        $crawler = self::$DI['client']->request('POST', '/login/renew-password/', array(
+        $crawler = self::$DI['client']->request('POST', '/login/renew-password/', [
             'token'           => $token,
             '_token'          => 'token',
-            'password'        => array('password' => 'password', 'confirm' => 'not_identical')
-        ));
+            'password'        => ['password' => 'password', 'confirm' => 'not_identical']
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -313,11 +313,11 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRenewPasswordBadToken()
     {
         $this->logout(self::$DI['app']);
-        self::$DI['client']->request('POST', '/login/renew-password/', array(
+        self::$DI['client']->request('POST', '/login/renew-password/', [
             'token'           => 'badToken',
             '_token'          => 'token',
-            'password'        => array('password' => 'password', 'confirm' => 'password')
-        ));
+            'password'        => ['password' => 'password', 'confirm' => 'password']
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertEquals(401, $response->getStatusCode());
@@ -325,11 +325,11 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRenewPasswordBadTokenWheneverItsAuthenticated()
     {
-        self::$DI['client']->request('POST', '/login/renew-password/', array(
+        self::$DI['client']->request('POST', '/login/renew-password/', [
             'token'           => 'badToken',
             '_token'          => 'token',
-            'password'        => array('password' => 'password', 'confirm' => 'password')
-        ));
+            'password'        => ['password' => 'password', 'confirm' => 'password']
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -340,10 +340,10 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRenewPasswordNoToken()
     {
         $this->logout(self::$DI['app']);
-        self::$DI['client']->request('POST', '/login/renew-password/', array(
+        self::$DI['client']->request('POST', '/login/renew-password/', [
             '_token'          => 'token',
-            'password'        => array('password' => 'password', 'confirm' => 'password')
-        ));
+            'password'        => ['password' => 'password', 'confirm' => 'password']
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -352,10 +352,10 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRenewPasswordNoTokenWheneverItsAuthenticated()
     {
-        self::$DI['client']->request('POST', '/login/renew-password/', array(
+        self::$DI['client']->request('POST', '/login/renew-password/', [
             '_token'          => 'token',
-            'password'        => array('password' => 'password', 'confirm' => 'password')
-        ));
+            'password'        => ['password' => 'password', 'confirm' => 'password']
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -371,11 +371,11 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->logout(self::$DI['app']);
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_PASSWORD, self::$DI['user']->get_id());
 
-        self::$DI['client']->request('POST', '/login/renew-password/', array(
+        self::$DI['client']->request('POST', '/login/renew-password/', [
             'token'                 => $token,
             '_token'                 => 'token',
-            'password'        => array('password' => 'password', 'confirm' => 'password')
-        ));
+            'password'        => ['password' => 'password', 'confirm' => 'password']
+        ]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -395,9 +395,9 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_PASSWORD, self::$DI['user']->get_id());
 
-        $crawler = self::$DI['client']->request('GET', '/login/renew-password/', array(
+        $crawler = self::$DI['client']->request('GET', '/login/renew-password/', [
             'token' => $token
-        ));
+        ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
@@ -425,10 +425,10 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testForgotPasswordInvalidEmail()
     {
         $this->logout(self::$DI['app']);
-        $crawler = self::$DI['client']->request('POST', '/login/forgot-password/', array(
+        $crawler = self::$DI['client']->request('POST', '/login/forgot-password/', [
             '_token' => 'token',
             'email'  => 'invalid.email',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertFalse($response->isRedirect());
@@ -439,10 +439,10 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testForgotPasswordWrongEmail()
     {
         $this->logout(self::$DI['app']);
-        $crawler = self::$DI['client']->request('POST', '/login/forgot-password/', array(
+        $crawler = self::$DI['client']->request('POST', '/login/forgot-password/', [
             '_token' => 'token',
             'email'  => 'invalid@email.com',
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertFalse($response->isRedirect());
@@ -455,10 +455,10 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestPasswordUpdate');
 
         $this->logout(self::$DI['app']);
-        $crawler = self::$DI['client']->request('POST', '/login/forgot-password/', array(
+        $crawler = self::$DI['client']->request('POST', '/login/forgot-password/', [
             '_token' => 'token',
             'email'  => self::$DI['user']->get_email(),
-        ));
+        ]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
@@ -518,11 +518,11 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function provideRegistrationRouteAndMethods()
     {
-        return array(
-            array('GET', '/login/register/'),
-            array('GET', '/login/register-classic/'),
-            array('POST', '/login/register-classic/'),
-        );
+        return [
+            ['GET', '/login/register/'],
+            ['GET', '/login/register-classic/'],
+            ['POST', '/login/register-classic/'],
+        ];
     }
 
     /**
@@ -547,7 +547,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->logout(self::$DI['app']);
 
-        $parameters = array_merge(array('_token' => 'token'), $parameters);
+        $parameters = array_merge(['_token' => 'token'], $parameters);
         foreach ($parameters as $key => $parameter) {
             if ('collections' === $key && null === $parameter) {
                 $parameters[$key] = self::$demands;
@@ -581,180 +581,180 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function provideInvalidRegistrationData()
     {
-        return array(
-            array(array(//required field missing
-                    "password" => array(
+        return [
+            [[//required field missing
+                    "password" => [
                         'password' => 'password',
                         'confirm'  => 'password'
-                    ),
+                    ],
                     "accept-tou"      => '1',
                     "collections"     => null,
-                ), array(), 1),
-            array(array(//required extra-field missing
-                    "password" => array(
+                ], [], 1],
+            [[//required extra-field missing
+                    "password" => [
                         'password' => 'password',
                         'confirm'  => 'password'
-                    ),
+                    ],
                     "email"           => $this->generateEmail(),
                     "accept-tou"      => '1',
                     "collections"     => null
-                ), array(
-                    array(
+                ], [
+                    [
                         'name'     => 'login',
                         'required' => true,
-                    )
-                ), 1),
-            array(array(//password mismatch
-                    "password" => array(
+                    ]
+                ], 1],
+            [[//password mismatch
+                    "password" => [
                         'password' => 'password',
                         'confirm'  => 'passwordMismatch'
-                    ),
+                    ],
                     "email"           => $this->generateEmail(),
                     "accept-tou"      => '1',
                     "collections"     => null
-                ), array(), 1),
-            array(array(//password tooshort
-                    "password" => array(
+                ], [], 1],
+            [[//password tooshort
+                    "password" => [
                         'password' => 'min',
                         'confirm'  => 'min'
-                    ),
+                    ],
                     "email"           => $this->generateEmail(),
                     "accept-tou"      => '1',
                     "collections"     => null
-                ), array(), 1),
-            array(array(//email invalid
-                    "password" => array(
+                ], [], 1],
+            [[//email invalid
+                    "password" => [
                         'password' => 'password',
                         'confirm'  => 'password'
-                    ),
+                    ],
                     "email"           => 'invalid.email',
                     "accept-tou"      => '1',
                     "collections"     => null
-                ), array(), 1),
-            array(array(//login exists
+                ], [], 1],
+            [[//login exists
                     "login"           => null,
-                    "password" => array(
+                    "password" => [
                         'password' => 'password',
                         'confirm'  => 'password'
-                    ),
+                    ],
                     "email"           => $this->generateEmail(),
                     "accept-tou"      => '1',
                     "collections"     => null
-                ), array(
-                    array(
+                ], [
+                    [
                         'name'     => 'login',
                         'required' => true,
-                    )
-                ), 1),
-            array(array(//mails exists
-                    "password" => array(
+                    ]
+                ], 1],
+            [[//mails exists
+                    "password" => [
                         'password' => 'password',
                         'confirm'  => 'password'
-                    ),
+                    ],
                     "email"           => null,
                     "accept-tou"      => '1',
                     "collections"     => null
-                ), array(), 1),
-            array(array(//tou declined
-                    "password" => array(
+                ], [], 1],
+            [[//tou declined
+                    "password" => [
                         'password' => 'password',
                         'confirm'  => 'password'
-                    ),
+                    ],
                     "email"           => $this->generateEmail(),
                     "collections"     => null
-                ), array(), 1)
-        );
+                ], [], 1]
+        ];
     }
 
     public function provideRegistrationData()
     {
-        return array(
-            array(array(
-                    "password" => array(
+        return [
+            [[
+                    "password" => [
                         'password' => 'password',
                         'confirm'  => 'password'
-                    ),
+                    ],
                     "email"           => $this->generateEmail(),
                     "accept-tou"      => '1',
                     "collections"     => null,
-                ), array()),
-            array(array(
-                    "password" => array(
+                ], []],
+            [[
+                    "password" => [
                         'password' => 'password',
                         'confirm'  => 'password'
-                    ),
+                    ],
                     "email"           => $this->generateEmail(),
                     "accept-tou"      => '1',
                     "collections"     => null
-                ), array(
-                    array(
+                ], [
+                    [
                         'name'     => 'login',
                         'required' => false,
-                    )
-                )),
-            array(array(//extra-fields are not required
-                    "password" => array(
+                    ]
+                ]],
+            [[//extra-fields are not required
+                    "password" => [
                         'password' => 'password',
                         'confirm'  => 'password'
-                    ),
+                    ],
                     "email"           => $this->generateEmail(),
                     "accept-tou"      => '1',
                     "collections"     => null
-                ), array(
-                    array(
+                ], [
+                    [
                         'name' => 'login',
                         'required' => false,
-                    ),
-                    array(
+                    ],
+                    [
                         'name' => 'gender',
                         'required' => false,
-                    ),
-                    array(
+                    ],
+                    [
                         'name' => 'firstname',
                         'required' => false,
-                    ),
-                    array(
+                    ],
+                    [
                         'name' => 'lastname',
                         'required' => false,
-                    ),
-                    array(
+                    ],
+                    [
                         'name' => 'address',
                         'required' => false,
-                    ),
-                    array(
+                    ],
+                    [
                         'name' => 'zipcode',
                         'required' => false,
-                    ),
-                    array(
+                    ],
+                    [
                         'name' => 'geonameid',
                         'required' => false,
-                    ),
-                    array(
+                    ],
+                    [
                         'name' => 'position',
                         'required' => false,
-                    ),
-                    array(
+                    ],
+                    [
                         'name' => 'company',
                         'required' => false,
-                    ),
-                    array(
+                    ],
+                    [
                         'name' => 'job',
                         'required' => false,
-                    ),
-                    array(
+                    ],
+                    [
                         'name' => 'tel',
                         'required' => false,
-                    ),
-                    array(
+                    ],
+                    [
                         'name' => 'fax',
                         'required' => false,
-                    )
-                )),
-            array(array(//extra-fields are required
-                    "password" => array(
+                    ]
+                ]],
+            [[//extra-fields are required
+                    "password" => [
                         'password' => 'password',
                         'confirm'  => 'password'
-                    ),
+                    ],
                     "email"           => $this->generateEmail(),
                     "accept-tou"      => '1',
                     "collections"     => null,
@@ -770,69 +770,69 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                     "job" => 'job',
                     "tel" => 'tel',
                     "fax" => 'fax',
-                ), array(
-                    array(
+                ], [
+                    [
                         'name' => 'login',
                         'required' => true,
-                    ),
-                    array(
+                    ],
+                    [
                         'name' => 'gender',
                         'required' => true,
-                    ),
-                    array(
+                    ],
+                    [
                         'name' => 'firstname',
                         'required' => true,
-                    ),
-                    array(
+                    ],
+                    [
                         'name' => 'lastname',
                         'required' => true,
-                    ),
-                    array(
+                    ],
+                    [
                         'name' => 'address',
                         'required' => true,
-                    ),
-                    array(
+                    ],
+                    [
                         'name' => 'zipcode',
                         'required' => true,
-                    ),
-                    array(
+                    ],
+                    [
                         'name' => 'geonameid',
                         'required' => true,
-                    ),
-                    array(
+                    ],
+                    [
                         'name' => 'position',
                         'required' => true,
-                    ),
-                    array(
+                    ],
+                    [
                         'name' => 'company',
                         'required' => true,
-                    ),
-                    array(
+                    ],
+                    [
                         'name' => 'job',
                         'required' => true,
-                    ),
-                    array(
+                    ],
+                    [
                         'name' => 'tel',
                         'required' => true,
-                    ),
-                    array(
+                    ],
+                    [
                         'name' => 'fax',
                         'required' => true,
-                    )
-                )),
-        );
+                    ]
+                ]],
+        ];
     }
 
     public function testPostRegisterWithProviderIdAndAlreadyBoundProvider()
     {
         $this->enableTOU();
-        self::$DI['app']['registration.fields'] = array();
+        self::$DI['app']['registration.fields'] = [];
         $this->logout(self::$DI['app']);
 
         $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $this->addProvider('provider-test', $provider);
 
-        $entity = $this->getMock('Entities\UsrAuthProvider');
+        $entity = $this->getMock('Alchemy\Phrasea\Model\Entities\UsrAuthProvider');
         $entity->expects($this->any())
             ->method('getUser')
             ->with(self::$DI['app'])
@@ -845,16 +845,16 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('getToken')
             ->will($this->returnValue($token));
 
-        $parameters = array_merge(array('_token' => 'token'), array(
-            "password" => array(
+        $parameters = array_merge(['_token' => 'token'], [
+            "password" => [
                 'password' => 'password',
                 'confirm'  => 'password'
-            ),
+            ],
             "email"           => $this->generateEmail(),
             "accept-tou"      => '1',
             "collections"     => null,
             "provider-id"     => 'provider-test',
-        ));
+        ]);
 
         foreach ($parameters as $key => $parameter) {
             if ('collections' === $key && null === $parameter) {
@@ -877,19 +877,19 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPostRegisterWithUnknownProvider()
     {
         $this->enableTOU();
-        self::$DI['app']['registration.fields'] = array();
+        self::$DI['app']['registration.fields'] = [];
         $this->logout(self::$DI['app']);
 
-        $parameters = array_merge(array('_token' => 'token'), array(
-            "password" => array(
+        $parameters = array_merge(['_token' => 'token'], [
+            "password" => [
                 'password' => 'password',
                 'confirm'  => 'password'
-            ),
+            ],
             "email"           => $this->generateEmail(),
             "accept-tou"      => '1',
             "collections"     => null,
             "provider-id"     => 'provider-test',
-        ));
+        ]);
 
         foreach ($parameters as $key => $parameter) {
             if ('collections' === $key && null === $parameter) {
@@ -913,7 +913,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPostRegisterWithProviderNotAuthenticated()
     {
         $this->enableTOU();
-        self::$DI['app']['registration.fields'] = array();
+        self::$DI['app']['registration.fields'] = [];
         $this->logout(self::$DI['app']);
 
         $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
@@ -923,16 +923,16 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('getToken')
             ->will($this->throwException(new NotAuthenticatedException('Not authenticated')));
 
-        $parameters = array_merge(array('_token' => 'token'), array(
-           "password" => array(
+        $parameters = array_merge(['_token' => 'token'], [
+           "password" => [
                 'password' => 'password',
                 'confirm'  => 'password'
-            ),
+            ],
             "email"           => $this->generateEmail(),
             "accept-tou"      => '1',
             "collections"     => null,
             "provider-id"     => 'provider-test',
-        ));
+        ]);
 
         foreach ($parameters as $key => $parameter) {
             if ('collections' === $key && null === $parameter) {
@@ -956,27 +956,27 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPostRegisterWithProviderId()
     {
         $this->enableTOU();
-        self::$DI['app']['registration.fields'] = array();
+        self::$DI['app']['registration.fields'] = [];
         $this->logout(self::$DI['app']);
 
-        $emails = array(
+        $emails = [
             'Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation'=>0,
             'Alchemy\Phrasea\Notification\Mail\MailInfoUserRegistered'=>0,
             'Alchemy\Phrasea\Notification\Mail\MailInfoSomebodyAutoregistered'=>0,
-        );
+        ];
 
         $this->mockNotificationsDeliverer($emails);
 
-        $parameters = array_merge(array('_token' => 'token'), array(
-            "password" => array(
+        $parameters = array_merge(['_token' => 'token'], [
+            "password" => [
                 'password' => 'password',
                 'confirm'  => 'password'
-            ),
+            ],
             "email"           => $this->generateEmail(),
             "accept-tou"      => '1',
             "collections"     => null,
             "provider-id"     => 'provider-test',
-        ));
+        ]);
 
         $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $this->addProvider('provider-test', $provider);
@@ -1011,8 +1011,8 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $user = new \User_Adapter((int) $userId, self::$DI['app']);
 
-        $ret = self::$DI['app']['EM']->getRepository('\Entities\UsrAuthProvider')
-            ->findBy(array('usr_id' => $userId, 'provider' => 'provider-test'));
+        $ret = self::$DI['app']['EM']->getRepository('\Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
+            ->findBy(['usr_id' => $userId, 'provider' => 'provider-test']);
         $this->assertCount(1, $ret);
 
         $user->delete();
@@ -1034,15 +1034,15 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->logout(self::$DI['app']);
 
-        $emails = array(
+        $emails = [
             'Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation'=>0,
             'Alchemy\Phrasea\Notification\Mail\MailInfoUserRegistered'=>0,
             'Alchemy\Phrasea\Notification\Mail\MailInfoSomebodyAutoregistered'=>0,
-        );
+        ];
 
         $this->mockNotificationsDeliverer($emails);
 
-        $parameters = array_merge(array('_token' => 'token'), $parameters);
+        $parameters = array_merge(['_token' => 'token'], $parameters);
         foreach ($parameters as $key => $parameter) {
             if ('collections' === $key && null === $parameter) {
                 $parameters[$key] = self::$demands;
@@ -1082,7 +1082,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testGetLogout()
     {
         $this->assertTrue(self::$DI['app']['authentication']->isAuthenticated());
-        self::$DI['client']->request('GET', '/login/logout/', array('app' => 'prod'));
+        self::$DI['client']->request('GET', '/login/logout/', ['app' => 'prod']);
         $this->assertFalse(self::$DI['app']['authentication']->isAuthenticated());
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
@@ -1107,7 +1107,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation');
 
         $this->logout(self::$DI['app']);
-        self::$DI['client']->request('GET', '/login/send-mail-confirm/', array('usr_id' => self::$DI['user']->get_id()));
+        self::$DI['client']->request('GET', '/login/send-mail-confirm/', ['usr_id' => self::$DI['user']->get_id()]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
@@ -1121,7 +1121,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testSendConfirmMailWrongUser()
     {
         $this->logout(self::$DI['app']);
-        self::$DI['client']->request('GET', '/login/send-mail-confirm/', array('usr_id' => 0));
+        self::$DI['client']->request('GET', '/login/send-mail-confirm/', ['usr_id' => 0]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
@@ -1142,13 +1142,13 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->logout(self::$DI['app']);
 
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
-        self::$DI['client']->request('POST', '/login/authenticate/', array(
+        self::$DI['client']->request('POST', '/login/authenticate/', [
             'login' => $login,
             'password'   => $password,
             '_token' => 'token',
-        ));
+        ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertRegExp('/^\/prod\/$/', self::$DI['client']->getResponse()->headers->get('Location'));
@@ -1168,38 +1168,37 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->logout(self::$DI['app']);
 
         $preEvent = 0;
-        $phpunit = $this;
-        self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use ($phpunit, &$preEvent, $className, $context) {
+        self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use (&$preEvent, $className, $context) {
             $preEvent++;
-            $phpunit->assertInstanceOf($className, $event);
-            $phpunit->assertEquals($context, $event->getContext()->getContext());
+            $this->assertInstanceOf($className, $event);
+            $this->assertEquals($context, $event->getContext()->getContext());
         });
 
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
-        self::$DI['client']->request('POST', '/login/authenticate/', array(
+        self::$DI['client']->request('POST', '/login/authenticate/', [
             'login' => $login,
             'password'   => $password,
             '_token' => 'token',
-        ));
+        ]);
 
         $this->assertEquals(1, $preEvent);
     }
 
     public function provideEventNames()
     {
-        return array(
-            array(PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate', Context::CONTEXT_NATIVE),
-            array(PhraseaEvents::POST_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PostAuthenticate', Context::CONTEXT_NATIVE),
-        );
+        return [
+            [PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate', Context::CONTEXT_NATIVE],
+            [PhraseaEvents::POST_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PostAuthenticate', Context::CONTEXT_NATIVE],
+        ];
     }
 
     public function provideGuestEventNames()
     {
-        return array(
-            array(PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate', Context::CONTEXT_GUEST),
-            array(PhraseaEvents::POST_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PostAuthenticate', Context::CONTEXT_GUEST),
-        );
+        return [
+            [PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate', Context::CONTEXT_GUEST],
+            [PhraseaEvents::POST_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PostAuthenticate', Context::CONTEXT_GUEST],
+        ];
     }
 
     /**
@@ -1214,14 +1213,14 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->logout(self::$DI['app']);
 
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
-        self::$DI['client']->request('POST', '/login/authenticate/', array(
+        self::$DI['client']->request('POST', '/login/authenticate/', [
             'login'    => $login,
             'password' => $password,
             '_token'   => 'token',
             'redirect' => '/admin'
-        ));
+        ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertRegExp('/admin/', self::$DI['client']->getResponse()->headers->get('Location'));
@@ -1236,11 +1235,11 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $user = \User_Adapter::getInstance($usr_id, self::$DI['app']);
 
-        $user->ACL()->give_access_to_base(array(self::$DI['collection']->get_base_id()));
+        self::$DI['app']['acl']->get($user)->give_access_to_base([self::$DI['collection']->get_base_id()]);
 
         $this->logout(self::$DI['app']);
 
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
         self::$DI['client']->request('POST', '/login/authenticate/guest/');
 
@@ -1259,20 +1258,19 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testGuestAuthenticateTriggersEvents($eventName, $className, $context)
     {
         $preEvent = 0;
-        $phpunit = $this;
-        self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use ($phpunit, &$preEvent, $className, $context) {
+        self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use (&$preEvent, $className, $context) {
             $preEvent++;
-            $phpunit->assertInstanceOf($className, $event);
-            $phpunit->assertEquals($context, $event->getContext()->getContext());
+            $this->assertInstanceOf($className, $event);
+            $this->assertEquals($context, $event->getContext()->getContext());
         });
 
         $usr_id = \User_Adapter::get_usr_id_from_login(self::$DI['app'], 'invite');
         $user = \User_Adapter::getInstance($usr_id, self::$DI['app']);
-        $user->ACL()->give_access_to_base(array(self::$DI['collection']->get_base_id()));
+        self::$DI['app']['acl']->get($user)->give_access_to_base([self::$DI['collection']->get_base_id()]);
 
         $this->logout(self::$DI['app']);
 
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
         self::$DI['client']->request('POST', '/login/authenticate/guest/');
 
@@ -1286,7 +1284,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->logout(self::$DI['app']);
 
-        self::$DI['client'] = new Client(self::$DI['app'], array());
+        self::$DI['client'] = new Client(self::$DI['app'], []);
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
         self::$DI['client']->request('GET', '/login/authenticate/guest/');
 
@@ -1305,11 +1303,11 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testBadAuthenticate()
     {
         $this->logout(self::$DI['app']);
-        self::$DI['client']->request('POST', '/login/authenticate/', array(
+        self::$DI['client']->request('POST', '/login/authenticate/', [
             'login' => self::$DI['user']->get_login(),
             'password'   => 'test',
             '_token' => 'token',
-        ));
+        ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertTrue(self::$DI['app']['session']->getFlashBag()->has('error'));
@@ -1322,12 +1320,12 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testBadAuthenticateCheckRedirect()
     {
         $this->logout(self::$DI['app']);
-        self::$DI['client']->request('POST', '/login/authenticate/', array(
+        self::$DI['client']->request('POST', '/login/authenticate/', [
             'login'     => self::$DI['user']->get_login(),
             'password'       => 'test',
             '_token' => 'token',
             'redirect'  => '/prod'
-        ));
+        ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertRegExp('/redirect=prod/', self::$DI['client']->getResponse()->headers->get('Location'));
@@ -1342,11 +1340,11 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->logout(self::$DI['app']);
         $password = \random::generatePassword();
         self::$DI['user']->set_mail_locked(true);
-        self::$DI['client']->request('POST', '/login/authenticate/', array(
+        self::$DI['client']->request('POST', '/login/authenticate/', [
             'login' => self::$DI['user']->get_login(),
             'password'   => $password,
             '_token' => 'token'
-        ));
+        ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertEquals('/login/', self::$DI['client']->getResponse()->headers->get('location'));
@@ -1367,7 +1365,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->with($this->equalTo('provider-test'))
             ->will($this->returnValue($provider));
 
-        $parameters = array('key1' => 'value1', 'key2' => 'value2');
+        $parameters = ['key1' => 'value1', 'key2' => 'value2'];
 
         $response = new Response();
 
@@ -1395,11 +1393,11 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function provideAuthProvidersRoutesAndMethods()
     {
-        return array(
-            array('GET', '/login/provider/provider-test/authenticate/'),
-            array('GET', '/login/provider/provider-test/callback/'),
-            array('GET', '/login/register-classic/?providerId=provider-test'),
-        );
+        return [
+            ['GET', '/login/provider/provider-test/authenticate/'],
+            ['GET', '/login/provider/provider-test/callback/'],
+            ['GET', '/login/register-classic/?providerId=provider-test'],
+        ];
     }
 
     /**
@@ -1464,7 +1462,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $provider->expects($this->once())
             ->method('onCallback');
 
-        $entity = $this->getMock('Entities\UsrAuthProvider');
+        $entity = $this->getMock('Alchemy\Phrasea\Model\Entities\UsrAuthProvider');
         $entity->expects($this->any())
             ->method('getUser')
             ->with(self::$DI['app'])
@@ -1516,8 +1514,8 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
 
-        $ret = self::$DI['app']['EM']->getRepository('\Entities\UsrAuthProvider')
-            ->findBy(array('usr_id' => self::$DI['user']->get_id(), 'provider' => 'provider-test'));
+        $ret = self::$DI['app']['EM']->getRepository('\Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
+            ->findBy(['usr_id' => self::$DI['user']->get_id(), 'provider' => 'provider-test']);
 
         $this->assertCount(1, $ret);
 
@@ -1560,7 +1558,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $provider->expects($this->once())
             ->method('getTemplates')
-            ->will($this->returnValue(array()));
+            ->will($this->returnValue([]));
 
         $identity->expects($this->once())
             ->method('getEmail')
@@ -1580,7 +1578,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->getMock();
         self::$DI['app']['authentication.providers.account-creator']->expects($this->once())
             ->method('create')
-            ->with(self::$DI['app'], 42, 'supermail@superprovider.com', array())
+            ->with(self::$DI['app'], 42, 'supermail@superprovider.com', [])
             ->will($this->returnValue($createdUser));
         self::$DI['app']['authentication.providers.account-creator']->expects($this->once())
             ->method('isEnabled')
@@ -1591,8 +1589,8 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
 
-        $ret = self::$DI['app']['EM']->getRepository('\Entities\UsrAuthProvider')
-            ->findBy(array('usr_id' => $createdUser->get_id(), 'provider' => 'provider-test'));
+        $ret = self::$DI['app']['EM']->getRepository('\Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
+            ->findBy(['usr_id' => $createdUser->get_id(), 'provider' => 'provider-test']);
 
         $this->assertCount(1, $ret);
 
@@ -1693,11 +1691,11 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testGetRegistrationFields()
     {
-        $fields = array(
-            'field' => array(
+        $fields = [
+            'field' => [
                 'required' => false
-            )
-        );
+            ]
+        ];
         self::$DI['app']['registration.fields'] = $fields;
 
         $this->logout(self::$DI['app']);
@@ -1741,7 +1739,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     private function addUsrAuthDoctrineEntitySupport($id, $out, $participants = false)
     {
         $repo = $this->getMockBuilder('Doctrine\ORM\EntityRepository\UsrAuthProviderRepository')
-            ->setMethods(array('findWithProviderAndId'))
+            ->setMethods(['findWithProviderAndId'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -1756,21 +1754,21 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         self::$DI['app']['EM']->expects($this->at(0))
             ->method('getRepository')
-            ->with('Entities\UsrAuthProvider')
+            ->with('Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
             ->will($this->returnValue($repo));
 
         if ($participants) {
-            $repo = $this->getMockBuilder('Repositories\ValidationParticipantRepository')
+            $repo = $this->getMockBuilder('Alchemy\Phrasea\Model\Repositories\ValidationParticipantRepository')
                 ->disableOriginalConstructor()
                 ->getMock();
 
             $repo->expects($this->once())
                 ->method('findNotConfirmedAndNotRemindedParticipantsByExpireDate')
-                ->will($this->returnValue(array()));
+                ->will($this->returnValue([]));
 
             self::$DI['app']['EM']->expects($this->at(1))
                 ->method('getRepository')
-                ->with('Entities\ValidationParticipant')
+                ->with('Alchemy\Phrasea\Model\Entities\ValidationParticipant')
                 ->will($this->returnValue($repo));
         }
     }
@@ -1790,7 +1788,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $sql = "DELETE FROM demand WHERE usr_id = :usr_id";
         $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => self::$DI['user']->get_id()));
+        $stmt->execute([':usr_id' => self::$DI['user']->get_id()]);
         $stmt->closeCursor();
     }
 
@@ -1806,11 +1804,11 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     private function disableTOU()
     {
         if (null === self::$termsOfUse) {
-            self::$termsOfUse = array();
+            self::$termsOfUse = [];
             foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
                 self::$termsOfUse[$databox->get_sbas_id()] = $databox->get_cgus();
 
-                foreach( self::$termsOfUse[$databox->get_sbas_id()]as $lng => $tou) {
+                foreach ( self::$termsOfUse[$databox->get_sbas_id()]as $lng => $tou) {
                     $databox->update_cgus($lng, '', false);
                 }
             }
@@ -1820,11 +1818,11 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     private function enableTOU()
     {
         if (null === self::$termsOfUse) {
-            self::$termsOfUse = array();
+            self::$termsOfUse = [];
             foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
                 self::$termsOfUse[$databox->get_sbas_id()] = $databox->get_cgus();
 
-                foreach( self::$termsOfUse[$databox->get_sbas_id()]as $lng => $tou) {
+                foreach ( self::$termsOfUse[$databox->get_sbas_id()]as $lng => $tou) {
                     $databox->update_cgus($lng, 'something', false);
                 }
             }

@@ -45,7 +45,7 @@ class MailInfoOrderCancelled extends AbstractMail
      */
     public function getSubject()
     {
-        return _('push::mail:: Refus d\'elements de votre commande');
+        return $this->app->trans('push::mail:: Refus d\'elements de votre commande');
     }
 
     /**
@@ -60,11 +60,10 @@ class MailInfoOrderCancelled extends AbstractMail
             throw new LogicException('You must set a deliverer before calling getMessage()');
         }
 
-        return sprintf(
-            _('%s a refuse %d elements de votre commande'),
-            $this->deliverer->get_display_name(),
-            $this->quantity
-        );
+        return $this->app->trans('%user% a refuse %quantity% elements de votre commande', [
+            '%user%' => $this->deliverer->get_display_name(),
+            '%quantity%' => $this->quantity,
+        ]);
     }
 
     /**
@@ -72,7 +71,7 @@ class MailInfoOrderCancelled extends AbstractMail
      */
     public function getButtonText()
     {
-        return _('See my order');
+        return $this->app->trans('See my order');
     }
 
     /**

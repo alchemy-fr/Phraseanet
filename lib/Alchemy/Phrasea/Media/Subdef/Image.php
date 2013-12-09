@@ -12,13 +12,8 @@
 namespace Alchemy\Phrasea\Media\Subdef;
 
 use MediaAlchemyst\Specification\Image as ImageSpecification;
+use Symfony\Component\Translation\TranslatorInterface;
 
-/**
- * Image Subdef
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Image extends Provider
 {
     const OPTION_SIZE = 'size';
@@ -26,14 +21,16 @@ class Image extends Provider
     const OPTION_STRIP = 'strip';
     const OPTION_QUALITY = 'quality';
 
-    protected $options = array();
+    protected $options = [];
 
-    public function __construct()
+    public function __construct(TranslatorInterface $translator)
     {
-        $this->registerOption(new OptionType\Range(_('Dimension'), self::OPTION_SIZE, 20, 3000, 800));
-        $this->registerOption(new OptionType\Range(_('Resolution'), self::OPTION_RESOLUTION, 50, 300, 72));
-        $this->registerOption(new OptionType\Boolean(_('Remove ICC Profile'), self::OPTION_STRIP, false));
-        $this->registerOption(new OptionType\Range(_('Quality'), self::OPTION_QUALITY, 0, 100, 75));
+        $this->translator = $translator;
+
+        $this->registerOption(new OptionType\Range($this->translator->trans('Dimension'), self::OPTION_SIZE, 20, 3000, 800));
+        $this->registerOption(new OptionType\Range($this->translator->trans('Resolution'), self::OPTION_RESOLUTION, 50, 300, 72));
+        $this->registerOption(new OptionType\Boolean($this->translator->trans('Remove ICC Profile'), self::OPTION_STRIP, false));
+        $this->registerOption(new OptionType\Range($this->translator->trans('Quality'), self::OPTION_QUALITY, 0, 100, 75));
     }
 
     public function getType()
@@ -43,7 +40,7 @@ class Image extends Provider
 
     public function getDescription()
     {
-        return _('Generates a Jpeg image');
+        return $this->translator->trans('Generates a Jpeg image');
     }
 
     public function getMediaAlchemystSpec()

@@ -49,13 +49,13 @@ $console
 
         $bridge->set_oauth_token($configuration['dailymotion']['dev_token']);
 
-        $options = array();
-        $samples = array(
+        $options = [];
+        $samples = [
             'title'         => $record->get_title(),
             'description'   => 'Upload functionnal test',
             'tags'          => 'phraseanet upload test dm api',
             'private'       => true,
-        );
+        ];
 
         foreach($bridge->get_fields() as $field) {
            $options[$field['name']] = isset($samples[$field['name']]) ? $samples[$field['name']] : uniqid('test_upload');

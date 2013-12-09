@@ -13,7 +13,7 @@ class LinkedinTest extends ProviderTestCase
         $state = md5(mt_rand());
 
         $request = $this->getRequestMock();
-        $this->addQueryParameter($request, array('state' => $state));
+        $this->addQueryParameter($request, ['state' => $state]);
 
         $provider1 = $this->getProvider();
         $provider1->setGuzzleClient($this->getGuzzleMock(401));
@@ -67,11 +67,11 @@ class LinkedinTest extends ProviderTestCase
         $provider2->setGuzzleClient($mock);
         $provider2->getSession()->set('linkedin.provider.state', $state);
 
-        return array(
-            array($this->getProvider(), $this->getRequestMock()),
-            array($provider1, $request),
-            array($provider2, $request),
-        );
+        return [
+            [$this->getProvider(), $this->getRequestMock()],
+            [$provider1, $request],
+            [$provider2, $request],
+        ];
     }
 
     public function getProviderForLogout()
@@ -130,19 +130,19 @@ class LinkedinTest extends ProviderTestCase
         $provider->getSession()->set('linkedin.provider.state', $state);
 
         $request = $this->getRequestMock();
-        $this->addQueryParameter($request, array('state' => $state));
+        $this->addQueryParameter($request, ['state' => $state]);
 
-        return array(
-            array($provider, $request),
-        );
+        return [
+            [$provider, $request],
+        ];
     }
 
     public function getTestOptions()
     {
-        return array(
+        return [
             'client-id'     => 'linkedin-client-id',
             'client-secret' => 'linkedin-client-secret',
-        );
+        ];
     }
 
     protected function getProviderForSuccessIdentity()
@@ -176,23 +176,23 @@ class LinkedinTest extends ProviderTestCase
         $response->expects($this->any())
             ->method('getBody')
             ->with($this->equalTo(true))
-            ->will($this->returnValue(json_encode(array(
-                'positions' => array(
+            ->will($this->returnValue(json_encode([
+                'positions' => [
                     '_total' => 1,
-                    'values' => array(
-                        array(
-                            'company' => array(
+                    'values' => [
+                        [
+                            'company' => [
                                 'name' => self::COMPANY
-                            )
-                        )
-                    )
-                ),
+                            ]
+                        ]
+                    ]
+                ],
                 'emailAddress' => self::EMAIL,
                 'firstName'    => self::FIRSTNAME,
                 'id'           => self::ID,
                 'pictureUrl'   => self::IMAGEURL,
                 'lastName'     => self::LASTNAME,
-            ))));
+            ])));
 
         $requestGet->expects($this->any())
             ->method('send')
@@ -210,14 +210,14 @@ class LinkedinTest extends ProviderTestCase
 
     protected function getAvailableFieldsForIdentity()
     {
-        return array(
+        return [
             Identity::PROPERTY_ID        => self::ID,
             Identity::PROPERTY_FIRSTNAME => self::FIRSTNAME,
             Identity::PROPERTY_LASTNAME  => self::LASTNAME,
             Identity::PROPERTY_EMAIL     => self::EMAIL,
             Identity::PROPERTY_IMAGEURL  => self::IMAGEURL,
             Identity::PROPERTY_COMPANY   => self::COMPANY,
-        );
+        ];
     }
 
     protected function getProviderForFailingIdentity()

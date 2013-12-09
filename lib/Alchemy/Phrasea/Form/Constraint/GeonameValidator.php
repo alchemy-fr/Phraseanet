@@ -22,7 +22,7 @@ class GeonameValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint->isValid($value)) {
-            $this->context->addViolation(_('This place does not seem to exist.'));
+            $this->context->addViolation($constraint->message);
         }
     }
 }

@@ -47,7 +47,7 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $basket = $this->insertOneBasket();
 
-        $crawler = self::$DI['client']->request('POST', '/prod/bridge/manager/', array('ssel'       => $basket->getId()));
+        $crawler = self::$DI['client']->request('POST', '/prod/bridge/manager/', ['ssel'       => $basket->getId()]);
         $pageContent = self::$DI['client']->getResponse()->getContent();
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
@@ -55,7 +55,7 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testLogin()
     {
         self::$DI['client']->request('GET', '/prod/bridge/login/Apitest/');
-        $test = new \Bridge_Api_Apitest(self::$DI['app']['url_generator'], self::$DI['app']['phraseanet.registry'], new \Bridge_Api_Auth_None());
+        $test = new \Bridge_Api_Apitest(self::$DI['app']['url_generator'], self::$DI['app']['phraseanet.registry'], new \Bridge_Api_Auth_None(), self::$DI['app']['translator']);
         $this->assertTrue(self::$DI['client']->getResponse()->getStatusCode() == 302);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect($test->get_auth_url()));
     }
@@ -72,14 +72,13 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $pageContent = self::$DI['client']->getResponse()->getContent();
         //check for errors in the crawler
-        $phpunit = $this;
         $crawler
             ->filter('div')
-            ->reduce(function ($crawler, $i) use ($phpunit) {
+            ->reduce(function ($crawler, $i) {
                 if (!$crawler->attr('class')) {
                     return false;
                 } elseif ($node->getAttribute('class') == 'error_auth') {
-                    $phpunit->fail("Erreur callback");
+                    $this->fail("Erreur callback");
                 }
             });
         $settings = self::$account->get_settings();
@@ -97,14 +96,13 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
             self::$account->delete();
         $crawler = self::$DI['client']->request('GET', '/prod/bridge/callback/apitest/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $phpunit = $this;
         $crawler
             ->filter('div')
-            ->reduce(function ($crawler, $i) use ($phpunit) {
+            ->reduce(function ($crawler, $i) {
                 if (!$crawler->attr('class')) {
                     return false;
                 } elseif ($node->getAttribute('class') == 'error_auth') {
-                    $phpunit->fail("Erreur callback");
+                    $this->fail("Erreur callback");
                 }
             });
         try {
@@ -139,7 +137,7 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$account->get_settings()->set("auth_token", "somethingNotNull"); //connected
         $url = sprintf("/prod/bridge/adapter/%s/load-elements/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
         $account = new \Bridge_Account(self::$DI['app'], self::$api, self::$account->get_id());
-        $crawler = self::$DI['client']->request('GET', $url, array("page" => 1));
+        $crawler = self::$DI['client']->request('GET', $url, ["page" => 1]);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertNotContains(self::$account->get_api()->generate_login_url(self::$DI['app']['url_generator'], self::$account->get_api()->get_connector()->get_name()), self::$DI['client']->getResponse()->getContent());
     }
@@ -148,7 +146,7 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         self::$account->get_settings()->set("auth_token", "somethingNotNull"); //connected
         $url = sprintf("/prod/bridge/adapter/%s/load-records/", self::$account->get_id());
-        $crawler = self::$DI['client']->request('GET', $url, array("page"    => 1));
+        $crawler = self::$DI['client']->request('GET', $url, ["page"    => 1]);
         $elements = \Bridge_Element::get_elements_by_account(self::$DI['app'], self::$account);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals(sizeof($elements), $crawler->filterXPath("//table/tr")->count());
@@ -160,7 +158,7 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['client']->followRedirects();
         self::$account->get_settings()->set("auth_token", null); //deconnected
         $url = sprintf("/prod/bridge/adapter/%s/load-records/", self::$account->get_id());
-        $crawler = self::$DI['client']->request('GET', $url, array("page"       => 1));
+        $crawler = self::$DI['client']->request('GET', $url, ["page"       => 1]);
         $pageContent = self::$DI['client']->getResponse()->getContent();
         $this->assertContains($url, $pageContent);
         $this->deconnected($crawler, $pageContent);
@@ -170,7 +168,7 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         self::$account->get_settings()->set("auth_token", "somethingNotNull"); //connected
         $url = sprintf("/prod/bridge/adapter/%s/load-containers/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_container_type());
-        $crawler = self::$DI['client']->request('GET', $url, array("page"    => 1));
+        $crawler = self::$DI['client']->request('GET', $url, ["page"    => 1]);
         $elements = \Bridge_Element::get_elements_by_account(self::$DI['app'], self::$account);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertNotContains(self::$account->get_api()->generate_login_url(self::$DI['app']['url_generator'], self::$account->get_api()->get_connector()->get_name()), self::$DI['client']->getResponse()->getContent());
@@ -181,7 +179,7 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['client']->followRedirects();
         self::$account->get_settings()->set("auth_token", null); //deconnected
         $url = sprintf("/prod/bridge/adapter/%s/load-containers/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_container_type());
-        $crawler = self::$DI['client']->request('GET', $url, array("page"       => 1));
+        $crawler = self::$DI['client']->request('GET', $url, ["page"       => 1]);
         $pageContent = self::$DI['client']->getResponse()->getContent();
         $this->assertContains($url, $pageContent);
         $this->deconnected($crawler, $pageContent);
@@ -192,7 +190,7 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['client']->followRedirects();
         self::$account->get_settings()->set("auth_token", null); //deconnected
         $url = sprintf("/prod/bridge/adapter/%s/load-elements/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
-        $crawler = self::$DI['client']->request('GET', $url, array("page"       => 1));
+        $crawler = self::$DI['client']->request('GET', $url, ["page"       => 1]);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $pageContent = self::$DI['client']->getResponse()->getContent();
         $this->assertContains($url, $pageContent);
@@ -226,14 +224,14 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$account->get_settings()->set("auth_token", "somethingNotNull"); //connected
         $url = sprintf("/prod/bridge/action/%s/ajjfhfjozqd/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
         try {
-            $crawler = self::$DI['client']->request('GET', $url, array("elements_list" => "1;2;3"));
+            $crawler = self::$DI['client']->request('GET', $url, ["elements_list" => "1;2;3"]);
             $this->fail("expected Exception here");
         } catch (\Exception $e) {
 
         }
 
         try {
-            $crawler = self::$DI['client']->request('POST', $url, array("elements_list" => "1;2;3"));
+            $crawler = self::$DI['client']->request('POST', $url, ["elements_list" => "1;2;3"]);
             $this->fail("expected Exception here");
         } catch (\Exception $e) {
 
@@ -244,14 +242,14 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         self::$account->get_settings()->set("auth_token", "somethingNotNull"); //connected
         $url = sprintf("/prod/bridge/action/%s/modify/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
-        $crawler = self::$DI['client']->request('GET', $url, array("element_list" => "1_2;1_3;1_4"));
+        $crawler = self::$DI['client']->request('GET', $url, ["element_list" => "1_2;1_3;1_4"]);
         $redirect = sprintf("/prod/bridge/adapter/%s/load-elements/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertContains($redirect, self::$DI['client']->getResponse()->headers->get("location"));
         $this->assertContains("error=", self::$DI['client']->getResponse()->headers->get("location"));
         $this->assertNotContains(self::$account->get_api()->generate_login_url(self::$DI['app']['url_generator'], self::$account->get_api()->get_connector()->get_name()), self::$DI['client']->getResponse()->getContent());
 
-        self::$DI['client']->request('POST', $url, array("element_list" => "1_2;1_3;1_4"));
+        self::$DI['client']->request('POST', $url, ["element_list" => "1_2;1_3;1_4"]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 
@@ -259,11 +257,11 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         self::$account->get_settings()->set("auth_token", "somethingNotNull"); //connected
         $url = sprintf("/prod/bridge/action/%s/modify/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
-        $crawler = self::$DI['client']->request('GET', $url, array("elements_list" => "element123qcs789"));
+        $crawler = self::$DI['client']->request('GET', $url, ["elements_list" => "element123qcs789"]);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertNotContains(self::$account->get_api()->generate_login_url(self::$DI['app']['url_generator'], self::$account->get_api()->get_connector()->get_name()), self::$DI['client']->getResponse()->getContent());
 
-        self::$DI['client']->request('POST', $url, array("elements_list" => "element123qcs789"));
+        self::$DI['client']->request('POST', $url, ["elements_list" => "element123qcs789"]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 
@@ -272,7 +270,7 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$account->get_settings()->set("auth_token", "somethingNotNull");
         \Bridge_Api_Apitest::$hasError = true;
         $url = sprintf("/prod/bridge/action/%s/modify/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
-        self::$DI['client']->request('POST', $url, array("elements_list" => "element123qcs789"));
+        self::$DI['client']->request('POST', $url, ["elements_list" => "element123qcs789"]);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
@@ -281,7 +279,7 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$account->get_settings()->set("auth_token", "somethingNotNull");
         \Bridge_Api_Apitest::$hasException = true;
         $url = sprintf("/prod/bridge/action/%s/modify/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
-        self::$DI['client']->request('POST', $url, array("elements_list" => "element123qcs789"));
+        self::$DI['client']->request('POST', $url, ["elements_list" => "element123qcs789"]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertRegexp('/error/', self::$DI['client']->getResponse()->headers->get('location'));
     }
@@ -290,17 +288,17 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         self::$account->get_settings()->set("auth_token", "somethingNotNull");
         $url = sprintf("/prod/bridge/action/%s/deleteelement/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
-        self::$DI['client']->request('GET', $url, array("elements_list" => "element123qcs789"));
+        self::$DI['client']->request('GET', $url, ["elements_list" => "element123qcs789"]);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
         \Bridge_Api_Apitest::$hasException = true;
         $url = sprintf("/prod/bridge/action/%s/deleteelement/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
-        self::$DI['client']->request('POST', $url, array("elements_list" => "element123qcs789"));
+        self::$DI['client']->request('POST', $url, ["elements_list" => "element123qcs789"]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertRegexp('/error/', self::$DI['client']->getResponse()->headers->get('location'));
 
         $url = sprintf("/prod/bridge/action/%s/deleteelement/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
-        self::$DI['client']->request('POST', $url, array("elements_list" => "element123qcs789"));
+        self::$DI['client']->request('POST', $url, ["elements_list" => "element123qcs789"]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 
@@ -319,7 +317,7 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertRegexp('/error/', self::$DI['client']->getResponse()->headers->get('location'));
 
         $url = sprintf("/prod/bridge/action/%s/createcontainer/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_container_type());
-        self::$DI['client']->request('POST', $url, array('title'       => 'test', 'description' => 'description'));
+        self::$DI['client']->request('POST', $url, ['title'       => 'test', 'description' => 'description']);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertRegexp('/success/', self::$DI['client']->getResponse()->headers->get('location'));
     }
@@ -332,12 +330,12 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->markTestSkipped("No templates declared for modify a container in any apis");
         self::$account->get_settings()->set("auth_token", "somethingNotNull"); //connected
         $url = sprintf("/prod/bridge/action/%s/modify/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_container_type());
-        $crawler = self::$DI['client']->request('GET', $url, array("elements_list" => "containerudt456shn"));
+        $crawler = self::$DI['client']->request('GET', $url, ["elements_list" => "containerudt456shn"]);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $pageContent = self::$DI['client']->getResponse()->getContent();
         $this->assertNotContains(self::$account->get_api()->generate_login_url(self::$DI['app']['url_generator'], self::$account->get_api()->get_connector()->get_name()), self::$DI['client']->getResponse()->getContent());
 
-        self::$DI['client']->request('POST', $url, array("elements_list" => "containerudt456shn"));
+        self::$DI['client']->request('POST', $url, ["elements_list" => "containerudt456shn"]);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
@@ -345,16 +343,16 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         self::$account->get_settings()->set("auth_token", "somethingNotNull"); //connected
         $url = sprintf("/prod/bridge/action/%s/moveinto/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
-        $crawler = self::$DI['client']->request('GET', $url, array("elements_list" => "containerudt456shn", 'destination'   => self::$account->get_api()->get_connector()->get_default_container_type()));
+        $crawler = self::$DI['client']->request('GET', $url, ["elements_list" => "containerudt456shn", 'destination'   => self::$account->get_api()->get_connector()->get_default_container_type()]);
         $this->assertNotContains("http://dev.phrasea.net/prod/bridge/login/youtube/", self::$DI['client']->getResponse()->getContent());
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
-        self::$DI['client']->request('POST', $url, array("elements_list" => "containerudt456shn", 'destination'   => self::$account->get_api()->get_connector()->get_default_container_type()));
+        self::$DI['client']->request('POST', $url, ["elements_list" => "containerudt456shn", 'destination'   => self::$account->get_api()->get_connector()->get_default_container_type()]);
         $this->assertRegexp('/success/', self::$DI['client']->getResponse()->headers->get('location'));
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
 
         \Bridge_Api_Apitest::$hasException = true;
-        self::$DI['client']->request('POST', $url, array("elements_list" => "containerudt456shn", 'destination'   => self::$account->get_api()->get_connector()->get_default_container_type()));
+        self::$DI['client']->request('POST', $url, ["elements_list" => "containerudt456shn", 'destination'   => self::$account->get_api()->get_connector()->get_default_container_type()]);
         $this->assertRegexp('/error/', self::$DI['client']->getResponse()->headers->get('location'));
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
@@ -369,22 +367,22 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         self::$account->get_settings()->set("auth_token", "somethingNotNull");
         $url = "/prod/bridge/upload/";
-        self::$DI['client']->request('GET', $url, array("account_id" => self::$account->get_id()));
+        self::$DI['client']->request('GET', $url, ["account_id" => self::$account->get_id()]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
 
-        $records = array(
+        $records = [
             self::$DI['record_1']->get_serialize_key()
-        );
+        ];
 
         \Bridge_Api_Apitest::$hasError = true;
         $lst = implode(';', $records);
-        self::$DI['client']->request('POST', $url, array("account_id" => self::$account->get_id(), 'lst'        => $lst));
+        self::$DI['client']->request('POST', $url, ["account_id" => self::$account->get_id(), 'lst'        => $lst]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
 
-        self::$DI['client']->request('POST', $url, array("account_id" => self::$account->get_id(), 'lst'        => $lst));
+        self::$DI['client']->request('POST', $url, ["account_id" => self::$account->get_id(), 'lst'        => $lst]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
     }

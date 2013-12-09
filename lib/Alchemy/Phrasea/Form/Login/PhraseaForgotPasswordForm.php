@@ -19,14 +19,14 @@ class PhraseaForgotPasswordForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('email', 'email', array(
-            'label' => _('E-mail'),
+        $builder->add('email', 'email', [
+            'label' => 'E-mail',
             'required' => true,
-            'constraints' => array(
+            'constraints' => [
                 new Assert\NotBlank(),
                 new Assert\Email()
-            ),
-        ));
+            ],
+        ]);
     }
 
     public function getName()

@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Authentication\Provider;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Provider\Token\Token;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
@@ -85,16 +84,16 @@ class Github extends AbstractProvider
 
         $this->session->set('github.provider.state', $state);
 
-        return new RedirectResponse('https://github.com/login/oauth/authorize?' . http_build_query(array(
+        return new RedirectResponse('https://github.com/login/oauth/authorize?' . http_build_query([
             'client_id' => $this->key,
             'scope' => 'user,user:email',
             'state' => $state,
             'redirect_uri' => $this->generator->generate(
                 'login_authentication_provider_callback',
-                array('providerId' => $this->getId()),
+                ['providerId' => $this->getId()],
                 UrlGenerator::ABSOLUTE_URL
             ),
-        ), '', '&'));
+        ], '', '&'));
     }
 
     /**
@@ -121,16 +120,16 @@ class Github extends AbstractProvider
         try {
             $guzzleRequest = $this->client->post('access_token');
 
-            $guzzleRequest->addPostFields(array(
+            $guzzleRequest->addPostFields([
                 'code' => $request->query->get('code'),
                 'redirect_uri' => $this->generator->generate(
                     'login_authentication_provider_callback',
-                    array('providerId' => $this->getId()),
+                    ['providerId' => $this->getId()],
                     UrlGenerator::ABSOLUTE_URL
                 ),
                 'client_id' => $this->key,
                 'client_secret' => $this->secret,
-            ));
+            ]);
             $guzzleRequest->setHeader('Accept', 'application/json');
             $response = $guzzleRequest->send();
         } catch (GuzzleException $e) {

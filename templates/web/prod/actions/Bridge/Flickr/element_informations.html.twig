@@ -2,13 +2,9 @@
   <li>
     {% set nb_view = element.get_view_count|default(0) %}
     {% if nb_view <= 1 %}
-      {% trans %}
-        {{ nb_view }} vue
-      {% endtrans %}
+      {% trans with {'%nb_view%' : nb_view} %}%nb_view% vue{% endtrans %}
     {% else %}
-      {% trans %}
-        {{ nb_view }} vues
-      {% endtrans %}
+      {% trans with {'%nb_view%' : nb_view} %}%nb_view% vues{% endtrans %}
     {% endif %}
     </li>
   </ul>

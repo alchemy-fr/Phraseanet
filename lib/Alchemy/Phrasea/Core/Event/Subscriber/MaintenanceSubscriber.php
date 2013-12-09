@@ -27,15 +27,15 @@ class MaintenanceSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::REQUEST => array('checkForMaintenance', 0),
-        );
+        return [
+            KernelEvents::REQUEST => ['checkForMaintenance', 0],
+        ];
     }
 
     public function checkForMaintenance(GetResponseEvent $event)
     {
-        if ($this->app['phraseanet.configuration']->isSetup() && $this->app['phraseanet.configuration']['main']['maintenance']) {
-            $this->app->abort(503, 'Service Temporarily Unavailable', array('Retry-After' => 3600));
+        if ($this->app['configuration.store']->isSetup() && $this->app['conf']->get(['main', 'maintenance'])) {
+            $this->app->abort(503, 'Service Temporarily Unavailable', ['Retry-After' => 3600]);
         }
     }
 }

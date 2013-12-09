@@ -4,9 +4,12 @@ namespace Alchemy\Tests\Phrasea\Media\Subdef;
 
 use Alchemy\Phrasea\Media\Subdef\Gif;
 use Alchemy\Phrasea\Media\Subdef\Subdef;
+use Alchemy\Tests\Tools\TranslatorMockTrait;
 
 class GifTest extends \PHPUnit_Framework_TestCase
 {
+    use TranslatorMockTrait;
+
     /**
      * @var Gif
      */
@@ -14,7 +17,7 @@ class GifTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->object = new Gif;
+        $this->object = new Gif($this->createTranslatorMock());
     }
 
     /**

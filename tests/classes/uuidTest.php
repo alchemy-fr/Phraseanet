@@ -15,7 +15,7 @@ class uuidTest extends PhraseanetPHPUnitAbstract
 
     public function testGenerate_v3()
     {
-        $datas = array();
+        $datas = [];
         for ($i = 0; $i < 1000; $i ++) {
             $uuid = uuid::generate_v4();
 
@@ -39,7 +39,7 @@ class uuidTest extends PhraseanetPHPUnitAbstract
 
     public function testGenerate_v4()
     {
-        $datas = array();
+        $datas = [];
         for ($i = 0; $i < 1000; $i ++) {
             $uuid = uuid::generate_v4();
 
@@ -59,7 +59,7 @@ class uuidTest extends PhraseanetPHPUnitAbstract
 
     public function testGenerate_v5()
     {
-        $datas = array();
+        $datas = [];
         for ($i = 0; $i < 1000; $i ++) {
             $uuid = uuid::generate_v4();
 

@@ -31,7 +31,7 @@ class ApiJSONPApplication extends ApiAbstract
         $this->assertEquals(200, $response->getStatusCode(), 'Test status code 405 ' . $response->getContent());
     }
 
-    public function getParameters(array $parameters = array())
+    public function getParameters(array $parameters = [])
     {
         $parameters['callback'] = 'jsFunction';
 

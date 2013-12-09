@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,8 +11,10 @@
 
 namespace Alchemy\Phrasea\Controller\Client;
 
+use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\Exception\SessionNotFound;
+use Alchemy\Phrasea\Model\Entities\UserQuery;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\Finder\Finder;
@@ -24,93 +26,30 @@ class Root implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
+        $app['controller.client'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
             if (!$app['authentication']->isAuthenticated() && null !== $request->query->get('nolog')) {
-                return $app->redirectPath('login_authenticate_as_guest', array('redirect' => 'client'));
+                return $app->redirectPath('login_authenticate_as_guest', ['redirect' => 'client']);
             }
             $app['firewall']->requireAuthentication();
         });
 
-        /**
-         * Get client main page
-         *
-         * name         : get_client
-         *
-         * description  : Get client homepage
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/', $this->call('getClient'))
+        $controllers->get('/', 'controller.client:getClient')
             ->bind('get_client');
 
-         /**
-         * Get client language
-         *
-         * name         : get_client_language
-         *
-         * description  : Get client language
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->get('/language/', $this->call('getClientLanguage'))
+        $controllers->get('/language/', 'controller.client:getClientLanguage')
             ->bind('get_client_language');
 
-         /**
-         * Get client publication page
-         *
-         * name         : client_publications_start_page
-         *
-         * description  : Get client language
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->get('/publications/', $this->call('getClientPublications'))
+        $controllers->get('/publications/', 'controller.client:getClientPublications')
             ->bind('client_publications_start_page');
 
-         /**
-         * Get client help page
-         *
-         * name         : client_help_start_page
-         *
-         * description  : Get client help
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/help/', $this->call('getClientHelp'))
+        $controllers->get('/help/', 'controller.client:getClientHelp')
             ->bind('client_help_start_page');
 
-         /**
-         * Query client for documents
-         *
-         * name         : client_query
-         *
-         * description  : Query client for documents
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/query/', $this->call('query'))
+        $controllers->post('/query/', 'controller.client:query')
             ->bind('client_query');
 
         return $controllers;
@@ -150,6 +89,17 @@ class Root implements ControllerProviderInterface
 
         $result = $app['phraseanet.SE']->query($query, ($currentPage - 1) * $perPage, $perPage);
 
+        $userQuery = new UserQuery();
+        $userQuery->setUsrId($app['authentication']->getUser()->get_id());
+        $userQuery->setQuery($query);
+
+        $app['EM']->persist($userQuery);
+        $app['EM']->flush();
+
+        if ($app['authentication']->getUser()->getPrefs('start_page') === 'LAST_QUERY') {
+            $app['authentication']->getUser()->setPrefs('start_page_query', $query);
+        }
+
         foreach ($options->getDataboxes() as $databox) {
             $colls = array_map(function (\collection $collection) {
                 return $collection->get_coll_id();
@@ -166,17 +116,17 @@ class Root implements ControllerProviderInterface
             return new Response($app['twig']->render("client/help.html.twig"));
         }
 
-        $resultData = array();
+        $resultData = [];
 
         foreach ($searchData as $record) {
             try {
                 $record->get_subdef('document');
-                $lightInfo = $app['twig']->render('common/technical_datas.html.twig', array('record' => $record));
+                $lightInfo = $app['twig']->render('common/technical_datas.html.twig', ['record' => $record]);
             } catch (\Exception $e) {
                 $lightInfo = '';
             }
 
-            $caption = $app['twig']->render('common/caption.html.twig', array('view'   => 'answer', 'record' => $record));
+            $caption = $app['twig']->render('common/caption.html.twig', ['view'   => 'answer', 'record' => $record]);
 
             $docType = $record->get_type();
             $isVideo = ($docType == 'video');
@@ -188,9 +138,9 @@ class Root implements ControllerProviderInterface
                 $isImage = true;
             }
 
-            $canDownload = $app['authentication']->getUser()->ACL()->has_right_on_base($record->get_base_id(), 'candwnldpreview') ||
-                $app['authentication']->getUser()->ACL()->has_right_on_base($record->get_base_id(), 'candwnldhd') ||
-                $app['authentication']->getUser()->ACL()->has_right_on_base($record->get_base_id(), 'cancmd');
+            $canDownload = $app['acl']->get($app['authentication']->getUser())->has_right_on_base($record->get_base_id(), 'candwnldpreview') ||
+            $app['acl']->get($app['authentication']->getUser())->has_right_on_base($record->get_base_id(), 'candwnldhd') ||
+            $app['acl']->get($app['authentication']->getUser())->has_right_on_base($record->get_base_id(), 'cancmd');
 
             try {
                 $previewExists = $record->get_preview()->is_physically_present();
@@ -198,7 +148,7 @@ class Root implements ControllerProviderInterface
                 $previewExists = false;
             }
 
-            $resultData[] = array(
+            $resultData[] = [
                 'record'            => $record,
                 'mini_logo'         => \collection::getLogo($record->get_base_id(), $app),
                 'preview_exists'    => $previewExists,
@@ -209,22 +159,22 @@ class Root implements ControllerProviderInterface
                 'is_image'          => $isImage,
                 'is_document'       => $isDocument,
                 'can_download'      => $canDownload,
-                'can_add_to_basket' => $app['authentication']->getUser()->ACL()->has_right_on_base($record->get_base_id(), 'canputinalbum')
-            );
+                'can_add_to_basket' => $app['acl']->get($app['authentication']->getUser())->has_right_on_base($record->get_base_id(), 'canputinalbum')
+            ];
         }
 
-        return new Response($app['twig']->render("client/answers.html.twig", array(
+        return new Response($app['twig']->render("client/answers.html.twig", [
             'mod_col'              => $modCol,
             'mod_row'              => $modRow,
             'result_data'          => $resultData,
             'per_page'             => $perPage,
             'search_engine'        =>  $app['phraseanet.SE'],
             'search_engine_option' => $options->serialize(),
-            'history'              => \queries::history($app['phraseanet.appbox'], $app['authentication']->getUser()->get_id()),
+            'history'              => \queries::history($app, $app['authentication']->getUser()->get_id()),
             'result'               => $result,
             'proposals'            => $currentPage === 1 ? $result->getProposals() : null,
             'help'                 => count($resultData) === 0 ? $this->getHelpStartPage($app) : '',
-        )));
+        ]));
     }
 
     /**
@@ -260,21 +210,21 @@ class Root implements ControllerProviderInterface
      */
     public function getClientLanguage(Application $app, Request $request)
     {
-        $out = array();
-        $out['createWinInvite'] = _('paniers:: Quel nom souhaitez vous donner a votre panier ?');
-        $out['chuNameEmpty'] = _('paniers:: Quel nom souhaitez vous donner a votre panier ?');
-        $out['noDLok'] = _('export:: aucun document n\'est disponible au telechargement');
-        $out['confirmRedirectAuth'] = _('invite:: Redirection vers la zone d\'authentification, cliquez sur OK pour continuer ou annulez');
+        $out = [];
+        $out['createWinInvite'] = $app->trans('paniers:: Quel nom souhaitez vous donner a votre panier ?');
+        $out['chuNameEmpty'] = $app->trans('paniers:: Quel nom souhaitez vous donner a votre panier ?');
+        $out['noDLok'] = $app->trans('export:: aucun document n\'est disponible au telechargement');
+        $out['confirmRedirectAuth'] = $app->trans('invite:: Redirection vers la zone d\'authentification, cliquez sur OK pour continuer ou annulez');
         $out['serverName'] = $app['phraseanet.registry']->get('GV_ServerName');
-        $out['serverError'] = _('phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, contactez le support technique');
-        $out['serverTimeout'] = _('phraseanet::erreur: La connection au serveur Phraseanet semble etre indisponible');
-        $out['serverDisconnected'] = _('phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier');
-        $out['confirmDelBasket'] = _('paniers::Vous etes sur le point de supprimer ce panier. Cette action est irreversible. Souhaitez-vous continuer ?');
-        $out['annuler'] = _('boutton::annuler');
-        $out['fermer'] = _('boutton::fermer');
-        $out['renewRss'] = _('boutton::renouveller');
-        $out['print'] = _('Print');
-        $out['no_basket'] = _('Please create a basket before adding an element');
+        $out['serverError'] = $app->trans('phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, contactez le support technique');
+        $out['serverTimeout'] = $app->trans('phraseanet::erreur: La connection au serveur Phraseanet semble etre indisponible');
+        $out['serverDisconnected'] = $app->trans('phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier');
+        $out['confirmDelBasket'] = $app->trans('paniers::Vous etes sur le point de supprimer ce panier. Cette action est irreversible. Souhaitez-vous continuer ?');
+        $out['annuler'] = $app->trans('boutton::annuler');
+        $out['fermer'] = $app->trans('boutton::fermer');
+        $out['renewRss'] = $app->trans('boutton::renouveller');
+        $out['print'] = $app->trans('Print');
+        $out['no_basket'] = $app->trans('Please create a basket before adding an element');
 
         return $app->json($out);
     }
@@ -289,19 +239,19 @@ class Root implements ControllerProviderInterface
     public function getClient(Application $app, Request $request)
     {
         try {
-            \User_Adapter::updateClientInfos($app, 2);
+            \Session_Logger::updateClientInfos($app, 2);
         } catch (SessionNotFound $e) {
             return $app->redirectPath('logout');
         }
         $renderTopics = '';
 
         if ($app['phraseanet.registry']->get('GV_client_render_topics') == 'popups') {
-            $renderTopics = \queries::dropdown_topics($app['locale.I18n']);
+            $renderTopics = \queries::dropdown_topics($app['translator'], $app['locale']);
         } elseif ($app['phraseanet.registry']->get('GV_client_render_topics') == 'tree') {
-            $renderTopics = \queries::tree_topics($app['locale.I18n']);
+            $renderTopics = \queries::tree_topics($app['locale']);
         }
 
-        return new Response($app['twig']->render('client/index.html.twig', array(
+        return new Response($app['twig']->render('client/index.html.twig', [
             'last_action'       => !$app['authentication']->getUser()->is_guest() && false !== $request->cookies->has('last_act') ? $request->cookies->has('last_act') : null,
             'phrasea_home'      => $this->getDefaultClientStartPage($app),
             'render_topics'     => $renderTopics,
@@ -310,13 +260,13 @@ class Root implements ControllerProviderInterface
             'storage_access'    => $this->getDocumentStorageAccess($app),
             'tabs_setup'        => $this->getTabSetup($app),
             'module'            => 'client',
-            'menubar'           => $app['twig']->render('common/menubar.html.twig', array('module'           => 'client')),
+            'menubar'           => $app['twig']->render('common/menubar.html.twig', ['module'           => 'client']),
             'css_file'          => $this->getCssFile($app),
             'basket_status'     => null !== $app['authentication']->getUser()->getPrefs('client_basket_status') ? $app['authentication']->getUser()->getPrefs('client_basket_status') : "1",
             'mod_pres'          => null !== $app['authentication']->getUser()->getPrefs('client_view') ? $app['authentication']->getUser()->getPrefs('client_view') : '',
             'start_page'        => $app['authentication']->getUser()->getPrefs('start_page'),
             'start_page_query'  => null !== $app['authentication']->getUser()->getPrefs('start_page_query') ? $app['authentication']->getUser()->getPrefs('start_page_query') : ''
-        )));
+        ]));
     }
 
     /**
@@ -326,15 +276,15 @@ class Root implements ControllerProviderInterface
      */
     private function getGridProperty()
     {
-        return array(
-            array('w'        => '3', 'h'        => '2', 'name'      => '3*2', 'selected'        => '0'),
-            array('w'        => '5', 'h'        => '4', 'name'      => '5*4', 'selected'        => '0'),
-            array('w'        => '4', 'h'        => '10', 'name'     => '4*10', 'selected'       => '0'),
-            array('w'        => '6', 'h'        => '3', 'name'      => '6*3', 'selected'        => '1'),
-            array('w'        => '8', 'h'        => '4', 'name'      => '8*4', 'selected'        => '0'),
-            array('w'        => '1', 'h'        => '10', 'name'     => 'list*10', 'selected'    => '0'),
-            array('w'        => '1', 'h'        => '100', 'name'    => 'list*100', 'selected'   => '0')
-        );
+        return [
+            ['w'        => '3', 'h'        => '2', 'name'      => '3*2', 'selected'        => '0'],
+            ['w'        => '5', 'h'        => '4', 'name'      => '5*4', 'selected'        => '0'],
+            ['w'        => '4', 'h'        => '10', 'name'     => '4*10', 'selected'       => '0'],
+            ['w'        => '6', 'h'        => '3', 'name'      => '6*3', 'selected'        => '1'],
+            ['w'        => '8', 'h'        => '4', 'name'      => '8*4', 'selected'        => '0'],
+            ['w'        => '1', 'h'        => '10', 'name'     => 'list*10', 'selected'    => '0'],
+            ['w'        => '1', 'h'        => '100', 'name'    => 'list*100', 'selected'   => '0']
+        ];
     }
 
     /**
@@ -345,22 +295,22 @@ class Root implements ControllerProviderInterface
      */
     private function getDocumentStorageAccess(Application $app)
     {
-        $allDataboxes = $allCollections = array();
+        $allDataboxes = $allCollections = [];
 
-        foreach ($app['authentication']->getUser()->ACL()->get_granted_sbas() as $databox) {
+        foreach ($app['acl']->get($app['authentication']->getUser())->get_granted_sbas() as $databox) {
             if (count($app['phraseanet.appbox']->get_databoxes()) > 0) {
-                $allDataboxes[$databox->get_sbas_id()] = array('databox'     => $databox, 'collections' => array());
+                $allDataboxes[$databox->get_sbas_id()] = ['databox'     => $databox, 'collections' => []];
             }
 
             if (count($databox->get_collections()) > 0) {
-                foreach ($app['authentication']->getUser()->ACL()->get_granted_base(array(), array($databox->get_sbas_id())) as $coll) {
+                foreach ($app['acl']->get($app['authentication']->getUser())->get_granted_base([], [$databox->get_sbas_id()]) as $coll) {
                     $allDataboxes[$databox->get_sbas_id()]['collections'][$coll->get_base_id()] = $coll;
                     $allCollections[$coll->get_base_id()] = $coll;
                 }
             }
         }
 
-        return array('databoxes'   => $allDataboxes, 'collections' => $allCollections);
+        return ['databoxes'   => $allDataboxes, 'collections' => $allCollections];
     }
 
     /**
@@ -371,16 +321,16 @@ class Root implements ControllerProviderInterface
      */
     private function getTabSetup(Application $app)
     {
-        $tong = array(
+        $tong = [
             $app['phraseanet.registry']->get('GV_ong_search')    => 1,
             $app['phraseanet.registry']->get('GV_ong_advsearch') => 2,
             $app['phraseanet.registry']->get('GV_ong_topics')    => 3
-        );
+        ];
 
         unset($tong[0]);
 
         if (count($tong) == 0) {
-            $tong = array(1 => 1);
+            $tong = [1 => 1];
         }
 
         ksort($tong);
@@ -398,7 +348,7 @@ class Root implements ControllerProviderInterface
     {
         $cssPath = __DIR__ . '/../../../../../www/skins/client/';
 
-        $css = array();
+        $css = [];
         $cssFile = $app['authentication']->getUser()->getPrefs('client_css');
 
         $finder = new Finder();
@@ -437,8 +387,8 @@ class Root implements ControllerProviderInterface
             $query .= $clientQuery;
         }
 
-        $opAdv = $request->request->get('opAdv', array());
-        $queryAdv = $request->request->get('qryAdv', array());
+        $opAdv = $request->request->get('opAdv', []);
+        $queryAdv = $request->request->get('qryAdv', []);
 
         if (count($opAdv) > 0 && count($opAdv) == count($queryAdv)) {
             foreach ($opAdv as $opId => $op) {
@@ -473,7 +423,7 @@ class Root implements ControllerProviderInterface
             return $this->getPublicationStartPage($app);
         }
 
-        if (in_array($startPage, array('QUERY', 'LAST_QUERY'))) {
+        if (in_array($startPage, ['QUERY', 'LAST_QUERY'])) {
             return $this->getQueryStartPage($app);
         }
 
@@ -488,7 +438,7 @@ class Root implements ControllerProviderInterface
      */
     private function getQueryStartPage(Application $app)
     {
-        $collections = $queryParameters = array();
+        $collections = $queryParameters = [];
 
         $searchSet = json_decode($app['authentication']->getUser()->getPrefs('search'));
 
@@ -497,7 +447,7 @@ class Root implements ControllerProviderInterface
                 $collections = array_merge($collections, $bases);
             }
         } else {
-            $collections = array_keys($app['authentication']->getUser()->ACL()->get_granted_base());
+            $collections = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base());
         }
 
         $queryParameters["mod"] = $app['authentication']->getUser()->getPrefs('client_view') ?: '3X6';
@@ -506,11 +456,11 @@ class Root implements ControllerProviderInterface
         $queryParameters["pag"] = 0;
         $queryParameters["search_type"] = SearchEngineOptions::RECORD_RECORD;
         $queryParameters["qryAdv"] = '';
-        $queryParameters["opAdv"] = array();
-        $queryParameters["status"] = array();
+        $queryParameters["opAdv"] = [];
+        $queryParameters["status"] = [];
         $queryParameters["recordtype"] = SearchEngineOptions::TYPE_ALL;
         $queryParameters["sort"] = $app['phraseanet.registry']->get('GV_phrasea_sort', '');
-        $queryParameters["infield"] = array();
+        $queryParameters["infield"] = [];
         $queryParameters["ord"] = SearchEngineOptions::SORT_MODE_DESC;
 
         $subRequest = Request::create('/client/query/', 'POST', $queryParameters);
@@ -526,10 +476,10 @@ class Root implements ControllerProviderInterface
      */
     private function getPublicationStartPage(Application $app)
     {
-        return $app['twig']->render('client/home_inter_pub_basket.html.twig', array(
-            'feeds'         => \Feed_Collection::load_all($app, $app['authentication']->getUser()),
+        return $app['twig']->render('client/home_inter_pub_basket.html.twig', [
+            'feeds'         => Aggregate::createFromUser($app, $app['authentication']->getUser()),
             'image_size'    => (int) $app['authentication']->getUser()->getPrefs('images_size')
-        ));
+        ]);
     }
 
      /**
@@ -541,16 +491,5 @@ class Root implements ControllerProviderInterface
     private function getHelpStartPage(Application $app)
     {
         return $app['twig']->render('client/help.html.twig');
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

@@ -3,67 +3,67 @@
     <div class="tools">
 
 
-      <button class="ui-corner-all TOOL_disktt_btn basket_window" title="{% trans 'action : exporter' %}">
+      <button class="ui-corner-all TOOL_disktt_btn basket_window" title="{{ 'action : exporter' | trans }}">
         <img src="/skins/prod/000000/images/disktt_history.gif"/>
       </button>
-      <button class="ui-corner-all TOOL_print_btn basket_window" title="{% trans 'action : print' %}">
+      <button class="ui-corner-all TOOL_print_btn basket_window" title="{{ 'action : print' | trans }}">
         <img src="/skins/prod/000000/images/print_history.gif"/>
       </button>
 
-      {% if app['authentication'].getUser().ACL().has_right('modifyrecord') %}
-      <button class="ui-corner-all TOOL_ppen_btn basket_window" title="{% trans 'action : editer' %}">
+      {% if app['acl'].get(app['authentication'].getUser()).has_right('modifyrecord') %}
+      <button class="ui-corner-all TOOL_ppen_btn basket_window" title="{{ 'action : editer' | trans }}">
         <img src="/skins/prod/000000/images/ppen_history.gif"/>
       </button>
       {% endif %}
 
-      {% if app['authentication'].getUser().ACL().has_right('changestatus') %}
-      <button class="ui-corner-all TOOL_chgstatus_btn basket_window" title="{% trans 'action : status' %}">
+      {% if app['acl'].get(app['authentication'].getUser()).has_right('changestatus') %}
+      <button class="ui-corner-all TOOL_chgstatus_btn basket_window" title="{{ 'action : status' | trans }}">
         <img src="/skins/prod/000000/images/chgstatus_history.gif"/>
       </button>
       {% endif %}
 
-      {% if app['authentication'].getUser().ACL().has_right('deleterecord') and app['authentication'].getUser().ACL().has_right('addrecord') %}
-      <button class="ui-corner-all TOOL_chgcoll_btn basket_window" title="{% trans 'action : collection' %}">
+      {% if app['acl'].get(app['authentication'].getUser()).has_right('deleterecord') and app['acl'].get(app['authentication'].getUser()).has_right('addrecord') %}
+      <button class="ui-corner-all TOOL_chgcoll_btn basket_window" title="{{ 'action : collection' | trans }}">
         <img src="/skins/prod/000000/images/chgcoll_history.gif"/>
       </button>
       {% endif %}
 
-      {% if app['authentication'].getUser().ACL().has_right('push') %}
-      <button class="ui-corner-all TOOL_pushdoc_btn basket_window" title="{% trans 'action : push' %}">
+      {% if app['acl'].get(app['authentication'].getUser()).has_right('push') %}
+      <button class="ui-corner-all TOOL_pushdoc_btn basket_window" title="{{ 'action : push' | trans }}">
         <img src="/skins/icons/push16.png"/>
       </button>
       {% endif %}
 
-      {% if app['authentication'].getUser().ACL().has_right('push') %}
-      <button class="ui-corner-all TOOL_feedback_btn basket_window" title="{% trans 'Feedback' %}">
+      {% if app['acl'].get(app['authentication'].getUser()).has_right('push') %}
+      <button class="ui-corner-all TOOL_feedback_btn basket_window" title="{{ 'Feedback' | trans }}">
         <img src="/skins/icons/feedback16.png"/>
       </button>
       {% endif %}
-      {% if app['authentication'].getUser().ACL().has_right('bas_chupub') %}
-      <button class="ui-corner-all TOOL_bridge_btn basket_window" title="{% trans 'action : bridge' %}">
+      {% if app['acl'].get(app['authentication'].getUser()).has_right('bas_chupub') %}
+      <button class="ui-corner-all TOOL_bridge_btn basket_window" title="{{ 'action : bridge' | trans }}">
         <img src="/skins/icons/door.png"/>
       </button>
-      <button class="ui-corner-all TOOL_publish_btn basket_window" title="{% trans 'action : publier' %}">
+      <button class="ui-corner-all TOOL_publish_btn basket_window" title="{{ 'action : publier' | trans }}">
         <img src="/skins/icons/rss16.png"/>
       </button>
       {% endif %}
 
-      {% if app['authentication'].getUser().ACL().has_right('doctools') %}
-      <button class="ui-corner-all TOOL_imgtools_btn basket_window" title="{% trans 'action : outils' %}">
+      {% if app['acl'].get(app['authentication'].getUser()).has_right('doctools') %}
+      <button class="ui-corner-all TOOL_imgtools_btn basket_window" title="{{ 'action : outils' | trans }}">
         <img src="/skins/prod/000000/images/imgtools_history.gif"/>
       </button>
       {% endif %}
-      <button class="ui-corner-all TOOL_trash_btn basket_window" title="{% trans 'action : supprimer' %}">
+      <button class="ui-corner-all TOOL_trash_btn basket_window" title="{{ 'action : supprimer' | trans }}">
         <img src="/skins/icons/delete.png"/>
       </button>
 
     </div>
-            <div class="alert_datas_changed ui-corner-all">{% trans 'Certaines donnees du panier ont change' %} <a class="basket_refresher" href="#">{% trans 'rafraichir' %}</a></div>
+            <div class="alert_datas_changed ui-corner-all">{{ 'Certaines donnees du panier ont change' | trans }} <a class="basket_refresher" href="#">{{ 'rafraichir' | trans }}</a></div>
 {% if basket_length == 0 %}
             <div style="height:120px;"></div>
 {% endif %}
 
-{% set basket_scope = 'objects'%}
+{% set basket_scope = 'objects' %}
 
 {% import 'prod/WorkZone/Macros.html.twig' as Macros %}
 

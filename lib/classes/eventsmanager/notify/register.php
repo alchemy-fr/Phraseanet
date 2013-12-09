@@ -12,19 +12,13 @@
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailInfoUserRegistered;
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 {
     /**
      *
      * @var string
      */
-    public $events = array('__REGISTER_APPROVAL__');
+    public $events = ['__REGISTER_APPROVAL__'];
 
     /**
      *
@@ -44,10 +38,10 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'usr_id' => ''
-            , 'demand' => array()
-        );
+            , 'demand' => []
+        ];
 
         $params = array_merge($default, $params);
         $base_ids = $params['demand'];
@@ -56,7 +50,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
             return;
         }
 
-        $mailColl = array();
+        $mailColl = [];
 
         try {
             $sql = 'SELECT u.usr_id, b.base_id
@@ -76,7 +70,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 
             foreach ($rs as $row) {
                 if ( ! isset($mailColl[$row['usr_id']]))
-                    $mailColl[$row['usr_id']] = array();
+                    $mailColl[$row['usr_id']] = [];
 
                 $mailColl[$row['usr_id']][] = $row['base_id'];
             }
@@ -157,19 +151,17 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
         $usr_id = (string) $sx->usr_id;
 
         try {
-            $registered_user = User_Adapter::getInstance($usr_id, $this->app);
+            User_Adapter::getInstance($usr_id, $this->app);
         } catch (Exception $e) {
-            return array();
+            return [];
         }
 
         $sender = User_Adapter::getInstance($usr_id, $this->app)->get_display_name();
 
-        $ret = array(
-            'text'  => sprintf(
-                _('%1$s demande votre approbation sur une ou plusieurs %2$scollections%3$s'), $sender, '<a href="' . $this->app->url('admin', array('section' => 'registrations')) . '" target="_blank">', '</a>'
-            )
+        $ret = [
+            'text'  => $this->app->trans('%user% demande votre approbation sur une ou plusieurs %before_link% collections %after_link%', ['%user%' => $sender, '%before_link%' => '<a href="' . $this->app->url('admin', ['section' => 'registrations']) . '" target="_blank">', '%after_link%' => '</a>'])
             , 'class' => ''
-        );
+        ];
 
         return $ret;
     }
@@ -180,7 +172,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
      */
     public function get_name()
     {
-        return _('Register approbation');
+        return $this->app->trans('Register approbation');
     }
 
     /**
@@ -189,7 +181,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
      */
     public function get_description()
     {
-        return _('Recevoir des notifications lorsqu\'un utilisateur demande une inscription necessitant mon approbation');
+        return $this->app->trans('Recevoir des notifications lorsqu\'un utilisateur demande une inscription necessitant mon approbation');
     }
 
     /**
@@ -209,6 +201,6 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
             return false;
         }
 
-        return $user->ACL()->has_right('manageusers');
+        return $this->app['acl']->get($user)->has_right('manageusers');
     }
 }

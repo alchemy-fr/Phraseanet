@@ -33,7 +33,7 @@ class SearchEngineLogger
 
         $stmt = $conn->prepare($sql);
 
-        $stmt->execute(array(
+        $stmt->execute([
             ':log_id'    => $this->app['phraseanet.logger']($databox)->get_id(),
             ':date'      => date("Y-m-d H:i:s"),
             ':query'     => $query,
@@ -41,7 +41,7 @@ class SearchEngineLogger
             ':colls'     => implode(',', array_map(function ($coll_id) {
                                 return (int) $coll_id;
                             }, $coll_ids)),
-        ));
+        ]);
 
         $stmt->closeCursor();
 

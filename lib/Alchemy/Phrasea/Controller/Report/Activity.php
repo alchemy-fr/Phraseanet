@@ -21,6 +21,8 @@ class Activity implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
+        $app['controller.report.activity'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function () use ($app) {
@@ -28,37 +30,37 @@ class Activity implements ControllerProviderInterface
             $app['firewall']->requireAccessToModule('report');
         });
 
-        $controllers->post('/users/connexions', $this->call('doReportConnexionsByUsers'))
+        $controllers->post('/users/connexions', 'controller.report.activity:doReportConnexionsByUsers')
             ->bind('report_activity_users_connexions');
 
-        $controllers->post('/users/downloads', $this->call('doReportDownloadsByUsers'))
+        $controllers->post('/users/downloads', 'controller.report.activity:doReportDownloadsByUsers')
             ->bind('report_activity_users_downloads');;
 
-        $controllers->post('/questions/best-of', $this->call('doReportBestOfQuestions'))
+        $controllers->post('/questions/best-of', 'controller.report.activity:doReportBestOfQuestions')
             ->bind('report_activity_questions_bestof');
 
-        $controllers->post('/questions/no-best-of', $this->call('doReportNoBestOfQuestions'))
+        $controllers->post('/questions/no-best-of', 'controller.report.activity:doReportNoBestOfQuestions')
             ->bind('report_activity_questions_nobestof');
 
-        $controllers->post('/instance/hours', $this->call('doReportSiteActiviyPerHours'))
+        $controllers->post('/instance/hours', 'controller.report.activity:doReportSiteActiviyPerHours')
             ->bind('report_activity_instance_hours');
 
-        $controllers->post('/instance/days', $this->call('doReportSiteActiviyPerDays'))
+        $controllers->post('/instance/days', 'controller.report.activity:doReportSiteActiviyPerDays')
             ->bind('report_activity_instance_days');
 
-        $controllers->post('/documents/pushed', $this->call('doReportPushedDocuments'))
+        $controllers->post('/documents/pushed', 'controller.report.activity:doReportPushedDocuments')
             ->bind('report_activity_documents_pushed');
 
-        $controllers->post('/documents/added', $this->call('doReportAddedDocuments'))
+        $controllers->post('/documents/added', 'controller.report.activity:doReportAddedDocuments')
             ->bind('report_activity_documents_added');
 
-        $controllers->post('/documents/edited', $this->call('doReportEditedDocuments'))
+        $controllers->post('/documents/edited', 'controller.report.activity:doReportEditedDocuments')
             ->bind('report_activity_documents_edited');
 
-        $controllers->post('/documents/validated', $this->call('doReportValidatedDocuments'))
+        $controllers->post('/documents/validated', 'controller.report.activity:doReportValidatedDocuments')
             ->bind('report_activity_documents_validated');
 
-        $controllers->post('/documents/sent', $this->call('doReportSentDocuments'))
+        $controllers->post('/documents/sent', 'controller.report.activity:doReportSentDocuments')
             ->bind('report_activity_documents_sent');
 
         return $controllers;
@@ -103,22 +105,22 @@ class Activity implements ControllerProviderInterface
                 $csv = '';
             }
 
-            return $app->json(array('rs' => $csv));
+            return $app->json(['rs' => $csv]);
         } else {
             $report = $activity->getConnexionBase(false, $request->request->get('on', 'user'));
 
-            return $app->json(array(
-                'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+            return $app->json([
+                'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
                     'result'      => isset($report['report']) ? $report['report'] : $report,
                     'is_infouser' => false,
                     'is_nav'      => false,
                     'is_groupby'  => false,
                     'is_plot'     => false,
                     'is_doc'      => false
-                )),
+                ]),
                 'display_nav' => false,
                 'title'       => false
-            ));
+            ]);
         }
     }
 
@@ -131,13 +133,13 @@ class Activity implements ControllerProviderInterface
      */
     public function doReportDownloadsByUsers(Application $app, Request $request)
     {
-        $conf = array(
-            'user'      => array(_('report:: utilisateur'), 0, 1, 0, 0),
-            'nbdoc'     => array(_('report:: nombre de documents'), 0, 0, 0, 0),
-            'poiddoc'   => array(_('report:: poids des documents'), 0, 0, 0, 0),
-            'nbprev'    => array(_('report:: nombre de preview'), 0, 0, 0, 0),
-            'poidprev'  => array(_('report:: poids des previews'), 0, 0, 0, 0)
-        );
+        $conf = [
+            'user'      => [$app->trans('report:: utilisateur'), 0, 1, 0, 0],
+            'nbdoc'     => [$app->trans('report:: nombre de documents'), 0, 0, 0, 0],
+            'poiddoc'   => [$app->trans('report:: poids des documents'), 0, 0, 0, 0],
+            'nbprev'    => [$app->trans('report:: nombre de preview'), 0, 0, 0, 0],
+            'poidprev'  => [$app->trans('report:: poids des previews'), 0, 0, 0, 0]
+        ];
 
         $activity = new \module_report_activity(
             $app,
@@ -169,20 +171,20 @@ class Activity implements ControllerProviderInterface
                 $csv = '';
             }
 
-            return $app->json(array('rs' => $csv));
+            return $app->json(['rs' => $csv]);
         } else {
-            return $app->json(array(
-                'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+            return $app->json([
+                'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
                     'result'      => isset($report['report']) ? $report['report'] : $report,
                     'is_infouser' => false,
                     'is_nav'      => false,
                     'is_groupby'  => false,
                     'is_plot'     => false,
                     'is_doc'      => false
-                )),
+                ]),
                 'display_nav' => false,
                 'title'       => false
-            ));
+            ]);
         }
     }
 
@@ -195,11 +197,11 @@ class Activity implements ControllerProviderInterface
      */
     public function doReportBestOfQuestions(Application $app, Request $request)
     {
-        $conf = array(
-            'search'    => array(_('report:: question'), 0, 0, 0, 0),
-            'nb'        => array(_('report:: nombre'), 0, 0, 0, 0),
-            'nb_rep'    => array(_('report:: nombre de reponses'), 0, 0, 0, 0)
-        );
+        $conf = [
+            'search'    => [$app->trans('report:: question'), 0, 0, 0, 0],
+            'nb'        => [$app->trans('report:: nombre'), 0, 0, 0, 0],
+            'nb_rep'    => [$app->trans('report:: nombre de reponses'), 0, 0, 0, 0]
+        ];
 
         $activity = new \module_report_activity(
             $app,
@@ -225,22 +227,22 @@ class Activity implements ControllerProviderInterface
                 $csv = '';
             }
 
-            return $app->json(array('rs' => $csv));
+            return $app->json(['rs' => $csv]);
         } else {
             $report = $activity->getTopQuestion($conf);
 
-            return $app->json(array(
-                'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+            return $app->json([
+                'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
                     'result'      => isset($report['report']) ? $report['report'] : $report,
                     'is_infouser' => false,
                     'is_nav'      => false,
                     'is_groupby'  => false,
                     'is_plot'     => false,
                     'is_doc'      => false
-                )),
+                ]),
                 'display_nav' => false,
                 'title'       => false
-            ));
+            ]);
         }
     }
 
@@ -253,11 +255,11 @@ class Activity implements ControllerProviderInterface
      */
     public function doReportNoBestOfQuestions(Application $app, Request $request)
     {
-        $conf = array(
-            'search'    => array(_('report:: question'), 0, 0, 0, 0),
-            'nb'        => array(_('report:: nombre'), 0, 0, 0, 0),
-            'nb_rep'    => array(_('report:: nombre de reponses'), 0, 0, 0, 0)
-        );
+        $conf = [
+            'search'    => [$app->trans('report:: question'), 0, 0, 0, 0],
+            'nb'        => [$app->trans('report:: nombre'), 0, 0, 0, 0],
+            'nb_rep'    => [$app->trans('report:: nombre de reponses'), 0, 0, 0, 0]
+        ];
 
         $activity = new \module_report_activity(
             $app,
@@ -290,22 +292,22 @@ class Activity implements ControllerProviderInterface
                 $csv = '';
             }
 
-            return $app->json(array('rs' => $csv));
+            return $app->json(['rs' => $csv]);
         } else {
             $report = $activity->getTopQuestion($conf, true);
 
-            return $app->json(array(
-                'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+            return $app->json([
+                'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
                     'result'      => isset($report['report']) ? $report['report'] : $report,
                     'is_infouser' => false,
                     'is_nav'      => false,
                     'is_groupby'  => false,
                     'is_plot'     => false,
                     'is_doc'      => false
-                )),
+                ]),
                 'display_nav' => false,
                 'title'       => false
-            ));
+            ]);
         }
     }
 
@@ -340,20 +342,20 @@ class Activity implements ControllerProviderInterface
                  $csv = '';
              }
 
-             return $app->json(array('rs' => $csv));
+             return $app->json(['rs' => $csv]);
          } else {
-             return $app->json(array(
-                 'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+             return $app->json([
+                 'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
                      'result'      => isset($report['report']) ? $report['report'] : $report,
                      'is_infouser' => false,
                      'is_nav'      => false,
                      'is_groupby'  => false,
                      'is_plot'     => true,
                      'is_doc'      => false
-                 )),
+                 ]),
                  'display_nav' => false,
                  'title'       => false
-             ));
+             ]);
          }
     }
 
@@ -366,12 +368,12 @@ class Activity implements ControllerProviderInterface
      */
     public function doReportSiteActiviyPerDays(Application $app, Request $request)
     {
-        $conf = array(
-            'ddate'     => array(_('report:: jour'), 0, 0, 0, 0),
-            'total'     => array(_('report:: total des telechargements'), 0, 0, 0, 0),
-            'preview'   => array(_('report:: preview'), 0, 0, 0, 0),
-            'document'  => array(_('report:: document original'), 0, 0, 0, 0)
-        );
+        $conf = [
+            'ddate'     => [$app->trans('report:: jour'), 0, 0, 0, 0],
+            'total'     => [$app->trans('report:: total des telechargements'), 0, 0, 0, 0],
+            'preview'   => [$app->trans('report:: preview'), 0, 0, 0, 0],
+            'document'  => [$app->trans('report:: document original'), 0, 0, 0, 0]
+        ];
 
         $activity = new \module_report_activity(
             $app,
@@ -404,20 +406,20 @@ class Activity implements ControllerProviderInterface
                  $csv = '';
              }
 
-             return $app->json(array('rs' => $csv));
+             return $app->json(['rs' => $csv]);
          } else {
-             return $app->json(array(
-                 'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+             return $app->json([
+                 'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
                      'result'      => isset($report['report']) ? $report['report'] : $report,
                      'is_infouser' => false,
                      'is_nav'      => false,
                      'is_groupby'  => false,
                      'is_plot'     => false,
                      'is_doc'      => false
-                 )),
+                 ]),
                  'display_nav' => false,
                  'title'       => false
-             ));
+             ]);
          }
     }
 
@@ -430,14 +432,14 @@ class Activity implements ControllerProviderInterface
      */
     public function doReportPushedDocuments(Application $app, Request $request)
     {
-        $conf = array(
-            'user'      => array('', 1, 0, 1, 1),
-            'getter'    => array("Destinataire", 1, 0, 1, 1),
-            'date'      => array('', 1, 0, 1, 1),
-            'record_id' => array('', 1, 1, 1, 1),
-            'file'      => array('', 1, 0, 1, 1),
-            'mime'      => array('', 1, 0, 1, 1),
-        );
+        $conf = [
+            'user'      => ['', 1, 0, 1, 1],
+            'getter'    => ["Destinataire", 1, 0, 1, 1],
+            'date'      => ['', 1, 0, 1, 1],
+            'record_id' => ['', 1, 1, 1, 1],
+            'file'      => ['', 1, 0, 1, 1],
+            'mime'      => ['', 1, 0, 1, 1],
+        ];
 
         $activity = new \module_report_push(
             $app,
@@ -459,7 +461,7 @@ class Activity implements ControllerProviderInterface
                 $csv = '';
             }
 
-            return $app->json(array('rs' => $csv));
+            return $app->json(['rs' => $csv]);
         }
 
         $report = $this->doReport($app, $request, $activity, $conf);
@@ -468,15 +470,15 @@ class Activity implements ControllerProviderInterface
             return $report;
         }
 
-        return $app->json(array(
-                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+        return $app->json([
+                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
                 'is_doc'      => false
-            )),
+            ]),
             'display_nav' => $report['display_nav'], // do we display the prev and next button ?
             'next'        => $report['next_page'], //Number of the next page
             'prev'        => $report['previous_page'], //Number of the previoous page
@@ -484,7 +486,7 @@ class Activity implements ControllerProviderInterface
             'filter'      => ((sizeof($report['filter']) > 0) ? serialize($report['filter']) : ''), //the serialized filters
             'col'         => $report['active_column'], //all the columns where a filter is applied
             'limit'       => $report['nb_record']
-        ));
+        ]);
     }
 
     /**
@@ -496,13 +498,13 @@ class Activity implements ControllerProviderInterface
      */
     public function doReportAddedDocuments(Application $app, Request $request)
     {
-        $conf = array(
-            'user'      => array('', 1, 0, 1, 1),
-            'date'      => array('', 1, 0, 1, 1),
-            'record_id' => array('', 1, 1, 1, 1),
-            'file'      => array('', 1, 0, 1, 1),
-            'mime'      => array('', 1, 0, 1, 1),
-        );
+        $conf = [
+            'user'      => ['', 1, 0, 1, 1],
+            'date'      => ['', 1, 0, 1, 1],
+            'record_id' => ['', 1, 1, 1, 1],
+            'file'      => ['', 1, 0, 1, 1],
+            'mime'      => ['', 1, 0, 1, 1],
+        ];
 
         $activity = new \module_report_add(
             $app,
@@ -524,7 +526,7 @@ class Activity implements ControllerProviderInterface
                 $csv = '';
             }
 
-            return $app->json(array('rs' => $csv));
+            return $app->json(['rs' => $csv]);
         }
 
         $report = $this->doReport($app, $request, $activity, $conf);
@@ -533,15 +535,15 @@ class Activity implements ControllerProviderInterface
             return $report;
         }
 
-        return $app->json(array(
-                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+        return $app->json([
+                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
                 'is_doc'      => false
-            )),
+            ]),
             'display_nav' => $report['display_nav'], // do we display the prev and next button ?
             'next'        => $report['next_page'], //Number of the next page
             'prev'        => $report['previous_page'], //Number of the previoous page
@@ -549,7 +551,7 @@ class Activity implements ControllerProviderInterface
             'filter'      => ((sizeof($report['filter']) > 0) ? serialize($report['filter']) : ''), //the serialized filters
             'col'         => $report['active_column'], //all the columns where a filter is applied
             'limit'       => $report['nb_record']
-        ));
+        ]);
     }
 
     /**
@@ -561,13 +563,13 @@ class Activity implements ControllerProviderInterface
      */
     public function doReportEditedDocuments(Application $app, Request $request)
     {
-        $conf = array(
-            'user'      => array('', 1, 0, 1, 1),
-            'date'      => array('', 1, 0, 1, 1),
-            'record_id' => array('', 1, 1, 1, 1),
-            'file'      => array('', 1, 0, 1, 1),
-            'mime'      => array('', 1, 0, 1, 1),
-        );
+        $conf = [
+            'user'      => ['', 1, 0, 1, 1],
+            'date'      => ['', 1, 0, 1, 1],
+            'record_id' => ['', 1, 1, 1, 1],
+            'file'      => ['', 1, 0, 1, 1],
+            'mime'      => ['', 1, 0, 1, 1],
+        ];
 
         $activity = new \module_report_edit(
             $app,
@@ -589,7 +591,7 @@ class Activity implements ControllerProviderInterface
                 $csv = '';
             }
 
-            return $app->json(array('rs' => $csv));
+            return $app->json(['rs' => $csv]);
         }
 
         $report = $this->doReport($app, $request, $activity, $conf);
@@ -598,15 +600,15 @@ class Activity implements ControllerProviderInterface
             return $report;
         }
 
-        return $app->json(array(
-                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+        return $app->json([
+                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
                 'is_doc'      => false
-            )),
+            ]),
             'display_nav' => $report['display_nav'], // do we display the prev and next button ?
             'next'        => $report['next_page'], //Number of the next page
             'prev'        => $report['previous_page'], //Number of the previoous page
@@ -614,7 +616,7 @@ class Activity implements ControllerProviderInterface
             'filter'      => ((sizeof($report['filter']) > 0) ? serialize($report['filter']) : ''), //the serialized filters
             'col'         => $report['active_column'], //all the columns where a filter is applied
             'limit'       => $report['nb_record']
-        ));
+        ]);
     }
 
     /**
@@ -626,14 +628,14 @@ class Activity implements ControllerProviderInterface
      */
     public function doReportValidatedDocuments(Application $app, Request $request)
     {
-        $conf = array(
-            'user'      => array('', 1, 0, 1, 1),
-            'getter'    => array("Destinataire", 1, 0, 1, 1),
-            'date'      => array('', 1, 0, 1, 1),
-            'record_id' => array('', 1, 1, 1, 1),
-            'file'      => array('', 1, 0, 1, 1),
-            'mime'      => array('', 1, 0, 1, 1),
-        );
+        $conf = [
+            'user'      => ['', 1, 0, 1, 1],
+            'getter'    => ["Destinataire", 1, 0, 1, 1],
+            'date'      => ['', 1, 0, 1, 1],
+            'record_id' => ['', 1, 1, 1, 1],
+            'file'      => ['', 1, 0, 1, 1],
+            'mime'      => ['', 1, 0, 1, 1],
+        ];
 
         $activity = new \module_report_validate(
             $app,
@@ -655,7 +657,7 @@ class Activity implements ControllerProviderInterface
                 $csv = '';
             }
 
-            return $app->json(array('rs' => $csv));
+            return $app->json(['rs' => $csv]);
         }
 
         $report = $this->doReport($app, $request, $activity, $conf);
@@ -664,15 +666,15 @@ class Activity implements ControllerProviderInterface
             return $report;
         }
 
-        return $app->json(array(
-                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+        return $app->json([
+                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
                 'is_doc'      => false
-            )),
+            ]),
             'display_nav' => $report['display_nav'], // do we display the prev and next button ?
             'next'        => $report['next_page'], //Number of the next page
             'prev'        => $report['previous_page'], //Number of the previoous page
@@ -680,7 +682,7 @@ class Activity implements ControllerProviderInterface
             'filter'      => ((sizeof($report['filter']) > 0) ? serialize($report['filter']) : ''), //the serialized filters
             'col'         => $report['active_column'], //all the columns where a filter is applied
             'limit'       => $report['nb_record']
-        ));
+        ]);
     }
 
     /**
@@ -692,14 +694,14 @@ class Activity implements ControllerProviderInterface
      */
     public function doReportSentDocuments(Application $app, Request $request)
     {
-        $conf = array(
-            'user'      => array('', 1, 0, 1, 1),
-            'date'      => array('', 1, 0, 1, 1),
-            'record_id' => array('', 1, 1, 1, 1),
-            'file'      => array('', 1, 0, 1, 1),
-            'mime'      => array('', 1, 0, 1, 1),
-            'comment'   => array(_('Receiver'), 1, 0, 1, 1),
-        );
+        $conf = [
+            'user'      => ['', 1, 0, 1, 1],
+            'date'      => ['', 1, 0, 1, 1],
+            'record_id' => ['', 1, 1, 1, 1],
+            'file'      => ['', 1, 0, 1, 1],
+            'mime'      => ['', 1, 0, 1, 1],
+            'comment'   => [$app->trans('Receiver'), 1, 0, 1, 1],
+        ];
 
         $activity = new \module_report_sent(
             $app,
@@ -721,7 +723,7 @@ class Activity implements ControllerProviderInterface
                 $csv = '';
             }
 
-            return $app->json(array('rs' => $csv));
+            return $app->json(['rs' => $csv]);
         }
 
         $report = $this->doReport($app, $request, $activity, $conf);
@@ -730,15 +732,15 @@ class Activity implements ControllerProviderInterface
             return $report;
         }
 
-        return $app->json(array(
-                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+        return $app->json([
+                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
                 'is_doc'      => false
-            )),
+            ]),
             'display_nav' => $report['display_nav'], // do we display the prev and next button ?
             'next'        => $report['next_page'], //Number of the next page
             'prev'        => $report['previous_page'], //Number of the previoous page
@@ -746,7 +748,7 @@ class Activity implements ControllerProviderInterface
             'filter'      => ((sizeof($report['filter']) > 0) ? serialize($report['filter']) : ''), //the serialized filters
             'col'         => $report['active_column'], //all the columns where a filter is applied
             'limit'       => $report['nb_record']
-        ));
+        ]);
     }
 
     /**
@@ -788,9 +790,9 @@ class Activity implements ControllerProviderInterface
 
         //display content of a table column when user click on it
         if ($request->request->get('conf') == 'on') {
-            return $app->json(array('liste' => $app['twig']->render('report/listColumn.html.twig', array(
+            return $app->json(['liste' => $app['twig']->render('report/listColumn.html.twig', [
                 'conf'  => $base_conf
-            )), "title" => _("configuration")));
+            ]), "title" => $app->trans("configuration")]);
         }
 
         //set order
@@ -801,7 +803,7 @@ class Activity implements ControllerProviderInterface
         //work on filters
         $mapColumnTitleToSqlField = $report->getTransQueryString();
 
-        $currentfilter = array();
+        $currentfilter = [];
 
         if ('' !== $serializedFilter = $request->request->get('liste_filter', '')) {
             $currentfilter = @unserialize(urldecode($serializedFilter));
@@ -814,10 +816,10 @@ class Activity implements ControllerProviderInterface
             $value = $request->request->get('filter_value', '');
 
             if ($request->request->get('liste') == 'on') {
-                return $app->json(array('diag'  => $app['twig']->render('report/colFilter.html.twig', array(
+                return $app->json(['diag'  => $app['twig']->render('report/colFilter.html.twig', [
                     'result' => $report->colFilter($field),
                     'field'  => $field
-                )), "title"  => sprintf(_('filtrer les resultats sur la colonne %s'), $field)));
+                ]), "title"  => $app->trans('filtrer les resultats sur la colonne %colonne%', ['%colonne%' => $field])]);
             }
 
             if ($field === $value) {
@@ -852,18 +854,18 @@ class Activity implements ControllerProviderInterface
                 $groupField = isset($conf[strtolower($groupby)]['title']) ? $conf[strtolower($groupby)]['title'] : '';
             }
 
-            return $app->json(array(
-                'rs' => $app['twig']->render('report/ajax_data_content.html.twig', array(
+            return $app->json([
+                'rs' => $app['twig']->render('report/ajax_data_content.html.twig', [
                     'result'      => isset($reportArray['report']) ? $reportArray['report'] : $reportArray,
                     'is_infouser' => false,
                     'is_nav'      => false,
                     'is_groupby'  => true,
                     'is_plot'     => false,
                     'is_doc'      => false
-                )),
+                ]),
                 'display_nav' => false,
-                'title'       => _(sprintf('Groupement des resultats sur le champ %s',  $groupField))
-            ));
+                'title'       => $app->trans('Groupement des resultats sur le champ %name%', ['%name%' => $groupField])
+            ]);
         }
 
         //set Limit
@@ -883,16 +885,5 @@ class Activity implements ControllerProviderInterface
         }
 
         return $reportArray;
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

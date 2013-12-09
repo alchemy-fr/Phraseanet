@@ -18,7 +18,7 @@ class BinariesProbe extends BinariesRequirements implements ProbeInterface
 {
     public function __construct(array $binaries)
     {
-        parent::__construct(array_filter(array(
+        parent::__construct(array_filter([
             'php_binary'         => isset($binaries['php_binary']) ? $binaries['php_binary'] : null,
             'pdf2swf_binary'     => isset($binaries['pdf2swf_binary']) ? $binaries['pdf2swf_binary'] : null,
             'unoconv_binary'     => isset($binaries['unoconv_binary']) ? $binaries['unoconv_binary'] : null,
@@ -29,7 +29,7 @@ class BinariesProbe extends BinariesRequirements implements ProbeInterface
             'ffmpeg_binary'      => isset($binaries['ffmpeg_binary']) ? $binaries['ffmpeg_binary'] : null,
             'ffprobe_binary'     => isset($binaries['ffprobe_binary']) ? $binaries['ffprobe_binary'] : null,
             'recess_binary'      => isset($binaries['recess_binary']) ? $binaries['recess_binary'] : null,
-        )));
+        ]));
     }
 
     /**
@@ -39,6 +39,6 @@ class BinariesProbe extends BinariesRequirements implements ProbeInterface
      */
     public static function create(Application $app)
     {
-        return new static($app['phraseanet.configuration']['binaries']);
+        return new static($app['conf']->get('binaries'));
     }
 }

@@ -38,13 +38,13 @@ class Migration31 implements MigrationInterface
         $retrieve_old_credentials = function () {
                 require __DIR__ . '/../../../../../../config/connexion.inc';
 
-                return array(
+                return [
                     'hostname' => $hostname,
                     'port'     => $port,
                     'user'     => $user,
                     'password' => $password,
                     'dbname'   => $dbname,
-                );
+                ];
             };
 
         $params = $retrieve_old_credentials();
@@ -75,11 +75,8 @@ class Migration31 implements MigrationInterface
 
         foreach ($GV as $section => $datas_section) {
             foreach ($datas_section['vars'] as $datas) {
-
-                eval('$test = defined("' . $datas["name"] . '");');
-
-                if ($test) {
-                    eval('$val = ' . $datas["name"] . ';');
+                if (defined($datas["name"])) {
+                    $val = constant($datas["name"]);
                 } elseif (isset($datas['default'])) {
                     $val = $datas['default'];
                 } else {
@@ -113,19 +110,19 @@ class Migration31 implements MigrationInterface
                         break;
                 }
 
-                $stmt->execute(array(
+                $stmt->execute([
                     ':key'   => $datas['name'],
                     ':value' => $val,
                     ':type'  => $type,
-                ));
+                ]);
             }
         }
 
-        $stmt->execute(array(
+        $stmt->execute([
             ':key'   => 'GV_sit',
             ':value' => GV_sit,
             ':type'  => \registry::TYPE_STRING,
-        ));
+        ]);
 
         $stmt->closeCursor();
 

@@ -11,6 +11,13 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\BasketElement;
+use Alchemy\Phrasea\Model\Entities\UsrList;
+use Alchemy\Phrasea\Model\Entities\UsrListEntry;
+use Alchemy\Phrasea\Model\Entities\ValidationSession;
+use Alchemy\Phrasea\Model\Entities\ValidationData;
+use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Alchemy\Phrasea\Helper\Record as RecordHelper;
@@ -19,20 +26,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Push implements ControllerProviderInterface
 {
-
     protected function getUserFormatter()
     {
         return function (\User_Adapter $user) {
-            $subtitle = array_filter(array($user->get_job(), $user->get_company()));
+            $subtitle = array_filter([$user->get_job(), $user->get_company()]);
 
-            return array(
+            return [
                 'type'         => 'USER'
                 , 'usr_id'       => $user->get_id()
                 , 'firstname'    => $user->get_firstname()
@@ -40,7 +41,7 @@ class Push implements ControllerProviderInterface
                 , 'email'        => $user->get_email()
                 , 'display_name' => $user->get_display_name()
                 , 'subtitle'     => implode(', ', $subtitle)
-            );
+            ];
         };
     }
 
@@ -48,24 +49,24 @@ class Push implements ControllerProviderInterface
     {
         $userFormatter = $this->getUserFormatter();
 
-        return function (\Entities\UsrList $List) use ($userFormatter, $app) {
-            $entries = array();
+        return function (UsrList $List) use ($userFormatter, $app) {
+            $entries = [];
 
             foreach ($List->getEntries() as $entry) {
-                /* @var $entry \Entities\UsrListEntry */
-                $entries[] = array(
+                /* @var $entry UsrListEntry */
+                $entries[] = [
                     'Id'   => $entry->getId(),
                     'User' => $userFormatter($entry->getUser($app))
-                );
+                ];
             }
 
-            return array(
+            return [
                 'type'    => 'LIST'
                 , 'list_id' => $List->getId()
                 , 'name'    => $List->getName()
                 , 'length'  => count($entries)
                 , 'entries' => $entries
-            );
+            ];
         };
     }
 
@@ -97,6 +98,8 @@ class Push implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
+        $app['controller.prod.push'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
@@ -113,17 +116,17 @@ class Push implements ControllerProviderInterface
         $controllers->post('/sendform/', function (Application $app) use ($userSelection) {
             $push = new RecordHelper\Push($app, $app['request']);
 
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $RecommendedUsers = $userSelection($push->get_elements());
 
-            $params = array(
+            $params = [
                 'push'             => $push,
                 'message'          => '',
                 'lists'            => $repository->findUserLists($app['authentication']->getUser()),
                 'context'          => 'Push',
                 'RecommendedUsers' => $RecommendedUsers
-            );
+            ];
 
             return $app['twig']->render('prod/actions/Push.html.twig', $params);
         });
@@ -131,17 +134,17 @@ class Push implements ControllerProviderInterface
         $controllers->post('/validateform/', function (Application $app) use ($userSelection) {
             $push = new RecordHelper\Push($app, $app['request']);
 
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $RecommendedUsers = $userSelection($push->get_elements());
 
-            $params = array(
+            $params = [
                 'push'             => $push,
                 'message'          => '',
                 'lists'            => $repository->findUserLists($app['authentication']->getUser()),
                 'context'          => 'Feedback',
                 'RecommendedUsers' => $RecommendedUsers
-            );
+            ];
 
             return $app['twig']->render('prod/actions/Push.html.twig', $params);
         });
@@ -149,35 +152,35 @@ class Push implements ControllerProviderInterface
         $controllers->post('/send/', function (Application $app) {
             $request = $app['request'];
 
-            $ret = array(
+            $ret = [
                 'success' => false,
-                'message' => _('Unable to send the documents')
-            );
+                'message' => $app->trans('Unable to send the documents')
+            ];
 
             try {
                 $pusher = new RecordHelper\Push($app, $app['request']);
 
-                $push_name = $request->request->get('name', sprintf(_('Push from %s'), $app['authentication']->getUser()->get_display_name()));
+                $push_name = $request->request->get('name', $app->trans('Push from %user%', ['%user%' => $app['authentication']->getUser()->get_display_name()]));
                 $push_description = $request->request->get('push_description');
 
                 $receivers = $request->request->get('participants');
 
                 if (!is_array($receivers) || count($receivers) === 0) {
-                    throw new ControllerException(_('No receivers specified'));
+                    throw new ControllerException($app->trans('No receivers specified'));
                 }
 
                 if (!is_array($pusher->get_elements()) || count($pusher->get_elements()) === 0) {
-                    throw new ControllerException(_('No elements to push'));
+                    throw new ControllerException($app->trans('No elements to push'));
                 }
 
                 foreach ($receivers as $receiver) {
                     try {
                         $user_receiver = \User_Adapter::getInstance($receiver['usr_id'], $app);
                     } catch (\Exception $e) {
-                        throw new ControllerException(sprintf(_('Unknown user %d'), $receiver['usr_id']));
+                        throw new ControllerException($app->trans('Unknown user %user_id%', ['%user_id%' => $receiver['usr_id']]));
                     }
 
-                    $Basket = new \Entities\Basket();
+                    $Basket = new Basket();
                     $Basket->setName($push_name);
                     $Basket->setDescription($push_description);
                     $Basket->setOwner($user_receiver);
@@ -187,7 +190,7 @@ class Push implements ControllerProviderInterface
                     $app['EM']->persist($Basket);
 
                     foreach ($pusher->get_elements() as $element) {
-                        $BasketElement = new \Entities\BasketElement();
+                        $BasketElement = new BasketElement();
                         $BasketElement->setRecord($element);
                         $BasketElement->setBasket($Basket);
 
@@ -196,13 +199,13 @@ class Push implements ControllerProviderInterface
                         $Basket->addElement($BasketElement);
 
                         if ($receiver['HD']) {
-                            $user_receiver->ACL()->grant_hd_on(
+                            $app['acl']->get($user_receiver)->grant_hd_on(
                                 $BasketElement->getRecord($app)
                                 , $app['authentication']->getUser()
                                 , \ACL::GRANT_ACTION_PUSH
                             );
                         } else {
-                            $user_receiver->ACL()->grant_preview_on(
+                            $app['acl']->get($user_receiver)->grant_preview_on(
                                 $BasketElement->getRecord($app)
                                 , $app['authentication']->getUser()
                                 , \ACL::GRANT_ACTION_PUSH
@@ -212,19 +215,19 @@ class Push implements ControllerProviderInterface
 
                     $app['EM']->flush();
 
-                    $url = $app->url('lightbox_compare', array(
-                        'ssel_id' => $Basket->getId(),
+                    $url = $app->url('lightbox_compare', [
+                        'basket' => $Basket->getId(),
                         'LOG' => $app['tokens']->getUrlToken(
                             \random::TYPE_VIEW,
                             $user_receiver->get_id(),
                             null,
                             $Basket->getId()
                         )
-                    ));
+                    ]);
 
                     $receipt = $request->get('recept') ? $app['authentication']->getUser()->get_email() : '';
 
-                    $params = array(
+                    $params = [
                         'from'       => $app['authentication']->getUser()->get_id()
                         , 'from_email' => $app['authentication']->getUser()->get_email()
                         , 'to'         => $user_receiver->get_id()
@@ -234,7 +237,7 @@ class Push implements ControllerProviderInterface
                         , 'accuse'     => $receipt
                         , 'message'    => $request->request->get('message')
                         , 'ssel_id'    => $Basket->getId()
-                    );
+                    ];
 
                     $app['events-manager']->trigger('__PUSH_DATAS__', $params);
                 }
@@ -244,16 +247,15 @@ class Push implements ControllerProviderInterface
 
                 $app['EM']->flush();
 
-                $message = sprintf(
-                    _('%1$d records have been sent to %2$d users')
-                    , count($pusher->get_elements())
-                    , count($receivers)
-                );
+                $message = $app->trans('%quantity_records% records have been sent to %quantity_users% users', [
+                    '%quantity_records%' => count($pusher->get_elements()),
+                    '%quantity_users%'   => count($receivers),
+                ]);
 
-                $ret = array(
+                $ret = [
                     'success' => true,
                     'message' => $message
-                );
+                ];
             } catch (ControllerException $e) {
                 $ret['message'] = $e->getMessage() . $e->getFile() . $e->getLine();
             }
@@ -264,35 +266,35 @@ class Push implements ControllerProviderInterface
         $controllers->post('/validate/', function (Application $app) {
             $request = $app['request'];
 
-            $ret = array(
+            $ret = [
                 'success' => false,
-                'message' => _('Unable to send the documents')
-            );
+                'message' => $app->trans('Unable to send the documents')
+            ];
 
             $app['EM']->beginTransaction();
 
             try {
                 $pusher = new RecordHelper\Push($app, $app['request']);
 
-                $repository = $app['EM']->getRepository('\Entities\Basket');
+                $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-                $validation_name = $request->request->get('name', sprintf(_('Validation from %s'), $app['authentication']->getUser()->get_display_name()));
+                $validation_name = $request->request->get('name', $app->trans('Validation from %user%', ['%user%' => $app['authentication']->getUser()->get_display_name()]));
                 $validation_description = $request->request->get('validation_description');
 
                 $participants = $request->request->get('participants');
 
                 if (!is_array($participants) || count($participants) === 0) {
-                    throw new ControllerException(_('No participants specified'));
+                    throw new ControllerException($app->trans('No participants specified'));
                 }
 
                 if (!is_array($pusher->get_elements()) || count($pusher->get_elements()) === 0) {
-                    throw new ControllerException(_('No elements to validate'));
+                    throw new ControllerException($app->trans('No elements to validate'));
                 }
 
                 if ($pusher->is_basket()) {
                     $Basket = $pusher->get_original_basket();
                 } else {
-                    $Basket = new \Entities\Basket();
+                    $Basket = new Basket();
                     $Basket->setName($validation_name);
                     $Basket->setDescription($validation_description);
                     $Basket->setOwner($app['authentication']->getUser());
@@ -301,7 +303,7 @@ class Push implements ControllerProviderInterface
                     $app['EM']->persist($Basket);
 
                     foreach ($pusher->get_elements() as $element) {
-                        $BasketElement = new \Entities\BasketElement();
+                        $BasketElement = new BasketElement();
                         $BasketElement->setRecord($element);
                         $BasketElement->setBasket($Basket);
 
@@ -315,7 +317,7 @@ class Push implements ControllerProviderInterface
                 $app['EM']->refresh($Basket);
 
                 if (!$Basket->getValidation()) {
-                    $Validation = new \Entities\ValidationSession();
+                    $Validation = new ValidationSession();
                     $Validation->setInitiator($app['authentication']->getUser());
                     $Validation->setBasket($Basket);
 
@@ -341,24 +343,24 @@ class Push implements ControllerProviderInterface
                 }
 
                 if (!$found) {
-                    $participants[$app['authentication']->getUser()->get_id()] = array(
+                    $participants[$app['authentication']->getUser()->get_id()] = [
                         'see_others' => 1,
                         'usr_id'     => $app['authentication']->getUser()->get_id(),
                         'agree'      => 0,
                         'HD'         => 0
-                    );
+                    ];
                 }
 
                 foreach ($participants as $key => $participant) {
-                    foreach (array('see_others', 'usr_id', 'agree', 'HD') as $mandatoryparam) {
+                    foreach (['see_others', 'usr_id', 'agree', 'HD'] as $mandatoryparam) {
                         if (!array_key_exists($mandatoryparam, $participant))
-                            throw new ControllerException(sprintf(_('Missing mandatory parameter %s'), $mandatoryparam));
+                            throw new ControllerException($app->trans('Missing mandatory parameter %parameter%', ['%parameter%' => $mandatoryparam]));
                     }
 
                     try {
                         $participant_user = \User_Adapter::getInstance($participant['usr_id'], $app);
                     } catch (\Exception $e) {
-                        throw new ControllerException(sprintf(_('Unknown user %d'), $receiver['usr_id']));
+                        throw new ControllerException($app->trans('Unknown user %usr_id%', ['%usr_id%' => $participant['usr_id']]));
                     }
 
                     try {
@@ -368,7 +370,7 @@ class Push implements ControllerProviderInterface
 
                     }
 
-                    $Participant = new \Entities\ValidationParticipant();
+                    $Participant = new ValidationParticipant();
                     $Participant->setUser($participant_user);
                     $Participant->setSession($Validation);
 
@@ -378,19 +380,19 @@ class Push implements ControllerProviderInterface
                     $app['EM']->persist($Participant);
 
                     foreach ($Basket->getElements() as $BasketElement) {
-                        $ValidationData = new \Entities\ValidationData();
+                        $ValidationData = new ValidationData();
                         $ValidationData->setParticipant($Participant);
                         $ValidationData->setBasketElement($BasketElement);
                         $BasketElement->addValidationData($ValidationData);
 
                         if ($participant['HD']) {
-                            $participant_user->ACL()->grant_hd_on(
+                            $app['acl']->get($participant_user)->grant_hd_on(
                                 $BasketElement->getRecord($app)
                                 , $app['authentication']->getUser()
                                 , \ACL::GRANT_ACTION_VALIDATE
                             );
                         } else {
-                            $participant_user->ACL()->grant_preview_on(
+                            $app['acl']->get($participant_user)->grant_preview_on(
                                 $BasketElement->getRecord($app)
                                 , $app['authentication']->getUser()
                                 , \ACL::GRANT_ACTION_VALIDATE
@@ -410,19 +412,19 @@ class Push implements ControllerProviderInterface
 
                     $app['EM']->flush();
 
-                    $url = $app->url('lightbox_validation', array(
-                        'ssel_id' => $Basket->getId(),
+                    $url = $app->url('lightbox_validation', [
+                        'basket' => $Basket->getId(),
                         'LOG' => $app['tokens']->getUrlToken(
                             \random::TYPE_VALIDATE,
                             $participant_user->get_id(),
                             null,
                             $Basket->getId()
                         )
-                    ));
+                    ]);
 
                     $receipt = $request->get('recept') ? $app['authentication']->getUser()->get_email() : '';
 
-                    $params = array(
+                    $params = [
                         'from'       => $app['authentication']->getUser()->get_id(),
                         'from_email' => $app['authentication']->getUser()->get_email(),
                         'to'         => $participant_user->get_id(),
@@ -433,7 +435,7 @@ class Push implements ControllerProviderInterface
                         'message'    => $request->request->get('message'),
                         'ssel_id'    => $Basket->getId(),
                         'duration'   => (int) $request->request->get('duration'),
-                    );
+                    ];
 
                     $app['events-manager']->trigger('__PUSH_VALIDATION__', $params);
                 }
@@ -443,16 +445,15 @@ class Push implements ControllerProviderInterface
 
                 $app['EM']->flush();
 
-                $message = sprintf(
-                    _('%1$d records have been sent for validation to %2$d users')
-                    , count($pusher->get_elements())
-                    , count($request->request->get('participants'))
-                );
+                $message = $app->trans('%quantity_records% records have been sent for validation to %quantity_users% users', [
+                    '%quantity_records%' => count($pusher->get_elements()),
+                    '%quantity_users%'   => count($request->request->get('participants')),
+                ]);
 
-                $ret = array(
+                $ret = [
                     'success' => true,
                     'message' => $message
-                );
+                ];
 
                 $app['EM']->commit();
             } catch (ControllerException $e) {
@@ -470,9 +471,9 @@ class Push implements ControllerProviderInterface
 
             $query = new \User_Query($app);
 
-            $query->on_bases_where_i_am($app['authentication']->getUser()->ACL(), array('canpush'));
+            $query->on_bases_where_i_am($app['acl']->get($app['authentication']->getUser()), ['canpush']);
 
-            $query->in(array($usr_id));
+            $query->in([$usr_id]);
 
             $result = $query->include_phantoms()
                     ->limit(0, 1)
@@ -490,7 +491,7 @@ class Push implements ControllerProviderInterface
         $controllers->get('/list/{list_id}/', function (Application $app, $list_id) use ($listFormatter) {
             $datas = null;
 
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
 
@@ -504,23 +505,23 @@ class Push implements ControllerProviderInterface
             ->assert('list_id', '\d+');
 
         $controllers->post('/add-user/', function (Application $app, Request $request) use ($userFormatter) {
-            $result = array('success' => false, 'message' => '', 'user'    => null);
+            $result = ['success' => false, 'message' => '', 'user'    => null];
 
             try {
-                if (!$app['authentication']->getUser()->ACL()->has_right('manageusers'))
-                    throw new ControllerException(_('You are not allowed to add users'));
+                if (!$app['acl']->get($app['authentication']->getUser())->has_right('manageusers'))
+                    throw new ControllerException($app->trans('You are not allowed to add users'));
 
                 if (!$request->request->get('firstname'))
-                    throw new ControllerException(_('First name is required'));
+                    throw new ControllerException($app->trans('First name is required'));
 
                 if (!$request->request->get('lastname'))
-                    throw new ControllerException(_('Last name is required'));
+                    throw new ControllerException($app->trans('Last name is required'));
 
                 if (!$request->request->get('email'))
-                    throw new ControllerException(_('Email is required'));
+                    throw new ControllerException($app->trans('Email is required'));
 
                 if (!\Swift_Validate::email($request->request->get('email')))
-                    throw new ControllerException(_('Email is invalid'));
+                    throw new ControllerException($app->trans('Email is invalid'));
             } catch (ControllerException $e) {
                 $result['message'] = $e->getMessage();
 
@@ -534,7 +535,7 @@ class Push implements ControllerProviderInterface
                 $usr_id = \User_Adapter::get_usr_id_from_email($app, $email);
                 $user = \User_Adapter::getInstance($usr_id, $app);
 
-                $result['message'] = _('User already exists');
+                $result['message'] = $app->trans('User already exists');
                 $result['success'] = true;
                 $result['user'] = $userFormatter($user);
             } catch (\Exception $e) {
@@ -557,11 +558,11 @@ class Push implements ControllerProviderInterface
                     if ($request->request->get('form_geonameid'))
                         $user->set_geonameid($request->request->get('form_geonameid'));
 
-                    $result['message'] = _('User successfully created');
+                    $result['message'] = $app->trans('User successfully created');
                     $result['success'] = true;
                     $result['user'] = $userFormatter($user);
                 } catch (\Exception $e) {
-                    $result['message'] = _('Error while creating user');
+                    $result['message'] = $app->trans('Error while creating user');
                 }
             }
 
@@ -569,7 +570,7 @@ class Push implements ControllerProviderInterface
         })->bind('prod_push_do_add_user');
 
         $controllers->get('/add-user/', function (Application $app, Request $request) {
-            $params = array('callback' => $request->query->get('callback'));
+            $params = ['callback' => $request->query->get('callback')];
 
             return $app['twig']->render('prod/User/Add.html.twig', $params);
         })->bind('prod_push_add_user');
@@ -579,7 +580,7 @@ class Push implements ControllerProviderInterface
 
             $query = new \User_Query($app);
 
-            $query->on_bases_where_i_am($app['authentication']->getUser()->ACL(), array('canpush'));
+            $query->on_bases_where_i_am($app['acl']->get($app['authentication']->getUser()), ['canpush']);
 
             $query->like(\User_Query::LIKE_FIRSTNAME, $request->query->get('query'))
                 ->like(\User_Query::LIKE_LASTNAME, $request->query->get('query'))
@@ -590,11 +591,11 @@ class Push implements ControllerProviderInterface
                     ->limit(0, 50)
                     ->execute()->get_results();
 
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $lists = $repository->findUserListLike($app['authentication']->getUser(), $request->query->get('query'));
 
-            $datas = array();
+            $datas = [];
 
             if ($lists) {
                 foreach ($lists as $list) {
@@ -613,13 +614,13 @@ class Push implements ControllerProviderInterface
 
         $controllers->match('/edit-list/{list_id}/', function (Application $app, Request $request, $list_id) {
 
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
 
             $query = new \User_Query($app);
 
-            $query->on_bases_where_i_am($app['authentication']->getUser()->ACL(), array('canpush'));
+            $query->on_bases_where_i_am($app['acl']->get($app['authentication']->getUser()), ['canpush']);
 
             if ($request->get('query')) {
                 $query->like($request->get('like_field'), $request->get('query'))
@@ -653,13 +654,13 @@ class Push implements ControllerProviderInterface
                     ->limit($offset_start, $perPage)
                     ->execute()->get_results();
 
-            $params = array(
+            $params = [
                 'query'   => $query
                 , 'results' => $results
                 , 'list'    => $list
                 , 'sort'    => $sort
                 , 'ord'     => $ord
-            );
+            ];
 
             if ($request->get('type') === 'fragment') {
                 return new Response(

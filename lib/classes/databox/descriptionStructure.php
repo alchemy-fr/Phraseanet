@@ -9,25 +9,20 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class databox_descriptionStructure implements IteratorAggregate, Countable
 {
     /**
      *
      * @var Array
      */
-    protected $elements = array();
+    protected $elements = [];
 
     /**
      * Cache array for the get element by name function
      *
      * @var Array
      */
-    protected $cache_name_id = array();
+    protected $cache_name_id = [];
 
     /**
      *

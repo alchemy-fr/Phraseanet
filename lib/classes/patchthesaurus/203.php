@@ -9,19 +9,11 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-class patchthesaurus_203
+class patchthesaurus_203 implements patchthesaurus_interface
 {
-
-    public function patch($version, &$domct, &$domth, connection_pdo &$connbas)
+    public function patch($version, \DOMDocument $domct, \DOMDocument $domth, \connection_interface $connbas, \unicode $unicode)
     {
-        global $debug;
-        global $ctchanged, $thchanged, $needreindex;
-        $unicode = new unicode();
+        $needreindex = false;
 
         if ($version == "2.0.3") {
             $xp = new DOMXPath($domth);
@@ -47,15 +39,13 @@ class patchthesaurus_203
             $domth->documentElement->setAttribute("version", "2.0.4");
             $domth->documentElement->setAttribute("modification_date", date("YmdHis"));
 
-            $thchanged = true;
-
             if ($needreindex) {
                 print("//   need to reindex, deleting cterms (keeping rejected)\n");
 
                 $xp = new DOMXPath($domct);
 
                 $nodes = $xp->query("//te[not(starts-with(@id, 'R')) and count(te[starts-with(@id, 'R')])=0]");
-                $nodestodel = array();
+                $nodestodel = [];
                 for ($i = 0; $i < $nodes->length; $i ++ )
                     $nodestodel[] = $nodes->item($i);
                 $ctdel = 0;
@@ -63,7 +53,7 @@ class patchthesaurus_203
                     $sql2 = "DELETE FROM thit WHERE value LIKE :like";
 
                     $stmt = $connbas->prepare($sql2);
-                    $stmt->execute(array(':like' => str_replace(".", "d", $node->getAttribute("id")) . "d%"));
+                    $stmt->execute([':like' => str_replace(".", "d", $node->getAttribute("id")) . "d%"]);
                     $stmt->closeCursor();
 
                     $node->parentNode->removeChild($node);
@@ -96,7 +86,6 @@ class patchthesaurus_203
 
             $domct->documentElement->setAttribute("version", "2.0.4");
             $domct->documentElement->setAttribute("modification_date", date("YmdHis"));
-            $ctchanged = true;
 
             $version = "2.0.4";
         }
@@ -106,8 +95,6 @@ class patchthesaurus_203
 
     public function fixRejected(connection_pdo &$connbas, &$node, $rejected)
     {
-        global $debug;
-
         if ($node->nodeType != XML_ELEMENT_NODE) {
             return;
         }
@@ -128,7 +115,7 @@ class patchthesaurus_203
                 $sql = "UPDATE thit SET value = :newid WHERE value = :oldid";
 
                 $stmt = $connbas->prepare($sql);
-                $stmt->execute(array(':newid' => $newid, ':oldid' => $id));
+                $stmt->execute([':newid' => $newid, ':oldid' => $id]);
                 $stmt->closeCursor();
             }
         }
@@ -138,8 +125,6 @@ class patchthesaurus_203
 
     public function fixIds(connection_pdo &$connbas, &$node)
     {
-        global $debug;
-
         if ($node->nodeType != XML_ELEMENT_NODE) {
             return;
         }
@@ -149,7 +134,6 @@ class patchthesaurus_203
             if ($pid != "") {
                 $id = $node->getAttribute("id");
                 if (substr($id, 1, strlen($pid)) != substr($pid, "1") . ".") {
-                    //printf("pid='%s', id='%s'\n", $pid, $id);
                     $nid = $node->parentNode->getAttribute("nextid");
                     $node->parentNode->setAttribute("nextid", $nid + 1);
                     $node->setAttribute("id", $newid = ($pid . "." . $nid));
@@ -159,7 +143,7 @@ class patchthesaurus_203
                     $sql = "UPDATE thit SET value = :newid WHERE value = :oldid";
 
                     $stmt = $connbas->prepare($sql);
-                    $stmt->execute(array(':newid' => $newid, ':oldid' => $id));
+                    $stmt->execute([':newid' => $newid, ':oldid' => $id]);
                     $stmt->closeCursor();
                 }
             }

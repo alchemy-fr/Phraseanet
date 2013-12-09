@@ -2,17 +2,17 @@
     <form>
         <fieldset>
             <select name='filtre'>
-                <option value="{{ field }}">{% trans "report:: Enlever le filtre" %}</option>
+                <option value="{{ field }}">{{ "report:: Enlever le filtre" | trans }}</option>
                 {% for value in result %}
                     <option value="{{ value.value }}">
                     {% if value.val == "" %}
-                        {% trans "report:: non-renseigne"  %}
+                        {{ "report:: non-renseigne" | trans }}
                     {% else %}
                         {{ value.val }}
                     {% endif %}
                     </option>
                 {% else %}
-                    <option value="">{% trans "report:: non-renseigne" %}</option>
+                    <option value="">{{ "report:: non-renseigne" | trans }}</option>
                 {%endfor %}
             </select>
         </fieldset>

@@ -20,7 +20,7 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
         $this->authenticate(self::$DI['app']);
         $logger_creater = self::$DI['app']['phraseanet.logger'];
 
-        foreach ($user->ACL()->get_granted_sbas() as $databox) {
+        foreach (self::$DI['app']['acl']->get($user)->get_granted_sbas() as $databox) {
             $this->object = $logger_creater($databox);
             $this->databox = $databox;
             break;
@@ -37,11 +37,11 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
 
         $sql = 'SELECT id FROM log
             WHERE sit_session = :ses_id AND usrid = :usr_id AND site = :site';
-        $params = array(
+        $params = [
             ':ses_id' => self::$DI['app']['session']->get('session_id')
             , ':usr_id' => self::$DI['app']['authentication']->getUser()->get_id()
-            , ':site'   => self::$DI['app']['phraseanet.configuration']['main']['key']
-        );
+            , ':site'   => self::$DI['app']['conf']->get(['main', 'key'])
+        ];
 
         $stmt = $this->databox->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -56,11 +56,11 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
 
         $sql = 'SELECT id FROM log
             WHERE sit_session = :ses_id AND usrid = :usr_id AND site = :site';
-        $params = array(
+        $params = [
             ':ses_id' => $ses_id
             , ':usr_id' => $usr_id
-            , ':site'   => self::$DI['app']['phraseanet.configuration']['main']['key']
-        );
+            , ':site'   => self::$DI['app']['conf']->get(['main', 'key'])
+        ];
 
         $stmt = $this->databox->get_connection()->prepare($sql);
         $stmt->execute($params);

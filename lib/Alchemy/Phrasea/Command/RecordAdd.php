@@ -14,19 +14,13 @@ namespace Alchemy\Phrasea\Command;
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager;
-use Entities\LazaretFile;
-use Entities\LazaretSession;
+use Alchemy\Phrasea\Model\Entities\LazaretFile;
+use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Create a record command
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class RecordAdd extends Command
 {
     /**
@@ -67,8 +61,8 @@ class RecordAdd extends Command
 
         if (!$input->getOption('yes')) {
             do {
-                $continue = strtolower($dialog->ask($output, sprintf("Will add record <info>%s</info> (%s) on collection <info>%s</info>\n<question>Continue ? (y/N)</question>", $file, $media->getType(), $collection->get_label($this->container['locale.I18n'])), 'N'));
-            } while ( ! in_array($continue, array('y', 'n')));
+                $continue = strtolower($dialog->ask($output, sprintf("Will add record <info>%s</info> (%s) on collection <info>%s</info>\n<question>Continue ? (y/N)</question>", $file, $media->getType(), $collection->get_label($this->container['locale'])), 'N'));
+            } while ( ! in_array($continue, ['y', 'n']));
 
             if (strtolower($continue) !== 'y') {
                 $output->writeln('Aborted !');
@@ -119,7 +113,7 @@ class RecordAdd extends Command
         if ($elementCreated instanceof \record_adapter) {
             $output->writeln(
                 sprintf(
-                    "Record id <info>%d</info> on collection `%s` (databox `%s`) has been created", $elementCreated->get_record_id(), $elementCreated->get_collection()->get_label($this->container['locale.I18n']), $elementCreated->get_databox()->get_label($this->container['locale.I18n'])
+                    "Record id <info>%d</info> on collection `%s` (databox `%s`) has been created", $elementCreated->get_record_id(), $elementCreated->get_collection()->get_label($this->container['locale']), $elementCreated->get_databox()->get_label($this->container['locale'])
                 )
             );
             $this->container['phraseanet.SE']->addRecord($elementCreated);

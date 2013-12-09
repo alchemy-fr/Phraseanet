@@ -9,8 +9,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <!-- styles -->
-        <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/build/bootstrap/css/bootstrap.css' }) }}" />
-        <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/build/bootstrap/css/bootstrap-responsive.css' }) }}" />
+        <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'assets/bootstrap/css/bootstrap.css' }) }}" />
+        <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'assets/bootstrap/css/bootstrap-responsive.css' }) }}" />
         <link rel="stylesheet" type="text/css" href="{{ path('minifier', { 'f' : 'skins/oauth/default.css' }) }}" />
 
         <!-- All JavaScript at the bottom, except this Modernizr build.
@@ -40,19 +40,17 @@
                                 <input type="hidden" name="{{key}}" value="{{value}}">
                             {% endfor %}
                             {% if errorMessage is defined %}
-                                <p class="login_error">{% trans 'Erreur de login / mot de passe' %}</p>
+                                <p class="login_error">{{ 'Erreur de login / mot de passe' | trans }}</p>
                             {% endif %}
                             <p class="login_hello">
-                                {% trans %}
-                                Bonjour, veuillez vous identifier sur {{home_title}} :
-                                {% endtrans %}
+                                {% trans with {'%home_title%' : home_title} %}Bonjour, veuillez vous identifier sur %home_title% :{% endtrans %}
                             </p>
-                            <input id="myLogin" name="login" class="span6" type="text" placeholder="{% trans 'admin::compte-utilisateur identifiant' %}" />
-                            <input id="myPass" name="password" class="span6" type="password" placeholder="{% trans 'admin::compte-utilisateur mot de passe' %}" />
-                            <input id="button_login" name="action_login" class="btn btn-inverse btn-large span6" type="submit" value="{% trans 'Se connecter' %}" />
+                            <input id="myLogin" name="login" class="span6" type="text" placeholder="{{ 'admin::compte-utilisateur identifiant' | trans }}" />
+                            <input id="myPass" name="password" class="span6" type="password" placeholder="{{ 'admin::compte-utilisateur mot de passe' | trans }}" />
+                            <input id="button_login" name="action_login" class="btn btn-inverse btn-large span6" type="submit" value="{{ 'Se connecter' | trans }}" />
                         </form>
                         <p>
-                            <a href="#">{% trans 'Probl&egrave;mes de connexion ?' %}</a>
+                            <a href="#">{{ 'Problemes de connexion ?' | trans }}</a>
                         </p>
                     </div>
                 {% else %}
@@ -60,23 +58,19 @@
                         {% set username = '<b>' ~ app['authentication'].getUser().get_display_name() ~ '</b>' %}
                         <div id="hello-box" class="span6 offset3">
                             <p class="login_hello">
-                                {% trans %}
-                                Hello {{username}}
-                                {% endtrans %}
+                                {% trans with {'%username%' : username} %}Hello %username%{% endtrans %}
                             </p>
                         </div>
                     {% endif %}
                     {% if auth.getClient() is not none %}
                     <div id="text-box" class="span6 offset3">
                         <div id="top-text-box">
-                            <h4>{% trans %}Autorisation d'acc&egrave;s{% endtrans %}</h4>
+                            <h4>{% trans %}Autorisation d'acces{% endtrans %}</h4>
                         </div>
                         <div id="main-text-box">
-                            {% set application_name = auth.getClient.get_name() %}
+                            {% set application_name = "<span>" ~ auth.getClient.get_name() ~ "</span>" %}
                             <p>
-                                {% trans %}
-                                Autorisez-vous l'application "<span>{{application_name}}</span>" &agrave; acc&eacute;der &agrave; votre contenu sur {{home_title}} ?
-                                {% endtrans %}
+                                {% trans with {'%application_name%' : application_name, '%home_title%' : home_title} %}Autorisez-vous l'application %application_name% a acceder a votre contenu sur %home_title% ?{% endtrans %}
                             </p>
                         </div>
                     </div>
@@ -87,14 +81,14 @@
                                 <input type="hidden" name="{{key}}" value="{{value}}">
                             {% endfor %}
                             <input type="hidden" name="action_accept" value="1">
-                            <input id="button_access" class="btn btn-inverse btn-large span3" type="submit" value="{% trans 'Autoriser' %}" />
+                            <input id="button_access" class="btn btn-inverse btn-large span3" type="submit" value="{{ 'Autoriser' | trans }}" />
                         </form>
                         <form method="post" class="access-deny">
                             {% for key,value in auth.getParams %}
                                 <input type="hidden" name="{{key}}" value="{{value}}">
                             {% endfor %}
                             <input type="hidden" name="action_accept" value="0">
-                            <input id="button_deny" class="btn btn-inverse btn-large span3" type="submit" value="{% trans 'Ne pas autoriser' %}" />
+                            <input id="button_deny" class="btn btn-inverse btn-large span3" type="submit" value="{{ 'Ne pas autoriser' | trans }}" />
                         </form>
                     </div>
                  {% endif %}
@@ -103,6 +97,6 @@
         </div>
 
         <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/jquery/jquery.js' }) }}"></script>
-        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/build/bootstrap/js/bootstrap.js' }) }}"></script>
+        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/bootstrap/js/bootstrap.js' }) }}"></script>
     </body>
 </html>

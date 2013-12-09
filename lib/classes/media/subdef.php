@@ -14,12 +14,6 @@ use MediaAlchemyst\Alchemyst;
 use MediaVorus\MediaVorus;
 use MediaVorus\Media\MediaInterface;
 
-/**
- *
- * @package     subdefs
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class media_subdef extends media_abstract implements cache_cacheableInterface
 {
     protected $app;
@@ -190,10 +184,10 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
                 FROM subdef
                 WHERE name = :name AND record_id = :record_id';
 
-        $params = array(
+        $params = [
             ':record_id' => $this->record->get_record_id(),
             ':name'      => $this->name
-        );
+        ];
 
         $stmt = $connbas->prepare($sql);
         $stmt->execute($params);
@@ -225,7 +219,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $this->find_substitute_file();
         }
 
-        $datas = array(
+        $datas = [
             'mime'               => $this->mime
             , 'width'              => $this->width
             , 'height'             => $this->height
@@ -238,7 +232,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             , 'subdef_id'          => $this->subdef_id
             , 'modification_date'  => $this->modification_date
             , 'creation_date'      => $this->creation_date
-        );
+        ];
 
         $this->set_data_to_cache($datas);
 
@@ -358,7 +352,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         $sql = "UPDATE subdef SET etag = :etag WHERE subdef_id = :subdef_id";
         $stmt = $this->record->get_databox()->get_connection()->prepare($sql);
-        $stmt->execute(array(':subdef_id' => $this->subdef_id, ':etag'      => $etag));
+        $stmt->execute([':subdef_id' => $this->subdef_id, ':etag'      => $etag]);
         $stmt->closeCursor();
 
         return $this;
@@ -531,7 +525,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     public function getDevices()
     {
         if ($this->get_name() == 'document') {
-            return array(\databox_subdef::DEVICE_ALL);
+            return [\databox_subdef::DEVICE_ALL];
         }
 
         try {
@@ -541,7 +535,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
                     ->get_subdef($this->record->get_type(), $this->get_name())
                     ->getDevices();
         } catch (\Exception_Databox_SubdefNotFound $e) {
-            return array();
+            return [];
         }
     }
 
@@ -574,12 +568,12 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
               SET height = :height , width = :width, updated_on = NOW()
               WHERE record_id = :record_id AND name = :name";
 
-        $params = array(
+        $params = [
             ':width'     => $media->getWidth(),
             ':height'    => $media->getHeight(),
             ':record_id' => $this->get_record_id(),
             ':name'      => $this->get_name(),
-        );
+        ];
 
         $stmt = $this->record->get_databox()->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -604,14 +598,14 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     public function readTechnicalDatas(MediaVorus $mediavorus)
     {
         if ( ! $this->is_physically_present()) {
-            return array();
+            return [];
         }
 
         $media = $mediavorus->guess($this->get_pathfile());
 
-        $datas = array();
+        $datas = [];
 
-        $methods = array(
+        $methods = [
             self::TC_DATA_WIDTH              => 'getWidth',
             self::TC_DATA_HEIGHT             => 'getHeight',
             self::TC_DATA_FOCALLENGTH        => 'getFocalLength',
@@ -630,11 +624,11 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             self::TC_DATA_AUDIOSAMPLERATE    => 'getAudioSampleRate',
             self::TC_DATA_VIDEOCODEC         => 'getVideoCodec',
             self::TC_DATA_AUDIOCODEC         => 'getAudioCodec',
-        );
+        ];
 
         foreach ($methods as $tc_name => $method) {
             if (method_exists($media, $method)) {
-                $result = call_user_func(array($media, $method));
+                $result = call_user_func([$media, $method]);
 
                 if (null !== $result) {
                     $datas[$tc_name] = $result;
@@ -660,7 +654,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $path = $media->getFile()->getPath();
         $newname = $media->getFile()->getFilename();
 
-        $params = array(
+        $params = [
             ':path'       => $path,
             ':file'       => $newname,
             ':width'      => 0,
@@ -668,7 +662,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             ':mime'       => $media->getFile()->getMimeType(),
             ':size'       => $media->getFile()->getSize(),
             ':dispatched' => 1,
-        );
+        ];
 
         if (method_exists($media, 'getWidth') && null !== $media->getWidth()) {
             $params[':width'] = $media->getWidth();
@@ -682,10 +676,10 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $sql = 'SELECT subdef_id FROM subdef
                     WHERE record_id = :record_id AND name = :name';
             $stmt = $connbas->prepare($sql);
-            $stmt->execute(array(
+            $stmt->execute([
                 ':record_id' => $record->get_record_id(),
                 ':name'      => $name,
-            ));
+            ]);
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
@@ -738,7 +732,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             return;
         }
 
-        if (in_array($this->mime, array('video/mp4'))) {
+        if (in_array($this->mime, ['video/mp4'])) {
             $token = p4file::apache_tokenize($this->app['phraseanet.registry'], $this->get_pathfile());
             if ($token) {
                 $this->url = $token;

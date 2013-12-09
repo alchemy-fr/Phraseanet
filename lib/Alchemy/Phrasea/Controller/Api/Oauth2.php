@@ -26,6 +26,8 @@ class Oauth2 implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
+        $app['controller.oauth2'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $app['oauth'] = $app->share(function ($app) {
@@ -79,20 +81,20 @@ class Oauth2 implements ControllerProviderInterface
                         $usr_id = $app['auth.native']->getUsrId($request->get("login"), $request->get("password"), $request);
 
                         if (null === $usr_id) {
-                            $app['session']->getFlashBag()->set('error', _('login::erreur: Erreur d\'authentification'));
+                            $app['session']->getFlashBag()->set('error', $app->trans('login::erreur: Erreur d\'authentification'));
 
                             return $app->redirectPath('oauth2_authorize');
                         }
                     } catch (RequireCaptchaException $e) {
-                        return $app->redirectPath('oauth2_authorize', array('error' => 'captcha'));
+                        return $app->redirectPath('oauth2_authorize', ['error' => 'captcha']);
                     } catch (AccountLockedException $e) {
-                        return $app->redirectPath('oauth2_authorize', array('error' => 'account-locked'));
+                        return $app->redirectPath('oauth2_authorize', ['error' => 'account-locked']);
                     }
 
                     $app['authentication']->openAccount(\User_Adapter::getInstance($usr_id, $app));
                 }
 
-                return new Response($app['twig']->render($template, array("auth" => $oauth2_adapter)));
+                return new Response($app['twig']->render($template, ["auth" => $oauth2_adapter]));
             }
 
             //check if current client is already authorized by current user
@@ -112,10 +114,10 @@ class Oauth2 implements ControllerProviderInterface
             $params['account_id'] = $account->get_id();
 
             if (!$app_authorized && $action_accept === null) {
-                $params = array(
+                $params = [
                     "auth"         => $oauth2_adapter,
                     "errorMessage" => $errorMessage,
-                );
+                ];
 
                 return new Response($app['twig']->render($template, $params));
             } elseif (!$app_authorized && $action_accept !== null) {
@@ -147,7 +149,7 @@ class Oauth2 implements ControllerProviderInterface
          */
         $controllers->post('/token', function (\Silex\Application $app, Request $request) {
             if ( ! $request->isSecure()) {
-                throw new HttpException(400, 'This route requires the use of the https scheme', null, array('content-type' => 'application/json'));
+                throw new HttpException(400, 'This route requires the use of the https scheme', null, ['content-type' => 'application/json']);
             }
 
             $app['oauth']->grantAccessToken($request);

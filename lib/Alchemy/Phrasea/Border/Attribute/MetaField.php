@@ -87,11 +87,11 @@ class MetaField implements AttributeInterface
      */
     public function asString()
     {
-        return serialize(array(
+        return serialize([
             'id'      => $this->databox_field->get_id(),
             'sbas_id' => $this->databox_field->get_databox()->get_sbas_id(),
             'value'   => $this->value
-        ));
+        ]);
     }
 
     /**

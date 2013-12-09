@@ -9,12 +9,6 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @package     KonsoleKomander
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,10 +29,10 @@ class module_console_systemTemplateGenerator extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $tplDirs = array(
+        $tplDirs = [
             realpath(__DIR__ . '/../../../../templates/web/'),
             realpath(__DIR__ . '/../../../../templates/mobile/')
-        );
+        ];
 
         $n_ok = $n_error = 0;
 
@@ -48,9 +42,9 @@ class module_console_systemTemplateGenerator extends Command
         $this->container['twig'];
 
         foreach ($tplDirs as $tplDir) {
-            $this->container['twig.loader.filesystem']->setPaths(array($tplDir));
+            $this->container['twig.loader.filesystem']->setPaths([$tplDir]);
             $finder = new Finder();
-            foreach ($finder->files()->in(array($tplDir)) as $file) {
+            foreach ($finder->files()->in([$tplDir]) as $file) {
                 try {
                     $this->container['twig']->loadTemplate(str_replace($tplDir, '', $file->getPathname()));
                     $output->writeln('' . $file . '');

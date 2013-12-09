@@ -14,16 +14,12 @@ namespace Alchemy\Phrasea\Controller\Utils;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class ConnectionTest implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.utils.connection-test'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         /**
@@ -41,7 +37,7 @@ class ConnectionTest implements ControllerProviderInterface
             $connection_ok = $db_ok = $is_databox = $is_appbox = $empty = false;
 
             try {
-                $conn = new \connection_pdo('test', $hostname, $port, $user, $password, null, array(), false);
+                $conn = new \connection_pdo('test', $hostname, $port, $user, $password, null, [], false);
                 $connection_ok = true;
             } catch (\Exception $e) {
 
@@ -49,7 +45,7 @@ class ConnectionTest implements ControllerProviderInterface
 
             if ($dbname && $connection_ok === true) {
                 try {
-                    $conn = new \connection_pdo('test', $hostname, $port, $user, $password, $dbname, array(), false);
+                    $conn = new \connection_pdo('test', $hostname, $port, $user, $password, $dbname, [], false);
                     $db_ok = true;
 
                     $sql = "SHOW TABLE STATUS";
@@ -74,13 +70,13 @@ class ConnectionTest implements ControllerProviderInterface
                 }
             }
 
-            $datas = array(
+            $datas = [
                 'connection' => $connection_ok
                 , 'database'   => $db_ok
                 , 'is_empty'   => $empty
                 , 'is_appbox'  => $is_appbox
                 , 'is_databox' => $is_databox
-            );
+            ];
 
             return $app->json($datas);
         });

@@ -39,11 +39,11 @@ class ConfigurationTester
     {
         $this->app = $app;
 
-        $this->versionProbes = array(
+        $this->versionProbes = [
             new Probe31($this->app),
             new Probe35($this->app),
             new Probe38($this->app),
-        );
+        ];
     }
 
     public function getRequirements()
@@ -52,7 +52,7 @@ class ConfigurationTester
             return $this->requirements;
         }
 
-        $this->requirements = array(
+        $this->requirements = [
             BinariesProbe::create($this->app),
             CacheServerProbe::create($this->app),
             DataboxStructureProbe::create($this->app),
@@ -64,7 +64,7 @@ class ConfigurationTester
             SearchEngineProbe::create($this->app),
             SubdefsPathsProbe::create($this->app),
             SystemProbe::create($this->app),
-        );
+        ];
 
         return $this->requirements;
     }
@@ -81,7 +81,7 @@ class ConfigurationTester
      */
     public function isInstalled()
     {
-        return $this->app['phraseanet.configuration']->isSetup();
+        return $this->app['configuration.store']->isSetup();
     }
 
     /**
@@ -136,7 +136,7 @@ class ConfigurationTester
 
     public function getMigrations()
     {
-        $migrations = array();
+        $migrations = [];
 
         if ($this->isUpToDate()) {
             return $migrations;

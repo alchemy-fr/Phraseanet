@@ -16,22 +16,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class SearchEngine implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.admin.search-engine'] = $this;
+
         $controllers = $app['controllers_factory'];
 
-        $controllers->get('/', $this->call('getSearchEngineConfigurationPanel'))
+        $controllers->get('/', 'controller.admin.search-engine:getSearchEngineConfigurationPanel')
                 ->bind('admin_searchengine_get');
 
-        $controllers->post('/', $this->call('postSearchEngineConfigurationPanel'))
+        $controllers->post('/', 'controller.admin.search-engine:postSearchEngineConfigurationPanel')
                 ->bind('admin_searchengine_post');
 
         return $controllers;
@@ -46,16 +42,4 @@ class SearchEngine implements ControllerProviderInterface
     {
         return $app['phraseanet.SE']->getConfigurationPanel()->post($app, $request);
     }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
-    }
-
 }

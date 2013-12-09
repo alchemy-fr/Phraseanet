@@ -12,24 +12,21 @@
 namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Helper\User as UserHelper;
+use Alchemy\Phrasea\Model\Entities\FtpCredential;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Users implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.admin.users'] = $this;
+
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function (Request $request) use ($app) {
+        $controllers->before(function (Request $request, Application $app) {
             $app['firewall']->requireAccessToModule('admin')
                 ->requireRight('manageusers');
         });
@@ -48,7 +45,7 @@ class Users implements ControllerProviderInterface
 
         $controllers->post('/rights/reset/', function (Application $app, Request $request) {
             try {
-                $datas = array('error' => false);
+                $datas = ['error' => false];
 
                 $helper = new UserHelper\Edit($app, $request);
                 $helper->resetRights();
@@ -68,7 +65,7 @@ class Users implements ControllerProviderInterface
         });
 
         $controllers->post('/rights/apply/', function (Application $app) {
-            $datas = array('error' => true);
+            $datas = ['error' => true];
 
             try {
                 $rights = new UserHelper\Edit($app, $app['request']);
@@ -86,7 +83,7 @@ class Users implements ControllerProviderInterface
 
                 $rights->apply_infos();
 
-                $datas = array('error' => false);
+                $datas = ['error' => false];
             } catch (\Exception $e) {
                 $datas['message'] = $e->getMessage();
             }
@@ -104,7 +101,7 @@ class Users implements ControllerProviderInterface
             $rights = new UserHelper\Edit($app, $app['request']);
             $rights->apply_quotas();
 
-            return $app->json(array('message' => '', 'error'   => false));
+            return $app->json(['message' => '', 'error'   => false]);
         });
 
         $controllers->post('/rights/time/', function (Application $app) {
@@ -123,7 +120,7 @@ class Users implements ControllerProviderInterface
             $rights = new UserHelper\Edit($app, $app['request']);
             $rights->apply_time();
 
-            return $app->json(array('message' => '', 'error'   => false));
+            return $app->json(['message' => '', 'error'   => false]);
         });
 
         $controllers->post('/rights/masks/', function (Application $app) {
@@ -136,7 +133,7 @@ class Users implements ControllerProviderInterface
             $rights = new UserHelper\Edit($app, $app['request']);
             $rights->apply_masks();
 
-            return $app->json(array('message' => '', 'error'   => false));
+            return $app->json(['message' => '', 'error'   => false]);
         });
 
         $controllers->match('/search/', function (Application $app) {
@@ -150,8 +147,8 @@ class Users implements ControllerProviderInterface
 
             $users = new UserHelper\Manage($app, $app['request']);
 
-            $userTable = array(
-                array(
+            $userTable = [
+                [
                     'ID',
                     'Login',
                     'Last Name',
@@ -168,12 +165,12 @@ class Users implements ControllerProviderInterface
                     'Job',
                     'Company',
                     'Position'
-                )
-            );
+                ]
+            ];
 
             foreach ($users->export() as $user) {
                 /* @var $user \User_Adapter */
-                $userTable[] = array(
+                $userTable[] = [
                     $user->get_id(),
                     $user->get_login(),
                     $user->get_lastname(),
@@ -190,12 +187,12 @@ class Users implements ControllerProviderInterface
                     $user->get_job(),
                     $user->get_company(),
                     $user->get_position()
-                );
+                ];
             }
 
             $CSVDatas = \format::arr_to_csv($userTable);
 
-            $response = new Response($CSVDatas, 200, array('Content-Type' => 'text/csv'));
+            $response = new Response($CSVDatas, 200, ['Content-Type' => 'text/csv']);
             $response->headers->set('Content-Disposition', 'attachment; filename=export.csv');
 
             return $response;
@@ -218,13 +215,13 @@ class Users implements ControllerProviderInterface
             $user_query = new \User_Query($app);
 
             $like_value = $request->query->get('term');
-            $rights = $request->query->get('filter_rights') ? : array();
-            $have_right = $request->query->get('have_right') ? : array();
-            $have_not_right = $request->query->get('have_not_right') ? : array();
-            $on_base = $request->query->get('on_base') ? : array();
+            $rights = $request->query->get('filter_rights') ? : [];
+            $have_right = $request->query->get('have_right') ? : [];
+            $have_not_right = $request->query->get('have_not_right') ? : [];
+            $on_base = $request->query->get('on_base') ? : [];
 
             $elligible_users = $user_query
-                ->on_sbas_where_i_am($app['authentication']->getUser()->ACL(), $rights)
+                ->on_sbas_where_i_am($app['acl']->get($app['authentication']->getUser()), $rights)
                 ->like(\User_Query::LIKE_EMAIL, $like_value)
                 ->like(\User_Query::LIKE_FIRSTNAME, $like_value)
                 ->like(\User_Query::LIKE_LASTNAME, $like_value)
@@ -236,15 +233,15 @@ class Users implements ControllerProviderInterface
                 ->execute()
                 ->get_results();
 
-            $datas = array();
+            $datas = [];
 
             foreach ($elligible_users as $user) {
-                $datas[] = array(
+                $datas[] = [
                     'email' => $user->get_email() ? : ''
                     , 'login' => $user->get_login() ? : ''
                     , 'name'  => $user->get_display_name() ? : ''
                     , 'id'    => $user->get_id()
-                );
+                ];
             }
 
             return $app->json($datas);
@@ -252,7 +249,7 @@ class Users implements ControllerProviderInterface
 
         $controllers->post('/create/', function (Application $app) {
 
-            $datas = array('error'   => false, 'message' => '', 'data'    => null);
+            $datas = ['error'   => false, 'message' => '', 'data'    => null];
             try {
                 $request = $app['request'];
                 $module = new UserHelper\Manage($app, $app['request']);
@@ -282,32 +279,32 @@ class Users implements ControllerProviderInterface
             $on_base = $request->request->get('base_id') ? : null;
             $on_sbas = $request->request->get('sbas_id') ? : null;
 
-            $elligible_users = $user_query->on_bases_where_i_am($app['authentication']->getUser()->ACL(), array('canadmin'))
+            $elligible_users = $user_query->on_bases_where_i_am($app['acl']->get($app['authentication']->getUser()), ['canadmin'])
                 ->like($like_field, $like_value)
                 ->on_base_ids($on_base)
                 ->on_sbas_ids($on_sbas);
 
             $offset = 0;
-            $buffer = array();
+            $buffer = [];
 
-            $buffer[] = array(
+            $buffer[] = [
                 'ID'
                 , 'Login'
-                , _('admin::compte-utilisateur nom')
-                , _('admin::compte-utilisateur prenom')
-                , _('admin::compte-utilisateur email')
+                , $app->trans('admin::compte-utilisateur nom')
+                , $app->trans('admin::compte-utilisateur prenom')
+                , $app->trans('admin::compte-utilisateur email')
                 , 'CreationDate'
                 , 'ModificationDate'
-                , _('admin::compte-utilisateur adresse')
-                , _('admin::compte-utilisateur ville')
-                , _('admin::compte-utilisateur code postal')
-                , _('admin::compte-utilisateur pays')
-                , _('admin::compte-utilisateur telephone')
-                , _('admin::compte-utilisateur fax')
-                , _('admin::compte-utilisateur poste')
-                , _('admin::compte-utilisateur societe')
-                , _('admin::compte-utilisateur activite')
-            );
+                , $app->trans('admin::compte-utilisateur adresse')
+                , $app->trans('admin::compte-utilisateur ville')
+                , $app->trans('admin::compte-utilisateur code postal')
+                , $app->trans('admin::compte-utilisateur pays')
+                , $app->trans('admin::compte-utilisateur telephone')
+                , $app->trans('admin::compte-utilisateur fax')
+                , $app->trans('admin::compte-utilisateur poste')
+                , $app->trans('admin::compte-utilisateur societe')
+                , $app->trans('admin::compte-utilisateur activite')
+            ];
             do {
                 $elligible_users->limit($offset, 20);
                 $offset += 20;
@@ -315,7 +312,7 @@ class Users implements ControllerProviderInterface
                 $results = $elligible_users->execute()->get_results();
 
                 foreach ($results as $user) {
-                    $buffer[] = array(
+                    $buffer[] = [
                         $user->get_id()
                         , $user->get_login()
                         , $user->get_lastname()
@@ -332,36 +329,36 @@ class Users implements ControllerProviderInterface
                         , $user->get_job()
                         , $user->get_company()
                         , $user->get_position()
-                    );
+                    ];
                 }
             } while (count($results) > 0);
 
             $out = \format::arr_to_csv($buffer);
 
-            $response = new Response($out, 200, array(
+            $response = new Response($out, 200, [
                 'Content-type'        => 'text/csv',
                 'Content-Disposition' => 'attachment; filename=export.csv',
-            ));
+            ]);
 
             $response->setCharset('UTF-8');
 
             return $response;
         })->bind('admin_users_export_csv');
 
-        $controllers->get('/demands/', function (Application $app, Request $request) {
+        $controllers->get('/demands/', function (Application $app) {
 
             $lastMonth = time() - (3 * 4 * 7 * 24 * 60 * 60);
             $sql = "DELETE FROM demand WHERE date_modif < :date";
             $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute(array(':date' => date('Y-m-d', $lastMonth)));
+            $stmt->execute([':date' => date('Y-m-d', $lastMonth)]);
             $stmt->closeCursor();
 
-            $baslist = array_keys($app['authentication']->getUser()->ACL()->get_granted_base(array('canadmin')));
+            $baslist = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['canadmin']));
 
             $sql = 'SELECT usr_id, usr_login FROM usr WHERE model_of = :usr_id';
 
             $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute(array(':usr_id' => $app['authentication']->getUser()->get_id()));
+            $stmt->execute([':usr_id' => $app['authentication']->getUser()->get_id()]);
             $models = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
@@ -379,7 +376,7 @@ class Users implements ControllerProviderInterface
             $stmt->closeCursor();
 
             $currentUsr = null;
-            $table = array('user' => array(), 'coll' => array());
+            $table = ['user' => [], 'coll' => []];
 
             foreach ($rs as $row) {
                 if ($row['usr_id'] != $currentUsr) {
@@ -389,7 +386,7 @@ class Users implements ControllerProviderInterface
                 }
 
                 if (!isset($table['coll'][$row['usr_id']])) {
-                    $table['coll'][$row['usr_id']] = array();
+                    $table['coll'][$row['usr_id']] = [];
                 }
 
                 if (!in_array($row['base_id'], $table['coll'][$row['usr_id']])) {
@@ -399,17 +396,17 @@ class Users implements ControllerProviderInterface
 
             $stmt->closeCursor();
 
-            return $app['twig']->render('admin/user/demand.html.twig', array(
+            return $app['twig']->render('admin/user/demand.html.twig', [
                 'table'  => $table,
                 'models' => $models,
-            ));
+            ]);
         })->bind('users_display_demands');
 
         $controllers->post('/demands/', function (Application $app, Request $request) {
 
-            $templates = $deny = $accept = $options = array();
+            $templates = $deny = $accept = $options = [];
 
-            foreach ($request->request->get('template', array()) as $tmp) {
+            foreach ($request->request->get('template', []) as $tmp) {
                 if (trim($tmp) != '') {
                     $tmp = explode('_', $tmp);
 
@@ -419,29 +416,29 @@ class Users implements ControllerProviderInterface
                 }
             }
 
-            foreach ($request->request->get('deny', array()) as $den) {
+            foreach ($request->request->get('deny', []) as $den) {
                 $den = explode('_', $den);
                 if (count($den) == 2 && !isset($templates[$den[0]])) {
                     $deny[$den[0]][$den[1]] = $den[1];
                 }
             }
 
-            foreach ($request->request->get('accept', array()) as $acc) {
+            foreach ($request->request->get('accept', []) as $acc) {
                 $acc = explode('_', $acc);
                 if (count($acc) == 2 && !isset($templates[$acc[0]])) {
                     $accept[$acc[0]][$acc[1]] = $acc[1];
-                    $options[$acc[0]][$acc[1]] = array('HD' => false, 'WM' => false);
+                    $options[$acc[0]][$acc[1]] = ['HD' => false, 'WM' => false];
                 }
             }
 
-            foreach ($request->request->get('accept_hd', array()) as $accHD) {
+            foreach ($request->request->get('accept_hd', []) as $accHD) {
                 $accHD = explode('_', $accHD);
                 if (count($accHD) == 2 && isset($accept[$accHD[0]]) && isset($options[$accHD[0]][$accHD[1]])) {
                     $options[$accHD[0]][$accHD[1]]['HD'] = true;
                 }
             }
 
-            foreach ($request->request->get('watermark', array()) as $wm) {
+            foreach ($request->request->get('watermark', []) as $wm) {
                 $wm = explode('_', $wm);
                 if (count($wm) == 2 && isset($accept[$wm[0]]) && isset($options[$wm[0]][$wm[1]])) {
                     $options[$wm[0]][$wm[1]]['WM'] = true;
@@ -449,20 +446,20 @@ class Users implements ControllerProviderInterface
             }
 
             if (count($templates) > 0 || count($deny) > 0 || count($accept) > 0) {
-                $done = array();
-                $cache_to_update = array();
+                $done = [];
+                $cache_to_update = [];
 
                 foreach ($templates as $usr => $template_id) {
                     $user = \User_Adapter::getInstance($usr, $app);
                     $cache_to_update[$usr] = true;
 
                     $user_template = \User_Adapter::getInstance($template_id, $app);
-                    $base_ids = array_keys($user_template->ACL()->get_granted_base());
+                    $base_ids = array_keys($app['acl']->get($user_template)->get_granted_base());
 
-                    $user->ACL()->apply_model($user_template, $base_ids);
+                    $app['acl']->get($user)->apply_model($user_template, $base_ids);
 
                     if (!isset($done[$usr])) {
-                        $done[$usr] = array();
+                        $done[$usr] = [];
                     }
 
                     foreach ($base_ids as $base_id) {
@@ -475,7 +472,7 @@ class Users implements ControllerProviderInterface
                     AND (base_id = " . implode(' OR base_id = ', $base_ids) . ")";
 
                     $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-                    $stmt->execute(array(':usr_id' => $usr));
+                    $stmt->execute([':usr_id' => $usr]);
                     $stmt->closeCursor();
                 }
 
@@ -489,10 +486,10 @@ class Users implements ControllerProviderInterface
                 foreach ($deny as $usr => $bases) {
                     $cache_to_update[$usr] = true;
                     foreach ($bases as $bas) {
-                        $stmt->execute(array(':usr_id'  => $usr, ':base_id' => $bas));
+                        $stmt->execute([':usr_id'  => $usr, ':base_id' => $bas]);
 
                         if (!isset($done[$usr])) {
-                            $done[$usr] = array();
+                            $done[$usr] = [];
                         }
 
                         $done[$usr][$bas] = false;
@@ -506,35 +503,35 @@ class Users implements ControllerProviderInterface
                     $cache_to_update[$usr] = true;
 
                     foreach ($bases as $bas) {
-                        $user->ACL()->give_access_to_sbas(array(\phrasea::sbasFromBas($app, $bas)));
+                        $app['acl']->get($user)->give_access_to_sbas([\phrasea::sbasFromBas($app, $bas)]);
 
-                        $rights = array(
+                        $rights = [
                             'canputinalbum'   => '1'
                             , 'candwnldhd'      => ($options[$usr][$bas]['HD'] ? '1' : '0')
                             , 'nowatermark'     => ($options[$usr][$bas]['WM'] ? '0' : '1')
                             , 'candwnldpreview' => '1'
                             , 'actif'           => '1'
-                        );
+                        ];
 
-                        $user->ACL()->give_access_to_base(array($bas));
-                        $user->ACL()->update_rights_to_base($bas, $rights);
+                        $app['acl']->get($user)->give_access_to_base([$bas]);
+                        $app['acl']->get($user)->update_rights_to_base($bas, $rights);
 
                         if (!isset($done[$usr])) {
-                            $done[$usr] = array();
+                            $done[$usr] = [];
                         }
 
                         $done[$usr][$bas] = true;
 
                         $sql = "DELETE FROM demand WHERE usr_id = :usr_id AND base_id = :base_id";
                         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-                        $stmt->execute(array(':usr_id'  => $usr, ':base_id' => $bas));
+                        $stmt->execute([':usr_id'  => $usr, ':base_id' => $bas]);
                         $stmt->closeCursor();
                     }
                 }
 
                 foreach (array_keys($cache_to_update) as $usr_id) {
                     $user = \User_Adapter::getInstance($usr_id, $app);
-                    $user->ACL()->delete_data_from_cache();
+                    $app['acl']->get($user)->delete_data_from_cache();
                     unset($user);
                 }
 
@@ -542,7 +539,7 @@ class Users implements ControllerProviderInterface
                     $sql = 'SELECT usr_mail FROM usr WHERE usr_id = :usr_id';
 
                     $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-                    $stmt->execute(array(':usr_id' => $usr));
+                    $stmt->execute([':usr_id' => $usr]);
                     $row = $stmt->fetch(\PDO::FETCH_ASSOC);
                     $stmt->closeCursor();
 
@@ -561,10 +558,10 @@ class Users implements ControllerProviderInterface
                             if (($accept != '' || $deny != '')) {
                                 $message = '';
                                 if ($accept != '') {
-                                    $message .= "\n" . _('login::register:email: Vous avez ete accepte sur les collections suivantes : ') . implode(', ', $accept). "\n";
+                                    $message .= "\n" . $app->trans('login::register:email: Vous avez ete accepte sur les collections suivantes :') . implode(', ', $accept). "\n";
                                 }
                                 if ($deny != '') {
-                                    $message .= "\n" . _('login::register:email: Vous avez ete refuse sur les collections suivantes : ') . implode(', ', $deny) . "\n";
+                                    $message .= "\n" . $app->trans('login::register:email: Vous avez ete refuse sur les collections suivantes :') . implode(', ', $deny) . "\n";
                                 }
 
                                 $receiver = new Receiver(null, $row['usr_mail']);
@@ -577,7 +574,7 @@ class Users implements ControllerProviderInterface
                 }
             }
 
-            return $app->redirectPath('users_display_demands', array('success' => 1));
+            return $app->redirectPath('users_display_demands', ['success' => 1]);
         })->bind('users_submit_demands');
 
         $controllers->get('/import/file/', function (Application $app, Request $request) {
@@ -586,16 +583,16 @@ class Users implements ControllerProviderInterface
 
         $controllers->post('/import/file/', function (Application $app, Request $request) {
             if ((null === $file = $request->files->get('files')) || !$file->isValid()) {
-                return $app->redirectPath('users_display_import_file', array('error' => 'file-invalid'));
+                return $app->redirectPath('users_display_import_file', ['error' => 'file-invalid']);
             }
 
             $equivalenceToMysqlField = self::getEquivalenceToMysqlField();
             $loginDefined = $pwdDefined = $mailDefined = false;
-            $loginNew = array();
-            $out = array(
-                'ignored_row' => array(),
-                'errors' => array()
-            );
+            $loginNew = [];
+            $out = [
+                'ignored_row' => [],
+                'errors' => []
+            ];
             $nbUsrToAdd = 0;
 
             $lines = \format::csv_to_arr($file->getPathname());
@@ -631,15 +628,15 @@ class Users implements ControllerProviderInterface
             }
 
             if (!$loginDefined) {
-                return $app->redirectPath('users_display_import_file', array('error' => 'row-login'));
+                return $app->redirectPath('users_display_import_file', ['error' => 'row-login']);
             }
 
             if (!$pwdDefined) {
-                return $app->redirectPath('users_display_import_file', array('error' => 'row-pwd'));
+                return $app->redirectPath('users_display_import_file', ['error' => 'row-pwd']);
             }
 
             if (!$mailDefined) {
-                return $app->redirectPath('users_display_import_file', array('error' => 'row-mail'));
+                return $app->redirectPath('users_display_import_file', ['error' => 'row-mail']);
             }
 
             foreach ($lines as $nbLine => $line) {
@@ -659,12 +656,12 @@ class Users implements ControllerProviderInterface
                     if ($sqlField === 'usr_login') {
                         $loginToAdd = $value;
                         if ($loginToAdd === "") {
-                            $out['errors'][] = sprintf(_("Login line %d is empty"), $nbLine + 1);
+                            $out['errors'][] = $app->trans("Login line %line% is empty", ['%line%' => $nbLine + 1]);
                         } elseif (in_array($loginToAdd, $loginNew)) {
-                            $out['errors'][] = sprintf(_("Login %s is already defined in the file at line %d"), $loginToAdd, $i);
+                            $out['errors'][] = $app->trans("Login %login% is already defined in the file at line %line%", ['%login%' => $loginToAdd, '%line%' => $nbLine]);
                         } else {
                             if (\User_Adapter::get_usr_id_from_login($app, $loginToAdd)) {
-                                $out['errors'][] = sprintf(_("Login %s already exists in database"), $loginToAdd);
+                                $out['errors'][] = $app->trans("Login %login% already exists in database", ['%login%' => $loginToAdd]);
                             } else {
                                 $loginValid = true;
                             }
@@ -675,9 +672,9 @@ class Users implements ControllerProviderInterface
                         $mailToAdd = $value;
 
                         if ($mailToAdd === "") {
-                            $out['errors'][] = sprintf(_("Mail line %d is empty"), $nbLine + 1);
+                            $out['errors'][] = $app->trans("Mail line %line% is empty", ['%line%' => $nbLine + 1]);
                         } elseif (false !== \User_Adapter::get_usr_id_from_email($app, $mailToAdd)) {
-                            $out['errors'][] = sprintf(_("Email '%s' for login '%s' already exists in database"), $mailToAdd, $loginToAdd);
+                            $out['errors'][] = $app->trans("Email '%email%' for login '%login%' already exists in database", ['%email%' => $mailToAdd, '%login%' => $loginToAdd]);
                         } else {
                             $mailValid = true;
                         }
@@ -687,7 +684,7 @@ class Users implements ControllerProviderInterface
                         $passwordToVerif = $value;
 
                         if ($passwordToVerif === "") {
-                            $out['errors'][] = sprintf(_("Password is empty at line %d"), $i);
+                            $out['errors'][] = $app->trans("Password is empty at line %line%", ['%line%' => $nbLine]);
                         } else {
                             $pwdValid = true;
                         }
@@ -701,15 +698,15 @@ class Users implements ControllerProviderInterface
             }
 
             if (count($out['errors']) > 0 && $nbUsrToAdd === 0) {
-                return $app['twig']->render('admin/user/import/file.html.twig', array(
+                return $app['twig']->render('admin/user/import/file.html.twig', [
                     'errors' => $out['errors']
-                ));
+                ]);
             }
 
             if ($nbUsrToAdd === 0) {
-                return $app->redirectPath('users_display_import_file', array(
+                return $app->redirectPath('users_display_import_file', [
                     'error' => 'no-user'
-                ));
+                ]);
             }
 
             $sql = "
@@ -718,22 +715,22 @@ class Users implements ControllerProviderInterface
               INNER JOIN basusr
                 ON (basusr.usr_id=usr.usr_id)
             WHERE usr.model_of = :usr_id
-              AND base_id in(" . implode(', ', array_keys($app['authentication']->getUser()->ACL()->get_granted_base(array('manage')))) . ")
+              AND base_id in(" . implode(', ', array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['manage']))) . ")
               AND usr_login not like '(#deleted_%)'
             GROUP BY usr_id";
 
             $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute(array(':usr_id' => $app['authentication']->getUser()->get_id()));
+            $stmt->execute([':usr_id' => $app['authentication']->getUser()->get_id()]);
             $models = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
-            return $app['twig']->render('/admin/user/import/view.html.twig', array(
+            return $app['twig']->render('/admin/user/import/view.html.twig', [
                 'nb_user_to_add'   => $nbUsrToAdd,
                 'models'           => $models,
                 'lines_serialized' => serialize($lines),
                 'columns_serialized' => serialize($columns),
                 'errors' => $out['errors']
-            ));
+            ]);
         })->bind('users_submit_import_file');
 
         $controllers->post('/import/', function (Application $app, Request $request) {
@@ -757,7 +754,7 @@ class Users implements ControllerProviderInterface
             $equivalenceToMysqlField = Users::getEquivalenceToMysqlField();
 
             foreach ($lines as $nbLine => $line) {
-                $curUser = array();
+                $curUser = [];
                 foreach ($columns as $nbCol => $colName) {
                     if (!isset($equivalenceToMysqlField[$colName]) || !isset($line[$nbCol])) {
                         continue;
@@ -807,23 +804,23 @@ class Users implements ControllerProviderInterface
                             && false === \User_Adapter::get_usr_id_from_email($app, $curUser['usr_mail'])) {
                         $NewUser = \User_Adapter::create($app, $curUser['usr_login'], $curUser['usr_password'], $curUser['usr_mail'], false);
 
-                        if (isset($curUser['defaultftpdatasent'])) {
-                            $NewUser->set_defaultftpdatas($curUser['defaultftpdatasent']);
-                        }
+                        $ftpCredential = new FtpCredential();
+                        $ftpCredential->setUsrId($NewUser->get_id());
+
                         if (isset($curUser['activeFTP'])) {
-                            $NewUser->set_activeftp((int) ($curUser['activeFTP']));
+                            $ftpCredential->setActive((int) $curUser['activeFTP']);
                         }
                         if (isset($curUser['addrFTP'])) {
-                            $NewUser->set_ftp_address($curUser['addrFTP']);
+                            $ftpCredential->setAddress((string) $curUser['addrFTP']);
                         }
                         if (isset($curUser['passifFTP'])) {
-                            $NewUser->set_ftp_passif((int) ($curUser['passifFTP']));
+                            $ftpCredential->setPassive((int) $curUser['passifFTP']);
                         }
                         if (isset($curUser['destFTP'])) {
-                            $NewUser->set_ftp_dir($curUser['destFTP']);
+                            $ftpCredential->setReceptionFolder($curUser['destFTP']);
                         }
                         if (isset($curUser['prefixFTPfolder'])) {
-                            $NewUser->set_ftp_dir_prefix($curUser['prefixFTPfolder']);
+                            $ftpCredential->setRepositoryPrefixName($curUser['prefixFTPfolder']);
                         }
                         if (isset($curUser['usr_prenom'])) {
                             $NewUser->set_firstname($curUser['usr_prenom']);
@@ -856,8 +853,8 @@ class Users implements ControllerProviderInterface
                             $NewUser->set_company($curUser['societe']);
                         }
 
-                        $NewUser->ACL()->apply_model(
-                            \User_Adapter::getInstance($model, $app), array_keys($app['authentication']->getUser()->ACL()->get_granted_base(array('manage')))
+                        $app['acl']->get($NewUser)->apply_model(
+                            \User_Adapter::getInstance($model, $app), array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['manage']))
                         );
 
                         $nbCreation++;
@@ -865,10 +862,10 @@ class Users implements ControllerProviderInterface
                 }
             }
 
-            return $app->redirectPath('admin_users_search', array('user-updated' => $nbCreation));
+            return $app->redirectPath('admin_users_search', ['user-updated' => $nbCreation]);
         })->bind('users_submit_import');
 
-        $controllers->get('/import/example/csv/', function (Application $app, Request $request) {
+        $controllers->get('/import/example/csv/', function (Application $app) {
 
             $file = new \SplFileInfo($app['root.path'] . '/lib/Fixtures/exampleImportUsers.csv');
 
@@ -887,7 +884,7 @@ class Users implements ControllerProviderInterface
             return $response;
         })->bind('users_import_csv');
 
-        $controllers->get('/import/example/rtf/', function (Application $app, Request $request) {
+        $controllers->get('/import/example/rtf/', function (Application $app) {
 
             $file = new \SplFileInfo($app['root.path'] . '/lib/Fixtures/Fields.rtf');
 
@@ -911,7 +908,7 @@ class Users implements ControllerProviderInterface
 
     public static function getEquivalenceToMysqlField()
     {
-        $equivalenceToMysqlField = array();
+        $equivalenceToMysqlField = [];
 
         $equivalenceToMysqlField['civilite'] = 'usr_sexe';
         $equivalenceToMysqlField['gender'] = 'usr_sexe';

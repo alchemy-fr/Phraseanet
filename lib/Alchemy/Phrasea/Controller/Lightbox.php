@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Controller;
 
+use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
 use Silex\ControllerProviderInterface;
@@ -23,6 +25,8 @@ class Lightbox implements ControllerProviderInterface
 {
     public function connect(SilexApplication $app)
     {
+        $app['controller.lightbox'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
@@ -35,7 +39,7 @@ class Lightbox implements ControllerProviderInterface
             }
 
             if (false === $usr_id = $app['authentication.token-validator']->isValid($request->query->get('LOG'))) {
-                $app->addFlash('error', _('The URL you used is out of date, please login'));
+                $app->addFlash('error', $app->trans('The URL you used is out of date, please login'));
 
                 return $app->redirectPath('homepage');
             }
@@ -49,29 +53,30 @@ class Lightbox implements ControllerProviderInterface
             }
             switch ($datas['type']) {
                 case \random::TYPE_FEED_ENTRY:
-                    return $app->redirectPath('lightbox_feed_entry', array('entry_id' => $datas['datas']));
+                    return $app->redirectPath('lightbox_feed_entry', ['entry_id' => $datas['datas']]);
                     break;
                 case \random::TYPE_VALIDATE:
                 case \random::TYPE_VIEW:
-                    return $app->redirectPath('lightbox_validation', array('ssel_id' => $datas['datas']));
+                    return $app->redirectPath('lightbox_validation', ['basket' => $datas['datas']]);
                     break;
             }
         });
 
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAuthentication();
-        });
+        })
+            // Silex\Route::convert is not used as this should be done prior the before middleware
+            ->before($app['middleware.basket.converter'])
+            ->before($app['middleware.basket.user-access']);
 
         $controllers->get('/', function (SilexApplication $app) {
             try {
-                \User_Adapter::updateClientInfos($app, 6);
+                \Session_Logger::updateClientInfos($app, 6);
             } catch (SessionNotFound $e) {
                 return $app->redirectPath('logout');
             }
 
-            $repository = $app['EM']->getRepository('\Entities\Basket');
-
-            /* @var $repository \Repositories\BasketRepository */
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
             $basket_collection = array_merge(
                 $repository->findActiveByUser($app['authentication']->getUser())
@@ -83,11 +88,11 @@ class Lightbox implements ControllerProviderInterface
                 $template = 'lightbox/IE6/index.html.twig';
             }
 
-            return new Response($app['twig']->render($template, array(
+            return new Response($app['twig']->render($template, [
                     'baskets_collection' => $basket_collection,
                     'module_name'        => 'Lightbox',
                     'module'             => 'lightbox'
-                    )
+                    ]
             ));
         })
             ->bind('lightbox');
@@ -99,13 +104,13 @@ class Lightbox implements ControllerProviderInterface
             }
 
             $basketElement = $app['EM']
-                ->getRepository('\Entities\BasketElement')
+                ->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement')
                 ->findUserElement($sselcont_id, $app['authentication']->getUser());
 
-            $parameters = array(
+            $parameters = [
                 'basket_element' => $basketElement,
                 'module_name'    => '',
-            );
+            ];
 
             return $app['twig']->render('lightbox/note_form.html.twig', $parameters);
         })
@@ -113,16 +118,15 @@ class Lightbox implements ControllerProviderInterface
             ->assert('sselcont_id', '\d+');
 
         $controllers->get('/ajax/LOAD_BASKET_ELEMENT/{sselcont_id}/', function (SilexApplication $app, $sselcont_id) {
-            /* @var $repository \Repositories\BasketElementRepository */
-            $repository = $app['EM']->getRepository('\Entities\BasketElement');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
 
             $BasketElement = $repository->findUserElement($sselcont_id, $app['authentication']->getUser());
 
             if ($app['browser']->isMobile()) {
-                $output = $app['twig']->render('lightbox/basket_element.html.twig', array(
+                $output = $app['twig']->render('lightbox/basket_element.html.twig', [
                     'basket_element' => $BasketElement,
                     'module_name'    => $BasketElement->getRecord($app)->get_title()
-                    )
+                    ]
                 );
 
                 return new Response($output);
@@ -141,16 +145,16 @@ class Lightbox implements ControllerProviderInterface
 
                 $Basket = $BasketElement->getBasket();
 
-                $ret = array();
+                $ret = [];
                 $ret['number'] = $BasketElement->getRecord($app)->get_number();
                 $ret['title'] = $BasketElement->getRecord($app)->get_title();
 
-                $ret['preview'] = $app['twig']->render($template_preview, array('record'             => $BasketElement->getRecord($app), 'not_wrapped'        => true));
-                $ret['options_html'] = $app['twig']->render($template_options, array('basket_element'       => $BasketElement));
-                $ret['agreement_html'] = $app['twig']->render($template_agreement, array('basket'              => $Basket, 'basket_element'      => $BasketElement));
-                $ret['selector_html'] = $app['twig']->render($template_selector, array('basket_element'  => $BasketElement));
-                $ret['note_html'] = $app['twig']->render($template_note, array('basket_element' => $BasketElement));
-                $ret['caption'] = $app['twig']->render($template_caption, array('view'   => 'preview', 'record' => $BasketElement->getRecord($app)));
+                $ret['preview'] = $app['twig']->render($template_preview, ['record'             => $BasketElement->getRecord($app), 'not_wrapped'        => true]);
+                $ret['options_html'] = $app['twig']->render($template_options, ['basket_element'       => $BasketElement]);
+                $ret['agreement_html'] = $app['twig']->render($template_agreement, ['basket'              => $Basket, 'basket_element'      => $BasketElement]);
+                $ret['selector_html'] = $app['twig']->render($template_selector, ['basket_element'  => $BasketElement]);
+                $ret['note_html'] = $app['twig']->render($template_note, ['basket_element' => $BasketElement]);
+                $ret['caption'] = $app['twig']->render($template_caption, ['view'   => 'preview', 'record' => $BasketElement->getRecord($app)]);
 
                 return $app->json($ret);
             }
@@ -160,14 +164,14 @@ class Lightbox implements ControllerProviderInterface
 
         $controllers->get('/ajax/LOAD_FEED_ITEM/{entry_id}/{item_id}/', function (SilexApplication $app, $entry_id, $item_id) {
 
-            $entry = \Feed_Entry_Adapter::load_from_id($app, $entry_id);
-            $item = new \Feed_Entry_Item($app['phraseanet.appbox'], $entry, $item_id);
+            $entry = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($entry_id);
+            $item = $entry->getItem($item_id);
 
             if ($app['browser']->isMobile()) {
-                $output = $app['twig']->render('lightbox/feed_element.html.twig', array(
+                $output = $app['twig']->render('lightbox/feed_element.html.twig', [
                     'feed_element' => $item,
-                    'module_name'  => $item->get_record()->get_title()
-                    )
+                    'module_name'  => $item->getRecord($app)->get_title()
+                    ]
                 );
 
                 return new Response($output);
@@ -180,13 +184,13 @@ class Lightbox implements ControllerProviderInterface
                     $template_options = 'lightbox/IE6/feed_options_box.html.twig';
                 }
 
-                $ret = array();
-                $ret['number'] = $item->get_record()->get_number();
-                $ret['title'] = $item->get_record()->get_title();
+                $ret = [];
+                $ret['number'] = $item->getRecord($app)->get_number();
+                $ret['title'] = $item->getRecord($app)->get_title();
 
-                $ret['preview'] = $app['twig']->render($template_preview, array('record'             => $item->get_record(), 'not_wrapped'        => true));
-                $ret['options_html'] = $app['twig']->render($template_options, array('feed_element'  => $item));
-                $ret['caption'] = $app['twig']->render($template_caption, array('view'   => 'preview', 'record' => $item->get_record()));
+                $ret['preview'] = $app['twig']->render($template_preview, ['record'             => $item->getRecord($app), 'not_wrapped'        => true]);
+                $ret['options_html'] = $app['twig']->render($template_options, ['feed_element'  => $item]);
+                $ret['caption'] = $app['twig']->render($template_caption, ['view'   => 'preview', 'record' => $item->getRecord($app)]);
 
                 $ret['agreement_html'] = $ret['selector_html'] = $ret['note_html'] = '';
 
@@ -197,25 +201,18 @@ class Lightbox implements ControllerProviderInterface
             ->assert('entry_id', '\d+')
             ->assert('item_id', '\d+');
 
-        $controllers->get('/validate/{ssel_id}/', function (SilexApplication $app, $ssel_id) {
+        $controllers->get('/validate/{basket}/', function (SilexApplication $app, $basket) {
 
             try {
-                \User_Adapter::updateClientInfos($app, 6);
+                \Session_Logger::updateClientInfos($app, 6);
             } catch (SessionNotFound $e) {
                 return $app->redirectPath('logout');
             }
 
-            $repository = $app['EM']->getRepository('\Entities\Basket');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-            /* @var $repository \Repositories\BasketRepository */
             $basket_collection = $repository->findActiveValidationAndBasketByUser(
                 $app['authentication']->getUser()
-            );
-
-            $basket = $repository->findUserBasket(
-                $app, $ssel_id
-                , $app['authentication']->getUser()
-                , false
             );
 
             if ($basket->getIsRead() === false) {
@@ -236,40 +233,33 @@ class Lightbox implements ControllerProviderInterface
                 $template = 'lightbox/IE6/validate.html.twig';
             }
 
-            $response = new Response($app['twig']->render($template, array(
+            $response = new Response($app['twig']->render($template, [
                         'baskets_collection' => $basket_collection,
                         'basket'             => $basket,
                         'local_title'        => strip_tags($basket->getName()),
                         'module'             => 'lightbox',
-                        'module_name'        => _('admin::monitor: module validation')
-                        )
+                        'module_name'        => $app->trans('admin::monitor: module validation')
+                        ]
                 ));
             $response->setCharset('UTF-8');
 
             return $response;
         })
             ->bind('lightbox_validation')
-            ->assert('ssel_id', '\d+');
+            ->assert('basket', '\d+');
 
-        $controllers->get('/compare/{ssel_id}/', function (SilexApplication $app, $ssel_id) {
+        $controllers->get('/compare/{basket}/', function (SilexApplication $app, Basket $basket) {
 
             try {
-                \User_Adapter::updateClientInfos($app, 6);
+                \Session_Logger::updateClientInfos($app, 6);
             } catch (SessionNotFound $e) {
                 return $app->redirectPath('logout');
             }
 
-            $repository = $app['EM']->getRepository('\Entities\Basket');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-            /* @var $repository \Repositories\BasketRepository */
             $basket_collection = $repository->findActiveValidationAndBasketByUser(
                 $app['authentication']->getUser()
-            );
-
-            $basket = $repository->findUserBasket(
-                $app, $ssel_id
-                , $app['authentication']->getUser()
-                , false
             );
 
             if ($basket->getIsRead() === false) {
@@ -290,30 +280,30 @@ class Lightbox implements ControllerProviderInterface
                 $template = 'lightbox/IE6/validate.html.twig';
             }
 
-            $response = new Response($app['twig']->render($template, array(
+            $response = new Response($app['twig']->render($template, [
                         'baskets_collection' => $basket_collection,
                         'basket'             => $basket,
                         'local_title'        => strip_tags($basket->getName()),
                         'module'             => 'lightbox',
-                        'module_name'        => _('admin::monitor: module validation')
-                        )
+                        'module_name'        => $app->trans('admin::monitor: module validation')
+                        ]
                 ));
             $response->setCharset('UTF-8');
 
             return $response;
         })
             ->bind('lightbox_compare')
-            ->assert('ssel_id', '\d+');
+            ->assert('basket', '\d+');
 
         $controllers->get('/feeds/entry/{entry_id}/', function (SilexApplication $app, $entry_id) {
 
             try {
-                \User_Adapter::updateClientInfos($app, 6);
+                \Session_Logger::updateClientInfos($app, 6);
             } catch (SessionNotFound $e) {
                 return $app->redirectPath('logout');
             }
 
-            $feed_entry = \Feed_Entry_Adapter::load_from_id($app, $entry_id);
+            $feed_entry = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($entry_id);
 
             $template = 'lightbox/feed.html.twig';
 
@@ -321,15 +311,16 @@ class Lightbox implements ControllerProviderInterface
                 $template = 'lightbox/IE6/feed.html.twig';
             }
 
-            $content = $feed_entry->get_content();
+            $content = $feed_entry->getItems();
+            $first = $content->first();
 
-            $output = $app['twig']->render($template, array(
+            $output = $app['twig']->render($template, [
                 'feed_entry'  => $feed_entry,
-                'first_item'  => array_shift($content),
-                'local_title' => $feed_entry->get_title(),
+                'first_item'  => $first,
+                'local_title' => $feed_entry->getTitle(),
                 'module'      => 'lightbox',
-                'module_name' => _('admin::monitor: module validation')
-                )
+                'module_name' => $app->trans('admin::monitor: module validation')
+                ]
             );
             $response = new Response($output, 200);
             $response->setCharset('UTF-8');
@@ -339,29 +330,14 @@ class Lightbox implements ControllerProviderInterface
             ->bind('lightbox_feed_entry')
             ->assert('entry_id', '\d+');
 
-        $controllers->get('/ajax/LOAD_REPORT/{ssel_id}/', function (SilexApplication $app, $ssel_id) {
-
-            $template = 'lightbox/basket_content_report.html.twig';
-
-            $repository = $app['EM']->getRepository('\Entities\Basket');
-
-            /* @var $repository \Repositories\BasketRepository */
-            $basket = $repository->findUserBasket(
-                $app, $ssel_id
-                , $app['authentication']->getUser()
-                , false
-            );
-
-            $response = new Response($app['twig']->render($template, array('basket' => $basket)));
-            $response->setCharset('UTF-8');
-
-            return $response;
+        $controllers->get('/ajax/LOAD_REPORT/{basket}/', function (SilexApplication $app, Basket $basket) {
+            return new Response($app['twig']->render('lightbox/basket_content_report.html.twig', ['basket' => $basket]));
         })
             ->bind('lightbox_ajax_report')
-            ->assert('ssel_id', '\d+');
+            ->assert('basket', '\d+');
 
         $controllers->post('/ajax/SET_NOTE/{sselcont_id}/', function (SilexApplication $app, $sselcont_id) {
-            $output = array('error' => true, 'datas' => _('Erreur lors de l\'enregistrement des donnees'));
+            $output = ['error' => true, 'datas' => $app->trans('Erreur lors de l\'enregistrement des donnees')];
 
             $request = $app['request'];
             $note = $request->request->get('note');
@@ -370,8 +346,7 @@ class Lightbox implements ControllerProviderInterface
                 Return new Response('You must provide a note value', 400);
             }
 
-            /* @var $repository \Repositories\BasketElementRepository */
-            $repository = $app['EM']->getRepository('\Entities\BasketElement');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
 
             $basket_element = $repository->findUserElement($sselcont_id, $app['authentication']->getUser());
 
@@ -384,15 +359,15 @@ class Lightbox implements ControllerProviderInterface
             $app['EM']->flush();
 
             if ($app['browser']->isMobile()) {
-                $datas = $app['twig']->render('lightbox/sc_note.html.twig', array('basket_element' => $basket_element));
+                $datas = $app['twig']->render('lightbox/sc_note.html.twig', ['basket_element' => $basket_element]);
 
-                $output = array('error' => false, 'datas' => $datas);
+                $output = ['error' => false, 'datas' => $datas];
             } else {
                 $template = 'lightbox/sc_note.html.twig';
 
-                $datas = $app['twig']->render($template, array('basket_element' => $basket_element));
+                $datas = $app['twig']->render($template, ['basket_element' => $basket_element]);
 
-                $output = array('error' => false, 'datas' => $datas);
+                $output = ['error' => false, 'datas' => $datas];
             }
 
             return $app->json($output);
@@ -412,20 +387,19 @@ class Lightbox implements ControllerProviderInterface
 
             $releasable = false;
             try {
-                $ret = array(
+                $ret = [
                     'error'      => true,
                     'releasable' => false,
-                    'datas'      => _('Erreur lors de la mise a jour des donnes ')
-                );
+                    'datas'      => $app->trans('Erreur lors de la mise a jour des donnes')
+                ];
 
-                $repository = $app['EM']->getRepository('\Entities\BasketElement');
+                $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
 
-                /* @var $repository \Repositories\BasketElementRepository */
                 $basket_element = $repository->findUserElement(
                     $sselcont_id
                     , $app['authentication']->getUser()
                 );
-                /* @var $basket_element \Entities\BasketElement */
+                /* @var $basket_element BasketElement */
                 $validationDatas = $basket_element->getUserValidationDatas($app['authentication']->getUser(), $app);
 
                 if (!$basket_element->getBasket()
@@ -446,14 +420,14 @@ class Lightbox implements ControllerProviderInterface
 
                 $releasable = false;
                 if ($participant->isReleasable() === true) {
-                    $releasable = _('Do you want to send your report ?');
+                    $releasable = $app->trans('Do you want to send your report ?');
                 }
 
-                $ret = array(
+                $ret = [
                     'error'      => false
                     , 'datas'      => ''
                     , 'releasable' => $releasable
-                );
+                ];
             } catch (ControllerException $e) {
                 $ret['datas'] = $e->getMessage();
             }
@@ -463,20 +437,11 @@ class Lightbox implements ControllerProviderInterface
             ->bind('lightbox_ajax_set_element_agreement')
             ->assert('sselcont_id', '\d+');
 
-        $controllers->post('/ajax/SET_RELEASE/{ssel_id}/', function (SilexApplication $app, $ssel_id) {
+        $controllers->post('/ajax/SET_RELEASE/{basket}/', function (SilexApplication $app, Basket $basket) {
 
-            $repository = $app['EM']->getRepository('\Entities\Basket');
-
-            $datas = array('error' => true, 'datas' => '');
+            $datas = ['error' => true, 'datas' => ''];
 
             try {
-                /* @var $repository \Repositories\BasketRepository */
-                $basket = $repository->findUserBasket(
-                    $app, $ssel_id
-                    , $app['authentication']->getUser()
-                    , false
-                );
-
                 if (!$basket->getValidation()) {
                     throw new ControllerException('There is no validation session attached to this basket');
                 }
@@ -486,7 +451,7 @@ class Lightbox implements ControllerProviderInterface
                 }
 
                 $agreed = false;
-                /* @var $basket \Entities\Basket */
+                /* @var $basket Basket */
                 foreach ($basket->getElements() as $element) {
                     if (null !== $element->getUserValidationDatas($app['authentication']->getUser(), $app)->getAgreement()) {
                         $agreed = true;
@@ -494,27 +459,27 @@ class Lightbox implements ControllerProviderInterface
                 }
 
                 if (!$agreed) {
-                    throw new ControllerException(_('You have to give your feedback at least on one document to send a report'));
+                    throw new ControllerException($app->trans('You have to give your feedback at least on one document to send a report'));
                 }
 
-                /* @var $basket \Entities\Basket */
+                /* @var $basket Basket */
                 $participant = $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app);
 
                 $expires = new \DateTime('+10 days');
-                $url = $app->url('lightbox', array('LOG' => $app['tokens']->getUrlToken(
+                $url = $app->url('lightbox', ['LOG' => $app['tokens']->getUrlToken(
                         \random::TYPE_VALIDATE
                         , $basket->getValidation()->getInitiator($app)->get_id()
                         , $expires
                         , $basket->getId()
-                )));
+                )]);
 
                 $to = $basket->getValidation()->getInitiator($app)->get_id();
-                $params = array(
+                $params = [
                     'ssel_id' => $basket->getId(),
                     'from'    => $app['authentication']->getUser()->get_id(),
                     'url'     => $url,
                     'to'      => $to
-                );
+                ];
 
                 $app['events-manager']->trigger('__VALIDATION_DONE__', $params);
 
@@ -523,15 +488,15 @@ class Lightbox implements ControllerProviderInterface
                 $app['EM']->merge($participant);
                 $app['EM']->flush();
 
-                $datas = array('error' => false, 'datas' => _('Envoie avec succes'));
+                $datas = ['error' => false, 'datas' => $app->trans('Envoie avec succes')];
             } catch (ControllerException $e) {
-                $datas = array('error' => true, 'datas' => $e->getMessage());
+                $datas = ['error' => true, 'datas' => $e->getMessage()];
             }
 
             return $app->json($datas);
         })
             ->bind('lightbox_ajax_set_release')
-            ->assert('ssel_id', '\d+');
+            ->assert('basket', '\d+');
 
         return $controllers;
     }

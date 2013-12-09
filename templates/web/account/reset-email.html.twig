@@ -3,7 +3,7 @@
 {% import "common/macros.html.twig" as auth_macro %}
 
 {% block title %}
-    {% trans "Change my email address" %}
+    {{ "Change my email address" | trans }}
 {% endblock %}
 
 {% block head %}
@@ -18,41 +18,41 @@
             {{ auth_macro.flashes() }}
             <form method="POST" action="{{ path("reset_email") }}" id="mainform" name="changeEmail" class="form-horizontal">
                 <div class="control-group">
-                    <label class="control-label" for="form_login">{% trans "admin::compte-utilisateur identifiant" %}</label>
+                    <label class="control-label" for="form_login">{{ "admin::compte-utilisateur identifiant" | trans }}</label>
                     <div class="controls">
                         <p id="form_login" style="line-height: 30px;">{{ app["authentication"].getUser().get_login() }}</p>
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="form_password">{% trans "admin::compte-utilisateur mot de passe" %}</label>
+                    <label class="control-label" for="form_password">{{ "admin::compte-utilisateur mot de passe" | trans }}</label>
                     <div class="controls">
                         <input type="password" id="form_password" name="form_password" autocomplete="off" />
                         <div class="error-view"></div>
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="form_email">{% trans "admin::compte-utilisateur nouvelle adresse email" %}</label>
+                    <label class="control-label" for="form_email">{{ "admin::compte-utilisateur nouvelle adresse email" | trans }}</label>
                     <div class="controls">
                         <input type="text" id="form_email" name="form_email" />
                         <div class="error-view"></div>
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="form_email_confirm">{% trans "admin::compte-utilisateur confirmer la nouvelle adresse email" %}</label>
+                    <label class="control-label" for="form_email_confirm">{{ "admin::compte-utilisateur confirmer la nouvelle adresse email" | trans }}</label>
                     <div class="controls">
                         <input type="text" id="form_email_confirm" name="form_email_confirm" autocomplete="off" />
                         <div class="error-view"></div>
                     </div>
                 </div>
                 <div class="form-actions" style="background-color: transparent;">
-                    <input type="submit" class="btn btn-success" value="{% trans "boutton::valider" %}" style="margin: 20px auto;" />
-                    <input type="button" class="btn" value="{% trans "boutton::annuler" %}" onclick="self.location.replace('/account/');" />
+                    <input type="submit" class="btn btn-success" value="{{ "boutton::valider" | trans }}" style="margin: 20px auto;" />
+                    <input type="button" class="btn" value="{{ "boutton::annuler" | trans }}" onclick="self.location.replace('/account/');" />
                 </div>
             </form>
             <div class="well well-small alert-info">
-                {% trans "admin::compte-utilisateur: Pourquoi me demande-t-on mon mot de passe pour changer mon adresse email ?"%}
+                {{ "admin::compte-utilisateur: Pourquoi me demande-t-on mon mot de passe pour changer mon adresse email ?" | trans }}
                 <br />
-                {% trans "admin::compte-utilisateur: Votre adresse e-mail sera utilisee lors de la perte de votre mot de passe afin de pouvoir le reinitialiser, il est important que vous soyez la seule personne a pouvoir la changer."%}
+                {{ "admin::compte-utilisateur: Votre adresse e-mail sera utilisee lors de la perte de votre mot de passe afin de pouvoir le reinitialiser, il est important que vous soyez la seule personne a pouvoir la changer." | trans }}
             </div>
         </div>
     </div>

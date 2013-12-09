@@ -17,16 +17,12 @@ use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Root implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.admin.root'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
@@ -35,14 +31,14 @@ class Root implements ControllerProviderInterface
 
         $controllers->get('/', function (Application $app, Request $request) {
             try {
-                \User_Adapter::updateClientInfos($app, 3);
+                \Session_Logger::updateClientInfos($app, 3);
             } catch (SessionNotFound $e) {
                 return $app->redirectPath('logout');
             }
 
             $section = $request->query->get('section', false);
 
-            $available = array(
+            $available = [
                 'connected',
                 'registrations',
                 'taskmanager',
@@ -51,7 +47,7 @@ class Root implements ControllerProviderInterface
                 'collection',
                 'user',
                 'users'
-            );
+            ];
 
             $feature = 'connected';
             $featured = false;
@@ -66,10 +62,10 @@ class Root implements ControllerProviderInterface
                 }
             }
 
-            $databoxes = $off_databoxes = array();
+            $databoxes = $off_databoxes = [];
             foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
                 try {
-                    if (!$app['authentication']->getUser()->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
+                    if (!$app['acl']->get($app['authentication']->getUser())->has_access_to_sbas($databox->get_sbas_id())) {
                         continue;
                     }
                     $databox->get_connection();
@@ -81,14 +77,14 @@ class Root implements ControllerProviderInterface
                 $databoxes[] = $databox;
             }
 
-            $params = array(
+            $params = [
                 'feature'       => $feature,
                 'featured'      => $featured,
                 'databoxes'     => $databoxes,
                 'off_databoxes' => $off_databoxes
-            );
+            ];
 
-            return $app['twig']->render('admin/index.html.twig', array(
+            return $app['twig']->render('admin/index.html.twig', [
                 'module'        => 'admin',
                 'events'        => $app['events-manager'],
                 'module_name'   => 'Admin',
@@ -98,19 +94,19 @@ class Root implements ControllerProviderInterface
                 'databoxes'     => $databoxes,
                 'off_databoxes' => $off_databoxes,
                 'tree'          => $app['twig']->render('admin/tree.html.twig', $params),
-            ));
+            ]);
         })->bind('admin');
 
         $controllers->get('/tree/', function (Application $app, Request $request) {
             try {
-                \User_Adapter::updateClientInfos($app, 3);
+                \Session_Logger::updateClientInfos($app, 3);
             } catch (SessionNotFound $e) {
                 return $app->redirectPath('logout');
             }
 
             $section = $request->query->get('section', false);
 
-            $available = array(
+            $available = [
                 'connected',
                 'registrations',
                 'taskmanager',
@@ -119,7 +115,7 @@ class Root implements ControllerProviderInterface
                 'collection',
                 'user',
                 'users'
-            );
+            ];
 
             $feature = 'connected';
             $featured = false;
@@ -135,10 +131,10 @@ class Root implements ControllerProviderInterface
                 }
             }
 
-            $databoxes = $off_databoxes = array();
+            $databoxes = $off_databoxes = [];
             foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
                 try {
-                    if (!$app['authentication']->getUser()->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
+                    if (!$app['acl']->get($app['authentication']->getUser())->has_access_to_sbas($databox->get_sbas_id())) {
                         continue;
                     }
 
@@ -151,12 +147,12 @@ class Root implements ControllerProviderInterface
                 $databoxes[] = $databox;
             }
 
-            $params = array(
+            $params = [
                 'feature'       => $feature,
                 'featured'      => $featured,
                 'databoxes'     => $databoxes,
                 'off_databoxes' => $off_databoxes
-            );
+            ];
 
             return $app['twig']->render('admin/tree.html.twig', $params);
         })->bind('admin_display_tree');
@@ -164,15 +160,15 @@ class Root implements ControllerProviderInterface
         $controllers->get('/test-paths/', function (Application $app, Request $request) {
 
             if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-                $app->abort(400, _('Bad request format, only JSON is allowed'));
+                $app->abort(400, $app->trans('Bad request format, only JSON is allowed'));
             }
 
-            if (0 !== count($tests = $request->query->get('tests', array()))) {
-                $app->abort(400, _('Missing tests parameter'));
+            if (0 !== count($tests = $request->query->get('tests', []))) {
+                $app->abort(400, $app->trans('Missing tests parameter'));
             }
 
             if (null !== $path = $request->query->get('path')) {
-                $app->abort(400, _('Missing path parameter'));
+                $app->abort(400, $app->trans('Missing path parameter'));
             }
 
             foreach ($tests as $test) {
@@ -191,18 +187,18 @@ class Root implements ControllerProviderInterface
                 }
             }
 
-            return $app->json(array('results' => $result));
+            return $app->json(['results' => $result]);
         })
             ->bind('admin_test_paths');
 
         $controllers->get('/structure/{databox_id}/', function (Application $app, Request $request, $databox_id) {
-            if (!$app['authentication']->getUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+            if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                 $app->abort(403);
             }
 
             $databox = $app['phraseanet.appbox']->get_databox((int) $databox_id);
             $structure = $databox->get_structure();
-            $errors = \databox::get_structure_errors($structure);
+            $errors = \databox::get_structure_errors($app['translator'], $structure);
 
             if ($updateOk = !!$request->query->get('success', false)) {
                 $updateOk = true;
@@ -212,26 +208,26 @@ class Root implements ControllerProviderInterface
                 $errorsStructure = true;
             }
 
-            return $app['twig']->render('admin/structure.html.twig', array(
+            return $app['twig']->render('admin/structure.html.twig', [
                 'databox'         => $databox,
                 'errors'          => $errors,
                 'structure'       => $structure,
                 'errorsStructure' => $errorsStructure,
                 'updateOk'        => $updateOk
-            ));
+            ]);
         })->assert('databox_id', '\d+')
           ->bind('database_display_stucture');
 
         $controllers->post('/structure/{databox_id}/', function (Application $app, Request $request, $databox_id) {
-            if (!$app['authentication']->getUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+            if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                 $app->abort(403);
             }
 
             if (null === $structure = $request->request->get('structure')) {
-                $app->abort(400, _('Missing "structure" parameter'));
+                $app->abort(400, $app->trans('Missing "structure" parameter'));
             }
 
-            $errors = \databox::get_structure_errors($structure);
+            $errors = \databox::get_structure_errors($app['translator'], $structure);
 
             $domst = new \DOMDocument('1.0', 'UTF-8');
             $domst->preserveWhiteSpace = false;
@@ -241,26 +237,26 @@ class Root implements ControllerProviderInterface
                 $databox = $app['phraseanet.appbox']->get_databox($databox_id);
                 $databox->saveStructure($domst);
 
-                return $app->redirectPath('database_display_stucture', array('databox_id' => $databox_id, 'success' => 1));
+                return $app->redirectPath('database_display_stucture', ['databox_id' => $databox_id, 'success' => 1]);
             } else {
-                return $app->redirectPath('database_display_stucture', array('databox_id' => $databox_id, 'success' => 0, 'error' => 'struct'));
+                return $app->redirectPath('database_display_stucture', ['databox_id' => $databox_id, 'success' => 0, 'error' => 'struct']);
             }
         })->assert('databox_id', '\d+')
           ->bind('database_submit_stucture');
 
         $controllers->get('/statusbit/{databox_id}/', function (Application $app, Request $request, $databox_id) {
-            if (!$app['authentication']->getUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+            if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                 $app->abort(403);
             }
 
-            return $app['twig']->render('admin/statusbit.html.twig', array(
+            return $app['twig']->render('admin/statusbit.html.twig', [
                 'databox' => $app['phraseanet.appbox']->get_databox($databox_id),
-            ));
+            ]);
         })->assert('databox_id', '\d+')
           ->bind('database_display_statusbit');
 
         $controllers->get('/statusbit/{databox_id}/status/{bit}/', function (Application $app, Request $request, $databox_id, $bit) {
-            if (!$app['authentication']->getUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+            if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                 $app->abort(403);
             }
 
@@ -270,26 +266,26 @@ class Root implements ControllerProviderInterface
 
             switch ($errorMsg = $request->query->get('error')) {
                 case 'rights':
-                    $errorMsg = _('You do not enough rights to update status');
+                    $errorMsg = $app->trans('You do not enough rights to update status');
                     break;
                 case 'too-big':
-                    $errorMsg = _('File is too big : 64k max');
+                    $errorMsg = $app->trans('File is too big : 64k max');
                     break;
                 case 'upload-error':
-                    $errorMsg = _('Status icon upload failed : upload error');
+                    $errorMsg = $app->trans('Status icon upload failed : upload error');
                     break;
                 case 'wright-error':
-                    $errorMsg = _('Status icon upload failed : can not write on disk');
+                    $errorMsg = $app->trans('Status icon upload failed : can not write on disk');
                     break;
                 case 'unknow-error':
-                    $errorMsg = _('Something wrong happend');
+                    $errorMsg = $app->trans('Something wrong happend');
                     break;
             }
 
             if (isset($status[$bit])) {
                 $status = $status[$bit];
             } else {
-                $status = array(
+                $status = [
                     "labeloff" => '',
                     "labelon" => '',
                     "img_off" => '',
@@ -298,28 +294,28 @@ class Root implements ControllerProviderInterface
                     "path_on" => '',
                     "searchable" => false,
                     "printable" => false,
-                );
+                ];
 
-                foreach ($app['locales.I18n.available'] as $code => $language) {
+                foreach ($app['locales.available'] as $code => $language) {
                     $status['labels_on'][$code] = null;
                     $status['labels_off'][$code] = null;
                 }
             }
 
-            return $app['twig']->render('admin/statusbit/edit.html.twig', array(
+            return $app['twig']->render('admin/statusbit/edit.html.twig', [
                 'status' => $status,
                 'errorMsg' => $errorMsg
-            ));
+            ]);
         })->assert('databox_id', '\d+')
           ->assert('bit', '\d+')
           ->bind('database_display_statusbit_form');
 
         $controllers->post('/statusbit/{databox_id}/status/{bit}/delete/', function (Application $app, Request $request, $databox_id, $bit) {
             if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-                $app->abort(400, _('Bad request format, only JSON is allowed'));
+                $app->abort(400, $app->trans('Bad request format, only JSON is allowed'));
             }
 
-            if (!$app['authentication']->getUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+            if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                 $app->abort(403);
             }
 
@@ -331,26 +327,26 @@ class Root implements ControllerProviderInterface
                 $error = true;
             }
 
-            return $app->json(array('success' => !$error));
+            return $app->json(['success' => !$error]);
         })
             ->bind('admin_statusbit_delete')
             ->assert('databox_id', '\d+')
             ->assert('bit', '\d+');
 
         $controllers->post('/statusbit/{databox_id}/status/{bit}/', function (Application $app, Request $request, $databox_id, $bit) {
-            if (!$app['authentication']->getUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+            if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                 $app->abort(403);
             }
 
-            $properties = array(
+            $properties = [
                 'searchable' => $request->request->get('searchable') ? '1' : '0',
                 'printable'  => $request->request->get('printable') ? '1' : '0',
                 'name'       => $request->request->get('name', ''),
                 'labelon'    => $request->request->get('label_on', ''),
                 'labeloff'   => $request->request->get('label_off', ''),
-                'labels_on'  => $request->request->get('labels_on', array()),
-                'labels_off' => $request->request->get('labels_off', array()),
-            );
+                'labels_on'  => $request->request->get('labels_on', []),
+                'labels_off' => $request->request->get('labels_off', []),
+            ];
 
             \databox_status::updateStatus($app, $databox_id, $bit, $properties);
 
@@ -362,41 +358,41 @@ class Root implements ControllerProviderInterface
                 try {
                     \databox_status::updateIcon($app, $databox_id, $bit, 'off', $file);
                 } catch (AccessDeniedHttpException $e) {
-                    return $app->redirectPath('database_display_statusbit_form', array(
+                    return $app->redirectPath('database_display_statusbit_form', [
                         'databox_id' => $databox_id,
                         'bit'        => $bit,
                         'error'      => 'rights',
-                    ));
+                    ]);
                 } catch (\Exception_InvalidArgument $e) {
-                    return $app->redirectPath('database_display_statusbit_form', array(
+                    return $app->redirectPath('database_display_statusbit_form', [
                         'databox_id' => $databox_id,
                         'bit'        => $bit,
                         'error'      => 'unknow-error',
-                    ));
+                    ]);
                 } catch (\Exception_Upload_FileTooBig $e) {
-                    return $app->redirectPath('database_display_statusbit_form', array(
+                    return $app->redirectPath('database_display_statusbit_form', [
                         'databox_id' => $databox_id,
                         'bit'        => $bit,
                         'error'      => 'too-big',
-                    ));
+                    ]);
                 } catch (\Exception_Upload_Error $e) {
-                    return $app->redirectPath('database_display_statusbit_form', array(
+                    return $app->redirectPath('database_display_statusbit_form', [
                         'databox_id' => $databox_id,
                         'bit'        => $bit,
                         'error'      => 'upload-error',
-                    ));
+                    ]);
                 } catch (\Exception_Upload_CannotWriteFile $e) {
-                    return $app->redirectPath('database_display_statusbit_form', array(
+                    return $app->redirectPath('database_display_statusbit_form', [
                         'databox_id' => $databox_id,
                         'bit'        => $bit,
                         'error'      => 'wright-error',
-                    ));
+                    ]);
                 } catch (\Exception $e) {
-                    return $app->redirectPath('database_display_statusbit_form', array(
+                    return $app->redirectPath('database_display_statusbit_form', [
                         'databox_id' => $databox_id,
                         'bit'        => $bit,
                         'error'      => 'unknow-error',
-                    ));
+                    ]);
                 }
             }
 
@@ -408,45 +404,45 @@ class Root implements ControllerProviderInterface
                 try {
                     \databox_status::updateIcon($app, $databox_id, $bit, 'on', $file);
                 } catch (AccessDeniedHttpException $e) {
-                    return $app->redirectPath('database_display_statusbit_form', array(
+                    return $app->redirectPath('database_display_statusbit_form', [
                         'databox_id' => $databox_id,
                         'bit'        => $bit,
                         'error'      => 'rights',
-                    ));
+                    ]);
                 } catch (\Exception_InvalidArgument $e) {
-                    return $app->redirectPath('database_display_statusbit_form', array(
+                    return $app->redirectPath('database_display_statusbit_form', [
                         'databox_id' => $databox_id,
                         'bit'        => $bit,
                         'error'      => 'unknow-error',
-                    ));
+                    ]);
                 } catch (\Exception_Upload_FileTooBig $e) {
-                    return $app->redirectPath('database_display_statusbit_form', array(
+                    return $app->redirectPath('database_display_statusbit_form', [
                         'databox_id' => $databox_id,
                         'bit'        => $bit,
                         'error'      => 'too-big',
-                    ));
+                    ]);
                 } catch (\Exception_Upload_Error $e) {
-                    return $app->redirectPath('database_display_statusbit_form', array(
+                    return $app->redirectPath('database_display_statusbit_form', [
                         'databox_id' => $databox_id,
                         'bit'        => $bit,
                         'error'      => 'upload-error',
-                    ));
+                    ]);
                 } catch (\Exception_Upload_CannotWriteFile $e) {
-                    return $app->redirectPath('database_display_statusbit_form', array(
+                    return $app->redirectPath('database_display_statusbit_form', [
                         'databox_id' => $databox_id,
                         'bit'        => $bit,
                         'error'      => 'wright-error',
-                    ));
+                    ]);
                 } catch (\Exception $e) {
-                    return $app->redirectPath('database_display_statusbit_form', array(
+                    return $app->redirectPath('database_display_statusbit_form', [
                         'databox_id' => $databox_id,
                         'bit'        => $bit,
                         'error'      => 'unknow-error',
-                    ));
+                    ]);
                 }
             }
 
-            return $app->redirectPath('database_display_statusbit', array('databox_id' => $databox_id, 'success' => 1));
+            return $app->redirectPath('database_display_statusbit', ['databox_id' => $databox_id, 'success' => 1]);
         })->assert('databox_id', '\d+')
           ->assert('bit', '\d+')
           ->bind('database_submit_statusbit');

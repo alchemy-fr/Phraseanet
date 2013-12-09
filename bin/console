@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,11 +11,6 @@
 
 namespace KonsoleKommander;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\BuildMissingSubdefs;
 use Alchemy\Phrasea\Command\CreateCollection;
@@ -30,6 +25,15 @@ use Alchemy\Phrasea\Command\Plugin\RemovePlugin;
 use Alchemy\Phrasea\Command\CheckConfig;
 use Alchemy\Phrasea\Command\Setup\XSendFileMappingGenerator;
 use Alchemy\Phrasea\Command\Setup\XSendFileConfigurationDumper;
+use Alchemy\Phrasea\Command\Task\SchedulerResumeTasks;
+use Alchemy\Phrasea\Command\Task\SchedulerState;
+use Alchemy\Phrasea\Command\Task\SchedulerPauseTasks;
+use Alchemy\Phrasea\Command\Task\SchedulerRun;
+use Alchemy\Phrasea\Command\Task\TaskList;
+use Alchemy\Phrasea\Command\Task\TaskRun;
+use Alchemy\Phrasea\Command\Task\TaskStart;
+use Alchemy\Phrasea\Command\Task\TaskStop;
+use Alchemy\Phrasea\Command\Task\TaskState;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
@@ -73,12 +77,16 @@ $cli->command(new \module_console_systemBackupDB('system:backup-db'));
 $cli->command(new \module_console_systemClearCache('system:clear-cache'));
 $cli->command(new \module_console_systemExport('system:export'));
 
-$cli->command(new \module_console_taskrun('task:run'));
-$cli->command(new \module_console_tasklist('task:list'));
-$cli->command(new \module_console_taskState('task:state'));
-$cli->command(new \module_console_schedulerState('scheduler:state'));
-$cli->command(new \module_console_schedulerStop('scheduler:stop'));
-$cli->command(new \module_console_schedulerStart('scheduler:start'));
+$cli->command(new TaskRun());
+$cli->command(new TaskList());
+$cli->command(new TaskState());
+$cli->command(new SchedulerResumeTasks());
+$cli->command(new SchedulerPauseTasks());
+$cli->command(new SchedulerState());
+$cli->command(new SchedulerRun());
+$cli->command(new TaskList());
+$cli->command(new TaskStart());
+$cli->command(new TaskStop());
 
 $cli->command(new MailTest('mail:test'));
 

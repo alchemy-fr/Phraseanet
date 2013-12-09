@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\ORM\EntityManager;
 use MediaVorus\Media\MediaInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class MediaType extends AbstractChecker
 {
@@ -48,8 +49,8 @@ class MediaType extends AbstractChecker
         return new Response($boolean, $this);
     }
 
-    public static function getMessage()
+    public static function getMessage(TranslatorInterface $translator)
     {
-        return _('The file does not match required media type');
+        return $translator->trans('The file does not match required media type');
     }
 }

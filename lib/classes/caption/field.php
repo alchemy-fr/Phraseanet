@@ -11,12 +11,6 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- *
- * @package     caption
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class caption_field implements cache_cacheableInterface
 {
     /**
@@ -38,7 +32,7 @@ class caption_field implements cache_cacheableInterface
     protected $record;
     protected $app;
 
-    protected static $localCache = array();
+    protected static $localCache = [];
 
     /**
      *
@@ -53,7 +47,7 @@ class caption_field implements cache_cacheableInterface
         $this->app = $app;
         $this->record = $record;
         $this->databox_field = $databox_field;
-        $this->values = array();
+        $this->values = [];
 
         $rs = $this->get_metadatas_ids();
 
@@ -85,10 +79,10 @@ class caption_field implements cache_cacheableInterface
                 WHERE record_id = :record_id
                   AND meta_struct_id = :meta_struct_id';
 
-        $params = array(
+        $params = [
             ':record_id'      => $this->record->get_record_id()
             , ':meta_struct_id' => $this->databox_field->get_id()
-        );
+        ];
 
         $stmt = $connbas->prepare($sql);
         $stmt->execute($params);
@@ -166,7 +160,7 @@ class caption_field implements cache_cacheableInterface
         else
             $separator = ' ' . $separator . ' ';
 
-        $array_values = array();
+        $array_values = [];
 
         foreach ($values as $value) {
             if ($highlight)
@@ -281,7 +275,7 @@ class caption_field implements cache_cacheableInterface
      */
     public static function get_multi_values($serialized_value, $separator)
     {
-        $values = array();
+        $values = [];
         if (strlen($separator) == 1) {
             $values = explode($separator, $serialized_value);
         } else {
@@ -304,9 +298,9 @@ class caption_field implements cache_cacheableInterface
         $sql = 'SELECT count(id) as count_id FROM metadatas
             WHERE meta_struct_id = :meta_struct_id';
         $stmt = $databox_field->get_databox()->get_connection()->prepare($sql);
-        $params = array(
+        $params = [
             ':meta_struct_id' => $databox_field->get_id()
-        );
+        ];
 
         $stmt->execute($params);
         $rowcount = $stmt->rowCount();
@@ -319,9 +313,9 @@ class caption_field implements cache_cacheableInterface
             $sql = 'SELECT record_id, id FROM metadatas
               WHERE meta_struct_id = :meta_struct_id LIMIT ' . $n . ', ' . $increment;
 
-            $params = array(
+            $params = [
                 ':meta_struct_id' => $databox_field->get_id()
-            );
+            ];
 
             $stmt = $databox_field->get_databox()->get_connection()->prepare($sql);
             $stmt->execute($params);
@@ -333,7 +327,7 @@ class caption_field implements cache_cacheableInterface
             foreach ($rs as $row) {
                 try {
                     $record = $databox_field->get_databox()->get_record($row['record_id']);
-                    $record->set_metadatas(array());
+                    $record->set_metadatas([]);
 
                     /**
                      * TODO NEUTRON add App
@@ -357,9 +351,9 @@ class caption_field implements cache_cacheableInterface
             WHERE meta_struct_id = :meta_struct_id';
 
         $stmt = $databox_field->get_databox()->get_connection()->prepare($sql);
-        $params = array(
+        $params = [
             ':meta_struct_id' => $databox_field->get_id()
-        );
+        ];
 
         $stmt->execute($params);
         $rowcount = $stmt->rowCount();
@@ -373,9 +367,9 @@ class caption_field implements cache_cacheableInterface
               WHERE meta_struct_id = :meta_struct_id
               LIMIT ' . $n . ', ' . $increment;
 
-            $params = array(
+            $params = [
                 ':meta_struct_id' => $databox_field->get_id()
-            );
+            ];
 
             $stmt = $databox_field->get_databox()->get_connection()->prepare($sql);
             $stmt->execute($params);
@@ -389,7 +383,7 @@ class caption_field implements cache_cacheableInterface
                     $record = $databox_field->get_databox()->get_record($row['record_id']);
                     $caption_field = new caption_field($app, $databox_field, $record);
                     $caption_field->delete();
-                    $record->set_metadatas(array());
+                    $record->set_metadatas([]);
 
                     $app['phraseanet.SE']->updateRecord($record);
                     unset($caption_field);

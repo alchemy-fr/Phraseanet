@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 use Alchemy\Phrasea\Application;
 
 /*
@@ -34,11 +43,11 @@ class phraseadate
     {
         switch ($this->app['locale']) {
             default:
-            case 'fr_FR':
-            case 'de_DE':
+            case 'fr':
+            case 'de':
                 $time = $date->format('H:i');
                 break;
-            case 'en_GB':
+            case 'en':
                 $time = $date->format('h:iA');
                 break;
         }
@@ -91,20 +100,18 @@ class phraseadate
 
         if ($dayDiff == 0) {
             if ($diff < 60) {
-                return _('phraseanet::temps:: a l\'instant');
+                return $this->app->trans('phraseanet::temps:: a l\'instant');
             } elseif ($diff < 120) {
-                return _('phraseanet::temps:: il y a une minute');
+                return $this->app->trans('phraseanet::temps:: il y a une minute');
             } elseif ($diff < 3600) {
-                return sprintf(_('phraseanet::temps:: il y a %d minutes')
-                        , floor($diff / 60));
+                return $this->app->trans('phraseanet::temps:: il y a %quantity% minutes', ['%quantity%' => floor($diff / 60)]);
             } elseif ($diff < 7200) {
-                return _('phraseanet::temps:: il y a une heure');
+                return $this->app->trans('phraseanet::temps:: il y a une heure');
             } elseif ($diff < 86400) {
-                return sprintf(_('phraseanet::temps:: il y a %d heures')
-                        , floor($diff / 3600));
+                return $this->app->trans('phraseanet::temps:: il y a %quantity% heures', ['%quantity%' => floor($diff / 3600)]);
             }
         } elseif ($dayDiff == 1) {
-            return _('phraseanet::temps:: hier');
+            return $this->app->trans('phraseanet::temps:: hier');
         } elseif ($dayDiff < 365 && $dayDiff > 0) {
             return $date_string;
         } else {
@@ -134,7 +141,7 @@ class phraseadate
 
         switch ($locale) {
             default:
-            case 'fr_FR':
+            case 'fr':
                 switch ($format) {
                     default:
                     case 'DAY_MONTH':
@@ -145,7 +152,7 @@ class phraseadate
                         break;
                 }
                 break;
-            case 'en_GB':
+            case 'en':
                 switch ($format) {
                     default:
                     case 'DAY_MONTH':
@@ -156,7 +163,7 @@ class phraseadate
                         break;
                 }
                 break;
-            case 'de_DE':
+            case 'de':
                 switch ($format) {
                     default:
                     case 'DAY_MONTH':
@@ -180,8 +187,8 @@ class phraseadate
      */
     public function isodateToDate($isodelimdate, $format)
     {
-        $tc = array();
-        $bal = array();
+        $tc = [];
+        $bal = [];
         $isodelimdate = trim($isodelimdate);
 
         while ($isodelimdate != "") {
@@ -198,14 +205,14 @@ class phraseadate
                     $isodelimdate = "";
                 }
             } else {
-                $tc[] = array("char"        => $c, "bals"        => $bal);
+                $tc[] = ["char"        => $c, "bals"        => $bal];
                 $isodelimdate = substr($isodelimdate, 1);
             }
         }
 
         $strdate = "";
-        $paterns = array("YYYY" => 0, "YY"   => 2, "MM"   => 5,
-            "DD"   => 8, "HH"   => 11, "NN"   => 14, "SS"   => 17);
+        $paterns = ["YYYY" => 0, "YY"   => 2, "MM"   => 5,
+            "DD"   => 8, "HH"   => 11, "NN"   => 14, "SS"   => 17];
 
         while ($format != "") {
             $patfound = false;
@@ -245,12 +252,12 @@ class phraseadate
     {
         $v_y = $v_m = $v_d = $v_h = $v_n = $v_s = 0;
         $v = str_replace(
-            array("-", ":", "/", "."), array(" ", " ", " ", " "), trim($strdate)
+            ["-", ":", "/", "."], [" ", " ", " ", " "], trim($strdate)
         );
         $n = 0;
 
         $format = str_replace(
-            array("-", ":", "/", "."), array(" ", " ", " ", " "), $format
+            ["-", ":", "/", "."], [" ", " ", " ", " "], $format
         );
         $isodelimdate = null;
         switch ($format) {
@@ -364,7 +371,6 @@ class phraseadate
                 break;
             default:
                 $n = 0;
-                // printf("format de date inconnu : %s\n", $format);
                 break;
         }
         if ($n > 0) {

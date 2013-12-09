@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,7 +17,7 @@ class patch_381alpha4a implements patchInterface
     private $release = '3.8.1-alpha.4';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -25,6 +25,14 @@ class patch_381alpha4a implements patchInterface
     public function get_release()
     {
         return $this->release;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return [];
     }
 
     /**
@@ -50,14 +58,17 @@ class patch_381alpha4a implements patchInterface
     {
         $sql = "SELECT usr_id, prop, value FROM usr_settings
                 WHERE prop = 'editing_top_box'
-                  OR prop = 'editing_right_box' OR prop = 'editing_left_box'";
+                  OR prop = 'editing_right_box'
+                  OR prop = 'editing_left_box'";
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $sql = 'UPDATE usr_settings SET value = :value WHERE usr_id = :usr_id AND prop = :prop';
+        $sql = 'UPDATE usr_settings SET value = :value
+                WHERE usr_id = :usr_id
+                    AND prop = :prop';
         $stmt = $appbox->get_connection()->prepare($sql);
 
         foreach ($rows as $row) {
@@ -69,7 +80,7 @@ class patch_381alpha4a implements patchInterface
                 $value = substr($value, 0, -1);
             }
 
-            $stmt->execute(array(':value' => $value, ':usr_id' => $row['usr_id'], ':prop' => $row['prop']));
+            $stmt->execute([':value' => $value, ':usr_id' => $row['usr_id'], ':prop' => $row['prop']]);
         }
 
         $stmt->closeCursor();

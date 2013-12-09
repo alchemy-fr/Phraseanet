@@ -26,7 +26,7 @@
     {# Hide wrapper if there are errors #}
     <div class="wrapper {% if errors|length > 0 %}hidden{% endif %}">
         <div class="page-header">
-            <h1>{% trans 'Apply a model' %} <small>({{ nb_user_to_add }} {% trans 'Users' %})</small></h1>
+            <h1>{{ 'Apply a model' | trans }} <small>({{ nb_user_to_add }} {{ 'Users' | trans }})</small></h1>
         </div>
 
         <form method="post" name="importform2" action="{{ path('users_submit_import') }}" ENCTYPE="multipart/form-data" >
@@ -38,17 +38,17 @@
             {% endfor %}
             </select>
             <div class="form-actions">
-                <button class="btn btn-primary" type="submit">{% trans 'boutton::valider' %}</button>
+                <button class="btn btn-primary" type="submit">{{ 'boutton::valider' | trans }}</button>
                 <a href="{{ path('users_display_import_file') }}" target="right" class="btn">{% trans %}Cancel{% endtrans %}</a>
             </div>
         </form>
     </div>
 {% elseif models|length == 0 %}
         <div class="alert alert-block">
-            {% trans 'You need define a model before importing a list of users' %}
+            {{ 'You need define a model before importing a list of users' | trans }}
         </div>
 {% elseif nb_user_to_add == 0 %}
         <div class="alert alert-block">
-            {% trans 'There is no user to add.' %}
+            {{ 'There is no user to add.' | trans }}
         </div>
 {% endif %}

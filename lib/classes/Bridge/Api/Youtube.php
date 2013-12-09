@@ -11,12 +11,6 @@
 
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- *
- * @package     Bridge
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Interface
 {
     /**
@@ -167,7 +161,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     public function get_element_types()
     {
-        return array(self::ELEMENT_TYPE_VIDEO => _('Videos'));
+        return [self::ELEMENT_TYPE_VIDEO => $this->translator->trans('Videos')];
     }
 
     /**
@@ -176,7 +170,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     public function get_container_types()
     {
-        return array(self::CONTAINER_TYPE_PLAYLIST => _('Playlists'));
+        return [self::CONTAINER_TYPE_PLAYLIST => $this->translator->trans('Playlists')];
     }
 
     /**
@@ -297,7 +291,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     public function update_element($object, $object_id, Array $datas)
     {
-        $required_fields = array("description", "category", "tags", "title", "privacy");
+        $required_fields = ["description", "category", "tags", "title", "privacy"];
         foreach ($required_fields as $field) {
             if ( ! array_key_exists($field, $datas))
                 throw new Bridge_Exception_ActionMandatoryField("Le paramétre " . $field . " est manquant");
@@ -495,26 +489,26 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
     {
         switch ($connector_status) {
             case self::UPLOAD_STATE_RESTRICTED:
-                return _('La video est restreinte');
+                return $this->translator->trans('La video est restreinte');
                 break;
             case self::UPLOAD_STATE_DELETED:
-                return _('La video a ete supprimee');
+                return $this->translator->trans('La video a ete supprimee');
                 break;
             case self::UPLOAD_STATE_REJECTED:
-                return _('La video a ete rejetee');
+                return $this->translator->trans('La video a ete rejetee');
                 break;
             case self::UPLOAD_STATE_FAILED:
-                return _('L\'upload a echoue');
+                return $this->translator->trans('L\'upload a echoue');
                 break;
             default:
             case self::UPLOAD_STATE_PROCESSING:
-                return _('En cours d\'encodage');
+                return $this->translator->trans('En cours d\'encodage');
                 break;
             default:
                 return '';
                 break;
             case self::UPLOAD_STATE_DONE:
-                return _('OK');
+                return $this->translator->trans('OK');
                 break;
         }
     }
@@ -541,30 +535,29 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
             $message = $code = "";
             switch ($response->getStatus()) {
                 case 400:
-                    $message = _("Erreur la requête a été mal formée ou contenait des données valides.");
+                    $message = $this->translator->trans("Erreur la requête a été mal formée ou contenait des données valides.");
                     break;
                 case 401:
-                    $message = _("Erreur lors de l'authentification au service Youtube, Veuillez vous déconnecter, puis vous reconnecter.");
+                    $message = $this->translator->trans("Erreur lors de l'authentification au service Youtube, Veuillez vous déconnecter, puis vous reconnecter.");
                     break;
                 case 403:
-                    $message = _("Erreur lors de l'envoi de la requête. Erreur d'authentification.");
+                    $message = $this->translator->trans("Erreur lors de l'envoi de la requête. Erreur d'authentification.");
                     break;
                 case 404:
-                    $message = _("Erreur la ressource que vous tentez de modifier n'existe pas.");
+                    $message = $this->translator->trans("Erreur la ressource que vous tentez de modifier n'existe pas.");
                     break;
                 case 500:
-                    $message = _("Erreur YouTube a rencontré une erreur lors du traitement de la requête.");
+                    $message = $this->translator->trans("Erreur YouTube a rencontré une erreur lors du traitement de la requête.");
                     break;
                 case 501:
-                    $message = _("Erreur vous avez essayé d'exécuter une requête non prise en charge par Youtube");
+                    $message = $this->translator->trans("Erreur vous avez essayé d'exécuter une requête non prise en charge par Youtube");
                     break;
                 case 503:
-                    $message = _("Erreur le service Youtube n'est pas accessible pour le moment. Veuillez réessayer plus tard.");
+                    $message = $this->translator->trans("Erreur le service Youtube n'est pas accessible pour le moment. Veuillez réessayer plus tard.");
                     break;
             }
 
             if ($error = $this->parse_xml_error($response->getBody())) {
-                $type = $error['type'];
                 $code = $error['code'];
 
                 if ($code == "too_many_recent_calls") {
@@ -577,34 +570,34 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
                 $reason = '';
                 switch ($code) {
                     case "required":
-                        $reason = _("A required field is missing or has an empty value");
+                        $reason = $this->translator->trans("A required field is missing or has an empty value");
                         break;
                     case "deprecated":
-                        $reason = _("A value has been deprecated and is no longer valid");
+                        $reason = $this->translator->trans("A value has been deprecated and is no longer valid");
                         break;
                     case "invalid_format":
-                        $reason = _("A value does not match an expected format");
+                        $reason = $this->translator->trans("A value does not match an expected format");
                         break;
                     case "invalid_character":
-                        $reason = _("A field value contains an invalid character");
+                        $reason = $this->translator->trans("A field value contains an invalid character");
                         break;
                     case "too_long":
-                        $reason = _("A value exceeds the maximum allowable length");
+                        $reason = $this->translator->trans("A value exceeds the maximum allowable length");
                         break;
                     case "too_many_recent_calls":
-                        $reason = _("The Youtube servers have received too many calls from the same caller in a short amount of time.");
+                        $reason = $this->translator->trans("The Youtube servers have received too many calls from the same caller in a short amount of time.");
                         break;
                     case "too_many_entries":
-                        $reason = _("You are attempting to exceed the storage limit on your account and must delete existing entries before inserting new entries");
+                        $reason = $this->translator->trans("You are attempting to exceed the storage limit on your account and must delete existing entries before inserting new entries");
                         break;
                     case "InvalidToken";
-                        $reason = _("The authentication token specified in the Authorization header is invalid");
+                        $reason = $this->translator->trans("The authentication token specified in the Authorization header is invalid");
                         break;
                     case "TokenExpired";
-                        $reason = _("The authentication token specified in the Authorization header has expired.");
+                        $reason = $this->translator->trans("The authentication token specified in the Authorization header has expired.");
                         break;
                     case "disabled_in_maintenance_mode":
-                        $reason = _("Current operations cannot be executed because the site is temporarily in maintenance mode. Wait a few minutes and try your request again");
+                        $reason = $this->translator->trans("Current operations cannot be executed because the site is temporarily in maintenance mode. Wait a few minutes and try your request again");
                         break;
                 }
 
@@ -612,7 +605,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
             }
 
             if ($error == false && $response->getStatus() == 404) {
-                $message = _("Service youtube introuvable.");
+                $message = $this->translator->trans("Service youtube introuvable.");
             }
             $e = new Exception($message);
         }
@@ -627,7 +620,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     protected function parse_xml_error($string)
     {
-        $rs = array();
+        $rs = [];
         libxml_use_internal_errors(true);
         $xml = simplexml_load_string($string);
         libxml_clear_errors();
@@ -637,7 +630,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
         }
 
         if (isset($xml->HEAD) || isset($xml->head)) {
-            return array();
+            return [];
         } else {
             $domaine = explode(":", (string) $xml->error[0]->domain);
             $rs['type'] = count($domaine) > 1 ? $domaine[1] : $domaine[0];
@@ -656,7 +649,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      * @param  array          $options
      * @return string         The new distant Id
      */
-    public function upload(record_adapter $record, array $options = array())
+    public function upload(record_adapter $record, array $options = [])
     {
         switch ($record->get_type()) {
             case 'video':
@@ -672,7 +665,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
                 $video_entry->setVideoDescription($options['description']);
                 $video_entry->setVideoCategory($options['category']);
                 $video_entry->SetVideoTags(explode(' ', $options['tags']));
-                $video_entry->setVideoDeveloperTags(array('phraseanet'));
+                $video_entry->setVideoDeveloperTags(['phraseanet']);
 
                 if ($options['privacy'] == "public")
                     $video_entry->setVideoPublic();
@@ -722,7 +715,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     public function get_category_list()
     {
-        $cat = array();
+        $cat = [];
         $url_cat = sprintf('%s?hl=%s', self::CATEGORY_URL, $this->get_locale());
 
         if (false === $cxml = simplexml_load_file($url_cat)) {
@@ -816,7 +809,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
     protected function set_auth_params()
     {
         $this->_auth->set_parameters(
-            array(
+            [
                 'client_id'      => $this->registry->get('GV_youtube_client_id')
                 , 'client_secret'  => $this->registry->get('GV_youtube_client_secret')
                 , 'redirect_uri'   => Bridge_Api::generate_callback_url($this->generator, $this->get_name())
@@ -824,7 +817,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
                 , 'response_type'  => 'code'
                 , 'token_endpoint' => self::OAUTH2_TOKEN_ENDPOINT
                 , 'auth_endpoint'  => self::OAUTH2_AUTHORIZE_ENDPOINT
-            )
+            ]
         );
 
         return $this;
@@ -885,11 +878,11 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     public function get_locale()
     {
-        $youtube_available_locale = array(
+        $youtube_available_locale = [
             'zh-CN', 'zh-TW', 'cs-CZ', 'nl-NL', 'en-GB', 'en-US', 'fr-FR', 'de-DE',
             'it-IT', 'ja-JP', 'ko-KR', 'pl-PL', 'pt-PT', 'ru-RU', 'es-ES', 'es-MX',
             'sv-SE'
-        );
+        ];
         if ( ! is_null($this->locale)) {
             $youtube_format_locale = str_replace('_', '-', $this->locale);
             if (in_array(trim($youtube_format_locale), $youtube_available_locale)) {
@@ -921,13 +914,13 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
                 if ( ! isset($datas[$name])) {
                     if ($required)
-                        $errors[$name . '_' . $key] = _("Ce champ est obligatoire");
+                        $errors[$name . '_' . $key] = $this->translator->trans("Ce champ est obligatoire");
                 } elseif (trim($datas[$name]) === '') {
                     if ( ! $empty)
-                        $errors[$name . '_' . $key] = _("Ce champ est obligatoire");
+                        $errors[$name . '_' . $key] = $this->translator->trans("Ce champ est obligatoire");
                 } elseif ($length !== 0) {
                     if (mb_strlen($datas[$name]) > $length)
-                        $errors[$name . '_' . $key] = sprintf(_("Ce champ est trop long %s caracteres max"), $length);
+                        $errors[$name . '_' . $key] = $this->translator->trans("Ce champ est trop long %length% caracteres max", ['%length%' => $length]);
                 }
             };
 
@@ -938,7 +931,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     public function check_update_constraints(Array $datas)
     {
-        $errors = array();
+        $errors = [];
         $check = function ($field) use (&$errors, $datas) {
                 $name = $field['name'];
                 $length = (int) $field['length'];
@@ -947,13 +940,13 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
                 if ( ! isset($datas[$name])) {
                     if ($required)
-                        $errors[$name] = _("Ce champ est obligatoire");
+                        $errors[$name] = $this->translator->trans("Ce champ est obligatoire");
                 } elseif (trim($datas[$name]) === '') {
                     if ( ! $empty)
-                        $errors[$name] = _("Ce champ est obligatoire");
+                        $errors[$name] = $this->translator->trans("Ce champ est obligatoire");
                 } elseif ($length !== 0) {
                     if (mb_strlen($datas[$name]) > $length)
-                        $errors[$name] = sprintf(_("Ce champ est trop long %s caracteres max"), $length);
+                        $errors[$name] = $this->translator->trans("Ce champ est trop long %length% caracteres max", ['%length%' => $length]);
                 }
             };
 
@@ -971,13 +964,13 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     public function get_update_datas(Request $request)
     {
-        $datas = array(
+        $datas = [
             'title'       => $request->get('modif_title'),
             'description' => $request->get('modif_description'),
             'category'    => $request->get('modif_category'),
             'tags'        => $request->get('modif_tags'),
             'privacy'     => $request->get('modif_privacy'),
-        );
+        ];
 
         return $datas;
     }
@@ -993,13 +986,13 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
     public function get_upload_datas(Request $request, record_adapter $record)
     {
         $key = $record->get_serialize_key();
-        $datas = array(
+        $datas = [
             'title'       => $request->get('title_' . $key),
             'description' => $request->get('description_' . $key),
             'category'    => $request->get('category_' . $key),
             'tags'        => $request->get('tags_' . $key),
             'privacy'     => $request->get('privacy_' . $key),
-        );
+        ];
 
         return $datas;
     }
@@ -1022,16 +1015,16 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     private function check_record_constraints(record_adapter $record)
     {
-        $errors = array();
+        $errors = [];
         $key = $record->get_serialize_key();
         if ( ! $record->get_hd_file() instanceof SplFileInfo)
-            $errors["file_size_" . $key] = _("Le record n'a pas de fichier physique"); //Record must rely on real file
+            $errors["file_size_" . $key] = $this->translator->trans("Le record n'a pas de fichier physique"); //Record must rely on real file
 
         if ($record->get_duration() > self::AUTH_VIDEO_DURATION)
-            $errors["duration_" . $key] = sprintf(_("La taille maximale d'une video est de %d minutes."), self::AUTH_VIDEO_DURATION / 60);
+            $errors["duration_" . $key] = $this->translator->trans("La taille maximale d'une video est de %duration% minutes.", ['%duration%' => self::AUTH_VIDEO_DURATION / 60]);
 
         if ($record->get_technical_infos('size') > self::AUTH_VIDEO_SIZE)
-            $errors["size_" . $key] = sprintf(_("Le poids maximum d'un fichier est de %s"), p4string::format_octets(self::AUTH_VIDEO_SIZE));
+            $errors["size_" . $key] = $this->translator->trans("Le poids maximum d'un fichier est de %size%", ['%size%' => p4string::format_octets(self::AUTH_VIDEO_SIZE)]);
 
         return $errors;
     }
@@ -1042,38 +1035,38 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     private function get_fields()
     {
-        return array(
-            array(
+        return [
+            [
                 'name'     => 'title',
                 'length'   => '100',
                 'required' => true,
                 'empty'    => false
-            )
-            , array(
+            ]
+            , [
                 'name'     => 'description',
                 'length'   => '2000',
                 'required' => true,
                 'empty'    => true
-            )
-            , array(
+            ]
+            , [
                 'name'       => 'tags',
                 'length'     => '500',
                 'tag_length' => '30',
                 'required'   => true,
                 'empty'      => true
-            )
-            , array(
+            ]
+            , [
                 'name'     => 'privacy',
                 'length'   => '0',
                 'required' => true,
                 'empty'    => false
-            )
-            , array(
+            ]
+            , [
                 'name'     => 'category',
                 'length'   => '0',
                 'required' => true,
                 'empty'    => false
-            )
-        );
+            ]
+        ];
     }
 }

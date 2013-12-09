@@ -5,28 +5,28 @@
         <table style="height: 40px;">
             <tr>
                 <td style="white-space:nowrap;">
-                    {% if list.getOwner(app['authentication'].getUser(), app).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+                    {% if list.getOwner(app['authentication'].getUser(), app).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
                         <form class="form-inline" method="POST" name="SaveName" action="{{ path('prod_lists_list_update', { 'list_id' : list.getId() }) }}">
-                            <label>{% trans 'List Name' %}</label>
+                            <label>{{ 'List Name' | trans }}</label>
                             <input type="text" name="name" style="margin: 0 5px;" value="{{ list.getName() }}"/>
-                            <button class="btn btn-inverse">{% trans 'Save' %}</button>
+                            <button class="btn btn-inverse">{{ 'Save' | trans }}</button>
                         </form>
                     {% else %}
                         <h1>{{ list.getName() }}</h1>
                     {% endif %}
                 </td>
                 <td style="text-align:right;white-space:nowrap;">
-                    {% if list.getOwner(app['authentication'].getUser(), app).getRole() == constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
-                        <a href="{{ path('prod_lists_list_share', { 'list_id' : list.getId() }) }}" title="{% trans 'Share the list' %}" class="list_sharer">
+                    {% if list.getOwner(app['authentication'].getUser(), app).getRole() == constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
+                        <a href="{{ path('prod_lists_list_share', { 'list_id' : list.getId() }) }}" title="{{ 'Share the list' | trans }}" class="list_sharer">
                             <img src="/skins/prod/Push/list-icon.png" />
-                            {% trans "Set sharing permission" %}
+                            {{ "Set sharing permission" | trans }}
                         </a>
                     {% endif %}
                 </td>
-                {% if list.getOwner(app['authentication'].getUser(), app).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
+                {% if list.getOwner(app['authentication'].getUser(), app).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
                     <td style="text-align:right;white-space:nowrap;width:150px;">
                         <button class="deleter btn btn-inverse">
-                            {% trans 'Delete' %}
+                            {{ 'Delete' | trans }}
                             <input type="hidden" name="list_id" value="{{ list.getId() }}"/>
                         </button>
                     </td>
@@ -39,9 +39,9 @@
             <div class="PNB" style="height:25px; bottom:auto;">
                 <p>
                     {% set length = '<span class="counter current">' ~ list.getEntries().count() ~ '</span>' %}
-                    {% trans %}{{ length }} peoples{% endtrans %}
-                    {% if list.getOwner(app['authentication'].getUser(), app).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
-                        <button class="EditToggle btn btn-inverse">{% trans 'Edit' %}</button>
+                    {% trans with {'%length%' : length} %}%length% peoples{% endtrans %}
+                    {% if list.getOwner(app['authentication'].getUser(), app).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+                        <button class="EditToggle btn btn-inverse">{{ 'Edit' | trans }}</button>
                     {% endif %}
                 </p>
             </div>
@@ -53,59 +53,59 @@
             </div>
         </div>
     </div>
-    {% if list.getOwner(app['authentication'].getUser(), app).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+    {% if list.getOwner(app['authentication'].getUser(), app).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
         <div class="PNB content readwrite grey-bg" style="display:none;top:40px;">
             <form name="list-editor-search" method="POST" action="{{ path('prod_push_list_edit', { 'list_id' : list.getId() }) }}">
                 <div class="PNB10" style="height:160px;">
                     <div class="PNB" style="height:40px;bottom:auto;">
-                        <button class="Refresher btn btn-inverse" type="button">&lt;{% trans 'View' %}</button>
+                        <button class="Refresher btn btn-inverse" type="button">&lt;{{ 'View' | trans }}</button>
                         <select name="like_field">
                             <option value="usr_login">
-                                {% trans 'Push::filter on login' %}
+                                {{ 'Push::filter on login' | trans }}
                             </option>
                             <option value="name">
-                                {% trans 'Push::filter on name' %}
+                                {{ 'Push::filter on name' | trans }}
                             </option>
                             <option value="pays">
-                                {% trans 'Push::filter on countries' %}
+                                {{ 'Push::filter on countries' | trans }}
                             </option>
                             <option value="societe">
-                                {% trans 'Push::filter on companies' %}
+                                {{ 'Push::filter on companies' | trans }}
                             </option>
                             <option value="usr_mail">
-                                {% trans 'Push::filter on emails' %}
+                                {{ 'Push::filter on emails' | trans }}
                             </option>
                             <option value="lastModel">
-                                {% trans 'Push::filter on templates' %}
+                                {{ 'Push::filter on templates' | trans }}
                             </option>
                         </select>
-                        {% trans 'Push::filter starts' %}
+                        {{ 'Push::filter starts' | trans }}
                         <input type="text" value="" class="search" name="query">
-                        <button type="submit" class="btn btn-inverse">{% trans 'boutton::chercher' %}</button>
+                        <button type="submit" class="btn btn-inverse">{{ 'boutton::chercher' | trans }}</button>
                     </div>
                     <div class="PNB" style="top:40px;height:120px;bottom:auto;">
                         <table style="table-layout:fixed;width:100%;">
                             <tr>
                                 <td>
-                                    <label>{% trans 'Activite' %}</label>
+                                    <label>{{ 'Activite' | trans }}</label>
                                 </td>
                                 <td>
-                                    <label>{% trans 'Template' %}</label>
+                                    <label>{{ 'Template' | trans }}</label>
                                 </td>
                                 <td >
-                                    <label>{% trans 'Company' %}</label>
+                                    <label>{{ 'Company' | trans }}</label>
                                 </td>
                                 <td >
-                                    <label>{% trans 'Country' %}</label>
+                                    <label>{{ 'Country' | trans }}</label>
                                 </td>
                                 <td >
-                                    <label>{% trans 'Position' %}</label>
+                                    <label>{{ 'Position' | trans }}</label>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <select size="5" multiple="multiple" name="Activity[]" style="width:80%;">
-                                        <option value="">{% trans 'All' %}</option>
+                                        <option value="">{{ 'All' | trans }}</option>
                                         {% for Activity in query.getRelatedActivities() %}
                                             <option value="{{ Activity }}">{{ Activity }}</option>
                                         {% endfor %}
@@ -113,7 +113,7 @@
                                 </td>
                                 <td>
                                     <select size="5" multiple="multiple" name="Template[]" style="width:80%;">
-                                        <option value="">{% trans 'All' %}</option>
+                                        <option value="">{{ 'All' | trans }}</option>
                                         {% for Template in query.getRelatedTemplates() %}
                                             <option value="{{ Template }}">{{ Template }}</option>
                                         {% endfor %}
@@ -121,7 +121,7 @@
                                 </td>
                                 <td>
                                     <select size="5" multiple="multiple" name="Company[]" style="width:80%;">
-                                        <option value="">{% trans 'All' %}</option>
+                                        <option value="">{{ 'All' | trans }}</option>
                                         {% for Company in query.getRelatedCompanies() %}
                                             <option value="{{ Company }}">{{ Company }}</option>
                                         {% endfor %}
@@ -129,7 +129,7 @@
                                 </td>
                                 <td>
                                     <select size="5" multiple="multiple" name="Country[]" style="width:80%;">
-                                        <option value="">{% trans 'All' %}</option>
+                                        <option value="">{{ 'All' | trans }}</option>
                                         {% for Code, Country in query.getRelatedCountries() %}
                                             <option value="{{ Code }}">{{ Country }}</option>
                                         {% endfor %}
@@ -137,7 +137,7 @@
                                 </td>
                                 <td>
                                     <select size="5" multiple="multiple" name="Position[]" style="width:80%;">
-                                        <option value="">{% trans 'All' %}</option>
+                                        <option value="">{{ 'All' | trans }}</option>
                                         {% for Position in query.getRelatedPositions() %}
                                             <option value="{{ Position }}">{{ Position }}</option>
                                         {% endfor %}

@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Checks if a file with the same filename already exists in the destination databox
@@ -28,7 +29,7 @@ class Filename extends AbstractChecker
      * @param Application $app
      * @param array       $options An array of options. available : 'sensitive' (false by default)
      */
-    public function __construct(Application $app, array $options = array())
+    public function __construct(Application $app, array $options = [])
     {
         if ( ! isset($options['sensitive'])) {
             $options['sensitive'] = false;
@@ -53,8 +54,8 @@ class Filename extends AbstractChecker
     /**
      * {@inheritdoc}
      */
-    public static function getMessage()
+    public static function getMessage(TranslatorInterface $translator)
     {
-        return _('A file with the same filename already exists in database');
+        return $translator->trans('A file with the same filename already exists in database');
     }
 }

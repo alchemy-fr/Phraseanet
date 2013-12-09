@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -18,7 +18,7 @@ class patch_380alpha18a implements patchInterface
     private $release = '3.8.0-alpha.18';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -26,6 +26,14 @@ class patch_380alpha18a implements patchInterface
     public function get_release()
     {
         return $this->release;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return [];
     }
 
     /**
@@ -49,11 +57,7 @@ class patch_380alpha18a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $finder = new ExecutableFinder();
-
-        $binaries = $app['phraseanet.configuration']['binaries'];
-        $binaries['recess_binary'] = $finder->find('recess');
-        $app['phraseanet.configuration']['binaries'] = $binaries;
+        $app['conf']->set(['binaries', 'recess_binary'], (new ExecutableFinder())->find('recess'));
 
         return true;
     }

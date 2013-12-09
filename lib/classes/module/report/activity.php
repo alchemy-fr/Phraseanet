@@ -23,7 +23,7 @@ class module_report_activity extends module_report
      *   Array correspondance column -> to query
      * @var array
      */
-    protected $cor_query = array(
+    protected $cor_query = [
         'user'      => 'log.user',
         'site'      => 'log.site',
         'societe'   => 'log.societe',
@@ -39,7 +39,7 @@ class module_report_activity extends module_report
         'final'     => 'log_docs.final',
         'comment'   => 'log_docs.comment',
         'size'      => 'subdef.size'
-    );
+    ];
 
     public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
@@ -69,7 +69,7 @@ class module_report_activity extends module_report
 
     private function setDisplayForActivity($rs)
     {
-        $hours = array();
+        $hours = [];
 
         for ($i = 0; $i < 24; $i ++) {
             array_push($this->display, $i);
@@ -90,13 +90,13 @@ class module_report_activity extends module_report
      */
     public function getActivityPerHours()
     {
-        $this->result = array();
-        $this->title = _('report:: activite par heure');
+        $this->result = [];
+        $this->title = $this->app->trans('report:: activite par heure');
 
         $sqlBuilder = new module_report_sql($this->app, $this);
 
         $filter = $sqlBuilder->getFilters()->getReportFilter();
-        $params = array_merge(array(), $filter['params']);
+        $params = array_merge([], $filter['params']);
 
         $sql = "
             SELECT tt.heures, SUM(1) AS nb
@@ -131,7 +131,7 @@ class module_report_activity extends module_report
 
         $this->result[] = $res;
         //calculate prev and next page
-        $this->calculatePages($rs);
+        $this->calculatePages();
         //display navigator
         $this->setDisplayNav();
         //set report
@@ -150,12 +150,12 @@ class module_report_activity extends module_report
      */
     public function getAllQuestionByUser($value, $what)
     {
-        $result = array();
+        $result = [];
 
         $sqlBuilder = new module_report_sql($this->app, $this);
 
         $filter = $sqlBuilder->getFilters()->getReportFilter();
-        $params = array_merge(array(':main_value' => $value), $filter['params']);
+        $params = array_merge([':main_value' => $value], $filter['params']);
 
         $sql = "
             SELECT DATE_FORMAT(log_search.date,'%Y-%m-%d %H:%i:%S') AS date ,
@@ -190,7 +190,7 @@ class module_report_activity extends module_report
             $i++;
         }
 
-        $this->title = _('report:: questions');
+        $this->title = $this->app->trans('report:: questions');
         $this->setResult($result);
 
         return $this->result;
@@ -203,14 +203,14 @@ class module_report_activity extends module_report
      */
     public function getTopQuestion($tab = false, $no_answer = false)
     {
-        $this->report['value'] = array();
-        $this->report['value2'] = array();
+        $this->report['value'] = [];
+        $this->report['value2'] = [];
 
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters()->getReportFilter();
-        $params = array_merge(array(), $filter['params']);
+        $params = array_merge([], $filter['params']);
 
-        ($no_answer) ? $this->title = _('report:: questions sans reponses') : $this->title = _('report:: questions les plus posees');
+        ($no_answer) ? $this->title = $this->app->trans('report:: questions sans reponses') : $this->title = $this->app->trans('report:: questions les plus posees');
 
         $sql = "
             SELECT TRIM(tt.search) AS search, SUM(1) AS nb, ROUND(avg(tt.results)) AS nb_rep
@@ -251,7 +251,7 @@ class module_report_activity extends module_report
 
         $this->total = sizeof($this->result);
         //calculate prev and next page
-        $this->calculatePages($rs);
+        $this->calculatePages();
         //do we display navigator ?
         $this->setDisplayNav();
         //set report
@@ -268,10 +268,10 @@ class module_report_activity extends module_report
      */
     public function getAllDownloadByUserBase($usr, $config = false)
     {
-        $result = array();
+        $result = [];
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters()->getReportFilter();
-        $params = array_merge(array(), $filter['params']);
+        $params = array_merge([], $filter['params']);
         $databox = $this->app['phraseanet.appbox']->get_databox($this->sbas_id);
 
         $sql = "
@@ -313,7 +313,7 @@ class module_report_activity extends module_report
             $i ++;
         }
 
-        $this->title = sprintf(_('report:: Telechargement effectue par l\'utilisateur %s'), $login);
+        $this->title = $this->app->trans('report:: Telechargement effectue par l\'utilisateur %name%', ['%name%' => $login]);
 
         $this->setResult($result);
 
@@ -327,11 +327,11 @@ class module_report_activity extends module_report
      */
     public function getDownloadByBaseByDay($tab = false)
     {
-        $this->title = _('report:: telechargements par jour');
+        $this->title = $this->app->trans('report:: telechargements par jour');
 
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters()->getReportFilter();
-        $params = array_merge(array(), $filter['params']);
+        $params = array_merge([], $filter['params']);
 
         $sql = "
             SELECT tt.record_id, DATE_FORMAT(tt.the_date, GET_FORMAT(DATE, 'INTERNAL')) AS ddate, tt.final, SUM(1) AS nb
@@ -357,8 +357,7 @@ class module_report_activity extends module_report
 
         $this->setChamp($rs);
         $this->setDisplay($tab);
-        $save_date = "";
-        $total = array('tot_doc'  => 0, 'tot_prev' => 0, 'tot_dl'   => 0);
+        $total = ['tot_doc'  => 0, 'tot_prev' => 0, 'tot_dl'   => 0];
         $i = -1;
 
         $last_date = null;
@@ -367,12 +366,12 @@ class module_report_activity extends module_report
             $date = $this->app['date-formatter']->getPrettyString(new DateTime($row['ddate']));
             if ($date != $last_date) {
                 $i ++;
-                $this->result[$i] = array(
+                $this->result[$i] = [
                     'ddate'    => $date,
                     'document' => 0,
                     'preview'  => 0,
                     'total'    => 0
-                );
+                ];
                 $last_date = $date;
             }
 
@@ -398,7 +397,7 @@ class module_report_activity extends module_report
             $this->result[$nb_row]['preview'] = '<b>' . $total['tot_prev'] . '</b>';
             $this->result[$nb_row]['total'] = '<b>' . $total['tot_dl'] . '</b>';
         }
-        $this->calculatePages($rs);
+        $this->calculatePages();
         $this->setDisplayNav();
         $this->setReport();
 
@@ -420,7 +419,7 @@ class module_report_activity extends module_report
 
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters()->getReportFilter();
-        $params = array_merge(array(), $filter['params']);
+        $params = array_merge([], $filter['params']);
 
         $this->req = "
             SELECT SUM(1) AS connexion, tt.user, tt.usrid FROM (
@@ -451,11 +450,11 @@ class module_report_activity extends module_report
         $i = 0;
         $total_connexion = 0;
         //set title
-        $this->title = _('report:: Detail des connexions');
+        $this->title = $this->app->trans('report:: Detail des connexions');
         //set champ
-        $this->champ = array($on, 'connexion');
+        $this->champ = [$on, 'connexion'];
         //set display
-        $this->default_display = array($on, 'connexion');
+        $this->default_display = [$on, 'connexion'];
         //set configuration of column
         ($tab) ? $this->setConfigColumn($tab) :
                 $this->initDefaultConfigColumn($this->default_display);
@@ -463,7 +462,7 @@ class module_report_activity extends module_report
         foreach ($rs as $row) {
             foreach ($this->champ as $key => $value) {
                 $this->result[$i][$value] = empty($row[$value]) ?
-                    "<i>" . _('report:: non-renseigne') . "</i>" : $row[$value];
+                    "<i>" . $this->app->trans('report:: non-renseigne') . "</i>" : $row[$value];
 
                 if ($value == 'connexion')
                     $total_connexion += $row['connexion'];
@@ -482,7 +481,7 @@ class module_report_activity extends module_report
             $this->result[$i][$on] = '<b>TOTAL</b>';
         }
         //calculate prev and next page
-        $this->calculatePages($rs);
+        $this->calculatePages();
         //do we display navigator ?
         $this->setDisplayNav();
         //set report
@@ -504,11 +503,11 @@ class module_report_activity extends module_report
         empty($on) ? $on = "user" : ""; //by default always report on user
 
         //set title
-        $this->title = _('report:: Detail des telechargements');
+        $this->title = $this->app->trans('report:: Detail des telechargements');
 
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters()->getReportFilter();
-        $params = array_merge(array(), $filter['params']);
+        $params = array_merge([], $filter['params']);
 
         $sql = "
             SELECT tt.usrid, TRIM(" . $on . ") AS " . $on . ", tt.final, sum(1) AS nb, sum(size) AS poid
@@ -533,12 +532,12 @@ class module_report_activity extends module_report
 
         $save_user = "";
         $i = -1;
-        $total = array(
+        $total = [
             'nbdoc'    => 0,
             'poiddoc'  => 0,
             'nbprev'   => 0,
             'poidprev' => 0
-        );
+        ];
 
         $this->setChamp($rs);
 
@@ -572,7 +571,7 @@ class module_report_activity extends module_report
                 $this->result[$i]['nbdoc'] = ( ! is_null($row['nb']) ? $row['nb'] : 0);
                 $this->result[$i]['poiddoc'] = ( ! is_null($row['poid']) ? $row['poid'] : 0);
                 $this->result[$i]['user'] = empty($row[$on]) ?
-                    "<i>" . _('report:: non-renseigne') . "</i>" : $row[$on];
+                    "<i>" . $this->app->trans('report:: non-renseigne') . "</i>" : $row[$on];
                 $total['nbdoc'] += $this->result[$i]['nbdoc'];
                 $total['poiddoc'] += ( ! is_null($row['poid']) ? $row['poid'] : 0);
                 $this->result[$i]['usrid'] = $row['usrid'];
@@ -586,7 +585,7 @@ class module_report_activity extends module_report
                 $this->result[$i]['poidprev'] += ( ! is_null($row['poid']) ? $row['poid'] : 0);
 
                 $this->result[$i]['user'] = empty($row[$on]) ?
-                    "<i>" . _('report:: non-renseigne') . "</i>" : $row[$on];
+                    "<i>" . $this->app->trans('report:: non-renseigne') . "</i>" : $row[$on];
                 $total['nbprev'] += ( ! is_null($row['nb']) ? $row['nb'] : 0);
                 $total['poidprev'] += ( ! is_null($row['poid']) ? $row['poid'] : 0);
                 $this->result[$i]['usrid'] = $row['usrid'];
@@ -609,7 +608,7 @@ class module_report_activity extends module_report
                 '<b>' . p4string::format_octets($total['poidprev']) . '</b>';
         }
         $this->total = sizeof($this->result);
-        $this->calculatePages($rs);
+        $this->calculatePages();
         $this->setDisplayNav();
         $this->setReport();
 
@@ -619,13 +618,13 @@ class module_report_activity extends module_report
     public static function topTenUser(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
-        $result = array();
-        $result['top_ten_doc'] = array();
-        $result['top_ten_prev'] = array();
-        $result['top_ten_poiddoc'] = array();
-        $result['top_ten_poidprev'] = array();
+        $result = [];
+        $result['top_ten_doc'] = [];
+        $result['top_ten_prev'] = [];
+        $result['top_ten_poiddoc'] = [];
+        $result['top_ten_poidprev'] = [];
 
-        $params = array(':site_id' => $app['phraseanet.configuration']['main']['key']);
+        $params = [':site_id' => $app['conf']->get(['main', 'key'])];
 
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $params = array_merge($params, $datefilter['params']);
@@ -653,7 +652,6 @@ class module_report_activity extends module_report
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $save_id = "";
         foreach ($rs as $row) {
             $kttd = 'top_ten_doc';
             $kttp = 'top_ten_poiddoc';
@@ -692,7 +690,6 @@ class module_report_activity extends module_report
                     $result[$kttpp][$id]['id'] = $id;
                 }
             }
-            $save_id = $id;
         }
 
         return $result;
@@ -701,13 +698,13 @@ class module_report_activity extends module_report
     public static function activity(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
-        $res = array();
+        $res = [];
         $datefilter =
             module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter =
             module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
-        $params = array(':site_id' => $app['phraseanet.configuration']['main']['key']);
+        $params = [':site_id' => $app['conf']->get(['main', 'key'])];
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
@@ -747,14 +744,14 @@ class module_report_activity extends module_report
     public static function activityDay(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
-        $result = array();
-        $res = array();
+        $result = [];
+        $res = [];
         $datefilter =
             module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter =
             module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
-        $params = array(':site_id' => $app['phraseanet.configuration']['main']['key']);
+        $params = [':site_id' => $app['conf']->get(['main', 'key'])];
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
@@ -789,13 +786,13 @@ class module_report_activity extends module_report
     public static function activityQuestion(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
-        $result = array();
+        $result = [];
         $datefilter =
             module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter =
             module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
-        $params = array(':site_id' => $app['phraseanet.configuration']['main']['key']);
+        $params = [':site_id' => $app['conf']->get(['main', 'key'])];
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
@@ -829,13 +826,13 @@ class module_report_activity extends module_report
     public static function activiteTopQuestion(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
-        $result = array();
+        $result = [];
         $datefilter =
             module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter =
             module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
-        $params = array(':site_id' => $app['phraseanet.configuration']['main']['key']);
+        $params = [':site_id' => $app['conf']->get(['main', 'key'])];
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
@@ -857,7 +854,7 @@ class module_report_activity extends module_report
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $conv = array(" " => "");
+        $conv = [" " => ""];
         foreach ($rs as $row) {
             $question = $row['question'];
             $question = mb_strtolower(strtr($question, $conv));
@@ -872,11 +869,11 @@ class module_report_activity extends module_report
     public static function activiteTopTenSiteView(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
-        $result = array();
+        $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
-        $params = array();
+        $params = [];
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
@@ -915,11 +912,11 @@ class module_report_activity extends module_report
     public static function activiteAddedDocument(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
-        $result = array();
+        $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
-        $params = array();
+        $params = [];
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
@@ -950,11 +947,11 @@ class module_report_activity extends module_report
     public static function activiteEditedDocument(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
-        $result = array();
+        $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
-        $params = array();
+        $params = [];
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
@@ -986,11 +983,11 @@ class module_report_activity extends module_report
     public static function activiteAddedTopTenUser(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
-        $result = array();
+        $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
-        $params = array();
+        $params = [];
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "

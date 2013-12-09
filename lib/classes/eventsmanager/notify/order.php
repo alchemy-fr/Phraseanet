@@ -12,19 +12,13 @@
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailInfoNewOrder;
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class eventsmanager_notify_order extends eventsmanager_notifyAbstract
 {
     /**
      *
      * @var string
      */
-    public $events = array('__NEW_ORDER__');
+    public $events = ['__NEW_ORDER__'];
 
     /**
      *
@@ -44,33 +38,30 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'usr_id'   => ''
-            , 'order_id' => array()
-        );
+            , 'order_id' => []
+        ];
 
         $params = array_merge($default, $params);
         $order_id = $params['order_id'];
 
-        $users = array();
+        $users = [];
 
         try {
-            $sql = 'SELECT DISTINCT e.base_id
-          FROM order_elements e
-          WHERE e.order_id = :order_id';
-            $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute(array(':order_id' => $order_id));
-            $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\OrderElement');
 
-            $base_ids = array();
-            foreach ($rs as $row) {
-                $base_ids[] = $row['base_id'];
+            $results = $repository->findBy(['orderId' => $order_id]);
+
+            $base_ids = [];
+            foreach ($results as $result) {
+                $base_ids[] = $result->getBaseId();
             }
+            $base_ids = array_unique($base_ids);
 
             $query = new User_Query($this->app);
             $users = $query->on_base_ids($base_ids)
-                    ->who_have_right(array('order_master'))
+                    ->who_have_right(['order_master'])
                     ->execute()->get_results();
         } catch (Exception $e) {
 
@@ -148,20 +139,20 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
         $order_id = (string) $sx->order_id;
 
         try {
-            $registered_user = User_Adapter::getInstance($usr_id, $this->app);
+            User_Adapter::getInstance($usr_id, $this->app);
         } catch (Exception $e) {
-            return array();
+            return [];
         }
 
         $sender = User_Adapter::getInstance($usr_id, $this->app)->get_display_name();
 
-        $ret = array(
-            'text'  => sprintf(_('%1$s a passe une %2$scommande%3$s')
-                , $sender
-                , '<a href="/prod/order/'.$order_id.'/" class="dialog full-dialog" title="'._('Orders manager').'">'
-                , '</a>')
+        $ret = [
+            'text'  => $this->app->trans('%user% a passe une %opening_link% commande %end_link%', [
+                '%user%' => $sender,
+                '%opening_link%' => '<a href="/prod/order/'.$order_id.'/" class="dialog full-dialog" title="'.$this->app->trans('Orders manager').'">',
+                '%end_link%' => '</a>',])
             , 'class' => ''
-        );
+        ];
 
         return $ret;
     }
@@ -172,7 +163,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
      */
     public function get_name()
     {
-        return _('Nouvelle commande');
+        return $this->app->trans('Nouvelle commande');
     }
 
     /**
@@ -181,7 +172,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
      */
     public function get_description()
     {
-        return _('Recevoir des notifications lorsqu\'un utilisateur commande des documents');
+        return $this->app->trans('Recevoir des notifications lorsqu\'un utilisateur commande des documents');
     }
 
     /**
@@ -197,6 +188,6 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
             return false;
         }
 
-        return $user->ACL()->has_right('order_master');
+        return $this->app['acl']->get($user)->has_right('order_master');
     }
 }

@@ -10,17 +10,16 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $route = "/prod/story/";
 
-        $collections = self::$DI['app']['authentication']->getUser()
-            ->ACL()
-            ->get_granted_base(array('canaddrecord'));
+        $collections = self::$DI['app']['acl']->get(self::$DI['app']['authentication']->getUser())
+            ->get_granted_base(['canaddrecord']);
 
         $collection = array_shift($collections);
 
         $crawler = self::$DI['client']->request(
-            'POST', $route, array(
+            'POST', $route, [
             'base_id' => $collection->get_base_id(),
             'name'    => 'test story'
-            )
+            ]
         );
 
         $response = self::$DI['client']->getResponse();
@@ -28,7 +27,7 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(302, $response->getStatusCode());
 
         $query = self::$DI['app']['EM']->createQuery(
-            'SELECT COUNT(w.id) FROM \Entities\StoryWZ w'
+            'SELECT COUNT(w.id) FROM \Alchemy\Phrasea\Model\Entities\StoryWZ w'
         );
 
         $count = $query->getSingleScalarResult();
@@ -40,17 +39,16 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $route = "/prod/story/";
 
-        $collections = self::$DI['app']['authentication']->getUser()
-            ->ACL()
-            ->get_granted_base(array('canaddrecord'));
+        $collections = self::$DI['app']['acl']->get(self::$DI['app']['authentication']->getUser())
+            ->get_granted_base(['canaddrecord']);
 
         $collection = array_shift($collections);
 
         $crawler = self::$DI['client']->request(
-            'POST', $route, array(
+            'POST', $route, [
             'base_id' => $collection->get_base_id(),
-            'name'    => 'test story'), array(), array(
-            "HTTP_ACCEPT" => "application/json")
+            'name'    => 'test story'], [], [
+            "HTTP_ACCEPT" => "application/json"]
         );
 
         $response = self::$DI['client']->getResponse();
@@ -97,14 +95,14 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = sprintf("/prod/story/%s/%s/addElements/", $story->get_sbas_id(), $story->get_record_id());
 
-        $records = array(
+        $records = [
             self::$DI['record_1']->get_serialize_key(),
             self::$DI['record_2']->get_serialize_key()
-        );
+        ];
 
         $lst = implode(';', $records);
 
-        $crawler = self::$DI['client']->request('POST', $route, array('lst' => $lst));
+        $crawler = self::$DI['client']->request('POST', $route, ['lst' => $lst]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -120,16 +118,16 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = sprintf("/prod/story/%s/%s/addElements/", $story->get_sbas_id(), $story->get_record_id());
 
-        $records = array(
+        $records = [
             self::$DI['record_1']->get_serialize_key(),
             self::$DI['record_2']->get_serialize_key()
-        );
+        ];
 
         $lst = implode(';', $records);
 
-        $crawler = self::$DI['client']->request('POST', $route, array('lst' => $lst)
-            , array(), array(
-            "HTTP_ACCEPT" => "application/json"));
+        $crawler = self::$DI['client']->request('POST', $route, ['lst' => $lst]
+            , [], [
+            "HTTP_ACCEPT" => "application/json"]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -143,10 +141,10 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
 
-        $records = array(
+        $records = [
             self::$DI['record_1'],
             self::$DI['record_2']
-        );
+        ];
 
         foreach ($records as $record) {
             $story->appendChild($record);
@@ -164,7 +162,7 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 , $record->get_record_id()
             );
 
-            self::$DI['client'] = new Client(self::$DI['app'], array());
+            self::$DI['client'] = new Client(self::$DI['app'], []);
 
             if (($n % 2) === 0) {
                 $crawler = self::$DI['client']->request('POST', $route);
@@ -174,8 +172,8 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 $this->assertEquals(302, $response->getStatusCode());
             } else {
                 $crawler = self::$DI['client']->request(
-                    'POST', $route, array(), array(), array(
-                    "HTTP_ACCEPT" => "application/json")
+                    'POST', $route, [], [], [
+                    "HTTP_ACCEPT" => "application/json"]
                 );
                 $response = self::$DI['client']->getResponse();
 

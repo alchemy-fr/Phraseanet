@@ -45,22 +45,22 @@ class XSendFileMappingGenerator extends Command
         $factory = new XSendFileFactory($this->container['monolog'], true, $type, $this->computeMapping($paths));
         $mode = $factory->getMode(true);
 
-        $conf = array(
+        $conf = [
             'enabled' => $enabled,
             'type' => $type,
             'mapping' => $mode->getMapping(),
-        );
+        ];
 
         if ($input->getOption('write')) {
             $output->write("Writing configuration ...");
-            $this->container['phraseanet.configuration']['xsendfile'] = $conf;
+            $this->container['conf']->set('xsendfile', $conf);
             $output->writeln(" <info>OK</info>");
             $output->writeln("");
             $output->write("It is now strongly recommended to use <info>xsendfile:dump-configuration</info> command to upgrade your virtual-host");
         } else {
             $output->writeln("Configuration will <info>not</info> be written, use <info>--write</info> option to write it");
             $output->writeln("");
-            $output->writeln(Yaml::dump(array('xsendfile' => $conf), 4));
+            $output->writeln(Yaml::dump(['xsendfile' => $conf], 4));
         }
 
         return 0;
@@ -68,10 +68,10 @@ class XSendFileMappingGenerator extends Command
 
     private function computeMapping($paths)
     {
-        return array_merge(array(
-            array('mount-point' => 'protected_lazaret', 'directory' => $this->container['root.path'] . '/tmp/lazaret'),
-            array('mount-point' => 'protected_download', 'directory' => $this->container['root.path'] . '/tmp/download'),
-        ), array_map(array($this, 'pathsToConf'), array_unique($paths)));
+        return array_merge([
+            ['mount-point' => 'protected_lazaret', 'directory' => $this->container['root.path'] . '/tmp/lazaret'],
+            ['mount-point' => 'protected_download', 'directory' => $this->container['root.path'] . '/tmp/download'],
+        ], array_map([$this, 'pathsToConf'], array_unique($paths)));
     }
 
     private function pathsToConf($path)
@@ -79,7 +79,7 @@ class XSendFileMappingGenerator extends Command
         static $n = 0;
         $n++;
 
-        return array('mount-point' => 'protected_dir_'.$n, 'directory' => $path);
+        return ['mount-point' => 'protected_dir_'.$n, 'directory' => $path];
     }
 
     private function extractPath(\appbox $appbox)

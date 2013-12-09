@@ -11,11 +11,6 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 use Alchemy\Phrasea\Application;
 use Silex\Application as SilexApplication;
 use Silex\ControllerProviderInterface;
@@ -23,52 +18,22 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Setup implements ControllerProviderInterface
 {
-
     public function connect(SilexApplication $app)
     {
+        $app['controller.admin.setup'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAdmin();
         });
 
-        /**
-         * Get globals values
-         *
-         * name         : setup_display_globals
-         *
-         * description  : Display globals values
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/', $this->call('getGlobals'))
+        $controllers->get('/', 'controller.admin.setup:getGlobals')
             ->bind('setup_display_globals');
 
-        /**
-         * Submit global values
-         *
-         * name         : setup_submit_globals
-         *
-         * description  : Change globals values
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
-        $controllers->post('/', $this->call('postGlobals'))
+        $controllers->post('/', 'controller.admin.setup:postGlobals')
             ->bind('setup_submit_globals');
 
         return $controllers;
@@ -87,17 +52,17 @@ class Setup implements ControllerProviderInterface
 
         if (null !== $update = $request->query->get('update')) {
             if (!!$update) {
-                $update = _('Update succeed');
+                $update = $app->trans('Update succeed');
             } else {
-                $update = _('Update failed');
+                $update = $app->trans('Update failed');
             }
         }
 
-        return $app['twig']->render('admin/setup.html.twig', array(
+        return $app['twig']->render('admin/setup.html.twig', [
             'GV'                => $GV,
             'update_post_datas' => $update,
             'listTimeZone'      => \DateTimeZone::listAbbreviations()
-        ));
+        ]);
     }
 
     /**
@@ -110,24 +75,13 @@ class Setup implements ControllerProviderInterface
     public function postGlobals(Application $app, Request $request)
     {
         if (\setup::create_global_values($app, $request->request->all())) {
-            return $app->redirectPath('setup_display_globals', array(
+            return $app->redirectPath('setup_display_globals', [
                 'success' => 1
-            ));
+            ]);
         }
 
-        return $app->redirectPath('setup_display_globals', array(
+        return $app->redirectPath('setup_display_globals', [
             'success' => 0
-        ));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
+        ]);
     }
 }

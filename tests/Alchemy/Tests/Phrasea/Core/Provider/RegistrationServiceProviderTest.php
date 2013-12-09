@@ -12,13 +12,10 @@ class RegistrationServiceProvidertest extends \PhraseanetPHPUnitAbstract
     public function testSameInstanceShouldBereturnedEveryTime()
     {
         self::$DI['app']->register(new RegistrationServiceProvider());
+        self::$DI['app']['conf']->set('registration-fields', ['plop']);
 
-        $conf = self::$DI['app']['phraseanet.configuration']->getConfig();
-        $conf['registration-fields'] = array('plop');
-        self::$DI['app']['phraseanet.configuration'] = $conf;
-
-        $this->assertEquals(array('plop'), self::$DI['app']['registration.fields']);
-        $this->assertEquals(array('plop'), self::$DI['app']['registration.fields']);
+        $this->assertEquals(['plop'], self::$DI['app']['registration.fields']);
+        $this->assertEquals(['plop'], self::$DI['app']['registration.fields']);
 
         $this->assertInternalType('array', self::$DI['app']['registration.optional-fields']);
     }

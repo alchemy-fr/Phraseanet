@@ -15,16 +15,11 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Subdefs implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.admin.subdefs'] = $this;
 
         $controllers = $app['controllers_factory'];
 
@@ -36,10 +31,10 @@ class Subdefs implements ControllerProviderInterface
         $controllers->get('/{sbas_id}/', function (Application $app, $sbas_id) {
             $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
-            return $app['twig']->render('admin/subdefs.html.twig', array(
+            return $app['twig']->render('admin/subdefs.html.twig', [
                 'databox' => $databox,
                 'subdefs' => $databox->get_subdef_structure()
-            ));
+            ]);
         })
             ->bind('admin_subdefs_subdef')
             ->assert('sbas_id', '\d+');
@@ -47,11 +42,11 @@ class Subdefs implements ControllerProviderInterface
         $controllers->post('/{sbas_id}/', function (Application $app, Request $request, $sbas_id) {
             $delete_subdef = $request->request->get('delete_subdef');
             $toadd_subdef = $request->request->get('add_subdef');
-            $Parmsubdefs = $request->request->get('subdefs', array());
+            $Parmsubdefs = $request->request->get('subdefs', []);
 
             $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
-            $add_subdef = array('class' => null, 'name'  => null, 'group' => null);
+            $add_subdef = ['class' => null, 'name'  => null, 'group' => null];
             foreach ($add_subdef as $k => $v) {
                 if (!isset($toadd_subdef[$k]) || trim($toadd_subdef[$k]) === '')
                     unset($add_subdef[$k]);
@@ -81,7 +76,7 @@ class Subdefs implements ControllerProviderInterface
 
                 foreach ($Parmsubdefs as $post_sub) {
 
-                    $options = array();
+                    $options = [];
 
                     $post_sub_ex = explode('_', $post_sub, 2);
 
@@ -91,7 +86,7 @@ class Subdefs implements ControllerProviderInterface
                     $class = $request->request->get($post_sub . '_class');
                     $downloadable = $request->request->get($post_sub . '_downloadable');
 
-                    $defaults = array('path', 'meta', 'mediatype');
+                    $defaults = ['path', 'meta', 'mediatype'];
 
                     foreach ($defaults as $def) {
                         $parm_loc = $request->request->get($post_sub . '_' . $def);
@@ -104,7 +99,7 @@ class Subdefs implements ControllerProviderInterface
                     }
 
                     $mediatype = $request->request->get($post_sub . '_mediatype');
-                    $media = $request->request->get($post_sub . '_' . $mediatype, array());
+                    $media = $request->request->get($post_sub . '_' . $mediatype, []);
 
                     foreach ($media as $option => $value) {
 
@@ -115,13 +110,13 @@ class Subdefs implements ControllerProviderInterface
                         $options[$option] = $value;
                     }
 
-                    $labels = $request->request->get($post_sub . '_label', array());
+                    $labels = $request->request->get($post_sub . '_label', []);
 
                     $subdefs->set_subdef($group, $name, $class, $downloadable, $options, $labels);
                 }
             }
 
-            return $app->redirectPath('admin_subdefs_subdef', array('sbas_id' => $databox->get_sbas_id()));
+            return $app->redirectPath('admin_subdefs_subdef', ['sbas_id' => $databox->get_sbas_id()]);
         })
             ->bind('admin_subdefs_subdef_update')
             ->assert('sbas_id', '\d+');

@@ -3,15 +3,15 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
 use Alchemy\Phrasea\Application;
-use Entities\Session;
-use Entities\SessionModule;
+use Alchemy\Phrasea\Model\Entities\Session;
+use Alchemy\Phrasea\Model\Entities\SessionModule;
 
 class patch_380alpha11a implements patchInterface
 {
@@ -19,7 +19,7 @@ class patch_380alpha11a implements patchInterface
     private $release = '3.8.0-alpha.11';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -48,6 +48,14 @@ class patch_380alpha11a implements patchInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrineMigrations()
+    {
+        return ['session'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $appbox, Application $app)
     {
         try {
@@ -60,7 +68,7 @@ class patch_380alpha11a implements patchInterface
             $stmt->closeCursor();
         } catch (\PDOException $e) {
             // this may fail on oldest versions
-            return;
+            return false;
         }
 
         foreach ($rs as $row) {
@@ -112,5 +120,7 @@ class patch_380alpha11a implements patchInterface
         }
 
         $app['EM']->flush();
+
+        return true;
     }
 }

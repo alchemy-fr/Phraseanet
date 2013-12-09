@@ -40,7 +40,7 @@ class SearchEngineSuggestionTest extends \PhraseanetPHPUnitAbstract
         $hits = 35;
 
         $suggestion = new SearchEngineSuggestion($query, $words, $hits);
-        $this->assertEquals(array('query' => $words, 'hits' => 35), $suggestion->toArray());
+        $this->assertEquals(['query' => $words, 'hits' => 35], $suggestion->toArray());
     }
 
     public function testToArrayWithNullValue()
@@ -50,6 +50,6 @@ class SearchEngineSuggestionTest extends \PhraseanetPHPUnitAbstract
         $hits = null;
 
         $suggestion = new SearchEngineSuggestion($query, $words, $hits);
-        $this->assertEquals(array('query' => $words, 'hits' => null), $suggestion->toArray());
+        $this->assertEquals(['query' => $words, 'hits' => null], $suggestion->toArray());
     }
 }

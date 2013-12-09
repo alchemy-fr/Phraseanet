@@ -9,12 +9,6 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @package     KonsoleKomander
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -39,7 +33,7 @@ class module_console_systemExport extends Command
          * To implement
          */
 //    $this->addOption('excludefield', 'f', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY
-//      , 'Exclude field from XML', array());
+//      , 'Exclude field from XML', []);
 
         /**
          * To implement
@@ -57,10 +51,10 @@ class module_console_systemExport extends Command
             , 'Limit files quantity (for test purposes)', false);
 
         $this->addOption('base_id', 'b', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY
-            , 'Restrict on base_ids', array());
+            , 'Restrict on base_ids', []);
 
         $this->addOption('sbas_id', 's', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY
-            , 'Restrict on sbas_ids', array());
+            , 'Restrict on sbas_ids', []);
 
         $this->addArgument('directory', InputOption::VALUE_REQUIRED
             , 'The directory where to export');
@@ -126,7 +120,7 @@ class module_console_systemExport extends Command
         $total = $errors = 0;
 
         foreach ($this->getService('phraseanet.appbox')->get_databoxes() as $databox) {
-            $output->writeln(sprintf("Processing <info>%s</info>", $databox->get_label($this->container['locale.I18n'])));
+            $output->writeln(sprintf("Processing <info>%s</info>", $databox->get_label($this->container['locale'])));
 
             if (count($restrictSbasIds) > 0 && ! in_array($databox->get_sbas_id(), $restrictSbasIds)) {
                 $output->writeln(sprintf("Databox not selected, bypassing ..."));
@@ -134,7 +128,7 @@ class module_console_systemExport extends Command
             }
 
             $go = true;
-            $coll_ids = array();
+            $coll_ids = [];
 
             if (count($restrictBaseIds) > 0) {
                 $go = false;
@@ -187,7 +181,7 @@ class module_console_systemExport extends Command
                 $record = $databox->get_record($row['record_id']);
                 if (($done % $docPerDir) === 0) {
                     $dir_increment ++;
-                    $in_dir_files = array();
+                    $in_dir_files = [];
                     $current_dir = $local_export . sprintf($dir_format, $dir_increment) . '/';
                     $this->getService('filesystem')->mkdir($current_dir);
                 }

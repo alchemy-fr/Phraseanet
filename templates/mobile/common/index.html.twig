@@ -1,13 +1,13 @@
 <!doctype html>
-<html lang="{{ app['locale.I18n'] }}">
+<html lang="{{ app['locale'] }}">
     <head>
         <meta charset="UTF-8" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
         <title>{{ app['phraseanet.registry'].get('GV_homeTitle') }} - {{ module_name }} </title>
-        <link rel="stylesheet" href="{{ path('minifier', { 'f' : 'include/jslibs/jquery.mobile-1.2.1/jquery.mobile-1.2.1.css' }) }}" />
+        <link rel="stylesheet" href="{{ path('minifier', { 'f' : 'assets/jquery-mobile/jquery.mobile.css' }) }}" />
         <script src="{{ path('minifier', { 'f' : 'assets/jquery/jquery.js' }) }}"></script>
-        <script src="{{ path('minifier', { 'f' : 'include/jslibs/jquery.mobile-1.2.1/jquery.mobile-1.2.1.js' }) }}"></script>
+        <script src="{{ path('minifier', { 'f' : 'assets/jquery-mobile/jquery.mobile.js' }) }}"></script>
         <style type="text/css">
             html,body, div[data-role ="page"] {
                 height: 100%;

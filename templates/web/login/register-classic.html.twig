@@ -4,7 +4,7 @@
 {% import "common/macros.html.twig" as macro %}
 
 {% block title %}
-    {% trans "Register" %}
+    {{ "Register" | trans }}
 {% endblock %}
 
 {% block sidebar %}
@@ -12,12 +12,10 @@
         <div class="row-fluid">
             <div class="span12">
                 <div class="text-title">
-                    {% trans "Inscription" %}
+                    {{ "Inscription" | trans }}
                 </div>
                 <div class="sidebar-hint">
-                    {% trans %}
-                        Complete the fields below to register on {{ instance_title }}!
-                    {% endtrans %}
+                    {% trans with {'%instance_title%' : instance_title} %}Complete the fields below to register on %instance_title%!{% endtrans %}
                 </div>
             </div>
         </div>
@@ -64,7 +62,7 @@
                             <div class="span12">
                                 {% set label %}
                                     <a target="_blank" href="{{ path("login_cgus") }}">
-                                        {% trans "I have read the terms of use" %}
+                                        {{ "I have read the terms of use" | trans }}
                                     </a>
                                 {% endset %}
 
@@ -95,7 +93,7 @@
                     <div class="row-fluid">
                         <div class="span12">
                             <button type="submit" class="btn btn-success btn-trigger">
-                                {% trans "Request access" %}
+                                {{ "Request access" | trans }}
                             </button>
                         </div>
                     </div>

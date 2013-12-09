@@ -9,14 +9,8 @@
  * file that was distributed with this source code.
  */
 
-/**
- * @todo write tests
- *
- * @package     KonsoleKomander
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Setup\Version\MailChecker;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -41,7 +35,10 @@ class module_console_systemMailCheck extends Command
     {
         $output->writeln("Processing...");
 
-        $bad_users = User_Adapter::get_wrong_email_users($this->container);
+        $bad_users = [];
+        if (version_compare($this->getService('phraseanet.appbox')->get_version(), '3.9', '<')) {
+            $bad_users = MailChecker::getWrongEmailUsers($this->container);
+        }
 
         foreach ($bad_users as $email => $users) {
             if ($input->getOption('list')) {
@@ -72,7 +69,7 @@ class module_console_systemMailCheck extends Command
                     . 'continue (C), detach from mail (d), or stop (s)</question>';
 
                 $continue = mb_strtolower($dialog->ask($output, $question, 'C'));
-            } while ( ! in_array($continue, array('c', 'd', 's')));
+            } while ( ! in_array($continue, ['c', 'd', 's']));
 
             if ($continue == 's') {
                 return false;
@@ -112,12 +109,14 @@ class module_console_systemMailCheck extends Command
         $output->writeln($email);
 
         foreach ($users as $user) {
+            $dateConn = new \DateTime($user['last_conn']);
+
             $output->writeln(
                 sprintf(
                     "\t %5d %40s   %s"
-                    , $user->get_id()
-                    , $user->get_display_name()
-                    , $user->get_last_connection()->format('Y m d')
+                    , $user['usr_id']
+                    , $user['usr_login']
+                    , $dateConn->format('Y m d')
                 )
             );
         }

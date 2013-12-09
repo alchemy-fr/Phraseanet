@@ -28,12 +28,12 @@ class GooglePlusTest extends ProviderTestCase
         $provider->getSession()->set('google-plus.provider.state', $state . mt_rand());
 
         $request = $this->getRequestMock();
-        $this->addQueryParameter($request, array('state' => $state));
+        $this->addQueryParameter($request, ['state' => $state]);
 
-        return array(
-            array($this->provideFailingProvider(), $this->getRequestMock()),
-            array($provider, $request),
-        );
+        return [
+            [$this->provideFailingProvider(), $this->getRequestMock()],
+            [$provider, $request],
+        ];
     }
 
     public function getProviderForLogout()
@@ -94,9 +94,9 @@ class GooglePlusTest extends ProviderTestCase
         $provider->getSession()->set('google-plus.provider.state', $state);
 
         $request = $this->getRequestMock();
-        $this->addQueryParameter($request, array(
+        $this->addQueryParameter($request, [
             'state' => $state,
-        ));
+        ]);
 
         $ticket = $this->getMockBuilder('Google_LoginTicket')
             ->disableOriginalConstructor()
@@ -106,17 +106,17 @@ class GooglePlusTest extends ProviderTestCase
             ->method('verifyIdToken')
             ->will($this->returnValue($ticket));
 
-        return array(
-            array($provider, $request),
-        );
+        return [
+            [$provider, $request],
+        ];
     }
 
     public function getTestOptions()
     {
-        return array(
+        return [
             'client-id'     => 'google-plus-client-id',
             'client-secret' => 'google-plus-client-secret',
-        );
+        ];
     }
 
     protected function getProviderForSuccessIdentity()
@@ -146,9 +146,9 @@ class GooglePlusTest extends ProviderTestCase
         $response->expects($this->any())
             ->method('getBody')
             ->with($this->equalTo(true))
-            ->will($this->returnValue(json_encode(array(
+            ->will($this->returnValue(json_encode([
                 'email' => self::EMAIL
-            ))));
+            ])));
 
         $requestGet->expects($this->any())
             ->method('send')
@@ -167,16 +167,16 @@ class GooglePlusTest extends ProviderTestCase
 
         $people->expects($this->once())
             ->method('get')
-            ->will($this->returnValue(array(
-                'name' => array(
+            ->will($this->returnValue([
+                'name' => [
                     'givenName' => self::FIRSTNAME,
                     'familyName' => self::LASTNAME,
-                ),
+                ],
                 'id' => self::ID,
-                'image' => array(
+                'image' => [
                     'url' => self::IMAGEURL
-                )
-        )));
+                ]
+        ]));
 
         $provider->getGooglePlusService()->people = $people;
 
@@ -185,13 +185,13 @@ class GooglePlusTest extends ProviderTestCase
 
     protected function getAvailableFieldsForIdentity()
     {
-        return array(
+        return [
             Identity::PROPERTY_ID        => self::ID,
             Identity::PROPERTY_FIRSTNAME => self::FIRSTNAME,
             Identity::PROPERTY_LASTNAME  => self::LASTNAME,
             Identity::PROPERTY_EMAIL     => self::EMAIL,
             Identity::PROPERTY_IMAGEURL  => self::IMAGEURL,
-        );
+        ];
     }
 
     protected function getProviderForFailingIdentity()

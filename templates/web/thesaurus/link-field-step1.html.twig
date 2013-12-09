@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html lang="{{ app['locale.I18n'] }}">
+<html lang="{{ app['locale'] }}">
     <head>
-        <title>{% trans 'thesaurus:: Lier la branche de thesaurus au champ' %}</title>
+        <title>{{ 'thesaurus:: Lier la branche de thesaurus au champ' | trans }}</title>
 
         <link REL="stylesheet" TYPE="text/css" href="{{ path('minifier', { 'f' : 'skins/thesaurus/thesaurus.css' }) }}" />
 
@@ -47,9 +47,7 @@
                 <input type="hidden" name="tid" value="{{ tid }}">
 
                 {% set branch = "<br/><b>" ~ fullBranch ~ "</b><br/>" %}
-                {% trans %}
-                    thesaurus:: Lier la branche de thesaurus au champ {{ branch }}
-                {% endtrans %}
+                {% trans with {'%branch%' : branch} %}thesaurus:: Lier la branche de thesaurus au champ %branch%{% endtrans %}
 
                 <div style="width:70%; height:200px; overflow:scroll;" class="x3Dbox">
                 {% for fieldname, checked in fieldnames %}
@@ -57,9 +55,9 @@
                 {% endfor %}
                 </div>
                 <br/>
-                <input type="button" id="submit_button" value="{% trans 'boutton::valider' %}" onclick="clkBut('submit');">
+                <input type="button" id="submit_button" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');">
                 &nbsp;&nbsp;&nbsp;
-                <input type="button" id="cancel_button" value="{% trans 'boutton::annuler' %}" onclick="clkBut('cancel');">
+                <input type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');">
             </form>
         </center>
     </body>

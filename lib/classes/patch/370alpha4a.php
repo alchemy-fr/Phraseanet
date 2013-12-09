@@ -11,58 +11,58 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class patch_370alpha4a implements patchInterface
 {
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     private $release = '3.7.0-alpha.4';
 
-    /**
-     *
-     * @var Array
-     */
-    private $concern = array(base::DATA_BOX);
+    /** @var array */
+    private $concern = [base::DATA_BOX];
 
     /**
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function get_release()
     {
         return $this->release;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function require_all_upgrades()
     {
         return false;
     }
 
     /**
-     *
-     * @return Array
+     * {@inheritdoc}
      */
     public function concern()
     {
         return $this->concern;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $databox, Application $app)
     {
-
         $sql = 'SELECT id, src FROM metadatas_structure';
         $stmt = $databox->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $update = array();
+        $update = [];
 
         $tagDirname = new \Alchemy\Phrasea\Metadata\Tag\TfDirname();
         $tagBasename = new \Alchemy\Phrasea\Metadata\Tag\TfBasename();
@@ -70,18 +70,19 @@ class patch_370alpha4a implements patchInterface
         foreach ($rs as $row) {
 
             if (strpos(strtolower($row['src']), 'tf-parentdir') !== false) {
-                $update[] = array('id'  => $row['id'], 'src' => $tagDirname->getTagname());
+                $update[] = ['id'  => $row['id'], 'src' => $tagDirname->getTagname()];
             }
             if (strpos(strtolower($row['src']), 'tf-filename') !== false) {
-                $update[] = array('id'  => $row['id'], 'src' => $tagBasename->getTagname());
+                $update[] = ['id'  => $row['id'], 'src' => $tagBasename->getTagname()];
             }
         }
 
-        $sql = 'UPDATE metadatas_structure SET src = :src WHERE id = :id';
+        $sql = 'UPDATE metadatas_structure SET src = :src
+                WHERE id = :id';
         $stmt = $databox->get_connection()->prepare($sql);
 
         foreach ($update as $row) {
-            $stmt->execute(array(':src' => $row['src'], ':id'  => $row['id']));
+            $stmt->execute([':src' => $row['src'], ':id'  => $row['id']]);
         }
 
         $stmt->closeCursor();

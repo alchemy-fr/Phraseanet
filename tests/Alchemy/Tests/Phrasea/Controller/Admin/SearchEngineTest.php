@@ -37,10 +37,10 @@ class SearchEngineTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $app = new Application('test');
 
-        return array(
-            array(new PhraseaEngine($app)),
-            array(new SphinxSearchEngine($app, 'localhost', 9306, 'localhost', 9308)),
-        );
+        return [
+            [new PhraseaEngine($app)],
+            [new SphinxSearchEngine($app, 'localhost', 9306, 'localhost', 9308)],
+        ];
     }
 
 }

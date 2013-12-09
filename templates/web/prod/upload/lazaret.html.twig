@@ -3,8 +3,8 @@
     {% if lazaretFiles is not none %}
         {% if lazaretFiles|length > 0 %}
             <div class="btn-group" style="text-align:center; padding:5px 0;">
-                <button class="btn empty-lazaret" title="{% trans "Empty quarantine"%}">
-                    <img src="/skins/icons/delete.png">{% trans "Empty quarantine"%}
+                <button class="btn empty-lazaret" title="{{ "Empty quarantine" | trans }}">
+                    <img src="/skins/icons/delete.png">{{ "Empty quarantine" | trans }}
                 </button>
             </div>
 
@@ -16,10 +16,10 @@
                 {% endfor %}
             </ul>
         {% else %}
-            {% trans "No document in quarantine" %}
+            {{ "No document in quarantine" | trans }}
         {% endif %}
     {% else %}
-        {% trans "You do not have enough rights to access quarantine" %}
+        {{ "You do not have enough rights to access quarantine" | trans }}
     {% endif %}
 </div>
 
@@ -76,7 +76,7 @@
         // empty lazaret
         $('button.empty-lazaret', scope).bind('click', function(){
 
-            if(!confirm("{% trans "Empty quarantine will remove all items, are you sure you want to continue ?" %}")) {
+            if(!confirm("{{ "Empty quarantine will remove all items, are you sure you want to continue ?" | trans }}")) {
                 return false;
             }
 
@@ -258,39 +258,37 @@
     {% import "common/thumbnail.html.twig" as thumb %}
     {% set records = file.getRecordsToSubstitute(app) %}
     <div class="lazaret-file span4">
-        <h5>{% trans "Last uploaded version" %}</h5>
+        <h5>{{ "Last uploaded version" | trans }}</h5>
         <ul class="thumbnails">
             <li class="span12" >
                 <div class="thumbnail">
                     <img src="/prod/lazaret/{{ file.getId() }}/thumbnail/"/>
                     <div class="caption">
-                        <p>{% trans "Filename" %} : <span class="info">{{ file.getOriginalName() }}</span></p>
-                        <p>{% trans "Date" %} : <span class="info">{{ app['date-formatter'].getPrettyString(file.getCreated()) }}</span></p>
+                        <p>{{ "Filename" | trans }} : <span class="info">{{ file.getOriginalName() }}</span></p>
+                        <p>{{ "Date" | trans }} : <span class="info">{{ app['date-formatter'].getPrettyString(file.getCreated()) }}</span></p>
                         {% if file.getSession().getUser(app) is not none %}
                             <p>
                                 {% set username = '<a href="#" class="username userTips" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : file.getSession().getUser(app).get_id() }) ~ '/">' ~ file.getSession().getUser(app).get_display_name() ~ '</a>' %}
-                                {% trans %}
-                                    Uploaded by : {{ username }}
-                                {% endtrans %}
+                                {% trans with {'%username%' : username} %}Uploaded by : %username%{% endtrans %}
                             </p>
                         {% endif %}
-                        <p>{% trans "Collection" %} : <span class="info">{{ file.getCollection(app).get_label(app['locale.I18n']) }}</span></p>
+                        <p>{{ "Collection" | trans }} : <span class="info">{{ file.getCollection(app).get_label(app['locale']) }}</span></p>
                     </div>
                     <div class="caption">
                         {% for check in file.getChecks() %}
-                            <p>{{ check.getMessage() }}</p>
+                            <p>{{ check.getMessage(app['translator']) }}</p>
                         {% endfor %}
                     </div>
                     <div class="btn-group" style="text-align:center; padding:5px;">
-                        <button class="btn add-lazaret" title="{% trans "Add"%}">
-                            <img src="/skins/icons/add.png">{% trans "Add"%}
+                        <button class="btn add-lazaret" title="{{ "Add" | trans }}">
+                            <img src="/skins/icons/add.png">{{ "Add" | trans }}
                         </button>
-                        <button class="btn delete-lazaret" title="{% trans "Delete"%}">
-                            <img src="/skins/icons/delete.png">{% trans "Delete"%}
+                        <button class="btn delete-lazaret" title="{{ "Delete" | trans }}">
+                            <img src="/skins/icons/delete.png">{{ "Delete" | trans }}
                         </button>
                         {% if records|length > 0 %}
-                            <button class="btn subtitute-lazaret" title="{% trans "Substitute" %}">
-                                <img src="/skins/icons/reload.png">{% trans "Substitute" %}
+                            <button class="btn subtitute-lazaret" title="{{ "Substitute" | trans }}">
+                                <img src="/skins/icons/reload.png">{{ "Substitute" | trans }}
                             </button>
                         {% endif %}
                     </div>
@@ -307,19 +305,15 @@
         <div class="lazaret-proposals span8">
             <h5>
             {% if record_count <= 1 %}
-                {% trans %}
-                    A record matches the unique identifier :
-                {% endtrans %}
+                {% trans %}A record matches the unique identifier :{% endtrans %}
             {% else %}
-                {% trans %}
-                    {{ record_count }} records match the unique identifier :
-                {% endtrans %}
+                {% trans with {'%record_count%' : record_count} %}%record_count% records match the unique identifier :{% endtrans %}
             {% endif %}
             </h5>
             <ul class="thumbnails">
                 {% for record in records %}
-                    {% if app['authentication'].getUser().ACL().has_right_on_base(record.get_base_id(), "canaddrecord")
-                        and app['authentication'].getUser().ACL().has_right_on_base(record.get_base_id(), "candeleterecord") %}
+                    {% if app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), "canaddrecord")
+                        and app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), "candeleterecord") %}
                         <li class="records-subititution span3">
                             <div class="thumbnail">
                                 <div class="record-thumb" style="text-align:center;">

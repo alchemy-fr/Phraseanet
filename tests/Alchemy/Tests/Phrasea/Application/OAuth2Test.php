@@ -51,13 +51,13 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
         $environment = 'test';
         self::$DI['app'] = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Api.php';
 
-        $this->queryParameters = array(
+        $this->queryParameters = [
             "response_type" => "code",
             "client_id"     => self::$appli->get_client_id(),
             "redirect_uri"  => self::$appli->get_redirect_uri(),
             "scope"         => "",
             "state"         => "valueTest"
-        );
+        ];
     }
 
     public static function deleteInsertedRow(\appbox $appbox, \API_OAuth2_Application $app)
@@ -67,7 +67,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
       DELETE FROM api_applications
       WHERE application_id = :id
     ';
-        $t = array(':id' => $app->get_id());
+        $t = [':id' => $app->get_id()];
         $stmt = $conn->prepare($sql);
         $stmt->execute($t);
         $sql = '
@@ -75,7 +75,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
       WHERE api_account_id  = :id
     ';
         $acc = self::getAccount();
-        $t = array(':id' => $acc->get_id());
+        $t = [':id' => $acc->get_id()];
         $stmt = $conn->prepare($sql);
         $stmt->execute($t);
     }
@@ -89,11 +89,10 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
         $acc->set_revoked($revoked); // revoked to show form
 
         $preEvent = 0;
-        $phpunit = $this;
-        self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use ($phpunit, &$preEvent, $className) {
+        self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use (&$preEvent, $className) {
             $preEvent++;
-            $phpunit->assertInstanceOf($className, $event);
-            $phpunit->assertEquals(Context::CONTEXT_OAUTH2_NATIVE, $event->getContext()->getContext());
+            $this->assertInstanceOf($className, $event);
+            $this->assertEquals(Context::CONTEXT_OAUTH2_NATIVE, $event->getContext()->getContext());
         });
 
         self::$DI['client']->request($method, '/api/oauthv2/authorize', $this->queryParameters);
@@ -103,18 +102,18 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
 
     public function provideEventNames()
     {
-        return array(
-            array(false, 'POST', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'),
-            array(true, 'POST', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'),
-            array(false, 'GET', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'),
-            array(true, 'GET', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'),
-        );
+        return [
+            [false, 'POST', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'],
+            [true, 'POST', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'],
+            [false, 'GET', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'],
+            [true, 'GET', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'],
+        ];
     }
 
     public static function getApp($rowId)
     {
         $sql = "SELECT * FROM api_applications WHERE application_id = :app_id";
-        $t = array(":app_id" => $rowId);
+        $t = [":app_id" => $rowId];
         $conn = self::$DI['app']['phraseanet.appbox']->get_connection();
         $stmt = $conn->prepare($sql);
         $stmt->execute($t);
@@ -126,7 +125,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
     public static function getAccount()
     {
         $sql = "SELECT api_account_id FROM api_accounts WHERE application_id = :app_id AND usr_id = :usr_id";
-        $t = array(":app_id" => self::$appli->get_id(), ":usr_id" => self::$DI['user']->get_id());
+        $t = [":app_id" => self::$appli->get_id(), ":usr_id" => self::$DI['user']->get_id()];
         $conn = self::$DI['app']['phraseanet.appbox']->get_connection();
         $stmt = $conn->prepare($sql);
         $stmt->execute($t);

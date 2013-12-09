@@ -160,7 +160,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetAttributes()
     {
-        $this->assertSame(array(), $this->object->getAttributes());
+        $this->assertSame([], $this->object->getAttributes());
     }
 
     /**
@@ -175,16 +175,16 @@ class FileTest extends \PhraseanetPHPUnitAbstract
         $attribute1 = new Metadata($metadata1);
 
         $this->object->addAttribute($attribute1);
-        $this->assertSame(array($attribute1), $this->object->getAttributes());
+        $this->assertSame([$attribute1], $this->object->getAttributes());
 
         $tag = new Keywords();
-        $value = new Multi(array('Later', 'Alligator'));
+        $value = new Multi(['Later', 'Alligator']);
 
         $metadata2 = new PHPExiftoolMetadata($tag, $value);
         $attribute2 = new Metadata($metadata2);
 
         $this->object->addAttribute($attribute2);
-        $this->assertSame(array($attribute1, $attribute2), $this->object->getAttributes());
+        $this->assertSame([$attribute1, $attribute2], $this->object->getAttributes());
     }
 
     /**

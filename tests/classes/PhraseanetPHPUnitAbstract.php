@@ -3,7 +3,26 @@
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
-use Doctrine\Common\DataFixtures\Loader;
+use Alchemy\Phrasea\Model\Entities\AggregateToken;
+use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\BasketElement;
+use Alchemy\Phrasea\Model\Entities\Feed;
+use Alchemy\Phrasea\Model\Entities\FeedEntry;
+use Alchemy\Phrasea\Model\Entities\FeedItem;
+use Alchemy\Phrasea\Model\Entities\FeedPublisher;
+use Alchemy\Phrasea\Model\Entities\FeedToken;
+use Alchemy\Phrasea\Model\Entities\LazaretFile;
+use Alchemy\Phrasea\Model\Entities\LazaretSession;
+use Alchemy\Phrasea\Model\Entities\Session;
+use Alchemy\Phrasea\Model\Entities\Task;
+use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Entities\ValidationData;
+use Alchemy\Phrasea\Model\Entities\ValidationSession;
+use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
+use Alchemy\Phrasea\Model\Entities\UsrListOwner;
+use Alchemy\Phrasea\Model\Entities\UsrList;
+use Alchemy\Phrasea\Model\Entities\UsrListEntry;
+use Alchemy\Phrasea\Model\Entities\StoryWZ;
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
@@ -11,8 +30,11 @@ use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfProviderInterface;
 use Symfony\Component\Routing\RequestContext;
 
+use Alchemy\Tests\Tools\TranslatorMockTrait;
+
 abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 {
+    use TranslatorMockTrait;
     /**
      * Define some user agents
      */
@@ -25,7 +47,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      * @var \Pimple
      */
     public static $DI;
-    protected static $testsTime = array();
+    protected static $testsTime = [];
     protected static $records;
     public static $recordsInitialized = false;
 
@@ -60,6 +82,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             self::$time_start = microtime(true);
 
             self::$DI = new \Pimple();
+            self::initializeSqliteDB();
 
             $application = new Application('test');
 
@@ -68,9 +91,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 exit(1);
             }
 
-            self::createSetOfUserTests($application);
-
             self::updateTablesSchema($application);
+
+            self::createSetOfUserTests($application);
 
             self::setCollection($application);
 
@@ -80,6 +103,14 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             self::$updated = true;
         }
+    }
+
+    public static function initializeSqliteDB($path = '/tmp/db.sqlite')
+    {
+        if (is_file($path)) {
+            unlink($path);
+        }
+        copy(__DIR__ . '/../db-ref.sqlite', $path);
     }
 
     public function createApplication()
@@ -92,7 +123,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      */
     public function __destruct()
     {
-        self::deleteRessources();
+        self::deleteResources();
 
         if (self::$time_start) {
             self::$time_start = null;
@@ -101,7 +132,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
     public function setUp()
     {
-        ini_set('memory_limit', '2048M');
+        ini_set('memory_limit', '4096M');
 
         $this->start = $start = microtime(true);
 
@@ -110,98 +141,82 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         \PHPUnit_Framework_Error_Warning::$enabled = true;
         \PHPUnit_Framework_Error_Notice::$enabled = true;
 
-        $phpunit = $this;
-
-        self::$DI['app'] = self::$DI->share(function ($DI) use ($phpunit) {
-            $environment = 'test';
-            $app = require __DIR__ . '/../../lib/Alchemy/Phrasea/Application/Root.php';
-
-            $app['form.csrf_provider'] = $app->share(function () {
-                return new CsrfTestProvider();
-            });
-
-            $app['url_generator'] = $app->share($app->extend('url_generator', function ($generator, $app) {
-                $host = parse_url($app['phraseanet.configuration']['main']['servername'], PHP_URL_HOST);
-                $generator->setContext(new RequestContext('', 'GET', $host));
-
-                return $generator;
-            }));
-
-            $app['debug'] = true;
-
-            $app['EM'] = $app->share($app->extend('EM', function ($em) {
-                @unlink('/tmp/db.sqlite');
-                copy(__DIR__ . '/../db-ref.sqlite', '/tmp/db.sqlite');
-
-                return $em;
-            }));
-
-            $app['browser'] = $app->share($app->extend('browser', function ($browser) {
-
-                $browser->setUserAgent(PhraseanetPHPUnitAbstract::USER_AGENT_FIREFOX8MAC);
-
-                return $browser;
-            }));
-
-            $app['notification.deliverer'] = $phpunit->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-                ->disableOriginalConstructor()
-                ->getMock();
-            $app['notification.deliverer']->expects($phpunit->any())
-                ->method('deliver')
-                ->will($phpunit->returnCallback(function () use ($phpunit) {
-                    $phpunit->fail('Notification deliverer must be mocked');
-                }));
-
-            return $app;
+        self::$DI['app'] = self::$DI->share(function ($DI) {
+            return $this->loadApp('/lib/Alchemy/Phrasea/Application/Root.php');
         });
 
-        self::$DI['cli'] = self::$DI->share(function ($DI) use ($phpunit) {
-            $app = new CLI('cli test', null, 'test');
-
-            $app['form.csrf_provider'] = $app->share(function () {
-                return new CsrfTestProvider();
-            });
-
-            $app['url_generator'] = $app->share($app->extend('url_generator', function ($generator, $app) {
-                $host = parse_url($app['phraseanet.configuration']['main']['servername'], PHP_URL_HOST);
-                $generator->setContext(new RequestContext('', 'GET', $host));
-
-                return $generator;
-            }));
-
-            $app['debug'] = true;
-
-            $app['EM'] = $app->share($app->extend('EM', function ($em) {
-                @unlink('/tmp/db.sqlite');
-                copy(__DIR__ . '/../db-ref.sqlite', '/tmp/db.sqlite');
-
-                return $em;
-            }));
-
-            $app['browser'] = $app->share($app->extend('browser', function ($browser) {
-
-                $browser->setUserAgent(PhraseanetPHPUnitAbstract::USER_AGENT_FIREFOX8MAC);
-
-                return $browser;
-            }));
-
-            $app['notification.deliverer'] = $phpunit->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-                ->disableOriginalConstructor()
-                ->getMock();
-            $app['notification.deliverer']->expects($phpunit->any())
-                ->method('deliver')
-                ->will($phpunit->returnCallback(function () use ($phpunit) {
-                    $phpunit->fail('Notification deliverer must be mocked');
-                }));
-
-            return $app;
+        self::$DI['cli'] = self::$DI->share(function ($DI) {
+            return $this->loadCLI();
         });
 
         self::$DI['client'] = self::$DI->share(function ($DI) {
-            return new Client($DI['app'], array());
+            return new Client($DI['app'], []);
         });
 
         self::$DI['user']->purgePreferences();
+    }
+
+    protected function loadCLI($environment = Application::ENV_TEST)
+    {
+        $cli = new CLI('cli test', null, $environment);
+        $this->addMocks($cli);
+
+        return $cli;
+    }
+
+    protected function loadApp($path, $environment = Application::ENV_TEST)
+    {
+        $app = require __DIR__ . '/../../' . $path;
+        $this->addMocks($app);
+
+        return $app;
+    }
+
+    protected function addMocks(Application $app)
+    {
+        $app['debug'] = true;
+
+        $app['form.csrf_provider'] = $app->share(function () {
+            return new CsrfTestProvider();
+        });
+
+        $app['url_generator'] = $app->share($app->extend('url_generator', function ($generator, $app) {
+            $host = parse_url($app['conf']->get(['main', 'servername']), PHP_URL_HOST);
+            $generator->setContext(new RequestContext('', 'GET', $host));
+
+            return $generator;
+        }));
+
+        $app['translator'] = $this->createTranslatorMock();
+
+        $app['phraseanet.SE.subscriber'] = $this->getMock('Symfony\Component\EventDispatcher\EventSubscriberInterface');
+        $app['phraseanet.SE.subscriber']::staticExpects($this->any())
+            ->method('getSubscribedEvents')
+            ->will($this->returnValue([]));
+
+        $app['translator'] = $this->createTranslatorMock();
+
+        $app['EM'] = $app->share($app->extend('EM', function ($em) {
+            $this->initializeSqliteDB();
+
+            return $em;
+        }));
+
+        $app['browser'] = $app->share($app->extend('browser', function ($browser) {
+            $browser->setUserAgent(PhraseanetPHPUnitAbstract::USER_AGENT_FIREFOX8MAC);
+
+            return $browser;
+        }));
+
+        $app['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $app['notification.deliverer']->expects($this->any())
+            ->method('deliver')
+            ->will($this->returnCallback(function () {
+                $this->fail('Notification deliverer must be mocked');
+            }));
     }
 
     public function tearDown()
@@ -251,315 +266,523 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $this->assertTrue(false !== stripos($response->getContent(), 'Sorry, the page you are looking for could not be found'));
     }
 
-    /**
-     * Insert fixture contained in the specified fixtureLoader
-     * into sqlLite test temporary database
-     *
-     * @param Doctrine\Common\DataFixtures\Loader $fixtureLoader
-     */
-    public function insertFixtureInDatabase(Doctrine\Common\DataFixtures\Loader $fixtureLoader, $append = true)
-    {
-        $purger = new Doctrine\Common\DataFixtures\Purger\ORMPurger();
-        $executor = new Doctrine\Common\DataFixtures\Executor\ORMExecutor(self::$DI['app']['EM'], $purger);
-        $executor->execute($fixtureLoader->getFixtures(), $append);
-        self::$DI['client'] = self::$DI->share(function ($DI) {
-            return new Client($DI['app'], array());
-        });
-    }
-
-    /**
-     * Purge sqlLite test temporary database by truncate all existing tables
-     */
-    protected static function purgeDatabase()
-    {
-        $purger = new Doctrine\Common\DataFixtures\Purger\ORMPurger();
-        $executor = new Doctrine\Common\DataFixtures\Executor\ORMExecutor(self::$DI['app']['EM'], $purger);
-        $executor->execute(array());
-        self::$DI['app']["phraseanet.cache-service"]->flushAll();
-    }
-
     protected function assertDateAtom($date)
     {
         return $this->assertRegExp('/\d{4}[-]\d{2}[-]\d{2}[T]\d{2}[:]\d{2}[:]\d{2}[+]\d{2}[:]\d{2}/', $date);
     }
 
-    protected function set_user_agent($user_agent, Alchemy\Phrasea\Application $app)
+    protected function set_user_agent($user_agent, Application $app)
     {
         $app['browser']->setUserAgent($user_agent);
         $app->register(new \Silex\Provider\TwigServiceProvider());
         $app->setupTwig();
         self::$DI['client'] = self::$DI->share(function ($DI) use ($app) {
-            return new Client($app, array());
+            return new Client($app, []);
         });
     }
 
     /**
-     * Insert one basket entry ans set current authenticated user as owner
+     * Inserts two tasks.
      *
-     * @return \Entities\Basket
+     * @return Task[]
      */
-    protected function insertOneBasket()
+    public function insertTwoTasks()
     {
-        try {
-            $basketFixture = new PhraseaFixture\Basket\LoadOneBasket();
+        $task1 = new Task();
+        $task1
+            ->setName('task 1')
+            ->setJobId('Null');
 
-            $basketFixture->setUser(self::$DI['user']);
+        $task2 = new Task();
+        $task2
+            ->setName('task 2')
+            ->setJobId('Null');
 
-            $loader = new Loader();
-            $loader->addFixture($basketFixture);
+        self::$DI['app']['EM']->persist($task1);
+        self::$DI['app']['EM']->persist($task2);
+        self::$DI['app']['EM']->flush();
 
-            $this->insertFixtureInDatabase($loader);
-
-            return $basketFixture->basket;
-        } catch (\Exception $e) {
-            $this->fail('Fail load one Basket : ' . $e->getMessage());
-        }
+        return [$task1, $task2];
     }
 
     /**
-     * Insert one basket entry ans set current authenticated user as owner
+     * Inserts one basket.
      *
-     * @return \Entities\Basket
-     */
-    protected function insertOneLazaretFile()
-    {
-        try {
-            $lazaretFixture = new PhraseaFixture\Lazaret\LoadOneFile();
-
-            $lazaretFixture->setUser(self::$DI['user']);
-            $lazaretFixture->setCollectionId(self::$DI['collection']->get_base_id());
-
-            $loader = new Loader();
-            $loader->addFixture($lazaretFixture);
-
-            $this->insertFixtureInDatabase($loader);
-
-            return $lazaretFixture->file;
-        } catch (\Exception $e) {
-            $this->fail('Fail load one Basket : ' . $e->getMessage());
-        }
-    }
-
-    protected function insertOneUsrList(\User_Adapter $user)
-    {
-        try {
-            $loader = new Loader();
-
-            $UsrOwner = new PhraseaFixture\UsrLists\UsrListOwner();
-            $UsrOwner->setUser($user);
-
-            $loader->addFixture($UsrOwner);
-
-            $UsrList = new PhraseaFixture\UsrLists\UsrList();
-
-            $loader->addFixture($UsrList);
-
-            $this->insertFixtureInDatabase($loader);
-
-            return $UsrList->list;
-        } catch (\Exception $e) {
-            $this->fail('Fail load one UsrList : ' . $e->getMessage());
-        }
-    }
-
-    /**
+     * @param User_Adapter $user
      *
-     * @param  \Entities\UsrList      $UsrList
-     * @return \Entities\UsrListEntry
+     * @return Basket
      */
-    protected function insertOneUsrListEntry(\User_adapter $owner, \User_adapter $user)
+    protected function insertOneBasket(\User_Adapter $user = null)
     {
-        try {
-            $loader = new Loader();
+        $basket = new Basket();
+        $basket->setOwner($user ?: self::$DI['user']);
+        $basket->setName('test');
+        $basket->setDescription('description test');
 
-            $UsrOwner = new PhraseaFixture\UsrLists\UsrListOwner();
-            $UsrOwner->setUser($owner);
-
-            $loader->addFixture($UsrOwner);
-
-            $UsrList = new PhraseaFixture\UsrLists\UsrList();
-
-            $loader->addFixture($UsrList);
-
-            $UsrEntry = new PhraseaFixture\UsrLists\UsrListEntry();
-
-            $UsrEntry->setUser($user);
-
-            $loader->addFixture($UsrEntry);
-
-            $this->insertFixtureInDatabase($loader);
-
-            return $UsrEntry->entry;
-        } catch (\Exception $e) {
-            $this->fail('Fail load one UsrListEntry : ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Insert five baskets and set current authenticated user as owner
-     *
-     * @return \Entities\Basket
-     */
-    protected function insertFiveBasket()
-    {
-        try {
-            $basketFixture = new PhraseaFixture\Basket\LoadFiveBaskets();
-
-            $basketFixture->setUser(self::$DI['user']);
-
-            $loader = new Loader();
-            $loader->addFixture($basketFixture);
-
-            $this->insertFixtureInDatabase($loader);
-
-            return $basketFixture->baskets;
-        } catch (\Exception $e) {
-            $this->fail('Fail load five Basket : ' . $e->getMessage());
-        }
-    }
-
-    /**
-     *
-     * @return \Entities\BasketElement
-     */
-    protected function insertOneBasketElement()
-    {
-        $basket = $this->insertOneBasket();
-
-        $basketElement = new \Entities\BasketElement();
-        $basketElement->setRecord(self::$DI['record_1']);
-        $basketElement->setBasket($basket);
-
-        $basket->addElement($basketElement);
-
-        $em = self::$DI['app']['EM'];
-
-        $em->persist($basketElement);
-
-        $em->merge($basket);
-
-        $em->flush();
-
-        return $basketElement;
-    }
-
-    /**
-     *
-     * @return \Entities\Basket
-     */
-    protected function insertOneValidationBasket(array $parameters = array())
-    {
-        $em = self::$DI['app']['EM'];
-
-        $basketElement = $this->insertOneBasketElement();
-        $basket = $basketElement->getBasket();
-
-        $Validation = new Entities\ValidationSession();
-        $Validation->setBasket($basket);
-        $Validation->setInitiator(self::$DI['user']);
-
-        if (isset($parameters['expires']) && $parameters['expires'] instanceof \DateTime) {
-            $Validation->setExpires($parameters['expires']);
-        }
-
-        $basket->setValidation($Validation);
-        $em->persist($Validation);
-        $em->merge($basket);
-
-        $Participant = new Entities\ValidationParticipant();
-        $Participant->setUser(self::$DI['user']);
-        $Participant->setCanAgree(true);
-        $Participant->setCanSeeOthers(true);
-
-        $Validation->addParticipant($Participant);
-        $Participant->setSession($Validation);
-
-        $em->persist($Participant);
-        $em->merge($Validation);
-
-        $Data = new Entities\ValidationData();
-        $Data->setBasketElement($basketElement);
-        $Data->setParticipant($Participant);
-        $basketElement->addValidationData($Data);
-
-        $em->persist($Data);
-        $em->merge($basketElement);
-
-        $em->flush();
+        self::$DI['app']['EM']->persist($basket);
+        self::$DI['app']['EM']->flush();
 
         return $basket;
     }
 
     /**
-     * Create a new basket with current auhtenticated user as owner
-     * Create a new sessionValidation with the newly created basket
-     * Set current authenticated user as sessionValidation initiator
-     * Add 2 records as elments of the newly created basket
-     * Add 2 participants to the newly created sessionValidation
+     * Inserts one feed.
      *
-     * @return \Entities\Basket
+     * @param User_Adapter $user
+     * @param string|null  $title
+     * @param bool         $public
+     *
+     * @return Feed
      */
-    protected function insertOneBasketEnv()
+    protected function insertOneFeed(\User_Adapter $user = null , $title = null, $public = false)
     {
-        try {
-            $basketFixture = new PhraseaFixture\Basket\LoadOneBasketEnv();
+        $feed = new Feed();
+        $publisher = new FeedPublisher();
 
-            $basketFixture->setUser(self::$DI['user']);
+        $user = $user ?: self::$DI['user'];
 
-            $basketFixture->addParticipant(self::$DI['user_alt1']);
-            $basketFixture->addParticipant(self::$DI['user_alt2']);
+        $publisher->setUsrId($user->get_id());
+        $publisher->setIsOwner(true);
+        $publisher->setFeed($feed);
 
-            $basketFixture->addElement(self::$DI['record_1']);
-            $basketFixture->addElement(self::$DI['record_2']);
+        $feed->addPublisher($publisher);
+        $feed->setTitle($title ?: "test");
+        $feed->setIsPublic($public);
+        $feed->setSubtitle("description");
 
-            $loader = new Loader();
-            $loader->addFixture($basketFixture);
+        self::$DI['app']['EM']->persist($feed);
+        self::$DI['app']['EM']->persist($publisher);
+        self::$DI['app']['EM']->flush();
 
-            $this->insertFixtureInDatabase($loader);
-
-            return $basketFixture->basket;
-        } catch (\Exception $e) {
-            $this->fail('Fail load one Basket context : ' . $e->getMessage());
-        }
+        return $feed;
     }
 
     /**
-     * Load One WZ with
-     * One basket
-     * One story
-     * One ValidationSession & one participant
-     * @return
+     * Inserts one feed entry.
+     *
+     * @param User_Adapter $user
+     * @param bool         $public
+     *
+     * @return FeedEntry
+     */
+    protected function insertOneFeedEntry(\User_Adapter $user = null, $public = false)
+    {
+        $feed = $this->insertOneFeed($user, null, $public);
+
+        $entry = new FeedEntry();
+        $entry->setFeed($feed);
+        $entry->setTitle("test");
+        $entry->setSubtitle("description");
+        $entry->setAuthorName('user');
+        $entry->setAuthorEmail('user@email.com');
+
+        $publisher = $feed->getPublisher($user ?: self::$DI['user']);
+
+        if ($publisher !== null) {
+            $entry->setPublisher($publisher);
+        }
+
+        $feed->addEntry($entry);
+
+        self::$DI['app']['EM']->persist($entry);
+        self::$DI['app']['EM']->persist($feed);
+        self::$DI['app']['EM']->flush();
+
+        return $entry;
+    }
+
+    /**
+     * Inserts one feed token.
+     *
+     * @param Feed         $feed
+     * @param User_Adapter $user
+     *
+     * @return FeedToken
+     */
+    protected function insertOneFeedToken(Feed $feed, \User_Adapter $user = null)
+    {
+        $user = $user ?: self::$DI['user'];
+
+        $token = new FeedToken();
+        $token->setValue(self::$DI['app']['tokens']->generatePassword(12));
+        $token->setFeed($feed);
+        $token->setUsrId($user->get_id());
+
+        $feed->addToken($token);
+
+        self::$DI['app']['EM']->persist($token);
+        self::$DI['app']['EM']->persist($feed);
+        self::$DI['app']['EM']->flush();
+
+        return $token;
+    }
+
+    /**
+     * Insert one aggregate token.
+     *
+     * @param User_Adapter $user
+     *
+     * @return AggregateToken
+     */
+    protected function insertOneAggregateToken(\User_Adapter $user = null)
+    {
+        $user = $user ?: self::$DI['user'];
+
+        $token = new AggregateToken();
+        $token->setValue(self::$DI['app']['tokens']->generatePassword(12));
+        $token->setUsrId($user->get_id());
+
+        self::$DI['app']['EM']->persist($token);
+        self::$DI['app']['EM']->flush();
+
+        return $token;
+    }
+
+    /**
+     * Inserts one feed item.
+     *
+     * @param User_Adapter   $user
+     * @param boolean        $public
+     * @param integer        $qty
+     * @param record_adapter $record
+     *
+     * @return FeedItem
+     */
+    protected function insertOneFeedItem(\User_Adapter $user = null, $public = false, $qty = 1, \record_adapter $record = null)
+    {
+        $entry = $this->insertOneFeedEntry($user, $public);
+
+        for ($i = 0; $i < $qty; $i++) {
+            $item = new FeedItem();
+            $item->setEntry($entry);
+
+            if (null === $record) {
+                $actual = self::$DI['record_'.($i+1)];
+            } else {
+                $actual = $record;
+            }
+
+            $item->setRecordId($actual->get_record_id());
+            $item->setSbasId($actual->get_sbas_id());
+            $item->setEntry($entry);
+            $entry->addItem($item);
+
+            self::$DI['app']['EM']->persist($item);
+        }
+
+        self::$DI['app']['EM']->persist($entry);
+        self::$DI['app']['EM']->flush();
+
+        return $item;
+    }
+
+    /**
+     * Inserts one lazaret file.
+     *
+     * @param User_Adapter $user
+     *
+     * @return LazaretFile
+     */
+    protected function insertOneLazaretFile(\User_Adapter $user = null)
+    {
+        $user = $user ?: self::$DI['user'];
+
+        $lazaretSession = new LazaretSession();
+        $lazaretSession->setUsrId($user->get_id());
+        $lazaretSession->setUpdated(new \DateTime('now'));
+        $lazaretSession->setCreated(new \DateTime('-1 day'));
+
+        $lazaretFile = new LazaretFile();
+        $lazaretFile->setOriginalName('test');
+        $lazaretFile->setFilename('test.jpg');
+        $lazaretFile->setThumbFilename('thumb_test.jpg');
+        $lazaretFile->setBaseId(self::$DI['collection']->get_base_id());
+        $lazaretFile->setSession($lazaretSession);
+        $lazaretFile->setSha256('3191af52748620e0d0da50a7b8020e118bd8b8a0845120b0bb');
+        $lazaretFile->setUuid('7b8ef0e3-dc8f-4b66-9e2f-bd049d175124');
+        $lazaretFile->setCreated(new \DateTime('now'));
+        $lazaretFile->setUpdated(new \DateTime('-1 day'));
+
+        self::$DI['app']['EM']->persist($lazaretFile);
+        self::$DI['app']['EM']->flush();
+
+        return $lazaretFile;
+
+    }
+
+    /**
+     * Inserts one user list owner.
+     *
+     * @param User_Adapter $user
+     *
+     * @return UsrListOwner
+     */
+    protected function insertOneUsrListOwner(\User_Adapter $user = null)
+    {
+        $user = $user ?: self::$DI['user'];
+
+        $owner = new UsrListOwner();
+        $owner->setRole(UsrListOwner::ROLE_ADMIN);
+        $owner->setUser($user);
+
+        self::$DI['app']['EM']->persist($owner);
+        self::$DI['app']['EM']->flush();
+
+        return $owner;
+    }
+
+    /**
+     * Inserts one user list.
+     *
+     * @param User_Adapter $user
+     *
+     * @return UsrListOwner
+     */
+    protected function insertOneUsrList(\User_Adapter $user = null)
+    {
+        $owner = $this->insertOneUsrListOwner($user);
+        $list = new UsrList();
+        $list->setName('new list');
+        $list->addOwner($owner);
+        $owner->setList($list);
+
+        self::$DI['app']['EM']->persist($list);
+        self::$DI['app']['EM']->flush();
+
+        return $list;
+    }
+
+    /**
+     * Insert one user list entry.
+     *
+     * @param User_adapter $owner
+     * @param User_adapter $user
+     *
+     * @return UsrListEntry
+     */
+    protected function insertOneUsrListEntry(\User_adapter $owner, \User_adapter $user)
+    {
+        $list = $this->insertOneUsrList($owner);
+
+        $entry = new UsrListEntry();
+        $entry->setUser($user);
+        $entry->setList($list);
+
+        $list->addEntrie($entry);
+
+        self::$DI['app']['EM']->persist($entry);
+        self::$DI['app']['EM']->persist($list);
+        self::$DI['app']['EM']->flush();
+
+        return $entry;
+    }
+
+    /**
+     * Inserts five baskets.
+     *
+     * @return Basket[]
+     */
+    protected function insertFiveBasket()
+    {
+        $baskets = [];
+
+        for ($i = 0; $i < 5; $i ++) {
+            $basket = new Basket();
+            $basket->setName('test ' . $i);
+            $basket->setDescription('description');
+            $basket->setOwner(self::$DI['user']);
+
+            self::$DI['app']['EM']->persist($basket);
+            $baskets[] = $basket;
+        }
+        self::$DI['app']['EM']->flush();
+
+        return $baskets;
+    }
+
+    /**
+     * Inserts one basket element.
+     *
+     * @param User_Adapter   $user
+     * @param record_adapter $record
+     *
+     * @return BasketElement
+     */
+    protected function insertOneBasketElement(\User_Adapter $user = null, \record_adapter $record = null)
+    {
+        $element = new BasketElement();
+        $element->setRecord($record ?: self::$DI['record_1']);
+
+        $basket = $this->insertOneBasket($user);
+        $basket->addElement($element);
+        $element->setBasket($basket);
+
+        self::$DI['app']['EM']->persist($basket);
+        self::$DI['app']['EM']->flush();
+
+        return $element;
+    }
+
+    /**
+     * Inserts one validation basket.
+     *
+     * @param array $parameters
+     *
+     * @return Basket
+     */
+    protected function insertOneValidationBasket(array $parameters = [])
+    {
+        $basketElement = $this->insertOneBasketElement();
+        $basket = $basketElement->getBasket();
+
+        $validation = new ValidationSession();
+        $validation->setBasket($basket);
+        $validation->setInitiator(self::$DI['user']);
+
+        if (isset($parameters['expires']) && $parameters['expires'] instanceof \DateTime) {
+            $validation->setExpires($parameters['expires']);
+        }
+
+        $basket->setValidation($validation);
+
+        $participant = new ValidationParticipant();
+        $participant->setUser(self::$DI['user']);
+        $participant->setCanAgree(true);
+        $participant->setCanSeeOthers(true);
+
+        $validation->addParticipant($participant);
+        $participant->setSession($validation);
+
+        $data = new ValidationData();
+        $data->setBasketElement($basketElement);
+        $data->setParticipant($participant);
+        $basketElement->addValidationData($data);
+
+        self::$DI['app']['EM']->persist($basket);
+        self::$DI['app']['EM']->persist($validation);
+        self::$DI['app']['EM']->persist($participant);
+        self::$DI['app']['EM']->persist($data);
+        self::$DI['app']['EM']->persist($basketElement);
+
+        self::$DI['app']['EM']->flush();
+
+        return $basket;
+    }
+
+    /**
+     * - Creates a new basket with current authenticated user as owner.
+     * - Creates a new sessionValidation with the newly created basket.
+     * - Sets current authenticated user as sessionValidation initiator.
+     * - Adds 2 records as elements of the newly created basket.
+     * - Adds 2 participants to the newly created sessionValidation.
+     *
+     * @return Basket
+     */
+    protected function insertOneBasketEnv()
+    {
+        $basket = new Basket();
+        $basket->setName('test');
+        $basket->setDescription('description');
+        $basket->setOwner(self::$DI['user']);
+
+        self::$DI['app']['EM']->persist($basket);
+
+        foreach ([self::$DI['record_1'], self::$DI['record_2']] as $record) {
+            $basketElement = new BasketElement();
+            $basketElement->setRecord($record);
+            $basketElement->setBasket($basket);
+            $basket->addElement($basketElement);
+            self::$DI['app']['EM']->persist($basketElement);
+        }
+
+        $validationSession = new ValidationSession();
+        $validationSession->setBasket($basket);
+        $basket->setValidation($validationSession);
+        $expires = new \DateTime();
+        $expires->modify('+1 week');
+        $validationSession->setExpires($expires);
+        $validationSession->setInitiator(self::$DI['user']);
+
+        foreach ([self::$DI['user_alt1'], self::$DI['user_alt2']] as $user) {
+            $validationParticipant = new ValidationParticipant();
+            $validationParticipant->setUser($user);
+            $validationParticipant->setSession($validationSession);
+            $validationSession->addParticipant($validationParticipant);
+            self::$DI['app']['EM']->persist($validationParticipant);
+        }
+
+        self::$DI['app']['EM']->flush();
+
+        return $basket;
+    }
+
+    /**
+     * Inserts one story.
+     *
+     * @param User_Adapter   $user
+     * @param record_adapter $record
+     *
+     * @return StoryWZ
+     */
+    protected function insertOneStory(User_Adapter $user = null, \record_adapter $record = null)
+    {
+        $story = new StoryWZ();
+
+        $story->setRecord($record ?: self::$DI['record_1']);
+        $story->setUser($user ?: self::$DI['user']);
+
+        self::$DI['app']['EM']->persist($story);
+        self::$DI['app']['EM']->flush();
+
+        return $story;
+    }
+
+    /**
+     * Inserts one validation session.
+     *
+     * @param Basket       $basket
+     * @param User_Adapter $user
+     *
+     * @return ValidationSession
+     */
+    protected function insertOneValidationSession(Basket $basket = null, \User_Adapter $user = null)
+    {
+        $validationSession = new ValidationSession();
+
+        $validationSession->setBasket($basket ?: $this->insertOneBasket());
+
+        $expires = new \DateTime();
+        $expires->modify('+1 week');
+        $validationSession->setExpires($expires);
+        $validationSession->setInitiator($user ?: self::$DI['user']);
+
+        self::$DI['app']['EM']->persist($validationSession);
+        self::$DI['app']['EM']->flush();
+
+        return $validationSession;
+    }
+
+    /**
+     * Loads One WZ with one basket, one story and one ValidationSession with one participant.
      */
     protected function insertOneWZ()
     {
-        try {
-            $currentUser = self::$DI['user'];
-            $altUser = self::$DI['user_alt1'];
+        $this->insertOneStory();
+        $this->insertOneValidationSession($this->insertOneBasket(), self::$DI['user_alt1']);
+    }
 
-            // add one basket
-            $basket = new PhraseaFixture\Basket\LoadOneBasket();
-            $basket->setUser($currentUser);
-
-            //add one story
-            $story = new PhraseaFixture\Story\LoadOneStory();
-            $story->setUser($currentUser);
-            $story->setRecord(self::$DI['record_1']);
-
-            //add a validation session initiated by alt user
-            $validationSession = new PhraseaFixture\ValidationSession\LoadOneValidationSession();
-            $validationSession->setUser($altUser);
-
-            $loader = new Loader();
-            $loader->addFixture($basket);
-            $loader->addFixture($story);
-            $loader->addFixture($validationSession);
-
-            $this->insertFixtureInDatabase($loader);
-        } catch (\Exception $e) {
-            $this->fail('Fail load one WorkingZone : ' . $e->getMessage());
-        }
-
-        return;
+    /**
+     * Inserts one user.
+     *
+     * @param string $login
+     * @param null   $email
+     * @param bool   $admin
+     *
+     * @return User
+     */
+    protected function insertOneUser($login, $email = null, $admin = false)
+    {
+        return self::$DI['app']['manipulator.user']->createUser($login, uniqid('pass'), $email, $admin);
     }
 
     /**
@@ -568,26 +791,24 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      * @param string $method     The request method
      * @param string $uri        The URI to fetch
      * @param array  $parameters The Request parameters
-     * @param array  $httpAccept Contents of the Accept header
+     * @param string $httpAccept Contents of the Accept header
      *
      * @return Crawler
      */
-    protected function XMLHTTPRequest($method, $uri, array $parameters = array(), $httpAccept = 'application/json')
+    protected function XMLHTTPRequest($method, $uri, array $parameters = [], $httpAccept = 'application/json')
     {
-        return self::$DI['client']->request($method, $uri, $parameters, array(), array(
+        return self::$DI['client']->request($method, $uri, $parameters, [], [
             'HTTP_ACCEPT'           => $httpAccept,
             'HTTP_X-Requested-With' => 'XMLHttpRequest',
-        ));
+        ]);
     }
 
     /**
-     * Update the sql tables with the current schema
-     * @return void
+     * Updates the sql tables with the current schema.
      */
     private static function updateTablesSchema(Application $application)
     {
         if (!self::$updated) {
-
             if (file_exists(Setup_Upgrade::get_lock_file())) {
                 unlink(Setup_Upgrade::get_lock_file());
             }
@@ -596,16 +817,21 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $application['phraseanet.appbox']->forceUpgrade($upgrader, $application);
             unset($upgrader);
 
-            $command = __DIR__ . '/../../bin/doctrine orm:schema-tool:update --force';
+            $command = __DIR__ . '/../../bin/developer orm:schema-tool:update --force';
 
             try {
                 $process = new Symfony\Component\Process\Process('php ' . $command);
                 $process->run();
-            } catch (Symfony\Component\Process\Exception\RuntimeException $e) {
-                exit('Unable to validate ORM schema');
-            }
 
-            self::$updated = true;
+                if (!$process->isSuccessful()) {
+                    throw new \RuntimeException($process->getErrorOutput());
+                }
+
+                self::$updated = true;
+            } catch (\RuntimeException $e) {
+                echo "\033[0;31mUnable to validate ORM schema\033[0;37m\n";
+                exit(1);
+            }
         }
 
         set_time_limit(3600);
@@ -614,12 +840,11 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     }
 
     /**
-     * Create a set of users for the test suite
+     * Creates a set of users for the test suite.
+     *
      * self::$DI['user']
      * self::$DI['user_alt1']
      * self::$DI['user_alt2']
-     *
-     * @return void;
      */
     private static function createSetOfUserTests(Application $application)
     {
@@ -671,32 +896,32 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     }
 
     /**
-     * Give Bases Rights to User
+     * Gives Bases Rights to User.
      *
      * @param \User_Adapter $user
      */
     public static function giveRightsToUser(Application $app, \User_Adapter $user)
     {
-        $user->ACL()->give_access_to_sbas(array_keys($app['phraseanet.appbox']->get_databoxes()));
+        $app['acl']->get($user)->give_access_to_sbas(array_keys($app['phraseanet.appbox']->get_databoxes()));
 
         foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
 
-            $rights = array(
+            $rights = [
                 'bas_manage'        => '1'
                 , 'bas_modify_struct' => '1'
                 , 'bas_modif_th'      => '1'
                 , 'bas_chupub'        => '1'
-            );
+            ];
 
-            $user->ACL()->update_rights_to_sbas($databox->get_sbas_id(), $rights);
+            $app['acl']->get($user)->update_rights_to_sbas($databox->get_sbas_id(), $rights);
 
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
 
-                $user->ACL()->give_access_to_base(array($base_id));
-                $user->ACL()->update_rights_to_base($base_id, array('order_master' => true));
+                $app['acl']->get($user)->give_access_to_base([$base_id]);
+                $app['acl']->get($user)->update_rights_to_base($base_id, ['order_master' => true]);
 
-                $rights = array(
+                $rights = [
                     'canputinalbum'     => '1'
                     , 'candwnldhd'        => '1'
                     , 'candwnldsubdef'    => '1'
@@ -716,16 +941,15 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                     , 'modify_struct'     => '1'
                     , 'manage'            => '1'
                     , 'bas_modify_struct' => '1'
-                );
+                ];
 
-                $user->ACL()->update_rights_to_base($collection->get_base_id(), $rights);
+                $app['acl']->get($user)->update_rights_to_base($collection->get_base_id(), $rights);
             }
         }
     }
 
     /**
-     * Set self::$DI['collection']
-     * @return void
+     * Sets self::$DI['collection'].
      */
     private static function setCollection(Application $application)
     {
@@ -764,8 +988,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             $DI['user'] = $DI->share(
                 $DI->extend('user', function ($user, $DI) use ($collection_no_acces) {
-                    $user->ACL()->revoke_access_from_bases(array($collection_no_acces->get_base_id()));
-                    $DI['client'] = new Client($DI['app'], array());
+                    $DI['app']['acl']->get($user)->revoke_access_from_bases([$collection_no_acces->get_base_id()]);
+                    $DI['client'] = new Client($DI['app'], []);
 
                     return $user;
                 })
@@ -783,8 +1007,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             $DI['user'] = $DI->share(
                 $DI->extend('user', function ($user, $DI) use ($collection_no_acces_by_status) {
-                    $user->ACL()->set_masks_on_base($collection_no_acces_by_status->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
-                    $DI['client'] = new Client($DI['app'], array());
+                    $DI['app']['acl']->get($user)->set_masks_on_base($collection_no_acces_by_status->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
+                    $DI['client'] = new Client($DI['app'], []);
 
                     return $user;
                 })
@@ -799,7 +1023,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     }
 
     /**
-     * Generate a set of records for the current tests suites
+     * Generates a set of records for the current tests suites.
      */
     private static function generateRecords(Application $app)
     {
@@ -807,7 +1031,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             $logger = new \Monolog\Logger('tests');
             $logger->pushHandler(new \Monolog\Handler\NullHandler());
-            self::$recordsInitialized = array();
+            self::$recordsInitialized = [];
 
             $resolvePathfile = function ($i) {
                 $finder = new Symfony\Component\Finder\Finder();
@@ -868,7 +1092,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             self::$DI['user'] = self::$DI->share(
                 self::$DI->extend('user', function ($user, $DI) use ($app) {
                     PhraseanetPHPUnitAbstract::giveRightsToUser($app, $user);
-                    $user->ACL()->set_admin(true);
+                    $app['acl']->get($user)->set_admin(true);
 
                     return $user;
                 })
@@ -877,7 +1101,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             self::$DI['user_notAdmin'] = self::$DI->share(
                 self::$DI->extend('user_notAdmin', function ($user, $DI) use ($app) {
                     PhraseanetPHPUnitAbstract::giveRightsToUser($app, $user);
-                    $user->ACL()->set_admin(false);
+                    $app['acl']->get($user)->set_admin(false);
 
                     return $user;
                 })
@@ -888,11 +1112,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     }
 
     /**
-     * Delete previously created Ressources
-     *
-     * @return void
+     * Deletes previously created Resources.
      */
-    private static function deleteRessources()
+    private static function deleteResources()
     {
         $skipped = \PhraseanetPHPUnitListener::getSkipped();
 
@@ -911,17 +1133,22 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 self::$DI['record_' . $i]->delete();
             }
 
-            self::$recordsInitialized = array();
+            self::$recordsInitialized = [];
         }
 
         return;
     }
 
+    /**
+     * Authenticates self::['user'] against application.
+     *
+     * @param Application $app
+     */
     protected function authenticate(Application $app)
     {
         $app['session']->clear();
         $app['session']->set('usr_id', self::$DI['user']->get_id());
-        $session = new \Entities\Session();
+        $session = new Session();
         $session->setUsrId(self::$DI['user']->get_id());
         $session->setUserAgent('');
         self::$DI['app']['EM']->persist($session);
@@ -932,6 +1159,11 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         self::$DI['app']['authentication']->reinitUser();
     }
 
+    /**
+     * Logout authenticated user from application.
+     *
+     * @param Application $app
+     */
     protected function logout(Application $app)
     {
         $app['session']->clear();
@@ -951,7 +1183,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
             ->disableOriginalConstructor()
             ->getMock();
-
         self::$DI['app']['notification.deliverer']->expects($this->exactly($qty))
             ->method('deliver')
             ->with($this->isInstanceOf($expectedMail), $this->equalTo($receipt));
@@ -963,12 +1194,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $phpunit = $this;
-
         self::$DI['app']['notification.deliverer']->expects($this->any())
             ->method('deliver')
-            ->will($this->returnCallback(function ($email, $receipt) use ($phpunit, &$expectedMails) {
-                $phpunit->assertTrue(isset($expectedMails[get_class($email)]));
+            ->will($this->returnCallback(function ($email, $receipt) use (&$expectedMails) {
+                $this->assertTrue(isset($expectedMails[get_class($email)]));
                 $expectedMails[get_class($email)]++;
             }));
     }
@@ -976,7 +1205,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     public function createRandomMock()
     {
         return $this->getMockBuilder('\random')
-            ->setMethods(array('generatePassword'))
+            ->setMethods(['generatePassword'])
             ->disableOriginalConstructor()
             ->getMock();
     }

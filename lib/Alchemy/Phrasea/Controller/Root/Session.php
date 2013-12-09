@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Root;
 
+use Alchemy\Phrasea\Model\Entities\SessionModule;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,25 +21,14 @@ class Session implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
+        $app['controller.session'] = $this;
+
         $controllers = $app['controllers_factory'];
 
-        /**
-         * Check session state
-         *
-         * name         : update_session
-         *
-         * description  : Check session state
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/update/', $this->call('updateSession'))
+        $controllers->post('/update/', 'controller.session:updateSession')
             ->bind('update_session');
 
-        $controllers->post('/delete/{id}', $this->call('deleteSession'))
+        $controllers->post('/delete/{id}', 'controller.session:deleteSession')
             ->before(function () use ($app) {
                 $app['firewall']->requireAuthentication();
             })
@@ -60,12 +50,12 @@ class Session implements ControllerProviderInterface
             $app->abort(400);
         }
 
-        $ret = array(
+        $ret = [
             'status'  => 'unknown',
             'message' => '',
             'notifications' => false,
-            'changed' => array()
-        );
+            'changed' => []
+        ];
 
         if ($app['authentication']->isAuthenticated()) {
             $usr_id = $app['authentication']->getUser()->get_id();
@@ -92,11 +82,11 @@ class Session implements ControllerProviderInterface
             return $app->json($ret);
         }
 
-        $session = $app['EM']->find('Entities\Session', $app['session']->get('session_id'));
+        $session = $app['EM']->find('Alchemy\Phrasea\Model\Entities\Session', $app['session']->get('session_id'));
         $session->setUpdated(new \DateTime());
 
         if (!$session->hasModuleId($moduleId)) {
-            $module = new \Entities\SessionModule();
+            $module = new SessionModule();
             $module->setModuleId($moduleId);
             $module->setSession($session);
             $app['EM']->persist($module);
@@ -109,19 +99,19 @@ class Session implements ControllerProviderInterface
 
         $ret['status'] = 'ok';
 
-        $ret['notifications'] = $app['twig']->render('prod/notifications.html.twig', array(
+        $ret['notifications'] = $app['twig']->render('prod/notifications.html.twig', [
             'notifications' => $app['events-manager']->get_notifications()
-        ));
+        ]);
 
-        $baskets = $app['EM']->getRepository('\Entities\Basket')->findUnreadActiveByUser($app['authentication']->getUser());
+        $baskets = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket')->findUnreadActiveByUser($app['authentication']->getUser());
 
         foreach ($baskets as $basket) {
             $ret['changed'][] = $basket->getId();
         }
 
-        if (in_array($app['session']->get('phraseanet.message'), array('1', null))) {
-            if ($app['phraseanet.configuration']['main']['maintenance']) {
-                $ret['message'] .= _('The application is going down for maintenance, please logout.');
+        if (in_array($app['session']->get('phraseanet.message'), ['1', null])) {
+            if ($app['conf']->get(['main', 'maintenance'])) {
+                $ret['message'] .= $app->trans('The application is going down for maintenance, please logout.');
             }
 
             if ($app['phraseanet.registry']->get('GV_message_on')) {
@@ -143,7 +133,7 @@ class Session implements ControllerProviderInterface
      */
     public function deleteSession(Application $app, Request $request, $id)
     {
-        $session = $app['EM']->find('Entities\Session', $id);
+        $session = $app['EM']->find('Alchemy\Phrasea\Model\Entities\Session', $id);
 
         if (null === $session) {
             $app->abort(404, 'Unknown session');
@@ -157,23 +147,12 @@ class Session implements ControllerProviderInterface
         $app['EM']->flush();
 
         if ($app['request']->isXmlHttpRequest()) {
-            return $app->json(array(
+            return $app->json([
                 'success' => true,
                 'session_id' => $id
-            ));
+            ]);
         }
 
         return $app->redirectPath('account_sessions');
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

@@ -23,6 +23,8 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\FormProcessingException;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
+use Alchemy\Phrasea\Model\Entities\UsrAuthProvider;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordUpdate;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation;
@@ -35,7 +37,6 @@ use Alchemy\Phrasea\Form\Login\PhraseaForgotPasswordForm;
 use Alchemy\Phrasea\Form\Login\PhraseaRecoverPasswordForm;
 use Alchemy\Phrasea\Form\Login\PhraseaRegisterForm;
 use Doctrine\ORM\EntityManager;
-use Entities\UsrAuthProvider;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -49,21 +50,21 @@ class Login implements ControllerProviderInterface
 {
     public static function getDefaultTemplateVariables(Application $app)
     {
-        $items = array();
+        $items = [];
 
-        foreach (\Feed_Entry_Item::loadLatest($app, 20) as $item) {
-            $record = $item->get_record();
+        foreach ($app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedItem')->loadLatest($app, 20) as $item) {
+            $record = $item->getRecord($app);
             $preview = $record->get_subdef('preview');
             $permalink = $preview->get_permalink();
 
-            $items[] = array(
+            $items[] = [
                 'record' => $record,
                 'preview' => $preview,
                 'permalink' => $permalink
-            );
+            ];
         }
 
-        return array(
+        return [
             'last_publication_items' => $items,
             'instance_title' => $app['phraseanet.registry']->get('GV_homeTitle'),
             'has_terms_of_use' => $app->hasTermsOfUse(),
@@ -83,7 +84,7 @@ class Login implements ControllerProviderInterface
             'authentication_providers' => $app['authentication.providers'],
             'registration_fields' => $app['registration.fields'],
             'registration_optional_fields' => $app['registration.optional-fields']
-        );
+        ];
     }
 
     public function connect(Application $app)
@@ -109,10 +110,10 @@ class Login implements ControllerProviderInterface
                         // then post login operation like getting baskets from an invit session
                         // could be done by Session_handler authentication process
 
-                        $params = array();
+                        $params = [];
 
                         if (null !== $redirect = $request->query->get('redirect')) {
-                            $params = array('redirect' => ltrim($redirect, '/'));
+                            $params = ['redirect' => ltrim($redirect, '/')];
                         }
 
                         $response = $app->redirectPath('logout', $params);
@@ -202,7 +203,7 @@ class Login implements ControllerProviderInterface
         // Displays Terms of use
         $controllers->get('/cgus', function (PhraseaApplication $app, Request $request) {
             return $app['twig']->render('login/cgus.html.twig', array_merge(
-                array('cgus' => \databox_cgu::getHome($app)),
+                ['cgus' => \databox_cgu::getHome($app)],
                 self::getDefaultTemplateVariables($app)
             ));
         })->bind('login_cgus');
@@ -215,25 +216,25 @@ class Login implements ControllerProviderInterface
 
     public function getLanguage(Application $app, Request $request)
     {
-        $response =  $app->json(array(
-            'validation_blank'          => _('Please provide a value.'),
-            'validation_choice_min'     => _('Please select at least %s choice.'),
-            'validation_email'          => _('Please provide a valid email address.'),
-            'validation_ip'             => _('Please provide a valid IP address.'),
-            'validation_length_min'     => _('Please provide a longer value. It should have %s character or more.'),
-            'password_match'            => _('Please provide the same passwords.'),
-            'email_match'               => _('Please provide the same emails.'),
-            'accept_tou'                => _('Please accept the terms of use to register.'),
-            'no_collection_selected'    => _('No collection selected'),
-            'one_collection_selected'   => _('%d collection selected'),
-            'collections_selected'      => _('%d collections selected'),
-            'all_collections'           => _('Select all collections'),
+        $response =  $app->json([
+            'validation_blank'          => $app->trans('Please provide a value.'),
+            'validation_choice_min'     => $app->trans('Please select at least %s choice.'),
+            'validation_email'          => $app->trans('Please provide a valid email address.'),
+            'validation_ip'             => $app->trans('Please provide a valid IP address.'),
+            'validation_length_min'     => $app->trans('Please provide a longer value. It should have %s character or more.'),
+            'password_match'            => $app->trans('Please provide the same passwords.'),
+            'email_match'               => $app->trans('Please provide the same emails.'),
+            'accept_tou'                => $app->trans('Please accept the terms of use to register.'),
+            'no_collection_selected'    => $app->trans('No collection selected'),
+            'one_collection_selected'   => $app->trans('%d collection selected'),
+            'collections_selected'      => $app->trans('%d collections selected'),
+            'all_collections'           => $app->trans('Select all collections'),
             // password strength
-            'weak'                      => _('Weak'),
-            'ordinary'                  => _('Ordinary'),
-            'good'                      => _('Good'),
-            'great'                     => _('Great'),
-        ));
+            'weak'                      => $app->trans('Weak'),
+            'ordinary'                  => $app->trans('Ordinary'),
+            'good'                      => $app->trans('Good'),
+            'great'                     => $app->trans('Great'),
+        ]);
 
         $response->setExpires(new \DateTime('+1 day'));
 
@@ -267,7 +268,7 @@ class Login implements ControllerProviderInterface
                 try {
                     $provider = $this->findProvider($app, $data['provider-id']);
                 } catch (NotFoundHttpException $e) {
-                    $app->addFlash('error', _('You tried to register with an unknown provider'));
+                    $app->addFlash('error', $app->trans('You tried to register with an unknown provider'));
 
                     return $app->redirectPath('login_register');
                 }
@@ -275,13 +276,13 @@ class Login implements ControllerProviderInterface
                 try {
                     $token = $provider->getToken();
                 } catch (NotAuthenticatedException $e) {
-                    $app->addFlash('error', _('You tried to register with an unknown provider'));
+                    $app->addFlash('error', $app->trans('You tried to register with an unknown provider'));
 
                     return $app->redirectPath('login_register');
                 }
 
                 $userAuthProvider = $app['EM']
-                    ->getRepository('Entities\UsrAuthProvider')
+                    ->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
                     ->findWithProviderAndId($token->getProvider()->getId(), $token->getId());
 
                 if (null !== $userAuthProvider) {
@@ -302,7 +303,7 @@ class Login implements ControllerProviderInterface
                     $captcha = $app['recaptcha']->bind($request);
 
                     if ($app['phraseanet.registry']->get('GV_captchas') && !$captcha->isValid()) {
-                        throw new FormProcessingException(_('Invalid captcha answer.'));
+                        throw new FormProcessingException($app->trans('Invalid captcha answer.'));
                     }
 
                     require_once $app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
@@ -313,7 +314,7 @@ class Login implements ControllerProviderInterface
                         $selected = isset($data['collections']) ? $data['collections'] : null;
                     }
                     $inscriptions = giveMeBases($app);
-                    $inscOK = array();
+                    $inscOK = [];
 
                     foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
 
@@ -341,7 +342,7 @@ class Login implements ControllerProviderInterface
 
                     $user = \User_Adapter::create($app, $data['login'], $data['password'], $data['email'], false);
 
-                    foreach (array(
+                    foreach ([
                         'gender'    => 'set_gender',
                         'firstname' => 'set_firstname',
                         'lastname'  => 'set_lastname',
@@ -353,9 +354,9 @@ class Login implements ControllerProviderInterface
                         'company'   => 'set_company',
                         'position'  => 'set_position',
                         'geonameid' => 'set_geonameid',
-                    ) as $property => $method) {
+                    ] as $property => $method) {
                         if (isset($data[$property])) {
-                            call_user_func(array($user, $method), $data[$property]);
+                            call_user_func([$user, $method], $data[$property]);
                         }
                     }
 
@@ -364,7 +365,7 @@ class Login implements ControllerProviderInterface
                         $app['EM']->flush();
                     }
 
-                    $demandOK = array();
+                    $demandOK = [];
 
                     if ($app['phraseanet.registry']->get('GV_autoregister')) {
 
@@ -372,20 +373,20 @@ class Login implements ControllerProviderInterface
 
                         $template_user = \User_Adapter::getInstance($template_user_id, $app);
 
-                        $base_ids = array();
+                        $base_ids = [];
 
                         foreach (array_keys($inscOK) as $base_id) {
                             $base_ids[] = $base_id;
                         }
-                        $user->ACL()->apply_model($template_user, $base_ids);
+                        $app['acl']->get($user)->apply_model($template_user, $base_ids);
                     }
 
-                    $autoReg = $user->ACL()->get_granted_base();
+                    $autoReg = $app['acl']->get($user)->get_granted_base();
 
                     $appbox_register = new \appbox_register($app['phraseanet.appbox']);
 
                     foreach ($inscOK as $base_id => $autorisation) {
-                        if (false === $autorisation || $user->ACL()->has_access_to_base($base_id)) {
+                        if (false === $autorisation || $app['acl']->get($user)->has_access_to_base($base_id)) {
                             continue;
                         }
 
@@ -394,11 +395,11 @@ class Login implements ControllerProviderInterface
                         $demandOK[$base_id] = true;
                     }
 
-                    $params = array(
+                    $params = [
                         'demand'       => $demandOK,
                         'autoregister' => $autoReg,
                         'usr_id'       => $user->get_id()
-                    );
+                    ];
 
                     $app['events-manager']->trigger('__REGISTER_AUTOREGISTER__', $params);
                     $app['events-manager']->trigger('__REGISTER_APPROVAL__', $params);
@@ -407,10 +408,10 @@ class Login implements ControllerProviderInterface
 
                     try {
                         $this->sendAccountUnlockEmail($app, $user);
-                        $app->addFlash('info', _('login::notification: demande de confirmation par mail envoyee'));
+                        $app->addFlash('info', $app->trans('login::notification: demande de confirmation par mail envoyee'));
                     } catch (InvalidArgumentException $e) {
                         // todo, log this failure
-                        $app->addFlash('error', _('Unable to send your account unlock email.'));
+                        $app->addFlash('error', $app->trans('Unable to send your account unlock email.'));
                     }
 
                     return $app->redirectPath('homepage');
@@ -422,21 +423,21 @@ class Login implements ControllerProviderInterface
             $provider = $this->findProvider($app, $request->query->get('providerId'));
             $identity = $provider->getIdentity();
 
-            $form->setData(array_filter(array(
+            $form->setData(array_filter([
                 'email'       => $identity->getEmail(),
                 'firstname'   => $identity->getFirstname(),
                 'lastname'    => $identity->getLastname(),
                 'company'     => $identity->getCompany(),
                 'provider-id' => $provider->getId(),
-            )));
+            ]));
         }
 
         return $app['twig']->render('login/register-classic.html.twig', array_merge(
             self::getDefaultTemplateVariables($app),
-            array(
+            [
                 'geonames_server_uri' => str_replace(sprintf('%s:', parse_url($app['geonames.server-uri'], PHP_URL_SCHEME)), '', $app['geonames.server-uri']),
                 'form' => $form->createView()
-        )));
+        ]));
     }
 
     private function attachProviderToUser(EntityManager $em, ProviderInterface $provider, \User_Adapter $user)
@@ -471,17 +472,17 @@ class Login implements ControllerProviderInterface
         try {
             $user = \User_Adapter::getInstance((int) $usrId, $app);
         } catch (\Exception $e) {
-            $app->addFlash('error', _('Invalid link.'));
+            $app->addFlash('error', $app->trans('Invalid link.'));
 
             return $app->redirectPath('homepage');
         }
 
         try {
             $this->sendAccountUnlockEmail($app, $user);
-            $app->addFlash('success', _('login::notification: demande de confirmation par mail envoyee'));
+            $app->addFlash('success', $app->trans('login::notification: demande de confirmation par mail envoyee'));
         } catch (InvalidArgumentException $e) {
             // todo, log this failure
-            $app->addFlash('error', _('Unable to send your account unlock email.'));
+            $app->addFlash('error', $app->trans('Unable to send your account unlock email.'));
         }
 
         return $app->redirectPath('homepage');
@@ -504,7 +505,7 @@ class Login implements ControllerProviderInterface
         $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), $expire, $user->get_email());
 
         $mail = MailRequestEmailConfirmation::create($app, $receiver);
-        $mail->setButtonUrl($app->url('login_register_confirm', array('code' => $token)));
+        $mail->setButtonUrl($app->url('login_register_confirm', ['code' => $token]));
         $mail->setExpiration($expire);
 
         $app['notification.deliverer']->deliver($mail);
@@ -520,7 +521,7 @@ class Login implements ControllerProviderInterface
     public function registerConfirm(PhraseaApplication $app, Request $request)
     {
         if (null === $code = $request->query->get('code')) {
-            $app->addFlash('error', _('Invalid unlock link.'));
+            $app->addFlash('error', $app->trans('Invalid unlock link.'));
 
             return $app->redirectPath('homepage');
         }
@@ -528,7 +529,7 @@ class Login implements ControllerProviderInterface
         try {
             $datas = $app['tokens']->helloToken($code);
         } catch (NotFoundHttpException $e) {
-            $app->addFlash('error', _('Invalid unlock link.'));
+            $app->addFlash('error', $app->trans('Invalid unlock link.'));
 
             return $app->redirectPath('homepage');
         }
@@ -536,13 +537,13 @@ class Login implements ControllerProviderInterface
         try {
             $user = \User_Adapter::getInstance((int) $datas['usr_id'], $app);
         } catch (\Exception $e) {
-            $app->addFlash('error', _('Invalid unlock link.'));
+            $app->addFlash('error', $app->trans('Invalid unlock link.'));
 
             return $app->redirectPath('homepage');
         }
 
         if (!$user->get_mail_locked()) {
-            $app->addFlash('info', _('Account is already unlocked, you can login.'));
+            $app->addFlash('info', $app->trans('Account is already unlocked, you can login.'));
 
             return $app->redirectPath('homepage');
         }
@@ -553,23 +554,23 @@ class Login implements ControllerProviderInterface
         try {
             $receiver = Receiver::fromUser($user);
         } catch (InvalidArgumentException $e) {
-            $app->addFlash('success', _('Account has been unlocked, you can now login.'));
+            $app->addFlash('success', $app->trans('Account has been unlocked, you can now login.'));
 
             return $app->redirectPath('homepage');
         }
 
         $app['tokens']->removeToken($code);
 
-        if (count($user->ACL()->get_granted_base()) > 0) {
+        if (count($app['acl']->get($user)->get_granted_base()) > 0) {
             $mail = MailSuccessEmailConfirmationRegistered::create($app, $receiver);
             $app['notification.deliverer']->deliver($mail);
 
-            $app->addFlash('success', _('Account has been unlocked, you can now login.'));
+            $app->addFlash('success', $app->trans('Account has been unlocked, you can now login.'));
         } else {
             $mail = MailSuccessEmailConfirmationUnregistered::create($app, $receiver);
             $app['notification.deliverer']->deliver($mail);
 
-            $app->addFlash('info', _('Account has been unlocked, you still have to wait for admin approval.'));
+            $app->addFlash('info', $app->trans('Account has been unlocked, you still have to wait for admin approval.'));
         }
 
         return $app->redirectPath('homepage');
@@ -588,7 +589,7 @@ class Login implements ControllerProviderInterface
         }
 
         $form = $app->form(new PhraseaRecoverPasswordForm($app));
-        $form->setData(array('token' => $token));
+        $form->setData(['token' => $token]);
 
         if ('POST' === $request->getMethod()) {
             $form->bind($request);
@@ -603,7 +604,7 @@ class Login implements ControllerProviderInterface
 
                     $app['tokens']->removeToken($token);
 
-                    $app->addFlash('success', _('login::notification: Mise a jour du mot de passe avec succes'));
+                    $app->addFlash('success', $app->trans('login::notification: Mise a jour du mot de passe avec succes'));
 
                     return $app->redirectPath('homepage');
                 }
@@ -614,7 +615,7 @@ class Login implements ControllerProviderInterface
 
         return $app['twig']->render('login/renew-password.html.twig', array_merge(
             self::getDefaultTemplateVariables($app),
-            array('form' => $form->createView())
+            ['form' => $form->createView()]
         ));
     }
 
@@ -639,13 +640,13 @@ class Login implements ControllerProviderInterface
                     try {
                         $user = \User_Adapter::getInstance(\User_Adapter::get_usr_id_from_email($app, $data['email']), $app);
                     } catch (\Exception $e) {
-                        throw new FormProcessingException(_('phraseanet::erreur: Le compte n\'a pas ete trouve'));
+                        throw new FormProcessingException($app->trans('phraseanet::erreur: Le compte n\'a pas ete trouve'));
                     }
 
                     try {
                         $receiver = Receiver::fromUser($user);
                     } catch (InvalidArgumentException $e) {
-                        throw new FormProcessingException(_('Invalid email address'));
+                        throw new FormProcessingException($app->trans('Invalid email address'));
                     }
 
                     $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), new \DateTime('+1 day'));
@@ -654,14 +655,14 @@ class Login implements ControllerProviderInterface
                         return $app->abort(500, 'Unable to generate a token');
                     }
 
-                    $url = $app->url('login_renew_password', array('token' => $token), true);
+                    $url = $app->url('login_renew_password', ['token' => $token], true);
 
                     $mail = MailRequestPasswordUpdate::create($app, $receiver);
                     $mail->setLogin($user->get_login());
                     $mail->setButtonUrl($url);
 
                     $app['notification.deliverer']->deliver($mail);
-                    $app->addFlash('info', _('phraseanet:: Un email vient de vous etre envoye'));
+                    $app->addFlash('info', $app->trans('phraseanet:: Un email vient de vous etre envoye'));
 
                     return $app->redirectPath('login_forgot_password');
                 }
@@ -672,9 +673,9 @@ class Login implements ControllerProviderInterface
 
         return $app['twig']->render('login/forgot-password.html.twig', array_merge(
             self::getDefaultTemplateVariables($app),
-            array(
+            [
             'form'  => $form->createView(),
-        )));
+        ]));
     }
 
     /**
@@ -709,11 +710,11 @@ class Login implements ControllerProviderInterface
         $app['dispatcher']->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($app));
         $app['authentication']->closeAccount();
 
-        $app->addFlash('info', _('Vous etes maintenant deconnecte. A bientot.'));
+        $app->addFlash('info', $app->trans('Vous etes maintenant deconnecte. A bientot.'));
 
-        $response = $app->redirectPath('homepage', array(
+        $response = $app->redirectPath('homepage', [
             'redirect' => $request->query->get("redirect")
-        ));
+        ]);
 
         $response->headers->clearCookie('persistent');
         $response->headers->clearCookie('last_act');
@@ -736,25 +737,22 @@ class Login implements ControllerProviderInterface
         try {
             $app['phraseanet.appbox']->get_connection();
         } catch (\Exception $e) {
-            $app->addFlash('error', _('login::erreur: No available connection - Please contact sys-admin'));
+            $app->addFlash('error', $app->trans('login::erreur: No available connection - Please contact sys-admin'));
         }
 
-        $public_feeds = \Feed_Collection::load_public_feeds($app);
-
-        $feeds = $public_feeds->get_feeds();
-        array_unshift($feeds, $public_feeds->get_aggregate());
+        $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(['public' => true], ['updatedOn' => 'DESC']);
 
         $form = $app->form(new PhraseaAuthenticationForm());
-        $form->setData(array(
+        $form->setData([
             'redirect' => $request->query->get('redirect')
-        ));
+        ]);
 
         return $app['twig']->render('login/index.html.twig', array_merge(
             self::getDefaultTemplateVariables($app),
-            array(
+            [
                 'feeds'             => $feeds,
                 'form'              => $form->createView(),
-        )));
+        ]));
     }
 
     /**
@@ -767,7 +765,7 @@ class Login implements ControllerProviderInterface
     public function authenticate(PhraseaApplication $app, Request $request)
     {
         $form = $app->form(new PhraseaAuthenticationForm());
-        $redirector = function (array $params = array()) use ($app) {
+        $redirector = function (array $params = []) use ($app) {
             return $app->redirectPath('homepage', $params);
         };
 
@@ -781,7 +779,7 @@ class Login implements ControllerProviderInterface
     public function authenticateAsGuest(PhraseaApplication $app, Request $request)
     {
         if (!$app->isGuestAllowed()) {
-            $app->abort(403, _('Phraseanet guest-access is disabled'));
+            $app->abort(403, $app->trans('Phraseanet guest-access is disabled'));
         }
 
         $context = new Context(Context::CONTEXT_GUEST);
@@ -793,11 +791,11 @@ class Login implements ControllerProviderInterface
         $inviteUsrid = \User_Adapter::get_usr_id_from_login($app, 'invite');
         $invite_user = \User_Adapter::getInstance($inviteUsrid, $app);
 
-        $usr_base_ids = array_keys($user->ACL()->get_granted_base());
-        $user->ACL()->revoke_access_from_bases($usr_base_ids);
+        $usr_base_ids = array_keys($app['acl']->get($user)->get_granted_base());
+        $app['acl']->get($user)->revoke_access_from_bases($usr_base_ids);
 
-        $invite_base_ids = array_keys($invite_user->ACL()->get_granted_base());
-        $user->ACL()->apply_model($invite_user, $invite_base_ids);
+        $invite_base_ids = array_keys($app['acl']->get($invite_user)->get_granted_base());
+        $app['acl']->get($user)->apply_model($invite_user, $invite_base_ids);
 
         $this->postAuthProcess($app, $user);
 
@@ -834,10 +832,10 @@ class Login implements ControllerProviderInterface
         $date = new \DateTime('+' . (int) $app['phraseanet.registry']->get('GV_validation_reminder') . ' days');
 
         foreach ($app['EM']
-            ->getRepository('Entities\ValidationParticipant')
+            ->getRepository('Alchemy\Phrasea\Model\Entities\ValidationParticipant')
             ->findNotConfirmedAndNotRemindedParticipantsByExpireDate($date) as $participant) {
 
-            /* @var $participant \Entities\ValidationParticipant */
+            /* @var $participant ValidationParticipant */
 
             $validationSession = $participant->getSession();
             $participantId = $participant->getUsrId();
@@ -849,13 +847,13 @@ class Login implements ControllerProviderInterface
                 continue;
             }
 
-            $app['events-manager']->trigger('__VALIDATION_REMINDER__', array(
+            $app['events-manager']->trigger('__VALIDATION_REMINDER__', [
                 'to'          => $participantId,
                 'ssel_id'     => $basketId,
                 'from'        => $validationSession->getInitiatorId(),
                 'validate_id' => $validationSession->getId(),
-                'url'         => $app->url('lightbox_validation', array('ssel_id' => $basketId, 'LOG' => $token)),
-            ));
+                'url'         => $app->url('lightbox_validation', ['basket' => $basketId, 'LOG' => $token]),
+            ]);
 
             $participant->setReminded(new \DateTime('now'));
             $app['EM']->persist($participant);
@@ -901,13 +899,13 @@ class Login implements ControllerProviderInterface
             $provider->onCallback($request);
             $token = $provider->getToken();
         } catch (NotAuthenticatedException $e) {
-            $app['session']->getFlashBag()->add('error', sprintf(_('Unable to authenticate with %s'), $provider->getName()));
+            $app['session']->getFlashBag()->add('error', $app->trans('Unable to authenticate with %provider_name%', ['%provider_name%' => $provider->getName()]));
 
             return $app->redirectPath('homepage');
         }
 
         $userAuthProvider = $app['EM']
-            ->getRepository('Entities\UsrAuthProvider')
+            ->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
             ->findWithProviderAndId($token->getProvider()->getId(), $token->getId());
 
         if (null !== $userAuthProvider) {
@@ -925,7 +923,7 @@ class Login implements ControllerProviderInterface
         try {
             $user = $app['authentication.suggestion-finder']->find($token);
         } catch (NotAuthenticatedException $e) {
-            $app->addFlash('error', _('Unable to retrieve provider identity'));
+            $app->addFlash('error', $app->trans('Unable to retrieve provider identity'));
 
             return $app->redirectPath('homepage');
         }
@@ -961,10 +959,10 @@ class Login implements ControllerProviderInterface
 
             return $app->redirect($redirection);
         } elseif ($app['registration.enabled']) {
-            return $app->redirectPath('login_register_classic', array('providerId' => $providerId));
+            return $app->redirectPath('login_register_classic', ['providerId' => $providerId]);
         }
 
-        $app->addFlash('error', _('Your identity is not recognized.'));
+        $app->addFlash('error', $app->trans('Your identity is not recognized.'));
 
         return $app->redirectPath('homepage');
     }
@@ -996,12 +994,12 @@ class Login implements ControllerProviderInterface
 
         $form->bind($request);
         if (!$form->isValid()) {
-            $app->addFlash('error', _('An unexpected error occured during authentication process, please contact an admin'));
+            $app->addFlash('error', $app->trans('An unexpected error occured during authentication process, please contact an admin'));
 
             throw new AuthenticationException(call_user_func($redirector));
         }
 
-        $params = array();
+        $params = [];
 
         if (null !== $redirect = $request->get('redirect')) {
             $params['redirect'] = ltrim($redirect, '/');
@@ -1011,18 +1009,18 @@ class Login implements ControllerProviderInterface
             $usr_id = $app['auth.native']->getUsrId($request->request->get('login'), $request->request->get('password'), $request);
         } catch (RequireCaptchaException $e) {
             $app->requireCaptcha();
-            $app->addFlash('warning', _('Please fill the captcha'));
+            $app->addFlash('warning', $app->trans('Please fill the captcha'));
 
             throw new AuthenticationException(call_user_func($redirector, $params));
         } catch (AccountLockedException $e) {
-            $app->addFlash('warning', _('login::erreur: Vous n\'avez pas confirme votre email'));
+            $app->addFlash('warning', $app->trans('login::erreur: Vous n\'avez pas confirme votre email'));
             $app->addUnlockAccountData($e->getUsrId());
 
             throw new AuthenticationException(call_user_func($redirector, $params));
         }
 
         if (null === $usr_id) {
-            $app['session']->getFlashBag()->set('error', _('login::erreur: Erreur d\'authentification'));
+            $app['session']->getFlashBag()->set('error', $app->trans('login::erreur: Erreur d\'authentification'));
 
             throw new AuthenticationException(call_user_func($redirector, $params));
         }
@@ -1038,8 +1036,8 @@ class Login implements ControllerProviderInterface
             if (!$user->is_guest() && $request->cookies->has('invite-usr_id')) {
                 if ($user->get_id() != $inviteUsrId = $request->cookies->get('invite-usr_id')) {
 
-                    $repo = $app['EM']->getRepository('Entities\Basket');
-                    $baskets = $repo->findBy(array('usr_id' => $inviteUsrId));
+                    $repo = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
+                    $baskets = $repo->findBy(['usr_id' => $inviteUsrId]);
 
                     foreach ($baskets as $basket) {
                         $basket->setUsrId($user->get_id());

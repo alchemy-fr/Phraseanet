@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of Phraseanet
- *
- * (c) 2005-2013 Alchemy
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Alchemy\Tests\Phrasea\Utilities\Compiler;
 
 use Alchemy\Phrasea\Utilities\Less\Builder;
@@ -27,6 +18,6 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
 
         $builder = new Builder($compiler, $filesystem);
 
-        $builder->build(array( __FILE__ => __DIR__ . '/output.css'));
+        $builder->build([ __FILE__ => __DIR__ . '/output.css']);
     }
 }

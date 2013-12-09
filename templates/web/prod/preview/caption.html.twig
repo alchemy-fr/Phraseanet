@@ -1,17 +1,17 @@
 {% import 'common/caption_templates/preview.html.twig' as caption %}
 
-  {% if app['authentication'].getUser().ACL().has_right_on_base(record.get_base_id, 'canmodifrecord') %}
+  {% if app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id, 'canmodifrecord') %}
     <div class="edit_button" style="text-align:right">
       <a href="#" onclick="editThis('IMGT','{{record.get_serialize_key()}}');">
         <img style="vertical-align:middle" src="/skins/prod/000000/images/ppen_history.gif" />
-        {% trans 'action : editer' %}
+        {{ 'action : editer' | trans }}
       </a>
     </div>
   {% endif %}
   <div style="text-align:center;">
     {{record.get_status_icons()|raw}}
   </div>
-  {% set business = app['authentication'].getUser().ACL().has_right_on_base(record.get_base_id(), 'canmodifrecord') %}
+  {% set business =  app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'canmodifrecord') %}
   {% if record.is_from_reg()  %}
     {{caption.format_caption(record, '', null, business)}}
   {% else %}

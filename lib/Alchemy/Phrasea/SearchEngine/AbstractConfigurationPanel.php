@@ -20,7 +20,7 @@ abstract class AbstractConfigurationPanel implements ConfigurationPanelInterface
      */
     public function getAvailableDateFields(array $databoxes)
     {
-        $date_fields = array();
+        $date_fields = [];
 
         foreach ($databoxes as $databox) {
             foreach ($databox->get_meta_structure() as $field) {

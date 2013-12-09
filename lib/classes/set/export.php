@@ -12,16 +12,10 @@
 use Alchemy\Phrasea\Application;
 use Symfony\Component\Filesystem\Filesystem;
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class set_export extends set_abstract
 {
     protected $app;
-    protected $storage = array();
+    protected $storage = [];
     protected $total_download;
     protected $total_order;
     protected $total_ftp;
@@ -45,9 +39,9 @@ class set_export extends set_abstract
     {
         $this->app = $app;
 
-        $download_list = array();
+        $download_list = [];
 
-        $remain_hd = array();
+        $remain_hd = [];
 
         if ($storyWZid) {
             $repository = $app['EM']->getRepository('\\Entities\\StoryWZ');
@@ -58,20 +52,18 @@ class set_export extends set_abstract
         }
 
         if ($sstid != "") {
-            $repository = $app['EM']->getRepository('\Entities\Basket');
+            $Basket = $app['converter.basket']->convert($sstid);
+            $app['acl.basket']->hasAccess($Basket, $app['authentication']->getUser());
 
-            /* @var $repository \Repositories\BasketRepository */
-            $Basket = $repository->findUserBasket($this->app, $sstid, $app['authentication']->getUser(), false);
-            $this->exportName = str_replace(array(' ', '\\', '/'), '_', $Basket->getName()) . "_" . date("Y-n-d");
+            $this->exportName = str_replace([' ', '\\', '/'], '_', $Basket->getName()) . "_" . date("Y-n-d");
 
             foreach ($Basket->getElements() as $basket_element) {
-                /* @var $basket_element \Entities\BasketElement */
                 $base_id = $basket_element->getRecord($this->app)->get_base_id();
                 $record_id = $basket_element->getRecord($this->app)->get_record_id();
 
                 if (!isset($remain_hd[$base_id])) {
-                    if ($app['authentication']->getUser()->ACL()->is_restricted_download($base_id)) {
-                        $remain_hd[$base_id] = $app['authentication']->getUser()->ACL()->remaining_download($base_id);
+                    if ($app['acl']->get($app['authentication']->getUser())->is_restricted_download($base_id)) {
+                        $remain_hd[$base_id] = $app['acl']->get($app['authentication']->getUser())->remaining_download($base_id);
                     } else {
                         $remain_hd[$base_id] = false;
                     }
@@ -110,8 +102,8 @@ class set_export extends set_abstract
                         $record_id = $child_basrec->get_record_id();
 
                         if (!isset($remain_hd[$base_id])) {
-                            if ($app['authentication']->getUser()->ACL()->is_restricted_download($base_id)) {
-                                $remain_hd[$base_id] = $app['authentication']->getUser()->ACL()->remaining_download($base_id);
+                            if ($app['acl']->get($app['authentication']->getUser())->is_restricted_download($base_id)) {
+                                $remain_hd[$base_id] = $app['acl']->get($app['authentication']->getUser())->remaining_download($base_id);
                             } else {
                                 $remain_hd[$base_id] = false;
                             }
@@ -133,8 +125,8 @@ class set_export extends set_abstract
                     $record_id = $record->get_record_id();
 
                     if (!isset($remain_hd[$base_id])) {
-                        if ($app['authentication']->getUser()->ACL()->is_restricted_download($base_id)) {
-                            $remain_hd[$base_id] = $app['authentication']->getUser()->ACL()->remaining_download($base_id);
+                        if ($app['acl']->get($app['authentication']->getUser())->is_restricted_download($base_id)) {
+                            $remain_hd[$base_id] = $app['acl']->get($app['authentication']->getUser())->remaining_download($base_id);
                         } else {
                             $remain_hd[$base_id] = false;
                         }
@@ -158,8 +150,8 @@ class set_export extends set_abstract
 
         $this->elements = $download_list;
 
-        $display_download = array();
-        $display_orderable = array();
+        $display_download = [];
+        $display_orderable = [];
 
         $this->total_download = 0;
         $this->total_order = 0;
@@ -168,18 +160,18 @@ class set_export extends set_abstract
         $this->businessFieldsAccess = false;
 
         foreach ($this->elements as $download_element) {
-            if ($app['authentication']->getUser()->ACL()->has_right_on_base($download_element->get_base_id(), 'canmodifrecord')) {
+            if ($app['acl']->get($app['authentication']->getUser())->has_right_on_base($download_element->get_base_id(), 'canmodifrecord')) {
                 $this->businessFieldsAccess = true;
             }
 
             foreach ($download_element->get_downloadable() as $name => $properties) {
                 if (!isset($display_download[$name])) {
-                    $display_download[$name] = array(
+                    $display_download[$name] = [
                         'size'      => 0,
                         'total'     => 0,
                         'available' => 0,
-                        'refused'   => array()
-                    );
+                        'refused'   => []
+                    ];
                 }
 
                 $display_download[$name]['total']++;
@@ -196,11 +188,11 @@ class set_export extends set_abstract
             }
             foreach ($download_element->get_orderable() as $name => $properties) {
                 if (!isset($display_orderable[$name])) {
-                    $display_orderable[$name] = array(
+                    $display_orderable[$name] = [
                         'total'     => 0,
                         'available' => 0,
-                        'refused'   => array()
-                    );
+                        'refused'   => []
+                    ];
                 }
 
                 $display_orderable[$name]['total']++;
@@ -218,66 +210,66 @@ class set_export extends set_abstract
             $display_download[$name]['size'] = (int) $values['size'];
         }
 
-        $display_ftp = array();
+        $display_ftp = [];
 
-        $hasadminright = $app['authentication']->getUser()->ACL()->has_right('addrecord')
-            || $app['authentication']->getUser()->ACL()->has_right('deleterecord')
-            || $app['authentication']->getUser()->ACL()->has_right('modifyrecord')
-            || $app['authentication']->getUser()->ACL()->has_right('coll_manage')
-            || $app['authentication']->getUser()->ACL()->has_right('coll_modify_struct');
+        $hasadminright = $app['acl']->get($app['authentication']->getUser())->has_right('addrecord')
+            || $app['acl']->get($app['authentication']->getUser())->has_right('deleterecord')
+            || $app['acl']->get($app['authentication']->getUser())->has_right('modifyrecord')
+            || $app['acl']->get($app['authentication']->getUser())->has_right('coll_manage')
+            || $app['acl']->get($app['authentication']->getUser())->has_right('coll_modify_struct');
 
-        $this->ftp_datas = array();
+        $this->ftp_datas = [];
 
         if ($this->app['phraseanet.registry']->get('GV_activeFTP') && ($hasadminright || $this->app['phraseanet.registry']->get('GV_ftp_for_user'))) {
             $display_ftp = $display_download;
             $this->total_ftp = $this->total_download;
 
-            $lst_base_id = array_keys($app['authentication']->getUser()->ACL()->get_granted_base());
+            $lst_base_id = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base());
 
             if ($hasadminright) {
-                $sql = "SELECT usr.usr_id,usr_login,usr.addrFTP,usr.loginFTP,usr.sslFTP,
-                  usr.pwdFTP,usr.destFTP,prefixFTPfolder,usr.passifFTP,
-                  usr.retryFTP,usr.usr_mail
-                  FROM (usr INNER JOIN basusr
-                      ON ( activeFTP=1
-                        AND usr.usr_id=basusr.usr_id
+                $sql = "SELECT usr.usr_id,usr_login,usr.usr_mail, FtpCredential.*
+                  FROM (
+                    FtpCredential INNER JOIN usr ON (
+                        FtpCredential.active = 1 AND FtpCredential.usrId = usr.usr_id
+                    ) INNER JOIN basusr ON (
+                        usr.usr_id=basusr.usr_id
                         AND (basusr.base_id=
                         '" . implode("' OR basusr.base_id='", $lst_base_id) . "'
                             )
                          )
                       )
                   GROUP BY usr_id  ";
-                $params = array();
+                $params = [];
             } elseif ($this->app['phraseanet.registry']->get('GV_ftp_for_user')) {
-                $sql = "SELECT usr.usr_id,usr_login,usr.addrFTP,usr.loginFTP,usr.sslFTP,
-                usr.pwdFTP,usr.destFTP,prefixFTPfolder,
-                usr.passifFTP,usr.retryFTP,usr.usr_mail
-                FROM (usr INNER JOIN basusr
-                    ON ( activeFTP=1 AND usr.usr_id=basusr.usr_id
-                      AND usr.usr_id = :usr_id
+                $sql = "SELECT usr.usr_id,usr_login,usr.usr_mail, FtpCredential.*
+                  FROM (
+                    FtpCredential INNER JOIN usr ON (
+                        FtpCredential.active = 1 AND FtpCredential.usrId = usr.usr_id
+                    ) INNER JOIN basusr ON (
+                        usr.usr_id=basusr.usr_id
+                        AND usr.usr_id = :usr_id
                         AND (basusr.base_id=
                         '" . implode("' OR basusr.base_id='", $lst_base_id) . "'
                           )
                         )
                       )
                   GROUP BY usr_id  ";
-                $params = array(':usr_id' => $app['authentication']->getUser()->get_id());
+                $params = [':usr_id' => $app['authentication']->getUser()->get_id()];
             }
 
-            $datas[] = array(
-                'name'            => _('export::ftp: reglages manuels'),
-                'usr_id'          => '0',
-                'addrFTP'         => '',
-                'loginFTP'        => '',
-                'pwdFTP'          => '',
-                'ssl'             => '0',
-                'destFTP'         => '',
-                'prefixFTPfolder' => 'Export_' . date("Y-m-d_H.i.s"),
-                'passifFTP'       => false,
-                'retryFTP'        => 5,
-                'mailFTP'         => '',
-                'sendermail'      => $app['authentication']->getUser()->get_email()
-            );
+            $datas[] = [
+                'name'              => $app->trans('export::ftp: reglages manuels'),
+                'usr_id'            => '0',
+                'address'           => '',
+                'login'             => '',
+                'password'          => '',
+                'ssl'               => false,
+                'dest_folder'       => '',
+                'prefix_folder'     => 'Export_' . date("Y-m-d_H.i.s"),
+                'passive'           => false,
+                'max_retry'         => 5,
+                'sendermail'        => $app['authentication']->getUser()->get_email()
+            ];
 
             $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
             $stmt->execute($params);
@@ -285,23 +277,23 @@ class set_export extends set_abstract
             $stmt->closeCursor();
 
             foreach ($rs as $row) {
-                $datas[] = array(
-                    'name'            => $row["usr_login"],
-                    'usr_id'          => $row['usr_id'],
-                    'addrFTP'         => $row['addrFTP'],
-                    'loginFTP'        => $row['loginFTP'],
-                    'pwdFTP'          => $row['pwdFTP'],
-                    'ssl'             => $row['sslFTP'],
-                    'destFTP'         => $row['destFTP'],
-                    'prefixFTPfolder' =>
-                    (strlen(trim($row['prefixFTPfolder'])) > 0 ?
-                        trim($row['prefixFTPfolder']) :
+                $datas[] = [
+                    'name'              => $row["usr_login"],
+                    'usr_id'            => $row['usr_id'],
+                    'address'           => $row['address'],
+                    'login'             => $row['login'],
+                    'password'          => $row['password'],
+                    'ssl'               => !! $row['tls'],
+                    'dest_folder'       => $row['reception_folder'],
+                    'prefix_folder'     =>
+                    (strlen(trim($row['repository_prefix_name'])) > 0 ?
+                        trim($row['repository_prefix_name']) :
                         'Export_' . date("Y-m-d_H.i.s")),
-                    'passifFTP'       => ($row['passifFTP'] > 0),
-                    'retryFTP'        => $row['retryFTP'],
-                    'mailFTP'         => $row['usr_mail'],
-                    'sendermail'      => $app['authentication']->getUser()->get_email()
-                );
+                    'passive'           => !! $row['passive'],
+                    'max_retry'         => $row['max_retry'],
+                    'usr_mail'          => $row['usr_mail'],
+                    'sender_mail'       => $app['authentication']->getUser()->get_email()
+                ];
             }
 
             $this->ftp_datas = $datas;
@@ -410,11 +402,11 @@ class set_export extends set_abstract
 
         $includeBusinessFields = !!$includeBusinessFields;
 
-        $files = array();
+        $files = [];
 
         $n_files = 0;
 
-        $file_names = array();
+        $file_names = [];
 
         $size = 0;
 
@@ -423,19 +415,17 @@ class set_export extends set_abstract
         foreach ($this->elements as $download_element) {
             $id = count($files);
 
-            $files[$id] = array(
+            $files[$id] = [
                 'base_id'       => $download_element->get_base_id(),
                 'record_id'     => $download_element->get_record_id(),
                 'original_name' => '',
                 'export_name'   => '',
-                'subdefs'       => array()
-            );
-
-            $rename_done = false;
+                'subdefs'       => []
+            ];
 
             $BF = false;
 
-            if ($includeBusinessFields && $user->ACL()->has_right_on_base($download_element->get_base_id(), 'canmodifrecord')) {
+            if ($includeBusinessFields && $this->app['acl']->get($user)->has_right_on_base($download_element->get_base_id(), 'canmodifrecord')) {
                 $BF = true;
             }
 
@@ -457,7 +447,6 @@ class set_export extends set_abstract
                 $title = strip_tags($download_element->get_title(null, null, true));
 
                 $files[$id]['export_name'] = $unicode->remove_nonazAZ09($title, true, true, true);
-                $rename_done = true;
             } else {
                 $files[$id]["export_name"] = $infos['filename'];
             }
@@ -471,7 +460,7 @@ class set_export extends set_abstract
                 if ($properties === false || !in_array($name, $subdefs)) {
                     continue;
                 }
-                if (!in_array($name, array('caption', 'caption-yaml')) && !isset($sd[$name])) {
+                if (!in_array($name, ['caption', 'caption-yaml']) && !isset($sd[$name])) {
                     continue;
                 }
 
@@ -480,7 +469,7 @@ class set_export extends set_abstract
 
                 $n_files++;
 
-                $tmp_pathfile = array('path' => null, 'file' => null);
+                $tmp_pathfile = ['path' => null, 'file' => null];
 
                 switch ($properties['class']) {
                     case 'caption':
@@ -489,25 +478,25 @@ class set_export extends set_abstract
                         $subdef_alive = true;
                         break;
                     case 'thumbnail':
-                        $tmp_pathfile = array(
+                        $tmp_pathfile = [
                             'path'         => $sd[$name]->get_path()
                             , 'file'         => $sd[$name]->get_file()
-                        );
+                        ];
                         $subdef_export = true;
                         $subdef_alive = true;
                         break;
                     case 'document':
                         $subdef_export = true;
                         $path = \recordutils_image::stamp($this->app , $sd[$name]);
-                        $tmp_pathfile = array(
+                        $tmp_pathfile = [
                             'path' => $sd[$name]->get_path()
                             , 'file' => $sd[$name]->get_file()
-                        );
+                        ];
                         if (file_exists($path)) {
-                            $tmp_pathfile = array(
+                            $tmp_pathfile = [
                                 'path'        => dirname($path)
                                 , 'file'        => basename($path)
-                            );
+                            ];
                             $subdef_alive = true;
                         }
                         break;
@@ -515,19 +504,19 @@ class set_export extends set_abstract
                     case 'preview':
                         $subdef_export = true;
 
-                        $tmp_pathfile = array(
+                        $tmp_pathfile = [
                             'path' => $sd[$name]->get_path()
                             , 'file' => $sd[$name]->get_file()
-                        );
-                        if (!$user->ACL()->has_right_on_base($download_element->get_base_id(), "nowatermark")
-                            && !$user->ACL()->has_preview_grant($download_element)
+                        ];
+                        if (!$this->app['acl']->get($user)->has_right_on_base($download_element->get_base_id(), "nowatermark")
+                            && !$this->app['acl']->get($user)->has_preview_grant($download_element)
                             && $sd[$name]->get_type() == media_subdef::TYPE_IMAGE) {
                             $path = recordutils_image::watermark($this->app, $sd[$name]);
                             if (file_exists($path)) {
-                                $tmp_pathfile = array(
+                                $tmp_pathfile = [
                                     'path'        => dirname($path)
                                     , 'file'        => basename($path)
-                                );
+                                ];
                                 $subdef_alive = true;
                             }
                         } else {
@@ -620,10 +609,10 @@ class set_export extends set_abstract
             $i = 0;
             $name = utf8_decode($files[$id]["export_name"]);
             $tmp_name = "";
-            $good_keys = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+            $good_keys = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
                 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
                 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3',
-                '4', '5', '6', '7', '8', '9', '-', '_', '.', '#');
+                '4', '5', '6', '7', '8', '9', '-', '_', '.', '#'];
 
             while (isset($name[$i])) {
                 if (!in_array(mb_strtolower($name[$i]), $good_keys))
@@ -682,12 +671,12 @@ class set_export extends set_abstract
             }
         }
 
-        $this->list = array(
+        $this->list = [
             'files' => $files,
             'names' => $file_names,
             'size'  => $size,
             'count' => $n_files
-        );
+        ];
 
         return $this->list;
     }
@@ -718,7 +707,7 @@ class set_export extends set_abstract
 
         $app['tokens']->updateToken($token, serialize($list));
 
-        $toRemove = array();
+        $toRemove = [];
 
         foreach ($files as $record) {
             if (isset($record["subdefs"])) {
@@ -770,13 +759,13 @@ class set_export extends set_abstract
      */
     public static function log_download(Application $app, Array $list, $type, $anonymous = false, $comment = '')
     {
-        $tmplog = array();
+        $tmplog = [];
         $files = $list['files'];
 
-        $event_names = array(
+        $event_names = [
             'mail-export' => Session_Logger::EVENT_EXPORTMAIL,
             'download'    => Session_Logger::EVENT_EXPORTDOWNLOAD
-        );
+        ];
 
         $event_name = isset($event_names[$type]) ? $event_names[$type] : Session_Logger::EVENT_EXPORTDOWNLOAD;
 
@@ -796,19 +785,13 @@ class set_export extends set_abstract
                     $log["shortXml"] = $record_object->get_caption()->serialize(caption_record::SERIALIZE_XML);
                     $tmplog[$record_object->get_base_id()][] = $log;
                     if (!$anonymous && $o == 'document') {
-                        $app['authentication']->getUser()->ACL()->remove_remaining($record_object->get_base_id());
+                        $app['acl']->get($app['authentication']->getUser())->remove_remaining($record_object->get_base_id());
                     }
                 }
 
                 unset($record_object);
             }
         }
-
-        $export_types = array(
-            'download'    => 0,
-            'mail-export' => 2,
-            'ftp'         => 4
-        );
 
         $list_base = array_unique(array_keys($tmplog));
 
@@ -820,12 +803,12 @@ class set_export extends set_abstract
             $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
 
             foreach ($list_base as $base_id) {
-                if ($app['authentication']->getUser()->ACL()->is_restricted_download($base_id)) {
-                    $params = array(
-                        ':remain_dl' => $app['authentication']->getUser()->ACL()->remaining_download($base_id)
+                if ($app['acl']->get($app['authentication']->getUser())->is_restricted_download($base_id)) {
+                    $params = [
+                        ':remain_dl' => $app['acl']->get($app['authentication']->getUser())->remaining_download($base_id)
                         , ':base_id'   => $base_id
-                        , ':usr_id'    => $app['authentication']->getUser()->get_id()
-                    );
+                        , ':usr_id'    => $app['acl']->get($app['authentication']->getUser())->get_id()
+                    ];
 
                     $stmt->execute($params);
                 }

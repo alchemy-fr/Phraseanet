@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Doctrine\ORM\Query\ResultSetMapping;
 
 class patch_383alpha1a implements patchInterface
 {
@@ -38,6 +39,14 @@ class patch_383alpha1a implements patchInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrineMigrations()
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function concern()
     {
         return $this->concern;
@@ -48,6 +57,10 @@ class patch_383alpha1a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
+        if (!$this->hasSessionTable($app)) {
+            return true;
+        }
+
         // Remove deleted users sessions
         $sql = 'SELECT s.id FROM `Sessions` s, usr u WHERE u.usr_login LIKE "(#deleted%" AND u.usr_id = s.usr_id';
         $stmt = $appbox->get_connection()->prepare($sql);
@@ -56,13 +69,13 @@ class patch_383alpha1a implements patchInterface
         $stmt->closeCursor();
 
         foreach ($rows as $row) {
-            if (null !== $session = $app['EM']->find('Entities\Session', $row['id'])) {
+            if (null !== $session = $app['EM']->find('Alchemy\Phrasea\Model\Entities\Session', $row['id'])) {
                 $app['EM']->remove($session);
             }
         }
 
         // Remove API sessions
-        $query = $app['EM']->createQuery('SELECT s FROM Entities\Session s WHERE s.user_agent LIKE :guzzle');
+        $query = $app['EM']->createQuery('SELECT s FROM Alchemy\Phrasea\Model\Entities\Session s WHERE s.user_agent LIKE :guzzle');
         $query->setParameter(':guzzle', 'Guzzle%');
 
         foreach ($query->getResult() as $session) {
@@ -72,5 +85,20 @@ class patch_383alpha1a implements patchInterface
         $app['EM']->flush();
 
         return true;
+    }
+
+    private function hasSessionTable(Application $app)
+    {
+        $rsm = (new ResultSetMapping())->addScalarResult('Name', 'Name');
+        $ret = false;
+
+        foreach ($app['EM']->createNativeQuery('SHOW TABLE STATUS', $rsm)->getResult() as $row) {
+            if ('Session' === $row['Name']) {
+                $ret = true;
+                break;
+            }
+        }
+
+        return $ret;
     }
 }

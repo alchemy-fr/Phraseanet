@@ -9,11 +9,6 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class connection_pdoStatementDebugger
 {
     /**
@@ -29,7 +24,7 @@ class connection_pdoStatementDebugger
         return $this;
     }
 
-    public function execute($params = array())
+    public function execute($params = [])
     {
         $start = microtime(true);
         $exception = null;
@@ -39,10 +34,10 @@ class connection_pdoStatementDebugger
             $exception = $e;
         }
         $time = microtime(true) - $start;
-        connection::$log[] = array(
+        connection::$log[] = [
             'query' => '' . str_replace(array_keys($params), array_values($params), $this->statement->queryString),
             'time'  => $time
-        );
+        ];
         if ($exception instanceof Exception)
             throw $exception;
 
@@ -51,6 +46,6 @@ class connection_pdoStatementDebugger
 
     public function __call($function_name, $parameters)
     {
-        return call_user_func_array(array($this->statement, $function_name), $parameters);
+        return call_user_func_array([$this->statement, $function_name], $parameters);
     }
 }

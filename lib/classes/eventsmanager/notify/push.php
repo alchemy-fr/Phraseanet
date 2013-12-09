@@ -13,19 +13,13 @@ use Alchemy\Phrasea\Notification\Emitter;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailInfoPushReceived;
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class eventsmanager_notify_push extends eventsmanager_notifyAbstract
 {
     /**
      *
      * @var string
      */
-    public $events = array('__PUSH_DATAS__');
+    public $events = ['__PUSH_DATAS__'];
 
     /**
      *
@@ -45,12 +39,12 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'from'    => ''
             , 'to'      => ''
             , 'message' => ''
             , 'ssel_id' => ''
-        );
+        ];
 
         $params = array_merge($default, $params);
 
@@ -86,7 +80,7 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
 
             $readyToSend = false;
             try {
-                $repository = $this->app['EM']->getRepository('\Entities\Basket');
+                $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
                 $basket = $repository->find($params['ssel_id']);
 
                 $user_from = User_Adapter::getInstance($params['from'], $this->app);
@@ -126,19 +120,18 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
         $from = (string) $sx->from;
 
         try {
-            $registered_user = User_Adapter::getInstance($from, $this->app);
+            User_Adapter::getInstance($from, $this->app);
         } catch (Exception $e) {
-            return array();
+            return [];
         }
 
         $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
 
-        $ret = array(
-            'text'  => sprintf(
-                _('%1$s vous a envoye un %2$spanier%3$s'), $sender, '<a href="#" onclick="openPreview(\'BASK\',1,\''
-                . (string) $sx->ssel_id . '\');return false;">', '</a>')
+        $ret = [
+            'text'  => $this->app->trans('%user% vous a envoye un %before_link% panier %after_link%', ['%user%' => $sender, '%before_link%' => '<a href="#" onclick="openPreview(\'BASK\',1,\''
+                . (string) $sx->ssel_id . '\');return false;">', '%after_link%' => '</a>'])
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
-        );
+        ];
 
         return $ret;
     }
@@ -149,7 +142,7 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
      */
     public function get_name()
     {
-        return _('Push');
+        return $this->app->trans('Push');
     }
 
     /**
@@ -158,7 +151,7 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
      */
     public function get_description()
     {
-        return _('Receive notification when I receive a push');
+        return $this->app->trans('Receive notification when I receive a push');
     }
 
     /**

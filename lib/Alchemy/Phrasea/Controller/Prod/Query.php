@@ -12,74 +12,32 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
+use Alchemy\Phrasea\Model\Entities\UserQuery;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Query implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.prod.query'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAuthentication();
         });
 
-        /**
-         * Query Phraseanet
-         *
-         * name         : prod_query
-         *
-         * description  : Query Phraseanet
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/', $this->call('query'))
+        $controllers->post('/', 'controller.prod.query:query')
             ->bind('prod_query');
 
-        /**
-         * Get a preview answer train
-         *
-         * name         : preview_answer_train
-         *
-         * description  : Get a preview answer train
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/answer-train/', $this->call('queryAnswerTrain'))
+        $controllers->post('/answer-train/', 'controller.prod.query:queryAnswerTrain')
             ->bind('preview_answer_train');
 
-        /**
-         * Get a preview reg train
-         *
-         * name         : preview_reg_train
-         *
-         * description  : Get a preview reg train
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/reg-train/', $this->call('queryRegTrain'))
+        $controllers->post('/reg-train/', 'controller.prod.query:queryRegTrain')
             ->bind('preview_reg_train');
 
         return $controllers;
@@ -98,7 +56,7 @@ class Query implements ControllerProviderInterface
 
         $mod = $app['authentication']->getUser()->getPrefs('view');
 
-        $json = array();
+        $json = [];
 
         $options = SearchEngineOptions::fromRequest($app, $request);
 
@@ -117,6 +75,17 @@ class Query implements ControllerProviderInterface
         }
 
         $result = $app['phraseanet.SE']->query($query, (($page - 1) * $perPage), $perPage);
+
+        $userQuery = new UserQuery();
+        $userQuery->setUsrId($app['authentication']->getUser()->get_id());
+        $userQuery->setQuery($result->getQuery());
+
+        $app['EM']->persist($userQuery);
+        $app['EM']->flush();
+
+        if ($app['authentication']->getUser()->getPrefs('start_page') === 'LAST_QUERY') {
+            $app['authentication']->getUser()->setPrefs('start_page_query', $result->getQuery());
+        }
 
         foreach ($options->getDataboxes() as $databox) {
             $colls = array_map(function (\collection $collection) {
@@ -184,16 +153,16 @@ class Query implements ControllerProviderInterface
         $explain .= "<img src=\"/skins/icons/answers.gif\" /><span><b>";
 
         if ($result->getTotal() != $result->getAvailable()) {
-            $explain .= sprintf(_('reponses:: %d Resultats rappatries sur un total de %d trouves'), $result->getAvailable(), $result->getTotal());
+            $explain .= $app->trans('reponses:: %available% Resultats rappatries sur un total de %total% trouves', ['available' => $result->getAvailable(), '%total%' => $result->getTotal()]);
         } else {
-            $explain .= sprintf(_('reponses:: %d Resultats'), $result->getTotal());
+            $explain .= $app->trans('reponses:: %total% Resultats', ['%total%' => $result->getTotal()]);
         }
 
         $explain .= " </b></span>";
         $explain .= '<br><div>' . $result->getDuration() . ' s</div>dans index ' . $result->getIndexes();
         $explain .= "</div>";
 
-        $infoResult = '<a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">' . sprintf(_('reponses:: %d reponses'), $result->getTotal()) . '</a> | ' . sprintf(_('reponses:: %s documents selectionnes'), '<span id="nbrecsel"></span>');
+        $infoResult = '<a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">' . $app->trans('reponses:: %total% reponses', ['%total%' => $result->getTotal()]) . '</a> | ' . $app->trans('reponses:: %number% documents selectionnes', ['%number%' => '<span id="nbrecsel"></span>']);
 
         $json['infos'] = $infoResult;
         $json['navigation'] = $string;
@@ -222,12 +191,12 @@ class Query implements ControllerProviderInterface
             }
         }
 
-        $json['results'] = $app['twig']->render($template, array(
+        $json['results'] = $app['twig']->render($template, [
             'results'         => $result,
             'highlight'       => $result->getQuery(),
             'searchEngine'    => $app['phraseanet.SE'],
             'suggestions'     => $prop
-            )
+            ]
         );
 
         $json['query'] = $query;
@@ -265,12 +234,12 @@ class Query implements ControllerProviderInterface
 
         $record = new \record_preview($app, 'RESULT', $pos, '', $app['phraseanet.SE'], $query);
 
-        return $app->json(array(
-            'current' => $app['twig']->render('prod/preview/result_train.html.twig', array(
+        return $app->json([
+            'current' => $app['twig']->render('prod/preview/result_train.html.twig', [
                 'records'  => $record->get_train($pos, $query, $app['phraseanet.SE']),
                 'selected' => $pos
-            ))
-        ));
+            ])
+        ]);
     }
 
     /**
@@ -284,20 +253,9 @@ class Query implements ControllerProviderInterface
     {
         $record = new \record_preview($app, 'REG', $request->request->get('pos'), $request->request->get('cont'));
 
-        return new Response($app['twig']->render('prod/preview/reg_train.html.twig', array(
+        return new Response($app['twig']->render('prod/preview/reg_train.html.twig', [
             'container_records' => $record->get_container()->get_children(),
             'record'            => $record
-        )));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
+        ]));
     }
 }

@@ -15,12 +15,6 @@ use Alchemy\Phrasea\Application;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Vocabulary\Term;
 
-/**
- * User Provider
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class UserProvider implements ControlProviderInterface
 {
 
@@ -43,9 +37,9 @@ class UserProvider implements ControlProviderInterface
      *
      * @return type
      */
-    public static function getName()
+    public function getName()
     {
-        return _('Users');
+        return $this->app['translator']->trans('Users');
     }
 
     /**
@@ -65,7 +59,7 @@ class UserProvider implements ControlProviderInterface
                 ->like(\User_Query::LIKE_LOGIN, $query)
                 ->like_match(\User_Query::LIKE_MATCH_OR)
                 ->include_phantoms(true)
-                ->on_bases_where_i_am($for_user->ACL(), array('canadmin'))
+                ->on_bases_where_i_am($this->app['acl']->get($for_user), ['canadmin'])
                 ->limit(0, 50)
                 ->execute()->get_results();
 

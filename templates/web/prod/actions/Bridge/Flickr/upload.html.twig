@@ -1,11 +1,9 @@
-{% extends "prod/actions/Bridge/wrapper.html.twig"%}
+{% extends "prod/actions/Bridge/wrapper.html.twig" %}
 {% import "common/thumbnail.html.twig" as thumb %}
 {% import "prod/actions/Bridge/macro_error_form.html.twig" as error_form %}
 
 {% block menu %}
-  {% trans %}
-  Upload
-  {% endtrans %}
+  {% trans %}Upload{% endtrans %}
 {% endblock %}
 
 {% block response %}
@@ -13,22 +11,18 @@
 {% set elements_received_length = route.get_count_element_received() %}
 
 {% if elements_received_length == 0 %}
-  {% trans 'Vous n\'avez selectionne aucun element' %}
+  {{ 'Vous n\'avez selectionne aucun element' | trans }}
 {% elseif elements_length == 0 %}
-  {% trans 'Les elements ne peuvent etre uploades (problemes de type ou de droit)' %}
-  {% trans 'Le bridge FlickR ne prend en charge que les photos' %}
+  {{ 'Les elements ne peuvent etre uploades (problemes de type ou de droit)' | trans }}
+  {{ 'Le bridge FlickR ne prend en charge que les photos' | trans }}
 {% else %}
   {% if elements_length != elements_received_length %}
     {% set n_elements = elements_received_length - elements_length %}
-    {% trans %}
-      {{n_elements}} elements ne peuvent etre uploades
-    {% endtrans %}
+    {% trans with {'%n_elements%' : n_elements} %}%n_elements% elements ne peuvent etre uploades{% endtrans %}
   {% endif %}
 
   <form class='bridge_form' name="upload_form" action="{{ path('prod_bridge_do_upload') }}" method="post">
-    {% trans %}
-      Upload sur Flickr de {{ elements_length }} elements
-    {% endtrans %}
+    {% trans with {'%elements_length%' : elements_length} %}Upload sur Flickr de %elements_length% elements{% endtrans %}
     <input type="hidden" name="lst" value="{{ route.get_serialize_list() }}" />
     <input type="hidden" name="account_id" value="{{ account.get_id() }}" />
     {% for record in route.get_elements() %}
@@ -42,7 +36,7 @@
               </td>
               <td style="width:100px;">
                 {% set name = "title_" ~ record.get_serialize_key() %}
-                <label for='{{name}}'>{% trans 'Titre' %}</label>
+                <label for='{{name}}'>{{ 'Titre' | trans }}</label>
               </td>
               <td style="width:180px;">
                 <input class="required_field" style="width:150px;" type='text' name='{{name}}' value="{{ caption.get_dc_field('Title') is not none ? caption.get_dc_field('Title').get_serialized_values()|default(record.get_title()) : record.get_title()  }}"/>
@@ -55,7 +49,7 @@
             <tr>
               <td>
                 {% set name = "description_" ~ record.get_serialize_key() %}
-                <label for='{{ name }}'>{% trans 'Description' %}
+                <label for='{{ name }}'>{{ 'Description' | trans }}
                   <br>
                   <span class='form_error'>&nbsp;</span>
                 </label>
@@ -71,7 +65,7 @@
             <tr>
               <td>
                 {% set name = "tags_" ~ record.get_serialize_key() %}
-                <label for='{{ name }}'>{% trans 'Tags' %}</label>
+                <label for='{{ name }}'>{{ 'Tags' | trans }}</label>
               </td>
               <td>
                 <input class='required_field' type='text' style="width:150px;" name='{{ name }}' value="{{ caption.get_dc_field('Subject') is not none ? caption.get_dc_field('Subject').get_serialized_values(' ') : '' }}"/>
@@ -79,14 +73,14 @@
                   {{ error_form.display_errors(name, constraint_errors) }}
               </td>
               <td>
-                {% trans "2000 caracteres maximum, separe par des espaces" %}
+                {{ "2000 caracteres maximum, separe par des espaces" | trans }}
               </td>
             </tr>
           </table>
         </div>
       </div>
     {% endfor %}
-    <button class="form_submitter">{% trans 'Upload' %}</button>
+    <button class="form_submitter">{{ 'Upload' | trans }}</button>
   </form>
   <script type="text/javascript">
     $(document).ready(function(){

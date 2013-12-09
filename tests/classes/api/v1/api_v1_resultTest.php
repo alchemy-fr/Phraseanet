@@ -16,12 +16,9 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
         parent::setUp();
 
         self::$DI['app']->register(new \API_V1_Timer());
+        self::$DI['app']['conf']->set(['main', 'api-timers'], true);
 
-        $conf = self::$DI['app']['phraseanet.configuration']->getConfig();
-        $conf['main']['api-timers'] = true;
-        self::$DI['app']['phraseanet.configuration']->setConfig($conf);
-
-        $this->api = $this->getMock("API_V1_adapter", array("get_version"), array(), "", false);
+        $this->api = $this->getMock("API_V1_adapter", ["get_version"], [], "", false);
         $this->api->expects($this->any())->method("get_version")->will($this->returnValue("my_super_version1.0"));
     }
 
@@ -34,14 +31,14 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testFormatJson()
     {
-        $server = array(
+        $server = [
             "HTTP_ACCEPT"     => "application/json"
             , 'REQUEST_METHOD'  => 'GET'
             , 'SCRIPT_FILENAME' => 'my/base/path/my/request/uri/filename'
             , "REQUEST_URI"     => "my/base/path/my/request/uri"
             , 'PHP_SELF'        => 'my/base/path'
-        );
-        $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
+        ];
+        $request = new Request(["callback" => ""], [], [], [], [], $server);
 
         $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
         $return = $api_result->format();
@@ -97,14 +94,14 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testFormatYaml()
     {
-        $server = array(
+        $server = [
             "HTTP_ACCEPT"     => "application/yaml"
             , 'REQUEST_METHOD'  => 'GET'
             , 'SCRIPT_FILENAME' => 'my/base/path/my/request/uri/filename'
             , "REQUEST_URI"     => "my/base/path/my/request/uri"
             , 'PHP_SELF'        => 'my/base/path'
-        );
-        $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
+        ];
+        $request = new Request(["callback" => ""], [], [], [], [], $server);
 
         $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
         $return = $api_result->format();
@@ -147,14 +144,14 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testFormatJsonP()
     {
-        $server = array(
+        $server = [
             "HTTP_ACCEPT"     => "application/yaml"
             , 'REQUEST_METHOD'  => 'GET'
             , 'SCRIPT_FILENAME' => 'my/base/path/my/request/uri/filename'
             , "REQUEST_URI"     => "my/base/path/my/request/uri"
             , 'PHP_SELF'        => 'my/base/path'
-        );
-        $request = new Request(array("callback" => "my_callback_function"), array(), array(), array(), array(), $server);
+        ];
+        $request = new Request(["callback" => "my_callback_function"], [], [], [], [], $server);
 
         $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
         $return = $api_result->format();
@@ -175,35 +172,35 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
      */
     public function testSet_datas()
     {
-        $server = array(
+        $server = [
             "HTTP_ACCEPT"     => "application/json"
             , 'REQUEST_METHOD'  => 'GET'
             , 'SCRIPT_FILENAME' => 'my/base/path/my/request/uri/filename'
             , "REQUEST_URI"     => "my/base/path/my/request/uri"
             , 'PHP_SELF'        => 'my/base/path'
-        );
-        $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
+        ];
+        $request = new Request(["callback" => ""], [], [], [], [], $server);
 
         $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
-        $api_result->set_datas(array("pirouette" => "cacahuete", "black"     => true, "bob"       => array("bob")));
+        $api_result->set_datas(["pirouette" => "cacahuete", "black"     => true, "bob"       => ["bob"]]);
         $response = json_decode($api_result->format());
         $this->checkResponseFieldResponse($response, "pirouette", "cacahuete", PHPUnit_Framework_Constraint_IsType::TYPE_STRING);
         $this->checkResponseFieldResponse($response, "black", true, PHPUnit_Framework_Constraint_IsType::TYPE_BOOL);
-        $this->checkResponseFieldResponse($response, "bob", array("bob"), PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY);
+        $this->checkResponseFieldResponse($response, "bob", ["bob"], PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY);
     }
 
     public function testGet_datas()
     {
-        $server = array(
+        $server = [
             "HTTP_ACCEPT"     => "application/json"
             , 'REQUEST_METHOD'  => 'GET'
             , 'SCRIPT_FILENAME' => 'my/base/path/my/request/uri/filename'
             , "REQUEST_URI"     => "my/base/path/my/request/uri"
             , 'PHP_SELF'        => 'my/base/path'
-        );
-        $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
+        ];
+        $request = new Request(["callback" => ""], [], [], [], [], $server);
 
-        $data = array("pirouette" => "cacahuete", "black"     => true, "bob"       => array("bob"));
+        $data = ["pirouette" => "cacahuete", "black"     => true, "bob"       => ["bob"]];
         $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
         $api_result->set_datas($data);
 
@@ -212,16 +209,16 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_Emptydatas()
     {
-        $server = array(
+        $server = [
             "HTTP_ACCEPT"     => "application/json"
             , 'REQUEST_METHOD'  => 'GET'
             , 'SCRIPT_FILENAME' => 'my/base/path/my/request/uri/filename'
             , "REQUEST_URI"     => "my/base/path/my/request/uri"
             , 'PHP_SELF'        => 'my/base/path'
-        );
-        $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
+        ];
+        $request = new Request(["callback" => ""], [], [], [], [], $server);
 
-        $data = array();
+        $data = [];
         $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
         $api_result->set_datas($data);
 
@@ -244,28 +241,28 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_content_type()
     {
-        $server = array("HTTP_ACCEPT" => "application/json");
-        $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
+        $server = ["HTTP_ACCEPT" => "application/json"];
+        $request = new Request(["callback" => ""], [], [], [], [], $server);
         $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
         $this->assertEquals("application/json", $api_result->get_content_type());
 
-        $server = array("HTTP_ACCEPT" => "application/yaml");
-        $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
+        $server = ["HTTP_ACCEPT" => "application/yaml"];
+        $request = new Request(["callback" => ""], [], [], [], [], $server);
         $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
         $this->assertEquals('application/yaml', $api_result->get_content_type());
 
-        $server = array("HTTP_ACCEPT" => "text/yaml");
-        $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
+        $server = ["HTTP_ACCEPT" => "text/yaml"];
+        $request = new Request(["callback" => ""], [], [], [], [], $server);
         $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
         $this->assertEquals('application/yaml', $api_result->get_content_type());
 
-        $server = array("HTTP_ACCEPT" => "");
-        $request = new Request(array("callback" => "hello"), array(), array(), array(), array(), $server);
+        $server = ["HTTP_ACCEPT" => ""];
+        $request = new Request(["callback" => "hello"], [], [], [], [], $server);
         $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
         $this->assertEquals('text/javascript', $api_result->get_content_type());
 
-        $server = array("HTTP_ACCEPT" => "unknow");
-        $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
+        $server = ["HTTP_ACCEPT" => "unknow"];
+        $request = new Request(["callback" => ""], [], [], [], [], $server);
         $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
         $this->assertEquals("application/json", $api_result->get_content_type());
     }
@@ -387,11 +384,11 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $api_result->set_error_code(500);
         $this->assertEquals(500, $api_result->get_http_code());
 
-        $api_result = new API_V1_result(self::$DI['app'], new Request(array("callback" => "my_callback")), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(["callback" => "my_callback"]), $this->api);
         $api_result->set_error_code(400);
         $this->assertEquals(200, $api_result->get_http_code());
 
-        $api_result = new API_V1_result(self::$DI['app'], new Request(array("callback" => "my_callback")), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(["callback" => "my_callback"]), $this->api);
         $api_result->set_error_code(500);
         $this->assertEquals(500, $api_result->get_http_code());
     }
@@ -409,7 +406,7 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $api_result->set_http_code(403);
         $this->assertEquals(403, $api_result->get_http_code());
 
-        $api_result = new API_V1_result(self::$DI['app'], new Request(array("callback" => "my_callback")), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(["callback" => "my_callback"]), $this->api);
         $api_result->set_http_code(500);
         $this->assertEquals(500, $api_result->get_http_code());
 

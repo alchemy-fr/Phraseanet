@@ -12,19 +12,13 @@
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication;
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
 {
     /**
      *
      * @var string
      */
-    public $events = array('__FEED_ENTRY_CREATE__');
+    public $events = ['__FEED_ENTRY_CREATE__'];
 
     /**
      *
@@ -44,10 +38,10 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$entry)
     {
-        $params = array(
-            'entry_id' => $entry->get_id(),
+        $params = [
+            'entry_id' => $entry->getId(),
             'notify_email' => $params['notify_email'],
-        );
+        ];
 
         $dom_xml = new DOMDocument('1.0', 'UTF-8');
 
@@ -73,17 +67,17 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
             ->include_templates(false)
             ->email_not_null(true);
 
-        if ($entry->get_feed()->get_collection()) {
-            $Query->on_base_ids(array($entry->get_feed()->get_collection()->get_base_id()));
+        if ($entry->getFeed()->getCollection($this->app)) {
+            $Query->on_base_ids([$entry->getFeed()->getCollection($this->app)->get_base_id()]);
         }
 
         $start = 0;
         $perLoop = 100;
 
-        $from = array(
-            'email' => $entry->get_author_email(),
-            'name'  => $entry->get_author_name()
-        );
+        $from = [
+            'email' => $entry->getAuthorEmail(),
+            'name'  => $entry->getAuthorName()
+        ];
 
         do {
             $results = $Query->limit($start, $perLoop)->execute()->get_results();
@@ -99,10 +93,10 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
                                 \random::TYPE_FEED_ENTRY
                                 , $user_to_notif->get_id()
                                 , null
-                                , $entry->get_id()
+                                , $entry->getId()
                         );
 
-                        $url = $this->app->url('lightbox', array('LOG' => $token));
+                        $url = $this->app->url('lightbox', ['LOG' => $token]);
 
                         $receiver = Receiver::fromUser($user_to_notif);
                         $readyToSend = true;
@@ -113,8 +107,8 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
                     if ($readyToSend) {
                         $mail = MailInfoNewPublication::create($this->app, $receiver);
                         $mail->setButtonUrl($url);
-                        $mail->setAuthor($entry->get_author_name());
-                        $mail->setTitle($entry->get_title());
+                        $mail->setAuthor($entry->getAuthorName());
+                        $mail->setTitle($entry->getTitle());
 
                         $this->app['notification.deliverer']->deliver($mail);
                         $mailed = true;
@@ -139,20 +133,16 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
     {
         $sx = simplexml_load_string($datas);
 
-        try {
-            $entry = \Feed_Entry_Adapter::load_from_id($this->app, (int) $sx->entry_id);
-        } catch (\Exception $e) {
-            return array();
+        $entry = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find((int) $sx->entry_id);
+
+        if (null === $entry) {
+            return [];
         }
 
-        $ret = array(
-            'text'  => sprintf(
-                _('%1$s has published %2$s')
-                , $entry->get_author_name()
-                , '<a href="/lightbox/feeds/entry/' . $entry->get_id() . '/" target="_blank">' . $entry->get_title() . '</a>'
-            )
+        $ret = [
+            'text'  => $this->app->trans('%user% has published %title%', ['%user%' => $entry->getAuthorName(), '%title%' => '<a href="/lightbox/feeds/entry/' . $entry->getId() . '/" target="_blank">' . $entry->getTitle() . '</a>'])
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
-        );
+        ];
 
         return $ret;
     }
@@ -163,7 +153,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
      */
     public function get_name()
     {
-        return _('Feeds');
+        return $this->app->trans('Feeds');
     }
 
     /**
@@ -172,7 +162,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
      */
     public function get_description()
     {
-        return _('Receive notification when a publication is available');
+        return $this->app->trans('Receive notification when a publication is available');
     }
 
     /**

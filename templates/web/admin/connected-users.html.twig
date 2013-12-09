@@ -22,11 +22,11 @@
             <td colspan="2"><strong>{{ 'admin::compte-utilisateur email' | trans }} : </strong>{{ user.get_email() }}</td>
         </tr>
         <tr>
-            <td colspan="2"><strong>{{ 'admin::monitor: bases sur lesquelles l\'utilisateur est connecte : ' | trans }} :</strong></td>
+            <td colspan="2"><strong>{{ 'admin::monitor: bases sur lesquelles l\'utilisateur est connecte :' | trans }} :</strong></td>
         </tr>
-        {% for databox in user.ACL().get_granted_sbas() %}
+        {% for databox in app['acl'].get(user).get_granted_sbas() %}
             <tr>
-                <td colspan="2" style="overflow:hidden;" >{{ databox.get_label(app['locale.I18n']) }}</td>
+                <td colspan="2" style="overflow:hidden;" >{{ databox.get_label(app['locale']) }}</td>
             </tr>
         {% endfor %}
         <tr>
@@ -76,7 +76,7 @@
         </tr>
         {% if data['applications'][0] != 0 %}
         <tr>
-            <td  class="colTitle" >{{ 'admin::monitor: total des utilisateurs uniques : ' | trans }}</td>
+            <td  class="colTitle" >{{ 'admin::monitor: total des utilisateurs uniques :' | trans }}</td>
             <td  class="colValue" >{{ data['applications'][0] }}</td>
         </tr>
         {% endif %}

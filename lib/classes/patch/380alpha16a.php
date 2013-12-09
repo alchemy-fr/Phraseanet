@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,7 +17,7 @@ class patch_380alpha16a implements patchInterface
     private $release = '3.8.0-alpha.16';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -25,6 +25,14 @@ class patch_380alpha16a implements patchInterface
     public function get_release()
     {
         return $this->release;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return [];
     }
 
     /**
@@ -48,22 +56,22 @@ class patch_380alpha16a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $xsendfile = $app['phraseanet.configuration']['xsendfile'];
+        $xsendfile = $app['conf']->get('xsendfile');
 
         if (!isset($xsendfile['mapping'])) {
-            $xsendfile['mapping'] = array();
+            $xsendfile['mapping'] = [];
         }
 
-        $xsendfile['mapping'][] = array(
+        $xsendfile['mapping'][] = [
             'directory' => $app['root.path'] . '/tmp/lazaret/',
             'mount-point' => '/lazaret/',
-        );
-        $xsendfile['mapping'][] = array(
+        ];
+        $xsendfile['mapping'][] = [
             'directory' => $app['root.path'] . '/tmp/download/',
             'mount-point' => '/download/',
-        );
+        ];
 
-        $app['phraseanet.configuration']['xsendfile'] = $xsendfile;
+        $app['conf']->set('xsendfile', $xsendfile);
 
         return true;
     }

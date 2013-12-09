@@ -34,15 +34,14 @@ class ControllerSubdefsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPostRouteAddSubdef()
     {
         $name = $this->getSubdefName();
-        self::$DI['client']->request("POST", "/admin/subdefs/" .  $this->databox->get_sbas_id() . "/", array('add_subdef' => array(
+        self::$DI['client']->request("POST", "/admin/subdefs/" .  $this->databox->get_sbas_id() . "/", ['add_subdef' => [
                 'class'  => 'thumbnail',
                 'name'   => $name,
                 'group'  => 'image'
-            )));
+            ]]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
 
-        $subdefs = new \databox_subdefsStructure(new \databox(self::$DI['app'], $this->databox->get_sbas_id()));
-        $subdef = $subdefs->get_subdef("image", $name);
+        $subdefs = new \databox_subdefsStructure(new \databox(self::$DI['app'], $this->databox->get_sbas_id()), self::$DI['app']['translator']);
         $subdefs->delete_subdef('image', $name);
     }
 
@@ -51,7 +50,7 @@ class ControllerSubdefsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $subdefs =  $this->databox->get_subdef_structure();
         $name = $this->getSubdefName();
         $subdefs->add_subdef("image", $name, "thumbnail");
-        self::$DI['client']->request("POST", "/admin/subdefs/" .  $this->databox->get_sbas_id() . "/", array('delete_subdef' => 'image_' . $name));
+        self::$DI['client']->request("POST", "/admin/subdefs/" .  $this->databox->get_sbas_id() . "/", ['delete_subdef' => 'image_' . $name]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         try {
             $subdefs->get_subdef("image", $name);
@@ -67,22 +66,22 @@ class ControllerSubdefsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $name = $this->getSubdefName();
         $subdefs->add_subdef("image", $name, "thumbnail");
         self::$DI['client']->request("POST", "/admin/subdefs/" .  $this->databox->get_sbas_id() . "/"
-            , array('subdefs' => array(
+            , ['subdefs' => [
                 'image_' . $name
-            )
+            ]
             , 'image_' . $name . '_class'        => 'thumbnail'
             , 'image_' . $name . '_downloadable' => 0
             , 'image_' . $name . '_mediatype'    => 'image'
-            , 'image_' . $name . '_image'        => array(
+            , 'image_' . $name . '_image'        => [
                 'size'       => 400,
                 'resolution' => 83,
                 'strip'      => 0,
                 'quality'    => 90,
-            ))
+            ]]
         );
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        $subdefs = new \databox_subdefsStructure(new \databox(self::$DI['app'], $this->databox->get_sbas_id()));
+        $subdefs = new \databox_subdefsStructure(new \databox(self::$DI['app'], $this->databox->get_sbas_id()), self::$DI['app']['translator']);
         $subdef = $subdefs->get_subdef("image", $name);
 
         /* @var $subdef \databox_subdef */

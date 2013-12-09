@@ -1,7 +1,7 @@
 
   {% if record.get_view_popularity() %}
     <br>
-    {% trans 'preview::statistiques de visualisation pour le lien' %}
+    {{ 'preview::statistiques de visualisation pour le lien' | trans }}
     <br/>
     <img src="{{record.get_view_popularity().get_url()}}" />
   {% endif %}
@@ -13,7 +13,7 @@
 
   {% if record.get_download_popularity() %}
     <br>
-    {% trans 'preview::statistiques de telechargement' %}
+    {{ 'preview::statistiques de telechargement' | trans }}
     <br>
     <img src="{{record.get_download_popularity().get_url()}}" />
   {% endif %}

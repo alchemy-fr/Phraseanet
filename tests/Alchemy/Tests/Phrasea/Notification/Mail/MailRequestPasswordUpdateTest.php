@@ -13,7 +13,7 @@ class MailRequestPasswordUpdateTest extends MailWithLinkTestCase
     public function testSetLogin()
     {
         $mail = $this->getMail();
-        $this->assertTrue(false !== strpos($mail->getMessage(), 'RomainNeutron'));
+        $this->assertEquals("Password renewal for login \"%login%\" has been requested\nlogin:: Visitez le lien suivant et suivez les instructions pour continuer, sinon ignorez cet email et il ne se passera rien", $mail->getMessage());
     }
 
     public function getMail()

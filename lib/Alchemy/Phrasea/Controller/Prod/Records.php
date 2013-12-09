@@ -20,81 +20,30 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class Records implements ControllerProviderInterface
 {
-
     /**
      * {@inheritDoc}
      */
     public function connect(Application $app)
     {
+        $app['controller.prod.records'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireNotGuest();
         });
 
-         /**
-         * Get  the record detailed view
-         *
-         * name         : record_details
-         *
-         * description  : Get the detailed view for a specific record
-         *
-         * method       : POST|GET
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->match('/', $this->call('getRecord'))
+        $controllers->match('/', 'controller.prod.records:getRecord')
             ->bind('record_details')
             ->method('GET|POST');
 
-        /**
-         * Delete a record or a list of records
-         *
-         * name         : record_delete
-         *
-         * description  : Delete a record or a list of records
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/delete/', $this->call('doDeleteRecords'))
+        $controllers->post('/delete/', 'controller.prod.records:doDeleteRecords')
             ->bind('record_delete');
 
-        /**
-         * Verify if I can delete records
-         *
-         * name         : record_what_can_i_delete
-         *
-         * description  : Verify if I can delete records
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->post('/delete/what/', $this->call('whatCanIDelete'))
+        $controllers->post('/delete/what/', 'controller.prod.records:whatCanIDelete')
             ->bind('record_what_can_i_delete');
 
-        /**
-         * Renew a record URL
-         *
-         * name         : record_renew_url
-         *
-         * description  : Renew a record URL
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/renew-url/', $this->call('renewUrl'))
+        $controllers->post('/renew-url/', 'controller.prod.records:renewUrl')
             ->bind('record_renew_url');
 
         return $controllers;
@@ -147,48 +96,48 @@ class Records implements ControllerProviderInterface
 
         if ($record->is_from_reg()) {
             $train = $app['twig']->render('prod/preview/reg_train.html.twig',
-                array('record' => $record)
+                ['record' => $record]
             );
         }
 
         if ($record->is_from_basket() && $reloadTrain) {
             $train = $app['twig']->render('prod/preview/basket_train.html.twig',
-                array('record' => $record)
+                ['record' => $record]
             );
         }
 
         if ($record->is_from_feed()) {
             $train = $app['twig']->render('prod/preview/feed_train.html.twig',
-                array('record' => $record)
+                ['record' => $record]
             );
         }
 
-        return $app->json(array(
-            "desc"          => $app['twig']->render('prod/preview/caption.html.twig', array(
+        return $app->json([
+            "desc"          => $app['twig']->render('prod/preview/caption.html.twig', [
                 'record'        => $record,
                 'highlight'     => $query,
                 'searchEngine'  => $searchEngine
-            )),
-            "html_preview"  => $app['twig']->render('common/preview.html.twig', array(
+            ]),
+            "html_preview"  => $app['twig']->render('common/preview.html.twig', [
                 'record'        => $record
-            )),
-            "others"        => $app['twig']->render('prod/preview/appears_in.html.twig', array(
+            ]),
+            "others"        => $app['twig']->render('prod/preview/appears_in.html.twig', [
                 'parents'       => $record->get_grouping_parents(),
                 'baskets'       => $record->get_container_baskets($app['EM'], $app['authentication']->getUser())
-            )),
+            ]),
             "current"       => $train,
-            "history"       => $app['twig']->render('prod/preview/short_history.html.twig', array(
+            "history"       => $app['twig']->render('prod/preview/short_history.html.twig', [
                 'record'        => $record
-            )),
-            "popularity"    => $app['twig']->render('prod/preview/popularity.html.twig', array(
+            ]),
+            "popularity"    => $app['twig']->render('prod/preview/popularity.html.twig', [
                 'record'        => $record
-            )),
-            "tools"         => $app['twig']->render('prod/preview/tools.html.twig', array(
+            ]),
+            "tools"         => $app['twig']->render('prod/preview/tools.html.twig', [
                 'record'        => $record
-            )),
+            ]),
             "pos"           => $record->get_number(),
             "title"         => $record->get_title($query, $searchEngine)
-        ));
+        ]);
     }
 
     /**
@@ -200,14 +149,14 @@ class Records implements ControllerProviderInterface
      */
     public function doDeleteRecords(Application $app, Request $request)
     {
-        $records = RecordsRequest::fromRequest($app, $request, !!$request->request->get('del_children'), array(
+        $records = RecordsRequest::fromRequest($app, $request, !!$request->request->get('del_children'), [
             'candeleterecord'
-        ));
+        ]);
 
-        $basketElementsRepository = $app['EM']->getRepository('\Entities\BasketElement');
-        $StoryWZRepository = $app['EM']->getRepository('\Entities\StoryWZ');
+        $basketElementsRepository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
+        $StoryWZRepository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\StoryWZ');
 
-        $deleted = array();
+        $deleted = [];
 
         foreach ($records as $record) {
             try {
@@ -245,13 +194,13 @@ class Records implements ControllerProviderInterface
      */
     public function whatCanIDelete(Application $app, Request $request)
     {
-        $records = RecordsRequest::fromRequest($app, $request, !!$request->request->get('del_children'), array(
+        $records = RecordsRequest::fromRequest($app, $request, !!$request->request->get('del_children'), [
             'candeleterecord'
-        ));
+        ]);
 
-        return $app['twig']->render('prod/actions/delete_records_confirm.html.twig', array(
+        return $app['twig']->render('prod/actions/delete_records_confirm.html.twig', [
             'records'   => $records
-        ));
+        ]);
     }
 
     /**
@@ -266,22 +215,11 @@ class Records implements ControllerProviderInterface
     {
         $records = RecordsRequest::fromRequest($app, $request, !!$request->request->get('renew_children_url'));
 
-        $renewed = array();
+        $renewed = [];
         foreach ($records as $record) {
             $renewed[$record->get_serialize_key()] = $record->get_preview()->renew_url();
         };
 
         return $app->json($renewed);
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

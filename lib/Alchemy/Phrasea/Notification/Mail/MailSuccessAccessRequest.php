@@ -18,7 +18,7 @@ class MailSuccessAccessRequest extends AbstractMailWithLink
      */
     public function getSubject()
     {
-        return sprintf(_('login::register:email: Votre compte %s'), $this->getPhraseanetTitle());
+        return $this->app->trans('login::register:email: Votre compte %application%', ['%application%' => $this->getPhraseanetTitle()]);
     }
 
     /**
@@ -26,7 +26,7 @@ class MailSuccessAccessRequest extends AbstractMailWithLink
      */
     public function getMessage()
     {
-        return _('login::register:email: Voici un compte rendu du traitement de vos demandes d\'acces :')
+        return $this->app->trans('login::register:email: Voici un compte rendu du traitement de vos demandes d\'acces :')
             . "\n"
             . $this->message;
     }
@@ -36,7 +36,7 @@ class MailSuccessAccessRequest extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return _('Watch my access requests status');
+        return $this->app->trans('Watch my access requests status');
     }
 
     /**

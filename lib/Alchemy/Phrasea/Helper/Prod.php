@@ -11,23 +11,18 @@
 
 namespace Alchemy\Phrasea\Helper;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Prod extends Helper
 {
 
     public function get_search_datas()
     {
-        $search_datas = array(
-            'bases' => array(),
-            'dates' => array(),
-            'fields' => array()
-        );
+        $search_datas = [
+            'bases' => [],
+            'dates' => [],
+            'fields' => []
+        ];
 
-        $bases = $fields = $dates = array();
+        $bases = $fields = $dates = [];
 
         if (! $this->app['authentication']->getUser() instanceof \User_Adapter) {
             return $search_datas;
@@ -35,24 +30,24 @@ class Prod extends Helper
 
         $searchSet = json_decode($this->app['authentication']->getUser()->getPrefs('search'), true);
 
-        foreach ($this->app['authentication']->getUser()->ACL()->get_granted_sbas() as $databox) {
+        foreach ($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_sbas() as $databox) {
             $sbas_id = $databox->get_sbas_id();
 
-            $bases[$sbas_id] = array(
+            $bases[$sbas_id] = [
                 'thesaurus'   => (trim($databox->get_thesaurus()) != ""),
                 'cterms'      => false,
-                'collections' => array(),
+                'collections' => [],
                 'sbas_id' => $sbas_id
-            );
+            ];
 
-            foreach ($this->app['authentication']->getUser()->ACL()->get_granted_base(array(), array($databox->get_sbas_id())) as $coll) {
+            foreach ($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base([], [$databox->get_sbas_id()]) as $coll) {
                 $selected = (isset($searchSet['bases']) &&
                     isset($searchSet['bases'][$sbas_id])) ? (in_array($coll->get_base_id(), $searchSet['bases'][$sbas_id])) : true;
                 $bases[$sbas_id]['collections'][] =
-                    array(
+                    [
                         'selected' => $selected,
                         'base_id'  => $coll->get_base_id()
-                );
+                ];
             }
 
             $meta_struct = $databox->get_meta_structure();
@@ -65,25 +60,25 @@ class Prod extends Helper
                     if (isset($dates[$id]))
                         $dates[$id]['sbas'][] = $sbas_id;
                     else
-                        $dates[$id] = array('sbas' => array($sbas_id), 'fieldname' => $name);
+                        $dates[$id] = ['sbas' => [$sbas_id], 'fieldname' => $name];
                 }
 
                 if (isset($fields[$name])) {
                     $fields[$name]['sbas'][] = $sbas_id;
                 } else {
-                    $fields[$name] = array(
-                        'sbas' => array($sbas_id)
+                    $fields[$name] = [
+                        'sbas' => [$sbas_id]
                         , 'fieldname' => $name
                         , 'type'      => $meta->get_type()
                         , 'id'        => $id
-                    );
+                    ];
                 }
             }
 
             if (! $bases[$sbas_id]['thesaurus']) {
                 continue;
             }
-            if ( ! $this->app['authentication']->getUser()->ACL()->has_right_on_sbas($sbas_id, 'bas_modif_th')) {
+            if ( ! $this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_sbas($sbas_id, 'bas_modif_th')) {
                 continue;
             }
 

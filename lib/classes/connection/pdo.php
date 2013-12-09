@@ -9,12 +9,6 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @package     connection
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class connection_pdo extends connection_abstract implements connection_interface
 {
     protected $debug;
@@ -32,7 +26,7 @@ class connection_pdo extends connection_abstract implements connection_interface
      *
      * @return connection_pdo
      */
-    public function __construct($name, $hostname, $port, $user, $passwd, $dbname = false, $options = array(), $debug = false)
+    public function __construct($name, $hostname, $port, $user, $passwd, $dbname = false, $options = [], $debug = false)
     {
         $this->debug = $debug;
         $this->name = $name;
@@ -65,7 +59,7 @@ class connection_pdo extends connection_abstract implements connection_interface
      * @param  type         $driver_options
      * @return PDOStatement
      */
-    public function prepare($statement, $driver_options = array())
+    public function prepare($statement, $driver_options = [])
     {
         if ($this->debug) {
             return new connection_pdoStatementDebugger(parent::prepare($statement, $driver_options));

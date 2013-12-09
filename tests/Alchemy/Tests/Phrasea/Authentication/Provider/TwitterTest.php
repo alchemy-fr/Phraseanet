@@ -51,11 +51,11 @@ class TwitterTest extends ProviderTestCase
         $provider->getTwitterClient()->expects($this->once())
             ->method('request')
             ->will($this->returncallback(function () use ($provider) {
-                $provider->getTwitterClient()->response = array(
-                    'response' => array(
+                $provider->getTwitterClient()->response = [
+                    'response' => [
                         'oauth_token' => 'twitter-oauth-token',
-                    )
-                );
+                    ]
+                ];
 
                 return 200;
             }));
@@ -66,7 +66,7 @@ class TwitterTest extends ProviderTestCase
     public function provideDataForFailingCallback()
     {
         $request = $this->getRequestMock();
-        $this->addQueryParameter($request, array());
+        $this->addQueryParameter($request, []);
 
         $provider1 = $this->getProvider();
         $provider1->getTwitterClient()->expects($this->once())
@@ -82,11 +82,11 @@ class TwitterTest extends ProviderTestCase
                     return 401;
                 } else {
 
-                    $provider2->getTwitterClient()->response = array(
-                        'response' => array(
+                    $provider2->getTwitterClient()->response = [
+                        'response' => [
                             'oauth_token' => 'twitter-oauth-token',
-                        )
-                    );
+                        ]
+                    ];
 
                     $first = false;
 
@@ -94,10 +94,10 @@ class TwitterTest extends ProviderTestCase
                 }
             }));
 
-        return array(
-            array($provider1, $request),
-            array($provider2, $request),
-        );
+        return [
+            [$provider1, $request],
+            [$provider2, $request],
+        ];
     }
 
     public function provideDataForSuccessCallback()
@@ -108,26 +108,25 @@ class TwitterTest extends ProviderTestCase
         $provider->getSession()->set('twitter.provider.state', $state);
 
         $request = $this->getRequestMock();
-        $this->addQueryParameter($request, array('state' => $state));
+        $this->addQueryParameter($request, ['state' => $state]);
 
-        $phpunit = $this;
         $provider->getTwitterClient()->expects($this->any())
             ->method('request')
-            ->will($this->returnCallback(function ($method) use ($provider, $phpunit) {
+            ->will($this->returnCallback(function ($method) use ($provider) {
                 switch ($method) {
                     case 'POST':
-                        $provider->getTwitterClient()->response = array(
-                            'response' => array(
+                        $provider->getTwitterClient()->response = [
+                            'response' => [
                                 'oauth_token' => 'twitter-oauth-token',
-                            )
-                        );
+                            ]
+                        ];
                         break;
                     case 'GET':
-                        $provider->getTwitterClient()->response = array(
-                            'response' => json_encode(array(
-                                'id' => $phpunit::ID,
-                            ))
-                        );
+                        $provider->getTwitterClient()->response = [
+                            'response' => json_encode([
+                                'id' => self::ID,
+                            ])
+                        ];
                         break;
                     default:
                         throw new \InvalidArgumentException(sprintf('Invalid method %s', $method));
@@ -139,43 +138,42 @@ class TwitterTest extends ProviderTestCase
 
         $provider->getTwitterClient()->expects($this->once())
             ->method('extract_params')
-            ->will($this->returnValue(array(
+            ->will($this->returnValue([
                'oauth_token_secret' => 'token secret',
                'oauth_token' => 'token',
-            )));
+            ]));
 
-        return array(
-            array($provider, $request),
-        );
+        return [
+            [$provider, $request],
+        ];
     }
 
     public function getTestOptions()
     {
-        return array(
+        return [
             'consumer-key' => 'twitter-consumer-key',
             'consumer-secret' => 'twitter-consumer-secret',
-        );
+        ];
     }
 
     protected function getProviderForSuccessIdentity()
     {
         $provider = $this->getProvider();
-        $provider->getSession()->set('twitter.provider.access_token', array(
+        $provider->getSession()->set('twitter.provider.access_token', [
             'oauth_token' => 'twitter token',
             'oauth_token_secret' => 'token secret',
-        ));
+        ]);
 
-        $phpunit = $this;
         $provider->getTwitterClient()->expects($this->once())
             ->method('request')
-            ->will($this->returncallback(function () use ($provider, $phpunit) {
-                $provider->getTwitterClient()->response = array(
-                    'response' => json_encode(array(
-                        'screen_name' => $phpunit::USERNAME,
-                        'profile_image_url_https' => $phpunit::IMAGEURL,
-                        'id' => $phpunit::ID,
-                    ))
-                );
+            ->will($this->returncallback(function () use ($provider) {
+                $provider->getTwitterClient()->response = [
+                    'response' => json_encode([
+                        'screen_name' => self::USERNAME,
+                        'profile_image_url_https' => self::IMAGEURL,
+                        'id' => self::ID,
+                    ])
+                ];
 
                 return 200;
             }));
@@ -185,11 +183,11 @@ class TwitterTest extends ProviderTestCase
 
     protected function getAvailableFieldsForIdentity()
     {
-        return array(
+        return [
             Identity::PROPERTY_ID        => self::ID,
             Identity::PROPERTY_USERNAME  => self::USERNAME,
             Identity::PROPERTY_IMAGEURL  => self::IMAGEURL,
-        );
+        ];
     }
 
     protected function getProviderForFailingIdentity()

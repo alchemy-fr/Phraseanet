@@ -15,19 +15,21 @@ use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class ConnectedUsers implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.admin.connected-users'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAccessToModule('Admin');
         });
 
-        $controllers->get('/', $this->call('listConnectedUsers'))
+        $controllers->get('/', 'controller.admin.connected-users:listConnectedUsers')
             ->bind('admin_connected_users');
 
         return $controllers;
@@ -35,19 +37,19 @@ class ConnectedUsers implements ControllerProviderInterface
 
     public function listConnectedUsers(Application $app, Request $request)
     {
-        $dql = 'SELECT s FROM Entities\Session s
+        $dql = 'SELECT s FROM Alchemy\Phrasea\Model\Entities\Session s
             WHERE
                 s.updated > :date
             ORDER BY s.updated DESC';
 
         $date = new \DateTime('-2 hours');
-        $params = array('date' => $date->format('Y-m-d h:i:s'));
+        $params = ['date' => $date->format('Y-m-d h:i:s')];
 
         $query = $app['EM']->createQuery($dql);
         $query->setParameters($params);
         $sessions = $query->getResult();
 
-        $result = array();
+        $result = [];
 
         foreach ($sessions as $session) {
             $info = '';
@@ -75,15 +77,15 @@ class ConnectedUsers implements ControllerProviderInterface
                 ));
             }
 
-            $result[] = array(
+            $result[] = [
                 'session' => $session,
                 'info' => $info,
-            );
+            ];
         }
 
-        $ret = array(
+        $ret = [
             'sessions'     => $result,
-            'applications' => array(
+            'applications' => [
                 '0' => 0,
                 '1' => 0,
                 '2' => 0,
@@ -93,8 +95,8 @@ class ConnectedUsers implements ControllerProviderInterface
                 '6' => 0,
                 '7' => 0,
                 '8' => 0,
-            )
-        );
+            ]
+        ];
 
         foreach ($result as $session) {
             foreach ($session['session']->getModules() as $module) {
@@ -104,7 +106,7 @@ class ConnectedUsers implements ControllerProviderInterface
             }
         }
 
-        return $app['twig']->render('admin/connected-users.html.twig', array('data' => $ret));
+        return $app['twig']->render('admin/connected-users.html.twig', ['data' => $ret]);
     }
 
     /**
@@ -114,31 +116,20 @@ class ConnectedUsers implements ControllerProviderInterface
      * @return string
      * @return null
      */
-    public static function appName($appId)
+    public static function appName(TranslatorInterface $translator, $appId)
     {
-        $appRef = array(
-            '0' => _('admin::monitor: module inconnu'),
-            '1' => _('admin::monitor: module production'),
-            '2' => _('admin::monitor: module client'),
-            '3' => _('admin::monitor: module admin'),
-            '4' => _('admin::monitor: module report'),
-            '5' => _('admin::monitor: module thesaurus'),
-            '6' => _('admin::monitor: module comparateur'),
-            '7' => _('admin::monitor: module validation'),
-            '8' => _('admin::monitor: module upload'),
-        );
+        $appRef = [
+            '0' => $translator->trans('admin::monitor: module inconnu'),
+            '1' => $translator->trans('admin::monitor: module production'),
+            '2' => $translator->trans('admin::monitor: module client'),
+            '3' => $translator->trans('admin::monitor: module admin'),
+            '4' => $translator->trans('admin::monitor: module report'),
+            '5' => $translator->trans('admin::monitor: module thesaurus'),
+            '6' => $translator->trans('admin::monitor: module comparateur'),
+            '7' => $translator->trans('admin::monitor: module validation'),
+            '8' => $translator->trans('admin::monitor: module upload'),
+        ];
 
         return isset($appRef[$appId]) ? $appRef[$appId] : null;
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

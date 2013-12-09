@@ -56,8 +56,7 @@ class PluginServiceProvider implements ServiceProviderInterface
         });
 
         $app['plugins.composer-installer'] = $app->share(function (Application $app) {
-            $binaries = $app['phraseanet.configuration']['binaries'];
-            $phpBinary = isset($binaries['php_binary']) ? $binaries['php_binary'] : null;
+            $phpBinary = $app['conf']->get(['binaries', 'php_binary'], null);
 
             if (!is_executable($phpBinary)) {
                 $finder = new PhpExecutableFinder();
@@ -71,9 +70,9 @@ class PluginServiceProvider implements ServiceProviderInterface
         });
 
         $app['plugins.importer'] = $app->share(function (Application $app) {
-            return new Importer($app['plugins.import-strategy'], array(
+            return new Importer($app['plugins.import-strategy'], [
                 'plugins.importer.folder-importer' => $app['plugins.importer.folder-importer'],
-            ));
+            ]);
         });
 
         $app['plugins.importer.folder-importer'] = $app->share(function (Application $app) {

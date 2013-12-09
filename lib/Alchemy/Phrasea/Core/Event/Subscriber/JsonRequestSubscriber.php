@@ -27,12 +27,12 @@ class JsonRequestSubscriber implements EventSubscriberInterface
             || 0 === strpos($request->getPathInfo(), '/admin/collection/')
             || 0 === strpos($request->getPathInfo(), '/admin/databox/'))
             && $request->getRequestFormat() == 'json') {
-            $datas = array(
+            $datas = [
                 'success' => false,
                 'message' => $exception->getMessage(),
-            );
+            ];
 
-            $event->setResponse(new JsonResponse($datas, 200, array('X-Status-Code' => 200)));
+            $event->setResponse(new JsonResponse($datas, 200, ['X-Status-Code' => 200]));
         }
     }
 
@@ -41,6 +41,6 @@ class JsonRequestSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(KernelEvents::EXCEPTION => array('onSilexError', 10));
+        return [KernelEvents::EXCEPTION => ['onSilexError', 10]];
     }
 }

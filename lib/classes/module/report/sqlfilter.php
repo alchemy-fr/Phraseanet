@@ -15,7 +15,7 @@ class module_report_sqlfilter
 {
     public $conn;
     private $filter;
-    private $cor_query = array();
+    private $cor_query = [];
     private $app;
     private $report;
 
@@ -34,16 +34,16 @@ class module_report_sqlfilter
 
     public static function constructDateFilter($dmin, $dmax)
     {
-        return array(
+        return [
             'sql' => ($dmin && $dmax ? ' log_date.date > :date_min AND log_date.date < :date_max ' : false)
-            , 'params' => ($dmin && $dmax ? array(':date_min' => $dmin, ':date_max' => $dmax) : array())
-        );
+            , 'params' => ($dmin && $dmax ? [':date_min' => $dmin, ':date_max' => $dmax] : [])
+        ];
     }
 
     public static function constructCollectionFilter(Application $app, $list_coll_id)
     {
-        $ret = array('sql'    => '', 'params' => array());
-        $coll_filter = array();
+        $ret = ['sql'    => '', 'params' => []];
+        $coll_filter = [];
         foreach (array_filter(explode(',', $list_coll_id)) as $val) {
             $val = \phrasea::collFromBas($app, $val);
             if ($val) {
@@ -64,7 +64,7 @@ class module_report_sqlfilter
     {
         $finalfilter = '';
 
-        $params = array(':log_site' => $this->app['phraseanet.configuration']['main']['key']);
+        $params = [':log_site' => $this->app['conf']->get(['main', 'key'])];
 
         if ($this->filter['date']) {
             $finalfilter .= $this->filter['date']['sql'] . ' AND ';
@@ -80,22 +80,22 @@ class module_report_sqlfilter
         }
         $finalfilter .= ' log.site = :log_site';
 
-        return array('sql' => $finalfilter, 'params' => $params);
+        return ['sql' => $finalfilter, 'params' => $params];
     }
 
     public function getGvSitFilter()
     {
-        $params = array();
+        $params = [];
 
         $sql = 'log.site = :log_site_gv_filter';
-        $params[':log_site_gv_filter'] = $this->app['phraseanet.configuration']['main']['key'];
+        $params[':log_site_gv_filter'] = $this->app['conf']->get(['main', 'key']);
 
-        return array('sql' => $sql, 'params' => $params);
+        return ['sql' => $sql, 'params' => $params];
     }
 
     public function getUserIdFilter($id)
     {
-        return array('sql' => "log.usrid = :usr_id_filter", 'params' => array(':usr_id_filter' => $id));
+        return ['sql' => "log.usrid = :usr_id_filter", 'params' => [':usr_id_filter' => $id]];
     }
 
     public function getDateFilter()
@@ -136,13 +136,13 @@ class module_report_sqlfilter
     {
         $this->filter['date'] = false;
         if ($report->getDmin() && $report->getDmax()) {
-            $this->filter['date'] = array(
+            $this->filter['date'] = [
                 'sql'    => ' (log.date > :date_min_f AND log.date < :date_max_f) '
-                , 'params' => array(
+                , 'params' => [
                     ':date_min_f' => $report->getDmin()
                     , ':date_max_f' => $report->getDmax()
-                )
-            );
+                ]
+            ];
         }
 
         return;
@@ -154,15 +154,15 @@ class module_report_sqlfilter
         $f = $report->getTabFilter();
 
         if (sizeof($f) > 0) {
-            $filter = array();
-            $params = array();
+            $filter = [];
+            $params = [];
             $n = 0;
             foreach ($f as $field => $value) {
                 if (array_key_exists($value['f'], $this->cor_query))
                     $value['f'] = $this->cor_query[$value['f']];
 
                 if ($value['o'] == 'LIKE') {
-                    $filter[] = $value['f'] . ' ' . $value['o'] . ' \'%' . str_replace(array("'", '%'), array("\'", '\%'), ' :user_filter' . $n) . '%\'';
+                    $filter[] = $value['f'] . ' ' . $value['o'] . ' \'%' . str_replace(["'", '%'], ["\'", '\%'], ' :user_filter' . $n) . '%\'';
                     $params[':user_filter' . $n] = $value['v'];
                 } elseif ($value['o'] == 'OR') {
                     $filter[] = $value['f'] . ' ' . $value['o'] . ' :user_filter' . $n;
@@ -174,7 +174,7 @@ class module_report_sqlfilter
 
                 $n ++;
             }
-            $filter_user = array('sql' => implode(' AND ', $filter), 'params' => $params);
+            $filter_user = ['sql' => implode(' AND ', $filter), 'params' => $params];
 
             $this->filter['user'] = $filter_user;
         }
@@ -185,7 +185,7 @@ class module_report_sqlfilter
     private function collectionFilter(module_report $report)
     {
         $this->filter['collection'] = false;
-        $coll_filter = array();
+        $coll_filter = [];
 
         if ($report->getUserId() == '') {
             return;
@@ -201,7 +201,7 @@ class module_report_sqlfilter
                 }
             }
 
-            $this->filter['collection'] = array('sql' => ' (' . implode(' OR ', array_unique($coll_filter)) . ') ', 'params' => array());
+            $this->filter['collection'] = ['sql' => ' (' . implode(' OR ', array_unique($coll_filter)) . ') ', 'params' => []];
         }
 
         return;
@@ -210,7 +210,7 @@ class module_report_sqlfilter
     private function recordFilter(module_report $report)
     {
         $this->filter['record'] = false;
-        $dl_coll_filter = $params = array();
+        $dl_coll_filter = $params = [];
         $n = 0;
         if (($report->getUserId() != '')) {
             $tab = explode(",", $report->getListCollId());
@@ -219,7 +219,7 @@ class module_report_sqlfilter
                 $params[":record_fil" . $n] = phrasea::collFromBas($this->app, $val);
                 $n ++;
             }
-            $this->filter['record'] = array('sql' => implode(' OR ', $dl_coll_filter), 'params' => $params);
+            $this->filter['record'] = ['sql' => implode(' OR ', $dl_coll_filter), 'params' => $params];
         }
 
         return;

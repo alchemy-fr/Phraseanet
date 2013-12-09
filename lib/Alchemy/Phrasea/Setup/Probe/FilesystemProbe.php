@@ -22,9 +22,9 @@ class FilesystemProbe extends FilesystemRequirements implements ProbeInterface
 
         $baseDir = realpath(__DIR__ . '/../../../../../');
 
-        $paths = array(
+        $paths = [
             $baseDir . '/config/configuration.yml',
-        );
+        ];
 
         foreach ($paths as $path) {
             $this->addRecommendation(
@@ -34,7 +34,7 @@ class FilesystemProbe extends FilesystemRequirements implements ProbeInterface
             );
         }
 
-        $path = array();
+        $path = [];
 
         if ($registry->is_set('GV_base_datapath_noweb')) {
             $paths[] = $registry->get('GV_base_datapath_noweb');

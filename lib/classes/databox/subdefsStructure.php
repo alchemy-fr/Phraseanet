@@ -9,18 +9,20 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
+use Symfony\Component\Translation\TranslatorInterface;
+
 class databox_subdefsStructure implements IteratorAggregate, Countable
 {
     /**
      *
      * @var Array
      */
-    protected $AvSubdefs = array();
+    protected $AvSubdefs = [];
+
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
 
     /**
      *
@@ -46,9 +48,10 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
      * @param  databox $databox
      * @return Array
      */
-    public function __construct(databox $databox)
+    public function __construct(databox $databox, TranslatorInterface $translator)
     {
         $this->databox = $databox;
+        $this->translator = $translator;
 
         $this->load_subdefs();
 
@@ -76,13 +79,13 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
     {
         $sx_struct = $this->databox->get_sxml_structure();
 
-        $this->AvSubdefs = array(
-            'image' => array(),
-            'video' => array(),
-            'audio' => array(),
-            'document' => array(),
-            'flash' => array()
-        );
+        $this->AvSubdefs = [
+            'image' => [],
+            'video' => [],
+            'audio' => [],
+            'document' => [],
+            'flash' => []
+        ];
 
         if (! $sx_struct) {
             return $this;
@@ -94,7 +97,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
             $subdefgroup_name = strtolower($subdefs->attributes()->name);
 
             if ( ! isset($AvSubdefs[$subdefgroup_name])) {
-                $AvSubdefs[$subdefgroup_name] = array();
+                $AvSubdefs[$subdefgroup_name] = [];
             }
 
             foreach ($subdefs as $sd) {
@@ -121,7 +124,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
                         break;
                 }
 
-                $AvSubdefs[$subdefgroup_name][$subdef_name] = new databox_subdef($type, $sd);
+                $AvSubdefs[$subdefgroup_name][$subdef_name] = new databox_subdef($type, $sd, $this->translator);
             }
         }
         $this->AvSubdefs = $AvSubdefs;
@@ -231,7 +234,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
 
         foreach ($labels as $code => $label) {
             $child = $dom_struct->createElement('label');
-            $labelElement = $child->appendChild($dom_struct->createTextNode($label));
+            $child->appendChild($dom_struct->createTextNode($label));
             $lang = $child->appendChild($dom_struct->createAttribute('lang'));
             $lang->value = $code;
             $subdef->appendChild($child);

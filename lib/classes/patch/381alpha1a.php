@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,7 +17,7 @@ class patch_381alpha1a implements patchInterface
     private $release = '3.8.1-alpha.1';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -38,6 +38,14 @@ class patch_381alpha1a implements patchInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrineMigrations()
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function concern()
     {
         return $this->concern;
@@ -49,20 +57,20 @@ class patch_381alpha1a implements patchInterface
     public function apply(base $appbox, Application $app)
     {
         $sql = 'SELECT base_id, ord, sbas_id
-            FROM  `bas`
-            ORDER BY sbas_id, ord';
+                FROM  `bas`
+                ORDER BY sbas_id, ord';
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $sbasData = array();
+        $sbasData = [];
         $sbas_id = null;
-        $reorder = array();
+        $reorder = [];
         foreach ($rs as $row) {
-            $sbasData[$row['sbas_id']][] = array('base_id' => $row['base_id']);
+            $sbasData[$row['sbas_id']][] = ['base_id' => $row['base_id']];
             if ($sbas_id !== $row['sbas_id']) {
-                $orders = array();
+                $orders = [];
             }
             $sbas_id = $row['sbas_id'];
             if (in_array($row['ord'], $orders, true)) {
@@ -78,7 +86,7 @@ class patch_381alpha1a implements patchInterface
             foreach ($reorder as $sbas_id) {
                 $i = 1;
                 foreach ($sbasData[$sbas_id] as $data) {
-                    $stmt->execute(array('base_id' => $data['base_id'], 'ord' => $i++));
+                    $stmt->execute(['base_id' => $data['base_id'], 'ord' => $i++]);
                 }
             }
             $stmt->closeCursor();

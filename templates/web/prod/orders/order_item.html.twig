@@ -1,8 +1,8 @@
 {% import 'common/thumbnail.html.twig' as thumbnail %}
-{% set displayName = order.get_user().get_display_name() %}
+{% set displayName = order.getUser(app).get_display_name() %}
 
 <div class="page-header">
-  <h1>{% trans %} {{ displayName }} wants to place an order {% endtrans %}</h1>
+  <h1>{% trans with {'%displayName%' : displayName} %}%displayName% wants to place an order{% endtrans %}</h1>
 </div>
 
 <div id="order_manager">
@@ -13,57 +13,57 @@
         <div class="alert alert-success">
             <button type="button" class="close" data-dismiss="alert">×</button>
              {% if action == 'send' %}
-                {% trans 'Order has been sent' %}
+                {{ 'Order has been sent' | trans }}
             {% elseif action == 'deny' %}
-                {% trans 'Order has been denied' %}
+                {{ 'Order has been denied' | trans }}
             {% endif %}
         </div>
-    {% elseif   success == '0'%}
+    {% elseif   success == '0' %}
         <div class="alert alert-error">
             <button type="button" class="close" data-dismiss="alert">×</button>
-            {% trans 'An error occured, please retry or contact an admin if problem persists' %}
+            {{ 'An error occured, please retry or contact an admin if problem persists' | trans }}
         </div>
     {% endif %}
 
     <div class="well">
         <table class="table" style="color:#333;">
             <tr>
-                <td>{% trans 'Destinataire' %}</td>
-                <td>{{ displayName }}({{ order.get_user().get_email() }})</td>
+                <td>{{ 'Destinataire' | trans }}</td>
+                <td>{{ displayName }}({{ order.getUser(app).get_email() }})</td>
             </tr>
             <tr>
-                <td>{% trans 'Date de commande' %}</td>
-                <td>{{ app['date-formatter'].getPrettyString(order.get_created_on()) }}</td>
+                <td>{{ 'Date de commande' | trans }}</td>
+                <td>{{ app['date-formatter'].getPrettyString(order.getCreatedOn()) }}</td>
             </tr>
             <tr>
-                <td>{% trans 'Deadline' %}</td>
-                <td>{{ app['date-formatter'].getPrettyString(order.get_deadline()) }}</td>
+                <td>{{ 'Deadline' | trans }}</td>
+                <td>{{ app['date-formatter'].getPrettyString(order.getDeadline()) }}</td>
             </tr>
             <tr>
-                <td>{% trans 'Utilisation prevue' %}</td>
-                <td>{{ order.get_usage() | nl2br }}</td>
+                <td>{{ 'Utilisation prevue' | trans }}</td>
+                <td>{{ order.getOrderUsage() | nl2br }}</td>
             </tr>
             <tr>
-                <td>{% trans 'Nombre total d\'element commandes' %}</td>
-                <td>{{ order.get_total() }}</td>
+                <td>{{ 'Nombre total d\'element commandes' | trans }}</td>
+                <td>{{ order.getTotal() }}</td>
             </tr>
         </table>
     </div>
     <div class="alert">
-        {% trans 'Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes' %}
+        {{ 'Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes' | trans }}
     </div>
 
     <div class="order_list well-small">
         <ul>
-            {% for order_element_id,element in order %}
+            {% for element in order.getElements() %}
                 <li>
-                    <div id="order_wrapper_{{order.get_order_id()}}_{{element.get_base_id()}}_{{element.get_record_id()}}" class="order_wrapper {% if element.get_order_master_id() == false %}selectable{% endif %}">
-                        {{ thumbnail.format(element.get_thumbnail() ,80, 80, '', true, false) }}
-                        {% if element.get_order_master_id() %}
-                            {% set name = element.get_order_master_name() %}
-                            {% if element.get_deny() == 1 %}
+                    <div id="order_wrapper_{{order.getId()}}_{{element.getBaseId()}}_{{element.getRecordId()}}" class="order_wrapper {% if element.getOrderMasterId() == false %}selectable{% endif %}">
+                        {{ thumbnail.format(element.getRecord(app).get_thumbnail() ,80, 80, '', true, false) }}
+                        {% if element.getOrderMasterId() %}
+                            {% set name = element.getOrderMasterName(app) %}
+                            {% if element.getDeny() == true %}
                                 {% set title %}
-                                     {% trans %}Document refuse par {{name}} {% endtrans %}
+                                     {% trans with {'%name%' : name} %}Document refuse par %name%{% endtrans %}
                                 {% endset %}
                                 {% set title_send %}
                                     {% trans %}Forcer l'envoi du document{% endtrans %}
@@ -72,17 +72,17 @@
                                 <img style="cursor:pointer;" class="force_sender" src="/skins/icons/reload.png" title="{% spaceless %}{{title_send|e}}{% endspaceless %}" />
                             {% else %}
                                 {% set title %}
-                                    {% trans %}Document envoye par {{name}} {% endtrans %}
+                                    {% trans with {'%name%' : name} %}Document envoye par %name%{% endtrans %}
                                 {% endset %}
                                 <img style="cursor:help;" src="/skins/icons/ok.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
                             {% endif %}
                         {% endif %}
                         <div style="position:absolute;bottom:4px;right:4px;">
-                            <img class="infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : element.get_sbas_id(), 'record_id' : element.get_record_id() }) }}" src="/skins/icons/info.gif"/>
-                            <div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : element.get_sbas_id(), 'record_id' : element.get_record_id() }) }}" class="previewTips"></div>
-                            <div tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : element.get_sbas_id(), 'record_id' : element.get_record_id(), 'context' : 'preview' }) }}" class="captionRolloverTips"></div>
+                            <img class="infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId() }) }}" src="/skins/icons/info.gif"/>
+                            <div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId() }) }}" class="previewTips"></div>
+                            <div tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId(), 'context' : 'preview' }) }}" class="captionRolloverTips"></div>
                         </div>
-                        <input type="hidden" name="order_element_id" value="{{order_element_id}}"/>
+                        <input type="hidden" name="order_element_id" value="{{element.getId()}}"/>
                     </div>
                 </li>
             {% endfor %}
@@ -90,12 +90,12 @@
     </div>
 
     <div class="form-actions" style="color:#333;">
-        {% trans 'Selectionnez des documents et ' %}
-        <button class="btn btn-primary send">{% trans 'Send' %}</button>
-        <button class="btn deny">{% trans 'Deny' %}</button>
-        <button class="order_launcher btn">{% trans 'Retour aux commandes' %}</button>
+        {{ 'Selectionnez des documents et' | trans }}
+        <button class="btn btn-primary send">{{ 'Send' | trans }}</button>
+        <button class="btn deny">{{ 'Deny' | trans }}</button>
+        <button class="order_launcher btn">{{ 'Retour aux commandes' | trans }}</button>
         <img src="/skins/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
-        <input name="order_id" type="hidden" value="{{ order.get_order_id() }}" />
+        <input name="order_id" type="hidden" value="{{ order.getId() }}" />
     </div>
 </div>
 <script type="text/javascript">

@@ -100,10 +100,10 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
 
     public function provideDisabledRoutes()
     {
-        return array(
-            array(true, '/api/v1/'),
-            array(false, '/'),
-        );
+        return [
+            [true, '/api/v1/'],
+            [false, '/'],
+        ];
     }
 
     /**
@@ -111,7 +111,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCookieLocale()
     {
-        foreach (array('fr_FR', 'en_GB', 'de_DE') as $locale) {
+        foreach (array_keys(Application::getAvailableLanguages()) as $locale) {
             $client = $this->getClientWithCookie( $this->getAppThatReturnLocale(), $locale);
             $client->request('GET', '/');
 
@@ -128,7 +128,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->mockRegistryAndReturnLocale($app, 'en_USA');
 
         $client = $this->getClientWithCookie($app, null);
-        $client->request('GET', '/', array(), array(), array('HTTP_ACCEPT_LANGUAGE' => ''));
+        $client->request('GET', '/', [], [], ['HTTP_ACCEPT_LANGUAGE' => '']);
 
         $this->assertEquals('en_USA', $client->getResponse()->getContent());
     }
@@ -142,7 +142,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->mockRegistryAndReturnLocale($app, 'en_USA');
 
         $client = $this->getClientWithCookie($app, 'de_PL');
-        $client->request('GET', '/', array(), array(), array('HTTP_ACCEPT_LANGUAGE' => ''));
+        $client->request('GET', '/', [], [], ['HTTP_ACCEPT_LANGUAGE' => '']);
 
         $this->assertEquals('en_USA', $client->getResponse()->getContent());
     }
@@ -160,7 +160,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
 
         $client = new Client($app);
 
-        $client->request('POST', '/prod/upload/', array('php_session_id'=>'123456'), array(), array('HTTP_USER_AGENT'=>'flash'));
+        $client->request('POST', '/prod/upload/', ['php_session_id'=>'123456'], [], ['HTTP_USER_AGENT'=>'flash']);
         $this->assertEquals('123456', $sessionId);
     }
 
@@ -178,7 +178,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
 
         $generator->expects($this->once())
             ->method('generate')
-            ->with($this->equalTo($route), $this->equalTo(array()), $this->equalTo(UrlGenerator::ABSOLUTE_PATH))
+            ->with($this->equalTo($route), $this->equalTo([]), $this->equalTo(UrlGenerator::ABSOLUTE_PATH))
             ->will($this->returnValue($ret));
 
         $this->assertEquals($ret, $app->path($route));
@@ -198,7 +198,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
 
         $generator->expects($this->once())
             ->method('generate')
-            ->with($this->equalTo($route), $this->equalTo(array()), $this->equalTo(UrlGenerator::ABSOLUTE_URL))
+            ->with($this->equalTo($route), $this->equalTo([]), $this->equalTo(UrlGenerator::ABSOLUTE_URL))
             ->will($this->returnValue($ret));
 
         $this->assertEquals($ret, $app->url($route));
@@ -216,8 +216,8 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
             ->getMock();
 
         $type = $this->getMock('Symfony\Component\Form\FormTypeInterface');
-        $data = array('some' => 'data');
-        $options = array();
+        $data = ['some' => 'data'];
+        $options = [];
 
         $parent = $this->getMockBuilder('Symfony\Component\Form\FormBuilder')
             ->disableOriginalConstructor()
@@ -235,15 +235,15 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
     {
         $app = new Application('test');
 
-        $this->assertEquals(array(), $app->getFlash('info'));
-        $this->assertEquals(array('BOUM'), $app->getFlash('info', array('BOUM')));
+        $this->assertEquals([], $app->getFlash('info'));
+        $this->assertEquals(['BOUM'], $app->getFlash('info', ['BOUM']));
 
         $app->addFlash('success', 'BAMBA');
-        $this->assertEquals(array('BAMBA'), $app->getFlash('success'));
+        $this->assertEquals(['BAMBA'], $app->getFlash('success'));
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
      */
     public function testAddSetFlashWithInvalidArgument()
     {
@@ -291,14 +291,13 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
     public function testUrlGeneratorContext()
     {
         $app = new Application('test');
-        $app['phraseanet.configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
-        $app['phraseanet.configuration']->expects($this->once())
-            ->method('isSetup')
-            ->will($this->returnValue(true));
-        $app['phraseanet.configuration']->expects($this->once())
-            ->method('offsetGet')
-            ->with('main')
-            ->will($this->returnValue(array('servername' => 'https://cat.turbocat.com/')));
+        $app['conf'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $app['conf']->expects($this->once())
+            ->method('get')
+            ->with(['main', 'servername'])
+            ->will($this->returnValue('https://cat.turbocat.com/'));
 
         $this->assertEquals('https', $app['url_generator']->getContext()->getScheme());
         $this->assertEquals('cat.turbocat.com', $app['url_generator']->getContext()->getHost());
@@ -336,6 +335,76 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
 
         $this->assertSame($app['monolog'], $app['media-alchemyst.logger']);
         $this->assertInstanceOf('MediaAlchemyst\Alchemyst', $app['media-alchemyst']);
+    }
+
+    /**
+     * @dataProvider transProvider
+     */
+    public function testCachedTranslator($key, $locale, $expected)
+    {
+        $tempDir = __DIR__ . '/temp-trans';
+        $this->cleanupTempDir($tempDir);
+
+        $app = $this->getPreparedApp($tempDir);
+
+        $this->assertInstanceOf('Alchemy\Phrasea\Utilities\CachedTranslator', $app['translator']);
+
+        $result = $app['translator']->trans($key, [], null, $locale);
+
+        $this->assertEquals($expected, $result);
+        $this->assertFileExists($tempDir.'/catalogue.'.($locale ?: 'en').'.php');
+    }
+
+    public function transProvider()
+    {
+        return [
+            ['key1', 'de', 'The german translation'],
+            ['test.key', 'de', 'It works in german'],
+        ];
+    }
+
+    protected function getPreparedApp($tempDir)
+    {
+        $app = new Application('test');
+        $app['translator.cache-options'] = [
+            'debug' => false,
+            'cache_dir' => $tempDir,
+        ];
+
+        $app['translator.domains'] = [
+            'messages' => [
+                'en' => [
+                    'key1' => 'The translation',
+                    'key_only_english' => 'Foo',
+                    'key2' => 'One apple|%count% apples',
+                    'test' => [
+                        'key' => 'It works'
+                    ]
+                ],
+                'de' => [
+                    'key1' => 'The german translation',
+                    'key2' => 'One german apple|%count% german apples',
+                    'test' => [
+                        'key' => 'It works in german'
+                    ]
+                ]
+            ]
+        ];
+
+        return $app;
+    }
+
+    private function cleanupTempDir($dir)
+    {
+        if (!is_dir($dir)) {
+            return;
+        }
+
+        foreach (new \DirectoryIterator($dir) as $fileinfo) {
+            if ($fileinfo->isFile()) {
+                unlink($fileinfo->getPathname());
+            }
+        }
     }
 
     private function getAppThatReturnLocale()
@@ -384,7 +453,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
             $cookieJar->set(new BrowserCookie('locale', $locale));
         }
 
-        return new Client($app, array(), null, $cookieJar);
+        return new Client($app, [], null, $cookieJar);
     }
 }
 
@@ -400,6 +469,6 @@ class TestExceptionHandlerSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(KernelEvents::EXCEPTION => array('onSilexError', 0));
+        return [KernelEvents::EXCEPTION => ['onSilexError', 0]];
     }
 }

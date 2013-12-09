@@ -17,51 +17,21 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class TOU implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.prod.tou'] = $this;
+
         $controllers = $app['controllers_factory'];
 
-        /**
-         * Deny terms of use
-         *
-         * name         : deny_tou
-         *
-         * description  : Deny terms of use
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/deny/{sbas_id}/', $this->call('denyTermsOfUse'))
+        $controllers->post('/deny/{sbas_id}/', 'controller.prod.tou:denyTermsOfUse')
             ->bind('deny_tou')
             ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireAuthentication();
             });
 
-        /**
-         * Display Terms of use
-         *
-         * name         : get_tou
-         *
-         * description  : Display Terms of use
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/', $this->call('displayTermsOfUse'))
+        $controllers->get('/', 'controller.prod.tou:displayTermsOfUse')
             ->bind('get_tou');
 
         return $controllers;
@@ -77,15 +47,15 @@ class TOU implements ControllerProviderInterface
      */
     public function denyTermsOfUse(Application $app, Request $request, $sbas_id)
     {
-        $ret = array('success' => false, 'message' => '');
+        $ret = ['success' => false, 'message' => ''];
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
-            $app['authentication']->getUser()->ACL()->revoke_access_from_bases(
-                array_keys($app['authentication']->getUser()->ACL()->get_granted_base(array(), array($databox->get_sbas_id())))
+            $app['acl']->get($app['authentication']->getUser())->revoke_access_from_bases(
+                array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base([], [$databox->get_sbas_id()]))
             );
-            $app['authentication']->getUser()->ACL()->revoke_unused_sbas_rights();
+            $app['acl']->get($app['authentication']->getUser())->revoke_unused_sbas_rights();
 
             $app['authentication']->closeAccount();
 
@@ -106,8 +76,8 @@ class TOU implements ControllerProviderInterface
      */
     public function displayTermsOfUse(Application $app, Request $request)
     {
-        $toDisplay = $request->query->get('to_display', array());
-        $data = array();
+        $toDisplay = $request->query->get('to_display', []);
+        $data = [];
 
         foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
             if (count($toDisplay) > 0 && !in_array($databox->get_sbas_id(), $toDisplay)) {
@@ -120,23 +90,12 @@ class TOU implements ControllerProviderInterface
                 continue;
             }
 
-            $data[$databox->get_label($app['locale.I18n'])] = $cgus[$app['locale']]['value'];
+            $data[$databox->get_label($app['locale'])] = $cgus[$app['locale']]['value'];
         }
 
-        return new Response($app['twig']->render('/prod/TOU.html.twig', array(
+        return new Response($app['twig']->render('/prod/TOU.html.twig', [
             'TOUs'        => $data,
-            'local_title' => _('Terms of use')
-        )));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
+            'local_title' => $app->trans('Terms of use')
+        ]));
     }
 }

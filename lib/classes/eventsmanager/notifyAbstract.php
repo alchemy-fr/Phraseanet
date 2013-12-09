@@ -1,8 +1,17 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 abstract class eventsmanager_notifyAbstract extends eventsmanager_eventAbstract
 {
-    protected $events = array('__EVENT__');
+    protected $events = ['__EVENT__'];
 
     public function fire($event, $params, &$object)
     {

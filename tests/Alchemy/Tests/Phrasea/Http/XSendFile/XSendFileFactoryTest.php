@@ -65,17 +65,17 @@ class XSendFileFactoryTest extends \PhraseanetPHPUnitAbstract
 
     public function provideTypes()
     {
-        return array(
-            array('apache', $this->getApacheMapping(), 'Alchemy\Phrasea\Http\XSendFile\ApacheMode'),
-            array('apache2', $this->getApacheMapping(), 'Alchemy\Phrasea\Http\XSendFile\ApacheMode'),
-            array('xsendfile', $this->getApacheMapping(), 'Alchemy\Phrasea\Http\XSendFile\ApacheMode'),
-            array('nginx',$this->getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'),
-            array('sendfile',$this->getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'),
-            array('xaccel',$this->getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'),
-            array('xaccelredirect',$this->getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'),
-            array('x-accel',$this->getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'),
-            array('x-accel-redirect',$this->getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'),
-        );
+        return [
+            ['apache', $this->getApacheMapping(), 'Alchemy\Phrasea\Http\XSendFile\ApacheMode'],
+            ['apache2', $this->getApacheMapping(), 'Alchemy\Phrasea\Http\XSendFile\ApacheMode'],
+            ['xsendfile', $this->getApacheMapping(), 'Alchemy\Phrasea\Http\XSendFile\ApacheMode'],
+            ['nginx',$this->getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'],
+            ['sendfile',$this->getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'],
+            ['xaccel',$this->getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'],
+            ['xaccelredirect',$this->getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'],
+            ['x-accel',$this->getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'],
+            ['x-accel-redirect',$this->getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'],
+        ];
     }
 
     public function testInvalidMappingThrowsAnExceptionIfRequired()
@@ -86,7 +86,7 @@ class XSendFileFactoryTest extends \PhraseanetPHPUnitAbstract
                 ->method('error')
                 ->with($this->isType('string'));
 
-        $factory = new XSendFileFactory($logger, true, 'nginx', array());
+        $factory = new XSendFileFactory($logger, true, 'nginx', []);
         $this->setExpectedException('Alchemy\Phrasea\Exception\RuntimeException');
         $factory->getMode(true);
     }
@@ -99,7 +99,7 @@ class XSendFileFactoryTest extends \PhraseanetPHPUnitAbstract
                 ->method('error')
                 ->with($this->isType('string'));
 
-        $factory = new XSendFileFactory($logger, true, 'nginx', array());
+        $factory = new XSendFileFactory($logger, true, 'nginx', []);
         $this->assertInstanceOf('Alchemy\Phrasea\Http\XSendFile\NginxMode', $factory->getMode(false));
     }
 
@@ -111,22 +111,22 @@ class XSendFileFactoryTest extends \PhraseanetPHPUnitAbstract
                 ->method('error')
                 ->with($this->isType('string'));
 
-        $factory = new XSendFileFactory($logger, true, 'nginx', array());
+        $factory = new XSendFileFactory($logger, true, 'nginx', []);
         $this->assertInstanceOf('Alchemy\Phrasea\Http\XSendFile\NginxMode', $factory->getMode());
     }
 
     private function getNginxMapping()
     {
-        return array(array(
+        return [[
             'directory' =>  __DIR__ . '/../../../../files/',
             'mount-point' => '/protected/'
-        ));
+        ]];
     }
 
     private function getApacheMapping()
     {
-        return array(array(
+        return [[
             'directory' =>  __DIR__ . '/../../../../files/',
-        ));
+        ]];
     }
 }

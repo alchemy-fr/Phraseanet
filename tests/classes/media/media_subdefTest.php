@@ -191,8 +191,8 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGet_name()
     {
-        $this->assertTrue(in_array(self::$objectPresent->get_name(), array('thumbnail', 'preview')));
-        $this->assertTrue(in_array(self::$objectNotPresent->get_name(), array('thumbnail', 'preview')));
+        $this->assertTrue(in_array(self::$objectPresent->get_name(), ['thumbnail', 'preview']));
+        $this->assertTrue(in_array(self::$objectNotPresent->get_name(), ['thumbnail', 'preview']));
     }
 
     /**
@@ -304,6 +304,6 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
         $this->assertArrayHasKey(media_subdef::TC_DATA_FILESIZE, $technical_datas);
 
         $technical_datas = self::$objectNotPresent->readTechnicalDatas(self::$DI['app']['mediavorus']);
-        $this->assertEquals(array(), $technical_datas);
+        $this->assertEquals([], $technical_datas);
     }
 }

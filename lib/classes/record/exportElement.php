@@ -11,12 +11,6 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class record_exportElement extends record_adapter
 {
     /**
@@ -69,7 +63,7 @@ class record_exportElement extends record_adapter
         }
 
         $this->remain_hd = $remain_hd;
-        $this->size = array();
+        $this->size = [];
         parent::__construct($app, $sbas_id, $record_id);
 
         $this->get_actions($remain_hd);
@@ -83,8 +77,8 @@ class record_exportElement extends record_adapter
      */
     protected function get_actions()
     {
-        $this->downloadable = $downloadable = array();
-        $this->orderable = $orderable = array();
+        $this->downloadable = $downloadable = [];
+        $this->orderable = $orderable = [];
 
         $sd = $this->get_subdefs();
 
@@ -92,7 +86,7 @@ class record_exportElement extends record_adapter
 
         $subdefgroups = $this->app['phraseanet.appbox']->get_databox($sbas_id)->get_subdef_structure();
 
-        $subdefs = array();
+        $subdefs = [];
 
         foreach ($subdefgroups as $subdef_type => $subdefs_obj) {
             if ($subdef_type == $this->get_type()) {
@@ -101,51 +95,57 @@ class record_exportElement extends record_adapter
             }
         }
 
-        $go_dl = array(
+        $go_dl = [
             'document'  => false,
             'preview'   => false,
             'thumbnail' => true
-        );
+        ];
 
-        if ($this->app['authentication']->getUser()->ACL()->has_right_on_base($this->get_base_id(), 'candwnldhd')) {
+        if ($this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($this->get_base_id(), 'candwnldhd')) {
             $go_dl['document'] = true;
         }
-        if ($this->app['authentication']->getUser()->ACL()->has_right_on_base($this->get_base_id(), 'candwnldpreview')) {
+        if ($this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($this->get_base_id(), 'candwnldpreview')) {
             $go_dl['preview'] = true;
         }
-        if ($this->app['authentication']->getUser()->ACL()->has_hd_grant($this)) {
+        if ($this->app['acl']->get($this->app['authentication']->getUser())->has_hd_grant($this)) {
             $go_dl['document'] = true;
             $go_dl['preview'] = true;
         }
-        if ($this->app['authentication']->getUser()->ACL()->has_preview_grant($this)) {
+        if ($this->app['acl']->get($this->app['authentication']->getUser())->has_preview_grant($this)) {
             $go_dl['preview'] = true;
         }
 
         $query = new User_Query($this->app);
 
-        $masters = $query->on_base_ids(array($this->base_id))
-                ->who_have_right(array('order_master'))
+        $masters = $query->on_base_ids([$this->base_id])
+                ->who_have_right(['order_master'])
                 ->execute()->get_results();
 
-        $go_cmd = (count($masters) > 0 && $this->app['authentication']->getUser()->ACL()->has_right_on_base($this->base_id, 'cancmd'));
+        $go_cmd = (count($masters) > 0 && $this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($this->base_id, 'cancmd'));
 
         $orderable['document'] = false;
         $downloadable['document'] = false;
 
         if (isset($sd['document']) && is_file($sd['document']->get_pathfile())) {
             if ($go_dl['document'] === true) {
-                if ($this->app['authentication']->getUser()->ACL()->is_restricted_download($this->base_id)) {
+                if ($this->app['acl']->get($this->app['authentication']->getUser())->is_restricted_download($this->base_id)) {
                     $this->remain_hd --;
-                    if ($this->remain_hd >= 0)
-                        $downloadable['document'] = array(
-                            'class'                   => 'document',
-                            'label'                   => _('document original')
-                        );
-                } else
-                    $downloadable['document'] = array(
+                    if ($this->remain_hd >= 0) {
+                        $localizedLabel = $this->app->trans('document original');
+                        $downloadable['document'] = [
+                            'class' => 'document',
+                            /** @Ignore */
+                            'label' => $localizedLabel,
+                        ];
+                    }
+                } else {
+                    $localizedLabel = $this->app->trans('document original');
+                    $downloadable['document'] = [
                         'class' => 'document',
-                        'label' => _('document original')
-                    );
+                        /** @Ignore */
+                        'label' => $localizedLabel
+                    ];
+                }
             }
             if ($go_cmd === true) {
                 $orderable['document'] = true;
@@ -163,7 +163,7 @@ class record_exportElement extends record_adapter
                 if (trim($label) == '')
                     continue;
 
-                if ($lang == $this->app['locale.I18n']) {
+                if ($lang == $this->app['locale']) {
                     $subdef_label = $label;
                     break;
                 }
@@ -182,23 +182,26 @@ class record_exportElement extends record_adapter
                 if (isset($sd[$name]) && $sd[$name]->is_physically_present()) {
                     if ($class == 'document') {
 
-                        if ($this->app['authentication']->getUser()->ACL()->is_restricted_download($this->base_id)) {
+                        if ($this->app['acl']->get($this->app['authentication']->getUser())->is_restricted_download($this->base_id)) {
                             $this->remain_hd --;
                             if ($this->remain_hd >= 0)
-                                $downloadable[$name] = array(
+                                $downloadable[$name] = [
                                     'class'              => $class,
+                                    /** @Ignore */
                                     'label'              => $subdef_label
-                                );
+                                ];
                         } else
-                            $downloadable[$name] = array(
+                            $downloadable[$name] = [
                                 'class' => $class,
+                                /** @Ignore */
                                 'label' => $subdef_label
-                            );
+                            ];
                     } else {
-                        $downloadable[$name] = array(
+                        $downloadable[$name] = [
                             'class' => $class,
+                            /** @Ignore */
                             'label' => $subdef_label
-                        );
+                        ];
                     }
 
                     $this->add_count($name, $sd[$name]->get_size());
@@ -209,15 +212,20 @@ class record_exportElement extends record_adapter
         $xml = $this->get_caption()->serialize(caption_record::SERIALIZE_XML);
 
         if ($xml) {
-            $downloadable['caption'] = array(
-                'class'                       => 'caption',
-                'label'                       => _('caption XML')
-            );
-            $this->add_count('caption', strlen($xml));
-            $downloadable['caption-yaml'] = array(
+            $localizedLabel = $this->app->trans('caption XML');
+            $downloadable['caption'] = [
                 'class' => 'caption',
-                'label' => _('caption YAML')
-            );
+                /** @Ignore */
+                'label' => $localizedLabel,
+            ];
+            $this->add_count('caption', strlen($xml));
+
+            $localizedLabel = $this->app->trans('caption YAML');
+            $downloadable['caption-yaml'] = [
+                'class' => 'caption',
+                /** @Ignore */
+                'label' => $localizedLabel,
+            ];
             $this->add_count('caption-yaml', strlen(strip_tags($xml)));
         }
 
@@ -236,7 +244,7 @@ class record_exportElement extends record_adapter
     private function add_count($name, $size)
     {
         if (! $this->size) {
-            $objectsize = array();
+            $objectsize = [];
         } else
             $objectsize = $this->size;
 

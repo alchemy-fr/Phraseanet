@@ -2,7 +2,7 @@
     <div class="multi_menu">
         <div class="btn-group">
             <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown">
-                {% trans 'Ajouter a' %}
+                {{ 'Ajouter a' | trans }}
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
@@ -11,7 +11,7 @@
                         <input type="hidden" name="elements_list" value="" />
                         <input type="hidden" name="destination" value="{{ constant('Bridge_Api_Dailymotion::CONTAINER_TYPE_PLAYLIST') }}" />
                         <a class="form_multiple_submitter">
-                            {% trans 'Playlist' %}
+                            {{ 'Playlist' | trans }}
                         </a>
                     </form>
                 </li>
@@ -23,7 +23,7 @@
     <div class="multi_menu">
         <div class="btn-group">
             <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown">
-                {% trans 'Actions' %}
+                {{ 'Actions' | trans }}
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
@@ -32,7 +32,7 @@
                         <input type="hidden" name="elements_list" value="" />
                         <input type="hidden" name="destination" value="" />
                         <a class="form_multiple_submitter">
-                            {% trans 'boutton::supprimer' %}
+                            {{ 'boutton::supprimer' | trans }}
                         </a>
                     </form>
                 </li>

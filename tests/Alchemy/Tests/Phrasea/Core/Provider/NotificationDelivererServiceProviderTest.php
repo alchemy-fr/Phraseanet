@@ -11,9 +11,9 @@ class NotificationDelivererServiceProvidertest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {
-        return array(
-            array('Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider', 'notification.deliverer', 'Alchemy\\Phrasea\\Notification\\Deliverer'),
-        );
+        return [
+            ['Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider', 'notification.deliverer', 'Alchemy\\Phrasea\\Notification\\Deliverer'],
+        ];
     }
 
     /**
@@ -49,8 +49,8 @@ class NotificationDelivererServiceProvidertest extends ServiceProviderTestCase
 
     public function provideConfigurationData()
     {
-        return array(
-            array('\Swift_Transport_EsmtpTransport', array(
+        return [
+            ['\Swift_Transport_EsmtpTransport', [
                 'GV_smtp' => true,
                 'GV_smtp_auth' => true,
                 'GV_smtp_host' => 'special.host.mail',
@@ -64,8 +64,8 @@ class NotificationDelivererServiceProvidertest extends ServiceProviderTestCase
                 'expected-username' => 'superman',
                 'expected-password' => 'b4tm4n',
                 'expected-authmode' => null,
-            )),
-            array('\Swift_Transport_MailTransport', array(
+            ]],
+            ['\Swift_Transport_MailTransport', [
                 'GV_smtp' => false,
                 'GV_smtp_auth' => true,
                 'GV_smtp_host' => 'special.host.mail',
@@ -79,8 +79,8 @@ class NotificationDelivererServiceProvidertest extends ServiceProviderTestCase
                 'expected-username' => 'superman',
                 'expected-password' => 'b4tm4n',
                 'expected-authmode' => null,
-            )),
-            array('\Swift_Transport_EsmtpTransport', array(
+            ]],
+            ['\Swift_Transport_EsmtpTransport', [
                 'GV_smtp' => true,
                 'GV_smtp_auth' => false,
                 'GV_smtp_host' => 'special.host.mail',
@@ -94,8 +94,8 @@ class NotificationDelivererServiceProvidertest extends ServiceProviderTestCase
                 'expected-username' => null,
                 'expected-password' => null,
                 'expected-authmode' => null,
-            )),
-            array('\Swift_Transport_MailTransport', array(
+            ]],
+            ['\Swift_Transport_MailTransport', [
                 'GV_smtp' => false,
                 'GV_smtp_auth' => false,
                 'expected-host' => null,
@@ -104,7 +104,7 @@ class NotificationDelivererServiceProvidertest extends ServiceProviderTestCase
                 'expected-username' => null,
                 'expected-password' => null,
                 'expected-authmode' => null,
-            )),
-        );
+            ]],
+        ];
     }
 }

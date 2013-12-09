@@ -8,73 +8,69 @@
     <button class="close" data-dismiss="alert" type="button">×</button>
     {% set user_count = app['request'].get('user-updated') %}
     {% if user_count == 1 %}
-        {% trans %}
-            The user has been created.
-        {% endtrans %}
+        {% trans %}The user has been created.{% endtrans %}
     {% else %}
-        {% trans %}
-           {{ user_count }} users have been created.
-        {% endtrans %}
+        {% trans with {'%user_count%' : user_count} %}%user_count% users have been created.{% endtrans %}
     {% endif %}
     </div>
 {% endif %}
 
 <div class="page-header">
-    <h1>{% trans 'Users' %}</h1>
+    <h1>{{ 'Users' | trans }}</h1>
 </div>
 
 <div id="users_page">
         <p class="admin_head_opts">
-            <a class="user_adder" href="#">{% trans 'admin::user: nouvel utilisateur' %}</a>
-            <a class="template_adder" href="#">{% trans 'admin::user: nouveau template' %}</a>
-            <a href="{{ path('users_display_import_file') }}" target='right'>{% trans 'admin::user: import d\'utilisateurs' %}</a> /
-            <a href="#"  onclick="exportlist();return(false);">{% trans 'admin::user: export d\'utilisateurs' %}</a>
-            <a class="invite_modifier" href="#">{% trans 'Reglages:: reglages d acces guest' %}</a>
+            <a class="user_adder" href="#">{{ 'admin::user: nouvel utilisateur' | trans }}</a>
+            <a class="template_adder" href="#">{{ 'admin::user: nouveau template' | trans }}</a>
+            <a href="{{ path('users_display_import_file') }}" target='right'>{{ 'admin::user: import d\'utilisateurs' | trans }}</a> /
+            <a href="#"  onclick="exportlist();return(false);">{{ 'admin::user: export d\'utilisateurs' | trans }}</a>
+            <a class="invite_modifier" href="#">{{ 'Reglages:: reglages d acces guest' | trans }}</a>
             <input type="hidden" value="{{invite_user.get_id()}}" name="invite_user_id"/>
-            <a class="autoregister_modifier" href="#">{% trans 'Reglages:: reglages d inscitpition automatisee' %}</a>
+            <a class="autoregister_modifier" href="#">{{ 'Reglages:: reglages d inscitpition automatisee' | trans }}</a>
             <input type="hidden" value="{{autoregister_user.get_id()}}" name="autoregister_user_id"/>
         </p>
 
         <form id="users_page_search" method="post" action="{{ path('admin_users_search') }}" target="_self" class="form-inline">
             <fieldset class="admin_head_opts">
-            <span>{% trans 'Filter' %}</span>
+            <span>{{ 'Filter' | trans }}</span>
                 <select name="like_field" class="input-medium">
-                    <option {% if parm['like_field'] == "usr_login" %}selected="selected"{% endif %} value="usr_login">{% trans 'Push::filter on login' %}</option>
-                    <option {% if parm['like_field'] == "name" %}selected="selected"{% endif %} value="name">{% trans 'First/Last Name' %}</option>
-                    <option {% if parm['like_field'] == "pays" %}selected="selected"{% endif %} value="pays">{% trans 'Push::filter on countries' %}</option>
-                    <option {% if parm['like_field'] == "societe" %}selected="selected"{% endif %} value="societe">{% trans 'Push::filter on companies' %}</option>
-                    <option {% if parm['like_field'] == "usr_mail" %}selected="selected"{% endif %} value="usr_mail">{% trans 'Push::filter on emails' %}</option>
+                    <option {% if parm['like_field'] == "usr_login" %}selected="selected"{% endif %} value="usr_login">{{ 'Push::filter on login' | trans }}</option>
+                    <option {% if parm['like_field'] == "name" %}selected="selected"{% endif %} value="name">{{ 'First/Last Name' | trans }}</option>
+                    <option {% if parm['like_field'] == "pays" %}selected="selected"{% endif %} value="pays">{{ 'Push::filter on countries' | trans }}</option>
+                    <option {% if parm['like_field'] == "societe" %}selected="selected"{% endif %} value="societe">{{ 'Push::filter on companies' | trans }}</option>
+                    <option {% if parm['like_field'] == "usr_mail" %}selected="selected"{% endif %} value="usr_mail">{{ 'Push::filter on emails' | trans }}</option>
                 </select>
-                <span>{% trans 'Push::filter starts' %}</span>
+                <span>{{ 'Push::filter starts' | trans }}</span>
                 <input type="text" value="{{parm['like_value']}}" name="like_value" class="input-medium">
-                <span>{% trans 'Last applied template' %}</span>
+                <span>{{ 'Last applied template' | trans }}</span>
                 <select name="last_model" class="input-medium">
-                    <option value="">{% trans 'None' %}</option>
+                    <option value="">{{ 'None' | trans }}</option>
                     {% for template in templates %}
                         <option {% if parm['last_model'] == template.get_login() %}selected="selected"{% endif %} value="{{ template.get_login() }}">{{ template.get_login() }}</option>
                     {% endfor %}
                 </select>
-                <button type="submit" class="btn">{% trans 'boutton::chercher' %}</button>
+                <button type="submit" class="btn">{{ 'boutton::chercher' | trans }}</button>
             </fieldset>
         </form>
 
         <form id="users_apply_template" method="post" action="{{ path('admin_users_apply_template') }}" target="_self" class="form-inline pull-left no-ajax" style="margin:0">
             <fieldset class="admin_head_opts">
-                <span>{% trans 'Apply a template' %}</span>
+                <span>{{ 'Apply a template' | trans }}</span>
                 <select name="template_chooser" class="input-medium">
-                    <option value="">{% trans 'boutton::choisir' %}</option>
+                    <option value="">{{ 'boutton::choisir' | trans }}</option>
                     {% for template in templates %}
                         <option value="{{ template.get_id() }}">{{ template.get_display_name() }}</option>
                     {% endfor %}
                 </select>
-                <button type="submit" class="btn">{% trans 'boutton::appliquer' %}</button>
+                <button type="submit" class="btn">{{ 'boutton::appliquer' | trans }}</button>
             </fieldset>
         </form>
 
         <form id="users_reset_rights" method="post" action="{{ path('admin_users_rights_reset') }}" target="_self" class="form-inline pull-right" style="margin:0">
             <fieldset class="admin_head_opts">
                 <input type="hidden" value="" name="users">
-                <button type='button' class="btn btn-warning">{% trans 'Delete all users rights' %}</button>
+                <button type='button' class="btn btn-warning">{{ 'Delete all users rights' | trans }}</button>
             </fieldset>
         </form>
 
@@ -82,42 +78,42 @@
             <thead>
                 <tr>
                     <th style="text-align: center;" class="sortable {{ parm.srt == 'usr_id' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-                        <span>{% trans 'admin::compte-utilisateur id utilisateur' %}</span>
+                        <span>{{ 'admin::compte-utilisateur id utilisateur' | trans }}</span>
                         <span class="ord_notifier">{{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}</span>
                         <input type="hidden" name="srt" value="usr_id" />
                     </th>
                     <th class="sortable {{ parm.srt == 'usr_login' ? 'sorted' :  '' }} ">
-                        <span>{% trans 'admin::compte-utilisateur identifiant' %}</span>
+                        <span>{{ 'admin::compte-utilisateur identifiant' | trans }}</span>
                         <span class="ord_notifier">{{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}</span>
                         <input type="hidden" name="srt" value="usr_login" />
                     </th>
                     <th class="sortable {{ parm.srt == 'usr_nom' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-                        <span>{% trans 'First/Last Name' %}</span>
+                        <span>{{ 'First/Last Name' | trans }}</span>
                         <span class="ord_notifier">{{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}</span>
                         <input type="hidden" name="srt" value="usr_nom" />
                     </th>
                     <th class="sortable {{ parm.srt == 'societe' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-                        <span>{% trans 'admin::compte-utilisateur societe' %}</span>
+                        <span>{{ 'admin::compte-utilisateur societe' | trans }}</span>
                         <span class="ord_notifier">{{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}</span>
                         <input type="hidden" name="srt" value="societe" />
                     </th>
                     <th class="sortable {{ parm.srt == 'usr_mail' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-                        <span>{% trans 'admin::compte-utilisateur email' %}</span>
+                        <span>{{ 'admin::compte-utilisateur email' | trans }}</span>
                         <span class="ord_notifier">{{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}</span>
                         <input type="hidden" name="srt" value="usr_mail" />
                     </th>
                     <th class="sortable {{ parm.srt == 'pays' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-                        <span>{% trans 'admin::compte-utilisateur pays' %}</span>
+                        <span>{{ 'admin::compte-utilisateur pays' | trans }}</span>
                         <span class="ord_notifier">{{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}</span>
                         <input type="hidden" name="srt" value="pays" />
                     </th>
                     <th class="sortable {{ parm.srt == 'lastModel' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-                        <span>{% trans 'admin::compte-utilisateur dernier modele applique' %}</span>
+                        <span>{{ 'admin::compte-utilisateur dernier modele applique' | trans }}</span>
                         <span class="ord_notifier">{{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}</span>
                         <input type="hidden" name="srt" value="lastModel" />
                     </th>
                     <th class="sortable {{ parm.srt == 'usr_creationdate' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-                        <span>{% trans 'admin::compte-utilisateur date de creation' %}</span>
+                        <span>{{ 'admin::compte-utilisateur date de creation' | trans }}</span>
                         <span class="ord_notifier">{{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}</span>
                         <input type="hidden" name="srt" value="usr_creationdate" />
                     </th>
@@ -128,10 +124,10 @@
                     <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}" id="user_{{usr.get_id()}}">
                         <td style="text-align: center;">
                             {% if usr.is_template() %}
-                                <img title="{% trans 'This is a template' %}" src="/skins/icons/template.png"/>
+                                <img title="{{ 'This is a template' | trans }}" src="/skins/icons/template.png"/>
                             {% else %}
-                                {% if usr.ACL().is_phantom() %}
-                                    <img title="{% trans 'This user has no rights' %}" src="/skins/admin/ghost.png"/>
+                                {% if app['acl'].get(usr).is_phantom() %}
+                                    <img title="{{ 'This user has no rights' | trans }}" src="/skins/admin/ghost.png"/>
                                 {% endif %}
                                 {{usr.get_id()}}
                             {% endif %}
@@ -203,14 +199,14 @@
                 {% endif %}
                 <select name="per_page" class="input-medium">
                     {% set n_par_page = 10 %}
-                    <option value="10" {% if parm['per_page'] == 10%}selected="selected"{% endif %}>{% trans %}{{n_par_page}} par page {% endtrans %}</option>
+                    <option value="10" {% if parm['per_page'] == 10%}selected="selected"{% endif %}>{% trans with {'%n_par_page%' : n_par_page} %}%n_par_page% par page{% endtrans %}</option>
                     {% set n_par_page = 20 %}
-                    <option value="20" {% if parm['per_page'] == 20%}selected="selected"{% endif %}>{% trans %}{{n_par_page}} par page {% endtrans %}</option>
+                    <option value="20" {% if parm['per_page'] == 20%}selected="selected"{% endif %}>{% trans with {'%n_par_page%' : n_par_page} %}%n_par_page% par page{% endtrans %}</option>
                     {% set n_par_page = 50 %}
-                    <option value="50" {% if parm['per_page'] == 50%}selected="selected"{% endif %}>{% trans %}{{n_par_page}} par page {% endtrans %}</option>
+                    <option value="50" {% if parm['per_page'] == 50%}selected="selected"{% endif %}>{% trans with {'%n_par_page%' : n_par_page} %}%n_par_page% par page{% endtrans %}</option>
                 </select>
-                <button class="user_modifier btn">{% trans 'boutton::modifier' %}</button>
-                <button class="user_deleter btn">{% trans 'Supprimer' %}</button>
+                <button class="user_modifier btn">{{ 'boutton::modifier' | trans }}</button>
+                <button class="user_deleter btn">{{ 'Supprimer' | trans }}</button>
 
                 <input type="hidden" name="total_results" value="{{users.get_total()}}"/>
                 <input type="hidden" name="page" value="{{users.get_page()}}"/>
@@ -248,7 +244,7 @@
             {% endif %}
             <input name="like_value" value="{{parm.like_value}}" type="hidden" />
             <input name="like_field" value="{{parm.like_field}}" type="hidden" />
-            <button class="btn btn-warning">{% trans 'boutton::exporter' %}</button>
+            <button class="btn btn-warning">{{ 'boutton::exporter' | trans }}</button>
         </form>
 
     <script type="text/javascript">
@@ -269,7 +265,7 @@
 
         if(selectedUsers.length === 0)
         {
-          alert("{% trans 'select at least one user' %}");
+          alert("{{ 'select at least one user' | trans }}");
           return;
         }
 
@@ -278,7 +274,7 @@
           users += $(n).attr("id").split("_").pop() + ';';
         });
 
-        if(confirm("{% trans 'Are you sure you want delete users rights ?' %}"))
+        if(confirm("{{ 'Are you sure you want delete users rights ?' | trans }}"))
         {
           $("#users_reset_rights input[name='users']").val(users);
 
@@ -292,11 +288,11 @@
             success: function(data){
               if(data.error)
               {
-                alert("{% trans 'An error occured' %}");
+                alert("{{ 'An error occured' | trans }}");
               }
               else
               {
-                alert("{% trans 'users rights have been reseted' %}");
+                alert("{{ 'users rights have been reseted' | trans }}");
               }
             }
           });

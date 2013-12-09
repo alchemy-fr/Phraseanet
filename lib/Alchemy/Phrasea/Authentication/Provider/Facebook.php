@@ -51,14 +51,14 @@ class Facebook extends AbstractProvider
      */
     public function authenticate()
     {
-        return new RedirectResponse($this->facebook->getLoginUrl(array(
+        return new RedirectResponse($this->facebook->getLoginUrl([
             'scope'        => 'email',
             'redirect_uri' => $this->generator->generate(
                 'login_authentication_provider_callback',
-                array('providerId' => $this->getId()),
+                ['providerId' => $this->getId()],
                 UrlGenerator::ABSOLUTE_URL
             )
-        )));
+        ]));
     }
 
     /**

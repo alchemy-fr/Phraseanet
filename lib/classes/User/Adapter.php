@@ -11,15 +11,9 @@
 
 use Alchemy\Phrasea\Application;
 
-use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
+use Alchemy\Phrasea\Model\Entities\FtpCredential;
 
-/**
- *
- * @package     User
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class User_Adapter implements User_Interface, cache_cacheableInterface
 {
     /**
@@ -32,44 +26,44 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
      *
      * @var Array
      */
-    public static $locales = array(
-        'ar_SA' => 'العربية'
-        , 'de_DE' => 'Deutsch'
-        , 'nl_NL' => 'Dutch'
-        , 'en_GB' => 'English'
-        , 'es_ES' => 'Español'
-        , 'fr_FR' => 'Français'
-    );
+    public static $locales = [
+        'ar' => 'العربية'
+        , 'de' => 'Deutsch'
+        , 'nl' => 'Dutch'
+        , 'en' => 'English'
+        , 'es' => 'Español'
+        , 'fr' => 'Français'
+    ];
 
     /**
      *
      * @var array
      */
-    protected static $_instance = array();
+    protected static $_instance = [];
 
     /**
      *
      * @var array
      */
-    protected $_prefs = array();
+    protected $_prefs = [];
 
     /**
      *
      * @var array
      */
-    protected static $_users = array();
+    protected static $_users = [];
 
     /**
      *
      * @var array
      */
-    protected $_updated_prefs = array();
+    protected $_updated_prefs = [];
 
     /**
      *
      * @var array
      */
-    public static $def_values = array(
+    public static $def_values = [
         'view'                    => 'thumbs',
         'images_per_page'         => 20,
         'images_size'             => 120,
@@ -91,21 +85,21 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         'basket_caption_display'  => '0',
         'basket_status_display'   => '0',
         'basket_title_display'    => '0'
-    );
+    ];
 
     /**
      *
      * @var array
      */
-    protected static $available_values = array(
-        'view' => array('thumbs', 'list'),
-        'basket_sort_field' => array('name', 'date'),
-        'basket_sort_order' => array('ASC', 'DESC'),
-        'start_page' => array('PUBLI', 'QUERY', 'LAST_QUERY', 'HELP'),
-        'technical_display' => array('0', '1', 'group'),
-        'rollover_thumbnail' => array('caption', 'preview'),
-        'bask_val_order' => array('nat', 'asc', 'desc')
-    );
+    protected static $available_values = [
+        'view' => ['thumbs', 'list'],
+        'basket_sort_field' => ['name', 'date'],
+        'basket_sort_order' => ['ASC', 'DESC'],
+        'start_page' => ['PUBLI', 'QUERY', 'LAST_QUERY', 'HELP'],
+        'technical_display' => ['0', '1', 'group'],
+        'rollover_thumbnail' => ['caption', 'preview'],
+        'bask_val_order' => ['nat', 'asc', 'desc']
+    ];
 
     /**
      *
@@ -246,57 +240,14 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     /**
      *
-     * @var string
+     * @var FtpCredential
      */
-    protected $defaultftpdatas;
-
+    protected $ftpCredential;
     /**
      *
      * @var string
      */
     protected $mail_notifications;
-
-    /**
-     *
-     * @var string
-     */
-    protected $activeftp;
-
-    /**
-     *
-     * @var string
-     */
-    protected $ftp_address;
-
-    /**
-     *
-     * @var string
-     */
-    protected $ftp_login;
-
-    /**
-     *
-     * @var string
-     */
-    protected $ftp_password;
-
-    /**
-     *
-     * @var string
-     */
-    protected $ftp_passif;
-
-    /**
-     *
-     * @var string
-     */
-    protected $ftp_dir;
-
-    /**
-     *
-     * @var string
-     */
-    protected $ftp_dir_prefix;
 
     /**
      *
@@ -381,24 +332,14 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     }
 
     /**
-     * Return Access Control List object for the user
-     *
-     * @return ACL
-     */
-    public function ACL()
-    {
-        return $this->get_ACL();
-    }
-
-    /**
      *
      * @param Application $app
      */
     protected function set_app(Application $app)
     {
         $this->app = $app;
-        if (null !== $this->ACL) {
-            $this->ACL->set_app($app);
+        if (null !== $app['acl']->get($this)) {
+            $app['acl']->get($this)->set_app($app);
         }
     }
 
@@ -415,7 +356,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $password = $this->app['auth.password-encoder']->encodePassword($pasword, $this->get_nonce());
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':password' => $password, ':usr_id'   => $this->get_id()));
+        $stmt->execute([':password' => $password, ':usr_id'   => $this->get_id()]);
         $stmt->closeCursor();
 
         $this->password = $password;
@@ -437,90 +378,17 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $test_user = User_Adapter::get_usr_id_from_email($this->app, $email);
 
         if ($test_user && $test_user != $this->get_id()) {
-            throw new Exception_InvalidArgument(sprintf(_('A user already exists with email addres %s'), $email));
+            throw new Exception_InvalidArgument($this->app->trans('A user already exists with email addres %email%', ['%email%' => $email]));
         }
 
         $sql = 'UPDATE usr SET usr_mail = :new_email WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':new_email' => $email, ':usr_id'    => $this->get_id()));
+        $stmt->execute([':new_email' => $email, ':usr_id'    => $this->get_id()]);
         $stmt->closeCursor();
         $this->email = $email;
         $this->delete_data_from_cache();
 
         return $this;
-    }
-
-    /**
-     * Load if needed of the ACL for the current user
-     *
-     * @return ACL
-     */
-    protected function get_ACL()
-    {
-        if (!$this->ACL instanceof ACL) {
-            $this->ACL = new ACL($this, $this->app);
-        }
-
-        return $this->ACL;
-    }
-
-    /**
-     *
-     * @param  boolean    $renew
-     * @return system_url
-     */
-    public function get_protected_rss_url($renew = false)
-    {
-        $token = $title = false;
-
-        if (!$renew) {
-            $sql = 'SELECT value FROM tokens WHERE usr_id = :usr_id AND type="rss"';
-            $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute(array(':usr_id' => $this->get_id()));
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-            $token = $row['value'];
-        } else {
-            $sql = 'DELETE FROM tokens WHERE usr_id = :usr_id AND type="rss"';
-            $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute(array(':usr_id' => $this->get_id()));
-            $stmt->closeCursor();
-        }
-        if ($token === false) {
-            $token = $this->app['tokens']->getUrlToken(\random::TYPE_RSS, $this->id);
-        }
-
-        return new system_url($this->app['phraseanet.registry']->get('GV_ServerName') . 'atom/' . $token);
-    }
-
-    /**
-     * Query in the cache
-     *
-     * @param Application $app
-     * @param string      $query
-     *
-     * @return boolean
-     */
-    public static function saveQuery(Application $app, $query)
-    {
-        try {
-            $sql = "INSERT INTO dsel (id, name, usr_id, query)
-        VALUES (null, :name, :usr_id, :query)";
-            $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute(array(
-                ':name'   => $query,
-                ':usr_id' => $app['authentication']->getUser()->get_id(),
-                ':query'  => $query
-            ));
-            $stmt->closeCursor();
-
-            if ($app['authentication']->getUser()->getPrefs('start_page') == 'LAST_QUERY')
-                $app['authentication']->getUser()->setPrefs('start_page_query', $query);
-        } catch (Exception $e) {
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -558,29 +426,13 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $conn = connection::getPDOConnection($app);
         $sql = 'SELECT usr_id FROM usr WHERE usr_login = :login';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':login' => trim($login)));
+        $stmt->execute([':login' => trim($login)]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         $usr_id = $row ? (int) $row['usr_id'] : false;
 
         return $usr_id;
-    }
-
-    /**
-     *
-     * @param  int          $datas
-     * @return User_Adapter
-     */
-    public function set_defaultftpdatas($datas)
-    {
-        $sql = 'UPDATE usr SET defaultftpdatasent = :defaultftpdatas WHERE usr_id = :usr_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':defaultftpdatas'     => $datas, ':usr_id'              => $this->get_id()));
-        $stmt->closeCursor();
-        $this->defaultftpdatas = $datas;
-
-        return $this;
     }
 
     /**
@@ -593,27 +445,10 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $value = $boolean ? '1' : '0';
         $sql = 'UPDATE usr SET mail_notifications = :mail_notifications WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':mail_notifications'     => $value, ':usr_id'                 => $this->get_id()));
+        $stmt->execute([':mail_notifications'     => $value, ':usr_id'                 => $this->get_id()]);
         $stmt->closeCursor();
         $this->mail_notifications = !!$boolean;
         $this->delete_data_from_cache();
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param  boolean      $boolean
-     * @return User_Adapter
-     */
-    public function set_activeftp($boolean)
-    {
-        $value = $boolean ? '1' : '0';
-        $sql = 'UPDATE usr SET activeftp = :activeftp WHERE usr_id = :usr_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':activeftp'     => $value, ':usr_id'        => $this->get_id()));
-        $stmt->closeCursor();
-        $this->activeftp = $boolean;
 
         return $this;
     }
@@ -628,94 +463,9 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $value = $boolean ? '1' : '0';
         $sql = 'UPDATE usr SET ldap_created = :ldap_created WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':ldap_created'     => $value, ':usr_id'           => $this->get_id()));
+        $stmt->execute([':ldap_created'     => $value, ':usr_id'           => $this->get_id()]);
         $stmt->closeCursor();
         $this->ldap_created = $boolean;
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param  string       $address
-     * @return User_Adapter
-     */
-    public function set_ftp_address($address)
-    {
-        $sql = 'UPDATE usr SET addrftp = :addrftp WHERE usr_id = :usr_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':addrftp'         => $address, ':usr_id'          => $this->get_id()));
-        $stmt->closeCursor();
-        $this->ftp_address = $address;
-        $this->delete_data_from_cache();
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param  string       $login
-     * @return User_Adapter
-     */
-    public function set_ftp_login($login)
-    {
-        $sql = 'UPDATE usr SET loginftp = :loginftp WHERE usr_id = :usr_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':loginftp'      => $login, ':usr_id'        => $this->get_id()));
-        $stmt->closeCursor();
-        $this->ftp_login = $login;
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param  type         $password
-     * @return User_Adapter
-     */
-    public function set_ftp_password($password)
-    {
-        $sql = 'UPDATE usr SET pwdFTP = :passwordftp WHERE usr_id = :usr_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':passwordftp'      => $password, ':usr_id'           => $this->get_id()));
-        $stmt->closeCursor();
-        $this->ftp_password = $password;
-        $this->delete_data_from_cache();
-
-        return $this;
-    }
-
-    public function set_ftp_passif($boolean)
-    {
-        $value = $boolean ? '1' : '0';
-        $sql = 'UPDATE usr SET passifftp = :passifftp WHERE usr_id = :usr_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':passifftp'      => $value, ':usr_id'         => $this->get_id()));
-        $stmt->closeCursor();
-        $this->ftp_passif = !!$boolean;
-
-        return $this;
-    }
-
-    public function set_ftp_dir($ftp_dir)
-    {
-        $sql = 'UPDATE usr SET destftp = :destftp WHERE usr_id = :usr_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':destftp'     => $ftp_dir, ':usr_id'      => $this->get_id()));
-        $stmt->closeCursor();
-        $this->ftp_dir = $ftp_dir;
-        $this->delete_data_from_cache();
-
-        return $this;
-    }
-
-    public function set_ftp_dir_prefix($ftp_dir_prefix)
-    {
-        $sql = 'UPDATE usr SET prefixFTPfolder = :prefixftp WHERE usr_id = :usr_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':prefixftp'          => $ftp_dir_prefix, ':usr_id'             => $this->get_id()));
-        $stmt->closeCursor();
-        $this->ftp_dir_prefix = $ftp_dir_prefix;
 
         return $this;
     }
@@ -724,7 +474,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     {
         $sql = 'UPDATE usr SET usr_prenom = :usr_prenom WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_prenom'    => $firstname, ':usr_id'        => $this->get_id()));
+        $stmt->execute([':usr_prenom'    => $firstname, ':usr_id'        => $this->get_id()]);
         $stmt->closeCursor();
         $this->firstname = $firstname;
         $this->delete_data_from_cache();
@@ -736,7 +486,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     {
         $sql = 'UPDATE usr SET usr_nom = :usr_nom WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_nom'      => $lastname, ':usr_id'       => $this->get_id()));
+        $stmt->execute([':usr_nom'      => $lastname, ':usr_id'       => $this->get_id()]);
         $stmt->closeCursor();
         $this->lastname = $lastname;
         $this->delete_data_from_cache();
@@ -748,7 +498,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     {
         $sql = 'UPDATE usr SET adresse = :adresse WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':adresse'     => $address, ':usr_id'      => $this->get_id()));
+        $stmt->execute([':adresse'     => $address, ':usr_id'      => $this->get_id()]);
         $stmt->closeCursor();
         $this->address = $address;
         $this->delete_data_from_cache();
@@ -760,7 +510,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     {
         $sql = 'UPDATE usr SET ville = :city WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':city'     => $city, ':usr_id'   => $this->get_id()));
+        $stmt->execute([':city'     => $city, ':usr_id'   => $this->get_id()]);
         $stmt->closeCursor();
         $this->city = $city;
         $this->delete_data_from_cache();
@@ -786,11 +536,11 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
         $sql = 'UPDATE usr SET geonameid = :geonameid, pays=:country_code WHERE usr_id = :usr_id';
 
-        $datas = array(
+        $datas = [
             ':geonameid'    => $geonameid,
             ':usr_id'       => $this->get_id(),
             ':country_code' => $country_code
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($datas);
@@ -806,7 +556,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     {
         $sql = 'UPDATE usr SET cpostal = :cpostal WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':cpostal' => $zip, ':usr_id'  => $this->get_id()));
+        $stmt->execute([':cpostal' => $zip, ':usr_id'  => $this->get_id()]);
         $stmt->closeCursor();
         $this->zip = $zip;
         $this->delete_data_from_cache();
@@ -818,7 +568,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     {
         $sql = 'UPDATE usr SET usr_sexe = :usr_sexe WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_sexe'   => $gender, ':usr_id'     => $this->get_id()));
+        $stmt->execute([':usr_sexe'   => $gender, ':usr_id'     => $this->get_id()]);
         $stmt->closeCursor();
         $this->gender = $gender;
         $this->delete_data_from_cache();
@@ -830,7 +580,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     {
         $sql = 'UPDATE usr SET tel = :tel WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':tel'     => $tel, ':usr_id'  => $this->get_id()));
+        $stmt->execute([':tel'     => $tel, ':usr_id'  => $this->get_id()]);
         $stmt->closeCursor();
         $this->tel = $tel;
         $this->delete_data_from_cache();
@@ -842,7 +592,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     {
         $sql = 'UPDATE usr SET fax = :fax WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':fax'     => $fax, ':usr_id'  => $this->get_id()));
+        $stmt->execute([':fax'     => $fax, ':usr_id'  => $this->get_id()]);
         $stmt->closeCursor();
         $this->fax = $fax;
         $this->delete_data_from_cache();
@@ -854,7 +604,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     {
         $sql = 'UPDATE usr SET fonction = :fonction WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':fonction' => $job, ':usr_id'   => $this->get_id()));
+        $stmt->execute([':fonction' => $job, ':usr_id'   => $this->get_id()]);
         $stmt->closeCursor();
         $this->job = $job;
         $this->delete_data_from_cache();
@@ -866,7 +616,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     {
         $sql = 'UPDATE usr SET activite = :activite WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':activite'     => $position, ':usr_id'       => $this->get_id()));
+        $stmt->execute([':activite'     => $position, ':usr_id'       => $this->get_id()]);
         $stmt->closeCursor();
         $this->position = $position;
         $this->delete_data_from_cache();
@@ -878,7 +628,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     {
         $sql = 'UPDATE usr SET societe = :company WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':company'     => $company, ':usr_id'      => $this->get_id()));
+        $stmt->execute([':company'     => $company, ':usr_id'      => $this->get_id()]);
         $stmt->closeCursor();
         $this->company = $company;
         $this->delete_data_from_cache();
@@ -896,21 +646,15 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
         $sql = 'UPDATE usr SET model_of = :owner_id WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':owner_id' => $owner->get_id(), ':usr_id'   => $this->get_id()));
+        $stmt->execute([':owner_id' => $owner->get_id(), ':usr_id'   => $this->get_id()]);
         $stmt->closeCursor();
 
-        $this->set_ftp_address('')
-            ->set_activeftp(false)
+        $this
             ->set_city('')
             ->set_company('')
             ->set_email(null)
             ->set_fax('')
             ->set_firstname('')
-            ->set_ftp_dir('')
-            ->set_ftp_dir_prefix('')
-            ->set_ftp_login('')
-            ->set_ftp_passif('')
-            ->set_ftp_password('')
             ->set_gender('')
             ->set_geonameid('')
             ->set_job('')
@@ -921,9 +665,33 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             ->set_zip('')
             ->set_tel('');
 
+        $this->ftpCredential = new FtpCredential();
+        $this->ftpCredential->setUsrId($this->get_id());
+        $this->app['EM']->persist($this->ftpCredential);
+        $this->app['EM']->flush();
+
         $this->delete_data_from_cache();
 
         return $this;
+    }
+
+    /**
+     * @return FtpCredential
+     */
+    public function getFtpCredential()
+    {
+        if (null === $this->ftpCredential) {
+            $this->ftpCredential = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FtpCredential')->findOneBy([
+                'usrId' => $this->get_id()
+            ]);
+
+            if (null === $this->ftpCredential) {
+                $this->ftpCredential = new FtpCredential();
+                $this->ftpCredential->setUsrId($this->get_id());
+            }
+        }
+
+        return $this->ftpCredential;
     }
 
     public function is_template()
@@ -933,7 +701,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     public function is_special()
     {
-        return in_array($this->login, array('invite', 'autoregister'));
+        return in_array($this->login, ['invite', 'autoregister']);
     }
 
     public function get_template_owner()
@@ -953,7 +721,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
               AND usr_login NOT LIKE "(#deleted_%"
               AND invite="0" AND usr_login != "autoregister"';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':email' => trim($email)));
+        $stmt->execute([':email' => trim($email)]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -968,13 +736,22 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
      */
     public function delete()
     {
-        $repo = $this->app['EM']->getRepository('Entities\UsrAuthProvider');
-
+        $repo = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider');
         foreach ($repo->findByUser($this) as $provider) {
             $this->app['EM']->remove($provider);
         }
 
-        $repo = $this->app['EM']->getRepository('Entities\Session');
+        $repo = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FtpExport');
+        foreach ($repo->findByUser($this) as $export) {
+            $this->app['EM']->remove($export);
+        }
+
+        $repo = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order');
+        foreach ($repo->findByUser($this) as $order) {
+            $this->app['EM']->remove($order);
+        }
+
+        $repo = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Session');
 
         foreach ($repo->findByUser($this) as $session) {
             $this->app['EM']->remove($session);
@@ -985,102 +762,51 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $sql = 'UPDATE usr SET usr_login = :usr_login , usr_mail = null
             WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_login' => '(#deleted_' . $this->get_login() . '_' . $this->get_id(), ':usr_id'    => $this->get_id()));
+        $stmt->execute([':usr_login' => '(#deleted_' . $this->get_login() . '_' . $this->get_id(), ':usr_id'    => $this->get_id()]);
         $stmt->closeCursor();
 
         $sql = 'DELETE FROM basusr WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->get_id()));
+        $stmt->execute([':usr_id' => $this->get_id()]);
         $stmt->closeCursor();
 
         $sql = 'DELETE FROM sbasusr WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->get_id()));
+        $stmt->execute([':usr_id' => $this->get_id()]);
         $stmt->closeCursor();
 
         $sql = 'DELETE FROM dsel WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->get_id()));
+        $stmt->execute([':usr_id' => $this->get_id()]);
         $stmt->closeCursor();
 
         $sql = 'DELETE FROM edit_presets WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->get_id()));
-        $stmt->closeCursor();
-
-        $sql = 'DELETE FROM ftp_export WHERE usr_id = :usr_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->get_id()));
-        $stmt->closeCursor();
-
-        $sql = 'DELETE FROM `order` WHERE usr_id = :usr_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->get_id()));
+        $stmt->execute([':usr_id' => $this->get_id()]);
         $stmt->closeCursor();
 
         $sql = 'DELETE FROM sselnew WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->get_id()));
+        $stmt->execute([':usr_id' => $this->get_id()]);
         $stmt->closeCursor();
 
         $sql = 'DELETE FROM tokens WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->get_id()));
+        $stmt->execute([':usr_id' => $this->get_id()]);
         $stmt->closeCursor();
 
         $sql = 'DELETE FROM usr_settings WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->get_id()));
+        $stmt->execute([':usr_id' => $this->get_id()]);
         $stmt->closeCursor();
 
         unset(self::$_instance[$this->get_id()]);
 
         return;
     }
-
-    public function get_defaultftpdatas()
-    {
-        return $this->defaultftpdatas;
-    }
-
     public function get_mail_notifications()
     {
         return $this->mail_notifications;
-    }
-
-    public function get_activeftp()
-    {
-        return $this->activeftp;
-    }
-
-    public function get_ftp_address()
-    {
-        return $this->ftp_address;
-    }
-
-    public function get_ftp_login()
-    {
-        return $this->ftp_login;
-    }
-
-    public function get_ftp_password()
-    {
-        return $this->ftp_password;
-    }
-
-    public function get_ftp_passif()
-    {
-        return $this->ftp_passif;
-    }
-
-    public function get_ftp_dir()
-    {
-        return $this->ftp_dir;
-    }
-
-    public function get_ftp_dir_prefix()
-    {
-        return $this->ftp_dir_prefix;
     }
 
     /**
@@ -1093,12 +819,11 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $sql = 'SELECT usr_id, ldap_created, create_db, usr_login, usr_password, usr_nom, activite,
             usr_prenom, usr_sexe as gender, usr_mail, adresse, usr_creationdate, usr_modificationdate,
             ville, cpostal, tel, fax, fonction, societe, geonameid, lastModel, invite,
-            defaultftpdatasent, mail_notifications, activeftp, addrftp, loginftp,
-            pwdFTP, passifftp, destftp, prefixFTPfolder, mail_locked, model_of, locale
+            mail_notifications, mail_locked, model_of, locale
           FROM usr WHERE usr_id= :id ';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':id' => $id));
+        $stmt->execute([':id' => $id]);
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -1114,15 +839,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
         $this->ldap_created = $row['ldap_created'];
 
-        $this->defaultftpdatas = $row['defaultftpdatasent'];
         $this->mail_notifications = $row['mail_notifications'];
-        $this->activeftp = $row['activeftp'];
-        $this->ftp_address = $row['addrftp'];
-        $this->ftp_login = $row['loginftp'];
-        $this->ftp_password = $row['pwdFTP'];
-        $this->ftp_passif = $row['passifftp'];
-        $this->ftp_dir = $row['destftp'];
-        $this->ftp_dir_prefix = $row['prefixFTPfolder'];
 
         $this->mail_locked = !!$row['mail_locked'];
 
@@ -1159,10 +876,10 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     {
         $sql = 'UPDATE usr  SET lastModel = :template_id WHERE usr_id = :usr_id';
 
-        $params = array(
+        $params = [
             ':usr_id'      => $this->get_id()
             , ':template_id' => $template->get_login()
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -1176,7 +893,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     {
         $sql = 'UPDATE usr  SET mail_locked = :mail_locked WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id'          => $this->get_id(), ':mail_locked'     => ($boolean ? '1' : '0')));
+        $stmt->execute([':usr_id'          => $this->get_id(), ':mail_locked'     => ($boolean ? '1' : '0')]);
         $stmt->closeCursor();
         $this->mail_locked = !!$boolean;
 
@@ -1288,7 +1005,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
 
-        $stmt->execute(array(':usr_id' => $this->get_id()));
+        $stmt->execute([':usr_id' => $this->get_id()]);
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -1322,7 +1039,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
         $sql = 'SELECT prop, value FROM usr_settings WHERE usr_id= :id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':id' => $this->id));
+        $stmt->execute([':id' => $this->id]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -1340,12 +1057,12 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             }
         }
 
-        if (isset($this->app['phraseanet.configuration']['user-settings'])) {
+        if ($this->app['conf']->has('user-settings')) {
             $this->_prefs = array_replace(
                 $this->_prefs,
                 // remove keys that are not defined in default values
                 array_intersect_key(
-                    $this->app['phraseanet.configuration']['user-settings'],
+                    $this->app['conf']->get('user-settings'),
                     self::$def_values
                 )
             );
@@ -1401,13 +1118,13 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     public function get_display_name()
     {
         if ($this->is_template())
-            $display_name = sprintf(_('modele %s'), $this->get_login());
+            $display_name = $this->app->trans('modele %name%', ['%name%' => $this->get_login()]);
         elseif (trim($this->lastname) !== '' || trim($this->firstname) !== '')
             $display_name = $this->firstname . ' ' . $this->lastname;
         elseif (trim($this->email) !== '')
             $display_name = $this->email;
         else
-            $display_name = _('phraseanet::utilisateur inconnu');
+            $display_name = $this->app->trans('phraseanet::utilisateur inconnu');
 
         return $display_name;
     }
@@ -1419,11 +1136,11 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         VALUES (:usr_id, :prop, :value)';
 
             $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute(array(
+            $stmt->execute([
                 ':usr_id' => $this->id,
                 ':prop'   => $prop,
                 ':value'  => $value
-            ));
+            ]);
             $this->delete_data_from_cache();
         } catch (Exception $e) {
 
@@ -1458,45 +1175,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         return $this;
     }
 
-    public static function get_wrong_email_users(Application $app)
-    {
-
-        $sql = 'SELECT usr_mail, usr_id FROM usr WHERE usr_mail IS NOT NULL';
-
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute();
-
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $stmt->closeCursor();
-
-        $users = array();
-
-        foreach ($rs as $row) {
-            if (!isset($users[$row['usr_mail']])) {
-                $users[$row['usr_mail']] = array();
-            }
-
-            $users[$row['usr_mail']][] = $row['usr_id'];
-        }
-
-        $bad_users = array();
-
-        foreach ($users as $email => $usrs) {
-            if (count($usrs) > 1) {
-                $bad_users[$email] = array();
-                foreach ($usrs as $usr_id) {
-                    $user = User_Adapter::getInstance($usr_id, $app);
-                    $bad_users[$email][$user->get_id()] = $user;
-                }
-            }
-        }
-
-        unset($users);
-
-        return $bad_users;
-    }
-
     public function setPrefs($prop, $value)
     {
         $this->load_preferences();
@@ -1527,88 +1205,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         return array_key_exists($prop, $this->_prefs) ? $this->_prefs[$prop] : $default;
     }
 
-    public static function updateClientInfos(Application $app, $app_id)
-    {
-        if (!$app['authentication']->isAuthenticated()) {
-            return;
-        }
-
-        $session = $app['EM']->find('Entities\Session', $app['session']->get('session_id'));
-
-        if (!$session) {
-            throw new SessionNotFound('No session found');
-        }
-
-        if (!$session->hasModuleId($app_id)) {
-            $module = new \Entities\SessionModule();
-
-            $module->setModuleId($app_id);
-            $module->setSession($session);
-            $session->addModule($module);
-
-            $app['EM']->persist($module);
-            $app['EM']->persist($session);
-
-            $app['EM']->flush();
-        }
-
-        $usr_id = $app['authentication']->getUser()->get_id();
-
-        $user = User_Adapter::getInstance($usr_id, $app);
-
-        $appName = array(
-            '1' => 'Prod',
-            '2' => 'Client',
-            '3' => 'Admin',
-            '4' => 'Report',
-            '5' => 'Thesaurus',
-            '6' => 'Compare',
-            '7' => 'Validate',
-            '8' => 'Upload',
-            '9' => 'API'
-        );
-
-        if (isset($appName[$app_id])) {
-            $sbas_ids = array_keys($user->ACL()->get_granted_sbas());
-
-            foreach ($sbas_ids as $sbas_id) {
-                try {
-                    $logger = $app['phraseanet.logger']($app['phraseanet.appbox']->get_databox($sbas_id));
-
-                    $connbas = connection::getPDOConnection($app, $sbas_id);
-                    $sql = 'SELECT appli FROM log WHERE id = :log_id';
-                    $stmt = $connbas->prepare($sql);
-                    $stmt->execute(array(':log_id' => $logger->get_id()));
-                    $row3 = $stmt->fetch(PDO::FETCH_ASSOC);
-                    $stmt->closeCursor();
-
-                    if (!$row3)
-                        throw new Exception('no log');
-                    $applis = unserialize($row3['appli']);
-
-                    if (!in_array($app_id, $applis)) {
-                        $applis[] = $app_id;
-                    }
-
-                    $sql = 'UPDATE log SET appli = :applis WHERE id = :log_id';
-
-                    $params = array(
-                        ':applis' => serialize($applis)
-                        , ':log_id' => $logger->get_id()
-                    );
-
-                    $stmt = $connbas->prepare($sql);
-                    $stmt->execute($params);
-                    $stmt->closeCursor();
-                } catch (Exception $e) {
-
-                }
-            }
-        }
-
-        return;
-    }
-
     public static function get_sys_admins(Application $app)
     {
         $sql = 'SELECT usr_id, usr_login FROM usr
@@ -1621,7 +1217,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $users = array();
+        $users = [];
 
         foreach ($rs as $row)
             $users[$row['usr_id']] = $row['usr_login'];
@@ -1634,7 +1230,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         try {
             $sql = "UPDATE usr SET create_db='0' WHERE create_db='1' AND usr_id != :usr_id";
             $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute(array(':usr_id' => $app['authentication']->getUser()->get_id()));
+            $stmt->execute([':usr_id' => $app['authentication']->getUser()->get_id()]);
             $stmt->closeCursor();
 
             $sql = "UPDATE usr SET create_db='1' WHERE usr_id IN (" . implode(',', $admins) . ")";
@@ -1650,60 +1246,9 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         return false;
     }
 
-    public static function reset_sys_admins_rights(Application $app)
-    {
-        $users = self::get_sys_admins($app);
-
-        foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
-            foreach (array_keys($users) as $usr_id) {
-                $user = User_Adapter::getInstance($usr_id, $app);
-                $user->ACL()->give_access_to_sbas(array($databox->get_sbas_id()));
-
-                $rights = array(
-                    'bas_manage'        => '1'
-                    , 'bas_modify_struct' => '1'
-                    , 'bas_modif_th'      => '1'
-                    , 'bas_chupub'        => '1'
-                );
-
-                $user->ACL()->update_rights_to_sbas($databox->get_sbas_id(), $rights);
-
-                foreach ($databox->get_collections() as $collection) {
-                    $user->ACL()->give_access_to_base(array($collection->get_base_id()));
-
-                    $rights = array(
-                        'canputinalbum'     => '1'
-                        , 'candwnldhd'        => '1'
-                        , 'candwnldsubdef'    => '1'
-                        , 'nowatermark'       => '1'
-                        , 'candwnldpreview'   => '1'
-                        , 'cancmd'            => '1'
-                        , 'canadmin'          => '1'
-                        , 'canreport'         => '1'
-                        , 'canpush'           => '1'
-                        , 'creationdate'      => '1'
-                        , 'canaddrecord'      => '1'
-                        , 'canmodifrecord'    => '1'
-                        , 'candeleterecord'   => '1'
-                        , 'chgstatus'         => '1'
-                        , 'imgtools'          => '1'
-                        , 'manage'            => '1'
-                        , 'modify_struct'     => '1'
-                        , 'bas_modify_struct' => '1'
-                    );
-
-                    $user->ACL()->update_rights_to_base($collection->get_base_id(), $rights);
-                    $user->ACL()->set_limits($collection->get_base_id(), false);
-                }
-            }
-        }
-
-        return;
-    }
-
     public function get_locale()
     {
-        return $this->locale ?: $this->app['phraseanet.registry']->get('GV_default_lng', 'en_GB');
+        return $this->locale ?: $this->app['phraseanet.registry']->get('GV_default_lng', 'en');
     }
 
     public function set_locale($locale)
@@ -1714,7 +1259,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
         $sql = 'UPDATE usr SET locale = :locale WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':locale'     => $locale, ':usr_id'  => $this->get_id()));
+        $stmt->execute([':locale'     => $locale, ':usr_id'  => $this->get_id()]);
         $stmt->closeCursor();
         $this->delete_data_from_cache();
 
@@ -1748,22 +1293,28 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
                 VALUES (null, :login, :password, NOW(), :email, :admin, :nonce, 1, :invite)';
 
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(
+        $stmt->execute([
             ':login'    => $login,
             ':nonce'    => $nonce,
             ':password' => $app['auth.password-encoder']->encodePassword($password, $nonce),
             ':email'    => ($email ? $email : null),
             ':admin'    => ($admin ? '1' : '0'),
             ':invite'   => ($invite ? '1' : '0')
-        ));
+        ]);
         $stmt->closeCursor();
 
         $usr_id = $conn->lastInsertId();
 
+        $ftpCredential = new FtpCredential();
+        $ftpCredential->setUsrId($usr_id);
+        $app['EM']->persist($ftpCredential);
+        $app['EM']->flush();
+
         if ($invite) {
-            $sql = 'UPDATE usr SET usr_login = "invite' . $usr_id . '" WHERE usr_id="' . $usr_id . '"';
+            $sql = 'UPDATE usr SET usr_login = :login
+                    WHERE usr_id = :usr_id';
             $stmt = $conn->prepare($sql);
-            $stmt->execute();
+            $stmt->execute([':login' => 'invite'.$usr_id, ':usr_id' => $usr_id]);
             $stmt->closeCursor();
         }
 
@@ -1782,7 +1333,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
         $sql = 'SELECT nonce FROM usr WHERE usr_id = :usr_id ';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->get_id()));
+        $stmt->execute([':usr_id' => $this->get_id()]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
         unset($stmt);
@@ -1796,9 +1347,9 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     public function __sleep()
     {
-        $vars = array();
+        $vars = [];
         foreach ($this as $key => $value) {
-            if (in_array($key, array('ACL', 'app')))
+            if (in_array($key, ['ACL', 'app']))
                 continue;
             $vars[] = $key;
         }

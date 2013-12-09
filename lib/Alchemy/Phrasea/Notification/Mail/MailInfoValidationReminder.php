@@ -37,7 +37,7 @@ class MailInfoValidationReminder extends AbstractMailWithLink
             throw new LogicException('You must set an title before calling getSubject');
         }
 
-        return sprintf(_("Reminder : validate '%s'"), $this->title);
+        return $this->app->trans("Reminder : validate '%title%'", ['%title%' => $this->title]);
     }
 
     /**
@@ -45,10 +45,9 @@ class MailInfoValidationReminder extends AbstractMailWithLink
      */
     public function getMessage()
     {
-        return sprintf(
-            _('Il ne vous reste plus que %d jours pour terminer votre validation'),
-            $this->app['phraseanet.registry']->get('GV_validation_reminder')
-        );
+        return $this->app->trans('Il ne vous reste plus que %quantity% jours pour terminer votre validation', [
+            '%quantity%' => $this->app['phraseanet.registry']->get('GV_validation_reminder')
+        ]);
     }
 
     /**
@@ -56,7 +55,7 @@ class MailInfoValidationReminder extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return _('Start validation');
+        return $this->app->trans('Start validation');
     }
 
     /**

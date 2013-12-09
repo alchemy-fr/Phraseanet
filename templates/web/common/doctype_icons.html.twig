@@ -1,16 +1,16 @@
 {% macro format(record)%}
     {% set doctype = record.get_type() %}
     {% if record.is_grouping() %}
-      <img src="/skins/icons/icon_story.gif" title="{% trans 'reportage' %}" />
+      <img src="/skins/icons/icon_story.gif" title="{{ 'reportage' | trans }}" />
     {% elseif doctype == 'image' %}
-      <img src="/skins/icons/icon_image.gif" title="{% trans 'image' %}" />
+      <img src="/skins/icons/icon_image.gif" title="{{ 'image' | trans }}" />
     {% elseif doctype == 'document' %}
-      <img src="/skins/icons/icon_document.gif" title="{% trans 'document' %}" />
+      <img src="/skins/icons/icon_document.gif" title="{{ 'document' | trans }}" />
     {% elseif doctype == 'flash' %}
-      <img src="/skins/icons/icon_flash.gif" title="{% trans 'animation flash' %}" />
+      <img src="/skins/icons/icon_flash.gif" title="{{ 'animation flash' | trans }}" />
     {% elseif doctype == 'video' %}
-      <img src="/skins/icons/icon_video.gif" title="{% trans 'video' %}" />
+      <img src="/skins/icons/icon_video.gif" title="{{ 'video' | trans }}" />
     {% elseif doctype == 'audio' %}
-      <img src="/skins/icons/icon_audio.gif" title="{% trans 'audio' %}" />
+      <img src="/skins/icons/icon_audio.gif" title="{{ 'audio' | trans }}" />
     {% endif %}
 {% endmacro %}

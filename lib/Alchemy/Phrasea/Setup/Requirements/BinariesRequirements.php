@@ -24,7 +24,7 @@ class BinariesRequirements extends RequirementCollection implements RequirementI
     const MP4BOX_VERSION = '0.4.0';
     const EXIFTOOL_VERSION = '9.15';
 
-    public function __construct($binaries = array())
+    public function __construct($binaries = [])
     {
         $this->setName('Binaries');
 

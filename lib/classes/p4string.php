@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 class p4string
 {
 
@@ -51,7 +60,7 @@ class p4string
 
         $lastCharacter = substr($path, -1, 1);
 
-        if ( ! in_array($lastCharacter, array('\\', '/'))) {
+        if ( ! in_array($lastCharacter, ['\\', '/'])) {
             $path .= DIRECTORY_SEPARATOR;
         }
 
@@ -90,7 +99,7 @@ class p4string
      */
     public static function JSstring($s)
     {
-        return(str_replace(array("\\", "\"", "\r", "\n"), array("\\\\", "\\\"", "\\r", "\\n"), $s));
+        return(str_replace(["\\", "\"", "\r", "\n"], ["\\\\", "\\\"", "\\r", "\\n"], $s));
     }
 
     /**
@@ -104,42 +113,42 @@ class p4string
     {
         switch (mb_strtolower($context . '_' . $quoted)) {
             case 'js_': // old method
-                $s = str_replace(array("\\", "\"", "'", "\r", "\n"), array("\\\\", "\\\"", "\\'", "\\r", "\\n"), $s);
+                $s = str_replace(["\\", "\"", "'", "\r", "\n"], ["\\\\", "\\\"", "\\'", "\\r", "\\n"], $s);
                 break;
             case 'js_"':
-                $s = str_replace(array("\\", "\"", "\r", "\n"), array("\\\\", "\\\"", "\\r", "\\n"), $s);
+                $s = str_replace(["\\", "\"", "\r", "\n"], ["\\\\", "\\\"", "\\r", "\\n"], $s);
                 break;
             case 'js_\'':
-                $s = str_replace(array("\\", "'", "\r", "\n"), array("\\\\", "\\'", "\\r", "\\n"), $s);
+                $s = str_replace(["\\", "'", "\r", "\n"], ["\\\\", "\\'", "\\r", "\\n"], $s);
                 break;
 
             case 'dquot_"':
-                $s = str_replace(array("\\", "\"", "\r", "\n"), array("\\\\", "\\\"", "\\r", "\\n"), $s);
+                $s = str_replace(["\\", "\"", "\r", "\n"], ["\\\\", "\\\"", "\\r", "\\n"], $s);
                 break;
             case 'squot_"':
-                $s = str_replace(array("\\", "'", "\r", "\n"), array("\\\\", "\\'", "\\r", "\\n"), $s);
+                $s = str_replace(["\\", "'", "\r", "\n"], ["\\\\", "\\'", "\\r", "\\n"], $s);
                 break;
 
             case 'html_': // old method
             case 'html_\'':
             case 'html_"':
-                $s = str_replace(array("&", "<", ">", "\n"), array("&amp;", "&lt;", "&gt;", "<br/>\n"), $s);
+                $s = str_replace(["&", "<", ">", "\n"], ["&amp;", "&lt;", "&gt;", "<br/>\n"], $s);
                 break;
 
             case 'htmlprop_':
-                $s = str_replace(array("\"", "'", "<", ">"), array("&quot;", "&#39;", "&lt;", "&gt;"), $s);
+                $s = str_replace(["\"", "'", "<", ">"], ["&quot;", "&#39;", "&lt;", "&gt;"], $s);
                 break;
             case 'htmlprop_\'':
-                $s = str_replace(array("'", "<", ">"), array("&#39;", "&lt;", "&gt;"), $s);
+                $s = str_replace(["'", "<", ">"], ["&#39;", "&lt;", "&gt;"], $s);
                 break;
             case 'htmlprop_"':
-                $s = str_replace(array("\"", "<", ">"), array("&quot;", "&lt;", "&gt;"), $s);
+                $s = str_replace(["\"", "<", ">"], ["&quot;", "&lt;", "&gt;"], $s);
                 break;
 
             case 'form_':
             case 'form_\'':  // <input type... value='$phpvar'...>
             case 'form_"':
-                $s = str_replace(array("&", "\"", "'", "<", ">"), array("&amp;", "&quot;", "&#39;", "&lt;", "&gt;"), $s);
+                $s = str_replace(["&", "\"", "'", "<", ">"], ["&amp;", "&quot;", "&#39;", "&lt;", "&gt;"], $s);
                 break;
 
             case 'none_"':

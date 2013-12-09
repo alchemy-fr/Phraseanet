@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,12 +15,12 @@ use Alchemy\Phrasea\Command\Developer\APIRoutesDumper;
 use Alchemy\Phrasea\Command\Developer\Behat;
 use Alchemy\Phrasea\Command\Developer\BowerInstall;
 use Alchemy\Phrasea\Command\Developer\ComposerInstall;
-use Alchemy\Phrasea\Command\Developer\LessCompiler;
 use Alchemy\Phrasea\Command\Developer\InstallAll;
-use Alchemy\Phrasea\Command\Developer\JavascriptBuilder;
+use Alchemy\Phrasea\Command\Developer\LessCompiler;
 use Alchemy\Phrasea\Command\Developer\RegenerateSqliteDb;
 use Alchemy\Phrasea\Command\Developer\RoutesDumper;
 use Alchemy\Phrasea\Command\Developer\Uninstaller;
+use Alchemy\Phrasea\Command\Developer\TranslationDumper;
 
 use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
@@ -42,6 +42,13 @@ use Doctrine\ORM\Tools\Console\Command\GenerateProxiesCommand;
 use Doctrine\ORM\Tools\Console\Command\ConvertMappingCommand;
 use Doctrine\ORM\Tools\Console\Command\RunDqlCommand;
 use Doctrine\ORM\Tools\Console\Command\ValidateSchemaCommand;
+// Migration Commands
+use Doctrine\DBAL\Migrations\Tools\Console\Command\DiffCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\ExecuteCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\GenerateCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\MigrateCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\StatusCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\VersionCommand;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
@@ -57,17 +64,19 @@ $cli = new CLI("
  under certain conditions; type `about:license' for details.\n\n"
             . ' Phraseanet Developer Tools ', Version::getName() . ' ' . Version::getNumber());
 
-if ($cli['phraseanet.configuration']->isSetup()) {
-    $helpers = array(
+if ($cli['configuration.store']->isSetup()) {
+    $helpers = [
         'db' => new ConnectionHelper($cli['EM']->getConnection()),
         'em' => new EntityManagerHelper($cli['EM'])
-    );
+    ];
 
     $helperSet = $cli['console']->getHelperSet();
     foreach ($helpers as $name => $helper) {
         $helperSet->set($helper, $name);
     }
 }
+
+$cli->command(new TranslationDumper());
 
 $cli->command(new InstallAll());
 $cli->command(new BowerInstall());
@@ -77,11 +86,11 @@ $cli->command(new APIRoutesDumper());
 $cli->command(new RoutesDumper());
 $cli->command(new Behat());
 $cli->command(new LessCompiler());
-$cli->command(new JavascriptBuilder());
 $cli->command(new Uninstaller());
 $cli->command(new \module_console_systemTemplateGenerator('system:generate-templates'));
 
-$cli['console']->addCommands(array(
+
+$cli['console']->addCommands([
     // DBAL Commands
     new RunSqlCommand(),
     new ImportCommand(),
@@ -100,6 +109,13 @@ $cli['console']->addCommands(array(
     new ConvertMappingCommand(),
     new RunDqlCommand(),
     new ValidateSchemaCommand(),
-));
+    // Migrations Commands
+    new DiffCommand(),
+    new ExecuteCommand(),
+    new GenerateCommand(),
+    new MigrateCommand(),
+    new StatusCommand(),
+    new VersionCommand(),
+]);
 
 exit($cli->runCLI());

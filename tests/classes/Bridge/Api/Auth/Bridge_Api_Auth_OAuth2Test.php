@@ -15,7 +15,7 @@ class Bridge_Api_Auth_OAuth2Test extends PHPUnit_Framework_TestCase
     {
         $this->object = new Bridge_Api_Auth_OAuth2();
 
-        $this->parameters = array(
+        $this->parameters = [
             'client_id'      => "client_id"
             , 'client_secret'  => "client_secret"
             , 'redirect_uri'   => "redirect_uri"
@@ -23,15 +23,15 @@ class Bridge_Api_Auth_OAuth2Test extends PHPUnit_Framework_TestCase
             , 'response_type'  => 'code'
             , 'token_endpoint' => "one_token_endpoint"
             , 'auth_endpoint'  => "one_auth_endpoint"
-        );
+        ];
 
-        $this->mockSettings = $this->getMock("Bridge_AccountSettings", array("get", "set"), array(), "", false);
+        $this->mockSettings = $this->getMock("Bridge_AccountSettings", ["get", "set"], [], "", false);
     }
 
     public function testParse_request_token()
     {
         $this->object->set_parameters($this->parameters);
-        $_GET = array("code" => "12345");
+        $_GET = ["code" => "12345"];
         $token = $this->object->parse_request_token();
         $this->assertEquals("12345", $token);
         $this->parameters["response_type"] = "blabla";
@@ -105,12 +105,12 @@ class Bridge_Api_Auth_OAuth2Test extends PHPUnit_Framework_TestCase
 
     public function testSet_parameters()
     {
-        $parameters = array(
+        $parameters = [
             "client_id"     => "cid"
             , "allo"          => "hello"
             , "yo"            => "coucou"
             , "response_type" => "hihi"
-        );
+        ];
 
         $return = $this->object->set_parameters($parameters);
 
@@ -124,10 +124,10 @@ class Bridge_Api_Auth_OAuth2Test extends PHPUnit_Framework_TestCase
         $expected_url = "one_auth_endpoint?response_type=code&client_id=client_id&redirect_uri=redirect_uri&scope=super_scope";
         $this->assertEquals($expected_url, $this->object->get_auth_url());
 
-        $more_params = array("test" => "test");
+        $more_params = ["test" => "test"];
         $this->assertEquals($expected_url . "&test=test", $this->object->get_auth_url($more_params));
 
-        $more_params = array("response_type" => "test");
+        $more_params = ["response_type" => "test"];
         $this->assertNotEquals($expected_url, $this->object->get_auth_url($more_params));
     }
 }

@@ -17,21 +17,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Datafiles extends AbstractDelivery
 {
-
     public function connect(Application $app)
     {
+        $app['controller.datafiles'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $that = $this;
 
-        $controllers->before(function (Request $request) use ($app) {
+        $controllers->before(function () use ($app) {
             if (!$app['authentication']->isAuthenticated()) {
                 $app->abort(403, 'You are not autorized to see this');
             }
@@ -63,12 +59,12 @@ class Datafiles extends AbstractDelivery
                     throw new NotFoundHttpException;
                 }
 
-                if (!$app['authentication']->getUser()->ACL()->has_access_to_subdef($record, $subdef)) {
+                if (!$app['acl']->get($app['authentication']->getUser())->has_access_to_subdef($record, $subdef)) {
                     throw new AccessDeniedHttpException(sprintf('User has not access to subdef %s', $subdef));
                 }
 
                 $stamp = false;
-                $watermark = !$app['authentication']->getUser()->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
+                $watermark = !$app['acl']->get($app['authentication']->getUser())->has_right_on_base($record->get_base_id(), 'nowatermark');
 
                 if ($watermark && !$all_access) {
                     $subdef_class = $databox
@@ -76,18 +72,18 @@ class Datafiles extends AbstractDelivery
                         ->get_subdef($record->get_type(), $subdef)
                         ->get_class();
 
-                    if ($subdef_class == \databox_subdef::CLASS_PREVIEW && $app['authentication']->getUser()->ACL()->has_preview_grant($record)) {
+                    if ($subdef_class == \databox_subdef::CLASS_PREVIEW && $app['acl']->get($app['authentication']->getUser())->has_preview_grant($record)) {
                         $watermark = false;
-                    } elseif ($subdef_class == \databox_subdef::CLASS_DOCUMENT && $app['authentication']->getUser()->ACL()->has_hd_grant($record)) {
+                    } elseif ($subdef_class == \databox_subdef::CLASS_DOCUMENT && $app['acl']->get($app['authentication']->getUser())->has_hd_grant($record)) {
                         $watermark = false;
                     }
                 }
 
                 if ($watermark && !$all_access) {
 
-                    $repository = $app['EM']->getRepository('\Entities\BasketElement');
+                    $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
 
-                    /* @var $repository \Repositories\BasketElementRepository */
+                    /* @var $repository BasketElementRepository */
 
                     $ValidationByRecord = $repository->findReceivedValidationElementsByRecord($record, $app['authentication']->getUser());
                     $ReceptionByRecord = $repository->findReceivedElementsByRecord($record, $app['authentication']->getUser());

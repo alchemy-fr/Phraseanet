@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Alchemy\Phrasea\Setup;
 
 /**
@@ -11,8 +20,8 @@ namespace Alchemy\Phrasea\Setup;
  */
 class RequirementCollection implements RequirementCollectionInterface
 {
-    private $requirements = array();
-    private $informations = array();
+    private $requirements = [];
+    private $informations = [];
     private $name;
 
     /**
@@ -114,7 +123,7 @@ class RequirementCollection implements RequirementCollectionInterface
      */
     public function getRequirements()
     {
-        $array = array();
+        $array = [];
         foreach ($this->requirements as $req) {
             if (!$req->isOptional()) {
                 $array[] = $req;
@@ -129,7 +138,7 @@ class RequirementCollection implements RequirementCollectionInterface
      */
     public function getFailedRequirements()
     {
-        $array = array();
+        $array = [];
         foreach ($this->requirements as $req) {
             if (!$req->isFulfilled() && !$req->isOptional()) {
                 $array[] = $req;
@@ -144,7 +153,7 @@ class RequirementCollection implements RequirementCollectionInterface
      */
     public function getRecommendations()
     {
-        $array = array();
+        $array = [];
         foreach ($this->requirements as $req) {
             if ($req->isOptional()) {
                 $array[] = $req;
@@ -159,7 +168,7 @@ class RequirementCollection implements RequirementCollectionInterface
      */
     public function getFailedRecommendations()
     {
-        $array = array();
+        $array = [];
         foreach ($this->requirements as $req) {
             if (!$req->isFulfilled() && $req->isOptional()) {
                 $array[] = $req;

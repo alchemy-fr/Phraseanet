@@ -4,7 +4,7 @@
         <table>
             <tr>
                 <td>
-                    <label for="">{% trans 'First Name' %} *</label>
+                    <label for="">{{ 'First Name' | trans }} *</label>
                 </td>
                 <td>
                     <input name="firstname" type="text" value=""/>
@@ -12,7 +12,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="">{% trans 'Last Name' %} *</label>
+                    <label for="">{{ 'Last Name' | trans }} *</label>
                 </td>
                 <td>
                     <input name="lastname" type="text" value=""/>
@@ -20,7 +20,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="">{% trans 'Email Name' %} *</label>
+                    <label for="">{{ 'Email Name' | trans }} *</label>
                 </td>
                 <td>
                     <input name="email" type="text" value=""/>
@@ -28,7 +28,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="">{% trans 'Job' %}</label>
+                    <label for="">{{ 'Job' | trans }}</label>
                 </td>
                 <td>
                     <input name="job" type="text" value=""/>
@@ -36,7 +36,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="">{% trans 'Company' %}</label>
+                    <label for="">{{ 'Company' | trans }}</label>
                 </td>
                 <td>
                     <input name="company" type="text" value=""/>
@@ -44,7 +44,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="">{% trans 'City' %}</label>
+                    <label for="">{{ 'City' | trans }}</label>
                 </td>
                 <td>
                     <input name="city" type="text" value="" class="geoname_field"/>
@@ -53,8 +53,8 @@
             <tr>
                 <td></td>
                 <td>
-                    <button class="valid btn btn-inverse">{% trans 'Add' %}</button>
-                    <button class="cancel btn btn-inverse">{% trans 'Cancel' %}</button>
+                    <button class="valid btn btn-inverse">{{ 'Add' | trans }}</button>
+                    <button class="cancel btn btn-inverse">{{ 'Cancel' | trans }}</button>
                 </td>
             </tr>
         </table>

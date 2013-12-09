@@ -25,7 +25,7 @@
         <table width="100%" bgcolor="#f2f2f2;" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0; width:100% !important; line-height: 100% !important;background-color:#f2f2f2;">
             <tr>
                 <td height="40" valign="center" align="center" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:12px; font-weight:normal; color:#999999;line-height:20px;">
-                    {% trans 'Si cet email contient des liens non cliquables, copiez/collez ces liens dans votre navigateur.' %}
+                    {{ 'Si cet email contient des liens non cliquables, copiez/collez ces liens dans votre navigateur.' | trans }}
                 </td>
             </tr>
             <tr>
@@ -116,7 +116,7 @@
                         </tr>
                         <tr>
                             <td height="60" valign="center" align="center" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:13px; font-style:italic; color:#dc4848;">
-                                {% trans 'Le contenu de cet email est confidentiel, ne le divulguez pas.' %}
+                                {{ 'Le contenu de cet email est confidentiel, ne le divulguez pas.' | trans }}
                             </td>
                         </tr>
                     </table>
@@ -125,15 +125,13 @@
             </tr>
             <tr>
                 <td height="50" valign="center" align="center" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:12px; color:#999999;">
-                    {% trans 'Message automatique de Phraseanet' %}<br />
+                    {{ 'Message automatique de Phraseanet' | trans }}<br />
                     {% set link %}
                     <a href="{{ phraseanetURL }}" target="_blank" style="font-weight:bold; cursor:pointer; color:#999999;">
                         {{ phraseanetTitle }}
                     </a>
                     {% endset %}
-                    {% trans %}
-                        Pour gérer l'envoi d'email automatique, connectez-vous à {{ link }}
-                    {% endtrans %}
+                    {% trans with {'%link%' : link} %}Pour gérer l'envoi d'email automatique, connectez-vous à %link%{% endtrans %}
                 </td>
             </tr>
         </table>

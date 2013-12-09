@@ -67,17 +67,17 @@ class Manifest
 
     public function getServices()
     {
-        return $this->get('services') ? : array();
+        return $this->get('services') ? : [];
     }
 
     public function getCommands()
     {
-        return $this->get('commands') ? : array();
+        return $this->get('commands') ? : [];
     }
 
     public function getTwigPaths()
     {
-        return $this->get('twig-paths') ? : array();
+        return $this->get('twig-paths') ? : [];
     }
 
     public function getExtra()

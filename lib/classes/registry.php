@@ -12,11 +12,6 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Cache\ArrayCache;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class registry implements registryInterface
 {
     /**
@@ -47,13 +42,11 @@ class registry implements registryInterface
         $this->cache = new ArrayCache();
 
         if ($app['phraseanet.configuration-tester']->isInstalled()) {
-            $this->cache->save('GV_ServerName', $app['phraseanet.configuration']['main']['servername']);
+            $this->cache->save('GV_ServerName', $app['conf']->get(['main', 'servername']));
             $this->cache->save('GV_debug', $app['debug']);
 
-            $config = $app['phraseanet.configuration']->getConfig();
-
-            if (isset($config['main']['key'])) {
-                $this->cache->save('GV_sit', $config['main']['key']);
+            if ($app['conf']->has(['main', 'key'])) {
+                $this->cache->save('GV_sit', $app['conf']->get(['main', 'key']));
             }
         }
 
@@ -67,7 +60,7 @@ class registry implements registryInterface
     protected function load()
     {
         if ($this->cache->fetch('registry_loaded') !== true) {
-            $rs = array();
+            $rs = [];
             $loaded = false;
             try {
                 $conn = connection::getPDOConnection($this->app);
@@ -81,7 +74,7 @@ class registry implements registryInterface
 
             }
             foreach ($rs as $row) {
-                if (in_array($row['key'], array('GV_ServerName', 'GV_sit', 'GV_debug'))) {
+                if (in_array($row['key'], ['GV_ServerName', 'GV_sit', 'GV_debug'])) {
                     continue;
                 }
 
@@ -180,7 +173,7 @@ class registry implements registryInterface
         $sql = 'REPLACE INTO registry (`id`, `key`, `value`, `type`)
             VALUES (null, :key, :value, :type)';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':key'   => $key, ':value' => $sql_value, ':type'  => $type));
+        $stmt->execute([':key'   => $key, ':value' => $sql_value, ':type'  => $type]);
         $stmt->closeCursor();
 
         $this->cache->save($key, $value);
@@ -217,7 +210,7 @@ class registry implements registryInterface
 
         $sql = 'DELETE FROM registry WHERE `key` = :key';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':key' => $key));
+        $stmt->execute([':key' => $key]);
         $stmt->closeCursor();
 
         $this->cache->delete($key);

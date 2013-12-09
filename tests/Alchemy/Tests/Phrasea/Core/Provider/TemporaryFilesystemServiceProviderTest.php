@@ -9,8 +9,8 @@ class TemporaryFilesystemServiceProvidertest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {
-        return array(
-            array('Alchemy\Phrasea\Core\Provider\TemporaryFilesystemServiceProvider', 'temporary-filesystem', 'Neutron\TemporaryFilesystem\TemporaryFilesystemInterface'),
-        );
+        return [
+            ['Alchemy\Phrasea\Core\Provider\TemporaryFilesystemServiceProvider', 'temporary-filesystem', 'Neutron\TemporaryFilesystem\TemporaryFilesystemInterface'],
+        ];
     }
 }

@@ -19,14 +19,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use vierbergenlars\SemVer\version;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class UpgradeDBDatas extends Command
 {
-    protected $upgrades = array();
+    protected $upgrades = [];
 
     /**
      * Constructor
@@ -63,10 +58,10 @@ EOF
             throw new \Exception('You CAN NOT provide a `from` AND `at-version` option at the same time');
         }
 
-        $versions = array(
+        $versions = [
             'Upgrade\\Step31' => '3.1',
             'Upgrade\\Step35' => '3.5',
-        );
+        ];
 
         if (null !== $input->getOption('from')) {
             foreach ($versions as $classname => $version) {
@@ -91,7 +86,7 @@ EOF
 
     public function setUpgrades(array $upgrades)
     {
-        $this->upgrades = array();
+        $this->upgrades = [];
 
         foreach ($upgrades as $upgrade) {
             $this->addUpgrade($upgrade);
@@ -131,7 +126,7 @@ EOF
 
         do {
             $continue = strtolower($dialog->ask($output, $question . '<question>Continue ? (Y/n)</question>', 'Y'));
-        } while ( ! in_array($continue, array('y', 'n')));
+        } while ( ! in_array($continue, ['y', 'n']));
 
         if (strtolower($continue) !== 'y') {
             $output->writeln('Aborting !');

@@ -11,11 +11,11 @@ class Bridge_Api_Dailymotion_ContainerTest extends PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->test = array(
+        $this->test = [
             'id'          => '01234567'
             , 'description' => 'one description'
             , 'name'        => 'hello container'
-        );
+        ];
     }
 
     public function testGet_created_on()

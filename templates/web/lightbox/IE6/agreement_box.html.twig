@@ -3,10 +3,10 @@
         <table style="margin-left:10px;width:220px;height:30px;" cellspacing="0" cellpadding="0">
             <tbody>
                 <tr>
-                    <td class="title">{% trans 'VALIDATION' %}</td>
+                    <td class="title">{{ 'VALIDATION' | trans }}</td>
                     <td class="report_wrapper">
                       <a class="report" href="#">
-                        {% trans 'lightbox::recaptitulatif' %}
+                        {{ 'lightbox::recaptitulatif' | trans }}
                       </a>
                     </td>
                 </tr>
@@ -41,12 +41,12 @@
                         <td>
                           {% set agreement = basket_element.getUserValidationDatas(app['authentication'].getUser(), app).getAgreement() %}
                             <div style="width:70px;margin:0px auto 0;" class="ui-corner-all big_box agree_{{basket_element.getId()}} agree {% if agreement is null or agreement == false %}not_decided{% endif %}">
-                                <img src="/skins/lightbox/agree-bigie6.gif" style="vertical-align:middle;"/><span>{% trans 'validation:: OUI' %}</span>
+                                <img src="/skins/lightbox/agree-bigie6.gif" style="vertical-align:middle;"/><span>{{ 'validation:: OUI' | trans }}</span>
                             </div>
                         </td>
                         <td>
                             <div style="width:70px;margin:0px auto;" class="ui-corner-all big_box disagree_{{basket_element.getId()}} disagree {% if agreement is null or agreement == true %}not_decided{% endif %}">
-                                <img src="/skins/lightbox/disagree-bigie6.gif" style="vertical-align:middle;"/><span>{% trans 'validation:: NON' %}</span>
+                                <img src="/skins/lightbox/disagree-bigie6.gif" style="vertical-align:middle;"/><span>{{ 'validation:: NON' | trans }}</span>
                             </div>
                         </td>
                     </tr>

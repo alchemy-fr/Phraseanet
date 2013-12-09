@@ -10,19 +10,19 @@
 </form>
 
 <div class="page-header">
-    <h1>{% trans 'Suggested values' %}</h1>
+    <h1>{{ 'Suggested values' | trans }}</h1>
 </div>
 
 
 {% if app['request'].query.get('success') == '1' %}
     <div class="alert alert-success">
         <a class="close" data-dismiss="alert" href="#">×</a>
-        {% trans 'Successful update' %}
+        {{ 'Successful update' | trans }}
     </div>
 {% elseif app['request'].query.get('success') == '0' %}
     <div class="alert alert-error">
         <a class="close" data-dismiss="alert" href="#">×</a>
-        <strong>{% trans 'An error occured' %}</strong>
+        <strong>{{ 'An error occured' | trans }}</strong>
     </div>
 {% endif %}
 
@@ -31,7 +31,7 @@
         <tr>
             <td>
                 <div style='background-color:#FFFFFF'>
-                    <b>{% trans 'phraseanet::chargement' %}</b>
+                    <b>{{ 'phraseanet::chargement' | trans }}</b>
                 </div>
             </td>
         </tr>
@@ -51,7 +51,7 @@
         </td>
 
         <td style="text-align:center;height:30px;font-size:12px; border:0px;background-position: 0px 0px;background-repeat: repeat-x" nowrap>
-            {% trans 'admin::sugval: Valeurs suggerees/Preferences de la collection' %} {{ app['request'].attributes.get('bas_id')|bas_labels(app) }}
+            {{ 'admin::sugval: Valeurs suggerees/Preferences de la collection' | trans }} {{ app['request'].attributes.get('bas_id')|bas_labels(app) }}
         </td>
 
         <td style="height:30px;width:20px;font-size:12px;border:0px; text-align:right">
@@ -62,8 +62,8 @@
 
     <tr style="background-color:#aaaaaa; border:#cccccc 1px solid;"  >
         <td colspan="3" style=" border:#aaaaaa 1px solid;padding-left:3px;text-align:right">
-            <a href="#" id="linkviewxml" onClick="view('XML');return(false);" class='btn btn-mini'>{% trans 'boutton::vue xml'%}</a>
-            <a href="#" id="linkviewgraph" onClick="view('GRAPH');return(false);"  class='btn btn-mini' style="display:none">{% trans 'boutton::vue graphique'%}</a>
+            <a href="#" id="linkviewxml" onClick="view('XML');return(false);" class='btn btn-mini'>{{ 'boutton::vue xml' | trans }}</a>
+            <a href="#" id="linkviewgraph" onClick="view('GRAPH');return(false);"  class='btn btn-mini' style="display:none">{{ 'boutton::vue graphique' | trans }}</a>
         </td>
     </tr>
 
@@ -75,11 +75,11 @@
                 <table border="0" id="tabsgv" style="width:100%; background-color:#c9c9c9;">
                     <tr>
                         <td valign="top" style="text-align:center;">
-                            {% trans'admin::sugval: champs' %}
+                            {{ 'admin::sugval: champs' | trans }}
                             <select  name=usrbases id="nomchamPH" onKeyUp="javascript:write_valsug();" onChange="javascript:savenomaff();makeRestrict();maketextaffich();makeEmpty();write_valsug();"   onclick="javascript: makeRestrict();desactivall4VS(); write_valsug();" >
                                 {% for field in databox.get_meta_structure() %}
                                     {% if not field.is_readonly %}
-                                        <option value='{{ field.get_name() }}'> {{ field.get_label(app['locale.I18n']) }} </option>
+                                        <option value='{{ field.get_name() }}'> {{ field.get_label(app['locale']) }} </option>
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -88,10 +88,10 @@
                     <tr>
                         <td valign="top" style="text-align:center;">
                             <div class="btn-group">
-                                <input class='btn' type="submit" value="{% trans'admin::base:collorder: monter' %}" disabled onclick="javascript:modifordre(true);" id="bout_mont" name="bout_mont">
-                                <input class='btn' type="submit" value="{% trans'admin::base:collorder: descendre' %}"  disabled onclick="javascript:modifordre(false);" id="bout_desc" name="bout_desc">
-                                <input class='btn' type="submit" value="{% trans'boutton::supprimer' %}" disabled onclick="javascript:supprimer();" ondblclick="javascript:supprimer();" id="bout_supp" name="bout_supp">
-                                <input class='btn' type="submit" value="{% trans'admin::base:collorder: reinitialiser en ordre alphabetique' %}" onclick="javascript:trialph();" ondblclick="javascript:trialph();" id="bout_trialph" name="bout_trialph">
+                                <input class='btn' type="submit" value="{{ 'admin::base:collorder: monter' | trans }}" disabled onclick="javascript:modifordre(true);" id="bout_mont" name="bout_mont">
+                                <input class='btn' type="submit" value="{{ 'admin::base:collorder: descendre' | trans }}"  disabled onclick="javascript:modifordre(false);" id="bout_desc" name="bout_desc">
+                                <input class='btn' type="submit" value="{{ 'boutton::supprimer' | trans }}" disabled onclick="javascript:supprimer();" ondblclick="javascript:supprimer();" id="bout_supp" name="bout_supp">
+                                <input class='btn' type="submit" value="{{ 'admin::base:collorder: reinitialiser en ordre alphabetique' | trans }}" onclick="javascript:trialph();" ondblclick="javascript:trialph();" id="bout_trialph" name="bout_trialph">
                             </div>
                         </td>
                     </tr>
@@ -108,7 +108,7 @@
                             <table style="width:100%;">
                                 <tr>
                                     <td style="width:100%"><input type="text" id="valajout" onKeyUp="verifAndactiv();" onclick="desactivall4VS();" style="width:99%"></td>
-                                    <td style="width:100px" ><input class='btn' type="submit" value="{% trans'boutton::ajouter' %}" disabled style="width:100px" onclick="javascript:ajouter();" id="bout_add" name="bout_add"></td>
+                                    <td style="width:100px" ><input class='btn' type="submit" value="{{ 'boutton::ajouter' | trans }}" disabled style="width:100px" onclick="javascript:ajouter();" id="bout_add" name="bout_add"></td>
                                 </tr>
                             </table>
                         </td>
@@ -127,7 +127,7 @@
 
         </td>
         <td style="height:30px; background-position: 0px 0px; background-repeat: repeat-x; font-size:12px;text-align:center;">
-            <b><a class='btn' href="javascript:void();" onclick="valid();return(false);"  id="genevalid" style="color:#000000; text-decoration:none">{% trans'boutton::valider' %}</a></b>
+            <b><a class='btn' href="javascript:void();" onclick="valid();return(false);"  id="genevalid" style="color:#000000; text-decoration:none">{{ 'boutton::valider' | trans }}</a></b>
         </td>
         <td style="height:30px;width:20px;font-size:12px; background-position:left ;">
         </td>
@@ -898,7 +898,7 @@ function view(type)
 
           break;
       case 'GRAPH':
-          if( !changeInXml || confirm("{{ 'admin::sugval: Attention, passer en mode graphique implique la perte des modifications du xml si vous n\'appliquez pas les changements avant.\nContinuer quand meme'|trans | e('js') }}"))
+          if( !changeInXml || confirm("{{ 'admin::sugval: Attention, passer en mode graphique implique la perte des modifications du xml si vous n\'appliquez pas les changements avant.' |trans | e('js') }}\n{{ 'Continuer quand meme' |trans | e('js') }}"))
           {
               if($('#divGraph').length > 0 )
                   $('#divGraph').show();

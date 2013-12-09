@@ -35,7 +35,7 @@ class userTest extends PhraseanetPHPUnitAbstract
             $user = \User_Adapter::create(self::$DI['app'], 'test_phpunit_providers', 'any', null, false);
         }
 
-        $provider = new Entities\UsrAuthProvider();
+        $provider = new Alchemy\Phrasea\Model\Entities\UsrAuthProvider();
         $provider->setDistantId(12345);
         $provider->setProvider('custom-one');
         $provider->setUsrId($user->get_id());
@@ -45,7 +45,7 @@ class userTest extends PhraseanetPHPUnitAbstract
 
         $user->delete();
 
-        $repo = self::$DI['app']['EM']->getRepository('Entities\UsrAuthProvider');
+        $repo = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider');
         $this->assertNull($repo->findWithProviderAndId('custom-one', 12345));
     }
 
@@ -58,7 +58,7 @@ class userTest extends PhraseanetPHPUnitAbstract
             $user = \User_Adapter::create(self::$DI['app'], 'test_phpunit_sessions', 'any', null, false);
         }
 
-        $session = new Entities\Session();
+        $session = new \Alchemy\Phrasea\Model\Entities\Session();
         $session
             ->setUsrId($user->get_id())
             ->setUserAgent('');
@@ -68,7 +68,7 @@ class userTest extends PhraseanetPHPUnitAbstract
 
         $user->delete();
 
-        $repo = self::$DI['app']['EM']->getRepository('Entities\Session');
+        $repo = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Session');
         $this->assertCount(0, $repo->findByUser($user));
     }
 
@@ -83,13 +83,13 @@ class userTest extends PhraseanetPHPUnitAbstract
 
     public function testGetPrefWithACustomizedConf()
     {
-        $data = isset(self::$DI['app']['phraseanet.configuration']['user-settings']) ? self::$DI['app']['phraseanet.configuration']['user-settings'] : null;
+        $data = self::$DI['app']['conf']->get(['user-settings']);
 
-        self::$DI['app']['phraseanet.configuration']['user-settings'] = array(
+        self::$DI['app']['conf']->set('user-settings', [
             'images_per_page' => 42,
             'images_size'     => 666,
             'lalala'          => 'didou',
-        );
+        ]);
 
         $user = $this->get_user();
 
@@ -99,9 +99,9 @@ class userTest extends PhraseanetPHPUnitAbstract
         $this->assertSame(\User_Adapter::$def_values['editing_top_box'], $user->getPrefs('editing_top_box'));
 
         if (null === $data) {
-            unset(self::$DI['app']['phraseanet.configuration']['user-settings']);
+            self::$DI['app']['conf']->remove('user-settings');
         } else {
-            self::$DI['app']['phraseanet.configuration']['user-settings'] = $data;
+            self::$DI['app']['conf']->set('user-settings', $data);
         }
     }
 

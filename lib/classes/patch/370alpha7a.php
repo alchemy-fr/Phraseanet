@@ -10,57 +10,60 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\LazaretFile;
+use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use MediaAlchemyst\Specification\Image as ImageSpec;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class patch_370alpha7a implements patchInterface
 {
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     private $release = '3.7.0-alpha.7';
 
-    /**
-     *
-     * @var Array
-     */
-    private $concern = array(base::APPLICATION_BOX);
+    /** @var array */
+    private $concern = [base::APPLICATION_BOX];
 
     /**
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function get_release()
     {
         return $this->release;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function require_all_upgrades()
     {
         return false;
     }
 
     /**
-     *
-     * @return Array
+     * {@inheritdoc}
      */
     public function concern()
     {
         return $this->concern;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return ['lazaret'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $appbox, Application $app)
     {
         $conn = $appbox->get_connection();
 
         try {
-            //get all old lazaret file & transform them to \Entities\LazaretFile object
+            //get all old lazaret file & transform them to LazaretFile object
             $sql = 'SELECT * FROM lazaret';
             $stmt = $conn->prepare($sql);
             $stmt->execute();
@@ -76,10 +79,10 @@ class patch_370alpha7a implements patchInterface
 
         //order matters for foreign keys constraints
         //truncate all altered tables
-        $this->truncateTable($app['EM'], 'Entities\\LazaretAttribute');
-        $this->truncateTable($app['EM'], 'Entities\\LazaretCheck');
-        $this->truncateTable($app['EM'], 'Entities\\LazaretFile');
-        $this->truncateTable($app['EM'], 'Entities\\LazaretSession');
+        $this->truncateTable($app['EM'], 'Alchemy\\Phrasea\\Model\\Entities\\LazaretAttribute');
+        $this->truncateTable($app['EM'], 'Alchemy\\Phrasea\\Model\\Entities\\LazaretCheck');
+        $this->truncateTable($app['EM'], 'Alchemy\\Phrasea\\Model\\Entities\\LazaretFile');
+        $this->truncateTable($app['EM'], 'Alchemy\\Phrasea\\Model\\Entities\\LazaretSession');
 
         $i = 0;
 
@@ -108,10 +111,10 @@ class patch_370alpha7a implements patchInterface
 
                 $borderFile = new \Alchemy\Phrasea\Border\File($app, $media, $collection);
 
-                $lazaretSession = new \Entities\LazaretSession();
+                $lazaretSession = new LazaretSession();
                 $lazaretSession->setUsrId($row['usr_id']);
 
-                $lazaretFile = new \Entities\LazaretFile();
+                $lazaretFile = new LazaretFile();
                 $lazaretFile->setBaseId($row['base_id']);
 
                 if (null === $row['uuid']) {
@@ -148,7 +151,7 @@ class patch_370alpha7a implements patchInterface
 
         $stmt->closeCursor();
 
-        return;
+        return true;
     }
 
     private function truncateTable(\Doctrine\ORM\EntityManager $em, $className)

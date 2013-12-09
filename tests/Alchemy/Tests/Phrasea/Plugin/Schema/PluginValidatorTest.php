@@ -28,22 +28,22 @@ class PluginValidatorTest extends PluginTestCase
 
     public function providePluginDirs()
     {
-        return array(
-            array(__DIR__ . '/../Fixtures/PluginDir/TestPlugin'),
-        );
+        return [
+            [__DIR__ . '/../Fixtures/PluginDir/TestPlugin'],
+        ];
     }
 
     public function provideInvalidPluginDirs()
     {
-        return array(
-            array(__DIR__ . '/../Fixtures/WrongPlugins/TestPluginInvalidManifest'),
-            array(__DIR__ . '/../Fixtures/WrongPlugins/TestPluginMissingComposer'),
-            array(__DIR__ . '/../Fixtures/WrongPlugins/TestPluginMissingManifest'),
-            array(__DIR__ . '/../Fixtures/WrongPlugins/TestPluginInvalidName'),
-            array(__DIR__ . '/../Fixtures/WrongPlugins/TestPluginInvalidTwigPath'),
-            array(__DIR__ . '/../Fixtures/WrongPlugins/TestPluginNoPublicDirectory'),
-            array(__DIR__ . '/../Fixtures/WrongPlugins/TestPluginInvalidTwigPathMapping'),
-            array(__DIR__ . '/../Fixtures/WrongPlugins/TestPluginWrongManifest'),
-        );
+        return [
+            [__DIR__ . '/../Fixtures/WrongPlugins/TestPluginInvalidManifest'],
+            [__DIR__ . '/../Fixtures/WrongPlugins/TestPluginMissingComposer'],
+            [__DIR__ . '/../Fixtures/WrongPlugins/TestPluginMissingManifest'],
+            [__DIR__ . '/../Fixtures/WrongPlugins/TestPluginInvalidName'],
+            [__DIR__ . '/../Fixtures/WrongPlugins/TestPluginInvalidTwigPath'],
+            [__DIR__ . '/../Fixtures/WrongPlugins/TestPluginNoPublicDirectory'],
+            [__DIR__ . '/../Fixtures/WrongPlugins/TestPluginInvalidTwigPathMapping'],
+            [__DIR__ . '/../Fixtures/WrongPlugins/TestPluginWrongManifest'],
+        ];
     }
 }

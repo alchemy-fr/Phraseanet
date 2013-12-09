@@ -19,12 +19,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Create a collection Command
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class CreateCollection extends Command
 {
 
@@ -49,24 +43,27 @@ class CreateCollection extends Command
         $databox = $this->container['phraseanet.appbox']
             ->get_databox((int) $input->getArgument('databox_id'));
 
-        $new_collection = \collection::create($app, $databox, $this->container['phraseanet.appbox'], $input->getArgument('collname'));
+        $new_collection = \collection::create($this->container, $databox, $this->container['phraseanet.appbox'], $input->getArgument('collname'));
 
         if ($new_collection && $input->getOption('base_id_rights')) {
 
             $query = new \User_Query($this->container);
-            $total = $query->on_base_ids(array($input->getOption('base_id_rights')))->get_total();
+            $total = $query->on_base_ids([$input->getOption('base_id_rights')])->get_total();
 
             $n = 0;
             while ($n < $total) {
                 $results = $query->limit($n, 40)->execute()->get_results();
                 foreach ($results as $user) {
-                    $user->ACL()->duplicate_right_from_bas($input->getOption('base_id_rights'), $new_collection->get_base_id());
+                    $this->container['acl']->get($user)->duplicate_right_from_bas($input->getOption('base_id_rights'), $new_collection->get_base_id());
                 }
                 $n+=40;
             }
         }
 
-        \User_Adapter::reset_sys_admins_rights($this->container);
+        $app = $this->container;
+        $this->container['manipulator.acl']->resetAdminRights(array_map(function ($id) use ($app) {
+            return \User_Adapter::getInstance($id, $app);
+        }, array_keys(\User_Adapter::get_sys_admins($this->container))));
 
         $this->container['dispatcher']->dispatch(PhraseaEvents::COLLECTION_CREATE, new CollectionCreateEvent($new_collection));
     }

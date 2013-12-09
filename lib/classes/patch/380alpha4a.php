@@ -3,14 +3,14 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
 use Alchemy\Phrasea\Application;
-use Entities\AuthFailure;
+use Alchemy\Phrasea\Model\Entities\AuthFailure;
 
 class patch_380alpha4a implements patchInterface
 {
@@ -18,7 +18,7 @@ class patch_380alpha4a implements patchInterface
     private $release = '3.8.0-alpha.4';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -47,10 +47,20 @@ class patch_380alpha4a implements patchInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrineMigrations()
+    {
+        return ['auth-failure'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $appbox, Application $app)
     {
         $conn = $app['phraseanet.appbox']->get_connection();
-        $sql = 'SELECT date, login, ip, locked FROM badlog ORDER BY id ASC';
+        $sql = 'SELECT date, login, ip, locked
+                FROM badlog
+                ORDER BY id ASC';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -78,5 +88,7 @@ class patch_380alpha4a implements patchInterface
 
         $app['EM']->flush();
         $app['EM']->clear();
+
+        return true;
     }
 }

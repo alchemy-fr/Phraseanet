@@ -3,7 +3,7 @@
 namespace Alchemy\Phrasea\Authentication\PersistentCookie;
 
 use Alchemy\Phrasea\Authentication\PersistentCookie\Manager;
-use Entities\Session;
+use Alchemy\Phrasea\Model\Entities\Session;
 
 class ManagerTest extends \PHPUnit_Framework_TestCase
 {
@@ -36,12 +36,12 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         $repo->expects($this->once())
             ->method('findOneBy')
-            ->with($this->equalTo(array('token' => $tokenValue)))
+            ->with($this->equalTo(['token' => $tokenValue]))
             ->will($this->returnValue($session));
 
         $em->expects($this->once())
             ->method('getRepository')
-            ->with($this->equalTo('Entities\Session'))
+            ->with($this->equalTo('Alchemy\Phrasea\Model\Entities\Session'))
             ->will($this->returnValue($repo));
 
         $encoder->expects($this->once())
@@ -81,12 +81,12 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         $repo->expects($this->once())
             ->method('findOneBy')
-            ->with($this->equalTo(array('token' => $tokenValue)))
+            ->with($this->equalTo(['token' => $tokenValue]))
             ->will($this->returnValue($session));
 
         $em->expects($this->once())
             ->method('getRepository')
-            ->with($this->equalTo('Entities\Session'))
+            ->with($this->equalTo('Alchemy\Phrasea\Model\Entities\Session'))
             ->will($this->returnValue($repo));
 
         $encoder->expects($this->once())
@@ -114,12 +114,12 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         $repo->expects($this->once())
             ->method('findOneBy')
-            ->with($this->equalTo(array('token' => $tokenValue)))
+            ->with($this->equalTo(['token' => $tokenValue]))
             ->will($this->returnValue(null));
 
         $em->expects($this->once())
             ->method('getRepository')
-            ->with($this->equalTo('Entities\Session'))
+            ->with($this->equalTo('Alchemy\Phrasea\Model\Entities\Session'))
             ->will($this->returnValue($repo));
 
         $this->assertFalse($manager->getSession($tokenValue));

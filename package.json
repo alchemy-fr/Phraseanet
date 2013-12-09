@@ -1,0 +1,17 @@
+{
+    "name": "phraseanet",
+    "version": "3.9.0",
+    "devDependencies": {
+        "bower-canary": "latest",
+        "mocha-phantomjs": ">=2.0 <3.0",
+        "recess": ">=1.1.0 <1.1.7",
+        "uglify-js": "latest",
+        "jake": "latest",
+        "grunt-cli": "latest",
+        "grunt": "~0.4.1",
+        "grunt-contrib": "~0.4.0",
+        "grunt-bower-task": "~0.3.0",
+        "grunt-bower-postinst": "~0.2.0",
+        "grunt-mocha-phantomjs": "~0.3.0"
+    }
+}

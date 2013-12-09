@@ -16,10 +16,10 @@ class connexionReportTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $date->modify('-6 month');
         $this->dmin = $date->format("Y-m-d H:i:s");
         $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
-        $this->ret = array();
+        $this->ret = [];
         foreach ($databoxes as $databox) {
             $colls = $databox->get_collections();
-            $rett = array();
+            $rett = [];
             foreach ($colls as $coll) {
                 $rett[$coll->get_coll_id()] = $coll->get_coll_id();
             }
@@ -42,16 +42,16 @@ class connexionReportTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testBuildReport()
     {
-        $conf = array(
-            'user' => array(_('phraseanet::utilisateurs'), 1, 1, 1, 1),
-            'ddate' => array(_('report:: date'), 1, 0, 1, 1),
-            'ip' => array(_('report:: IP'), 1, 0, 0, 0),
-            'appli' => array(_('report:: modules'), 1, 0, 0, 0),
-            'fonction' => array(_('report::fonction'), 1, 1, 1, 1),
-            'activite' => array(_('report::activite'), 1, 1, 1, 1),
-            'pays' => array(_('report::pays'), 1, 1, 1, 1),
-            'societe' => array(_('report::societe'), 1, 1, 1, 1)
-        );
+        $conf = [
+            'user' => [self::$DI['app']['translator']->trans('phraseanet::utilisateurs'), 1, 1, 1, 1],
+            'ddate' => [self::$DI['app']['translator']->trans('report:: date'), 1, 0, 1, 1],
+            'ip' => [self::$DI['app']['translator']->trans('report:: IP'), 1, 0, 0, 0],
+            'appli' => [self::$DI['app']['translator']->trans('report:: modules'), 1, 0, 0, 0],
+            'fonction' => [self::$DI['app']['translator']->trans('report::fonction'), 1, 1, 1, 1],
+            'activite' => [self::$DI['app']['translator']->trans('report::activite'), 1, 1, 1, 1],
+            'pays' => [self::$DI['app']['translator']->trans('report::pays'), 1, 1, 1, 1],
+            'societe' => [self::$DI['app']['translator']->trans('report::societe'), 1, 1, 1, 1]
+        ];
 
         $nbResult = 0;
         foreach ($this->ret as $sbasid => $collections) {

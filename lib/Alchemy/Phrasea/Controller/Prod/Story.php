@@ -13,22 +13,19 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Model\Entities\StoryWZ;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Story implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.prod.story'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
@@ -36,14 +33,14 @@ class Story implements ControllerProviderInterface
         });
 
         $controllers->get('/create/', function (Application $app) {
-            return $app['twig']->render('prod/Story/Create.html.twig', array());
+            return $app['twig']->render('prod/Story/Create.html.twig', []);
         })->bind('prod_stories_create');
 
         $controllers->post('/', function (Application $app, Request $request) {
             /* @var $request \Symfony\Component\HttpFoundation\Request */
             $collection = \collection::get_from_base_id($app, $request->request->get('base_id'));
 
-            if (!$app['authentication']->getUser()->ACL()->has_right_on_base($collection->get_base_id(), 'canaddrecord')) {
+            if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($collection->get_base_id(), 'canaddrecord')) {
                 throw new AccessDeniedHttpException('You can not create a story on this collection');
             }
 
@@ -59,7 +56,7 @@ class Story implements ControllerProviderInterface
                 $Story->appendChild($record);
             }
 
-            $metadatas = array();
+            $metadatas = [];
 
             foreach ($collection->get_databox()->get_meta_structure() as $meta) {
                 if ($meta->get_thumbtitle()) {
@@ -68,18 +65,18 @@ class Story implements ControllerProviderInterface
                     continue;
                 }
 
-                $metadatas[] = array(
+                $metadatas[] = [
                     'meta_struct_id' => $meta->get_id()
                     , 'meta_id'        => null
                     , 'value'          => $value
-                );
+                ];
 
                 break;
             }
 
             $Story->set_metadatas($metadatas)->rebuild_subdefs();
 
-            $StoryWZ = new \Entities\StoryWZ();
+            $StoryWZ = new StoryWZ();
             $StoryWZ->setUser($app['authentication']->getUser());
             $StoryWZ->setRecord($Story);
 
@@ -88,29 +85,29 @@ class Story implements ControllerProviderInterface
             $app['EM']->flush();
 
             if ($request->getRequestFormat() == 'json') {
-                $data = array(
+                $data = [
                     'success'  => true
-                    , 'message'  => _('Story created')
+                    , 'message'  => $app->trans('Story created')
                     , 'WorkZone' => $StoryWZ->getId()
-                    , 'story'    => array(
+                    , 'story'    => [
                         'sbas_id'   => $Story->get_sbas_id(),
                         'record_id' => $Story->get_record_id(),
-                    )
-                );
+                    ]
+                ];
 
                 return $app->json($data);
             } else {
-                return $app->redirectPath('prod_stories_story', array(
+                return $app->redirectPath('prod_stories_story', [
                     'sbas_id' => $StoryWZ->getSbasId(),
                     'record_id' => $StoryWZ->getRecordId(),
-                ));
+                ]);
             }
         })->bind('prod_stories_do_create');
 
         $controllers->get('/{sbas_id}/{record_id}/', function (Application $app, $sbas_id, $record_id) {
             $Story = new \record_adapter($app, $sbas_id, $record_id);
 
-            $html = $app['twig']->render('prod/WorkZone/Story.html.twig', array('Story' => $Story));
+            $html = $app['twig']->render('prod/WorkZone/Story.html.twig', ['Story' => $Story]);
 
             return new Response($html);
         })
@@ -121,7 +118,7 @@ class Story implements ControllerProviderInterface
         $controllers->post('/{sbas_id}/{record_id}/addElements/', function (Application $app, Request $request, $sbas_id, $record_id) {
             $Story = new \record_adapter($app, $sbas_id, $record_id);
 
-            if (!$app['authentication']->getUser()->ACL()->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
+            if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
                 throw new AccessDeniedHttpException('You can not add document to this Story');
 
             $n = 0;
@@ -137,15 +134,15 @@ class Story implements ControllerProviderInterface
                 $n++;
             }
 
-            $data = array(
+            $data = [
                 'success' => true
-                , 'message' => sprintf(_('%d records added'), $n)
-            );
+                , 'message' => $app->trans('%quantity% records added', ['%quantity%' => $n])
+            ];
 
             if ($request->getRequestFormat() == 'json') {
                 return $app->json($data);
             } else {
-                return $app->redirectPath('prod_stories_story', array('sbas_id' => $sbas_id,'record_id' => $record_id));
+                return $app->redirectPath('prod_stories_story', ['sbas_id' => $sbas_id,'record_id' => $record_id]);
             }
         })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
@@ -154,20 +151,20 @@ class Story implements ControllerProviderInterface
 
             $record = new \record_adapter($app, $child_sbas_id, $child_record_id);
 
-            if (!$app['authentication']->getUser()->ACL()->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
+            if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
                 throw new AccessDeniedHttpException('You can not add document to this Story');
 
             $Story->removeChild($record);
 
-            $data = array(
+            $data = [
                 'success' => true
-                , 'message' => _('Record removed from story')
-            );
+                , 'message' => $app->trans('Record removed from story')
+            ];
 
             if ($request->getRequestFormat() == 'json') {
                 return $app->json($data);
             } else {
-                return $app->redirectPath('prod_stories_story', array('sbas_id' => $sbas_id,'record_id' => $record_id));
+                return $app->redirectPath('prod_stories_story', ['sbas_id' => $sbas_id,'record_id' => $record_id]);
             }
         })
             ->bind('prod_stories_story_remove_element')
@@ -189,7 +186,7 @@ class Story implements ControllerProviderInterface
             return new Response(
                     $app['twig']->render(
                         'prod/Story/Reorder.html.twig'
-                        , array('story' => $story)
+                        , ['story' => $story]
                     )
             );
         })
@@ -198,7 +195,7 @@ class Story implements ControllerProviderInterface
             ->assert('record_id', '\d+');
 
         $controllers->post('/{sbas_id}/{record_id}/reorder/', function (Application $app, $sbas_id, $record_id) {
-            $ret = array('success' => false, 'message' => _('An error occured'));
+            $ret = ['success' => false, 'message' => $app->trans('An error occured')];
             try {
 
                 $story = new \record_adapter($app, $sbas_id, $record_id);
@@ -207,8 +204,8 @@ class Story implements ControllerProviderInterface
                     throw new \Exception('This is not a story');
                 }
 
-                if (!$app['authentication']->getUser()->ACL()->has_right_on_base($story->get_base_id(), 'canmodifrecord')) {
-                    throw new ControllerException(_('You can not edit this story'));
+                if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($story->get_base_id(), 'canmodifrecord')) {
+                    throw new ControllerException($app->trans('You can not edit this story'));
                 }
 
                 $sql = 'UPDATE regroup SET ord = :ord
@@ -216,19 +213,19 @@ class Story implements ControllerProviderInterface
                 $stmt = $story->get_databox()->get_connection()->prepare($sql);
 
                 foreach ($app['request']->request->get('element') as $record_id => $ord) {
-                    $params = array(
+                    $params = [
                         ':ord'         => $ord,
                         ':parent_id'   => $story->get_record_id(),
                         ':children_id' => $record_id
-                    );
+                    ];
                     $stmt->execute($params);
                 }
 
                 $stmt->closeCursor();
 
-                $ret = array('success' => true, 'message' => _('Story updated'));
+                $ret = ['success' => true, 'message' => $app->trans('Story updated')];
             } catch (ControllerException $e) {
-                $ret = array('success' => false, 'message' => $e->getMessage());
+                $ret = ['success' => false, 'message' => $e->getMessage()];
             } catch (\Exception $e) {
 
             }

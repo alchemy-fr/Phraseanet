@@ -91,13 +91,13 @@
                     <img class="collapsed" src="/skins/lightbox/collapsed.png"/>
                     <img class="expanded" src="/skins/lightbox/expanded.png"/>
                 {% endif %}
-                    {% trans 'notice'%}
+                    {{ 'notice' | trans }}
                 </div>
                 <div class="right_column_wrapper caption right_column_wrapper_caption PNB" style="{% if basket.getValidation() %}display:none;{% endif %}">
                     <div id="record_infos" class="PNB">
                         <div class="lightbox_container PNB">
               {% if basket_element %}
-                {% set business = app['authentication'].getUser().ACL().has_right_on_base(basket_element.getRecord(app).get_base_id(), 'canmodifrecord') %}
+                {% set business =  app['acl'].get(app['authentication'].getUser()).has_right_on_base(basket_element.getRecord(app).get_base_id(), 'canmodifrecord') %}
                 {{caption.format_caption(basket_element.getRecord(app), '', null, business)}}
               {% endif %}
             </div>
@@ -111,7 +111,7 @@
                 </div>
                 <div id="right_column_validation_toggle" class="PNB ui-corner-all title15">
                     <img src="/skins/lightbox/toexpand.png"/>
-                    {% trans 'VALIDATION' %}
+                    {{ 'VALIDATION' | trans }}
                 </div>
                 <div id="basket_options" class="PNB ui-corner-all unselectable">
                     {% include 'lightbox/basket_options.html.twig' %}
@@ -127,12 +127,12 @@
                         </td>
                         {% if basket.getValidation() %}
                             <td style="width:50px;">
-                                <img title="{% trans 'lightbox::recaptitulatif' %}" class="report" src="/skins/lightbox/retour.png"/>
+                                <img title="{{ 'lightbox::recaptitulatif' | trans }}" class="report" src="/skins/lightbox/retour.png"/>
                             </td>
                         {% endif %}
                         <td style="width:220px;">
                             <select id="navigation" style='margin:0'>
-                                <optgroup label="{% trans 'Validations'%}">
+                                <optgroup label="{{ 'Validations' | trans }}">
                                 {% for item in baskets_collection %}
                                   {% if item.getValidation() %}
                                       <option {% if item.getId() == basket.getId() %} selected="selected" {% endif %}
@@ -140,7 +140,7 @@
                                   {% endif %}
                                 {% endfor %}
                                 </optgroup>
-                                <optgroup label="{% trans 'Paniers'%}">
+                                <optgroup label="{{ 'Paniers' | trans }}">
                                 {% for item in baskets_collection %}
                                   {% if item.getValidation() is null %}
                                     <option {% if basket.getId() == item.getId() %} selected="selected" {% endif %}
@@ -151,7 +151,7 @@
                             </select>
                         </td>
                         <td style="width:50px;">
-                            <button style='width:30px;margin:0;' class="ui-corner-all basket_downloader" title="{% trans 'boutton::telecharger tous les documents' %}">
+                            <button style='width:30px;margin:0;' class="ui-corner-all basket_downloader" title="{{ 'boutton::telecharger tous les documents' | trans }}">
                                <img src="/skins/lightbox/save.png"/>
                             </button>
                         </td>
@@ -178,10 +178,10 @@
     <div id="report" style="display:none;">
     </div>
     {% endif %}
-    <div id="dialog_dwnl" title="{% trans 'action : exporter' %}" style="display:none;"></div>
+    <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
   <script type="text/javascript">
     {% if basket.getValidation() %}
-    p4.releasable = {% if basket.getValidation().getParticipant(app['authentication'].getUser(), app).isReleasable() %}"{% trans 'Do you want to send your report ?' %}"{% else %}false{% endif %}
+    p4.releasable = {% if basket.getValidation().getParticipant(app['authentication'].getUser(), app).isReleasable() %}"{{ 'Do you want to send your report ?' | trans }}"{% else %}false{% endif %}
     {% endif %}
   </script>
 {% endblock %}

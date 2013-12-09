@@ -7,9 +7,11 @@ use Alchemy\Phrasea\Core\Event\Subscriber\ApiOauth2ErrorsSubscriber;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
+use Alchemy\Tests\Tools\TranslatorMockTrait;
 
 class ApiOauth2ErrorsSubscriberTest extends \PHPUnit_Framework_TestCase
 {
+    use TranslatorMockTrait;
     /**
      * @dataProvider provideExceptionsAndCode
      */
@@ -20,7 +22,7 @@ class ApiOauth2ErrorsSubscriberTest extends \PHPUnit_Framework_TestCase
             return new \API_V1_adapter($app);
         };
         $app->register(new \API_V1_Timer());
-        $app['dispatcher']->addSubscriber(new ApiOauth2ErrorsSubscriber(PhraseaExceptionHandler::register()));
+        $app['dispatcher']->addSubscriber(new ApiOauth2ErrorsSubscriber(PhraseaExceptionHandler::register(), $this->createTranslatorMock()));
         $app->get('/api/oauthv2', function () use ($exception) {
             throw $exception;
         });
@@ -43,7 +45,7 @@ class ApiOauth2ErrorsSubscriberTest extends \PHPUnit_Framework_TestCase
             return new \API_V1_adapter($app);
         };
         $app->register(new \API_V1_Timer());
-        $app['dispatcher']->addSubscriber(new ApiOauth2ErrorsSubscriber(PhraseaExceptionHandler::register()));
+        $app['dispatcher']->addSubscriber(new ApiOauth2ErrorsSubscriber(PhraseaExceptionHandler::register(), $this->createTranslatorMock()));
         $app->get('/', function () use ($exception) {
             throw $exception;
         });
@@ -55,10 +57,10 @@ class ApiOauth2ErrorsSubscriberTest extends \PHPUnit_Framework_TestCase
 
     public function provideExceptionsAndCode()
     {
-        return array(
-            array(new HttpException(512, null, null, array('content-type' => 'application/json')), 512, 'application/json'),
-            array(new HttpException(512, null, null), 512, 'text/html; charset=UTF-8'),
-            array(new \Exception(), 500, 'text/html; charset=UTF-8'),
-        );
+        return [
+            [new HttpException(512, null, null, ['content-type' => 'application/json']), 512, 'application/json'],
+            [new HttpException(512, null, null), 512, 'text/html; charset=UTF-8'],
+            [new \Exception(), 500, 'text/html; charset=UTF-8'],
+        ];
     }
 }

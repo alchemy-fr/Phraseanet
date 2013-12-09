@@ -30,20 +30,20 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::REQUEST => array(
-                array('addLocale', 255),
+        return [
+            KernelEvents::REQUEST => [
+                ['addLocale', 255],
                 // symfony locale is set on 16 priority, let's override it
-                array('addLocale', 17),
-                array('addLocale', 15),
-            ),
-            KernelEvents::RESPONSE => array(
-                array('addLocaleCookie', 8),
-            ),
-            KernelEvents::TERMINATE => array(
-                array('unsetLocale', -255),
-            )
-        );
+                ['addLocale', 17],
+                ['addLocale', 15],
+            ],
+            KernelEvents::RESPONSE => [
+                ['addLocaleCookie', 8],
+            ],
+            KernelEvents::FINISH_REQUEST => [
+                ['unsetLocale', -255],
+            ]
+        ];
     }
 
     public function unsetLocale()
@@ -74,10 +74,10 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
         $this->app['locale'] = $this->app->share(function (Application $app) use ($event) {
             if (isset($app['phraseanet.registry'])) {
                 $event->getRequest()->setDefaultLocale(
-                    $app['phraseanet.registry']->get('GV_default_lng', 'en_GB')
+                    $app['phraseanet.registry']->get('GV_default_lng', 'en')
                 );
                 $event->getRequest()->setLocale(
-                    $app['phraseanet.registry']->get('GV_default_lng', 'en_GB')
+                    $app['phraseanet.registry']->get('GV_default_lng', 'en')
                 );
             }
 
@@ -93,8 +93,8 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
 
             foreach ($event->getRequest()->getLanguages() as $code) {
                 $data = preg_split('/[-_]/', $code);
-                if (array_key_exists($data[0], $app['locales.mapping'])) {
-                    $event->getRequest()->setLocale($app['locales.mapping'][$data[0]]);
+                if (in_array($data[0], array_keys($app['locales.available']), true)) {
+                    $event->getRequest()->setLocale($data[0]);
                     $localeSet = true;
                     break;
                 }
@@ -108,7 +108,6 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
         });
 
         $this->locale = $this->app['locale'];
-        \phrasea::use_i18n($this->locale);
     }
 
     public function addLocaleCookie(FilterResponseEvent $event)

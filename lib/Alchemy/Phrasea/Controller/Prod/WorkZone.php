@@ -11,47 +11,47 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Entities\StoryWZ;
+use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\StoryWZ;
+use Alchemy\Phrasea\Helper\WorkZone as WorkzoneHelper;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Alchemy\Phrasea\Helper\WorkZone as WorkzoneHelper;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class WorkZone implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.prod.workzone'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAuthentication();
-        });
+        })
+            // Silex\Route::convert is not used as this should be done prior the before middleware
+            ->before($app['middleware.basket.converter'])
+            ->before($app['middleware.basket.user-access']);;
 
-        $controllers->get('/', $this->call('displayWorkzone'))
+        $controllers->get('/', 'controller.prod.workzone:displayWorkzone')
             ->bind('prod_workzone_show');
 
-        $controllers->get('/Browse/', $this->call('browse'))
+        $controllers->get('/Browse/', 'controller.prod.workzone:browse')
             ->bind('prod_workzone_browse');
 
-        $controllers->get('/Browse/Search/', $this->call('browserSearch'))
+        $controllers->get('/Browse/Search/', 'controller.prod.workzone:browserSearch')
             ->bind('prod_workzone_search');
 
-        $controllers->get('/Browse/Basket/{basket_id}/', $this->call('browseBasket'))
+        $controllers->get('/Browse/Basket/{basket}/', 'controller.prod.workzone:browseBasket')
             ->bind('prod_workzone_basket')
-            ->assert('basket_id', '\d+');
+            ->assert('basket', '\d+');
 
-        $controllers->post('/attachStories/', $this->call('attachStories'));
+        $controllers->post('/attachStories/', 'controller.prod.workzone:attachStories');
 
-        $controllers->post('/detachStory/{sbas_id}/{record_id}/', $this->call('detachStory'))
+        $controllers->post('/detachStory/{sbas_id}/{record_id}/', 'controller.prod.workzone:detachStory')
             ->bind('prod_workzone_detach_story')
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+');
@@ -61,12 +61,12 @@ class WorkZone implements ControllerProviderInterface
 
     public function displayWorkzone(Application $app)
     {
-        $params = array(
+        $params = [
             'WorkZone'      => new WorkzoneHelper($app, $app['request'])
             , 'selected_type' => $app['request']->query->get('type')
             , 'selected_id'   => $app['request']->query->get('id')
             , 'srt'           => $app['request']->query->get('sort')
-        );
+        ];
 
         return $app['twig']->render('prod/WorkZone/WorkZone.html.twig', $params);
     }
@@ -80,7 +80,7 @@ class WorkZone implements ControllerProviderInterface
     {
         $request = $app['request'];
 
-        $BasketRepo = $app['EM']->getRepository('\Entities\Basket');
+        $BasketRepo = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
         $Page = (int) $request->query->get('Page', 0);
 
@@ -99,7 +99,7 @@ class WorkZone implements ControllerProviderInterface
         $page = floor($offsetStart / $PerPage) + 1;
         $maxPage = floor(count($Baskets) / $PerPage) + 1;
 
-        $params = array(
+        $params = [
             'Baskets' => $Baskets
             , 'Page'    => $page
             , 'MaxPage' => $maxPage
@@ -107,18 +107,14 @@ class WorkZone implements ControllerProviderInterface
             , 'Query'   => $request->query->get('Query')
             , 'Year'    => $request->query->get('Year')
             , 'Type'    => $request->query->get('Type')
-        );
+        ];
 
         return $app['twig']->render('prod/WorkZone/Browser/Results.html.twig', $params);
     }
 
-    public function browseBasket(Application $app, Request $request, $basket_id)
+    public function browseBasket(Application $app, Request $request, Basket $basket)
     {
-        $basket = $app['EM']
-            ->getRepository('\Entities\Basket')
-            ->findUserBasket($app, $basket_id, $app['authentication']->getUser(), false);
-
-        return $app['twig']->render('prod/WorkZone/Browser/Basket.html.twig', array('Basket' => $basket));
+        return $app['twig']->render('prod/WorkZone/Browser/Basket.html.twig', ['Basket' => $basket]);
     }
 
     public function attachStories(Application $app, Request $request)
@@ -127,11 +123,11 @@ class WorkZone implements ControllerProviderInterface
             throw new BadRequestHttpException('Missing parameters stories');
         }
 
-        $StoryWZRepo = $app['EM']->getRepository('\Entities\StoryWZ');
+        $StoryWZRepo = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\StoryWZ');
 
         $alreadyFixed = $done = 0;
 
-        $stories = $request->request->get('stories', array());
+        $stories = $request->request->get('stories', []);
 
         foreach ($stories as $element) {
             $element = explode('_', $element);
@@ -141,7 +137,7 @@ class WorkZone implements ControllerProviderInterface
                 throw new \Exception('You can only attach stories');
             }
 
-            if (!$app['authentication']->getUser()->ACL()->has_access_to_base($Story->get_base_id())) {
+            if (!$app['acl']->get($app['authentication']->getUser())->has_access_to_base($Story->get_base_id())) {
                 throw new AccessDeniedHttpException('You do not have access to this Story');
             }
 
@@ -162,37 +158,23 @@ class WorkZone implements ControllerProviderInterface
 
         if ($alreadyFixed === 0) {
             if ($done <= 1) {
-                $message = sprintf(
-                    _('%d Story attached to the WorkZone')
-                    , $done
-                );
+                $message = $app->trans('%quantity% Story attached to the WorkZone', ['%quantity%' => $done]);
             } else {
-                $message = sprintf(
-                    _('%d Stories attached to the WorkZone')
-                    , $done
-                );
+                $message = $app->trans('%quantity% Stories attached to the WorkZone', ['%quantity%' => $done]);
             }
         } else {
             if ($done <= 1) {
-                $message = sprintf(
-                    _('%1$d Story attached to the WorkZone, %2$d already attached')
-                    , $done
-                    , $alreadyFixed
-                );
+                $message = $app->trans('%quantity% Story attached to the WorkZone, %quantity_already% already attached', ['%quantity%' => $done, '%quantity_already%' => $alreadyFixed]);
             } else {
-                $message = sprintf(
-                    _('%1$d Stories attached to the WorkZone, %2$d already attached')
-                    , $done
-                    , $alreadyFixed
-                );
+                $message = $app->trans('%quantity% Stories attached to the WorkZone, %quantity_already% already attached', ['%quantity%' => $done, '%quantity_already%' => $alreadyFixed]);
             }
         }
 
         if ($request->getRequestFormat() == 'json') {
-            return $app->json(array(
+            return $app->json([
                 'success' => true
                 , 'message' => $message
-            ));
+            ]);
         }
 
         return $app->redirectPath('prod_workzone_show');
@@ -202,9 +184,8 @@ class WorkZone implements ControllerProviderInterface
     {
         $Story = new \record_adapter($app, $sbas_id, $record_id);
 
-        $repository = $app['EM']->getRepository('\Entities\StoryWZ');
+        $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\StoryWZ');
 
-        /* @var $repository \Repositories\StoryWZRepository */
         $StoryWZ = $repository->findUserStory($app, $app['authentication']->getUser(), $Story);
 
         if (!$StoryWZ) {
@@ -215,23 +196,12 @@ class WorkZone implements ControllerProviderInterface
         $app['EM']->flush();
 
         if ($request->getRequestFormat() == 'json') {
-            return $app->json(array(
+            return $app->json([
                 'success' => true
-                , 'message' => _('Story detached from the WorkZone')
-            ));
+                , 'message' => $app->trans('Story detached from the WorkZone')
+            ]);
         }
 
         return $app->redirectPath('prod_workzone_show');
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

@@ -10,16 +10,8 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Setup\Version\MailChecker;
 
-/**
- * UpgradeManager for Phraseanet.
- * Datas are written in a lock file.
- * If lock file exists, it contains YAML datas about the current process.
- *
- * @package     Setup
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Setup_Upgrade
 {
     /**
@@ -38,7 +30,7 @@ class Setup_Upgrade
      *
      * @var array
      */
-    protected $recommendations = array();
+    protected $recommendations = [];
 
     /**
      *
@@ -64,8 +56,9 @@ class Setup_Upgrade
 
         $this->appbox = $app['phraseanet.appbox'];
 
-        if (count(User_Adapter::get_wrong_email_users($app)) > 0) {
-            throw new Exception_Setup_FixBadEmailAddresses('Please fix the database before starting');
+        if (version_compare($this->appbox->get_version(), '3.9', '<')
+                && count(MailChecker::getWrongEmailUsers($app)) > 0) {
+            throw new \Exception_Setup_FixBadEmailAddresses('Please fix the database before starting');
         }
 
         $this->write_lock();
@@ -133,7 +126,7 @@ class Setup_Upgrade
      */
     public function addRecommendation($recommendation, $command = null)
     {
-        $this->recommendations[] = array($recommendation, $command);
+        $this->recommendations[] = [$recommendation, $command];
     }
 
     /**
@@ -169,13 +162,13 @@ class Setup_Upgrade
         $date_obj = new DateTime();
         $dumper = new Symfony\Component\Yaml\Dumper();
         $datas = $dumper->dump(
-            array(
+            [
             'percentage'      => $this->get_percentage()
             , 'total_steps'     => $this->total_steps
             , 'completed_steps' => $this->completed_steps
             , 'message'         => $this->message
             , 'last_update'     => $date_obj->format(DATE_ATOM)
-            ), 1
+            ], 1
         );
 
         if (!file_put_contents(self::get_lock_file(), $datas))
@@ -239,14 +232,14 @@ class Setup_Upgrade
     {
         $active = self::lock_exists();
 
-        $datas = array(
+        $datas = [
             'active'          => $active
             , 'percentage'      => 1
             , 'total_steps'     => 0
             , 'completed_steps' => 0
             , 'message'         => null
             , 'last_update'     => null
-        );
+        ];
 
         if ($active) {
             $parser = new Symfony\Component\Yaml\Parser();

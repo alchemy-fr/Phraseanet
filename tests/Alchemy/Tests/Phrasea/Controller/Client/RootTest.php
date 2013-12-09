@@ -61,18 +61,18 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testExecuteQuery()
     {
-        $queryParameters = array();
+        $queryParameters = [];
         $queryParameters["mod"] = self::$DI['user']->getPrefs('client_view') ? : '3X6';
-        $queryParameters["bas"] = array_keys(self::$DI['user']->ACL()->get_granted_base());
+        $queryParameters["bas"] = array_keys(self::$DI['app']['acl']->get(self::$DI['user'])->get_granted_base());
         $queryParameters["qry"] = self::$DI['user']->getPrefs('start_page_query') ? : 'all';
         $queryParameters["pag"] = 0;
         $queryParameters["search_type"] = SearchEngineOptions::RECORD_RECORD;
         $queryParameters["qryAdv"] = '';
-        $queryParameters["opAdv"] = array();
-        $queryParameters["status"] = array();
+        $queryParameters["opAdv"] = [];
+        $queryParameters["status"] = [];
         $queryParameters["recordtype"] = SearchEngineOptions::TYPE_ALL;
         $queryParameters["sort"] = self::$DI['app']['phraseanet.registry']->get('GV_phrasea_sort', '');
-        $queryParameters["infield"] = array();
+        $queryParameters["infield"] = [];
         $queryParameters["ord"] = SearchEngineOptions::SORT_MODE_DESC;
 
         self::$DI['client']->request("POST", "/client/query/", $queryParameters);

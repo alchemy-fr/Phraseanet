@@ -12,12 +12,6 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\RuntimeException;
 
-/**
- *
- * @package     subdefs
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class media_Permalink_Adapter implements media_Permalink_Interface, cache_cacheableInterface
 {
     /**
@@ -148,13 +142,14 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
     {
         $label = $this->get_label() . '.' . pathinfo($this->media_subdef->get_file(), PATHINFO_EXTENSION);
 
-        return $this->app->url('permalinks_permalink', array(
+        return $this->app->url('permalinks_permalink', [
             'sbas_id'   => $this->media_subdef->get_sbas_id(),
             'record_id' => $this->media_subdef->get_record_id(),
             'subdef'    => $this->media_subdef->get_name(),
+            /** @Ignore */
             'label'     => $label,
             'token'     => $this->get_token(),
-        ));
+        ]);
     }
 
     /**
@@ -163,12 +158,12 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
      */
     public function get_page()
     {
-        return $this->app->url('permalinks_permaview', array(
+        return $this->app->url('permalinks_permaview', [
             'sbas_id'   => $this->media_subdef->get_sbas_id(),
             'record_id' => $this->media_subdef->get_record_id(),
             'subdef'    => $this->media_subdef->get_name(),
             'token'     => $this->get_token(),
-        ));
+        ]);
     }
 
     /**
@@ -183,7 +178,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
         $sql = 'UPDATE permalinks SET token = :token, last_modified = NOW()
             WHERE id = :id';
         $stmt = $this->databox->get_connection()->prepare($sql);
-        $stmt->execute(array(':token' => $this->token, ':id'    => $this->get_id()));
+        $stmt->execute([':token' => $this->token, ':id'    => $this->get_id()]);
         $stmt->closeCursor();
 
         $this->delete_data_from_cache();
@@ -204,10 +199,10 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
             WHERE id = :id';
         $stmt = $this->databox->get_connection()->prepare($sql);
 
-        $params = array(
+        $params = [
             ':activated' => $this->is_activated,
             ':id'        => $this->get_id()
-        );
+        ];
 
         $stmt->execute($params);
         $stmt->closeCursor();
@@ -235,7 +230,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
         $sql = 'UPDATE permalinks SET label = :label, last_modified = NOW()
             WHERE id = :id';
         $stmt = $this->databox->get_connection()->prepare($sql);
-        $stmt->execute(array(':label' => $this->label, ':id'    => $this->get_id()));
+        $stmt->execute([':label' => $this->label, ':id'    => $this->get_id()]);
         $stmt->closeCursor();
 
         $this->delete_data_from_cache();
@@ -268,7 +263,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
             FROM permalinks p
             WHERE p.subdef_id = :subdef_id';
         $stmt = $this->databox->get_connection()->prepare($sql);
-        $stmt->execute(array(':subdef_id' => $this->media_subdef->get_subdef_id()));
+        $stmt->execute([':subdef_id' => $this->media_subdef->get_subdef_id()]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -282,14 +277,15 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
         $this->last_modified = new DateTime($row['last_modified']);
         $this->label = $row['label'];
 
-        $datas = array(
-            'id'            => $this->id
-            , 'token'         => $this->token
-            , 'is_activated'  => $this->is_activated
-            , 'created_on'    => $this->created_on
-            , 'last_modified' => $this->last_modified
-            , 'label'         => $this->label
-        );
+        $datas = [
+            'id'            => $this->id,
+            'token'         => $this->token,
+            'is_activated'  => $this->is_activated,
+            'created_on'    => $this->created_on,
+            'last_modified' => $this->last_modified,
+            /** @Ignore */
+            'label'         => $this->label,
+        ];
 
         $this->set_data_to_cache($datas);
 
@@ -327,11 +323,11 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
             (id, subdef_id, token, activated, created_on, last_modified, label)
             VALUES (null, :subdef_id, :token, :activated, NOW(), NOW(), "")';
 
-        $params = array(
+        $params = [
             ':subdef_id' => $media_subdef->get_subdef_id()
             , ':token'     => random::generatePassword(8, random::LETTERS_AND_NUMBERS)
             , ':activated' => '1'
-        );
+        ];
 
         $error = null;
         $stmt = $databox->get_connection()->prepare($sql);
@@ -371,11 +367,11 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
               AND activated = "1"
               AND token = :token';
 
-        $params = array(
+        $params = [
             ':record_id' => $record_id
             , ':token'     => $token
             , ':name'      => $name
-        );
+        ];
 
         $stmt = $databox->get_connection()->prepare($sql);
         $stmt->execute($params);

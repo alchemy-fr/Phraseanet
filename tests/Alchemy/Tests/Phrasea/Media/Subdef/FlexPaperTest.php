@@ -4,9 +4,12 @@ namespace Alchemy\Tests\Phrasea\Media\Subdef;
 
 use Alchemy\Phrasea\Media\Subdef\FlexPaper;
 use Alchemy\Phrasea\Media\Subdef\Subdef;
+use Alchemy\Tests\Tools\TranslatorMockTrait;
 
 class FlexPaperTest extends \PHPUnit_Framework_TestCase
 {
+    use TranslatorMockTrait;
+
     /**
      * @var FlexPaper
      */
@@ -14,7 +17,7 @@ class FlexPaperTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->object = new FlexPaper;
+        $this->object = new FlexPaper($this->createTranslatorMock());
     }
 
     /**

@@ -19,7 +19,7 @@ class Bridge_Api_AbstractTest extends PhraseanetWebTestCaseAbstract
     {
         parent::setUp();
         $this->auth = $this->getMock("Bridge_Api_Auth_Interface");
-        $this->bridgeApi = $this->getMock('Bridge_Api_Abstract', array("is_configured", "initialize_transport", "set_auth_params", "set_transport_authentication_params"), array(self::$DI['app']['url_generator'], self::$DI['app']['phraseanet.registry'], $this->auth, "Mock_Bridge_Api_Abstract"));
+        $this->bridgeApi = $this->getMock('Bridge_Api_Abstract', ["is_configured", "initialize_transport", "set_auth_params", "set_transport_authentication_params"], [self::$DI['app']['url_generator'], self::$DI['app']['phraseanet.registry'], $this->auth, self::$DI['app']['translator']]);
     }
 
     public static function setUpBeforeClass()
@@ -71,11 +71,11 @@ class Bridge_Api_AbstractTest extends PhraseanetWebTestCaseAbstract
             ->will($this->returnValue("token"));
         $this->auth->expects($this->once())
             ->method('connect')
-            ->will($this->returnValue(array("coucou")));
+            ->will($this->returnValue(["coucou"]));
 
         $return = $this->bridgeApi->connect();
 
-        $this->assertEquals(array("coucou"), $return);
+        $this->assertEquals(["coucou"], $return);
     }
 
     public function testConnectBad()
@@ -174,7 +174,7 @@ class Bridge_Api_AbstractTest extends PhraseanetWebTestCaseAbstract
         $this->assertTrue($this->bridgeApi->is_valid_object_id("abc"));
         $this->assertTrue($this->bridgeApi->is_valid_object_id(123));
         $this->assertTrue($this->bridgeApi->is_valid_object_id(12.25));
-        $this->assertFalse($this->bridgeApi->is_valid_object_id(array()));
+        $this->assertFalse($this->bridgeApi->is_valid_object_id([]));
         $this->assertFalse($this->bridgeApi->is_valid_object_id(true));
     }
 

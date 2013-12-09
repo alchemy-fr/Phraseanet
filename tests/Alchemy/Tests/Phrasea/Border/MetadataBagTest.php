@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of Phraseanet
- *
- * (c) 2005-2013 Alchemy
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Alchemy\Tests\Phrasea\Border;
 
 use Alchemy\Phrasea\Border\MetadataBag;
@@ -37,7 +28,7 @@ class MetadataBagTest extends \PhraseanetPHPUnitAbstract
         $structure = self::$DI['collection']->get_databox()->get_meta_structure();
 
         $valueMono = new Mono('mono value');
-        $valueMulti = new Multi(array('multi', 'value'));
+        $valueMulti = new Multi(['multi', 'value']);
 
         $monoAdded = $multiAdded = false;
 
@@ -59,22 +50,22 @@ class MetadataBagTest extends \PhraseanetPHPUnitAbstract
             $this->markTestSkipped('Unable to find multi value field');
         }
 
-        $this->assertEquals(array(
-            array(
+        $this->assertEquals([
+            [
                 'meta_struct_id' => $monoAdded,
                 'value'          => 'mono value',
                 'meta_id'        => null
-            ),
-            array(
+            ],
+            [
                 'meta_struct_id' => $multiAdded,
                 'value'          => 'multi',
                 'meta_id'        => null
-            ),
-            array(
+            ],
+            [
                 'meta_struct_id' => $multiAdded,
                 'value'          => 'value',
                 'meta_id'        => null
-            ),
-            ), $this->object->toMetadataArray($structure));
+            ],
+            ], $this->object->toMetadataArray($structure));
     }
 }

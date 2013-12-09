@@ -9,17 +9,6 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- *
- * @package     OAuth2 Connector
- *
- * @see         http://oauth.net/2/
- * @uses        http://code.google.com/p/oauth2-php/
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints;
@@ -147,15 +136,12 @@ class API_OAuth2_Form_DevAppInternet
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
-        $blank = array('message' => _('Cette valeur ne peut être vide'));
-        $url = array('message' => _('Url non valide'));
-
-        $metadata->addPropertyConstraint('name', new Constraints\NotBlank($blank));
-        $metadata->addPropertyConstraint('description', new Constraints\NotBlank($blank));
-        $metadata->addPropertyConstraint('urlwebsite', new Constraints\NotBlank($blank));
-        $metadata->addPropertyConstraint('urlwebsite', new Constraints\Url($url));
-        $metadata->addPropertyConstraint('urlcallback', new Constraints\NotBlank($blank));
-        $metadata->addPropertyConstraint('urlcallback', new Constraints\Url($url));
+        $metadata->addPropertyConstraint('name', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('description', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('urlwebsite', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('urlwebsite', new Constraints\Url());
+        $metadata->addPropertyConstraint('urlcallback', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('urlcallback', new Constraints\Url());
 
         return;
     }

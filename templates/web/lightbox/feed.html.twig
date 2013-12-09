@@ -24,11 +24,11 @@
                             <tr valign="middle">
                                 <td style="width:10px;"></td>
                                 <td style="width:35px;text-align:center;">
-                                    <div class="display_id">{% if first_item %}{{first_item.get_ord()}}{% endif %}</div>
+                                    <div class="display_id">{% if first_item %}{{first_item.getOrd()}}{% endif %}</div>
                                 </td>
                                 <td style="text-align:left;width:auto;">
-                                    <div class="title title15" title="{% if first_item %}{{first_item.get_record().get_title|e}}{% endif %}">
-                                        {% if first_item %}{{first_item.get_record().get_title|raw}}{% endif %}
+                                    <div class="title title15" title="{% if first_item %}{{first_item.getRecord(app).get_title|e}}{% endif %}">
+                                        {% if first_item %}{{first_item.getRecord(app).get_title|raw}}{% endif %}
                                     </div>
                                 </td>
                                 <td style="text-align:right;width:230px;">
@@ -42,10 +42,10 @@
                     </div>
                     <div class="lightbox_container PNB record_display_box">
                     {% if first_item %}
-                        {% if app['authentication'].getUser().ACL().has_access_to_subdef(first_item.get_record(), 'preview') %}
-                            {% set bask_prev = first_item.get_record().get_preview() %}
+                        {% if app['acl'].get(app['authentication'].getUser()).has_access_to_subdef(first_item.getRecord(app), 'preview') %}
+                            {% set bask_prev = first_item.getRecord(app).get_preview() %}
                         {% else %}
-                            {% set bask_prev = first_item.get_record().get_thumbnail() %}
+                            {% set bask_prev = first_item.getRecord(app).get_thumbnail() %}
                         {% endif %}
                         {{thumbnail.format(bask_prev,bask_prev.get_width(),bask_prev.get_height(),'', false, false)}}
                     {% endif %}
@@ -60,8 +60,8 @@
                                     <div class="display_id"></div>
                                 </td>
                                 <td style="text-align:left;width:auto;">
-                                    <div class="title title15" title="{% if first_item %}{{first_item.get_record().get_title|e}}{% endif %}">
-                                        {% if first_item %}{{first_item.get_record().get_title}}{% endif %}
+                                    <div class="title title15" title="{% if first_item %}{{first_item.getRecord(app).get_title|e}}{% endif %}">
+                                        {% if first_item %}{{first_item.getRecord(app).get_title}}{% endif %}
                                     </div>
                                 </td>
                                 <td style="text-align:right;width:230px;">
@@ -76,14 +76,14 @@
             </div>
             <div id="right_column" class="PNB">
                 <div class="right_column_title title15 unselectable">
-                    {% trans 'notice'%}
+                    {{ 'notice' | trans }}
                 </div>
                 <div class="right_column_wrapper caption right_column_wrapper_caption PNB">
                     <div id="record_infos" class="PNB">
                         <div class="lightbox_container PNB">
-              {% set business = app['authentication'].getUser().ACL().has_right_on_base(first_item.get_record().get_base_id(), 'canmodifrecord') %}
+              {% set business = app['acl'].get(app['authentication'].getUser()).has_right_on_base(first_item.getRecord(app).get_base_id(), 'canmodifrecord') %}
               {% if first_item %}
-                {{caption.format_caption(first_item.get_record(), '', null, business)}}
+                {{caption.format_caption(first_item.getRecord(app), '', null, business)}}
               {% endif %}
             </div>
                     </div>
@@ -97,7 +97,7 @@
                         <td style="width:20px;">
                         </td>
                         <td style="width:40px;">
-                            <button class="ui-corner-all basket_downloader" title="{% trans 'boutton::telecharger tous les documents' %}">
+                            <button class="ui-corner-all basket_downloader" title="{{ 'boutton::telecharger tous les documents' | trans }}">
                                 <img src="/skins/lightbox/save.png"/>
                             </button>
                         </td>
@@ -120,7 +120,7 @@
             </div>
         </div>
     </div>
-    <div id="dialog_dwnl" title="{% trans 'action : exporter' %}" style="display:none;"></div>
+    <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
 {% endblock %}
 
 

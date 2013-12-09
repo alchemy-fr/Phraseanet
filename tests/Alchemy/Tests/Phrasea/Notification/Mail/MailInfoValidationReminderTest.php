@@ -15,7 +15,7 @@ class MailInfoValidationReminderTest extends MailWithLinkTestCase
      */
     public function testSetTitle()
     {
-        $this->assertContainsString('Hulk Hogan', $this->getMail()->getSubject());
+        $this->assertEquals('Reminder : validate \'%title%\'', $this->getMail()->getSubject());
     }
 
     public function testShouldThrowALogicExceptionIfNoTitleProvided()

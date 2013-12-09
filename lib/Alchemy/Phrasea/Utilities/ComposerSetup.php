@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Alchemy\Phrasea\Utilities;
 
 use Alchemy\Phrasea\Exception\RuntimeException;
@@ -61,7 +70,7 @@ class ComposerSetup
             throw new RuntimeException('Unable to move to target directory for composer install.');
         }
 
-        $process = ProcessBuilder::create(array($this->phpExecutable, $installer))->getProcess();
+        $process = ProcessBuilder::create([$this->phpExecutable, $installer])->getProcess();
 
         try {
             $process->run();

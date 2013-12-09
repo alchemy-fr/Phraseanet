@@ -25,11 +25,11 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRouteDashboard()
     {
         $this->setAdmin(true);
-
-        self::$DI['client']->request('GET', '/admin/dashboard/', array(
+        self::$DI['app']['phraseanet.configuration-tester']->getRequirements();
+        self::$DI['client']->request('GET', '/admin/dashboard/', [
             'flush_cache' => 'ok',
             'email'       => 'sent'
-        ));
+        ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
@@ -56,9 +56,9 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailTest');
 
-        self::$DI['client']->request('POST', '/admin/dashboard/send-mail-test/', array(
+        self::$DI['client']->request('POST', '/admin/dashboard/send-mail-test/', [
             'email' => 'user-test@phraseanet.com'
-        ));
+        ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertRegexp('/email=/', self::$DI['client']->getResponse()->headers->get('location'));
@@ -71,9 +71,9 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        self::$DI['client']->request('POST', '/admin/dashboard/send-mail-test/', array(
+        self::$DI['client']->request('POST', '/admin/dashboard/send-mail-test/', [
             'email' => 'user-test-phraseanet.com'
-        ));
+        ]);
 
         $this->assertEquals(400, self::$DI['client']->getResponse()->getStatusCode());
     }
@@ -114,9 +114,9 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $admins[] = $user->get_id();
 
-        self::$DI['client']->request('POST', '/admin/dashboard/add-admins/', array(
+        self::$DI['client']->request('POST', '/admin/dashboard/add-admins/', [
             'admins' => $admins
-        ));
+        ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
 

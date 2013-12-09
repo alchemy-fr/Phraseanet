@@ -12,13 +12,9 @@
 namespace Alchemy\Phrasea\Helper\Record;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\Basket;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Helper extends \Alchemy\Phrasea\Helper\Helper
 {
     /**
@@ -61,13 +57,13 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
      *
      * @var Array
      */
-    protected $required_rights = array();
+    protected $required_rights = [];
 
     /**
      *
      * @var Array
      */
-    protected $required_sbas_rights = array();
+    protected $required_sbas_rights = [];
 
     /**
      *
@@ -94,8 +90,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
     protected $is_basket = false;
 
     /**
-     *
-     * @var \Entities\Basket
+     * @var Basket
      */
     protected $original_basket;
 
@@ -113,21 +108,19 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
         $this->selection = new \set_selection($app);
 
         if (trim($Request->get('ssel')) !== '') {
-            $repository = $app['EM']->getRepository('\Entities\Basket');
-
-            /* @var $$repository \Repositories\BasketRepository */
-            $Basket = $repository->findUserBasket($this->app, $Request->get('ssel'), $app['authentication']->getUser(), false);
+            $Basket = $app['converter.basket']->convert($Request->get('ssel'));
+            $app['acl.basket']->hasAccess($Basket, $app['authentication']->getUser());
 
             $this->selection->load_basket($Basket);
 
             $this->is_basket = true;
             $this->original_basket = $Basket;
         } elseif (trim($Request->get('story')) !== '') {
-            $repository = $app['EM']->getRepository('\Entities\StoryWZ');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\StoryWZ');
 
             $storyWZ = $repository->findByUserAndId($app, $app['authentication']->getUser(), $Request->get('story'));
 
-            $this->selection->load_list(array($storyWZ->getRecord($this->app)->get_serialize_key()), $this->flatten_groupings);
+            $this->selection->load_list([$storyWZ->getRecord($this->app)->get_serialize_key()], $this->flatten_groupings);
         } else {
             $this->selection->load_list(explode(";", $Request->get('lst')), $this->flatten_groupings);
         }
@@ -154,7 +147,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
     /**
      * If the original selection was a basket, returns the basket object
      *
-     * @return \Entities\Basket
+     * @return Basket
      */
     public function get_original_basket()
     {

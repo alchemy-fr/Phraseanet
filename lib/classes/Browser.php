@@ -712,13 +712,13 @@ class Browser
             if (stripos($this->_agent, 'msnb') !== false) {
                 $aresult = explode(' ', stristr(str_replace(';', '; ', $this->_agent), 'MSN'));
                 $this->setBrowser(self::BROWSER_MSN);
-                $this->setVersion(str_replace(array('(', ')', ';'), '', $aresult[1]));
+                $this->setVersion(str_replace(['(', ')', ';'], '', $aresult[1]));
 
                 return true;
             }
             $aresult = explode(' ', stristr(str_replace(';', '; ', $this->_agent), 'msie'));
             $this->setBrowser(self::BROWSER_IE);
-            $this->setVersion(str_replace(array('(', ')', ';'), '', $aresult[1]));
+            $this->setVersion(str_replace(['(', ')', ';'], '', $aresult[1]));
 
             return true;
         }
@@ -746,7 +746,7 @@ class Browser
             $this->setVersion(preg_replace("/[^0-9.]+/", "", $result[1]));
 
             // remove Gecko out of the user-agent, otherwise the mozilla check will success
-            $this->_agent = str_replace(array("Mozilla", "Gecko"), "MSIE", $this->_agent);
+            $this->_agent = str_replace(["Mozilla", "Gecko"], "MSIE", $this->_agent);
         }
 
         return false;
@@ -840,7 +840,7 @@ class Browser
         if (stripos($this->_agent, 'NetPositive') !== false) {
             $aresult = explode('/', stristr($this->_agent, 'NetPositive'));
             $aversion = explode(' ', $aresult[1]);
-            $this->setVersion(str_replace(array('(', ')', ';'), '', $aversion[0]));
+            $this->setVersion(str_replace(['(', ')', ';'], '', $aversion[0]));
             $this->setBrowser(self::BROWSER_NETPOSITIVE);
 
             return true;
@@ -1299,7 +1299,7 @@ class Browser
     {
         $this->_is_new_generation = false;
 
-        if (in_array($this->_browser_name, array('Opera', 'Internet Explorer', 'Firefox', 'Iceweasel', 'Safari', 'Chrome', 'iPhone', 'iPod'))) {
+        if (in_array($this->_browser_name, ['Opera', 'Internet Explorer', 'Firefox', 'Iceweasel', 'Safari', 'Chrome', 'iPhone', 'iPod'])) {
             switch ($this->_browser_name) {
                 case 'Opera':
                     if ($this->_version >= 10)
@@ -1337,7 +1337,7 @@ class Browser
      */
     protected function checkHTML5()
     {
-        if (in_array($this->_browser_name, array('Opera', 'Internet Explorer', 'Firefox', 'Iceweasel', 'Safari', 'Chrome', 'iPhone', 'iPod'))) {
+        if (in_array($this->_browser_name, ['Opera', 'Internet Explorer', 'Firefox', 'Iceweasel', 'Safari', 'Chrome', 'iPhone', 'iPod'])) {
             switch ($this->_browser_name) {
                 case 'Opera':
                     if ($this->_version >= 10)

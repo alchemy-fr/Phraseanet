@@ -13,9 +13,9 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRouteSetLocale()
     {
         $cookieJar = new CookieJar();
-        $cookieJar->set(new BrowserCookie('locale', 'de_DE'));
+        $cookieJar->set(new BrowserCookie('locale', 'de'));
 
-        $client = new Client(self::$DI['app'], array(), null, $cookieJar);
+        $client = new Client(self::$DI['app'], [], null, $cookieJar);
         $crawler = $client->request('GET', '/language/fr_CA/');
 
         $response = $client->getResponse();
@@ -50,7 +50,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $crawler = self::$DI['client']->request('GET', '/available-languages');
         $response = self::$DI['client']->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals((array) json_decode($response->getContent()), self::$DI['app']['locales.I18n.available']);
+        $this->assertEquals((array) json_decode($response->getContent()), self::$DI['app']['locales.available']);
     }
 
     public function testRouteRobots()
@@ -123,7 +123,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $app['browser'] = $browser;
 
-        $session = new \Entities\Session();
+        $session = new \Alchemy\Phrasea\Model\Entities\Session();
         $session->setUser(self::$DI['user'])
             ->setBrowserName($browser->getBrowser())
             ->setBrowserVersion($browser->getVersion())
@@ -145,7 +145,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $cookieJar = new CookieJar();
         $cookieJar->set(new BrowserCookie('persistent', $token));
 
-        $client = new Client($app, array(), null, $cookieJar);
+        $client = new Client($app, [], null, $cookieJar);
         $client->request('GET', '/unit-test-route');
 
         $this->assertTrue($boolean);

@@ -16,7 +16,7 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
 class ProvidersCollection implements \Countable, \IteratorAggregate
 {
-    private $providers = array();
+    private $providers = [];
 
     public function getIterator()
     {

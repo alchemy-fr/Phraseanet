@@ -13,7 +13,7 @@ use Alchemy\Phrasea\Application;
 
 class module_report_download extends module_report
 {
-    protected $cor_query = array(
+    protected $cor_query = [
         'user'      => 'log.user',
         'site'      => 'log.site',
         'societe'   => 'log.societe',
@@ -31,7 +31,7 @@ class module_report_download extends module_report
         'size'      => 'subdef.size',
         'mime'      => 'subdef.mime',
         'file'      => 'subdef.file'
-    );
+    ];
 
     /**
      * constructor
@@ -45,7 +45,7 @@ class module_report_download extends module_report
     public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
         parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
-        $this->title = _('report:: telechargements');
+        $this->title = $this->app->trans('report:: telechargements');
     }
 
     /**
@@ -65,7 +65,7 @@ class module_report_download extends module_report
 
     public function colFilter($field, $on = false)
     {
-        $ret = array();
+        $ret = [];
         $sqlBuilder = $this->sqlBuilder('download');
         $var = $sqlBuilder->sqlDistinctValByField($field);
         $sql = $var['sql'];
@@ -86,7 +86,7 @@ class module_report_download extends module_report
                 $caption = p4string::format_octets($value);
             else
                 $caption = $value;
-            $ret[] = array('val'   => $caption, 'value' => $value);
+            $ret[] = ['val'   => $caption, 'value' => $value];
         }
 
         return $ret;
@@ -153,7 +153,7 @@ class module_report_download extends module_report
 
     private function formatEmptyValue()
     {
-        return '<i>' . _('report:: non-renseigne') . '</i>';
+        return '<i>' . $this->app->trans('report:: non-renseigne') . '</i>';
     }
 
     private function formatDateValue($value)
@@ -174,7 +174,7 @@ class module_report_download extends module_report
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
 
-        $params = array(':site_id'  => $app['phraseanet.configuration']['main']['key']);
+        $params = [':site_id'  => $app['conf']->get(['main', 'key'])];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
@@ -210,16 +210,16 @@ class module_report_download extends module_report
         $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
         $conn = $databox->get_connection();
 
-        $params = array(':site_id'  => $app['phraseanet.configuration']['main']['key']);
+        $params = [':site_id'  => $app['conf']->get(['main', 'key'])];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $finalfilter = "";
-        $array = array(
-            'preview' => array(),
-            'document' => array()
-        );
+        $array = [
+            'preview' => [],
+            'document' => []
+        ];
 
         $finalfilter .= $datefilter['sql'] . ' AND ';
         $finalfilter .= $collfilter['sql'] . ' AND ';

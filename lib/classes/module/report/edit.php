@@ -13,7 +13,7 @@ use Alchemy\Phrasea\Application;
 
 class module_report_edit extends module_report
 {
-    protected $cor_query = array(
+    protected $cor_query = [
         'user'      => 'log.user',
         'site'      => 'log.site',
         'societe'   => 'log.societe',
@@ -29,7 +29,7 @@ class module_report_edit extends module_report
         'final'     => 'd.final',
         'comment'   => 'd.comment',
         'size'      => 's.size'
-    );
+    ];
 
     /**
      * constructor
@@ -43,7 +43,7 @@ class module_report_edit extends module_report
     public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
         parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
-        $this->title = _('report:: edited documents');
+        $this->title = $app->trans('report:: edited documents');
     }
 
     /**
@@ -72,7 +72,7 @@ class module_report_edit extends module_report
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $ret = array();
+        $ret = [];
         foreach ($rs as $row) {
             $value = $row['val'];
             $caption = $value;
@@ -89,7 +89,7 @@ class module_report_edit extends module_report
                 $caption = p4string::format_octets($value);
             }
 
-            $ret[] = array('val'   => $caption, 'value' => $value);
+            $ret[] = ['val'   => $caption, 'value' => $value];
         }
 
         return $ret;
@@ -114,7 +114,7 @@ class module_report_edit extends module_report
                     if ($value == 'comment') {
                         $this->result[$i][$value] = '&nbsp;';
                     } else {
-                        $this->result[$i][$value] = '<i>' . _('report:: non-renseigne') . '</i>';
+                        $this->result[$i][$value] = '<i>' . $app->trans('report:: non-renseigne') . '</i>';
                     }
                 }
             }

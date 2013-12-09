@@ -11,9 +11,9 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Entities\UsrList;
-use Entities\UsrListEntry;
-use Entities\UsrListOwner;
+use Alchemy\Phrasea\Model\Entities\UsrList;
+use Alchemy\Phrasea\Model\Entities\UsrListEntry;
+use Alchemy\Phrasea\Model\Entities\UsrListOwner;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
@@ -21,78 +21,50 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class UsrLists implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.prod.usr-lists'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAuthentication();
         });
 
-        /**
-         * Get all lists
-         */
-        $controllers->get('/all/', $this->call('getAll'))->bind('prod_lists_all');
+        $controllers->get('/all/', 'controller.prod.usr-lists:getAll')
+            ->bind('prod_lists_all');
 
-        /**
-         * Creates a list
-         */
-        $controllers->post('/list/', $this->call('createList'))->bind('prod_lists_list');
+        $controllers->post('/list/', 'controller.prod.usr-lists:createList')
+            ->bind('prod_lists_list');
 
-        /**
-         * Gets a list
-         */
-        $controllers->get('/list/{list_id}/', $this->call('displayList'))
+        $controllers->get('/list/{list_id}/', 'controller.prod.usr-lists:displayList')
             ->assert('list_id', '\d+');
 
-        /**
-         * Update a list
-         */
-        $controllers->post('/list/{list_id}/update/', $this->call('updateList'))
+        $controllers->post('/list/{list_id}/update/', 'controller.prod.usr-lists:updateList')
             ->bind('prod_lists_list_update')
             ->assert('list_id', '\d+');
 
-        /**
-         * Delete a list
-         */
-        $controllers->post('/list/{list_id}/delete/', $this->call('removeList'))
+        $controllers->post('/list/{list_id}/delete/', 'controller.prod.usr-lists:removeList')
             ->assert('list_id', '\d+');
 
-        /**
-         * Remove a usr_id from a list
-         */
-        $controllers->post('/list/{list_id}/remove/{usr_id}/', $this->call('removeUser'))
+        $controllers->post('/list/{list_id}/remove/{usr_id}/', 'controller.prod.usr-lists:removeUser')
             ->assert('list_id', '\d+')
             ->assert('usr_id', '\d+');
 
-        /**
-         * Adds a usr_id to a list
-         */
-        $controllers->post('/list/{list_id}/add/', $this->call('addUsers'))
+        $controllers->post('/list/{list_id}/add/', 'controller.prod.usr-lists:addUsers')
             ->assert('list_id', '\d+');
 
-        $controllers->get('/list/{list_id}/share/', $this->call('displayShares'))
+        $controllers->get('/list/{list_id}/share/', 'controller.prod.usr-lists:displayShares')
             ->assert('list_id', '\d+')
             ->bind('prod_lists_list_share');
 
-        /**
-         * Share a list to a user with an optionnal role
-         */
-        $controllers->post('/list/{list_id}/share/{usr_id}/', $this->call('shareWithUser'))
+        $controllers->post('/list/{list_id}/share/{usr_id}/', 'controller.prod.usr-lists:shareWithUser')
             ->assert('list_id', '\d+')
             ->assert('usr_id', '\d+');
-        /**
-         * UnShare a list to a user
-         */
-        $controllers->post('/list/{list_id}/unshare/{usr_id}/', $this->call('unshareWithUser'))
+
+        $controllers->post('/list/{list_id}/unshare/{usr_id}/', 'controller.prod.usr-lists:unshareWithUser')
             ->assert('list_id', '\d+')
             ->assert('usr_id', '\d+');
 
@@ -101,26 +73,26 @@ class UsrLists implements ControllerProviderInterface
 
     public function getAll(Application $app, Request $request)
     {
-        $datas = array(
+        $datas = [
             'success' => false
             , 'message' => ''
             , 'result'  => null
-        );
+        ];
 
         $lists = new ArrayCollection();
 
         try {
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $lists = $repository->findUserLists($app['authentication']->getUser());
 
-            $result = array();
+            $result = [];
 
             foreach ($lists as $list) {
-                $owners = $entries = array();
+                $owners = $entries = [];
 
                 foreach ($list->getOwners() as $owner) {
-                    $owners[] = array(
+                    $owners[] = [
                         'usr_id'       => $owner->getUser($app)->get_id(),
                         'display_name' => $owner->getUser($app)->get_display_name(),
                         'position'     => $owner->getUser($app)->get_position(),
@@ -128,40 +100,40 @@ class UsrLists implements ControllerProviderInterface
                         'company'      => $owner->getUser($app)->get_company(),
                         'email'        => $owner->getUser($app)->get_email(),
                         'role'         => $owner->getRole()
-                    );
+                    ];
                 }
 
                 foreach ($list->getEntries() as $entry) {
-                    $entries[] = array(
+                    $entries[] = [
                         'usr_id'       => $owner->getUser($app)->get_id(),
                         'display_name' => $owner->getUser($app)->get_display_name(),
                         'position'     => $owner->getUser($app)->get_position(),
                         'job'          => $owner->getUser($app)->get_job(),
                         'company'      => $owner->getUser($app)->get_company(),
                         'email'        => $owner->getUser($app)->get_email(),
-                    );
+                    ];
                 }
 
-                /* @var $list \Entities\UsrList */
-                $result[] = array(
+                /* @var $list UsrList */
+                $result[] = [
                     'name'    => $list->getName(),
                     'created' => $list->getCreated()->format(DATE_ATOM),
                     'updated' => $list->getUpdated()->format(DATE_ATOM),
                     'owners'  => $owners,
                     'users'   => $entries
-                );
+                ];
             }
 
-            $datas = array(
+            $datas = [
                 'success' => true
                 , 'message' => ''
                 , 'result'  => $result
-            );
+            ];
         } catch (ControllerException $e) {
-            $datas = array(
+            $datas = [
                 'success' => false
                 , 'message' => $e->getMessage()
-            );
+            ];
         } catch (\Exception $e) {
 
         }
@@ -170,7 +142,7 @@ class UsrLists implements ControllerProviderInterface
             return $app->json($datas);
         }
 
-        return $app['twig']->render('prod/actions/Feedback/lists-all.html.twig', array('lists' => $lists));
+        return $app['twig']->render('prod/actions/Feedback/lists-all.html.twig', ['lists' => $lists]);
     }
 
     public function createList(Application $app)
@@ -179,15 +151,15 @@ class UsrLists implements ControllerProviderInterface
 
         $list_name = $request->request->get('name');
 
-        $datas = array(
+        $datas = [
             'success' => false
-            , 'message' => sprintf(_('Unable to create list %s'), $list_name)
+            , 'message' => $app->trans('Unable to create list %name%', ['%name%' => $list_name])
             , 'list_id' => null
-        );
+        ];
 
         try {
             if (!$list_name) {
-                throw new ControllerException(_('List name is required'));
+                throw new ControllerException($app->trans('List name is required'));
             }
 
             $List = new UsrList();
@@ -204,16 +176,16 @@ class UsrLists implements ControllerProviderInterface
             $app['EM']->persist($List);
             $app['EM']->flush();
 
-            $datas = array(
+            $datas = [
                 'success' => true
-                , 'message' => sprintf(_('List %s has been created'), $list_name)
+                , 'message' => $app->trans('List %name% has been created', ['%name%' => $list_name])
                 , 'list_id' => $List->getId()
-            );
+            ];
         } catch (ControllerException $e) {
-            $datas = array(
+            $datas = [
                 'success' => false
                 , 'message' => $e->getMessage()
-            );
+            ];
         } catch (\Exception $e) {
 
         }
@@ -223,7 +195,7 @@ class UsrLists implements ControllerProviderInterface
 
     public function displayList(Application $app, Request $request, $list_id)
     {
-        $repository = $app['EM']->getRepository('\Entities\UsrList');
+        $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
         $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
 
@@ -231,7 +203,7 @@ class UsrLists implements ControllerProviderInterface
         $owners = new ArrayCollection();
 
         foreach ($list->getOwners() as $owner) {
-            $owners[] = array(
+            $owners[] = [
                 'usr_id'       => $owner->getUser($app)->get_id(),
                 'display_name' => $owner->getUser($app)->get_display_name(),
                 'position'     => $owner->getUser($app)->get_position(),
@@ -239,69 +211,69 @@ class UsrLists implements ControllerProviderInterface
                 'company'      => $owner->getUser($app)->get_company(),
                 'email'        => $owner->getUser($app)->get_email(),
                 'role'         => $owner->getRole($app)
-            );
+            ];
         }
 
         foreach ($list->getEntries() as $entry) {
-            $entries[] = array(
+            $entries[] = [
                 'usr_id'       => $entry->getUser($app)->get_id(),
                 'display_name' => $entry->getUser($app)->get_display_name(),
                 'position'     => $entry->getUser($app)->get_position(),
                 'job'          => $entry->getUser($app)->get_job(),
                 'company'      => $entry->getUser($app)->get_company(),
                 'email'        => $entry->getUser($app)->get_email(),
-            );
+            ];
         }
 
-        return $app->json(array(
-            'result' => array(
+        return $app->json([
+            'result' => [
                 'id'      => $list->getId(),
                 'name'    => $list->getName(),
                 'created' => $list->getCreated()->format(DATE_ATOM),
                 'updated' => $list->getUpdated()->format(DATE_ATOM),
                 'owners'  => $owners,
                 'users'   => $entries
-            )
-        ));
+            ]
+        ]);
     }
 
     public function updateList(Application $app, $list_id)
     {
         $request = $app['request'];
 
-        $datas = array(
+        $datas = [
             'success' => false
-            , 'message' => _('Unable to update list')
-        );
+            , 'message' => $app->trans('Unable to update list')
+        ];
 
         try {
             $list_name = $request->request->get('name');
 
             if (!$list_name) {
-                throw new ControllerException(_('List name is required'));
+                throw new ControllerException($app->trans('List name is required'));
             }
 
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
 
             if ($list->getOwner($app['authentication']->getUser(), $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
-                throw new ControllerException(_('You are not authorized to do this'));
+                throw new ControllerException($app->trans('You are not authorized to do this'));
             }
 
             $list->setName($list_name);
 
             $app['EM']->flush();
 
-            $datas = array(
+            $datas = [
                 'success' => true
-                , 'message' => _('List has been updated')
-            );
+                , 'message' => $app->trans('List has been updated')
+            ];
         } catch (ControllerException $e) {
-            $datas = array(
+            $datas = [
                 'success' => false
                 , 'message' => $e->getMessage()
-            );
+            ];
         } catch (\Exception $e) {
 
         }
@@ -312,32 +284,32 @@ class UsrLists implements ControllerProviderInterface
     public function removeList(Application $app, $list_id)
     {
         try {
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
 
             if ($list->getOwner($app['authentication']->getUser(), $app)->getRole() < UsrListOwner::ROLE_ADMIN) {
-                throw new ControllerException(_('You are not authorized to do this'));
+                throw new ControllerException($app->trans('You are not authorized to do this'));
             }
 
             $app['EM']->remove($list);
             $app['EM']->flush();
 
-            $datas = array(
+            $datas = [
                 'success' => true
-                , 'message' => sprintf(_('List has been deleted'))
-            );
+                , 'message' => $app->trans('List has been deleted')
+            ];
         } catch (ControllerException $e) {
-            $datas = array(
+            $datas = [
                 'success' => false
                 , 'message' => $e->getMessage()
-            );
+            ];
         } catch (\Exception $e) {
 
-            $datas = array(
+            $datas = [
                 'success' => false
-                , 'message' => sprintf(_('Unable to delete list'))
-            );
+                , 'message' => $app->trans('Unable to delete list')
+            ];
         }
 
         return $app->json($datas);
@@ -346,37 +318,36 @@ class UsrLists implements ControllerProviderInterface
     public function removeUser(Application $app, $list_id, $usr_id)
     {
         try {
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
-            /* @var $list \Entities\UsrList */
+            /* @var $list UsrList */
 
             if ($list->getOwner($app['authentication']->getUser(), $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
-                throw new ControllerException(_('You are not authorized to do this'));
+                throw new ControllerException($app->trans('You are not authorized to do this'));
             }
 
-            $entry_repository = $app['EM']->getRepository('\Entities\UsrListEntry');
+            $entry_repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrListEntry');
 
             $user_entry = $entry_repository->findEntryByListAndUsrId($list, $usr_id);
 
             $app['EM']->remove($user_entry);
             $app['EM']->flush();
 
-            $datas = array(
+            $datas = [
                 'success' => true
-                , 'message' => _('Entry removed from list')
-            );
+                , 'message' => $app->trans('Entry removed from list')
+            ];
         } catch (ControllerException $e) {
-            $datas = array(
+            $datas = [
                 'success' => false
                 , 'message' => $e->getMessage()
-            );
+            ];
         } catch (\Exception $e) {
-
-            $datas = array(
-                'success' => false
-                , 'message' => _('Unable to remove entry from list ' . $e->getMessage())
-            );
+            $datas = [
+                'success' => false,
+                'message' => $app->trans('Unable to remove entry from list'),
+            ];
         }
 
         return $app->json($datas);
@@ -389,16 +360,16 @@ class UsrLists implements ControllerProviderInterface
                 throw new ControllerException('Invalid or missing parameter usr_ids');
             }
 
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
-            /* @var $list \Entities\UsrList */
+            /* @var $list UsrList */
 
             if ($list->getOwner($app['authentication']->getUser(), $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
-                throw new ControllerException(_('You are not authorized to do this'));
+                throw new ControllerException($app->trans('You are not authorized to do this'));
             }
 
-            $inserted_usr_ids = array();
+            $inserted_usr_ids = [];
 
             foreach ($request->request->get('usr_ids') as $usr_id) {
                 $user_entry = \User_Adapter::getInstance($usr_id, $app);
@@ -420,29 +391,29 @@ class UsrLists implements ControllerProviderInterface
             $app['EM']->flush();
 
             if (count($inserted_usr_ids) > 1) {
-                $datas = array(
+                $datas = [
                     'success' => true
-                    , 'message' => sprintf(_('%d Users added to list'), count($inserted_usr_ids))
+                    , 'message' => $app->trans('%quantity% Users added to list', ['%quantity%' => count($inserted_usr_ids)])
                     , 'result'  => $inserted_usr_ids
-                );
+                ];
             } else {
-                $datas = array(
+                $datas = [
                     'success' => true
-                    , 'message' => sprintf(_('%d User added to list'), count($inserted_usr_ids))
+                    , 'message' => $app->trans('%quantity% User added to list', ['%quantity%' => count($inserted_usr_ids)])
                     , 'result'  => $inserted_usr_ids
-                );
+                ];
             }
         } catch (ControllerException $e) {
-            $datas = array(
+            $datas = [
                 'success' => false
                 , 'message' => $e->getMessage()
-            );
+            ];
         } catch (\Exception $e) {
 
-            $datas = array(
+            $datas = [
                 'success' => false
-                , 'message' => _('Unable to add usr to list')
-            );
+                , 'message' => $app->trans('Unable to add usr to list')
+            ];
         }
 
         return $app->json($datas);
@@ -453,29 +424,29 @@ class UsrLists implements ControllerProviderInterface
         $list = null;
 
         try {
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
-            /* @var $list \Entities\UsrList */
+            /* @var $list UsrList */
 
             if ($list->getOwner($app['authentication']->getUser(), $app)->getRole() < UsrListOwner::ROLE_ADMIN) {
                 $list = null;
-                throw new \Exception(_('You are not authorized to do this'));
+                throw new \Exception($app->trans('You are not authorized to do this'));
             }
         } catch (\Exception $e) {
 
         }
 
-        return $app['twig']->render('prod/actions/Feedback/List-Share.html.twig', array('list' => $list));
+        return $app['twig']->render('prod/actions/Feedback/List-Share.html.twig', ['list' => $list]);
     }
 
     public function shareWithUser(Application $app, $list_id, $usr_id)
     {
-        $availableRoles = array(
+        $availableRoles = [
             UsrListOwner::ROLE_USER,
             UsrListOwner::ROLE_EDITOR,
             UsrListOwner::ROLE_ADMIN,
-        );
+        ];
 
         if (!$app['request']->request->get('role'))
             throw new BadRequestHttpException('Missing role parameter');
@@ -483,13 +454,13 @@ class UsrLists implements ControllerProviderInterface
             throw new BadRequestHttpException('Role is invalid');
 
         try {
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
-            /* @var $list \Entities\UsrList */
+            /* @var $list UsrList */
 
             if ($list->getOwner($app['authentication']->getUser(), $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
-                throw new ControllerException(_('You are not authorized to do this'));
+                throw new ControllerException($app->trans('You are not authorized to do this'));
             }
 
             $new_owner = \User_Adapter::getInstance($usr_id, $app);
@@ -516,21 +487,21 @@ class UsrLists implements ControllerProviderInterface
 
             $app['EM']->flush();
 
-            $datas = array(
+            $datas = [
                 'success' => true
-                , 'message' => _('List shared to user')
-            );
+                , 'message' => $app->trans('List shared to user')
+            ];
         } catch (ControllerException $e) {
-            $datas = array(
+            $datas = [
                 'success' => false
                 , 'message' => $e->getMessage()
-            );
+            ];
         } catch (\Exception $e) {
 
-            $datas = array(
+            $datas = [
                 'success' => false
-                , 'message' => _('Unable to share the list with the usr')
-            );
+                , 'message' => $app->trans('Unable to share the list with the usr')
+            ];
         }
 
         return $app->json($datas);
@@ -539,49 +510,38 @@ class UsrLists implements ControllerProviderInterface
     public function unshareWithUser(Application $app, $list_id, $usr_id)
     {
         try {
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
-            /* @var $list \Entities\UsrList */
+            /* @var $list UsrList */
 
             if ($list->getOwner($app['authentication']->getUser(), $app)->getRole() < UsrListOwner::ROLE_ADMIN) {
-                throw new \Exception(_('You are not authorized to do this'));
+                throw new \Exception($app->trans('You are not authorized to do this'));
             }
 
-            $owners_repository = $app['EM']->getRepository('\Entities\UsrListOwner');
+            $owners_repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrListOwner');
 
             $owner = $owners_repository->findByListAndUsrId($list, $usr_id);
 
             $app['EM']->remove($owner);
             $app['EM']->flush();
 
-            $datas = array(
+            $datas = [
                 'success' => true
-                , 'message' => _('Owner removed from list')
-            );
+                , 'message' => $app->trans('Owner removed from list')
+            ];
         } catch (ControllerException $e) {
-            $datas = array(
+            $datas = [
                 'success' => false
                 , 'message' => $e->getMessage()
-            );
+            ];
         } catch (\Exception $e) {
-            $datas = array(
+            $datas = [
                 'success' => false
-                , 'message' => _('Unable to remove usr from list')
-            );
+                , 'message' => $app->trans('Unable to remove usr from list')
+            ];
         }
 
         return $app->json($datas);
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

@@ -6,7 +6,7 @@ class databox_descriptionStructureTest extends PhraseanetPHPUnitAbstract
     {
         $structure = new \databox_descriptionStructure();
 
-        $array = array('name1' => 'value1', 'name2' => 'value2');
+        $array = ['name1' => 'value1', 'name2' => 'value2'];
 
         $element = $this->provideDataboxFieldMock();
         $element->expects($this->once())
@@ -15,7 +15,7 @@ class databox_descriptionStructureTest extends PhraseanetPHPUnitAbstract
 
         $structure->add_element($element);
 
-        $this->assertEquals(array($array), $structure->toArray());
+        $this->assertEquals([$array], $structure->toArray());
     }
 
     private function provideDataboxFieldMock()

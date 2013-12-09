@@ -11,53 +11,53 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class patch_320alpha1a implements patchInterface
 {
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     private $release = '3.2.0-alpha.1';
 
-    /**
-     *
-     * @var Array
-     */
-    private $concern = array(base::DATA_BOX);
+    /** @var Array */
+    private $concern = [base::DATA_BOX];
 
     /**
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function get_release()
     {
         return $this->release;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function require_all_upgrades()
     {
         return false;
     }
 
     /**
-     *
-     * @return Array
+     * {@inheritdoc}
      */
     public function concern()
     {
         return $this->concern;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $databox, Application $app)
     {
         $sql = 'UPDATE record SET parent_record_id = "1"
-                            WHERE parent_record_id != "0"';
+                WHERE parent_record_id != "0"';
         $stmt = $databox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();

@@ -11,66 +11,65 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Symfony\Component\HttpFoundation\Request;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 
-/**
- * @todo        Check if a user has access to record before sending the response
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Tooltip implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.prod.tooltip'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAuthentication();
         });
 
-        $controllers->post('/basket/{basket_id}/', $this->call('displayBasket'))
-            ->assert('basket_id', '\d+')
+        $controllers->post('/basket/{basket}/', 'controller.prod.tooltip:displayBasket')
+            ->assert('basket', '\d+')
+            ->before($app['middleware.basket.converter'])
+            ->before($app['middleware.basket.user-access'])
             ->bind('prod_tooltip_basket');
 
-        $controllers->post('/Story/{sbas_id}/{record_id}/', $this->call('displayStory'))
+        $controllers->post('/Story/{sbas_id}/{record_id}/', 'controller.prod.tooltip:displayStory')
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+')
             ->bind('prod_tooltip_story');
 
-        $controllers->post('/user/{usr_id}/', $this->call('displayUserBadge'))
+        $controllers->post('/user/{usr_id}/', 'controller.prod.tooltip:displayUserBadge')
             ->assert('usr_id', '\d+')
             ->bind('prod_tooltip_user');
 
-        $controllers->post('/preview/{sbas_id}/{record_id}/', $this->call('displayPreview'))
+        $controllers->post('/preview/{sbas_id}/{record_id}/', 'controller.prod.tooltip:displayPreview')
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+')
             ->bind('prod_tooltip_preview');
 
-        $controllers->post('/caption/{sbas_id}/{record_id}/{context}/', $this->call('displayCaption'))
+        $controllers->post('/caption/{sbas_id}/{record_id}/{context}/', 'controller.prod.tooltip:displayCaption')
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+')
             ->bind('prod_tooltip_caption');
 
-        $controllers->post('/tc_datas/{sbas_id}/{record_id}/', $this->call('displayTechnicalDatas'))
+        $controllers->post('/tc_datas/{sbas_id}/{record_id}/', 'controller.prod.tooltip:displayTechnicalDatas')
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+')
             ->bind('prod_tooltip_technical_data');
 
-        $controllers->post('/metas/FieldInfos/{sbas_id}/{field_id}/', $this->call('displayFieldInfos'))
+        $controllers->post('/metas/FieldInfos/{sbas_id}/{field_id}/', 'controller.prod.tooltip:displayFieldInfos')
             ->assert('sbas_id', '\d+')
             ->assert('field_id', '\d+')
             ->bind('prod_tooltip_metadata');
 
-        $controllers->post('/DCESInfos/{sbas_id}/{field_id}/', $this->call('displayDCESInfos'))
+        $controllers->post('/DCESInfos/{sbas_id}/{field_id}/', 'controller.prod.tooltip:displayDCESInfos')
             ->assert('sbas_id', '\d+')
             ->assert('field_id', '\d+')
             ->bind('prod_tooltip_dces');
 
-        $controllers->post('/metas/restrictionsInfos/{sbas_id}/{field_id}/', $this->call('displayMetaRestrictions'))
+        $controllers->post('/metas/restrictionsInfos/{sbas_id}/{field_id}/', 'controller.prod.tooltip:displayMetaRestrictions')
             ->assert('sbas_id', '\d+')
             ->assert('field_id', '\d+')
             ->bind('prod_tooltip_metadata_restrictions');
@@ -78,19 +77,16 @@ class Tooltip implements ControllerProviderInterface
         return $controllers;
     }
 
-    public function displayBasket(Application $app, $basket_id)
+    public function displayBasket(Application $app, Basket $basket)
     {
-        $basket = $app['EM']->getRepository('\Entities\Basket')
-            ->findUserBasket($app, $basket_id, $app['authentication']->getUser(), false);
-
-        return $app['twig']->render('prod/Tooltip/Basket.html.twig', array('basket' => $basket));
+        return $app['twig']->render('prod/Tooltip/Basket.html.twig', ['basket' => $basket]);
     }
 
     public function displayStory(Application $app, $sbas_id, $record_id)
     {
         $Story = new \record_adapter($app, $sbas_id, $record_id);
 
-        return $app['twig']->render('prod/Tooltip/Story.html.twig', array('Story' => $Story));
+        return $app['twig']->render('prod/Tooltip/Story.html.twig', ['Story' => $Story]);
     }
 
     public function displayUserBadge(Application $app, $usr_id)
@@ -99,7 +95,7 @@ class Tooltip implements ControllerProviderInterface
 
         return $app['twig']->render(
                 'prod/Tooltip/User.html.twig'
-                , array('user' => $user)
+                , ['user' => $user]
         );
     }
 
@@ -109,7 +105,7 @@ class Tooltip implements ControllerProviderInterface
 
         return $app['twig']->render(
                 'prod/Tooltip/Preview.html.twig'
-                , array('record'      => $record, 'not_wrapped' => true)
+                , ['record'      => $record, 'not_wrapped' => true]
         );
     }
 
@@ -131,12 +127,12 @@ class Tooltip implements ControllerProviderInterface
 
         return $app['twig']->render(
             'prod/Tooltip/Caption.html.twig'
-            , array(
+            , [
             'record'       => $record,
             'view'         => $context,
             'highlight'    => $app['request']->request->get('query'),
             'searchEngine' => $search_engine,
-        ));
+        ]);
     }
 
     public function displayTechnicalDatas(Application $app, $sbas_id, $record_id)
@@ -151,7 +147,7 @@ class Tooltip implements ControllerProviderInterface
 
         return $app['twig']->render(
                 'prod/Tooltip/TechnicalDatas.html.twig'
-                , array('record'   => $record, 'document' => $document)
+                , ['record'   => $record, 'document' => $document]
         );
     }
 
@@ -162,7 +158,7 @@ class Tooltip implements ControllerProviderInterface
 
         return $app['twig']->render(
                 'prod/Tooltip/DataboxField.html.twig'
-                , array('field' => $field)
+                , ['field' => $field]
         );
     }
 
@@ -173,7 +169,7 @@ class Tooltip implements ControllerProviderInterface
 
         return $app['twig']->render(
                 'prod/Tooltip/DCESFieldInfo.html.twig'
-                , array('field' => $field)
+                , ['field' => $field]
         );
     }
 
@@ -184,18 +180,7 @@ class Tooltip implements ControllerProviderInterface
 
         return $app['twig']->render(
                 'prod/Tooltip/DataboxFieldRestrictions.html.twig'
-                , array('field' => $field)
+                , ['field' => $field]
         );
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

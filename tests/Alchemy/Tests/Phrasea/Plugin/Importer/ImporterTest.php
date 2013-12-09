@@ -23,7 +23,7 @@ class ImporterTest extends PluginTestCase
             ->method('import')
             ->with($source, $target);
 
-        $importer = new Importer($strategy, array('elephant' => $importerInterface));
+        $importer = new Importer($strategy, ['elephant' => $importerInterface]);
         $importer->import($source, $target);
     }
 
@@ -45,7 +45,7 @@ class ImporterTest extends PluginTestCase
         $importerInterface->expects($this->never())
             ->method('import');
 
-        $importer = new Importer($strategy, array('rhinoceros' => $importerInterface));
+        $importer = new Importer($strategy, ['rhinoceros' => $importerInterface]);
         $importer->import($source, $target);
     }
 }

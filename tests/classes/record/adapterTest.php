@@ -1,8 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Controller\RecordsRequest;
-use Doctrine\Common\Collections\ArrayCollection;
-
 class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 {
     /**
@@ -39,7 +36,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
      */
     public function testSetExport()
     {
-        $basket = new \Entities\Basket();
+        $basket = new \Alchemy\Phrasea\Model\Entities\Basket();
 
         $basket->setName('hello');
         $basket->setOwner(self::$DI['user']);
@@ -47,7 +44,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $em = self::$DI['app']['EM'];
 
-        $basketElement = new \Entities\BasketElement();
+        $basketElement = new \Alchemy\Phrasea\Model\Entities\BasketElement();
 
         $basketElement->setRecord(self::$DI['record_1']);
         $basketElement->setBasket($basket);
@@ -59,21 +56,25 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $em->persist($basket);
         $em->flush();
 
-        $receveid = array(self::$DI['record_1']->get_serialize_key() => self::$DI['record_1']);
+        $receveid = [self::$DI['record_1']->get_serialize_key() => self::$DI['record_1']];
 
-        self::$DI['app']['authentication']->getUser()->ACL()->update_rights_to_base(self::$DI['record_1']->get_base_id(), array('order_master' => true));
+        self::$DI['app']['acl']->get( self::$DI['app']['authentication']->getUser())->update_rights_to_base(self::$DI['record_1']->get_base_id(), ['order_master' => true]);
 
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $eventManagerStub = $this->getMockBuilder('\eventsmanager_broker')
+                     ->disableOriginalConstructor()
+                     ->getMock();
 
-        self::$DI['app']['notification.deliverer']->expects($this->atLeastOnce())
-            ->method('deliver')
-            ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewOrder'), $this->equalTo(null));
+        $eventManagerStub->expects($this->once())
+             ->method('trigger')
+             ->with($this->equalTo('__NEW_ORDER__'), $this->isType('array'))
+             ->will($this->returnValue(null));
 
-        return new set_order(self::$DI['app'], \set_order::create(
-                self::$DI['app'], new RecordsRequest($receveid, new ArrayCollection($receveid), $basket), self::$DI['user_alt2'], 'I need this photos', new \DateTime('+10 minutes')
-        ));
+        self::$DI['app']['events-manager'] = $eventManagerStub;
+
+        self::$DI['client']->request('POST', '/prod/order/', [
+            'lst'      => self::$DI['record_1']->get_serialize_key(),
+            'deadline' => '+10 minutes'
+        ]);
     }
 
     public function testGet_creation_date()
@@ -182,7 +183,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_type()
     {
-        $this->assertTrue(in_array(self::$DI['record_1']->get_type(), array('video', 'audio', 'image', 'document', 'flash', 'unknown')));
+        $this->assertTrue(in_array(self::$DI['record_1']->get_type(), ['video', 'audio', 'image', 'document', 'flash', 'unknown']));
     }
 
     public function testGet_formated_duration()
@@ -301,10 +302,10 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $current_caption = self::$DI['record_1']->get_caption();
 
-        $metadatas = array();
+        $metadatas = [];
 
         foreach ($meta_structure_el as $meta_el) {
-            $current_fields = $current_caption->get_fields(array($meta_el->get_name()));
+            $current_fields = $current_caption->get_fields([$meta_el->get_name()]);
 
             $field = null;
 
@@ -315,34 +316,34 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             if ($meta_el->is_multi()) {
                 if ($field) {
                     foreach ($field->get_values() as $value) {
-                        $metadatas[] = array(
+                        $metadatas[] = [
                             'meta_struct_id' => $meta_el->get_id()
                             , 'meta_id'        => $value->getId()
                             , 'value'          => ''
-                        );
+                        ];
                     }
                 }
 
-                $metadatas[] = array(
+                $metadatas[] = [
                     'meta_struct_id' => $meta_el->get_id()
                     , 'meta_id'        => null
                     , 'value'          => 'un'
-                );
-                $metadatas[] = array(
+                ];
+                $metadatas[] = [
                     'meta_struct_id' => $meta_el->get_id()
                     , 'meta_id'        => null
                     , 'value'          => 'jeu'
-                );
-                $metadatas[] = array(
+                ];
+                $metadatas[] = [
                     'meta_struct_id' => $meta_el->get_id()
                     , 'meta_id'        => null
                     , 'value'          => 'de'
-                );
-                $metadatas[] = array(
+                ];
+                $metadatas[] = [
                     'meta_struct_id' => $meta_el->get_id()
                     , 'meta_id'        => null
                     , 'value'          => 'test'
-                );
+                ];
             } else {
                 $meta_id = null;
 
@@ -351,17 +352,17 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
                     $meta_id = array_pop($values)->getId();
                 }
 
-                $metadatas[] = array(
+                $metadatas[] = [
                     'meta_struct_id' => $meta_el->get_id()
                     , 'meta_id'        => $meta_id
                     , 'value'          => 'un premier jeu de test'
-                );
+                ];
 
-                $metadatas[] = array(
+                $metadatas[] = [
                     'meta_struct_id' => $meta_el->get_id()
                     , 'meta_id'        => $meta_id
                     , 'value'          => 'un second jeu de test'
-                );
+                ];
             }
         }
 
@@ -370,7 +371,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $caption = self::$DI['record_1']->get_caption();
 
         foreach ($meta_structure_el as $meta_el) {
-            $current_fields = $caption->get_fields(array($meta_el->get_name()), true);
+            $current_fields = $caption->get_fields([$meta_el->get_name()], true);
 
             $this->assertEquals(1, count($current_fields));
             $field = $current_fields[0];
@@ -383,10 +384,10 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
                 $separator = '';
             }
 
-            $multi_imploded = implode(' ' . $separator . ' ', array('un', 'jeu', 'de', 'test'));
+            $multi_imploded = implode(' ' . $separator . ' ', ['un', 'jeu', 'de', 'test']);
 
             if ($meta_el->is_multi()) {
-                $initial_values = array();
+                $initial_values = [];
                 foreach ($field->get_values() as $value) {
                     $initial_values[] = $value->getValue();
                 }
@@ -408,7 +409,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
               AND record_id = :record_id';
         $stmt = self::$DI['record_1']->get_databox()->get_connection()->prepare($sql);
 
-        $stmt->execute(array(':record_id' => self::$DI['record_1']->get_record_id()));
+        $stmt->execute([':record_id' => self::$DI['record_1']->get_record_id()]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -426,7 +427,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             AND record_id = :record_id';
         $stmt = self::$DI['record_1']->get_databox()->get_connection()->prepare($sql);
 
-        $stmt->execute(array(':record_id' => self::$DI['record_1']->get_record_id()));
+        $stmt->execute([':record_id' => self::$DI['record_1']->get_record_id()]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -492,10 +493,10 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_container_baskets()
     {
         $basket = $this->insertOneBasket();
-        $this->assertInstanceOf('\Entities\Basket', $basket);
+        $this->assertInstanceOf('\Alchemy\Phrasea\Model\Entities\Basket', $basket);
 
-        /* @var $basket \Entities\Basket */
-        $basket_element = new \Entities\BasketElement();
+        /* @var $basket \Alchemy\Phrasea\Model\Entities\Basket */
+        $basket_element = new \Alchemy\Phrasea\Model\Entities\BasketElement();
         $basket_element->setRecord(self::$DI['record_1']);
         $basket_element->setBasket($basket);
 
@@ -533,5 +534,12 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
                 ->method('updateRecord')
                 ->with($record);
         $record->reindex();
+    }
+
+    public function testSetStatus()
+    {
+        $record = new \record_adapter(self::$DI['app'], self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());
+        $record->set_binary_status('1001001001010101');
+        $this->assertSame('00000000000000001001001001010101', $record->get_status());
     }
 }

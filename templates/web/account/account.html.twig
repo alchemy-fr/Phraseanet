@@ -23,7 +23,7 @@
 {% endblock %}
 
 {% block title %}
-    {% trans "login:: Mon compte" %}
+    {{ "login:: Mon compte" | trans }}
 {% endblock %}
 
 {% block content_account %}
@@ -34,117 +34,117 @@
             <form name="account" id="account" class="form-horizontal" action="{{ path("submit_update_account") }}" method="post">
                 <div class="row-fluid">
                     <div class="span12 well well-small" id="phr-account">
-                        <legend>{% trans "Informations personnelles" %}</legend>
+                        <legend>{{ "Informations personnelles" | trans }}</legend>
                         <div class="control-group">
-                            <label class="form_label control-label" for="form_login"><strong>{% trans "admin::compte-utilisateur identifiant" %}</strong></label>
+                            <label class="form_label control-label" for="form_login"><strong>{{ "admin::compte-utilisateur identifiant" | trans }}</strong></label>
                             <div class="controls">
                                 <span class="control-span">{{ app["authentication"].getUser().get_login() }}</span>
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="form_label control-label" for="form_gender"><strong>{% trans "admin::compte-utilisateur sexe" %}</strong></label>
+                            <label class="form_label control-label" for="form_gender"><strong>{{ "admin::compte-utilisateur sexe" | trans }}</strong></label>
                             <div class="controls">
                                 <select name="form_gender" class="input-xlarge">
                                     <option value=""></option>
                                     <option {% if app["authentication"].getUser().get_gender() == "0" %}selected{% endif %} value="0" >
-                                        {% trans "admin::compte-utilisateur:sexe: mademoiselle" %}
+                                        {{ "admin::compte-utilisateur:sexe: mademoiselle" | trans }}
                                     </option>
                                     <option {% if app["authentication"].getUser().get_gender() == "1" %}selected{% endif %} value="1" >
-                                        {% trans "admin::compte-utilisateur:sexe: madame" %}
+                                        {{ "admin::compte-utilisateur:sexe: madame" | trans }}
                                     </option>
                                     <option {% if app["authentication"].getUser().get_gender() == "2" %}selected{% endif %} value="2" >
-                                        {% trans "admin::compte-utilisateur:sexe: monsieur" %}
+                                        {{ "admin::compte-utilisateur:sexe: monsieur" | trans }}
                                     </option>
                                 </select>
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="form_label control-label" for="form_lastname"><strong>{% trans "admin::compte-utilisateur nom" %}</strong></label>
+                            <label class="form_label control-label" for="form_lastname"><strong>{{ "admin::compte-utilisateur nom" | trans }}</strong></label>
                             <div class="controls">
                                 <input class="input_element input-xlarge" type="text" name="form_lastname" id="form_lastname" value="{{ app["authentication"].getUser().get_lastname() }}" />
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="form_label control-label" for="form_firstname"><strong>{% trans "admin::compte-utilisateur prenom" %}</strong></label>
+                            <label class="form_label control-label" for="form_firstname"><strong>{{ "admin::compte-utilisateur prenom" | trans }}</strong></label>
                             <div class="controls">
                                 <input class="input_element input-xlarge" type="text" name="form_firstname" id="form_firstname" value="{{ app["authentication"].getUser().get_firstname() }}" />
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="form_label control-label" for="form_firstname"><strong>{% trans "admin::compte-utilisateur email" %}</strong></label>
+                            <label class="form_label control-label" for="form_firstname"><strong>{{ "admin::compte-utilisateur email" | trans }}</strong></label>
                             <div class="controls">
-                                <span class="control-span">{{ app["authentication"].getUser().get_email() }} <a href="{{ path("account_reset_email") }}" target="_self">{% trans "login:: Changer mon adresse email" %}</a></span>
+                                <span class="control-span">{{ app["authentication"].getUser().get_email() }} <a href="{{ path("account_reset_email") }}" target="_self">{{ "login:: Changer mon adresse email" | trans }}</a></span>
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="control-label"><strong>{% trans "Password" %}</strong></label>
+                            <label class="control-label"><strong>{{ "Password" | trans }}</strong></label>
                             <div class="controls">
-                                <span class="control-span"><a href="{{ path("reset_password") }}" target="_self">{% trans "admin::compte-utilisateur changer mon mot de passe" %}</a></span>
+                                <span class="control-span"><a href="{{ path("reset_password") }}" target="_self">{{ "admin::compte-utilisateur changer mon mot de passe" | trans }}</a></span>
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="form_label control-label" for="form_address"><strong>{% trans "admin::compte-utilisateur adresse" %}</strong></label>
+                            <label class="form_label control-label" for="form_address"><strong>{{ "admin::compte-utilisateur adresse" | trans }}</strong></label>
                             <div class="controls">
                                 <input class="input_element input-xlarge" type="text" name="form_address" id="form_address" value="{{ app["authentication"].getUser().get_address() }}" />
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="form_label control-label" for="form_zip"><strong>{% trans "admin::compte-utilisateur code postal" %}</strong></label>
+                            <label class="form_label control-label" for="form_zip"><strong>{{ "admin::compte-utilisateur code postal" | trans }}</strong></label>
                             <div class="controls">
                                 <input class="input_element input-xlarge" type="text" name="form_zip" id="form_zip" value="{{ app["authentication"].getUser().get_zipcode() }}" />
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="form_label control-label" for="form_city"><strong>{% trans "admin::compte-utilisateur ville" %}</strong></label>
+                            <label class="form_label control-label" for="form_city"><strong>{{ "admin::compte-utilisateur ville" | trans }}</strong></label>
                             <div class="controls">
                                 <input class="input_element input-xlarge geoname_field" type="text" name="form_geonameid" id="form_geonameid" value="{{ app["authentication"].getUser().get_geonameid() }}" />
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="form_label control-label" for="form_function"><strong>{% trans "admin::compte-utilisateur poste" %}</strong></label>
+                            <label class="form_label control-label" for="form_function"><strong>{{ "admin::compte-utilisateur poste" | trans }}</strong></label>
                             <div class="controls">
                                 <input class="input_element input-xlarge" type="text" name="form_function" id="form_function" value="{{ app["authentication"].getUser().get_position() }}" />
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="form_label control-label" for="form_company"><strong>{% trans "admin::compte-utilisateur societe" %}</strong></label>
+                            <label class="form_label control-label" for="form_company"><strong>{{ "admin::compte-utilisateur societe" | trans }}</strong></label>
                             <div class="controls">
                                 <input class="input_element input-xlarge" type="text" name="form_company" id="form_company" value="{{ app["authentication"].getUser().get_company() }}" />
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="form_label control-label" for="form_activity"><strong>{% trans "admin::compte-utilisateur activite" %}</strong></label>
+                            <label class="form_label control-label" for="form_activity"><strong>{{ "admin::compte-utilisateur activite" | trans }}</strong></label>
                             <div class="controls">
                                 <input class="input_element input-xlarge" type="text" name="form_activity" id="form_activity" value="{{ app["authentication"].getUser().get_job() }}" />
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="form_label control-label" for="form_phone"><strong>{% trans "admin::compte-utilisateur telephone" %}</strong></label>
+                            <label class="form_label control-label" for="form_phone"><strong>{{ "admin::compte-utilisateur telephone" | trans }}</strong></label>
                             <div class="controls">
                                 <input class="input_element input-xlarge" type="text" name="form_phone" id="form_phone" value="{{ app["authentication"].getUser().get_tel() }}" />
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="form_label control-label" for="form_fax"><strong>{% trans "admin::compte-utilisateur fax" %}</strong></label>
+                            <label class="form_label control-label" for="form_fax"><strong>{{ "admin::compte-utilisateur fax" | trans }}</strong></label>
                             <div class="controls">
                                 <input class="input_element input-xlarge" type="text" name="form_fax" id="form_fax" value="{{ app["authentication"].getUser().get_fax() }}" />
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
 
-                        <legend>{% trans "Notification par email" %}</legend>
+                        <legend>{{ "Notification par email" | trans }}</legend>
 
                         {% for notification_group, nots in notifications%}
                             <div class="control-group">
@@ -165,73 +165,74 @@
                             </div>
                         {% endfor %}
 
-                        <legend>{% trans "FTP" %}</legend>
+                        <legend>{{ "FTP" | trans }}</legend>
 
+                        {% set ftpCredential = app["authentication"].getUser().getFtpCredential() %}
                         <div class="control-group">
                             <div class="controls">
-                                <label class="form_label checkbox" for="form_activeFTP">{% trans "admin::compte-utilisateur:ftp: Activer le compte FTP" %}
-                                    <input class="input_element input-xlarge" type="checkbox" name="form_activeFTP" id="form_activeFTP" {% if app["authentication"].getUser().get_activeftp() %}checked{% endif %} onchange="if(this.checked){$('#ftpinfos').slideDown();}else{$('#ftpinfos').slideUp();}" />
+                                <label class="form_label checkbox" for="form_activeFTP">{{ "admin::compte-utilisateur:ftp: Activer le compte FTP" | trans }}
+                                    <input class="input_element input-xlarge" type="checkbox" name="form_activeFTP" id="form_activeFTP" {% if ftpCredential.isActive() %}checked{% endif %} onchange="if(this.checked){$('#ftpinfos').slideDown();}else{$('#ftpinfos').slideUp();}" />
                                 </label>
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
 
-                        <div id="ftpinfos" style="display:{% if app["authentication"].getUser().get_activeftp() %}block{% else %}none{% endif %}">
+                        <div id="ftpinfos" style="display:{% if ftpCredential.isActive() %}block{% else %}none{% endif %}">
                             <div class="control-group">
-                                <label class="form_label control-label" for="form_addrFTP"><strong>{% trans "phraseanet:: adresse" %}</strong></label>
+                                <label class="form_label control-label" for="form_addressFTP"><strong>{{ "phraseanet:: adresse" | trans }}</strong></label>
                                 <div class="controls">
-                                    <input class="input_element input-xlarge" type="text" name="form_addrFTP" id="form_addrFTP" value="{{ app["authentication"].getUser().get_ftp_address() }}" />
+                                    <input class="input_element input-xlarge" type="text" name="form_addressFTP" id="form_addressFTP" value="{{ ftpCredential.getAddress() }}" />
                                     <p class="form_alert help-block"></p>
                                 </div>
                             </div>
                             <div class="control-group">
-                                <label class="form_label control-label" for="form_loginFTP"><strong>{% trans "admin::compte-utilisateur identifiant" %}</strong></label>
+                                <label class="form_label control-label" for="form_loginFTP"><strong>{{ "admin::compte-utilisateur identifiant" | trans }}</strong></label>
                                 <div class="controls">
-                                    <input class="input_element input-xlarge" type="text" name="form_loginFTP" id="form_loginFTP" value="{{ app["authentication"].getUser().get_ftp_login() }}" />
+                                    <input class="input_element input-xlarge" type="text" name="form_loginFTP" id="form_loginFTP" value="{{ ftpCredential.getLogin() }}" />
                                     <p class="form_alert help-block"></p>
                                 </div>
                             </div>
                             <div class="control-group">
-                                <label class="form_label control-label" for="form_pwdFTP"><strong>{% trans "admin::compte-utilisateur mot de passe" %}</strong></label>
+                                <label class="form_label control-label" for="form_pwdFTP"><strong>{{ "admin::compte-utilisateur mot de passe" | trans }}</strong></label>
                                 <div class="controls">
-                                    <input class="input_element input-xlarge" type="text" name="form_pwdFTP" id="form_pwdFTP" value="{{ app["authentication"].getUser().get_ftp_password() }}" />
+                                    <input class="input_element input-xlarge" type="text" name="form_pwdFTP" id="form_pwdFTP" value="{{ ftpCredential.getPassword() }}" />
                                     <p class="form_alert help-block"></p>
                                 </div>
                             </div>
                             <div class="control-group">
-                                <label class="form_label control-label" for="form_destFTP"><strong>{% trans "admin::compte-utilisateur:ftp:  repertoire de destination ftp" %}</strong></label>
+                                <label class="form_label control-label" for="form_destFTP"><strong>{{ "admin::compte-utilisateur:ftp:  repertoire de destination ftp" | trans }}</strong></label>
                                 <div class="controls">
-                                    <input class="input_element input-xlarge" type="text" name="form_destFTP" id="form_destFTP" value="{{ app["authentication"].getUser().get_ftp_dir() }}" />
+                                    <input class="input_element input-xlarge" type="text" name="form_destFTP" id="form_destFTP" value="{{ ftpCredential.getReceptionFolder() }}" />
                                     <p class="form_alert help-block"></p>
                                 </div>
                             </div>
                             <div class="control-group">
-                                <label class="form_label control-label" for="form_prefixFTPfolder"><strong>{% trans "admin::compte-utilisateur:ftp: prefixe des noms de dossier ftp" %}</strong></label>
+                                <label class="form_label control-label" for="form_prefixFTPfolder"><strong>{{ "admin::compte-utilisateur:ftp: prefixe des noms de dossier ftp" | trans }}</strong></label>
                                 <div class="controls">
-                                    <input class="input_element input-xlarge" type="text" name="form_prefixFTPfolder" id="form_prefixFTPfolder" value="{{ app["authentication"].getUser().get_ftp_dir_prefix() }}" />
+                                    <input class="input_element input-xlarge" type="text" name="form_prefixFTPfolder" id="form_prefixFTPfolder" value="{{ ftpCredential.getRepositoryPrefixName() }}" />
                                     <p class="form_alert help-block"></p>
                                 </div>
                             </div>
                             <div class="control-group">
                                 <div class="controls">
                                     <label class="form_label checkbox" for="form_passifFTP">
-                                        {% trans "admin::compte-utilisateur:ftp: Utiliser le mode passif" %}
-                                        <input class="input_element input-xlarge" type="checkbox" name="form_passifFTP" id="form_passifFTP" {% if app["authentication"].getUser().get_ftp_passif() == "1" %}checked{% endif %} />
+                                        {{ "admin::compte-utilisateur:ftp: Utiliser le mode passif" | trans }}
+                                        <input class="input_element input-xlarge" type="checkbox" name="form_passifFTP" id="form_passifFTP" {% if ftpCredential.isPassive() %}checked{% endif %} />
                                     </label>
                                     <p class="form_alert help-block"></p>
                                 </div>
                             </div>
                             <div class="control-group">
-                                <label class="form_label control-label" for="form_retryFTP"><strong>{% trans "admin::compte-utilisateur:ftp: Nombre d\'essais max" %}</strong></label>
+                                <label class="form_label control-label" for="form_retryFTP"><strong>{{ "admin::compte-utilisateur:ftp: Nombre d\'essais max" | trans }}</strong></label>
                                 <div class="controls">
-                                    <input class="input_element input-xlarge" type="text" name="form_retryFTP" id="form_retryFTP" value="5" />
+                                    <input class="input_element input-xlarge" type="text" name="form_retryFTP" id="form_retryFTP" value="{{ ftpCredential.getMaxRetry() }}" />
                                     <p class="form_alert help-block"></p>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="form-actions">
-                        <input type="submit" class="btn btn-info btn-" value="{% trans "boutton::valider" %}">
+                        <input type="submit" class="btn btn-info btn-" value="{{ "boutton::valider" | trans }}">
                     </div>
                 </div>
             </form>

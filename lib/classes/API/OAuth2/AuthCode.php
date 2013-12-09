@@ -12,16 +12,6 @@
 use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- *
- * @package     OAuth2 Connector
- *
- * @see         http://oauth.net/2/
- * @uses        http://code.google.com/p/oauth2-php/
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class API_OAuth2_AuthCode
 {
     protected $app;
@@ -40,7 +30,7 @@ class API_OAuth2_AuthCode
             FROM api_oauth_codes WHERE code = :code';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':code' => $this->code));
+        $stmt->execute([':code' => $this->code]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -82,7 +72,7 @@ class API_OAuth2_AuthCode
         $sql = 'UPDATE api_oauth_codes SET redirect_uri = :redirect_uri
             WHERE code = :code';
 
-        $params = array(':redirect_uri' => $redirect_uri, ':code'         => $this->code);
+        $params = [':redirect_uri' => $redirect_uri, ':code'         => $this->code];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -112,7 +102,7 @@ class API_OAuth2_AuthCode
         $sql = 'UPDATE api_oauth_codes SET scope = :scope
             WHERE code = :code';
 
-        $params = array(':scope' => $scope, ':code'  => $this->code);
+        $params = [':scope' => $scope, ':code'  => $this->code];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -128,7 +118,7 @@ class API_OAuth2_AuthCode
         $sql = 'DELETE FROM api_oauth_codes WHERE code = :code';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':code' => $this->code));
+        $stmt->execute([':code' => $this->code]);
         $stmt->closeCursor();
 
         return;
@@ -147,12 +137,12 @@ class API_OAuth2_AuthCode
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
 
-        $params = array(":account_id" => $account->get_id());
+        $params = [":account_id" => $account->get_id()];
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $codes = array();
+        $codes = [];
 
         foreach ($rs as $row) {
             $codes[] = new API_OAuth2_AuthCode($app, $row['code']);
@@ -177,11 +167,11 @@ class API_OAuth2_AuthCode
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
 
-        $params = array(
+        $params = [
             ":code"       => $code,
             ":account_id" => $account->get_id(),
             ":expires"    => $expires
-        );
+        ];
         $stmt->execute($params);
         $stmt->closeCursor();
 

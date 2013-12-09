@@ -11,12 +11,6 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- *
- * @package     Bridge
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Bridge_Element
 {
     /**
@@ -119,7 +113,7 @@ class Bridge_Element
                   , title, serialized_datas, created_on, updated_on, uploaded_on
             FROM bridge_elements WHERE id = :id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':id' => $this->id));
+        $stmt->execute([':id' => $this->id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -190,11 +184,11 @@ class Bridge_Element
         $sql = 'UPDATE bridge_elements
             SET dist_id = :dist_id, updated_on = :update WHERE id = :id';
 
-        $params = array(
+        $params = [
             ':dist_id' => $this->dist_id
             , ':id'      => $this->id
             , ':update'  => $this->updated_on->format(DATE_ISO8601)
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -225,11 +219,11 @@ class Bridge_Element
         $sql = 'UPDATE bridge_elements
             SET status = :status, updated_on = :update WHERE id = :id';
 
-        $params = array(
+        $params = [
             ':status' => $this->status
             , ':id'     => $this->id
             , ':update' => $this->updated_on->format(DATE_ISO8601)
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -261,11 +255,11 @@ class Bridge_Element
             SET connector_status = :connector_status, updated_on = :update
             WHERE id = :id';
 
-        $params = array(
+        $params = [
             ':connector_status' => $this->connector_status
             , ':id'               => $this->id
             , ':update'           => $this->updated_on->format(DATE_ISO8601)
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -322,11 +316,11 @@ class Bridge_Element
         $sql = 'UPDATE bridge_elements
             SET title = :title, updated_on = :update WHERE id = :id';
 
-        $params = array(
+        $params = [
             ':title'  => $this->title
             , ':id'     => $this->id
             , ':update' => $this->updated_on->format(DATE_ISO8601)
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -357,11 +351,11 @@ class Bridge_Element
         $sql = 'UPDATE bridge_elements
             SET serialized_datas = :datas, updated_on = :update WHERE id = :id';
 
-        $params = array(
+        $params = [
             ':datas'  => serialize($this->datas)
             , ':id'     => $this->id
             , ':update' => $this->updated_on->format(DATE_ISO8601)
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -402,11 +396,11 @@ class Bridge_Element
         $sql = 'UPDATE bridge_elements
             SET uploaded_on = :uploaded_on, updated_on = :update WHERE id = :id';
 
-        $params = array(
+        $params = [
             ':uploaded_on' => $this->uploaded_on ? $this->uploaded_on->format(DATE_ISO8601) : null
             , ':id'          => $this->id
             , ':update'      => $this->updated_on->format(DATE_ISO8601)
-        );
+        ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -433,7 +427,7 @@ class Bridge_Element
         $sql = 'DELETE FROM bridge_elements WHERE id = :id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':id' => $this->id));
+        $stmt->execute([':id' => $this->id]);
         $stmt->closeCursor();
 
         return;
@@ -446,11 +440,11 @@ class Bridge_Element
             LIMIT ' . (int) $offset_start . ',' . (int) $quantity;
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':account_id' => $account->get_id()));
+        $stmt->execute([':account_id' => $account->get_id()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $results = array();
+        $results = [];
 
         foreach ($rs as $row) {
             $results[] = new Bridge_Element($app, $account, $row['id']);
@@ -459,7 +453,7 @@ class Bridge_Element
         return $results;
     }
 
-    public static function create(Application $app, Bridge_Account $account, record_adapter $record, $title, $status, $type, Array $datas = array())
+    public static function create(Application $app, Bridge_Account $account, record_adapter $record, $title, $status, $type, Array $datas = [])
     {
         $sql = 'INSERT INTO bridge_elements
             (id, account_id, sbas_id, record_id, dist_id, title, `type`
@@ -468,7 +462,7 @@ class Bridge_Element
             (null, :account_id, :sbas_id, :record_id, null, :title, :type
               ,:datas , :status, NOW(), NOW())';
 
-        $params = array(
+        $params = [
             ':account_id' => $account->get_id()
             , ':sbas_id'    => $record->get_sbas_id()
             , ':record_id'  => $record->get_record_id()
@@ -476,7 +470,7 @@ class Bridge_Element
             , ':title'      => $title
             , ':type'       => $type
             , ':datas'      => serialize($datas)
-        );
+        ];
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);

@@ -11,12 +11,6 @@
 
 namespace Alchemy\Phrasea\Media\Subdef\OptionType;
 
-/**
- * Boolean Subdef Option
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Boolean implements OptionType
 {
     protected $name;

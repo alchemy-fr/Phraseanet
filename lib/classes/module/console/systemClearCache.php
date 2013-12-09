@@ -9,11 +9,6 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Filesystem\Filesystem;
@@ -39,13 +34,14 @@ class module_console_systemClearCache extends Command
         $finder
             ->exclude('.git')
             ->exclude('.svn')
-            ->in(array(
+            ->in([
                 $this->container['root.path'] . '/tmp/cache_minify/',
                 $this->container['root.path'] . '/tmp/cache_twig/',
+                $this->container['root.path'] . '/tmp/translations/',
                 $this->container['root.path'] . '/tmp/cache/profiler/',
                 $this->container['root.path'] . '/tmp/doctrine/',
                 $this->container['root.path'] . '/tmp/serializer/',
-            ));
+            ]);
 
         $filesystem = new Filesystem();
 

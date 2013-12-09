@@ -6,6 +6,7 @@ use Alchemy\Phrasea\Border\Checker\AbstractChecker;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
 {
@@ -19,7 +20,7 @@ class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
         parent::setUp();
 
         $this->object = new AbstractCheckerTester(self::$DI['app']);
-        $this->file = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getCollection'), array(), 'CheckerTesterMock' . mt_rand(), false);
+        $this->file = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', ['getCollection'], [], 'CheckerTesterMock' . mt_rand(), false);
     }
 
     public function tearDown()
@@ -66,14 +67,14 @@ class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
             }
         }
 
-        $ret = array(
-            array(array($collection->get_databox()), $collection, true),
-            array($collection->get_databox(), $collection, true),
-            array($collection->get_databox(), null, true),
-        );
+        $ret = [
+            [[$collection->get_databox()], $collection, true],
+            [$collection->get_databox(), $collection, true],
+            [$collection->get_databox(), null, true],
+        ];
 
         if ($databox) {
-            $ret[] = array($databox, $collection, false);
+            $ret[] = [$databox, $collection, false];
         }
 
         return $ret;
@@ -130,13 +131,13 @@ class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
             $collection = \collection::create($app, $databox, $app['phraseanet.appbox'], 'other coll');
         }
 
-        return array(
-            array(array($collection), $collection, true),
-            array($collection, $collection, true),
-            array($collection, null, true),
-            array($collection, $othercollection, false),
-            array(array($collection), $othercollection, false),
-        );
+        return [
+            [[$collection], $collection, true],
+            [$collection, $collection, true],
+            [$collection, null, true],
+            [$collection, $othercollection, false],
+            [[$collection], $othercollection, false],
+        ];
     }
 
     /**
@@ -194,16 +195,16 @@ class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
             }
         }
 
-        return array(
-            array($databox, $collection),
-        );
+        return [
+            [$databox, $collection],
+        ];
     }
 }
 
 class AbstractCheckerTester extends AbstractChecker
 {
 
-    public static function getMessage()
+    public static function getMessage(TranslatorInterface $translator)
     {
 
     }

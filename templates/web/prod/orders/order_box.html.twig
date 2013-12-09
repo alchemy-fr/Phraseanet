@@ -6,17 +6,17 @@
         <div class="alert alert-success">
             <button type="button" class="close" data-dismiss="alert">×</button>
             {% if action == 'order' %}
-                {% trans 'The records have been properly ordered' %}
+                {{ 'The records have been properly ordered' | trans }}
             {% elseif action == 'send' %}
-                {% trans 'Order has been sent' %}
+                {{ 'Order has been sent' | trans }}
             {% elseif action == 'deny' %}
-                {% trans 'Order has been denied' %}
+                {{ 'Order has been denied' | trans }}
             {% endif %}
         </div>
-    {% elseif   success == '0'%}
+    {% elseif   success == '0' %}
         <div class="alert alert-error">
             <button type="button" class="close" data-dismiss="alert">×</button>
-            {% trans 'An error occured, please retry or contact an admin if problem persists' %}
+            {{ 'An error occured, please retry or contact an admin if problem persists' | trans }}
         </div>
     {% endif %}
 
@@ -25,34 +25,34 @@
             <thead>
                 <tr>
                     <th>
-                        {% trans %}Page {{page}}{% endtrans %}
+                        {% trans with {'%page%' : page} %}Page %page%{% endtrans %}
                     </th>
                 </tr>
             </thead>
             <thead>
                 <tr>
-                    <th>{% trans 'Utilisateur' %}</th>
-                    <th>{% trans 'Date de demande' %}</th>
-                    <th>{% trans 'Deadline' %}</th>
-                    <th>{% trans 'Utilisation prevue' %}</th>
-                    <th>{% trans 'Statut' %}</th>
+                    <th>{{ 'Utilisateur' | trans }}</th>
+                    <th>{{ 'Date de demande' | trans }}</th>
+                    <th>{{ 'Deadline' | trans }}</th>
+                    <th>{{ 'Utilisation prevue' | trans }}</th>
+                    <th>{{ 'Statut' | trans }}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for order in orders %}
-                    {% set deadline = app['date-formatter'].getPrettyString(order.get_deadline()) %}
-                    <tr id="order_{{ order.get_order_id() }}" class="order_row" {{ current_date > order.get_deadline() ? "style=color:#777": "" }}>
-                        <td>{{ order.get_user().get_display_name() }}</td>
-                        <td>{{ app['date-formatter'].getPrettyString(order.get_created_on()) }}</td>
+                    {% set deadline = app['date-formatter'].getPrettyString(order.getDeadline()) %}
+                    <tr id="order_{{ order.getId() }}" class="order_row" {{ current_date > order.getDeadline() ? "style=color:#777": "" }}>
+                        <td>{{ order.getUser(app).get_display_name() }}</td>
+                        <td>{{ app['date-formatter'].getPrettyString(order.getCreatedOn()) }}</td>
                         <td>
                             {% if deadline != '' %}
                                 {{deadline}}
                             {% else %}
-                                {% trans 'Aucune' %}
+                                {{ 'Aucune' | trans }}
                             {% endif %}
                         </td>
-                        <td>{{ order.get_usage() | nl2br }}</td>
-                        <td>{% if order.get_todo() == 0 %}<img src="/skins/icons/ok.png" />{% endif %}</td>
+                        <td>{{ order.getOrderUsage() | nl2br }}</td>
+                        <td>{% if order.getTodo() == 0 %}<img src="/skins/icons/ok.png" />{% endif %}</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -62,11 +62,11 @@
     <div class='well-small'>
         <ul class="pager">
           {% if previousPage %}
-              <li  class="previous"><a class='self-ajax' href="{{ path('prod_orders', {'page': previousPage}) }}"><i class="icon-arrow-left"></i>{% trans 'Previous' %}</a></li>
+              <li  class="previous"><a class='self-ajax' href="{{ path('prod_orders', {'page': previousPage}) }}"><i class="icon-arrow-left"></i>{{ 'Previous' | trans }}</a></li>
           {% endif %}
 
           {% if nextPage %}
-              <li class="next"><a class='self-ajax' href="{{ path('prod_orders', {'page': nextPage}) }}"><i class="icon-arrow-right"></i>{% trans 'Next' %}</a></li>
+              <li class="next"><a class='self-ajax' href="{{ path('prod_orders', {'page': nextPage}) }}"><i class="icon-arrow-right"></i>{{ 'Next' | trans }}</a></li>
           {% endif %}
         </ul>
     </div>

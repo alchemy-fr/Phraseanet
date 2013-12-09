@@ -1,0 +1,28 @@
+{% extends 'admin/task-manager/task-editor/task.html.twig' %}
+
+{% block form %}
+<div class="control-group">
+    <div class="controls">
+        <label class="checkbox">
+            <input class="formElem" type="checkbox" name="cleardoc">
+            {{ 'task::writemeta:effacer les metadatas non presentes dans la structure' | trans }}
+        </label>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block javascript %}
+    function taskFillGraphic(xml)
+    {
+        if (xml) {
+            xml = $.parseXML(xml);
+            xml = $(xml);
+
+            with(document.forms['graphicForm'])
+            {
+                cleardoc.checked = Number(xml.find("cleardoc").text()) > 0;
+            }
+        }
+    }
+{% endblock %}

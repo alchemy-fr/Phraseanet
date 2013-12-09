@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Doctrine\ORM\Tools\SchemaTool;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Specification\Image as ImageSpecification;
 use Symfony\Component\Filesystem\Filesystem;
@@ -18,11 +19,6 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use vierbergenlars\SemVer\version;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class appbox extends base
 {
     /**
@@ -65,7 +61,7 @@ class appbox extends base
     {
         $this->app = $app;
         $this->connection = connection::getPDOConnection($app);
-        $connexion = $app['phraseanet.configuration']['main']['database'];
+        $connexion = $app['conf']->get(['main', 'database']);
 
         $this->host = $connexion['host'];
         $this->port = $connexion['port'];
@@ -82,7 +78,7 @@ class appbox extends base
 
         if (!is_null($pathfile)) {
 
-            if (!in_array(mb_strtolower($pathfile->getMimeType()), array('image/gif', 'image/png', 'image/jpeg', 'image/jpg', 'image/pjpeg'))) {
+            if (!in_array(mb_strtolower($pathfile->getMimeType()), ['image/gif', 'image/png', 'image/jpeg', 'image/jpg', 'image/pjpeg'])) {
                 throw new \InvalidArgumentException('Invalid file format');
             }
 
@@ -146,7 +142,7 @@ class appbox extends base
         $file = $this->app['root.path'] . '/config/' . $pic_type . '/' . $collection->get_base_id();
         $custom_path = $this->app['root.path'] . '/www/custom/' . $pic_type . '/' . $collection->get_base_id();
 
-        foreach (array($file, $custom_path) as $target) {
+        foreach ([$file, $custom_path] as $target) {
 
             if (is_file($target)) {
 
@@ -171,12 +167,12 @@ class appbox extends base
 
         if (!is_null($pathfile)) {
 
-            if (!in_array(mb_strtolower($pathfile->getMimeType()), array('image/jpeg', 'image/jpg', 'image/pjpeg', 'image/png', 'image/gif'))) {
+            if (!in_array(mb_strtolower($pathfile->getMimeType()), ['image/jpeg', 'image/jpg', 'image/pjpeg', 'image/png', 'image/gif'])) {
                 throw new \InvalidArgumentException('Invalid file format');
             }
         }
 
-        if (!in_array($pic_type, array(databox::PIC_PDF))) {
+        if (!in_array($pic_type, [databox::PIC_PDF])) {
             throw new \InvalidArgumentException('unknown pic_type');
         }
 
@@ -201,7 +197,7 @@ class appbox extends base
         $file = $this->app['root.path'] . '/config/minilogos/' . $pic_type . '_' . $databox->get_sbas_id() . '.jpg';
         $custom_path = $this->app['root.path'] . '/www/custom/minilogos/' . $pic_type . '_' . $databox->get_sbas_id() . '.jpg';
 
-        foreach (array($file, $custom_path) as $target) {
+        foreach ([$file, $custom_path] as $target) {
 
             if (is_file($target)) {
                 $filesystem->remove($target);
@@ -231,7 +227,7 @@ class appbox extends base
     {
         $sqlupd = "UPDATE bas SET ord = :ordre WHERE base_id = :base_id";
         $stmt = $this->get_connection()->prepare($sqlupd);
-        $stmt->execute(array(':ordre'   => $ordre, ':base_id' => $collection->get_base_id()));
+        $stmt->execute([':ordre'   => $ordre, ':base_id' => $collection->get_base_id()]);
         $stmt->closeCursor();
 
         $collection->get_databox()->delete_data_from_cache(\databox::CACHE_COLLECTIONS);
@@ -251,10 +247,10 @@ class appbox extends base
         $sql = 'UPDATE sbas SET indexable = :indexable WHERE sbas_id = :sbas_id';
 
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute(array(
+        $stmt->execute([
             ':indexable' => ($boolean ? '1' : '0'),
             ':sbas_id'   => $databox->get_sbas_id()
-        ));
+        ]);
         $stmt->closeCursor();
 
         return $this;
@@ -270,7 +266,7 @@ class appbox extends base
         $sql = 'SELECT indexable FROM sbas WHERE sbas_id = :sbas_id';
 
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute(array(':sbas_id' => $databox->get_sbas_id()));
+        $stmt->execute([':sbas_id' => $databox->get_sbas_id()]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -297,36 +293,30 @@ class appbox extends base
         /**
          * Step 1
          */
-        $upgrader->set_current_message(_('Flushing cache'));
+        $upgrader->set_current_message($this->app->trans('Flushing cache'));
 
         $app['phraseanet.cache-service']->flushAll();
 
         $upgrader->add_steps_complete(1);
 
-        $upgrader->set_current_message(_('Creating new tables'));
-        //create schema
-
-        if ($app['EM']->getConnection()->getDatabasePlatform()->supportsAlterTable()) {
-            $tool = new \Doctrine\ORM\Tools\SchemaTool($app['EM']);
-            $metas = $app['EM']->getMetadataFactory()->getAllMetadata();
-            $tool->updateSchema($metas, true);
-        }
+        $upgrader->set_current_message($this->app->trans('Creating new tables'));
 
         $upgrader->add_steps_complete(1);
 
         /**
          * Step 2
          */
-        $upgrader->set_current_message(_('Purging directories'));
+        $upgrader->set_current_message($this->app->trans('Purging directories'));
 
         $finder = new Finder();
-        $finder->in(array(
+        $finder->in([
             $this->app['root.path'] . '/tmp/cache_minify/',
             $this->app['root.path'] . '/tmp/cache_twig/',
+            $this->app['root.path'] . '/tmp/translations/',
             $this->app['root.path'] . '/tmp/cache/profiler/',
             $this->app['root.path'] . '/tmp/doctrine/',
             $this->app['root.path'] . '/tmp/serializer/',
-        ))
+        ])
             ->depth(0)
             ->ignoreVCS(true)
             ->ignoreDotFiles(true);
@@ -340,26 +330,26 @@ class appbox extends base
         /**
          * Step 5
          */
-        $upgrader->set_current_message(_('Copying files'));
+        $upgrader->set_current_message($this->app->trans('Copying files'));
 
-        foreach (array(
+        foreach ([
         'config/custom_files/' => 'www/custom/',
         'config/minilogos/'    => 'www/custom/minilogos/',
         'config/stamp/'        => 'www/custom/stamp/',
         'config/status/'       => 'www/custom/status/',
         'config/wm/'           => 'www/custom/wm/',
-        ) as $source => $target) {
+        ] as $source => $target) {
             $app['filesystem']->mirror($this->app['root.path'] . '/' . $source, $this->app['root.path'] . '/' . $target);
         }
 
         $upgrader->add_steps_complete(1);
 
-        $advices = array();
+        $advices = [];
 
         /**
          * Step 6
          */
-        $upgrader->set_current_message(_('Upgrading appbox'));
+        $upgrader->set_current_message($this->app->trans('Upgrading appbox'));
         $advices = $this->upgradeDB(true, $upgrader, $app);
         $upgrader->add_steps_complete(1);
 
@@ -367,7 +357,7 @@ class appbox extends base
          * Step 7
          */
         foreach ($this->get_databoxes() as $s) {
-            $upgrader->set_current_message(sprintf(_('Upgrading %s'), $s->get_label($this->app['locale.I18n'])));
+            $upgrader->set_current_message($this->app->trans('Upgrading %databox_name%', ['%databox_name%' => $s->get_label($this->app['locale'])]));
             $advices = array_merge($advices, $s->upgradeDB(true, $upgrader, $app));
             $upgrader->add_steps_complete(1);
         }
@@ -375,28 +365,34 @@ class appbox extends base
         /**
          * Step 8
          */
-        $upgrader->set_current_message(_('Post upgrade'));
+        $upgrader->set_current_message($this->app->trans('Post upgrade'));
         $this->post_upgrade($upgrader, $app);
         $upgrader->add_steps_complete(1);
 
         /**
          * Step 9
          */
-        $upgrader->set_current_message(_('Flushing cache'));
+        $upgrader->set_current_message($this->app->trans('Flushing cache'));
 
         $app['phraseanet.cache-service']->flushAll();
+
+        if ($app['EM']->getConnection()->getDatabasePlatform()->supportsAlterTable()) {
+            $tool = new SchemaTool($app['EM']);
+            $metas = $app['EM']->getMetadataFactory()->getAllMetadata();
+            $tool->updateSchema($metas, true);
+        }
 
         $upgrader->add_steps_complete(1);
 
         if (version::lt($from_version, '3.1')) {
-            $upgrader->addRecommendation(_('Your install requires data migration, please execute the following command'), 'bin/setup system:upgrade-datas --from=3.1');
+            $upgrader->addRecommendation($app->trans('Your install requires data migration, please execute the following command'), 'bin/setup system:upgrade-datas --from=3.1');
         } elseif (version::lt($from_version, '3.5')) {
-            $upgrader->addRecommendation(_('Your install requires data migration, please execute the following command'), 'bin/setup system:upgrade-datas --from=3.5');
+            $upgrader->addRecommendation($app->trans('Your install requires data migration, please execute the following command'), 'bin/setup system:upgrade-datas --from=3.5');
         }
 
         if (version::lt($from_version, '3.7')) {
-            $upgrader->addRecommendation(_('Your install might need to re-read technical datas'), 'bin/console records:rescan-technical-datas');
-            $upgrader->addRecommendation(_('Your install might need to build some sub-definitions'), 'bin/console records:build-missing-subdefs');
+            $upgrader->addRecommendation($app->trans('Your install might need to re-read technical datas'), 'bin/console records:rescan-technical-datas');
+            $upgrader->addRecommendation($app->trans('Your install might need to build some sub-definitions'), 'bin/console records:build-missing-subdefs');
         }
 
         return $advices;
@@ -428,7 +424,7 @@ class appbox extends base
             return $this->databoxes;
         }
 
-        $ret = array();
+        $ret = [];
         foreach ($this->retrieve_sbas_ids() as $sbas_id) {
             try {
                 $ret[$sbas_id] = new \databox($this->app, $sbas_id);
@@ -451,7 +447,7 @@ class appbox extends base
         }
         $sql = 'SELECT sbas_id FROM sbas';
 
-        $ret = array();
+        $ret = [];
 
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();

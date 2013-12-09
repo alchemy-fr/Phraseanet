@@ -10,14 +10,10 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class record_preview extends record_adapter
 {
     /**
@@ -127,7 +123,6 @@ class record_preview extends record_adapter
                 $this->original_item = $this->container;
                 if ($pos == 0) {
                     $number = 0;
-                    $title = _('preview:: regroupement ');
                 } else {
                     $children = $this->container->get_children();
                     foreach ($children as $child) {
@@ -143,19 +138,17 @@ class record_preview extends record_adapter
 
                 break;
             case "BASK":
-                $repository = $app['EM']->getRepository('\Entities\Basket');
+                $Basket = $app['converter.basket']->convert($contId);
+                $app['acl.basket']->hasAccess($Basket, $app['authentication']->getUser());
 
-                /* @var $repository \Repositories\BasketRepository */
-                $Basket = $repository->findUserBasket($app, $contId, $app['authentication']->getUser(), false);
-
-                /* @var $Basket \Entities\Basket */
+                /* @var $Basket Basket */
                 $this->container = $Basket;
                 $this->total = $Basket->getElements()->count();
                 $i = 0;
                 $first = true;
 
                 foreach ($Basket->getElements() as $element) {
-                    /* @var $element \Entities\BasketElement */
+                    /* @var $element BasketElement */
                     $i ++;
                     if ($first) {
                         $this->original_item = $element;
@@ -176,30 +169,30 @@ class record_preview extends record_adapter
                 }
                 break;
             case "FEED":
-                $entry = Feed_Entry_Adapter::load_from_id($app, $contId);
+                $entry = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($contId);
 
                 $this->container = $entry;
-                $this->total = count($entry->get_content());
+                $this->total = count($entry->getItems());
                 $i = 0;
                 $first = true;
 
-                foreach ($entry->get_content() as $element) {
+                foreach ($entry->getItems() as $element) {
                     $i ++;
                     if ($first) {
-                        $sbas_id = $element->get_record()->get_sbas_id();
-                        $record_id = $element->get_record()->get_record_id();
+                        $sbas_id = $element->getRecord($this->app)->get_sbas_id();
+                        $record_id = $element->getRecord($this->app)->get_record_id();
+                        $this->name = $entry->getTitle();
                         $this->original_item = $element;
-                        $this->name = $entry->get_title();
-                        $number = $element->get_ord();
+                        $number = $element->getOrd();
                     }
                     $first = false;
 
-                    if ($element->get_ord() == $pos) {
-                        $sbas_id = $element->get_record()->get_sbas_id();
-                        $record_id = $element->get_record()->get_record_id();
+                    if ($element->getOrd() == $pos) {
+                        $sbas_id = $element->getRecord($this->app)->get_sbas_id();
+                        $record_id = $element->getRecord($this->app)->get_record_id();
+                        $this->name = $entry->getTitle();
                         $this->original_item = $element;
-                        $this->name = $entry->get_title();
-                        $number = $element->get_ord();
+                        $number = $element->getOrd();
                     }
                 }
                 break;
@@ -219,7 +212,6 @@ class record_preview extends record_adapter
             case 'RESULT':
                 $perPage = 56;
                 $index = ($pos - 3) < 0 ? 0 : ($pos - 3);
-                $page = (int) ceil($pos / $perPage);
                 $results = $search_engine->query($query, $index, $perPage);
 
                 $this->train = $results->getResults()->toArray();
@@ -287,11 +279,7 @@ class record_preview extends record_adapter
         switch ($this->env) {
 
             case "RESULT":
-                $this->title .= sprintf(
-                    _('preview:: resultat numero %s '), '<span id="current_result_n">' . ($this->number + 1)
-                    . '</span> : '
-                );
-
+                $this->title .= $this->app->trans('preview:: resultat numero %number%', ['%number%' => '<span id="current_result_n">' . ($this->number + 1) . '</span> : ']);
                 $this->title .= parent::get_title($highlight, $search_engine);
                 break;
             case "BASK":
@@ -335,9 +323,9 @@ class record_preview extends record_adapter
             return $this->short_history;
         }
 
-        $tab = array();
+        $tab = [];
 
-        $report = $this->app['authentication']->getUser()->ACL()->has_right_on_base($this->get_base_id(), 'canreport');
+        $report = $this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($this->get_base_id(), 'canreport');
 
         $connsbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
 
@@ -345,12 +333,12 @@ class record_preview extends record_adapter
                 FROM log_docs d, log l
                 WHERE d.log_id = l.id
                 AND d.record_id = :record_id ';
-        $params = array(':record_id' => $this->get_record_id());
+        $params = [':record_id' => $this->get_record_id()];
 
         if (! $report) {
             $sql .= ' AND ((l.usrid = :usr_id AND l.site= :site) OR action="add")';
             $params[':usr_id'] = $this->app['authentication']->getUser()->get_id();
-            $params[':site'] = $this->app['phraseanet.configuration']['main']['key'];
+            $params[':site'] = $this->app['conf']->get(['main', 'key']);
         }
 
         $sql .= 'ORDER BY d.date, usrid DESC';
@@ -364,17 +352,17 @@ class record_preview extends record_adapter
             $hour = $this->app['date-formatter']->getPrettyString(new DateTime($row['date']));
 
             if ( ! isset($tab[$hour]))
-                $tab[$hour] = array();
+                $tab[$hour] = [];
 
             $site = $row['site'];
 
             if ( ! isset($tab[$hour][$site]))
-                $tab[$hour][$site] = array();
+                $tab[$hour][$site] = [];
 
             $action = $row['action'];
 
             if ( ! isset($tab[$hour][$site][$action]))
-                $tab[$hour][$site][$action] = array();
+                $tab[$hour][$site][$action] = [];
 
             if ( ! isset($tab[$hour][$site][$action][$row['usr_id']])) {
                 $user = null;
@@ -386,11 +374,11 @@ class record_preview extends record_adapter
                 }
 
                 $tab[$hour][$site][$action][$row['usr_id']] =
-                    array(
-                        'final' => array()
-                        , 'comment' => array()
+                    [
+                        'final' => []
+                        , 'comment' => []
                         , 'user' => $user
-                );
+                ];
             }
 
             if ( ! in_array($row['final'], $tab[$hour][$site][$action][$row['usr_id']]['final'])) {
@@ -420,7 +408,7 @@ class record_preview extends record_adapter
             return $this->view_popularity;
         }
 
-        $report = $this->app['authentication']->getUser()->ACL()->has_right_on_base(
+        $report = $this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base(
             $this->get_base_id(), 'canreport');
 
         if ( ! $report && ! $this->app['phraseanet.registry']->get('GV_google_api')) {
@@ -429,7 +417,7 @@ class record_preview extends record_adapter
             return $this->view_popularity;
         }
 
-        $views = $dwnls = array();
+        $views = $dwnls = [];
         $top = 1;
         $day = 30;
         $min = 0;
@@ -453,10 +441,10 @@ class record_preview extends record_adapter
         $connsbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
         $stmt = $connsbas->prepare($sql);
         $stmt->execute(
-            array(
+            [
                 ':record_id' => $this->get_record_id(),
-                ':site'      => $this->app['phraseanet.configuration']['main']['key']
-            )
+                ':site'      => $this->app['conf']->get(['main', 'key'])
+            ]
         );
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -509,7 +497,7 @@ class record_preview extends record_adapter
             return $this->refferer_popularity;
         }
 
-        $report = $this->app['authentication']->getUser()->ACL()->has_right_on_base(
+        $report = $this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base(
             $this->get_base_id(), 'canreport');
 
         if ( ! $report && ! $this->app['phraseanet.registry']->get('GV_google_api')) {
@@ -527,29 +515,29 @@ class record_preview extends record_adapter
             GROUP BY referrer ORDER BY referrer ASC';
 
         $stmt = $connsbas->prepare($sql);
-        $stmt->execute(array(':record_id' => $this->get_record_id()));
+        $stmt->execute([':record_id' => $this->get_record_id()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $referrers = array();
+        $referrers = [];
 
         foreach ($rs as $row) {
             if ($row['referrer'] == 'NO REFERRER')
-                $row['referrer'] = _('report::acces direct');
+                $row['referrer'] = $this->app->trans('report::acces direct');
             if ($row['referrer'] == $this->app['phraseanet.registry']->get('GV_ServerName') . 'prod/')
-                $row['referrer'] = _('admin::monitor: module production');
+                $row['referrer'] = $this->app->trans('admin::monitor: module production');
             if ($row['referrer'] == $this->app['phraseanet.registry']->get('GV_ServerName') . 'client/')
-                $row['referrer'] = _('admin::monitor: module client');
+                $row['referrer'] = $this->app->trans('admin::monitor: module client');
             if (strpos($row['referrer'], $this->app['phraseanet.registry']->get('GV_ServerName') . 'login/') !== false)
-                $row['referrer'] = _('report:: page d\'accueil');
+                $row['referrer'] = $this->app->trans('report:: page d\'accueil');
             if (strpos($row['referrer'], 'http://apps.cooliris.com/') !== false)
-                $row['referrer'] = _('report:: visualiseur cooliris');
+                $row['referrer'] = $this->app->trans('report:: visualiseur cooliris');
 
             if (strpos($row['referrer'], $this->app['phraseanet.registry']->get('GV_ServerName') . 'document/') !== false) {
-                $row['referrer'] = _('report::acces direct');
+                $row['referrer'] = $this->app->trans('report::acces direct');
             }
             if (strpos($row['referrer'], $this->app['phraseanet.registry']->get('GV_ServerName') . 'permalink/') !== false) {
-                $row['referrer'] = _('report::acces direct');
+                $row['referrer'] = $this->app->trans('report::acces direct');
             }
             if ( ! isset($referrers[$row['referrer']]))
                 $referrers[$row['referrer']] = 0;
@@ -581,7 +569,7 @@ class record_preview extends record_adapter
             return $this->download_popularity;
         }
 
-        $report = $this->app['authentication']->getUser()->ACL()->has_right_on_base($this->get_base_id(), 'canreport');
+        $report = $this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($this->get_base_id(), 'canreport');
 
         $ret = false;
         if ( ! $report && ! $this->app['phraseanet.registry']->get('GV_google_api')) {
@@ -590,11 +578,9 @@ class record_preview extends record_adapter
             return $this->download_popularity;
         }
 
-        $views = $dwnls = array();
+        $views = $dwnls = [];
         $top = 1;
         $day = 30;
-        $min = 0;
-        $average = 0;
 
         while ($day >= 0) {
 
@@ -616,10 +602,10 @@ class record_preview extends record_adapter
         $connsbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
         $stmt = $connsbas->prepare($sql);
         $stmt->execute(
-            array(
+            [
                 ':record_id' => $this->get_record_id(),
-                ':site'      => $this->app['phraseanet.configuration']['main']['key']
-            )
+                ':site'      => $this->app['conf']->get(['main', 'key'])
+            ]
         );
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();

@@ -20,7 +20,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = array('__PUSH_VALIDATION__');
+    public $events = ['__PUSH_VALIDATION__'];
 
     /**
      *
@@ -28,8 +28,8 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
      */
     public function __construct(Application $app, eventsmanager_broker $broker)
     {
-        $this->group = _('Validation');
         parent::__construct($app, $broker);
+        $this->group = $this->app->trans('Validation');
 
         return $this;
     }
@@ -52,12 +52,12 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'from'    => ''
             , 'to'      => ''
             , 'message' => ''
             , 'ssel_id' => ''
-        );
+        ];
 
         $params = array_merge($default, $params);
 
@@ -97,7 +97,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
                 $user_to = User_Adapter::getInstance($params['to'], $this->app);
 
                 $basket = $this->app['EM']
-                    ->getRepository('\Entities\Basket')
+                    ->getRepository('Alchemy\Phrasea\Model\Entities\Basket')
                     ->find($params['ssel_id']);
                 $title = $basket->getName();
 
@@ -138,35 +138,32 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
         $ssel_id = (string) $sx->ssel_id;
 
         try {
-            $registered_user = User_Adapter::getInstance($from, $this->app);
+            User_Adapter::getInstance($from, $this->app);
         } catch (Exception $e) {
-            return array();
+            return [];
         }
 
         $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
 
         try {
-            $repository = $this->app['EM']->getRepository('\Entities\Basket');
-
-            $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['authentication']->getUser(), false);
-
-            $basket_name = trim($basket->getName()) ? : _('Une selection');
+            $basket = $this->app['converter.basket']->convert($ssel_id);
+            $basket_name = trim($basket->getName()) ? : $this->app->trans('Une selection');
         } catch (Exception $e) {
-            $basket_name = _('Une selection');
+            $basket_name = $this->app->trans('Une selection');
         }
 
         $bask_link = '<a href="'
-            . $this->app->url('lightbox_validation', array('ssel_id' => (string) $sx->ssel_id))
+            . $this->app->url('lightbox_validation', ['basket' => (string) $sx->ssel_id])
             . '" target="_blank">'
             . $basket_name . '</a>';
 
-        $ret = array(
-            'text'  => sprintf(
-                _('%1$s vous demande de valider %2$s')
-                , $sender, $bask_link
-            )
+        $ret = [
+            'text'  => $this->app->trans('%user% vous demande de valider %title%', [
+                '%user%' => $sender,
+                '%title%' => $bask_link,
+            ])
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
-        );
+        ];
 
         return $ret;
     }
@@ -177,7 +174,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
      */
     public function get_name()
     {
-        return _('Validation');
+        return $this->app->trans('Validation');
     }
 
     /**
@@ -186,7 +183,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
      */
     public function get_description()
     {
-        return _('Recevoir des notifications lorsqu\'on me demande une validation');
+        return $this->app->trans('Recevoir des notifications lorsqu\'on me demande une validation');
     }
 
     /**

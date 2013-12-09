@@ -1,18 +1,18 @@
 <form method="POST" action="{{ path('prod_stories_do_create') }}">
 
-    <label>{% trans 'Collection' %}</label>
+    <label>{{ 'Collection' | trans }}</label>
     <select name="base_id">
-        {% for collection in app['authentication'].getUser().ACL().get_granted_base(['canaddrecord']) %}
-            <option value="{{ collection.get_base_id() }}">{{ collection.get_databox().get_label(app['locale.I18n']) }} / {{ collection.get_label(app['locale.I18n']) }}</option>
+        {% for collection in app['acl'].get(app['authentication'].getUser()).get_granted_base(['canaddrecord']) %}
+            <option value="{{ collection.get_base_id() }}">{{ collection.get_databox().get_label(app['locale']) }} / {{ collection.get_label(app['locale']) }}</option>
         {% endfor %}
     </select>
 
-    <label>{% trans 'Story name' %}</label>
+    <label>{{ 'Story name' | trans }}</label>
     <input name="name" value="" type="text"/>
 
     <label for="new_story_add_sel" class="checkbox">
         <input type="checkbox" name="lst" value="" id="new_story_add_sel"/>
-        {% trans 'Ajouter ma selection courrante' %}
+        {{ 'Ajouter ma selection courrante' | trans }}
     </label>
 
   <script type="text/javascript">

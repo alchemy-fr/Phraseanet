@@ -5,49 +5,49 @@
         <thead>
           <tr>
             <th style="text-align: center;" class="sortable {{ sort == 'usr_login' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-              {% trans 'Login' %}
+              {{ 'Login' | trans }}
               <span class="ord_notifier">
                 {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
               </span>
               <input type="hidden" name="srt" value="usr_login" />
             </th>
             <th style="text-align: center;" class="sortable {{ sort == 'usr_nom' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-              {% trans 'First/Last Name' %}
+              {{ 'First/Last Name' | trans }}
               <span class="ord_notifier">
                 {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
               </span>
               <input type="hidden" name="srt" value="usr_nom" />
             </th>
             <th style="text-align: center;" class="sortable {{ sort == 'societe' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-              {% trans 'Company' %}
+              {{ 'Company' | trans }}
               <span class="ord_notifier">
                 {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
               </span>
               <input type="hidden" name="srt" value="societe" />
             </th>
             <th style="text-align: center;" class="sortable {{ sort == 'usr_mail' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-              {% trans 'E-Mail' %}
+              {{ 'E-Mail' | trans }}
               <span class="ord_notifier">
                 {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
               </span>
               <input type="hidden" name="srt" value="usr_mail" />
             </th>
             <th style="text-align: center;" class="sortable {{ sort == 'pays' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-              {% trans 'Country' %}
+              {{ 'Country' | trans }}
               <span class="ord_notifier">
                 {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
               </span>
               <input type="hidden" name="srt" value="pays" />
             </th>
             <th style="text-align: center;" class="sortable {{ sort == 'lastModel' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-              {% trans 'Last Template' %}
+              {{ 'Last Template' | trans }}
               <span class="ord_notifier">
                 {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
               </span>
               <input type="hidden" name="srt" value="lastModel" />
             </th>
             <th style="text-align: center;" class="sortable {{ sort == 'usr_creationdate' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-              {% trans 'Creation date' %}
+              {{ 'Creation date' | trans }}
               <span class="ord_notifier">
                 {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
               </span>
@@ -87,15 +87,13 @@
   </div>
   <div class="PNB" style="top:auto;height:20px;text-align:right;line-height:20px;">
     {% set length = '<span class="counter current">' ~ list.getEntries().count() ~ '</span>' %}
-    {% trans %}
-      {{ length }} peoples
-    {% endtrans %}
+    {% trans with {'%length%' : length} %}%length% peoples{% endtrans %}
     {% if query.get_page() > 1 %}
-      <a class="prev" value="{{ query.get_page() - 1 }}" href="#">< {% trans 'Previous' %}</a>
+      <a class="prev" value="{{ query.get_page() - 1 }}" href="#">< {{ 'Previous' | trans }}</a>
     {% endif %}
     {{ query.get_page() }} / {{ query.get_total_page() }}
     {% if query.get_page() < query.get_total_page() %}
-      <a class="next" value="{{ query.get_page() + 1 }}" href="#">{% trans 'Next' %} ></a>
+      <a class="next" value="{{ query.get_page() + 1 }}" href="#">{{ 'Next' | trans }} ></a>
     {% endif %}
   </div>
 </div>
@@ -179,7 +177,7 @@
 {% macro badgeReadonly(entry, role) %}
   <div class="badge">
     <input type="hidden" value="{{ entry.getUser(app).get_id() }}" name="id">
-    {% if role >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+    {% if role >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
       <a class="deleter" href="#">
         <img src="/skins/prod/Push/close_badge.png">
       </a>

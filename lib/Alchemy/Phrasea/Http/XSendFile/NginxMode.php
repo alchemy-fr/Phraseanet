@@ -21,17 +21,17 @@ class NginxMode extends AbstractXSendFileMode implements ModeInterface
      */
     public function setHeaders(Request $request)
     {
-        $xAccelMapping = array();
+        $xAccelMapping = [];
 
         foreach ($this->mapping as $entry) {
             $xAccelMapping[] = sprintf('%s=%s', $entry['mount-point'], $entry['directory']);
         }
 
         if (count($xAccelMapping) > 0 ) {
-            $request->headers->add(array(
+            $request->headers->add([
                 'X-Sendfile-Type' => 'X-Accel-Redirect',
                 'X-Accel-Mapping' => implode(',', $xAccelMapping),
-            ));
+            ]);
         }
     }
 
@@ -40,7 +40,7 @@ class NginxMode extends AbstractXSendFileMode implements ModeInterface
      */
     public function setMapping(array $mapping)
     {
-        $final = array();
+        $final = [];
 
         foreach ($mapping as $entry) {
             if (!is_array($entry)) {
@@ -59,10 +59,10 @@ class NginxMode extends AbstractXSendFileMode implements ModeInterface
                 continue;
             }
 
-            $final[] = array(
+            $final[] = [
                 'directory' => $this->sanitizePath(realpath($entry['directory'])),
                 'mount-point' => $this->sanitizeMountPoint($entry['mount-point'])
-            );
+            ];
         }
 
         $this->mapping = $final;

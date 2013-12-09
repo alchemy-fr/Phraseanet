@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class phrasea
 {
@@ -29,24 +30,6 @@ class phrasea
     const CACHE_SBAS_LABELS = 'sbas_labels';
     const CACHE_SBAS_FROM_BAS = 'sbas_from_bas';
     const CACHE_SBAS_PARAMS = 'sbas_params';
-
-    public static function is_scheduler_started(Application $app)
-    {
-        $retval = false;
-        $conn = connection::getPDOConnection($app);
-        $sql = 'SELECT schedstatus FROM sitepreff';
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if ($row && $row['schedstatus'] != 'stopped') {
-            $retval = true;
-        }
-
-        return $retval;
-    }
 
     public static function clear_sbas_params(Application $app)
     {
@@ -70,7 +53,7 @@ class phrasea
 
         }
 
-        self::$_sbas_params = array();
+        self::$_sbas_params = [];
 
         $sql = 'SELECT sbas_id, host, port, user, pwd, dbname FROM sbas';
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
@@ -87,37 +70,20 @@ class phrasea
         return self::$_sbas_params;
     }
 
-    public static function use_i18n($locale, $textdomain = 'phraseanet')
+    public static function modulesName(TranslatorInterface $translator, $array_modules)
     {
-        $codeset = "UTF-8";
+        $array = [];
 
-        putenv('LANG=' . $locale . '.' . $codeset);
-        putenv('LANGUAGE=' . $locale . '.' . $codeset);
-        bind_textdomain_codeset($textdomain, 'UTF-8');
-
-        bindtextdomain($textdomain, __DIR__ . '/../../locale/');
-        setlocale(LC_ALL
-            , $locale . '.UTF-8'
-            , $locale . '.UTF8'
-            , $locale . '.utf-8'
-            , $locale . '.utf8');
-        textdomain($textdomain);
-    }
-
-    public static function modulesName($array_modules)
-    {
-        $array = array();
-
-        $modules = array(
-            1 => _('admin::monitor: module production'),
-            2 => _('admin::monitor: module client'),
-            3 => _('admin::monitor: module admin'),
-            4 => _('admin::monitor: module report'),
-            5 => _('admin::monitor: module thesaurus'),
-            6 => _('admin::monitor: module comparateur'),
-            7 => _('admin::monitor: module validation'),
-            8 => _('admin::monitor: module upload')
-        );
+        $modules = [
+            1 => $translator->trans('admin::monitor: module production'),
+            2 => $translator->trans('admin::monitor: module client'),
+            3 => $translator->trans('admin::monitor: module admin'),
+            4 => $translator->trans('admin::monitor: module report'),
+            5 => $translator->trans('admin::monitor: module thesaurus'),
+            6 => $translator->trans('admin::monitor: module comparateur'),
+            7 => $translator->trans('admin::monitor: module validation'),
+            8 => $translator->trans('admin::monitor: module upload')
+        ];
 
         foreach ($array_modules as $a) {
             if (isset($modules[$a]))
@@ -162,7 +128,7 @@ class phrasea
 
             foreach ($rs as $row) {
                 if (!isset(self::$_coll2bas[$row['sbas_id']]))
-                    self::$_coll2bas[$row['sbas_id']] = array();
+                    self::$_coll2bas[$row['sbas_id']] = [];
                 self::$_coll2bas[$row['sbas_id']][$row['server_coll_id']] = (int) $row['base_id'];
             }
         }
@@ -174,12 +140,12 @@ class phrasea
     {
         self::$_coll2bas = self::$_bas2coll = self::$_bas_labels = self::$_bas2sbas = null;
         $appbox->delete_data_from_cache(
-            array(
+            [
                 self::CACHE_BAS_2_COLL
                 , self::CACHE_BAS_2_COLL
                 , self::CACHE_BAS_LABELS
                 , self::CACHE_SBAS_FROM_BAS
-            )
+            ]
         );
 
         return;
@@ -189,12 +155,12 @@ class phrasea
     {
         self::$_sbas_names = self::$_sbas_labels = self::$_sbas_params = self::$_bas2sbas = null;
         $appbox->delete_data_from_cache(
-            array(
+            [
                 self::CACHE_SBAS_NAMES,
                 self::CACHE_SBAS_LABELS,
                 self::CACHE_SBAS_FROM_BAS,
                 self::CACHE_SBAS_PARAMS,
-            )
+            ]
         );
 
         return;
@@ -241,19 +207,19 @@ class phrasea
                 self::$_sbas_labels = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_LABELS);
             } catch (Exception $e) {
                 foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
-                    self::$_sbas_labels[$databox->get_sbas_id()] = array(
+                    self::$_sbas_labels[$databox->get_sbas_id()] = [
                         'fr' => $databox->get_label('fr'),
                         'en' => $databox->get_label('en'),
                         'de' => $databox->get_label('de'),
                         'nl' => $databox->get_label('nl'),
-                    );
+                    ];
                 }
                 $app['phraseanet.appbox']->set_data_to_cache(self::$_sbas_labels, self::CACHE_SBAS_LABELS);
             }
         }
 
-        if (isset(self::$_sbas_labels[$sbas_id]) && isset(self::$_sbas_labels[$sbas_id][$app['locale.I18n']])) {
-            return self::$_sbas_labels[$sbas_id][$app['locale.I18n']];
+        if (isset(self::$_sbas_labels[$sbas_id]) && isset(self::$_sbas_labels[$sbas_id][$app['locale']])) {
+            return self::$_sbas_labels[$sbas_id][$app['locale']];
         }
 
         return 'Unknown database';
@@ -267,12 +233,12 @@ class phrasea
             } catch (Exception $e) {
                 foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
                     foreach ($databox->get_collections() as $collection) {
-                        self::$_bas_labels[$collection->get_base_id()] = array(
+                        self::$_bas_labels[$collection->get_base_id()] = [
                             'fr' => $collection->get_label('fr'),
                             'en' => $collection->get_label('en'),
                             'de' => $collection->get_label('de'),
                             'nl' => $collection->get_label('nl'),
-                        );
+                        ];
                     }
                 }
 
@@ -280,38 +246,10 @@ class phrasea
             }
         }
 
-        if (isset(self::$_bas_labels[$base_id]) && isset(self::$_bas_labels[$base_id][$app['locale.I18n']])) {
-            return self::$_bas_labels[$base_id][$app['locale.I18n']];
+        if (isset(self::$_bas_labels[$base_id]) && isset(self::$_bas_labels[$base_id][$app['locale']])) {
+            return self::$_bas_labels[$base_id][$app['locale']];
         }
 
         return 'Unknown collection';
-    }
-
-    public static function scheduler_key(Application $app, $renew = false)
-    {
-        $conn = connection::getPDOConnection($app);
-
-        $schedulerkey = false;
-
-        $sql = 'SELECT schedulerkey FROM sitepreff';
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if ($row) {
-            $schedulerkey = trim($row['schedulerkey']);
-        }
-
-        if ($renew === true || $schedulerkey == '') {
-            $schedulerkey = random::generatePassword(20);
-            $sql = 'UPDATE sitepreff SET schedulerkey = :scheduler_key';
-            $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':scheduler_key' => $schedulerkey));
-            $stmt->closeCursor();
-        }
-
-        return $schedulerkey;
     }
 }

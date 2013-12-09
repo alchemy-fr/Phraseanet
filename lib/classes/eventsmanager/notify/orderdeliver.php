@@ -14,19 +14,13 @@ use Alchemy\Phrasea\Notification\Emitter;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailInfoOrderDelivered;
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
 {
     /**
      *
      * @var string
      */
-    public $events = array('__ORDER_DELIVER__');
+    public $events = ['__ORDER_DELIVER__'];
 
     /**
      *
@@ -34,8 +28,8 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
      */
     public function __construct(Application $app, eventsmanager_broker $broker)
     {
-        $this->group = _('Commande');
         parent::__construct($app, $broker);
+        $this->group = $this->app->trans('Commande');
 
         return $this;
     }
@@ -58,12 +52,12 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = array(
+        $default = [
             'from'    => ''
             , 'to'      => ''
             , 'ssel_id' => ''
             , 'n'       => ''
-        );
+        ];
 
         $params = array_merge($default, $params);
 
@@ -104,7 +98,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
                 $receiver = Receiver::fromUser($user_to);
                 $emitter = Emitter::fromUser($user_from);
 
-                $repository = $this->app['EM']->getRepository('\Entities\Basket');
+                $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
                 $basket = $repository->find($params['ssel_id']);
 
                 $readyToSend = true;
@@ -113,15 +107,15 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
             }
 
             if ($readyToSend) {
-                $url = $this->app->url('lightbox_compare', array(
-                    'ssel_id' => $basket->getId(),
+                $url = $this->app->url('lightbox_compare', [
+                    'basket' => $basket->getId(),
                     'LOG' => $this->app['tokens']->getUrlToken(
                         \random::TYPE_VIEW,
                         $user_to->get_id(),
                         null,
                         $basket->getId()
                     )
-                ));
+                ]);
 
                 $mail = MailInfoOrderDelivered::create($this->app, $receiver, $emitter, null);
                 $mail->setButtonUrl($url);
@@ -151,28 +145,24 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
         $n = (int) $sx->n;
 
         try {
-            $registered_user = User_Adapter::getInstance($from, $this->app);
+            User_Adapter::getInstance($from, $this->app);
         } catch (Exception $e) {
-            return array();
+            return [];
         }
 
         $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
 
         try {
-            $repository = $this->app['EM']->getRepository('\Entities\Basket');
-
-            $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['authentication']->getUser(), false);
+            $basket = $this->app['converter.basket']->convert($ssel_id);
         } catch (Exception $e) {
-            return array();
+            return [];
         }
-        $ret = array(
-            'text'  => sprintf(
-                _('%1$s vous a delivre %2$d document(s) pour votre commande %3$s'), $sender, $n, '<a href="/lightbox/compare/'
+        $ret = [
+            'text'  => $this->app->trans('%user% vous a delivre %quantity% document(s) pour votre commande %title%', ['%user%' => $sender, '%quantity%' => $n, '%title%' => '<a href="/lightbox/compare/'
                 . (string) $sx->ssel_id . '/" target="_blank">'
-                . $basket->getName() . '</a>'
-            )
+                . $basket->getName() . '</a>'])
             , 'class' => ''
-        );
+        ];
 
         return $ret;
     }
@@ -183,7 +173,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
      */
     public function get_name()
     {
-        return _('Reception de commande');
+        return $this->app->trans('Reception de commande');
     }
 
     /**
@@ -192,7 +182,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
      */
     public function get_description()
     {
-        return _('Reception d\'une commande');
+        return $this->app->trans('Reception d\'une commande');
     }
 
     /**

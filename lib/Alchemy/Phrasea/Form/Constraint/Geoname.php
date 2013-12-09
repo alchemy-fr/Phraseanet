@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Form\Constraint;
 
+use Alchemy\Phrasea\Application;
 use Symfony\Component\Validator\Constraint;
 use Alchemy\Geonames\Connector;
 use Alchemy\Geonames\Exception\TransportException;
@@ -18,12 +19,11 @@ use Alchemy\Geonames\Exception\NotFoundException;
 
 class Geoname extends Constraint
 {
+    public $message = 'This place does not seem to exist.';
     private $connector;
-    private $message;
 
     public function __construct(Connector $connector)
     {
-        $this->message = _('This place does not seem to exist.');
         $this->connector = $connector;
         parent::__construct();
     }
@@ -39,5 +39,10 @@ class Geoname extends Constraint
         }
 
         return true;
+    }
+
+    public static function create(Application $app)
+    {
+        return new static($app['geonames.connector']);
     }
 }

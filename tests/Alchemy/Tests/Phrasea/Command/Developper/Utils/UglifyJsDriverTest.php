@@ -19,7 +19,7 @@ class UglifyJsDriverTest extends \PHPUnit_Framework_TestCase
         $finder = new PhpExecutableFinder();
         $php = $finder->find();
 
-        $driver = UglifyJsDriver::create(array('uglifyjs.binaries' => $php));
+        $driver = UglifyJsDriver::create(['uglifyjs.binaries' => $php]);
         $this->assertInstanceOf('Alchemy\Phrasea\Command\Developer\Utils\UglifyJsDriver', $driver);
         $this->assertEquals($php, $driver->getProcessBuilderFactory()->getBinary());
     }

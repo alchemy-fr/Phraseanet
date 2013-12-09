@@ -5,72 +5,13 @@ namespace Alchemy\Tests\Phrasea\Controller\Root;
 require_once __DIR__ . '/../../../../../classes/FeedValidator.inc';
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\Feed;
+use Alchemy\Phrasea\Model\Entities\FeedEntry;
+use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Symfony\Component\HttpFoundation\Response;
 
 class RssFeedTest extends \PhraseanetWebTestCaseAbstract
 {
-    /**
-     *
-     * @var \Feed_Adapter
-     */
-    public static $feed;
-
-    /**
-     *
-     * @var \Feed_Adapter_Entry
-     */
-    public static $entry;
-    public static $publisher;
-
-    /**
-     *
-     * @var \Feed_Collection
-     */
-    protected static $public_feeds;
-
-    /**
-     *
-     * @var \Feed_Collection
-     */
-    protected static $private_feeds;
-
-    /**
-     *
-     * @var \Feed_Adapter
-     */
-    protected static $feed_1_private;
-    protected static $feed_1_private_title = 'Feed 1 title';
-    protected static $feed_1_private_subtitle = 'Feed 1 subtitle';
-    protected static $feed_1_entries = array();
-    protected static $feed_2_entries = array();
-    protected static $feed_3_entries = array();
-    protected static $feed_4_entries = array();
-
-    /**
-     *
-     * @var \Feed_Adapter
-     */
-    protected static $feed_2_private;
-    protected static $feed_2_private_title = 'Feed 2 title';
-    protected static $feed_2_private_subtitle = 'Feed 2 subtitle';
-
-    /**
-     *
-     * @var \Feed_Adapter
-     */
-    protected static $feed_3_public;
-    protected static $feed_3_public_title = 'Feed 3 title';
-    protected static $feed_3_public_subtitle = 'Feed 3 subtitle';
-
-    /**
-     *
-     * @var \Feed_Adapter
-     */
-    protected static $feed_4_public;
-    protected static $feed_4_public_title = 'Feed 4 title';
-    protected static $feed_4_public_subtitle = 'Feed 4 subtitle';
-    protected $client;
-
     private static $initialized = false;
 
     public function setUp()
@@ -81,92 +22,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
 
             @unlink('/tmp/db.sqlite');
             copy(__DIR__ . '/../../../../../db-ref.sqlite', '/tmp/db.sqlite');
-
-            self::$DI['app']['session']->clear();
-            self::$DI['app']['session']->set('usr_id', self::$DI['user']->get_id());
-
-            self::$feed_1_private = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$feed_1_private_title, self::$feed_1_private_subtitle);
-            self::$feed_1_private->set_public(false);
-            self::$feed_1_private->set_icon(__DIR__ . '/../../../../../files/logocoll.gif');
-
-            self::$feed_2_private = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$feed_2_private_title, self::$feed_2_private_subtitle);
-            self::$feed_2_private->set_public(false);
-
-            self::$feed_3_public = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$feed_3_public_title, self::$feed_3_public_subtitle);
-            self::$feed_3_public->set_public(true);
-            self::$feed_3_public->set_icon(__DIR__ . '/../../../../../files/logocoll.gif');
-
-            self::$feed_4_public = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$feed_4_public_title, self::$feed_4_public_subtitle);
-            self::$feed_4_public->set_public(true);
-
-            $publishers = self::$feed_4_public->get_publishers();
-            $publisher = array_shift($publishers);
-
-            self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-                ->disableOriginalConstructor()
-                ->getMock();
-
-            self::$DI['app']['notification.deliverer']->expects($this->atLeastOnce())
-                ->method('deliver')
-                ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication'), $this->equalTo(null));
-
-            for ($i = 1; $i != 15; $i++) {
-                $entry = \Feed_Entry_Adapter::create(self::$DI['app'], self::$feed_4_public, $publisher, 'titre entry', 'soustitre entry', 'Jean-Marie Biggaro', 'author@example.com');
-
-                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_1']);
-                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_6']);
-                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_7']);
-                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_13']);
-                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_15']);
-                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_16']);
-
-                $entry = \Feed_Entry_Adapter::create(self::$DI['app'], self::$feed_1_private, $publisher, 'titre entry', 'soustitre entry', 'Jean-Marie Biggaro', 'author@example.com');
-
-                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_1']);
-                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_6']);
-                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_7']);
-                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_13']);
-                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_15']);
-                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_16']);
-
-                self::$feed_4_entries[] = $entry;
-            }
-
-            self::$public_feeds = \Feed_Collection::load_public_feeds(self::$DI['app']);
-            self::$private_feeds = \Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
-            self::$DI['app']['session']->clear();
-
-            self::$initialized = true;
         }
-
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        self::$DI['app']['notification.deliverer']->expects($this->atLeastOnce())
-            ->method('deliver')
-            ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication'), $this->equalTo(null));
-
-        self::$feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], 'title', 'subtitle');
-        self::$publisher = \Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], self::$feed, self::$DI['user']);
-        self::$entry = \Feed_Entry_Adapter::create(self::$DI['app'], self::$feed, self::$publisher, 'title_entry', 'subtitle', 'hello', "test@mail.com");
-        \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], self::$entry, self::$DI['record_1']);
-        \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], self::$entry, self::$DI['record_2']);
-        self::$feed->set_public(true);
-    }
-
-    public function tearDown()
-    {
-        if (self::$publisher instanceof \Feed_Publisher_Adapter) {
-            self::$publisher->delete();
-        }
-        if (self::$entry instanceof \Feed_Entry_Adapter) {
-            self::$entry->delete();
-        }
-        if (self::$feed instanceof \Feed_Adapter) {
-            self::$feed->delete();
-        }
-        parent::tearDown();
     }
 
     public static function setUpBeforeClass()
@@ -179,17 +35,13 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public static function tearDownAfterClass()
     {
-        self::$feed_1_private->delete();
-        self::$feed_2_private->delete();
-        self::$feed_3_public->delete();
-        self::$feed_4_public->delete();
-
         parent::tearDownAfterClass();
     }
 
     public function testPublicFeedAggregated()
     {
-        self::$public_feeds->get_aggregate();
+        $this->insertOneFeed(self::$DI['user'], "test", true);
+
         self::$DI['client']->request('GET', '/feeds/aggregated/atom/');
         $response = self::$DI['client']->getResponse();
 
@@ -234,12 +86,9 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
     {
         $this->authenticate(self::$DI['app']);
 
-        $link = self::$feed_3_public->get_user_link(self::$DI['app']['phraseanet.registry'], self::$DI['user'], \Feed_Adapter::FORMAT_ATOM)->get_href();
-        $link = str_replace(self::$DI['app']['phraseanet.registry']->get('GV_ServerName') . 'feeds/', '/', $link);
+        $feed = $this->insertOneFeed(self::$DI['user'], "test1", true);
 
-        $this->logout(self::$DI['app']);
-
-        self::$DI['client']->request('GET', "/feeds" . $link);
+        self::$DI['client']->request('GET', "/feeds/feed/" . $feed->getId() . "/atom/");
         $response = self::$DI['client']->getResponse();
 
         $this->evaluateResponse200($response);
@@ -250,14 +99,15 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function testUserFeedAggregated()
     {
-        $this->authenticate(self::$DI['app']);
+        $feed = $this->insertOneFeed(self::$DI['user']);
 
-        $link = self::$private_feeds->get_aggregate()->get_user_link(self::$DI['app']['phraseanet.registry'], self::$DI['user'], \Feed_Adapter::FORMAT_ATOM)->get_href();
-        $link = str_replace(self::$DI['app']['phraseanet.registry']->get('GV_ServerName') . 'feeds/', '/', $link);
+        $token = $this->insertOneAggregateToken(self::$DI['user']);
+
+        $tokenValue = $token->getValue();
 
         $this->logout(self::$DI['app']);
 
-        self::$DI['client']->request('GET', "/feeds" . $link);
+        self::$DI['client']->request('GET', "/feeds/userfeed/aggregated/$tokenValue/atom/");
         $response = self::$DI['client']->getResponse();
 
         $this->evaluateResponse200($response);
@@ -270,12 +120,17 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
     {
         $this->authenticate(self::$DI['app']);
 
-        $link = self::$feed_1_private->get_user_link(self::$DI['app']['phraseanet.registry'], self::$DI['user'], \Feed_Adapter::FORMAT_ATOM)->get_href();
-        $link = str_replace(self::$DI['app']['phraseanet.registry']->get('GV_ServerName') . 'feeds/', '/', $link);
+        $feed = $this->insertOneFeed(self::$DI['user']);
+
+        $id = $feed->getId();
+
+        $token = $this->insertOneFeedToken($feed, self::$DI['user']);
+
+        $tokenValue = $token->getValue();
 
         $this->logout(self::$DI['app']);
 
-        self::$DI['client']->request('GET', "/feeds" . $link);
+        self::$DI['client']->request('GET', "/feeds/userfeed/$tokenValue/$id/atom/");
         $response = self::$DI['client']->getResponse();
 
         $this->evaluateResponse200($response);
@@ -286,18 +141,16 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function testGetFeedFormat()
     {
-        $feeds = \Feed_Collection::load_public_feeds(self::$DI['app']);
-        $all_feeds = $feeds->get_feeds();
-        $feed = array_shift($all_feeds);
+        $feed = $this->insertOneFeed(self::$DI['user'], "test", true);
 
-        $crawler = self::$DI['client']->request("GET", "/feeds/feed/" . $feed->get_id() . "/rss/");
+        $crawler = self::$DI['client']->request("GET", "/feeds/feed/" . $feed->getId() . "/rss/");
         $this->assertEquals("application/rss+xml", self::$DI['client']->getResponse()->headers->get("content-type"));
         $xml = self::$DI['client']->getResponse()->getContent();
 
         $this->verifyXML($xml);
         $this->verifyRSS($feed, $xml);
 
-        $crawler = self::$DI['client']->request("GET", "/feeds/feed/" . $feed->get_id() . "/atom/");
+        $crawler = self::$DI['client']->request("GET", "/feeds/feed/" . $feed->getId() . "/atom/");
         $this->assertEquals("application/atom+xml", self::$DI['client']->getResponse()->headers->get("content-type"));
         $xml = self::$DI['client']->getResponse()->getContent();
         $this->verifyXML($xml);
@@ -306,6 +159,8 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function testCooliris()
     {
+        $feed = $this->insertOneFeed(self::$DI['user'], "test", true);
+
         $crawler = self::$DI['client']->request("GET", "/feeds/cooliris/");
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals("application/rss+xml", self::$DI['client']->getResponse()->headers->get("content-type"));
@@ -315,10 +170,13 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function testAggregatedRss()
     {
-        $feeds = \Feed_Collection::load_public_feeds(self::$DI['app']);
-        $all_feeds = $feeds->get_feeds();
+        $this->insertOneFeed(self::$DI['user'], "test1", true);
+        $this->insertOneFeed(self::$DI['user'], "test2", true);
+
+        $all_feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(['public' => true], ['updatedOn' => 'DESC']);
+
         foreach ($all_feeds as $feed) {
-            $this->assertTrue($feed->is_public());
+            $this->assertTrue($feed->isPublic());
         }
         $crawler = self::$DI['client']->request("GET", "/feeds/aggregated/rss/");
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
@@ -329,10 +187,13 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function testAggregatedAtom()
     {
-        $feeds = \Feed_Collection::load_public_feeds(self::$DI['app']);
-        $all_feeds = $feeds->get_feeds();
+        $this->insertOneFeed(self::$DI['user'], "test1", true);
+        $this->insertOneFeed(self::$DI['user'], "test2", true);
+
+        $all_feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(['public' => true], ['updatedOn' => 'DESC']);
+
         foreach ($all_feeds as $feed) {
-            $this->assertTrue($feed->is_public());
+            $this->assertTrue($feed->isPublic());
         }
         $crawler = self::$DI['client']->request("GET", "/feeds/aggregated/atom/");
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
@@ -356,17 +217,15 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function testGetFeedId()
     {
-        $feeds = \Feed_Collection::load_public_feeds(self::$DI['app']);
-        $all_feeds = $feeds->get_feeds();
-        $feed = array_shift($all_feeds);
+        $feed = $this->insertOneFeed(self::$DI['user'], "test1", true);
 
-        $crawler = self::$DI['client']->request("GET", "/feeds/feed/" . $feed->get_id() . "/rss/");
+        $crawler = self::$DI['client']->request("GET", "/feeds/feed/" . $feed->getId() . "/rss/");
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $xml = self::$DI['client']->getResponse()->getContent();
         $this->verifyXML($xml);
         $this->verifyRSS($feed, $xml);
 
-        $crawler = self::$DI['client']->request("GET", "/feeds/feed/" . $feed->get_id() . "/atom/");
+        $crawler = self::$DI['client']->request("GET", "/feeds/feed/" . $feed->getId() . "/atom/");
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $xml = self::$DI['client']->getResponse()->getContent();
         $this->verifyATOM($feed, $xml);
@@ -374,12 +233,11 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function testPrivateFeedAccess()
     {
-        $private_feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], 'title', 'subtitle');
-        $private_feed->set_public(false);
-        self::$DI['client']->request("GET", "/feeds/feed/" . $private_feed->get_id() . "/rss/");
+        $feed = $this->insertOneFeed(self::$DI['user'], "test1", false);
+
+        self::$DI['client']->request("GET", "/feeds/feed/" . $feed->getId() . "/rss/");
         $this->assertFalse(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals(403, self::$DI['client']->getResponse()->getStatusCode());
-        $private_feed->delete();
     }
 
     public function verifyXML($xml)
@@ -400,7 +258,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         }
     }
 
-    public function verifyRSS(\Feed_Adapter $feed, $xml_string)
+    public function verifyRSS(Feed $feed, $xml_string)
     {
         $dom_doc = new \DOMDocument();
         $dom_doc->loadXML($xml_string);
@@ -413,23 +271,23 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         $this->checkRSSEntryNode($xpath, $feed);
     }
 
-    public function checkRSSRootNode(\DOMXPath $xpath, \Feed_Adapter $feed)
+    public function checkRSSRootNode(\DOMXPath $xpath, Feed $feed)
     {
         $channel = $xpath->query("/rss/channel");
         foreach ($channel->item(0)->childNodes as $child) {
             if ($child->nodeType !== XML_TEXT_NODE) {
                 switch ($child->nodeName) {
                     case 'title':
-                        $this->assertEquals($feed->get_title(), $child->nodeValue);
+                        $this->assertEquals($feed->getTitle(), $child->nodeValue);
                         break;
                     case 'dc:title':
-                        $this->assertEquals($feed->get_title(), $child->nodeValue);
+                        $this->assertEquals($feed->getTitle(), $child->nodeValue);
                         break;
                     case 'description':
-                        $this->assertEquals($feed->get_subtitle(), $child->nodeValue);
+                        $this->assertEquals($feed->getSubtitle(), $child->nodeValue);
                         break;
                     case 'link':
-                        $this->assertEquals($feed->get_homepage_link(self::$DI['app']['phraseanet.registry'], \Feed_Adapter::FORMAT_RSS, 1)->get_href(), $child->nodeValue);
+                        $this->assertEquals(self::$DI['app']['feed.user-link-generator']->generatePublic($feed, 'rss', 1)->getURI(), $child->nodeValue);
                         break;
                     case 'pubDate':
                         $this->assertTrue(new \DateTime() >= new \DateTime($child->nodeValue));
@@ -443,7 +301,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
                     case 'atom:link':
                         foreach ($child->attributes as $attribute) {
                             if ($attribute->name == "href") {
-                                $this->assertEquals($feed->get_homepage_link(self::$DI['app']['phraseanet.registry'], \Feed_Adapter::FORMAT_RSS, 1)->get_href(), $attribute->value);
+                                $this->assertEquals(self::$DI['app']['feed.user-link-generator']->generatePublic($feed, 'rss', 1)->getURI(), $attribute->value);
                                 break;
                             }
                         }
@@ -453,59 +311,57 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         }
     }
 
-    public function checkRSSEntryNode(\DOMXPath $xpath, \Feed_Adapter $feed)
+    public function checkRSSEntryNode(\DOMXPath $xpath, Feed $feed)
     {
         $list_entries = $xpath->query("/rss/channel/item");
         $count = 0;
         $offset_start = 0;
         $n_entries = 20;
-        $collection = $feed->get_entries($offset_start, $n_entries);
-        $entries = $collection->get_entries();
+        $entries = $feed->getEntries($offset_start, $n_entries);
 
         foreach ($list_entries as $node) {
             if (sizeof($entries) == 0) {
                 $offset_start = ($offset_start++) * $n_entries;
-                $collection = $feed->get_entries($offset_start, $n_entries);
-                $entries = $collection->get_entries();
+                $entries = $feed->getEntries($offset_start, $n_entries);
                 if (sizeof($entries) == 0) //no more
                     break;
             }
             $feed_entry = array_shift($entries);
             switch ($node->nodeName) {
                 case 'title':
-                    $this->assertEquals($feed_entry->get_title(), $node->nodeValue);
+                    $this->assertEquals($feed_entry->getTitle(), $node->nodeValue);
                     break;
                 case 'description':
-                    $this->assertEquals($feed_entry->get_subtitle(), $node->nodeValue);
+                    $this->assertEquals($feed_entry->getSubtitle(), $node->nodeValue);
                     break;
                 case 'author':
                     $author = sprintf(
                         '%s (%s)'
-                        , $feed_entry->get_author_email()
-                        , $feed_entry->get_author_name()
+                        , $feed_entry->getAuthorEmail()
+                        , $feed_entry->getAuthorName()
                     );
                     $this->assertEquals($author, $node->nodeValue);
                     break;
                 case 'pubDate':
-                    $this->assertEquals($feed_entry->get_created_on()->format(DATE_RFC2822), $node->nodeValue);
+                    $this->assertEquals($feed_entry->getCreatedOn()->format(DATE_RFC2822), $node->nodeValue);
                     break;
                 case 'guid':
-                    $this->assertEquals($feed_entry->get_link()->get_href(), $node->nodeValue);
+                    $this->assertEquals($feed_entry->getLink()->getURI(), $node->nodeValue);
                     break;
                 case 'link':
-                    $this->assertEquals($feed_entry->get_link()->get_href(), $node->nodeValue);
+                    $this->assertEquals($feed_entry->getLink()->getURI(), $node->nodeValue);
                     break;
             }
             $count++;
             $this->checkRSSEntryItemsNode($xpath, $feed_entry, $count);
         }
-        $this->assertEquals($feed->get_count_total_entries(), $count);
+        $this->assertEquals($feed->getCountTotalEntries(), $count);
     }
 
-    public function checkRSSEntryItemsNode(\DOMXPath $xpath, \Feed_Entry_Adapter $entry, $count)
+    public function checkRSSEntryItemsNode(\DOMXPath $xpath, FeedEntry $entry, $count)
     {
-        $content = $entry->get_content();
-        $available_medium = array('image', 'audio', 'video');
+        $content = $entry->getItems();
+        $available_medium = ['image', 'audio', 'video'];
         array_walk($content, $this->removeBadItems($content, $available_medium));
         $media_group = $xpath->query("/rss/channel/item[" . $count . "]/media:group");
         $this->assertEquals(sizeof($content), $media_group->length, sizeof($content)." != ".$media_group->length);
@@ -516,7 +372,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         }
     }
 
-    public function verifyMediaItem(\Feed_Entry_Item $item, \DOMNode $node)
+    public function verifyMediaItem(FeedItem $item, \DOMNode $node)
     {
         foreach ($node->childNodes as $node) {
             if ($node->nodeType !== XML_TEXT_NODE) {
@@ -535,7 +391,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function parseAttributes(\DOMNode $node)
     {
-        $current_attributes = array();
+        $current_attributes = [];
         foreach ($node->attributes as $attribute) {
             $current_attributes[$attribute->name] = $attribute->value;
         }
@@ -543,11 +399,11 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         return $current_attributes;
     }
 
-    public function checkMediaContentAttributes(\Feed_Entry_Item $entry_item, \DOMNode $node)
+    public function checkMediaContentAttributes(FeedItem $entry_item, \DOMNode $node)
     {
         $current_attributes = $this->parseAttributes($node);
         $is_thumbnail = false;
-        $record = $entry_item->get_record();
+        $record = $entry_item->getRecord();
 
         if (false !== strpos($current_attributes["url"], 'preview')) {
             $ressource = $record->get_subdef('preview');
@@ -602,77 +458,77 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         }
     }
 
-    public function checkOptionnalMediaGroupNode(\DOMNode $node, \Feed_Entry_Item $entry_item)
+    public function checkOptionnalMediaGroupNode(\DOMNode $node, FeedItem $entry_item)
     {
-        $fields = array(
-            'title' => array(
+        $fields = [
+            'title' => [
                 'dc_field'    => \databox_Field_DCESAbstract::Title,
-                'media_field' => array(
+                'media_field' => [
                     'name'       => 'media:title',
-                    'attributes' => array(
+                    'attributes' => [
                         'type'        => 'plain'
-                    )
-                ),
+                    ]
+                ],
                 'separator'   => ' '
-            )
-            , 'description' => array(
+            ]
+            , 'description' => [
                 'dc_field'    => \databox_Field_DCESAbstract::Description,
-                'media_field' => array(
+                'media_field' => [
                     'name'       => 'media:description',
-                    'attributes' => array()
-                ),
+                    'attributes' => []
+                ],
                 'separator'   => ' '
-            )
-            , 'contributor' => array(
+            ]
+            , 'contributor' => [
                 'dc_field'    => \databox_Field_DCESAbstract::Contributor,
-                'media_field' => array(
+                'media_field' => [
                     'name'       => 'media:credit',
-                    'attributes' => array(
+                    'attributes' => [
                         'role'      => 'contributor',
                         'scheme'    => 'urn:ebu'
-                    )
-                ),
+                    ]
+                ],
                 'separator' => ' '
-            )
-            , 'director'  => array(
+            ]
+            , 'director'  => [
                 'dc_field'    => \databox_Field_DCESAbstract::Creator,
-                'media_field' => array(
+                'media_field' => [
                     'name'       => 'media:credit',
-                    'attributes' => array(
+                    'attributes' => [
                         'role'      => 'director',
                         'scheme'    => 'urn:ebu'
-                    )
-                ),
+                    ]
+                ],
                 'separator' => ' '
-            )
-            , 'publisher' => array(
+            ]
+            , 'publisher' => [
                 'dc_field'    => \databox_Field_DCESAbstract::Publisher,
-                'media_field' => array(
+                'media_field' => [
                     'name'       => 'media:credit',
-                    'attributes' => array(
+                    'attributes' => [
                         'role'      => 'publisher',
                         'scheme'    => 'urn:ebu'
-                    )
-                ),
+                    ]
+                ],
                 'separator' => ' '
-            )
-            , 'rights'    => array(
+            ]
+            , 'rights'    => [
                 'dc_field'    => \databox_Field_DCESAbstract::Rights,
-                'media_field' => array(
+                'media_field' => [
                     'name'       => 'media:copyright',
-                    'attributes' => array()
-                ),
+                    'attributes' => []
+                ],
                 'separator' => ' '
-            )
-            , 'keywords'  => array(
+            ]
+            , 'keywords'  => [
                 'dc_field'    => \databox_Field_DCESAbstract::Subject,
-                'media_field' => array(
+                'media_field' => [
                     'name'       => 'media:keywords',
-                    'attributes' => array()
-                ),
+                    'attributes' => []
+                ],
                 'separator' => ', '
-            )
-        );
+            ]
+        ];
 
         foreach ($fields as $key_field => $field) {
 
@@ -690,7 +546,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
 
             if ($field["media_field"]["name"] == $node->nodeName && $role != false) {
 
-                if ($p4field = $entry_item->get_record()->get_caption()->get_dc_field($field["dc_field"])) {
+                if ($p4field = $entry_item->getRecord()->get_caption()->get_dc_field($field["dc_field"])) {
                     $this->assertEquals($p4field->get_serialized_values($field["separator"]), $node->nodeValue, sprintf('Asserting good value for DC %s', $field["dc_field"]));
                     if (sizeof($field["media_field"]["attributes"]) > 0) {
                         foreach ($node->attributes as $attribute) {
@@ -709,12 +565,12 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
     public function removeBadItems(Array &$item_entries, Array $available_medium)
     {
         $remove = function ($entry_item, $key) use (&$item_entries, $available_medium) {
-                $preview_sd = $entry_item->get_record()->get_subdef('preview');
+                $preview_sd = $entry_item->getRecord()->get_subdef('preview');
                 $url_preview = $preview_sd->get_permalink();
-                $thumbnail_sd = $entry_item->get_record()->get_thumbnail();
+                $thumbnail_sd = $entry_item->getRecord()->get_thumbnail();
                 $url_thumb = $thumbnail_sd->get_permalink();
 
-                if (!in_array(strtolower($entry_item->get_record()->get_type()), $available_medium)) {
+                if (!in_array(strtolower($entry_item->getRecord()->get_type()), $available_medium)) {
                     unset($item_entries[$key]); //remove
                 }
 
@@ -726,7 +582,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         return $remove;
     }
 
-    public function verifyATOM(\Feed_Adapter $feed, $xml_string)
+    public function verifyATOM(Feed $feed, $xml_string)
     {
         $this->verifyXML($xml_string);
         $dom_doc = new \DOMDocument();
@@ -739,17 +595,17 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         $this->checkATOMRootNode($dom_doc, $xpath, $feed);
     }
 
-    public function checkATOMRootNode(\DOMDocument $dom_doc, \DOMXPath $xpath, \Feed_Adapter $feed)
+    public function checkATOMRootNode(\DOMDocument $dom_doc, \DOMXPath $xpath, Feed $feed)
     {
         $ids = $xpath->query('/Atom:feed/Atom:id');
-        $this->assertEquals($feed->get_homepage_link(self::$DI['app']['phraseanet.registry'], \Feed_Adapter::FORMAT_ATOM, 1)->get_href(), $ids->item(0)->nodeValue);
+        $this->assertEquals(self::$DI['app']['feed.user-link-generator']->generatePublic($feed, 'atom', 1)->getURI(), $ids->item(0)->nodeValue);
 
         $titles = $xpath->query('/Atom:feed/Atom:title');
-        $this->assertEquals($feed->get_title(), $titles->item(0)->nodeValue);
+        $this->assertEquals($feed->getTitle(), $titles->item(0)->nodeValue);
 
         $subtitles = $xpath->query('/Atom:feed/Atom:subtitle');
         if ($subtitles->length > 0)
-            $this->assertEquals($feed->get_subtitle(), $subtitles->item(0)->nodeValue);
+            $this->assertEquals($feed->getSubtitle(), $subtitles->item(0)->nodeValue);
 
         $updateds = $xpath->query('/Atom:feed/Atom:updated');
         $this->assertTrue(new \DateTime() >= new \DateTime($updateds->item(0)->nodeValue));
@@ -759,14 +615,12 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         $count = 0;
         $offset_start = 0;
         $n_entries = 20;
-        $collection = $feed->get_entries($offset_start, $n_entries);
-        $entries = $collection->get_entries();
+        $entries = $feed->getEntries($offset_start, $n_entries);
 
         foreach ($entries_item as $entry) {
             if (sizeof($entries) == 0) {
                 $offset_start = ($offset_start++) * $n_entries;
-                $collection = $feed->get_entries($offset_start, $n_entries);
-                $entries = $collection->get_entries();
+                $entries = $feed->getEntries($offset_start, $n_entries);
                 if (sizeof($entries) == 0) //no more
                     break;
             }
@@ -774,52 +628,53 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
             $this->checkATOMEntryNode($entry, $xpath, $feed, $feed_entry);
             $count++;
         }
-        $this->assertEquals($feed->get_count_total_entries(), $count);
+        $this->assertEquals($feed->getCountTotalEntries(), $count);
     }
 
-    public function checkATOMEntryNode(\DOMNode $node, \DOMXPath $xpath, \Feed_Adapter $feed, \Feed_Entry_Adapter $entry)
+    public function checkATOMEntryNode(\DOMNode $node, \DOMXPath $xpath, Feed $feed, FeedEntry $entry)
     {
         foreach ($node->childNodes as $child) {
             if ($child->nodeType !== XML_TEXT_NODE) {
                 switch ($child->nodeName) {
                     case 'id':
-                        $this->assertEquals(sprintf('%sentry/%d/', $feed->get_homepage_link(self::$DI['app']['phraseanet.registry'], \Feed_Adapter::FORMAT_ATOM, 1)->get_href(), $entry->get_id()), $child->nodeValue);
+
+                        $this->assertEquals(sprintf('%sentry/%d/', self::$DI['app']['feed.user-link-generator']->generatePublic($feed, 'atom', 1)->getURI(), $entry->getId()), $child->nodeValue);
                         break;
                     case 'link':
                         foreach ($child->attributes as $attribute) {
                             if ($attribute->name == "href") {
-                                $this->assertEquals(sprintf('%sentry/%d/', $feed->get_homepage_link(self::$DI['app']['phraseanet.registry'], \Feed_Adapter::FORMAT_ATOM, 1)->get_href(), $entry->get_id()), $attribute->value);
+                                $this->assertEquals(sprintf('%sentry/%d/', self::$DI['app']['feed.user-link-generator']->generatePublic($feed, 'atom', 1)->getURI(), $entry->getId()), $attribute->value);
                                 break;
                             }
                         }
                         break;
                     case 'updated':
-                        $this->assertEquals($entry->get_updated_on()->format(DATE_ATOM), $child->nodeValue);
+                        $this->assertEquals($entry->getUpdatedOn()->format(DATE_ATOM), $child->nodeValue);
                         break;
                     case 'published':
-                        $this->assertEquals($entry->get_created_on()->format(DATE_ATOM), $child->nodeValue);
+                        $this->assertEquals($entry->getCreatedOn()->format(DATE_ATOM), $child->nodeValue);
                         break;
                     case 'title':
-                        $this->assertEquals($entry->get_title(), $child->nodeValue);
+                        $this->assertEquals($entry->getTitle(), $child->nodeValue);
                         break;
                     case 'content':
-                        $this->assertEquals($entry->get_subtitle(), $child->nodeValue);
+                        $this->assertEquals($entry->getSubtitle(), $child->nodeValue);
                         break;
                     case 'author':
                         foreach ($node->childNodes as $child) {
                             if ($child->nodeType !== XML_TEXT_NODE && $child->nodeName == "email")
-                                $this->assertEquals($entry->get_author_email(), $child->nodeValue);
+                                $this->assertEquals($entry->getAuthorEmail(), $child->nodeValue);
                             if ($child->nodeType !== XML_TEXT_NODE && $child->nodeName == "name")
-                                $this->assertEquals($entry->get_author_name(), $child->nodeValue);
+                                $this->assertEquals($entry->getAuthorName(), $child->nodeValue);
                         }
                         break;
                 }
             }
         }
 
-        $content = $entry->get_content();
+        $content = $entry->getItems()->toArray();
 
-        $available_medium = array('image', 'audio', 'video');
+        $available_medium = ['image', 'audio', 'video'];
 
         array_walk($content, $this->removeBadItems($content, $available_medium));
 
@@ -829,7 +684,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
             foreach ($media_group as $media) {
 
                 $entry_item = array_shift($content);
-                if ($entry_item instanceof \Feed_Entry_Item) {
+                if ($entry_item instanceof FeedEntry) {
                     $this->verifyMediaItem($entry_item, $media);
                 }
             }

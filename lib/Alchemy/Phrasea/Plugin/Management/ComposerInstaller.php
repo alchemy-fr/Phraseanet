@@ -66,12 +66,12 @@ class ComposerInstaller
                 throw new ComposerInstallException('Unable to install composer.', $e->getCode(), $e);
             }
         } else {
-            $process = ProcessBuilder::create(array(
+            $process = ProcessBuilder::create([
                 $this->phpExecutable, $this->composer, 'self-update'
-            ))->getProcess();
+            ])->getProcess();
             $process->run();
         }
 
-        return ProcessBuilder::create(array($this->phpExecutable, $this->composer));
+        return ProcessBuilder::create([$this->phpExecutable, $this->composer]);
     }
 }

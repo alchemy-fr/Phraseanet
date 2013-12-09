@@ -22,8 +22,8 @@ class Manager
     private $file;
     /** @var Compiler */
     private $compiler;
-    private $registry = array();
-    private $drivers = array();
+    private $registry = [];
+    private $drivers = [];
     /** @var Logger */
     private $logger;
     /** @var Factory */
@@ -37,7 +37,7 @@ class Manager
         $this->factory = $factory;
 
         if (!is_file($file)) {
-            $this->registry = array();
+            $this->registry = [];
             $this->save();
         } else {
             $this->registry = require $file;
@@ -55,7 +55,7 @@ class Manager
             $driver->flushAll();
         }
 
-        $this->registry = array();
+        $this->registry = [];
         $this->save();
 
         return $this;
@@ -78,7 +78,7 @@ class Manager
             $cache = $this->factory->create($name, $options);
         } catch (RuntimeException $e) {
             $this->logger->error($e->getMessage());
-            $cache = $this->factory->create('array', array());
+            $cache = $this->factory->create('array', []);
         }
 
         $cache->setNamespace(md5(__DIR__));

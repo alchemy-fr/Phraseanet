@@ -1,18 +1,27 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 class ftpclient
 {
     protected $connexion;
     protected $proxy;
     protected $host;
-    protected $cached_dirs = array();
+    protected $cached_dirs = [];
     protected $debug = false;
 
     public function __construct($host, $port = 21, $timeout = 90, $ssl = false, $proxy = false, $proxyport = false)
     {
         $host = mb_substr($host, -1, 1) == '/' ? mb_substr($host, 0, (mb_strlen($host) - 1)) : $host;
 
-        if (($p = mb_strpos($host, 'ftp://')) !== false)
+        if (mb_strpos($host, 'ftp://') !== false)
             $host = mb_substr($host, 6);
 
         $host = $proxy ? $proxy : $host;
@@ -35,11 +44,11 @@ class ftpclient
         }
 
         if ($ssl === true) {
-            if (($this->connexion = ftp_ssl_connect($host, $port, $timeout)) === false) {
+            if (($this->connexion = @ftp_ssl_connect($host, $port, $timeout)) === false) {
                 throw new Exception('Impossible de se connecter au serveur FTP en SSL');
             }
         } else {
-            if (($this->connexion = ftp_connect($host, $port, $timeout)) === false) {
+            if (($this->connexion = @ftp_connect($host, $port, $timeout)) === false) {
                 throw new Exception('Impossible de se connecter au serveur FTP ' . $host . ":$port $timeout");
             }
         }
@@ -66,7 +75,7 @@ class ftpclient
             echo "tentative de login avec $username, $password\n<br>";
 
         while ($retry > 0) {
-            if ((ftp_login($this->connexion, $username, $password)) === false) {
+            if ((@ftp_login($this->connexion, $username, $password)) === false) {
                 $retry --;
             } else {
                 $retry = 0;
@@ -87,7 +96,7 @@ class ftpclient
         if ($this->debug)
             echo ($boolean ? 'des' : '') . "activation du mode passif\n<br>";
 
-        if ((ftp_pasv($this->connexion, $boolean)) === false) {
+        if ((@ftp_pasv($this->connexion, $boolean)) === false) {
             throw new Exception('Impossible de changer le mode passif');
         }
 
@@ -100,7 +109,7 @@ class ftpclient
         if ($this->debug)
             echo "Recuperation du path working directory\n<br>";
 
-        if (($pwd = ftp_pwd($this->connexion)) === false) {
+        if (($pwd = @ftp_pwd($this->connexion)) === false) {
             throw new Exception('Impossible de recuperer le path working directory');
         }
         $this->cached_dirs[$pwd] = $pwd;
@@ -114,7 +123,7 @@ class ftpclient
         if ($this->debug)
             echo "Changement de dossier vers $directory\n<br>";
 
-        if ((ftp_chdir($this->connexion, $directory)) === false) {
+        if ((@ftp_chdir($this->connexion, $directory)) === false) {
             throw new Exception('Impossible de changer de dossier');
         }
         $this->pwd();
@@ -128,7 +137,7 @@ class ftpclient
         if ($this->debug)
             echo "Suppression du dossier $remote_directory\n<br>";
 
-        if ((ftp_rmdir($this->connexion, $remote_directory)) === false) {
+        if ((@ftp_rmdir($this->connexion, $remote_directory)) === false) {
             throw new Exception('Impossible de supprimer le dossier');
         }
 
@@ -143,7 +152,7 @@ class ftpclient
         if ($this->debug)
             echo "Suppression du fichier $filepath \n<br>";
 
-        if ((ftp_delete($this->connexion, $filepath)) === false) {
+        if ((@ftp_delete($this->connexion, $filepath)) === false) {
             throw new Exception('Impossible de supprimer le fichier');
         }
 
@@ -157,7 +166,7 @@ class ftpclient
         if ($this->debug)
             echo "Renommage de $oldname en $newname\n<br>";
 
-        if ((ftp_rename($this->connexion, $oldname, $newname)) === false) {
+        if ((@ftp_rename($this->connexion, $oldname, $newname)) === false) {
             throw new Exception('Impossible de renommer le dossier ou le fichier');
         }
 
@@ -176,7 +185,7 @@ class ftpclient
         if ($this->debug)
             echo "Creation du dossier $remote_directory\n<br>";
 
-        if ((ftp_mkdir($this->connexion, $remote_directory)) === false) {
+        if ((@ftp_mkdir($this->connexion, $remote_directory)) === false) {
             throw new Exception('Impossible de creer le dossier');
         }
         $this->cached_dirs[$remote_directory] = $remote_directory;
@@ -217,7 +226,7 @@ class ftpclient
 
     protected function nb_put($remotefile, $localfile, $start = FTP_AUTORESUME)
     {
-        $ret = ftp_nb_put($this->connexion, $remotefile, $localfile, FTP_BINARY, $start);
+        $ret = @ftp_nb_put($this->connexion, $remotefile, $localfile, FTP_BINARY, $start);
 
         while ($ret == FTP_MOREDATA) {
             set_time_limit(20);
@@ -247,9 +256,6 @@ class ftpclient
                 echo $e;
             }
             $ret = $this->nb_get($localfile, $remotefile, 0);
-
-//      if($this->debug)
-//        echo "On doit avoir a la fin $remotefile de size ".filesize($localfile)."\n<br>";
         }
         if ($ret != FTP_FINISHED) {
             throw new Exception('Erreur lors du transfert de fichier');
@@ -260,7 +266,7 @@ class ftpclient
 
     public function delete($filepath)
     {
-        if ( ! ftp_delete($this->connexion, $filepath))
+        if (!@ftp_delete($this->connexion, $filepath))
             throw new Exception('Impossible de supprimer le fichier');
 
         return $this;
@@ -272,7 +278,7 @@ class ftpclient
         if ( ! file_exists($localfile))
             $start = 0;
 
-        $ret = ftp_nb_get($this->connexion, $localfile, $remotefile, FTP_BINARY, $start);
+        $ret = @ftp_nb_get($this->connexion, $localfile, $remotefile, FTP_BINARY, $start);
 
         while ($ret == FTP_MOREDATA) {
             set_time_limit(20);
@@ -288,7 +294,7 @@ class ftpclient
         if ($this->debug)
             echo "Recuperation du type de systeme distant\n<br>";
 
-        if (($systype = ftp_systype($this->connexion)) === false) {
+        if (($systype = @ftp_systype($this->connexion)) === false) {
             throw new Exception('Impossible de recuperer le type de systeme');
         }
 
@@ -301,7 +307,7 @@ class ftpclient
         if ($this->debug)
             echo "Recuperation de la taille du fichier $remotefile\n<br>";
 
-        if (($size = ftp_size($this->connexion, $remotefile)) === false) {
+        if (($size = @ftp_size($this->connexion, $remotefile)) === false) {
             throw new Exception('Impossible de recuperer la taille du fichier');
         }
 
@@ -316,7 +322,7 @@ class ftpclient
             return $this;
         }
 
-        if ((ftp_close($this->connexion)) === false) {
+        if ((@ftp_close($this->connexion)) === false) {
             throw new Exception('Impossible de fermer la connexion');
         }
         $this->connexion = null;
@@ -365,7 +371,7 @@ class ftpclient
         $current_dir = $this->pwd();
         $contents = ftp_rawlist($this->connexion, $current_dir,  ! ! $recursive);
 
-        $list = array();
+        $list = [];
 
         foreach ($contents as $content) {
             if ($content == '')
@@ -388,9 +394,9 @@ class ftpclient
                 $date = strtotime($info[6] . ' ' . $info[5] . ' ' . date('Y') . ' ' . $info[7]);
             }
 
-            $list[$file] = array(
+            $list[$file] = [
                 'date' => $date
-            );
+            ];
         }
 
         return $list;

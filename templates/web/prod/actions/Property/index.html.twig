@@ -8,22 +8,18 @@
     <input type="hidden" name='original_selection' value="{{ app.request.query.get('lst') }}">
 
     <ul>
-        <li><a href="#property-statut">{% trans 'Records Statut' %}</a></li>
+        <li><a href="#property-statut">{{ 'Records Statut' | trans }}</a></li>
         {# <span>&nbsp;</span> element is required for the jQuery loading spinner appears && disappears properly #}
-        <li><a href="{{ path('display_type_property') }}">{% trans 'Records type' %}&nbsp;<span>&nbsp;</span></a></li>
+        <li><a href="{{ path('display_type_property') }}">{{ 'Records type' | trans }}&nbsp;<span>&nbsp;</span></a></li>
     </ul>
 
     <div id='property-statut'>
         <p class="header">
             <h4 style='text-align:center;'>
                 {% if nbReceivedDocuments == 1 %}
-                    {% trans %}
-                        You have selected one record.
-                    {% endtrans %}
+                    {% trans %}You have selected one record.{% endtrans %}
                 {% else %}
-                    {% trans %}
-                        You have selected {{ nbReceivedDocuments }} records.
-                    {% endtrans %}
+                    {% trans with {'%nbReceivedDocuments%' : nbReceivedDocuments} %}You have selected %nbReceivedDocuments% records.{% endtrans %}
                 {% endif %}
 
                   {% if nbEditableDocuments == 0 %}
@@ -31,13 +27,9 @@
                   {% else %}
                     {% if nbEditableDocuments < nbReceivedDocuments %}
                         {% if nbEditableDocuments == 1 %}
-                            {% trans %}
-                                Only one record can be modified.
-                            {% endtrans %}
+                            {% trans %}Only one record can be modified.{% endtrans %}
                         {% else %}
-                            {% trans %}
-                                Only {{ nbEditableDocuments }} records can be modified.
-                            {% endtrans %}
+                            {% trans with {'%nbEditableDocuments%' : nbEditableDocuments} %}Only %nbEditableDocuments% records can be modified.{% endtrans %}
                         {% endif %}
                   {% endif %}
                 {% endif %}
@@ -55,7 +47,7 @@
                     <thead>
                         <tr>
                             <th colspan="6">
-                                {{ databox.get_label(app['locale.I18n'])|title }}
+                                {{ databox.get_label(app['locale'])|title }}
                             </th>
                         </tr>
                     </thead>
@@ -88,7 +80,7 @@
                                 </td>
                                 <td style='text-align:right'>
                                     <label for="status-radio-{{ sbasId ~ "-" ~ bit ~ '-off'}}" {% if inverse == 2 %}style='color:#FF3333'{% endif%}>
-                                        {{ values['labels_off_i18n'][app['locale.I18n']] }}
+                                        {{ values['labels_off_i18n'][app['locale']] }}
                                     </label>
                                 </td>
                                 <td style='text-align:right'>
@@ -99,7 +91,7 @@
                                 </td>
                                 <td style='text-align:left'>
                                     <label for="status-radio-{{ sbasId ~ "-" ~ bit ~ '-on'}}" {% if inverse == 2 %}style='color:#FF3333'{% endif%}>
-                                        {{ values['labels_on_i18n'][app['locale.I18n']] }}
+                                        {{ values['labels_on_i18n'][app['locale']] }}
                                     </label>
                                 </td>
                                 <td style='text-align:left'>
@@ -118,7 +110,7 @@
                                 <td colspan="6">
                                     <input type="checkbox" name="apply_to_children[{{ sbasId }}]"/>
                                     {% if nbStories == 1 %}
-                                        {% trans %}Apply status on stories children. {% endtrans %}
+                                        {% trans %}Apply status on stories children.{% endtrans %}
                                     {% elseif nbStories > 0 %}
                                         {% trans %}Apply status on story children.{% endtrans %}
                                     {% endif %}
@@ -130,9 +122,9 @@
             {% endfor %}
             <div class="form-actions" style="background:transparent">
             {% if nbEditableDocuments > 0 %}
-                <button type="button" class="btn btn-primary submiter">{% trans "Apply changes" %}</button>
+                <button type="button" class="btn btn-primary submiter">{{ "Apply changes" | trans }}</button>
             {% endif %}
-                <button type="button" class="btn cancel">{% trans "Cancel" %}</button>
+                <button type="button" class="btn cancel">{{ "Cancel" | trans }}</button>
                 <span class="form-action-loader" style="display:none;">
                     <img src="../skins/icons/loader414141.gif" />
                 </span>

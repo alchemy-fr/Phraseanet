@@ -7,11 +7,11 @@
 /config/status
 /config/stamp
 /config/configuration.yml
-.DS_Store
 /vendor
 /plugins
+/node_modules
 composer.phar
 behat.yml
 /datas
 /www/assets
-/www/skins/build
+/tmp-assets

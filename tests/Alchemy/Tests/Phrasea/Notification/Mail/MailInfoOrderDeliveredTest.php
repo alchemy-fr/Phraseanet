@@ -12,12 +12,12 @@ class MailInfoOrderDeliveredTest extends MailTestCase
 {
     public function testSetBasket()
     {
-        $this->assertContainsString('Hello basket', $this->getMail()->getSubject());
+        $this->assertEquals('push::mail:: Reception de votre commande %title%', $this->getMail()->getSubject());
     }
 
     public function testSetDeliverer()
     {
-        $this->assertContainsString('JeanPhil', $this->getMail()->getMessage());
+        $this->assertEquals('%user% vous a delivre votre commande, consultez la en ligne a l\'adresse suivante', $this->getMail()->getMessage());
     }
 
     public function testShouldThrowALogicExceptionIfNoDelivererProvided()
@@ -29,7 +29,7 @@ class MailInfoOrderDeliveredTest extends MailTestCase
             $this->getMessage()
         );
 
-        $basket = $this->getMock('Entities\Basket');
+        $basket = $this->getMock('Alchemy\Phrasea\Model\Entities\Basket');
         $basket->expects($this->any())
             ->method('getName')
             ->will($this->returnValue('Hello basket'));
@@ -80,7 +80,7 @@ class MailInfoOrderDeliveredTest extends MailTestCase
             $this->getMessage()
         );
 
-        $basket = $this->getMock('Entities\Basket');
+        $basket = $this->getMock('Alchemy\Phrasea\Model\Entities\Basket');
         $basket->expects($this->any())
             ->method('getName')
             ->will($this->returnValue('Hello basket'));

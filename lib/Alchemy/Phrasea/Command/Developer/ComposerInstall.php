@@ -42,7 +42,7 @@ class ComposerInstall extends Command
             $output->writeln("<error>ERROR</error> Failed to update composer, bypassing");
         }
 
-        $commands = array('install', '--optimize-autoloader', '--quiet', '--no-interaction');
+        $commands = ['install', '--optimize-autoloader', '--quiet', '--no-interaction'];
         if ($input->getOption('prefer-source')) {
             $commands[] = '--prefer-source';
         }
@@ -50,12 +50,12 @@ class ComposerInstall extends Command
         try {
             if ($input->getOption('no-dev')) {
                 $output->write("Installing dependencies <info>without</info> developer packages ");
-                $composer->command(array_merge($commands, array('--no-dev')));
-                $output->writeln("<info>OK</info>");
+                $composer->command(array_merge($commands, ['--no-dev']));
+                $output->writeln("<comment>OK</comment>");
             } else {
                 $output->write("Installing dependencies <info>with</info> developer packages ");
-                $composer->command(array_merge($commands, array('--dev')));
-                $output->writeln("<info>OK</info>");
+                $composer->command(array_merge($commands, ['--dev']));
+                $output->writeln("<comment>OK</comment>");
             }
         } catch (ExecutionFailureException $e) {
             throw new RuntimeException('Unable to install composer dependencies', $e->getCode(), $e);

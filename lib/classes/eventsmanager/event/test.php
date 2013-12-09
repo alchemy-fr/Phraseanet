@@ -9,19 +9,13 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class eventsmanager_event_test extends eventsmanager_eventAbstract
 {
     /**
      *
      * @var Array
      */
-    protected $events = array('__EVENT__');
+    protected $events = ['__EVENT__'];
 
     /**
      *

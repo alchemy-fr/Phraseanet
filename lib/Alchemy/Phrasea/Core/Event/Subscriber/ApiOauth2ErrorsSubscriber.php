@@ -17,21 +17,24 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Debug\ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class ApiOauth2ErrorsSubscriber implements EventSubscriberInterface
 {
     private $handler;
+    private $translator;
 
-    public function __construct(ExceptionHandler $handler)
+    public function __construct(ExceptionHandler $handler, TranslatorInterface $translator)
     {
         $this->handler = $handler;
+        $this->translator = $translator;
     }
 
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::EXCEPTION => array('onSilexError', 20),
-        );
+        return [
+            KernelEvents::EXCEPTION => ['onSilexError', 20],
+        ];
     }
 
     public function onSilexError(GetResponseForExceptionEvent $event)
@@ -45,8 +48,8 @@ class ApiOauth2ErrorsSubscriber implements EventSubscriberInterface
         $e = $event->getException();
 
         $code = 500;
-        $msg = _('Whoops, looks like something went wrong.');
-        $headers = array();
+        $msg = $this->translator->trans('Whoops, looks like something went wrong.');
+        $headers = [];
 
         if ($e instanceof HttpExceptionInterface) {
             $headers = $e->getHeaders();
@@ -55,7 +58,7 @@ class ApiOauth2ErrorsSubscriber implements EventSubscriberInterface
         }
 
         if (isset($headers['content-type']) && $headers['content-type'] == 'application/json') {
-            $msg = json_encode(array('msg'  => $msg, 'code' => $code));
+            $msg = json_encode(['msg'  => $msg, 'code' => $code]);
             $event->setResponse(new Response($msg, $code, $headers));
         } else {
             $event->setResponse($this->handler->createResponseBasedOnRequest($event->getRequest(), $event->getException()));

@@ -35,12 +35,12 @@ class NewEmailValidatorTest extends \PhraseanetPHPUnitAbstract
 
     public function provideValidationData()
     {
-        return array(
-            array('romain@neutron.io', true),
-            array('romain@neutron.io', false),
-            array('', false),
-            array(null, false),
-        );
+        return [
+            ['romain@neutron.io', true],
+            ['romain@neutron.io', false],
+            ['', false],
+            [null, false],
+        ];
     }
 
     private function getConstraint()

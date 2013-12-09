@@ -30,7 +30,7 @@
                 '</DIV>';
     {% else %}
 
-        if(confirm("{{ "Thesaurus ou CTerms invalide\n effacer (OK) ou quitter (Annuler) ?" | trans | e('js') }}"))
+        if(confirm("{{ "Thesaurus ou CTerms invalide" | trans | e('js') }}\n{{ "effacer (OK) ou quitter (Annuler) ?" | trans | e('js') }}"))
         {
             parent.document.forms['fBase'].repair.value = "on";
             parent.document.forms['fBase'].submit();

@@ -30,9 +30,9 @@ class BorderManagerServiceProvider implements ServiceProviderInterface
 
             }
 
-            $options = $app['phraseanet.configuration']['border-manager'];
+            $options = $app['conf']->get('border-manager');
 
-            $registeredCheckers = array();
+            $registeredCheckers = [];
 
             if ($options['enabled']) {
                 foreach ($options['checkers'] as $checker) {
@@ -50,7 +50,7 @@ class BorderManagerServiceProvider implements ServiceProviderInterface
                         continue;
                     }
 
-                    $options = array();
+                    $options = [];
 
                     if (isset($checker['options']) && is_array($checker['options'])) {
                         $options = $checker['options'];
@@ -60,7 +60,7 @@ class BorderManagerServiceProvider implements ServiceProviderInterface
                         $checkerObj = new $className($app, $options);
                         if (isset($checker['databoxes'])) {
 
-                            $databoxes = array();
+                            $databoxes = [];
                             foreach ($checker['databoxes'] as $sbas_id) {
                                 try {
                                     $databoxes[] = $app['phraseanet.appbox']->get_databox($sbas_id);
@@ -73,7 +73,7 @@ class BorderManagerServiceProvider implements ServiceProviderInterface
                         }
                         if (isset($checker['collections'])) {
 
-                            $collections = array();
+                            $collections = [];
                             foreach ($checker['collections'] as $base_id) {
                                 try {
                                     $collections[] = \collection::get_from_base_id($app, $base_id);

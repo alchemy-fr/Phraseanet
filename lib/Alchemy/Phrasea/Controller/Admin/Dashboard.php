@@ -19,100 +19,31 @@ use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Dashboard implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.admin.dashboard'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAdmin();
         });
 
-        /**
-         * Get admin dashboard
-         *
-         * name         : admin_dashbord
-         *
-         * description  : Display admin dashboard
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/', $this->call('slash'))
+        $controllers->get('/', 'controller.admin.dashboard:slash')
             ->bind('admin_dashbord');
 
-        /**
-         * Reset cache
-         *
-         * name         : admin_dashboard_flush_cache
-         *
-         * description  : Reset all cache
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
-        $controllers->post('/flush-cache/', $this->call('flush'))
+        $controllers->post('/flush-cache/', 'controller.admin.dashboard:flush')
             ->bind('admin_dashboard_flush_cache');
 
-        /**
-         * Test send mail
-         *
-         * name         : admin_dashboard_test_mail
-         *
-         * description  : Test send mail
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
-        $controllers->post('/send-mail-test/', $this->call('sendMail'))
+        $controllers->post('/send-mail-test/', 'controller.admin.dashboard:sendMail')
             ->bind('admin_dashboard_test_mail');
 
-        /**
-         * Reset admin rights
-         *
-         * name         : admin_dashboard_reset_admin_rights
-         *
-         * description  : Reset admin rights
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
-        $controllers->post('/reset-admin-rights/', $this->call('resetAdminRights'))
+        $controllers->post('/reset-admin-rights/', 'controller.admin.dashboard:resetAdminRights')
             ->bind('admin_dashboard_reset_admin_rights');
 
-        /**
-         * Add admins
-         *
-         * name         : admin_dashboard_new
-         *
-         * description  : Add new admin_dashboard_add_admins
-         *
-         * method       : POST
-         *
-         * parameters   : admins An array of user id admins
-         *
-         * return       : Redirect Response
-         */
-        $controllers->post('/add-admins/', $this->call('addAdmins'))
+        $controllers->post('/add-admins/', 'controller.admin.dashboard:addAdmins')
             ->bind('admin_dashboard_add_admins');
 
         return $controllers;
@@ -129,18 +60,18 @@ class Dashboard implements ControllerProviderInterface
     {
         switch ($emailStatus = $request->query->get('email')) {
             case 'sent';
-                $emailStatus = _('Mail sent');
+                $emailStatus = $app->trans('Mail sent');
                 break;
             case 'error':
-                $emailStatus = _('Could not send email');
+                $emailStatus = $app->trans('Could not send email');
                 break;
         }
 
-        $parameters = array(
+        $parameters = [
             'cache_flushed'                 => $request->query->get('flush_cache') === 'ok',
             'admins'                        => \User_Adapter::get_sys_admins($app),
             'email_status'                  => $emailStatus,
-        );
+        ];
 
         return $app['twig']->render('admin/dashboard.html.twig', $parameters);
     }
@@ -155,10 +86,10 @@ class Dashboard implements ControllerProviderInterface
     public function flush(Application $app, Request $request)
     {
         if ($app['phraseanet.cache-service']->flushAll()) {
-            return $app->redirectPath('admin_dashbord', array('flush_cache' => 'ok'));
+            return $app->redirectPath('admin_dashbord', ['flush_cache' => 'ok']);
         }
 
-        return $app->redirectPath('admin_dashbord', array('flush_cache' => 'ko'));
+        return $app->redirectPath('admin_dashbord', ['flush_cache' => 'ko']);
     }
 
     /**
@@ -181,7 +112,7 @@ class Dashboard implements ControllerProviderInterface
         try {
             $receiver = new Receiver(null, $mail);
         } catch (InvalidArgumentException $e) {
-            return $app->redirectPath('admin_dashbord', array('email' => 'not-sent'));
+            return $app->redirectPath('admin_dashbord', ['email' => 'not-sent']);
         }
 
         $mail = MailTest::create($app, $receiver);
@@ -189,7 +120,7 @@ class Dashboard implements ControllerProviderInterface
         $app['notification.deliverer']->deliver($mail);
         $app['swiftmailer.spooltransport']->getSpool()->flushQueue($app['swiftmailer.transport']);
 
-        return $app->redirectPath('admin_dashbord', array('email' => 'sent'));
+        return $app->redirectPath('admin_dashbord', ['email' => 'sent']);
     }
 
     /**
@@ -201,7 +132,9 @@ class Dashboard implements ControllerProviderInterface
      */
     public function resetAdminRights(Application $app, Request $request)
     {
-        \User_Adapter::reset_sys_admins_rights($app);
+        $app['manipulator.acl']->resetAdminRights(array_map(function ($id) use ($app) {
+            return \User_Adapter::getInstance($id, $app);
+        }, array_keys(\User_Adapter::get_sys_admins($app))));
 
         return $app->redirectPath('admin_dashbord');
     }
@@ -215,7 +148,7 @@ class Dashboard implements ControllerProviderInterface
      */
     public function addAdmins(Application $app, Request $request)
     {
-        if (count($admins = $request->request->get('admins', array())) > 0) {
+        if (count($admins = $request->request->get('admins', [])) > 0) {
 
             if (!in_array($app['authentication']->getUser()->get_id(), $admins)) {
                 $admins[] = $app['authentication']->getUser()->get_id();
@@ -223,21 +156,12 @@ class Dashboard implements ControllerProviderInterface
 
             if ($admins > 0) {
                 \User_Adapter::set_sys_admins($app, array_filter($admins));
-                \User_Adapter::reset_sys_admins_rights($app);
+                $app['manipulator.acl']->resetAdminRights(array_map(function ($id) use ($app) {
+                    return \User_Adapter::getInstance($id, $app);
+                }, array_keys(\User_Adapter::get_sys_admins($app))));
             }
         }
 
         return $app->redirectPath('admin_dashbord');
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

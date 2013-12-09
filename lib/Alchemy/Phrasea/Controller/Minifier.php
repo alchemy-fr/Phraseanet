@@ -21,6 +21,8 @@ class Minifier implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
+        $app['controller.minifier'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/', function (Application $app, Request $request) {
@@ -78,7 +80,7 @@ class Minifier implements ControllerProviderInterface
              * array('//static' => 'D:\\staticStorage')  // Windows
              * </code>
              */
-            $min_symlinks = array();
+            $min_symlinks = [];
 
             /**
              * If you upload files from Windows to a non-Windows server, Windows may report
@@ -117,7 +119,7 @@ class Minifier implements ControllerProviderInterface
                 $min_serveOptions['minApp']['allowDirs'][] = $target;
             }
 
-            if (isset($_GET['g'])) {
+            if (null !== $request->query->get('g')) {
                 // well need groups config
                 $min_serveOptions['minApp']['groups'] = require __DIR__ . '/../../../conf.d/minifyGroupsConfig.php';
             }

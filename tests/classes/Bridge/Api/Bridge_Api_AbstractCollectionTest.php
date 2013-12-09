@@ -116,6 +116,6 @@ class Bridge_Api_AbstractCollectionTest extends PHPUnit_Framework_TestCase
     public function testGet_elements()
     {
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $this->stub->get_elements());
-        $this->assertEquals(array(), $this->stub->get_elements());
+        $this->assertEquals([], $this->stub->get_elements());
     }
 }

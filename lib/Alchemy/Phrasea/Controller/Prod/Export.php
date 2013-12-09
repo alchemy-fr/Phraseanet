@@ -17,87 +17,35 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Emitter;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRecordsExport;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class Export implements ControllerProviderInterface
 {
-
     /**
      * {@inheritDoc}
      */
     public function connect(Application $app)
     {
+        $app['controller.prod.export'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireNotGuest();
         });
 
-        /**
-         * Display multi export
-         *
-         * name         : export_multi_export
-         *
-         * description  : Display multi export
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->post('/multi-export/', $this->call('displayMultiExport'))
+        $controllers->post('/multi-export/', 'controller.prod.export:displayMultiExport')
             ->bind('export_multi_export');
 
-        /**
-         * Export by mail
-         *
-         * name         : export_mail
-         *
-         * description  : Export by mail
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/mail/', $this->call('exportMail'))
+        $controllers->post('/mail/', 'controller.prod.export:exportMail')
             ->bind('export_mail');
 
-        /**
-         * Export by FTP
-         *
-         * name         : export_ftp
-         *
-         * description  : Export by FTP
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/ftp/', $this->call('exportFtp'))
+        $controllers->post('/ftp/', 'controller.prod.export:exportFtp')
             ->bind('export_ftp');
 
-        /**
-         * Test FTP connexion
-         *
-         * name         : export_ftp_test
-         *
-         * description  : Test a FTP connexion
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/ftp/test/', $this->call('testFtpConnexion'))
+        $controllers->post('/ftp/test/', 'controller.prod.export:testFtpConnexion')
             ->bind('export_ftp_test');
 
         return $controllers;
@@ -119,13 +67,13 @@ class Export implements ControllerProviderInterface
             $request->request->get('story')
         );
 
-        return new Response($app['twig']->render('common/dialog_export.html.twig', array(
+        return new Response($app['twig']->render('common/dialog_export.html.twig', [
             'download'             => $download,
             'ssttid'               => $request->request->get('ssel'),
             'lst'                  => $download->serialize_list(),
             'default_export_title' => $app['phraseanet.registry']->get('GV_default_export_title'),
             'choose_export_title'  => $app['phraseanet.registry']->get('GV_choose_export_title')
-        )));
+        ]));
     }
 
     /**
@@ -143,19 +91,19 @@ class Export implements ControllerProviderInterface
 
         $success = false;
         try {
-            $ftpClient = $app['phraseanet.ftp.client']($request->request->get('addr', ''), 21, 90, !!$request->request->get('ssl'));
-            $ftpClient->login($request->request->get('login', ''), $request->request->get('pwd', ''));
+            $ftpClient = $app['phraseanet.ftp.client']($request->request->get('address', ''), 21, 90, !!$request->request->get('ssl'));
+            $ftpClient->login($request->request->get('login', 'anonymous'), $request->request->get('password', 'anonymous'));
             $ftpClient->close();
-            $msg = _('Connection to FTP succeed');
+            $msg = $app->trans('Connection to FTP succeed');
             $success = true;
         } catch (\Exception $e) {
-            $msg = sprintf(_('Error while connecting to FTP'));
+            $msg = $app->trans('Error while connecting to FTP');
         }
 
-        return $app->json(array(
+        return $app->json([
             'success' => $success,
             'message' => $msg
-        ));
+        ]);
     }
 
     /**
@@ -168,7 +116,7 @@ class Export implements ControllerProviderInterface
     {
         $download = new \set_exportftp($app, $request->request->get('lst'), $request->request->get('ssttid'));
 
-        $mandatoryParameters = array('addr', 'login', 'destfolder', 'NAMMKDFOLD', 'obj');
+        $mandatoryParameters = ['address', 'login', 'dest_folder', 'prefix_folder', 'obj'];
 
         foreach ($mandatoryParameters as $parameter) {
             if (!$request->request->get($parameter)) {
@@ -177,10 +125,10 @@ class Export implements ControllerProviderInterface
         }
 
         if (count($download->get_display_ftp()) == 0) {
-            return $app->json(array(
+            return $app->json([
                 'success' => false,
-                'message' => _("You do not have required rights to send these documents over FTP")
-            ));
+                'message' => $app->trans("You do not have required rights to send these documents over FTP")
+            ]);
         }
 
         try {
@@ -194,26 +142,26 @@ class Export implements ControllerProviderInterface
 
             $download->export_ftp(
                 $request->request->get('user_dest'),
-                $request->request->get('addr'),
+                $request->request->get('address'),
                 $request->request->get('login'),
-                $request->request->get('pwd', ''),
+                $request->request->get('password', ''),
                 $request->request->get('ssl'),
-                $request->request->get('nbretry'),
-                $request->request->get('passif'),
-                $request->request->get('destfolder'),
-                $request->request->get('NAMMKDFOLD'),
+                $request->request->get('max_retry'),
+                $request->request->get('passive'),
+                $request->request->get('dest_folder'),
+                $request->request->get('prefix_folder'),
                 $request->request->get('logfile')
             );
 
-            return $app->json(array(
+            return $app->json([
                 'success' => true,
-                'message' => _('Export saved in the waiting queue')
-            ));
+                'message' => $app->trans('Export saved in the waiting queue')
+            ]);
         } catch (\Exception $e) {
-            return $app->json(array(
+            return $app->json([
                 'success' => false,
-                'message' => _('Something went wrong')
-            ));
+                'message' => $app->trans('Something went wrong')
+            ]);
         }
     }
 
@@ -249,19 +197,19 @@ class Export implements ControllerProviderInterface
         $list['export_name'] = sprintf("%s.zip", $download->getExportName());
         $list['email'] = implode(';', preg_split($separator, $request->request->get("destmail", "")));
 
-        $destMails = array();
+        $destMails = [];
         //get destination mails
         foreach (explode(";", $list['email']) as $mail) {
             if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
                 $destMails[] = $mail;
             } else {
-                $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', array(
+                $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', [
                     'usr_id' => $app['authentication']->getUser()->get_id(),
                     'lst'    => $lst,
                     'ssttid' => $ssttid,
                     'dest'   => $mail,
                     'reason' => \eventsmanager_notify_downloadmailfail::MAIL_NO_VALID
-                ));
+                ]);
             }
         }
 
@@ -280,7 +228,7 @@ class Export implements ControllerProviderInterface
 
             $remaingEmails = $destMails;
 
-            $url = $app->url('prepare_download', array('token' => $token, 'anonymous'));
+            $url = $app->url('prepare_download', ['token' => $token, 'anonymous']);
 
             $emitter = new Emitter($app['authentication']->getUser()->get_display_name(), $app['authentication']->getUser()->get_email());
 
@@ -302,41 +250,30 @@ class Export implements ControllerProviderInterface
             //some mails failed
             if (count($remaingEmails) > 0) {
                 foreach ($remaingEmails as $mail) {
-                    $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', array(
+                    $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', [
                         'usr_id' => $app['authentication']->getUser()->get_id(),
                         'lst'    => $lst,
                         'ssttid' => $ssttid,
                         'dest'   => $mail,
                         'reason' => \eventsmanager_notify_downloadmailfail::MAIL_FAIL
-                    ));
+                    ]);
                 }
             }
         } elseif (!$token && count($destMails) > 0) { //couldn't generate token
             foreach ($destMails as $mail) {
-                $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', array(
+                $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', [
                     'usr_id' => $app['authentication']->getUser()->get_id(),
                     'lst'    => $lst,
                     'ssttid' => $ssttid,
                     'dest'   => $mail,
                     'reason' => 0
-                ));
+                ]);
             }
         }
 
-        return $app->json(array(
+        return $app->json([
             'success' => true,
             'message' => ''
-        ));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
+        ]);
     }
 }

@@ -9,12 +9,6 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @package     KonsoleKomander
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -102,7 +96,7 @@ class module_console_fieldsRename extends Command
 
             foreach ($results as $row) {
                 $record = $databox->get_record($row['record_id']);
-                $record->set_metadatas(array());
+                $record->set_metadatas([]);
                 unset($record);
             }
 
