@@ -1320,16 +1320,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             return $this;
         }
 
-        $sql = 'SELECT prop, value FROM usr_settings WHERE usr_id= :id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':id' => $this->id));
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        foreach ($rs as $row) {
-            $this->_prefs[$row['prop']] = $row['value'];
-        }
-
         foreach (self::$def_values as $k => $v) {
             if (!isset($this->_prefs[$k])) {
                 if ($k == 'start_page_query' && $this->app['phraseanet.registry']->get('GV_defaultQuery')) {
@@ -1349,6 +1339,16 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
                     self::$def_values
                 )
             );
+        }
+
+        $sql = 'SELECT prop, value FROM usr_settings WHERE usr_id= :id';
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute(array(':id' => $this->id));
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        foreach ($rs as $row) {
+            $this->_prefs[$row['prop']] = $row['value'];
         }
 
         $this->preferences_loaded = true;
