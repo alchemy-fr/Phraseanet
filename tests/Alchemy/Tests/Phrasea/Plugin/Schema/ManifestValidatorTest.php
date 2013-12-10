@@ -26,7 +26,7 @@ class ManifestValidatorTest extends PluginTestCase
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Plugin\Exception\JsonValidationException
+     * @expectedException \Alchemy\Phrasea\Plugin\Exception\JsonValidationException
      * @dataProvider provideWrongManifestFiles
      */
     public function testValidateWrongOnes($file)
@@ -49,7 +49,7 @@ class ManifestValidatorTest extends PluginTestCase
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
      */
     public function testValidateInvalidData()
     {
@@ -58,7 +58,7 @@ class ManifestValidatorTest extends PluginTestCase
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
      */
     public function testConstructWithInvalidSchema()
     {

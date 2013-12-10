@@ -1,6 +1,6 @@
 <?php
 
-class API_OAuth2_TokenTest extends PhraseanetPHPUnitAbstract
+class API_OAuth2_TokenTest extends \PhraseanetTestCase
 {
 
     /**
@@ -30,7 +30,7 @@ class API_OAuth2_TokenTest extends PhraseanetPHPUnitAbstract
         parent::tearDown();
     }
 
-    protected function assertmd5($md5)
+    private function assertmd5($md5)
     {
         $this->assertTrue((count(preg_match('/[a-z0-9]{32}/', $md5)) === 1));
     }

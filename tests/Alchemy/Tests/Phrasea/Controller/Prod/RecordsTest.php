@@ -8,7 +8,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 /**
  * @todo Test Alchemy\Phrasea\Controller\Prod\Export::exportMail
  */
-class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 

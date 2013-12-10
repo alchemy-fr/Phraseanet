@@ -35,7 +35,7 @@ class ConfigurationServiceProvidertest extends ServiceProviderTestCase
 
     public function testRequestTrustedProxiesAreSetOnRequest()
     {
-        $app = new Application();
+        $app = $this->loadApp();
         $app['root.path'] = __DIR__ . '/../../../../../..';
         $app->register(new ConfigurationServiceProvider());
         $app['phraseanet.configuration.config-path'] = __DIR__ . '/fixtures/config-proxies.yml';

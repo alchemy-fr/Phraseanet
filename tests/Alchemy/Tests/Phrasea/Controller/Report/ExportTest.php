@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Report;
 
-class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class ExportTest extends \PhraseanetAuthenticatedWebTestCase
 {
 
     public function testExportCSV()

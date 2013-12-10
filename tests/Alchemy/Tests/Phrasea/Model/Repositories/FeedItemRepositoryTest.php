@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Repositories;
 
-class FeedItemRepositoryTest extends \PhraseanetPHPUnitAbstract
+class FeedItemRepositoryTest extends \PhraseanetTestCase
 {
     public function testIs_record_in_public_feedInPublicFeed()
     {

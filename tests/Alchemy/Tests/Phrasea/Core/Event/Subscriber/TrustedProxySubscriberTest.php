@@ -7,7 +7,7 @@ use Silex\Application;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Request;
 
-class TrustedProxySubscriberTest extends \PHPUnit_Framework_TestCase
+class TrustedProxySubscriberTest extends \PhraseanetTestCase
 {
     private function getConfigurationMock()
     {

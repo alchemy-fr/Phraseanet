@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 use Alchemy\Phrasea\Model\Entities\User;
 
-class UserManipulatorTest extends \PhraseanetPHPUnitAbstract
+class UserManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreateUser()
     {

@@ -8,7 +8,7 @@ use PHPExiftool\Driver\Tag\IPTC\ObjectName;
 use PHPExiftool\Driver\Value\Mono;
 use PHPExiftool\Driver\Metadata\Metadata as ExiftoolMeta;
 
-class MetadataTest extends \PhraseanetPHPUnitAbstract
+class MetadataTest extends \PhraseanetTestCase
 {
     /**
      * @var Metadata

@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Border\Checker\Response;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
-class ResponseTest extends \PHPUnit_Framework_TestCase
+class ResponseTest extends \PhraseanetTestCase
 {
     use TranslatorMockTrait;
 

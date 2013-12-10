@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Report;
 
-class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class RootTest extends \PhraseanetAuthenticatedWebTestCase
 {
     private $dmin;
     private $dmax;

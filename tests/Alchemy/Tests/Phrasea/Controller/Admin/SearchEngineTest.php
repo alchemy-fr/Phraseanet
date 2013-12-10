@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine;
 use Alchemy\Phrasea\SearchEngine\SphinxSearch\SphinxSearchEngine;
 
-class SearchEngineTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class SearchEngineTest extends \PhraseanetAuthenticatedWebTestCase
 {
 
     /**
@@ -35,7 +35,7 @@ class SearchEngineTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function getSearchEngines()
     {
-        $app = new Application('test');
+        $app = $this->loadApp();
 
         return [
             [new PhraseaEngine($app)],

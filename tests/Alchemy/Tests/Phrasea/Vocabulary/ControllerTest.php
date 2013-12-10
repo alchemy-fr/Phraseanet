@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Vocabulary;
 
 use Alchemy\Phrasea\Vocabulary\Controller;
 
-class ControllerTest extends \PhraseanetPHPUnitAbstract
+class ControllerTest extends \PhraseanetTestCase
 {
 
     public function testGet()

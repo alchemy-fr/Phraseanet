@@ -1,6 +1,6 @@
 <?php
 
-class sqlActionTest extends PhraseanetPHPUnitAuthenticatedAbstract
+class sqlActionTest extends \PhraseanetAuthenticatedTestCase
 {
     protected $action;
     protected $mock;

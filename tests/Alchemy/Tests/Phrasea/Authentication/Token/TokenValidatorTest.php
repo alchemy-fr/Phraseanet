@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Authentication;
 
 use Alchemy\Phrasea\Authentication\Token\TokenValidator;
 
-class TokenValidatorTest extends \PhraseanetPHPUnitAbstract
+class TokenValidatorTest extends \PhraseanetTestCase
 {
     /**
      * @covers Alchemy\Phrasea\Authentication\TokenValidator::isValid

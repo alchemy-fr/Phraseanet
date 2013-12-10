@@ -6,14 +6,14 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
-    protected static $createdCollections = [];
+    private static $createdCollections = [];
 
     public function setUp()
     {
-        self::$DI['app'] = new Application('test');
+        self::$DI['app'] = $this->loadApp();
         self::dropDatabase();
         parent::setUp();
     }

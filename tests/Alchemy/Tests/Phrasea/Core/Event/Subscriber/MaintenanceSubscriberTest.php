@@ -7,7 +7,7 @@ use Alchemy\Phrasea\Core\Event\Subscriber\MaintenanceSubscriber;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class MaintenanceSubscriberTest extends \PHPUnit_Framework_TestCase
+class MaintenanceSubscriberTest extends \PhraseanetTestCase
 {
     public function tearDown()
     {

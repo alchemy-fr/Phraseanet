@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Model\Entities;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
 
-class UserTest extends \PhraseanetPHPUnitAbstract
+class UserTest extends \PhraseanetTestCase
 {
     private $user;
 

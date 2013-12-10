@@ -13,7 +13,7 @@ use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Response;
 
-class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public static $demands;
     public static $collections;

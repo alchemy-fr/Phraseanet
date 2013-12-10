@@ -28,7 +28,7 @@ class ImporterTest extends PluginTestCase
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Plugin\Exception\ImportFailureException
+     * @expectedException \Alchemy\Phrasea\Plugin\Exception\ImportFailureException
      */
     public function testImportFailure()
     {

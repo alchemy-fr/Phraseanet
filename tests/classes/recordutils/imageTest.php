@@ -5,7 +5,7 @@ use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 /**
  * @covers recordutils_image
  */
-class recordutils_imageTest extends PhraseanetPHPUnitAbstract
+class recordutils_imageTest extends \PhraseanetTestCase
 {
     public function testWatermarkWithoutFile()
     {

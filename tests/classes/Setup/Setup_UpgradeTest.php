@@ -1,6 +1,6 @@
 <?php
 
-class Setup_UpgradeTest extends PhraseanetPHPUnitAbstract
+class Setup_UpgradeTest extends \PhraseanetTestCase
 {
     /**
      * @var Setup_Upgrade
@@ -39,7 +39,7 @@ class Setup_UpgradeTest extends PhraseanetPHPUnitAbstract
         $this->check_percentage(0, 16, 0);
     }
 
-    protected function check_percentage($percent, $total, $complete)
+    private function check_percentage($percent, $total, $complete)
     {
         $datas = $this->object->get_status();
         $this->assertArrayHasKey('completed_steps', $datas);

@@ -4,22 +4,21 @@ use Alchemy\Phrasea\Application;
 
 require_once __DIR__ . '/Bridge_datas.inc';
 
-class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
+class Bridge_AccountTest extends \PhraseanetAuthenticatedTestCase
 {
     /**
      * @var Bridge_Account
      */
-    protected static $object;
-    protected static $api;
-    protected static $dist_id;
-    protected static $named;
-    protected static $id;
+    private static $object;
+    private static $api;
+    private static $dist_id;
+    private static $named;
+    private static $id;
 
-    public static function setUpBeforeClass()
+    public function bootTestCase()
     {
-        parent::setUpBeforeClass();
         try {
-            $application = new Application('test');
+            $application = self::$DI['app'];
 
             $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
             $stmt = $application['phraseanet.appbox']->get_connection()->prepare($sql);

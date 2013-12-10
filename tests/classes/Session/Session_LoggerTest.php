@@ -1,6 +1,6 @@
 <?php
 
-class Session_LoggerTest extends PhraseanetPHPUnitAbstract
+class Session_LoggerTest extends \PhraseanetTestCase
 {
     /**
      * @var Session_Logger
@@ -13,7 +13,7 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
      */
     protected $databox;
 
-    protected function feed_datas()
+    private function feed_datas()
     {
         $user = self::$DI['user'];
 

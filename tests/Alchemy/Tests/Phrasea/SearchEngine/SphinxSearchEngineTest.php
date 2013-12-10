@@ -11,16 +11,14 @@ use Symfony\Component\Process\Process;
 class SphinxSearchEngineTest extends SearchEngineAbstractTest
 {
     private static $skipped = false;
-    protected static $config;
-    protected static $searchd;
+    private static $config;
+    private static $searchd;
 
     /**
      * @covers Alchemy\Phrasea\SearchEngine\SphinxSearch\SphinxSearchEngine
      */
-    public static function setUpBeforeClass()
+    public function bootTestCase()
     {
-        parent::setUpBeforeClass();
-
         $binaryFinder = new ExecutableFinder();
         $indexer = $binaryFinder->find('indexer');
 
@@ -32,7 +30,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
             return;
         }
 
-        $app = new Application('test');
+        $app = self::$DI['app'];
         $appbox = $app['phraseanet.appbox'];
 
         $app['conf']->set(['main', 'search-engine', 'options'], [

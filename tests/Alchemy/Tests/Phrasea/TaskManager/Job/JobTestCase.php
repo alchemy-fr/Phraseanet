@@ -6,7 +6,7 @@ use Alchemy\Phrasea\TaskManager\Job\JobInterface;
 use Alchemy\TaskManager\JobDataInterface;
 use Alchemy\Phrasea\TaskManager\Job\Factory;
 
-abstract class JobTestCase extends \PhraseanetPHPUnitAbstract
+abstract class JobTestCase extends \PhraseanetTestCase
 {
     public function testGetJobIdReturnsAvalidId()
     {

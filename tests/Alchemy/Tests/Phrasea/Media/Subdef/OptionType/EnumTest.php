@@ -5,14 +5,14 @@ namespace Alchemy\Tests\Phrasea\Media\Subdef\OptionType;
 use Alchemy\Phrasea\Media\Subdef\OptionType\Enum;
 use Alchemy\Phrasea\Media\Subdef\OptionType\OptionType;
 
-class EnumTest extends \PHPUnit_Framework_TestCase
+class EnumTest extends \PhraseanetTestCase
 {
     /**
      * @var Enum
      */
     protected $object;
 
-    protected function setUp()
+    public function setUp()
     {
         $this->object = new Enum('Numo', 'enumerateur', ['un', 'dos', 'tres'], 'dos');
     }

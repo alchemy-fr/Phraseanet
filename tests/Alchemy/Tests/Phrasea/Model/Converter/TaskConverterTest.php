@@ -5,7 +5,7 @@ namespace Alchemy\Phrasea\Model\Converter;
 use Alchemy\Phrasea\Model\Converter\TaskConverter;
 use Alchemy\Phrasea\Model\Entities\Task;
 
-class TaskConverterTest extends \PhraseanetPHPUnitAbstract
+class TaskConverterTest extends \PhraseanetTestCase
 {
     public function testConvert()
     {
@@ -22,7 +22,7 @@ class TaskConverterTest extends \PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @expectedException Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      * @expectedExceptionMessage Task prout not found.
      */
     public function testConvertFailure()

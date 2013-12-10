@@ -4,10 +4,10 @@ use Silex\Application;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\DomCrawler\Crawler;
 
-abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPUnitAuthenticatedAbstract
+abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticatedTestCase
 {
     protected $StubbedACL;
-    protected static $createdDataboxes = [];
+    private static $createdDataboxes = [];
 
     public function setUp()
     {

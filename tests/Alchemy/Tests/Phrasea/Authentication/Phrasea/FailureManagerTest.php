@@ -7,7 +7,7 @@ use Alchemy\Phrasea\Model\Entities\AuthFailure;
 use Gedmo\Timestampable\TimestampableListener;
 use Symfony\Component\HttpFoundation\Request;
 
-class FailureManagerTest extends \PhraseanetPHPUnitAbstract
+class FailureManagerTest extends \PhraseanetTestCase
 {
     /**
      * @covers Alchemy\Phrasea\Authentication\Phrasea\FailureManager::saveFailure
@@ -155,7 +155,7 @@ class FailureManagerTest extends \PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException
+     * @expectedException \Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException
      * @covers Alchemy\Phrasea\Authentication\Phrasea\FailureManager::checkFailures
      */
     public function testCheckFailuresMoreThan9WithIncorrectCaptcha()
@@ -213,7 +213,7 @@ class FailureManagerTest extends \PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException
+     * @expectedException \Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException
      * @covers Alchemy\Phrasea\Authentication\Phrasea\FailureManager::checkFailures
      */
     public function testCheckFailuresTrialsIsConfigurableOverThreshold()

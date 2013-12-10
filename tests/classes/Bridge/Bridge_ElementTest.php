@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/Bridge_datas.inc';
 
-class Bridge_ElementTest extends PhraseanetPHPUnitAuthenticatedAbstract
+class Bridge_ElementTest extends \PhraseanetAuthenticatedTestCase
 {
     /**
      * @var Bridge_Element

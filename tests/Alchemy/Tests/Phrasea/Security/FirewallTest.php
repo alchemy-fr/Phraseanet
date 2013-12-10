@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Security;
 
 use Alchemy\Phrasea\Security\Firewall;
 
-class FirewallTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class FirewallTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 
@@ -15,7 +15,7 @@ class FirewallTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
+     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testRequiredAuthNotAuthenticated()
     {

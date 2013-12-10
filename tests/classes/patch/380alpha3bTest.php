@@ -1,6 +1,6 @@
 <?php
 
-class patch_380alpha3bTest extends PhraseanetPHPUnitAbstract
+class patch_380alpha3bTest extends \PhraseanetTestCase
 {
     /**
      * @covers patch_380alpha3b::apply

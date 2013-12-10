@@ -2,19 +2,16 @@
 
 use Alchemy\Phrasea\Application;
 
-class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
+class ACLTest extends \PhraseanetAuthenticatedTestCase
 {
     /**
      * @var ACL
      */
-    protected static $object;
+    private static $object;
 
     public static function tearDownAfterClass()
     {
-        /**
-         * In case first test fails
-         */
-        $application = new Application('test');
+        $application = self::$DI['app'];
         $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit2');
         try {
             $template = User_Adapter::getInstance($usr_id, $application);
@@ -30,9 +27,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         }
 
-        self::giveRightsToUser($application, self::$DI['user']);
-        self::$DI['app']['acl']->get(self::$DI['user'])->revoke_access_from_bases([self::$DI['collection_no_access']->get_base_id()]);
-        self::$DI['app']['acl']->get(self::$DI['user'])->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
+        self::resetUsersRights(self::$DI['app'], self::$DI['user']);
 
         parent::tearDownAfterClass();
     }
@@ -41,9 +36,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         parent::setUp();
 
-        if (null === self::$object) {
-            self::$object = self::$DI['app']['acl']->get(self::$DI['user']);
-        }
+        self::$object = self::$DI['app']['acl']->get(self::$DI['user']);
     }
 
     public function testHasAccesToRecord()

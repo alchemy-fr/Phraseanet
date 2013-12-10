@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../../../vendor/alchemy/oauth2php/lib/OAuth2.php';
 
 use Symfony\Component\HttpFoundation\Request;
 
-class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
+class API_V1_resultTest extends \PhraseanetAuthenticatedTestCase
 {
     /**
      * @var API_V1_result
@@ -22,7 +22,7 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->api->expects($this->any())->method("get_version")->will($this->returnValue("my_super_version1.0"));
     }
 
-    protected function assertIsTimer($timer)
+    private function assertIsTimer($timer)
     {
         $this->assertObjectHasAttribute('name', $timer);
         $this->assertObjectHasAttribute('memory', $timer);
@@ -225,14 +225,14 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertEquals($data, $api_result->get_datas());
     }
 
-    protected function checkResponseFieldMeta(stdClass $response, $field, $expected_value, $type)
+    private function checkResponseFieldMeta(stdClass $response, $field, $expected_value, $type)
     {
         $this->assertObjectHasAttribute($field, $response->meta);
         $this->assertInternalType($type, $response->meta->$field);
         $this->assertEquals($expected_value, $response->meta->$field);
     }
 
-    protected function checkResponseFieldResponse(stdClass $response, $field, $expected_value, $type)
+    private function checkResponseFieldResponse(stdClass $response, $field, $expected_value, $type)
     {
         $this->assertObjectHasAttribute($field, $response->response);
         $this->assertInternalType($type, $response->response->$field);
@@ -301,7 +301,7 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertErrorMessage($api_result, 200, OAUTH2_ERROR_INVALID_REQUEST, NULL, 'detaillage');
     }
 
-    protected function assertErrorMessage(API_V1_result $api_result, $code, $type, $message, $detail)
+    private function assertErrorMessage(API_V1_result $api_result, $code, $type, $message, $detail)
     {
         $response = json_decode($api_result->format());
         $this->checkResponseFieldMeta($response, 'http_code', $code, PHPUnit_Framework_Constraint_IsType::TYPE_INT);

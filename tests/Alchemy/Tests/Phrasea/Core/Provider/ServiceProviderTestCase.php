@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
-abstract class ServiceProviderTestCase extends \PhraseanetPHPUnitAbstract
+abstract class ServiceProviderTestCase extends \PhraseanetTestCase
 {
     /**
      * @test

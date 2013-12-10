@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
-class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class ControllerUsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 
@@ -32,7 +32,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(4, count($datas['result']));
     }
 
-    protected function checkList($list, $owners = true, $users = true)
+    private function checkList($list, $owners = true, $users = true)
     {
         $this->assertInstanceOf('stdClass', $list);
         $this->assertObjectHasAttribute('name', $list);
@@ -401,7 +401,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($datas['success']);
     }
 
-    protected function checkOwner($owner)
+    private function checkOwner($owner)
     {
         $this->assertInstanceOf('stdClass', $owner);
         $this->assertObjectHasAttribute('usr_id', $owner);
@@ -414,7 +414,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue(ctype_digit($owner->role));
     }
 
-    protected function checkUser($user)
+    private function checkUser($user)
     {
         $this->assertInstanceOf('stdClass', $user);
         $this->assertObjectHasAttribute('usr_id', $user);

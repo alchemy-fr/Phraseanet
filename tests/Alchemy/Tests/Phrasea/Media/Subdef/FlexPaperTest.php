@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Media\Subdef\FlexPaper;
 use Alchemy\Phrasea\Media\Subdef\Subdef;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
-class FlexPaperTest extends \PHPUnit_Framework_TestCase
+class FlexPaperTest extends \PhraseanetTestCase
 {
     use TranslatorMockTrait;
 
@@ -15,7 +15,7 @@ class FlexPaperTest extends \PHPUnit_Framework_TestCase
      */
     protected $object;
 
-    protected function setUp()
+    public function setUp()
     {
         $this->object = new FlexPaper($this->createTranslatorMock());
     }

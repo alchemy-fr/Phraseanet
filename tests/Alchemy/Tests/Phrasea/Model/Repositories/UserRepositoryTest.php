@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Model\Entities\User;
 
-class UserRepositoryTest extends \PhraseanetPHPUnitAbstract
+class UserRepositoryTest extends \PhraseanetTestCase
 {
     public function testFindAdminsWithNoAdmins()
     {

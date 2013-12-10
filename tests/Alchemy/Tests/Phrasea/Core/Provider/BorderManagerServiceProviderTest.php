@@ -26,7 +26,7 @@ class BorderManagerServiceProvidertest extends ServiceProviderTestCase
 
     public function testItLoadsWithoutXPDF()
     {
-        $app = new Application();
+        $app = $this->loadApp();
         $app->register(new XPDFServiceProvider(), [
             'xpdf.configuration' => [
                 'pdftotext.binaries' => '/path/to/nowhere',
@@ -50,7 +50,7 @@ class BorderManagerServiceProvidertest extends ServiceProviderTestCase
             $this->markTestSkipped('Unable to find php binary, mandatory for this test');
         }
 
-        $app = new Application();
+        $app = $this->loadApp();
         $app->register(new XPDFServiceProvider(), [
             'xpdf.configuration' => [
                 'pdftotext.binaries' => $php,

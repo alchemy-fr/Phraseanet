@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Notification;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
-class ReceiverTest extends \PHPUnit_Framework_TestCase
+class ReceiverTest extends \PhraseanetTestCase
 {
     /**
      * @var Receiver
@@ -14,7 +14,7 @@ class ReceiverTest extends \PHPUnit_Framework_TestCase
     private $name;
     private $email;
 
-    protected function setUp()
+    public function setUp()
     {
         $this->name = 'name-' . mt_rand();
         $this->email = sprintf('name-%s@domain-%s.com', mt_rand(), mt_rand());

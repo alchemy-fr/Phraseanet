@@ -4,9 +4,8 @@ namespace Alchemy\Tests\Phrasea\Application;
 
 use Symfony\Component\HttpFoundation\Response;
 
-class ApiJSONPApplication extends ApiAbstract
+class ApiJSONPApplication extends ApiTestCase
 {
-
     protected function evaluateResponseBadRequest(Response $response)
     {
         $this->assertEquals('UTF-8', $response->getCharset(), 'Test charset response');

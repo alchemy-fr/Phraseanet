@@ -1,6 +1,6 @@
 <?php
 
-class databoxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
+class databoxTest extends \PhraseanetAuthenticatedWebTestCase
 {
     /**
      * @covers databox::get_thesaurus

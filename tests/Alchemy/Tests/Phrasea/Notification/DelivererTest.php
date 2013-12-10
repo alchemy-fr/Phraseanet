@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Notification;
 use Alchemy\Phrasea\Notification\Deliverer;
 use Alchemy\Phrasea\Exception\LogicException;
 
-class DelivererTest extends \PHPUnit_Framework_TestCase
+class DelivererTest extends \PhraseanetTestCase
 {
     /**
      * @covers Alchemy\Phrasea\Notification\Deliverer::deliver

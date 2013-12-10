@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Application;
 
 use Symfony\Component\Process\Process;
 
-class ConsoleAPITest extends \PHPUnit_Framework_TestCase
+class ConsoleAPITest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideConsoleNames

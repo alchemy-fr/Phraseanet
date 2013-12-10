@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Checker\Sha256;
 
-class Sha256Test extends \PhraseanetPHPUnitAbstract
+class Sha256Test extends \PhraseanetTestCase
 {
     /**
      * @var Sha256

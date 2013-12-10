@@ -6,14 +6,14 @@ use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
-class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
 {
     /**
      *
      * @return Client A Client instance
      */
     protected $client;
-    protected static $need_records = false;
+    private static $need_records = false;
 
     public function tearDown()
     {

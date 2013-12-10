@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Metadata\Tag;
 
 use Alchemy\Phrasea\Metadata\Tag\TfBits;
 
-class TfBitsTest extends \PHPUnit_Framework_TestCase
+class TfBitsTest extends \PhraseanetTestCase
 {
 
     /**

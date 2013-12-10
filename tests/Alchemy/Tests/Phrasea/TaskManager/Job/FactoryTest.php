@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\TaskManager\Job\Factory;
 
-class FactoryTest extends \PHPUnit_Framework_TestCase
+class FactoryTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideValidClasses
@@ -70,10 +70,5 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     private function createLoggerMock()
     {
         return $this->getMock('Psr\Log\LoggerInterface');
-    }
-
-    private function createTranslatorMock()
-    {
-        return $this->getMock('Symfony\Component\Translation\TranslatorInterface');
     }
 }

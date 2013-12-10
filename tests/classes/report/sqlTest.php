@@ -1,6 +1,6 @@
 <?php
 
-class sqlTest extends PhraseanetPHPUnitAuthenticatedAbstract
+class sqlTest extends \PhraseanetAuthenticatedTestCase
 {
 
     public function setUp()

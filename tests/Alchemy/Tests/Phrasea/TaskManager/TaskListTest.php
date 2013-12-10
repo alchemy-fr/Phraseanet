@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\TaskManager;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\TaskManager\TaskList;
 
-class TaskListTest extends \PhraseanetPHPUnitAbstract
+class TaskListTest extends \PhraseanetTestCase
 {
     public function testThatRefreshReturnsAnArrayOfTaskInterface()
     {

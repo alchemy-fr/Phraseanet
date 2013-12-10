@@ -9,7 +9,7 @@ use PHPExiftool\Driver\Tag\IPTC\UniqueDocumentID;
 use PHPExiftool\Driver\Value\Mono;
 use PHPExiftool\Driver\Metadata\Metadata;
 
-class FactoryTest extends \PhraseanetPHPUnitAbstract
+class FactoryTest extends \PhraseanetTestCase
 {
 
     /**

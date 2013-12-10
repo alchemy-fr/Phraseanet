@@ -15,16 +15,13 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
-class ApplicationTest extends \PhraseanetPHPUnitAbstract
+class ApplicationTest extends \PhraseanetTestCase
 {
     /**
      * @covers Alchemy\Phrasea\Application
      */
     public function testDebug()
     {
-        $app = new Application();
-        $this->assertFalse($app['debug']);
-
         $app = new Application('prod');
         $this->assertFalse($app['debug']);
 
@@ -363,7 +360,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         ];
     }
 
-    protected function getPreparedApp($tempDir)
+    private function getPreparedApp($tempDir)
     {
         $app = new Application('test');
         $app['translator.cache-options'] = [

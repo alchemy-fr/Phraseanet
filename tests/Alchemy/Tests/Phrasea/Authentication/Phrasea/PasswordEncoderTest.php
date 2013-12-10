@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Authentication\Phrasea;
 
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
 
-class PasswordEncoderTest extends \PHPUnit_Framework_TestCase
+class PasswordEncoderTest extends \PhraseanetTestCase
 {
     public function providePasswords()
     {
@@ -31,7 +31,7 @@ class PasswordEncoderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideInvalidKeys
-     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
      */
     public function testFailureIfNoKey($key)
     {

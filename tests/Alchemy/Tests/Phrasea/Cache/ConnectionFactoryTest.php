@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Cache;
 use Alchemy\Phrasea\Cache\ConnectionFactory;
 use Alchemy\Phrasea\Cache\Factory;
 
-class ConnectionFactoryTest extends \PHPUnit_Framework_TestCase
+class ConnectionFactoryTest extends \PhraseanetTestCase
 {
     public function testGetRedisConnection()
     {
@@ -21,7 +21,7 @@ class ConnectionFactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Alchemy\PHrasea\Exception\RuntimeException
+     * @expectedException \Alchemy\PHrasea\Exception\RuntimeException
      * @expectedExceptionMessage Redis instance with host 'unknown-host' and port '666' is not reachable
      */
     public function testGetInvalidRedisConnection()
@@ -51,7 +51,7 @@ class ConnectionFactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Alchemy\PHrasea\Exception\RuntimeException
+     * @expectedException \Alchemy\PHrasea\Exception\RuntimeException
      * @expectedExceptionMessage Memcached instance with host 'unknown-host' and port '666' is not reachable
      */
     public function testGetInvalidMemcachedConnection()
@@ -81,7 +81,7 @@ class ConnectionFactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Alchemy\PHrasea\Exception\RuntimeException
+     * @expectedException \Alchemy\PHrasea\Exception\RuntimeException
      * @expectedExceptionMessage Memcache instance with host 'unknown-host' and port '666' is not reachable
      */
     public function testGetInvalidMemcacheConnection()

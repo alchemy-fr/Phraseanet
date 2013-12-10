@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Border;
 use Alchemy\Phrasea\Border\Attribute\MetaField;
 use Alchemy\Phrasea\Border\MetaFieldsBag;
 
-class MetaFieldsBagTest extends \PhraseanetPHPUnitAbstract
+class MetaFieldsBagTest extends \PhraseanetTestCase
 {
     /**
      * @var MetaFieldsBag

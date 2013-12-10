@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Command\Developper\Utils;
 use Alchemy\Phrasea\Command\Developer\Utils\ComposerDriver;
 use Symfony\Component\Process\PhpExecutableFinder;
 
-class ComposerDriverTest extends \PHPUnit_Framework_TestCase
+class ComposerDriverTest extends \PhraseanetTestCase
 {
     public function testCreate()
     {

@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Checker\MediaType;
 
-class MediaTypeTest extends \PhraseanetPHPUnitAbstract
+class MediaTypeTest extends \PhraseanetTestCase
 {
     /**
      * @var MediaType
@@ -51,7 +51,7 @@ class MediaTypeTest extends \PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testContructorInvalidArgumentException()
     {

@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea;
 
 use Alchemy\Phrasea\CLI;
 
-class CLITest extends \PhraseanetPHPUnitAbstract
+class CLITest extends \PhraseanetTestCase
 {
     public function testsEmailWithoutQueue()
     {

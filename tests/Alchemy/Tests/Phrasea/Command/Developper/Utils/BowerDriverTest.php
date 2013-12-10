@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Command\Developper\Utils;
 use Alchemy\Phrasea\Command\Developer\Utils\BowerDriver;
 use Symfony\Component\Process\PhpExecutableFinder;
 
-class BowerDriverTest extends \PHPUnit_Framework_TestCase
+class BowerDriverTest extends \PhraseanetTestCase
 {
     public function testCreate()
     {

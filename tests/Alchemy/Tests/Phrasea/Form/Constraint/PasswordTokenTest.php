@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Form\Constraint;
 use Alchemy\Phrasea\Form\Constraint\PasswordToken;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class PasswordTokenTest extends \PhraseanetPHPUnitAbstract
+class PasswordTokenTest extends \PhraseanetTestCase
 {
     public function testInvalidTokenIsNotValid()
     {

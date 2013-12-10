@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Twig;
 
 use Alchemy\Phrasea\Twig\BytesConverter;
 
-class BytesConverterTest extends \PHPUnit_Framework_TestCase
+class BytesConverterTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider convertDataProvider

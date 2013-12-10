@@ -6,14 +6,14 @@ use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CommandTest extends \PHPUnit_Framework_TestCase
+class CommandTest extends \PhraseanetTestCase
 {
     /**
      * @var Command
      */
     protected $object;
 
-    protected function setUp()
+    public function setUp()
     {
         $this->object = new AbstractCommandTester('name');
     }

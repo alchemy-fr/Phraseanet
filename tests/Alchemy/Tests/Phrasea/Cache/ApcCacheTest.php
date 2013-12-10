@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Cache;
 
 use Alchemy\Phrasea\Cache\ApcCache;
 
-class ApcCacheTest extends \PHPUnit_Framework_TestCase
+class ApcCacheTest extends \PhraseanetTestCase
 {
     /**
      * @var ApcCache

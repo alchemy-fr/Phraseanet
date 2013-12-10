@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Form\Constraint;
 
 use Alchemy\Phrasea\Form\Constraint\PasswordTokenValidator;
 
-class PasswordTokenValidatorTest extends \PhraseanetPHPUnitAbstract
+class PasswordTokenValidatorTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideValidationData

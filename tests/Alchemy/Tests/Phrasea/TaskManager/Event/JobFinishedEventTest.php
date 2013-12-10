@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\TaskManager\Event;
 
 use Alchemy\Phrasea\TaskManager\Event\JobFinishedEvent;
 
-class JobFinishedEventTest extends \PHPUnit_Framework_TestCase
+class JobFinishedEventTest extends \PhraseanetTestCase
 {
     public function testEvent()
     {

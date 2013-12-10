@@ -5,14 +5,14 @@ namespace Alchemy\Tests\Phrasea\Media\Subdef\OptionType;
 use Alchemy\Phrasea\Media\Subdef\OptionType\Multi;
 use Alchemy\Phrasea\Media\Subdef\OptionType\OptionType;
 
-class MultiTest extends \PHPUnit_Framework_TestCase
+class MultiTest extends \PhraseanetTestCase
 {
     /**
      * @var Multi
      */
     protected $object;
 
-    protected function setUp()
+    public function setUp()
     {
         $this->object = new Multi('MUMU', 'multiateur', ['un', 'dos', 'tres'], 'dos');
     }

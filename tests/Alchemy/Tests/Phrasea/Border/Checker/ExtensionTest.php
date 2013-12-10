@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Checker\Extension;
 
-class ExtensionTest extends \PhraseanetPHPUnitAbstract
+class ExtensionTest extends \PhraseanetTestCase
 {
     /**
      * @var Extension
@@ -67,7 +67,7 @@ class ExtensionTest extends \PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testContructorInvalidArgumentException()
     {

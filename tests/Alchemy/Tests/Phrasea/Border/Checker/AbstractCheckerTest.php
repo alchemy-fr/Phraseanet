@@ -8,7 +8,7 @@ use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
+class AbstractCheckerTest extends \PhraseanetTestCase
 {
     /**
      * @var AbstractChecker
@@ -48,7 +48,7 @@ class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
     public function getDataboxesCombinaison()
     {
         $databox = $collection = null;
-        $app = new Application('test');
+        $app = $this->loadApp();
 
         foreach ($app['phraseanet.appbox']->get_databoxes() as $db) {
             if (! $collection) {
@@ -99,7 +99,7 @@ class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
     public function getCollectionsCombinaison()
     {
         $othercollection = $collection = null;
-        $app = new Application('test');
+        $app = $this->loadApp();
         $databoxes = $app['phraseanet.appbox']->get_databoxes();
         if (count($databoxes) === 0) {
             $this->fail('Unable to find collections');
@@ -181,7 +181,7 @@ class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
     public function getDataboxAndCollection()
     {
         $databox = $collection = null;
-        $app = new Application('test');
+        $app = $this->loadApp();
 
         foreach ($app['phraseanet.appbox']->get_databoxes() as $db) {
             if (! $databox) {

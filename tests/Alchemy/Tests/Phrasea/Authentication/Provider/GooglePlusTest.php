@@ -236,7 +236,7 @@ class GooglePlusTest extends ProviderTestCase
         return $provider;
     }
 
-    protected function authenticate(ProviderInterface $provider)
+    protected function authenticateProvider(ProviderInterface $provider)
     {
         $provider->getSession()->set('google-plus.provider.id', '12345678');
     }

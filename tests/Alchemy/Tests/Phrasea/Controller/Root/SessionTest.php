@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Root;
 
 use Symfony\Component\HttpKernel\Client;
 
-class SessionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class SessionTest extends \PhraseanetAuthenticatedWebTestCase
 {
     /**
      * @covers \Alchemy\Phrasea\Controller\Root\Session::updateSession

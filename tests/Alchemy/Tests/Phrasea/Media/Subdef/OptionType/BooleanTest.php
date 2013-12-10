@@ -5,14 +5,14 @@ namespace Alchemy\Tests\Phrasea\Media\Subdef\OptionType;
 use Alchemy\Phrasea\Media\Subdef\OptionType\Boolean;
 use Alchemy\Phrasea\Media\Subdef\OptionType\OptionType;
 
-class BooleanTest extends \PHPUnit_Framework_TestCase
+class BooleanTest extends \PhraseanetTestCase
 {
     /**
      * @var Boolean
      */
     protected $object;
 
-    protected function setUp()
+    public function setUp()
     {
         $this->object = new Boolean('Booleen', 'boolean', true);
     }

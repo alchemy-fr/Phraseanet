@@ -19,11 +19,6 @@ class PhraseaEngineTest extends SearchEngineAbstractTest
         }
     }
 
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-    }
-
     public function initialize()
     {
         self::$searchEngine = PhraseaEngine::create(self::$DI['app']);

@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../../Bridge_datas.inc';
 
-class Bridge_Api_Youtube_ContainerTest extends PHPUnit_Framework_TestCase
+class Bridge_Api_Youtube_ContainerTest extends \PhraseanetTestCase
 {
     /**
      * @var Bridge_Api_Youtube_Container

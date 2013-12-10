@@ -8,14 +8,6 @@ use Alchemy\Tests\Phrasea\SearchEngine\ConfigurationPanelAbstractTest;
 
 class PhraseaConfigurationPanelTest extends ConfigurationPanelAbstractTest
 {
-    /**
-     * @covers Alchemy\Phrasea\SearchEngine\Phrasea\ConfigurationPanel
-     */
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-    }
-
     public function getPanel()
     {
         return new ConfigurationPanel(new PhraseaEngine(self::$DI['app']), self::$DI['app']['configuration.store']);

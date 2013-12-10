@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\SearchEngine;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Symfony\Component\HttpFoundation\Request;
 
-class SearchEngineOptionsTest extends \PhraseanetPHPUnitAbstract
+class SearchEngineOptionsTest extends \PhraseanetTestCase
 {
     /**
      * @covers Alchemy\Phrasea\SearchEngine\SearchEngineOptions

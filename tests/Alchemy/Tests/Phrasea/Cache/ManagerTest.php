@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Cache\Manager;
 use Alchemy\Phrasea\Core\Configuration\Compiler;
 use Alchemy\Phrasea\Exception\RuntimeException;
 
-class ManagerTest extends \PHPUnit_Framework_TestCase
+class ManagerTest extends \PhraseanetTestCase
 {
     private $file;
 

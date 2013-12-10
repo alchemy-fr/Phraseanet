@@ -4,13 +4,13 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Silex\Application;
 use Symfony\Component\EventDispatcher\Event;
 
-class API_V1_TimerTest extends PhraseanetPHPUnitAbstract
+class API_V1_TimerTest extends \PhraseanetTestCase
 {
     public function testRegister()
     {
         $start = microtime(true);
 
-        $app = new Application();
+        $app = $this->loadApp();
         $dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
         $dispatcher->expects($this->exactly(9))
             ->method('addListener');
@@ -23,7 +23,7 @@ class API_V1_TimerTest extends PhraseanetPHPUnitAbstract
 
     public function testTriggerEvent()
     {
-        $app = new Application();
+        $app = $this->loadApp();
         $app->register(new API_V1_Timer());
 
         $app['dispatcher']->dispatch(PhraseaEvents::API_RESULT, new Event());

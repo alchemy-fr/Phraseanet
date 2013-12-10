@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Checker\Dimension;
 
-class DimensionTest extends \PhraseanetPHPUnitAbstract
+class DimensionTest extends \PhraseanetTestCase
 {
     /**
      * @var Dimension
@@ -115,7 +115,7 @@ class DimensionTest extends \PhraseanetPHPUnitAbstract
     }
 
      /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testContructorInvalidArgumentException()
     {

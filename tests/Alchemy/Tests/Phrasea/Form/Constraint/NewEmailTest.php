@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Form\Constraint;
 
 use Alchemy\Phrasea\Form\Constraint\NewEmail;
 
-class NewEmailTest extends \PhraseanetPHPUnitAbstract
+class NewEmailTest extends \PhraseanetTestCase
 {
     public function testAnUnknownAddressIsNotAlreadyRegistered()
     {

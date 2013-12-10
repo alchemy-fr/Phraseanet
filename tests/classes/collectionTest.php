@@ -3,21 +3,20 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 
-class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
+class collectionTest extends \PhraseanetAuthenticatedTestCase
 {
     /**
      * @var collection
      */
-    protected static $object;
+    private static $object;
     /**
      * @var collection
      */
-    protected static $objectDisable;
+    private static $objectDisable;
 
-    public static function setUpBeforeClass()
+    public function bootTestCase()
     {
-        parent::setUpBeforeClass();
-        $application = new Application('test');
+        $application = self::$DI['app'];
 
         $found = false;
         foreach ($application['phraseanet.appbox']->get_databoxes() as $databox) {

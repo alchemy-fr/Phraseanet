@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Command\Task;
 use Alchemy\Phrasea\Command\Task\TaskState;
 use Alchemy\Phrasea\Model\Entities\Task;
 
-class TaskStateTest extends \PhraseanetPHPUnitAbstract
+class TaskStateTest extends \PhraseanetTestCase
 {
     public function testRunWithoutProblems()
     {

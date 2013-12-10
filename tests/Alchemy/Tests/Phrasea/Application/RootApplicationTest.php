@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Application;
 
 use Alchemy\Phrasea\Application;
 
-class RootApplicationTest extends \PHPUnit_Framework_TestCase
+class RootApplicationTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideEnvironments

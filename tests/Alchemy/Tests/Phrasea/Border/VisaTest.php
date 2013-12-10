@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Border\Visa;
 use Alchemy\Phrasea\Border\Checker\Filename;
 use Alchemy\Phrasea\Border\Checker\Response;
 
-class VisaTest extends \PhraseanetPHPUnitAbstract
+class VisaTest extends \PhraseanetTestCase
 {
 
     /**

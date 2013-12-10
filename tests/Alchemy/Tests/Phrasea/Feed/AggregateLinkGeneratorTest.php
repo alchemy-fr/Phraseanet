@@ -7,7 +7,7 @@ use Alchemy\Phrasea\Feed\Link\AggregateLinkGenerator;
 use Alchemy\Phrasea\Model\Entities\Feed;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
-class AggregateLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
+class AggregateLinkGeneratorTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideGenerationData

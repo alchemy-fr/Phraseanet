@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Cache;
 
 use Alchemy\Phrasea\Cache\MemcachedCache;
 
-class MemcachedCacheTest extends \PHPUnit_Framework_TestCase
+class MemcachedCacheTest extends \PhraseanetTestCase
 {
     /**
      * @var MemcacheCache

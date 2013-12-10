@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Form;
 
-abstract class FormTestCase extends \PhraseanetPHPUnitAbstract
+abstract class FormTestCase extends \PhraseanetTestCase
 {
     public function testBuildForm()
     {

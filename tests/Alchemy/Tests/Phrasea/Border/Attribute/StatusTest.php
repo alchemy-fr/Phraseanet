@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Border\Attribute;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 
-class StatusTest extends \PhraseanetPHPUnitAbstract
+class StatusTest extends \PhraseanetTestCase
 {
     /**
      * @var Status

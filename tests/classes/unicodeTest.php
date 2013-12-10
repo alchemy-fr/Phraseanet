@@ -1,6 +1,6 @@
 <?php
 
-class unicodeTest extends PhraseanetPHPUnitAbstract
+class unicodeTest extends \PhraseanetTestCase
 {
     /**
      * @var unicode
@@ -25,7 +25,7 @@ class unicodeTest extends PhraseanetPHPUnitAbstract
 
     /**
      * @covers \unicode::convert
-     * @expectedException        Exception_InvalidArgument
+     * @expectedException        \Exception_InvalidArgument
      */
     public function testConvertError()
     {

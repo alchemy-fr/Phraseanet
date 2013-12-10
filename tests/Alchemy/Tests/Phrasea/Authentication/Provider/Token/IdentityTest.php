@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Authentication\Provider\Token;
 
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 
-class IdentityTest extends \PHPUnit_Framework_TestCase
+class IdentityTest extends \PhraseanetTestCase
 {
     public function testThatOffsetAreSetOnConstruct()
     {
@@ -23,7 +23,7 @@ class IdentityTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
      */
     public function testThatGetOnUnknownArgThrowsAnException()
     {
@@ -103,7 +103,7 @@ class IdentityTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @depends testSet
-     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
      */
     public function testRemoveThrowsAnException($identity)
     {

@@ -1,6 +1,6 @@
 <?php
 
-class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
+class EntityBasketTest extends \PhraseanetAuthenticatedTestCase
 {
     /**
      *

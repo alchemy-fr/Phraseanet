@@ -14,15 +14,15 @@ use Alchemy\Phrasea\Border\Attribute\Metadata;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Attribute\Story;
 
-class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
 {
     /**
      * @var Manager
      */
     protected $object;
     protected $session;
-    protected static $file1;
-    protected static $file2;
+    private static $file1;
+    private static $file2;
 
     public static function setUpBeforeClass()
     {

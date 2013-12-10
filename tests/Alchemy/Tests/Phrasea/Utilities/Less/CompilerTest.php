@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Utilities\Compiler;
 use Alchemy\Phrasea\Utilities\Less\Compiler;
 use Alchemy\BinaryDriver\Exception\ExecutionFailureException;
 
-class CompilerTest extends \PhraseanetPHPUnitAbstract
+class CompilerTest extends \PhraseanetTestCase
 {
     public function testCompileSuccess()
     {
@@ -24,7 +24,7 @@ class CompilerTest extends \PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\RuntimeException
+     * @expectedException \Alchemy\Phrasea\Exception\RuntimeException
      */
     public function testCompileFileNotExists()
     {
@@ -41,7 +41,7 @@ class CompilerTest extends \PhraseanetPHPUnitAbstract
     }
 
    /**
-     * @expectedException Alchemy\Phrasea\Exception\RuntimeException
+     * @expectedException \Alchemy\Phrasea\Exception\RuntimeException
      */
     public function testCompileExecutionFailure()
     {

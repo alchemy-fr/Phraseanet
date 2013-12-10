@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Metadata\Tag;
 
 use Alchemy\Phrasea\Metadata\Tag\Nosource;
 
-class NosourceTest extends \PHPUnit_Framework_TestCase
+class NosourceTest extends \PhraseanetTestCase
 {
 
     /**

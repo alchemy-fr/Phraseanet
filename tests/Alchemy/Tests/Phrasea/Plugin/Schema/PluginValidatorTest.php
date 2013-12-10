@@ -9,7 +9,7 @@ class PluginValidatorTest extends PluginTestCase
 {
     /**
      * @dataProvider provideInvalidPluginDirs
-     * @expectedException Alchemy\Phrasea\Plugin\Exception\PluginValidationException
+     * @expectedException \Alchemy\Phrasea\Plugin\Exception\PluginValidationException
      */
     public function testValidateInvalidPlugin($directory)
     {

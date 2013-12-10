@@ -1,16 +1,15 @@
 <?php
 
-class unitTestsTest extends PhraseanetPHPUnitAbstract
+class unitTestsTest extends \PhraseanetTestCase
 {
-
     public function testFiles()
     {
         $reserved = [
             "BoilerPlate.php",
-            "PhraseanetPHPUnitAbstract.php",
-            "PhraseanetWebTestCaseAbstract.php",
-            "PhraseanetPHPUnitAuthenticatedAbstract.php",
-            "PhraseanetWebTestCaseAuthenticatedAbstract.php",
+            "PhraseanetTestCase.php",
+            "PhraseanetWebTestCase.php",
+            "PhraseanetAuthenticatedTestCase.php",
+            "PhraseanetAuthenticatedWebTestCase.php",
             "PhraseanetPHPUnitListener.php",
         ];
 

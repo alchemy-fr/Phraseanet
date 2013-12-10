@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\TaskManager\Job\JobData;
 
-class JobDataTest extends \PHPUnit_Framework_TestCase
+class JobDataTest extends \PhraseanetTestCase
 {
     public function testGetters()
     {

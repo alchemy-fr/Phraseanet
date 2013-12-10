@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\SearchEngine;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 
-class SearchEngineLoggerTest extends \PhraseanetPHPUnitAbstract
+class SearchEngineLoggerTest extends \PhraseanetTestCase
 {
     /**
      * @covers Alchemy\Phrasea\SearchEngine\SearchEngineLogger::log

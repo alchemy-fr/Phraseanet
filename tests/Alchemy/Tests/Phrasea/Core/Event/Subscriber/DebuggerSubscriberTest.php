@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\Subscriber\DebuggerSubscriber;
 use Symfony\Component\HttpFoundation\Request;
 
-class DebuggerSubscriberTest extends \PHPUnit_Framework_TestCase
+class DebuggerSubscriberTest extends \PhraseanetTestCase
 {
     public function tearDown()
     {

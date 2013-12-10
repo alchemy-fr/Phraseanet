@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Client;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 
-class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class RootTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 

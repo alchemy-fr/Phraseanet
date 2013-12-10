@@ -7,7 +7,7 @@ use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Command\Upgrade\Step31;
 use Alchemy\Phrasea\Command\Upgrade\Step35;
 
-class UpgradeDBDatasTest extends \PHPUnit_Framework_TestCase
+class UpgradeDBDatasTest extends \PhraseanetTestCase
 {
     /**
      * @var UpgradeDBDatas
@@ -17,7 +17,7 @@ class UpgradeDBDatasTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers Alchemy\Phrasea\Command\UpgradeDBDatas::__construct
      */
-    protected function setUp()
+    public function setUp()
     {
         $this->object = new UpgradeDBDatas('commandname');
     }
@@ -33,7 +33,7 @@ class UpgradeDBDatasTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([], $this->object->getUpgrades());
 
         $upgrades = [
-            new Step31(new Application('test'))
+            new Step31($this->loadApp())
         ];
         $this->object->setUpgrades($upgrades);
         $this->assertEquals($upgrades, $this->object->getUpgrades());
@@ -46,12 +46,12 @@ class UpgradeDBDatasTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals([], $this->object->getUpgrades());
 
-        $step31 = new Step31(new Application('test'));
+        $step31 = new Step31($this->loadApp());
         $this->object->addUpgrade($step31);
 
         $this->assertEquals([$step31], $this->object->getUpgrades());
 
-        $step35 = new Step35(new Application('test'));
+        $step35 = new Step35($this->loadApp());
         $this->object->addUpgrade($step35);
 
         $this->assertEquals([$step31, $step35], $this->object->getUpgrades());

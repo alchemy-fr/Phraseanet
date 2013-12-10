@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Cookie;
 
-class CookiesDisablerSubscriberTest extends \PHPUnit_Framework_TestCase
+class CookiesDisablerSubscriberTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideVariousRoutes

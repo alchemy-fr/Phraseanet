@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Setup\Requirements;
 use Alchemy\Phrasea\Setup\RequirementCollection;
 use Alchemy\Phrasea\Setup\RequirementCollectionInterface;
 
-abstract class RequirementsTestCase extends \PHPUnit_Framework_TestCase
+abstract class RequirementsTestCase extends \PhraseanetTestCase
 {
     /**
      * @return RequirementCollectionInterface

@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Feed;
 use Alchemy\Phrasea\Feed\Link\FeedLinkGenerator;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
-class FeedLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
+class FeedLinkGeneratorTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideGenerationData

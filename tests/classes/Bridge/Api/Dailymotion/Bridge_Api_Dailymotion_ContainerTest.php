@@ -2,14 +2,14 @@
 
 require_once __DIR__ . '/../../Bridge_datas.inc';
 
-class Bridge_Api_Dailymotion_ContainerTest extends PHPUnit_Framework_TestCase
+class Bridge_Api_Dailymotion_ContainerTest extends \PhraseanetTestCase
 {
     /**
      * @var Bridge_Api_Dailymotion_Container
      */
     protected $object;
 
-    protected function setUp()
+    public function setUp()
     {
         $this->test = [
             'id'          => '01234567'

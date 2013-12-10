@@ -7,7 +7,7 @@ use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono;
 use PHPExiftool\Driver\Value\Multi;
 
-class MetadataBagTest extends \PhraseanetPHPUnitAbstract
+class MetadataBagTest extends \PhraseanetTestCase
 {
     /**
      * @var MetadataBag

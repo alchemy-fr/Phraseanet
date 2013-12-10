@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Authentication\Provider\Token;
 
 use Alchemy\Phrasea\Authentication\Provider\Token\Token;
 
-class TokenTest extends \PHPUnit_Framework_TestCase
+class TokenTest extends \PhraseanetTestCase
 {
     public function testGetIdAndProvider()
     {

@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Plugin\Schema;
 
 use Alchemy\Phrasea\Plugin\Schema\Manifest;
 
-class ManifestTest extends \PHPUnit_Framework_TestCase
+class ManifestTest extends \PhraseanetTestCase
 {
     public function testGetters()
     {

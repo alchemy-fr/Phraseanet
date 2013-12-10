@@ -1,6 +1,6 @@
 <?php
 
-class thesaurusTest extends PhraseanetPHPUnitAbstract
+class thesaurusTest extends \PhraseanetTestCase
 {
 
     public function testXquery_escape()

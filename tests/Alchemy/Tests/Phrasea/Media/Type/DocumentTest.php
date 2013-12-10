@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Media\Type;
 use Alchemy\Phrasea\Media\Type\Document;
 use Alchemy\Phrasea\Media\Type\Type;
 
-class DocumentTest extends \PHPUnit_Framework_TestCase
+class DocumentTest extends \PhraseanetTestCase
 {
 
     /**

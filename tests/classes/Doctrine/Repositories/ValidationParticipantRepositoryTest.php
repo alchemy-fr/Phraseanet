@@ -1,6 +1,6 @@
 <?php
 
-class ValidationParticipantRepositoryTest extends PhraseanetPHPUnitAuthenticatedAbstract
+class ValidationParticipantRepositoryTest extends \PhraseanetAuthenticatedTestCase
 {
 
     public function testFindNotConfirmedAndNotRemindedParticipants()

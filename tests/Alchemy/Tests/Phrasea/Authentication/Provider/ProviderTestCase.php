@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
 use Symfony\Component\HttpFoundation\Session\Session;
 
-abstract class ProviderTestCase extends \PHPUnit_Framework_TestCase
+abstract class ProviderTestCase extends \PhraseanetTestCase
 {
     protected $session;
 
@@ -101,7 +101,7 @@ abstract class ProviderTestCase extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideDataForFailingCallback
-     * @expectedException Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException
+     * @expectedException \Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException
      */
     public function testOnCallbackWithFailure($provider, $request)
     {
@@ -111,7 +111,7 @@ abstract class ProviderTestCase extends \PHPUnit_Framework_TestCase
     public function testGetToken()
     {
         $provider = $this->getProvider();
-        $this->authenticate($provider);
+        $this->authenticateProvider($provider);
 
         $token = $provider->getToken();
 
@@ -120,7 +120,7 @@ abstract class ProviderTestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException
+     * @expectedException \Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException
      */
     public function testGetTokenWhenNotAuthenticated()
     {
@@ -140,7 +140,7 @@ abstract class ProviderTestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException
+     * @expectedException \Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException
      */
     public function testGetIdentityWhenNotAuthenticated()
     {
@@ -192,7 +192,7 @@ abstract class ProviderTestCase extends \PHPUnit_Framework_TestCase
         $this->getProviderForLogout()->logout();
     }
 
-    abstract protected function authenticate(ProviderInterface $provider);
+    abstract protected function authenticateProvider(ProviderInterface $provider);
 
     abstract protected function getProviderForAuthentication();
 

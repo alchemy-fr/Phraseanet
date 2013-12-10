@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Media\Subdef\Provider;
 use Alchemy\Phrasea\Media\Subdef\Image;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
-class ProviderTest extends \PHPUnit_Framework_TestCase
+class ProviderTest extends \PhraseanetTestCase
 {
     use TranslatorMockTrait;
 
@@ -15,7 +15,7 @@ class ProviderTest extends \PHPUnit_Framework_TestCase
      */
     protected $object;
 
-    protected function setUp()
+    public function setUp()
     {
         $this->object = new Image($this->createTranslatorMock());
     }

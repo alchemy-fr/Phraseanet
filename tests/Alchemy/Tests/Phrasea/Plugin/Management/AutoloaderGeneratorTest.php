@@ -9,7 +9,7 @@ use Alchemy\Phrasea\Plugin\Schema\Manifest;
 use Symfony\Component\Process\ProcessBuilder;
 use Symfony\Component\Process\ExecutableFinder;
 
-class AutoloaderGeneratorTest extends \PHPUnit_Framework_TestCase
+class AutoloaderGeneratorTest extends \PhraseanetTestCase
 {
     public function testGeneratedFileAfterInstall()
     {

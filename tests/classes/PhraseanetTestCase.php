@@ -23,7 +23,10 @@ use Alchemy\Phrasea\Model\Entities\UsrListOwner;
 use Alchemy\Phrasea\Model\Entities\UsrList;
 use Alchemy\Phrasea\Model\Entities\UsrListEntry;
 use Alchemy\Phrasea\Model\Entities\StoryWZ;
+use Monolog\Logger;
+use Monolog\Handler\NullHandler;
 use Silex\WebTestCase;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\DomCrawler\Crawler;
@@ -32,9 +35,10 @@ use Symfony\Component\Routing\RequestContext;
 
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
-abstract class PhraseanetPHPUnitAbstract extends WebTestCase
+abstract class PhraseanetTestCase extends WebTestCase
 {
     use TranslatorMockTrait;
+
     /**
      * Define some user agents
      */
@@ -42,70 +46,25 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     const USER_AGENT_IE6 = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; SV1; .NET CLR 1.1.4322)';
     const USER_AGENT_IPHONE = 'Mozilla/5.0 (iPod; U; CPU iPhone OS 2_1 like Mac OS X; fr-fr) AppleWebKit/525.18.1 (KHTML, like Gecko) Version/3.1.1 Mobile/5F137 Safari/525.20';
 
+    public $app;
+
     /**
-     *
      * @var \Pimple
      */
-    public static $DI;
-    protected static $testsTime = [];
-    protected static $records;
-    public static $recordsInitialized = false;
+    protected static $DI;
+
+    private static $recordsInitialized = false;
 
     /**
      * Tell if tables were updated with new schemas
      * @var boolean
      */
-    protected static $updated;
+    private static $booted;
+    private static $testCaseBooted;
 
-    /**
-     * Test start time
-     * @var float
-     */
-    protected static $time_start;
-    public $app;
-    protected $start;
+    private static $fixtureIds = [];
 
-    /**
-     *
-     * @var Symfony\Component\HttpKernel\Client
-     */
-    protected $client;
-
-    /**
-     * This method is called before the first test of this test class is run.
-     */
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-
-        if (!self::$updated) {
-            self::$time_start = microtime(true);
-
-            self::$DI = new \Pimple();
-            self::initializeSqliteDB();
-
-            $application = new Application('test');
-
-            if (!$application['phraseanet.configuration-tester']->isInstalled()) {
-                echo "\033[0;31mPhraseanet is not set up\033[0;37m\n";
-                exit(1);
-            }
-
-            self::updateTablesSchema($application);
-
-            self::createSetOfUserTests($application);
-
-            self::setCollection($application);
-
-            self::generateRecords($application);
-
-            self::$DI['user']->set_email('valid@phraseanet.com');
-
-            self::$updated = true;
-        }
-    }
-
-    public static function initializeSqliteDB($path = '/tmp/db.sqlite')
+    private function initializeSqliteDB($path = '/tmp/db.sqlite')
     {
         if (is_file($path)) {
             unlink($path);
@@ -124,19 +83,15 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     public function __destruct()
     {
         self::deleteResources();
-
-        if (self::$time_start) {
-            self::$time_start = null;
-        }
     }
 
     public function setUp()
     {
-        ini_set('memory_limit', '4096M');
-
-        $this->start = $start = microtime(true);
-
         parent::setUp();
+
+        self::$DI = new \Pimple();
+
+        ini_set('memory_limit', '4096M');
 
         \PHPUnit_Framework_Error_Warning::$enabled = true;
         \PHPUnit_Framework_Error_Notice::$enabled = true;
@@ -153,7 +108,158 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             return new Client($DI['app'], []);
         });
 
-        self::$DI['user']->purgePreferences();
+        self::$DI['user'] = self::$DI->share(function ($DI) {
+            $user = User_Adapter::getInstance(self::$fixtureIds['user']['test_phpunit'], $DI['app']);
+            $user->purgePreferences();
+
+            return $user;
+        });
+
+        self::$DI['user_notAdmin'] = self::$DI->share(function ($DI) {
+            return User_Adapter::getInstance(self::$fixtureIds['user']['test_phpunit_not_admin'], $DI['app']);
+        });
+
+        self::$DI['user_alt1'] = self::$DI->share(function ($DI) {
+            return User_Adapter::getInstance(self::$fixtureIds['user']['test_phpunit_alt1'], $DI['app']);
+        });
+
+        self::$DI['user_alt2'] = self::$DI->share(function ($DI) {
+            return User_Adapter::getInstance(self::$fixtureIds['user']['test_phpunit_alt2'], $DI['app']);
+        });
+
+        self::$DI['logger'] = self::$DI->share(function () {
+            $logger = new Logger('tests');
+            $logger->pushHandler(new NullHandler());
+
+            return $logger;
+        });
+
+        self::$DI['collection'] = self::$DI->share(function ($DI) {
+            return collection::get_from_base_id($DI['app'], self::$fixtureIds['collection']['coll']);
+        });
+
+        self::$DI['collection_no_access'] = self::$DI->share(function ($DI) {
+            return collection::get_from_base_id($DI['app'], self::$fixtureIds['collection']['coll_no_access']);
+        });
+
+        self::$DI['collection_no_access_by_status'] = self::$DI->share(function ($DI) {
+            return collection::get_from_base_id($DI['app'], self::$fixtureIds['collection']['coll_no_status']);
+        });
+
+        if (!self::$booted) {
+            if (!self::$DI['app']['phraseanet.configuration-tester']->isInstalled()) {
+                echo "\033[0;31mPhraseanet is not set up\033[0;37m\n";
+                exit(1);
+            }
+
+            $this->createSetOfUserTests(self::$DI['app']);
+            self::setCollection(self::$DI['app']);
+
+            self::resetUsersRights(self::$DI['app'], self::$DI['user']);
+            self::resetUsersRights(self::$DI['app'], self::$DI['user_notAdmin']);
+
+            self::$booted = true;
+        }
+
+        self::$DI['record_id_resolver'] = self::$DI->protect(function ($id) {
+            if (isset(self::$fixtureIds['records'][$id])) {
+                return self::$fixtureIds['records'][$id];
+            }
+
+            self::$recordsInitialized[] = $id;
+            $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../files/' . ($id < 10 ? 'test00' . $id . '.jpg' : 'test0' . $id . '.jpg')), self::$DI['collection']);
+            $record = record_adapter::createFromFile($file, self::$DI['app']);
+            $record->generate_subdefs($record->get_databox(), self::$DI['app']);
+            self::$fixtureIds['records'][$id] = $record->get_record_id();
+
+            return self::$fixtureIds['records'][$id];
+        });
+
+        self::$DI['story_id_resolver'] = self::$DI->protect(function ($id) {
+            $id = 'story_'.$id;
+
+            if (isset(self::$fixtureIds['records'][$id])) {
+                return self::$fixtureIds['records'][$id];
+            }
+
+            self::$recordsInitialized[] = $id;
+            $story = record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
+
+            $media = self::$DI['app']['mediavorus']->guess(__DIR__ . '/../files/cestlafete.jpg');
+            $story->substitute_subdef('preview', $media, self::$DI['app']);
+            $story->substitute_subdef('thumbnail', $media, self::$DI['app']);
+
+            self::$fixtureIds['records'][$id] = $story->get_record_id();
+
+            return self::$fixtureIds['records'][$id];
+        });
+
+        foreach (range(1, 24) as $i) {
+            self::$DI['record_' . $i] = self::$DI->share(function ($DI) use ($i) {
+                return new \record_adapter($DI['app'], self::$fixtureIds['databox']['records'], $DI['record_id_resolver']($i));
+            });
+        }
+
+        foreach (range(1, 2) as $i) {
+            self::$DI['record_story_' . $i] = self::$DI->share(function ($DI) use ($i) {
+                return new \record_adapter($DI['app'], self::$fixtureIds['databox']['records'], $DI['story_id_resolver']($i));
+            });
+        }
+
+        self::$DI['record_no_access_resolver'] = self::$DI->protect(function () {
+            $id = 'no_access';
+
+            if (isset(self::$fixtureIds['records'][$id])) {
+                return self::$fixtureIds['records'][$id];
+            }
+
+            self::$recordsInitialized[] = $id;
+            $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../files/cestlafete.jpg'), self::$DI['collection_no_access']);
+            $record = record_adapter::createFromFile($file, self::$DI['app']);
+            $record->generate_subdefs($record->get_databox(), self::$DI['app']);
+            self::$fixtureIds['records'][$id] = $record->get_record_id();
+
+            return self::$fixtureIds['records'][$id];
+        });
+
+        self::$DI['record_no_access_by_status_resolver'] = self::$DI->protect(function () {
+            $id = 'no_access_by_status';
+
+            if (isset(self::$fixtureIds['records'][$id])) {
+                return self::$fixtureIds['records'][$id];
+            }
+
+            self::$recordsInitialized[] = $id;
+            $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../files/cestlafete.jpg'), self::$DI['collection_no_access_by_status']);
+            $record = record_adapter::createFromFile($file, self::$DI['app']);
+            $record->generate_subdefs($record->get_databox(), self::$DI['app']);
+            self::$fixtureIds['records'][$id] = $record->get_record_id();
+
+            return self::$fixtureIds['records'][$id];
+        });
+
+        self::$DI['record_no_access'] = self::$DI->share(function ($DI) {
+            return new \record_adapter($DI['app'], self::$fixtureIds['databox']['records'], $DI['record_no_access_resolver']());
+        });
+
+        self::$DI['record_no_access_by_status'] = self::$DI->share(function ($DI) {
+            return new \record_adapter($DI['app'], self::$fixtureIds['databox']['records'], $DI['record_no_access_by_status_resolver']());
+        });
+
+        if (!self::$testCaseBooted) {
+            $this->bootTestCase();
+        }
+        self::$testCaseBooted = true;
+    }
+
+    public static function tearDownAfterClass()
+    {
+        self::$testCaseBooted = false;
+    }
+
+    protected function bootTestCase()
+    {
+
     }
 
     protected function loadCLI($environment = Application::ENV_TEST)
@@ -164,9 +270,14 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         return $cli;
     }
 
-    protected function loadApp($path, $environment = Application::ENV_TEST)
+    protected function loadApp($path = null, $environment = Application::ENV_TEST)
     {
-        $app = require __DIR__ . '/../../' . $path;
+        if (null !== $path) {
+            $app = require __DIR__ . '/../../' . $path;
+        } else {
+            $app = new Application($environment);
+        }
+
         $this->addMocks($app);
 
         return $app;
@@ -203,7 +314,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         }));
 
         $app['browser'] = $app->share($app->extend('browser', function ($browser) {
-            $browser->setUserAgent(PhraseanetPHPUnitAbstract::USER_AGENT_FIREFOX8MAC);
+            $browser->setUserAgent(self::USER_AGENT_FIREFOX8MAC);
 
             return $browser;
         }));
@@ -235,12 +346,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $refl = null;
 
         parent::tearDown();
-
-//        $duration = (microtime(true) - $this->start);
-//        if ($duration > 0.75) {
-//            echo "test in " . get_class($this) . " last " . $duration . "\n";
-//        }
-        $this->start = null;
 
         //In case some executed script modify 'max_execution_time' ini var
         //Initialize set_time_limit(0) which is the default value for PHP CLI
@@ -803,96 +908,62 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         ]);
     }
 
-    /**
-     * Updates the sql tables with the current schema.
-     */
-    private static function updateTablesSchema(Application $application)
+    protected static function resetUsersRights(Application $app, \User_Adapter $user)
     {
-        if (!self::$updated) {
-            if (file_exists(Setup_Upgrade::get_lock_file())) {
-                unlink(Setup_Upgrade::get_lock_file());
-            }
-
-            $upgrader = new Setup_Upgrade($application);
-            $application['phraseanet.appbox']->forceUpgrade($upgrader, $application);
-            unset($upgrader);
-
-            $command = __DIR__ . '/../../bin/developer orm:schema-tool:update --force';
-
-            try {
-                $process = new Symfony\Component\Process\Process('php ' . $command);
-                $process->run();
-
-                if (!$process->isSuccessful()) {
-                    throw new \RuntimeException($process->getErrorOutput());
-                }
-
-                self::$updated = true;
-            } catch (\RuntimeException $e) {
-                echo "\033[0;31mUnable to validate ORM schema\033[0;37m\n";
-                exit(1);
-            }
+        switch ($user->get_login()) {
+            case 'test_phpunit':
+                self::giveRightsToUser($app, $user);
+                $app['acl']->get($user)->set_admin(true);
+                $app['acl']->get(self::$DI['user'])->revoke_access_from_bases([self::$DI['collection_no_access']->get_base_id()]);
+                $app['acl']->get(self::$DI['user'])->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000');
+                break;
+            case 'test_phpunit_not_admin':
+            case 'test_phpunit_alt2':
+            case 'test_phpunit_alt1':
+                self::giveRightsToUser(self::$DI['app'], $user);
+                $app['acl']->get($user)->set_admin(false);
+                $app['acl']->get(self::$DI['user'])->revoke_access_from_bases([self::$DI['collection_no_access']->get_base_id()]);
+                $app['acl']->get(self::$DI['user'])->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000');
+                break;
+            default:
+                throw new \InvalidArgumentException(sprintf('User %s not found', $user->get_login()));
         }
-
-        set_time_limit(3600);
-
-        return;
     }
 
-    /**
-     * Creates a set of users for the test suite.
-     *
-     * self::$DI['user']
-     * self::$DI['user_alt1']
-     * self::$DI['user_alt2']
-     */
-    private static function createSetOfUserTests(Application $application)
+    private function createSetOfUserTests(Application $application)
     {
-        self::$DI['user'] = self::$DI->share(function ($DI) use ($application) {
-            $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit');
-
-            if (!$usr_id) {
-                $user = User_Adapter::create($application, 'test_phpunit', random::generatePassword(), 'noone@example.com', false);
-                $usr_id = $user->get_id();
-            }
-
+        if (false === $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit')) {
+            $user = User_Adapter::create($application, 'test_phpunit', random::generatePassword(), 'noone@example.com', false);
+            $usr_id = $user->get_id();
+        } else {
             $user = User_Adapter::getInstance($usr_id, $application);
+        }
+        $user->set_email('valid@phraseanet.com');
 
-            return $user;
-        });
+        self::$fixtureIds['user']['test_phpunit'] = $usr_id;
 
-        self::$DI['user_notAdmin'] = self::$DI->share(function () use ($application) {
-            $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit_not_admin');
+        if (false === $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit_not_admin')) {
+            $user = User_Adapter::create($application, 'test_phpunit_not_admin', random::generatePassword(), 'noone_not_admin@example.com', false);
+            $usr_id = $user->get_id();
+        } else {
+            $user = User_Adapter::getInstance($usr_id, $application);
+        }
 
-            if (!$usr_id) {
-                $user = User_Adapter::create($application, 'test_phpunit_not_admin', random::generatePassword(), 'noone_not_admin@example.com', false);
-                $usr_id = $user->get_id();
-            }
+        self::$fixtureIds['user']['test_phpunit_not_admin'] = $usr_id;
 
-            return User_Adapter::getInstance($usr_id, $application);
-        });
+        if (false === $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit_alt1')) {
+            $user = User_Adapter::create($application, 'test_phpunit_alt1', random::generatePassword(), 'noonealt1@example.com', false);
+            $usr_id = $user->get_id();
+        }
 
-        self::$DI['user_alt1'] = self::$DI->share(function () use ($application) {
-            $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit_alt1');
+        self::$fixtureIds['user']['test_phpunit_alt1'] = $usr_id;
 
-            if (!$usr_id) {
-                $user = User_Adapter::create($application, 'test_phpunit_alt1', random::generatePassword(), 'noonealt1@example.com', false);
-                $usr_id = $user->get_id();
-            }
+        if (false === $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit_alt2')) {
+            $user = User_Adapter::create($application, 'test_phpunit_alt2', random::generatePassword(), 'noonealt2@example.com', false);
+            $usr_id = $user->get_id();
+        }
 
-            return User_Adapter::getInstance($usr_id, $application);
-        });
-
-        self::$DI['user_alt2'] = self::$DI->share(function () use ($application) {
-            $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit_alt2');
-
-            if (!$usr_id) {
-                $user = User_Adapter::create($application, 'test_phpunit_alt2', random::generatePassword(), 'noonealt2@example.com', false);
-                $usr_id = $user->get_id();
-            }
-
-            return User_Adapter::getInstance($usr_id, $application);
-        });
+        self::$fixtureIds['user']['test_phpunit_alt2'] = $usr_id;
     }
 
     /**
@@ -900,7 +971,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      *
      * @param \User_Adapter $user
      */
-    public static function giveRightsToUser(Application $app, \User_Adapter $user)
+    public static function giveRightsToUser(Application $app, \User_Adapter $user, $base_ids = null)
     {
         $app['acl']->get($user)->give_access_to_sbas(array_keys($app['phraseanet.appbox']->get_databoxes()));
 
@@ -916,6 +987,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $app['acl']->get($user)->update_rights_to_sbas($databox->get_sbas_id(), $rights);
 
             foreach ($databox->get_collections() as $collection) {
+                if (null !== $base_ids && !in_array($collection->get_base_id(), (array) $base_ids, true)) {
+                    continue;
+                }
+
                 $base_id = $collection->get_base_id();
 
                 $app['acl']->get($user)->give_access_to_base([$base_id]);
@@ -956,7 +1031,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $coll = $collection_no_acces = $collection_no_acces_by_status = $db = null;
 
         foreach ($application['phraseanet.appbox']->get_databoxes() as $databox) {
-            $db = $databox;
             foreach ($databox->get_collections() as $collection) {
                 if ($collection_no_acces instanceof collection && !$collection_no_acces_by_status) {
                     $collection_no_acces_by_status = $collection;
@@ -975,138 +1049,18 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             }
         }
 
-        if (!$coll instanceof collection) {
-            self::fail('Unable to find a collection');
+        self::$fixtureIds['databox']['records'] = $coll->get_databox()->get_sbas_id();
+        self::$fixtureIds['collection']['coll'] = $coll->get_base_id();
+
+        if (!$collection_no_acces instanceof collection) {
+            $collection_no_acces = collection::create($application, $databox, $application['phraseanet.appbox'], 'BIBOO', self::$DI['user']);
         }
+        self::$fixtureIds['collection']['coll_no_access'] = $collection_no_acces->get_base_id();
 
-        self::$DI['collection'] = $coll;
-
-        self::$DI['collection_no_access'] = self::$DI->share(function ($DI) use ($application, $databox, $collection_no_acces) {
-            if (!$collection_no_acces instanceof collection) {
-                $collection_no_acces = collection::create($application, $databox, $application['phraseanet.appbox'], 'BIBOO', $DI['user']);
-            }
-
-            $DI['user'] = $DI->share(
-                $DI->extend('user', function ($user, $DI) use ($collection_no_acces) {
-                    $DI['app']['acl']->get($user)->revoke_access_from_bases([$collection_no_acces->get_base_id()]);
-                    $DI['client'] = new Client($DI['app'], []);
-
-                    return $user;
-                })
-            );
-
-            $DI['user'];
-
-            return $collection_no_acces;
-        });
-
-        self::$DI['collection_no_access_by_status'] = self::$DI->share(function ($DI) use ($application, $databox, $collection_no_acces_by_status) {
-            if (!$collection_no_acces_by_status instanceof collection) {
-                $collection_no_acces_by_status = collection::create($application, $databox, $application['phraseanet.appbox'], 'BIBOONOACCESBYSTATUS', $DI['user']);
-            }
-
-            $DI['user'] = $DI->share(
-                $DI->extend('user', function ($user, $DI) use ($collection_no_acces_by_status) {
-                    $DI['app']['acl']->get($user)->set_masks_on_base($collection_no_acces_by_status->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
-                    $DI['client'] = new Client($DI['app'], []);
-
-                    return $user;
-                })
-            );
-
-            $DI['user'];
-
-            return $collection_no_acces_by_status;
-        });
-
-        return;
-    }
-
-    /**
-     * Generates a set of records for the current tests suites.
-     */
-    private static function generateRecords(Application $app)
-    {
-        if (self::$recordsInitialized === false) {
-
-            $logger = new \Monolog\Logger('tests');
-            $logger->pushHandler(new \Monolog\Handler\NullHandler());
-            self::$recordsInitialized = [];
-
-            $resolvePathfile = function ($i) {
-                $finder = new Symfony\Component\Finder\Finder();
-
-                $name = $i < 10 ? 'test00' . $i . '.*' : 'test0' . $i . '.*';
-
-                $finder->name($name)->in(__DIR__ . '/../files/');
-
-                foreach ($finder as $file) {
-                    return $file;
-                }
-
-                throw new Exception(sprintf('File %d not found', $i));
-            };
-
-            foreach (range(1, 24) as $i) {
-                self::$DI['record_' . $i] = self::$DI->share(function ($DI) use ($logger, $resolvePathfile, $i) {
-
-                    PhraseanetPHPUnitAbstract::$recordsInitialized[] = $i;
-
-                    $file = new File($DI['app'], $DI['app']['mediavorus']->guess($resolvePathfile($i)->getPathname()), $DI['collection']);
-
-                    $record = record_adapter::createFromFile($file, $DI['app']);
-
-                    $record->generate_subdefs($record->get_databox(), $DI['app']);
-
-                    return $record;
-                });
-            }
-
-            foreach (range(1, 2) as $i) {
-                self::$DI['record_story_' . $i] = self::$DI->share(function ($DI) use ($i) {
-
-                    PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'story_' . $i;
-
-                    return record_adapter::createStory($DI['app'], $DI['collection']);
-                });
-            }
-
-            self::$DI['record_no_access'] = self::$DI->share(function ($DI) {
-
-                PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access';
-
-                $file = new File($DI['app'], $DI['app']['mediavorus']->guess(__DIR__ . '/../files/cestlafete.jpg'), $DI['collection_no_access']);
-
-                return \record_adapter::createFromFile($file, $DI['app']);
-            });
-
-            self::$DI['record_no_access_by_status'] = self::$DI->share(function ($DI) {
-
-                PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access_by_status';
-
-                $file = new File($DI['app'], $DI['app']['mediavorus']->guess(__DIR__ . '/../files/cestlafete.jpg'), $DI['collection_no_access']);
-
-                return \record_adapter::createFromFile($file, $DI['app']);
-            });
-
-            self::$DI['user'] = self::$DI->share(
-                self::$DI->extend('user', function ($user, $DI) use ($app) {
-                    PhraseanetPHPUnitAbstract::giveRightsToUser($app, $user);
-                    $app['acl']->get($user)->set_admin(true);
-
-                    return $user;
-                })
-            );
-
-            self::$DI['user_notAdmin'] = self::$DI->share(
-                self::$DI->extend('user_notAdmin', function ($user, $DI) use ($app) {
-                    PhraseanetPHPUnitAbstract::giveRightsToUser($app, $user);
-                    $app['acl']->get($user)->set_admin(false);
-
-                    return $user;
-                })
-            );
+        if (!$collection_no_acces_by_status instanceof collection) {
+            $collection_no_acces_by_status = collection::create($application, $databox, $application['phraseanet.appbox'], 'BIBOONOACCESBYSTATUS', self::$DI['user']);
         }
+        self::$fixtureIds['collection']['coll_no_status'] = $collection_no_acces_by_status->get_base_id();
 
         return;
     }
@@ -1116,18 +1070,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      */
     private static function deleteResources()
     {
-        $skipped = \PhraseanetPHPUnitListener::getSkipped();
-
-        if ($skipped) {
-            echo "\nSkipped test : \n\n";
-            foreach ($skipped as $skipped_test) {
-                echo $skipped_test . "\n";
-            }
-            echo "\n";
-        }
-
-        \PhraseanetPHPUnitListener::resetSkipped();
-
         if (self::$recordsInitialized !== false) {
             foreach (self::$recordsInitialized as $i) {
                 self::$DI['record_' . $i]->delete();

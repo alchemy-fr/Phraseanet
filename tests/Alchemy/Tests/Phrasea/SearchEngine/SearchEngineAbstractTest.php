@@ -6,12 +6,12 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 
-abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedAbstract
+abstract class SearchEngineAbstractTest extends \PhraseanetAuthenticatedTestCase
 {
     protected $options;
     protected static $searchEngine;
     protected static $searchEngineClass;
-    protected static $initialized = false;
+    private static $initialized = false;
 
     public function setUp()
     {

@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Checker\Colorspace;
 
-class ColorspaceTest extends \PhraseanetPHPUnitAbstract
+class ColorspaceTest extends \PhraseanetTestCase
 {
     /**
      * @var Colorspace
@@ -55,7 +55,7 @@ class ColorspaceTest extends \PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testContructorInvalidArgumentException()
     {

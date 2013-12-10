@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Command\Developper\Utils;
 
 use Alchemy\Phrasea\Command\Developer\Utils\RecessDriver;
 
-class RecessDriverTest extends \PHPUnit_Framework_TestCase
+class RecessDriverTest extends \PhraseanetTestCase
 {
     public function testGetCreate()
     {

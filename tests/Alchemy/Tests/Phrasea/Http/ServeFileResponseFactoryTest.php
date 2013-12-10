@@ -7,7 +7,7 @@ use Alchemy\Phrasea\Http\XSendFile\NginxMode;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
+class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
 {
     protected $factory;
 
@@ -107,7 +107,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
     }
 
     /**
-     * @expectedException Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException
+     * @expectedException \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException
      */
     public function testDeliverUnexistingFile()
     {
@@ -132,13 +132,13 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
         $request = Request::create('/');
         $mode->setHeaders($request);
 
-        $file = __DIR__ . '/../../../../classes/PhraseanetPHPUnitAbstract.php';
+        $file = __DIR__ . '/../../../../classes/PhraseanetTestCase.php';
 
-        $response = $this->factory->deliverFile($file, 'PhraseanetPHPUnitAbstract.php', 'attachment');
+        $response = $this->factory->deliverFile($file, 'PhraseanetTestCase.php', 'attachment');
         $response->prepare($request);
 
         $this->assertInstanceOf("Symfony\Component\HttpFoundation\Response", $response);
-        $this->assertEquals('attachment; filename="PhraseanetPHPUnitAbstract.php"', $response->headers->get('content-disposition'));
+        $this->assertEquals('attachment; filename="PhraseanetTestCase.php"', $response->headers->get('content-disposition'));
         $this->assertEquals(realpath($file), $response->headers->get('x-accel-redirect'));
     }
 
