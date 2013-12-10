@@ -9,8 +9,6 @@ class ControllerWorkZoneTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRootGet()
     {
-        $this->insertOneWZ();
-
         $route = "/prod/WorkZone/";
 
         self::$DI['client']->request('GET', $route);
@@ -33,7 +31,7 @@ class ControllerWorkZoneTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAttachStoryToWZ()
     {
-        $story = self::$DI['record_story_1'];
+        $story = self::$DI['record_story_2'];
         $route = sprintf("/prod/WorkZone/attachStories/");
         self::$DI['client']->request('POST', $route, ['stories' => [$story->get_serialize_key()]]);
         $response = self::$DI['client']->getResponse();
@@ -42,13 +40,11 @@ class ControllerWorkZoneTest extends \PhraseanetAuthenticatedWebTestCase
 
         $em = self::$DI['app']['EM'];
         /* @var $em \Doctrine\ORM\EntityManager */
-        $query = $em->createQuery(
-                'SELECT COUNT(w.id) FROM \Alchemy\Phrasea\Model\Entities\StoryWZ w'
-        );
+        $query = $em->createQuery('SELECT COUNT(w.id) FROM \Alchemy\Phrasea\Model\Entities\StoryWZ w');
 
         $count = $query->getSingleScalarResult();
 
-        $this->assertEquals(1, $count);
+        $this->assertEquals(2, $count);
     }
 
     public function testAttachMultipleStoriesToWZ()
@@ -66,35 +62,18 @@ class ControllerWorkZoneTest extends \PhraseanetAuthenticatedWebTestCase
 
         $em = self::$DI['app']['EM'];
         /* @var $em \Doctrine\ORM\EntityManager */
-        $query = $em->createQuery(
-                'SELECT COUNT(w.id) FROM \Alchemy\Phrasea\Model\Entities\StoryWZ w'
-        );
-
+        $query = $em->createQuery('SELECT COUNT(w.id) FROM \Alchemy\Phrasea\Model\Entities\StoryWZ w');
         $count = $query->getSingleScalarResult();
 
         $this->assertEquals(2, $count);
-
-        $query = $em->createQuery(
-                'SELECT w FROM \Alchemy\Phrasea\Model\Entities\StoryWZ w'
-        );
-
-        $storyWZ = $query->getResult();
-        $em->remove(array_shift($storyWZ));
-
-        $em->flush();
     }
 
     public function testAttachExistingStory()
     {
-        $story = self::$DI['record_story_1'];
+        $story = self::$DI['record_story_2'];
         $route = sprintf("/prod/WorkZone/attachStories/");
 
-        $StoryWZ = new \Alchemy\Phrasea\Model\Entities\StoryWZ();
-        $StoryWZ->setUser(self::$DI['app']['authentication']->getUser());
-        $StoryWZ->setRecord($story);
-
-        self::$DI['app']['EM']->persist($StoryWZ);
-        self::$DI['app']['EM']->flush();
+        $storyWZ = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\StoryWZ', 1);
 
         self::$DI['client']->request('POST', $route, ['stories' => [$story->get_serialize_key()]]);
         $response = self::$DI['client']->getResponse();
@@ -104,12 +83,12 @@ class ControllerWorkZoneTest extends \PhraseanetAuthenticatedWebTestCase
         $em = self::$DI['app']['EM'];
         /* @var $em \Doctrine\ORM\EntityManager */
         $query = $em->createQuery(
-                'SELECT COUNT(w.id) FROM \Alchemy\Phrasea\Model\Entities\StoryWZ w'
+            'SELECT COUNT(w.id) FROM \Alchemy\Phrasea\Model\Entities\StoryWZ w'
         );
 
         $count = $query->getSingleScalarResult();
 
-        $this->assertEquals(1, $count);
+        $this->assertEquals(2, $count);
     }
 
     public function testAttachStoryToWZJson()
@@ -137,7 +116,7 @@ class ControllerWorkZoneTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDetachStoryFromWZ()
     {
-        $story = self::$DI['record_story_1'];
+        $story = self::$DI['record_story_2'];
 
         $route = sprintf("/prod/WorkZone/detachStory/%s/%s/", $story->get_sbas_id(), $story->get_record_id());
         //story not yet Attched
@@ -157,7 +136,7 @@ class ControllerWorkZoneTest extends \PhraseanetAuthenticatedWebTestCase
 
         $count = $query->getSingleScalarResult();
 
-        $this->assertEquals(1, $count);
+        $this->assertEquals(2, $count);
 
         //detach
         self::$DI['client']->request('POST', $route);
@@ -170,7 +149,7 @@ class ControllerWorkZoneTest extends \PhraseanetAuthenticatedWebTestCase
 
         $count = $query->getSingleScalarResult();
 
-        $this->assertEquals(0, $count);
+        $this->assertEquals(1, $count);
 
         //attach
         self::$DI['client']->request('POST', $attachRoute, ['stories' => [$story->get_serialize_key()]]);
@@ -199,18 +178,8 @@ class ControllerWorkZoneTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testBrowseBasket()
     {
-        $basket = $this->insertOneBasket();
-        self::$DI['client']->request("GET", "/prod/WorkZone/Browse/Basket/" . $basket->getId() . "/");
+        self::$DI['client']->request("GET", "/prod/WorkZone/Browse/Basket/1/");
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
     }
-
-    public function testDetachStoryFromWZNotFound()
-    {
-        $story = self::$DI['record_story_1'];
-
-        $route = sprintf("/prod/WorkZone/detachStory/%s/%s/", $story->get_sbas_id(), 'unknow');
-        //story not yet Attched
-    }
-
 }

@@ -562,7 +562,7 @@ class collection implements cache_cacheableInterface
 
         $sql = "SELECT GREATEST(0, MAX(ord)) + 1 AS ord FROM bas WHERE sbas_id = :sbas_id";
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':sbas_id' => $sbas_id));
+        $stmt->execute([':sbas_id' => $sbas_id]);
         $ord = $stmt->fetch(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 

@@ -183,7 +183,7 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     public function connect()
     {
-        return array('auth_token'    => 'kikoo', 'refresh_token' => 'kooki');
+        return ['auth_token'    => 'kikoo', 'refresh_token' => 'kooki'];
     }
 
     /**
@@ -413,7 +413,7 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     }
 
-    public function upload(record_adapter $record, array $options = array())
+    public function upload(record_adapter $record, array $options = [])
     {
 
     }
@@ -433,15 +433,15 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
         if (self::$hasError) {
             self::$hasError = false;
 
-            return array('title' => 'too long');
+            return ['title' => 'too long'];
         }
 
-        return array();
+        return [];
     }
 
     public function get_upload_datas(\Symfony\Component\HttpFoundation\Request $request, record_adapter $record)
     {
-        return array();
+        return [];
     }
 
     public function is_multiple_upload()
@@ -457,17 +457,17 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
                 throw new \Exception('une erreur');
             }
 
-            return array();
+            return [];
         } elseif (self::$hasError) {
             self::$hasError = false;
 
-            return array('title' => 'too long');
+            return ['title' => 'too long'];
         }
     }
 
     public function get_update_datas(\Symfony\Component\HttpFoundation\Request $request)
     {
-        return array();
+        return [];
     }
 }
 
@@ -499,7 +499,7 @@ class Bridge_Api_Auth_None extends Bridge_Api_Auth_Abstract implements Bridge_Ap
         return $this->settings->get('auth_token', null) !== null;
     }
 
-    public function get_auth_url(Array $supp_parameters = array())
+    public function get_auth_url(Array $supp_parameters = [])
     {
         return 'kameamea';
     }

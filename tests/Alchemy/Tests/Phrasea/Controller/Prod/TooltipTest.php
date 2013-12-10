@@ -10,10 +10,7 @@ class ControllerTooltipTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRouteBasket()
     {
-
-        $basket = $this->insertOneBasket();
-
-        $crawler = self::$DI['client']->request('POST', '/prod/tooltip/basket/' . $basket->getId() . '/');
+        $crawler = self::$DI['client']->request('POST', '/prod/tooltip/basket/1/');
         $pageContent = self::$DI['client']->getResponse()->getContent();
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }

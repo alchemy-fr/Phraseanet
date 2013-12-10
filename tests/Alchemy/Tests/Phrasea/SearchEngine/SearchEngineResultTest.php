@@ -14,7 +14,7 @@ class SearchEngineResultTest extends \PhraseanetTestCase
     public function testBasic()
     {
         $results = new ArrayCollection([
-                    self::$DI['record_24']
+                    self::$DI['record_2']
                 ]);
 
         $query = 'Gotainer';
@@ -52,7 +52,7 @@ class SearchEngineResultTest extends \PhraseanetTestCase
     public function testWithOffsetStartAtZero()
     {
         $results = new ArrayCollection([
-                    self::$DI['record_24']
+                    self::$DI['record_2']
                 ]);
 
         $query = 'Gotainer';

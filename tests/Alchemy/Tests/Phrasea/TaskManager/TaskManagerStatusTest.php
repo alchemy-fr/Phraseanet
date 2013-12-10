@@ -64,11 +64,11 @@ class TaskManagerStatusTest extends \PhraseanetTestCase
     public function provideConfAndStatusData()
     {
         return [
-//            array(array(), TaskManagerStatus::STATUS_STARTED, true),
-//            array(array('task-manager' => array()), TaskManagerStatus::STATUS_STARTED, true),
+            [[], TaskManagerStatus::STATUS_STARTED, true],
+            [['task-manager' => []], TaskManagerStatus::STATUS_STARTED, true],
             [['task-manager' => ['status' => TaskManagerStatus::STATUS_STOPPED]], TaskManagerStatus::STATUS_STOPPED, false],
-//            array(array('task-manager' => array('status' => TaskManagerStatus::STATUS_STARTED)), TaskManagerStatus::STATUS_STARTED, true),
-//            array(array('task-manager' => array('status' => 'unknown')), TaskManagerStatus::STATUS_STARTED, true),
+            [['task-manager' => ['status' => TaskManagerStatus::STATUS_STARTED]], TaskManagerStatus::STATUS_STARTED, true],
+            [['task-manager' => ['status' => 'unknown']], TaskManagerStatus::STATUS_STARTED, true],
         ];
     }
 

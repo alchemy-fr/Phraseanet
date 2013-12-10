@@ -19,13 +19,7 @@ class TaskLogFileTest extends LogFileTestCase
 
     protected function getLogFile($root)
     {
-        $task = new Task();
-        $task
-            ->setName('task')
-            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
-
-        self::$DI['app']['EM']->persist($task);
-        self::$DI['app']['EM']->flush();
+        $task = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
 
         return new TaskLogFile($root, $task);
     }

@@ -132,17 +132,17 @@ class W3CFeedRawValidator extends W3CFeedValidator
      */
     public function validate()
     {
-        $context = stream_context_create(array(
-            'http' => array(
+        $context = stream_context_create([
+            'http' => [
                 'method'  => 'POST',
                 'header'  => 'Content-type: application/x-www-form-urlencoded',
-                'content' => http_build_query(array(
+                'content' => http_build_query([
                     'rawdata' => $this->rawData,
                     'manual'  => 1,
-                    'output'  => self::OUTPOUT)),
+                    'output'  => self::OUTPOUT]),
                 'timeout' => 5,
-            ),
-            ));
+            ],
+            ]);
         sleep(self::TIME_BETWEEN_REQUEST);
         $response = @file_get_contents(self::VALIDATOR_ENDPOINT, false, $context);
         if ( ! $response) {
@@ -273,7 +273,7 @@ class W3CFeedValidatorResponse
      */
     public function getWarnings()
     {
-        $warnings = array();
+        $warnings = [];
         $xPathQuery = "/env:Envelope/env:Body/m:feedvalidationresponse/m:warnings/m:warninglist/*";
         $warningList = $this->DOMXpath->query($xPathQuery);
         if ($warningList->length > 0) {
@@ -291,7 +291,7 @@ class W3CFeedValidatorResponse
      */
     public function getErrors()
     {
-        $errors = array();
+        $errors = [];
         $xPathQuery = "/env:Envelope/env:Body/m:feedvalidationresponse/m:errors/m:errorlist/*";
         $errorList = $this->DOMXpath->query($xPathQuery);
         if ($errorList->length > 0) {
@@ -324,7 +324,7 @@ class W3CFeedValidatorResponse
                 $ret = trim($node->nodeValue);
             } else {
                 // Otherwise, do recursion
-                $ret = array();
+                $ret = [];
                 foreach ($node->childNodes as $child) {
                     if ($child->nodeType !== XML_TEXT_NODE) {
                         // If there's more than one node with this node name on the
@@ -332,7 +332,7 @@ class W3CFeedValidatorResponse
                         if (isset($ret[$child->nodeName])) {
                             if ( ! is_array($ret[$child->nodeName]) || ! isset($ret[$child->nodeName][0])) {
                                 $tmp = $ret[$child->nodeName];
-                                $ret[$child->nodeName] = array();
+                                $ret[$child->nodeName] = [];
                                 $ret[$child->nodeName][] = $tmp;
                             }
 

@@ -5,15 +5,11 @@ class ValidationParticipantRepositoryTest extends \PhraseanetAuthenticatedTestCa
 
     public function testFindNotConfirmedAndNotRemindedParticipants()
     {
-        $this->insertOneValidationBasket([
-            'expires' => new \DateTime('+1 days')
-        ]);
-
         $em = self::$DI['app']['EM'];
-        $repo = $em->getRepository('\Alchemy\Phrasea\Model\Entities\ValidationParticipant');
+        $repo = $em->getRepository('Alchemy\Phrasea\Model\Entities\ValidationParticipant');
         /* @var $repo Alchemy\Phrasea\Model\Repositories\ValidationParticipantRepository */
-        $expireDate = new \DateTime('+2 days');
+        $expireDate = new \DateTime('+8 days');
         $participants = $repo->findNotConfirmedAndNotRemindedParticipantsByExpireDate($expireDate);
-        $this->assertEquals(1, count($participants));
+        $this->assertEquals(3, count($participants));
     }
 }

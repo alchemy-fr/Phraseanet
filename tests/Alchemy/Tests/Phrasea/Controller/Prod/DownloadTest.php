@@ -104,7 +104,7 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testDownloadBasket()
     {
-        $basket = $this->insertOneBasketEnv();
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 4);
 
         $eventManagerStub = $this->getMockBuilder('\eventsmanager_broker')
                      ->disableOriginalConstructor()
@@ -136,7 +136,7 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testDownloadBasketValidation()
     {
-        $basket = $this->insertOneValidationBasket();
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 4);
 
         $eventManagerStub = $this->getMockBuilder('\eventsmanager_broker')
                      ->disableOriginalConstructor()

@@ -27,7 +27,7 @@ interface FeedFormatterInterface
      *
      * @return string
      */
-    public function format(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', Application $app = null);
+    public function format(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', Application $app);
 
     /**
      * Returns an HTTP Response containing a string representation of the feed.
@@ -40,5 +40,5 @@ interface FeedFormatterInterface
      *
      * @return string
      */
-    public function createResponse(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', Application $app = null);
+    public function createResponse(Application $app, FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet');
 }

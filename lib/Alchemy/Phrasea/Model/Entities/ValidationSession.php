@@ -290,6 +290,6 @@ class ValidationSession
             }
         }
 
-        throw new NotFoundHttpException('Particpant not found' . $user->get_email());
+        throw new NotFoundHttpException('Participant not found ' . $user->get_email());
     }
 }

@@ -79,7 +79,7 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
     public function testGetRecordDetailResult()
     {
         $this->authenticate(self::$DI['app']);
-        self::$DI['record_24'];
+        self::$DI['record_1'];
 
         $options = new SearchEngineOptions();
         $acl = self::$DI['app']['acl']->get(self::$DI['app']['authentication']->getUser());
@@ -145,18 +145,7 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
     public function testGetRecordDetailBasket()
     {
         $this->authenticate(self::$DI['app']);
-        $basket = $this->insertOneBasket();
-        $record = self::$DI['record_1'];
-
-        $basketElement = new \Alchemy\Phrasea\Model\Entities\BasketElement();
-        $basketElement->setBasket($basket);
-        $basketElement->setRecord($record);
-        $basketElement->setLastInBasket();
-
-        $basket->addElement($basketElement);
-
-        self::$DI['app']['EM']->persist($basket);
-        self::$DI['app']['EM']->flush();
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
 
         $this->XMLHTTPRequest('POST', '/prod/records/', [
             'env'   => 'BASK',
@@ -192,8 +181,8 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $item = $this->insertOneFeedItem(self::$DI['user']);
-        $feedEntry = $item->getEntry();
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $feedEntry = $feed->getEntries()->first();
 
         $this->XMLHTTPRequest('POST', '/prod/records/', [
             'env'   => 'FEED',

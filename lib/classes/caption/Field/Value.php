@@ -347,7 +347,7 @@ class caption_Field_Value implements cache_cacheableInterface
         }
 
         // ---------------- new code ----------------------
-        $cleanvalue = str_replace(array("[[em]]", "[[/em]]", "'"), array("", "", "&apos;"), $value);
+        $cleanvalue = str_replace(["[[em]]", "[[/em]]", "'"], ["", "", "&apos;"], $value);
 
         list($term_noacc, $context_noacc) = $this->splitTermAndContext($cleanvalue);
         $term_noacc = $this->app['unicode']->remove_indexer_chars($term_noacc);
@@ -379,7 +379,7 @@ class caption_Field_Value implements cache_cacheableInterface
             }
         }
         if ($bestnode) {
-            list($term, $context) = $this->splitTermAndContext(str_replace(array("[[em]]", "[[/em]]"), array("", ""), $value));
+            list($term, $context) = $this->splitTermAndContext(str_replace(["[[em]]", "[[/em]]"], ["", ""], $value));
             $qjs = $term . ($context ? '['.$context.']' : '');
 
             $value = new ThesaurusValue($bestnode->getAttribute('v'), $this->databox_field, $qjs);

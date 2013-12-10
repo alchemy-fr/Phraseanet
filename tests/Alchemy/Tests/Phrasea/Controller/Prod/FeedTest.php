@@ -10,8 +10,6 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testRequestAvailable()
     {
-        $feed = $this->insertOneFeed(self::$DI['user']);
-
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/requestavailable/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
@@ -32,7 +30,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
             ->method('deliver')
             ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication'), $this->equalTo(null));
 
-        $feed = $this->insertOneFeed(self::$DI['user']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
         $params = [
             "feed_id"        => $feed->getId()
             , "notify"        => 1
@@ -43,7 +41,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
             , 'lst'          => self::$DI['record_1']->get_serialize_key()
         ];
 
-        $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/create/', $params);
+        self::$DI['client']->request('POST', '/prod/feeds/entry/create/', $params);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
         $pageContent = json_decode(self::$DI['client']->getResponse()->getContent());
@@ -62,14 +60,14 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
             , "author_mail"  => "robert@kikoo.mail"
             , 'lst'          => self::$DI['record_1']->get_serialize_key()
         ];
-        $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/create/', $params);
+        self::$DI['client']->request('POST', '/prod/feeds/entry/create/', $params);
         $this->assertFalse(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals(404, self::$DI['client']->getResponse()->getStatusCode());
     }
 
     public function testEntryCreateUnauthorized()
     {
-        $feed = $this->insertOneFeed(self::$DI['user_alt1']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 3);
 
         self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
             ->disableOriginalConstructor()
@@ -87,15 +85,15 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
             , 'lst'          => self::$DI['record_1']->get_serialize_key()
         ];
 
-        $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/create/', $params);
+        self::$DI['client']->request('POST', '/prod/feeds/entry/create/', $params);
         $this->assertEquals(403, self::$DI['client']->getResponse()->getStatusCode());
     }
 
     public function testEntryEdit()
     {
-        $entry = $this->insertOneFeedEntry(self::$DI['user']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $entry = $feed->getEntries()->first();
         $crawler = self::$DI['client']->request('GET', '/prod/feeds/entry/' . $entry->getId() . '/edit/');
-        $pageContent = self::$DI['client']->getResponse()->getContent();
 
         foreach ($entry->getItems() as $content) {
             $this->assertEquals(1, $crawler->filterXPath("//input[@value='" . $content->getId() . "' and @name='item_id']")->count());
@@ -110,16 +108,18 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testEntryEditUnauthorized()
     {
-        $entry = $this->insertOneFeedEntry(self::$DI['user_alt1']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 3);
+        $entry = $feed->getEntries()->first();
 
-        $crawler = self::$DI['client']->request('GET', '/prod/feeds/entry/' . $entry->getId() . '/edit/');
+        self::$DI['client']->request('GET', '/prod/feeds/entry/' . $entry->getId() . '/edit/');
         $pageContent = self::$DI['client']->getResponse();
         $this->assertEquals(403, $pageContent->getStatusCode());
     }
 
     public function testEntryUpdate()
     {
-        $entry = $this->insertOneFeedEntry(self::$DI['user']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $entry = $feed->getEntries()->first();
 
         $params = [
             "title"        => "dog",
@@ -129,7 +129,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
             'lst'          => self::$DI['record_1']->get_serialize_key(),
         ];
 
-        $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
+        self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
         $pageContent = json_decode(self::$DI['client']->getResponse()->getContent());
@@ -142,8 +142,9 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testEntryUpdateChangeFeed()
     {
-        $entry = $this->insertOneFeedEntry(self::$DI['user']);
-        $newfeed = $this->insertOneFeed(self::$DI['user'], "test2");
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $entry = $feed->getEntries()->first();
+        $newfeed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 2);
 
         $params = [
             "feed_id"      => $newfeed->getId(),
@@ -153,7 +154,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
             "author_mail"  => "mouse",
             'lst'          => self::$DI['record_1']->get_serialize_key(),
         ];
-        $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
+        self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
         $pageContent = json_decode(self::$DI['client']->getResponse()->getContent());
@@ -169,8 +170,9 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testEntryUpdateChangeFeedNoAccess()
     {
-        $entry = $this->insertOneFeedEntry(self::$DI['user']);
-        $newfeed = $this->insertOneFeed(self::$DI['user_alt1'], "test2");
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $entry = $feed->getEntries()->first();
+        $newfeed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 3);
         $newfeed->setCollection(self::$DI['collection_no_access']);
         self::$DI['app']['EM']->persist($newfeed);
         self::$DI['app']['EM']->flush();
@@ -184,13 +186,14 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
             'lst'          => self::$DI['record_1']->get_serialize_key(),
         ];
 
-        $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
+        self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
         $this->assertEquals(403, self::$DI['client']->getResponse()->getStatusCode());
     }
 
     public function testEntryUpdateChangeFeedInvalidFeed()
     {
-        $entry = $this->insertOneFeedEntry(self::$DI['user']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $entry = $feed->getEntries()->first();
 
         $params = [
             "feed_id"      => 0,
@@ -201,13 +204,12 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
             'lst'          => self::$DI['record_1']->get_serialize_key(),
         ];
 
-        $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
+        self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
         $this->assertEquals(404, self::$DI['client']->getResponse()->getStatusCode());
     }
 
     public function testEntryUpdateNotFound()
     {
-
         $params = [
             "feed_id"        => 9999999
             , "title"        => "dog"
@@ -217,18 +219,14 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
             , 'lst'          => self::$DI['record_1']->get_serialize_key()
         ];
 
-        $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/99999999/update/', $params);
-
-        $response = self::$DI['client']->getResponse();
-
-        $pageContent = json_decode($response->getContent());
-
+        self::$DI['client']->request('POST', '/prod/feeds/entry/99999999/update/', $params);
         $this->assertEquals(404, self::$DI['client']->getResponse()->getStatusCode());
     }
 
     public function testEntryUpdateFailed()
     {
-        $entry = $this->insertOneFeedEntry(self::$DI['user']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $entry = $feed->getEntries()->first(['user']);
 
         $params = [
             "feed_id"        => 9999999
@@ -239,20 +237,14 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
             , 'sorted_lst'   => self::$DI['record_1']->get_serialize_key() . ";" . self::$DI['record_2']->get_serialize_key() . ";12345;" . "unknow_unknow"
         ];
 
-        $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
-
-        $response = self::$DI['client']->getResponse();
-
+        self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
         $this->assertEquals(404, self::$DI['client']->getResponse()->getStatusCode());
     }
 
     public function testEntryUpdateUnauthorized()
     {
-        /**
-         * I CREATE A FEED THAT IS NOT MINE
-         * */
-
-        $entry = $this->insertOneFeedEntry(self::$DI['user_alt1']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 3);
+        $entry = $feed->getEntries()->first();
 
         $params = [
             "feed_id"      => $entry->getFeed()->getId()
@@ -263,26 +255,18 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
             , 'lst'          => self::$DI['record_1']->get_serialize_key()
         ];
 
-        $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
-
-        $response = self::$DI['client']->getResponse();
-
+        self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
         $this->assertEquals(403, self::$DI['client']->getResponse()->getStatusCode());;
     }
 
     public function testEntryUpdateChangeOrder()
     {
-        $item1 = $this->insertOneFeedItem(self::$DI['user']);
-        $entry = $item1->getEntry();
-        $item2 = new FeedItem();
-        $item2->setEntry($entry)
-            ->setRecordId(self::$DI['record_2']->get_record_id())
-            ->setSbasId(self::$DI['record_2']->get_sbas_id());
-        $entry->addItem($item2);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $entry = $feed->getEntries()->first();
 
-        self::$DI['app']['EM']->persist($entry);
-        self::$DI['app']['EM']->persist($item2);
-        self::$DI['app']['EM']->flush();
+        $items = $entry->getItems()->toArray();
+        $item1 = array_shift($items);
+        $item2 = array_shift($items);
 
         $ord1 = $item1->getOrd();
         $ord2 = $item2->getOrd();
@@ -295,7 +279,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
                              . $item2->getId() . '_' . $item1->getOrd()
             ];
 
-        $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
+        self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
         $newItem1 = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedItem')->find($item1->getId());
@@ -307,9 +291,10 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDelete()
     {
-        $entry = $this->insertOneFeedEntry(self::$DI['user']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $entry = $feed->getEntries()->first();
 
-        $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/delete/');
+        self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/delete/');
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
@@ -330,47 +315,30 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDeleteNotFound()
     {
-
-        $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/9999999/delete/');
-
-        $response = self::$DI['client']->getResponse();
-
-        $pageContent = json_decode(self::$DI['client']->getResponse()->getContent());
-
+        self::$DI['client']->request('POST', '/prod/feeds/entry/9999999/delete/');
         $this->assertEquals(404, self::$DI['client']->getResponse()->getStatusCode());
     }
 
     public function testDeleteUnauthorized()
     {
-        /**
-         * I CREATE A FEED
-         * */
-        $entry = $this->insertOneFeedEntry(self::$DI['user_alt1']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 3);
+        $entry = $feed->getEntries()->first();
 
-        $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/delete/');
-
-        $response = self::$DI['client']->getResponse();
-
-        $pageContent = json_decode(self::$DI['client']->getResponse()->getContent());
-
+        self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/delete/');
         $this->assertEquals(403, self::$DI['client']->getResponse()->getStatusCode());
     }
 
     public function testRoot()
     {
         $crawler = self::$DI['client']->request('GET', '/prod/feeds/');
-
-        $pageContent = self::$DI['client']->getResponse()->getContent();
-
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-
         $feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
 
         foreach ($feeds as $one_feed) {
             $path = CssSelector::toXPath("ul.submenu a[href='/prod/feeds/feed/" . $one_feed->getId() . "/']");
-            $msg = sprintf("user %s has access to feed %s", self::$DI['user']->getId(), $one_feed->getId());
+            $msg = sprintf("user %s has access to feed %s", self::$DI['user']->get_id(), $one_feed->getId());
 
-            if ($one_feed->has_access(self::$DI['user'])) {
+            if ($one_feed->hasAccess(self::$DI['user'], self::$DI['app'])) {
                 $this->assertEquals(1, $crawler->filterXPath($path)->count(), $msg);
             } else {
                 $this->fail('FeedRepository::getAllForUser should return feeds I am allowed to access');
@@ -380,13 +348,9 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testGetFeed()
     {
-
-        $feed = $this->insertOneFeed(self::$DI['user']);
-
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
         $feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
-
         $crawler = self::$DI['client']->request('GET', '/prod/feeds/feed/' . $feed->getId() . "/");
-        $pageContent = self::$DI['client']->getResponse()->getContent();
 
         foreach ($feeds as $one_feed) {
             $path = CssSelector::toXPath("ul.submenu a[href='/prod/feeds/feed/" . $one_feed->getId() . "/']");
@@ -402,8 +366,6 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testSuscribeAggregate()
     {
-        $feed = $this->insertOneFeed(self::$DI['user']);
-
         self::$DI['app']['feed.aggregate-link-generator'] = $this->getMockBuilder('Alchemy\Phrasea\Feed\Link\AggregateLinkGenerator')
             ->disableOriginalConstructor()
             ->getMock();
@@ -436,7 +398,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testSuscribe()
     {
-        $feed = $this->insertOneFeed(self::$DI['user']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
 
         self::$DI['app']['feed.user-link-generator'] = $this->getMockBuilder('Alchemy\Phrasea\Feed\Link\FeedLinkGenerator')
             ->disableOriginalConstructor()
@@ -452,7 +414,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
             ->with($this->isInstanceOf('\Alchemy\Phrasea\Model\Entities\Feed'), $this->isInstanceOf('\User_Adapter'), 'rss', null, false)
             ->will($this->returnValue($link));
 
-        $crawler = self::$DI['client']->request('GET', '/prod/feeds/subscribe/' . $feed->getId() . '/');
+        self::$DI['client']->request('GET', '/prod/feeds/subscribe/' . $feed->getId() . '/');
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));

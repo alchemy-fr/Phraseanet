@@ -8,7 +8,7 @@ class BasketConverterTest extends \PhraseanetTestCase
 {
     public function testConvert()
     {
-        $basket = $this->insertOneBasket();
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
 
         $converter = new BasketConverter(self::$DI['app']['EM']);
         $this->assertSame($basket, $converter->convert($basket->getId()));

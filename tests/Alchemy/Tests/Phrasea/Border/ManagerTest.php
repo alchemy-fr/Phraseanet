@@ -54,9 +54,7 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
     {
         parent::setUp();
         $this->object = new Manager(self::$DI['app']);
-        $this->session = new \Alchemy\Phrasea\Model\Entities\LazaretSession();
-
-        self::$DI['app']['EM']->persist($this->session);
+        $this->session = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\LazaretSession', 1);
     }
 
     /**

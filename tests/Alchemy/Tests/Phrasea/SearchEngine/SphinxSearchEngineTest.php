@@ -83,7 +83,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
     public function tearDown()
     {
         if (!self::$skipped) {
-            self::$searchEngine->removeRecord(self::$DI['record_24']);
+            self::$searchEngine->removeRecord(self::$DI['record_2']);
         }
 
         parent::tearDown();
@@ -113,7 +113,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
      */
     public function testAutocomplete()
     {
-        $record = self::$DI['record_24'];
+        $record = self::$DI['record_2'];
 
         $toupdate = [];
 

@@ -43,7 +43,7 @@ class BasketsTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testAddElementToBasket()
     {
-        $basket = $this->insertOneBasket();
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
         self::$DI['client']->request("POST", "/client/baskets/add-element/", [
             'courChuId'  => $basket->getId(),
             'sbas'       => self::$DI['record_1']->get_sbas_id(),
@@ -59,15 +59,14 @@ class BasketsTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testDeleteBasket()
     {
-        $basket = $this->insertOneBasket();
         self::$DI['client']->request("POST", "/client/baskets/delete/", [
-            'courChuId'  => $basket->getId()
+            'courChuId'  => 1
         ]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         try {
-            $basket = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket')->find($basket->getId());
+            $basket = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket')->find(1);
             $this->fail('Basket is not deleted');
-        } catch (\exception $e) {
+        } catch (\Exception $e) {
 
         }
     }
@@ -77,19 +76,8 @@ class BasketsTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testDeleteBasketElement()
     {
-        $basket = $this->insertOneBasket();
-
-        $record = self::$DI['record_1'];
-
-        $basketElement = new \Alchemy\Phrasea\Model\Entities\BasketElement();
-        $basketElement->setBasket($basket);
-        $basketElement->setRecord($record);
-        $basketElement->setLastInBasket();
-
-        $basket->addElement($basketElement);
-
-        self::$DI['app']['EM']->persist($basket);
-        self::$DI['app']['EM']->flush();
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
+        $basketElement = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\BasketElement', 1);
 
         self::$DI['client']->request("POST", "/client/baskets/delete-element/", [
             'p0'  => $basketElement->getId()
