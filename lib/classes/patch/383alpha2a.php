@@ -40,7 +40,7 @@ class patch_383alpha2a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return [];
+        return ['workzone'];
     }
 
     /**
