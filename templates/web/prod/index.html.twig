@@ -799,6 +799,15 @@
             </ul>
             <div id="look_box_screen">
                 <div class="box">
+                    <div class="" style="float:left; width:100%;margin-top:20px;">
+                        {% set mod = app['authentication'].getUser().getPrefs('advanced_search_reload') %}
+                        <label class="checkbox inline" for="user_settings_advanced_search_reload">
+                            <input onchange="setPref('advanced_search_reload',$(this).attr('checked')?'1' : '0');" name="advanced_search_reload" type="checkbox" style="margin: 3px 0 0 -18px;" class="checkbox" value="1" id="user_settings_advanced_search_reload" {% if mod == '1' %}checked="checked"{% endif %}/>
+                            {% trans 'Use latest search settings on Production loading' %}
+                        </label>
+                    </div>
+                </div>
+                <div class="box">
                     <div class="" style="float:left; width:49%;">
                         <h1>{% trans 'Mode de presentation' %}</h1>
                         {% set mod = app['authentication'].getUser().getPrefs('view') %}
