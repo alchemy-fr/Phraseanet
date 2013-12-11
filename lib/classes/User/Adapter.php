@@ -82,6 +82,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         'warning_on_delete_story' => 'true',
         'client_basket_status'    => '1',
         'css'                     => '000000',
+        'advanced_search_reload'  => '1',
         'start_page_query'        => 'last',
         'start_page'              => 'QUERY',
         'rollover_thumbnail'      => 'caption',
