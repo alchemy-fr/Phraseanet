@@ -18,23 +18,27 @@
   {% else %}
 
     {% set b_ratio = b_width / b_height %}
-    {% set i_ratio = thumbnail.get_width() / thumbnail.get_height() %}
+
+    {% set thumbnail_height = thumbnail.get_height() > 0 ? thumbnail.get_height() : 120 %}
+    {% set thumbnail_width = thumbnail.get_width() > 0 ? thumbnail.get_width() : 120 %}
+
+    {% set i_ratio = thumbnail_width / thumbnail_height %}
 
     {% if i_ratio > b_ratio%}
-      {% if b_width > thumbnail.get_width() %}
-        {% set d_width = thumbnail.get_width() %}
+      {% if b_width > thumbnail_width %}
+        {% set d_width = thumbnail_width %}
       {% else %}
         {% set d_width = b_width %}
       {% endif %}
-      {% set d_height = d_width / thumbnail.get_width() * thumbnail.get_height() %}
+      {% set d_height = d_width / thumbnail_width * thumbnail_height %}
       {% set top = (b_height - d_height) / 2 %}
     {% else %}
-      {% if b_height > thumbnail.get_height() %}
-        {% set d_height = thumbnail.get_height() %}
+      {% if b_height > thumbnail_height %}
+        {% set d_height = thumbnail_height %}
       {% else %}
         {% set d_height = b_height %}
       {% endif %}
-      {% set d_width = d_height * thumbnail.get_width() / thumbnail.get_height() %}
+      {% set d_width = d_height * thumbnail_width / thumbnail_height %}
       {% set top = ((b_height - d_height) / 2) %}
     {% endif %}
 
@@ -54,8 +58,8 @@
           {% set random = thumbnail.get_random() %}
           <div class="record record_video imgTips" style="position:relative;width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
               <div id="preview{{random}}" class="PNB"></div>
-              <input type="hidden" name="width" value="{{thumbnail.get_width()}}"/>
-              <input type="hidden" name="height" value="{{thumbnail.get_height()}}"/>
+              <input type="hidden" name="width" value="{{thumbnail_width}}"/>
+              <input type="hidden" name="height" value="{{thumbnail_height}}"/>
           </div>
           <script type="text/javascript">
             flowplayer("preview{{random}}",
@@ -82,8 +86,8 @@
           {% set random = thumbnail.get_random() %}
           <div class="record record_audio audioTips" style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
             <div id="preview_{{thumbnail.get_sbas_id()}}_{{thumbnail.get_record_id()}}_{{random}}" class="PNB" style=""></div>
-            <input type="hidden" name="width" value="{{thumbnail.get_width()}}"/>
-            <input type="hidden" name="height" value="{{thumbnail.get_height()}}"/>
+            <input type="hidden" name="width" value="{{thumbnail_width}}"/>
+            <input type="hidden" name="height" value="{{thumbnail_height}}"/>
           </div>
           <script type="text/javascript">
             swfobject.embedSWF("/include/jslibs/audio-player/player.swf",
@@ -94,8 +98,8 @@
           <img class="{% if lazyload %}lazyload{% endif %} record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
                style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;"
                src="{% if lazyload %}/skins/grey.gif{% else %}{{ url }}{% endif %}" data-original="{{ url }}" ondragstart="return false;">
-          <input type="hidden" name="width" value="{{thumbnail.get_width()}}"/>
-          <input type="hidden" name="height" value="{{thumbnail.get_height()}}"/>
+          <input type="hidden" name="width" value="{{thumbnail_width}}"/>
+          <input type="hidden" name="height" value="{{thumbnail_height}}"/>
         {% endif %}
         {% if wrap %}
         </div>
@@ -125,19 +129,23 @@
     {% set b_height = b_h|default(b_w) %}
 
     {% set b_ratio = b_width / b_height %}
-    {% set i_ratio = thumbnail.get_width() / thumbnail.get_height() %}
+
+    {% set thumbnail_height = thumbnail.get_height() > 0 ? thumbnail.get_height() : 120 %}
+    {% set thumbnail_width = thumbnail.get_width() > 0 ? thumbnail.get_width() : 120 %}
+
+    {% set i_ratio = thumbnail_width / thumbnail_height %}
 
     {% if i_ratio > b_ratio%}
       {% set d_height = b_height %}
-      {% set d_width = d_height * thumbnail.get_width() / thumbnail.get_height() %}
+      {% set d_width = d_height * thumbnail_width / thumbnail_height %}
       {% set left = (b_height - d_height) / 2 %}
     {% else %}
-      {% if b_height > thumbnail.get_height() %}
-        {% set d_height = thumbnail.get_height() %}
+      {% if b_height > thumbnail_height %}
+        {% set d_height = thumbnail_height %}
       {% else %}
         {% set d_height = b_height %}
       {% endif %}
-      {% set d_width = d_height * thumbnail.get_width() / thumbnail.get_height() %}
+      {% set d_width = d_height * thumbnail_width / thumbnail_height %}
       {% set top = ((b_height - d_height) / 2) %}
     {% endif %}
 
@@ -157,8 +165,8 @@
           {% set random = thumbnail.get_random() %}
           <div class="record record_video imgTips" style="position:relative;width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
               <div id="preview{{random}}" class="PNB"></div>
-              <input type="hidden" name="width" value="{{thumbnail.get_width()}}"/>
-              <input type="hidden" name="height" value="{{thumbnail.get_height()}}"/>
+              <input type="hidden" name="width" value="{{thumbnail_width}}"/>
+              <input type="hidden" name="height" value="{{thumbnail_height}}"/>
           </div>
           <script type="text/javascript">
             flowplayer("preview{{random}}",
@@ -183,8 +191,8 @@
           {% set random = thumbnail.get_random() %}
           <div class="record record_audio audioTips" style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
             <div id="preview_{{thumbnail.get_sbas_id()}}_{{thumbnail.get_record_id()}}_{{random}}" class="PNB" style=""></div>
-            <input type="hidden" name="width" value="{{thumbnail.get_width()}}"/>
-            <input type="hidden" name="height" value="{{thumbnail.get_height()}}"/>
+            <input type="hidden" name="width" value="{{thumbnail_width}}"/>
+            <input type="hidden" name="height" value="{{thumbnail_height}}"/>
           </div>
           <script type="text/javascript">
             swfobject.embedSWF("/include/jslibs/audio-player/player.swf",
@@ -195,8 +203,8 @@
           <img class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
                style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;"
                src="{{url}}" ondragstart="return false;">
-          <input type="hidden" name="width" value="{{thumbnail.get_width()}}"/>
-          <input type="hidden" name="height" value="{{thumbnail.get_height()}}"/>
+          <input type="hidden" name="width" value="{{thumbnail_width}}"/>
+          <input type="hidden" name="height" value="{{thumbnail_height}}"/>
         {% endif %}
         {% if wrap %}
         </div>
@@ -204,3 +212,4 @@
 
 
 {% endmacro %}
+
