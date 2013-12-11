@@ -353,7 +353,7 @@ class caption_Field_Value implements cache_cacheableInterface
             return $value;
         }
 
-        $DOM_branchs = $XPATH_thesaurus->query($tbranch);
+        $cleanvalue = str_replace(array("<em>", "</em>", "'"), array("", "", "&apos;"), $value);
 
         $fvalue = $value;
 
