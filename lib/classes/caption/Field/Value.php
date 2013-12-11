@@ -353,7 +353,6 @@ class caption_Field_Value implements cache_cacheableInterface
             return $value;
         }
 
-        // ---------------- new code ----------------------
         $cleanvalue = str_replace(array("<em>", "</em>", "'"), array("", "", "&apos;"), $value);
 
         list($term_noacc, $context_noacc) = $this->splitTermAndContext($cleanvalue);
