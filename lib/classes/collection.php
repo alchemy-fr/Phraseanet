@@ -565,6 +565,12 @@ class collection implements cache_cacheableInterface
                 </sugestedValues>
             </baseprefs>';
 
+        $sql = "SELECT GREATEST(0, MAX(ord)) + 1 AS ord FROM bas WHERE sbas_id = :sbas_id";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(array(':sbas_id' => $sbas_id));
+        $ord = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
         $sql = "INSERT INTO coll (coll_id, asciiname, prefs, logo)
                 VALUES (null, :name, :prefs, '')";
 
@@ -579,11 +585,15 @@ class collection implements cache_cacheableInterface
 
         $new_id = (int) $connbas->lastInsertId();
 
-        $sql = "INSERT INTO bas (base_id, active, server_coll_id, sbas_id, aliases)
+        $sql = "INSERT INTO bas (base_id, active, ord, server_coll_id, sbas_id, aliases)
             VALUES
-            (null, 1, :server_coll_id, :sbas_id, '')";
+            (null, 1, :ord, :server_coll_id, :sbas_id, '')";
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':server_coll_id' => $new_id, ':sbas_id'        => $sbas_id));
+        $stmt->execute(array(
+            ':server_coll_id' => $new_id,
+            ':sbas_id' => $sbas_id,
+            ':ord' => $ord['ord'] ?: 1,
+        ));
         $stmt->closeCursor();
 
         $new_bas = $conn->lastInsertId();
@@ -638,7 +648,7 @@ class collection implements cache_cacheableInterface
             VALUES
             (null, 1, :server_coll_id, :sbas_id, '')";
         $stmt = $databox->get_appbox()->get_connection()->prepare($sql);
-        $stmt->execute(array(':server_coll_id' => $coll_id, ':sbas_id'        => $sbas_id));
+        $stmt->execute(array(':server_coll_id' => $coll_id, ':sbas_id'        => $databox->get_sbas_id()));
         $stmt->closeCursor();
 
         $new_bas = $databox->get_appbox()->get_connection()->lastInsertId();
@@ -646,7 +656,7 @@ class collection implements cache_cacheableInterface
 
         $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
 
-        cache_databox::update($app, $sbas_id, 'structure');
+        cache_databox::update($app, $databox->get_sbas_id(), 'structure');
 
         phrasea::reset_baseDatas($databox->get_appbox());
 
