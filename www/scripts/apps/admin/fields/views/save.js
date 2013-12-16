@@ -85,14 +85,25 @@ define([
             return this;
         },
         updateStateButton: function (disable) {
-            var toDisable = disable || !this._isModelDesync();
+            var toDisable = !this._isModelDesync();
+            if ("undefined" !== typeof disable) {
+                toDisable = disable;
+            }
+
             this._disableSaveButton(toDisable);
         },
         // check whether model has changed or not
         _isModelDesync: function () {
-            return "undefined" !== typeof AdminFieldApp.fieldsCollection.find(function (model) {
+            var fieldToDelete = false;
+            var fieldToUpdate = false;
+
+            fieldToUpdate = "undefined" !== typeof AdminFieldApp.fieldsCollection.find(function (model) {
                 return !_.isEmpty(model.previousAttributes());
             });
+
+            fieldToDelete = AdminFieldApp.fieldsToDelete.length > 0;
+
+            return fieldToUpdate || fieldToDelete;
         },
         // create a transparent overlay on top of the application
         _overlay: function (showOrHide) {

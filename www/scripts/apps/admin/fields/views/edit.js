@@ -189,12 +189,16 @@ define([
 
             // get previous index if exists else next index - 1 as item is being deleted
             var index = previousIndex ? previousIndex : (nextIndex ? nextIndex - 1 : -1);
-
             modalView.render();
             modalView.on("modal:confirm", function () {
                 AdminFieldApp.fieldsToDelete.push(self.model);
                 AdminFieldApp.fieldListView.collection.remove(self.model);
-                self._selectModelView(index);
+                // last item is deleted
+                if (index < 0) {
+                    self.remove();
+                } else {
+                    self._selectModelView(index);
+                }
                 // Enable state button, models is out of sync
                 AdminFieldApp.saveView.updateStateButton(false);
             });
