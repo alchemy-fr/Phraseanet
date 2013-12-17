@@ -354,7 +354,7 @@ class caption_Field_Value implements cache_cacheableInterface
         }
 
         // ---------------- new code ----------------------
-        $cleanvalue = str_replace(array("<em>", "</em>", "'"), array("", "", "&apos;"), $value);
+        $cleanvalue = str_replace(array("[[em]]", "[[/em]]", "'"), array("", "", "&apos;"), $value);
 
         list($term_noacc, $context_noacc) = $this->splitTermAndContext($cleanvalue);
         $term_noacc = $this->app['unicode']->remove_indexer_chars($term_noacc);
@@ -388,21 +388,10 @@ class caption_Field_Value implements cache_cacheableInterface
         }
         if($bestnode)
         {
-            list($term, $context) = $this->splitTermAndContext($value);
-            $term = str_replace(array("<em>", "</em>"), array("", ""), $term);
-            $context = str_replace(array("<em>", "</em>"), array("", ""), $context);
-            $qjs = $term;
-            if ($context) {
-                $qjs .= " [" . $context . "]";
-            }
+            list($term, $context) = $this->splitTermAndContext(str_replace(array("[[em]]", "[[/em]]"), array("", ""), $value));
+            $qjs = $term . ($context ? '['.$context.']' : '');
 
-            $value = "<a class=\"bounce\" onclick=\"bounce('" . $databox->get_sbas_id() . "','"
-                . str_replace("'", "\'", $qjs)
-                . "', '"
-                . str_replace("'", "\'", $this->databox_field->get_name())
-                . "');return(false);\">"
-                . $bestnode->getAttribute('v')
-                . "</a>";
+            $value = new ThesaurusValue($bestnode->getAttribute('v'), $this->databox_field, $qjs);
         }
 
         return $value;

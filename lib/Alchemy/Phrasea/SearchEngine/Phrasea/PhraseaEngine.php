@@ -641,7 +641,7 @@ class PhraseaEngine implements SearchEngineInterface
             if ($sxe && $sxe->description && $sxe->description->$name) {
                 $val = array();
                 foreach ($sxe->description->$name as $value) {
-                    $val[] = str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), (string) $value);
+                    $val[] = (string) $value;
                 }
                 $separator = $field['separator'] ? $field['separator'][0] : '';
                 $val = implode(' ' . $separator . ' ', $val);
