@@ -2,11 +2,11 @@
 {% macro table(title, titleLeft, titleRight, object, dmin, dmax, unite, sbasid) %}
 {% if object|length > 0 %}
       <table style="margin:0 auto; margin-bottom:30px;">
-          <caption>{% trans title %}</caption>
+          <caption>{{ title }}</caption>
             <thead>
                 <tr>
-                    <th>{% trans titleLeft %}</th>
-                    <th>{% trans titleRight %}</th>
+                    <th>{{ titleLeft }}</th>
+                    <th>{{ titleRight }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -41,8 +41,8 @@
             <caption>{% trans %} report:: Volumetrie des questions posees sur {{home_title}} {% endtrans %}</caption>
             <thead>
                 <tr>
-                    <th>{% trans title_left %}</th>
-                    <th>{% trans title_right %}</th>
+                    <th>{{ title_left }}</th>
+                    <th>{{ title_right }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -64,17 +64,17 @@
 
 {% macro connexion_download(title, title_left, title_right, itemco, itemdl, dmin, dmax ) %}
     <table style="margin:0 auto; margin-bottom:30px;">
-        <caption>{% trans  title %}</caption>
+        <caption>{{ title }}</caption>
         <thead>
             <tr>
-                <th>{% trans title_left %}</th>
-                <th>{% trans  title_right %}</th>
+                <th>{{ title_left }}</th>
+                <th>{{ title_right }}</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>{{ itemco }}</td>
-                <td>{{  itemdl }}</td>
+                <td>{{ itemdl }}</td>
             </tr>
         </tbody>
         <tfoot>
@@ -88,7 +88,7 @@
 {% macro table_activity( id, title, title_abscisse, item) %}
     {% if item|length > 0 %}
         <table border='1' class="center imgdash" id = "{{id}}">
-            <caption>{% trans title %}</caption>
+            <caption>{{ title }}</caption>
             <thead>
                 <tr>
                     <th></th>
@@ -101,7 +101,7 @@
                 <tr>
                     <th>
                         {% if title_abscisse|length > 0 %}
-                            {% trans  title_abscisse%}
+                            {{ title_abscisse }}
                         {% endif %}
                     </th>
                     {% for value in item %}
