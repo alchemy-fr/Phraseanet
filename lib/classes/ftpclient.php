@@ -217,9 +217,9 @@ class ftpclient
 
     protected function nb_put($remotefile, $localfile, $start = FTP_AUTORESUME)
     {
-        $ret = ftp_nb_put($this->connexion, $remotefile, $localfile, FTP_BINARY, $start);
+        $ret = @ftp_nb_put($this->connexion, $remotefile, $localfile, FTP_BINARY, $start);
 
-        while ($ret == FTP_MOREDATA) {
+        while ($ret === FTP_MOREDATA) {
             set_time_limit(20);
             $ret = ftp_nb_continue($this->connexion);
         }
@@ -272,9 +272,9 @@ class ftpclient
         if ( ! file_exists($localfile))
             $start = 0;
 
-        $ret = ftp_nb_get($this->connexion, $localfile, $remotefile, FTP_BINARY, $start);
+        $ret = @ftp_nb_get($this->connexion, $localfile, $remotefile, FTP_BINARY, $start);
 
-        while ($ret == FTP_MOREDATA) {
+        while ($ret === FTP_MOREDATA) {
             set_time_limit(20);
             $ret = ftp_nb_continue($this->connexion);
         }

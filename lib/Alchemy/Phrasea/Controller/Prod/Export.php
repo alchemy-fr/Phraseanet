@@ -168,7 +168,7 @@ class Export implements ControllerProviderInterface
     {
         $download = new \set_exportftp($app, $request->request->get('lst'), $request->request->get('ssttid'));
 
-        $mandatoryParameters = array('addr', 'login', 'destfolder', 'NAMMKDFOLD', 'obj');
+        $mandatoryParameters = array('addr', 'login', 'obj');
 
         foreach ($mandatoryParameters as $parameter) {
             if (!$request->request->get($parameter)) {
