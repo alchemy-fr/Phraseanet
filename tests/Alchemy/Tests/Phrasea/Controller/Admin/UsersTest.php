@@ -408,6 +408,59 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
+    public function testPostDemands()
+    {
+        $id = self::$DI['user_alt1']->get_id();
+        $baseId = self::$DI['collection']->get_base_id();
+        $param = sprintf('%s_%s', $id, $baseId);
+
+        $appbox = self::$DI['app']['phraseanet.appbox'];
+
+        $stmt = $this->getMockBuilder('\mysqli_stmt')
+            ->setMethods(['fetch'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $stmt->expects($this->any())
+            ->method('fetch')
+            ->will($this->returnValue([
+                'usr_id' => $id,
+                'base_id' => $baseId,
+                'en_cours' => 1,
+                'refuser' => 0,
+            ]));
+
+        $pdo = $this->getMockBuilder('PDOMock')
+            ->setMethods(['prepare'])
+            ->getMock();
+
+        $pdo->expects($this->any())
+            ->method('get_connection')
+            ->will($this->returnValue($stmt));
+
+        $appbox = $this->getMockBuilder('\appbox')
+            ->setMethods(['get_connection'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $appbox->expects($this->any())
+            ->method('get_connection')
+            ->will($this->returnValue($pdo));
+
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate');
+
+        self::$DI['client']->request('POST', '/admin/users/demands/', [
+            'template' => [],
+            'accept' => [$param],
+            'accept_hd' => [$param],
+            'watermark' => [$param],
+        ]);
+
+        self::$DI['app']['phraseanet.appbox'] = $appbox;
+
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+    }
+
     public function testRenderImportFile()
     {
         self::$DI['client']->request('GET', '/admin/users/import/file/');

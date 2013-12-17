@@ -1001,3 +1001,8 @@ class CsrfTestProvider implements CsrfProviderInterface
         return true;
     }
 }
+
+class PDOMock extends \PDO
+{
+    public function __construct() {}
+}
