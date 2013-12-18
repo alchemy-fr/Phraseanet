@@ -610,6 +610,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $new_email = $user->get_email();
 
         if ($old_email != $new_email) {
+            $oldReceiver = $newReceiver = null;
             try {
                 $oldReceiver = new Receiver(null, $old_email);
             } catch (InvalidArgumentException $e) {

@@ -11,10 +11,10 @@
 
 use Alchemy\Phrasea\Application;
 
-class patch_381alpha1a implements patchInterface
+class patch_383alpha3a implements patchInterface
 {
     /** @var string */
-    private $release = '3.8.1-alpha.1';
+    private $release = '3.8.3-alpha.3';
 
     /** @var array */
     private $concern = [base::APPLICATION_BOX];

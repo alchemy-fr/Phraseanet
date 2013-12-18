@@ -201,6 +201,7 @@ function editField(evt, meta_struct_id) {
 
         $('#idEditZTextArea, #EditTextMultiValued').autocomplete({
             minLength: 2,
+            appendTo: "#idEditZone",
             source: function (request, response) {
                 $.ajax({
                     url: '../prod/records/edit/vocabulary/' + vocabType + '/',

@@ -29,6 +29,7 @@ class Prod extends Helper
         }
 
         $searchSet = json_decode($this->app['authentication']->getUser()->getPrefs('search'), true);
+        $saveSettings = $this->app['authentication']->getUser()->getPrefs('advanced_search_reload');
 
         foreach ($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_sbas() as $databox) {
             $sbas_id = $databox->get_sbas_id();
@@ -41,8 +42,7 @@ class Prod extends Helper
             ];
 
             foreach ($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base([], [$databox->get_sbas_id()]) as $coll) {
-                $selected = (isset($searchSet['bases']) &&
-                    isset($searchSet['bases'][$sbas_id])) ? (in_array($coll->get_base_id(), $searchSet['bases'][$sbas_id])) : true;
+                $selected = $saveSettings ? ((isset($searchSet['bases']) && isset($searchSet['bases'][$sbas_id])) ? (in_array($coll->get_base_id(), $searchSet['bases'][$sbas_id])) : true) : true;
                 $bases[$sbas_id]['collections'][] =
                     [
                         'selected' => $selected,

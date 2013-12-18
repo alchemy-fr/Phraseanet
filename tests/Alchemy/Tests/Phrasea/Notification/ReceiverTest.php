@@ -83,4 +83,13 @@ class ReceiverTest extends \PhraseanetTestCase
 
         }
     }
+
+    /**
+     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
+     * @expectedExceptionMessage Invalid e-mail address (romain neutron email)
+     */
+    public function testWrongEmail()
+    {
+        new Receiver('romain neutron', 'romain neutron email');
+    }
 }

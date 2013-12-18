@@ -83,4 +83,13 @@ class EmitterTest extends \PhraseanetTestCase
 
         }
     }
+
+    /**
+     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
+     * @expectedExceptionMessage Invalid e-mail address (romain neutron email)
+     */
+    public function testWrongEmail()
+    {
+        new Emitter('romain neutron', 'romain neutron email');
+    }
 }

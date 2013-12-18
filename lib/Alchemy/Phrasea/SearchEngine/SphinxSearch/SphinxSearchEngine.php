@@ -552,8 +552,8 @@ class SphinxSearchEngine implements SearchEngineInterface
         }
 
         $opts = [
-            'before_match' => "<em>",
-            'after_match'  => "</em>",
+            'before_match' => "[[em]]",
+            'after_match'  => "[[/em]]",
         ];
 
         $fields_to_send = [];

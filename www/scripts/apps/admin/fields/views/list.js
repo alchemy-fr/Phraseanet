@@ -28,7 +28,7 @@ define([
             this.itemViews = [];
 
             // force base 1 indexed
-            if (this.collection.first().get("sorter") === 0) {
+            if (this.collection.length > 0 && this.collection.first().get("sorter") === 0) {
                 this.collection.each(function (model) {
                     model.set({'sorter': model.get("sorter") + 1}, {silent: true});
                 });

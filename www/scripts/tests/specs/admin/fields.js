@@ -113,6 +113,24 @@ define([
                 });
             });
 
+            describe("Empty List Item Views", function () {
+                beforeEach(function () {
+                    this.collection = new FieldCollection([], {
+                        "sbas_id": sbasId
+                    });
+
+                    this.view = new ListItemView({
+                        collection: this.collection,
+                        el: AdminFieldApp.$leftBlock
+                    });
+                });
+
+                it("should include list items for all models in collection", function () {
+                    this.view.render();
+                    this.view.$el.find("li").should.have.length(0);
+                });
+            });
+
             describe("List Item Views", function () {
                 beforeEach(function () {
                     this.collection = new FieldCollection([
@@ -284,6 +302,11 @@ define([
 
                 it("should render as a DIV element", function () {
                     this.view.render().el.nodeName.should.equal("DIV");
+                });
+
+                it("should tell that model is desync if one model has been deleted", function() {
+                    AdminFieldApp.fieldsToDelete = [{"id": 1, "sbas-id": sbasId, "name": "Categorie", "tag": "XMP:Categorie"}];
+                    assert.isTrue(this.view._isModelDesync());
                 });
             });
         });

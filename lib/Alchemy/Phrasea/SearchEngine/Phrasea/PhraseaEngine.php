@@ -639,7 +639,7 @@ class PhraseaEngine implements SearchEngineInterface
             if ($sxe && $sxe->description && $sxe->description->$name) {
                 $val = [];
                 foreach ($sxe->description->$name as $value) {
-                    $val[] = str_replace(['[[em]]', '[[/em]]'], ['<em>', '</em>'], (string) $value);
+                    $val[] = (string) $value;
                 }
                 $separator = $field['separator'] ? $field['separator'][0] : '';
                 $val = implode(' ' . $separator . ' ', $val);

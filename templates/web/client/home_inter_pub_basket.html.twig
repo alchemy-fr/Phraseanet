@@ -43,7 +43,13 @@
                 {% set thumbnail = record.get_thumbnail() %}
                 {% set docType = record.get_type() %}
                 {% set duration = "" %}
-                {% set ratio = thumbnail.get_width() / thumbnail.get_height() %}
+
+                {% if thumbnail.get_height() > 0 %}
+                    {% set ratio = thumbnail.get_width() / thumbnail.get_height() %}
+                {% else %}
+                    {% set ratio = 1 %}
+                {% endif %}
+
                 {% set wrapper_size = image_size + 30 %}
 
                 {% set types = {

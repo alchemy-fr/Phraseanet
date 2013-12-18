@@ -315,7 +315,7 @@ class User_Query implements User_QueryInterface
         }
 
         if ($this->last_model) {
-            $sql .= ' AND usr.lastModel = "' . mysql_real_escape_string($this->last_model) . '" ';
+            $sql .= ' AND usr.lastModel = ' . $this->app['phraseanet.appbox']->get_connection()->quote($this->last_model) . ' ';
         }
 
         $sql_like = [];

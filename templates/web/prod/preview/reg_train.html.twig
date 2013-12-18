@@ -2,7 +2,11 @@
   {% set regroupement = record.get_container() %}
   {% set thumbnail = regroupement.get_thumbnail() %}
 
-  {% set ratio = thumbnail.get_width() / thumbnail.get_height() %}
+  {% if thumbnail.get_height() > 0 %}
+      {% set ratio = thumbnail.get_width() / thumbnail.get_height() %}
+  {% else %}
+      {% set ratio = 1 %}
+  {% endif %}
   {% if thumbnail.is_paysage %}
     {% set style = 'width:80px;top:' %}
     {% set top = (8 + (80 - (80 / ratio)) / 2)|round %}

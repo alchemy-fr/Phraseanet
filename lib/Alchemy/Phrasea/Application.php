@@ -633,10 +633,24 @@ class Application extends SilexApplication
                     return ConnectedUsers::appName($app['translator'], $value);
                 }));
                 $twig->addFilter(new \Twig_SimpleFilter('escapeSimpleQuote', function ($value) {
-                    $ret = str_replace("'", "\'", $value);
+                    $ret = str_replace("'", "\\'", $value);
 
                     return $ret;
                 }));
+                $twig->addFilter(new \Twig_SimpleFilter('thesaurus', function (\Twig_Environment $twig, $value) {
+                    if (!$value instanceof \ThesaurusValue) {
+                        return twig_escape_filter($twig, str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), $value));
+                    }
+
+                    return "<a class=\"bounce\" onclick=\"bounce('" . $value->getField()->get_databox()->get_sbas_id() . "','"
+                        . str_replace("'", "\\'", $value->getQuery())
+                        . "', '"
+                        . str_replace("'", "\\'", $value->getField()->get_name())
+                        . "');return(false);\">"
+                        . twig_escape_filter($twig, str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), $value->getValue()))
+                        . "</a>";
+                }, array('needs_environment' => true, 'is_safe' => array('html'))));
+
                 $twig->addFilter(new \Twig_SimpleFilter('escapeDoubleQuote', function ($value) {
                     return str_replace('"', '\"', $value);
                 }));

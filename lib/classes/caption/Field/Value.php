@@ -346,73 +346,45 @@ class caption_Field_Value implements cache_cacheableInterface
             return $value;
         }
 
-        $DOM_branchs = $XPATH_thesaurus->query($tbranch);
-
-        $fvalue = $value;
-
-        $cleanvalue = str_replace(["<em>", "</em>", "'"], ["", "", "&apos;"], $fvalue);
+        // ---------------- new code ----------------------
+        $cleanvalue = str_replace(array("[[em]]", "[[/em]]", "'"), array("", "", "&apos;"), $value);
 
         list($term_noacc, $context_noacc) = $this->splitTermAndContext($cleanvalue);
         $term_noacc = $this->app['unicode']->remove_indexer_chars($term_noacc);
         $context_noacc = $this->app['unicode']->remove_indexer_chars($context_noacc);
+
+        // find all synonyms in all related branches
+        $q = "(" . $tbranch . ")//sy[@w='" . $term_noacc . "'";
         if ($context_noacc) {
-            $q = "//sy[@w='" . $term_noacc . "' and @k='" . $context_noacc . "']";
+            $q .= " and @k='" . $context_noacc . "']";
         } else {
-            $q = "//sy[@w='" . $term_noacc . "' and not(@k)]";
+            $q .= " and not(@k)]";
         }
-        $qjs = $link = "";
+        $q .= "/../sy";
 
-        // loop on each linked branch for field
-        foreach ($DOM_branchs as $DOM_branch) {
-            $nodes = $XPATH_thesaurus->cache_query($q, $DOM_branch);
-            $lngfound = false;
-            foreach ($nodes as $node) {
-                if ($node->getAttribute("lng") == $this->app['locale']) {
-                    // le terme est dans la bonne langue, on le rend cliquable
-                    list($term, $context) = $this->splitTermAndContext($fvalue);
-                    $term = str_replace(["<em>", "</em>"], ["", ""], $term);
-                    $context = str_replace(["<em>", "</em>"], ["", ""], $context);
-                    $qjs = $term;
-                    if ($context) {
-                        $qjs .= " [" . $context . "]";
-                    }
-                    $link = $fvalue;
+        $nodes = $XPATH_thesaurus->query($q);
 
-                    $lngfound = true;
-                    break;
-                }
-
-                $synonyms = $XPATH_thesaurus->query("sy[@lng='" . $this->app['locale'] . "']", $node->parentNode);
-                foreach ($synonyms as $synonym) {
-                    $k = $synonym->getAttribute("k");
-                    if ($synonym->getAttribute("w") != $term_noacc || $k != $context_noacc) {
-                        $link = $qjs = $synonym->getAttribute("v");
-                        $lngfound = true;
-                        break;
-                    }
-                }
-
-            }
-            if (! $lngfound) {
-                list($term, $context) = $this->splitTermAndContext($fvalue);
-                $term = str_replace(["<em>", "</em>"], ["", ""], $term);
-                $context = str_replace(["<em>", "</em>"], ["", ""], $context);
-                $qjs = $term;
-                if ($context) {
-                    $qjs .= " [" . $context . "]";
-                }
-                $link = $fvalue;
+        // loop on every sy found
+        $bestnode = null;
+        $bestnote = 0;
+        foreach ($nodes as $node) {
+            $note = 0;
+            $note += ($node->getAttribute("lng") == $this->app['locale.I18n']) ? 4 : 0;
+            $note += ($node->getAttribute("w") == $term_noacc) ? 2 : 0;
+            if($context_noacc != "")
+                $note += ($node->getAttribute("k") == $context_noacc) ? 1 : 0;
+            if($note > $bestnote)
+            {
+                $bestnote = $note;
+                $bestnode = $node;
             }
         }
+        if($bestnode)
+        {
+            list($term, $context) = $this->splitTermAndContext(str_replace(array("[[em]]", "[[/em]]"), array("", ""), $value));
+            $qjs = $term . ($context ? '['.$context.']' : '');
 
-        if ($qjs) {
-            $value = "<a class=\"bounce\" onclick=\"bounce('" . $databox->get_sbas_id() . "','"
-                . str_replace("'", "\'", $qjs)
-                . "', '"
-                . str_replace("'", "\'", $this->databox_field->get_name())
-                . "');return(false);\">"
-                . $link
-                . "</a>";
+            $value = new ThesaurusValue($bestnode->getAttribute('v'), $this->databox_field, $qjs);
         }
 
         return $value;

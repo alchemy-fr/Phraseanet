@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Notification\Mail\MailSuccessFTPReceiver;
 use Alchemy\Phrasea\TaskManager\Editor\FtpEditor;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessFTPSender;
@@ -391,7 +392,7 @@ class FtpJob extends AbstractJob
 
         try {
             $receiver = new Receiver(null, $export->getMail());
-            $mail = MailSuccessFTPSender::create($app, $receiver, null, $receiver_message);
+            $mail = MailSuccessFTPReceiver::create($app, $receiver, null, $receiver_message);
             $mail->setServer($ftp_server);
             $app['notification.deliverer']->deliver($mail);
         } catch (\Exception $e) {
