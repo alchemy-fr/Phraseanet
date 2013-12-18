@@ -26,7 +26,6 @@ use Alchemy\Phrasea\Model\Entities\StoryWZ;
 use Monolog\Logger;
 use Monolog\Handler\NullHandler;
 use Silex\WebTestCase;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\DomCrawler\Crawler;

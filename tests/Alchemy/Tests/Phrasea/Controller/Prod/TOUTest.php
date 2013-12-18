@@ -2,8 +2,6 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Application;
-
 class TOUTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;

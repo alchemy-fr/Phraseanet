@@ -2,7 +2,6 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine;
 use Alchemy\Phrasea\SearchEngine\SphinxSearch\SphinxSearchEngine;
 

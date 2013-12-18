@@ -1,7 +1,6 @@
 <?php
 
 use Alchemy\Phrasea\Core\PhraseaEvents;
-use Silex\Application;
 use Symfony\Component\EventDispatcher\Event;
 
 class API_V1_TimerTest extends \PhraseanetTestCase

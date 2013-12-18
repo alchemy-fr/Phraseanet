@@ -2,7 +2,6 @@
 
 namespace Alchemy\Tests\Phrasea\Command;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Command\Upgrade\Step31;
 use Alchemy\Phrasea\Command\Upgrade\Step35;

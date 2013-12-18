@@ -3,7 +3,6 @@
 namespace Alchemy\Tests\Phrasea\Controller;
 
 use Alchemy\Phrasea\Controller\RecordsRequest;
-use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Request;
 
 class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase

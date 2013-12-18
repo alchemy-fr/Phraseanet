@@ -4,7 +4,6 @@ namespace Alchemy\Tests\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Core\Provider\TasksServiceProvider;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
-use Silex\Application;
 
 class TasksServiceProviderTest extends ServiceProviderTestCase
 {

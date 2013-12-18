@@ -373,14 +373,12 @@ class caption_Field_Value implements cache_cacheableInterface
             $note += ($node->getAttribute("w") == $term_noacc) ? 2 : 0;
             if($context_noacc != "")
                 $note += ($node->getAttribute("k") == $context_noacc) ? 1 : 0;
-            if($note > $bestnote)
-            {
+            if ($note > $bestnote) {
                 $bestnote = $note;
                 $bestnode = $node;
             }
         }
-        if($bestnode)
-        {
+        if ($bestnode) {
             list($term, $context) = $this->splitTermAndContext(str_replace(array("[[em]]", "[[/em]]"), array("", ""), $value));
             $qjs = $term . ($context ? '['.$context.']' : '');
 

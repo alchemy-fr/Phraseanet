@@ -2,7 +2,6 @@
 
 namespace Alchemy\Tests\Phrasea\Authentication;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\Session;

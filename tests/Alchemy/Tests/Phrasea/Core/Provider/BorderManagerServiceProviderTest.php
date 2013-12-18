@@ -4,7 +4,6 @@ namespace Alchemy\Tests\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
-use Silex\Application;
 use Symfony\Component\Process\ExecutableFinder;
 use XPDF\XPDFServiceProvider;
 

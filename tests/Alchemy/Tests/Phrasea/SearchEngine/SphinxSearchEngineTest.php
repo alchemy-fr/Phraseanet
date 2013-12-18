@@ -2,7 +2,6 @@
 
 namespace Alchemy\Tests\Phrasea\SearchEngine;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SphinxSearch\SphinxSearchEngine;
 use Alchemy\Tests\Phrasea\SearchEngine\SearchEngineAbstractTest;
 use Symfony\Component\Process\ExecutableFinder;

@@ -4,7 +4,6 @@ namespace Alchemy\Tests\Phrasea\Border\Checker;
 
 use Alchemy\Phrasea\Border\Checker\AbstractChecker;
 use Alchemy\Phrasea\Border\File;
-use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Translation\TranslatorInterface;
 
