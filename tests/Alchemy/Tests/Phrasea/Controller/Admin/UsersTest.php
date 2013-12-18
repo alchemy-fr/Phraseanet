@@ -416,13 +416,10 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $appbox = self::$DI['app']['phraseanet.appbox'];
 
-        $stmt = $this->getMockBuilder('\mysqli_stmt')
-            ->setMethods(['fetch'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $stmt = $this->getMock('PDOStatement');
 
         $stmt->expects($this->any())
-            ->method('fetch')
+            ->method('fetchAll')
             ->will($this->returnValue([
                 'usr_id' => $id,
                 'base_id' => $baseId,
@@ -430,12 +427,10 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 'refuser' => 0,
             ]));
 
-        $pdo = $this->getMockBuilder('PDOMock')
-            ->setMethods(['prepare'])
-            ->getMock();
+        $pdo = $this->getMock('PDOMock');
 
         $pdo->expects($this->any())
-            ->method('get_connection')
+            ->method('prepare')
             ->will($this->returnValue($stmt));
 
         $appbox = $this->getMockBuilder('\appbox')
