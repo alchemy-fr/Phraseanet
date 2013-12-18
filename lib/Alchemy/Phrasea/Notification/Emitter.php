@@ -20,6 +20,10 @@ class Emitter implements EmitterInterface
 
     public function __construct($name, $email)
     {
+        if (!\Swift_Validate::email($email)) {
+            throw new InvalidArgumentException(sprintf('Invalid e-mail address (%s)', $email));
+        }
+
         $this->name = $name;
         $this->email = $email;
     }
@@ -51,13 +55,6 @@ class Emitter implements EmitterInterface
      */
     public static function fromUser(\User_Adapter $user)
     {
-        if (!\Swift_Validate::email($user->get_email())) {
-            throw new InvalidArgumentException(sprintf(
-                'User provided does not have a valid e-mail address (%s)',
-                $user->get_email()
-            ));
-        }
-
         return new static($user->get_display_name(), $user->get_email());
     }
 }

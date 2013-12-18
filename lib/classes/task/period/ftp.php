@@ -11,6 +11,7 @@
 use Alchemy\Phrasea\Core\Configuration\Configuration;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessFTPSender;
+use Alchemy\Phrasea\Notification\Mail\MailSuccessFTPReceiver;
 use Alchemy\Phrasea\Notification\Receiver;
 
 class task_period_ftp extends task_appboxAbstract
@@ -414,19 +415,19 @@ class task_period_ftp extends task_appboxAbstract
                     $sbas_id = phrasea::sbasFromBas($this->dependencyContainer, $base_id);
                     $record = new record_adapter($this->dependencyContainer, $sbas_id, $record_id);
 
-                    $sdcaption = $record->get_caption()->serialize(caption_record::SERIALIZE_XML, $ftp_export["businessfields"]);
+                    $sdcaption = $record->get_caption()->serialize(caption_record::SERIALIZE_XML, $file["businessfields"]);
 
                     $remotefile = $file["filename"];
 
                     if ($subdef == 'caption') {
-                        $desc = $record->get_caption()->serialize(\caption_record::SERIALIZE_XML, $ftp_export["businessfields"]);
+                        $desc = $record->get_caption()->serialize(\caption_record::SERIALIZE_XML, $file["businessfields"]);
 
                         $localfile = $this->dependencyContainer['root.path'] . '/tmp/' . md5($desc . time() . mt_rand());
                         if (file_put_contents($localfile, $desc) === false) {
                             throw new Exception('Impossible de creer un fichier temporaire');
                         }
                     } elseif ($subdef == 'caption-yaml') {
-                        $desc = $record->get_caption()->serialize(\caption_record::SERIALIZE_YAML, $ftp_export["businessfields"]);
+                        $desc = $record->get_caption()->serialize(\caption_record::SERIALIZE_YAML, $file["businessfields"]);
 
                         $localfile = $this->dependencyContainer['root.path'] . '/tmp/' . md5($desc . time() . mt_rand());
                         if (file_put_contents($localfile, $desc) === false) {
@@ -623,16 +624,16 @@ class task_period_ftp extends task_appboxAbstract
         foreach ($rs as $row) {
             if ($row['error'] == '0' && $row['done'] == '1') {
                 $transferts[] =
-                    '<li>' . sprintf(_('task::ftp:Record %1$s - %2$s de la base (%3$s - %4$s) - %5$s')
+                    ' - ' . sprintf(_('task::ftp:Record %1$s - %2$s de la base (%3$s - %4$s) - %5$s')
                         , $row["record_id"], $row["filename"]
                         , phrasea::sbas_labels(phrasea::sbasFromBas($this->dependencyContainer, $row["base_id"]), $this->dependencyContainer)
-                        , phrasea::bas_labels($row['base_id'], $this->dependencyContainer), $row['subdef']) . ' : ' . _('Transfert OK') . '</li>';
+                        , phrasea::bas_labels($row['base_id'], $this->dependencyContainer), $row['subdef']) . ' : ' . _('Transfert OK');
             } else {
                 $transferts[] =
-                    '<li>' . sprintf(_('task::ftp:Record %1$s - %2$s de la base (%3$s - %4$s) - %5$s')
+                    ' - ' . sprintf(_('task::ftp:Record %1$s - %2$s de la base (%3$s - %4$s) - %5$s')
                         , $row["record_id"], $row["filename"]
                         , phrasea::sbas_labels(phrasea::sbasFromBas($this->dependencyContainer, $row["base_id"]), $this->dependencyContainer), phrasea::bas_labels($row['base_id'], $this->dependencyContainer)
-                        , $row['subdef']) . ' : ' . _('Transfert Annule') . '</li>';
+                        , $row['subdef']) . ' : ' . _('Transfert Annule');
                 $transfert_status = _('task::ftp:Certains documents n\'ont pas pu etre tranferes');
             }
         }
@@ -654,7 +655,7 @@ class task_period_ftp extends task_appboxAbstract
 
             $text_mail_sender = $row['text_mail_sender'];
             $text_mail_receiver = $row['text_mail_receiver'];
-            $mail = $row['mail'];
+            $receveirmail = $row['mail'];
             $sendermail = $row['sendermail'];
             $ftp_server = $row['addr'];
         }
@@ -669,28 +670,28 @@ class task_period_ftp extends task_appboxAbstract
         $sender_message = $text_mail_sender . $message;
         $receiver_message = $text_mail_receiver . $message;
 
-        $receiver = null;
+        $sender = null;
         try {
-            $receiver = new Receiver(null, $sendermail);
+            $sender = new Receiver(null, $sendermail);
         } catch (InvalidArgumentException $e) {
 
         }
 
-        if ($receiver) {
-            $mail = MailSuccessFTPSender::create($this->dependencyContainer, $receiver, null, $sender_message);
+        if ($sender) {
+            $mail = MailSuccessFTPSender::create($this->dependencyContainer, $sender, null, $sender_message);
             $mail->setServer($ftp_server);
             $this->dependencyContainer['notification.deliverer']->deliver($mail);
         }
 
         $receiver = null;
         try {
-            $receiver = new Receiver(null, $mail);
+            $receiver = new Receiver(null, $receveirmail);
         } catch (InvalidArgumentException $e) {
 
         }
 
         if ($receiver) {
-            $mail = MailSuccessFTP::create($this->dependencyContainer, $receiver, null, $receiver_message);
+            $mail = MailSuccessFTPReceiver::create($this->dependencyContainer, $receiver, null, $receiver_message);
             $mail->setServer($ftp_server);
             $this->dependencyContainer['notification.deliverer']->deliver($mail);
         }
@@ -699,7 +700,7 @@ class task_period_ftp extends task_appboxAbstract
     public function logexport(record_adapter $record, $obj, $ftpLog)
     {
         foreach ($obj as $oneObj) {
-            $this->app['phraseanet.logger']($record->get_databox())
+            $this->dependencyContainer['phraseanet.logger']($record->get_databox())
                 ->log($record, Session_Logger::EVENT_EXPORTFTP, $ftpLog, '');
         }
 
