@@ -17,21 +17,6 @@ class module_report_filter
     private $posting_filter = array();
     private $cor_query = array();
     private $active_column = array();
-    private $trans = array(
-        'user'      => 'phraseanet::utilisateurs',
-        'ddate'     => 'report:: date',
-        'ip'        => 'report:: IP',
-        'appli'     => 'report:: modules',
-        'fonction'  => 'report::fonction',
-        'activite'  => 'report::activite',
-        'pays'      => 'report::pays',
-        'societe'   => 'report::societe',
-        'record_id' => 'report:: record id',
-        'final'     => 'phraseanet:: sous definition',
-        'coll_id'   => 'report:: collections',
-        'comment'   => 'report:: commentaire',
-        'search'    => 'report:: question',
-    );
 
     public function __construct(Application $app, $current_filter, $correspondance)
     {
@@ -69,6 +54,22 @@ class module_report_filter
 
     public function getPostingFilter()
     {
+        $trans = array(
+            'user'      => _('phraseanet::utilisateurs'),
+            'ddate'     => _('report:: date'),
+            'ip'        => _('report:: IP'),
+            'appli'     => _('report:: modules'),
+            'fonction'  => _('report::fonction'),
+            'activite'  => _('report::activite'),
+            'pays'      => _('report::pays'),
+            'societe'   => _('report::societe'),
+            'record_id' => _('report:: record id'),
+            'final'     => _('phraseanet:: sous definition'),
+            'coll_id'   => _('report:: collections'),
+            'comment'   => _('report:: commentaire'),
+            'search'    => _('report:: question'),
+        );
+
         if (sizeof($this->tab_filter) > 0) {
             foreach ($this->tab_filter as $key => $filter) {
                 if (empty($filter['v']))
@@ -76,8 +77,8 @@ class module_report_filter
                 else
                     $value = $filter['v'];
 
-                if (array_key_exists($filter['f'], $this->trans))
-                    $field = _($this->trans[$filter['f']]);
+                if (array_key_exists($filter['f'], $trans))
+                    $field = _($trans[$filter['f']]);
                 else
                     $field = $filter['f'];
 
