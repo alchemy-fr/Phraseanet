@@ -206,7 +206,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
         }
 
         if ($readyToSend) {
-            $mail = MailInfoSomebodyAutoregistered::create($this->app, $receiver, $body);
+            $mail = MailInfoSomebodyAutoregistered::create($this->app, $receiver, null, $body);
             $this->app['notification.deliverer']->deliver($mail);
         }
 
