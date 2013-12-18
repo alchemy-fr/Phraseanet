@@ -754,7 +754,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         $found = false;
         foreach (self::$searchEngine->excerpt($query_string, $fields, $foundRecord) as $field) {
-            if (strpos($field, '<em>') !== false && strpos($field, '</em>') !== false) {
+            if (strpos($field, '[[em]]') !== false && strpos($field, '[[/em]]') !== false) {
                 $found = true;
                 break;
             }
