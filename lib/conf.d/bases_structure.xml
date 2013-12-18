@@ -4085,7 +4085,7 @@
           </field>
           <field>
             <name>value</name>
-            <type>varbinary(1024)</type>
+            <type>varbinary(32768)</type>
             <null>YES</null>
             <extra></extra>
             <default>0</default>
