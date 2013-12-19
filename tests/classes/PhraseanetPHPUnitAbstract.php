@@ -988,16 +988,3 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             ->getMock();
     }
 }
-
-class CsrfTestProvider implements CsrfProviderInterface
-{
-    public function generateCsrfToken($intention)
-    {
-        return mt_rand();
-    }
-
-    public function isCsrfTokenValid($intention, $token)
-    {
-        return true;
-    }
-}
