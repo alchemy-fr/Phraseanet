@@ -168,7 +168,6 @@ class UserManager
     {
         foreach ([
             'DELETE FROM `edit_presets` WHERE usr_id = :usr_id',
-            'DELETE FROM `sselnew` WHERE usr_id = :usr_id',
             'DELETE FROM `tokens` WHERE usr_id = :usr_id',
         ] as $sql) {
             $stmt = $this->appboxConnection->prepare($sql);
