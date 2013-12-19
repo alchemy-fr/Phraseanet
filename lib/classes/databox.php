@@ -110,14 +110,15 @@ class databox extends base
         assert($sbas_id > 0);
 
         $this->app = $app;
-        $this->connection = connection::getPDOConnection($app, $sbas_id);
         $this->id = $sbas_id;
 
         $connection_params = phrasea::sbas_params($this->app);
 
-        if ( ! isset($connection_params[$sbas_id])) {
+        if (! isset($connection_params[$sbas_id])) {
             throw new NotFoundHttpException(sprintf('databox %d not found', $sbas_id));
         }
+
+        $this->connection = connection::getPDOConnection($app, $sbas_id);
 
         $this->host = $connection_params[$sbas_id]['host'];
         $this->port = $connection_params[$sbas_id]['port'];
