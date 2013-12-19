@@ -59,12 +59,12 @@ class Migration38 implements MigrationInterface
 
         $app['configuration.store']->setConfig($conf);
 
-        foreach (array(
+        foreach ([
             $this->configYaml,
             $this->connexionsYaml,
             $this->binariesYaml,
             $this->servicesYaml
-        ) as $file) {
+        ] as $file) {
             if (is_file($file)) {
                 rename($file, $file.'.bkp');
             }

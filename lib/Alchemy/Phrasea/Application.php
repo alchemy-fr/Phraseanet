@@ -639,7 +639,7 @@ class Application extends SilexApplication
                 }));
                 $twig->addFilter(new \Twig_SimpleFilter('thesaurus', function (\Twig_Environment $twig, $value) {
                     if (!$value instanceof \ThesaurusValue) {
-                        return str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), twig_escape_filter($twig, $value));
+                        return str_replace(['[[em]]', '[[/em]]'], ['<em>', '</em>'], twig_escape_filter($twig, $value));
                     }
 
                     return "<a class=\"bounce\" onclick=\"bounce('" . $value->getField()->get_databox()->get_sbas_id() . "','"
@@ -647,7 +647,7 @@ class Application extends SilexApplication
                         . "', '"
                         . str_replace("'", "\\'", $value->getField()->get_name())
                         . "');return(false);\">"
-                        . str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), twig_escape_filter($twig, $value->getValue()))
+                        . str_replace(['[[em]]', '[[/em]]'], ['<em>', '</em>'], twig_escape_filter($twig, $value->getValue()))
                         . "</a>";
                 }, ['needs_environment' => true, 'is_safe' => ['html']]));
 
