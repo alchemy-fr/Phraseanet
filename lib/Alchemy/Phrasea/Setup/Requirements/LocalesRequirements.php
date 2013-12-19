@@ -37,7 +37,7 @@ class LocalesRequirements extends RequirementCollection implements RequirementIn
             if (defined('INTL_ICU_VERSION')) {
                 $version = INTL_ICU_VERSION;
             } else {
-                $reflector = new ReflectionExtension('intl');
+                $reflector = new \ReflectionExtension('intl');
 
                 ob_start();
                 $reflector->info();

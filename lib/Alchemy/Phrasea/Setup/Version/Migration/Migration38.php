@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Setup\Version\Migration;
 
 use Alchemy\Phrasea\Application;
 use Symfony\Component\Yaml\Yaml;
+use Alchemy\Phrasea\Exception\RuntimeException;
 
 class Migration38 implements MigrationInterface
 {
@@ -58,12 +59,12 @@ class Migration38 implements MigrationInterface
 
         $app['configuration.store']->setConfig($conf);
 
-        foreach ([
+        foreach (array(
             $this->configYaml,
             $this->connexionsYaml,
             $this->binariesYaml,
             $this->servicesYaml
-        ] as $file) {
+        ) as $file) {
             if (is_file($file)) {
                 rename($file, $file.'.bkp');
             }
@@ -86,7 +87,8 @@ class Migration38 implements MigrationInterface
 
         if (is_file($this->configYaml)) {
             $data = $this->yaml->parse($this->configYaml);
-            $conf['main']['key'] = $data['key'];
+            $key = isset($data['key']) ? $data['key'] : $this->fetchInstanceKey();
+            $conf['main']['key'] = $key;
             $env = $data['environment'];
             if (isset($data[$env])) {
                 $conf['main']['servername'] = $data[$env]['phraseanet']['servername'];
@@ -114,7 +116,9 @@ class Migration38 implements MigrationInterface
                     $conf['main']['cache']['options'] = [];
                 }
             }
-            $conf['border-manager'] = $services['Border']['border_manager']['options'];
+            if (isset($services['Border'])) {
+                $conf['border-manager'] = $services['Border']['border_manager']['options'];
+            }
         }
     }
 
@@ -126,5 +130,19 @@ class Migration38 implements MigrationInterface
             $conf['main']['database'] = $data['main_connexion'];
             $conf['main']['database-test'] = $data['test_connexion'];
         }
+    }
+
+    private function fetchInstanceKey()
+    {
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare('SELECT `value` FROM registry WHERE `key` = "GV_SIT"');
+        $stmt->execute();
+        $rs = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        if (!$rs) {
+            throw new RuntimeException('Unable to fetch GV_SIT key from registry table.');
+        }
+
+        return $rs['key'];
     }
 }

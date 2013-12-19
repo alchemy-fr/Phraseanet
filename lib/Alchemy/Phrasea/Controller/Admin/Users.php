@@ -17,6 +17,8 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
 
 class Users implements ControllerProviderInterface
 {
@@ -543,31 +545,30 @@ class Users implements ControllerProviderInterface
                     $row = $stmt->fetch(\PDO::FETCH_ASSOC);
                     $stmt->closeCursor();
 
-                    $accept = $deny = '';
+                    $acceptColl = $denyColl = [];
 
                     if ($row) {
-
                         if (\Swift_Validate::email($row['usr_mail'])) {
                             foreach ($bases as $bas => $isok) {
                                 if ($isok) {
-                                    $accept .= '<li>' . \phrasea::bas_labels($bas, $app) . "</li>\n";
+                                    $acceptColl[] = \phrasea::bas_labels($bas, $app);
                                 } else {
-                                    $deny .= '<li>' . \phrasea::bas_labels($bas, $app) . "</li>\n";
+                                    $denyColl[] = \phrasea::bas_labels($bas, $app);
                                 }
                             }
-                            if (($accept != '' || $deny != '')) {
+                            if (0 !== count($acceptColl) || 0 !== count($denyColl)) {
                                 $message = '';
-                                if ($accept != '') {
-                                    $message .= "\n" . $app->trans('login::register:email: Vous avez ete accepte sur les collections suivantes :') . implode(', ', $accept). "\n";
+                                if (0 !== count($acceptColl)) {
+                                    $message .= "\n" . $app->trans('login::register:email: Vous avez ete accepte sur les collections suivantes : ') . implode(', ', $acceptColl). "\n";
                                 }
-                                if ($deny != '') {
-                                    $message .= "\n" . $app->trans('login::register:email: Vous avez ete refuse sur les collections suivantes :') . implode(', ', $deny) . "\n";
+                                if (0 !== count($denyColl)) {
+                                    $message .= "\n" . $app->trans('login::register:email: Vous avez ete refuse sur les collections suivantes : ') . implode(', ', $denyColl) . "\n";
                                 }
 
                                 $receiver = new Receiver(null, $row['usr_mail']);
-                                $mail = MailSuccessEmailUpdate::create($this->app, $receiver, null, $message);
+                                $mail = MailSuccessEmailUpdate::create($app, $receiver, null, $message);
 
-                                $this->app['notification.deliverer']->deliver($mail);
+                                $app['notification.deliverer']->deliver($mail);
                             }
                         }
                     }
