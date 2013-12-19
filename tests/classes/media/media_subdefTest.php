@@ -8,10 +8,6 @@ class media_subdefTest extends \PhraseanetTestCase
      * @var \media_subdef
      */
     private static $objectPresent;
-    /**
-     * @var \media_subdef
-     */
-    private static $storyPresent;
 
     /**
      * @var \media_subdef
@@ -46,10 +42,13 @@ class media_subdefTest extends \PhraseanetTestCase
             }
         }
 
-        $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
-
         self::$objectNotPresent->remove_file();
-        self::$storyPresent = $story->get_subdef('thumbnail');
+    }
+
+    public static function tearDownAfterClass()
+    {
+        self::$objectPresent = self::$objectNotPresent = self::$recordonbleu = null;
+        parent::tearDownAfterClass();
     }
 
     /**
@@ -66,7 +65,7 @@ class media_subdefTest extends \PhraseanetTestCase
      */
     public function testStoryIsNotPhysicallyPresent()
     {
-        $this->assertFalse(self::$storyPresent->is_physically_present());
+        $this->assertFalse(self::$DI['record_story_3']->get_subdef('thumbnail')->is_physically_present());
     }
 
     /**

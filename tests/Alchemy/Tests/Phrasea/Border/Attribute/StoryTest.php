@@ -8,39 +8,12 @@ use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 class StoryTest extends \PhraseanetTestCase
 {
     /**
-     * @var Story
-     */
-    protected $object;
-    protected $story;
-
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Attribute
-     * @covers Alchemy\Phrasea\Border\Attribute\Story::__construct
-     */
-    public function setUp()
-    {
-        parent::setUp();
-        $this->story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);;
-        $this->object = new Story($this->story);
-    }
-
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Story::__destruct
-     */
-    public function tearDown()
-    {
-        $this->story->delete();
-        $this->object = null;
-        parent::tearDown();
-    }
-
-    /**
      * @covers Alchemy\Phrasea\Border\Attribute\Story::getName
-     * @todo Implement testGetName().
      */
     public function testGetName()
     {
-        $this->assertEquals(AttributeInterface::NAME_STORY, $this->object->getName());
+        $story = new Story(self::$DI['record_story_1']);
+        $this->assertEquals(AttributeInterface::NAME_STORY, $story->getName());
     }
 
     /**
@@ -48,7 +21,9 @@ class StoryTest extends \PhraseanetTestCase
      */
     public function testGetValue()
     {
-        $this->assertSame($this->story, $this->object->getValue());
+        $record = self::$DI['record_story_1'];
+        $story = new Story($record);
+        $this->assertSame($record, $story->getValue());
     }
 
     /**
@@ -56,7 +31,8 @@ class StoryTest extends \PhraseanetTestCase
      */
     public function testAsString()
     {
-        $this->assertInternalType('string', $this->object->asString());
+        $story = new Story(self::$DI['record_story_1']);
+        $this->assertInternalType('string', $story->asString());
     }
 
     /**
@@ -64,9 +40,9 @@ class StoryTest extends \PhraseanetTestCase
      */
     public function testLoadFromString()
     {
-        $loaded = Story::loadFromString(self::$DI['app'], $this->object->asString());
-
-        $this->assertEquals($this->object, $loaded);
+        $story = new Story(self::$DI['record_story_1']);
+        $loaded = Story::loadFromString(self::$DI['app'], $story->asString());
+        $this->assertEquals($story, $loaded);
     }
 
     /**

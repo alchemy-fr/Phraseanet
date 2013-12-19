@@ -51,6 +51,12 @@ abstract class SearchEngineAbstractTest extends \PhraseanetAuthenticatedTestCase
         self::$searchEngine->setOptions($options);
     }
 
+    public static function tearDownAfterClass()
+    {
+        self::$searchEngine = self::$searchEngineClass = self::$initialized = null;
+        parent::tearDownAfterClass();
+    }
+
     /**
      * @return SearchEngineOptions
      */

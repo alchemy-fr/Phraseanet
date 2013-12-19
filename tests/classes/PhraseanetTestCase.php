@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfProviderInterface;
 use Symfony\Component\Routing\RequestContext;
 
 use Alchemy\Tests\Tools\TranslatorMockTrait;
+use Guzzle\Http\Client as Guzzle;
 
 abstract class PhraseanetTestCase extends WebTestCase
 {
@@ -86,6 +87,10 @@ abstract class PhraseanetTestCase extends WebTestCase
             return $this->loadCLI();
         });
 
+        self::$DI['local-guzzle'] = self::$DI->share(function ($DI) {
+            return new Guzzle(self::$DI['app']['phraseanet.registry']->get('GV_ServerName'));
+        });
+
         self::$DI['client'] = self::$DI->share(function ($DI) {
             return new Client($DI['app'], []);
         });
@@ -107,6 +112,14 @@ abstract class PhraseanetTestCase extends WebTestCase
 
         self::$DI['user_alt2'] = self::$DI->share(function ($DI) {
             return User_Adapter::getInstance(self::$fixtureIds['user']['test_phpunit_alt2'], $DI['app']);
+        });
+
+        self::$DI['oauth2-app-user'] = self::$DI->share(function ($DI) {
+            return new \API_OAuth2_Application($DI['app'], self::$fixtureIds['oauth']['user']);
+        });
+
+        self::$DI['oauth2-app-user_notAdmin'] = self::$DI->share(function ($DI) {
+            return new \API_OAuth2_Application($DI['app'], self::$fixtureIds['oauth']['user_notAdmin']);
         });
 
         self::$DI['logger'] = self::$DI->share(function () {
@@ -152,7 +165,7 @@ abstract class PhraseanetTestCase extends WebTestCase
             });
         }
 
-        foreach (range(1, 2) as $i) {
+        foreach (range(1, 3) as $i) {
             self::$DI['record_story_' . $i] = self::$DI->share(function ($DI) use ($i) {
                 return new \record_adapter($DI['app'], self::$fixtureIds['databox']['records'], self::$fixtureIds['record']['record_story_'.$i]);
             });
@@ -207,6 +220,7 @@ abstract class PhraseanetTestCase extends WebTestCase
     public static function tearDownAfterClass()
     {
         self::$testCaseBooted = false;
+        parent::tearDownAfterClass();
     }
 
     protected function bootTestCase()
@@ -447,6 +461,26 @@ abstract class PhraseanetTestCase extends WebTestCase
 
             self::$recordsInitialized = [];
         }
+
+        $duration = PhraseanetPHPUnitListener::getDurationByTest();
+        $tests = array();
+
+        foreach ($duration as $name => $data) {
+            $tests[$name . '(total : '.$data['time'].' and '.$data['executions'].' executions)'] = $data['time'] / $data['executions'];
+        }
+
+        asort($tests);
+
+        $csvData = PhraseanetPHPUnitListener::getCsv();
+        if (count($csvData) > 0) {
+            foreach ($csvData as $data) {
+                file_put_contents(__DIR__ . '/../../report.csv', "\"".implode('","', array_map(function ($value) {
+                    return str_replace('"', '""', $value);
+                }, $data))."\"\n", FILE_APPEND);
+            }
+        }
+
+        PhraseanetPHPUnitListener::resetDuration();
 
         return;
     }

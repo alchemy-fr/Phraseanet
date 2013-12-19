@@ -2,26 +2,21 @@
 
 namespace Alchemy\Tests\Phrasea\Application;
 
+use Symfony\Component\Yaml\Yaml;
+
 class ApiYamlApplication extends ApiTestCase
 {
-
-    public function getParameters(array $parameters = [])
+    protected function getParameters(array $parameters = [])
     {
         return $parameters;
     }
 
-    public function unserialize($data)
+    protected function unserialize($data)
     {
-        try {
-            $ret = \Symfony\Component\Yaml\Yaml::parse($data);
-        } catch (\Exception $e) {
-            $this->fail("Unable to parse data : \n" . $data . "\nexception : " . $e->getMessage() . "\n");
-        }
-
-        return $ret;
+        return Yaml::parse($data);
     }
 
-    public function getAcceptMimeType()
+    protected function getAcceptMimeType()
     {
         return 'text/yaml';
     }

@@ -28,5 +28,11 @@
         <directory>vendor</directory>
       </blacklist>
     </filter>
+
+    <!--
+    <listeners>
+      <listener class="PhraseanetPHPUnitListener" file="tests/classes/PhraseanetPHPUnitListener.php"></listener>
+    </listeners>
+    -->
 </phpunit>
 

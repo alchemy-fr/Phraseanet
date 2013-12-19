@@ -7,26 +7,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 {
-    private static $authorizedApp;
-
-    public function bootTestCase()
-    {
-        try {
-            self::$authorizedApp = \API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test API v1');
-        } catch (\Exception $e) {
-
-        }
-    }
-
-    public static function tearDownAfterClass()
-    {
-        if (self::$authorizedApp) {
-            self::$authorizedApp->delete();
-        }
-
-         parent::tearDownAfterClass();
-    }
-
     /**
      * @covers \Alchemy\Phrasea\Controller\Root\Account::displayAccount
      * @covers \Alchemy\Phrasea\Controller\Root\Account::call
@@ -351,11 +331,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testAUthorizedAppGrantAccessSuccessfull($revoke, $expected)
     {
-        if (null === self::$authorizedApp) {
-            $this->markTestSkipped('Application could not be created');
-        }
-
-        self::$DI['client']->request('GET', '/account/security/application/' . self::$authorizedApp->get_id() . '/grant/', [
+        self::$DI['client']->request('GET', '/account/security/application/' . self::$DI['oauth2-app-user']->get_id() . '/grant/', [
             'revoke' => $revoke
             ], [], [
             'HTTP_ACCEPT'           => 'application/json',
@@ -372,7 +348,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 
         $account = \API_OAuth2_Account::load_with_user(
                 self::$DI['app']
-                , self::$authorizedApp
+                , self::$DI['oauth2-app-user']
                 , self::$DI['user']
         );
 

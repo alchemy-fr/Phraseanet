@@ -105,6 +105,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
             unlink(self::$config);
         }
 
+        self::$skipped = self::$config = self::$searchd = null;
         parent::tearDownAfterClass();
     }
 

@@ -12,19 +12,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RssFeedTest extends \PhraseanetWebTestCase
 {
-    private static $initialized = false;
-
-    public function setUp()
-    {
-        parent::setUp();
-
-        if (!self::$initialized) {
-
-            @unlink('/tmp/db.sqlite');
-            copy(__DIR__ . '/../../../../../db-ref.sqlite', '/tmp/db.sqlite');
-        }
-    }
-
     public function testPublicFeedAggregated()
     {
         self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 2);

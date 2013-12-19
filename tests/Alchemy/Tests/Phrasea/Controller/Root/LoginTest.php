@@ -53,6 +53,12 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         parent::tearDown();
     }
 
+    public static function tearDownAfterClass()
+    {
+        self::$demands = self::$collections = self::$login = self::$email = null;
+        parent::tearDownAfterClass();
+    }
+
     public function testRegisterWithNoTou()
     {
         $this->logout(self::$DI['app']);

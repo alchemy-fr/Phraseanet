@@ -80,6 +80,7 @@ class RegenerateSqliteDb extends Command
             $DI = new \Pimple();
 
             $this->generateUsers($this->container['EM'], $DI);
+            $this->insertOauthApps($DI);
             $this->generateCollection($DI);
             $this->generateRecord($DI);
             $this->insertOneStoryInWz($this->container['EM'], $DI);
@@ -96,6 +97,9 @@ class RegenerateSqliteDb extends Command
             $fixtures['user']['test_phpunit_alt1'] = $DI['user_alt1']->get_id();
             $fixtures['user']['test_phpunit_alt2'] = $DI['user_alt2']->get_id();
 
+            $fixtures['oauth']['user'] = $DI['app-user']->get_id();
+            $fixtures['oauth']['user_notAdmin'] = $DI['app-user_notAdmin']->get_id();
+
             $fixtures['databox']['records'] = $DI['databox']->get_sbas_id();
             $fixtures['collection']['coll'] = $DI['coll']->get_base_id();
             $fixtures['collection']['coll_no_access'] = $DI['coll_no_access']->get_base_id();
@@ -103,6 +107,7 @@ class RegenerateSqliteDb extends Command
 
             $fixtures['record']['record_story_1'] = $DI['record_story_1']->get_record_id();
             $fixtures['record']['record_story_2'] = $DI['record_story_2']->get_record_id();
+            $fixtures['record']['record_story_3'] = $DI['record_story_3']->get_record_id();
 
             $fixtures['record']['record_1'] = $DI['record_1']->get_record_id();
             $fixtures['record']['record_2'] = $DI['record_2']->get_record_id();
@@ -141,6 +146,19 @@ class RegenerateSqliteDb extends Command
         $fs->dumpFile($json, json_encode($fixtures, defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0));
 
         return 0;
+    }
+
+    private function insertOauthApps(\Pimple $DI)
+    {
+        $DI['app-user'] = \API_OAuth2_Application::create($this->container, $DI['user'], 'test application for user');
+        $DI['app-user']->set_redirect_uri('http://callback.com/callback/');
+        $DI['app-user']->set_website('http://website.com/');
+        $DI['app-user']->set_type(\API_OAuth2_Application::WEB_TYPE);
+
+        $DI['app-user_notAdmin'] = \API_OAuth2_Application::create($this->container, $DI['user_notAdmin'], 'test application for user not admin');
+        $DI['app-user_notAdmin']->set_redirect_uri('http://callback.com/callback/');
+        $DI['app-user_notAdmin']->set_website('http://website.com/');
+        $DI['app-user_notAdmin']->set_type(\API_OAuth2_Application::WEB_TYPE);
     }
 
     private function insertAuthFailures(EntityManager $em, \Pimple $DI)
@@ -276,10 +294,12 @@ class RegenerateSqliteDb extends Command
 
         $media = $this->container['mediavorus']->guess($this->container['root.path'] . '/tests/files/cestlafete.jpg');
 
-        foreach (range(1, 2) as $i) {
+        foreach (range(1, 3) as $i) {
             $story = \record_adapter::createStory($this->container, $DI['coll']);
-            $story->substitute_subdef('preview', $media, $this->container);
-            $story->substitute_subdef('thumbnail', $media, $this->container);
+            if ($i < 3) {
+                $story->substitute_subdef('preview', $media, $this->container);
+                $story->substitute_subdef('thumbnail', $media, $this->container);
+            }
             $DI['record_story_' . $i] = $story;
         }
     }

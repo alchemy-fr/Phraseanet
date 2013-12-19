@@ -2,20 +2,11 @@
 
 class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 {
-    /**
-     * @var record_adapter
-     */
-    private static $grouping;
-    private static $initialized;
     private static $thumbtitled = false;
 
     public function setUp()
     {
         parent::setUp();
-
-        if (self::$initialized) {
-            return;
-        }
 
         /**
          * Reset thumbtitle in order to have consistent tests (testGet_title)
@@ -28,6 +19,12 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
             }
             self::$thumbtitled = true;
         }
+    }
+
+    public static function tearDownAfterClass()
+    {
+        self::$thumbtitled = null;
+        parent::tearDownAfterClass();
     }
 
     /**

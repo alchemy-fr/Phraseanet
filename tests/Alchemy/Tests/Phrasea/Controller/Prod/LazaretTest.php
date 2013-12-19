@@ -13,7 +13,6 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
      * @return Client A Client instance
      */
     protected $client;
-    private static $need_records = false;
 
     public function tearDown()
     {
