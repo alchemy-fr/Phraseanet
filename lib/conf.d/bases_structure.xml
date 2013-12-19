@@ -2323,58 +2323,6 @@
         <engine>InnoDB</engine>
       </table>
 
-      <table name="sselnew">
-        <fields>
-          <field>
-            <name>id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra>auto_increment</extra>
-
-
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>ssel_id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra></extra>
-
-
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>usr_id</name>
-            <type>int(11) unsigned</type>
-
-            <null></null>
-            <extra></extra>
-
-            <default>0</default>
-            <comment></comment>
-          </field>
-        </fields>
-        <indexes>
-          <index>
-            <name>PRIMARY</name>
-            <type>PRIMARY</type>
-            <fields>
-              <field>id</field>
-            </fields>
-          </index>
-          <index>
-            <name>couple</name>
-            <type>UNIQUE</type>
-            <fields>
-              <field>ssel_id</field>
-              <field>usr_id</field>
-            </fields>
-          </index>
-        </indexes>
-        <engine>InnoDB</engine>
-      </table>
       <table name="tokens">
         <fields>
           <field>

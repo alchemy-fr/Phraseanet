@@ -786,11 +786,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $stmt->execute([':usr_id' => $this->get_id()]);
         $stmt->closeCursor();
 
-        $sql = 'DELETE FROM sselnew WHERE usr_id = :usr_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $this->get_id()]);
-        $stmt->closeCursor();
-
         $sql = 'DELETE FROM tokens WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->get_id()]);
