@@ -250,25 +250,6 @@ class FailureManagerTest extends \PhraseanetTestCase
             ->method('getClientIp')
             ->will($this->returnValue($ip));
 
-        for ($i = 0; $i < 10; $i++) {
-            $failure = new AuthFailure();
-            $failure->setIp($ip);
-            $failure->setUsername($username);
-            $failure->setLocked(false);
-            $failure->setCreated(new \DateTime('-3 months'));
-            self::$DI['app']['EM']->persist($failure);
-        }
-        for ($i = 0; $i < 2; $i++) {
-            $failure = new AuthFailure();
-            $failure->setIp($ip);
-            $failure->setUsername($username);
-            $failure->setLocked(false);
-            $failure->setCreated(new \DateTime('-1 months'));
-            self::$DI['app']['EM']->persist($failure);
-        }
-
-        self::$DI['app']['EM']->flush();
-
         $this->assertCount(10, self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\AuthFailure')
                 ->findOldFailures());
         $this->assertCount(12, self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\AuthFailure')

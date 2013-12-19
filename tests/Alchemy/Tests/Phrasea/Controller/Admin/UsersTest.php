@@ -63,13 +63,11 @@ class ControllerUsersTest extends \PhraseanetAuthenticatedWebTestCase
         $user = \User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
 
         $base_id = self::$DI['collection']->get_base_id();
-        $_POST['values'] = 'canreport_' . $base_id . '=1&manage_' . self::$DI['collection']->get_base_id() . '=1&canpush_' . self::$DI['collection']->get_base_id() . '=1';
-        $_POST['user_infos'] = "email=" .$username . "-lambda@email.com";
 
         self::$DI['client']->request('POST', '/admin/users/rights/apply/', [
             'users' => $user->get_id(),
             'values' => 'canreport_' . $base_id . '=1&manage_' . self::$DI['collection']->get_base_id() . '=1&canpush_' . self::$DI['collection']->get_base_id() . '=1',
-            'user_infos' => "user_infos[email]=" . $user->get_email(),
+            'user_infos' => "email=" . $username . "-lambda@email.com",
         ]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOK());

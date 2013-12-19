@@ -40,7 +40,7 @@ class RSSFeeds implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
 
-            return $app['feed.formatter-strategy']($format)->createResponse($feed, $page);
+            return $app['feed.formatter-strategy']($format)->createResponse($app, $feed, $page);
         })
             ->bind('feed_public')
             ->assert('id', '\d+')
@@ -55,7 +55,7 @@ class RSSFeeds implements ControllerProviderInterface
             $page = $page < 1 ? 1 : $page;
 
             return $app['feed.formatter-strategy']($format)
-                ->createResponse($token->getFeed(), $page, \User_Adapter::getInstance($token->getUsrId(), $app));
+                ->createResponse($app, $token->getFeed(), $page, \User_Adapter::getInstance($token->getUsrId(), $app));
         })
             ->bind('feed_user')
             ->assert('id', '\d+')
@@ -63,7 +63,6 @@ class RSSFeeds implements ControllerProviderInterface
 
         $controllers->get('/userfeed/aggregated/{token}/{format}/', function (Application $app, $token, $format) {
             $token = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')->findOneBy(["value" => $token]);
-
             $user = \User_Adapter::getInstance($token->getUsrId(), $app);
 
             $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['acl']->get($user));
@@ -75,7 +74,7 @@ class RSSFeeds implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
 
-            return $app['feed.formatter-strategy']($format)->createResponse($aggregate, $page, $user);
+            return $app['feed.formatter-strategy']($format)->createResponse($app, $aggregate, $page, $user);
         })
             ->bind('feed_user_aggregated')
             ->assert('format', '(rss|atom)');
@@ -87,7 +86,7 @@ class RSSFeeds implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
 
-            return $app['feed.formatter-strategy']($format)->createResponse($feed, $page);
+            return $app['feed.formatter-strategy']($format)->createResponse($app, $feed, $page);
         })
             ->bind('feed_public_aggregated')
             ->assert('format', '(rss|atom)');
@@ -99,7 +98,7 @@ class RSSFeeds implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
 
-            return $app['feed.formatter-strategy']('cooliris')->createResponse($feed, $page, null, 'Phraseanet', $app);
+            return $app['feed.formatter-strategy']('cooliris')->createResponse($app, $feed, $page, null, 'Phraseanet', $app);
         })
             ->bind('feed_public_cooliris');
 

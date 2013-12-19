@@ -79,9 +79,9 @@
                     {{ app['date-formatter'].getDate(feed.getCreatedOn()) }}
                 </td>
                 <td valign="center" align="center">
-                    {% if feed.getCollection() != null %}
-                        {{ feed.getCollection().get_databox().get_label(app['locale']) }} /
-                        {{ feed.getCollection().get_name() }}
+                    {% if feed.getCollection(app) != null %}
+                        {{ feed.getCollection(app).get_databox().get_label(app['locale']) }} /
+                        {{ feed.getCollection(app).get_name() }}
                     {% endif %}
                 </td>
                 <td valign="center" align="center">

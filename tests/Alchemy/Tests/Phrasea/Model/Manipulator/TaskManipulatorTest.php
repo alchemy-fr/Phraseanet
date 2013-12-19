@@ -16,13 +16,15 @@ class TaskManipulatorTest extends \PhraseanetTestCase
                 ->with(Notifier::MESSAGE_CREATE);
 
         $manipulator = new TaskManipulator(self::$DI['app']['EM'], $notifier, self::$DI['app']['translator']);
-        $this->assertCount(0, $this->findAllTasks());
+        $this->assertCount(2, $this->findAllTasks());
         $task = $manipulator->create('prout', 'bla bla', 'super settings', 0);
         $this->assertEquals('prout', $task->getName());
         $this->assertEquals('bla bla', $task->getJobId());
         $this->assertEquals('super settings', $task->getSettings());
         $this->assertEquals(0, $task->getPeriod());
-        $this->assertSame([$task], $this->findAllTasks());
+        $allTasks = $this->findAllTasks();
+        $this->assertCount(3, $allTasks);
+        $this->assertContains($task, $allTasks);
 
         return $task;
     }
@@ -39,7 +41,8 @@ class TaskManipulatorTest extends \PhraseanetTestCase
         $task->setName('new name');
         $this->assertSame($task, $manipulator->update($task));
         self::$DI['app']['EM']->clear();
-        $this->assertEquals([$task], $this->findAllTasks());
+        $updated = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
+        $this->assertEquals($task, $updated);
     }
 
     public function testDelete()
@@ -52,7 +55,7 @@ class TaskManipulatorTest extends \PhraseanetTestCase
         $manipulator = new TaskManipulator(self::$DI['app']['EM'], $notifier, self::$DI['app']['translator']);
         $task = $this->loadTask();
         $manipulator->delete($task);
-        $this->assertEquals([], $this->findAllTasks());
+        $this->assertNotContains($task, $this->findAllTasks());
     }
 
     public function testStart()
@@ -121,7 +124,7 @@ class TaskManipulatorTest extends \PhraseanetTestCase
 
         $tasks = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Task')->findAll();
         $this->assertSame('EmptyCollection', $task->getJobId());
-        $this->assertSame([$task], $tasks);
+        $this->assertContains($task, $tasks);
         $settings = simplexml_load_string($task->getSettings());
         $this->assertEquals(42, (int) $settings->bas_id);
     }
@@ -132,15 +135,7 @@ class TaskManipulatorTest extends \PhraseanetTestCase
 
     private function loadTask()
     {
-        $task = new Task();
-        $task
-            ->setName('test')
-            ->setJobId('SuperSpace');
-
-        self::$DI['app']['EM']->persist($task);
-        self::$DI['app']['EM']->flush();
-
-        return $task;
+        return self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
     }
 
     private function createNotifierMock()

@@ -15,7 +15,7 @@ class ControllerStoryTest extends \PhraseanetAuthenticatedWebTestCase
 
         $collection = array_shift($collections);
 
-        $crawler = self::$DI['client']->request(
+        self::$DI['client']->request(
             'POST', $route, [
             'base_id' => $collection->get_base_id(),
             'name'    => 'test story'
@@ -32,7 +32,7 @@ class ControllerStoryTest extends \PhraseanetAuthenticatedWebTestCase
 
         $count = $query->getSingleScalarResult();
 
-        $this->assertEquals(1, $count);
+        $this->assertEquals(2, $count);
     }
 
     public function testRootPostJSON()

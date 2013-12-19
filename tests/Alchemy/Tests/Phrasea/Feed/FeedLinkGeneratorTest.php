@@ -10,17 +10,17 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
     /**
      * @dataProvider provideGenerationData
      */
-    public function testGenerate($expected, $format, $feed, $user, $page, $renew, $alreadyCreated)
+    public function testGenerate($expected, $format, $page, $renew, $alreadyCreated)
     {
-        self::$DI['app']['EM']->persist($feed);
-        self::$DI['app']['EM']->flush();
+        $user = self::$DI['user'];
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
 
         $generator = $this->getMockBuilder('Symfony\Component\Routing\Generator\UrlGenerator')
             ->disableOriginalConstructor()
             ->getMock();
 
         if ($alreadyCreated) {
-            $token = $this->insertOneFeedToken($feed, $user);
+            $token = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\FeedToken', 1);
             $tokenValue = $token->getValue();
         }
 
@@ -43,10 +43,10 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
         $this->assertSame($expected, $link->getUri());
         if ($format == "atom") {
             $this->assertSame("application/atom+xml", $link->getMimetype());
-            $this->assertSame("Title - Atom", $link->getTitle());
+            $this->assertSame("Feed test, YOLO! - Atom", $link->getTitle());
         } elseif ($format == "rss") {
             $this->assertSame("application/rss+xml", $link->getMimetype());
-            $this->assertSame("Title - RSS", $link->getTitle());
+            $this->assertSame("Feed test, YOLO! - RSS", $link->getTitle());
         }
 
         if ($alreadyCreated) {
@@ -93,20 +93,14 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
                 ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
                 ->findBy(['value' => $capture['token']]));
         }
-        $token = self::$DI['app']['EM']
-            ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
-            ->findOneBy(['usrId' => $user->get_id(), 'feed' => $feed->getId()]);
-        self::$DI['app']['EM']->remove($token);
-        self::$DI['app']['EM']->flush();
     }
 
     /**
      * @dataProvider provideGenerationDataPublic
      */
-    public function testGeneratePublic($expected, $format, $feed, $page)
+    public function testGeneratePublic($expected, $format, $page)
     {
-        self::$DI['app']['EM']->persist($feed);
-        self::$DI['app']['EM']->flush();
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
 
         $generator = $this->getMockBuilder('Symfony\Component\Routing\Generator\UrlGenerator')
             ->disableOriginalConstructor()
@@ -131,10 +125,10 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
         $this->assertSame($expected, $link->getUri());
         if ($format == "atom") {
             $this->assertSame("application/atom+xml", $link->getMimetype());
-            $this->assertSame("Title - Atom", $link->getTitle());
+            $this->assertSame("Feed test, YOLO! - Atom", $link->getTitle());
         } elseif ($format == "rss") {
             $this->assertSame("application/rss+xml", $link->getMimetype());
-            $this->assertSame("Title - RSS", $link->getTitle());
+            $this->assertSame("Feed test, YOLO! - RSS", $link->getTitle());
         }
 
         if (null !== $page) {
@@ -146,47 +140,33 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
 
     public function provideGenerationData()
     {
-        $user = $this->getMockBuilder('User_Adapter')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $user->expects($this->any())
-            ->method('get_id')
-            ->will($this->returnValue(42));
-
-        $feed = new \Alchemy\Phrasea\Model\Entities\Feed();
-        $feed->setTitle('Title');
-
         return [
-            ['doliprane', 'atom', $feed, $user, null, false, false],
-            ['doliprane', 'atom', $feed, $user, null, false, true],
-            ['doliprane', 'atom', $feed, $user, null, true, false],
-            ['doliprane', 'atom', $feed, $user, null, true, true],
-            ['doliprane', 'atom', $feed, $user, 1, false, false],
-            ['doliprane', 'atom', $feed, $user, 1, false, true],
-            ['doliprane', 'atom', $feed, $user, 1, true, false],
-            ['doliprane', 'atom', $feed, $user, 1, true, true],
-            ['doliprane', 'rss', $feed, $user, null, false, false],
-            ['doliprane', 'rss', $feed, $user, null, false, true],
-            ['doliprane', 'rss', $feed, $user, null, true, false],
-            ['doliprane', 'rss', $feed, $user, null, true, true],
-            ['doliprane', 'rss', $feed, $user, 1, false, false],
-            ['doliprane', 'rss', $feed, $user, 1, false, true],
-            ['doliprane', 'rss', $feed, $user, 1, true, false],
-            ['doliprane', 'rss', $feed, $user, 1, true, true],
+            ['doliprane', 'atom', null, false, false],
+            ['doliprane', 'atom', null, false, true],
+            ['doliprane', 'atom', null, true, false],
+            ['doliprane', 'atom', null, true, true],
+            ['doliprane', 'atom', 1, false, false],
+            ['doliprane', 'atom', 1, false, true],
+            ['doliprane', 'atom', 1, true, false],
+            ['doliprane', 'atom', 1, true, true],
+            ['doliprane', 'rss', null, false, false],
+            ['doliprane', 'rss', null, false, true],
+            ['doliprane', 'rss', null, true, false],
+            ['doliprane', 'rss', null, true, true],
+            ['doliprane', 'rss', 1, false, false],
+            ['doliprane', 'rss', 1, false, true],
+            ['doliprane', 'rss', 1, true, false],
+            ['doliprane', 'rss', 1, true, true],
         ];
     }
 
     public function provideGenerationDataPublic()
     {
-        $feed = new \Alchemy\Phrasea\Model\Entities\Feed();
-        $feed->setTitle('Title');
-
         return [
-            ['doliprane', 'atom', $feed, null],
-            ['doliprane', 'atom', $feed, 1],
-            ['doliprane', 'rss', $feed, null],
-            ['doliprane', 'rss', $feed, 1]
+            ['doliprane', 'atom', null],
+            ['doliprane', 'atom', 1],
+            ['doliprane', 'rss', null],
+            ['doliprane', 'rss', 1]
         ];
     }
 }

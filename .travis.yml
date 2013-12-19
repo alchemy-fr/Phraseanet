@@ -61,5 +61,7 @@ script:
               bin/setup system:install --email=test@phraseanet.com --password=test --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;
             fi"
   - php hudson/cleanupSubdefs.php
+#sqlite db generation should occur once Phraseanet is up to date :
+  - bin/developer phraseanet:regenerate-sqlite
   - grunt test
   - bin/phpunit

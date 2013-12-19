@@ -42,13 +42,8 @@ class BridgeApplication extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testManager()
     {
-        $accounts = \Bridge_Account::get_accounts_by_user(self::$DI['app'], self::$DI['user']);
-        $usr_id = self::$DI['user']->get_id();
-
-        $basket = $this->insertOneBasket();
-
-        $crawler = self::$DI['client']->request('POST', '/prod/bridge/manager/', ['ssel'       => $basket->getId()]);
-        $pageContent = self::$DI['client']->getResponse()->getContent();
+        self::$DI['client']->request('POST', '/prod/bridge/manager/', ['ssel' => 1]);
+        self::$DI['client']->getResponse()->getContent();
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 

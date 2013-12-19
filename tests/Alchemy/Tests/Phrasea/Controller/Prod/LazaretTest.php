@@ -311,7 +311,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testDenyElement()
     {
-        $lazaretFile = $this->insertOneLazaretFile();
+        $lazaretFile = self::$DI['lazaret_1'];
 
         $route = sprintf('/prod/lazaret/%s/deny/', $lazaretFile->getId());
 
@@ -336,8 +336,6 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testEmptyLazaret()
     {
-        $lazaretFile = $this->insertOneLazaretFile();
-
         $route = sprintf('/prod/lazaret/empty/');
         self::$DI['client']->request('POST', $route);
 
@@ -353,8 +351,6 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $count = $query->getSingleScalarResult();
 
         $this->assertEquals(0, $count);
-
-        $lazaretFile = null;
     }
 
     /**

@@ -17,6 +17,8 @@ use Alchemy\Phrasea\Feed\Link\FeedLink;
 use Alchemy\Phrasea\Feed\Link\LinkGeneratorCollection;
 use Alchemy\Phrasea\Feed\RSS\FeedRSSImage;
 use Symfony\Component\HttpFoundation\Response;
+use Alchemy\Phrasea\Model\Entities\FeedEntry;
+use Alchemy\Phrasea\Feed\Link\FeedLinkGenerator;
 
 class RssFormatter extends FeedFormatterAbstract implements FeedFormatterInterface
 {
@@ -35,7 +37,7 @@ class RssFormatter extends FeedFormatterAbstract implements FeedFormatterInterfa
     /**
      * {@inheritdoc}
      */
-    public function createResponse(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', Application $app = null)
+    public function createResponse(Application $app, FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet')
     {
         $content = $this->format($feed, $page, $user, $generator, $app);
         $response = new Response($content, 200, ['Content-Type' => 'application/rss+xml']);
@@ -165,17 +167,22 @@ class RssFormatter extends FeedFormatterAbstract implements FeedFormatterInterfa
         }
 
         foreach ($feed->getEntries() as $item) {
-            $this->addItem($doc, $channel, $item);
+            $this->addItem($app, $doc, $channel, $item);
         }
 
         return $doc->saveXML();
     }
 
-    protected function addItem(\DOMDocument $document, \DOMNode $node, FeedEntry $entry)
+    protected function addItem(Application $app, \DOMDocument $document, \DOMNode $node, FeedEntry $entry)
     {
         $item = $this->addTag($document, $node, 'item');
+        $feed = $entry->getFeed();
 
-        $link = $entry->getLink();
+        if ($feed->isPublic()) {
+            $link = $app['feed.link-generator-collection']->generatePublic($feed, FeedLinkGenerator::FORMAT_RSS);
+        } else {
+            $link = $app['feed.link-generator-collection']->generate($feed, $app['authentication']->getUser(), FeedLinkGenerator::FORMAT_RSS);
+        }
 
         $this->addTag($document, $item, 'title', $entry->getTitle());
         $this->addTag($document, $item, 'description', $entry->getSubtitle());
@@ -202,7 +209,7 @@ class RssFormatter extends FeedFormatterAbstract implements FeedFormatterInterfa
          *
          */
         foreach ($entry->getItems() as $content) {
-            $this->addContent($document, $item, $entry, $content);
+            $this->addContent($app, $document, $item, $content);
         }
 
         return $item;

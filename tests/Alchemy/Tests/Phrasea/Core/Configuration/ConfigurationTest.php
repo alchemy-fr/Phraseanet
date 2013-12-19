@@ -280,7 +280,7 @@ class ConfigurationTest extends \PhraseanetTestCase
         $compiler->expects($this->once())
             ->method('compile')
             ->with(['main' => 'tiptop'])
-            ->will($this->returnValue('<?php return array("main" => "tiptop");'));
+            ->will($this->returnValue('<?php return ["main" => "tiptop"];'));
 
         $yaml = $this->getMockBuilder('Symfony\Component\Yaml\Yaml')
             ->disableOriginalConstructor()

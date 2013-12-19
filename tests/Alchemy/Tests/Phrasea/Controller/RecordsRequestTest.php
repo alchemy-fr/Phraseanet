@@ -11,8 +11,8 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
     {
         $request = new Request([
                 'lst' => implode(';', [
-                    self::$DI['record_24']->get_serialize_key(),
-                    self::$DI['record_24']->get_serialize_key(),
+                    self::$DI['record_3']->get_serialize_key(),
+                    self::$DI['record_3']->get_serialize_key(),
                     self::$DI['record_2']->get_serialize_key(),
                     self::$DI['record_story_2']->get_serialize_key(),
                     self::$DI['record_no_access']->get_serialize_key(),
@@ -39,7 +39,7 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
         $exploded = explode(';', $serialized);
 
         $this->assertEquals(3, count($exploded));
-        $this->assertContains(self::$DI['record_24']->get_serialize_key(), $exploded);
+        $this->assertContains(self::$DI['record_3']->get_serialize_key(), $exploded);
         $this->assertContains(self::$DI['record_2']->get_serialize_key(), $exploded);
         $this->assertContains(self::$DI['record_story_2']->get_serialize_key(), $exploded);
         $this->assertNotContains(self::$DI['record_no_access']->get_serialize_key(), $exploded);
@@ -127,8 +127,8 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
     {
         $request = new Request([
                 'lst' => implode(';', [
-                    self::$DI['record_24']->get_serialize_key(),
-                    self::$DI['record_24']->get_serialize_key(),
+                    self::$DI['record_3']->get_serialize_key(),
+                    self::$DI['record_3']->get_serialize_key(),
                     self::$DI['record_2']->get_serialize_key(),
                     self::$DI['record_story_2']->get_serialize_key(),
                     self::$DI['record_no_access']->get_serialize_key(),
@@ -150,7 +150,7 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
 
         $this->assertEquals(2, count($exploded));
         $this->assertContains(self::$DI['record_2']->get_serialize_key(), $exploded);
-        $this->assertContains(self::$DI['record_24']->get_serialize_key(), $exploded);
+        $this->assertContains(self::$DI['record_3']->get_serialize_key(), $exploded);
         $this->assertNotContains(self::$DI['record_story_2']->get_serialize_key(), $exploded);
         $this->assertNotContains(self::$DI['record_no_access']->get_serialize_key(), $exploded);
         $this->assertNotContains(self::$DI['record_no_access_by_status']->get_serialize_key(), $exploded);
@@ -158,7 +158,7 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
 
     public function testSimpleBasket()
     {
-        $basketElement = $this->insertOneBasketElement();
+        $basketElement = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\BasketElement', 1);
         $request = new Request(['ssel' => $basketElement->getBasket()->getId()]);
 
         $records = RecordsRequest::fromRequest(self::$DI['app'], $request);
@@ -175,34 +175,6 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
 
         $this->assertEquals(1, count($exploded));
         $this->assertContains($basketElement->getRecord(self::$DI['app'])->get_serialize_key(), $exploded);
-    }
-
-    public function getBasket()
-    {
-        $elements = [
-            self::$DI['record_24'],
-            self::$DI['record_2'],
-            self::$DI['record_no_access'],
-            self::$DI['record_no_access_by_status'],
-        ];
-
-        $basket = new \Alchemy\Phrasea\Model\Entities\Basket();
-        $basket->setName('test');
-        $basket->setOwner(self::$DI['app']['authentication']->getUser());
-
-        self::$DI['app']['EM']->persist($basket);
-        self::$DI['app']['EM']->flush();
-
-        foreach ($elements as $element) {
-            $basket_element = new \Alchemy\Phrasea\Model\Entities\BasketElement();
-            $basket_element->setRecord($element);
-            $basket_element->setBasket($basket);
-            $basket->addElement($basket_element);
-            self::$DI['app']['EM']->persist($basket_element);
-            self::$DI['app']['EM']->flush();
-        }
-
-        return $basket;
     }
 
     public function testSimpleStory()
@@ -230,7 +202,6 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
     {
         $story = $this->getStoryWZ();
         $request = new Request(['story' => $story->getId()]);
-
         $records = RecordsRequest::fromRequest(self::$DI['app'], $request, true);
 
         $this->assertEquals(0, count($records));
@@ -269,13 +240,6 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
 
     private function getStoryWZ()
     {
-        $story = new \Alchemy\Phrasea\Model\Entities\StoryWZ();
-        $story->setRecord(self::$DI['record_story_2']);
-        $story->setUser(self::$DI['app']['authentication']->getUser());
-
-        self::$DI['app']['EM']->persist($story);
-        self::$DI['app']['EM']->flush();
-
-        return $story;
+        return self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\StoryWZ', 1);
     }
 }

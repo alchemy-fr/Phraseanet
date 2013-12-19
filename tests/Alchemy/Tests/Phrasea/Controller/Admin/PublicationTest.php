@@ -17,7 +17,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetAuthenticatedWebTest
 
         foreach ($feeds as $feed) {
             $this->assertRegExp('/\/admin\/publications\/feed\/' . $feed->getId() . '/', $pageContent);
-            if ($feed->getCollection() != null) {
+            if ($feed->getCollection(self::$DI['app']) != null) {
                 $this->assertRegExp('/' . $feed->getCollection()->get_label(self::$DI['app']['locale']) . '/', $pageContent);
             }
             if ($feed->isOwner(self::$DI['user'])) {
@@ -42,17 +42,16 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetAuthenticatedWebTest
 
     public function testGetFeed()
     {
-        $feed = $this->insertOneFeed(self::$DI['user'], "salut");
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
         $crawler = self::$DI['client']->request('GET', '/admin/publications/feed/' . $feed->getId() . '/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals(1, $crawler->filterXPath("//form[@action='/admin/publications/feed/" . $feed->getId() . "/update/']")->count());
-        $this->assertEquals(1, $crawler->filterXPath("//input[@value='salut']")->count());
+        $this->assertEquals(1, $crawler->filterXPath("//input[@value='Feed test, YOLO!']")->count());
     }
 
     public function testUpdatedFeedException()
     {
-
-        $feed = $this->insertOneFeed(self::$DI['user']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
 
         self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/update/", [
             'title'    => 'test'
@@ -76,7 +75,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetAuthenticatedWebTest
 
     public function testUpdatedFeedOwner()
     {
-        $feed = $this->insertOneFeed(self::$DI['user']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
 
         self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/update/", [
             'title'    => 'test'
@@ -109,7 +108,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetAuthenticatedWebTest
 
     public function testIconUploadErrorOwner()
     {
-        $feed = $this->insertOneFeed(self::$DI['user_alt1']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 3);
 
         self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/iconupload/", [], [], ['HTTP_ACCEPT' => 'application/json']);
 
@@ -120,7 +119,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetAuthenticatedWebTest
 
     public function testIconUploadErrorFileData()
     {
-        $feed = $this->insertOneFeed(self::$DI['user']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
 
         self::$DI['client']->request(
             "POST"
@@ -138,7 +137,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetAuthenticatedWebTest
 
     public function testIconUploadErrorFileType()
     {
-        $feed = $this->insertOneFeed(self::$DI['user']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
 
         self::$DI['client']->request(
             "POST"
@@ -156,7 +155,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetAuthenticatedWebTest
 
     public function testIconUpload()
     {
-        $feed = $this->insertOneFeed(self::$DI['user']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
 
         $files = [
             'files' => [
@@ -184,7 +183,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetAuthenticatedWebTest
 
     public function testAddPublisher()
     {
-        $feed = $this->insertOneFeed(self::$DI['user']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
 
         self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/addpublisher/", [
             'usr_id' => self::$DI['user_alt1']->get_id()
@@ -206,7 +205,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetAuthenticatedWebTest
 
     public function testAddPublisherException()
     {
-        $feed = $this->insertOneFeed(self::$DI['user']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
 
         self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/addpublisher/");
 
@@ -222,7 +221,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetAuthenticatedWebTest
 
     public function testRemovePublisher()
     {
-        $feed = $this->insertOneFeed(self::$DI['user']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
 
         self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/removepublisher/", [
             'usr_id' => self::$DI['user_alt1']->get_id()
@@ -244,7 +243,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetAuthenticatedWebTest
 
     public function testRemovePublisherException()
     {
-        $feed = $this->insertOneFeed(self::$DI['user']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
 
         self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/removepublisher/");
 
@@ -262,7 +261,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetAuthenticatedWebTest
 
     public function testDeleteFeed()
     {
-        $feed = $this->insertOneFeed(self::$DI['user']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
 
         self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/delete/");
 

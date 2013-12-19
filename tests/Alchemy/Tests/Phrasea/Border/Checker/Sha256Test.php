@@ -38,8 +38,7 @@ class Sha256Test extends \PhraseanetTestCase
      */
     public function testCheck()
     {
-        $session = new \Alchemy\Phrasea\Model\Entities\LazaretSession();
-        self::$DI['app']['EM']->persist($session);
+        $session = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\LazaretSession', 1);
 
         self::$DI['app']['border-manager']->process($session, File::buildFromPathfile($this->media->getFile()->getPathname(), self::$DI['collection'], self::$DI['app']), null, Manager::FORCE_RECORD);
 
@@ -48,13 +47,11 @@ class Sha256Test extends \PhraseanetTestCase
         $mock
             ->expects($this->once())
             ->method('getSha256')
-            ->will($this->returnValue($this->media->getHash('sha256', __DIR__ . '/../../../../../files/test001.jpg')))
+            ->will($this->returnValue('7fad283de349b903c850548cda65cf2d86d24c4e3856cdc2b97e47430494b8c8'))
         ;
 
         $response = $this->object->check(self::$DI['app']['EM'], $mock);
-
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
-
         $this->assertFalse($response->isOk());
     }
 

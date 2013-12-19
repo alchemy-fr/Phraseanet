@@ -58,13 +58,10 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDatafilesRouteNotAuthenticatedIsOkInPublicFeed()
     {
-        $this->insertOneFeedItem(self::$DI['user'], true, 1, self::$DI['record_1']);
-        self::$DI['record_1']->move_to_collection(self::$DI['collection_no_access'], self::$DI['app']['phraseanet.appbox']);
-
-        self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
-
+        self::$DI['record_5']->move_to_collection(self::$DI['collection_no_access'], self::$DI['app']['phraseanet.appbox']);
+        self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_5']->get_sbas_id() . '/' . self::$DI['record_5']->get_record_id() . '/preview/');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
-        self::$DI['record_1']->move_to_collection(self::$DI['collection'], self::$DI['app']['phraseanet.appbox']);
+        self::$DI['record_5']->move_to_collection(self::$DI['collection'], self::$DI['app']['phraseanet.appbox']);
     }
 
     public function testDatafilesRouteNotAuthenticatedUnknownSubdef()
@@ -211,7 +208,9 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPermalinkRouteNotAuthenticatedIsOkInPublicFeed()
     {
-        $item = $this->insertOneFeedItem(self::$DI['user'], true);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 2);
+        $entry = $feed->getEntries()->first();
+        $item = $entry->getItems()->first();
 
         self::$DI['app']['authentication']->closeAccount();
         self::$DI['client']->request('GET', '/permalink/v1/' . $item->getRecord(self::$DI['app'])->get_sbas_id() . '/' . $item->getRecord(self::$DI['app'])->get_record_id() . '/preview/');

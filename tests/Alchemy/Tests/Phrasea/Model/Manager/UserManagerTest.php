@@ -28,9 +28,9 @@ class UserManagerTest extends \PhraseanetTestCase
 
     public function testUpdateUser()
     {
-        $template = self::$DI['app']['manipulator.user']->createUser('template', 'password');
+        $template = self::$DI['app']['manipulator.user']->createUser('template'.uniqid(), 'password');
         self::$DI['app']['model.user-manager']->update($template);
-        $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
+        $user = self::$DI['app']['manipulator.user']->createUser('login'.uniqid(), 'password');
         $user->setModelOf($template);
         self::$DI['app']['model.user-manager']->update($user);
         $this->assertNotNull($user->getPassword());

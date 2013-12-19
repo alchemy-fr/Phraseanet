@@ -337,17 +337,9 @@ class API_V1_adapterTest extends \PhraseanetAuthenticatedTestCase
 
     public function testGet_record_related()
     {
-
-        $basketElement = $this->insertOneBasketElement();
-        $basketElement->setRecord(self::$DI['record_1']);
-
-        $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
-
-        if (!$story->hasChild(self::$DI['record_1'])) {
-            $story->appendChild(self::$DI['record_1']);
-        }
-
-        self::$DI['app']['EM']->flush($basketElement);
+        $basketElement = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\BasketElement', 1);
+        $story = self::$DI['record_story_1'];
+        $story->appendChild(self::$DI['record_1']);
 
         $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->get_record_related($request, self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());
@@ -555,28 +547,13 @@ class API_V1_adapterTest extends \PhraseanetAuthenticatedTestCase
         $response = json_decode($result->format(), true);
         $this->assertArrayHasKey('basket', $response['response']);
 
-        $em = self::$DI['app']['EM'];
-
         $basket = self::$DI['app']['converter.basket']->convert($response['response']['basket']['basket_id']);
         self::$DI['app']['acl.basket']->isOwner($basket, self::$DI['app']['authentication']->getUser());
-
-        $em->remove($basket);
-        $em->flush();
     }
 
     public function testDelete_basket()
     {
-        $usr_id = self::$DI['app']['authentication']->getUser()->get_id();
-        $user = User_Adapter::getInstance($usr_id, self::$DI['app']);
-
-        $em = self::$DI['app']['EM'];
-
-        $Basket = new Alchemy\Phrasea\Model\Entities\Basket();
-        $Basket->setName('Delete test');
-        $Basket->setOwner($user);
-
-        $em->persist($Basket);
-        $em->flush();
+        $Basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
 
         $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->delete_basket($request, $Basket);
@@ -584,20 +561,13 @@ class API_V1_adapterTest extends \PhraseanetAuthenticatedTestCase
         $this->assertEquals('application/json', $result->get_content_type());
         $this->assertTrue(is_array(json_decode($result->format(), true)));
 
-        try {
-            $basket = self::$DI['app']['converter.basket']->convert($Basket->getId());
-            self::$DI['app']['acl.basket']->isOwner($basket, $user);
-            $this->fail('An exception should have been raised');
-        } catch (\Exception $e) {
-
-        }
+        $this->setExpectedException('Symfony\Component\HttpKernel\Exception\NotFoundHttpException');
+        self::$DI['app']['converter.basket']->convert($Basket->getId());
     }
 
     public function testGet_basket()
     {
-        $usr_id = self::$DI['app']['authentication']->getUser()->get_id();
-
-        $basket = $this->insertOneBasket();
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
 
         $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->get_basket($request, $basket);
@@ -608,9 +578,7 @@ class API_V1_adapterTest extends \PhraseanetAuthenticatedTestCase
 
     public function testSet_basket_title()
     {
-        $usr_id = self::$DI['app']['authentication']->getUser()->get_id();
-
-        $basket = $this->insertOneBasket();
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
 
         $request = new Request([], [], ['name' => 'PROUTO'], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->set_basket_title($request, $basket);
@@ -627,9 +595,7 @@ class API_V1_adapterTest extends \PhraseanetAuthenticatedTestCase
 
     public function testSet_basket_description()
     {
-        $usr_id = self::$DI['app']['authentication']->getUser()->get_id();
-
-        $basket = $this->insertOneBasket();
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
 
         $request = new Request([], [], ['description' => 'une belle description'], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->set_basket_description($request, $basket);
@@ -647,7 +613,7 @@ class API_V1_adapterTest extends \PhraseanetAuthenticatedTestCase
     public function testSearch_publications()
     {
         $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
-        $feed = $this->insertOneFeed(self::$DI['user']);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
         $result = $this->object->search_publications($request, self::$DI['user']);
         $this->checkResponseField($result, "feeds", 'array');
     }
@@ -668,8 +634,6 @@ class API_V1_adapterTest extends \PhraseanetAuthenticatedTestCase
 
         $date = new DateTime();
         $request = new Request([], [], [], [], [], ['HTTP_Accept'    => 'application/json']);
-        $feedItem = $this->insertOneFeedItem(self::$DI['user']);
-        $feed = $feedItem->getEntry()->getFeed();
 
         $feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
         foreach ($feeds as $feed) {

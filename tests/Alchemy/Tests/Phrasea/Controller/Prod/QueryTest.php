@@ -31,7 +31,7 @@ class QueryTest extends \PhraseanetAuthenticatedWebTestCase
     public function testQueryAnswerTrain()
     {
         $this->authenticate(self::$DI['app']);
-        self::$DI['record_24'];
+        self::$DI['record_2'];
 
         $options = new SearchEngineOptions();
         $options->onCollections(self::$DI['app']['acl']->get(self::$DI['app']['authentication']->getUser())->get_granted_base());

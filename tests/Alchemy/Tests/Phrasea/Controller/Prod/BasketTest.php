@@ -38,18 +38,21 @@ class ControllerBasketTest extends \PhraseanetAuthenticatedWebTestCase
         $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM \Alchemy\Phrasea\Model\Entities\Basket b');
         $count = $query->getSingleScalarResult();
 
-        $this->assertEquals(1, $count);
+        $this->assertEquals(5, $count);
         $this->assertEquals(302, $response->getStatusCode());
 
         $query = self::$DI['app']['EM']->createQuery('SELECT b FROM \Alchemy\Phrasea\Model\Entities\Basket b');
         $result = $query->getResult();
 
-        $basket = array_shift($result);
+        $basket = array_pop($result);
         $this->assertEquals(2, $basket->getElements()->count());
     }
 
     public function testRootPostJSON()
     {
+        $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM \Alchemy\Phrasea\Model\Entities\Basket b');
+        $count = $query->getSingleScalarResult();
+
         $route = '/prod/baskets/';
 
         self::$DI['client']->request(
@@ -69,10 +72,7 @@ class ControllerBasketTest extends \PhraseanetAuthenticatedWebTestCase
 
         $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM \Alchemy\Phrasea\Model\Entities\Basket b');
 
-        $count = $query->getSingleScalarResult();
-
-        $this->assertEquals(1, $count);
-
+        $this->assertEquals($count + 1, $query->getSingleScalarResult());
         $this->assertEquals(200, $response->getStatusCode());
     }
 
@@ -97,8 +97,7 @@ class ControllerBasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testBasketGet()
     {
-        $basket = $this->insertOneBasket();
-        $route = sprintf('/prod/baskets/%s/', $basket->getId());
+        $route = '/prod/baskets/1/';
         self::$DI['client']->request('GET', $route);
         $response = self::$DI['client']->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
@@ -106,7 +105,7 @@ class ControllerBasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testBasketGetAccessDenied()
     {
-        $basket = $this->insertOneBasket(self::$DI['user_alt1']);
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 3);
         $route = sprintf('/prod/baskets/%s/', $basket->getId());
         self::$DI['client']->request('GET', $route);
         $response = self::$DI['client']->getResponse();
@@ -115,7 +114,7 @@ class ControllerBasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testBasketDeleteElementPost()
     {
-        $basketElement = $this->insertOneBasketElement();
+        $basketElement = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\BasketElement', 1);
         $basket = $basketElement->getBasket();
 
         $this->assertEquals(1, $basket->getElements()->count());
@@ -132,19 +131,8 @@ class ControllerBasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testBasketDeldeteElementPostJSON()
     {
-        $basket = $this->insertOneBasket();
-
-        $record = self::$DI['record_1'];
-
-        $basket_element = new \Alchemy\Phrasea\Model\Entities\BasketElement();
-        $basket_element->setBasket($basket);
-        $basket_element->setRecord($record);
-        $basket_element->setLastInBasket();
-
-        $basket->addElement($basket_element);
-
-        self::$DI['app']['EM']->persist($basket);
-        self::$DI['app']['EM']->flush();
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
+        $basket_element = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\BasketElement', 1);
 
         $route = sprintf(
             "/prod/baskets/%s/delete/%s/", $basket->getId(), $basket_element->getId()
@@ -163,7 +151,7 @@ class ControllerBasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testBasketDeletePostUnauthorized()
     {
-        $basket = $this->insertOneBasket(self::$DI['user_alt1']);
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 3);
         $route = sprintf('/prod/baskets/%s/delete/', $basket->getId());
         self::$DI['client']->request('POST', $route);
         $response = self::$DI['client']->getResponse();
@@ -171,37 +159,34 @@ class ControllerBasketTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(403, $response->getStatusCode());
         $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM \Alchemy\Phrasea\Model\Entities\Basket b');
         $count = $query->getSingleScalarResult();
-        $this->assertEquals(1, $count);
+        $this->assertEquals(4, $count);
     }
 
     public function testBasketDeletePost()
     {
-        $basket = $this->insertOneBasket();
-        $route = sprintf('/prod/baskets/%s/delete/', $basket->getId());
+        $route = '/prod/baskets/1/delete/';
         self::$DI['client']->request('POST', $route);
         $response = self::$DI['client']->getResponse();
         $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM \Alchemy\Phrasea\Model\Entities\Basket b');
         $count = $query->getSingleScalarResult();
-        $this->assertEquals(0, $count);
+        $this->assertEquals(3, $count);
         $this->assertEquals(302, $response->getStatusCode());
     }
 
     public function testBasketDeletePostJSON()
     {
-        $basket = $this->insertOneBasket();
-        $route = sprintf('/prod/baskets/%s/delete/', $basket->getId());
+        $route = '/prod/baskets/1/delete/';
         self::$DI['client']->request('POST', $route, [], [], ["HTTP_ACCEPT" => "application/json"]);
         $response = self::$DI['client']->getResponse();
         $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM \Alchemy\Phrasea\Model\Entities\Basket b');
         $count = $query->getSingleScalarResult();
-        $this->assertEquals(0, $count);
+        $this->assertEquals(3, $count);
         $this->assertEquals(200, $response->getStatusCode());
     }
 
     public function testBasketUpdatePost()
     {
-        $basket = $this->insertOneBasket();
-
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
         $route = sprintf('/prod/baskets/%s/update/', $basket->getId());
 
         self::$DI['client']->request(
@@ -218,7 +203,7 @@ class ControllerBasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testBasketUpdatePostJSON()
     {
-        $basket = $this->insertOneBasket();
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
         $route = sprintf('/prod/baskets/%s/update/', $basket->getId());
 
         self::$DI['client']->request(
@@ -237,7 +222,7 @@ class ControllerBasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testReorderGet()
     {
-        $basket = $this->insertOneBasketEnv();
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 4);
 
         $route = sprintf("/prod/baskets/%s/reorder/", $basket->getId());
 
@@ -253,8 +238,7 @@ class ControllerBasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testBasketUpdateGet()
     {
-        $basket = $this->insertOneBasket();
-
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
         $route = sprintf('/prod/baskets/%s/update/', $basket->getId());
 
         $crawler = self::$DI['client']->request(
@@ -276,7 +260,7 @@ class ControllerBasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testBasketArchivedPost()
     {
-        $basket = $this->insertOneBasket();
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
         $route = sprintf('/prod/baskets/%s/archive/?archive=1', $basket->getId());
         self::$DI['client']->request('POST', $route);
         $this->assertTrue($basket->getArchived());
@@ -290,8 +274,7 @@ class ControllerBasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testBasketArchivedPostJSON()
     {
-        $basket = $this->insertOneBasket();
-
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
         $route = sprintf('/prod/baskets/%s/archive/?archive=1', $basket->getId());
 
         self::$DI['client']->request(
@@ -317,8 +300,7 @@ class ControllerBasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAddElementPost()
     {
-        $basket = $this->insertOneBasket();
-
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
         $route = sprintf('/prod/baskets/%s/addElements/', $basket->getId());
 
         $records = [
@@ -337,7 +319,7 @@ class ControllerBasketTest extends \PhraseanetAuthenticatedWebTestCase
         $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(302, $response->getStatusCode());
-        $this->assertEquals(2, $basket->getElements()->count());
+        $this->assertCount(2, $basket->getElements());
     }
 
     public function testAddElementToValidationPost()
@@ -345,37 +327,13 @@ class ControllerBasketTest extends \PhraseanetAuthenticatedWebTestCase
         $datas = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\ValidationData')->findAll();
         $countDatas = count($datas);
 
-        $basket = $this->insertOneBasket();
-
-        $validationSession = new \Alchemy\Phrasea\Model\Entities\ValidationSession();
-
-        $expires = new \DateTime();
-        $expires->modify('+1 week');
-
-        $validationSession->setExpires($expires);
-        $validationSession->setInitiator(self::$DI['user']);
-
-        self::$DI['app']['EM']->persist($validationSession);
-
-        $basket->setValidation($validationSession);
-
-        $validationSession->setBasket($basket);
-
-        $validationParticipant = new \Alchemy\Phrasea\Model\Entities\ValidationParticipant();
-        $validationParticipant->setSession($validationSession);
-        $validationParticipant->setUser(self::$DI['user_alt1']);
-
-        self::$DI['app']['EM']->persist($validationParticipant);
-
-        $validationSession->addParticipant($validationParticipant);
-
-        self::$DI['app']['EM']->flush();
-
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 4);
+        $this->assertCount(2, $basket->getElements());
         $route = sprintf('/prod/baskets/%s/addElements/', $basket->getId());
 
         $records = [
-            self::$DI['record_1']->get_serialize_key(),
-            self::$DI['record_2']->get_serialize_key(),
+            self::$DI['record_3']->get_serialize_key(),
+            self::$DI['record_4']->get_serialize_key(),
             ' ',
             '42',
             'abhak',
@@ -389,16 +347,15 @@ class ControllerBasketTest extends \PhraseanetAuthenticatedWebTestCase
         $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(302, $response->getStatusCode());
-        $this->assertEquals(2, $basket->getElements()->count());
+        $this->assertCount(4, $basket->getElements());
         $datas = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\ValidationData')->findAll();
         $this->assertTrue($countDatas < count($datas), 'assert that ' . count($datas) . ' > ' . $countDatas);
     }
 
     public function testAddElementPostJSON()
     {
-        $basket = $this->insertOneBasket();
-
-        $route = sprintf('/prod/baskets/%s/addElements/', $basket->getId());
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
+        $route = '/prod/baskets/1/addElements/';
 
         $records = [
             self::$DI['record_1']->get_serialize_key(),
@@ -407,28 +364,18 @@ class ControllerBasketTest extends \PhraseanetAuthenticatedWebTestCase
 
         $lst = implode(';', $records);
 
-        self::$DI['client']->request(
-            'POST', $route, [
-            'lst' => $lst
-            ], [], [
-            "HTTP_ACCEPT" => "application/json"
-            ]
-        );
-
+        self::$DI['client']->request('POST', $route, ['lst' => $lst], [], ["HTTP_ACCEPT" => "application/json"]);
         $response = self::$DI['client']->getResponse();
-
         $this->assertEquals(200, $response->getStatusCode());
-
         $this->assertEquals(2, $basket->getElements()->count());
     }
 
     public function testRouteStealElements()
     {
-        $BasketElement = $this->insertOneBasketElement();
+        $BasketElement = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\BasketElement', 1);
 
         $Basket_1 = $BasketElement->getBasket();
-
-        $Basket_2 = $this->insertOneBasket();
+        $Basket_2 = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 2);
 
         $route = sprintf('/prod/baskets/%s/stealElements/', $Basket_2->getId());
 
@@ -448,11 +395,11 @@ class ControllerBasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRouteStealElementsJson()
     {
-        $BasketElement = $this->insertOneBasketElement();
+        $BasketElement = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\BasketElement', 1);
 
         $Basket_1 = $BasketElement->getBasket();
 
-        $Basket_2 = $this->insertOneBasket();
+        $Basket_2 = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 2);
 
         $route = sprintf('/prod/baskets/%s/stealElements/', $Basket_2->getId());
 
@@ -481,7 +428,7 @@ class ControllerBasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRemoveBasket()
     {
-        $basket = $this->insertOneBasketEnv();
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 4);
 
         $route = sprintf('/prod/baskets/%s/delete/', $basket->getId());
         self::$DI['client']->request('POST', $route, [], [], ["HTTP_ACCEPT" => "application/json"]);
@@ -500,12 +447,12 @@ class ControllerBasketTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(0, $query->getSingleScalarResult());
 
         $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM \Alchemy\Phrasea\Model\Entities\BasketElement b');
-        $this->assertEquals(0, $query->getSingleScalarResult());
+        $this->assertEquals(1, $query->getSingleScalarResult());
 
         $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(v.id) FROM \Alchemy\Phrasea\Model\Entities\ValidationSession v');
         $this->assertEquals(0, $query->getSingleScalarResult());
 
         $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM \Alchemy\Phrasea\Model\Entities\Basket b');
-        $this->assertEquals(0, $query->getSingleScalarResult());
+        $this->assertEquals(3, $query->getSingleScalarResult());
     }
 }

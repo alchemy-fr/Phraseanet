@@ -27,7 +27,7 @@ class RssFeedTest extends \PhraseanetWebTestCase
 
     public function testPublicFeedAggregated()
     {
-        $this->insertOneFeed(self::$DI['user'], "test", true);
+        self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 2);
 
         self::$DI['client']->request('GET', '/feeds/aggregated/atom/');
         $response = self::$DI['client']->getResponse();
@@ -72,8 +72,7 @@ class RssFeedTest extends \PhraseanetWebTestCase
     public function testPublicFeed()
     {
         $this->authenticate(self::$DI['app']);
-
-        $feed = $this->insertOneFeed(self::$DI['user'], "test1", true);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 2);
 
         self::$DI['client']->request('GET', "/feeds/feed/" . $feed->getId() . "/atom/");
         $response = self::$DI['client']->getResponse();
@@ -86,10 +85,7 @@ class RssFeedTest extends \PhraseanetWebTestCase
 
     public function testUserFeedAggregated()
     {
-        $feed = $this->insertOneFeed(self::$DI['user']);
-
-        $token = $this->insertOneAggregateToken(self::$DI['user']);
-
+        $token = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\AggregateToken', 1);
         $tokenValue = $token->getValue();
 
         $this->logout(self::$DI['app']);
@@ -105,19 +101,11 @@ class RssFeedTest extends \PhraseanetWebTestCase
 
     public function testUserFeed()
     {
-        $this->authenticate(self::$DI['app']);
-
-        $feed = $this->insertOneFeed(self::$DI['user']);
-
-        $id = $feed->getId();
-
-        $token = $this->insertOneFeedToken($feed, self::$DI['user']);
-
+        $token = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\FeedToken', 1);
         $tokenValue = $token->getValue();
-
         $this->logout(self::$DI['app']);
 
-        self::$DI['client']->request('GET', "/feeds/userfeed/$tokenValue/$id/atom/");
+        self::$DI['client']->request('GET', "/feeds/userfeed/$tokenValue/".$token->getFeed()->getId()."/atom/");
         $response = self::$DI['client']->getResponse();
 
         $this->evaluateResponse200($response);
@@ -128,16 +116,16 @@ class RssFeedTest extends \PhraseanetWebTestCase
 
     public function testGetFeedFormat()
     {
-        $feed = $this->insertOneFeed(self::$DI['user'], "test", true);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 2);
+        self::$DI['client']->request("GET", "/feeds/feed/" . $feed->getId() . "/rss/");
 
-        $crawler = self::$DI['client']->request("GET", "/feeds/feed/" . $feed->getId() . "/rss/");
         $this->assertEquals("application/rss+xml", self::$DI['client']->getResponse()->headers->get("content-type"));
         $xml = self::$DI['client']->getResponse()->getContent();
 
         $this->verifyXML($xml);
         $this->verifyRSS($feed, $xml);
 
-        $crawler = self::$DI['client']->request("GET", "/feeds/feed/" . $feed->getId() . "/atom/");
+        self::$DI['client']->request("GET", "/feeds/feed/" . $feed->getId() . "/atom/");
         $this->assertEquals("application/atom+xml", self::$DI['client']->getResponse()->headers->get("content-type"));
         $xml = self::$DI['client']->getResponse()->getContent();
         $this->verifyXML($xml);
@@ -146,9 +134,9 @@ class RssFeedTest extends \PhraseanetWebTestCase
 
     public function testCooliris()
     {
-        $feed = $this->insertOneFeed(self::$DI['user'], "test", true);
+        self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 2);
 
-        $crawler = self::$DI['client']->request("GET", "/feeds/cooliris/");
+        self::$DI['client']->request("GET", "/feeds/cooliris/");
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals("application/rss+xml", self::$DI['client']->getResponse()->headers->get("content-type"));
         $xml = self::$DI['client']->getResponse()->getContent();
@@ -157,15 +145,12 @@ class RssFeedTest extends \PhraseanetWebTestCase
 
     public function testAggregatedRss()
     {
-        $this->insertOneFeed(self::$DI['user'], "test1", true);
-        $this->insertOneFeed(self::$DI['user'], "test2", true);
-
         $all_feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(['public' => true], ['updatedOn' => 'DESC']);
 
         foreach ($all_feeds as $feed) {
             $this->assertTrue($feed->isPublic());
         }
-        $crawler = self::$DI['client']->request("GET", "/feeds/aggregated/rss/");
+        self::$DI['client']->request("GET", "/feeds/aggregated/rss/");
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals("application/rss+xml", self::$DI['client']->getResponse()->headers->get("content-type"));
         $xml = self::$DI['client']->getResponse()->getContent();
@@ -174,15 +159,12 @@ class RssFeedTest extends \PhraseanetWebTestCase
 
     public function testAggregatedAtom()
     {
-        $this->insertOneFeed(self::$DI['user'], "test1", true);
-        $this->insertOneFeed(self::$DI['user'], "test2", true);
-
         $all_feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(['public' => true], ['updatedOn' => 'DESC']);
 
         foreach ($all_feeds as $feed) {
             $this->assertTrue($feed->isPublic());
         }
-        $crawler = self::$DI['client']->request("GET", "/feeds/aggregated/atom/");
+        self::$DI['client']->request("GET", "/feeds/aggregated/atom/");
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals("application/atom+xml", self::$DI['client']->getResponse()->headers->get("content-type"));
         $xml = self::$DI['client']->getResponse()->getContent();
@@ -204,15 +186,15 @@ class RssFeedTest extends \PhraseanetWebTestCase
 
     public function testGetFeedId()
     {
-        $feed = $this->insertOneFeed(self::$DI['user'], "test1", true);
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 2);
 
-        $crawler = self::$DI['client']->request("GET", "/feeds/feed/" . $feed->getId() . "/rss/");
+        self::$DI['client']->request("GET", "/feeds/feed/" . $feed->getId() . "/rss/");
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $xml = self::$DI['client']->getResponse()->getContent();
         $this->verifyXML($xml);
         $this->verifyRSS($feed, $xml);
 
-        $crawler = self::$DI['client']->request("GET", "/feeds/feed/" . $feed->getId() . "/atom/");
+        self::$DI['client']->request("GET", "/feeds/feed/" . $feed->getId() . "/atom/");
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $xml = self::$DI['client']->getResponse()->getContent();
         $this->verifyATOM($feed, $xml);
@@ -220,8 +202,7 @@ class RssFeedTest extends \PhraseanetWebTestCase
 
     public function testPrivateFeedAccess()
     {
-        $feed = $this->insertOneFeed(self::$DI['user'], "test1", false);
-
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
         self::$DI['client']->request("GET", "/feeds/feed/" . $feed->getId() . "/rss/");
         $this->assertFalse(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals(403, self::$DI['client']->getResponse()->getStatusCode());
@@ -347,7 +328,7 @@ class RssFeedTest extends \PhraseanetWebTestCase
 
     public function checkRSSEntryItemsNode(\DOMXPath $xpath, FeedEntry $entry, $count)
     {
-        $content = $entry->getItems();
+        $content = $entry->getItems()->toArray();
         $available_medium = ['image', 'audio', 'video'];
         array_walk($content, $this->removeBadItems($content, $available_medium));
         $media_group = $xpath->query("/rss/channel/item[" . $count . "]/media:group");
@@ -390,7 +371,7 @@ class RssFeedTest extends \PhraseanetWebTestCase
     {
         $current_attributes = $this->parseAttributes($node);
         $is_thumbnail = false;
-        $record = $entry_item->getRecord();
+        $record = $entry_item->getRecord(self::$DI['app']);
 
         if (false !== strpos($current_attributes["url"], 'preview')) {
             $ressource = $record->get_subdef('preview');
@@ -533,7 +514,7 @@ class RssFeedTest extends \PhraseanetWebTestCase
 
             if ($field["media_field"]["name"] == $node->nodeName && $role != false) {
 
-                if ($p4field = $entry_item->getRecord()->get_caption()->get_dc_field($field["dc_field"])) {
+                if ($p4field = $entry_item->getRecord(self::$DI['app'])->get_caption()->get_dc_field($field["dc_field"])) {
                     $this->assertEquals($p4field->get_serialized_values($field["separator"]), $node->nodeValue, sprintf('Asserting good value for DC %s', $field["dc_field"]));
                     if (sizeof($field["media_field"]["attributes"]) > 0) {
                         foreach ($node->attributes as $attribute) {
@@ -552,12 +533,12 @@ class RssFeedTest extends \PhraseanetWebTestCase
     public function removeBadItems(Array &$item_entries, Array $available_medium)
     {
         $remove = function ($entry_item, $key) use (&$item_entries, $available_medium) {
-                $preview_sd = $entry_item->getRecord()->get_subdef('preview');
+                $preview_sd = $entry_item->getRecord(self::$DI['app'])->get_subdef('preview');
                 $url_preview = $preview_sd->get_permalink();
-                $thumbnail_sd = $entry_item->getRecord()->get_thumbnail();
+                $thumbnail_sd = $entry_item->getRecord(self::$DI['app'])->get_thumbnail();
                 $url_thumb = $thumbnail_sd->get_permalink();
 
-                if (!in_array(strtolower($entry_item->getRecord()->get_type()), $available_medium)) {
+                if (!in_array(strtolower($entry_item->getRecord(self::$DI['app'])->get_type()), $available_medium)) {
                     unset($item_entries[$key]); //remove
                 }
 

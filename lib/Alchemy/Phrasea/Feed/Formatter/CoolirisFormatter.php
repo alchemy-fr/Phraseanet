@@ -13,6 +13,8 @@ namespace Alchemy\Phrasea\Feed\Formatter;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Feed\FeedInterface;
+use Alchemy\Phrasea\Model\Entities\FeedEntry;
+use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Feed\Link\LinkGeneratorCollection;
 use Alchemy\Phrasea\Feed\RSS\FeedRSSImage;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,7 +36,7 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
     /**
      * {@inheritdoc}
      */
-    public function createResponse(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', Application $app = null)
+    public function createResponse(Application $app, FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet')
     {
         $content = $this->format($feed, $page, $user, $generator, $app);
         $response = new Response($content, 200, ['Content-Type' => 'application/rss+xml']);
@@ -174,8 +176,8 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
 
     protected function addItem(Application $app, \DOMDocument $document, \DOMNode $feed, FeedEntry $entry)
     {
-        foreach ($entry->get_content() as $content) {
-            $this->addContent($app, $document, $feed, $entry, $content);
+        foreach ($entry->getItems() as $content) {
+            $this->addContent($app, $document, $feed, $content);
         }
     }
 
@@ -201,7 +203,7 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
 
         $caption =  $content->getRecord($app)->get_caption();
 
-        $title_field = $caption->get_dc_field(databox_Field_DCESAbstract::Title);
+        $title_field = $caption->get_dc_field(\databox_Field_DCESAbstract::Title);
         if (null !== $title_field) {
             $str_title = $title_field->get_serialized_values(' ');
         } else {
@@ -211,7 +213,7 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
         //attach tile node to item node
         $title = $this->addTag($document, $item, 'title', $str_title);
 
-        $desc_field = $caption->get_dc_field(databox_Field_DCESAbstract::Description);
+        $desc_field = $caption->get_dc_field(\databox_Field_DCESAbstract::Description);
         if (null !== $desc_field) {
             $str_desc = $desc_field->get_serialized_values(' ');
         } else {

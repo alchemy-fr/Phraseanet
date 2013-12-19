@@ -10,9 +10,9 @@
 {% block header_rss %}
  {% for feed in feeds %}
         {% set link = app['feed.user-link-generator'].generatePublic(feed, 'rss') %}
-        <link rel="alternate" type="{{ link.get_mimetype() }}" title="{{ link.get_title() }}" href="{{ link.get_href() }}" />
+        <link rel="alternate" type="{{ link.getMimetype() }}" title="{{ link.getTitle() }}" href="{{ link.getURI() }}" />
         {% set link = app['feed.user-link-generator'].generatePublic(feed, 'atom') %}
-        <link rel="alternate" type="{{ link.get_mimetype() }}" title="{{ link.get_title() }}" href="{{ link.get_href() }}" />
+        <link rel="alternate" type="{{ link.getMimetype() }}" title="{{ link.getTitle() }}" href="{{ link.getURI() }}" />
     {% endfor %}
 {% endblock %}
 

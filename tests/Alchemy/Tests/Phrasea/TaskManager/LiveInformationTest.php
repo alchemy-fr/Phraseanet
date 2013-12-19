@@ -49,11 +49,7 @@ class LiveInformationTest extends \PhraseanetTestCase
 
     public function testItReturnsWorkingTaskStatus()
     {
-        $task = new Task();
-        $task->setName('Task')->setJobId('Null');
-
-        self::$DI['app']['EM']->persist($task);
-        self::$DI['app']['EM']->flush();
+        $task = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
 
         $notifier = $this->createNotifierMock();
         $notifier->expects($this->once())
@@ -82,11 +78,7 @@ class LiveInformationTest extends \PhraseanetTestCase
 
     public function testItReturnsNonWorkingTaskStatus()
     {
-        $task = new Task();
-        $task->setName('Task')->setJobId('Null');
-
-        self::$DI['app']['EM']->persist($task);
-        self::$DI['app']['EM']->flush();
+        $task = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
 
         $notifier = $this->createNotifierMock();
         $notifier->expects($this->once())

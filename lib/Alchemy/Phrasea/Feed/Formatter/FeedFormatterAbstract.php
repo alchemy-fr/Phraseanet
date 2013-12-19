@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Feed\Formatter;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\FeedItem;
 
 abstract class FeedFormatterAbstract
 {
@@ -65,21 +66,21 @@ abstract class FeedFormatterAbstract
 
         $caption = $content->getRecord($app)->get_caption();
 
-        $title_field = $caption->get_dc_field(databox_Field_DCESAbstract::Title);
+        $title_field = $caption->get_dc_field(\databox_Field_DCESAbstract::Title);
         if (null !== $title_field) {
             $str_title = $title_field->get_serialized_values(' ');
             $title = $this->addTag($document, $group, 'media:title', $str_title);
             $title->setAttribute('type', 'plain');
         }
 
-        $desc_field = $caption->get_dc_field(databox_Field_DCESAbstract::Description);
+        $desc_field = $caption->get_dc_field(\databox_Field_DCESAbstract::Description);
         if (null !== $desc_field) {
             $str_desc = $desc_field->get_serialized_values(' ');
             $desc = $this->addTag($document, $group, 'media:description', $str_desc);
             $desc->setAttribute('type', 'plain');
         }
 
-        $contrib_field = $caption->get_dc_field(databox_Field_DCESAbstract::Contributor);
+        $contrib_field = $caption->get_dc_field(\databox_Field_DCESAbstract::Contributor);
         if (null !== $contrib_field) {
             $str_contrib = $contrib_field->get_serialized_values(' ');
             $contrib = $this->addTag($document, $group, 'media:credit', $str_contrib);
@@ -87,7 +88,7 @@ abstract class FeedFormatterAbstract
             $contrib->setAttribute('scheme', 'urn:ebu');
         }
 
-        $director_field = $caption->get_dc_field(databox_Field_DCESAbstract::Creator);
+        $director_field = $caption->get_dc_field(\databox_Field_DCESAbstract::Creator);
         if (null !== $director_field) {
             $str_director = $director_field->get_serialized_values(' ');
             $director = $this->addTag($document, $group, 'media:credit', $str_director);
@@ -95,7 +96,7 @@ abstract class FeedFormatterAbstract
             $director->setAttribute('scheme', 'urn:ebu');
         }
 
-        $publisher_field = $caption->get_dc_field(databox_Field_DCESAbstract::Publisher);
+        $publisher_field = $caption->get_dc_field(\databox_Field_DCESAbstract::Publisher);
         if (null !== $publisher_field) {
             $str_publisher = $publisher_field->get_serialized_values(' ');
             $publisher = $this->addTag($document, $group, 'media:credit', $str_publisher);
@@ -103,19 +104,19 @@ abstract class FeedFormatterAbstract
             $publisher->setAttribute('scheme', 'urn:ebu');
         }
 
-        $rights_field = $caption->get_dc_field(databox_Field_DCESAbstract::Rights);
+        $rights_field = $caption->get_dc_field(\databox_Field_DCESAbstract::Rights);
         if (null !== $rights_field) {
             $str_rights = $rights_field->get_serialized_values(' ');
             $rights = $this->addTag($document, $group, 'media:copyright', $str_rights);
         }
 
-        $keyword_field = $caption->get_dc_field(databox_Field_DCESAbstract::Subject);
+        $keyword_field = $caption->get_dc_field(\databox_Field_DCESAbstract::Subject);
         if (null !== $keyword_field) {
             $str_keywords = $keyword_field->get_serialized_values(', ');
             $keywords = $this->addTag($document, $group, 'media:keywords', $str_keywords);
         }
 
-        $duration = $content->get_record()->get_duration();
+        $duration = $content->getRecord($app)->get_duration();
 
         if (null !== $preview_permalink) {
             $preview = $this->addTag($document, $group, 'media:content');

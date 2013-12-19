@@ -37,28 +37,6 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
      */
     public function testSetExport()
     {
-        $basket = new \Alchemy\Phrasea\Model\Entities\Basket();
-
-        $basket->setName('hello');
-        $basket->setOwner(self::$DI['user']);
-        $basket->setDescription('hello');
-
-        $em = self::$DI['app']['EM'];
-
-        $basketElement = new \Alchemy\Phrasea\Model\Entities\BasketElement();
-
-        $basketElement->setRecord(self::$DI['record_1']);
-        $basketElement->setBasket($basket);
-
-        $em->persist($basketElement);
-
-        $basket->addElement($basketElement);
-
-        $em->persist($basket);
-        $em->flush();
-
-        $receveid = [self::$DI['record_1']->get_serialize_key() => self::$DI['record_1']];
-
         self::$DI['app']['acl']->get( self::$DI['app']['authentication']->getUser())->update_rights_to_base(self::$DI['record_1']->get_base_id(), ['order_master' => true]);
 
         $eventManagerStub = $this->getMockBuilder('\eventsmanager_broker')
@@ -488,21 +466,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 
     public function testGet_container_baskets()
     {
-        $basket = $this->insertOneBasket();
-        $this->assertInstanceOf('\Alchemy\Phrasea\Model\Entities\Basket', $basket);
-
-        /* @var $basket \Alchemy\Phrasea\Model\Entities\Basket */
-        $basket_element = new \Alchemy\Phrasea\Model\Entities\BasketElement();
-        $basket_element->setRecord(self::$DI['record_1']);
-        $basket_element->setBasket($basket);
-
-        self::$DI['app']['EM']->persist($basket_element);
-
-        $basket->addElement($basket_element);
-        $basket = self::$DI['app']['EM']->merge($basket);
-
-        self::$DI['app']['EM']->flush();
-
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
         $found = $sselcont_id = false;
 
         $sbas_id = self::$DI['record_1']->get_sbas_id();

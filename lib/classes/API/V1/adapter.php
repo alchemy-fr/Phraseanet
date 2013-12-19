@@ -1035,7 +1035,9 @@ class API_V1_adapter extends API_V1_Abstract
         $mimes = $request->get('mimes', []);
 
         foreach ($record->get_embedable_medias($devices, $mimes) as $name => $media) {
-            $ret[] = $this->list_embedable_media($media, $this->app['phraseanet.registry']);
+            if (null !== $embed = $this->list_embedable_media($media, $this->app['phraseanet.registry'])) {
+                $ret[] = $embed;
+            }
         }
 
         $result->set_datas(["embed" => $ret]);
@@ -1067,7 +1069,9 @@ class API_V1_adapter extends API_V1_Abstract
         $mimes = $request->get('mimes', []);
 
         foreach ($record->get_embedable_medias($devices, $mimes) as $name => $media) {
-            $ret[] = $this->list_embedable_media($media, $this->app['phraseanet.registry']);
+            if (null !== $embed = $this->list_embedable_media($media, $this->app['phraseanet.registry'])) {
+                $ret[] = $embed;
+            }
         }
 
         $result->set_datas(["embed" => $ret]);

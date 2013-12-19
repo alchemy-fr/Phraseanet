@@ -29,25 +29,23 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->authenticate(self::$DI['app']);
 
-        $baskets = $this->insertFiveBasket();
-
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
 
         $crawler = self::$DI['client']->request('GET', '/lightbox/');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
-        $this->assertEquals(5, $crawler->filter('div.basket_wrapper')->count());
+        $this->assertCount(3, $crawler->filter('div.basket_wrapper'));
 
         $this->set_user_agent(self::USER_AGENT_IE6, self::$DI['app']);
 
         $crawler = self::$DI['client']->request('GET', '/lightbox/');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
-        $this->assertEquals($crawler->filter('div.basket_wrapper')->count(), count($baskets));
+        $this->assertCount(3, $crawler->filter('div.basket_wrapper'));
 
         $this->set_user_agent(self::USER_AGENT_IPHONE, self::$DI['app']);
 
-        $crawler = self::$DI['client']->request('GET', '/lightbox/');
+        self::$DI['client']->request('GET', '/lightbox/');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
     }
@@ -56,7 +54,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->logout(self::$DI['app']);
 
-        $Basket = $this->insertOneBasket();
+        $Basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_VIEW, self::$DI['user_alt2']->get_id(), null, $Basket->getId());
 
         self::$DI['client']->request('GET', '/lightbox/?LOG='.$token);
@@ -67,7 +65,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAjaxNoteForm()
     {
-        $basket = $this->insertOneValidationBasket();
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 4);
         $basket_element = $basket->getELements()->first();
 
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
@@ -91,7 +89,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAjaxElement()
     {
-        $basket_element = $this->insertOneBasketElement();
+        $basket_element = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\BasketElement', 1);
 
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
 
@@ -136,8 +134,9 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
 
-        $item = $this->insertOneFeedItem(self::$DI['user']);
-        $entry = $item->getEntry();
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $entry = $feed->getEntries()->first();
+        $item = $entry->getItems()->first();
 
         $crawler = self::$DI['client']->request('GET', '/lightbox/ajax/LOAD_FEED_ITEM/' . $entry->getId() . '/' . $item->getId() . '/');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
@@ -180,7 +179,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->authenticate(self::$DI['app']);
 
-        $basket = $this->insertOneValidationBasket();
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 4);
 
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
 
@@ -205,7 +204,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->authenticate(self::$DI['app']);
 
-        $basket = $this->insertOneBasket();
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
 
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
 
@@ -232,8 +231,8 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
 
-        $item = $this->insertOneFeedItem(self::$DI['user']);
-        $entry = $item->getEntry();
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $entry = $feed->getEntries()->first();
 
         $crawler = self::$DI['client']->request('GET', '/lightbox/feeds/entry/' . $entry->getId() . '/');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
@@ -254,20 +253,20 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAjaxReport()
     {
-        $validationBasket = $this->insertOneValidationBasket();
+        $validationBasket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 4);
 
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
-        $crawler = self::$DI['client']->request('GET', '/lightbox/ajax/LOAD_REPORT/' . $validationBasket->getId() . '/');
+        self::$DI['client']->request('GET', '/lightbox/ajax/LOAD_REPORT/' . $validationBasket->getId() . '/');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
     }
 
     public function testAjaxSetNote()
     {
-        $validationBasket = $this->insertOneValidationBasket();
+        $validationBasket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 4);
         $validationBasketElement = $validationBasket->getElements()->first();
 
-        $crawler = self::$DI['client']->request('POST', '/lightbox/ajax/SET_NOTE/' . $validationBasketElement->getId() . '/');
+        self::$DI['client']->request('POST', '/lightbox/ajax/SET_NOTE/' . $validationBasketElement->getId() . '/');
         $this->assertEquals(400, self::$DI['client']->getResponse()->getStatusCode());
 
         $crawler = self::$DI['client']->request(
@@ -287,7 +286,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAjaxSetAgreement()
     {
-        $validationBasket = $this->insertOneValidationBasket();
+        $validationBasket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 4);
         $validationBasketElement = $validationBasket->getElements()->first();
 
         $crawler = self::$DI['client']->request(
@@ -313,7 +312,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAjaxSetReleaseWithRegularBasket()
     {
-        $basket = $this->insertOneBasket();
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
 
         $crawler = self::$DI['client']->request('POST', '/lightbox/ajax/SET_RELEASE/' . $basket->getId() . '/');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
@@ -325,16 +324,16 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAjaxSetReleaseWithRegularBasketWithValidation()
     {
-        $validationBasket = $this->insertOneValidationBasket();
+        $validationBasket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 4);
 
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoValidationDone');
 
         foreach ($validationBasket->getElements() as $element) {
-            $element->getUserValidationDatas(self::$DI['app']['authentication']->getUser(), self::$DI['app'])->setAgreement(true);
+            $element->getUserValidationDatas(self::$DI['user'], self::$DI['app'])->setAgreement(true);
             break;
         }
 
-        $crawler = self::$DI['client']->request('POST', '/lightbox/ajax/SET_RELEASE/' . $validationBasket->getId() . '/');
+        self::$DI['client']->request('POST', '/lightbox/ajax/SET_RELEASE/' . $validationBasket->getId() . '/');
 
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode(), sprintf('set note to element %s ', $validationBasket->getId()));
         $this->assertEquals('application/json', self::$DI['client']->getResponse()->headers->get('Content-type'));

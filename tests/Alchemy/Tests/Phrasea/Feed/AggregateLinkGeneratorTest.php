@@ -12,8 +12,9 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
     /**
      * @dataProvider provideGenerationData
      */
-    public function testGenerate($expected, $format, $user, $page, $renew, $alreadyCreated)
+    public function testGenerate($expected, $format, $page, $renew, $alreadyCreated)
     {
+        $user = self::$DI['user'];
         $feed = new Feed();
         $feed->setTitle("title");
 
@@ -29,7 +30,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
             ->getMock();
 
         if ($alreadyCreated) {
-            $token = $this->insertOneAggregateToken($user);
+            $token = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\AggregateToken', 1);
             $tokenValue = $token->getValue();
         }
 
@@ -98,40 +99,27 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
                 ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
                 ->findBy(['value' => $capture['token']]));
         }
-        $token = self::$DI['app']['EM']
-            ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
-            ->findOneBy(['usrId' => $user->get_id()]);
-        self::$DI['app']['EM']->remove($token);
-        self::$DI['app']['EM']->flush();
     }
 
     public function provideGenerationData()
     {
-        $user = $this->getMockBuilder('User_Adapter')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $user->expects($this->any())
-            ->method('get_id')
-            ->will($this->returnValue(42));
-
         return [
-            ['doliprane', 'atom', $user, null, false, false],
-            ['doliprane', 'atom', $user, null, false, true],
-            ['doliprane', 'atom', $user, null, true, false],
-            ['doliprane', 'atom', $user, null, true, true],
-            ['doliprane', 'atom', $user, 1, false, false],
-            ['doliprane', 'atom', $user, 1, false, true],
-            ['doliprane', 'atom', $user, 1, true, false],
-            ['doliprane', 'atom', $user, 1, true, true],
-            ['doliprane', 'rss', $user, null, false, false],
-            ['doliprane', 'rss', $user, null, false, true],
-            ['doliprane', 'rss', $user, null, true, false],
-            ['doliprane', 'rss', $user, null, true, true],
-            ['doliprane', 'rss', $user, 1, false, false],
-            ['doliprane', 'rss', $user, 1, false, true],
-            ['doliprane', 'rss', $user, 1, true, false],
-            ['doliprane', 'rss', $user, 1, true, true],
+            ['doliprane', 'atom', null, false, false],
+            ['doliprane', 'atom', null, false, true],
+            ['doliprane', 'atom', null, true, false],
+            ['doliprane', 'atom', null, true, true],
+            ['doliprane', 'atom', 1, false, false],
+            ['doliprane', 'atom', 1, false, true],
+            ['doliprane', 'atom', 1, true, false],
+            ['doliprane', 'atom', 1, true, true],
+            ['doliprane', 'rss', null, false, false],
+            ['doliprane', 'rss', null, false, true],
+            ['doliprane', 'rss', null, true, false],
+            ['doliprane', 'rss', null, true, true],
+            ['doliprane', 'rss', 1, false, false],
+            ['doliprane', 'rss', 1, false, true],
+            ['doliprane', 'rss', 1, true, false],
+            ['doliprane', 'rss', 1, true, true],
         ];
     }
 

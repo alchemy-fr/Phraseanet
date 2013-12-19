@@ -8,8 +8,6 @@ class TaskListTest extends \PhraseanetTestCase
 {
     public function testRunWithoutProblems()
     {
-        $this->insertTwoTasks();
-
         $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
         $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
 

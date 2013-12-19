@@ -4,7 +4,6 @@ namespace Alchemy\Tests\Phrasea\Application;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
-use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Model\Entities\Task;
@@ -358,7 +357,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
      */
     public function testGetMonitorTaskById()
     {
-        $this->insertTwoTasks();
         $tasks = self::$DI['app']['manipulator.task']->getRepository()->findAll();
 
         if (null === self::$adminToken) {
@@ -390,7 +388,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
      */
     public function testPostMonitorTaskById()
     {
-        $this->insertTwoTasks();
         $tasks = self::$DI['app']['manipulator.task']->getRepository()->findAll();
 
         if (null === self::$adminToken) {
@@ -445,7 +442,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $this->markTestSkipped('there is no user with admin rights');
         }
 
-        $this->insertTwoTasks();
         $tasks = self::$DI['app']['manipulator.task']->getRepository()->findAll();
 
         if (!count($tasks)) {
@@ -476,7 +472,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
      */
     public function testPostMonitorStopTask()
     {
-        $this->insertTwoTasks();
         $tasks = self::$DI['app']['manipulator.task']->getRepository()->findAll();
 
         if (null === self::$adminToken) {
@@ -567,12 +562,8 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testStoryRoute()
     {
         $this->setToken(self::$token);
-
         self::$DI['app']['session']->set('usr_id', self::$DI['user']->get_id());
-
-        if (!self::$DI['record_story_1']->hasChild(self::$DI['record_1'])) {
-            self::$DI['record_story_1']->appendChild(self::$DI['record_1']);
-        }
+        self::$DI['record_story_1']->appendChild(self::$DI['record_1']);
 
         self::$DI['app']['session']->remove('usr_id');
 
@@ -593,6 +584,8 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $route = '/api/v1/stories/kjslkz84spm/sfsd5qfsd5/';
         $this->evaluateBadRequestRoute($route, ['GET']);
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
+
+        self::$DI['record_story_1']->removeChild(self::$DI['record_1']);
     }
 
     /**
@@ -840,6 +833,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         foreach ($response['results']['records'] as $record) {
             $this->evaluateGoodRecord($record);
             $found = true;
+            break;
         }
 
         if (!$found) {
@@ -876,6 +870,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         foreach ($response['results']['stories'] as $story) {
             $this->evaluateGoodStory($story);
             $found = true;
+            break;
         }
 
         if (!$found) {
@@ -1050,9 +1045,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testStoriesEmbedRoute()
     {
         $this->setToken(self::$token);
-
         $story = self::$DI['record_story_1'];
-        $keys = array_keys($story->get_subdefs());
 
         $route = '/api/v1/stories/' . $story->get_sbas_id() . '/' . $story->get_record_id() . '/embed/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
@@ -1304,8 +1297,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
      */
     public function testSearchBaskets()
     {
-        $this->insertFiveBasket();
-        $this->insertOneValidationBasket();
         self::$DI['client'] = new Client(self::$DI['app'], []);
 
         $this->setToken(self::$adminToken);
@@ -1357,7 +1348,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken(self::$adminToken);
 
-        $basketElement = $this->insertOneBasketElement();
+        $basketElement = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\BasketElement', 1);
         $basket = $basketElement->getBasket();
 
         $route = '/api/v1/baskets/' . $basket->getId() . '/content/';
@@ -1397,7 +1388,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken(self::$adminToken);
 
-        $basket = $this->insertOneBasket();
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
 
         $route = '/api/v1/baskets/' . $basket->getId() . '/setname/';
 
@@ -1450,7 +1441,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken(self::$adminToken);
 
-        $basket = $this->insertOneBasket();
+        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
 
         $route = '/api/v1/baskets/' . $basket->getId() . '/setdescription/';
 
@@ -1475,11 +1466,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testDeleteBasket()
     {
         $this->setToken(self::$adminToken);
-
-        $baskets = $this->insertFiveBasket();
-
-        $route = '/api/v1/baskets/' . $baskets[0]->getId() . '/delete/';
-
+        $route = '/api/v1/baskets/1/delete/';
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
 
         self::$DI['client']->request('POST', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
@@ -1494,6 +1481,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         foreach ($content['response']['baskets'] as $basket) {
             $this->evaluateGoodBasket($basket);
             $found = true;
+            break;
         }
         if (!$found) {
             $this->fail('There should be four baskets left');
@@ -1674,7 +1662,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $title = 'Yellow title';
 
-        $created_feed = $this->insertOneFeed(self::$DI['user'], $title);
+        $created_feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
 
         $this->setToken(self::$token);
         $route = '/api/v1/feeds/list/';
@@ -1696,7 +1684,8 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
             if ($feed['id'] == $created_feed->getId()) {
                 $found = true;
-                $this->assertEquals($title, $feed['title']);
+                $this->assertEquals('Feed test, YOLO!', $feed['title']);
+                break;
             }
         }
 
@@ -1718,15 +1707,14 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $title = 'Yellow title';
-        $subtitle = 'Trololololo !';
         $entry_title = 'Superman';
         $entry_subtitle = 'Wonder Woman';
         $author = "W. Shakespeare";
         $author_email = "gontran.bonheur@gmail.com";
 
-        $created_item = $this->insertOneFeedItem(self::$DI['user']);
-        $created_entry = $created_item->getEntry();
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $created_entry = $feed->getEntries()->first();
+
         $created_entry->setAuthorEmail($author_email);
         $created_entry->setAuthorName($author);
         $created_entry->setTitle($entry_title);
@@ -1761,6 +1749,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
                 $this->assertEquals($author, $entry['author_name']);
                 $this->assertEquals($entry_title, $entry['title']);
                 $this->assertEquals($entry_subtitle, $entry['subtitle']);
+                break;
             }
         }
 
@@ -1779,15 +1768,8 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $title = 'Yellow title';
-        $subtitle = 'Trololololo !';
-        $entry_title = 'Superman';
-        $entry_subtitle = 'Wonder Woman';
-        $author = "W. Shakespeare";
-        $author_email = "gontran.bonheur@gmail.com";
-
-        $created_item = $this->insertOneFeedItem(self::$DI['user']);
-        $created_entry = $created_item->getEntry();
+        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $created_entry = $feed->getEntries()->first();
 
         $this->setToken(self::$token);
         $route = '/api/v1/feeds/entry/' . $created_entry->getId() . '/';
@@ -1817,16 +1799,8 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $title = 'Yellow title';
-        $subtitle = 'Trololololo !';
-        $entry_title = 'Superman';
-        $entry_subtitle = 'Wonder Woman';
-        $author = "W. Shakespeare";
-        $author_email = "gontran.bonheur@gmail.com";
-
-        $created_item = $this->insertOneFeedItem(self::$DI['user']);
-        $created_entry = $created_item->getEntry();
-        $created_feed = $created_entry->getFeed();
+        $created_feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $created_entry = $created_feed->getEntries()->first();
 
         $created_feed->setCollection(self::$DI['collection_no_access']);
 
@@ -1858,9 +1832,8 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $entry_title = 'Superman';
         $entry_subtitle = 'Wonder Woman';
 
-        $created_item = $this->insertOneFeedItem(self::$DI['user']);
-        $created_entry = $created_item->getEntry();
-        $created_feed = $created_entry->getFeed();
+        $created_feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $created_entry = $created_feed->getEntries()->first();
         $created_entry->setTitle($entry_title);
         $created_entry->setSubtitle($entry_subtitle);
         self::$DI['app']['EM']->persist($created_entry);
@@ -1889,6 +1862,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
                 $this->assertEquals($entry_title, $entry['title']);
                 $this->assertEquals($entry_subtitle, $entry['subtitle']);
                 $found = true;
+                break;
             }
         }
 
@@ -1908,7 +1882,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->setToken(self::$token);
         $route = '/api/v1/quarantine/list/';
 
-        $quarantineItemId = $this->getQuarantineItem()->getId();
+        $quarantineItemId = self::$DI['lazaret_1']->getId();
 
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
@@ -1925,6 +1899,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $this->evaluateGoodQuarantineItem($item);
             if ($item['id'] == $quarantineItemId) {
                 $found = true;
+                break;
             }
         }
 
@@ -1940,7 +1915,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken(self::$token);
 
-        $quarantineItemId = $this->getQuarantineItem()->getId();
+        $quarantineItemId = self::$DI['lazaret_1']->getId();
         $route = '/api/v1/quarantine/item/' . $quarantineItemId . '/';
 
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
@@ -1952,25 +1927,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $this->evaluateGoodQuarantineItem($content['response']['quarantine_item']);
         $this->assertEquals($quarantineItemId, $content['response']['quarantine_item']['id']);
-    }
-
-    protected function getQuarantineItem()
-    {
-        $lazaretSession = new \Alchemy\Phrasea\Model\Entities\LazaretSession();
-        self::$DI['app']['EM']->persist($lazaretSession);
-
-        $quarantineItem = null;
-        $callback = function ($element, $visa, $code) use (&$quarantineItem) {
-                $quarantineItem = $element;
-            };
-
-        $tmpname = tempnam(sys_get_temp_dir(), 'test_quarantine');
-        copy(__DIR__ . '/../../../../files/iphone_pic.jpg', $tmpname);
-
-        $file = File::buildFromPathfile($tmpname, self::$DI['collection'], self::$DI['app']);
-        self::$DI['app']['border-manager']->process($lazaretSession, $file, $callback, Manager::FORCE_LAZARET);
-
-        return $quarantineItem;
     }
 
     protected function evaluateGoodQuarantineItem($item)

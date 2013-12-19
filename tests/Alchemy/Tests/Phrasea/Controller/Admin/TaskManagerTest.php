@@ -15,15 +15,6 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRootListTasks()
     {
-        foreach (self::$DI['app']['task-manager.available-jobs'] as $job) {
-            $task = new Task();
-            $task
-                ->setName('task')
-                ->setJobId(get_class($job));
-            self::$DI['app']['EM']->persist($task);
-        }
-        self::$DI['app']['EM']->flush();
-
         self::$DI['client']->request('GET', '/admin/task-manager/tasks');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
@@ -84,43 +75,22 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testGetTaskLog()
     {
-        $task = new Task();
-        $task
-            ->setName('task')
-            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
-        self::$DI['app']['EM']->persist($task);
-        self::$DI['app']['EM']->flush();
-
-        self::$DI['client']->request('GET', '/admin/task-manager/task/'.$task->getId().'/log');
+        self::$DI['client']->request('GET', '/admin/task-manager/task/1/log');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
     }
 
     public function testPostTaskDelete()
     {
-        $task = new Task();
-        $task
-            ->setName('task')
-            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
-        self::$DI['app']['EM']->persist($task);
-        self::$DI['app']['EM']->flush();
-        $taskId = $task->getId();
-
-        self::$DI['client']->request('POST', '/admin/task-manager/task/'.$taskId.'/delete');
+        self::$DI['client']->request('POST', '/admin/task-manager/task/1/delete');
         $this->assertEquals(302, self::$DI['client']->getResponse()->getStatusCode());
         $this->assertEquals('/admin/task-manager/tasks', self::$DI['client']->getResponse()->headers->get('location'));
 
-        $this->assertNull(self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Task', $taskId));
+        $this->assertNull(self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Task', 1));
     }
 
     public function testPostTaskStart()
     {
-        $task = new Task();
-        $task
-            ->setName('task')
-            ->setStatus(Task::STATUS_STOPPED)
-            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
-        self::$DI['app']['EM']->persist($task);
-        self::$DI['app']['EM']->flush();
+        $task = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
 
         self::$DI['client']->request('POST', '/admin/task-manager/task/'.$task->getId().'/start');
         $this->assertEquals(302, self::$DI['client']->getResponse()->getStatusCode());
@@ -131,13 +101,7 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostTaskStop()
     {
-        $task = new Task();
-        $task
-            ->setName('task')
-            ->setStatus(Task::STATUS_STARTED)
-            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
-        self::$DI['app']['EM']->persist($task);
-        self::$DI['app']['EM']->flush();
+        $task = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
 
         self::$DI['client']->request('POST', '/admin/task-manager/task/'.$task->getId().'/stop');
         $this->assertEquals(302, self::$DI['client']->getResponse()->getStatusCode());
@@ -148,13 +112,7 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostResetCrashes()
     {
-        $task = new Task();
-        $task
-            ->setName('task')
-            ->setCrashed(30)
-            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
-        self::$DI['app']['EM']->persist($task);
-        self::$DI['app']['EM']->flush();
+        $task = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
 
         self::$DI['client']->request('POST', '/admin/task-manager/task/'.$task->getId().'/resetcrashcounter');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
@@ -165,12 +123,7 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostSaveTask()
     {
-        $task = new Task();
-        $task
-            ->setName('task')
-            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
-        self::$DI['app']['EM']->persist($task);
-        self::$DI['app']['EM']->flush();
+        $task = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
 
         $name = 'renamed';
         $period = 366;
@@ -198,14 +151,7 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testGetTask()
     {
-        $task = new Task();
-        $task
-            ->setName('task')
-            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
-        self::$DI['app']['EM']->persist($task);
-        self::$DI['app']['EM']->flush();
-
-        self::$DI['client']->request('GET', '/admin/task-manager/task/'.$task->getId());
+        self::$DI['client']->request('GET', '/admin/task-manager/task/1');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
     }
 
@@ -234,13 +180,6 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostTaskFacility()
     {
-        $task = new Task();
-        $task
-            ->setName('task')
-            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
-        self::$DI['app']['EM']->persist($task);
-        self::$DI['app']['EM']->flush();
-
         $job = $this->getMock('Alchemy\Phrasea\TaskManager\Job\JobInterface');
         $editor = $this->getMock('Alchemy\Phrasea\TaskManager\Editor\EditorInterface');
 
@@ -257,19 +196,12 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
                 ->method('create')
                 ->will($this->returnValue($job));
 
-        self::$DI['client']->request('POST', '/admin/task-manager/task/'.$task->getId().'/facility');
+        self::$DI['client']->request('POST', '/admin/task-manager/task/1/facility');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
     }
 
     public function testPostTaskXmlFromForm()
     {
-        $task = new Task();
-        $task
-            ->setName('task')
-            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
-        self::$DI['app']['EM']->persist($task);
-        self::$DI['app']['EM']->flush();
-
         $job = $this->getMock('Alchemy\Phrasea\TaskManager\Job\JobInterface');
         $editor = $this->getMock('Alchemy\Phrasea\TaskManager\Editor\EditorInterface');
 
@@ -286,7 +218,7 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
                 ->method('create')
                 ->will($this->returnValue($job));
 
-        self::$DI['client']->request('POST', '/admin/task-manager/task/'.$task->getId().'/xml-from-form');
+        self::$DI['client']->request('POST', '/admin/task-manager/task/1/xml-from-form');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
     }
 }
