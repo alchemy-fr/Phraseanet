@@ -102,6 +102,7 @@ use Alchemy\Phrasea\Core\Provider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
+use Alchemy\Phrasea\Core\Provider\SubdefServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TasksServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TemporaryFilesystemServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
@@ -280,6 +281,7 @@ class Application extends SilexApplication
         $this->register(new PhraseaVersionServiceProvider());
         $this->register(new PHPExiftoolServiceProvider());
         $this->register(new ReCaptchaServiceProvider());
+        $this->register(new SubdefServiceProvider());
 
         $this['recaptcha.public-key'] = $this->share(function (Application $app) {
             if ($app['conf']->get(['registry', 'webservices', 'captcha-enabled'])) {

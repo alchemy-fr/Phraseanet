@@ -79,7 +79,7 @@ class BuildMissingSubdefs extends Command
                         }
 
                         if ($todo) {
-                            $record->generate_subdefs($databox, $this->container, [$subdef->get_name()]);
+                            $this->container['subdef.generator']->generateSubdefs($record, [$subdef->get_name()]);
                             $this->container['monolog']->addInfo("generate " . $subdef->get_name() . " for record " . $record->get_record_id());
                             $n ++;
                         }
