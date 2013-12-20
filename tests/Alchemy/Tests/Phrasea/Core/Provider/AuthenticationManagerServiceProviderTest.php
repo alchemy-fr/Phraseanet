@@ -89,7 +89,7 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
 
         $app['conf']->set(['authentication', 'captcha', 'trials-before-display'], 42);
 
-        $app['EM'] = $this->getMockBuilder('Doctrine\Orm\EntityManager')
+        $app['EM'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
         $app['recaptcha'] = $this->getMockBuilder('Neutron\ReCaptcha\ReCaptcha')
@@ -133,7 +133,7 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
 
         $app['conf']->set(['authentication', 'captcha'], ['enabled' => true]);
 
-        $app['EM'] = $this->getMockBuilder('Doctrine\Orm\EntityManager')
+        $app['EM'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
         $app['recaptcha'] = $this->getMockBuilder('Neutron\ReCaptcha\ReCaptcha')
@@ -166,7 +166,7 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
 
         $app['conf']->set(['authentication', 'captcha'], ['enabled' => false]);
 
-        $app['EM'] = $this->getMockBuilder('Doctrine\Orm\EntityManager')
+        $app['EM'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
         $app['recaptcha'] = $this->getMockBuilder('Neutron\ReCaptcha\ReCaptcha')
