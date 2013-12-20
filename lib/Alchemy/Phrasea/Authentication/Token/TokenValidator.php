@@ -16,11 +16,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TokenValidator
 {
-    private $app;
+    private $random;
 
-    public function __construct(Application $app)
+    public function __construct(\random $random)
     {
-        $this->app = $app;
+        $this->random = $random;
     }
 
     /**
@@ -32,7 +32,7 @@ class TokenValidator
     public function isValid($token)
     {
         try {
-            $datas = $this->app['tokens']->helloToken($token);
+            $datas = $this->random->helloToken($token);
 
             return $datas['usr_id'];
         } catch (NotFoundHttpException $e) {

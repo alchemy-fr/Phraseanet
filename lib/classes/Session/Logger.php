@@ -26,7 +26,6 @@ class Session_Logger
      * @var databox
      */
     protected $databox;
-    protected $app;
 
     const EVENT_DELETE = 'delete';
     const EVENT_EDIT = 'edit';
@@ -48,9 +47,8 @@ class Session_Logger
      *
      * @return Session_Logger
      */
-    public function __construct(Application $app, databox $databox, $log_id)
+    public function __construct(databox $databox, $log_id)
     {
-        $this->app = $app;
         $this->databox = $databox;
         $this->id = (int) $log_id;
 
@@ -154,7 +152,7 @@ class Session_Logger
         $stmt->closeCursor();
         unset($stmt, $conn);
 
-        return new Session_Logger($app, $databox, $log_id);
+        return new Session_Logger($databox, $log_id);
     }
 
     public static function load(Application $app, databox $databox)
@@ -179,7 +177,7 @@ class Session_Logger
         if ( ! $row)
             throw new Exception_Session_LoggerNotFound('Logger not found');
 
-        return new self($app, $databox, $row['id']);
+        return new self($databox, $row['id']);
     }
 
     public static function updateClientInfos(Application $app, $appId)
