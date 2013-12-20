@@ -2,7 +2,6 @@
 
 class API_OAuth2_TokenTest extends \PhraseanetTestCase
 {
-
     /**
      * @var API_OAuth2_Token
      */
@@ -11,8 +10,7 @@ class API_OAuth2_TokenTest extends \PhraseanetTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->application = API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test app');
-        $account = API_OAuth2_Account::load_with_user(self::$DI['app'], $this->application, self::$DI['user']);
+        $account = API_OAuth2_Account::load_with_user(self::$DI['app'], self::$DI['oauth2-app-user'], self::$DI['user']);
 
         try {
             new API_OAuth2_Token(self::$DI['app']['phraseanet.appbox'], $account);
@@ -26,7 +24,7 @@ class API_OAuth2_TokenTest extends \PhraseanetTestCase
 
     public function tearDown()
     {
-        $this->application->delete();
+        $this->object->delete();
         parent::tearDown();
     }
 
@@ -35,59 +33,38 @@ class API_OAuth2_TokenTest extends \PhraseanetTestCase
         $this->assertTrue((count(preg_match('/[a-z0-9]{32}/', $md5)) === 1));
     }
 
-    public function testGet_value()
+    public function testGettersAndSetters()
     {
         $this->assertmd5($this->object->get_value());
-    }
 
-    public function testSet_value()
-    {
         $value = md5('prout');
         $this->object->set_value($value);
         $this->assertEquals($value, $this->object->get_value());
-    }
 
-    public function testGet_session_id()
-    {
+        $this->object->set_session_id(null);
         $this->assertNull($this->object->get_session_id());
-    }
 
-    public function testSet_session_id()
-    {
         $this->object->set_session_id(458);
         $this->assertEquals(458, $this->object->get_session_id());
-    }
 
-    public function testGet_expires()
-    {
+        $expire = time() + 3600;
+        $this->object->set_expires($expire);
         $diff = (int) $this->object->get_expires() - time();
-        $this->assertInternalType('string', $this->object->get_expires(), "expiration timestamp is string : " . $this->object->get_expires());
+        $this->assertSame($expire, $this->object->get_expires(), "expiration timestamp is string : " . $this->object->get_expires());
         $this->assertTrue($diff > 3500, "expire value $diff should be more than 3500 seconds ");
         $this->assertTrue($diff < 3700, "expire value $diff should be less than 3700 seconds ");
-    }
 
-    public function testSet_expires()
-    {
         $date = time() + 7200;
         $this->object->set_expires($date);
         $this->assertEquals($date, $this->object->get_expires());
-    }
 
-    public function testGet_scope()
-    {
         $this->assertNull($this->object->get_scope());
-    }
 
-    public function testset_scope()
-    {
         $this->assertNull($this->object->get_scope());
         $scope = "prout";
         $this->object->set_scope($scope);
         $this->assertEquals($scope, $this->object->get_scope());
-    }
 
-    public function testGet_account()
-    {
         $this->assertInstanceOf('API_OAuth2_Account', $this->object->get_account());
     }
 

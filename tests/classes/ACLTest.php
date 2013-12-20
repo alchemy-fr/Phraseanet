@@ -28,6 +28,7 @@ class ACLTest extends \PhraseanetAuthenticatedTestCase
         }
 
         self::resetUsersRights(self::$DI['app'], self::$DI['user']);
+        self::$object = null;
 
         parent::tearDownAfterClass();
     }

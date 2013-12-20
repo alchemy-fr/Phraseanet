@@ -27,13 +27,9 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testEtag()
     {
-        $tmp = tempnam(sys_get_temp_dir(), 'testEtag');
-        copy(__DIR__ . '/../../../../files/cestlafete.jpg', $tmp);
-
         $record = self::$DI['record_1'];
-        $record->generate_subdefs($record->get_databox(), self::$DI['app']);
 
-        $crawler = self::$DI['client']->request('GET', '/datafiles/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/preview/');
+        self::$DI['client']->request('GET', '/datafiles/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/preview/');
         $response = self::$DI['client']->getResponse();
 
         /* @var $response \Symfony\Component\HttpFoundation\Response */
@@ -44,8 +40,6 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(0, $response->getTtl());
         $this->assertGreaterThanOrEqual(0, $response->getAge());
         $this->assertNull($response->getExpires());
-
-        unlink($tmp);
     }
 
     public function testDatafilesRouteNotAuthenticated()

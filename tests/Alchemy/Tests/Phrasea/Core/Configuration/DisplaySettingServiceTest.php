@@ -35,6 +35,7 @@ class DisplaySettingServiceTest extends \PhraseanetTestCase
             self::$DI['app']['conf']->set('registry', self::$appSettings);
         }
 
+        self::$userSettings = self::$appSettings = null;
         parent::tearDownAfterClass();
     }
 

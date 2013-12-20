@@ -15,45 +15,33 @@ class oauthv2_application_test extends \PhraseanetAuthenticatedWebTestCase
      *
      * @var API_OAuth2_Application
      */
-    public static $appli;
     public static $account_id;
     public static $account;
     public $oauth;
     protected $client;
     protected $queryParameters;
 
-    public function bootTestCase()
-    {
-        self::$appli = \API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test');
-        self::$appli->set_description('une description')
-            ->set_redirect_uri('http://callback.com/callback/')
-            ->set_website('http://website.com/')
-            ->set_type(\API_OAuth2_Application::WEB_TYPE);
-    }
-
-    public static function tearDownAfterClass()
-    {
-        if (self::$appli !== false) {
-            self::deleteInsertedRow(self::$DI['app']['phraseanet.appbox'], self::$appli);
-        }
-        self::$appli = null;
-        parent::tearDownAfterClass();
-    }
-
     public function setUp()
     {
         parent::setUp();
 
-        $environment = 'test';
-        self::$DI['app'] = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Api.php';
+        self::$DI['app'] = self::$DI->share(function ($DI) {
+            return $this->loadApp('/lib/Alchemy/Phrasea/Application/Api.php');
+        });
 
         $this->queryParameters = [
             "response_type" => "code",
-            "client_id"     => self::$appli->get_client_id(),
-            "redirect_uri"  => self::$appli->get_redirect_uri(),
+            "client_id"     => self::$DI['oauth2-app-user']->get_client_id(),
+            "redirect_uri"  => self::$DI['oauth2-app-user']->get_redirect_uri(),
             "scope"         => "",
             "state"         => "valueTest"
         ];
+    }
+
+    public static function tearDownAfterClass()
+    {
+        self::$account_id = self::$account = null;
+        parent::tearDownAfterClass();
     }
 
     public static function deleteInsertedRow(\appbox $appbox, \API_OAuth2_Application $app)
@@ -121,7 +109,7 @@ class oauthv2_application_test extends \PhraseanetAuthenticatedWebTestCase
     public static function getAccount()
     {
         $sql = "SELECT api_account_id FROM api_accounts WHERE application_id = :app_id AND usr_id = :usr_id";
-        $t = [":app_id" => self::$appli->get_id(), ":usr_id" => self::$DI['user']->get_id()];
+        $t = [":app_id" => self::$DI['oauth2-app-user']->get_id(), ":usr_id" => self::$DI['user']->get_id()];
         $conn = self::$DI['app']['phraseanet.appbox']->get_connection();
         $stmt = $conn->prepare($sql);
         $stmt->execute($t);
@@ -146,7 +134,7 @@ class oauthv2_application_test extends \PhraseanetAuthenticatedWebTestCase
         //session off
         $apps = \API_OAuth2_Application::load_authorized_app_by_user(self::$DI['app'], self::$DI['user']);
         foreach ($apps as $app) {
-            if ($app->get_client_id() == self::$appli->get_client_id()) {
+            if ($app->get_client_id() == self::$DI['oauth2-app-user']->get_client_id()) {
                 $authorize = true;
 
                 self::$DI['client']->followRedirects();
@@ -159,10 +147,10 @@ class oauthv2_application_test extends \PhraseanetAuthenticatedWebTestCase
         $acc = self::getAccount();
         $acc->set_revoked(true); // revoked to show form
 
-        $crawler = self::$DI['client']->request('GET', '/api/oauthv2/authorize', $this->queryParameters);
+        self::$DI['client']->request('GET', '/api/oauthv2/authorize', $this->queryParameters);
         $this->assertTrue(self::$DI['client']->getResponse()->isSuccessful());
-        $this->assertRegExp("/" . self::$appli->get_client_id() . "/", self::$DI['client']->getResponse()->getContent());
-        $this->assertRegExp("/" . str_replace("/", '\/', self::$appli->get_redirect_uri()) . "/", self::$DI['client']->getResponse()->getContent());
+        $this->assertRegExp("/" . self::$DI['oauth2-app-user']->get_client_id() . "/", self::$DI['client']->getResponse()->getContent());
+        $this->assertRegExp("/" . str_replace("/", '\/', self::$DI['oauth2-app-user']->get_redirect_uri()) . "/", self::$DI['client']->getResponse()->getContent());
         $this->assertRegExp("/" . $this->queryParameters["response_type"] . "/", self::$DI['client']->getResponse()->getContent());
         $this->assertRegExp("/" . $this->queryParameters["scope"] . "/", self::$DI['client']->getResponse()->getContent());
         $this->assertRegExp("/" . $this->queryParameters["state"] . "/", self::$DI['client']->getResponse()->getContent());

@@ -30,14 +30,14 @@ class ApiJSONPApplication extends ApiTestCase
         $this->assertEquals(200, $response->getStatusCode(), 'Test status code 405 ' . $response->getContent());
     }
 
-    public function getParameters(array $parameters = [])
+    protected function getParameters(array $parameters = [])
     {
         $parameters['callback'] = 'jsFunction';
 
         return $parameters;
     }
 
-    public function unserialize($data)
+    protected function unserialize($data)
     {
         if (strpos($data, 'jsFunction(') !== 0) {
             $this->fail('Invalid JSONP response');
@@ -50,7 +50,7 @@ class ApiJSONPApplication extends ApiTestCase
         return json_decode(substr($data, 11, -1), true);
     }
 
-    public function getAcceptMimeType()
+    protected function getAcceptMimeType()
     {
         return 'application/json';
     }

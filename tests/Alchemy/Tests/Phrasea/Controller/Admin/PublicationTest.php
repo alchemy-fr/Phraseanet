@@ -8,6 +8,12 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetAuthenticatedWebTest
     public static $api = null;
     protected $client;
 
+    public static function tearDownAfterClass()
+    {
+        self::$account = self::$api = null;
+        parent::tearDownAfterClass();
+    }
+
     public function testList()
     {
         $crawler = self::$DI['client']->request('GET', '/admin/publications/list/');

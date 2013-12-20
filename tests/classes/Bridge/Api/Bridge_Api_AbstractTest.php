@@ -44,6 +44,7 @@ class Bridge_Api_AbstractTest extends \PhraseanetWebTestCase
         if (self::$account instanceof Bridge_Account) {
             self::$account->delete();
         }
+        self::$api = self::$account = null;
         parent::tearDownAfterClass();
     }
 

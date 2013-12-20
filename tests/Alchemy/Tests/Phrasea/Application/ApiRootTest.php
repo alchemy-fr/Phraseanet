@@ -9,7 +9,7 @@ class ApiRootTest extends \PhraseanetWebTestCase
 {
     /**
      *
-     * @var Symfony\Component\HttpKernel\Client
+     * @var \Symfony\Component\HttpKernel\Client
      */
     protected $client;
 
@@ -17,15 +17,9 @@ class ApiRootTest extends \PhraseanetWebTestCase
     {
         parent::setUp();
 
-        self::$DI['app'] = self::$DI->share(function () {
-            $environment = 'test';
-            $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Api.php';
-
-            $app['debug'] = true;
-
-            return $app;
+        self::$DI['app'] = self::$DI->share(function ($DI) {
+            return $this->loadApp('/lib/Alchemy/Phrasea/Application/Api.php');
         });
-
     }
 
     public function testRoot()

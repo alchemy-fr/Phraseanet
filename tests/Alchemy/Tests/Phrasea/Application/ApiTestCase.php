@@ -7,6 +7,7 @@ use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Model\Entities\Task;
+use Guzzle\Common\Exception\GuzzleException;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -37,12 +38,11 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
      * @var \API_OAuth2_Application
      */
     private static $adminApplication;
-    private static $databoxe_ids = [];
     private static $apiInitialized = false;
 
-    abstract public function getParameters(array $parameters = []);
-    abstract public function unserialize($data);
-    abstract public function getAcceptMimeType();
+    abstract protected function getParameters(array $parameters = []);
+    abstract protected function unserialize($data);
+    abstract protected function getAcceptMimeType();
 
     public function tearDown()
     {
@@ -59,33 +59,19 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         });
 
         if (!self::$apiInitialized) {
-            self::$oauthApplication = \API_OAuth2_Application::create(self::$DI['app'], self::$DI['user_notAdmin'], 'test API v1');
-            self::$account = \API_OAuth2_Account::load_with_user(self::$DI['app'], self::$oauthApplication, self::$DI['user_notAdmin']);
+            self::$account = \API_OAuth2_Account::load_with_user(self::$DI['app'], self::$DI['oauth2-app-user_notAdmin'], self::$DI['user_notAdmin']);
             self::$token = self::$account->get_token()->get_value();
 
-            self::$adminToken = null;
-
-            self::$adminApplication = \API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test2 API v1');
-            self::$adminAccount = \API_OAuth2_Account::load_with_user(self::$DI['app'], self::$adminApplication, self::$DI['user']);
+            self::$adminAccount = \API_OAuth2_Account::load_with_user(self::$DI['app'], self::$DI['oauth2-app-user'], self::$DI['user']);
             self::$adminToken = self::$adminAccount->get_token()->get_value();
+
             self::$apiInitialized = true;
         }
     }
 
     public static function tearDownAfterClass()
     {
-        //delete database entry
-        self::$account->delete();
-        self::$oauthApplication->delete();
-
-        if (self::$adminToken) {
-            self::$adminAccount->delete();
-            self::$adminApplication->delete();
-        }
-
         self::$apiInitialized = false;
-        self::$databoxe_ids = [];
-
         self::$token = self::$account = self::$oauthApplication = self::$adminToken
             = self::$adminAccount = self::$adminApplication = null;
 
@@ -168,7 +154,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $this->assertArrayHasKey('de', $databox['labels']);
             $this->assertArrayHasKey('nl', $databox['labels']);
             $this->assertArrayHasKey('version', $databox);
-            self::$databoxe_ids[] = $databox['databox_id'];
+            break;
         }
     }
 
@@ -596,34 +582,34 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testDataboxCollectionRoute()
     {
         $this->setToken(self::$token);
-        foreach (self::$databoxe_ids as $databox_id) {
-            $route = '/api/v1/databoxes/' . $databox_id . '/collections/';
-            $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
+        $databox_id = self::$DI['record_1']->get_sbas_id();
+        $route = '/api/v1/databoxes/' . $databox_id . '/collections/';
+        $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-            $crawler = self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-            $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
-            $this->evaluateResponse200(self::$DI['client']->getResponse());
-            $this->evaluateMeta200($content);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateMeta200($content);
 
-            $this->assertArrayHasKey('collections', $content['response']);
-            foreach ($content['response']['collections'] as $collection) {
-                $this->assertTrue(is_array($collection), 'Une collection est un objet');
-                $this->assertArrayHasKey('base_id', $collection);
-                $this->assertArrayHasKey('collection_id', $collection);
-                $this->assertArrayHasKey('name', $collection);
-                $this->assertArrayHasKey('labels', $collection);
-                $this->assertArrayHasKey('fr', $collection['labels']);
-                $this->assertArrayHasKey('en', $collection['labels']);
-                $this->assertArrayHasKey('de', $collection['labels']);
-                $this->assertArrayHasKey('nl', $collection['labels']);
-                $this->assertArrayHasKey('record_amount', $collection);
-                $this->assertTrue(is_int($collection['base_id']));
-                $this->assertGreaterThan(0, $collection['base_id']);
-                $this->assertTrue(is_int($collection['collection_id']));
-                $this->assertGreaterThan(0, $collection['collection_id']);
-                $this->assertTrue(is_string($collection['name']));
-                $this->assertTrue(is_int($collection['record_amount']));
-            }
+        $this->assertArrayHasKey('collections', $content['response']);
+        foreach ($content['response']['collections'] as $collection) {
+            $this->assertTrue(is_array($collection), 'Une collection est un objet');
+            $this->assertArrayHasKey('base_id', $collection);
+            $this->assertArrayHasKey('collection_id', $collection);
+            $this->assertArrayHasKey('name', $collection);
+            $this->assertArrayHasKey('labels', $collection);
+            $this->assertArrayHasKey('fr', $collection['labels']);
+            $this->assertArrayHasKey('en', $collection['labels']);
+            $this->assertArrayHasKey('de', $collection['labels']);
+            $this->assertArrayHasKey('nl', $collection['labels']);
+            $this->assertArrayHasKey('record_amount', $collection);
+            $this->assertTrue(is_int($collection['base_id']));
+            $this->assertGreaterThan(0, $collection['base_id']);
+            $this->assertTrue(is_int($collection['collection_id']));
+            $this->assertGreaterThan(0, $collection['collection_id']);
+            $this->assertTrue(is_string($collection['name']));
+            $this->assertTrue(is_int($collection['record_amount']));
+            break;
         }
         $route = '/api/v1/databoxes/24892534/collections/';
         $this->evaluateNotFoundRoute($route, ['GET']);
@@ -640,43 +626,43 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testDataboxStatusRoute()
     {
         $this->setToken(self::$token);
-        foreach (self::$databoxe_ids as $databox_id) {
-            $databox = self::$DI['app']['phraseanet.appbox']->get_databox($databox_id);
-            $ref_status = $databox->get_statusbits();
-            $route = '/api/v1/databoxes/' . $databox_id . '/status/';
-            $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
+        $databox_id = self::$DI['record_1']->get_sbas_id();
+        $databox = self::$DI['app']['phraseanet.appbox']->get_databox($databox_id);
+        $ref_status = $databox->get_statusbits();
+        $route = '/api/v1/databoxes/' . $databox_id . '/status/';
+        $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-            $crawler = self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-            $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
-            $this->evaluateResponse200(self::$DI['client']->getResponse());
-            $this->evaluateMeta200($content);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateMeta200($content);
 
-            $this->assertArrayHasKey('status', $content['response']);
-            foreach ($content['response']['status'] as $status) {
-                $this->assertTrue(is_array($status), 'Un bloc status est un objet');
-                $this->assertArrayHasKey('bit', $status);
-                $this->assertTrue(is_int($status['bit']));
-                $this->assertGreaterThan(3, $status['bit']);
-                $this->assertLessThan(65, $status['bit']);
-                $this->assertArrayHasKey('label_on', $status);
-                $this->assertArrayHasKey('label_off', $status);
-                $this->assertArrayHasKey('labels', $status);
-                $this->assertArrayHasKey('fr', $status['labels']);
-                $this->assertArrayHasKey('en', $status['labels']);
-                $this->assertArrayHasKey('de', $status['labels']);
-                $this->assertArrayHasKey('nl', $status['labels']);
-                $this->assertArrayHasKey('img_on', $status);
-                $this->assertArrayHasKey('img_off', $status);
-                $this->assertArrayHasKey('searchable', $status);
-                $this->assertArrayHasKey('printable', $status);
-                $this->assertTrue(is_bool($status['searchable']));
-                $this->assertTrue($status['searchable'] === (bool) $ref_status[$status['bit']]['searchable']);
-                $this->assertTrue(is_bool($status['printable']));
-                $this->assertTrue($status['printable'] === (bool) $ref_status[$status['bit']]['printable']);
-                $this->assertTrue($status['label_on'] === $ref_status[$status['bit']]['labelon']);
-                $this->assertTrue($status['img_off'] === $ref_status[$status['bit']]['img_off']);
-                $this->assertTrue($status['img_on'] === $ref_status[$status['bit']]['img_on']);
-            }
+        $this->assertArrayHasKey('status', $content['response']);
+        foreach ($content['response']['status'] as $status) {
+            $this->assertTrue(is_array($status), 'Un bloc status est un objet');
+            $this->assertArrayHasKey('bit', $status);
+            $this->assertTrue(is_int($status['bit']));
+            $this->assertGreaterThan(3, $status['bit']);
+            $this->assertLessThan(65, $status['bit']);
+            $this->assertArrayHasKey('label_on', $status);
+            $this->assertArrayHasKey('label_off', $status);
+            $this->assertArrayHasKey('labels', $status);
+            $this->assertArrayHasKey('fr', $status['labels']);
+            $this->assertArrayHasKey('en', $status['labels']);
+            $this->assertArrayHasKey('de', $status['labels']);
+            $this->assertArrayHasKey('nl', $status['labels']);
+            $this->assertArrayHasKey('img_on', $status);
+            $this->assertArrayHasKey('img_off', $status);
+            $this->assertArrayHasKey('searchable', $status);
+            $this->assertArrayHasKey('printable', $status);
+            $this->assertTrue(is_bool($status['searchable']));
+            $this->assertTrue($status['searchable'] === (bool) $ref_status[$status['bit']]['searchable']);
+            $this->assertTrue(is_bool($status['printable']));
+            $this->assertTrue($status['printable'] === (bool) $ref_status[$status['bit']]['printable']);
+            $this->assertTrue($status['label_on'] === $ref_status[$status['bit']]['labelon']);
+            $this->assertTrue($status['img_off'] === $ref_status[$status['bit']]['img_off']);
+            $this->assertTrue($status['img_on'] === $ref_status[$status['bit']]['img_on']);
+            break;
         }
         $route = '/api/v1/databoxes/24892534/status/';
         $this->evaluateNotFoundRoute($route, ['GET']);
@@ -694,77 +680,77 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testDataboxMetadatasRoute()
     {
         $this->setToken(self::$token);
-        foreach (self::$databoxe_ids as $databox_id) {
-            $databox = self::$DI['app']['phraseanet.appbox']->get_databox($databox_id);
-            $ref_structure = $databox->get_meta_structure();
+        $databox_id = self::$DI['record_1']->get_sbas_id();
+        $databox = self::$DI['app']['phraseanet.appbox']->get_databox($databox_id);
+        $ref_structure = $databox->get_meta_structure();
 
-            try {
-                $ref_structure->get_element('idbarbouze');
-                $this->fail('An expected exception has not been raised.');
-            } catch (\Exception_Databox_FieldNotFound $e) {
+        try {
+            $ref_structure->get_element('idbarbouze');
+            $this->fail('An expected exception has not been raised.');
+        } catch (\Exception_Databox_FieldNotFound $e) {
 
+        }
+
+        $route = '/api/v1/databoxes/' . $databox_id . '/metadatas/';
+        $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
+
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateMeta200($content);
+
+        $this->assertArrayHasKey('document_metadatas', $content['response']);
+        foreach ($content['response']['document_metadatas'] as $metadatas) {
+            $this->assertTrue(is_array($metadatas), 'Un bloc metadata est un objet');
+            $this->assertArrayHasKey('id', $metadatas);
+            $this->assertArrayHasKey('namespace', $metadatas);
+            $this->assertArrayHasKey('source', $metadatas);
+            $this->assertArrayHasKey('tagname', $metadatas);
+            $this->assertArrayHasKey('name', $metadatas);
+            $this->assertArrayHasKey('separator', $metadatas);
+            $this->assertArrayHasKey('thesaurus_branch', $metadatas);
+            $this->assertArrayHasKey('type', $metadatas);
+            $this->assertArrayHasKey('labels', $metadatas);
+            $this->assertArrayHasKey('indexable', $metadatas);
+            $this->assertArrayHasKey('multivalue', $metadatas);
+            $this->assertArrayHasKey('readonly', $metadatas);
+            $this->assertArrayHasKey('required', $metadatas);
+
+            $this->assertTrue(is_int($metadatas['id']));
+            $this->assertTrue(is_string($metadatas['namespace']));
+            $this->assertTrue(is_string($metadatas['name']));
+            $this->assertTrue(is_array($metadatas['labels']));
+            $this->assertTrue(is_null($metadatas['source']) || is_string($metadatas['source']));
+            $this->assertTrue(is_string($metadatas['tagname']));
+            $this->assertTrue((strlen($metadatas['name']) > 0));
+            $this->assertTrue(is_string($metadatas['separator']));
+
+            $this->assertEquals(['fr', 'en', 'de', 'nl'], array_keys($metadatas['labels']));
+
+            if ($metadatas['multivalue']) {
+                $this->assertTrue((strlen($metadatas['separator']) > 0));
             }
 
-            $route = '/api/v1/databoxes/' . $databox_id . '/metadatas/';
-            $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
+            $this->assertTrue(is_string($metadatas['thesaurus_branch']));
+            $this->assertTrue(in_array($metadatas['type'], [\databox_field::TYPE_DATE, \databox_field::TYPE_STRING, \databox_field::TYPE_NUMBER, \databox_field::TYPE_TEXT]));
+            $this->assertTrue(is_bool($metadatas['indexable']));
+            $this->assertTrue(is_bool($metadatas['multivalue']));
+            $this->assertTrue(is_bool($metadatas['readonly']));
+            $this->assertTrue(is_bool($metadatas['required']));
 
-            $crawler = self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-            $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
-            $this->evaluateResponse200(self::$DI['client']->getResponse());
-            $this->evaluateMeta200($content);
-
-            $this->assertArrayHasKey('document_metadatas', $content['response']);
-            foreach ($content['response']['document_metadatas'] as $metadatas) {
-                $this->assertTrue(is_array($metadatas), 'Un bloc metadata est un objet');
-                $this->assertArrayHasKey('id', $metadatas);
-                $this->assertArrayHasKey('namespace', $metadatas);
-                $this->assertArrayHasKey('source', $metadatas);
-                $this->assertArrayHasKey('tagname', $metadatas);
-                $this->assertArrayHasKey('name', $metadatas);
-                $this->assertArrayHasKey('separator', $metadatas);
-                $this->assertArrayHasKey('thesaurus_branch', $metadatas);
-                $this->assertArrayHasKey('type', $metadatas);
-                $this->assertArrayHasKey('labels', $metadatas);
-                $this->assertArrayHasKey('indexable', $metadatas);
-                $this->assertArrayHasKey('multivalue', $metadatas);
-                $this->assertArrayHasKey('readonly', $metadatas);
-                $this->assertArrayHasKey('required', $metadatas);
-
-                $this->assertTrue(is_int($metadatas['id']));
-                $this->assertTrue(is_string($metadatas['namespace']));
-                $this->assertTrue(is_string($metadatas['name']));
-                $this->assertTrue(is_array($metadatas['labels']));
-                $this->assertTrue(is_null($metadatas['source']) || is_string($metadatas['source']));
-                $this->assertTrue(is_string($metadatas['tagname']));
-                $this->assertTrue((strlen($metadatas['name']) > 0));
-                $this->assertTrue(is_string($metadatas['separator']));
-
-                $this->assertEquals(['fr', 'en', 'de', 'nl'], array_keys($metadatas['labels']));
-
-                if ($metadatas['multivalue']) {
-                    $this->assertTrue((strlen($metadatas['separator']) > 0));
-                }
-
-                $this->assertTrue(is_string($metadatas['thesaurus_branch']));
-                $this->assertTrue(in_array($metadatas['type'], [\databox_field::TYPE_DATE, \databox_field::TYPE_STRING, \databox_field::TYPE_NUMBER, \databox_field::TYPE_TEXT]));
-                $this->assertTrue(is_bool($metadatas['indexable']));
-                $this->assertTrue(is_bool($metadatas['multivalue']));
-                $this->assertTrue(is_bool($metadatas['readonly']));
-                $this->assertTrue(is_bool($metadatas['required']));
-
-                $element = $ref_structure->get_element($metadatas['id']);
-                $this->assertTrue($element->is_indexable() === $metadatas['indexable']);
-                $this->assertTrue($element->is_required() === $metadatas['required']);
-                $this->assertTrue($element->is_readonly() === $metadatas['readonly']);
-                $this->assertTrue($element->is_multi() === $metadatas['multivalue']);
-                $this->assertTrue($element->get_type() === $metadatas['type']);
-                $this->assertTrue($element->get_tbranch() === $metadatas['thesaurus_branch']);
-                $this->assertTrue($element->get_separator() === $metadatas['separator']);
-                $this->assertTrue($element->get_name() === $metadatas['name']);
-                $this->assertTrue($element->get_tag()->getName() === $metadatas['tagname']);
-                $this->assertTrue($element->get_tag()->getTagname() === $metadatas['source']);
-                $this->assertTrue($element->get_tag()->getGroupName() === $metadatas['namespace']);
-            }
+            $element = $ref_structure->get_element($metadatas['id']);
+            $this->assertTrue($element->is_indexable() === $metadatas['indexable']);
+            $this->assertTrue($element->is_required() === $metadatas['required']);
+            $this->assertTrue($element->is_readonly() === $metadatas['readonly']);
+            $this->assertTrue($element->is_multi() === $metadatas['multivalue']);
+            $this->assertTrue($element->get_type() === $metadatas['type']);
+            $this->assertTrue($element->get_tbranch() === $metadatas['thesaurus_branch']);
+            $this->assertTrue($element->get_separator() === $metadatas['separator']);
+            $this->assertTrue($element->get_name() === $metadatas['name']);
+            $this->assertTrue($element->get_tag()->getName() === $metadatas['tagname']);
+            $this->assertTrue($element->get_tag()->getTagname() === $metadatas['source']);
+            $this->assertTrue($element->get_tag()->getGroupName() === $metadatas['namespace']);
+            break;
         }
         $route = '/api/v1/databoxes/24892534/metadatas/';
         $this->evaluateNotFoundRoute($route, ['GET']);
@@ -782,22 +768,22 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testDataboxTermsOfUseRoute()
     {
         $this->setToken(self::$token);
-        foreach (self::$databoxe_ids as $databox_id) {
-            $route = '/api/v1/databoxes/' . $databox_id . '/termsOfUse/';
-            $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
+        $databox_id = self::$DI['record_1']->get_sbas_id();
+        $route = '/api/v1/databoxes/' . $databox_id . '/termsOfUse/';
+        $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-            self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-            $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
-            $this->evaluateResponse200(self::$DI['client']->getResponse());
-            $this->evaluateMeta200($content);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateMeta200($content);
 
-            $this->assertArrayHasKey('termsOfUse', $content['response']);
-            foreach ($content['response']['termsOfUse'] as $terms) {
-                $this->assertTrue(is_array($terms), 'Une bloc cgu est un objet');
-                $this->assertArrayHasKey('locale', $terms);
-                $this->assertTrue(in_array($terms['locale'], array_keys(Application::getAvailableLanguages())));
-                $this->assertArrayHasKey('terms', $terms);
-            }
+        $this->assertArrayHasKey('termsOfUse', $content['response']);
+        foreach ($content['response']['termsOfUse'] as $terms) {
+            $this->assertTrue(is_array($terms), 'Une bloc cgu est un objet');
+            $this->assertArrayHasKey('locale', $terms);
+            $this->assertTrue(in_array($terms['locale'], array_keys(Application::getAvailableLanguages())));
+            $this->assertArrayHasKey('terms', $terms);
+            break;
         }
         $route = '/api/v1/databoxes/24892534/termsOfUse/';
         $this->evaluateNotFoundRoute($route, ['GET']);
@@ -815,7 +801,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testSearchRoute()
     {
         $this->setToken(self::$token);
-        $crawler = self::$DI['client']->request('POST', '/api/v1/search/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', '/api/v1/search/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -852,7 +838,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         self::$DI['record_story_1'];
 
-        $crawler = self::$DI['client']->request('POST', '/api/v1/search/', $this->getParameters(['search_type' => 1]), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', '/api/v1/search/', $this->getParameters(['search_type' => 1]), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -885,7 +871,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testRecordsSearchRoute()
     {
         $this->setToken(self::$token);
-        $crawler = self::$DI['client']->request('POST', '/api/v1/records/search/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', '/api/v1/records/search/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -897,6 +883,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         foreach ($response['results'] as $record) {
             $this->evaluateGoodRecord($record);
+            break;
         }
     }
 
@@ -915,7 +902,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
                         ->disableOriginalConstructor()
                         ->getMock()
                 ));
-        $crawler = self::$DI['client']->request($method, '/api/v1/records/search/', $this->getParameters(['query' => 'koala']), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request($method, '/api/v1/records/search/', $this->getParameters(['query' => 'koala']), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
     }
 
     public function provideAvailableSearchMethods()
@@ -1013,8 +1000,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken(self::$token);
 
-        $keys = array_keys(self::$DI['record_1']->get_subdefs());
-
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
@@ -1078,14 +1063,12 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(['mimes' => ['image/jpg', 'image/jpeg']]), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(['mimes' => ['image/png']]), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->assertArrayHasKey('embed', $content['response']);
 
-        foreach ($content['response']['embed'] as $embed) {
-            $this->checkEmbed($embed, self::$DI['record_1']);
-        }
+        $this->assertEquals(0, count($content['response']['embed']));
     }
 
     /**
@@ -1213,7 +1196,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         }
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
 
-        $crawler = self::$DI['client']->request('POST', $route, $this->getParameters(['status' => $tochange]), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters(['status' => $tochange]), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         /**
@@ -1235,7 +1218,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $tochange[$n] = $value == '0' ? '1' : '0';
         }
 
-        $crawler = self::$DI['client']->request('POST', $route, $this->getParameters(['status' => $tochange]), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters(['status' => $tochange]), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         /**
@@ -1394,7 +1377,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
 
-        $crawler = self::$DI['client']->request('POST', $route, $this->getParameters(['name' => 'un Joli Nom']), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters(['name' => 'un Joli Nom']), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1406,7 +1389,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $this->assertEquals($content['response']['basket']['name'], 'un Joli Nom');
 
-        $crawler = self::$DI['client']->request('POST', $route, $this->getParameters(['name' => 'un Joli Nom']), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters(['name' => 'un Joli Nom']), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1420,7 +1403,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $this->assertEquals($content['response']['basket']['name'], 'un Joli Nom');
 
-        $crawler = self::$DI['client']->request('POST', $route, $this->getParameters(['name' => '<strong>aéaa']), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters(['name' => '<strong>aéaa']), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1660,8 +1643,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
      */
     public function testFeedList()
     {
-        $title = 'Yellow title';
-
         $created_feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
 
         $this->setToken(self::$token);
@@ -2063,7 +2044,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     protected function evaluateNotFoundRoute($route, $methods)
     {
         foreach ($methods as $method) {
-            $crawler = self::$DI['client']->request($method, $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+            self::$DI['client']->request($method, $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
             $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
             $this->evaluateResponseNotFound(self::$DI['client']->getResponse());
@@ -2076,109 +2057,142 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         if ($embed['filesize'] === 0) {
             var_dump($embed);
         }
+        $subdef = $record->get_subdef($embed['name']);
         $this->assertArrayHasKey("name", $embed);
         $this->assertArrayHasKey("permalink", $embed);
-        $this->checkPermalink($embed['permalink'], $record->get_subdef($embed['name']));
+        $this->checkPermalink($embed['permalink'], $subdef);
         $this->assertArrayHasKey("height", $embed);
-        $this->assertEquals($embed['height'], $record->get_subdef($embed['name'])->get_height());
+        $this->assertEquals($embed['height'], $subdef->get_height());
         $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT, $embed['height']);
         $this->assertArrayHasKey("width", $embed);
-        $this->assertEquals($embed['width'], $record->get_subdef($embed['name'])->get_width());
+        $this->assertEquals($embed['width'], $subdef->get_width());
         $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT, $embed['width']);
         $this->assertArrayHasKey("filesize", $embed);
-        $this->assertEquals($embed['filesize'], $record->get_subdef($embed['name'])->get_size());
+        $this->assertEquals($embed['filesize'], $subdef->get_size());
         $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT, $embed['filesize']);
         $this->assertArrayHasKey("player_type", $embed);
-        $this->assertEquals($embed['player_type'], $record->get_subdef($embed['name'])->get_type());
+        $this->assertEquals($embed['player_type'], $subdef->get_type());
         $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $embed['player_type']);
         $this->assertArrayHasKey("mime_type", $embed);
-        $this->assertEquals($embed['mime_type'], $record->get_subdef($embed['name'])->get_mime());
+        $this->assertEquals($embed['mime_type'], $subdef->get_mime());
         $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $embed['mime_type']);
         $this->assertArrayHasKey("devices", $embed);
-        $this->assertEquals($embed['devices'], $record->get_subdef($embed['name'])->getDevices());
+        $this->assertEquals($embed['devices'], $subdef->getDevices());
         $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $embed['devices']);
     }
 
     protected function checkPermalink($permalink, \media_subdef $subdef)
     {
-        if ($subdef->is_physically_present()) {
-            $this->assertNotNull($subdef->get_permalink());
-            $this->assertInternalType('array', $permalink);
-            $this->assertArrayHasKey("created_on", $permalink);
-            $now = new \Datetime($permalink['created_on']);
-            $interval = $now->diff($subdef->get_permalink()->get_created_on());
-            $this->assertTrue(abs($interval->format('U')) < 2);
-            $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['created_on']);
-            $this->assertDateAtom($permalink['created_on']);
-            $this->assertArrayHasKey("id", $permalink);
-            $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT, $permalink['id']);
-            $this->assertEquals($subdef->get_permalink()->get_id(), $permalink['id']);
-            $this->assertArrayHasKey("is_activated", $permalink);
-            $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_BOOL, $permalink['is_activated']);
-            $this->assertEquals($subdef->get_permalink()->get_is_activated(), $permalink['is_activated']);
-            $this->assertArrayHasKey("label", $permalink);
-            $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['label']);
-            $this->assertArrayHasKey("updated_on", $permalink);
-            $this->assertEquals($subdef->get_permalink()->get_last_modified()->format(DATE_ATOM), $permalink['updated_on']);
-            $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['updated_on']);
-            $this->assertDateAtom($permalink['updated_on']);
-            $this->assertArrayHasKey("page_url", $permalink);
-            $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['page_url']);
-            $this->assertEquals($subdef->get_permalink()->get_page(self::$DI['app']['phraseanet.registry']), $permalink['page_url']);
-            $this->checkUrlCode200($permalink['page_url']);
-            $this->assertPermalinkHeaders($permalink['page_url'], $subdef);
-
-            $this->assertArrayHasKey("url", $permalink);
-            $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['url']);
-            $this->assertEquals($subdef->get_permalink()->get_url(), $permalink['url']);
-            $this->checkUrlCode200($permalink['url']);
-            $this->assertPermalinkHeaders($permalink['url'], $subdef, "url");
-
-            $this->assertArrayHasKey("download_url", $permalink);
-            $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['download_url']);
-            $this->assertEquals($subdef->get_permalink()->get_url() . '&download', $permalink['download_url']);
-            $this->checkUrlCode200($permalink['download_url']);
-            $this->assertPermalinkHeaders($permalink['download_url'], $subdef, "download_url");
+        if (!$subdef->is_physically_present()) {
+            return;
         }
+        $start = microtime(true);
+        $this->assertNotNull($subdef->get_permalink());
+        $this->assertInternalType('array', $permalink);
+        $this->assertArrayHasKey("created_on", $permalink);
+        $now = new \Datetime($permalink['created_on']);
+        $interval = $now->diff($subdef->get_permalink()->get_created_on());
+        $this->assertTrue(abs($interval->format('U')) < 2);
+        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['created_on']);
+        $this->assertDateAtom($permalink['created_on']);
+        $this->assertArrayHasKey("id", $permalink);
+        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT, $permalink['id']);
+        $this->assertEquals($subdef->get_permalink()->get_id(), $permalink['id']);
+        $this->assertArrayHasKey("is_activated", $permalink);
+        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_BOOL, $permalink['is_activated']);
+        $this->assertEquals($subdef->get_permalink()->get_is_activated(), $permalink['is_activated']);
+        $this->assertArrayHasKey("label", $permalink);
+        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['label']);
+        $this->assertArrayHasKey("updated_on", $permalink);
+        $this->assertEquals($subdef->get_permalink()->get_last_modified()->format(DATE_ATOM), $permalink['updated_on']);
+        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['updated_on']);
+        $this->assertDateAtom($permalink['updated_on']);
+        $this->assertArrayHasKey("page_url", $permalink);
+        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['page_url']);
+        $this->assertEquals($subdef->get_permalink()->get_page(self::$DI['app']['phraseanet.registry']), $permalink['page_url']);
+        $this->checkUrlCode200($permalink['page_url']);
+        $this->assertPermalinkHeaders($permalink['page_url'], $subdef);
+
+        $this->assertArrayHasKey("url", $permalink);
+        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['url']);
+        $this->assertEquals($subdef->get_permalink()->get_url(), $permalink['url']);
+        $this->checkUrlCode200($permalink['url']);
+        $this->assertPermalinkHeaders($permalink['url'], $subdef, "url");
+
+        $this->assertArrayHasKey("download_url", $permalink);
+        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['download_url']);
+        $this->assertEquals($subdef->get_permalink()->get_url() . '&download', $permalink['download_url']);
+        $this->checkUrlCode200($permalink['download_url']);
+        $this->assertPermalinkHeaders($permalink['download_url'], $subdef, "download_url");
+    }
+
+    private function executeRequest($url)
+    {
+        static $request = [];
+
+        if (isset($request[$url])) {
+            return $request[$url];
+        }
+
+        static $webserver;
+
+        if (null === $webserver) {
+            try {
+                $code = self::$DI['local-guzzle']->head('/api/')->send()->getStatusCode();
+            } catch (GuzzleException $e) {
+                $code = null;
+            }
+            $webserver = ($code < 200 || $code >= 400) ? false : rtrim(self::$DI['app']['phraseanet.registry']->get('GV_ServerName'), '/');
+        }
+        if (false === $webserver) {
+            $this->markTestSkipped('Install does not seem to rely on a webserver');
+        }
+        if (0 === strpos($url, $webserver)) {
+            $url = substr($url, strlen($webserver));
+        }
+
+        return $request[$url] = self::$DI['local-guzzle']->head($url)->send();
     }
 
     protected function assertPermalinkHeaders($url, \media_subdef $subdef, $type_url = "page_url")
     {
-        $headers = \http_query::getHttpHeaders($url);
-        $this->assertEquals(200, $headers["http_code"]);
+        $response = $this->executeRequest($url);
+
+        $this->assertEquals(200, $response->getStatusCode());
 
         switch ($type_url) {
             case "page_url" :
-                $this->assertTrue(strpos($headers['content_type'], "text/html") === 0);
-                $this->assertNotEquals($subdef->get_size(), $headers["download_content_length"]);
+                $this->assertTrue(strpos((string) $response->getHeader('content-type'), "text/html") === 0);
+                if ($response->hasHeader('content-length')) {
+                    $this->assertNotEquals($subdef->get_size(), (string) $response->getHeader('content-length'));
+                }
                 break;
             case "url" :
-                $this->assertTrue(strpos($headers['content_type'], $subdef->get_mime()) === 0, 'Verify that header ' . $headers['content_type'] . ' contains subdef mime type ' . $subdef->get_mime());
-                $this->assertEquals($subdef->get_size(), $headers["download_content_length"]);
+                $this->assertTrue(strpos((string) $response->getHeader('content-type'), $subdef->get_mime()) === 0, 'Verify that header ' . (string) $response->getHeader('content-type') . ' contains subdef mime type ' . $subdef->get_mime());
+                if ($response->hasHeader('content-length')) {
+                    $this->assertEquals($subdef->get_size(), (string) $response->getHeader('content-length'));
+                }
                 break;
             case "download_url" :
-                $this->assertTrue(strpos($headers['content_type'], $subdef->get_mime()) === 0, 'Verify that header ' . $headers['content_type'] . ' contains subdef mime type ' . $subdef->get_mime());
-                $this->assertEquals($subdef->get_size(), $headers["download_content_length"]);
+                $this->assertTrue(strpos((string) $response->getHeader('content-type'), $subdef->get_mime()) === 0, 'Verify that header ' . (string) $response->getHeader('content-type') . ' contains subdef mime type ' . $subdef->get_mime());
+                if ($response->hasHeader('content-length')) {
+                    $this->assertEquals($subdef->get_size(), (string) $response->getHeader('content-length'));
+                }
                 break;
         }
     }
 
     protected function checkUrlCode200($url)
     {
-        $code = \http_query::getHttpCodeFromUrl(self::$DI['app']['phraseanet.registry']->get('GV_ServerName'));
-
-        if ($code == 0) {
-            $this->markTestSkipped('Install does not seem to rely on a webserver');
-        }
-
-        $code = \http_query::getHttpCodeFromUrl($url);
+        $response = $this->executeRequest($url);
+        $code = $response->getStatusCode();
         $this->assertEquals(200, $code, sprintf('verification de url %s', $url));
     }
 
     protected function evaluateMethodNotAllowedRoute($route, $methods)
     {
         foreach ($methods as $method) {
-            $crawler = self::$DI['client']->request($method, $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+            self::$DI['client']->request($method, $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
             $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
             $this->assertTrue(self::$DI['client']->getResponse()->headers->has('Allow'));
             $this->evaluateResponseMethodNotAllowed(self::$DI['client']->getResponse());

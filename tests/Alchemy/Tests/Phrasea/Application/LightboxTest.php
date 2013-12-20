@@ -4,7 +4,6 @@ namespace Alchemy\Tests\Phrasea\Application;
 
 class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
 {
-
     protected $client;
     protected $feed;
     protected $entry;
@@ -18,11 +17,6 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
             ->disableOriginalConstructor()
             ->getMock();
-    }
-
-    public function tearDown()
-    {
-        parent::tearDown();
     }
 
     public function testRouteSlash()

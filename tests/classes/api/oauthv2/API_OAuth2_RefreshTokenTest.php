@@ -14,20 +14,13 @@ class API_OAuth2_RefreshTokenTest extends \PhraseanetTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->application = API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test app');
-        $this->account = API_OAuth2_Account::load_with_user(self::$DI['app'], $this->application, self::$DI['user']);
+        $this->account = API_OAuth2_Account::load_with_user(self::$DI['app'], self::$DI['oauth2-app-user'], self::$DI['user']);
 
         $expires = time() + 100;
         $this->token = random::generatePassword(8);
         $this->scope = 'scopidou';
 
         $this->object = API_OAuth2_RefreshToken::create(self::$DI['app'], $this->account, $expires, $this->token, $this->scope);
-    }
-
-    public function tearDown()
-    {
-        $this->application->delete();
-        parent::tearDown();
     }
 
     public function testGet_value()

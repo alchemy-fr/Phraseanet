@@ -37,6 +37,12 @@ class BridgeApplication extends \PhraseanetAuthenticatedWebTestCase
         parent::tearDown();
     }
 
+    public static function tearDownAfterClass()
+    {
+        self::$api = self::$account = null;
+        parent::tearDownAfterClass();
+    }
+
     /**
      * @todo create a new basket dont take an existing one
      */

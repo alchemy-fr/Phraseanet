@@ -53,6 +53,9 @@ class Bridge_AccountTest extends \PhraseanetAuthenticatedTestCase
         if (self::$api) {
             self::$api->delete();
         }
+
+        self::$object = self::$api = self::$dist_id = self::$named = self::$id = null;
+
         parent::tearDownAfterClass();
     }
 

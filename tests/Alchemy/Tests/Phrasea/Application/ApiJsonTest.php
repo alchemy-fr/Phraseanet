@@ -4,18 +4,17 @@ namespace Alchemy\Tests\Phrasea\Application;
 
 class ApiJsonApplication extends ApiTestCase
 {
-
-    public function getParameters(array $parameters = [])
+    protected function getParameters(array $parameters = [])
     {
         return $parameters;
     }
 
-    public function unserialize($data)
+    protected function unserialize($data)
     {
         return json_decode($data, true);
     }
 
-    public function getAcceptMimeType()
+    protected function getAcceptMimeType()
     {
         return 'application/json';
     }

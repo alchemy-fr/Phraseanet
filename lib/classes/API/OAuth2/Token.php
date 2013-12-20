@@ -142,7 +142,7 @@ class API_OAuth2_Token
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        $this->session_id = (int) $session_id;
+        $this->session_id = $session_id !== null ? (int) $session_id : $session_id;
 
         return $this;
     }

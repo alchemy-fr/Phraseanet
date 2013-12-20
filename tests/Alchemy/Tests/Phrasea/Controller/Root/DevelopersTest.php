@@ -89,10 +89,9 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetApp()
     {
-        $oauthApp = \API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test app');
+        $oauthApp = self::$DI['oauth2-app-user'];
         self::$DI['client']->request('GET', '/developers/application/' . $oauthApp->get_id() . '/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $oauthApp->delete();
     }
 
     /**
@@ -123,9 +122,7 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
     public function testDeleteApp()
     {
         $oauthApp = \API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test app');
-
         $this->XMLHTTPRequest('DELETE', '/developers/application/' . $oauthApp->get_id() . '/');
-
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
         try {
@@ -165,10 +162,8 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testRenewAppCallbackError2()
     {
-         $oauthApp = \API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test app');
-
+        $oauthApp = self::$DI['oauth2-app-user'];
         $this->XMLHTTPRequest('POST', '/developers/application/'.$oauthApp->get_id().'/callback/');
-
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $content = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->assertFalse($content->success);
@@ -179,7 +174,7 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testRenewAppCallback()
     {
-        $oauthApp = \API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test app');
+        $oauthApp = self::$DI['oauth2-app-user'];
 
         $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->get_id() . '/callback/', [
             'callback' => 'my.callback.com'
@@ -222,7 +217,7 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testRenewAccessToken()
     {
-        $oauthApp = \API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test app');
+        $oauthApp = self::$DI['oauth2-app-user'];
 
         $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->get_id() . '/access_token/');
 
@@ -261,7 +256,7 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testAuthorizeGrantpasswordToken()
     {
-        $oauthApp = \API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test app');
+        $oauthApp = self::$DI['oauth2-app-user'];
 
         $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->get_id() . '/authorize_grant_password/', [
             'grant' => '1'
