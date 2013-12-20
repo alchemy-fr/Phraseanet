@@ -1905,7 +1905,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
               FROM regroup g
                 INNER JOIN (record r
                   INNER JOIN collusr c
-                    ON site = :GV_site
+                    ON site = :site
                       AND usr_id = :usr_id
                       AND c.coll_id = r.coll_id
                       AND ((status ^ mask_xor) & mask_and) = 0
@@ -1915,7 +1915,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
               ORDER BY g.ord ASC, dateadd ASC, record_id ASC';
 
             $params = [
-                ':GV_site'   => $this->app['conf']->get(['main', 'key']),
+                ':site'   => $this->app['conf']->get(['main', 'key']),
                 ':usr_id'    => $this->app['authentication']->getUser()->get_id(),
                 ':record_id' => $this->get_record_id(),
             ];
@@ -1956,7 +1956,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             FROM regroup g
               INNER JOIN (record r
                 INNER JOIN collusr c
-                  ON site = :GV_site
+                  ON site = :site
                     AND usr_id = :usr_id
                     AND c.coll_id = r.coll_id
                     AND ((status ^ mask_xor) & mask_and)=0
@@ -1966,7 +1966,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             WHERE rid_child = :record_id';
 
         $params = [
-            ':GV_site'   => $this->app['conf']->get(['main', 'key'])
+            ':site'   => $this->app['conf']->get(['main', 'key'])
             , ':usr_id'    => $this->app['authentication']->getUser()->get_id()
             , ':record_id' => $this->get_record_id()
         ];

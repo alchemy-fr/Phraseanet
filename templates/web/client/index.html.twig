@@ -1,6 +1,6 @@
 <html lang="{{ app['locale'] }}">
     <head>
-        <title>{{ app['phraseanet.registry'].get('GV_homeTitle') }} Client</title>
+        <title>{{ app['conf'].get(['registry', 'general', 'title']) }} Client</title>
         <meta http-equiv="X-UA-Compatible" content="chrome=1">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="shortcut icon" type="image/x-icon" href="/skins/client/favicon.ico" />
@@ -57,7 +57,7 @@
                                         {% set active_tab = '' %}
                                         {% for key_tab, tab in tabs_setup %}
                                             {% if key_tab != 0 %}
-                                                {% set tab_active = key_tab == app['phraseanet.registry'].get('GV_ong_actif') ? 'actif' : 'inactif' %}
+                                                {% set tab_active = key_tab == app['conf'].get(['registry', 'classic', 'active-tab']) ? 'actif' : 'inactif' %}
                                                 {% if tab == 1 %}
                                                     {% if tab_active == 'actif' %}
                                                         {% set active_tab = 'ongSearch' %}
@@ -107,7 +107,7 @@
                                                     <input type="text" name="qryAdv[]" id="qryAdv2" style="width:185px">
                                                 </div>
                                             </div>
-                                            {% if app['phraseanet.registry'].get('GV_client_coll_ckbox') == 'popup' %}
+                                            {% if app['conf'].get(['registry', 'classic', 'collection-presentation']) == 'popup' %}
                                                 <div>
                                                     {{ "client::recherche: rechercher dans les bases :" | trans }}
                                                     {% if app['phraseanet.appbox'].get_databoxes()|length > 0 %}
@@ -144,9 +144,9 @@
                                                         <option {{ selected }} value="{{ property['h'] ~ 'X' ~ property['w'] }}"> {{ property['name'] }}</option>
                                                     {% endfor %}
                                                 </select>
-                                                <input type="radio" value="0" class="checkbox" {% if app['phraseanet.registry'].get('GV_defaultQuery_type') == 0 %}checked="checked"{% endif %} id="search_type_docs" name="search_type" /><label for="search_type_docs">{{ "phraseanet::type:: documents" | trans }}</label>
-                                                <input type="radio" value="1" class="checkbox" {% if app['phraseanet.registry'].get('GV_defaultQuery_type') != 0 %}checked="checked"{% endif %} id="search_type_group" name="search_type" /><label for="search_type_group">{{ "phraseanet::type:: reportages" | trans }}</label>
-                                                <input type="hidden" name="sort" value="{{ app['phraseanet.registry'].get('GV_phrasea_sort') }}"/>
+                                                <input type="radio" value="0" class="checkbox" {% if app['conf'].get(['registry', 'searchengine', 'default-query-type']) == 0 %}checked="checked"{% endif %} id="search_type_docs" name="search_type" /><label for="search_type_docs">{{ "phraseanet::type:: documents" | trans }}</label>
+                                                <input type="radio" value="1" class="checkbox" {% if app['conf'].get(['registry', 'searchengine', 'default-query-type']) != 0 %}checked="checked"{% endif %} id="search_type_group" name="search_type" /><label for="search_type_group">{{ "phraseanet::type:: reportages" | trans }}</label>
+                                                <input type="hidden" name="sort" value=""/>
                                                 <input type="hidden" name="ord" id="searchOrd" value="{{ search_order }}" />
                                             </div>
                                             <div>
@@ -157,24 +157,24 @@
                                         <input type="hidden" name="nba" value="">
 
                                         <div class="onglets" style="white-space: nowrap; margin-left: 5px; width: 227px;">
-                                            {% if app['phraseanet.registry'].get('GV_client_coll_ckbox') == 'checkbox' %}
+                                            {% if app['conf'].get(['registry', 'classic', 'collection-presentation']) == 'checkbox' %}
                                                 <span id="idOnglet1" class="actif actives" onclick="chgOng(1);">
                                                     {{ "phraseanet:: collections" | trans }} <img onclick="removeFilters();" id="filter_danger" src="/skins/icons/alert.png" title="{{ "client::recherche: cliquez ici pour desactiver tous les filtres de toutes base" | trans }}" style="vertical-align:bottom;width:12px;height:12px;display:none;"/>
                                                 </span>
                                             {% endif %}
 
-                                            {% if app['phraseanet.registry'].get('GV_thesaurus') %}
-                                                <span id="idOnglet4" class="{{ app['phraseanet.registry'].get('GV_client_coll_ckbox') == 'checkbox' ? "inactif" : "actif" }} actives" onclick="chgOng(4);">
+                                            {% if app['conf'].get(['registry', 'modules', 'thesaurus']) %}
+                                                <span id="idOnglet4" class="{{ app['conf'].get(['registry', 'classic', 'collection-presentation']) == 'checkbox' ? "inactif" : "actif" }} actives" onclick="chgOng(4);">
                                                     {{ "phraseanet:: propositions" | trans }}
                                                 </span>
                                             {% endif %}
-                                            <span id="idOnglet5" class="{{ not app['phraseanet.registry'].get('GV_client_coll_ckbox') == 'checkbox' and not app['phraseanet.registry'].get('GV_thesaurus') ? 'actif' : 'inactif' }} actives" onclick="chgOng(5);">
+                                            <span id="idOnglet5" class="{{ not app['conf'].get(['registry', 'classic', 'collection-presentation']) == 'checkbox' and not app['conf'].get(['registry', 'modules', 'thesaurus']) ? 'actif' : 'inactif' }} actives" onclick="chgOng(5);">
                                                 {{ "phraseanet:: historique" | trans }}
                                             </span>
                                         </div>
                                     </div>
                                     <div id="searchMiddle" style="">
-                                        {% if app['phraseanet.registry'].get('GV_client_coll_ckbox') == 'checkbox' %}
+                                        {% if app['conf'].get(['registry', 'classic', 'collection-presentation']) == 'checkbox' %}
                                             <div id="onglet1" style="display:block;height:100%;overflow-x: hidden; overflow-y: auto;" class="searchZone" >
                                                 <div>
                                                     <div style="text-align:center;margin:5px;">
@@ -186,7 +186,7 @@
                                                     <div class="basesContainer">
                                                         {% for sbasId, databoxWrapper in storage_access['databoxes'] %}
                                                             {% set databox = databoxWrapper['databox'] %}
-                                                            {% if app['phraseanet.registry'].get('GV_view_bas_and_coll') %}
+                                                            {% if app['conf'].get(['registry', 'actions', 'collection-display']) %}
                                                                 <div class="basContainer">
                                                                     <div class="basContTitle">
                                                                         <div class="basTitle">
@@ -319,14 +319,14 @@
                                                 </div>
                                             </div>
                                         {% endif %}
-                                        {% if app['phraseanet.registry'].get('GV_thesaurus') %}
-                                            <div id="onglet4" style="{% if app['phraseanet.registry'].get('GV_client_coll_ckbox') == 'checkbox' %}display:none;{% endif %}height:100%;overflow-x: hidden; overflow-y: auto;" class="searchZone" >
+                                        {% if app['conf'].get(['registry', 'modules', 'thesaurus']) %}
+                                            <div id="onglet4" style="{% if app['conf'].get(['registry', 'classic', 'collection-presentation']) == 'checkbox' %}display:none;{% endif %}height:100%;overflow-x: hidden; overflow-y: auto;" class="searchZone" >
                                                 <div>
                                                     <div id="proposals" style="width:235px; overflow:hidden"></div>
                                                 </div>
                                             </div>
                                         {% endif %}
-                                        <div id="onglet5" style="{% if app['phraseanet.registry'].get('GV_client_coll_ckbox') == 'checkbox'  or app['phraseanet.registry'].get('GV_thesaurus') %}display:none;{% endif %}height:100%;overflow-x: hidden; overflow-y: auto;" class="searchZone" >
+                                        <div id="onglet5" style="{% if app['conf'].get(['registry', 'classic', 'collection-presentation']) == 'checkbox'  or app['conf'].get(['registry', 'modules', 'thesaurus']) %}display:none;{% endif %}height:100%;overflow-x: hidden; overflow-y: auto;" class="searchZone" >
                                             <div id="history"></div>
                                         </div>
                                     </div>
@@ -489,7 +489,7 @@
             });
         </script>
 
-        {% if app['phraseanet.registry'].get('GV_googleAnalytics') is not empty %}
+        {% if app['conf'].get(['registry', 'general', 'analytics']) is not empty %}
             <script type="text/javascript">
                 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
                 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
@@ -497,7 +497,7 @@
 
             <script type="text/javascript">
                 try {
-                    var pageTracker = _gat._getTracker("{{ app['phraseanet.registry'].get('GV_googleAnalytics') }}");
+                    var pageTracker = _gat._getTracker("{{ app['conf'].get(['registry', 'general', 'analytics']) }}");
                     pageTracker._setDomainName("none");
                     pageTracker._setAllowLinker(true);
                     pageTracker._trackPageview();

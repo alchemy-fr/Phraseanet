@@ -71,7 +71,7 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
         $queryParameters["opAdv"] = [];
         $queryParameters["status"] = [];
         $queryParameters["recordtype"] = SearchEngineOptions::TYPE_ALL;
-        $queryParameters["sort"] = self::$DI['app']['phraseanet.registry']->get('GV_phrasea_sort', '');
+        $queryParameters["sort"] = '';
         $queryParameters["infield"] = [];
         $queryParameters["ord"] = SearchEngineOptions::SORT_MODE_DESC;
 

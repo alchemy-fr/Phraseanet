@@ -72,13 +72,10 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
         );
 
         $this->app['locale'] = $this->app->share(function (Application $app) use ($event) {
-            if (isset($app['phraseanet.registry'])) {
-                $event->getRequest()->setDefaultLocale(
-                    $app['phraseanet.registry']->get('GV_default_lng', 'en')
-                );
-                $event->getRequest()->setLocale(
-                    $app['phraseanet.registry']->get('GV_default_lng', 'en')
-                );
+            if (isset($app['conf'])) {
+                $locale = $app['conf']->get(['languages', 'default'], 'en');
+                $event->getRequest()->setDefaultLocale($locale);
+                $event->getRequest()->setLocale($locale);
             }
 
             $languages = $app['locales.available'];
@@ -101,7 +98,7 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
             }
 
             if (!$localeSet) {
-                $event->getRequest()->setLocale($app['phraseanet.registry']->get('GV_default_lng'));
+                $event->getRequest()->setLocale($app['conf']->get(['languages', 'default'], 'en_GB'));
             }
 
             return $event->getRequest()->getLocale();

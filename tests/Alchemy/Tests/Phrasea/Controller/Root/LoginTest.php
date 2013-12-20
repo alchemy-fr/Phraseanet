@@ -80,21 +80,21 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     public function testRegisterWithAutoSelect()
     {
         $this->logout(self::$DI['app']);
-        $gvAutoSelectDb = !! self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB');
-        self::$DI['app']['phraseanet.registry']->set('GV_autoselectDB', false, \registry::TYPE_BOOLEAN);
+        $gvAutoSelectDb = !! self::$DI['app']['conf']->get(['registry', 'registration', 'auto-select-collections']);
+        self::$DI['app']['conf']->set(['registry', 'registration', 'auto-select-collections'], false);
         $crawler = self::$DI['client']->request('GET', '/login/register-classic/');
         $this->assertEquals(1, $crawler->filter('select[name="collections[]"]')->count());
-        self::$DI['app']['phraseanet.registry']->set('GV_autoselectDB', $gvAutoSelectDb, \registry::TYPE_BOOLEAN);
+        self::$DI['app']['conf']->set(['registry', 'registration', 'auto-select-collections'], $gvAutoSelectDb);
     }
 
     public function testRegisterWithNoAutoSelect()
     {
         $this->logout(self::$DI['app']);
-        $gvAutoSelectDb = !! self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB');
-        self::$DI['app']['phraseanet.registry']->set('GV_autoselectDB', true, \registry::TYPE_BOOLEAN);
+        $gvAutoSelectDb = !! self::$DI['app']['conf']->get(['registry', 'registration', 'auto-select-collections']);
+        self::$DI['app']['conf']->set(['registry', 'registration', 'auto-select-collections'], true);
         $crawler = self::$DI['client']->request('GET', '/login/register-classic/');
         $this->assertEquals(0, $crawler->filter('select[name="collections[]"]')->count());
-        self::$DI['app']['phraseanet.registry']->set('GV_autoselectDB', $gvAutoSelectDb, \registry::TYPE_BOOLEAN);
+        self::$DI['app']['conf']->set(['registry', 'registration', 'auto-select-collections'], $gvAutoSelectDb);
     }
 
     public function testLoginAlreadyAthenticated()
@@ -566,7 +566,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             }
         }
 
-        if (self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB')) {
+        if (self::$DI['app']['conf']->get(['registry', 'registration', 'auto-select-collections'])) {
             unset($parameters['collections']);
         }
 
@@ -582,7 +582,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $crawler = self::$DI['client']->request('POST', '/login/register-classic/');
 
         $this->assertFalse(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertFormOrFlashError($crawler, self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB') ? 7 : 8);
+        $this->assertFormOrFlashError($crawler, self::$DI['app']['conf']->get(['registry', 'registration', 'auto-select-collections']) ? 7 : 8);
     }
 
     public function provideInvalidRegistrationData()
@@ -1005,7 +1005,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             }
         }
 
-        if ( self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB')) {
+        if ( self::$DI['app']['conf']->get(['registry', 'registration', 'auto-select-collections'])) {
             unset($parameters['collections']);
         }
 
@@ -1061,7 +1061,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             }
         }
 
-        if (self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB')) {
+        if (self::$DI['app']['conf']->get(['registry', 'registration', 'auto-select-collections'])) {
             unset($parameters['collections']);
         }
 

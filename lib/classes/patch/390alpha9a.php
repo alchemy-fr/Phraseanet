@@ -64,8 +64,18 @@ class patch_390alpha9a implements patchInterface
 
     private function updateRegistry(Application $app)
     {
-        $locale = $app['phraseanet.registry']->get('GV_default_lng', 'fr_FR');
-        $app['phraseanet.registry']->set('GV_default_lng', $this->extractLocale($locale), \registry::TYPE_STRING);
+        $sql = 'SELECT `value` FROM registry WHERE `key` = :key';
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute([':key' => 'GV_default_lng']);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $locale = null !== $row ? $row['value'] : 'fr';
+
+        $sql = 'UPDATE registry SET `value` = :value WHERE `key` = :key';
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute([':key' => 'GV_default_lng', ':value' => $this->extractLocale($locale)]);
+        $stmt->closeCursor();
     }
 
     private function updateUsers(\appbox $appbox)

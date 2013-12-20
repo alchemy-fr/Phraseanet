@@ -215,7 +215,7 @@ class Root implements ControllerProviderInterface
         $out['chuNameEmpty'] = $app->trans('paniers:: Quel nom souhaitez vous donner a votre panier ?');
         $out['noDLok'] = $app->trans('export:: aucun document n\'est disponible au telechargement');
         $out['confirmRedirectAuth'] = $app->trans('invite:: Redirection vers la zone d\'authentification, cliquez sur OK pour continuer ou annulez');
-        $out['serverName'] = $app['phraseanet.registry']->get('GV_ServerName');
+        $out['serverName'] = $app['conf']->get('servername');
         $out['serverError'] = $app->trans('phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, contactez le support technique');
         $out['serverTimeout'] = $app->trans('phraseanet::erreur: La connection au serveur Phraseanet semble etre indisponible');
         $out['serverDisconnected'] = $app->trans('phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier');
@@ -245,9 +245,9 @@ class Root implements ControllerProviderInterface
         }
         $renderTopics = '';
 
-        if ($app['phraseanet.registry']->get('GV_client_render_topics') == 'popups') {
+        if ($app['conf']->get(['registry', 'classic', 'render-topics']) == 'popups') {
             $renderTopics = \queries::dropdown_topics($app['translator'], $app['locale']);
-        } elseif ($app['phraseanet.registry']->get('GV_client_render_topics') == 'tree') {
+        } elseif ($app['conf']->get(['registry', 'classic', 'render-topics']) == 'tree') {
             $renderTopics = \queries::tree_topics($app['locale']);
         }
 
@@ -322,9 +322,9 @@ class Root implements ControllerProviderInterface
     private function getTabSetup(Application $app)
     {
         $tong = [
-            $app['phraseanet.registry']->get('GV_ong_search')    => 1,
-            $app['phraseanet.registry']->get('GV_ong_advsearch') => 2,
-            $app['phraseanet.registry']->get('GV_ong_topics')    => 3
+            $app['conf']->get(['registry', 'classic', 'search-tab'])     => 1,
+            $app['conf']->get(['registry', 'classic', 'adv-search-tab']) => 2,
+            $app['conf']->get(['registry', 'classic', 'topics-tab'])     => 3
         ];
 
         unset($tong[0]);
@@ -459,7 +459,7 @@ class Root implements ControllerProviderInterface
         $queryParameters["opAdv"] = [];
         $queryParameters["status"] = [];
         $queryParameters["recordtype"] = SearchEngineOptions::TYPE_ALL;
-        $queryParameters["sort"] = $app['phraseanet.registry']->get('GV_phrasea_sort', '');
+        $queryParameters["sort"] = '';
         $queryParameters["infield"] = [];
         $queryParameters["ord"] = SearchEngineOptions::SORT_MODE_DESC;
 

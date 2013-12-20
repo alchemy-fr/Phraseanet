@@ -9,25 +9,27 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
+
 class p4file
 {
 
-    public static function apache_tokenize(\registry $registry, $file)
+    public static function apache_tokenize(PropertyAccess $conf, $file)
     {
         $ret = false;
 
-        if ($registry->get('GV_h264_streaming') && is_file($file)) {
-            if (mb_strpos($file, $registry->get('GV_mod_auth_token_directory_path')) === false) {
+        if ($conf->get(['registry', 'executables', 'h264-streaming-enabled']) && is_file($file)) {
+            if (mb_strpos($file, $conf->get(['registry', 'executables', 'auth-token-directory-path'])) === false) {
                 return false;
             }
 
             $server = new system_server();
 
             if ($server->is_nginx()) {
-                $fileToProtect = mb_substr($file, mb_strlen($registry->get('GV_mod_auth_token_directory_path')));
+                $fileToProtect = mb_substr($file, mb_strlen($conf->get(['registry', 'executables', 'auth-token-directory-path'])));
 
-                $secret = $registry->get('GV_mod_auth_token_passphrase');
-                $protectedPath = p4string::addFirstSlash(p4string::delEndSlash($registry->get('GV_mod_auth_token_directory')));
+                $secret = $conf->get(['registry', 'executables', 'auth-token-passphrase']);
+                $protectedPath = p4string::addFirstSlash(p4string::delEndSlash($conf->get(['registry', 'executables', 'auth-token-directory'])));
 
                 $hexTime = strtoupper(dechex(time() + 3600));
 
@@ -37,10 +39,10 @@ class p4file
 
                 $ret = $url;
             } elseif ($server->is_apache()) {
-                $fileToProtect = mb_substr($file, mb_strlen($registry->get('GV_mod_auth_token_directory_path')));
+                $fileToProtect = mb_substr($file, mb_strlen($conf->get(['registry', 'executables', 'auth-token-directory-path'])));
 
-                $secret = $registry->get('GV_mod_auth_token_passphrase');        // Same as AuthTokenSecret
-                $protectedPath = p4string::addEndSlash(p4string::delFirstSlash($registry->get('GV_mod_auth_token_directory')));         // Same as AuthTokenPrefix
+                $secret = $conf->get(['registry', 'executables', 'auth-token-passphrase']);        // Same as AuthTokenSecret
+                $protectedPath = p4string::addEndSlash(p4string::delFirstSlash($conf->get(['registry', 'executables', 'auth-token-directory'])));         // Same as AuthTokenPrefix
                 $hexTime = dechex(time());             // Time in Hexadecimal
 
                 $token = md5($secret . $fileToProtect . $hexTime);

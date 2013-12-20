@@ -1035,8 +1035,8 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
         foreach (self::$def_values as $k => $v) {
             if (!isset($this->_prefs[$k])) {
-                if ($k == 'start_page_query' && $this->app['phraseanet.registry']->get('GV_defaultQuery')) {
-                    $v = $this->app['phraseanet.registry']->get('GV_defaultQuery');
+                if ($k == 'start_page_query' && $this->app['conf']->get(['registry', 'searchengine', 'default-query'])) {
+                    $v = $this->app['conf']->get(['registry', 'searchengine', 'default-query']);
                 }
 
                 $this->_prefs[$k] = $v;
@@ -1244,7 +1244,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     public function get_locale()
     {
-        return $this->locale ?: $this->app['phraseanet.registry']->get('GV_default_lng', 'en');
+        return $this->locale ?: $this->app['conf']->get(['languages', 'default'], 'en');
     }
 
     public function set_locale($locale)

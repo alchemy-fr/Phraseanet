@@ -220,7 +220,7 @@ class set_export extends set_abstract
 
         $this->ftp_datas = [];
 
-        if ($this->app['phraseanet.registry']->get('GV_activeFTP') && ($hasadminright || $this->app['phraseanet.registry']->get('GV_ftp_for_user'))) {
+        if ($this->app['conf']->get(['registry', 'ftp', 'ftp-enabled']) && ($hasadminright || $this->app['conf']->get(['registry', 'ftp', 'ftp-user-access']))) {
             $display_ftp = $display_download;
             $this->total_ftp = $this->total_download;
 
@@ -240,7 +240,7 @@ class set_export extends set_abstract
                       )
                   GROUP BY usr_id  ";
                 $params = [];
-            } elseif ($this->app['phraseanet.registry']->get('GV_ftp_for_user')) {
+            } elseif ($this->app['conf']->get(['registry', 'ftp', 'ftp-user-access'])) {
                 $sql = "SELECT usr.usr_id,usr_login,usr.usr_mail, FtpCredential.*
                   FROM (
                     FtpCredential INNER JOIN usr ON (

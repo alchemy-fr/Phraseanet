@@ -23,7 +23,7 @@
         <![endif]-->
     </head>
 
-    {% set home_title = app['phraseanet.registry'].get('GV_homeTitle') %}
+    {% set home_title = app['conf'].get(['registry', 'general', 'title']) %}
 
     <body>
         <div id="page" class="container">

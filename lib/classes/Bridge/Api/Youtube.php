@@ -15,12 +15,6 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 {
     /**
      *
-     * @var registryInterface
-     */
-    protected $registry;
-
-    /**
-     *
      * @var Zend_Gdata_YouTube
      */
     protected $_api;
@@ -321,7 +315,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
                 break;
 
             default:
-                throw new Bridge_Exception_ElementUnknown('Unknown element ' . $type);
+                throw new Bridge_Exception_ElementUnknown('Unknown element ' . $object);
                 break;
         }
 
@@ -342,7 +336,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
                 $container_title = $request->get('f_container_title');
 
                 $new_playlist = $this->_api->newPlaylistListEntry();
-                if (trim($description) !== '')
+                if (trim($container_desc) !== '')
                     $new_playlist->description = $this->_api->newDescription()->setText($container_desc);
                 $new_playlist->title = $this->_api->newTitle()->setText($container_title);
 
@@ -353,7 +347,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
                 break;
             default:
-                throw new Bridge_Exception_ElementUnknown('Unknown element ' . $type);
+                throw new Bridge_Exception_ElementUnknown('Unknown element ' . $container_type);
                 break;
         }
     }
@@ -383,7 +377,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
                         return new Bridge_Api_Youtube_Container($playlistEntry, $destination, null);
                         break;
                     default:
-                        throw new Bridge_Exception_ContainerUnknown('Unknown element ' . $container);
+                        throw new Bridge_Exception_ContainerUnknown('Unknown element ' . $destination);
                         break;
                 }
                 break;
@@ -787,15 +781,16 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     public function is_configured()
     {
-        if ( ! $this->registry->get('GV_youtube_api')) {
+        if (!$this->conf->get(['main', 'bridge', 'youtube', 'enabled'])) {
             return false;
         }
-
-        if (trim($this->registry->get('GV_youtube_client_id')) === '') {
+        if ('' === trim($this->conf->get(['main', 'bridge', 'youtube', 'client_id']))) {
             return false;
         }
-
-        if (trim($this->registry->get('GV_youtube_dev_key')) === '') {
+        if ('' === trim($this->conf->get(['main', 'bridge', 'youtube', 'client_secret']))) {
+            return false;
+        }
+        if ('' === trim($this->conf->get(['main', 'bridge', 'youtube', 'developer_key']))) {
             return false;
         }
 
@@ -810,8 +805,8 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
     {
         $this->_auth->set_parameters(
             [
-                'client_id'      => $this->registry->get('GV_youtube_client_id')
-                , 'client_secret'  => $this->registry->get('GV_youtube_client_secret')
+                'client_id'      => $this->conf->get(['main', 'bridge', 'youtube', 'client_id'])
+                , 'client_secret'  => $this->conf->get(['main', 'bridge', 'youtube', 'client_secret'])
                 , 'redirect_uri'   => Bridge_Api::generate_callback_url($this->generator, $this->get_name())
                 , 'scope'          => 'http://gdata.youtube.com'
                 , 'response_type'  => 'code'
@@ -835,8 +830,8 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
         $this->_api = new Zend_Gdata_YouTube(
                 $http_client,
                 uuid::generate_v4(),
-                $this->registry->get('GV_youtube_client_id'),
-                $this->registry->get('GV_youtube_dev_key'));
+                $this->conf->get(['main', 'bridge', 'youtube', 'client_id']),
+                $this->conf->get(['main', 'bridge', 'youtube', 'developer_key']));
         $this->_api->setMajorProtocolVersion(2);
 
         return $this;

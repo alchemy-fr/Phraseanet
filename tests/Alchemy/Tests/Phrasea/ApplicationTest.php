@@ -252,11 +252,13 @@ class ApplicationTest extends \PhraseanetTestCase
     public function testAddCaptcha()
     {
         $app = new Application('test');
-        $app['phraseanet.registry'] = $this->getMock('registryInterface');
-        $app['phraseanet.registry']
+        $app['conf'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $app['conf']
             ->expects($this->any())
             ->method('get')
-            ->with('GV_captchas')
+            ->with(['registry', 'webservices', 'captcha-enabled'])
             ->will($this->returnValue(true));
 
         $this->assertFalse($app->isCaptchaRequired());
@@ -293,7 +295,7 @@ class ApplicationTest extends \PhraseanetTestCase
             ->getMock();
         $app['conf']->expects($this->once())
             ->method('get')
-            ->with(['main', 'servername'])
+            ->with('servername')
             ->will($this->returnValue('https://cat.turbocat.com/'));
 
         $this->assertEquals('https', $app['url_generator']->getContext()->getScheme());
@@ -418,12 +420,28 @@ class ApplicationTest extends \PhraseanetTestCase
 
     private function mockRegistryAndReturnLocale(Application $app, $locale)
     {
-        $app['phraseanet.registry'] = $this->getMockBuilder('\registry')
+        $app['conf'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
             ->disableOriginalConstructor()
             ->getmock();
-        $app['phraseanet.registry']->expects($this->any())
+        $app['conf']->expects($this->any())
             ->method('get')
-            ->will($this->returnValue($locale));
+            ->will($this->returnCallback(function ($param) use ($locale) {
+
+                switch ($param) {
+                    case ['languages', 'default']:
+                        return $locale;
+                        break;
+                    case ['languages', 'available']:
+                        return [];
+                        break;
+                    case ['main', 'maintenance']:
+                        return false;
+                        break;
+                    case ['main', 'search-engine', 'type']:
+                        return 'Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine';
+                        break;
+                }
+            }));
     }
 
     private function getApp()

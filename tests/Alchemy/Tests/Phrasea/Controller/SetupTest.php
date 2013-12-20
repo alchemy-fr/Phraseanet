@@ -33,7 +33,7 @@ class SetupTest extends \PhraseanetWebTestCase
 
     public function testRouteSlashWhenInstalled()
     {
-        $this->app['phraseanet.configuration-tester']->expects($this->exactly(2))
+        $this->app['phraseanet.configuration-tester']->expects($this->exactly(1))
             ->method('isInstalled')
             ->will($this->returnValue(true));
         $this->app['phraseanet.configuration-tester']->expects($this->once())
@@ -41,7 +41,7 @@ class SetupTest extends \PhraseanetWebTestCase
             ->will($this->returnValue(false));
 
         $client = $this->createClient();
-        $crawler = $client->request('GET', '/setup/');
+        $client->request('GET', '/setup/');
         $response = $client->getResponse();
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertEquals('/login/', $response->headers->get('location'));
@@ -49,7 +49,7 @@ class SetupTest extends \PhraseanetWebTestCase
 
     public function testRouteInstructionsWhenUpgradeRequired()
     {
-        $this->app['phraseanet.configuration-tester']->expects($this->exactly(2))
+        $this->app['phraseanet.configuration-tester']->expects($this->exactly(1))
             ->method('isInstalled')
             ->will($this->returnValue(false));
         $this->app['phraseanet.configuration-tester']->expects($this->once())
@@ -57,7 +57,7 @@ class SetupTest extends \PhraseanetWebTestCase
             ->will($this->returnValue(false));
 
         $client = $this->createClient();
-        $crawler = $client->request('GET', '/setup/');
+        $client->request('GET', '/setup/');
         $response = $client->getResponse();
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertEquals('/setup/upgrade-instructions/', $response->headers->get('location'));

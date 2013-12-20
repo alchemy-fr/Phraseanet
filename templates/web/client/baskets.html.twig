@@ -7,7 +7,7 @@
                 {{ selected_basket.getName() }}
                     :
                 {% trans with {'%nb_basket_elements%' : nb_basket_elements} %}paniers:: %nb_basket_elements% documents dans le panier{% endtrans %}
-                {% if app['phraseanet.registry'].get('GV_viewSizeBaket') %}
+                {% if app['conf'].get(['registry', 'classic', 'basket-size-display']) %}
                     ({{ selected_basket.getSize(app) }} Mo)
                 {% endif %}
             {% endif %}
@@ -93,7 +93,7 @@
             {% endif %}
 
             {% set tooltip = '' %}
-            {% if app['phraseanet.registry'].get('GV_rollover_chu') %}
+            {% if app['conf'].get(['registry', 'classic', 'basket-rollover']) %}
                 {% set tooltip = 'tooltipsrc="' ~ path('prod_tooltip_caption', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id(), 'context' : 'basket', 'number' : record.get_number() }) ~ '"' %}
             {% endif %}
 

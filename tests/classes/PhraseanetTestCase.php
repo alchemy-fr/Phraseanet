@@ -88,7 +88,7 @@ abstract class PhraseanetTestCase extends WebTestCase
         });
 
         self::$DI['local-guzzle'] = self::$DI->share(function ($DI) {
-            return new Guzzle(self::$DI['app']['phraseanet.registry']->get('GV_ServerName'));
+            return new Guzzle(self::$DI['app']['conf']->get('servername'));
         });
 
         self::$DI['client'] = self::$DI->share(function ($DI) {
@@ -258,7 +258,7 @@ abstract class PhraseanetTestCase extends WebTestCase
         });
 
         $app['url_generator'] = $app->share($app->extend('url_generator', function ($generator, $app) {
-            $host = parse_url($app['conf']->get(['main', 'servername']), PHP_URL_HOST);
+            $host = parse_url($app['conf']->get('servername'), PHP_URL_HOST);
             $generator->setContext(new RequestContext('', 'GET', $host));
 
             return $generator;

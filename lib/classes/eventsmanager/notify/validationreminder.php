@@ -156,7 +156,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
             . $basket_name . '</a>';
 
         $ret = [
-            'text'  => $this->app->trans('Rappel : Il vous reste %number% jours pour valider %title% de %user%', ['%number%' => $this->app['phraseanet.registry']->get('GV_validation_reminder'), '%title%' => $bask_link, '%user%' => $sender])
+            'text'  => $this->app->trans('Rappel : Il vous reste %number% jours pour valider %title% de %user%', ['%number%' => $this->app['conf']->get(['registry', 'actions', 'validation-reminder-days']), '%title%' => $bask_link, '%user%' => $sender])
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
         ];
 

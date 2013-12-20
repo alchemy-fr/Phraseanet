@@ -107,10 +107,10 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetTestCase
         $app = new Application();
         $app['debug'] = true;
         $app->register(new LocaleServiceProvider());
-        $app['phraseanet.registry'] = $this->getMockBuilder('\registry')
-            ->disableOriginalConstructor()
-            ->getmock();
         $app['configuration.store'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
+        $app['conf'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $app['dispatcher']->addSubscriber(new PhraseaLocaleSubscriber($app));
 
@@ -123,7 +123,7 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetTestCase
 
     private function mockRegistryAndReturnLocale(Application $app, $locale)
     {
-        $app['phraseanet.registry']->expects($this->any())
+        $app['conf']->expects($this->any())
             ->method('get')
             ->will($this->returnValue($locale));
     }

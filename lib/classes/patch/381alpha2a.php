@@ -54,10 +54,19 @@ class patch_381alpha2a implements patchInterface
     /**
      * {@inheritdoc}
      */
-    public function apply(base $databox, Application $app)
+    public function apply(base $appbox, Application $app)
     {
-        if (false !== strpos($app['phraseanet.registry']->get('GV_i18n_service'), 'localization.webservice.alchemyasp.com')) {
-            $app['phraseanet.registry']->set('GV_i18n_service', 'http://geonames.alchemyasp.com/', \registry::TYPE_STRING);
+        $sql = 'SELECT `value` FROM `registry` WHERE `key` = "GV_i18n_service"';
+        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt->execute();
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        if (null !== $row && false !== strpos($row['value'], 'localization.webservice.alchemyasp.com')) {
+            $sql = 'UPDATE `registry` SET `value` = "http://geonames.alchemyasp.com/" WHERE `key` = "GV_i18n_service"';
+            $stmt = $appbox->get_connection()->prepare($sql);
+            $stmt->execute();
+            $stmt->closeCursor();
         }
 
         return true;

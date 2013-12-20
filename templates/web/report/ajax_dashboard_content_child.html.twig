@@ -78,7 +78,7 @@
             {% set title = 'report:: question' | trans %}
             {% set title_left = 'report:: question' | trans %}
             {% set title_right = 'report:: poids preview' | trans %}
-            {{dash.top_ten_question(app['phraseanet.registry'].get('GV_homeTitle'), title_left, title_right, item.top_ten_question,dashboard.getTitleDate('dmin') , dashboard.getTitleDate('dmax')) }}
+            {{dash.top_ten_question(app['conf'].get(['registry', 'general', 'title']), title_left, title_right, item.top_ten_question,dashboard.getTitleDate('dmin') , dashboard.getTitleDate('dmax')) }}
         {%endif %}
         {% if "top_ten_site"|key_exists(item) %}
             {% set title_left = 'report:: site' | trans %}

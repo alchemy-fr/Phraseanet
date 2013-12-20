@@ -71,8 +71,8 @@ class Export implements ControllerProviderInterface
             'download'             => $download,
             'ssttid'               => $request->request->get('ssel'),
             'lst'                  => $download->serialize_list(),
-            'default_export_title' => $app['phraseanet.registry']->get('GV_default_export_title'),
-            'choose_export_title'  => $app['phraseanet.registry']->get('GV_choose_export_title')
+            'default_export_title' => $app['conf']->get(['registry', 'actions', 'default-export-title']),
+            'choose_export_title'  => $app['conf']->get(['registry', 'actions', 'export-title-choice'])
         ]));
     }
 

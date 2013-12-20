@@ -40,8 +40,8 @@ class CLIDriversServiceProvider implements ServiceProviderInterface
                 return $app['executable-finder']->find($name, null, $extraDirs);
             }
 
-            if ($app['conf']->has(['binaries', $configName])) {
-                return $app['conf']->get(['binaries', $configName]);
+            if ($app['conf']->has(['main', 'binaries', $configName])) {
+                return $app['conf']->get(['main', 'binaries', $configName]);
             }
 
             return $app['executable-finder']->find($name, null, $extraDirs);

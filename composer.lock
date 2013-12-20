@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "c8348e356ce79bc133510a11279d48c9",
+    "hash": "2c0ef0f8f4568b105cf63028188d6b82",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -1293,6 +1293,47 @@
                 "web service"
             ],
             "time": "2013-10-02 20:47:00"
+        },
+        {
+            "name": "igorw/get-in",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/igorw/get-in.git",
+                "reference": "f265eb25569891e1888d7773c72a81c2f96c8982"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/igorw/get-in/zipball/f265eb25569891e1888d7773c72a81c2f96c8982",
+                "reference": "f265eb25569891e1888d7773c72a81c2f96c8982",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/get_in.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Igor Wiedler",
+                    "email": "igor@wiedler.ch",
+                    "homepage": "http://wiedler.ch/igor/"
+                }
+            ],
+            "description": "Functions for for hash map (assoc array) traversal.",
+            "keywords": [
+                "assoc-array",
+                "hash-map"
+            ],
+            "time": "2013-12-16 23:26:47"
         },
         {
             "name": "imagine/imagine",
@@ -4231,6 +4272,7 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
+        "igorw/get-in": 20,
         "imagine/imagine": 20,
         "silex/silex": 20,
         "doctrine/migrations": 20,

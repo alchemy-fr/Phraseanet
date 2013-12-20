@@ -17,11 +17,6 @@ class PhraseanetServiceProviderTest extends ServiceProviderTestCase
             ],
             [
                 'Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider',
-                'phraseanet.registry',
-                '\registry'
-            ],
-            [
-                'Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider',
                 'firewall',
                 'Alchemy\Phrasea\Security\Firewall'
             ],

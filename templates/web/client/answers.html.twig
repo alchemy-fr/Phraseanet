@@ -7,11 +7,11 @@
 {% set max = 2 * pagination_offset + 3 %}
 
 
-{% if app['phraseanet.registry'].get('GV_thesaurus') %}
+{% if app['conf'].get(['registry', 'modules', 'thesaurus']) %}
     <script type="text/javascript" language="javascript">
         $('#proposals').empty().append("<div style='height:0px; overflow:hidden'>{{ query_string|e('js') }}</div>{{ proposals is not none ? proposals|e('js') : ''}}");
 
-        {% if app['phraseanet.registry'].get('GV_clientAutoShowProposals') %}
+        {% if app['conf'].get(['registry', 'classic', 'auto-show-proposals']) %}
 
             {% if proposals is not none %}
                 chgOng(4);

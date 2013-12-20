@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="{{ app['locale'] }}">
     <head>
-        <title>{{ app['phraseanet.registry'].get('GV_homeTitle') }} - {{ 'phraseanet:: thesaurus' | trans }}</title>
+        <title>{{ app['conf'].get(['registry', 'general', 'title']) }} - {{ 'phraseanet:: thesaurus' | trans }}</title>
         <style id="STYLES">
             DIV.glossaire DIV.r1_
             {

@@ -160,8 +160,8 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testCheckNativeApp()
     {
-        $value = self::$DI['app']["phraseanet.registry"]->get('GV_client_navigator');
-        self::$DI['app']["phraseanet.registry"]->set('GV_client_navigator', false, \registry::TYPE_BOOLEAN);
+        $value = self::$DI['app']['conf']->get(['registry', 'api-clients', 'navigator-enabled']);
+        self::$DI['app']['conf']->set(['registry', 'api-clients', 'navigator-enabled'], false);
 
         $fail = null;
 
@@ -182,7 +182,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $fail = $e;
         }
 
-        self::$DI['app']["phraseanet.registry"]->set('GV_client_navigator', $value, \registry::TYPE_BOOLEAN);
+        self::$DI['app']['conf']->set(['registry', 'api-clients', 'navigator-enabled'], false);
 
         if ($fail) {
             throw $fail;
@@ -2109,7 +2109,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertDateAtom($permalink['updated_on']);
         $this->assertArrayHasKey("page_url", $permalink);
         $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['page_url']);
-        $this->assertEquals($subdef->get_permalink()->get_page(self::$DI['app']['phraseanet.registry']), $permalink['page_url']);
+        $this->assertEquals($subdef->get_permalink()->get_page(), $permalink['page_url']);
         $this->checkUrlCode200($permalink['page_url']);
         $this->assertPermalinkHeaders($permalink['page_url'], $subdef);
 
@@ -2142,7 +2142,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             } catch (GuzzleException $e) {
                 $code = null;
             }
-            $webserver = ($code < 200 || $code >= 400) ? false : rtrim(self::$DI['app']['phraseanet.registry']->get('GV_ServerName'), '/');
+            $webserver = ($code < 200 || $code >= 400) ? false : rtrim(self::$DI['app']['conf']->get('servername'), '/');
         }
         if (false === $webserver) {
             $this->markTestSkipped('Install does not seem to rely on a webserver');

@@ -76,9 +76,9 @@ class Root implements ControllerProviderInterface
 
             $queries_topics = '';
 
-            if ($app['phraseanet.registry']->get('GV_client_render_topics') == 'popups') {
+            if ($app['conf']->get(['registry', 'classic', 'render-topics']) == 'popups') {
                 $queries_topics = \queries::dropdown_topics($app['translator'], $app['locale']);
-            } elseif ($app['phraseanet.registry']->get('GV_client_render_topics') == 'tree') {
+            } elseif ($app['conf']->get(['registry', 'classic', 'render-topics']) == 'tree') {
                 $queries_topics = \queries::tree_topics($app['locale']);
             }
 
@@ -107,14 +107,14 @@ class Root implements ControllerProviderInterface
                 'cssfile'              => $cssfile,
                 'module'               => 'prod',
                 'events'               => $app['events-manager'],
-                'GV_defaultQuery_type' => $app['phraseanet.registry']->get('GV_defaultQuery_type'),
-                'GV_multiAndReport'    => $app['phraseanet.registry']->get('GV_multiAndReport'),
-                'GV_thesaurus'         => $app['phraseanet.registry']->get('GV_thesaurus'),
+                'GV_defaultQuery_type' => $app['conf']->get(['registry', 'searchengine', 'default-query-type']),
+                'GV_multiAndReport'    => $app['conf']->get(['registry', 'modules', 'stories']),
+                'GV_thesaurus'         => $app['conf']->get(['registry', 'modules', 'thesaurus']),
                 'cgus_agreement'       => \databox_cgu::askAgreement($app),
                 'css'                  => $css,
                 'feeds'                => $feeds,
                 'aggregate'            => $aggregate,
-                'GV_google_api'        => $app['phraseanet.registry']->get('GV_google_api'),
+                'GV_google_api'        => $app['conf']->get(['registry', 'webservices', 'google-charts-enabled']),
                 'queries_topics'       => $queries_topics,
                 'search_status'        => \databox_status::getSearchStatus($app),
                 'queries_history'      => \queries::history($app, $app['authentication']->getUser()->get_id()),

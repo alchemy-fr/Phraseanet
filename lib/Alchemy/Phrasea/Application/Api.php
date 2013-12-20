@@ -40,9 +40,9 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         $result = new \API_V1_result($app, $request, $apiAdapter);
 
         return $result->set_datas([
-            'name'          => $app['phraseanet.registry']->get('GV_homeTitle'),
+            'name'          => $app['conf']->get(['registry', 'general', 'title']),
             'type'          => 'phraseanet',
-            'description'   => $app['phraseanet.registry']->get('GV_metaDescription'),
+            'description'   => $app['conf']->get(['registry', 'general', 'description']),
             'documentation' => 'https://docs.phraseanet.com/Devel',
             'versions'      => [
                 '1' => [

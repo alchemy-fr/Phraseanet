@@ -4,7 +4,7 @@
   <li class="title">{{ 'Apparait aussi dans ces reportages' | trans }}</li>
   {% for par in parents %}
     <li onclick="openPreview('REG',0,'{{par.get_serialize_key()}}'); return(false);"
-        class="otherRegToolTip" {% if app['phraseanet.registry'].get('GV_rollover_reg_preview') %}tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : par.get_sbas_id(), 'record_id' : par.get_record_id(), 'context' : 'basket' }) }}" {% endif %}>
+        class="otherRegToolTip" {% if app['conf'].get(['registry', 'classic', 'stories-preview']) %}tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : par.get_sbas_id(), 'record_id' : par.get_record_id(), 'context' : 'basket' }) }}" {% endif %}>
       <img src="{{par.get_thumbnail().get_url()}}" style="width:25px;height:25px;"/>
       <span class="title"> {{ par.get_title() }} </span>
     </li>

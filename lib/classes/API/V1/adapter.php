@@ -307,7 +307,7 @@ class API_V1_adapter extends API_V1_Abstract
         $ret['phraseanet']['debug'] = $app['debug'];
         $ret['phraseanet']['maintenance'] = $app['conf']->get(['main', 'maintenance']);
         $ret['phraseanet']['errorsLog'] = $app['debug'];
-        $ret['phraseanet']['serverName'] = $app['conf']->get(['main', 'servername']);
+        $ret['phraseanet']['serverName'] = $app['conf']->get('servername');
 
         return $ret;
     }
@@ -325,88 +325,78 @@ class API_V1_adapter extends API_V1_Abstract
             $SEStatus = ['error' => $e->getMessage()];
         }
 
-        $binaries = $app['conf']->get('binaries');
+        $binaries = $app['conf']->get(['main', 'binaries']);
 
         return [
             'global_values' => [
-                'serverName'  => $app['phraseanet.registry']->get('GV_ServerName'),
-                'title'       => $app['phraseanet.registry']->get('GV_homeTitle'),
-                'keywords'    => $app['phraseanet.registry']->get('GV_metaKeywords'),
-                'description' => $app['phraseanet.registry']->get('GV_metaDescription'),
+                'serverName'  => $app['conf']->get('servername'),
+                'title'       => $app['conf']->get(['registry', 'general', 'title']),
+                'keywords'    => $app['conf']->get(['registry', 'general', 'keywords']),
+                'description' => $app['conf']->get(['registry', 'general', 'description']),
                 'httpServer'  => [
-                    'logErrors'       => $app['phraseanet.registry']->get('GV_log_errors'),
                     'phpTimezone'     => ini_get('date.timezone'),
                     'siteId'          => $app['conf']->get(['main', 'key']),
-                    'staticUrl'       => $app['phraseanet.registry']->get('GV_STATIC_URL'),
-                    'defaultLanguage' => $app['phraseanet.registry']->get('id_GV_default_lng'),
-                    'allowIndexing'   => $app['phraseanet.registry']->get('GV_allow_search_engine'),
+                    'defaultLanguage' => $app['conf']->get(['languages', 'default']),
+                    'allowIndexing'   => $app['conf']->get(['registry', 'general', 'allow-indexation']),
                     'modes'           => [
                         'XsendFile'                     => $app['conf']->get(['xsendfile', 'enabled']),
                         'XsendFileMapping'              => $app['conf']->get(['xsendfile', 'mapping']),
-                        'h264Streaming'                 => $app['phraseanet.registry']->get('GV_h264_streaming'),
-                        'authTokenDirectory'            => $app['phraseanet.registry']->get('GV_mod_auth_token_directory'),
-                        'authTokenDirectoryPath'        => $app['phraseanet.registry']->get('GV_mod_auth_token_directory_path'),
-                        'authTokenPassphrase'           => $app['phraseanet.registry']->get('GV_mod_auth_token_passphrase'),
+                        'h264Streaming'                 => $app['conf']->get(['registry', 'executables', 'h264-streaming-enabled']),
+                        'authTokenDirectory'            => $app['conf']->get(['registry', 'executables', 'auth-token-directory']),
+                        'authTokenDirectoryPath'        => $app['conf']->get(['registry', 'executables', 'auth-token-directory-path']),
+                        'authTokenPassphrase'           => $app['conf']->get(['registry', 'executables', 'auth-token-passphrase']),
                     ]
                 ],
                 'maintenance' => [
-                    'alertMessage'   => $app['phraseanet.registry']->get('GV_message'),
-                    'displayMessage' => $app['phraseanet.registry']->get('GV_message_on'),
+                    'alertMessage'   => $app['conf']->get(['registry', 'maintenance', 'message']),
+                    'displayMessage' => $app['conf']->get(['registry', 'maintenance', 'enabled']),
                 ],
                 'webServices'    => [
-                    'googleApi'                   => $app['phraseanet.registry']->get('GV_google_api'),
-                    'googleAnalyticsId'           => $app['phraseanet.registry']->get('GV_googleAnalytics'),
-                    'i18nWebService'              => $app['phraseanet.registry']->get('GV_i18n_service'),
+                    'googleApi'                   => $app['conf']->get(['registry', 'webservices', 'google-charts-enabled']),
+                    'googleAnalyticsId'           => $app['conf']->get(['registry', 'general', 'analytics']),
+                    'i18nWebService'              => $app['conf']->get(['registry', 'webservices', 'geonames-server']),
                     'recaptacha'                  => [
-                        'active'     => $app['phraseanet.registry']->get('GV_captchas'),
-                        'publicKey'  => $app['phraseanet.registry']->get('GV_captcha_public_key'),
-                        'privateKey' => $app['phraseanet.registry']->get('GV_captcha_private_key'),
+                        'active'     => $app['conf']->get(['registry', 'webservices', 'captcha-enabled']),
+                        'publicKey'  => $app['conf']->get(['registry', 'webservices', 'recaptcha-public-key']),
+                        'privateKey' => $app['conf']->get(['registry', 'webservices', 'recaptcha-private-key']),
                     ],
                     'youtube'    => [
-                        'active'       => $app['phraseanet.registry']->get('GV_youtube_api'),
-                        'clientId'     => $app['phraseanet.registry']->get('GV_youtube_client_id'),
-                        'clientSecret' => $app['phraseanet.registry']->get('GV_youtube_client_secret'),
-                        'devKey'       => $app['phraseanet.registry']->get('GV_youtube_dev_key'),
+                        'active'       => $app['conf']->get(['main', 'bridge', 'youtube', 'enabled']),
+                        'clientId'     => $app['conf']->get(['main', 'bridge', 'youtube', 'client_id']),
+                        'clientSecret' => $app['conf']->get(['main', 'bridge', 'youtube', 'client_secret']),
+                        'devKey'       => $app['conf']->get(['main', 'bridge', 'youtube', 'developer_key']),
                     ],
                     'flickr'       => [
-                        'active'       => $app['phraseanet.registry']->get('GV_flickr_api'),
-                        'clientId'     => $app['phraseanet.registry']->get('GV_flickr_client_id'),
-                        'clientSecret' => $app['phraseanet.registry']->get('GV_flickr_client_secret'),
+                        'active'       => $app['conf']->get(['main', 'bridge', 'flickr', 'enabled']),
+                        'clientId'     => $app['conf']->get(['main', 'bridge', 'flickr', 'client_id']),
+                        'clientSecret' => $app['conf']->get(['main', 'bridge', 'flickr', 'client_secret']),
                     ],
                     'dailymtotion' => [
-                        'active'       => $app['phraseanet.registry']->get('GV_dailymotion_api'),
-                        'clientId'     => $app['phraseanet.registry']->get('GV_dailymotion_client_id'),
-                        'clientSecret' => $app['phraseanet.registry']->get('GV_dailymotion_client_secret'),
+                        'active'       => $app['conf']->get(['main', 'bridge', 'dailymotion', 'enabled']),
+                        'clientId'     => $app['conf']->get(['main', 'bridge', 'dailymotion', 'client_id']),
+                        'clientSecret' => $app['conf']->get(['main', 'bridge', 'dailymotion', 'client_secret']),
                     ]
                 ],
                 'navigator'    => [
-                    'active'   => $app['phraseanet.registry']->get('GV_client_navigator'),
+                    'active'   => $app['conf']->get(['registry', 'api-clients', 'navigator-enabled']),
                 ],
                 'office-plugin' => [
-                    'active'    => $app['phraseanet.registry']->get('GV_client_navigator'),
+                    'active'    => $app['conf']->get(['registry', 'api-clients', 'office-enabled']),
                 ],
                 'homepage' => [
-                    'viewType' => $app['phraseanet.registry']->get('GV_home_publi'),
+                    'viewType' => $app['conf']->get(['registry', 'general', 'home-presentation-mode']),
                 ],
                 'report'   => [
-                    'anonymous' => $app['phraseanet.registry']->get('GV_anonymousReport'),
-                ],
-                'events'    => [
-                    'events'        => $app['phraseanet.registry']->get('GV_events'),
-                    'notifications' => $app['phraseanet.registry']->get('GV_notifications'),
-                ],
-                'upload'        => [
-                    'allowedFileExtension' => $app['phraseanet.registry']->get('GV_appletAllowedFileEx'),
+                    'anonymous' => $app['conf']->get(['registry', 'modules', 'anonymous-report']),
                 ],
                 'filesystem'           => [
-                    'noWeb'        => $app['phraseanet.registry']->get('GV_base_datapath_noweb'),
+                    'noWeb'        => $app['conf']->get(['main', 'storage', 'subdefs', 'default-dir']),
                 ],
                 'searchEngine' => [
                     'configuration' => [
-                        'defaultQuery'     => $app['phraseanet.registry']->get('GV_defaultQuery'),
-                        'defaultQueryType' => $app['phraseanet.registry']->get('GV_defaultQuery_type'),
-                        'minChar'          => $app['phraseanet.registry']->get('GV_min_letters_truncation'),
-                        'sort'             => $app['phraseanet.registry']->get('GV_phrasea_sort'),
+                        'defaultQuery'     => $app['conf']->get(['registry', 'searchengine', 'default-query']),
+                        'defaultQueryType' => $app['conf']->get(['registry', 'searchengine', 'default-query-type']),
+                        'minChar'          => $app['conf']->get(['registry', 'searchengine', 'min-letters-truncation']),
                     ],
                     'engine'            => [
                         'type'          => $app['phraseanet.SE']->getName(),
@@ -416,7 +406,7 @@ class API_V1_adapter extends API_V1_Abstract
                 ],
                 'binary'  => [
                     'phpCli'            => isset($binaries['php_binary']) ? $binaries['php_binary'] : null,
-                    'phpIni'            => $app['phraseanet.registry']->get('GV_PHP_INI'),
+                    'phpIni'            => $app['conf']->get(['registry', 'executables', 'php-conf-path']),
                     'swfExtract'        => isset($binaries['swf_extract_binary']) ? $binaries['swf_extract_binary'] : null,
                     'pdf2swf'           => isset($binaries['pdf2swf_binary']) ? $binaries['pdf2swf_binary'] : null,
                     'swfRender'         => isset($binaries['swf_render_binary']) ? $binaries['swf_render_binary'] : null,
@@ -426,53 +416,52 @@ class API_V1_adapter extends API_V1_Abstract
                     'mp4box'            => isset($binaries['mp4box_binary']) ? $binaries['mp4box_binary'] : null,
                     'pdftotext'         => isset($binaries['pdftotext_binary']) ? $binaries['pdftotext_binary'] : null,
                     'recess'            => isset($binaries['recess_binary']) ? $binaries['recess_binary'] : null,
-                    'pdfmaxpages'       => $app['phraseanet.registry']->get('GV_pdfmaxpages'),],
+                    'pdfmaxpages'       => $app['conf']->get(['registry', 'executables', 'pdf-max-pages']),],
                 'mainConfiguration' => [
-                    'adminMail'          => $app['phraseanet.registry']->get('GV_adminMail'),
-                    'viewBasAndCollName' => $app['phraseanet.registry']->get('GV_view_bas_and_coll'),
-                    'chooseExportTitle'  => $app['phraseanet.registry']->get('GV_choose_export_title'),
-                    'defaultExportTitle' => $app['phraseanet.registry']->get('GV_default_export_title'),
-                    'socialTools'        => $app['phraseanet.registry']->get('GV_social_tools'),],
+                    'viewBasAndCollName' => $app['conf']->get(['registry', 'actions', 'collection-display']),
+                    'chooseExportTitle'  => $app['conf']->get(['registry', 'actions', 'export-title-choice']),
+                    'defaultExportTitle' => $app['conf']->get(['registry', 'actions', 'default-export-title']),
+                    'socialTools'        => $app['conf']->get(['registry', 'actions', 'social-tools']),],
                 'modules'            => [
-                    'thesaurus'          => $app['phraseanet.registry']->get('GV_thesaurus'),
-                    'storyMode'          => $app['phraseanet.registry']->get('GV_multiAndReport'),
-                    'docSubsitution'     => $app['phraseanet.registry']->get('GV_seeOngChgDoc'),
-                    'subdefSubstitution' => $app['phraseanet.registry']->get('GV_seeNewThumb'),],
+                    'thesaurus'          => $app['conf']->get(['registry', 'modules', 'thesaurus']),
+                    'storyMode'          => $app['conf']->get(['registry', 'modules', 'stories']),
+                    'docSubsitution'     => $app['conf']->get(['registry', 'modules', 'doc-substitution']),
+                    'subdefSubstitution' => $app['conf']->get(['registry', 'modules', 'thumb-substitution']),],
                 'email'              => [
-                    'defaultMailAddress' => $app['phraseanet.registry']->get('GV_defaulmailsenderaddr'),
+                    'defaultMailAddress' => $app['conf']->get(['registry', 'email', 'emitter-email']),
                     'smtp'               => [
-                        'active'   => $app['phraseanet.registry']->get('GV_smtp'),
-                        'auth'     => $app['phraseanet.registry']->get('GV_smtp_auth'),
-                        'host'     => $app['phraseanet.registry']->get('GV_smtp_host'),
-                        'port'     => $app['phraseanet.registry']->get('GV_smtp_port'),
-                        'secure'   => $app['phraseanet.registry']->get('GV_smtp_secure'),
-                        'user'     => $app['phraseanet.registry']->get('GV_smtp_user'),
-                        'password' => $app['phraseanet.registry']->get('GV_smtp_password'),
+                        'active'   => $app['conf']->get(['registry', 'email', 'smtp-enabled']),
+                        'auth'     => $app['conf']->get(['registry', 'email', 'smtp-auth-enabled']),
+                        'host'     => $app['conf']->get(['registry', 'email', 'smtp-host']),
+                        'port'     => $app['conf']->get(['registry', 'email', 'smtp-port']),
+                        'secure'   => $app['conf']->get(['registry', 'email', 'smtp-secure-mode']),
+                        'user'     => $app['conf']->get(['registry', 'email', 'smtp-user']),
+                        'password' => $app['conf']->get(['registry', 'email', 'smtp-password']),
                     ],
                 ],
                 'ftp'      => [
-                    'active'        => $app['phraseanet.registry']->get('GV_activeFTP'),
-                    'activeForUser' => $app['phraseanet.registry']->get('GV_ftp_for_user'),],
+                    'active'        => $app['conf']->get(['registry', 'ftp', 'ftp-enabled']),
+                    'activeForUser' => $app['conf']->get(['registry', 'ftp', 'ftp-user-access']),],
                 'client'        => [
-                    'maxSizeDownload'         => $app['phraseanet.registry']->get('GV_download_max'),
-                    'tabSearchMode'           => $app['phraseanet.registry']->get('GV_ong_search'),
-                    'tabAdvSearchPosition'    => $app['phraseanet.registry']->get('GV_ong_advsearch'),
-                    'tabTopicsPosition'       => $app['phraseanet.registry']->get('GV_ong_topics'),
-                    'tabOngActifPosition'     => $app['phraseanet.registry']->get('GV_ong_actif'),
-                    'renderTopicsMode'        => $app['phraseanet.registry']->get('GV_client_render_topics'),
-                    'displayRolloverPreview'  => $app['phraseanet.registry']->get('GV_rollover_reg_preview'),
-                    'displayRolloverBasket'   => $app['phraseanet.registry']->get('GV_rollover_chu'),
-                    'collRenderMode'          => $app['phraseanet.registry']->get('GV_client_coll_ckbox'),
-                    'viewSizeBaket'           => $app['phraseanet.registry']->get('GV_viewSizeBaket'),
-                    'clientAutoShowProposals' => $app['phraseanet.registry']->get('GV_clientAutoShowProposals'),
-                    'needAuth2DL'             => $app['phraseanet.registry']->get('GV_needAuth2DL'),],
+                    'maxSizeDownload'         => $app['conf']->get(['registry', 'actions', 'download-max-size']),
+                    'tabSearchMode'           => $app['conf']->get(['registry', 'classic', 'search-tab']),
+                    'tabAdvSearchPosition'    => $app['conf']->get(['registry', 'classic', 'adv-search-tab']),
+                    'tabTopicsPosition'       => $app['conf']->get(['registry', 'classic', 'topics-tab']),
+                    'tabOngActifPosition'     => $app['conf']->get(['registry', 'classic', 'active-tab']),
+                    'renderTopicsMode'        => $app['conf']->get(['registry', 'classic', 'render-topics']),
+                    'displayRolloverPreview'  => $app['conf']->get(['registry', 'classic', 'stories-preview']),
+                    'displayRolloverBasket'   => $app['conf']->get(['registry', 'classic', 'basket-rollover']),
+                    'collRenderMode'          => $app['conf']->get(['registry', 'classic', 'collection-presentation']),
+                    'viewSizeBaket'           => $app['conf']->get(['registry', 'classic', 'basket-size-display']),
+                    'clientAutoShowProposals' => $app['conf']->get(['registry', 'classic', 'auto-show-proposals']),
+                    'needAuth2DL'             => $app['conf']->get(['registry', 'actions', 'auth-required-for-export']),],
                 'inscription'             => [
-                    'autoSelectDB' => $app['phraseanet.registry']->get('GV_autoselectDB'),
-                    'autoRegister' => $app['phraseanet.registry']->get('GV_autoregister'),
+                    'autoSelectDB' => $app['conf']->get(['registry', 'registration', 'auto-select-collections']),
+                    'autoRegister' => $app['conf']->get(['registry', 'registration', 'auto-register-enabled']),
                 ],
                 'push'         => [
-                    'validationReminder' => $app['phraseanet.registry']->get('GV_validation_reminder'),
-                    'expirationValue'    => $app['phraseanet.registry']->get('GV_val_expiration'),
+                    'validationReminder' => $app['conf']->get(['registry', 'actions', 'validation-reminder-days']),
+                    'expirationValue'    => $app['conf']->get(['registry', 'actions', 'validation-expiration-days']),
                 ],
             ]
         ];
@@ -1034,8 +1023,8 @@ class API_V1_adapter extends API_V1_Abstract
         $devices = $request->get('devices', []);
         $mimes = $request->get('mimes', []);
 
-        foreach ($record->get_embedable_medias($devices, $mimes) as $name => $media) {
-            if (null !== $embed = $this->list_embedable_media($media, $this->app['phraseanet.registry'])) {
+        foreach ($record->get_embedable_medias($devices, $mimes) as $media) {
+            if (null !== $embed = $this->list_embedable_media($media)) {
                 $ret[] = $embed;
             }
         }
@@ -1068,8 +1057,8 @@ class API_V1_adapter extends API_V1_Abstract
         $devices = $request->get('devices', []);
         $mimes = $request->get('mimes', []);
 
-        foreach ($record->get_embedable_medias($devices, $mimes) as $name => $media) {
-            if (null !== $embed = $this->list_embedable_media($media, $this->app['phraseanet.registry'])) {
+        foreach ($record->get_embedable_medias($devices, $mimes) as $media) {
+            if (null !== $embed = $this->list_embedable_media($media)) {
                 $ret[] = $embed;
             }
         }
@@ -1670,14 +1659,14 @@ class API_V1_adapter extends API_V1_Abstract
      * @param  media_subdef $media
      * @return array
      */
-    protected function list_embedable_media(media_subdef $media, registryInterface $registry)
+    protected function list_embedable_media(media_subdef $media)
     {
         if (!$media->is_physically_present()) {
             return null;
         }
 
         if ($media->get_permalink() instanceof media_Permalink_Adapter) {
-            $permalink = $this->list_permalink($media->get_permalink(), $registry);
+            $permalink = $this->list_permalink($media->get_permalink());
         } else {
             $permalink = null;
         }
@@ -1697,11 +1686,11 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retrieve detailled information about one permalink
      *
-     * @param  media_Permalink_Adapter $permalink
-     * @param  registryInterface       $registry
+     * @param media_Permalink_Adapter $permalink
+     *
      * @return type
      */
-    protected function list_permalink(media_Permalink_Adapter $permalink, registryInterface $registry)
+    protected function list_permalink(media_Permalink_Adapter $permalink)
     {
         return [
             'created_on'   => $permalink->get_created_on()->format(DATE_ATOM),
@@ -1856,7 +1845,7 @@ class API_V1_adapter extends API_V1_Abstract
             'created_on'             => $record->get_creation_date()->format(DATE_ATOM),
             'collection_id'          => phrasea::collFromBas($this->app, $record->get_base_id()),
             'sha256'                 => $record->get_sha256(),
-            'thumbnail'              => $this->list_embedable_media($record->get_thumbnail(), $this->app['phraseanet.registry']),
+            'thumbnail'              => $this->list_embedable_media($record->get_thumbnail()),
             'technical_informations' => $technicalInformation,
             'phrasea_type'           => $record->get_type(),
             'uuid'                   => $record->get_uuid(),
@@ -1901,7 +1890,7 @@ class API_V1_adapter extends API_V1_Abstract
             'updated_on'     => $story->get_modification_date()->format(DATE_ATOM),
             'created_on'     => $story->get_creation_date()->format(DATE_ATOM),
             'collection_id'  => phrasea::collFromBas($this->app, $story->get_base_id()),
-            'thumbnail'      => $this->list_embedable_media($story->get_thumbnail(), $this->app['phraseanet.registry']),
+            'thumbnail'      => $this->list_embedable_media($story->get_thumbnail()),
             'uuid'           => $story->get_uuid(),
             'metadatas'      => [
                 '@entity@'       => self::OBJECT_TYPE_STORY_METADATA_BAG,

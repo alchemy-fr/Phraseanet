@@ -43,7 +43,7 @@ class AbstractMailTest extends \PhraseanetTestCase
                     case 'url_generator':
                         return $urlGenerator;
                         break;
-                    case 'phraseanet.registry':
+                    case 'conf':
                         return $registry;
                         break;
                     default:
@@ -65,13 +65,13 @@ class AbstractMailTest extends \PhraseanetTestCase
 
         $registry->expects($this->once())
             ->method('get')
-            ->with('GV_homeTitle')
+            ->with(['registry', 'general', 'title'])
             ->will($this->returnValue('Super Mario'));
 
         $app = $this->getApplicationMock();
         $app->expects($this->once())
             ->method('offsetGet')
-            ->with($this->equalTo('phraseanet.registry'))
+            ->with($this->equalTo('conf'))
             ->will($this->returnValue($registry));
 
         $mail = new AbstractTester($app, $this->getReceiverMock());
@@ -117,7 +117,7 @@ class AbstractMailTest extends \PhraseanetTestCase
 
         $app->expects($this->any())
             ->method('offsetGet')
-            ->with($this->equalTo('phraseanet.registry'))
+            ->with($this->equalTo('conf'))
             ->will($this->returnValue($this->getRegistryMock()));
 
         $mail = new AbstractTester($app, $this->getReceiverMock());
@@ -246,7 +246,7 @@ class AbstractMailTest extends \PhraseanetTestCase
 
     protected function getRegistryMock()
     {
-        return $this->getMockBuilder('registry')
+        return $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
                 ->disableOriginalConstructor()
                 ->getMock();
     }

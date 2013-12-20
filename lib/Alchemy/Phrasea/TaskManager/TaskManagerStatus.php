@@ -64,32 +64,34 @@ class TaskManagerStatus
     {
         $this->ensureConfigurationSchema();
 
-        return $this->conf['task-manager']['status'];
+        return $this->conf['main']['task-manager']['status'];
     }
 
     private function setStatus($status)
     {
         $this->ensureConfigurationSchema();
-        $managerConf = $this->conf['task-manager'];
-        $managerConf['status'] = $status;
-        $this->conf['task-manager'] = $managerConf;
+        $mainConf = $this->conf['main'];
+        $mainConf['task-manager']['status'] = $status;
+        $this->conf['main'] = $mainConf;
     }
 
     private function ensureConfigurationSchema()
     {
-        if (!isset($this->conf['task-manager'])) {
-            $this->conf['task-manager'] = ['status' => static::STATUS_STARTED];
+        if (!isset($this->conf['main']['task-manager'])) {
+            $mainConf = $this->conf['main'];
+            $mainConf['task-manager'] = ['status' => static::STATUS_STARTED];
+            $this->conf['main'] = $mainConf;
 
             return;
         }
-        if (!isset($this->conf['task-manager']['status'])) {
-            $conf = $this->conf['task-manager'];
-            $conf['status'] = static::STATUS_STARTED;
-            $this->conf['task-manager'] = $conf;
-        } elseif (!$this->isValidStatus($this->conf['task-manager']['status'])) {
-            $conf = $this->conf['task-manager'];
-            $conf['status'] = static::STATUS_STARTED;
-            $this->conf['task-manager'] = $conf;
+        if (!isset($this->conf['main']['task-manager']['status'])) {
+            $mainConf = $this->conf['main'];
+            $mainConf['task-manager']['status'] = static::STATUS_STARTED;
+            $this->conf['main'] = $mainConf;
+        } elseif (!$this->isValidStatus($this->conf['main']['task-manager']['status'])) {
+            $mainConf = $this->conf['main'];
+            $mainConf['task-manager']['status'] = static::STATUS_STARTED;
+            $this->conf['main'] = $mainConf;
         }
     }
 

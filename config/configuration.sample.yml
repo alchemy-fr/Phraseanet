@@ -1,7 +1,9 @@
+servername: 'http://local.phrasea/'
+languages:
+    available: []
+    default: 'fr'
 main:
-    servername: 'http://local.phrasea/'
     maintenance: false
-    languages: []
     database:
         host: 127.0.0.1
         port: 3306
@@ -26,25 +28,48 @@ main:
     search-engine:
         type: Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine
         options: []
-binaries:
-    ghostscript_binary: null
-    php_binary: null
-    swf_extract_binary: null
-    pdf2swf_binary: null
-    swf_render_binary: null
-    unoconv_binary: null
-    ffmpeg_binary: null
-    ffprobe_binary: null
-    mp4box_binary: null
-    pdftotext_binary: null
-    recess_binary: null
-    phraseanet_indexer: null
-    ffmpeg_timeout: 3600
-    ffprobe_timeout: 60
-    gs_timeout: 60
-    mp4box_timeout: 60
-    swftools_timeout: 60
-    unoconv_timeout: 60
+    binaries:
+        ghostscript_binary: null
+        php_binary: null
+        swf_extract_binary: null
+        pdf2swf_binary: null
+        swf_render_binary: null
+        unoconv_binary: null
+        ffmpeg_binary: null
+        ffprobe_binary: null
+        mp4box_binary: null
+        pdftotext_binary: null
+        recess_binary: null
+        phraseanet_indexer: null
+        ffmpeg_timeout: 3600
+        ffprobe_timeout: 60
+        gs_timeout: 60
+        mp4box_timeout: 60
+        swftools_timeout: 60
+        unoconv_timeout: 60
+    task-manager:
+        status: started
+        listener:
+            protocol: tcp
+            host: 127.0.0.1
+            port: 6700
+    storage:
+        subdefs:
+            default-dir: null
+    bridge:
+        youtube:
+            enabled: false
+            client_id: null
+            client_secret: null
+            developer_key: null
+        flickr:
+            enabled: false
+            client_id: null
+            client_secret: null
+        dailymotion:
+            enabled: false
+            client_id: null
+            client_secret: null
 border-manager:
     enabled: true
     checkers:
@@ -127,12 +152,6 @@ registration-fields:
     -
         name: geonameid
         required: true
-task-manager:
-    status: started
-    listener:
-        protocol: tcp
-        host: 127.0.0.1
-        port: 6700
 xsendfile:
     enabled: false
     type: nginx

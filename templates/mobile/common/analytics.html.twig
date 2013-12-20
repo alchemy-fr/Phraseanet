@@ -1,8 +1,8 @@
-{% if app['phraseanet.registry'].get('GV_googleAnalytics') != '' %}
+{% if app['conf'].get(['registry', 'general', 'analytics']) != '' %}
     <script type="text/javascript">
 
     var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', '{{ app['phraseanet.registry'].get('GV_googleAnalytics') }}']);
+    _gaq.push(['_setAccount', '{{ app['conf'].get(['registry', 'general', 'analytics']) }}']);
     _gaq.push(['_trackPageview']);
 
     (function() {

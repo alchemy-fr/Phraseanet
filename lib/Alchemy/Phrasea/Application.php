@@ -105,8 +105,10 @@ use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TasksServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TemporaryFilesystemServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
+use Alchemy\Phrasea\Core\Provider\TranslationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Form\Extension\HelpTypeExtension;
 use Alchemy\Phrasea\Twig\JSUniqueID;
 use Alchemy\Phrasea\Twig\Camelize;
 use Alchemy\Phrasea\Twig\BytesConverter;
@@ -130,7 +132,6 @@ use Silex\Application\TranslationTrait;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\SessionServiceProvider;
-use Alchemy\Phrasea\Core\Provider\TranslationServiceProvider;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\SwiftmailerServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
@@ -225,7 +226,7 @@ class Application extends SilexApplication
         $this->register(new FtpServiceProvider());
         $this->register(new GeonamesServiceProvider());
         $this['geonames.server-uri'] = $this->share(function (Application $app) {
-            return $app['phraseanet.registry']->get('GV_i18n_service', 'https://geonames.alchemyasp.com/');
+            return $app['conf']->get(['registry', 'webservices', 'geonames-server'], 'http://geonames.alchemyasp.com/');
         });
 
         $this->register(new MediaAlchemystServiceProvider());
@@ -248,14 +249,14 @@ class Application extends SilexApplication
                     'swftools.timeout'             => 'swftools_timeout',
                     'unoconv.timeout'              => 'unoconv_timeout',
             ] as $parameter => $key) {
-                if ($this['conf']->has(['binaries', $key])) {
-                    $configuration[$parameter] = $this['conf']->get(['binaries', $key]);
+                if ($this['conf']->has(['main', 'binaries', $key])) {
+                    $configuration[$parameter] = $this['conf']->get(['main', 'binaries', $key]);
                 }
             }
 
-            $imagineDriver = $app['phraseanet.registry']->get('GV_imagine_driver');
+            $imagineDriver = $app['conf']->get(['registry', 'executables', 'imagine-driver']);
 
-            $configuration['ffmpeg.threads'] = $app['phraseanet.registry']->get('GV_ffmpeg_threads');
+            $configuration['ffmpeg.threads'] = $app['conf']->get(['registry', 'executables', 'ffmpeg-threads']);
             $configuration['imagine.driver'] = $imagineDriver ?: null;
 
             return $configuration;
@@ -281,13 +282,13 @@ class Application extends SilexApplication
         $this->register(new ReCaptchaServiceProvider());
 
         $this['recaptcha.public-key'] = $this->share(function (Application $app) {
-            if ($app['phraseanet.registry']->get('GV_captchas')) {
-                return $app['phraseanet.registry']->get('GV_captcha_public_key');
+            if ($app['conf']->get(['registry', 'webservices', 'captcha-enabled'])) {
+                return $app['conf']->get(['registry', 'webservices', 'recaptcha-public-key']);
             }
         });
         $this['recaptcha.private-key'] = $this->share(function (Application $app) {
-            if ($app['phraseanet.registry']->get('GV_captchas')) {
-                return $app['phraseanet.registry']->get('GV_captcha_private_key');
+            if ($app['conf']->get(['registry', 'webservices', 'captcha-enabled'])) {
+                return $app['conf']->get(['registry', 'webservices', 'recaptcha-private-key']);
             }
         });
 
@@ -329,6 +330,12 @@ class Application extends SilexApplication
 
         $this->register(new FormServiceProvider());
 
+        $this['form.type.extensions'] = $this->share($this->extend('form.type.extensions', function ($extensions) {
+            $extensions[] = new HelpTypeExtension();
+
+            return $extensions;
+        }));
+
         $this->setupTwig();
         $this->register(new UnoconvServiceProvider());
         $this->register(new UrlGeneratorServiceProvider());
@@ -348,7 +355,7 @@ class Application extends SilexApplication
         });
 
         $this['swiftmailer.transport'] = $this->share(function ($app) {
-            if ($app['phraseanet.registry']->get('GV_smtp')) {
+            if ($app['conf']->get(['registry', 'email', 'smtp-enabled'])) {
                 $transport = new \Swift_Transport_EsmtpTransport(
                     $app['swiftmailer.transport.buffer'],
                     [$app['swiftmailer.transport.authhandler']],
@@ -357,15 +364,15 @@ class Application extends SilexApplication
 
                 $encryption = null;
 
-                if (in_array($app['phraseanet.registry']->get('GV_smtp_secure'), ['ssl', 'tls'])) {
-                    $encryption = $app['phraseanet.registry']->get('GV_smtp_secure');
+                if (in_array($app['conf']->get(['registry', 'email', 'smtp-secure-mode']), ['ssl', 'tls'])) {
+                    $encryption = $app['conf']->get(['registry', 'email', 'smtp-secure-mode']);
                 }
 
                 $options = $app['swiftmailer.options'] = array_replace([
-                    'host'       => $app['phraseanet.registry']->get('GV_smtp_host'),
-                    'port'       => $app['phraseanet.registry']->get('GV_smtp_port'),
-                    'username'   => $app['phraseanet.registry']->get('GV_smtp_user'),
-                    'password'   => $app['phraseanet.registry']->get('GV_smtp_password'),
+                    'host'       => $app['conf']->get(['registry', 'email', 'smtp-host']),
+                    'port'       => $app['conf']->get(['registry', 'email', 'smtp-port']),
+                    'username'   => $app['conf']->get(['registry', 'email', 'smtp-user']),
+                    'password'   => $app['conf']->get(['registry', 'email', 'smtp-password']),
                     'encryption' => $encryption,
                     'auth_mode'  => null,
                 ], $app['swiftmailer.options']);
@@ -375,7 +382,7 @@ class Application extends SilexApplication
                 // tls or ssl
                 $transport->setEncryption($options['encryption']);
 
-                if ($app['phraseanet.registry']->get('GV_smtp_auth')) {
+                if ($app['conf']->get(['registry', 'email', 'smtp-auth-enabled'])) {
                     $transport->setUsername($options['username']);
                     $transport->setPassword($options['password']);
                     $transport->setAuthMode($options['auth_mode']);
@@ -391,8 +398,8 @@ class Application extends SilexApplication
         });
 
         $this['imagine.factory'] = $this->share(function (Application $app) {
-            if ($app['phraseanet.registry']->get('GV_imagine_driver') != '') {
-                return $app['phraseanet.registry']->get('GV_imagine_driver');
+            if ($app['conf']->get(['registry', 'executables', 'imagine-driver']) != '') {
+                return $app['conf']->get(['registry', 'executables', 'imagine-driver']);
             }
             if (class_exists('\Gmagick')) {
                 return 'gmagick';
@@ -422,8 +429,8 @@ class Application extends SilexApplication
 
         $this['xpdf.pdftotext'] = $this->share(
             $this->extend('xpdf.pdftotext', function (PdfToText $pdftotext, Application $app) {
-                if ($app['phraseanet.registry']->get('GV_pdfmaxpages')) {
-                    $pdftotext->setPageQuantity($app['phraseanet.registry']->get('GV_pdfmaxpages'));
+                if ($app['conf']->get(['registry', 'executables', 'pdf-max-pages'])) {
+                    $pdftotext->setPageQuantity($app['conf']->get(['registry', 'executables', 'pdf-max-pages']));
                 }
 
                 return $pdftotext;
@@ -557,7 +564,7 @@ class Application extends SilexApplication
     {
         $this['url_generator'] = $this->share($this->extend('url_generator', function ($urlGenerator, $app) {
             if ($app['configuration.store']->isSetup()) {
-                $data = parse_url($app['conf']->get(['main', 'servername']));
+                $data = parse_url($app['conf']->get('servername'));
 
                 if (isset($data['scheme'])) {
                     $urlGenerator->getContext()->setScheme($data['scheme']);
@@ -729,7 +736,7 @@ class Application extends SilexApplication
      */
     public function requireCaptcha()
     {
-        if ($this['phraseanet.registry']->get('GV_captchas')) {
+        if ($this['conf']->get(['registry', 'webservices', 'captcha-enabled'])) {
             $this['session']->set('require_captcha', true);
         }
 

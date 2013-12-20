@@ -23,11 +23,15 @@ class NotificationDelivererServiceProvidertest extends ServiceProviderTestCase
     {
         self::$DI['app']->register(new NotificationDelivererServiceProvider());
 
-        self::$DI['app']['phraseanet.registry'] = $this->getMock('registryInterface');
-        self::$DI['app']['phraseanet.registry']->expects($this->any())
+        self::$DI['app']['conf'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
+            ->disableOriginalConstructor()
+            ->getMock();
+        self::$DI['app']['conf']->expects($this->any())
             ->method('get')
             ->will($this->returnCallback(function ($key) use ($values) {
-
+                if (!is_scalar($key)) {
+                    $key = serialize($key);
+                }
                 if (!isset($values[$key])) {
                     throw new \InvalidArgumentException(sprintf('Invalid key %s', $key));
                 }
@@ -51,13 +55,13 @@ class NotificationDelivererServiceProvidertest extends ServiceProviderTestCase
     {
         return [
             ['\Swift_Transport_EsmtpTransport', [
-                'GV_smtp' => true,
-                'GV_smtp_auth' => true,
-                'GV_smtp_host' => 'special.host.mail',
-                'GV_smtp_port' => 3306,
-                'GV_smtp_user' => 'superman',
-                'GV_smtp_password' => 'b4tm4n',
-                'GV_smtp_secure' => 'ssl',
+                serialize(['registry', 'email', 'smtp-enabled']) => true,
+                serialize(['registry', 'email', 'smtp-auth-enabled']) => true,
+                serialize(['registry', 'email', 'smtp-host']) => 'special.host.mail',
+                serialize(['registry', 'email', 'smtp-port']) => 3306,
+                serialize(['registry', 'email', 'smtp-user']) => 'superman',
+                serialize(['registry', 'email', 'smtp-password']) => 'b4tm4n',
+                serialize(['registry', 'email', 'smtp-secure-mode']) => 'ssl',
                 'expected-host' => 'special.host.mail',
                 'expected-port' => 3306,
                 'expected-encryption' => 'ssl',
@@ -66,13 +70,13 @@ class NotificationDelivererServiceProvidertest extends ServiceProviderTestCase
                 'expected-authmode' => null,
             ]],
             ['\Swift_Transport_MailTransport', [
-                'GV_smtp' => false,
-                'GV_smtp_auth' => true,
-                'GV_smtp_host' => 'special.host.mail',
-                'GV_smtp_port' => 3306,
-                'GV_smtp_user' => 'superman',
-                'GV_smtp_password' => 'b4tm4n',
-                'GV_smtp_secure' => 'tls',
+                serialize(['registry', 'email', 'smtp-enabled']) => false,
+                serialize(['registry', 'email', 'smtp-auth-enabled']) => true,
+                serialize(['registry', 'email', 'smtp-host']) => 'special.host.mail',
+                serialize(['registry', 'email', 'smtp-port']) => 3306,
+                serialize(['registry', 'email', 'smtp-user']) => 'superman',
+                serialize(['registry', 'email', 'smtp-password']) => 'b4tm4n',
+                serialize(['registry', 'email', 'smtp-secure-mode']) => 'tls',
                 'expected-host' => 'special.host.mail',
                 'expected-port' => 3306,
                 'expected-encryption' => 'tls',
@@ -81,13 +85,13 @@ class NotificationDelivererServiceProvidertest extends ServiceProviderTestCase
                 'expected-authmode' => null,
             ]],
             ['\Swift_Transport_EsmtpTransport', [
-                'GV_smtp' => true,
-                'GV_smtp_auth' => false,
-                'GV_smtp_host' => 'special.host.mail',
-                'GV_smtp_port' => 3306,
-                'GV_smtp_user' => 'superman',
-                'GV_smtp_password' => 'b4tm4n',
-                'GV_smtp_secure' => 'ssl',
+                serialize(['registry', 'email', 'smtp-enabled']) => true,
+                serialize(['registry', 'email', 'smtp-auth-enabled']) => false,
+                serialize(['registry', 'email', 'smtp-host']) => 'special.host.mail',
+                serialize(['registry', 'email', 'smtp-port']) => 3306,
+                serialize(['registry', 'email', 'smtp-user']) => 'superman',
+                serialize(['registry', 'email', 'smtp-password']) => 'b4tm4n',
+                serialize(['registry', 'email', 'smtp-secure-mode']) => 'ssl',
                 'expected-host' => 'special.host.mail',
                 'expected-port' => 3306,
                 'expected-encryption' => 'ssl',
@@ -96,8 +100,8 @@ class NotificationDelivererServiceProvidertest extends ServiceProviderTestCase
                 'expected-authmode' => null,
             ]],
             ['\Swift_Transport_MailTransport', [
-                'GV_smtp' => false,
-                'GV_smtp_auth' => false,
+                serialize(['registry', 'email', 'smtp-enabled']) => false,
+                serialize(['registry', 'email', 'smtp-auth-enabled']) => false,
                 'expected-host' => null,
                 'expected-port' => null,
                 'expected-encryption' => null,

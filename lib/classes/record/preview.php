@@ -411,7 +411,7 @@ class record_preview extends record_adapter
         $report = $this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base(
             $this->get_base_id(), 'canreport');
 
-        if ( ! $report && ! $this->app['phraseanet.registry']->get('GV_google_api')) {
+        if ( ! $report && ! $this->app['conf']->get(['registry', 'webservices', 'google-charts-enabled'])) {
             $this->view_popularity = false;
 
             return $this->view_popularity;
@@ -500,7 +500,7 @@ class record_preview extends record_adapter
         $report = $this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base(
             $this->get_base_id(), 'canreport');
 
-        if ( ! $report && ! $this->app['phraseanet.registry']->get('GV_google_api')) {
+        if ( ! $report && ! $this->app['conf']->get(['registry', 'webservices', 'google-charts-enabled'])) {
             $this->refferer_popularity = false;
 
             return $this->refferer_popularity;
@@ -524,19 +524,19 @@ class record_preview extends record_adapter
         foreach ($rs as $row) {
             if ($row['referrer'] == 'NO REFERRER')
                 $row['referrer'] = $this->app->trans('report::acces direct');
-            if ($row['referrer'] == $this->app['phraseanet.registry']->get('GV_ServerName') . 'prod/')
+            if ($row['referrer'] == $this->app['conf']->get('servername') . 'prod/')
                 $row['referrer'] = $this->app->trans('admin::monitor: module production');
-            if ($row['referrer'] == $this->app['phraseanet.registry']->get('GV_ServerName') . 'client/')
+            if ($row['referrer'] == $this->app['conf']->get('servername') . 'client/')
                 $row['referrer'] = $this->app->trans('admin::monitor: module client');
-            if (strpos($row['referrer'], $this->app['phraseanet.registry']->get('GV_ServerName') . 'login/') !== false)
+            if (strpos($row['referrer'], $this->app['conf']->get('servername') . 'login/') !== false)
                 $row['referrer'] = $this->app->trans('report:: page d\'accueil');
             if (strpos($row['referrer'], 'http://apps.cooliris.com/') !== false)
                 $row['referrer'] = $this->app->trans('report:: visualiseur cooliris');
 
-            if (strpos($row['referrer'], $this->app['phraseanet.registry']->get('GV_ServerName') . 'document/') !== false) {
+            if (strpos($row['referrer'], $this->app['conf']->get('servername') . 'document/') !== false) {
                 $row['referrer'] = $this->app->trans('report::acces direct');
             }
-            if (strpos($row['referrer'], $this->app['phraseanet.registry']->get('GV_ServerName') . 'permalink/') !== false) {
+            if (strpos($row['referrer'], $this->app['conf']->get('servername') . 'permalink/') !== false) {
                 $row['referrer'] = $this->app->trans('report::acces direct');
             }
             if ( ! isset($referrers[$row['referrer']]))
@@ -572,7 +572,7 @@ class record_preview extends record_adapter
         $report = $this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($this->get_base_id(), 'canreport');
 
         $ret = false;
-        if ( ! $report && ! $this->app['phraseanet.registry']->get('GV_google_api')) {
+        if ( ! $report && ! $this->app['conf']->get(['registry', 'webservices', 'google-charts-enabled'])) {
             $this->download_popularity = false;
 
             return $this->download_popularity;

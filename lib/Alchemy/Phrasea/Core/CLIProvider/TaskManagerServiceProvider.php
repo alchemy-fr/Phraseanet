@@ -45,7 +45,7 @@ class TaskManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['task-manager.task-list'] = $app->share(function (Application $app) {
-            $conf = $app['phraseanet.registry']->get('GV_PHP_INI', null);
+            $conf = $app['conf']->get(['registry', 'executables', 'php-conf-path']);
             $finder = new PhpExecutableFinder();
             $php = $finder->find();
 

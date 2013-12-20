@@ -152,11 +152,6 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
     public static $hasError = false;
     public static $hasException = false;
 
-    public function __construct(UrlGenerator $generator, registryInterface $registry, Bridge_Api_Auth_Interface $auth, TranslatorInterface $translator)
-    {
-        parent::__construct($generator, $registry, $auth, $translator);
-    }
-
     protected function initialize_transport()
     {
 

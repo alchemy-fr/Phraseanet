@@ -56,12 +56,31 @@ class patch_380alpha13a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $xsendfilePath = $app['phraseanet.registry']->get('GV_X_Accel_Redirect');
-        $xsendfileMountPoint = $app['phraseanet.registry']->get('GV_X_Accel_Redirect_mount_point');
+        $sql = 'SELECT `key`, `value` FROM `registry`
+                WHERE `key` = "GV_X_Accel_Redirect"
+                    OR `key` = "GV_X_Accel_Redirect_mount_point"
+                    OR `key` = "GV_modxsendfile"';
+        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $registry = [
+            'GV_X_Accel_Redirect' => null,
+            'GV_X_Accel_Redirect_mount_point' => null,
+            'GV_modxsendfile' => null,
+        ];
+
+        foreach ($rows as $row) {
+            $registry[$row['key']] = $row['value'];
+        }
+
+        $xsendfilePath = $registry['GV_X_Accel_Redirect'];
+        $xsendfileMountPoint = $registry['GV_X_Accel_Redirect_mount_point'];
 
         $config = $app['configuration.store']->setDefault('xsendfile')->getConfig();
 
-        $config['xsendfile']['enabled'] = (Boolean) $app['phraseanet.registry']->get('GV_modxsendfile', false);
+        $config['xsendfile']['enabled'] = (Boolean) $registry['GV_modxsendfile'];
         $config['xsendfile']['type'] = $config['xsendfile']['enabled'] ? 'nginx' : '';
 
         if (null !== $xsendfilePath && null !== $xsendfileMountPoint) {
