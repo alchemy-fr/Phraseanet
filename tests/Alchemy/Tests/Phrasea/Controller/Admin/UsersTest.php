@@ -420,12 +420,12 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $stmt->expects($this->any())
             ->method('fetchAll')
-            ->will($this->returnValue([
+            ->will($this->returnValue(array(
                 'usr_id' => $id,
                 'base_id' => $baseId,
                 'en_cours' => 1,
                 'refuser' => 0,
-            ]));
+            )));
 
         $pdo = $this->getMock('PDOMock');
 
@@ -445,10 +445,10 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate');
 
         self::$DI['client']->request('POST', '/admin/users/demands/', [
-            'template' => [],
-            'accept' => [$param],
-            'accept_hd' => [$param],
-            'watermark' => [$param],
+            'template' => array(),
+            'accept' => array($param),
+            'accept_hd' => array($param),
+            'watermark' => array($param),
         ]);
 
         self::$DI['app']['phraseanet.appbox'] = $appbox;
