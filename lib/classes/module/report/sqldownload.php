@@ -97,7 +97,7 @@ class module_report_sqldownload extends module_report_sql implements module_repo
 
         $stmt = $this->connbas->prepare($this->sql);
         $stmt->execute($this->params);
-        $this->total = $stmt->rowCount();
+        $this->total_row = $stmt->rowCount();
         $stmt->closeCursor();
 
         if (count($customFieldMap) > 0) {

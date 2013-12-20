@@ -68,7 +68,7 @@ class module_report_sqlaction extends module_report_sql implements module_report
 
             $stmt = $this->getConnBas()->prepare($this->sql);
             $stmt->execute($this->params);
-            $this->total = $stmt->rowCount();
+            $this->total_row = $stmt->rowCount();
             $stmt->closeCursor();
 
             $this->sql .= $this->filter->getOrderFilter($customFieldMap) ? : '';
@@ -91,7 +91,7 @@ class module_report_sqlaction extends module_report_sql implements module_report
 
             $stmt = $this->getConnBas()->prepare($this->sql);
             $stmt->execute($this->params);
-            $this->total = $stmt->rowCount();
+            $this->total_row = $stmt->rowCount();
             $stmt->closeCursor();
         }
 

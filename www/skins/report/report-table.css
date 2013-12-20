@@ -46,7 +46,7 @@ form.report_form input[type=text]{
 
 .form_csv input[name=submit]{
 
-	background:url(../../report/images/csv.gif) top right no-repeat;
+	background:url(img/csv.gif) top right no-repeat;
 	width:15px;
 	height: 16px;
 	cursor: pointer;
