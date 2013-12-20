@@ -19,9 +19,8 @@ before_script:
   - sh -c 'if [ $(php -r "echo PHP_MINOR_VERSION;") -le 4 ]; then pecl install redis; fi;'
   - echo 'extension="memcache.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcache.ini
   - echo 'extension="memcached.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcached.ini
-  - git clone https://github.com/mkoppanen/php-zmq.git
-  - sh -c "cd php-zmq && phpize && ./configure && make --silent && sudo make install"
-  - echo "extension=zmq.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
+  - yes | pecl install zmq-beta
+  - yes | pecl install imagick
   - composer self-update
   - composer install --dev --prefer-source
   - bin/developer system:uninstall
@@ -40,10 +39,6 @@ before_script:
   - echo "extension=phrasea2.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
   - git clone git://github.com/alchemy-fr/Phraseanet-Indexer.git
   - sh -c "cd Phraseanet-Indexer && autoreconf --force --install && ./configure --quiet && make -j --quiet && sudo make install"
-  - wget http://pecl.php.net/get/imagick-3.1.0RC2.tgz
-  - tar -xzf imagick-3.1.0RC2.tgz
-  - sh -c "cd imagick-3.1.0RC2 && phpize && ./configure --with-imagick=/usr/local && make -j && sudo make install"
-  - echo "extension=imagick.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
 
 php:
   - 5.4
