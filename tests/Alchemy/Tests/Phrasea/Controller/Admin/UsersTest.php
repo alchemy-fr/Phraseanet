@@ -434,7 +434,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->will($this->returnValue($stmt));
 
         $appbox = $this->getMockBuilder('\appbox')
-            ->setMethods(['get_connection'])
+            ->setMethods(array('get_connection'))
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -444,12 +444,12 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate');
 
-        self::$DI['client']->request('POST', '/admin/users/demands/', [
+        self::$DI['client']->request('POST', '/admin/users/demands/', array(
             'template' => array(),
             'accept' => array($param),
             'accept_hd' => array($param),
             'watermark' => array($param),
-        ]);
+        ));
 
         self::$DI['app']['phraseanet.appbox'] = $appbox;
 
