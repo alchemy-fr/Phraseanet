@@ -87,7 +87,7 @@
                 {% for class, config in result.display %}
                     <td class="{{ class }}">
                     {% for key , res in value %}
-                       {% if key == class %}
+                       {% if key|lower == class %}
                             {% if config.bound == 1 and "</i>" not in res %}
                                 {% if key == "user" and value.user == "<b>TOTAL</b>"%}
                                     {{ res|raw }}
