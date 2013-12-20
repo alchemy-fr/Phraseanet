@@ -463,7 +463,7 @@ abstract class PhraseanetTestCase extends WebTestCase
         }
 
         $duration = PhraseanetPHPUnitListener::getDurationByTest();
-        $tests = array();
+        $tests = [];
 
         foreach ($duration as $name => $data) {
             $tests[$name . '(total : '.$data['time'].' and '.$data['executions'].' executions)'] = $data['time'] / $data['executions'];

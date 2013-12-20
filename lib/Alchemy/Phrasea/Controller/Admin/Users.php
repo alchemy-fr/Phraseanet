@@ -545,7 +545,7 @@ class Users implements ControllerProviderInterface
                     $row = $stmt->fetch(\PDO::FETCH_ASSOC);
                     $stmt->closeCursor();
 
-                    $acceptColl = $denyColl = array();
+                    $acceptColl = $denyColl = [];
 
                     if ($row) {
                         if (\Swift_Validate::email($row['usr_mail'])) {
