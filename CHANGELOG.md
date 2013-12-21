@@ -7,6 +7,7 @@
   - Convert Users custom adapter to Doctrine entity.
   - Convert Ftp Export custom adapter to Doctrine entity.
   - Convert Ftp Export custom adapter to Doctrine entity.
+  - Session management is now part of Phraseanet configuration.
 
 * 3.8.2 (2013-11-15)
 

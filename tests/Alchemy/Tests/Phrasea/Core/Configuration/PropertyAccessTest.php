@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Configuration;
 
-use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
+use Alchemy\Tests\Phrasea\MockArrayConf;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 
 class PropertyAccessTest extends \PhraseanetTestCase
@@ -12,7 +12,7 @@ class PropertyAccessTest extends \PhraseanetTestCase
      */
     public function testGet($conf, $props, $expected, $default)
     {
-        $propAccess = new PropertyAccess(new ArrayConf($conf));
+        $propAccess = new PropertyAccess(new MockArrayConf($conf));
         $this->assertSame($expected, $propAccess->get($props, $default));
     }
 
@@ -21,7 +21,7 @@ class PropertyAccessTest extends \PhraseanetTestCase
      */
     public function testHas($conf, $props, $expected)
     {
-        $propAccess = new PropertyAccess(new ArrayConf($conf));
+        $propAccess = new PropertyAccess(new MockArrayConf($conf));
         $this->assertSame($expected, $propAccess->has($props));
     }
 
@@ -30,7 +30,7 @@ class PropertyAccessTest extends \PhraseanetTestCase
      */
     public function testSet($conf, $props, $value, $expectedConf)
     {
-        $conf = new ArrayConf($conf);
+        $conf = new MockArrayConf($conf);
         $propAccess = new PropertyAccess($conf);
         $this->assertSame($value, $propAccess->set($props, $value));
         $this->assertSame($expectedConf, $conf->getConfig());
@@ -41,7 +41,7 @@ class PropertyAccessTest extends \PhraseanetTestCase
      */
     public function testRemove($conf, $props, $expectedReturnValue, $expectedConf)
     {
-        $conf = new ArrayConf($conf);
+        $conf = new MockArrayConf($conf);
         $propAccess = new PropertyAccess($conf);
         $this->assertSame($expectedReturnValue, $propAccess->remove($props));
         $this->assertSame($expectedConf, $conf->getConfig());
@@ -52,7 +52,7 @@ class PropertyAccessTest extends \PhraseanetTestCase
      */
     public function testMerge($conf, $props, $value, $expectedReturnValue, $expectedConf)
     {
-        $conf = new ArrayConf($conf);
+        $conf = new MockArrayConf($conf);
         $propAccess = new PropertyAccess($conf);
         $this->assertSame($expectedReturnValue, $propAccess->merge($props, $value));
         $this->assertSame($expectedConf, $conf->getConfig());
@@ -141,70 +141,5 @@ class PropertyAccessTest extends \PhraseanetTestCase
             [$conf, ['key1', 'subkey2'], null, $conf],
             [$conf, 'key2', null, $conf],
         ];
-    }
-}
-
-class ArrayConf implements ConfigurationInterface
-{
-    private $conf;
-
-    public function __construct(array $conf)
-    {
-        $this->conf = $conf;
-    }
-
-    public function getConfig()
-    {
-        return $this->conf;
-    }
-
-    public function setConfig(array $config)
-    {
-        $this->conf = $config;
-    }
-
-    public function offsetGet($offset)
-    {
-        throw new \Exception('not implemented');
-    }
-
-    public function offsetSet($offset, $value)
-    {
-        throw new \Exception('not implemented');
-    }
-
-    public function offsetUnset($offset)
-    {
-        throw new \Exception('not implemented');
-    }
-
-    public function offsetExists($offset)
-    {
-        throw new \Exception('not implemented');
-    }
-
-    public function setDefault($name)
-    {
-        throw new \Exception('not implemented');
-    }
-
-    public function initialize()
-    {
-        throw new \Exception('not implemented');
-    }
-
-    public function delete()
-    {
-        throw new \Exception('not implemented');
-    }
-
-    public function isSetup()
-    {
-        throw new \Exception('not implemented');
-    }
-
-    public function compileAndWrite()
-    {
-        throw new \Exception('not implemented');
     }
 }

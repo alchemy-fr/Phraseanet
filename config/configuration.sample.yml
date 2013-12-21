@@ -28,6 +28,10 @@ main:
     search-engine:
         type: Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine
         options: []
+    session:
+        type: 'file'
+        options: []
+        ttl: 86400
     binaries:
         ghostscript_binary: null
         php_binary: null

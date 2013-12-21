@@ -3,7 +3,7 @@
 namespace Alchemy\Tests\Phrasea\TaskManager;
 
 use Alchemy\Phrasea\TaskManager\TaskManagerStatus;
-use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
+use Alchemy\Tests\Phrasea\MockArrayConf;
 
 class TaskManagerStatusTest extends \PhraseanetTestCase
 {
@@ -12,7 +12,7 @@ class TaskManagerStatusTest extends \PhraseanetTestCase
      */
     public function testStart($initialData)
     {
-        $conf = new ConfigurationTest($initialData);
+        $conf = new MockArrayConf($initialData);
         $expected = $conf->getConfig();
         $expected['main']['task-manager']['status'] = TaskManagerStatus::STATUS_STARTED;
 
@@ -41,7 +41,7 @@ class TaskManagerStatusTest extends \PhraseanetTestCase
      */
     public function testStop($initialData)
     {
-        $conf = new ConfigurationTest($initialData);
+        $conf = new MockArrayConf($initialData);
         $expected = $conf->getConfig();
         $expected['main']['task-manager']['status'] = TaskManagerStatus::STATUS_STOPPED;
 
@@ -56,7 +56,7 @@ class TaskManagerStatusTest extends \PhraseanetTestCase
      */
     public function testIsRunning($data, $expectedStatus, $isRunning)
     {
-        $conf = new ConfigurationTest($data);
+        $conf = new MockArrayConf($data);
         $status = new TaskManagerStatus($conf);
         $this->assertEquals($isRunning, $status->isRunning());
     }
@@ -77,73 +77,8 @@ class TaskManagerStatusTest extends \PhraseanetTestCase
      */
     public function testGetStatus($data, $expectedStatus, $isRunning)
     {
-        $conf = new ConfigurationTest($data);
+        $conf = new MockArrayConf($data);
         $status = new TaskManagerStatus($conf);
         $this->assertEquals($expectedStatus, $status->getStatus());
-    }
-}
-
-class ConfigurationTest implements ConfigurationInterface
-{
-    private $data = [];
-
-    public function __construct(array $data)
-    {
-        $this->data = $data;
-    }
-
-    public function offsetGet($key)
-    {
-        return $this->data[$key];
-    }
-
-    public function offsetSet($key, $value)
-    {
-        $this->data[$key] = $value;
-    }
-
-    public function offsetExists($key)
-    {
-        return isset($this->data[$key]);
-    }
-
-    public function offsetUnset($key)
-    {
-        unset($this->data[$key]);
-    }
-
-    public function getConfig()
-    {
-        return $this->data;
-    }
-
-    public function initialize()
-    {
-        throw new \RuntimeException('This method should not be used here');
-    }
-
-    public function delete()
-    {
-        throw new \RuntimeException('This method should not be used here');
-    }
-
-    public function isSetup()
-    {
-        throw new \RuntimeException('This method should not be used here');
-    }
-
-    public function setDefault($name)
-    {
-        throw new \RuntimeException('This method should not be used here');
-    }
-
-    public function setConfig(array $config)
-    {
-        throw new \RuntimeException('This method should not be used here');
-    }
-
-    public function compileAndWrite()
-    {
-        throw new \RuntimeException('This method should not be used here');
     }
 }
