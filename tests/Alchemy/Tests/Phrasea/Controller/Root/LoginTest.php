@@ -1796,7 +1796,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     private function disableTOU()
     {
         if (null === self::$termsOfUse) {
-            self::$termsOfUse = array();
+            self::$termsOfUse = [];
             foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
                 self::$termsOfUse[$databox->get_sbas_id()] = $databox->get_cgus();
 
@@ -1810,7 +1810,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     private function enableTOU()
     {
         if (null === self::$termsOfUse) {
-            self::$termsOfUse = array();
+            self::$termsOfUse = [];
             foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
                 self::$termsOfUse[$databox->get_sbas_id()] = $databox->get_cgus();
 
