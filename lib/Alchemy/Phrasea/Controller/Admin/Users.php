@@ -241,10 +241,10 @@ class Users implements ControllerProviderInterface
 
             foreach ($elligible_users as $user) {
                 $datas[] = [
-                    'email' => $user->getEmail() ? : ''
-                    , 'login' => $user->getLogin() ? : ''
-                    , 'name'  => $user->getDisplayName($app['translator']) ? : ''
-                    , 'id'    => $user->getId()
+                    'email' => $user->getEmail() ? : '',
+                    'login' => $user->getLogin() ? : '',
+                    'name'  => $user->getDisplayName($app['translator']) ? : '',
+                    'id'    => $user->getId(),
                 ];
             }
 
@@ -261,8 +261,9 @@ class Users implements ControllerProviderInterface
                 } else {
                     $user = $module->create_newuser();
                 }
-                if (!($user instanceof User))
+                if (!$user instanceof User) {
                     throw new \Exception('Unknown error');
+                }
 
                 $datas['data'] = $user->getId();
             } catch (\Exception $e) {
@@ -295,22 +296,22 @@ class Users implements ControllerProviderInterface
             $buffer = [];
 
             $buffer[] = [
-                'ID'
-                , 'Login'
-                , $app->trans('admin::compte-utilisateur nom')
-                , $app->trans('admin::compte-utilisateur prenom')
-                , $app->trans('admin::compte-utilisateur email')
-                , 'CreationDate'
-                , 'ModificationDate'
-                , $app->trans('admin::compte-utilisateur adresse')
-                , $app->trans('admin::compte-utilisateur ville')
-                , $app->trans('admin::compte-utilisateur code postal')
-                , $app->trans('admin::compte-utilisateur pays')
-                , $app->trans('admin::compte-utilisateur telephone')
-                , $app->trans('admin::compte-utilisateur fax')
-                , $app->trans('admin::compte-utilisateur poste')
-                , $app->trans('admin::compte-utilisateur societe')
-                , $app->trans('admin::compte-utilisateur activite')
+                'ID',
+                'Login',
+                $app->trans('admin::compte-utilisateur nom'),
+                $app->trans('admin::compte-utilisateur prenom'),
+                $app->trans('admin::compte-utilisateur email'),
+                'CreationDate',
+                'ModificationDate',
+                $app->trans('admin::compte-utilisateur adresse'),
+                $app->trans('admin::compte-utilisateur ville'),
+                $app->trans('admin::compte-utilisateur code postal'),
+                $app->trans('admin::compte-utilisateur pays'),
+                $app->trans('admin::compte-utilisateur telephone'),
+                $app->trans('admin::compte-utilisateur fax'),
+                $app->trans('admin::compte-utilisateur poste'),
+                $app->trans('admin::compte-utilisateur societe'),
+                $app->trans('admin::compte-utilisateur activite'),
             ];
             do {
                 $elligible_users->limit($offset, 20);
@@ -320,22 +321,22 @@ class Users implements ControllerProviderInterface
 
                 foreach ($results as $user) {
                     $buffer[] = [
-                        $user->getId()
-                        , $user->getLogin()
-                        , $user->getLastName()
-                        , $user->getFirstName()
-                        , $user->getEmail()
-                        , $app['date-formatter']->format_mysql($user->getCreated())
-                        , $app['date-formatter']->format_mysql($user->getUpdated())
-                        , $user->getAddress()
-                        , $user->getCity()
-                        , $user->getZipCode()
-                        , $user->getCountry()
-                        , $user->getPhone()
-                        , $user->getFax()
-                        , $user->getJob()
-                        , $user->getCompany()
-                        , $user->getActivity()
+                        $user->getId(),
+                        $user->getLogin(),
+                        $user->getLastName(),
+                        $user->getFirstName(),
+                        $user->getEmail(),
+                        $app['date-formatter']->format_mysql($user->getCreated()),
+                        $app['date-formatter']->format_mysql($user->getUpdated()),
+                        $user->getAddress(),
+                        $user->getCity(),
+                        $user->getZipCode(),
+                        $user->getCountry(),
+                        $user->getPhone(),
+                        $user->getFax(),
+                        $user->getJob(),
+                        $user->getCompany(),
+                        $user->getActivity(),
                     ];
                 }
             } while (count($results) > 0);
@@ -497,11 +498,11 @@ class Users implements ControllerProviderInterface
                         $app['acl']->get($user)->give_access_to_sbas([\phrasea::sbasFromBas($app, $bas)]);
 
                         $rights = [
-                            'canputinalbum'   => '1'
-                            , 'candwnldhd'      => ($options[$usr][$bas]['HD'] ? '1' : '0')
-                            , 'nowatermark'     => ($options[$usr][$bas]['WM'] ? '0' : '1')
-                            , 'candwnldpreview' => '1'
-                            , 'actif'           => '1'
+                            'canputinalbum'   => '1',
+                            'candwnldhd'      => ($options[$usr][$bas]['HD'] ? '1' : '0'),
+                            'nowatermark'     => ($options[$usr][$bas]['WM'] ? '0' : '1'),
+                            'candwnldpreview' => '1',
+                            'actif'           => '1',
                         ];
 
                         $app['acl']->get($user)->give_access_to_base([$bas]);
@@ -773,10 +774,10 @@ class Users implements ControllerProviderInterface
                     if (null === $app['manipulator.user']->getRepository()->findByLogin($curUser['usr_login'])
                             && false === $app['manipulator.user']->getRepository()->findByEmail($curUser['usr_mail'])) {
 
-                        $NewUser = $app['manipulator.user']->createUser($curUser['usr_login'], $curUser['usr_password'], $curUser['usr_mail']);
+                        $newUser = $app['manipulator.user']->createUser($curUser['usr_login'], $curUser['usr_password'], $curUser['usr_mail']);
 
                         $ftpCredential = new FtpCredential();
-                        $ftpCredential->setUser($NewUser);
+                        $ftpCredential->setUser($newUser);
 
                         if (isset($curUser['activeFTP'])) {
                             $ftpCredential->setActive((int) $curUser['activeFTP']);
@@ -794,37 +795,37 @@ class Users implements ControllerProviderInterface
                             $ftpCredential->setRepositoryPrefixName($curUser['prefixFTPfolder']);
                         }
                         if (isset($curUser['usr_prenom'])) {
-                            $NewUser->setFirstName($curUser['usr_prenom']);
+                            $newUser->setFirstName($curUser['usr_prenom']);
                         }
                         if (isset($curUser['usr_nom'])) {
-                            $NewUser->setLastName($curUser['usr_nom']);
+                            $newUser->setLastName($curUser['usr_nom']);
                         }
                         if (isset($curUser['adresse'])) {
-                            $NewUser->setAdress($curUser['adresse']);
+                            $newUser->setAdress($curUser['adresse']);
                         }
                         if (isset($curUser['cpostal'])) {
-                            $NewUser->setZipCode($curUser['cpostal']);
+                            $newUser->setZipCode($curUser['cpostal']);
                         }
                         if (isset($curUser['usr_sexe'])) {
-                            $NewUser->setGender((int) ($curUser['usr_sexe']));
+                            $newUser->setGender((int) ($curUser['usr_sexe']));
                         }
                         if (isset($curUser['tel'])) {
-                            $NewUser->setPhone($curUser['tel']);
+                            $newUser->setPhone($curUser['tel']);
                         }
                         if (isset($curUser['fax'])) {
-                            $NewUser->setFax($curUser['fax']);
+                            $newUser->setFax($curUser['fax']);
                         }
                         if (isset($curUser['activite'])) {
-                            $NewUser->setJob($curUser['activite']);
+                            $newUser->setJob($curUser['activite']);
                         }
                         if (isset($curUser['fonction'])) {
-                            $NewUser->setPosition($curUser['fonction']);
+                            $newUser->setPosition($curUser['fonction']);
                         }
                         if (isset($curUser['societe'])) {
-                            $NewUser->setCompany($curUser['societe']);
+                            $newUser->setCompany($curUser['societe']);
                         }
 
-                        $app['acl']->get($NewUser)->apply_model(
+                        $app['acl']->get($newUser)->apply_model(
                             $app['manipulator.user']->getRepository()->find($model), array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['manage']))
                         );
 

@@ -49,7 +49,7 @@ class Feed implements ControllerProviderInterface
                 $app->abort(404, "Feed not found");
             }
 
-            $publisher = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedPublisher')->findOneBy(['feed' => $feed, 'user' => $app['authentication']->getUser()->getId()]);
+            $publisher = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedPublisher')->findOneBy(['feed' => $feed, 'user' => $app['authentication']->getUser()]);
 
             if ('' === $title = trim($request->request->get('title', ''))) {
                 $app->abort(400, "Bad request");

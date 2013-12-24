@@ -35,13 +35,13 @@ class Push implements ControllerProviderInterface
             $subtitle = array_filter([$user->getJob(), $user->getCompany()]);
 
             return [
-                'type'         => 'USER'
-                , 'usr_id'       => $user->getId()
-                , 'firstname'    => $user->getFirstName()
-                , 'lastname'     => $user->getLastName()
-                , 'email'        => $user->getEmail()
-                , 'display_name' => $user->getDisplayName($app['translator'])
-                , 'subtitle'     => implode(', ', $subtitle)
+                'type'         => 'USER',
+                'usr_id'       => $user->getId(),
+                'firstname'    => $user->getFirstName(),
+                'lastname'     => $user->getLastName(),
+                'email'        => $user->getEmail(),
+                'display_name' => $user->getDisplayName($app['translator']),
+                'subtitle'     => implode(', ', $subtitle),
             ];
         };
     }
@@ -62,11 +62,11 @@ class Push implements ControllerProviderInterface
             }
 
             return [
-                'type'    => 'LIST'
-                , 'list_id' => $List->getId()
-                , 'name'    => $List->getName()
-                , 'length'  => count($entries)
-                , 'entries' => $entries
+                'type'    => 'LIST',
+                'list_id' => $List->getId(),
+                'name'    => $List->getName(),
+                'length'  => count($entries),
+                'entries' => $entries,
             ];
         };
     }
@@ -230,15 +230,15 @@ class Push implements ControllerProviderInterface
                     $receipt = $request->get('recept') ? $app['authentication']->getUser()->getEmail() : '';
 
                     $params = [
-                        'from'       => $app['authentication']->getUser()->getId()
-                        , 'from_email' => $app['authentication']->getUser()->getEmail()
-                        , 'to'         => $user_receiver->getId()
-                        , 'to_email'   => $user_receiver->getEmail()
-                        , 'to_name'    => $user_receiver->getDisplayName($app['translator'])
-                        , 'url'        => $url
-                        , 'accuse'     => $receipt
-                        , 'message'    => $request->request->get('message')
-                        , 'ssel_id'    => $Basket->getId()
+                        'from'       => $app['authentication']->getUser()->getId(),
+                        'from_email' => $app['authentication']->getUser()->getEmail(),
+                        'to'         => $user_receiver->getId(),
+                        'to_email'   => $user_receiver->getEmail(),
+                        'to_name'    => $user_receiver->getDisplayName($app['translator']),
+                        'url'        => $url,
+                        'accuse'     => $receipt,
+                        'message'    => $request->request->get('message'),
+                        'ssel_id'    => $Basket->getId(),
                     ];
 
                     $app['events-manager']->trigger('__PUSH_DATAS__', $params);

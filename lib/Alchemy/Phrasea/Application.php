@@ -130,7 +130,6 @@ use Neutron\Silex\Provider\FilesystemServiceProvider;
 use Neutron\ReCaptcha\ReCaptchaServiceProvider;
 use PHPExiftool\PHPExiftoolServiceProvider;
 use Silex\Application as SilexApplication;
-use Silex\Provider\DoctrineServiceProvider;
 use Silex\Application\UrlGeneratorTrait;
 use Silex\Application\TranslationTrait;
 use Silex\Provider\FormServiceProvider;
