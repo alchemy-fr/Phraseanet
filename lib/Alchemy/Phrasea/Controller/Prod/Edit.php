@@ -248,7 +248,7 @@ class Edit implements ControllerProviderInterface
 
             $query = $request->query->get('query');
 
-            $results = $VC->find($query, $app['authentication']->getUser(), $app['translator'], $databox);
+            $results = $VC->find($query, $app['authentication']->getUser(), $databox);
 
             $list = [];
 

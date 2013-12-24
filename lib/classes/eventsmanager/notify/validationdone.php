@@ -96,8 +96,8 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
                     ->find($params['ssel_id']);
                 $title = $basket->getName();
 
-                $receiver = Receiver::fromUser($user_to, $this->app['translator']);
-                $emitter = Emitter::fromUser($user_from, $this->app['translator']);
+                $receiver = Receiver::fromUser($user_to);
+                $emitter = Emitter::fromUser($user_from);
 
                 $readyToSend = true;
             } catch (\Exception $e) {

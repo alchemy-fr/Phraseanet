@@ -34,9 +34,7 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $app['session'] = $session = $this->getSessionMock();
         $app['EM'] = $em = $this->getEntityManagerMock();
 
-        $user = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $user = $this->createUserMock();
 
         $authenticator = new Authenticator($app, $browser, $session, $em);
         $authenticator->setUser($user);
@@ -57,9 +55,7 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $app['session'] = $session = $this->getSessionMock();
         $app['EM'] = $em = $this->getEntityManagerMock();
 
-        $user = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $user = $this->createUserMock();
         $user->expects($this->any())
             ->method('getId')
             ->will($this->returnvalue(self::$DI['user']->getId()));

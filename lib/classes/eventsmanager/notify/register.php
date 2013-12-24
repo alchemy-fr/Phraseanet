@@ -103,7 +103,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
                 $readyToSend = false;
                 try {
                     $admin_user = $this->app['manipulator.user']->getRepository()->find($usr_id);
-                    $receiver = Receiver::fromUser($admin_user, $this->app['translator']);
+                    $receiver = Receiver::fromUser($admin_user);
                     $readyToSend = true;
                 } catch (\Exception $e) {
                     continue;

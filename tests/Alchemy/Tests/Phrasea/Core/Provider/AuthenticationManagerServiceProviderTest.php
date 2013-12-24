@@ -156,7 +156,7 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
             return $u->getLogin();
         }, self::$DI['app']['authentication.providers.account-creator']->getTemplates()));
 
-        self::$DI['app']['model.user-manager']->delete($template1);
-        self::$DI['app']['model.user-manager']->delete($template2);
+        $this->removeUser(self::$DI['app'], $template1);
+        $this->removeUser(self::$DI['app'], $template2);
     }
 }

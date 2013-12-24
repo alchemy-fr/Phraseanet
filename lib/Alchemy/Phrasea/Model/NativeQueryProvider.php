@@ -46,9 +46,6 @@ class NativeQueryProvider
 
     public function getModelForUser(User $user, array $basList)
     {
-        debug_print_backtrace(10);
-        echo __METHOD__;
-        exit;
         $rsm = new ResultSetMappingBuilder($this->em);
         $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\User', 'u');
 
@@ -70,9 +67,6 @@ class NativeQueryProvider
 
     public function getAdminsOfBases(array $basList)
     {
-        debug_print_backtrace(10);
-        echo __METHOD__;
-        exit;
         $rsm = new ResultSetMappingBuilder($this->em);
         $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\User', 'u');
         $rsm->addScalarResult('base_id', 'base_id');

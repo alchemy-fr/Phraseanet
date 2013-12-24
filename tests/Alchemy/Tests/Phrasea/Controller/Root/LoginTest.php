@@ -1074,7 +1074,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['client']->request('POST', '/login/register-classic/', $parameters);
 
-        if (null === $user =  $user= self::$DI['app']['manipulator.user']->getRepository()->findByEmail($parameters['email'])) {
+        if (null === $user = self::$DI['app']['manipulator.user']->getRepository()->findByEmail($parameters['email'])) {
             $this->fail('User not created');
         }
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());

@@ -7,6 +7,7 @@ use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Model\Entities\Task;
+use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Doctrine\Common\Collections\ArrayCollection;
 use Guzzle\Common\Exception\GuzzleException;
 use Symfony\Component\HttpKernel\Client;
@@ -1926,7 +1927,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     protected function getQuarantineItem()
     {
-        $lazaretSession = new \Alchemy\Phrasea\Model\Entities\LazaretSession();
+        $lazaretSession = new LazaretSession();
         self::$DI['app']['EM']->persist($lazaretSession);
 
         $quarantineItem = null;

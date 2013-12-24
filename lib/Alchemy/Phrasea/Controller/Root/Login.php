@@ -522,7 +522,7 @@ class Login implements ControllerProviderInterface
      */
     private function sendAccountUnlockEmail(PhraseaApplication $app, User $user)
     {
-        $receiver = Receiver::fromUser($user, $app['translator']);
+        $receiver = Receiver::fromUser($user);
 
         $expire = new \DateTime('+3 days');
         $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->getId(), $expire, $user->getEmail());
@@ -573,7 +573,7 @@ class Login implements ControllerProviderInterface
         $user->setMailLocked(false);
 
         try {
-            $receiver = Receiver::fromUser($user, $app['translator']);
+            $receiver = Receiver::fromUser($user);
         } catch (InvalidArgumentException $e) {
             $app->addFlash('success', $app->trans('Account has been unlocked, you can now login.'));
 
@@ -663,7 +663,7 @@ class Login implements ControllerProviderInterface
                     }
 
                     try {
-                        $receiver = Receiver::fromUser($user, $app['translator']);
+                        $receiver = Receiver::fromUser($user);
                     } catch (InvalidArgumentException $e) {
                         throw new FormProcessingException($app->trans('Invalid email address'));
                     }

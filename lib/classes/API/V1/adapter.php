@@ -1287,17 +1287,12 @@ class API_V1_adapter extends API_V1_Abstract
      * Delete a basket
      *
      * @param  Request $request
-     * @param  int     $basket_id
+     * @param  Basket  $basket
      * @return array
      */
-    public function delete_basket(Request $request, $basket_id)
+    public function delete_basket(Request $request, Basket $basket)
     {
-        $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
-
-        /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
-
-        $Basket = $repository->findUserBasket($this->app, $basket_id, $this->app['authentication']->getUser(), true);
-        $this->app['EM']->remove($Basket);
+        $this->app['EM']->remove($basket);
         $this->app['EM']->flush();
 
         return $this->search_baskets($request);
@@ -1307,24 +1302,18 @@ class API_V1_adapter extends API_V1_Abstract
      * Retrieve a basket
      *
      * @param  Request       $request
-     * @param  int           $basket_id
+     * @param  Basket        $basket
      * @return API_V1_result
      */
-    public function get_basket(Request $request, $basket_id)
+    public function get_basket(Request $request, Basket $basket)
     {
         $result = new API_V1_result($this->app, $request, $this);
 
-        $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
-
-        /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
-
-        $Basket = $repository->findUserBasket($this->app, $basket_id, $this->app['authentication']->getUser(), false);
-
         $result->set_datas(
-                [
-                    "basket"          => $this->list_basket($Basket),
-                    "basket_elements" => $this->list_basket_content($Basket)
-                ]
+            [
+                "basket"          => $this->list_basket($basket),
+                "basket_elements" => $this->list_basket_content($basket)
+            ]
         );
 
         return $result;
@@ -1404,26 +1393,19 @@ class API_V1_adapter extends API_V1_Abstract
      * Change the name of one basket
      *
      * @param  Request       $request
-     * @param  int           $basket_id
+     * @param  Basket        $basket
      * @return API_V1_result
      */
-    public function set_basket_title(Request $request, $basket_id)
+    public function set_basket_title(Request $request, Basket $basket)
     {
         $result = new API_V1_result($this->app, $request, $this);
 
-        $name = $request->get('name');
+        $basket->setName($request->get('name'));
 
-        $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
-
-        /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
-
-        $Basket = $repository->findUserBasket($this->app, $basket_id, $this->app['authentication']->getUser(), true);
-        $Basket->setName($name);
-
-        $this->app['EM']->merge($Basket);
+        $this->app['EM']->persist($basket);
         $this->app['EM']->flush();
 
-        $result->set_datas(["basket" => $this->list_basket($Basket)]);
+        $result->set_datas(["basket" => $this->list_basket($basket)]);
 
         return $result;
     }
@@ -1432,26 +1414,19 @@ class API_V1_adapter extends API_V1_Abstract
      * Change the description of one basket
      *
      * @param  Request       $request
-     * @param  type          $basket_id
+     * @param  Basket        $basket
      * @return API_V1_result
      */
-    public function set_basket_description(Request $request, $basket_id)
+    public function set_basket_description(Request $request, Basket $basket)
     {
         $result = new API_V1_result($this->app, $request, $this);
 
-        $desc = $request->get('description');
+        $basket->setDescription($request->get('description'));
 
-        $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
-
-        /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
-
-        $Basket = $repository->findUserBasket($this->app, $basket_id, $this->app['authentication']->getUser(), true);
-        $Basket->setDescription($desc);
-
-        $this->app['EM']->merge($Basket);
+        $this->app['EM']->persist($basket);
         $this->app['EM']->flush();
 
-        $result->set_datas(["basket" => $this->list_basket($Basket)]);
+        $result->set_datas(["basket" => $this->list_basket($basket)]);
 
         return $result;
     }

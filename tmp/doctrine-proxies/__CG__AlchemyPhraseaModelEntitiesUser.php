@@ -1071,7 +1071,7 @@ class User extends \Alchemy\Phrasea\Model\Entities\User implements \Doctrine\ORM
     /**
      * {@inheritDoc}
      */
-    public function getDisplayName(\Symfony\Component\Translation\TranslatorInterface $translator)
+    public function getDisplayName(\Symfony\Component\Translation\TranslatorInterface $translator = NULL)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDisplayName', array($translator));

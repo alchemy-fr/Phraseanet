@@ -143,7 +143,7 @@ class Account implements ControllerProviderInterface
         $url = $app->url('account_reset_email', ['token' => $token]);
 
         try {
-            $receiver = Receiver::fromUser($app['authentication']->getUser(), $app['translator']);
+            $receiver = Receiver::fromUser($app['authentication']->getUser());
         } catch (InvalidArgumentException $e) {
             $app->addFlash('error', $app->trans('phraseanet::erreur: echec du serveur de mail'));
 

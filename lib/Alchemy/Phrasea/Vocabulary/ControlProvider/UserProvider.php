@@ -51,7 +51,7 @@ class UserProvider implements ControlProviderInterface
      * @param  \databox                                     $on_databox
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
-    public function find($query, User $for_user, TranslatorInterface $translator ,\databox $on_databox = null)
+    public function find($query, User $for_user,\databox $on_databox = null)
     {
         $user_query = new \User_Query($this->app);
 
@@ -69,7 +69,7 @@ class UserProvider implements ControlProviderInterface
 
         foreach ($users as $user) {
             $results->add(
-                new Term($user->getDisplayName($translator), '', $this, $user->getId())
+                new Term($user->getDisplayName($this->app['translator']), '', $this, $user->getId())
             );
         }
 

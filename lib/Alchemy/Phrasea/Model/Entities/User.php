@@ -1031,10 +1031,14 @@ class User
     /**
      * @return string
      */
-    public function getDisplayName(TranslatorInterface $translator)
+    public function getDisplayName(TranslatorInterface $translator = null)
     {
-        if ($this->isTemplate()) {
+        if ($this->isTemplate() && $translator) {
             return $translator->trans('modele %name%', ['%name%' => $this->getLogin()]);
+        }
+
+        if ($this->isTemplate()) {
+            return $this->getLogin();
         }
 
         if (trim($this->lastName) !== '' || trim($this->firstName) !== '') {
@@ -1045,6 +1049,10 @@ class User
             return $this->email;
         }
 
-        return $translator->trans('Unnamed user');
+        if ($translator) {
+            return $translator->trans('Unnamed user');
+        }
+
+        return 'Unnamed user';
     }
 }

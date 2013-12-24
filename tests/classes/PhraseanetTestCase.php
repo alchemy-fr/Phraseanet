@@ -5,7 +5,6 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Model\Entities\User;
-use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 use Monolog\Handler\NullHandler;
 use Silex\WebTestCase;
@@ -14,6 +13,7 @@ use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Routing\RequestContext;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
+use Alchemy\Phrasea\Authentication\ACLProvider;
 use Guzzle\Http\Client as Guzzle;
 
 abstract class PhraseanetTestCase extends WebTestCase
@@ -287,33 +287,11 @@ abstract class PhraseanetTestCase extends WebTestCase
             ->method('getSubscribedEvents')
             ->will($this->returnValue([]));
 
-        $app['translator'] = $this->createTranslatorMock();
-
-        $app['EM'] = $app->share(function ($app) {
-            return $app['EM.test'];
-        });
-
-        $app['EM.test'] = $app->share(function ($app) {
+        $app['EM'] = $app->share($app->extend('EM', function ($em) {
             $this->initializeSqliteDB();
 
-            try {
-                $em = EntityManager::create($app['conf']->get(['main', 'database-test']), $app['EM.config'], $app['EM.events-manager']);
-            } catch (\Exception $e) {
-                throw new RuntimeException("Unable to create database connection", $e->getCode(), $e);
-            }
-
             return $em;
-        });
-
-        $app['EM.prod'] = $app->share(function ($app) {
-            try {
-                $em = EntityManager::create($app['conf']->get(['main', 'database']), $app['EM.config'], $app['EM.events-manager']);
-            } catch (\Exception $e) {
-                throw new RuntimeException("Unable to create database connection", $e->getCode(), $e);
-            }
-
-            return $em;
-        });
+        }));
 
         $app['browser'] = $app->share($app->extend('browser', function ($browser) {
             $browser->setUserAgent(self::USER_AGENT_FIREFOX8MAC);
@@ -334,7 +312,7 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     public function tearDown()
     {
-        \Alchemy\Phrasea\Authentication\ACLProvider::purge();
+        ACLProvider::purge();
         \collection::purge();
         \databox::purge();
         \caption_field::purge();
@@ -342,7 +320,6 @@ abstract class PhraseanetTestCase extends WebTestCase
         \databox_field::purge();
         \databox_status::purge();
         \thesaurus_xpath::purge();
-        \User_Adapter::purge();
 
         /**
          * Kris Wallsmith pro-tip
@@ -634,5 +611,16 @@ abstract class PhraseanetTestCase extends WebTestCase
         return $this->getMockBuilder('appbox')
             ->disableOriginalConstructor()
             ->getMock();
+    }
+
+    public function createUserMock()
+    {
+        return $this->getMock('Alchemy\Phrasea\Model\Entities\User');
+    }
+
+    public function removeUser(Application $app, User $user)
+    {
+        $app['EM']->remove($user);
+        $app['EM']->flush();
     }
 }

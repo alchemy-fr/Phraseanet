@@ -172,7 +172,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
 
         $readyToSend = false;
         try {
-            $receiver = Receiver::fromUser($to, $this->app['translator']);
+            $receiver = Receiver::fromUser($to);
             $readyToSend = true;
         } catch (Exception $e) {
 

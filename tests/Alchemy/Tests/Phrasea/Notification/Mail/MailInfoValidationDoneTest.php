@@ -38,9 +38,7 @@ class MailInfoValidationDoneTest extends MailWithLinkTestCase
             $this->getExpiration()
         );
 
-        $user = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $user = $this->createUserMock();
 
         $user->expects($this->any())
             ->method('getDisplayName')
@@ -95,9 +93,7 @@ class MailInfoValidationDoneTest extends MailWithLinkTestCase
             $this->getExpiration()
         );
 
-        $user = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $user = $this->createUserMock();
 
         $user->expects($this->any())
             ->method('getDisplayName')

@@ -52,10 +52,9 @@ interface ControlProviderInterface
      *
      * @param string              $query      A scalar quaery
      * @param User                $for_user   The user doing the query
-     * @param TranslatorInterface $translator
      * @param \databox            $on_databox The databox where vocabulary should be requested
      *
      * @return Doctrine\Common\Collections\ArrayCollection
      */
-    public function find($query, User $for_user, TranslatorInterface $translator, \databox $on_databox);
+    public function find($query, User $for_user, \databox $on_databox);
 }

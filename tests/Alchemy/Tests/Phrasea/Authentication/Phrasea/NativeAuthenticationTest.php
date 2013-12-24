@@ -14,7 +14,7 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
         $oldEncoder = $this->getOldEncoderMock();
         $request = $this->getRequestMock();
 
-        $specialUser = $this->getMock('Alchemy\Phrasea\Model\Entities\User');
+        $specialUser = $this->createUserMock();
         $specialUser->expects($this->any())->method('isSpecial')->will($this->returnValue(true));
 
         $manipulator = $this->getUserManipulatorMock($specialUser);
@@ -40,7 +40,7 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
         $oldEncoder = $this->getOldEncoderMock();
         $request = $this->getRequestMock();
 
-        $mailLockedUser = $this->getMock('Alchemy\Phrasea\Model\Entities\User');
+        $mailLockedUser = $this->createUserMock();
         $mailLockedUser->expects($this->any())->method('isMailLocked')->will($this->returnValue(true));
 
         $manipulator = $this->getUserManipulatorMock($mailLockedUser);
@@ -66,7 +66,7 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
         $oldEncoder = $this->getOldEncoderMock();
         $request = $this->getRequestMock();
 
-        $user = $this->getMock('Alchemy\Phrasea\Model\Entities\User');
+        $user = $this->createUserMock();
 
         $user->expects($this->any())->method('getId')->will($this->returnValue($userId));
         $user->expects($this->any())->method('isSpecial')->will($this->returnValue(false));
@@ -101,7 +101,7 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
         $oldEncoder = $this->getOldEncoderMock();
         $request = $this->getRequestMock();
 
-        $user = $this->getMock('Alchemy\Phrasea\Model\Entities\User');
+        $user = $this->createUserMock();
 
         $user->expects($this->any())->method('getId')->will($this->returnValue($userId));
         $user->expects($this->any())->method('isSpecial')->will($this->returnValue(false));
@@ -136,7 +136,7 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
         $oldEncoder = $this->getOldEncoderMock();
         $request = $this->getRequestMock();
 
-        $user = $this->getMock('Alchemy\Phrasea\Model\Entities\User');
+        $user = $this->createUserMock();
 
         $user->expects($this->any())->method('getId')->will($this->returnValue($userId));
         $user->expects($this->any())->method('isSpecial')->will($this->returnValue(false));
@@ -173,7 +173,7 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
         $oldEncoder = $this->getOldEncoderMock();
         $request = $this->getRequestMock();
 
-        $user = $this->getMock('Alchemy\Phrasea\Model\Entities\User');
+        $user = $this->createUserMock();
 
         $user->expects($this->any())->method('getId')->will($this->returnValue($userId));
         $user->expects($this->any())->method('isSpecial')->will($this->returnValue(false));

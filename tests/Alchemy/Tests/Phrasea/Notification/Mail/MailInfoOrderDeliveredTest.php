@@ -53,9 +53,7 @@ class MailInfoOrderDeliveredTest extends MailTestCase
             $this->getMessage()
         );
 
-        $user = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $user = $this->createUserMock();
 
         $user->expects($this->any())
             ->method('getDisplayName')
@@ -88,9 +86,7 @@ class MailInfoOrderDeliveredTest extends MailTestCase
             ->method('getId')
             ->will($this->returnValue(42));
 
-        $user = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $user = $this->createUserMock();
 
         $user->expects($this->any())
             ->method('getDisplayName')

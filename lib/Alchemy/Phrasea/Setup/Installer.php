@@ -72,8 +72,8 @@ class Installer
             ->give_access_to_sbas([$databox->get_sbas_id()])
             ->update_rights_to_sbas(
                 $databox->get_sbas_id(), [
-                'bas_manage'        => 1, 'bas_modify_struct' => 1,
-                'bas_modif_th'      => 1, 'bas_chupub'        => 1
+                    'bas_manage'        => 1, 'bas_modify_struct' => 1,
+                    'bas_modif_th'      => 1, 'bas_chupub'        => 1
                 ]
         );
 

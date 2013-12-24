@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UsrList;
 use Alchemy\Phrasea\Model\Entities\UsrListEntry;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NoResultException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -78,12 +79,12 @@ class UsrListEntryRepository extends EntityRepository
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
 
-        $entry = $query->getResult();
-
-        if (!$entry) {
-            throw new NotFoundHttpException('Entry not found');
+        try {
+            $entry = $query->getSingleResult();
+        } catch (NoResultException $e) {
+            throw new NotFoundHttpException('Entry not found', null, $e);
         }
 
-        return $query->getSingleResult();
+        return $entry;
     }
 }

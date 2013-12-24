@@ -55,8 +55,8 @@ class Emitter implements EmitterInterface
      *
      * @throws InvalidArgumentException In case no valid email is found for user
      */
-    public static function fromUser(User $user, TranslatorInterface $translator)
+    public static function fromUser(User $user)
     {
-        return new static($user->getDisplayName($translator), $user->getEmail());
+        return new static($user->getDisplayName(), $user->getEmail());
     }
 }

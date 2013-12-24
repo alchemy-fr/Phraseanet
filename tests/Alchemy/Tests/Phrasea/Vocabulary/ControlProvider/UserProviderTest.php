@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Vocabulary\ControlProvider;
 
 use Alchemy\Phrasea\Vocabulary\ControlProvider\UserProvider;
+use Doctrine\ORM\EntityManager;
 
 class UserProviderTest extends \PhraseanetTestCase
 {
@@ -39,29 +40,31 @@ class UserProviderTest extends \PhraseanetTestCase
 
     public function testFind()
     {
-        self::$DI['app']['EM'] = self::$DI['app']['EM.prod'];
-        $user = self::$DI['app']['manipulator.user']->createUser(uniqid('test'), 'a_password', uniqid('test').'@titi.tu');
+        // mandatory until user rights are managed by doctrine
+        self::$DI['app']['EM'] = EntityManager::create(self::$DI['app']['conf']->get(['main', 'database']), self::$DI['app']['EM.config'], self::$DI['app']['EM.events-manager']);
+
+        $user = self::$DI['app']['manipulator.user']->createUser(uniqid('test'), 'a_password', uniqid('test').'@domain.fr');
         self::giveRightsToUser(self::$DI['app'], $user);
-        $user->setFirstName('toto');
-        $user->setLastName('tata');
+        $user->setFirstName('John');
+        $user->setLastName('Doe');
         self::$DI['app']['EM']->persist($user);
         self::$DI['app']['EM']->flush();
 
-        $results = $this->object->find('BABE', $user, self::$DI['app']['translator'], self::$DI['collection']->get_databox());
+        $results = $this->object->find('BABE', $user,  self::$DI['collection']->get_databox());
 
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
 
-        $results = $this->object->find($user->getEmail(), $user,self::$DI['app']['translator'], self::$DI['collection']->get_databox());
-
-        $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
-        $this->assertTrue($results->count() > 0);
-
-        $results = $this->object->find($user->getFirstName(), $user, self::$DI['app']['translator'], self::$DI['collection']->get_databox());
+        $results = $this->object->find($user->getEmail(), $user, self::$DI['collection']->get_databox());
 
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
         $this->assertTrue($results->count() > 0);
 
-        $results = $this->object->find($user->getLastName(), $user, self::$DI['app']['translator'], self::$DI['collection']->get_databox());
+        $results = $this->object->find($user->getFirstName(), $user,  self::$DI['collection']->get_databox());
+
+        $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
+        $this->assertTrue($results->count() > 0);
+
+        $results = $this->object->find($user->getLastName(), $user,  self::$DI['collection']->get_databox());
 
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
         $this->assertTrue($results->count() > 0);

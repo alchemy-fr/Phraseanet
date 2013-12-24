@@ -86,6 +86,6 @@ class ACLManipulatorTest extends \PhraseanetTestCase
         $this->assertEquals(0, $acl->get_limits($acl->get_mask_xor($baseId)));
         $this->assertEquals(0, $acl->get_limits($acl->get_mask_and($baseId)));
 
-        self::$DI['app']['model.user-manager']->delete($user);
+        $this->removeUser(self::$DI['app'], $user);
     }
 }

@@ -154,7 +154,7 @@ class Manage extends Helper
 
             $receiver = null;
             try {
-                $receiver = Receiver::fromUser($createdUser, $this->app['translator']);
+                $receiver = Receiver::fromUser($createdUser);
             } catch (InvalidArgumentException $e) {
 
             }

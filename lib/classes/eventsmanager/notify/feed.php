@@ -97,7 +97,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
 
                         $url = $this->app->url('lightbox', ['LOG' => $token]);
 
-                        $receiver = Receiver::fromUser($user_to_notif, $this->app['translator']);
+                        $receiver = Receiver::fromUser($user_to_notif);
                         $readyToSend = true;
                     } catch (\Exception $e) {
 

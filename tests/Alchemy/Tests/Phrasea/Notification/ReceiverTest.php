@@ -42,9 +42,7 @@ class ReceiverTest extends \PhraseanetTestCase
      */
     public function testFromUser()
     {
-        $user = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $user = $this->createUserMock();
 
         $user->expects($this->any())
             ->method('getDisplayName')
@@ -54,7 +52,7 @@ class ReceiverTest extends \PhraseanetTestCase
             ->method('getEmail')
             ->will($this->returnValue($this->email));
 
-        $object = Receiver::fromUser($user, self::$DI['app']['translator']);
+        $object = Receiver::fromUser($user);
         $this->assertEquals($this->email, $object->getEmail());
         $this->assertEquals($this->name, $object->getName());
     }
@@ -64,9 +62,7 @@ class ReceiverTest extends \PhraseanetTestCase
      */
     public function testFromUserFailed()
     {
-        $user = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $user = $this->createUserMock();
 
         $user->expects($this->any())
             ->method('getDisplayName')
@@ -77,7 +73,7 @@ class ReceiverTest extends \PhraseanetTestCase
             ->will($this->returnValue('wrong user'));
 
         try {
-            Receiver::fromUser($user, self::$DI['app']['translator']);
+            Receiver::fromUser($user);
             $this->fail('Should have raised an exception');
         } catch (InvalidArgumentException $e) {
 

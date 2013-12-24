@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\User;
 use Symfony\Component\HttpFoundation\Request;
 use Silex\Application;
@@ -199,7 +200,7 @@ interface API_V1_Interface
      *    BASKET_ID : required INT
      *
      */
-    public function delete_basket(Request $request, $basket_id);
+    public function delete_basket(Request $request, Basket $basket);
 
     /**
      * Route : /baskets/BASKET_ID/content/FORMAT/
@@ -210,7 +211,7 @@ interface API_V1_Interface
      *    BASKET_ID : required INT
      *
      */
-    public function get_basket(Request $request, $basket_id);
+    public function get_basket(Request $request, Basket $basket);
 
     /**
      * Route : /baskets/BASKET_ID/title/FORMAT/
@@ -221,7 +222,7 @@ interface API_V1_Interface
      *    BASKET_ID : required INT
      *
      */
-    public function set_basket_title(Request $request, $basket_id);
+    public function set_basket_title(Request $request, Basket $basket);
 
     /**
      * Route : /baskets/BASKET_ID/description/FORMAT/
@@ -232,7 +233,7 @@ interface API_V1_Interface
      *    BASKET_ID : required INT
      *
      */
-    public function set_basket_description(Request $request, $basket_id);
+    public function set_basket_description(Request $request, Basket $basket);
 
     /**
      * Route : /publications/list/FORMAT/

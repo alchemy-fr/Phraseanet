@@ -70,11 +70,10 @@ class UsrListOwnerRepository extends EntityRepository
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
 
-        $owner = $query->getSingleResult();
-
-        /* @var $owner UsrListOwner */
-        if (null === $owner) {
-            throw new NotFoundHttpException('Owner is not found');
+        try {
+            $owner = $query->getSingleResult();
+        } catch (NoResultException $e) {
+            throw new NotFoundHttpException('Owner is not found', null, $e);
         }
 
         return $owner;

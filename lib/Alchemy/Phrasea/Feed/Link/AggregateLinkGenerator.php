@@ -132,7 +132,7 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
     {
         $token = $this->em
             ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
-            ->findOneBy(['user' => $user->getId()]);
+            ->findOneBy(['user' => $user]);
 
         if (null === $token || true === $renew) {
             if (null === $token) {
