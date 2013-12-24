@@ -968,7 +968,7 @@ class databox extends base
 
     /**
      *
-     * @param  User $user
+     * @param  User    $user
      * @return databox
      */
     public function registerAdmin(User $user)

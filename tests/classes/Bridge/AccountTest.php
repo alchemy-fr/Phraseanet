@@ -1,7 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Application;
-
 require_once __DIR__ . '/Bridge_datas.inc';
 
 class Bridge_AccountTest extends \PhraseanetAuthenticatedTestCase

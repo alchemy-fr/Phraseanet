@@ -453,8 +453,8 @@ class Feed implements FeedInterface
     /**
      * Returns a boolean indicating whether the given user has access to the feed.
      *
-     * @param User $user
-     * @param Application   $app
+     * @param User        $user
+     * @param Application $app
      *
      * @return boolean
      */
@@ -548,7 +548,7 @@ class Feed implements FeedInterface
      *
      * Returns a boolean indicating whether a given user has access to the feed
      *
-     * @param User                $user
+     * @param User                         $user
      * @param \Alchemy\Phrasea\Application $app
      *
      * @return boolean

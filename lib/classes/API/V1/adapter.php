@@ -1460,7 +1460,7 @@ class API_V1_adapter extends API_V1_Abstract
      * List all avalaible feeds
      *
      * @param  Request       $request
-     * @param  User  $user
+     * @param  User          $user
      * @return API_V1_result
      */
     public function search_publications(Request $request, User $user)
@@ -1493,7 +1493,7 @@ class API_V1_adapter extends API_V1_Abstract
      *
      * @param  Request       $request
      * @param  int           $publication_id
-     * @param  User  $user
+     * @param  User          $user
      * @return API_V1_result
      */
     public function get_publication(Request $request, $publication_id, User $user)

@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Model\Entities\User;
 
 class patch_381alpha3a implements patchInterface
 {

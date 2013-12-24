@@ -37,7 +37,7 @@ class appbox_register
     /**
      * Add a registration request for a user on a collection
      *
-     * @param  User  $user
+     * @param  User            $user
      * @param  collection      $collection
      * @return appbox_register
      */
@@ -56,8 +56,8 @@ class appbox_register
      * Return an array of collection objects where provided
      * user is waiting for approbation
      *
-     * @param Application    $app
-     * @param User $user
+     * @param Application $app
+     * @param User        $user
      *
      * @return array
      */

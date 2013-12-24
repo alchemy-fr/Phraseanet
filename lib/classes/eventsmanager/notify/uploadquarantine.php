@@ -99,8 +99,8 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
     /**
      * Notifiy an user using the specified datas
      *
-     * @param User $user
-     * @param string        $datas
+     * @param User   $user
+     * @param string $datas
      */
     private function notifyUser(User $user, $datas)
     {

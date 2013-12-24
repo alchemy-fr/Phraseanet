@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Feed;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -73,7 +72,7 @@ class Aggregate implements FeedInterface
      * Creates an aggregate from all the feeds available to a given user.
      *
      * @param EntityManager $em
-     * @param User $user
+     * @param User          $user
      *
      * @return Aggregate
      */

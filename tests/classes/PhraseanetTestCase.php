@@ -289,7 +289,7 @@ abstract class PhraseanetTestCase extends WebTestCase
 
         $app['translator'] = $this->createTranslatorMock();
 
-        $app['EM'] = $app->share(function($app) {
+        $app['EM'] = $app->share(function ($app) {
             return $app['EM.test'];
         });
 
@@ -305,7 +305,7 @@ abstract class PhraseanetTestCase extends WebTestCase
             return $em;
         });
 
-        $app['EM.prod'] = $app->share(function($app){
+        $app['EM.prod'] = $app->share(function ($app) {
             try {
                 $em = EntityManager::create($app['conf']->get(['main', 'database']), $app['EM.config'], $app['EM.events-manager']);
             } catch (\Exception $e) {

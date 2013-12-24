@@ -1,8 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Application;
-use Doctrine\ORM\UnitOfWork;
-
 class ACLTest extends \PhraseanetAuthenticatedTestCase
 {
     /**

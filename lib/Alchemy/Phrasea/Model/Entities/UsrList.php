@@ -222,7 +222,7 @@ class UsrList
 
     /**
      *
-     * @param  User $user
+     * @param  User         $user
      * @return UsrListOwner
      */
     public function getOwner(User $user)
@@ -239,7 +239,7 @@ class UsrList
     /**
      * Return true if one of the entry is related to the given user
      *
-     * @param  User $user
+     * @param  User    $user
      * @return boolean
      */
     public function has(User $user, Application $app)

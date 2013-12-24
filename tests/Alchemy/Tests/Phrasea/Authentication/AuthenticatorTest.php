@@ -244,7 +244,6 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $session->set('usr_id', self::$DI['user']->getId());
         $session->set('session_id', 1);
 
-
         $authenticator = new Authenticator($app, $browser, $session,  $app['EM']);
         $this->assertTrue($authenticator->isAuthenticated());
         $this->assertEquals(self::$DI['user'], $authenticator->getUser());

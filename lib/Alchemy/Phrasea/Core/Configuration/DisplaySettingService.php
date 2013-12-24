@@ -91,20 +91,18 @@ class DisplaySettingService
         return $user->getSettings()->get($name)->getValue();
     }
 
-
     /**
      * Return a user notification setting given a user.
      *
-     * @param User $user
+     * @param User   $user
      * @param string $name
-     * @param mixed $default
+     * @param mixed  $default
      *
      * @return mixed
      */
     public function getUserNotificationSetting(User $user, $name, $default = true)
     {
         if (false === $user->getNotificationSettings()->containsKey($name)) {
-
             return $default;
         }
 

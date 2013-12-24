@@ -28,7 +28,7 @@ class BasketRepository extends EntityRepository
     /**
      * Returns all basket for a given user that are not marked as archived
      *
-     * @param  User                               $user
+     * @param  User                                         $user
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
     public function findActiveByUser(User $user, $sort = null)
@@ -54,7 +54,7 @@ class BasketRepository extends EntityRepository
     /**
      * Returns all unread basket for a given user that are not marked as archived
      *
-     * @param  User                               $user
+     * @param  User                                         $user
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
     public function findUnreadActiveByUser(User $user)
@@ -89,7 +89,7 @@ class BasketRepository extends EntityRepository
      * Returns all baskets that are in validation session not expired  and
      * where a specified user is participant (not owner)
      *
-     * @param  User                               $user
+     * @param  User                                         $user
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
     public function findActiveValidationByUser(User $user, $sort = null)
@@ -121,7 +121,7 @@ class BasketRepository extends EntityRepository
      * @throws NotFoundHttpException
      * @throws AccessDeniedHttpException
      * @param  type                      $basket_id
-     * @param  User            $user
+     * @param  User                      $user
      * @return Basket
      */
     public function findUserBasket(Application $app, $basket_id, User $user, $requireOwner)
@@ -270,8 +270,8 @@ class BasketRepository extends EntityRepository
     /**
      * Return all actives validation where current user is involved and user basket
      *
-     * @param  User         $user
-     * @param  type          $sort
+     * @param  User  $user
+     * @param  type  $sort
      * @return Array
      */
     public function findActiveValidationAndBasketByUser(User $user, $sort = null)

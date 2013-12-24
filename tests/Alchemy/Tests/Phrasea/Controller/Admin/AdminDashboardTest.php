@@ -110,7 +110,7 @@ class AdminDashboardTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->setAdmin(true);
 
-        $admins = array_map(function(User $user) {
+        $admins = array_map(function (User $user) {
             return $user->getId();
         }, self::$DI['app']['manipulator.user']->getRepository()->findAdmins());
 

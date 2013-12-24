@@ -2,13 +2,9 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
-use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\Application as PhraseaApplication;
-use Alchemy\Phrasea\Core\Provider\ManipulatorServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
-use Silex\Application;
 
 /**
  * @covers Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider
@@ -156,7 +152,7 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 
         self::$DI['app']['conf']->set(['authentication', 'auto-create'], ['templates' => [$template1->getId(), $template2->getId()]]);
 
-        $this->assertEquals([$template1->getLogin(), $template2->getLogin()], array_map(function($u) {
+        $this->assertEquals([$template1->getLogin(), $template2->getLogin()], array_map(function ($u) {
             return $u->getLogin();
         }, self::$DI['app']['authentication.providers.account-creator']->getTemplates()));
 

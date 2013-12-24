@@ -141,7 +141,7 @@ class record_preview extends record_adapter
             case "BASK":
                 $Basket = $app['converter.basket']->convert($contId);
                 $app['acl.basket']->hasAccess($Basket, $app['authentication']->getUser());
-                
+
                 /* @var $Basket Basket */
                 $this->container = $Basket;
                 $this->total = $Basket->getElements()->count();

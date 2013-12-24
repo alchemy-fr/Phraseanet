@@ -98,7 +98,7 @@ class BasketElementRepository extends EntityRepository
     /**
      *
      * @param  \record_adapter                              $record
-     * @param  User                                $user
+     * @param  User                                         $user
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
     public function findReceivedElementsByRecord(\record_adapter $record, User $user)

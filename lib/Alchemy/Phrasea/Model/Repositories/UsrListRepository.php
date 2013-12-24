@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UsrList;
 use Doctrine\ORM\EntityRepository;
@@ -30,7 +29,7 @@ class UsrListRepository extends EntityRepository
     /**
      * Get all lists readable for a given User
      *
-     * @param  User                                $user
+     * @param  User                                         $user
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
     public function findUserLists(User $user)
@@ -51,8 +50,8 @@ class UsrListRepository extends EntityRepository
 
     /**
      *
-     * @param  User $user
-     * @param  type          $list_id
+     * @param  User    $user
+     * @param  type    $list_id
      * @return UsrList
      */
     public function findUserListByUserAndId(User $user, $list_id)
@@ -74,7 +73,7 @@ class UsrListRepository extends EntityRepository
     /**
      * Search for a UsrList like '' with a given value, for a user
      *
-     * @param  User                                $user
+     * @param  User                                         $user
      * @param  type                                         $name
      * @return \Doctrine\Common\Collections\ArrayCollection
      */

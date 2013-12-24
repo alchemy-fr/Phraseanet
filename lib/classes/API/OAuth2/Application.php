@@ -519,7 +519,7 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param  User       $user
+     * @param  User               $user
      * @return API_OAuth2_Account
      */
     public function get_user_account(User $user)
@@ -589,7 +589,7 @@ class API_OAuth2_Application
     /**
      *
      * @param  Application            $app
-     * @param  User           $user
+     * @param  User                   $user
      * @param  type                   $name
      * @return API_OAuth2_Application
      */

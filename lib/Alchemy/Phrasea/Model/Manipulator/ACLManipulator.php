@@ -40,13 +40,13 @@ class ACLManipulator implements ManipulatorInterface
     /**
      * Resets rights for users.
      *
-     * @param User[]    $users
+     * @param User[] $users
      *
      * @throws InvalidArgumentException
      */
     public function resetAdminRights($users)
     {
-        foreach($this->makeTraversable($users) as $user) {
+        foreach ($this->makeTraversable($users) as $user) {
             $this->doResetAdminRights($user);
         }
     }

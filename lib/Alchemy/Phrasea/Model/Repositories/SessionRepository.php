@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Model\Repositories;
 
 use Doctrine\ORM\EntityRepository;
-use Alchemy\Phrasea\Model\Entities\User;
 
 /**
  * SessionRepository

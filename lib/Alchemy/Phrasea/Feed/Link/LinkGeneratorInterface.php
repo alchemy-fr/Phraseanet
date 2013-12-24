@@ -20,7 +20,7 @@ interface LinkGeneratorInterface
      * Generates a FeedLink based on given FeedInterface and User.
      *
      * @param FeedInterface $feed
-     * @param User $user
+     * @param User          $user
      * @param type          $format
      * @param type          $page
      * @param type          $renew

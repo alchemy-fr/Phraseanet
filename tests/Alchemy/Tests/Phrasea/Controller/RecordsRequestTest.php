@@ -214,7 +214,7 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
         $serialized = $records->serializedList();
         $exploded = explode(';', $serialized);
         $expected = '';
-        foreach($story->getRecord(self::$DI['app'])->get_children() as $record) {
+        foreach ($story->getRecord(self::$DI['app'])->get_children() as $record) {
             $expected .= $expected === '' ? $record->get_serialize_key() : ';' . $record->get_serialize_key();
         }
         $this->assertEquals($expected, $serialized);

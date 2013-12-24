@@ -152,7 +152,7 @@ class Dashboard implements ControllerProviderInterface
             }
 
             if ($admins > 0) {
-                $app['manipulator.user']->promote(array_filter(array_map(function($id) use ($app) {
+                $app['manipulator.user']->promote(array_filter(array_map(function ($id) use ($app) {
                     return $app['manipulator.user']->getRepository()->find($id);
                 }, $admins)));
                 $app['manipulator.acl']->resetAdminRights($app['manipulator.user']->getRepository()->findAdmins());

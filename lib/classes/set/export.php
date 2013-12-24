@@ -389,11 +389,11 @@ class set_export extends set_abstract
 
     /**
      *
-     * @param User $user
-     * @param Filesystem   $filesystem
-     * @param Array        $subdefs
-     * @param boolean      $rename_title
-     * @param boolean      $includeBusinessFields
+     * @param User       $user
+     * @param Filesystem $filesystem
+     * @param Array      $subdefs
+     * @param boolean    $rename_title
+     * @param boolean    $includeBusinessFields
      *
      * @return Array
      */

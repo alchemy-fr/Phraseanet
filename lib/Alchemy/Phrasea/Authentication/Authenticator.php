@@ -18,7 +18,6 @@ use Browser;
 use Doctrine\ORM\EntityManager;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Authenticator
 {

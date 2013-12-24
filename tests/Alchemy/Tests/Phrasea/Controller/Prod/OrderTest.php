@@ -4,7 +4,6 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
-use Alchemy\Phrasea\Application as SilexApplication;
 
 class OrderTest extends \PhraseanetAuthenticatedWebTestCase
 {

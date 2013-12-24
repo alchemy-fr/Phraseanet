@@ -22,7 +22,7 @@ interface FeedFormatterInterface
      *
      * @param FeedInterface $feed
      * @param type          $page
-     * @param User $user
+     * @param User          $user
      * @param type          $generator
      * @param Application   $app
      *
@@ -35,7 +35,7 @@ interface FeedFormatterInterface
      *
      * @param FeedInterface $feed
      * @param type          $page
-     * @param User $user
+     * @param User          $user
      * @param type          $generator
      * @param Application   $app
      *

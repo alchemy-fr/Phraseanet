@@ -254,7 +254,7 @@ class Bridge_Account
      *
      * @param  Application    $app
      * @param  Bridge_Api     $api
-     * @param  User   $user
+     * @param  User           $user
      * @param  string         $distant_id
      * @return Bridge_Account
      */
@@ -309,7 +309,7 @@ class Bridge_Account
     /**
      *
      * @param  Application    $app
-     * @param  User   $user
+     * @param  User           $user
      * @return Bridge_Account
      */
     public static function get_accounts_by_user(Application $app, User $user)
@@ -341,11 +341,11 @@ class Bridge_Account
 
     /**
      *
-     * @param Application  $app
-     * @param Bridge_Api   $api
-     * @param User $user
-     * @param string       $dist_id
-     * @param string       $name
+     * @param Application $app
+     * @param Bridge_Api  $api
+     * @param User        $user
+     * @param string      $dist_id
+     * @param string      $name
      *
      * @return Bridge_Account
      */

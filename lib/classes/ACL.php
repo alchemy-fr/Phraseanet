@@ -101,8 +101,8 @@ class ACL implements cache_cacheableInterface
     /**
      * Constructor
      *
-     * @param User $user
-     * @param Application    $app
+     * @param User        $user
+     * @param Application $app
      *
      * @return \ACL
      */
@@ -257,8 +257,8 @@ class ACL implements cache_cacheableInterface
     /**
      * Apply a template on user
      *
-     * @param  User $template_user
-     * @param  array          $base_ids
+     * @param  User  $template_user
+     * @param  array $base_ids
      * @return ACL
      */
     public function apply_model(User $template_user, Array $base_ids)

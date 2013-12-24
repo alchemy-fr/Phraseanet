@@ -515,7 +515,7 @@ class Login implements ControllerProviderInterface
      * Sends an account unlock email.
      *
      * @param PhraseaApplication $app
-     * @param User      $user
+     * @param User               $user
      *
      * @throws InvalidArgumentException
      * @throws RuntimeException

@@ -11,7 +11,6 @@
 namespace Alchemy\Phrasea\Model;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Alchemy\Phrasea\Model\Entities\User;
 
