@@ -159,7 +159,7 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
             ->method('getFile')
             ->will($this->returnValue($symfoFile));
 
-        $story->substitute_subdef($name, $media, self::$DI['app']);
+        self::$DI['app']['subdef.substituer']->substitute($story, $name, $media);
 
         self::$DI['client']->request('GET', '/datafiles/' . $story->get_sbas_id() . '/' . $story->get_record_id() . '/' . $name . '/');
         $response = self::$DI['client']->getResponse();

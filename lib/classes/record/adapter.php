@@ -16,12 +16,8 @@ use Alchemy\Phrasea\Metadata\Tag\TfBasename;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\ORM\EntityManager;
-use MediaVorus\Media\MediaInterface;
-use MediaAlchemyst\Alchemyst;
 use MediaVorus\MediaVorus;
-use Monolog\Logger;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
-use Symfony\Component\Filesystem\Filesystem;
 
 class record_adapter implements record_Interface, cache_cacheableInterface
 {
@@ -961,74 +957,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     public function get_sbas_id()
     {
         return $this->get_databox()->get_sbas_id();
-    }
-
-    public function substitute_subdef($name, MediaInterface $media, Application $app)
-    {
-        $newfilename = $this->record_id . '_0_' . $name . '.' . $media->getFile()->getExtension();
-
-        $subdef_def = false;
-
-        if ($name == 'document') {
-            $baseprefs = $this->get_databox()->get_sxml_structure();
-
-            $pathhd = p4string::addEndSlash((string) ($baseprefs->path));
-
-            $filehd = $this->get_record_id() . "_document." . strtolower($media->getFile()->getExtension());
-            $pathhd = databox::dispatch($app['filesystem'], $pathhd);
-
-            $app['filesystem']->copy($media->getFile()->getRealPath(), $pathhd . $filehd, true);
-
-            $subdefFile = $pathhd . $filehd;
-
-            $meta_writable = true;
-        } else {
-            $type = $this->is_grouping() ? 'image' : $this->get_type();
-
-            $subdef_def = $this->get_databox()->get_subdef_structure()->get_subdef($type, $name);
-
-            if ($this->has_subdef($name) && $this->get_subdef($name)->is_physically_present()) {
-
-                $path_file_dest = $this->get_subdef($name)->get_pathfile();
-                $this->get_subdef($name)->remove_file();
-                $this->clearSubdefCache($name);
-            } else {
-                $path = databox::dispatch($app['filesystem'], $subdef_def->get_path());
-                $app['filesystem']->mkdir($path, 0750);
-                $path_file_dest = $path . $newfilename;
-            }
-
-            try {
-                $app['media-alchemyst']->turnInto(
-                    $media->getFile()->getRealPath(),
-                    $path_file_dest,
-                    $subdef_def->getSpecs()
-                );
-            } catch (\MediaAlchemyst\Exception\ExceptionInterface $e) {
-                return $this;
-            }
-
-            $subdefFile = $path_file_dest;
-
-            $meta_writable = $subdef_def->meta_writeable();
-        }
-
-        $app['filesystem']->chmod($subdefFile, 0760);
-        $media = $app['mediavorus']->guess($subdefFile);
-
-        media_subdef::create($app, $this, $name, $media);
-
-        $this->delete_data_from_cache(self::CACHE_SUBDEFS);
-
-        if ($meta_writable) {
-            $this->write_metas();
-        }
-
-        if ($name == 'document') {
-            $this->rebuild_subdefs();
-        }
-
-        return $this;
     }
 
     /**

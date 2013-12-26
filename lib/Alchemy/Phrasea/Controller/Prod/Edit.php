@@ -290,7 +290,7 @@ class Edit implements ControllerProviderInterface
                             continue;
                         }
                         $media = $app['mediavorus']->guess($value->get_pathfile());
-                        $reg_record->substitute_subdef($name, $media, $app);
+                        $app['subdef.substituer']->substitute($reg_record, $name, $media);
                         $app['phraseanet.logger']($reg_record->get_databox())->log(
                             $reg_record,
                             \Session_Logger::EVENT_SUBSTITUTE,

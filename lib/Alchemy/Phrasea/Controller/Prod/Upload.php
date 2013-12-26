@@ -214,7 +214,7 @@ class Upload implements ControllerProviderInterface
                         $fileName = $app['temporary-filesystem']->createTemporaryFile('base_64_thumb', null, "png");
                         file_put_contents($fileName, $dataUri->getData());
                         $media = $app['mediavorus']->guess($fileName);
-                        $elementCreated->substitute_subdef('thumbnail', $media, $app);
+                        $app['subdef.substituer']->substitute($elementCreated, 'thumbnail', $media);
                         $app['phraseanet.logger']($elementCreated->get_databox())->log(
                             $elementCreated,
                             \Session_Logger::EVENT_SUBSTITUTE,

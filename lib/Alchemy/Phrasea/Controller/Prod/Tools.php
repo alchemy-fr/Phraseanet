@@ -138,7 +138,7 @@ class Tools implements ControllerProviderInterface
 
                         $media = $app['mediavorus']->guess($tempoFile);
 
-                        $record->substitute_subdef('document', $media, $app);
+                        $app['subdef.substituer']->substitute($record, 'document', $media);
                         $app['phraseanet.logger']($record->get_databox())->log(
                             $record,
                             \Session_Logger::EVENT_SUBSTITUTE,
@@ -196,7 +196,7 @@ class Tools implements ControllerProviderInterface
 
                         $media = $app['mediavorus']->guess($tempoFile);
 
-                        $record->substitute_subdef('thumbnail', $media, $app);
+                        $app['subdef.substituer']->substitute($record, 'thumbnail', $media);
                         $app['phraseanet.logger']($record->get_databox())->log(
                             $record,
                             \Session_Logger::EVENT_SUBSTITUTE,
@@ -261,7 +261,7 @@ class Tools implements ControllerProviderInterface
 
                 $media = $app['mediavorus']->guess($fileName);
 
-                $record->substitute_subdef('thumbnail', $media, $app);
+                $app['subdef.substituer']->substitute($record, 'thumbnail', $media);
                 $app['phraseanet.logger']($record->get_databox())->log(
                     $record,
                     \Session_Logger::EVENT_SUBSTITUTE,
