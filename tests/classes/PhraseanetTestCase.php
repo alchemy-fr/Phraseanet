@@ -220,6 +220,7 @@ abstract class PhraseanetTestCase extends WebTestCase
     public static function tearDownAfterClass()
     {
         self::$testCaseBooted = false;
+        gc_collect_cycles();
         parent::tearDownAfterClass();
     }
 
@@ -298,6 +299,16 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     public function tearDown()
     {
+        \Alchemy\Phrasea\Authentication\ACLProvider::purge();
+        \collection::purge();
+        \databox::purge();
+        \caption_field::purge();
+        \caption_Field_Value::purge();
+        \databox_field::purge();
+        \databox_status::purge();
+        \thesaurus_xpath::purge();
+        \User_Adapter::purge();
+
         /**
          * Kris Wallsmith pro-tip
          * @see http://kriswallsmith.net/post/18029585104/faster-phpunit

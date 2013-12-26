@@ -53,7 +53,7 @@ class connection
      */
     public static function printLog(Application $app)
     {
-        if (!$app['debug']) {
+        if ($app->getEnvironment() !== Application::ENV_DEV) {
             return;
         }
 

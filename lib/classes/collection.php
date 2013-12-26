@@ -730,4 +730,9 @@ class collection implements cache_cacheableInterface
     {
         return $this->databox->delete_data_from_cache($this->get_cache_key($option));
     }
+
+    public static function purge()
+    {
+        self::$_collections = [];
+    }
 }

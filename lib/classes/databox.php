@@ -1464,4 +1464,9 @@ class databox extends base
         }
         parent::delete_data_from_cache($option);
     }
+
+    public static function purge()
+    {
+        self::$_xpath_thesaurus = self::$_dom_thesaurus = self::$_thesaurus = self::$_sxml_thesaurus = [];
+    }
 }
