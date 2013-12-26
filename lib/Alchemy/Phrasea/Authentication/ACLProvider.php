@@ -49,7 +49,7 @@ class ACLProvider
     /**
      * Purges ACL cache
      */
-    public function purge()
+    public static function purge()
     {
         self::$cache = [];
     }

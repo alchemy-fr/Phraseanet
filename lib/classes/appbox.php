@@ -29,12 +29,6 @@ class appbox extends base
 
     /**
      *
-     * @var appbox
-     */
-    protected static $_instance;
-
-    /**
-     *
      * constant defining the app type
      */
     const BASE_TYPE = self::APPLICATION_BOX;

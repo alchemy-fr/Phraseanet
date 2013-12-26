@@ -465,4 +465,9 @@ class caption_Field_Value implements cache_cacheableInterface
 
         unset(self::$localCache[$this->get_cache_key($option)]);
     }
+
+    public static function purge()
+    {
+        self::$localCache = [];
+    }
 }

@@ -236,4 +236,9 @@ class patch_320alpha4b implements patchInterface
 
         return $feed;
     }
+
+    public static function purge()
+    {
+        self::$feeds = [];
+    }
 }

@@ -587,4 +587,9 @@ class databox_status
 
         return $status;
     }
+
+    public static function purge()
+    {
+        self::$_status = self::$_statuses = [];
+    }
 }

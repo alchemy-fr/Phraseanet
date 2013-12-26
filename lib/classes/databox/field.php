@@ -1071,4 +1071,9 @@ class databox_field implements cache_cacheableInterface
 
         }
     }
+
+    public static function purge()
+    {
+        self::$_instance = [];
+    }
 }

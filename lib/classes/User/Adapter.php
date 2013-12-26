@@ -51,12 +51,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
      *
      * @var array
      */
-    protected static $_users = [];
-
-    /**
-     *
-     * @var array
-     */
     protected $_updated_prefs = [];
 
     /**
@@ -1351,5 +1345,10 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         }
 
         return $vars;
+    }
+
+    public static function purge()
+    {
+        self::$_instance = [];
     }
 }
