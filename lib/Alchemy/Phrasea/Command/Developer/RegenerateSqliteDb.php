@@ -288,7 +288,7 @@ class RegenerateSqliteDb extends Command
         foreach (range(1, 7) as $i) {
             $file = new File($this->container, $this->container['mediavorus']->guess(__DIR__ . '/../../../../../tests/files/test001.jpg'), $DI['coll']);
             $record = \record_adapter::createFromFile($file, $this->container);
-            $record->generate_subdefs($record->get_databox(), $this->container);
+            $this->container['subdef.generator']->generateSubdefs($record);
             $DI['record_' . $i] = $record;
         }
 
