@@ -49,12 +49,14 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
     public function boot(Application $app)
     {
-        $app['dispatcher'] = $app->share(
-            $app->extend('dispatcher', function ($dispatcher, Application $app) {
-                $dispatcher->addSubscriber($app['phraseanet.SE.subscriber']);
+        if ($app['phraseanet.configuration']->isSetup()) {
+            $app['dispatcher'] = $app->share(
+                $app->extend('dispatcher', function ($dispatcher, Application $app) {
+                    $dispatcher->addSubscriber($app['phraseanet.SE.subscriber']);
 
-                return $dispatcher;
-            })
-        );
+                    return $dispatcher;
+                })
+            );
+        }
     }
 }
