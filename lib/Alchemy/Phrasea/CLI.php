@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Phrasea\Command\CommandInterface;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Symfony\Component\Console;
 use Alchemy\Phrasea\Core\CLIProvider\CLIDriversServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\ComposerSetupServiceProvider;
@@ -77,6 +78,10 @@ class CLI extends Application
 
     public function run(\Symfony\Component\HttpFoundation\Request $request = null)
     {
+        if (null !== $request) {
+            throw new RuntimeException('Phraseanet Konsole can not run Http Requests.');
+        }
+
         $this->runCLI();
     }
 

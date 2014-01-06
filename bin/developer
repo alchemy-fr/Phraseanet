@@ -102,4 +102,4 @@ $cli['console']->addCommands(array(
     new ValidateSchemaCommand(),
 ));
 
-exit($cli->runCLI());
+exit(is_int($cli->run()) ? : 1);
