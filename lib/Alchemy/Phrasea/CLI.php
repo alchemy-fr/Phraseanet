@@ -65,6 +65,8 @@ class CLI extends Application
      */
     public function runCLI($interactive = false)
     {
+        $this->boot();
+
         $app = $this['console'];
         if ($interactive) {
             $app = new Console\Shell($app);
