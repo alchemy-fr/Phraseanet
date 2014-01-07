@@ -12,15 +12,15 @@
 {% endif %}
 
 {% if view == 'answer' %}
-  {{cap_ans.format_caption(record, highlight|default(''), searchEngine|default(null), business)}}
+  {{cap_ans.format_caption(record, highlight|default(''), searchEngine|default(null), searchOptions|default(null), business)}}
 {% elseif view == 'lazaret' %}
-  {{cap_laz.format_caption(record, highlight|default(''), searchEngine|default(null), business)}}
+  {{cap_laz.format_caption(record, highlight|default(''), searchEngine|default(null), searchOptions|default(null), business)}}
 {% elseif view == 'preview' %}
-  {{cap_prev.format_caption(record, highlight|default(''), searchEngine|default(null), business)}}
+  {{cap_prev.format_caption(record, highlight|default(''), searchEngine|default(null), searchOptions|default(null), business)}}
 {% elseif view == 'basket' %}
-  {{cap_bas.format_caption(record, highlight|default(''), searchEngine|default(null), business)}}
+  {{cap_bas.format_caption(record, highlight|default(''), searchEngine|default(null), searchOptions|default(null), business)}}
 {% elseif view == 'overview' %}
-  {{cap_ovr.format_caption(record, highlight|default(''), searchEngine|default(null), business)}}
+  {{cap_ovr.format_caption(record, highlight|default(''), searchEngine|default(null), searchOptions|default(null), business)}}
 {% elseif view == 'publi' %}
-  {{cap_pub.format_caption(record, '', null, business)}}
+  {{cap_pub.format_caption(record, '', null, null, business)}}
 {% endif %}

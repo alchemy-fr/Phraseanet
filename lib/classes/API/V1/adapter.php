@@ -870,11 +870,9 @@ class API_V1_adapter extends API_V1_Abstract
         $perPage = (int) $request->get('per_page') ? : 10;
 
         $query = (string) $request->get('query');
-
-        $this->app['phraseanet.SE']->setOptions($options);
         $this->app['phraseanet.SE']->resetCache();
 
-        $search_result = $this->app['phraseanet.SE']->query($query, $offsetStart, $perPage);
+        $search_result = $this->app['phraseanet.SE']->query($query, $offsetStart, $perPage, $options);
 
         $userQuery = new UserQuery();
         $userQuery->setUsrId($this->app['authentication']->getUser()->get_id());

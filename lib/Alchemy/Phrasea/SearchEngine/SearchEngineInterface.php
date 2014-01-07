@@ -163,31 +163,15 @@ interface SearchEngineInterface
     public function updateFeedEntry(FeedEntry $entry);
 
     /**
-     * Set options to search-engine
-     *
-     * @param  SearchEngineOptions   $options
-     * @return SearchEngineInterface
-     * @throws RuntimeException
-     */
-    public function setOptions(SearchEngineOptions $options);
-
-    /**
-     * Reset search-engine options
-     *
-     * @return SearchEngineInterface
-     * @throws RuntimeException
-     */
-    public function resetOptions();
-
-    /**
      *
      * @param string  $query
      * @param integer $offset
      * @param integer $perPage
+     * @param SearchEngineOptions $options
      *
      * @return SearchEngineResult
      */
-    public function query($query, $offset, $perPage);
+    public function query($query, $offset, $perPage, SearchEngineOptions $options = null);
 
     /**
      * Return an array of suggestions corresponding to the last word of the
@@ -197,7 +181,7 @@ interface SearchEngineInterface
      *
      * @return ArrayCollection A collection of SearchEngineSuggestion
      */
-    public function autocomplete($query);
+    public function autocomplete($query, SearchEngineOptions $options);
 
     /**
      * Highlight the fields of a record
@@ -208,7 +192,7 @@ interface SearchEngineInterface
      *
      * @return array The array of highlighted fields
      */
-    public function excerpt($query, $fields, \record_adapter $record);
+    public function excerpt($query, $fields, \record_adapter $record, SearchEngineOptions $options = null);
 
     /**
      * Reset the cache of the SE (if applicable)

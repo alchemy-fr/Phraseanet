@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\ORM\EntityManager;
 use MediaAlchemyst\Specification\SpecificationInterface;
 use MediaVorus\Media\MediaInterface;
@@ -871,7 +872,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      *
      * @return string
      */
-    public function get_title($highlight = false, SearchEngineInterface $searchEngine = null, $removeExtension = null)
+    public function get_title($highlight = false, SearchEngineInterface $searchEngine = null, $removeExtension = null, SearchEngineOptions $options = null)
     {
         $cache = !$highlight && !$searchEngine && !$removeExtension;
 
@@ -896,7 +897,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         }
 
         if (count($fields_to_retrieve) > 0) {
-            $retrieved_fields = $this->get_caption()->get_highlight_fields($highlight, $fields_to_retrieve, $searchEngine);
+            $retrieved_fields = $this->get_caption()->get_highlight_fields($highlight, $fields_to_retrieve, $searchEngine, false, $options);
             $titles = [];
             foreach ($retrieved_fields as $key => $value) {
                 if (trim($value['value'] === ''))

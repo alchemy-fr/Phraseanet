@@ -64,8 +64,6 @@ class Query implements ControllerProviderInterface
 
         $perPage = (int) $app['authentication']->getUser()->getPrefs('images_per_page');
 
-        $app['phraseanet.SE']->setOptions($options);
-
         $page = (int) $request->request->get('pag');
         $firstPage = $page < 1;
 
@@ -74,7 +72,7 @@ class Query implements ControllerProviderInterface
             $page = 1;
         }
 
-        $result = $app['phraseanet.SE']->query($query, (($page - 1) * $perPage), $perPage);
+        $result = $app['phraseanet.SE']->query($query, (($page - 1) * $perPage), $perPage, $options);
 
         $userQuery = new UserQuery();
         $userQuery->setUsrId($app['authentication']->getUser()->get_id());
@@ -195,6 +193,7 @@ class Query implements ControllerProviderInterface
             'results'         => $result,
             'highlight'       => $result->getQuery(),
             'searchEngine'    => $app['phraseanet.SE'],
+            'searchOptions'   => $options,
             'suggestions'     => $prop
             ]
         );
@@ -224,7 +223,6 @@ class Query implements ControllerProviderInterface
 
         try {
             $options = SearchEngineOptions::hydrate($app, $optionsSerial);
-            $app['phraseanet.SE']->setOptions($options);
         } catch (\Exception $e) {
             $app->abort(400, 'Provided search engine options are not valid');
         }
@@ -232,7 +230,7 @@ class Query implements ControllerProviderInterface
         $pos = (int) $request->request->get('pos', 0);
         $query = $request->request->get('query', '');
 
-        $record = new \record_preview($app, 'RESULT', $pos, '', $app['phraseanet.SE'], $query);
+        $record = new \record_preview($app, 'RESULT', $pos, '', $app['phraseanet.SE'], $query, $options);
 
         return $app->json([
             'current' => $app['twig']->render('prod/preview/result_train.html.twig', [

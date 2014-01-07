@@ -78,7 +78,6 @@ class Root implements ControllerProviderInterface
         $perPage = $modCol * $modRow;
 
         $options = SearchEngineOptions::fromRequest($app, $request);
-        $app['phraseanet.SE']->setOptions($options);
 
         $currentPage = (int) $request->request->get('pag', 0);
 
@@ -87,7 +86,7 @@ class Root implements ControllerProviderInterface
             $currentPage = 1;
         }
 
-        $result = $app['phraseanet.SE']->query($query, ($currentPage - 1) * $perPage, $perPage);
+        $result = $app['phraseanet.SE']->query($query, ($currentPage - 1) * $perPage, $perPage, $options);
 
         $userQuery = new UserQuery();
         $userQuery->setUsrId($app['authentication']->getUser()->get_id());

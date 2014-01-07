@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\SearchEngine;
 
 use Alchemy\Phrasea\SearchEngine\SphinxSearch\SphinxSearchEngine;
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Tests\Phrasea\SearchEngine\SearchEngineAbstractTest;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
@@ -150,7 +151,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         $process->run();
         usleep(500000);
 
-        $suggestions = self::$searchEngine->autocomplete('jean');
+        $suggestions = self::$searchEngine->autocomplete('jean', $this->options);
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $suggestions);
 
         $this->assertGreaterThan(2, count($suggestions));
