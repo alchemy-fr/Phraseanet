@@ -891,6 +891,8 @@ class API_V1_adapter extends API_V1_Abstract
             $this->app['phraseanet.SE.logger']->log($databox, $search_result->getQuery(), $search_result->getTotal(), $colls);
         }
 
+        $this->app['phraseanet.SE']->clearCache();
+
         $ret = [
             'offset_start'      => $offsetStart,
             'per_page'          => $perPage,
