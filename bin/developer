@@ -118,4 +118,4 @@ $cli['console']->addCommands([
     new VersionCommand(),
 ]);
 
-exit($cli->runCLI());
+exit(is_int($cli->run()) ? : 1);

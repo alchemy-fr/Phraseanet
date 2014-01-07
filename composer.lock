@@ -1692,16 +1692,16 @@
         },
         {
             "name": "mediavorus/mediavorus",
-            "version": "0.4.2",
+            "version": "0.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/MediaVorus.git",
-                "reference": "b80ab6acd79f69b2040f7915e1393f08f68277fc"
+                "reference": "7cc8c0b8d3440eaff9aa68fff2185216fd72bd75"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/MediaVorus/zipball/b80ab6acd79f69b2040f7915e1393f08f68277fc",
-                "reference": "b80ab6acd79f69b2040f7915e1393f08f68277fc",
+                "url": "https://api.github.com/repos/romainneutron/MediaVorus/zipball/7cc8c0b8d3440eaff9aa68fff2185216fd72bd75",
+                "reference": "7cc8c0b8d3440eaff9aa68fff2185216fd72bd75",
                 "shasum": ""
             },
             "require": {
@@ -1749,7 +1749,7 @@
             "keywords": [
                 "metadata"
             ],
-            "time": "2013-11-28 16:41:54"
+            "time": "2014-01-06 15:45:32"
         },
         {
             "name": "monolog/monolog",
