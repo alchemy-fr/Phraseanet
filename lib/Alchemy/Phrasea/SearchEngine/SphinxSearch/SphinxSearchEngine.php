@@ -44,13 +44,11 @@ class SphinxSearchEngine implements SearchEngineInterface
     private $dateFields;
     protected $configuration;
     protected $configurationPanel;
-    protected $options;
     protected $app;
 
     public function __construct(Application $app, $host, $port, $rt_host, $rt_port)
     {
         $this->app = $app;
-        $this->options = new SearchEngineOptions();
 
         $this->sphinx = new \SphinxClient();
         $this->sphinx->SetServer($host, $port);
@@ -417,28 +415,6 @@ class SphinxSearchEngine implements SearchEngineInterface
         throw new RuntimeException('Feed Entry indexing not supported by Sphinx Search Engine');
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setOptions(SearchEngineOptions $options)
-    {
-        $this->options = $options;
-        $this->applyOptions($options);
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function resetOptions()
-    {
-        $this->options = new SearchEngineOptions();
-        $this->resetSphinx();
-
-        return $this;
-    }
-
     private function resetSphinx()
     {
         $this->sphinx->ResetGroupBy();
@@ -450,8 +426,14 @@ class SphinxSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function query($query, $offset, $perPage)
+    public function query($query, $offset, $perPage, SearchEngineOptions $options = null)
     {
+        if (null === $options) {
+            $options = new SearchEngineOptions();
+        }
+
+        $this->applyOptions($options);
+
         assert(is_int($offset));
         assert($offset >= 0);
         assert(is_int($perPage));
@@ -468,7 +450,7 @@ class SphinxSearchEngine implements SearchEngineInterface
         $this->sphinx->SetLimits($offset, $perPage);
         $this->sphinx->SetMatchMode(SPH_MATCH_EXTENDED2);
 
-        $index = $this->getQueryIndex($query);
+        $index = $this->getQueryIndex($query, $options);
         $res = $this->sphinx->Query($query, $index);
 
         $results = new ArrayCollection();
@@ -513,7 +495,7 @@ class SphinxSearchEngine implements SearchEngineInterface
                 }
             }
 
-            $suggestions = $this->getSuggestions($query);
+            $suggestions = $this->getSuggestions($query, $options);
             $propositions = '';
         }
 
@@ -523,29 +505,37 @@ class SphinxSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function autocomplete($query)
+    public function autocomplete($query, SearchEngineOptions $options)
     {
+        $this->applyOptions($options);
+
         $words = explode(" ", $this->cleanupQuery($query));
 
-        return $this->getSuggestions(array_pop($words));
+        return $this->getSuggestions(array_pop($words), $options);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function excerpt($query, $fields, \record_adapter $record)
+    public function excerpt($query, $fields, \record_adapter $record, SearchEngineOptions $options = null)
     {
+        if (null === $options) {
+            $options = new SearchEngineOptions();
+        }
+
+        $this->applyOptions($options);
+
         $index = '';
         // in this case search is done on metas
-        if ($this->options->getFields() || $this->options->getBusinessFieldsOn()) {
-            if ($this->options->isStemmed() && $this->options->getLocale()) {
-                $index = 'metadatas' . $this->CRCdatabox($record->get_databox()) . '_stemmed_' . $this->options->getLocale();
+        if ($options->getFields() || $options->getBusinessFieldsOn()) {
+            if ($options->isStemmed() && $options->getLocale()) {
+                $index = 'metadatas' . $this->CRCdatabox($record->get_databox()) . '_stemmed_' . $options->getLocale();
             } else {
                 $index = 'metadatas' . $this->CRCdatabox($record->get_databox());
             }
         } else {
-            if ($this->options->isStemmed() && $this->options->getLocale()) {
-                $index = 'documents' . $this->CRCdatabox($record->get_databox()) . '_stemmed_' . $this->options->getLocale();
+            if ($options->isStemmed() && $options->getLocale()) {
+                $index = 'documents' . $this->CRCdatabox($record->get_databox()) . '_stemmed_' . $options->getLocale();
             } else {
                 $index = 'documents' . $this->CRCdatabox($record->get_databox());
             }
@@ -775,7 +765,7 @@ class SphinxSearchEngine implements SearchEngineInterface
      * @param  string          $query
      * @return ArrayCollection An array collection of SearchEngineSuggestion
      */
-    private function getSuggestions($query)
+    private function getSuggestions($query, SearchEngineOptions $options)
     {
         // First we split the query into simple words
         $words = explode(" ", $this->cleanupQuery(mb_strtolower($query)));
@@ -798,10 +788,10 @@ class SphinxSearchEngine implements SearchEngineInterface
         }
 
         // As we got words, we look for alternate word for each of them
-        if (function_exists('enchant_broker_init') && $this->options->getLocale()) {
+        if (function_exists('enchant_broker_init') && $options->getLocale()) {
             $broker = enchant_broker_init();
-            if (enchant_broker_dict_exists($broker, $this->options->getLocale())) {
-                $dictionnary = enchant_broker_request_dict($broker, $this->options->getLocale());
+            if (enchant_broker_dict_exists($broker, $options->getLocale())) {
+                $dictionnary = enchant_broker_request_dict($broker, $options->getLocale());
 
                 foreach ($words as $word) {
 
@@ -820,7 +810,7 @@ class SphinxSearchEngine implements SearchEngineInterface
          * @todo enhance the trigramm query, as it could be sent in one batch
          */
         foreach ($altVersions as $word => $versions) {
-            $altVersions[$word] = array_unique(array_merge($versions, $this->get_sugg_trigrams($word)));
+            $altVersions[$word] = array_unique(array_merge($versions, $this->get_sugg_trigrams($word, $options)));
         }
 
         // We now build an array of all possibilities based on the original query
@@ -842,7 +832,7 @@ class SphinxSearchEngine implements SearchEngineInterface
         $max_results = 0;
 
         foreach ($queries as $alt_query) {
-            $results = $this->sphinx->Query($alt_query, $this->getQueryIndex($alt_query));
+            $results = $this->sphinx->Query($alt_query, $this->getQueryIndex($alt_query, $options));
             if ($results !== false && isset($results['total_found'])) {
                 if ($results['total_found'] > 0) {
 
@@ -886,7 +876,7 @@ class SphinxSearchEngine implements SearchEngineInterface
         return $trigrams;
     }
 
-    private function get_sugg_trigrams($word)
+    private function get_sugg_trigrams($word, SearchEngineOptions $options)
     {
         $trigrams = $this->BuildTrigrams($word);
         $query = "\"$trigrams\"/1";
@@ -903,7 +893,7 @@ class SphinxSearchEngine implements SearchEngineInterface
 
         $indexes = [];
 
-        foreach ($this->options->getDataboxes() as $databox) {
+        foreach ($options->getDataboxes() as $databox) {
             $indexes[] = 'suggest' . $this->CRCdatabox($databox);
         }
 
@@ -926,29 +916,29 @@ class SphinxSearchEngine implements SearchEngineInterface
         return $words;
     }
 
-    private function getQueryIndex($query)
+    private function getQueryIndex($query, SearchEngineOptions $options)
     {
         $index = '*';
 
         $index_keys = [];
 
-        foreach ($this->options->getDataboxes() as $databox) {
+        foreach ($options->getDataboxes() as $databox) {
             $index_keys[] = $this->CRCdatabox($databox);
         }
 
         if (count($index_keys) > 0) {
-            if ($this->options->getFields() || $this->options->getBusinessFieldsOn()) {
-                if ($query !== '' && $this->options->isStemmed() && $this->options->getLocale()) {
-                    $index = 'metadatas' . implode('_stemmed_' . $this->options->getLocale() . ', metadatas', $index_keys) . '_stemmed_' . $this->options->getLocale();
-                    $index .= ', metas_realtime_stemmed_' . $this->options->getLocale() . '_' . implode(', metas_realtime_stemmed_' . $this->options->getLocale() . '_', $index_keys);
+            if ($options->getFields() || $options->getBusinessFieldsOn()) {
+                if ($query !== '' && $options->isStemmed() && $options->getLocale()) {
+                    $index = 'metadatas' . implode('_stemmed_' . $options->getLocale() . ', metadatas', $index_keys) . '_stemmed_' . $options->getLocale();
+                    $index .= ', metas_realtime_stemmed_' . $options->getLocale() . '_' . implode(', metas_realtime_stemmed_' . $options->getLocale() . '_', $index_keys);
                 } else {
                     $index = 'metadatas' . implode(',metadatas', $index_keys);
                     $index .= ', metas_realtime' . implode(', metas_realtime', $index_keys);
                 }
             } else {
-                if ($query !== '' && $this->options->isStemmed() && $this->options->getLocale()) {
-                    $index = 'documents' . implode('_stemmed_' . $this->options->getLocale() . ', documents', $index_keys) . '_stemmed_' . $this->options->getLocale();
-                    $index .= ', docs_realtime_stemmed_' . $this->options->getLocale() . '_' . implode(', docs_realtime_stemmed_' . $this->options->getLocale() . '_', $index_keys);
+                if ($query !== '' && $options->isStemmed() && $options->getLocale()) {
+                    $index = 'documents' . implode('_stemmed_' . $options->getLocale() . ', documents', $index_keys) . '_stemmed_' . $options->getLocale();
+                    $index .= ', docs_realtime_stemmed_' . $options->getLocale() . '_' . implode(', docs_realtime_stemmed_' . $options->getLocale() . '_', $index_keys);
                 } else {
                     $index = 'documents' . implode(', documents', $index_keys);
                     $index .= ', docs_realtime' . implode(', docs_realtime', $index_keys);
@@ -1079,5 +1069,4 @@ class SphinxSearchEngine implements SearchEngineInterface
     {
         return $this;
     }
-
 }

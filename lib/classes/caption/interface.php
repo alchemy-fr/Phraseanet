@@ -11,11 +11,12 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 
 interface caption_interface
 {
 
     public function __construct(Application $app, record_Interface $record, databox $databox);
 
-    public function get_highlight_fields($highlight = '', Array $grep_fields = null, SearchEngineInterface $searchEngine = null);
+    public function get_highlight_fields($highlight = '', Array $grep_fields = null, SearchEngineInterface $searchEngine = null, $includeBusiness = false, SearchEngineOptions $options = null);
 }

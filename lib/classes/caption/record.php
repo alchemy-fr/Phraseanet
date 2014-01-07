@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Symfony\Component\Yaml\Dumper as YamlDumper;
 
 class caption_record implements caption_interface, cache_cacheableInterface
@@ -284,9 +285,9 @@ class caption_record implements caption_interface, cache_cacheableInterface
      *
      * @return array
      */
-    public function get_highlight_fields($highlight = '', Array $grep_fields = null, SearchEngineInterface $searchEngine = null, $includeBusiness = false)
+    public function get_highlight_fields($highlight = '', Array $grep_fields = null, SearchEngineInterface $searchEngine = null, $includeBusiness = false, SearchEngineOptions $options = null)
     {
-        return $this->highlight_fields($highlight, $grep_fields, $searchEngine, $includeBusiness);
+        return $this->highlight_fields($highlight, $grep_fields, $searchEngine, $includeBusiness, $options);
     }
 
     /**
@@ -296,7 +297,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
      * @param  SearchEngineInterface $searchEngine
      * @return array
      */
-    protected function highlight_fields($highlight, Array $grep_fields = null, SearchEngineInterface $searchEngine = null, $includeBusiness = false)
+    protected function highlight_fields($highlight, Array $grep_fields = null, SearchEngineInterface $searchEngine = null, $includeBusiness = false, SearchEngineOptions $options = null)
     {
         $fields = [];
 
@@ -317,7 +318,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
         }
 
         if ($searchEngine instanceof SearchEngineInterface) {
-            $ret = $searchEngine->excerpt($highlight, $fields, $this->record);
+            $ret = $searchEngine->excerpt($highlight, $fields, $this->record, $options);
 
             if ($ret) {
                 $n = -1;

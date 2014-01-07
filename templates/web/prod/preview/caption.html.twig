@@ -13,9 +13,9 @@
   </div>
   {% set business =  app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'canmodifrecord') %}
   {% if record.is_from_reg()  %}
-    {{caption.format_caption(record, '', null, business)}}
+    {{caption.format_caption(record, '', null, null, business)}}
   {% else %}
-    {{caption.format_caption(record, highlight, searchEngine, business)}}
+    {{caption.format_caption(record, highlight, searchEngine, searchOptions, business)}}
   {% endif %}
   <hr style="margin:10px 0;"/>
   {% include 'common/technical_datas.html.twig' %}

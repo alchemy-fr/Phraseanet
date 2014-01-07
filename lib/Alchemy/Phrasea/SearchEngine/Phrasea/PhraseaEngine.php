@@ -25,11 +25,6 @@ class PhraseaEngine implements SearchEngineInterface
 {
     private $initialized;
 
-    /**
-     *
-     * @var SearchEngineOptions
-     */
-    private $options;
     private $app;
     private $dateFields;
     private $configuration;
@@ -47,7 +42,6 @@ class PhraseaEngine implements SearchEngineInterface
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->options = new SearchEngineOptions();
     }
 
     /**
@@ -339,28 +333,12 @@ class PhraseaEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function setOptions(SearchEngineOptions $options)
+    public function query($query, $offset, $perPage, SearchEngineOptions $options = null)
     {
-        $this->options = $options;
+        if (null === $options) {
+            $options = new SearchEngineOptions();
+        }
 
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function resetOptions()
-    {
-        $this->options = new SearchEngineOptions();
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function query($query, $offset, $perPage)
-    {
         $this->initialize();
         $this->checkSession();
 
@@ -372,8 +350,8 @@ class PhraseaEngine implements SearchEngineInterface
             $query = "all";
         }
 
-        if ($this->options->getRecordType()) {
-            $query .= ' AND recordtype=' . $this->options->getRecordType();
+        if ($options->getRecordType()) {
+            $query .= ' AND recordtype=' . $options->getRecordType();
         }
 
         $sql = 'SELECT query, query_time, duration, total FROM cache WHERE session_id = :ses_id';
@@ -394,8 +372,8 @@ class PhraseaEngine implements SearchEngineInterface
 
         if ($this->resetCacheNextQuery === true) {
             phrasea_clear_cache($this->app['session']->get('phrasea_session_id'));
-            $this->addQuery($query);
-            $this->executeQuery($query);
+            $this->addQuery($query, $options);
+            $this->executeQuery($query, $options);
 
             $sql = 'SELECT query, query_time, duration, total FROM cache WHERE session_id = :ses_id';
             $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
@@ -534,13 +512,13 @@ class PhraseaEngine implements SearchEngineInterface
      * @param  string        $query
      * @return PhraseaEngine
      */
-    private function executeQuery($query)
+    private function executeQuery($query, SearchEngineOptions $options)
     {
         $nbanswers = $total_time = 0;
         $sort = '';
 
-        if ($this->options->getSortBy()) {
-            switch ($this->options->getSortOrder()) {
+        if ($options->getSortBy()) {
+            switch ($options->getSortOrder()) {
                 case SearchEngineOptions::SORT_MODE_ASC:
                     $sort = '+';
                     break;
@@ -549,13 +527,13 @@ class PhraseaEngine implements SearchEngineInterface
                     $sort = '-';
                     break;
             }
-            $sort .= '0' . $this->options->getSortBy();
+            $sort .= '0' . $options->getSortBy();
         }
 
         foreach ($this->queries as $sbas_id => $qry) {
             $BF = [];
 
-            foreach ($this->options->getBusinessFieldsOn() as $collection) {
+            foreach ($options->getBusinessFieldsOn() as $collection) {
                 // limit business field query to databox local collection
                 if ($sbas_id === $collection->get_sbas_id()) {
                     $BF[] = $collection->get_base_id();
@@ -570,10 +548,10 @@ class PhraseaEngine implements SearchEngineInterface
                     , $this->app['conf']->get(['main', 'key'])
                     , $this->app['session']->get('usr_id')
                     , false
-                    , $this->options->getSearchType() == SearchEngineOptions::RECORD_GROUPING ? PHRASEA_MULTIDOC_REGONLY : PHRASEA_MULTIDOC_DOCONLY
+                    , $options->getSearchType() == SearchEngineOptions::RECORD_GROUPING ? PHRASEA_MULTIDOC_REGONLY : PHRASEA_MULTIDOC_DOCONLY
                     , $sort
                     , $BF
-                    , $this->options->isStemmed() ? $this->options->getLocale() : null
+                    , $options->isStemmed() ? $options->getLocale() : null
             );
 
             if ($results) {
@@ -603,7 +581,7 @@ class PhraseaEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function autocomplete($query)
+    public function autocomplete($query, SearchEngineOptions $options)
     {
         return new ArrayCollection();
     }
@@ -611,8 +589,12 @@ class PhraseaEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function excerpt($query, $fields, \record_adapter $record)
+    public function excerpt($query, $fields, \record_adapter $record, SearchEngineOptions $options = null)
     {
+        if (null === $options) {
+            $options = new SearchEngineOptions();
+        }
+
         $ret = [];
 
         $this->initialize();
@@ -670,13 +652,13 @@ class PhraseaEngine implements SearchEngineInterface
      * @param  string        $query
      * @return PhraseaEngine
      */
-    private function addQuery($query)
+    private function addQuery($query, SearchEngineOptions $options)
     {
-        foreach ($this->options->getDataboxes() as $databox) {
+        foreach ($options->getDataboxes() as $databox) {
             $this->queries[$databox->get_sbas_id()] = $query;
         }
 
-        $status = $this->options->getStatus();
+        $status = $options->getStatus();
 
         foreach ($this->queries as $sbas => $qs) {
             if ($status) {
@@ -704,32 +686,32 @@ class PhraseaEngine implements SearchEngineInterface
                     $this->queries[$sbas] .= ' AND (recordstatus=' . $requestStat . ')';
                 }
             }
-            if ($this->options->getFields()) {
+            if ($options->getFields()) {
                 $this->queries[$sbas] .= ' IN (' . implode(' OR ', array_map(function (\databox_field $field) {
                                             return $field->get_name();
-                                        }, $this->options->getFields())) . ')';
+                                        }, $options->getFields())) . ')';
             }
-            if (($this->options->getMinDate() || $this->options->getMaxDate()) && $this->options->getDateFields()) {
-                if ($this->options->getMinDate()) {
-                    $this->queries[$sbas] .= ' AND ( ' . implode(' >= ' . $this->options->getMinDate()->format('Y-m-d') . ' OR  ', array_map(function (\databox_field $field) { return $field->get_name(); }, $this->options->getDateFields())) . ' >= ' . $this->options->getMinDate()->format('Y-m-d') . ' ) ';
+            if (($options->getMinDate() || $options->getMaxDate()) && $options->getDateFields()) {
+                if ($options->getMinDate()) {
+                    $this->queries[$sbas] .= ' AND ( ' . implode(' >= ' . $options->getMinDate()->format('Y-m-d') . ' OR  ', array_map(function (\databox_field $field) { return $field->get_name(); }, $options->getDateFields())) . ' >= ' . $options->getMinDate()->format('Y-m-d') . ' ) ';
                 }
-                if ($this->options->getMaxDate()) {
-                    $this->queries[$sbas] .= ' AND ( ' . implode(' <= ' . $this->options->getMaxDate()->format('Y-m-d') . ' OR  ', array_map(function (\databox_field $field) { return $field->get_name(); }, $this->options->getDateFields())) . ' <= ' . $this->options->getMaxDate()->format('Y-m-d') . ' ) ';
+                if ($options->getMaxDate()) {
+                    $this->queries[$sbas] .= ' AND ( ' . implode(' <= ' . $options->getMaxDate()->format('Y-m-d') . ' OR  ', array_map(function (\databox_field $field) { return $field->get_name(); }, $options->getDateFields())) . ' <= ' . $options->getMaxDate()->format('Y-m-d') . ' ) ';
                 }
             }
         }
 
-        $this->singleParse('main', $query);
+        $this->singleParse('main', $query, $options);
 
         foreach ($this->queries as $sbas => $db_query) {
-            $this->singleParse($sbas, $this->queries[$sbas]);
+            $this->singleParse($sbas, $this->queries[$sbas], $options);
         }
 
         $base_ids = array_map(function (\collection $collection) {
                         return $collection->get_base_id();
-                    }, $this->options->getCollections());
+                    }, $options->getCollections());
 
-        foreach ($this->options->getDataboxes() as $databox) {
+        foreach ($options->getDataboxes() as $databox) {
             $sbas_id = $databox->get_sbas_id();
 
             $this->colls[$sbas_id] = [];
@@ -771,9 +753,9 @@ class PhraseaEngine implements SearchEngineInterface
      * @param  string        $query
      * @return PhraseaEngine
      */
-    private function singleParse($sbas, $query)
+    private function singleParse($sbas, $query, SearchEngineOptions $options)
     {
-        $this->qp[$sbas] = new PhraseaEngineQueryParser($this->app, $this->options->getLocale());
+        $this->qp[$sbas] = new PhraseaEngineQueryParser($this->app, $options->getLocale());
         $this->qp[$sbas]->debug = false;
 
         $simple_treeq = $this->qp[$sbas]->parsequery($query);

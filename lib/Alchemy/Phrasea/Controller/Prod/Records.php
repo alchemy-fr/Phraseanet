@@ -63,7 +63,7 @@ class Records implements ControllerProviderInterface
             $app->abort(400);
         }
 
-        $searchEngine = null;
+        $searchEngine = $options = null;
         $train = '';
 
         if ('' === $env = strtoupper($request->get('env', ''))) {
@@ -75,7 +75,6 @@ class Records implements ControllerProviderInterface
             try {
                 $options = SearchEngineOptions::hydrate($app, $request->get('options_serial'));
                 $searchEngine = $app['phraseanet.SE'];
-                $searchEngine->setOptions($options);
             } catch (\Exception $e) {
                 $app->abort(400, 'Search-engine options are not valid or missing');
             }
@@ -91,7 +90,8 @@ class Records implements ControllerProviderInterface
             $pos < 0 ? 0 : $pos,
             $request->get('cont', ''),
             $searchEngine,
-            $query
+            $query,
+            $options
         );
 
         if ($record->is_from_reg()) {
@@ -116,7 +116,8 @@ class Records implements ControllerProviderInterface
             "desc"          => $app['twig']->render('prod/preview/caption.html.twig', [
                 'record'        => $record,
                 'highlight'     => $query,
-                'searchEngine'  => $searchEngine
+                'searchEngine'  => $searchEngine,
+                'searchOptions' => $options,
             ]),
             "html_preview"  => $app['twig']->render('common/preview.html.twig', [
                 'record'        => $record

@@ -115,11 +115,11 @@ class Tooltip implements ControllerProviderInterface
         $record = new \record_adapter($app, $sbas_id, $record_id, $number);
 
         $search_engine = $app['phraseanet.SE'];
+        $search_engine_options = null;
 
         if ($context == 'answer') {
             try {
                 $search_engine_options = SearchEngineOptions::hydrate($app, $app['request']->request->get('options_serial'));
-                $search_engine->setOptions($search_engine_options);
             } catch (\Exception $e) {
 
             }
@@ -128,10 +128,11 @@ class Tooltip implements ControllerProviderInterface
         return $app['twig']->render(
             'prod/Tooltip/Caption.html.twig'
             , [
-            'record'       => $record,
-            'view'         => $context,
-            'highlight'    => $app['request']->request->get('query'),
-            'searchEngine' => $search_engine,
+            'record'        => $record,
+            'view'          => $context,
+            'highlight'     => $app['request']->request->get('query'),
+            'searchEngine'  => $search_engine,
+            'searchOptions' => $search_engine_options,
         ]);
     }
 

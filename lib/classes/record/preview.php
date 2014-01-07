@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 
 class record_preview extends record_adapter
 {
@@ -89,7 +90,7 @@ class record_preview extends record_adapter
      *
      * @return record_preview
      */
-    public function __construct(Application $app, $env, $pos, $contId, SearchEngineInterface $search_engine = null, $query = '')
+    public function __construct(Application $app, $env, $pos, $contId, SearchEngineInterface $search_engine = null, $query = '', SearchEngineOptions $options = null)
     {
         $number = null;
         $this->env = $env;
@@ -101,7 +102,7 @@ class record_preview extends record_adapter
                     throw new \LogicException('Search Engine should be provided');
                 }
 
-                $results = $search_engine->query($query, (int) ($pos), 1);
+                $results = $search_engine->query($query, (int) ($pos), 1, $options);
 
                 if ($results->getResults()->isEmpty()) {
                     throw new Exception('Record introuvable');
