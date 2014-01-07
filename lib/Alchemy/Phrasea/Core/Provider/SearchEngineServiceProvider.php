@@ -14,12 +14,13 @@ namespace Alchemy\Phrasea\Core\Provider;
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
+use Elasticsearch\Client;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
 class SearchEngineServiceProvider implements ServiceProviderInterface
 {
-
     public function register(Application $app)
     {
         $app['phraseanet.SE'] = $app->share(function ($app) {
@@ -44,6 +45,10 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
         $app['phraseanet.SE.subscriber'] = $app->share(function ($app) {
             return $app['phraseanet.SE.engine-class']::createSubscriber($app);
+        });
+
+        $app['ES.indexer'] = $app->share(function ($app) {
+            return new Indexer($app['phraseanet.SE'], $app['monolog'], $app['phraseanet.appbox']);
         });
     }
 

@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
+use Alchemy\Phrasea\Model\Serializer\ESRecordSerializer;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -21,6 +22,10 @@ class SerializerServiceProvider implements ServiceProviderInterface
     {
         $app['serializer.caption'] = $app->share(function (Application $app) {
             return new CaptionSerializer();
+        });
+
+        $app['serializer.es-record'] = $app->share(function (Application $app) {
+            return new ESRecordSerializer();
         });
     }
 

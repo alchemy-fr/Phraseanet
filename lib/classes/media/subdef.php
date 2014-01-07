@@ -624,6 +624,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             self::TC_DATA_AUDIOSAMPLERATE    => 'getAudioSampleRate',
             self::TC_DATA_VIDEOCODEC         => 'getVideoCodec',
             self::TC_DATA_AUDIOCODEC         => 'getAudioCodec',
+            self::TC_DATA_ORIENTATION        => 'getOrientation',
         ];
 
         foreach ($methods as $tc_name => $method) {
