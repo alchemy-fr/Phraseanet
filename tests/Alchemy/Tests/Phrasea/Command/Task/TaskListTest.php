@@ -10,6 +10,9 @@ class TaskListTest extends \PhraseanetTestCase
     {
         $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
         $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
+        $output->expects($this->any())
+            ->method('getFormatter')
+            ->will($this->returnValue($this->getMock('Symfony\Component\Console\Formatter\OutputFormatterInterface')));
 
         $command = new TaskList();
         $command->setContainer(self::$DI['cli']);
