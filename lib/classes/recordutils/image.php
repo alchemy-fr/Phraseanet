@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Palette\RGB;
 use Imagine\Image\Box;
@@ -68,7 +69,7 @@ class recordutils_image extends recordutils
             return $subdef->get_pathfile();
         }
 
-        if (false === $sxxml = simplexml_load_string($subdef->get_record()->get_caption()->serialize(caption_record::SERIALIZE_XML))) {
+        if (false === $sxxml = simplexml_load_string($app['serializer.caption']->serialize($subdef->get_record()->get_caption(), CaptionSerializer::SERIALIZE_XML))) {
             return $subdef->get_pathfile();
         }
 

@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Symfony\Component\Filesystem\Filesystem;
 
 class set_export extends set_abstract
@@ -429,7 +430,7 @@ class set_export extends set_abstract
                 $BF = true;
             }
 
-            $desc = $download_element->get_caption()->serialize(caption_record::SERIALIZE_XML, $BF);
+            $desc = $this->app['serializer.caption']->serialize($download_element->get_caption(), CaptionSerializer::SERIALIZE_XML, $BF);
 
             $files[$id]['original_name'] =
                 $files[$id]['export_name'] =
@@ -632,7 +633,7 @@ class set_export extends set_abstract
 
                 $filesystem->mkdir($caption_dir, 0750);
 
-                $desc = $download_element->get_caption()->serialize(\caption_record::SERIALIZE_XML, $BF);
+                $desc = $this->app['serializer.caption']->serialize($download_element->get_caption(), CaptionSerializer::SERIALIZE_XML, $BF);
 
                 $file = $files[$id]["export_name"]
                     . $files[$id]["subdefs"]['caption']["ajout"] . '.'
@@ -654,7 +655,7 @@ class set_export extends set_abstract
 
                 $filesystem->mkdir($caption_dir, 0750);
 
-                $desc = $download_element->get_caption()->serialize(\caption_record::SERIALIZE_YAML, $BF);
+                $desc = $this->app['serializer.caption']->serialize($download_element->get_caption(), CaptionSerializer::SERIALIZE_YAML, $BF);
 
                 $file = $files[$id]["export_name"]
                     . $files[$id]["subdefs"]['caption-yaml']["ajout"] . '.'
@@ -782,7 +783,7 @@ class set_export extends set_abstract
                     $log["rid"] = $record_object->get_record_id();
                     $log["subdef"] = $o;
                     $log["poids"] = $obj["size"];
-                    $log["shortXml"] = $record_object->get_caption()->serialize(caption_record::SERIALIZE_XML);
+                    $log["shortXml"] = $app['serializer.caption']->serialize($record_object->get_caption(), CaptionSerializer::SERIALIZE_XML);
                     $tmplog[$record_object->get_base_id()][] = $log;
                     if (!$anonymous && $o == 'document') {
                         $app['acl']->get($app['authentication']->getUser())->remove_remaining($record_object->get_base_id());

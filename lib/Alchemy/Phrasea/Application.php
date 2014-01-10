@@ -102,6 +102,7 @@ use Alchemy\Phrasea\Core\Provider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
+use Alchemy\Phrasea\Core\Provider\SerializerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SessionHandlerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SubdefServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TasksServiceProvider;
@@ -305,6 +306,7 @@ class Application extends SilexApplication
             return $this['session.storage.handler.factory']->create($app['conf']);
         });
 
+        $this->register(new SerializerServiceProvider());
         $this->register(new ServiceControllerServiceProvider());
         $this->register(new SwiftmailerServiceProvider());
         $this->register(new TasksServiceProvider());
