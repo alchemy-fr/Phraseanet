@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade;
 
 use Doctrine\ORM\EntityManager;
 use Alchemy\Phrasea\Application;
+use Doctrine\DBAL\Migrations\Configuration\Configuration;
 
 /**
  * Interface for DB schema upgrade that have to be done before Doctrine schema
@@ -21,14 +22,18 @@ use Alchemy\Phrasea\Application;
 interface PreSchemaUpgradeInterface
 {
     /**
-     * Applies the pre-upgrade/
+     * Applies the pre-upgrade.
      *
      * @param EntityManager $em
+     * @param \appbox       $appbox
+     * @param Configuration $conf
+     *
+     * @return mixed
      */
-    public function apply(EntityManager $em);
+    public function apply(EntityManager $em, \appbox $appbox, Configuration $conf);
 
     /**
-     * Returns true if the Upgrade is applyable
+     * Returns true if the Upgrade is applyable.
      *
      * @param Application $app
      *

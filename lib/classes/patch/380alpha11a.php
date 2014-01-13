@@ -12,6 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Model\Entities\SessionModule;
+use Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade\Upgrade39;
 
 class patch_380alpha11a implements patchInterface
 {
@@ -80,7 +81,7 @@ class patch_380alpha11a implements patchInterface
                 $updated = \DateTime::createFromFormat('Y-m-d H:i:s', $row['lastaccess']);
             }
 
-            $user = $app['manipulator.user']->getRepository()->find($row['usr_id']);
+            $user = Upgrade39::getUserFromOldId($app['EM'], $row['usr_id'], false);
 
             $session = new Session();
             $session

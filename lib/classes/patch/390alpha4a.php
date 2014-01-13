@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\UserSetting;
+use Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade\Upgrade39;
 
 class patch_390alpha4a implements patchInterface
 {
@@ -77,7 +78,7 @@ class patch_390alpha4a implements patchInterface
                 continue;
             }
 
-            $user = $app['manipulator.user']->getRepository()->find($row['usr_id']);
+            $user = Upgrade39::getUserFromOldId($em, $row['usr_id'], false);
 
             $userSetting = new UserSetting();
             $userSetting->setName($row['prop']);

@@ -12,7 +12,9 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\FtpExport;
 use Alchemy\Phrasea\Model\Entities\FtpExportElement;
+use Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade\Upgrade39;
 use Gedmo\Timestampable\TimestampableListener;
+use Doctrine\ORM\NoResultException;
 
 class patch_390alpha6a implements patchInterface
 {
@@ -93,7 +95,9 @@ class patch_390alpha6a implements patchInterface
         $n = 0;
 
         foreach ($rs as $row) {
-            if (null === $user = $app['manipulator.user']->getRepository()->find($row['usr_id'])) {
+            try {
+                $user = Upgrade39::getUserFromOldId($em, $row['usr_id'], false);
+            } catch (NoResultException $e) {
                 continue;
             }
 

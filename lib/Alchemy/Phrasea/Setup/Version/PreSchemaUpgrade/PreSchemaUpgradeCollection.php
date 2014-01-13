@@ -35,7 +35,11 @@ class PreSchemaUpgradeCollection
     {
         foreach ($this->upgrades as $upgrade) {
             if ($upgrade->isApplyable($app)) {
-                $upgrade->apply($app['EM']);
+                $upgrade->apply(
+                    $app['EM'],
+                    $app['phraseanet.appbox'],
+                    $app['doctrine-migration.configuration']
+                );
             }
         }
     }

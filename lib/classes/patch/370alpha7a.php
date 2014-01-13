@@ -12,6 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
+use Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade\Upgrade39;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use MediaAlchemyst\Specification\Image as ImageSpec;
 
@@ -111,7 +112,7 @@ class patch_370alpha7a implements patchInterface
 
                 $borderFile = new \Alchemy\Phrasea\Border\File($app, $media, $collection);
 
-                $user = $app['manipulator.user']->getRepository()->find($row['usr_id']);
+                $user = $user = Upgrade39::getUserFromOldId($app['EM'], $row['usr_id']);
 
                 $lazaretSession = new LazaretSession();
                 $lazaretSession->setUser($user);

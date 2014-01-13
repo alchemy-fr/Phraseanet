@@ -57,7 +57,7 @@ class patch_383alpha2a implements patchInterface
     public function apply(base $appbox, Application $app)
     {
         // Clean validation sessions where initiator_id does not exist anymore
-        $sql = 'SELECT DISTINCT(v.id) AS validation_session_id FROM `ValidationSessions` v LEFT JOIN usr u ON (v.initiator_id = u.usr_id) WHERE u.usr_id IS NULL';
+        $sql = 'SELECT DISTINCT(v.id) AS validation_session_id FROM `ValidationSessions` v LEFT JOIN Users u ON (v.initiator_id = u.id) WHERE u.id IS NULL';
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);

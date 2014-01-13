@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\FtpCredential;
+use Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade\Upgrade39;
 
 class patch_390alpha1a implements patchInterface
 {
@@ -33,7 +34,7 @@ class patch_390alpha1a implements patchInterface
      */
     public function require_all_upgrades()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -70,8 +71,7 @@ class patch_390alpha1a implements patchInterface
         $em = $app['EM'];
 
         foreach ($rs as $row) {
-            $user = $app['manipulator.user']->getRepository()->find($row['usr_id']);
-
+            $user = Upgrade39::getUserFromOldId($em, $row['usr_id'], false);
             $credential = new FtpCredential();
             $credential->setActive($row['activeFTP']);
             $credential->setAddress($row['addrFTP']);

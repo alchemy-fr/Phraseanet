@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Alchemy\Phrasea\Model\Entities\FeedToken;
+use Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade\Upgrade39;
 use Doctrine\ORM\Query\ResultSetMapping;
 
 class patch_390alpha7a implements patchInterface
@@ -133,7 +134,7 @@ class patch_390alpha7a implements patchInterface
             $fpRes = $fpStmt->fetchAll(\PDO::FETCH_ASSOC);
 
             foreach ($fpRes as $fpRow) {
-                $user = $app['manipulator.user']->getRepository()->find($fpRow['usr_id']);
+                $user = Upgrade39::getUserFromOldId($em, $fpRow['usr_id'], false);
 
                 $feedPublisher = new FeedPublisher();
                 $feedPublisher->setFeed($feed);
@@ -179,7 +180,7 @@ class patch_390alpha7a implements patchInterface
             $ftRes = $ftStmt->fetchAll(\PDO::FETCH_ASSOC);
 
             foreach ($ftRes as $ftRow) {
-                $user = $app['manipulator.user']->getRepository()->find($ftRow['usr_id']);
+                $user = Upgrade39::getUserFromOldId($em, $ftRow['usr_id'], false);
 
                 $token = new FeedToken();
                 $token->setFeed($feed);
@@ -208,7 +209,7 @@ class patch_390alpha7a implements patchInterface
         $faRes = $faStmt->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($faRes as $faRow) {
-            $user = $app['manipulator.user']->getRepository()->find($faRow['usr_id']);
+            $user = Upgrade39::getUserFromOldId($em, $faRow['usr_id'], false);
 
             $token = new AggregateToken();
             $token->setUser($user);

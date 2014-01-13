@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Model\Entities\FeedPublisher;
+use Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade\Upgrade39;
 use Gedmo\Timestampable\TimestampableListener;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -46,7 +47,7 @@ class patch_320alpha4b implements patchInterface
      */
     public function require_all_upgrades()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -62,8 +63,6 @@ class patch_320alpha4b implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $feeds = [];
-
         try {
             $sql = 'ALTER TABLE `ssel` ADD `migrated` INT NOT NULL DEFAULT "0"';
             $stmt = $appbox->get_connection()->prepare($sql);
@@ -88,7 +87,7 @@ class patch_320alpha4b implements patchInterface
 
         $app['EM']->getEventManager()->removeEventSubscriber(new TimestampableListener());
         foreach ($rs as $row) {
-            $user = $app['manipulator.user']->getRepository()->find($row['usr_id']);
+            $user =  Upgrade39::getUserFromOldId($app['EM'], $row['usr_id'], false);
 
             $feed = $this->get_feed($appbox, $user, $row['pub_restrict'], $row['homelink'], $app);
 

@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\UserNotificationSetting;
+use Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade\Upgrade39;
 
 class patch_390alpha5a implements patchInterface
 {
@@ -74,7 +75,7 @@ class patch_390alpha5a implements patchInterface
         $em = $app['EM'];
 
         foreach ($rs as $row) {
-            $user = $app['manipulator.user']->getRepository()->find($row['usr_id']);
+            $user = Upgrade39::getUserFromOldId($em, $row['usr_id'], false);
 
             $userSetting = new UserNotificationSetting();
             $userSetting->setName($row['prop']);

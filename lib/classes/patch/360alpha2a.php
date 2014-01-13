@@ -56,13 +56,7 @@ class patch_360alpha2a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-
-        $sql = 'UPDATE usr SET usr_mail = NULL
-                WHERE usr_mail IS NOT NULL
-                  AND usr_login LIKE "(#deleted%"';
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $app['EM']->executeQuery('UPDATE Alchemy\Phrasea\Model\Entities\User u SET u.email = NULL WHERE u.email IS NOT NULL AND u.delete = 1');
 
         return true;
     }

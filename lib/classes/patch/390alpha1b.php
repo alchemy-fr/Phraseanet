@@ -12,6 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
+use Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade\Upgrade39;
 use Gedmo\Timestampable\TimestampableListener;
 
 class patch_390alpha1b implements patchInterface
@@ -35,7 +36,7 @@ class patch_390alpha1b implements patchInterface
      */
     public function require_all_upgrades()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -79,7 +80,6 @@ class patch_390alpha1b implements patchInterface
         $n = 0;
         $em = $app['EM'];
         $em->getEventManager()->removeEventSubscriber(new TimestampableListener());
-        $basketRepository = $em->getRepository('Phraseanet:Basket');
 
         foreach ($rs as $row) {
             $sql = 'SELECT count(id) as todo
@@ -92,7 +92,7 @@ class patch_390alpha1b implements patchInterface
             $todo = $stmt->fetch(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
-            $user = $app['manipulator.user']->getRepository()->find($row['usr_id']);
+            $user = Upgrade39::getUserFromOldId($em, $row['usr_id'], false);
 
             $order = new Order();
             $order->setUser($user)
@@ -100,7 +100,7 @@ class patch_390alpha1b implements patchInterface
                 ->setOrderUsage($row['usage'])
                 ->setDeadline(new \DateTime($row['deadline']))
                 ->setCreatedOn(new \DateTime($row['created_on']))
-                ->setBasket($basketRepository->find($row['ssel_id']));
+                ->setBasket($em->getPartialReference('Alchemy\Phrasea\Model\Entities\Basket', $row['ssel_id']));
 
             $em->persist($order);
 

@@ -249,6 +249,7 @@ class UserManipulator implements ManipulatorInterface
     {
         $user->setNonce(base_convert(sha1(uniqid(mt_rand(), true)), 16, 36));
         $user->setPassword($this->passwordEncoder->encodePassword($password, $user->getNonce()));
+        $user->setSaltedPassword(true);
     }
 
     /**
