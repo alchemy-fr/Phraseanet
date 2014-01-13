@@ -18,7 +18,7 @@
         "alchemy/google-plus-api-client"   : "~0.6.2",
         "alchemy/geonames-api-consumer"    : "~0.1.0",
         "guzzle/guzzle"                    : "~3.6",
-        "igorw/get-in"                     : "dev-master",
+        "igorw/get-in"                     : "~1.0",
         "imagine/imagine"                  : "0.6.x-dev@dev",
         "jms/serializer"                   : "~0.10",
         "justinrainbow/json-schema"        : "~1.3",
