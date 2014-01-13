@@ -551,6 +551,17 @@ class collection implements cache_cacheableInterface
         return $this;
     }
 
+    private static function getNewOrder(\connection_pdo $conn, $sbas_id)
+    {
+        $sql = "SELECT GREATEST(0, MAX(ord)) + 1 AS ord FROM bas WHERE sbas_id = :sbas_id";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(array(':sbas_id' => $sbas_id));
+        $ord = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        return $ord['ord'] ?: 1;
+    }
+
     public static function create(Application $app, databox $databox, appbox $appbox, $name, User_Adapter $user = null)
     {
         $sbas_id = $databox->get_sbas_id();
@@ -564,12 +575,6 @@ class collection implements cache_cacheableInterface
                 <sugestedValues>
                 </sugestedValues>
             </baseprefs>';
-
-        $sql = "SELECT GREATEST(0, MAX(ord)) + 1 AS ord FROM bas WHERE sbas_id = :sbas_id";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':sbas_id' => $sbas_id));
-        $ord = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
 
         $sql = "INSERT INTO coll (coll_id, asciiname, prefs, logo)
                 VALUES (null, :name, :prefs, '')";
@@ -592,7 +597,7 @@ class collection implements cache_cacheableInterface
         $stmt->execute(array(
             ':server_coll_id' => $new_id,
             ':sbas_id' => $sbas_id,
-            ':ord' => $ord['ord'] ?: 1,
+            ':ord' => self::getNewOrder($conn, $sbas_id),
         ));
         $stmt->closeCursor();
 
@@ -644,11 +649,15 @@ class collection implements cache_cacheableInterface
     public static function mount_collection(Application $app, databox $databox, $coll_id, User_Adapter $user)
     {
 
-        $sql = "INSERT INTO bas (base_id, active, server_coll_id, sbas_id, aliases)
+        $sql = "INSERT INTO bas (base_id, active, server_coll_id, sbas_id, aliases, ord)
             VALUES
-            (null, 1, :server_coll_id, :sbas_id, '')";
+            (null, 1, :server_coll_id, :sbas_id, '', :ord)";
         $stmt = $databox->get_appbox()->get_connection()->prepare($sql);
-        $stmt->execute(array(':server_coll_id' => $coll_id, ':sbas_id'        => $databox->get_sbas_id()));
+        $stmt->execute(array(
+            ':server_coll_id' => $coll_id,
+            ':sbas_id'        => $databox->get_sbas_id(),
+            ':ord'            => self::getNewOrder($databox->get_appbox()->get_connection(), $databox->get_sbas_id()),
+        ));
         $stmt->closeCursor();
 
         $new_bas = $databox->get_appbox()->get_connection()->lastInsertId();
@@ -660,7 +669,8 @@ class collection implements cache_cacheableInterface
 
         phrasea::reset_baseDatas($databox->get_appbox());
 
-        self::set_admin($new_bas, $user);
+        $coll = self::get_from_base_id($app, $new_bas);
+        $coll->set_admin($new_bas, $user);
 
         return $new_bas;
     }
