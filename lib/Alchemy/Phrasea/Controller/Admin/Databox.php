@@ -395,21 +395,21 @@ class Databox implements ControllerProviderInterface
         try {
             $baseId = \collection::mount_collection($app, $app['phraseanet.appbox']->get_databox($databox_id), $collection_id, $app['authentication']->getUser());
 
-            if (null == $othCollSel = $request->request->get("othcollsel")) {
-                $app->abort(400);
-            }
+            $othCollSel = (int) $request->request->get("othcollsel") ?: null;
 
-            $query = new \User_Query($app);
-            $n = 0;
+            if (null !== $othCollSel) {
+                $query = new \User_Query($app);
+                $n = 0;
 
-            while ($n < $query->on_base_ids([$othCollSel])->get_total()) {
-                $results = $query->limit($n, 50)->execute()->get_results();
+                while ($n < $query->on_base_ids([$othCollSel])->get_total()) {
+                    $results = $query->limit($n, 50)->execute()->get_results();
+    
+                    foreach ($results as $user) {
+                        $app['acl']->get($user)->duplicate_right_from_bas($othCollSel, $baseId);
+                    }
 
-                foreach ($results as $user) {
-                    $app['acl']->get($user)->duplicate_right_from_bas($othCollSel, $baseId);
+                    $n += 50;
                 }
-
-                $n += 50;
             }
 
             $app['phraseanet.appbox']->get_connection()->commit();
