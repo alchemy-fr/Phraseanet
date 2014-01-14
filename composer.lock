@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "33fb601111277362faca0ff80185d4ab",
+    "hash": "713759a9aea9d0178ef01ce2f7aea6b2",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -1296,22 +1296,27 @@
         },
         {
             "name": "igorw/get-in",
-            "version": "dev-master",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/igorw/get-in.git",
-                "reference": "f265eb25569891e1888d7773c72a81c2f96c8982"
+                "reference": "ba9ab6e41d0819db138d52f6431587f56698f121"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/igorw/get-in/zipball/f265eb25569891e1888d7773c72a81c2f96c8982",
-                "reference": "f265eb25569891e1888d7773c72a81c2f96c8982",
+                "url": "https://api.github.com/repos/igorw/get-in/zipball/ba9ab6e41d0819db138d52f6431587f56698f121",
+                "reference": "ba9ab6e41d0819db138d52f6431587f56698f121",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.4"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
             "autoload": {
                 "files": [
                     "src/get_in.php"
@@ -1333,7 +1338,7 @@
                 "assoc-array",
                 "hash-map"
             ],
-            "time": "2013-12-16 23:26:47"
+            "time": "2014-01-08 02:24:41"
         },
         {
             "name": "imagine/imagine",
@@ -4276,7 +4281,6 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "igorw/get-in": 20,
         "imagine/imagine": 20,
         "silex/silex": 20,
         "silex/web-profiler": 20,
