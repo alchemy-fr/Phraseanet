@@ -114,14 +114,14 @@ class Tooltip implements ControllerProviderInterface
         $number = (int) $app['request']->get('number');
         $record = new \record_adapter($app, $sbas_id, $record_id, $number);
 
-        $search_engine = $app['phraseanet.SE'];
-        $search_engine_options = null;
+        $search_engine = $search_engine_options = null;
 
         if ($context == 'answer') {
             try {
                 $search_engine_options = SearchEngineOptions::hydrate($app, $app['request']->request->get('options_serial'));
+                $search_engine = $app['phraseanet.SE'];
             } catch (\Exception $e) {
-
+                $search_engine = null;
             }
         }
 
