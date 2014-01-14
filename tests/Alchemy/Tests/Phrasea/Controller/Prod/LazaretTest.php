@@ -377,12 +377,17 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         //mock Doctrine\ORM\EntityManager
         $em = $this->getMock('Doctrine\ORM\EntityManager', [], [], '', false);
 
-        $record = $this->getMock('record_adapter', ['substitute_subdef'], [], '', false);
+        self::$DI['app']['subdef.substituer'] = $this->getMockBuilder('Alchemy\Phrasea\Media\SubdefSubstituer')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $record = $this->getMockBuilder('record_adapter')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         //expect one call to substitute the documents
-        $record->expects($this->once())
-            ->method('substitute_subdef')
-            ->with($this->equalTo('document'));
+        self::$DI['app']['subdef.substituer']->expects($this->once())
+            ->method('substitute')
+            ->with($record, $this->equalTo('document'));
 
         $databox = $this->getMock('databox', [], [], '', false);
 

@@ -390,7 +390,7 @@ class Lazaret implements ControllerProviderInterface
             $media = $app['mediavorus']->guess($lazaretFileName);
 
             $record = $lazaretFile->getCollection($app)->get_databox()->get_record($recordId);
-            $record->substitute_subdef('document', $media, $app);
+            $app['subdef.substituer']->substitute($record, 'document', $media);
             $app['phraseanet.logger']($record->get_databox())->log(
                 $record,
                 \Session_Logger::EVENT_SUBSTITUTE,

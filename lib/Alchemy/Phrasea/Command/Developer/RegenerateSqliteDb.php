@@ -297,8 +297,8 @@ class RegenerateSqliteDb extends Command
         foreach (range(1, 3) as $i) {
             $story = \record_adapter::createStory($this->container, $DI['coll']);
             if ($i < 3) {
-                $story->substitute_subdef('preview', $media, $this->container);
-                $story->substitute_subdef('thumbnail', $media, $this->container);
+                $this->container['subdef.substituer']->substitute($story, 'preview', $media);
+                $this->container['subdef.substituer']->substitute($story, 'thumbnail', $media);
             }
             $DI['record_story_' . $i] = $story;
         }

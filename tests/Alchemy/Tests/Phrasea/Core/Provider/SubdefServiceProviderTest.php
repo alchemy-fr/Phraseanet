@@ -12,6 +12,11 @@ class SubdefServiceProviderTest extends ServiceProviderTestCase
                 'subdef.generator',
                 'Alchemy\Phrasea\Media\SubdefGenerator'
             ],
+            [
+                'Alchemy\Phrasea\Core\Provider\SubdefServiceProvider',
+                'subdef.substituer',
+                'Alchemy\Phrasea\Media\SubdefSubstituer'
+            ],
         ];
     }
 }

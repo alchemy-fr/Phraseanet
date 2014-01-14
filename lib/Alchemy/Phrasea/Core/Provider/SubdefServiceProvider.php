@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Media\SubdefSubstituer;
 use Silex\Application as SilexApplication;
 use Silex\ServiceProviderInterface;
 use Alchemy\Phrasea\Media\SubdefGenerator;
@@ -22,6 +23,9 @@ class SubdefServiceProvider implements ServiceProviderInterface
     {
         $app['subdef.generator'] = $app->share(function (SilexApplication $app) {
             return new SubdefGenerator($app, $app['media-alchemyst'], $app['filesystem'], $app['mediavorus'], isset($app['task-manager.logger']) ? $app['task-manager.logger'] : $app['monolog']);
+        });
+        $app['subdef.substituer'] = $app->share(function (SilexApplication $app) {
+            return new SubdefSubstituer($app, $app['filesystem'], $app['media-alchemyst'], $app['mediavorus']);
         });
     }
 

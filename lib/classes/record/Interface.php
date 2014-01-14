@@ -81,8 +81,6 @@ interface record_Interface
 
     public function get_sbas_id();
 
-    public function substitute_subdef($name, MediaInterface $media, Application $app);
-
     public function set_metadatas(Array $metadatas, $force_readonly = false);
 
     public function reindex();
