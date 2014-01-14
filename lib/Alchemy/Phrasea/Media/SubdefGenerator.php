@@ -106,7 +106,7 @@ class SubdefGenerator
     /**
      * Get the extension from MediaAlchemyst specs
      *
-     * @param  SpecificationInterface $spec
+     * @param SpecificationInterface $spec
      *
      * @return string
      */
@@ -138,7 +138,7 @@ class SubdefGenerator
     /**
      * Get the extension from audiocodec
      *
-     * @param  string $audioCodec
+     * @param string $audioCodec
      *
      * @return string
      */
@@ -164,7 +164,7 @@ class SubdefGenerator
     /**
      * Get the extension from videocodec
      *
-     * @param  string $videoCodec
+     * @param string $videoCodec
      *
      * @return string
      */
@@ -187,5 +187,3 @@ class SubdefGenerator
         return $extension;
     }
 }
-
-

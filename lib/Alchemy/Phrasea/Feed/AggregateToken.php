@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Feed;
 
-use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Model\Entities\Feed;
 
 /**

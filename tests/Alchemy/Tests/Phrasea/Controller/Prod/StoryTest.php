@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Symfony\Component\HttpKernel\Client;
 
-class ControllerStoryTest extends \PhraseanetAuthenticatedWebTestCase
+class StoryTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testRootPost()
     {

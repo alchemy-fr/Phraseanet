@@ -7,7 +7,7 @@ use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
 /**
  * @covers Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider
  */
-class RegistrationServiceProvidertest extends \PhraseanetTestCase
+class RegistrationServiceProviderTest extends \PhraseanetTestCase
 {
     private $fields;
 

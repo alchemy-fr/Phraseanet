@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Metadata\Tag;
 
 use Alchemy\Phrasea\Metadata\Tag\TfMimetype;
 
-class TfMimetypeTest extends \PhraseanetTestCase
+class TfMimeTypeTest extends \PhraseanetTestCase
 {
 
     /**

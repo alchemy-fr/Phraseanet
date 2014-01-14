@@ -136,7 +136,7 @@ class uuid
      * @param  stiring $uuid1
      * @param  string  $uuid2
      * @return int
-     * -1 uuid1<uuid2 0 uuid1==uuid2 +1 uuid1>uuid2
+     *                       -1 uuid1<uuid2 0 uuid1==uuid2 +1 uuid1>uuid2
      */
     public static function compare($uuid1, $uuid2)
     {

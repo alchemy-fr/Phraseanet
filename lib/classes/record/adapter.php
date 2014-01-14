@@ -16,7 +16,6 @@ use Alchemy\Phrasea\Metadata\Tag\TfBasename;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\ORM\EntityManager;
-use MediaAlchemyst\Specification\SpecificationInterface;
 use MediaVorus\Media\MediaInterface;
 use MediaAlchemyst\Alchemyst;
 use MediaVorus\MediaVorus;
@@ -345,7 +344,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
 
     /**
-     * return recor_id of the record
+     * Returns record_id of the record
      *
      * @return <int>
      */
@@ -437,7 +436,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
 
     /**
-     * return the type of the document
+     * Returns the type of the document
      *
      * @return string
      */
@@ -457,7 +456,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
 
     /**
-     * return duration in seconds
+     * Returns duration in seconds
      *
      * @return int
      */

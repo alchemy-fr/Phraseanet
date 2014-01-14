@@ -3,8 +3,6 @@
 namespace Alchemy\Tests\Phrasea\SearchEngine;
 
 use Alchemy\Phrasea\SearchEngine\SphinxSearch\SphinxSearchEngine;
-use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
-use Alchemy\Tests\Phrasea\SearchEngine\SearchEngineAbstractTest;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 

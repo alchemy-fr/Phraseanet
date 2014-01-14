@@ -93,7 +93,6 @@ class module_report_connexion extends module_report
      * @desc build the result from the specified sql
      * @param array  $champ all the field from the request displayed in a array
      * @param string $sql   the request from buildreq
-     * @return $this->result
      */
     protected function buildResult(Application $app, $rs)
     {

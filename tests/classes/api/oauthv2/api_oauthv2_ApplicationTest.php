@@ -68,19 +68,16 @@ class API_OAuth2_ApplicationTest extends \PhraseanetTestCase
         $this->assertEquals(API_OAuth2_Application::NATIVE_APP_REDIRECT_URI, self::$DI['oauth2-app-user']->get_redirect_uri());
         self::$DI['oauth2-app-user']->set_type(API_OAuth2_Application::WEB_TYPE);
 
-
         self::$DI['oauth2-app-user']->set_name('prout');
         $this->assertEquals('prout', self::$DI['oauth2-app-user']->get_name());
         self::$DI['oauth2-app-user']->set_name('test application for user');
         $this->assertEquals('test application for user', self::$DI['oauth2-app-user']->get_name());
-
 
         $desc = 'prouti prouto prout prout';
         self::$DI['oauth2-app-user']->set_description($desc);
         $this->assertEquals($desc, self::$DI['oauth2-app-user']->get_description());
         self::$DI['oauth2-app-user']->set_description('');
         $this->assertEquals('', self::$DI['oauth2-app-user']->get_description());
-
 
         $site = 'http://www.example.com/';
         self::$DI['oauth2-app-user']->set_website($site);

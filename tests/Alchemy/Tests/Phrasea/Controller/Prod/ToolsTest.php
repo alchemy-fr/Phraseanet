@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class ControllerToolsTest extends \PhraseanetAuthenticatedWebTestCase
+class ToolsTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
     protected $tmpFile;

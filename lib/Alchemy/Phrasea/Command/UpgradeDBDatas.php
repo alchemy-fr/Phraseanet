@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Command;
 
-use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Command\Upgrade\Step31;
 use Alchemy\Phrasea\Command\Upgrade\Step35;
 use Symfony\Component\Console\Input\InputOption;

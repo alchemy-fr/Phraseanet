@@ -10,7 +10,7 @@ use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Symfony\Component\HttpFoundation\Response;
 
-class RssFeedTest extends \PhraseanetWebTestCase
+class RSSFeedTest extends \PhraseanetWebTestCase
 {
     public function testPublicFeedAggregated()
     {

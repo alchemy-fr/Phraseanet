@@ -105,14 +105,14 @@ class Manager
     /**
      * Add a file to Phraseanet after having checked it
      *
-     * @param LazaretSession $session  The current Lazaret Session
-     * @param File           $file     A File package object
-     * @param type           $callable A callback to execute after process
-     *                                          (arguments are $element (LazaretFile or \record_adapter),
-     *                                          $visa (Visa)
-     *                                          and $code (self::RECORD_CREATED or self::LAZARET_CREATED))
-     * @param  type $forceBehavior Force a behavior, one of the self::FORCE_* constant
-     * @return int  One of the self::RECORD_CREATED or self::LAZARET_CREATED constants
+     * @param  LazaretSession $session       The current Lazaret Session
+     * @param  File           $file          A File package object
+     * @param  type           $callable      A callback to execute after process
+     *                                       (arguments are $element (LazaretFile or \record_adapter),
+     *                                       $visa (Visa)
+     *                                       and $code (self::RECORD_CREATED or self::LAZARET_CREATED))
+     * @param  type           $forceBehavior Force a behavior, one of the self::FORCE_* constant
+     * @return int            One of the self::RECORD_CREATED or self::LAZARET_CREATED constants
      */
     public function process(LazaretSession $session, File $file, $callable = null, $forceBehavior = null)
     {

@@ -2,7 +2,6 @@
 
 namespace Alchemy\Phrasea\TaskManager;
 
-use Alchemy\Phrasea\TaskManager\Notifier;
 use Alchemy\TaskManager\TaskManager;
 
 class NotifierTest extends \PhraseanetTestCase

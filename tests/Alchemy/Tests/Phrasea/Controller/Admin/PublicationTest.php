@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
-class Module_Admin_Route_PublicationTest extends \PhraseanetAuthenticatedWebTestCase
+class PublicationTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public static $account = null;
     public static $api = null;

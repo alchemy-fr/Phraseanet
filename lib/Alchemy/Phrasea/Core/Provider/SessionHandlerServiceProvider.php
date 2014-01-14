@@ -14,7 +14,6 @@ namespace Alchemy\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Core\Configuration\SessionHandlerFactory;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
-use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeSessionHandler;
 
 class SessionHandlerServiceProvider implements ServiceProviderInterface
 {

@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Cache;
 
 use \Alchemy\Phrasea\Cache\RedisCache;
 
-class RedisTest extends \PhraseanetTestCase
+class RedisCacheTest extends \PhraseanetTestCase
 {
 
     public function testBasics()

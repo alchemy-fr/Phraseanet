@@ -20,7 +20,6 @@ use JMS\TranslationBundle\Annotation\Ignore;
 use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
-use JMS\TranslationBundle\Logger\LoggerAwareInterface;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 class HelpMessageExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
@@ -40,7 +39,6 @@ class HelpMessageExtractor implements FileVisitorInterface, \PHPParser_NodeVisit
         $this->traverser = new \PHPParser_NodeTraverser();
         $this->traverser->addVisitor($this);
     }
-
 
     public function enterNode(\PHPParser_Node $node)
     {
@@ -92,9 +90,9 @@ class HelpMessageExtractor implements FileVisitorInterface, \PHPParser_NodeVisit
             foreach ($this->docParser->parse($docComment, 'file '.$this->file.' near line '.$item->value->getLine()) as $annot) {
                 if ($annot instanceof Ignore) {
                     $ignore = true;
-                } else if ($annot instanceof Desc) {
+                } elseif ($annot instanceof Desc) {
                     $desc = $annot->text;
-                } else if ($annot instanceof Meaning) {
+                } elseif ($annot instanceof Meaning) {
                     $meaning = $annot->text;
                 }
             }

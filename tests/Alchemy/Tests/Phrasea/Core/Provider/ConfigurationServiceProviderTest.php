@@ -9,7 +9,7 @@ use Symfony\Component\HttpKernel\Client;
 /**
  * @covers Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider
  */
-class ConfigurationServiceProvidertest extends ServiceProviderTestCase
+class ConfigurationServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {

@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
-class ACLServiceProvidertest extends ServiceProviderTestCase
+class ACLServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {

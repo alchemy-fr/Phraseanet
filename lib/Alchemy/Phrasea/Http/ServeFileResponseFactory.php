@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Http;
 
-use Alchemy\Phrasea\Http\DeliverDataInterface;
 use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;

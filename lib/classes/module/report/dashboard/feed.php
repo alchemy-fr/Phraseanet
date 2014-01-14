@@ -58,7 +58,7 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
     private $app;
 
     /**
-     * return l'objet stockee dans le cache si i l existe sinon instancie
+     * Returns l'objet stockee dans le cache si i l existe sinon instancie
      * un nouveau objet dashboard_feed
      *
      * @param Application $app

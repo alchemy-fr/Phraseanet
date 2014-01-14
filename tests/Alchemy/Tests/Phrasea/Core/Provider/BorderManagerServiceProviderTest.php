@@ -10,7 +10,7 @@ use XPDF\XPDFServiceProvider;
 /**
  * @covers Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider
  */
-class BorderManagerServiceProvidertest extends ServiceProviderTestCase
+class BorderManagerServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {

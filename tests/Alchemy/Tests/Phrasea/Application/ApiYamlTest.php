@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Application;
 
 use Symfony\Component\Yaml\Yaml;
 
-class ApiYamlApplication extends ApiTestCase
+class ApiYamlTest extends ApiTestCase
 {
     protected function getParameters(array $parameters = [])
     {
