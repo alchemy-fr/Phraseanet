@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2013 Alchemy
+ * (c) 2005-2014 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,7 +14,6 @@ namespace Alchemy\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Core\Configuration\SessionHandlerFactory;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
-use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeSessionHandler;
 
 class SessionHandlerServiceProvider implements ServiceProviderInterface
 {

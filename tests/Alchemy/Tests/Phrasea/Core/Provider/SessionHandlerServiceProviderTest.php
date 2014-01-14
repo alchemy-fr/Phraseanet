@@ -4,7 +4,6 @@ namespace Alchemy\Tests\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Provider\SessionHandlerServiceProvider;
-use Alchemy\Tests\Tools\TranslatorMockTrait;
 use Alchemy\Tests\Phrasea\MockArrayConf;
 use Silex\Application;
 use Silex\Provider\SessionServiceProvider;

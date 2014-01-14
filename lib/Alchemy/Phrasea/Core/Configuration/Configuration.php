@@ -27,11 +27,11 @@ class Configuration implements ConfigurationInterface
     private $autoReload;
 
     /**
-     * @param Yaml     $yaml     The Yaml Parser
-     * @param Compiler $compiler The PHP Compiler
-     * @param $config The path to the yaml configuration path
-     * @param $compiled The path to the compiled configuration path
-     * @param $autoReload Whether to recompile configuration on any change (slow, useful in debug)
+     * @param Yaml     $yaml       The Yaml Parser
+     * @param Compiler $compiler   The PHP Compiler
+     * @param string   $config     The path to the yaml configuration path
+     * @param string   $compiled   The path to the compiled configuration path
+     * @param Boolean  $autoReload Whether to recompile configuration on any change (slow, useful in debug)
      */
     public function __construct(Yaml $yaml, Compiler $compiler, $config, $compiled, $autoReload)
     {

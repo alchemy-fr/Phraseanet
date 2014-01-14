@@ -2,8 +2,6 @@
 
 namespace Alchemy\Phrasea\Model\Converter;
 
-use Alchemy\Phrasea\Model\Converter\BasketConverter;
-
 class BasketConverterTest extends \PhraseanetTestCase
 {
     public function testConvert()

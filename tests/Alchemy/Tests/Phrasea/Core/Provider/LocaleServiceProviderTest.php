@@ -9,7 +9,7 @@ use Alchemy\Phrasea\Core\Provider\LocaleServiceProvider;
 /**
  * @covers Alchemy\Phrasea\Core\Provider\LocaleServiceProvider
  */
-class LocaleServiceProvidertest extends \PhraseanetTestCase
+class LocaleServiceProviderTest extends \PhraseanetTestCase
 {
     public function testLocalesAvailable()
     {

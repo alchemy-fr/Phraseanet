@@ -16,7 +16,7 @@ class ZipArchiveImproved extends ZipArchive
     protected $_newAddedFilesSize = 100;
 
     /**
-     * returns the name of the archive file.
+     * Returns the name of the archive file.
      *
      * @return string
      */
@@ -26,7 +26,7 @@ class ZipArchiveImproved extends ZipArchive
     }
 
     /**
-     * returns the number of files that are going to be added to ZIP
+     * Returns the number of files that are going to be added to ZIP
      * without reopenning the stream to file.
      *
      * @return int
@@ -59,7 +59,8 @@ class ZipArchiveImproved extends ZipArchive
      *
      * @param string $fileName
      * @param int    $flags
-     * return mixed
+     *
+     * @return mixed
      */
     public function open($fileName, $flags = null)
     {

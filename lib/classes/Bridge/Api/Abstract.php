@@ -32,9 +32,9 @@ abstract class Bridge_Api_Abstract
     protected $translator;
 
     /**
-     * @param UrlGenerator              $generator
-     * @param PropertyAccess            $conf
-     * @param TranslatorInterface       $translator
+     * @param UrlGenerator        $generator
+     * @param PropertyAccess      $conf
+     * @param TranslatorInterface $translator
      *
      * @param Bridge_Api_Auth_Interface $auth
      */

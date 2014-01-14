@@ -14,7 +14,6 @@ namespace Alchemy\Phrasea\Feed\Link;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Feed\FeedInterface;
-use Alchemy\Phrasea\Feed\Link\FeedLink;
 use Alchemy\Phrasea\Model\Entities\AggregateToken;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Routing\Generator\UrlGenerator;

@@ -23,11 +23,11 @@ class Factory
     /**
      * Build a file package Attribute
      *
-     * @param Application $app  Application context
-     * @param string      $name The name of the attribute, one of the
-     *                                  AttributeInterface::NAME_* constants
-     * @param string $serialized The serialized value of the attribute
-     *                                  (AttributeInterface::asString result)
+     * @param  Application               $app        Application context
+     * @param  string                    $name       The name of the attribute, one of the
+     *                                               AttributeInterface::NAME_* constants
+     * @param  string                    $serialized The serialized value of the attribute
+     *                                               (AttributeInterface::asString result)
      * @return AttributeInterface        The attribute
      * @throws \InvalidArgumentException
      */

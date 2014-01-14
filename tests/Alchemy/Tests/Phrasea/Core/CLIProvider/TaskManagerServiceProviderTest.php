@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Core\CLIProvider;
 /**
  * @covers Alchemy\Phrasea\Core\CLIProvider\TaskManagerServiceProvider
  */
-class TaskManagerServiceProvidertest extends ServiceProviderTestCase
+class TaskManagerServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {

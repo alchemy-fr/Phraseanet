@@ -11,13 +11,6 @@
 
 namespace Alchemy\Phrasea\Cache;
 
-use Alchemy\Phrasea\Cache\ApcCache;
-use Alchemy\Phrasea\Cache\ArrayCache;
-use Alchemy\Phrasea\Cache\Cache;
-use Alchemy\Phrasea\Cache\MemcacheCache;
-use Alchemy\Phrasea\Cache\RedisCache;
-use Alchemy\Phrasea\Cache\WinCacheCache;
-use Alchemy\Phrasea\Cache\XcacheCache;
 use Alchemy\Phrasea\Exception\RuntimeException;
 
 class Factory

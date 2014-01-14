@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Http\XSendFile;
 use Alchemy\Phrasea\Http\XSendFile\NginxMode;
 use Symfony\Component\HttpFoundation\Request;
 
-class XSendFileModeNginxTest extends \PhraseanetTestCase
+class NginxModeTest extends \PhraseanetTestCase
 {
     public function testGetVirtualHost()
     {

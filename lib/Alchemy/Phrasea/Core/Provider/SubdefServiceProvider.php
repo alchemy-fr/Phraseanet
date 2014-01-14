@@ -15,7 +15,6 @@ use Alchemy\Phrasea\Application;
 use Silex\Application as SilexApplication;
 use Silex\ServiceProviderInterface;
 use Alchemy\Phrasea\Media\SubdefGenerator;
-use Alchemy\Phrasea\Media\SubdefGeneratorMock;
 
 class SubdefServiceProvider implements ServiceProviderInterface
 {

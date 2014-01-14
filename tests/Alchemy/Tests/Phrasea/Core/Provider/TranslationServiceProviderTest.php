@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Core\Provider;
 /**
  * @covers Alchemy\Phrasea\Core\Provider\TranslatorServiceProvider
  */
-class TranslatorServiceProvidertest extends ServiceProviderTestCase
+class TranslationServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {

@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Core\CLIProvider;
 
-class SignalHandlerServiceProvidertest extends ServiceProviderTestCase
+class SignalHandlerServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {

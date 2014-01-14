@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Core\Configuration;
 
-use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Entities\User;
 
 class DisplaySettingService

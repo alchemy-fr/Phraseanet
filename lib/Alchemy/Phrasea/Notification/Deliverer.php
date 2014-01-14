@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Notification;
 
-use Alchemy\Phrasea\Notification\EmitterInterface;
 use Alchemy\Phrasea\Notification\Mail\MailInterface;
 use Alchemy\Phrasea\Exception\LogicException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;

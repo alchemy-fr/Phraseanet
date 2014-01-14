@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
-class ControllerPushTest extends \PhraseanetAuthenticatedWebTestCase
+class PushTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 

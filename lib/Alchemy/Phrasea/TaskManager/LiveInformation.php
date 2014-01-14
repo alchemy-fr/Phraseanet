@@ -11,8 +11,6 @@
 
 namespace Alchemy\Phrasea\TaskManager;
 
-use Alchemy\Phrasea\TaskManager\Notifier;
-use Alchemy\Phrasea\TaskManager\TaskManagerStatus;
 use Alchemy\Phrasea\Model\Entities\Task;
 
 class LiveInformation

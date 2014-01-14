@@ -11,8 +11,6 @@
 
 namespace Alchemy\Phrasea\Plugin\Schema;
 
-use Alchemy\Phrasea\Plugin\Schema\ManifestValidator;
-use Alchemy\Phrasea\Plugin\Schema\Manifest;
 use Alchemy\Phrasea\Plugin\Exception\PluginValidationException;
 use Alchemy\Phrasea\Plugin\Exception\JsonValidationException;
 

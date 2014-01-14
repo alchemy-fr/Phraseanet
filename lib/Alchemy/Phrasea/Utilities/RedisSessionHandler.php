@@ -32,8 +32,8 @@ class RedisSessionHandler implements \SessionHandlerInterface
     /**
      * Constructor
      *
-     * @param \Redis $redis     The redis instance
-     * @param array      $options   An associative array of Memcached options
+     * @param \Redis $redis   The redis instance
+     * @param array  $options An associative array of Memcached options
      *
      * @throws \InvalidArgumentException When unsupported options are passed
      */

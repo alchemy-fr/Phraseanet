@@ -2,7 +2,6 @@
 
 namespace Alchemy\Phrasea\Model\Converter;
 
-use Alchemy\Phrasea\Model\Converter\TaskConverter;
 use Alchemy\Phrasea\Model\Entities\Task;
 
 class TaskConverterTest extends \PhraseanetTestCase

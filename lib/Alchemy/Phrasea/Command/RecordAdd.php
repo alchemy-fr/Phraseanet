@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Command;
 
-use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;

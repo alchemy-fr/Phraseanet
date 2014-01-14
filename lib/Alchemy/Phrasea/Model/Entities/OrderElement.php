@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Model\Entities;
 
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Mapping as ORM;
-use Alchemy\Phrasea\Model\Entities\Order;
 
 /**
  * @ORM\Table(name="OrderElements", uniqueConstraints={@ORM\UniqueConstraint(name="unique_ordercle", columns={"base_id","record_id","order_id"})})
