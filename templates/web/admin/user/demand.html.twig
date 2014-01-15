@@ -1,21 +1,4 @@
 <script type="text/javascript">
-    var bodySize = {x:100,y:100};
-
-    function resize(){
-
-        bodySize.y = $(window).height();
-        bodySize.x = $(window).width();
-
-        var $heightd =  $('#tab_demandes').outerHeight(true);
-        var maxSize = (bodySize.y - 120);
-
-        if($heightd > maxSize)
-        {
-            $('#tab_demandes').height(maxSize);
-        }
-
-    }
-
     $(document).ready(function(){
 
         resize();
@@ -33,7 +16,7 @@
         }).on("uncheck-deny", function(event) {
             var $btnGroup = $(event.currentTarget);
             var $denyButton = $(".deny-checker", $btnGroup);
-            
+
             if ($denyButton.hasClass("active")) {
                 $denyButton.removeClass("active");
                 $(".deny-checker", $mainBtnAction).removeClass("active");
@@ -48,7 +31,7 @@
 
                 var nbActiveButton = $(".deny-checker.active", $basesBtnAction).length;
                 var totalBtn = $(".deny-checker", $basesBtnAction).length;
-                
+
                 if (nbActiveButton === totalBtn) {
                     $(".deny-checker", $mainBtnAction).addClass("active");
                 }
@@ -75,7 +58,7 @@
             if ($acceptBtn.hasClass("active")) {
                 $acceptBtn.removeClass("active");
                 $(".accept-checker", $mainBtnAction).removeClass("active");
-                
+
                 $btnGroup.trigger("uncheck-hd");
                 $btnGroup.trigger("uncheck-watermark");
             }
@@ -92,7 +75,7 @@
                 if (nbActiveButton === totalBtn) {
                     $(".accept-hd-checker", $mainBtnAction).addClass("active");
                 }
-                
+
                 $btnGroup.trigger('uncheck-deny').trigger('check-accept');
             }
         }).on('uncheck-hd', function(event) {
@@ -116,7 +99,7 @@
                 if (nbActiveButton === totalBtn) {
                     $(".accept-watermark-checker", $mainBtnAction).addClass("active");
                 }
-                
+
                 $btnGroup.trigger('uncheck-deny').trigger('check-accept');
             }
         }).on('uncheck-watermark', function(event) {
@@ -128,7 +111,7 @@
                 $(".accept-watermark-checker", $mainBtnAction).removeClass("active");
             }
         });
-        
+
         $.each([
             $('.deny-checker', $basesBtnAction),
             $('.accept-checker', $basesBtnAction),
@@ -167,7 +150,7 @@
                 }
             });
         });
-        
+
         $(".submit", $form).bind("click", function (event) {
             $(".btn.active", $basesBtnAction).each(function() {
                 $("<input>").attr("type", "hidden").attr("name", this.name).val(this.value).appendTo($form);
@@ -216,7 +199,7 @@
             </thead>
         </table>
 
-        <div  id="tab_demandes" style="overflow-y:scroll; overflow-x:hidden;">
+        <div  id="tab_demandes">
             {% set tableColls = table['coll'] %}
             {% for row in table['user'] %}
                 <div class="well well-small">
@@ -253,9 +236,9 @@
                             </td>
                             <td>
                                 {% for basId in colls %}
-                                    <h1 style="word-wrap: break-word;">
+                                    <span style="font-weight:bold;font-size:14px;word-wrap: break-word;">
                                         {{ basId| bas_labels(app) }}
-                                    </h1>
+                                    </span>
                                     {% set btn_value = row['usr_id'] ~ "_" ~  basId %}
                                     <div class="btn-group btn-single-action" style="margin:auto auto 5px 0;">
                                         <button data-event="deny" value="{{ btn_value }}" type="button" name="deny[]" class="btn deny-checker" title="{% trans 'admin:: refuser l\'acces' %}">
