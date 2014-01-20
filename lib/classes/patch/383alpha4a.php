@@ -47,6 +47,14 @@ class patch_383alpha4a implements patchInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrineMigrations()
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $appbox, Application $app)
     {
         $em = $app['EM'];
