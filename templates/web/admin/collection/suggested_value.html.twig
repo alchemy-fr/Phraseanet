@@ -354,18 +354,6 @@ function returnElement(unId)
 var pref = new Array(0);
 var lastpref=null;
 
-function loaded()
-{
-    self.focus();
-    write_valsug();
-    makeRestrict();
-    maketextaffich();
-    makeEmpty();
-    redrawme();
-    scan();
-    $("#iddivloading").hide();
-}
-
 function Roll(im, x)
 {
     var s=document[im].src;
@@ -809,7 +797,18 @@ pref["{{ value['key']|escapeDoubleQuote|raw }}"].valsug["{{ value['value']|escap
 
 function getSruct()
 {
-    var dom = document.implementation.createDocument(null, 'baseprefs', null);
+    var parser = new DOMParser();
+    var dom = parser.parseFromString($('#txtareaxml').val(), 'text/xml');
+    var existing = dom.getElementsByTagName('sugestedValues');
+
+    if (existing.length !== 0) {
+        for (i in existing) {
+            if (existing[i].parentNode) {
+                existing[i].parentNode.removeChild(existing[i]);
+            }
+        }
+    }
+
     var values = dom.createElement('sugestedValues');
 
     for (a in pref ) {
@@ -830,7 +829,11 @@ function getSruct()
     dom.getElementsByTagName('baseprefs')[0].appendChild(values);
 
     var serializer = new XMLSerializer();
-    var xml = '<?xml version="1.0" encoding="UTF-8"?>' + serializer.serializeToString(dom);
+    var xml = serializer.serializeToString(dom);
+
+    if (xml.substring(0, 8) !== '<?xml ve') {
+        xml = '<?xml version="1.0" encoding="UTF-8"?>' + xml;
+    }
 
     xml.replace('<sugestedValues>', statuscoll + otherFields + '<sugestedValues>');
 
@@ -888,7 +891,6 @@ function view(type)
 
           newStr=getSruct();
 
-          console.log(newStr);
           if($('#txtareaxml').length > 0 && newStr!=null  )
           {
               avantModif =  newStr;
@@ -916,6 +918,11 @@ function view(type)
 }
 
 $(document).ready(function(){
+    write_valsug();
+    makeRestrict();
+    maketextaffich();
+    makeEmpty();
+    redrawme();
     scan();
     $("#iddivloading").hide();
 });
