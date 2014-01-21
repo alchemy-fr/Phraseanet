@@ -209,6 +209,12 @@ class SystemRequirements extends RequirementCollection implements RequirementInt
         );
 
         $this->addRequirement(
+            function_exists('gettext'),
+            'gettext extension is required',
+            'Install and enable the <strong>gettext</strong> extension.'
+        );
+
+        $this->addRequirement(
             function_exists('gd_info'),
             'gd extension is required',
             'Install and enable the <strong>gd</strong> extension.'
