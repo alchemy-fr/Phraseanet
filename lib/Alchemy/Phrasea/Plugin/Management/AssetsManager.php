@@ -63,6 +63,18 @@ class AssetsManager
     }
 
     /**
+     * Checks whether plugin exists or not.
+     *
+     * @param $name
+     *
+     * @return boolean
+     */
+    public function isSetup($name)
+    {
+        return file_exists($this->rootPath . DIRECTORY_SEPARATOR . 'www' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $name);
+    }
+
+    /**
      * Twig function to generate asset URL.
      *
      * @param string $name

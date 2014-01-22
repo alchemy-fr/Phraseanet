@@ -30,6 +30,11 @@ class RemovePlugin extends AbstractPluginCommand
     {
         $name = $input->getArgument('name');
 
+        if (false === $this->container['plugins.assets-manager']->isSetup($name)) {
+            $output->write("Plugin <info>$name</info> is not set up");
+            return 1;
+        }
+
         $output->write("Removing public assets...");
         $this->container['plugins.assets-manager']->remove($name);
         $output->writeln(" <comment>OK</comment>");
