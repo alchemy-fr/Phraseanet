@@ -146,7 +146,7 @@
         </form>
 
         <form style="display:inline;" method="post" action="{{ path('admin_database_empty', {'databox_id': databox.get_sbas_id()}) }}">
-            <button type="button" class="btn submiter confirm" data-confirm-msg="{% trans 'admin::base: Confirmer le vidage complet de la base' %}">
+            <button type="button" class="btn submiter confirm reload" data-confirm-msg="{% trans 'admin::base: Confirmer le vidage complet de la base' %}">
                 <img src="/skins/icons/trash.png" />
                 {% trans "admin::base: vider la base" %}
             </button>
