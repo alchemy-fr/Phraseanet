@@ -134,7 +134,7 @@ class Migration38 implements MigrationInterface
 
     private function fetchInstanceKey()
     {
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare('SELECT `value` FROM registry WHERE `key` = "GV_SIT"');
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare('SELECT `value` FROM registry WHERE `key` = "GV_sit"');
         $stmt->execute();
         $rs = $stmt->fetch(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
