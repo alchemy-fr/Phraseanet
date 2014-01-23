@@ -136,8 +136,7 @@ abstract class task_abstract
         try {
             $conn = connection::getPDOConnection($this->dependencyContainer);
         } catch (Exception $e) {
-            $this->log($e->getMessage());
-            $this->log(("Warning : abox connection lost, restarting in 10 min."));
+            $this->log(("Warning : abox connection lost : ".$e->getMessage().", restarting in 10 min."), self::LOG_DEBUG);
 
             $this->sleep(60 * 10);
 
@@ -252,7 +251,7 @@ abstract class task_abstract
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':status' => $status, ':taskid' => $this->getID()));
         $stmt->closeCursor();
-        $this->log(sprintf("task %d <- %s", $this->getID(), $status));
+        $this->log(sprintf("task %d <- %s", $this->getID(), $status), self::LOG_INFO);
     }
 
     /**
@@ -542,7 +541,9 @@ abstract class task_abstract
 
     protected function pause($when_started = 0)
     {
-        $this->log($this->records_done . ' records done');
+        if ($this->records_done > 0) {
+            $this->log($this->records_done . ' records done');
+        }
         if ($this->running) {       // && $this->records_done == 0)
             $when_started = time() - $when_started;
             if ($when_started < $this->period) {
@@ -602,7 +603,7 @@ abstract class task_abstract
 
         $locker = true;
         if (flock($lockFD, LOCK_EX | LOCK_NB, $locker) === FALSE) {
-            $this->log("runtask::ERROR : task already running.");
+            $this->log("runtask::ERROR : task already running.", self::LOG_ERROR);
             fclose($lockFD);
 
             throw new Exception('task already running.', self::ERR_ALREADY_RUNNING);
@@ -691,7 +692,7 @@ abstract class task_abstract
                 // process one record
                 $this->processOneContent($box, $row);
             } catch (Exception $e) {
-                $this->log("Exception : " . $e->getMessage() . " " . basename($e->getFile()) . " " . $e->getLine());
+                $this->log("Exception : " . $e->getMessage() . " " . basename($e->getFile()) . " " . $e->getLine(), self::LOG_ERROR);
             }
 
             $this->records_done ++;
@@ -704,13 +705,13 @@ abstract class task_abstract
 
             $current_memory = memory_get_usage();
             if ($current_memory >> 20 >= $this->maxmegs) {
-                $this->log(sprintf("Max memory (%s M) reached (actual is %.02f M)", $this->maxmegs, ($current_memory >> 10) / 1024), self::LOG_ERROR);
+                $this->log(sprintf("Max memory (%s M) reached (actual is %.02f M)", $this->maxmegs, ($current_memory >> 10) / 1024), self::LOG_DEBUG);
                 $this->running = FALSE;
                 $ret = self::STATE_MAXMEGSREACHED;
             }
 
             if ($this->records_done >= (integer) ($this->maxrecs)) {
-                $this->log(sprintf("Max records done (%s) reached (actual is %s)", $this->maxrecs, $this->records_done));
+                $this->log(sprintf("Max records done (%s) reached (actual is %s)", $this->maxrecs, $this->records_done), self::LOG_DEBUG);
                 $this->running = FALSE;
                 $ret = self::STATE_MAXRECSDONE;
             }
@@ -789,7 +790,7 @@ abstract class task_abstract
     protected function incrementLoops()
     {
         if ($this->getRunner() == self::RUNNER_SCHEDULER && ++ $this->loop >= $this->maxloops) {
-            $this->log(sprintf(('%d loops done, restarting'), $this->loop));
+            $this->log(sprintf(('%d loops done, restarting'), $this->loop), self::LOG_DEBUG);
             $this->setState(self::STATE_TORESTART);
 
             $this->running = false;
@@ -812,9 +813,8 @@ abstract class task_abstract
         $this->logger->addDebug(memory_get_usage() . " -- " . memory_get_usage(true));
     }
 
-    public function log($message, $level=self::LOG_INFO)
+    public function log($message, $level = Logger::LOG_DEBUG)
     {
-        // nb : self::log_levels ARE standard log levels, ok with monolog
         $this->logger->addRecord($level, $message);
 
         return $this;

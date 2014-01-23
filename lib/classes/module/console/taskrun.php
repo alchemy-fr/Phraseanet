@@ -18,6 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Monolog\Handler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\RotatingFileHandler;
+use Monolog\Logger;
 
 /**
  * @todo write tests
@@ -96,7 +97,7 @@ class module_console_taskrun extends Command
         }
 
         $logfile = __DIR__ . '/../../../../logs/task_' . $task_id . '.log';
-        $this->container['task-manager.logger']->pushHandler(new RotatingFileHandler($logfile, 10));
+        $this->container['task-manager.logger']->pushHandler(new RotatingFileHandler($logfile, 10, Logger::INFO));
         $this->task = $task_manager->getTask($task_id, $this->container['task-manager.logger']);
 
         $lib2v = array(

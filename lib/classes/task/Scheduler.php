@@ -45,9 +45,9 @@ class task_Scheduler
         $this->schedstatus = '';
     }
 
-    protected function log($message)
+    protected function log($message, $level = Logger::DEBUG)
     {
-        $this->logger->addInfo($message);
+        $this->logger->addRecord($level, $message);
 
         return $this;
     }
@@ -114,7 +114,7 @@ class task_Scheduler
             $lockfile = ($lockdir . 'scheduler.lock');
             if (($schedlock = fopen($lockfile, 'a+')) != FALSE) {
                 if (flock($schedlock, LOCK_EX | LOCK_NB) === FALSE) {
-                    $this->log(sprintf("failed to lock '%s' (try=%s/4)", $lockfile, $try));
+                    $this->log(sprintf("failed to lock '%s' (try=%s/4)", $lockfile, $try), Logger::INFO);
                     if ($try == 4) {
                         $this->log("scheduler already running.");
                         fclose($schedlock);
@@ -140,7 +140,7 @@ class task_Scheduler
             }
         }
 
-        $this->log(sprintf("running scheduler with method %s", $this->method));
+        $this->log(sprintf("running scheduler with method %s", $this->method), Logger::INFO);
 
         $conn = $this->dependencyContainer['phraseanet.appbox']->get_connection();
 
@@ -182,7 +182,7 @@ class task_Scheduler
 
                 unset($conn);
                 if (! $connwaslost) {
-                    $this->log(sprintf("Warning : abox connection lost, restarting in 10 min."));
+                    $this->log(sprintf("Warning : abox connection lost, restarting in 10 min."), Logger::INFO);
                 }
                 for ($i = 0; $i < 60 * 10; $i ++) {
                     sleep(1);
@@ -196,7 +196,7 @@ class task_Scheduler
                 $connwaslost = true;
             }
             if ($connwaslost) {
-                $this->log("abox connection restored");
+                $this->log("abox connection restored", Logger::INFO);
 
                 $sql = 'UPDATE task SET crashed=0';
                 $stmt = $conn->prepare($sql);
@@ -235,7 +235,7 @@ class task_Scheduler
                 $stmt = $conn->prepare($sql);
                 $stmt->execute();
                 $stmt->closeCursor();
-                $this->log("schedstatus == 'stopping', waiting tasks to end");
+                $this->log("schedstatus == 'stopping', waiting tasks to end", Logger::INFO);
             }
 
             // initialy, all tasks are supposed to be removed from the poll
@@ -490,7 +490,7 @@ class task_Scheduler
                                     "Task %s crashed %d times"
                                     , $taskPoll[$tkey]["task"]->getID()
                                     , $taskPoll[$tkey]["task"]->getCrashCounter()
-                                )
+                                ), Logger::INFO
                             );
 
                             if ($taskPoll[$tkey]["task"]->getCrashCounter() > 5) {
@@ -519,7 +519,7 @@ class task_Scheduler
                                             "SIGTERM sent to task %s (pid=%s)"
                                             , $taskPoll[$tkey]["task"]->getID()
                                             , $pid
-                                        )
+                                        ), Logger::INFO
                                     );
                                 }
                             }
@@ -536,7 +536,7 @@ class task_Scheduler
                                             "proc_terminate(...) done on task %s (pid=%s)"
                                             , $taskPoll[$tkey]["task"]->getID()
                                             , $pid
-                                        )
+                                        ), Logger::INFO
                                     );
                                 } else { // METHOD_FORK, I guess we have posix
                                     posix_kill($pid, 9);
@@ -545,7 +545,7 @@ class task_Scheduler
                                             "SIGKILL sent to task %s (pid=%s)"
                                             , $taskPoll[$tkey]["task"]->getID()
                                             , $pid
-                                        )
+                                        ), Logger::INFO
                                     );
                                 }
                             } else {
@@ -554,7 +554,7 @@ class task_Scheduler
                                         "waiting task %s to quit (kill in %d seconds)"
                                         , $taskPoll[$tkey]["task"]->getID()
                                         , $dt
-                                    )
+                                    ), Logger::INFO
                                 );
                                 $runningtask ++;
                             }
@@ -563,7 +563,7 @@ class task_Scheduler
                                 sprintf(
                                     "task %s has quit"
                                     , $taskPoll[$tkey]["task"]->getID()
-                                )
+                                ), Logger::INFO
                             );
                             $taskPoll[$tkey]["task"]->setState(task_abstract::STATE_STOPPED);
                         }
@@ -610,11 +610,11 @@ class task_Scheduler
         $stmt->execute();
         $stmt->closeCursor();
 
-        $this->log("Scheduler2 is quitting.");
+        $this->log("Scheduler2 is quitting.", Logger::INFO);
 
         ftruncate($schedlock, 0);
         fclose($schedlock);
 
-        $this->log("Scheduler2 has quit.\n");
+        $this->log("Scheduler2 has quit.\n", Logger::INFO);
     }
 }

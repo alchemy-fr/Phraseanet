@@ -42,7 +42,7 @@ class module_console_schedulerStart extends Command
         $logger->pushHandler($streamHandler);
 
         $logfile = __DIR__ . '/../../../../logs/scheduler.log';
-        $rotateHandler = new Handler\RotatingFileHandler($logfile, 10);
+        $rotateHandler = new Handler\RotatingFileHandler($logfile, 10, Logger::INFO);
         $logger->pushHandler($rotateHandler);
 
         try {
