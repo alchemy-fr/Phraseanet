@@ -37,16 +37,13 @@
 
   <script type="text/javascript">
     $(document).ready(function(){
-
         var container = $('#reorder_box');//p4.Dialog.get(1).getDomElement();
 
         $('button.autoorder', container).bind('click', function(){
-            console.log("click autoorder");
             autoorder();
             return false;
         });
         $('button.reverseorder', container).bind('click', function(){
-            console.log("click reverse order");
             reverse_order();
             return false;
         });
@@ -54,102 +51,43 @@
         function autoorder()
         {
             var val = $.trim($('#auto_order').val());
+
             if(val == '') {
                 return;
             }
 
-            var sorter = {};
-
+            var diapos = [];
             $('#reorder_box .diapo form').each(function(i,n){
-                var id = $('input[name=id]',n).val();
-
-                switch(val)
-                {
-                    case 'title':
-                    default:
-                        var data = $('input[name=title]',n).val();
-                        break;
-                    case 'default':
-                        var data = $('input[name=default]',n).val();
-                        break;
-                }
-                sorter[id] = data;
+                diapos.push({
+                    "title": $('input[name=title]',n).val(),
+                    "order" : parseInt($('input[name=default]',n).val()),
+                    "id"  : $('input[name=id]',n).val()
+                });
             });
 
-            var data_type = 'string';
+            var sorterCallback;
 
-            switch(val)
-            {
-                case 'default':
-                    var data_type = 'integer';
-                    break;
+            if (val === "default")  {
+                sorterCallback = function(diapo) {return diapo.order;};
+            } else {
+                sorterCallback = function(diapo) {return diapo.title;};
             }
 
-            sorter = arraySortByValue(sorter, data_type);
+            var elements = [];
 
-            var last_moved = false;
+            _.chain(diapos)
+            .sortBy(sorterCallback)
+            .each(function(diapo) {
+                elements.push($('#ORDER_'+ diapo.id));
+            });
 
-            for(i in sorter)
-            {
-                var elem = $('#ORDER_'+i);
-                if(last_moved) {
-                    elem.after(last_moved);
-                } else {
-                    $('#reorder_box .elements').prepend(elem);
-                }
-                last_moved = elem;
-            }
-
+            $('#reorder_box .elements').append(elements);
         }
-
-        function arraySortByValue(datas, data_type) {
-            var tmp = new Array();
-
-            for (i in datas) {
-                tmp.push({
-                    v: i,
-                    c: datas[i].toUpperCase(),
-                    o: datas[i]
-                });
-            }
-
-            switch(data_type)
-            {
-                case 'string':
-                    tmp.sort(function (x, y) {
-                        return y.c < x.c;
-                    });
-                    break;
-                case 'integer':
-                    tmp.sort(function (x, y) {
-                        return parseInt(y.c) < parseInt(x.c);
-                    });
-                    break;
-            }
-
-            var out = {};
-
-            for (i in tmp) {
-                out[tmp[i].v] = tmp[i].o;
-            }
-
-            return out;
-        }
-
 
         function reverse_order() {
-            var elems = $('#reorder_box .diapo');
-
-            var last_moved = false;
-
-            elems.each(function(i,n){
-                var elem = $(n);
-                if(last_moved) {
-                    elem.before(last_moved);
-                } else {
-                    $('#reorder_box .elements').append(elem);
-                }
-                last_moved = elem;
+            var $container = $('#reorder_box .elements');
+            $('#reorder_box .diapo').each(function() {
+                $(this).prependTo($container);
             });
         }
 
