@@ -163,8 +163,14 @@
               or collection.get_base_id() in app['authentication'].getUser().ACL.get_granted_base(['manage'])|keys
               or collection.get_base_id() in app['authentication'].getUser().ACL.get_granted_base(['modify_struct'])|keys) %}
 
+          {% if feature == 'collection' and featured == collection.get_base_id() %}
+              {% set coll_selected = true %}
+          {% else %}
+              {% set coll_selected = false %}
+          {% endif %}
+
           <li>
-            <div style="padding:0 0 2px 0;">
+            <div style="padding:0 0 2px 0;" {% if coll_selected %}class="selected"{% endif %}>
                 <a target="right" href="{{ path('admin_display_collection', { 'bas_id' : collection.get_base_id() }) }}" class="ajax">
                     <span>{{ collection.get_name() }}</span>
                 </a>

@@ -108,8 +108,6 @@ class Root implements ControllerProviderInterface
                 return $app->redirectPath('logout');
             }
 
-            $section = $request->query->get('section', false);
-
             $available = array(
                 'connected',
                 'registrations',
