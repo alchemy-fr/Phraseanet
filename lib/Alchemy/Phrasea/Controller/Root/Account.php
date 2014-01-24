@@ -231,10 +231,8 @@ class Account implements ControllerProviderInterface
      */
     public function accountAccess(Application $app, Request $request)
     {
-        require_once $app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
-
         return $app['twig']->render('account/access.html.twig', [
-            'inscriptions' => giveMeBases($app, $app['authentication']->getUser()->getId())
+            'inscriptions' => $app['registration-manager']->getRegistrationInformations($app['authentication']->getUser()->getId())
         ]);
     }
 
@@ -328,17 +326,11 @@ class Account implements ControllerProviderInterface
      */
     public function updateAccount(PhraseaApplication $app, Request $request)
     {
-        $demands = (array) $request->request->get('demand', []);
-
-        if (0 !== count($demands)) {
+        if (0 !== count($demands = (array) $request->request->get('demand', []))) {
             foreach ($demands as $baseId) {
-                try {
-                    $app['phraseanet.appbox-register']->add_request($app['authentication']->getUser(), \collection::get_from_base_id($app, $baseId));
-                    $app->addFlash('success', $app->trans('login::notification: Vos demandes ont ete prises en compte'));
-                } catch (\Exception $e) {
-
-                }
+                $app['registration-manager']->newDemand($app['authentication']->getUser()->getId(), $baseId);
             }
+            $app->addFlash('success', $app->trans('login::notification: Vos demandes ont ete prises en compte'));
         }
 
         $accountFields = [

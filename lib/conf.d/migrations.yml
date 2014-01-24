@@ -54,3 +54,6 @@ migrations:
   migration17:
     version: user-auth-provider
     class: Alchemy\Phrasea\Setup\DoctrineMigrations\UserAuthProviderMigration
+  migration18:
+      version: registration-demand
+      class: Alchemy\Phrasea\Setup\DoctrineMigrations\RegistrationDemandMigration

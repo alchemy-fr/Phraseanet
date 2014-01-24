@@ -354,39 +354,34 @@ class Users implements ControllerProviderInterface
         })->bind('admin_users_export_csv');
 
         $controllers->get('/demands/', function (Application $app) {
-            $lastMonth = time() - (3 * 4 * 7 * 24 * 60 * 60);
-            $sql = "DELETE FROM demand WHERE date_modif < :date";
-            $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute([':date' => date('Y-m-d', $lastMonth)]);
-            $stmt->closeCursor();
+            $app['registration-manager']->deleteOldDemand();
 
-            $basList = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['canadmin']));
             $models = $app['manipulator.user']->getRepository()->findModelOf($app['authentication']->getUser());
 
-            $currentUsr = null;
-            $table = ['users' => [], 'coll' => []];
+            $demands = $app['registration-manager']->getRepository()->getDemandsForUser(
+                $app['authentication']->getUser(),
+                array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['canadmin']))
+            );
 
-            foreach ($app['EM.native-query']->getUsersRegistrationDemand($basList) as $row) {
-                $user = $row[0];
+            $currentUsr = null;
+            $table = ['user' => [], 'demand' => []];
+
+            foreach ($demands as $demand) {
+                $user = $demand->getUser();
 
                 if ($user->getId() !== $currentUsr) {
                     $currentUsr = $user->getId();
-                    $table['users'][$currentUsr] = [
-                        'user' => $user,
-                        'date_demand' => $row['date_demand'],
-                    ];
+                    $table['user'][$user->getId()] = $user;
                 }
 
-                if (!isset($table['coll'][$user->getId()])) {
-                    $table['coll'][$user->getId()] = [];
+                if (!isset($table['demand'][$user->getId()])) {
+                    $table['demand'][$user->getId()] = [];
                 }
 
-                if (!in_array($row['base_demand'], $table['coll'][$user->getId()])) {
-                    $table['coll'][$user->getId()][] = $row['base_demand'];
+                if (!array_key_exists($demand->getBaseId(), $table['demand'][$user->getId()][$demand->getBaseId()])) {
+                    $table['demand'][$user->getId()][$demand->getBaseId()] = $demand;
                 }
             }
-
-            $stmt->closeCursor();
 
             return $app['twig']->render('admin/user/demand.html.twig', [
                 'table'  => $table,
@@ -395,7 +390,6 @@ class Users implements ControllerProviderInterface
         })->bind('users_display_demands');
 
         $controllers->post('/demands/', function (Application $app, Request $request) {
-
             $templates = $deny = $accept = $options = [];
 
             foreach ($request->request->get('template', []) as $tmp) {
@@ -458,27 +452,13 @@ class Users implements ControllerProviderInterface
                         $done[$usr][$base_id] = true;
                     }
 
-                    $sql = "
-                    DELETE FROM demand
-                    WHERE usr_id = :usr_id
-                    AND (base_id = " . implode(' OR base_id = ', $base_ids) . ")";
-
-                    $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-                    $stmt->execute([':usr_id' => $usr]);
-                    $stmt->closeCursor();
+                    $app['registration-manager']->getRepository()->deleteUserDemands($user, $base_ids);
                 }
-
-                $sql = "
-                UPDATE demand SET en_cours=0, refuser=1, date_modif=now()
-                WHERE usr_id = :usr_id
-                AND base_id = :base_id";
-
-                $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
 
                 foreach ($deny as $usr => $bases) {
                     $cache_to_update[$usr] = true;
                     foreach ($bases as $bas) {
-                        $stmt->execute([':usr_id'  => $usr, ':base_id' => $bas]);
+                        $app['registration-manager']->rejectDemand($usr, $bas);
 
                         if (!isset($done[$usr])) {
                             $done[$usr] = [];
@@ -488,36 +468,18 @@ class Users implements ControllerProviderInterface
                     }
                 }
 
-                $stmt->closeCursor();
-
                 foreach ($accept as $usr => $bases) {
                     $user = $app['manipulator.user']->getRepository()->find($usr);
                     $cache_to_update[$usr] = true;
 
                     foreach ($bases as $bas) {
-                        $app['acl']->get($user)->give_access_to_sbas([\phrasea::sbasFromBas($app, $bas)]);
-
-                        $rights = [
-                            'canputinalbum'   => '1',
-                            'candwnldhd'      => ($options[$usr][$bas]['HD'] ? '1' : '0'),
-                            'nowatermark'     => ($options[$usr][$bas]['WM'] ? '0' : '1'),
-                            'candwnldpreview' => '1',
-                            'actif'           => '1',
-                        ];
-
-                        $app['acl']->get($user)->give_access_to_base([$bas]);
-                        $app['acl']->get($user)->update_rights_to_base($bas, $rights);
-
+                        $collection = \collection::get_from_base_id($app, $bas);
                         if (!isset($done[$usr])) {
                             $done[$usr] = [];
                         }
-
                         $done[$usr][$bas] = true;
 
-                        $sql = "DELETE FROM demand WHERE usr_id = :usr_id AND base_id = :base_id";
-                        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-                        $stmt->execute([':usr_id'  => $usr, ':base_id' => $bas]);
-                        $stmt->closeCursor();
+                        $app['registration-manager']->acceptDemand($user, $collection, $options[$usr][$bas]['HD'], $options[$usr][$bas]['WM']);
                     }
                 }
 

@@ -47,10 +47,44 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetAccountAccess()
     {
+        $data = [
+            [
+                'config' => [
+                    'db-name'       => 'a_db_name',
+                    'cgu'           => null,
+                    'cgu-release'   => null,
+                    'can-register'  => false,
+                    'collections'   => [
+                        [
+                            'coll-name'     => 'a_coll_name',
+                            'can-register'  => false,
+                            'cgu'           => null,
+                            'cgu-release'   => null,
+                            'demand'        => null
+                        ],
+                        [
+                            'coll-name'     => 'an_other_coll_name',
+                            'can-register'  => false,
+                            'cgu'           => null,
+                            'cgu-release'   => null,
+                            'demand'        => null
+                        ]
+                    ],
+                ]
+            ]
+        ];
+
+        $service = $this->getMockBuilder('Alchemy\Phrasea\Registration\RegistrationManager')
+            ->setConstructorArgs([self::$DI['app']['EM'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']])
+            ->setMethods(['getRegistrationDemandsForUser'])
+            ->getMock();
+
+        $service->expects($this->once())->method('getRegistrationDemandsForUser')->will($this->returnValue($data));
+
+        self::$DI['app']['registration-manager'] = $service;
         self::$DI['client']->request('GET', '/account/access/');
 
         $response = self::$DI['client']->getResponse();
-
         $this->assertTrue($response->isOk());
     }
 
@@ -303,11 +337,10 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('minet', self::$DI['app']['authentication']->getUser()->getLastName());
 
-        $sql = 'SELECT base_id FROM demand WHERE usr_id = :usr_id AND en_cours="1" ';
-        $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => self::$DI['app']['authentication']->getUser()->getId()]);
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $rs = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\RegistrationDemand')->findBy([
+            'user' => self::$DI['app']['authentication']->getUser(),
+            'pending' => true
+        ]);
 
         $this->assertCount(count($bases), $rs);
     }

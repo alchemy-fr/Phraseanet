@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Form\Constraint\NewLogin;
+use Alchemy\Phrasea\Registration\RegistrationManager;
 use Alchemy\Phrasea\Model\Entities\User;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
@@ -26,19 +27,7 @@ class RegistrationServiceProvider implements ServiceProviderInterface
         });
 
         $app['registration.enabled'] = $app->share(function (Application $app) {
-            require_once __DIR__ . '/../../../../classes/deprecated/inscript.api.php';
-
-            $bases = giveMeBases($app);
-
-            if ($bases) {
-                foreach ($bases as $base) {
-                    if ($base['inscript']) {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
+            return $app['registration-manager']->isRegistrationEnabled();
         });
 
         $app['registration.optional-fields'] = $app->share(function (Application $app) {
@@ -133,6 +122,10 @@ class RegistrationServiceProvider implements ServiceProviderInterface
                     ]
                 ],
             ];
+        });
+
+        $app['registration-manager'] = $app->share(function (Application $app) {
+            return new RegistrationManager($app['EM'], $app['phraseanet.appbox'], $app['acl']);
         });
     }
 

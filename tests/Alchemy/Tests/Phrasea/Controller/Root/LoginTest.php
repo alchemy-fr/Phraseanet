@@ -9,6 +9,7 @@ use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Authentication\ProvidersCollection;
+use Alchemy\Phrasea\Model\Entities\RegistrationDemand;
 use Alchemy\Phrasea\Model\Entities\User;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -36,7 +37,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             $sxml->caninscript = 1;
             $dom = new \DOMDocument();
             $dom->loadXML($sxml->asXML());
-
             self::$DI['collection']->set_prefs($dom);
         }
         if (null === self::$login) {
@@ -45,6 +45,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         if (null === self::$email) {
             self::$email = self::$DI['user']->getEmail();
         }
+        self::$DI['app']['registration.enabled'] = true;
     }
 
     public function tearDown()
@@ -208,7 +209,13 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['user']->setMailLocked(true);
         $this->deleteRequest();
-        self::$DI['app']['phraseanet.appbox-register']->add_request(self::$DI['user'], self::$DI['collection']);
+        $demand = new RegistrationDemand();
+        $demand->setUser(self::$DI['user']);
+        $demand->setBaseId(self::$DI['collection']->get_base_id());
+
+        self::$DI['app']['EM']->persist($demand);
+        self::$DI['app']['EM']->flush();
+
         self::$DI['client']->request('GET', '/login/register-confirm/', ['code'    => $token]);
         $response = self::$DI['client']->getResponse();
 
@@ -470,7 +477,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetRegister($type, $message)
     {
-        self::$DI['app']['registration.enabled'] = true;
         $this->logout(self::$DI['app']);
         self::$DI['app']->addFlash($type, $message);
         $crawler = self::$DI['client']->request('GET', '/login/register-classic/');
@@ -483,7 +489,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testGetRegisterWithRegisterIdBindDataToForm()
     {
-        self::$DI['app']['registration.enabled'] = true;
         $this->logout(self::$DI['app']);
 
         $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
@@ -540,6 +545,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testPostRegisterbadArguments($parameters, $extraParameters, $errors)
     {
+        $this->enableTOU();
         self::$DI['app']['registration.enabled'] = true;
         self::$DI['app']['registration.fields'] = $extraParameters;
 
@@ -572,6 +578,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->logout(self::$DI['app']);
         $crawler = self::$DI['client']->request('POST', '/login/register-classic/');
+
         $this->assertFalse(self::$DI['client']->getResponse()->isRedirect());
         $this->assertFormOrFlashError($crawler, self::$DI['app']['conf']->get(['registry', 'registration', 'auto-select-collections']) ? 6 : 7);
     }
@@ -814,6 +821,13 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     {
         self::$DI['app']['registration.fields'] = [];
         $this->logout(self::$DI['app']);
+
+        $managerMock = $this->getMockBuilder('Alchemy\Phrasea\Registration\RegistrationManager')
+            ->setConstructorArgs([self::$DI['app']['EM'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']])
+            ->setMethods(['getRepository'])
+            ->getMock();
+        $managerMock->expects($this->any())->method('getRepository')->will($this->returnValue(self::$DI['app']['registration-manager']->getRepository()));
+        self::$DI['app']['registration-manager'] = $managerMock;
 
         $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $this->addProvider('provider-test', $provider);
@@ -1454,6 +1468,13 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAuthenticateProviderCallbackAlreadyBound()
     {
+        $managerMock = $this->getMockBuilder('Alchemy\Phrasea\Registration\RegistrationManager')
+            ->setConstructorArgs([self::$DI['app']['EM'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']])
+            ->setMethods(['getRepository'])
+            ->getMock();
+        $managerMock->expects($this->any())->method('getRepository')->will($this->returnValue(self::$DI['app']['registration-manager']->getRepository()));
+        self::$DI['app']['registration-manager'] = $managerMock;
+
         $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $this->addProvider('provider-test', $provider);
 
@@ -1626,8 +1647,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             ->method('isEnabled')
             ->will($this->returnValue(false));
 
-        self::$DI['app']['registration.enabled'] = true;
-
         $this->logout(self::$DI['app']);
         self::$DI['client']->request('GET', '/login/provider/provider-test/callback/');
 
@@ -1778,10 +1797,9 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
      */
     private function deleteRequest()
     {
-        $sql = "DELETE FROM demand WHERE usr_id = :usr_id";
-        $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => self::$DI['user']->getId()]);
-        $stmt->closeCursor();
+        $query = self::$DI['app']['EM']->createQuery('DELETE FROM Alchemy\Phrasea\Model\Entities\RegistrationDemand d WHERE d.user=?1');
+        $query->setParameter(1, self::$DI['user']->getId());
+        $query->execute();
     }
 
     /**

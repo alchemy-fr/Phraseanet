@@ -428,7 +428,6 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         ]);
 
         self::$DI['app']['phraseanet.appbox'] = $appbox;
-
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 

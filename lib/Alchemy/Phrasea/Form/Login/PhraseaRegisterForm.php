@@ -72,39 +72,22 @@ class PhraseaRegisterForm extends AbstractType
 
         $builder->add('provider-id', 'hidden');
 
-        require_once $this->app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
         $choices = [];
         $baseIds = [];
 
-        foreach (\giveMeBases($this->app) as $sbas_id => $baseInsc) {
-            if (($baseInsc['CollsCGU'] || $baseInsc['Colls']) && $baseInsc['inscript']) {
-                if ($baseInsc['Colls']) {
-                    foreach ($baseInsc['Colls'] as  $collId => $collName) {
-                        $baseId = \phrasea::baseFromColl($sbas_id, $collId, $this->app);
-                        $sbasName= \phrasea::sbas_names($sbas_id, $this->app);
-
-                        if (!isset($choices[$sbasName])) {
-                            $choices[$sbasName] = [];
-                        }
-
-                        $choices[$sbasName][$baseId] = \phrasea::bas_labels($baseId, $this->app);
-                        $baseIds[] = $baseId;
-                    }
+        foreach ($this->app['registration-manager']->getRegistrationInformations() as $baseInfo) {
+            $dbName = $baseInfo['config']['db-name'];
+            foreach ($baseInfo['config']['collections'] as $baseId => $collInfo) {
+                if (false === $collInfo['can-register']) {
+                    continue;
                 }
 
-                if ($baseInsc['CollsCGU']) {
-                    foreach ($baseInsc['CollsCGU'] as  $collId => $collName) {
-                        $baseId = \phrasea::baseFromColl($sbas_id, $collId, $this->app);
-                        $sbasName= \phrasea::sbas_names($sbas_id, $this->app);
-
-                        if (!isset($choices[$sbasName])) {
-                            $choices[$sbasName] = [];
-                        }
-
-                        $choices[$sbasName][$baseId] = \phrasea::bas_labels($baseId, $this->app);
-                        $baseIds[] = $baseId;
-                    }
+                if (!isset($choices[$dbName])) {
+                    $choices[$dbName] = [];
                 }
+
+                $choices[$dbName][$baseId] = \phrasea::bas_labels($baseId, $this->app);
+                $baseIds[] = $baseId;
             }
         }
 
