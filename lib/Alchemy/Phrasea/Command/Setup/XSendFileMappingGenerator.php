@@ -84,6 +84,8 @@ class XSendFileMappingGenerator extends Command
 
     private function extractPath(\appbox $appbox)
     {
+        $paths = array();
+
         foreach ($appbox->get_databoxes() as $databox) {
             $paths[] = (string) $databox->get_sxml_structure()->path;
             foreach ($databox->get_subdef_structure() as $group => $subdefs) {
