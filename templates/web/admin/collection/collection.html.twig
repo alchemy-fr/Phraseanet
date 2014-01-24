@@ -123,7 +123,7 @@
     </form>
 
     <form style="display:inline; margin:0;" method="post" action="{{ path('admin_collection_empty', { 'bas_id' : bas_id }) }}">
-        <button type="button" class="btn confirm submiter" data-confirm-msg="{{ 'admin::base:collection: etes vous sur de vider la collection ?' | trans }}">
+        <button type="button" class="btn confirm submiter reload" data-confirm-msg="{{ 'admin::base:collection: etes vous sur de vider la collection ?' | trans }}">
             <img src="/skins/icons/trash.png" />
             {{ 'admin::base:collection: vider la collection' | trans }}
         </button>
@@ -331,7 +331,7 @@
                 success: function(datas) {
                     if(datas.success) {
                         if(submitLink.hasClass('reload')) {
-                            reloadTree('base:{{ collection.get_sbas_id() }}', true);
+                            reloadTree('collection:{{ collection.get_base_id() }}', true);
                         } else if(submitLink.hasClass('reload-tree')) {
                             reloadTree('bases:bases', true);
                         }

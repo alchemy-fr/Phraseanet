@@ -22,22 +22,22 @@
         <title>{{ subject }}</title>
     </head>
     <body style="margin:0;padding:0;background-color:#f2f2f2;">
-        <table width="100%" bgcolor="#f2f2f2;" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0; width:100% !important; line-height: 100% !important;background-color:#f2f2f2;">
+        <table width="100%" bgcolor="#f2f2f2;" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0; width:100% !important; line-height: 120% !important;background-color:#f2f2f2;">
             <tr>
-                <td height="40" valign="center" align="center" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:12px; font-weight:normal; color:#999999;line-height:20px;">
+                <td height="40" valign="center" align="center" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:12px; font-weight:normal; color:#999999;line-height:15px;">
                     {{ 'Si cet email contient des liens non cliquables, copiez/collez ces liens dans votre navigateur.' | trans }}
                 </td>
             </tr>
             <tr>
                 <td valign="center" align="center">
                     <!-- Wrapper Table: to control the width and the background color consistently, instead of setting attributes on the body tag. -->
-                    <table width="90%" bgcolor="#ffffff;" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0;  width:90% !important; line-height: 100% !important;background-color:#ffffff;">
+                    <table width="90%" bgcolor="#ffffff;" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0;  width:90% !important; line-height: 120% !important;background-color:#ffffff;">
                         <tr>
                             <td style="border-bottom: 1px solid #f2f2f2;">
                                 <!-- Header table -->
                                 <table width="80%" cellpadding="0" cellspacing="0" border="0" align="center" style="width:80% !important;">
                                     <tr>
-                                        <td height="180" valign="center" align="center" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:22px; font-weight:normal; color:#000;">
+                                        <td height="180" valign="center" align="center" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:22px;  line-height:27px; font-weight:normal; color:#000;">
                                             {% if logoUrl is not none %}
                                                 <img src="{{ logoUrl }}" alt="{{ logoText }}" title="{{ logoText }}" height="180" style="display:block; outline:none; text-decoration:none; -ms-interpolation-mode: bicubic;" />
                                             {% else %}
@@ -50,7 +50,7 @@
                                 <!-- Subject table -->
                                 <table width="90%" cellpadding="0" cellspacing="0" border="0" align="center" style="width:90% !important;">
                                     <tr style="background-color:#a6aab0">
-                                        <td height="50" valign="center" align="center" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:16px; font-weight:bold; color:#ffffff;">
+                                        <td height="50" valign="center" align="center" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:16px;  line-height:19px; font-weight:bold; color:#ffffff;">
                                             {{ subject }}
                                         </td>
                                     </tr>
@@ -66,7 +66,7 @@
                                                     <td height="15" valign="center" align="center" style="font-size:0px;"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td height="115" valign="center" align="left" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:15px; color:#999999;">
+                                                    <td height="115" valign="center" align="left" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:15px; line-height:18px; color:#999999;">
                                                         {% if senderName is not none and senderMail is not none %}
                                                             {{ senderName }} - <a href="mailto:{{ senderMail }}" target="_blank" style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; cursor:pointer;">
                                                             <span style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; cursor:pointer;">{{ senderMail }}</span></a><br/>
@@ -105,7 +105,7 @@
                                     {% endif %}
                                     {% if expiration is not none %}
                                     <tr>
-                                        <td height="60" valign="center" align="center" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:13px; color:#999999;">
+                                        <td height="60" valign="center" align="center" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:13px; line-height:16px; color:#999999;">
                                             Ce lien est valable jusqu'au {{ app['date-formatter'].getDate(expiration) }} {{ app['date-formatter'].getTime(expiration) }}
                                         </td>
                                     </tr>
@@ -124,7 +124,7 @@
                 </td>
             </tr>
             <tr>
-                <td height="50" valign="center" align="center" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:12px; color:#999999;">
+                <td height="50" valign="center" align="center" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:12px; line-height: 15px; color:#999999;">
                     {{ 'Message automatique de Phraseanet' | trans }}<br />
                     {% set link %}
                     <a href="{{ phraseanetURL }}" target="_blank" style="font-weight:bold; cursor:pointer; color:#999999;">
