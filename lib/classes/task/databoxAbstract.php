@@ -82,7 +82,7 @@ abstract class task_databoxAbstract extends task_abstract
                 }
 
                 $this->sbas_id = (int) $row['sbas_id'];
-                $this->log(sprintf('This task works now on sbasid=%s ', $this->sbas_id), self::LOG_INFO);
+                $this->log(sprintf('This task works now on sbasid=%s ', $this->sbas_id), self::LOG_DEBUG);
 
                 try {
                     // get the records to process
