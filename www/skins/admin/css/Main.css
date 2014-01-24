@@ -283,3 +283,12 @@ div.switch_right.unchecked {
   margin: 10px 0;
   line-height: 22px;
 }
+
+#tab_demandes .dl-horizontal dd {
+    word-break: break-all;
+    margin-left: 140px;
+}
+
+#tab_demandes .dl-horizontal dt {
+    width: 130px;
+}
