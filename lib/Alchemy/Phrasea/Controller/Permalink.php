@@ -25,134 +25,147 @@ class Permalink extends AbstractDelivery
 
         $controllers = $app['controllers_factory'];
 
-        $that = $this;
+        $controllers->get('/v1/{sbas_id}/{record_id}/caption/', 'controller.permalink:deliverCaption')
+                    ->assert('sbas_id', '\d+')->assert('record_id', '\d+')
+                    ->bind('permalinks_caption');
 
-        $retrieveRecord = function ($app, $databox, $token, $record_id, $subdef) {
-            if (in_array($subdef, [\databox_subdef::CLASS_PREVIEW, \databox_subdef::CLASS_THUMBNAIL]) && $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedItem')->isRecordInPublicFeed($app, $databox->get_sbas_id(), $record_id)) {
-                $record = $databox->get_record($record_id);
-            } else {
-                $record = \media_Permalink_Adapter::challenge_token($app, $databox, $token, $record_id, $subdef);
+        $controllers->get('/v1/{sbas_id}/{record_id}/{subdef}/', 'controller.permalink:deliverPermaview')
+                    ->bind('permalinks_permaview')
+                    ->assert('sbas_id', '\d+')
+                    ->assert('record_id', '\d+');
 
-                if (!($record instanceof \record_adapter)) {
-                    throw new NotFoundHttpException('Wrong token.');
+        $controllers->get('/v1/{label}/{sbas_id}/{record_id}/{token}/{subdef}/view/', 'controller.permalink:deliverPermaviewOldWay')
+                    ->bind('permalinks_permaview_old')
+                    ->assert('sbas_id', '\d+')
+                    ->assert('record_id', '\d+');
+
+        $controllers->get('/v1/{sbas_id}/{record_id}/{subdef}/{label}', 'controller.permalink:deliverPermalink')
+                    ->bind('permalinks_permalink')
+                    ->assert('sbas_id', '\d+')
+                    ->assert('record_id', '\d+');
+
+        $controllers->get('/v1/{label}/{sbas_id}/{record_id}/{token}/{subdef}/', 'controller.permalink:deliverPermalinkOldWay')
+                    ->bind('permalinks_permalink_old')
+                    ->assert('sbas_id', '\d+')
+                    ->assert('record_id', '\d+');
+
+        return $controllers;
+    }
+
+    public function deliverCaption(PhraseaApplication $app, Request $request, $sbas_id, $record_id)
+    {
+        $token = $request->query->get('token');
+
+        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
+
+        $record = $this->retrieveRecord($app, $databox, $token, $record_id, \databox_subdef::CLASS_THUMBNAIL);
+        if (null === $record) {
+            throw new NotFoundHttpException("Caption not found");
+        }
+        $caption = $record->get_caption();
+
+        return new Response($caption->serialize(\caption_record::SERIALIZE_JSON), 200, ["Content-Type" => 'application/json']);
+    }
+
+    public function deliverPermaview(PhraseaApplication $app, Request $request, $sbas_id, $record_id, $subdef)
+    {
+        return $this->doDeliverPermaview($sbas_id, $record_id, $request->query->get('token'), $subdef, $app);
+    }
+
+    public function deliverPermaviewOldWay(PhraseaApplication $app, $label, $sbas_id, $record_id, $token, $subdef)
+    {
+        return $this->doDeliverPermaview($sbas_id, $record_id, $token, $subdef, $app);
+    }
+
+    public function deliverPermalink(PhraseaApplication $app, Request $request, $sbas_id, $record_id, $subdef, $label)
+    {
+        return $this->doDeliverPermalink($app, $sbas_id, $record_id, $request->query->get('token'), $subdef);
+    }
+
+    public function deliverPermalinkOldWay(PhraseaApplication $app, $label, $sbas_id, $record_id, $token, $subdef)
+    {
+        return $this->doDeliverPermalink($app, $sbas_id, $record_id, $token, $subdef);
+    }
+
+    private function retrieveRecord($app, $databox, $token, $record_id, $subdef)
+    {
+        if (in_array($subdef, [\databox_subdef::CLASS_PREVIEW, \databox_subdef::CLASS_THUMBNAIL]) && $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedItem')->isRecordInPublicFeed($app, $databox->get_sbas_id(), $record_id)) {
+            $record = $databox->get_record($record_id);
+        } else {
+            $record = \media_Permalink_Adapter::challenge_token($app, $databox, $token, $record_id, $subdef);
+
+            if (! ($record instanceof \record_adapter)) {
+                throw new NotFoundHttpException('Wrong token.');
+            }
+        }
+
+        return $record;
+    }
+
+    private function doDeliverPermaview($sbas_id, $record_id, $token, $subdef, PhraseaApplication $app)
+    {
+        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
+
+        $record = $this->retrieveRecord($app, $databox, $token, $record_id, $subdef);
+
+        return $app['twig']->render('overview.html.twig', [
+            'subdef_name' => $subdef,
+            'module_name' => 'overview',
+            'module'      => 'overview',
+            'view'        => 'overview',
+            'record'      => $record,
+        ]);
+    }
+
+    private function doDeliverPermalink(PhraseaApplication $app, $sbas_id, $record_id, $token, $subdef)
+    {
+        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
+
+        $record = $this->retrieveRecord($app, $databox, $token, $record_id, $subdef);
+
+        $watermark = $stamp = false;
+
+        if ($app['authentication']->isAuthenticated()) {
+            $user = \User_Adapter::getInstance($app['authentication']->getUser()->get_id(), $app);
+
+            $watermark = !$app['acl']->get($user)->has_right_on_base($record->get_base_id(), 'nowatermark');
+
+            if ($watermark) {
+                $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
+
+                if (count($repository->findReceivedValidationElementsByRecord($record, $user)) > 0) {
+                    $watermark = false;
+                } elseif (count($repository->findReceivedElementsByRecord($record, $user)) > 0) {
+                    $watermark = false;
                 }
             }
-
-            return $record;
-        };
-
-        $deliverPermaview = function ($sbas_id, $record_id, $token, $subdef, PhraseaApplication $app) use ($retrieveRecord) {
-            $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
-
-            $record = $retrieveRecord($app, $databox, $token, $record_id, $subdef);
-
-            $params = [
-                'subdef_name' => $subdef
-                , 'module_name' => 'overview'
-                , 'module'      => 'overview'
-                , 'view'        => 'overview'
-                , 'record'      => $record
-            ];
-
-            return $app['twig']->render('overview.html.twig', $params);
-        };
-
-        $deliverPermalink = function (PhraseaApplication $app, $sbas_id, $record_id, $token, $subdef) use ($that, $retrieveRecord) {
-            $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
-
-            $record = $retrieveRecord($app, $databox, $token, $record_id, $subdef);
-
-            $watermark = $stamp = false;
-
-            if ($app['authentication']->isAuthenticated()) {
-                $user = \User_Adapter::getInstance($app['authentication']->getUser()->get_id(), $app);
-
-                $watermark = !$app['acl']->get($user)->has_right_on_base($record->get_base_id(), 'nowatermark');
-
-                if ($watermark) {
-
-                    $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
-
-                    if (count($repository->findReceivedValidationElementsByRecord($record, $user)) > 0) {
-                        $watermark = false;
-                    } elseif (count($repository->findReceivedElementsByRecord($record, $user)) > 0) {
-                        $watermark = false;
-                    }
-                }
-                $response = $that->deliverContent($app['request'], $record, $subdef, $watermark, $stamp, $app);
-
-                $linkToCaption = $app->url("permalinks_caption", ['sbas_id' => $sbas_id, 'record_id' => $record_id, 'token' => $token]);
-                $response->headers->set('Link', $linkToCaption);
-
-                return $response;
-            } else {
-                $collection = \collection::get_from_base_id($app, $record->get_base_id());
-                switch ($collection->get_pub_wm()) {
-                    default:
-                    case 'none':
-                        $watermark = false;
-                        break;
-                    case 'stamp':
-                        $stamp = true;
-                        break;
-                    case 'wm':
-                        $watermark = false;
-                        break;
-                }
-            }
-
-            $response = $that->deliverContent($app['request'], $record, $subdef, $watermark, $stamp, $app);
+            $response = $this->deliverContent($app['request'], $record, $subdef, $watermark, $stamp, $app);
 
             $linkToCaption = $app->url("permalinks_caption", ['sbas_id' => $sbas_id, 'record_id' => $record_id, 'token' => $token]);
             $response->headers->set('Link', $linkToCaption);
 
             return $response;
-        };
+        }
 
-        $controllers->get('/v1/{sbas_id}/{record_id}/caption/', function (PhraseaApplication $app, Request $request, $sbas_id, $record_id) use ($retrieveRecord) {
-            $token = $request->query->get('token');
+        $collection = \collection::get_from_base_id($app, $record->get_base_id());
+        switch ($collection->get_pub_wm()) {
+            default:
+            case 'none':
+                $watermark = false;
+                break;
+            case 'stamp':
+                $stamp = true;
+                break;
+            case 'wm':
+                $watermark = false;
+                break;
+        }
 
-            $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
-            $record = $retrieveRecord($app, $databox, $token, $record_id, \databox_subdef::CLASS_THUMBNAIL);
-            $caption = $record->get_caption();
+        $response = $this->deliverContent($app['request'], $record, $subdef, $watermark, $stamp, $app);
 
-            return new Response($caption->serialize(\caption_record::SERIALIZE_JSON), 200, ["Content-Type" => 'application/json']);
-        })
-            ->assert('sbas_id', '\d+')->assert('record_id', '\d+')
-            ->bind('permalinks_caption');
+        $linkToCaption = $app->url("permalinks_caption", ['sbas_id' => $sbas_id, 'record_id' => $record_id, 'token' => $token]);
+        $response->headers->set('Link', $linkToCaption);
 
-        $controllers->get('/v1/{sbas_id}/{record_id}/{subdef}/', function (PhraseaApplication $app, Request $request, $sbas_id, $record_id, $subdef) use ($deliverPermaview) {
-            $token = $request->query->get('token');
-
-            return $deliverPermaview($sbas_id, $record_id, $token, $subdef, $app);
-        })
-            ->bind('permalinks_permaview')
-            ->assert('sbas_id', '\d+')
-            ->assert('record_id', '\d+');
-
-        $controllers->get('/v1/{label}/{sbas_id}/{record_id}/{token}/{subdef}/view/', function (PhraseaApplication $app, $label, $sbas_id, $record_id, $token, $subdef) use ($deliverPermaview) {
-            return $deliverPermaview($sbas_id, $record_id, $token, $subdef, $app);
-        })
-            ->bind('permalinks_permaview_old')
-            ->assert('sbas_id', '\d+')
-            ->assert('record_id', '\d+');
-
-        $controllers->get('/v1/{sbas_id}/{record_id}/{subdef}/{label}', function (PhraseaApplication $app, Request $request, $sbas_id, $record_id, $subdef, $label) use ($deliverPermalink) {
-            $token = $request->query->get('token');
-
-            return $deliverPermalink($app, $sbas_id, $record_id, $token, $subdef);
-        })
-            ->bind('permalinks_permalink')
-            ->assert('sbas_id', '\d+')
-            ->assert('record_id', '\d+');
-
-        $controllers->get('/v1/{label}/{sbas_id}/{record_id}/{token}/{subdef}/', function (PhraseaApplication $app, $label, $sbas_id, $record_id, $token, $subdef) use ($deliverPermalink) {
-            return $deliverPermalink($app, $sbas_id, $record_id, $token, $subdef);
-        })
-            ->bind('permalinks_permalink_old')
-            ->assert('sbas_id', '\d+')
-            ->assert('record_id', '\d+');
-
-        return $controllers;
+        return $response;
     }
 }

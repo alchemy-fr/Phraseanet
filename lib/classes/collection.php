@@ -550,7 +550,7 @@ class collection implements cache_cacheableInterface
     {
         $sql = "SELECT GREATEST(0, MAX(ord)) + 1 AS ord FROM bas WHERE sbas_id = :sbas_id";
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':sbas_id' => $sbas_id));
+        $stmt->execute([':sbas_id' => $sbas_id]);
         $ord = $stmt->fetch(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -648,11 +648,11 @@ class collection implements cache_cacheableInterface
             VALUES
             (null, 1, :server_coll_id, :sbas_id, '', :ord)";
         $stmt = $databox->get_appbox()->get_connection()->prepare($sql);
-        $stmt->execute(array(
+        $stmt->execute([
             ':server_coll_id' => $coll_id,
             ':sbas_id'        => $databox->get_sbas_id(),
             ':ord'            => self::getNewOrder($databox->get_appbox()->get_connection(), $databox->get_sbas_id()),
-        ));
+        ]);
         $stmt->closeCursor();
 
         $new_bas = $databox->get_appbox()->get_connection()->lastInsertId();

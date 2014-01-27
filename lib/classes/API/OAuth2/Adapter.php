@@ -787,7 +787,7 @@ class API_OAuth2_Adapter extends OAuth2
     protected function checkUserCredentials($client_id, $username, $password)
     {
         try {
-            $application = API_OAuth2_Application::load_from_client_id($this->app, $client_id);
+            $this->setClient(API_OAuth2_Application::load_from_client_id($this->app, $client_id));
 
             $usr_id = $this->app['auth.native']->getUsrId($username, $password, Request::createFromGlobals());
 
@@ -795,13 +795,11 @@ class API_OAuth2_Adapter extends OAuth2
                 return false;
             }
 
-            $user = \User_Adapter::getInstance($usr_id, $this->app);
-
-            $account = API_OAuth2_Account::load_with_user($this->app, $application, $user);
+            $account = $this->updateAccount($usr_id);
 
             return [
-                'redirect_uri' => $application->get_redirect_uri()
-                , 'client_id'    => $application->get_client_id()
+                'redirect_uri' => $this->client->get_redirect_uri()
+                , 'client_id'    => $this->client->get_client_id()
                 , 'account_id'   => $account->get_id()
             ];
         } catch (AccountLockedException $e) {

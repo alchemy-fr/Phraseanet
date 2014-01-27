@@ -37,11 +37,11 @@ class RedisSessionHandler implements \SessionHandlerInterface
      *
      * @throws \InvalidArgumentException When unsupported options are passed
      */
-    public function __construct(\Redis $redis, array $options = array())
+    public function __construct(\Redis $redis, array $options = [])
     {
         $this->redis = $redis;
 
-        if ($diff = array_diff(array_keys($options), array('prefix', 'expiretime'))) {
+        if ($diff = array_diff(array_keys($options), ['prefix', 'expiretime'])) {
             throw new \InvalidArgumentException(sprintf(
                 'The following options are not supported "%s"', implode(', ', $diff)
             ));

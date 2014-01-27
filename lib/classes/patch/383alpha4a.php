@@ -18,7 +18,7 @@ class patch_383alpha4a implements patchInterface
     private $release = '3.8.3-alpha.4';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -89,14 +89,14 @@ class patch_383alpha4a implements patchInterface
             $em->getConnection()->executeQuery(sprintf('UPDATE usr SET usr_login="%s" WHERE usr_id=%d', $row['login_utf8'], $row['usr_id']));
         }
 
-        foreach (array(
+        foreach ([
                      // drop index
                      "ALTER TABLE usr DROP INDEX usr_login;",
                      // change field type
                      "ALTER TABLE usr MODIFY usr_login VARCHAR(128) CHARACTER SET utf8 COLLATE utf8_bin;",
                      // recreate index
                      "CREATE UNIQUE INDEX usr_login ON usr (usr_login);"
-                 ) as $sql) {
+                 ] as $sql) {
             $em->getConnection()->executeQuery($sql);
         }
 
