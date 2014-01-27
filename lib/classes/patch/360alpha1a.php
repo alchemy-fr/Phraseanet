@@ -214,7 +214,7 @@ class patch_360alpha1a implements patchInterface
         $stmt->execute();
         $stmt->closeCursor();
 
-        $sql = 'SELECT usr_id, basket_id, p.id as participant_id
+        $sql = 'SELECT user_id, basket_id, p.id as participant_id
                 FROM ValidationParticipants p, ValidationSessions s
                 WHERE p.ValidationSession_Id = s.id';
 
@@ -236,7 +236,7 @@ class patch_360alpha1a implements patchInterface
             $params = [
                 ':participant_id' => $row['participant_id'],
                 ':basket_id'      => $row['basket_id'],
-                ':usr_id'         => $row['usr_id'],
+                ':usr_id'         => $row['user_id'],
             ];
             $stmt->execute($params);
         }

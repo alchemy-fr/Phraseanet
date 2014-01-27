@@ -67,14 +67,14 @@ class User
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=16, nullable=true)
+     * @ORM\Column(type="string", length=64, nullable=true)
      */
     private $nonce;
 
     /**
      * @ORM\Column(type="boolean", name="salted_password")
      */
-    private $saltedPassword = false;
+    private $saltedPassword = true;
 
     /**
      * @ORM\Column(type="string", length=64, name="first_name")

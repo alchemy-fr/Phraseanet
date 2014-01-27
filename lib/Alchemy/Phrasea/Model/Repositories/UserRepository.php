@@ -78,11 +78,10 @@ class UserRepository extends EntityRepository
     public function findRealUserByLogin($login)
     {
         $qb = $this->createQueryBuilder('u');
-
         $qb->where($qb->expr()->eq('u.login', $qb->expr()->literal($login)))
             ->andWhere($qb->expr()->isNotNull('u.email'))
             ->andWhere($qb->expr()->isNull('u.modelOf'))
-            ->andWhere($qb->expr()->eq('u.guest', $qb->expr()->literal('0')))
+            ->andWhere($qb->expr()->eq('u.guest', $qb->expr()->literal(false)))
             ->andWhere($qb->expr()->eq('u.deleted', $qb->expr()->literal(false)));
 
         return $qb->getQuery()->getOneOrNullResult();

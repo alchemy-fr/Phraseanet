@@ -54,7 +54,6 @@ class NativeAuthentication implements PasswordAuthenticationInterface
         if (false === $user->isSaltedPassword()) {
             // we need a quick update and continue
             if ($this->oldEncoder->isPasswordValid($user->getPassword(), $password, $user->getNonce())) {
-                $user->setSaltedPassword(true);
                 $this->userManipulator->setPassword($user, $password);
             }
         }

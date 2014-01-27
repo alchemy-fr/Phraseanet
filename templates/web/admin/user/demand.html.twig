@@ -241,7 +241,7 @@
                                     <span style="font-weight:bold;font-size:14px;word-wrap: break-word;">
                                         {{ basId| bas_labels(app) }}
                                     </span>
-                                    {% set btn_value = row['usr_id'] ~ "_" ~  basId %}
+                                    {% set btn_value = user.getId() ~ "_" ~  basId %}
                                     <div class="btn-group btn-single-action" style="margin:auto auto 5px 0;">
                                         <button data-event="deny" value="{{ btn_value }}" type="button" name="deny[]" class="btn deny-checker" title="{{ 'admin:: refuser l\'acces' | trans }}">
                                             <img title="{{ 'admin:: refuser l\'acces' | trans }}" src='/skins/icons/delete.gif' />

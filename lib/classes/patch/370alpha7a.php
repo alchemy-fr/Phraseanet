@@ -88,11 +88,9 @@ class patch_370alpha7a implements patchInterface
         $i = 0;
 
         foreach ($rs as $row) {
-
             $filePath = $app['root.path'] . '/tmp/lazaret/' . $row['filepath'];
 
             if (file_exists($filePath)) {
-
                 $spec = new ImageSpec();
 
                 $spec->setResizeMode(ImageSpec::RESIZE_MODE_INBOUND_FIXEDRATIO);

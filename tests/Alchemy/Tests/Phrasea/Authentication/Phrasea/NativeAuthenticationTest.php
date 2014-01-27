@@ -181,7 +181,6 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
         $user->expects($this->any())->method('isSaltedPassword')->will($this->returnValue(false));
         $user->expects($this->any())->method('getPassword')->will($this->returnValue($encoded));
         $user->expects($this->any())->method('getNonce')->will($this->returnValue($nonce));
-        $user->expects($this->once())->method('setSaltedPassword')->with($this->equalTo(true));
 
         $manipulator = $this->getUserManipulatorMock($user);
 

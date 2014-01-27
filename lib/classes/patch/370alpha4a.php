@@ -68,7 +68,6 @@ class patch_370alpha4a implements patchInterface
         $tagBasename = new \Alchemy\Phrasea\Metadata\Tag\TfBasename();
 
         foreach ($rs as $row) {
-
             if (strpos(strtolower($row['src']), 'tf-parentdir') !== false) {
                 $update[] = ['id'  => $row['id'], 'src' => $tagDirname->getTagname()];
             }

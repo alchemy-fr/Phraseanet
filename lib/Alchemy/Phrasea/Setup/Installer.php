@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Setup;
 
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Tools\SchemaTool;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class Installer
 {

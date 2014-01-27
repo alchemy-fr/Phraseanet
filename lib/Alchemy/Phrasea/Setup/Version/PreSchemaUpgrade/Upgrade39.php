@@ -28,6 +28,8 @@ class Upgrade39 implements PreSchemaUpgradeInterface
     private $backupFeeds = false;
     private $migrateUsers = false;
 
+    private $tablesStatus;
+
     private static $users = [];
 
     /**
@@ -264,17 +266,18 @@ class Upgrade39 implements PreSchemaUpgradeInterface
         $em->getConnection()->beginTransaction();
         try {
             foreach ($tables as $tableName => $fields) {
+                if (false === $this->tableExists($em, $tableName)) {
+                    continue;
+                }
                 $this->doUpdateFields($em, $tableName, $fields);
             }
             $em->getConnection()->commit();
-            // restore indexes
-            $this->indexes($em, 'restore');
         } catch (\Exception $e) {
             $em->getConnection()->rollback();
-            // restore indexes
-            $this->indexes($em, 'restore');
             throw $e;
         }
+        // restore indexes
+        $this->indexes($em, 'restore');
     }
 
     /**
@@ -286,21 +289,21 @@ class Upgrade39 implements PreSchemaUpgradeInterface
     private function indexes(EntityManager $em, $action)
     {
         if ($action === 'drop') {
-            if ($this->indexExists($em, 'demand', 'PRIMARY')) {
+            if ($this->tableExists($em, 'demand') && $this->indexExists($em, 'demand', 'PRIMARY')) {
                 $em->getConnection()->executeQuery('ALTER TABLE demand DROP PRIMARY KEY');
             }
 
-            if ($this->indexExists($em, 'UsrListsContent', 'unique_usr_per_list')) {
+            if ($this->tableExists($em, 'UsrListsContent') && $this->indexExists($em, 'UsrListsContent', 'unique_usr_per_list')) {
                 $em->getConnection()->executeQuery('ALTER TABLE UsrListsContent DROP INDEX `unique_usr_per_list`');
             }
         }
 
         if ($action === 'restore') {
-            if (!$this->indexExists($em, 'demand', 'PRIMARY')) {
+            if ($this->tableExists($em, 'demand') && !$this->indexExists($em, 'demand', 'PRIMARY')) {
                 $em->getConnection()->executeQuery('ALTER TABLE demand ADD PRIMARY KEY (`usr_id`, `base_id`, `en_cours`);');
             }
 
-            if (!$this->indexExists($em, 'UsrListsContent', 'unique_usr_per_list')) {
+            if ($this->tableExists($em, 'UsrListsContent') && !$this->indexExists($em, 'UsrListsContent', 'unique_usr_per_list')) {
                 $em->getConnection()->executeQuery('ALTER TABLE UsrListsContent ADD INDEX `unique_usr_per_list` (`user_id`, `list_id`);');
             }
         }
@@ -426,6 +429,9 @@ class Upgrade39 implements PreSchemaUpgradeInterface
 
         $sql = 'ALTER TABLE %s CHANGE '.($direction === 'up' ? 'usr_id user_id' : 'user_id usr_id').' INT';
         foreach ($tables as $tableName) {
+            if (false === $this->tableExists($em, $tableName)) {
+                continue;
+            }
             $em->getConnection()->executeQuery(sprintf($sql, $tableName));
         }
     }
@@ -513,18 +519,51 @@ class Upgrade39 implements PreSchemaUpgradeInterface
         $em->getEventManager()->addEventSubscriber(new TimestampableListener());
     }
 
+    private function tableExists(EntityManager $em , $tableName)
+    {
+        if (null === $this->tablesStatus) {
+            $this->tablesStatus = array_map(function($row) {
+                return $row['Name'];
+            }, $em->createNativeQuery(
+                "SHOW TABLE STATUS",
+                new ResultSetMapping()
+            )->getResult());
+        }
+
+        return in_array($tableName, $this->tablesStatus);
+    }
+
+    private function hasNonceColumn(EntityManager $em)
+    {
+        return (Boolean) $em->createNativeQuery(
+            "SHOW FIELDS FROM usr WHERE Field = 'nonce';",
+            new ResultSetMapping()
+        )->getOneOrNullResult();
+    }
+
     /**
      * Sets user entity from usr table.
      */
     private function updateUsers(EntityManager $em, $conn)
     {
-        $sql = 'SELECT activite, adresse, create_db, canchgftpprofil, canchgprofil, ville,
+        if ($this->hasNonceColumn($em)) {
+            $sql = 'SELECT activite, adresse, create_db, canchgftpprofil, canchgprofil, ville,
                     societe, pays, usr_mail, fax, usr_prenom, geonameid, invite, fonction,
                     last_conn, lastModel, usr_nom, ldap_created, locale, usr_login,
                     mail_notifications, nonce, usr_password, push_list, mail_locked,
                     request_notifications, salted_password, usr_sexe, tel, timezone, cpostal, usr_creationdate,
                     usr_modificationdate
                 FROM usr';
+        } else {
+            $sql = 'SELECT activite, adresse, create_db, canchgftpprofil, canchgprofil, ville,
+                    societe, pays, usr_mail, fax, usr_prenom, geonameid, invite, fonction,
+                    last_conn, lastModel, usr_nom, ldap_created, locale, usr_login,
+                    mail_notifications, NULL as nonce, usr_password, push_list, mail_locked,
+                    request_notifications, "0" as salted_password, usr_sexe, tel, timezone, cpostal, usr_creationdate,
+                    usr_modificationdate
+                FROM usr';
+        }
+
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -536,9 +575,9 @@ class Upgrade39 implements PreSchemaUpgradeInterface
             $user = new User();
             $user->setActivity($row['activite']);
             $user->setAddress($row['adresse']);
-            $user->setAdmin(!!$row['create_db']);
-            $user->setCanChangeFtpProfil(!!$row['canchgftpprofil']);
-            $user->setCanChangeProfil(!!$row['canchgprofil']);
+            $user->setAdmin((Boolean) $row['create_db']);
+            $user->setCanChangeFtpProfil((Boolean) $row['canchgftpprofil']);
+            $user->setCanChangeProfil((Boolean) $row['canchgprofil']);
             $user->setCity($row['ville']);
             $user->setCompany($row['societe']);
             $user->setCountry((string) $row['pays']);
@@ -548,11 +587,11 @@ class Upgrade39 implements PreSchemaUpgradeInterface
             if ($row['geonameid'] > 0) {
                 $user->setGeonameId($row['geonameid']);
             }
-            $user->setGuest(!!$row['invite']);
+            $user->setGuest((Boolean) $row['invite']);
             $user->setJob($row['fonction']);
             $user->setLastConnection(new \DateTime($row['last_conn']));
             $user->setLastName($row['usr_nom']);
-            $user->setLdapCreated(!!$row['ldap_created']);
+            $user->setLdapCreated((Boolean) $row['ldap_created']);
             try {
                 $user->setLocale($row['locale']);
             } catch (\InvalidArgumentException $e ) {
@@ -565,13 +604,13 @@ class Upgrade39 implements PreSchemaUpgradeInterface
                 $user->setDeleted(true);
             }
 
-            $user->setMailLocked(!!$row['mail_locked']);
-            $user->setMailNotificationsActivated(!!$row['mail_notifications']);
+            $user->setMailLocked((Boolean) $row['mail_locked']);
+            $user->setMailNotificationsActivated((Boolean) $row['mail_notifications']);
             $user->setNonce($row['nonce']);
             $user->setPassword($row['usr_password']);
             $user->setPushList($row['push_list']);
-            $user->setRequestNotificationsActivated(!!$row['request_notifications']);
-            $user->setSaltedPassword(!!$row['salted_password']);
+            $user->setRequestNotificationsActivated((Boolean) $row['request_notifications']);
+            $user->setSaltedPassword((Boolean) $row['salted_password']);
 
             switch ($row['usr_sexe']) {
                 case 0:
