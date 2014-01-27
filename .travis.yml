@@ -12,14 +12,14 @@ services:
 before_script:
   - node --version
   - npm --version
-  - npm install bower mocha-phantomjs@">=2.0 <3.0" recess@">=1.1.0 <1.1.7" uglify-js -g
+  - travis_retry npm install bower mocha-phantomjs@">=2.0 <3.0" recess@">=1.1.0 <1.1.7" uglify-js -g
   - echo '' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
   - sh -c 'if [ $(php -r "echo PHP_MINOR_VERSION;") -le 4 ]; then echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;'
   - echo 'extension="redis.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/redis.ini
   - echo 'extension="memcache.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcache.ini
   - echo 'extension="memcached.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcached.ini
-  - composer self-update
-  - composer install --dev --prefer-source
+  - travis_retry composer self-update
+  - travis_retry composer install --dev --prefer-source
   - wget http://sphinxsearch.com/files/sphinx-2.0.6-release.tar.gz
   - tar xzf sphinx-2.0.6-release.tar.gz
   - sh -c "cd sphinx-2.0.6-release && wget http://snowball.tartarus.org/dist/libstemmer_c.tgz && tar xzf libstemmer_c.tgz && ./configure --with-libstemmer --with-iconv --with-mysql --enable-id64 --quiet && make -j --quiet && sudo make install"
@@ -40,15 +40,6 @@ before_script:
   - sh -c "cd imagick-3.1.0RC2 && phpize && ./configure --with-imagick=/usr/local && make -j && sudo make install"
   - echo "extension=imagick.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
 
-notifications:
-  irc:
-    channels:
-      - "irc.freenode.org#phrasea"
-    template:
-      - "%{repository_url} %{branch} by %{author} (%{commit}) : %{message}"
-      - "Build details: %{build_url}"
-    use_notice: true
-
 php:
   - 5.3
   - 5.4
@@ -56,7 +47,7 @@ php:
 
 script:
   - bin/developer system:uninstall
-  - bin/developer dependencies:all --prefer-source
+  - travis_retry bin/developer dependencies:all --prefer-source
   - sh -c " if [ '$SETUP_MODE' = 'update' ]; then
               cp hudson/connexion.inc config/;
               cp hudson/_GV.php config/;
