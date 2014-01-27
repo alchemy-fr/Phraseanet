@@ -68,11 +68,6 @@
                 <blockquote>{{ advice['sql'] }}</blockquote>
             {% endfor %}
         {% endif %}
-
-        <form action="{{ path('admin_databases_upgrade') }}" method="post" >
-            <input type="hidden" value="" name="upgrade" />
-            <input type="submit" class="btn btn-warning" value="{{ 'update::Verifier els tables' | trans }}" />
-        </form>
     </div>
 
     <div class="db_infos">
