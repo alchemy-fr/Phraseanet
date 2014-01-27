@@ -1044,7 +1044,7 @@ class databox extends base
     public function clear_logs()
     {
         foreach (array('log', 'log_colls', 'log_docs', 'log_search', 'log_view', 'log_thumb') as $table) {
-            $sql = 'TRUNCATE ' . $table;
+            $sql = 'DELETE FROM ' . $table;
             $stmt = $this->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
