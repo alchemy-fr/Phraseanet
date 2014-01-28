@@ -386,8 +386,6 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostDemands()
     {
-        $this->markTestSkipped();
-        return;
         $id = self::$DI['user_alt1']->getId();
         $baseId = self::$DI['collection']->get_base_id();
         $param = sprintf('%s_%s', $id, $baseId);

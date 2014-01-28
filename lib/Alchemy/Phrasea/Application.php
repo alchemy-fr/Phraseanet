@@ -72,7 +72,6 @@ use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
 use Alchemy\Phrasea\Controller\Utils\PathFileTest;
 use Alchemy\Phrasea\Controller\User\Notifications;
 use Alchemy\Phrasea\Controller\User\Preferences;
-use Alchemy\Phrasea\Core\CLIProvider\DoctrineMigrationServiceProvider;
 use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
 use Alchemy\Phrasea\Core\Event\Subscriber\LogoutSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
@@ -210,7 +209,6 @@ class Application extends SilexApplication
         $this->register(new BasketMiddlewareProvider());
 
         $this->register(new ACLServiceProvider());
-        $this->register(new DoctrineMigrationServiceProvider());
         $this->register(new AuthenticationManagerServiceProvider());
         $this->register(new BorderManagerServiceProvider());
         $this->register(new BrowserServiceProvider());

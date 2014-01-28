@@ -1033,10 +1033,6 @@ class User
      */
     public function getDisplayName(TranslatorInterface $translator = null)
     {
-        if ($this->isTemplate() && $translator) {
-            return $translator->trans('modele %name%', ['%name%' => $this->getLogin()]);
-        }
-
         if ($this->isTemplate()) {
             return $this->getLogin();
         }
@@ -1047,10 +1043,6 @@ class User
 
         if (trim($this->email) !== '') {
             return $this->email;
-        }
-
-        if ($translator) {
-            return $translator->trans('Unnamed user');
         }
 
         return 'Unnamed user';

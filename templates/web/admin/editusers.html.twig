@@ -131,7 +131,7 @@
               <select name="template">
                 <option value="">{{ 'boutton::choisir' | trans }}</option>
                 {% for template in templates %}
-                <option value="{{ template.getId() }}">{{ template.getDisplayName(app['translator']) }}</option>
+                    <option value="{{ template.getId() }}">{{ template.getLogin() }}</option>
                 {% endfor %}
               </select>
                <button class="btn" type='button' id='reset_rights'>{{ 'Delete all users rights' | trans }}</button>
