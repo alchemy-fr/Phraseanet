@@ -52,18 +52,6 @@ class DataboxesTest extends \PhraseanetAuthenticatedWebTestCase
     }
 
     /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Databases::databasesUpgrade
-     */
-    public function testPostUpgrade()
-    {
-        $this->setAdmin(true);
-
-        self::$DI['client']->request('POST', '/admin/databoxes/upgrade/');
-
-        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-    }
-
-    /**
      * @covers \Alchemy\Phrasea\Controller\Admin\Database::databaseMount
      */
     public function testMountBase()

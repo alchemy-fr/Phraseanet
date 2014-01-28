@@ -45,12 +45,6 @@ class Databoxes implements ControllerProviderInterface
                 $app['firewall']->requireAdmin();
             });
 
-        $controllers->post('/upgrade/', 'controller.admin.databoxes:databasesUpgrade')
-            ->bind('admin_databases_upgrade')
-            ->before(function (Request $request) use ($app) {
-                $app['firewall']->requireAdmin();
-            });
-
         return $controllers;
     }
 
@@ -261,34 +255,6 @@ class Databoxes implements ControllerProviderInterface
 
                 return $app->redirectPath('admin_databases', ['success' => 0, 'error' => 'mount-failed']);
             }
-        }
-    }
-
-    /**
-     * Upgrade all databases
-     *
-     * @param                   $app     Application $app
-     * @param                   $request Request $request
-     * @return RedirectResponse
-     */
-    public function databasesUpgrade(Application $app, Request $request)
-    {
-        $info = $app['task-manager.live-information']->getManager();
-        if (TaskManagerStatus::STATUS_STARTED === $info['actual']) {
-            return $app->redirectPath('admin_databases', ['success' => 0, 'error' => 'scheduler-started']);
-        }
-
-        try {
-            $upgrader = new \Setup_Upgrade($app);
-            $advices = $app['phraseanet.appbox']->forceUpgrade($upgrader, $app);
-
-            return $app->redirectPath('admin_databases', ['success' => 1, 'notice' => 'restart', 'advices' => $advices]);
-        } catch (\Exception_Setup_UpgradeAlreadyStarted $e) {
-            return $app->redirectPath('admin_databases', ['success' => 0, 'error' => 'already-started']);
-        } catch (\Exception_Setup_FixBadEmailAddresses $e) {
-            return $app->redirectPath('admin_databases', ['success' => 0, 'error' => 'bad-email']);
-        } catch (\Exception $e) {
-            return $app->redirectPath('admin_databases', ['success' => 0, 'error' => 'unknow']);
         }
     }
 }
