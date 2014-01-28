@@ -1,5 +1,6 @@
 <?php
 
+use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Symfony\Component\Yaml\Yaml;
 
 class caption_recordTest extends \PhraseanetTestCase
@@ -29,7 +30,7 @@ class caption_recordTest extends \PhraseanetTestCase
             }
         }
 
-        $xml = $this->object->serialize(\caption_record::SERIALIZE_XML);
+        $xml = self::$DI['app']['serializer.caption']->serialize($this->object, CaptionSerializer::SERIALIZE_XML);
 
         $sxe = simplexml_load_string($xml);
         $this->assertInstanceOf('SimpleXMLElement', $sxe);
@@ -66,7 +67,7 @@ class caption_recordTest extends \PhraseanetTestCase
             }
         }
 
-        $json = json_decode($this->object->serialize(\caption_record::SERIALIZE_JSON), true);
+        $json = json_decode(self::$DI['app']['serializer.caption']->serialize($this->object, CaptionSerializer::SERIALIZE_JSON), true);
 
         foreach (self::$DI['record_1']->get_caption()->get_fields() as $field) {
             if ($field->get_databox_field()->is_multi()) {
@@ -104,7 +105,7 @@ class caption_recordTest extends \PhraseanetTestCase
         }
 
         $parser = new Yaml();
-        $yaml = $parser->parse($this->object->serialize(\caption_record::SERIALIZE_YAML));
+        $yaml = $parser->parse(self::$DI['app']['serializer.caption']->serialize($this->object, CaptionSerializer::SERIALIZE_YAML));
 
         foreach (self::$DI['record_1']->get_caption()->get_fields() as $field) {
             if ($field->get_databox_field()->is_multi()) {

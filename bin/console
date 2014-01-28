@@ -11,7 +11,7 @@
 
 namespace KonsoleKommander;
 
-use Alchemy\Phrasea\Core\Version;
+use Alchemy\Phrasea\Command\SearchEngine\IndexFull;
 use Alchemy\Phrasea\Command\BuildMissingSubdefs;
 use Alchemy\Phrasea\Command\CreateCollection;
 use Alchemy\Phrasea\Command\MailTest;
@@ -19,6 +19,7 @@ use Alchemy\Phrasea\Command\Compile\Configuration;
 use Alchemy\Phrasea\Command\RecordAdd;
 use Alchemy\Phrasea\Command\RescanTechnicalDatas;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
+use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Command\Plugin\AddPlugin;
 use Alchemy\Phrasea\Command\Plugin\RemovePlugin;
@@ -106,6 +107,10 @@ $cli->command(new RemovePlugin());
 $cli->command(new Configuration());
 $cli->command(new XSendFileConfigurationDumper());
 $cli->command(new XSendFileMappingGenerator());
+
+if ($cli['phraseanet.SE']->getName() === 'ElasticSearch') {
+    $cli->command(new IndexFull('searchengine:index'));
+}
 
 $cli->loadPlugins();
 

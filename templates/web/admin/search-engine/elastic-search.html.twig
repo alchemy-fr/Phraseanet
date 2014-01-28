@@ -1,0 +1,11 @@
+<h1>{{ 'ElasticSearch configuration' | trans }}</h1>
+
+<form method="post" action="{{ path('admin_searchengine_post') }}">
+    <div>{{ 'ElasticSearch connection configuration' | trans }}</div>
+
+    <div>{{ 'ElasticSearch server' | trans }}</div>
+    <input type="text" name="host" value="{{ configuration['host'] | default('localhost') }}"/>
+    <input type="text" name="port" value="{{ configuration['port'] | default('9200') }}"/>
+
+    <button type="submit" class="btn btn-warning" >{{ 'boutton::valider' | trans }}</button>
+</form>

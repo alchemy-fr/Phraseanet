@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessFTPReceiver;
 use Alchemy\Phrasea\TaskManager\Editor\FtpEditor;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
@@ -184,19 +185,19 @@ class FtpJob extends AbstractJob
                     $sbas_id = \phrasea::sbasFromBas($app, $base_id);
                     $record = new \record_adapter($app, $sbas_id, $record_id);
 
-                    $sdcaption = $record->get_caption()->serialize(\caption_record::SERIALIZE_XML, $exportElement->isBusinessfields());
+                    $sdcaption = $app['serializer.caption']->serialize($record->get_caption(), CaptionSerializer::SERIALIZE_XML, $exportElement->isBusinessfields());
 
                     $remotefile = $exportElement->getFilename();
 
                     if ($subdef == 'caption') {
-                        $desc = $record->get_caption()->serialize(\caption_record::SERIALIZE_XML, $exportElement->isBusinessfields());
+                        $desc = $app['serializer.caption']->serialize($record->get_caption(), CaptionSerializer::SERIALIZE_XML, $exportElement->isBusinessfields());
 
                         $localfile = $app['root.path'] . '/tmp/' . md5($desc . time() . mt_rand());
                         if (file_put_contents($localfile, $desc) === false) {
                             throw new \Exception('Impossible de creer un fichier temporaire');
                         }
                     } elseif ($subdef == 'caption-yaml') {
-                        $desc = $record->get_caption()->serialize(\caption_record::SERIALIZE_YAML, $exportElement->isBusinessfields());
+                        $desc = $app['serializer.caption']->serialize($record->get_caption(), CaptionSerializer::SERIALIZE_YAML, $exportElement->isBusinessfields());
 
                         $localfile = $app['root.path'] . '/tmp/' . md5($desc . time() . mt_rand());
                         if (file_put_contents($localfile, $desc) === false) {

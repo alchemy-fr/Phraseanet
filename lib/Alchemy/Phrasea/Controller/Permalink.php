@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -64,7 +65,7 @@ class Permalink extends AbstractDelivery
         }
         $caption = $record->get_caption();
 
-        return new Response($caption->serialize(\caption_record::SERIALIZE_JSON), 200, ["Content-Type" => 'application/json']);
+        return new Response($app['serializer.caption']->serialize($caption, CaptionSerializer::SERIALIZE_JSON), 200, ["Content-Type" => 'application/json']);
     }
 
     public function deliverPermaview(PhraseaApplication $app, Request $request, $sbas_id, $record_id, $subdef)

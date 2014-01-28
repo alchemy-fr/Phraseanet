@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "713759a9aea9d0178ef01ce2f7aea6b2",
+    "hash": "cf050120950d3b57c24a52d01bbf94a3",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -1037,6 +1037,61 @@
             "time": "2013-11-12 12:40:13"
         },
         {
+            "name": "elasticsearch/elasticsearch",
+            "version": "v0.4.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/elasticsearch/elasticsearch-php.git",
+                "reference": "f8116d7dc79e6602714e0bcf5a97f1753ef6ca9f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/elasticsearch/elasticsearch-php/zipball/f8116d7dc79e6602714e0bcf5a97f1753ef6ca9f",
+                "reference": "f8116d7dc79e6602714e0bcf5a97f1753ef6ca9f",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "guzzle/guzzle": "~3.7",
+                "monolog/monolog": "~1.5",
+                "php": ">=5.3.9",
+                "pimple/pimple": "~1.0",
+                "psr/log": "~1.0"
+            },
+            "require-dev": {
+                "athletic/athletic": "~0.1",
+                "mikey179/vfsstream": "~1.2",
+                "mockery/mockery": "dev-master@dev",
+                "phpunit/phpunit": "3.7.*",
+                "satooshi/php-coveralls": "dev-master",
+                "symfony/yaml": "2.4.*@dev"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Elasticsearch": "src/",
+                    "Elasticsearch\\Tests": "tests/",
+                    "Elasticsearch\\Benchmarks": "benchmarks/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache 2"
+            ],
+            "authors": [
+                {
+                    "name": "Zachary Tong"
+                }
+            ],
+            "description": "PHP Client for Elasticsearch",
+            "keywords": [
+                "client",
+                "elasticsearch",
+                "search"
+            ],
+            "time": "2013-12-02 15:31:03"
+        },
+        {
             "name": "evenement/evenement",
             "version": "v1.0.0",
             "source": {
@@ -1124,16 +1179,16 @@
         },
         {
             "name": "gedmo/doctrine-extensions",
-            "version": "v2.3.8",
+            "version": "v2.3.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/l3pp4rd/DoctrineExtensions.git",
-                "reference": "d2bef940268e4dc5f0f050e80458169a7267813a"
+                "reference": "35adcaae1a3f50d0d5b73aa50ed8fd28ee35ce54"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/l3pp4rd/DoctrineExtensions/zipball/d2bef940268e4dc5f0f050e80458169a7267813a",
-                "reference": "d2bef940268e4dc5f0f050e80458169a7267813a",
+                "url": "https://api.github.com/repos/l3pp4rd/DoctrineExtensions/zipball/35adcaae1a3f50d0d5b73aa50ed8fd28ee35ce54",
+                "reference": "35adcaae1a3f50d0d5b73aa50ed8fd28ee35ce54",
                 "shasum": ""
             },
             "require": {
@@ -1200,7 +1255,7 @@
                 "tree",
                 "uploadable"
             ],
-            "time": "2013-11-09 21:23:13"
+            "time": "2014-01-12 16:34:06"
         },
         {
             "name": "guzzle/guzzle",
@@ -2669,12 +2724,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/silexphp/Silex.git",
-                "reference": "5633f1b652a6cbc0c0ed4b6b86c0560c4560731a"
+                "reference": "93dde2797c6e8498b844ac0eca6e8dd6713fb172"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/silexphp/Silex/zipball/5633f1b652a6cbc0c0ed4b6b86c0560c4560731a",
-                "reference": "5633f1b652a6cbc0c0ed4b6b86c0560c4560731a",
+                "url": "https://api.github.com/repos/silexphp/Silex/zipball/93dde2797c6e8498b844ac0eca6e8dd6713fb172",
+                "reference": "93dde2797c6e8498b844ac0eca6e8dd6713fb172",
                 "shasum": ""
             },
             "require": {
@@ -2745,7 +2800,7 @@
             "keywords": [
                 "microframework"
             ],
-            "time": "2013-12-03 18:11:54"
+            "time": "2014-01-08 07:22:38"
         },
         {
             "name": "silex/web-profiler",

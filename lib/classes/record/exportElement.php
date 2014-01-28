@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 
 class record_exportElement extends record_adapter
 {
@@ -209,7 +210,7 @@ class record_exportElement extends record_adapter
             }
         }
 
-        $xml = $this->get_caption()->serialize(caption_record::SERIALIZE_XML);
+        $xml = $this->app['serializer.caption']->serialize($this->get_caption(), CaptionSerializer::SERIALIZE_XML);
 
         if ($xml) {
             $localizedLabel = $this->app->trans('caption XML');

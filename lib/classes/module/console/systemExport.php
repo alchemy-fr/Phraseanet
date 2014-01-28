@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -250,7 +251,7 @@ class module_console_systemExport extends Command
         switch (strtolower($caption)) {
             case 'xml':
                 $pathinfo = pathinfo($dest_file->getPathname());
-                $xml = $record->get_caption()->serialize(caption_record::SERIALIZE_XML);
+                $xml = $this->container['serializer.caption']->serialize($record->get_caption(), CaptionSerializer::SERIALIZE_XML);
                 $xml_file = dirname($outfile) . '/' . $pathinfo['filename'] . '.xml';
                 file_put_contents($xml_file, $xml);
                 break;

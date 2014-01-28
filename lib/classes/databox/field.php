@@ -826,12 +826,17 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
+     * @param Boolean $all If set to false, returns a one-char separator to use for serialiation
      *
      * @return string
      */
-    public function get_separator()
+    public function get_separator($all = true)
     {
-        return $this->separator;
+        if ($all) {
+            return $this->separator;
+        }
+
+        return substr($this->separator, 0, 1);
     }
 
     /**

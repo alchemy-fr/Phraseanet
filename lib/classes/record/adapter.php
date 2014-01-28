@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
+use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\ORM\EntityManager;
@@ -1068,7 +1069,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $this->caption_record = null;
 
         $xml = new DOMDocument();
-        $xml->loadXML($this->get_caption()->serialize(\caption_record::SERIALIZE_XML, true));
+        $xml->loadXML($this->app['serializer.caption']->serialize($this->get_caption(), CaptionSerializer::SERIALIZE_XML, true));
 
         $this->set_xml($xml);
         $this->reindex();
@@ -1433,7 +1434,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         $origcoll = phrasea::collFromBas($this->app, $this->get_base_id());
 
-        $xml = $this->get_caption()->serialize(\caption_record::SERIALIZE_XML);
+        $xml = $this->app['serializer.caption']->serialize($this->get_caption(), CaptionSerializer::SERIALIZE_XML);
 
         $this->app['phraseanet.logger']($this->get_databox())
             ->log($this, Session_Logger::EVENT_DELETE, $origcoll, $xml);

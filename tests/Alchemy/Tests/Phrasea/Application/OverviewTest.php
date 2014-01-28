@@ -2,6 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Application;
 
+use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
@@ -179,7 +180,7 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
             $this->assertEquals($value, $response->headers->get($name));
         }
 
-        $caption = self::$DI['record_1']->get_caption()->serialize(\caption_record::SERIALIZE_JSON);
+        $caption = self::$DI['app']['serializer.caption']->serialize(self::$DI['record_1']->get_caption(), CaptionSerializer::SERIALIZE_JSON);
         $this->assertEquals($caption, $response->getContent());
         $this->assertEquals(200, $response->getStatusCode());
     }
