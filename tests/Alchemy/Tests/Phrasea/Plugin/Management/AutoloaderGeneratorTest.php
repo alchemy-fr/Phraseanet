@@ -65,7 +65,7 @@ class AutoloaderGeneratorTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Vendor\CustomCommand', $cli['console']->find('hello:world'));
 
         $mapping = require $pluginsDir . '/twig-paths.php';
-        $this->assertSame(array('plugin-test-plugin' => $pluginsDir . '/test-plugin/views', $pluginsDir . '/test-plugin/views', $pluginsDir . '/test-plugin/twig-views'), $mapping);
+        $this->assertSame(array('plugin-test-plugin' => realpath($pluginsDir) . '/test-plugin/views', realpath($pluginsDir) . '/test-plugin/views', realpath($pluginsDir) . '/test-plugin/twig-views'), $mapping);
 
         $this->assertRegExp('#@import#', file_get_contents($pluginsDir . '/login.less'));
         $this->assertRegExp('#@import#', file_get_contents($pluginsDir . '/account.less'));

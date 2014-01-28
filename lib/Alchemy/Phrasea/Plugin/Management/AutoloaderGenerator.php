@@ -196,19 +196,19 @@ EOF;
 
         foreach ($manifests as $manifest) {
             $namespace = $this->quote('plugin-' . $manifest->getName());
-            $path = $this->pluginDirectory . DIRECTORY_SEPARATOR . $manifest->getName() . DIRECTORY_SEPARATOR . 'views';
+            $path = DIRECTORY_SEPARATOR . $manifest->getName() . DIRECTORY_SEPARATOR . 'views';
 
-            if (is_dir($path)) {
+            if (is_dir($this->pluginDirectory . $path)) {
                 $path = $this->quote($path);
                 $buffer .= <<<EOF
-    $namespace => $path,
+    $namespace => __DIR__ . $path,
 EOF;
             }
 
             foreach ($manifest->getTwigPaths() as $path) {
-                $path = $this->quote($this->pluginDirectory . DIRECTORY_SEPARATOR . $manifest->getName() . DIRECTORY_SEPARATOR . $path);
+                $path = $this->quote(DIRECTORY_SEPARATOR . $manifest->getName() . DIRECTORY_SEPARATOR . $path);
                 $buffer .= <<<EOF
-    $path,
+    __DIR__ . $path,
 EOF;
             }
         }
