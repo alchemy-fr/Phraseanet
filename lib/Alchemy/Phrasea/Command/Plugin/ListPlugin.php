@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Command\Plugin;
 
 use Alchemy\Phrasea\Plugin\Plugin;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ListPlugin extends AbstractPluginCommand
@@ -22,27 +23,68 @@ class ListPlugin extends AbstractPluginCommand
         parent::__construct('plugins:list');
 
         $this
-            ->setDescription('Lists installed plugins');
+            ->setDescription('Lists installed plugins')
+            ->addOption('json', 'j', InputOption::VALUE_NONE, 'Output result in JSON');
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $plugins = array_map(function (Plugin $plugin) {
+        $plugins = array_map(function (Plugin $plugin) use ($input) {
             if ($plugin->isErroneous()) {
-                return array('<error>'.$plugin->getName().'</error>', '<error>Error : '.$plugin->getError()->getMessage().'</error>', '');
+                return $this->formatErroneousPlugin($input, $plugin);
             }
 
-            return array($plugin->getName(), $plugin->getManifest()->getVersion(), $plugin->getManifest()->getDescription());
+            return $this->formatPlugin($input, $plugin);
         }, $this->container['plugins.manager']->listPlugins());
 
-        $table = $this->getHelperSet()->get('table');
-        $table
-            ->setHeaders(array('Name', 'Version', 'Description'))
-            ->setRows($plugins)
-        ;
+        if ($input->getOption('json')) {
+            $output->writeln(json_encode(array('plugins' => array_values($plugins))));
+        } else {
+            $table = $this->getHelperSet()->get('table');
+            $table
+                ->setHeaders(array('Name', 'Version', 'Description'))
+                ->setRows($plugins)
+            ;
 
-        $table->render($output);
+            $table->render($output);
+        }
 
         return 0;
+    }
+
+    private function formatPlugin(InputInterface $input, Plugin $plugin)
+    {
+        if ($input->getOption('json')) {
+            return array(
+                'name'        => $plugin->getName(),
+                'version'     => $plugin->getManifest()->getVersion(),
+                'description' => $plugin->getManifest()->getDescription(),
+                'error'       => false,
+            );
+        }
+
+        return array(
+            $plugin->getName(),
+            $plugin->getManifest()->getVersion(),
+            $plugin->getManifest()->getDescription(),
+        );
+    }
+
+    private function formatErroneousPlugin(InputInterface $input, Plugin $plugin)
+    {
+        if ($input->getOption('json')) {
+            return array(
+                'name'        => $plugin->getName(),
+                'error'       => true,
+                'description' => 'Error : '.$plugin->getError()->getMessage(),
+                'version'     => null,
+            );
+        }
+
+        return array(
+            '<error>' . $plugin->getName() . '</error>',
+            '<error>Error : ' . $plugin->getError()->getMessage() . '</error>',
+            '',
+        );
     }
 }
