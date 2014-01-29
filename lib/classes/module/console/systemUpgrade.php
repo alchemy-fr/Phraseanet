@@ -32,7 +32,8 @@ class module_console_systemUpgrade extends Command
             ->setDescription('Upgrades Phraseanet to the latest version')
             ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Answers yes to all questions and do not ask the user')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Forces the upgrade even if there is a concurrent upgrade')
-            ->addOption('dump', 'd', InputOption::VALUE_NONE, 'Dumps SQL queries that can be used to clean database.');
+            ->addOption('dump', 'd', InputOption::VALUE_NONE, 'Dumps SQL queries that can be used to clean database.')
+            ->addOption('stderr', 's', InputOption::VALUE_NONE, 'Dumps SQL queries to stderr');
 
         return $this;
     }
@@ -74,12 +75,24 @@ class module_console_systemUpgrade extends Command
 
             $queries = $this->getService('phraseanet.appbox')->forceUpgrade($upgrader, $this->container);
 
-            if ($input->getOption('dump')) {
+            if ($input->getOption('dump') || $input->getOption('stderr')) {
                 if (0 < count($queries)) {
                     $output->writeln("Some SQL queries can be executed to optimize\n");
 
+                    $stderr = $input->getOption('stderr');
+
+                    if ($stderr) {
+                        $handle = fopen('php://stderr', 'a');
+                    }
                     foreach ($queries as $query) {
-                        $output->writeln(" ".$query['sql']);
+                        if ($stderr) {
+                            fwrite($handle, $query['sql']."\n");
+                        } else {
+                            $output->writeln(" ".$query['sql']);
+                        }
+                    }
+                    if ($stderr) {
+                        fclose ($handle);
                     }
 
                     $output->writeln("\n");
