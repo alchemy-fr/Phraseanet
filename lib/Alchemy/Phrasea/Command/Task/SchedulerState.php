@@ -12,12 +12,17 @@
 namespace Alchemy\Phrasea\Command\Task;
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Model\Entities\Task;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
 class SchedulerState extends Command
 {
+    const EXITCODE_ERROR = 1;
+    const EXITCODE_STARTED = 10;
+    const EXITCODE_STOPPED = 11;
+
     public function __construct()
     {
         parent::__construct('task-manager:scheduler:state');
@@ -47,6 +52,13 @@ class SchedulerState extends Command
             }
         }
 
-        return (int) $error;
+        switch ($info['actual']) {
+            case Task::STATUS_STARTED:
+                return self::EXITCODE_STARTED;
+            case Task::STATUS_STOPPED:
+                return self::EXITCODE_STOPPED;
+            default:
+                return self::EXITCODE_ERROR;
+        }
     }
 }
