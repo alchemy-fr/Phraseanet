@@ -15,7 +15,6 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
-use Elasticsearch\Client;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 

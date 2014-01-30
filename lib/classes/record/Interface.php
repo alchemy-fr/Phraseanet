@@ -9,10 +9,8 @@
  * file that was distributed with this source code.
  */
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Doctrine\ORM\EntityManager;
-use MediaVorus\Media\MediaInterface;
 
 interface record_Interface
 {

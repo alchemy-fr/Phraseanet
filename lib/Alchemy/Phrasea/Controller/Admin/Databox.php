@@ -403,7 +403,7 @@ class Databox implements ControllerProviderInterface
 
                 while ($n < $query->on_base_ids([$othCollSel])->get_total()) {
                     $results = $query->limit($n, 50)->execute()->get_results();
-    
+
                     foreach ($results as $user) {
                         $app['acl']->get($user)->duplicate_right_from_bas($othCollSel, $baseId);
                     }

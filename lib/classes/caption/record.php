@@ -12,7 +12,6 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
-use Symfony\Component\Yaml\Dumper as YamlDumper;
 
 class caption_record implements caption_interface, cache_cacheableInterface
 {
