@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "21af9b0c45201bacb0045dd4b8220358",
+    "hash": "6d21ea16cd4f85707ff5c89c7a5777ac",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -1434,16 +1434,16 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.4.3",
+            "version": "0.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "319f55c2265a9056d68f1f0e6314dce977ef47ef"
+                "reference": "067599fd669b86ff3a1cfb344730014b4a339b7e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/319f55c2265a9056d68f1f0e6314dce977ef47ef",
-                "reference": "319f55c2265a9056d68f1f0e6314dce977ef47ef",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/067599fd669b86ff3a1cfb344730014b4a339b7e",
+                "reference": "067599fd669b86ff3a1cfb344730014b4a339b7e",
                 "shasum": ""
             },
             "require": {
@@ -1503,7 +1503,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-12-03 17:07:51"
+            "time": "2014-01-31 11:32:50"
         },
         {
             "name": "mediavorus/mediavorus",
