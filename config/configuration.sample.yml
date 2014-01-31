@@ -26,6 +26,11 @@ main:
     search-engine:
         type: Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine
         options: []
+    task-manager:
+        logger:
+            max-files: 10
+            enabled: true
+            level: INFO
 binaries:
     ghostscript_binary: null
     php_binary: null

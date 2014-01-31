@@ -96,8 +96,21 @@ class module_console_taskrun extends Command
             }
         }
 
-        $logfile = __DIR__ . '/../../../../logs/task_' . $task_id . '.log';
-        $this->container['task-manager.logger']->pushHandler(new RotatingFileHandler($logfile, 10, Logger::INFO));
+        $taskManagerConf = isset($this->container['phraseanet.configuration']['main']['task-manager']) ? $this->container['phraseanet.configuration']['main']['task-manager'] : array();
+        $taskManagerConf = array_replace_recursive(array(
+            'logger' => array(
+                'enabled'   => true,
+                'level'     => 'INFO',
+                'max-files' => 10,
+            )
+        ), $taskManagerConf);
+
+        if ($taskManagerConf['logger']['enabled']) {
+            $level = defined('Monolog\\Logger::'.$taskManagerConf['logger']['level']) ? constant('Monolog\\Logger::'.$taskManagerConf['logger']['level']) : Logger::INFO;
+            $logfile = __DIR__ . '/../../../../logs/task_' . $task_id . '.log';
+            $this->container['task-manager.logger']->pushHandler(new RotatingFileHandler($logfile, $taskManagerConf['logger']['max-files'], $level));
+        }
+
         $this->task = $task_manager->getTask($task_id, $this->container['task-manager.logger']);
 
         $lib2v = array(
