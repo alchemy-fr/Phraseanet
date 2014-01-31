@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\CLIProvider;
 
+use Alchemy\Phrasea\Plugin\PluginManager;
 use Alchemy\Phrasea\Plugin\Schema\ManifestValidator;
 use Alchemy\Phrasea\Plugin\Management\PluginsExplorer;
 use Alchemy\Phrasea\Plugin\Management\ComposerInstaller;
@@ -30,6 +31,10 @@ class PluginServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['plugins.schema'] = realpath(__DIR__ . '/../../../../conf.d/plugin-schema.json');
+
+        $app['plugins.manager'] = $app->share(function (Application $app) {
+            return new PluginManager($app['plugins.directory'], $app['plugins.plugins-validator']);
+        });
 
         $app['plugins.json-validator'] = $app->share(function (Application $app) {
             return new JsonValidator();

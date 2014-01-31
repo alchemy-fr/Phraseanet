@@ -16,6 +16,7 @@ namespace KonsoleKommander;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+use Alchemy\Phrasea\Command\Plugin\ListPlugin;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\BuildMissingSubdefs;
 use Alchemy\Phrasea\Command\CreateCollection;
@@ -94,6 +95,7 @@ $cli->command(new RescanTechnicalDatas('records:rescan-technical-datas'));
 $cli->command(new BuildMissingSubdefs('records:build-missing-subdefs'));
 
 $cli->command(new AddPlugin());
+$cli->command(new ListPlugin());
 $cli->command(new RemovePlugin());
 $cli->command(new Configuration());
 $cli->command(new XSendFileConfigurationDumper());
