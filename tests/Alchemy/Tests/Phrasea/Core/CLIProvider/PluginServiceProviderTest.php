@@ -20,6 +20,11 @@ class PluginServiceProviderTest extends ServiceProviderTestCase
             ],
             [
                 'Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider',
+                'plugins.manager',
+                'Alchemy\Phrasea\Plugin\PluginManager'
+            ),
+            array(
+                'Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider',
                 'plugins.plugins-validator',
                 'Alchemy\Phrasea\Plugin\Schema\PluginValidator'
             ],

@@ -47,11 +47,6 @@ class Step35 implements DatasUpgraderInterface
 
             $this->ensureMigrateColumn($databox);
 
-            $sql = 'TRUNCATE metadatas';
-            $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
-
             do {
                 $rs = $this->getEmptyOriginalNameRecords($databox);
 

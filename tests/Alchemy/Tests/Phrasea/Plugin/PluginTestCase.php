@@ -30,4 +30,11 @@ class PluginTestCase extends \PhraseanetTestCase
     {
         return __DIR__ . '/../../../../../lib/conf.d/plugin-schema.json';
     }
+
+    protected function createManifestMock()
+    {
+        return $this->getMockBuilder('Alchemy\Phrasea\Plugin\Schema\Manifest')
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
 }
