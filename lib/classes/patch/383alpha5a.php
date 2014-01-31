@@ -51,7 +51,7 @@ class patch_383alpha5a implements patchInterface
         $config = $app['phraseanet.configuration']->getConfig();
 
         $config['main']['task-manager']['logger'] = array(
-            'enabled'  => true,
+            'enabled'   => true,
             'max-files' => 10,
             'level'     => 'INFO',
         );
