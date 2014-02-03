@@ -415,7 +415,7 @@ class task_period_RecordMover extends task_appboxAbstract
                 if (array_key_exists('coll', $row)) {
                     $coll = collection::get_from_coll_id($this->dependencyContainer, $databox, $row['coll']);
                     $rec->move_to_collection($coll, $this->dependencyContainer['phraseanet.appbox']);
-                    $this['phraseanet.SE']->updateRecord($rec);
+                    $this->dependencyContainer['phraseanet.SE']->updateRecord($rec);
                     if ($logsql) {
                         $this->log(sprintf("on sbas %s move rid %s to coll %s \n", $row['sbas_id'], $row['record_id'], $coll->get_coll_id()));
                     }
