@@ -78,7 +78,7 @@ class RecordMoverJob extends AbstractJob
                 if (array_key_exists('coll', $row)) {
                     $coll = \collection::get_from_coll_id($app, $databox, $row['coll']);
                     $rec->move_to_collection($coll, $app['phraseanet.appbox']);
-                    $this['phraseanet.SE']->updateRecord($rec);
+                    $app['phraseanet.SE']->updateRecord($rec);
                     if ($logsql) {
                         $this->log('debug', sprintf("on sbas %s move rid %s to coll %s \n", $row['sbas_id'], $row['record_id'], $coll->get_coll_id()));
                     }
