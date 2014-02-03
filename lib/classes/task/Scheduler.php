@@ -66,11 +66,11 @@ class task_Scheduler
                 $this->log(sprintf("SIGCHLD (%s) received from pid=%s, status=%s, exitstatus=%s", $signal, $pid, var_export($status, true), $exitstatus));
                 break;
             case SIGINT:  // ctrl C
-                $this->log(sprintf("SIGINT (%s) Ctrl-C received, schedstatus='tostop'", $signal));
+                $this->log(sprintf("SIGINT (%s) Ctrl-C received, schedstatus='tostop'", $signal), Logger::NOTICE);
                 $this->schedstatus = 'tostop';
                 break;
             case SIGTERM:
-                $this->log(sprintf("SIGTERM (%s) received but ignored, http timeout ?", $signal));
+                $this->log(sprintf("SIGTERM (%s) received but ignored, http timeout ?", $signal), Logger::NOTICE);
                 break;
         }
     }
@@ -114,7 +114,7 @@ class task_Scheduler
             $lockfile = ($lockdir . 'scheduler.lock');
             if (($schedlock = fopen($lockfile, 'a+')) != FALSE) {
                 if (flock($schedlock, LOCK_EX | LOCK_NB) === FALSE) {
-                    $this->log(sprintf("failed to lock '%s' (try=%s/4)", $lockfile, $try), Logger::INFO);
+                    $this->log(sprintf("failed to lock '%s' (try=%s/4)", $lockfile, $try), Logger::NOTICE);
                     if ($try == 4) {
                         $this->log("scheduler already running.");
                         fclose($schedlock);
@@ -182,7 +182,7 @@ class task_Scheduler
 
                 unset($conn);
                 if (! $connwaslost) {
-                    $this->log(sprintf("Warning : abox connection lost, restarting in 10 min."), Logger::INFO);
+                    $this->log(sprintf("Warning : abox connection lost, restarting in 10 min."), Logger::ERROR);
                 }
                 for ($i = 0; $i < 60 * 10; $i ++) {
                     sleep(1);
@@ -196,7 +196,7 @@ class task_Scheduler
                 $connwaslost = true;
             }
             if ($connwaslost) {
-                $this->log("abox connection restored", Logger::INFO);
+                $this->log("abox connection restored", Logger::NOTICE);
 
                 $sql = 'UPDATE task SET crashed=0';
                 $stmt = $conn->prepare($sql);
@@ -235,7 +235,7 @@ class task_Scheduler
                 $stmt = $conn->prepare($sql);
                 $stmt->execute();
                 $stmt->closeCursor();
-                $this->log("schedstatus == 'stopping', waiting tasks to end", Logger::INFO);
+                $this->log("schedstatus == 'stopping', waiting tasks to end", Logger::NOTICE);
             }
 
             // initialy, all tasks are supposed to be removed from the poll
@@ -284,7 +284,7 @@ class task_Scheduler
                             "new Task %s, status=%s"
                             , $taskPoll[$tkey]["task"]->getID()
                             , $status
-                        )
+                        ), Logger::NOTICE
                     );
                 } else {
                     // the task is already in the poll, update its status
@@ -312,7 +312,7 @@ class task_Scheduler
             // remove not-existing task from poll
             foreach ($taskPoll as $tkey => $task) {
                 if ($task["todel"]) {
-                    $this->log(sprintf("Task %s deleted", $taskPoll[$tkey]["task"]->getID()));
+                    $this->log(sprintf("Task %s deleted", $taskPoll[$tkey]["task"]->getID()), Logger::NOTICE);
                     unset($taskPoll[$tkey]);
                 }
             }
@@ -324,7 +324,7 @@ class task_Scheduler
                 $status = $tv['task']->getState();
                 switch ($status) {
                     default:
-                        $this->log(sprintf('Unknow status `%s`', $status));
+                        $this->log(sprintf('Unknow status `%s`', $status), Logger::ERROR);
                         break;
 
                     case task_abstract::STATE_TORESTART:
@@ -416,7 +416,7 @@ class task_Scheduler
                                             , $taskPoll[$tkey]["task"]->getID()
                                             , $taskPoll[$tkey]["cmd"]
                                             , $taskPoll[$tkey]["task"]->getCrashCounter()
-                                        )
+                                        ), Logger::ERROR
                                     );
 
                                     if ($taskPoll[$tkey]["task"]->getCrashCounter() > 5) {
@@ -490,7 +490,7 @@ class task_Scheduler
                                     "Task %s crashed %d times"
                                     , $taskPoll[$tkey]["task"]->getID()
                                     , $taskPoll[$tkey]["task"]->getCrashCounter()
-                                ), Logger::INFO
+                                ), Logger::ERROR
                             );
 
                             if ($taskPoll[$tkey]["task"]->getCrashCounter() > 5) {

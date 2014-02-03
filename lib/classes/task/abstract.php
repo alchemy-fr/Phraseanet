@@ -136,7 +136,7 @@ abstract class task_abstract
         try {
             $conn = connection::getPDOConnection($this->dependencyContainer);
         } catch (Exception $e) {
-            $this->log(("Warning : abox connection lost : ".$e->getMessage().", restarting in 10 min."), self::LOG_DEBUG);
+            $this->log(("Warning : abox connection lost : ".$e->getMessage().", restarting in 10 min."), self::LOG_ERROR);
 
             $this->sleep(60 * 10);
 
@@ -735,7 +735,7 @@ abstract class task_abstract
 
             $current_memory = memory_get_usage();
             if ($current_memory >> 20 >= $this->maxmegs) {
-                $this->log(sprintf("Max memory (%s M) reached (current is %.02f M)", $this->maxmegs, ($current_memory >> 10) / 1024), self::LOG_ERROR);
+                $this->log(sprintf("Max memory (%s M) reached (current is %.02f M)", $this->maxmegs, ($current_memory >> 10) / 1024), self::LOG_INFO);
                 $this->running = FALSE;
                 $ret = self::STATE_MAXMEGSREACHED;
             }
