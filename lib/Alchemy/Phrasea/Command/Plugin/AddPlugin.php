@@ -26,7 +26,7 @@ class AddPlugin extends AbstractPluginCommand
             ->addArgument('source', InputArgument::REQUIRED, 'The source is a folder');
     }
 
-    protected function doExecute(InputInterface $input, OutputInterface $output)
+    protected function doExecutePluginAction(InputInterface $input, OutputInterface $output)
     {
         $source = $input->getArgument('source');
 

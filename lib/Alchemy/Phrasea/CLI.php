@@ -82,6 +82,13 @@ class CLI extends Application
         $app->run();
     }
 
+    public function boot()
+    {
+        parent::boot();
+
+        $this['console']->setDispatcher($this['dispatcher']);
+    }
+
     public function run(\Symfony\Component\HttpFoundation\Request $request = null)
     {
         if (null !== $request) {

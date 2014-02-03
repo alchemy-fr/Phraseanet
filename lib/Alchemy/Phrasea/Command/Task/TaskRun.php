@@ -20,6 +20,7 @@ use Alchemy\TaskManager\Event\JobSubscriber\LockFileSubscriber;
 use Alchemy\TaskManager\Event\JobSubscriber\MemoryLimitSubscriber;
 use Alchemy\TaskManager\Event\JobSubscriber\SignalControlledSubscriber;
 use Alchemy\TaskManager\Event\JobSubscriber\StopSignalSubscriber;
+use Monolog\Handler\RotatingFileHandler;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -50,6 +51,11 @@ class TaskRun extends Command
 
         $job = $this->container['task-manager.job-factory']->create($task->getJobId());
         $logger = $this->container['task-manager.logger'];
+
+        if ($this->container['task-manager.logger.configuration']['enabled']) {
+            $file = $this->container['task-manager.log-file.factory']->forTask($task);
+            $logger->pushHandler(new RotatingFileHandler($file, $this->container['task-manager.logger.configuration']['max-files'], $this->container['task-manager.logger.configuration']['level']));
+        }
 
         $job->addSubscriber(new LockFileSubscriber('task-'.$task->getId(), $logger, $this->container['root.path'].'/tmp/locks'));
         $job->addSubscriber(new StopSignalSubscriber($this->container['signal-handler'], $logger));

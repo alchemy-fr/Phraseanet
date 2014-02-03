@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Core\CLIProvider;
 use Alchemy\TaskManager\TaskManager;
 use Alchemy\Phrasea\TaskManager\TaskList;
 use Monolog\Handler\NullHandler;
+use Monolog\Logger;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\Process\PhpExecutableFinder;
@@ -42,6 +43,18 @@ class TaskManagerServiceProvider implements ServiceProviderInterface
                     'listener_port'     => $options['port'],
                 ]
             );
+        });
+
+        $app['task-manager.logger.configuration'] = $app->share(function (Application $app) {
+            $conf = array_replace([
+                'enabled'   => true,
+                'level'     => 'INFO',
+                'max-files' => 10,
+            ], $app['conf']->get(['main', 'task-manager', 'logger'], []));
+
+            $conf['level'] = defined('Monolog\\Logger::'.$conf['level']) ? constant('Monolog\\Logger::'.$conf['level']) : Logger::INFO;
+
+            return $conf;
         });
 
         $app['task-manager.task-list'] = $app->share(function (Application $app) {

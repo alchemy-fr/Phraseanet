@@ -14,6 +14,8 @@ namespace Alchemy\Phrasea\Command\Task;
 use Alchemy\TaskManager\TaskManager;
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\TaskManager\Event\TaskManagerSubscriber\LockFileSubscriber;
+use Monolog\Handler\RotatingFileHandler;
+use Monolog\Logger;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -38,6 +40,12 @@ class SchedulerRun extends Command
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         declare(ticks=1);
+
+        if ($this->container['task-manager.logger.configuration']['enabled']) {
+            $file = $this->container['task-manager.log-file.factory']->forManager();
+            $this->container['task-manager.logger']->pushHandler(new RotatingFileHandler($file, $this->container['task-manager.logger.configuration']['max-files'], $this->container['task-manager.logger.configuration']['level']));
+        }
+
         $this->container['signal-handler']->register([SIGINT, SIGTERM], [$this, 'signalHandler']);
         $this->container['task-manager']->addSubscriber(new LockFileSubscriber($this->container['task-manager.logger'], $this->container['root.path'].'/tmp/locks'));
         $this->container['task-manager']->start();

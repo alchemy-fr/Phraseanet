@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Command\Plugin;
 
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -23,12 +24,19 @@ class RemovePlugin extends AbstractPluginCommand
 
         $this
             ->setDescription('Removes a plugin given its name')
-            ->addArgument('name', InputArgument::REQUIRED, 'The name of the plugin');
+            ->addArgument('name', InputArgument::REQUIRED, 'The name of the plugin')
+            ->addOption('keep-config', 'k', InputOption::VALUE_NONE, 'Use this flag to keep configuration');
     }
 
-    protected function doExecute(InputInterface $input, OutputInterface $output)
+    protected function doExecutePluginAction(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument('name');
+
+        if (!$this->container['plugins.manager']->hasPlugin($name)) {
+            $output->writeln(sprintf('There is no plugin named <comment>%s</comment>, aborting', $name));
+
+            return 0;
+        }
 
         $output->write("Removing public assets...");
         $this->container['plugins.assets-manager']->remove($name);
@@ -41,6 +49,12 @@ class RemovePlugin extends AbstractPluginCommand
         $output->writeln(" <comment>OK</comment>");
 
         $this->updateConfigFiles($input, $output);
+
+        if (!$input->getOption('keep-config')) {
+            $conf = $this->container['phraseanet.configuration']->getConfig();
+            unset($conf['plugins'][$name]);
+            $this->container['phraseanet.configuration']->setConfig($conf);
+        }
 
         return 0;
     }
