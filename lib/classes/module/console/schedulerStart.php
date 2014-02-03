@@ -41,9 +41,21 @@ class module_console_schedulerStart extends Command
         $streamHandler = new Handler\StreamHandler('php://stdout', $input->getOption('verbose') ? Logger::DEBUG : Logger::WARNING);
         $logger->pushHandler($streamHandler);
 
-        $logfile = __DIR__ . '/../../../../logs/scheduler.log';
-        $rotateHandler = new Handler\RotatingFileHandler($logfile, 10, Logger::INFO);
-        $logger->pushHandler($rotateHandler);
+        $taskManagerConf = isset($this->container['phraseanet.configuration']['main']['task-manager']) ? $this->container['phraseanet.configuration']['main']['task-manager'] : array();
+        $taskManagerConf = array_replace_recursive(array(
+            'logger' => array(
+                'enabled'   => true,
+                'level'     => 'INFO',
+                'max-files' => 10,
+            )
+        ), $taskManagerConf);
+
+        if ($taskManagerConf['logger']['enabled']) {
+            $level = defined('Monolog\\Logger::'.$taskManagerConf['logger']['level']) ? constant('Monolog\\Logger::'.$taskManagerConf['logger']['level']) : Logger::INFO;
+            $logfile = __DIR__ . '/../../../../logs/scheduler.log';
+            $rotateHandler = new Handler\RotatingFileHandler($logfile, $taskManagerConf['logger']['max-files'], $level);
+            $logger->pushHandler($rotateHandler);
+        }
 
         try {
             $scheduler = new task_Scheduler($this->container, $logger);
