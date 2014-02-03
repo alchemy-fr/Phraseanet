@@ -30,6 +30,12 @@ class RemovePlugin extends AbstractPluginCommand
     {
         $name = $input->getArgument('name');
 
+        if (!$this->container['plugins.manager']->hasPlugin($name)) {
+            $output->writeln(sprintf('There is no plugin named <comment>%s</comment>, aborting', $name));
+
+            return 0;
+        }
+
         $output->write("Removing public assets...");
         $this->container['plugins.assets-manager']->remove($name);
         $output->writeln(" <comment>OK</comment>");
