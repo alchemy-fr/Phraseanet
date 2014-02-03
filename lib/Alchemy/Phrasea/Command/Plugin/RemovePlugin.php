@@ -28,7 +28,7 @@ class RemovePlugin extends AbstractPluginCommand
             ->addOption('keep-config', 'k', InputOption::VALUE_NONE, 'Use this flag to keep configuration');
     }
 
-    protected function doExecute(InputInterface $input, OutputInterface $output)
+    protected function doExecutePluginAction(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument('name');
 
