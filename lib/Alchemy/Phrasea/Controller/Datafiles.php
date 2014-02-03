@@ -33,7 +33,7 @@ class Datafiles extends AbstractDelivery
 
         $controllers->before(function (Request $request) use ($app) {
             if (!$app['authentication']->isAuthenticated()) {
-                $app->abort(403, 'You are not autorized to see this');
+                $app->abort(403, sprintf('You are not authorized to access %s', $request->getRequestUri()));
             }
         });
 
