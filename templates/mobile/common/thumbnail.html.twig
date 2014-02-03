@@ -34,7 +34,7 @@
           {% set random = thumbnail.get_random() %}
           <div class="record record_video imgTips" style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
             <video type="video/mp4" controls="controls" style="width:{{d_width|round}}px;height:{{d_height|round}}px;" autoplay="autoplay">
-              <source src="{{thumbnail.get_url()}}" type="video/mp4"></source>
+              <source src="{{thumbnail.get_url()}}" type="video/mp4" />
             </video>
           </div>
         {% elseif record_type == 'FLEXPAPER' %}
@@ -79,8 +79,8 @@
         {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
           {% set random = thumbnail.get_random() %}
           <div class="record record_video imgTips">
-            <video type="video/mp4" controls="controls" style="height:100%;" autoplay="autoplay">
-              <source src="{{thumbnail.get_url()}}" type="video/mp4"></source>
+            <video type="video/mp4" controls="controls" style="height:80%;width:80%;max-height: 80%;max-width:80%; margin: 0 auto" autoplay="autoplay">
+              <source src="{{thumbnail.get_url()}}" type="video/mp4" />
             </video>
           </div>
         {% elseif record_type == 'FLEXPAPER' %}
