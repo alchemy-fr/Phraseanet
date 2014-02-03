@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Command\Plugin;
 
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -23,7 +24,8 @@ class RemovePlugin extends AbstractPluginCommand
 
         $this
             ->setDescription('Removes a plugin given its name')
-            ->addArgument('name', InputArgument::REQUIRED, 'The name of the plugin');
+            ->addArgument('name', InputArgument::REQUIRED, 'The name of the plugin')
+            ->addOption('keep-config', 'k', InputOption::VALUE_NONE, 'Use this flag to keep configuration');
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
@@ -47,6 +49,12 @@ class RemovePlugin extends AbstractPluginCommand
         $output->writeln(" <comment>OK</comment>");
 
         $this->updateConfigFiles($input, $output);
+
+        if (!$input->getOption('keep-config')) {
+            $conf = $this->container['phraseanet.configuration']->getConfig();
+            unset($conf['plugins'][$name]);
+            $this->container['phraseanet.configuration']->setConfig($conf);
+        }
 
         return 0;
     }
