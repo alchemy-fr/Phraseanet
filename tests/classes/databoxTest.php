@@ -112,4 +112,43 @@ class databoxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertNull($databox->get_label('fr', false));
         $this->assertNull($databox->get_label('en', false));
     }
+
+    /**
+     * @dataProvider databoxXmlConfiguration
+     */
+    public function testIsRegistrationEnabled($data, $value)
+    {
+        $mock = $this->getMockBuilder('\databox')
+            ->disableOriginalConstructor()
+            ->setMethods(['get_sxml_structure'])
+            ->getMock();
+
+        $mock->expects($this->once())->method('get_sxml_structure')->will($this->returnValue($data));
+        $this->assertEquals($value, $mock->isRegistrationEnabled());
+    }
+
+    public function databoxXmlConfiguration()
+    {
+        $xmlInscript =
+<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<record><caninscript>1</caninscript>1</record>
+XML;
+        $xmlNoInscript =
+<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<record><caninscript>0</caninscript>1</record>
+XML;
+        $xmlNoInscriptEmpty =
+<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<record><caninscript></caninscript></record>
+XML;
+
+        return [
+            [simplexml_load_string($xmlInscript), true],
+            [simplexml_load_string($xmlNoInscript), false],
+            [simplexml_load_string($xmlNoInscriptEmpty), false],
+        ];
+    }
 }

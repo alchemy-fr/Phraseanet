@@ -75,7 +75,7 @@ class PhraseaRegisterForm extends AbstractType
         $choices = [];
         $baseIds = [];
 
-        foreach ($this->app['registration-manager']->getRegistrationInformations() as $baseInfo) {
+        foreach ($this->app['registration-manager']->getRegistrationSummary() as $baseInfo) {
             $dbName = $baseInfo['config']['db-name'];
             foreach ($baseInfo['config']['collections'] as $baseId => $collInfo) {
                 if (false === $collInfo['can-register']) {

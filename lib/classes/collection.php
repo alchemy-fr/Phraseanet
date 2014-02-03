@@ -406,7 +406,7 @@ class collection implements cache_cacheableInterface
         $stmt->execute([':base_id' => $this->get_base_id()]);
         $stmt->closeCursor();
 
-        $this->app['registration-manager']->getRepository()->deleteDemandsOnCollection($this->get_base_id());
+        $this->app['registration-manager']->deleteRegistrationsOnCollection($this->get_base_id());
 
         $this->get_databox()->delete_data_from_cache(databox::CACHE_COLLECTIONS);
 
@@ -534,7 +534,7 @@ class collection implements cache_cacheableInterface
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        $this->app['registration-manager']->getRepository()->deleteDemandsOnCollection($this->get_base_id());
+        $this->app['registration-manager']->deleteRegistrationsOnCollection($this->get_base_id());
 
         phrasea::reset_baseDatas($app['phraseanet.appbox']);
 
@@ -739,5 +739,47 @@ class collection implements cache_cacheableInterface
     public static function purge()
     {
         self::$_collections = [];
+    }
+
+    /**
+     * Tells whether registration is activated for provided collection or not.
+     *
+     * @return boolean
+     */
+    public function isRegistrationEnabled()
+    {
+        if ($xml = simplexml_load_string($this->get_prefs())) {
+            $element = $xml->xpath('/baseprefs/caninscript');
+
+            if (count($element) === 0) {
+                return $this->databox->isRegistrationEnabled();
+            }
+
+            foreach ($element as $caninscript) {
+                if (false !== (Boolean) (string) $caninscript) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Gets terms of use.
+     *
+     * @param \collection $collection
+     *
+     * @return null|string
+     */
+    public function getTermsOfUse()
+    {
+        if ($xml = simplexml_load_string($this->get_prefs())) {
+            foreach ($xml->xpath('/baseprefs/cgu') as $sbpcgu) {
+                return $sbpcgu->saveXML();
+            }
+        }
+
+        return null;
     }
 }

@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Controller\Root;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\Registration;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Alchemy\Phrasea\Model\Entities\User;
 
@@ -49,6 +50,17 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $data = [
             [
+                'registrations' => [
+                    'by-type' => [
+                        'inactive'  => [new Registration()],
+                        'accepted'  => [new Registration()],
+                        'in-time'   => [new Registration()],
+                        'out-dated' => [new Registration()],
+                        'pending'   => [new Registration()],
+                        'rejected'  => [new Registration()],
+                    ],
+                    'by-collection' => []
+                ],
                 'config' => [
                     'db-name'       => 'a_db_name',
                     'cgu'           => null,
@@ -58,16 +70,14 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
                         [
                             'coll-name'     => 'a_coll_name',
                             'can-register'  => false,
-                            'cgu'           => null,
-                            'cgu-release'   => null,
-                            'demand'        => null
+                            'cgu'           => 'Some terms of use.',
+                            'registration'  => null
                         ],
                         [
                             'coll-name'     => 'an_other_coll_name',
                             'can-register'  => false,
                             'cgu'           => null,
-                            'cgu-release'   => null,
-                            'demand'        => null
+                            'registration'  => null
                         ]
                     ],
                 ]
@@ -76,10 +86,10 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 
         $service = $this->getMockBuilder('Alchemy\Phrasea\Registration\RegistrationManager')
             ->setConstructorArgs([self::$DI['app']['EM'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']])
-            ->setMethods(['getRegistrationDemandsForUser'])
+            ->setMethods(['getRegistrationSummary'])
             ->getMock();
 
-        $service->expects($this->once())->method('getRegistrationDemandsForUser')->will($this->returnValue($data));
+        $service->expects($this->once())->method('getRegistrationSummary')->will($this->returnValue($data));
 
         self::$DI['app']['registration-manager'] = $service;
         self::$DI['client']->request('GET', '/account/access/');
@@ -337,8 +347,8 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('minet', self::$DI['app']['authentication']->getUser()->getLastName());
 
-        $rs = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\RegistrationDemand')->findBy([
-            'user' => self::$DI['app']['authentication']->getUser(),
+        $rs = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Registration')->findBy([
+            'user' => self::$DI['app']['authentication']->getUser()->getId(),
             'pending' => true
         ]);
 

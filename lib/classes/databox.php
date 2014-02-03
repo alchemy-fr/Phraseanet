@@ -1482,4 +1482,22 @@ class databox extends base
     {
         self::$_xpath_thesaurus = self::$_dom_thesaurus = self::$_thesaurus = self::$_sxml_thesaurus = [];
     }
+
+    /**
+     * Tells whether the registration is enable for provided databox or not.
+     *
+     * @return boolean
+     */
+    public function isRegistrationEnabled()
+    {
+        if (false !== $xml = $this->get_sxml_structure()) {
+            foreach ($xml->xpath('/record/caninscript') as $canRegister) {
+                if (false !== (Boolean) (string) $canRegister) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }

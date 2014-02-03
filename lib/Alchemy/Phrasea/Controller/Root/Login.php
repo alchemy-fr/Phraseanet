@@ -335,7 +335,7 @@ class Login implements ControllerProviderInterface
                     } else {
                         $selected = isset($data['collections']) ? $data['collections'] : null;
                     }
-                    $inscriptions = $app['registration-manager']->getRegistrationInformations();
+                    $inscriptions = $app['registration-manager']->getRegistrationSummary();
                     $inscOK = [];
 
                     foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
@@ -406,7 +406,7 @@ class Login implements ControllerProviderInterface
                             continue;
                         }
 
-                        $app['registration-manager']->newDemand($user->getId(), $base_id);
+                        $app['registration-manager']->createRegistration($user->getId(), $base_id);
                         $demandOK[$base_id] = true;
                     }
 

@@ -19,8 +19,8 @@
                 <tr>
                     <td colspan="3" style="text-align: center;"><h3>{{ sbasName }}</h3></td>
                 </tr>
-                {% if baseInfo["demands"]["by-type"]["accepted"]|length > 0 %}
-                    {% for baseId in baseInfo["demands"]["by-type"]["accepted"] %}
+                {% if baseInfo["registrations"]["by-type"]["accepted"]|length > 0 %}
+                    {% for baseId in baseInfo["registrations"]["by-type"]["accepted"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
                                 {{ "login::register: acces authorise sur la collection" | trans }}{{ sbasName }}
@@ -35,8 +35,8 @@
                         </td>
                     </tr>
                 {% endif %}
-                {% if baseInfo["demands"]["by-type"]["rejected"]|length > 0 %}
-                    {% for baseId in baseInfo["demands"]["by-type"]["rejected"] %}
+                {% if baseInfo["registrations"]["by-type"]["rejected"]|length > 0 %}
+                    {% for baseId in baseInfo["registrations"]["by-type"]["rejected"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
                                 <span style="color: red;">{{ "login::register: acces refuse sur la collection" | trans }}{{ sbasName }}
@@ -51,8 +51,8 @@
                         </td>
                     </tr>
                 {% endif %}
-                {% if baseInfo["demands"]["by-type"]["pending"]|length > 0 %}
-                    {% for baseId in baseInfo["demands"]["by-type"]["pending"] %}
+                {% if baseInfo["registrations"]["by-type"]["pending"]|length > 0 %}
+                    {% for baseId in baseInfo["registrations"]["by-type"]["pending"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
                                 <span style="color: orange;">{{ "login::register: en attente d\'acces sur" | trans }} {{ sbasId |sbas_labels(app) }}</span>
@@ -67,8 +67,8 @@
                         </td>
                     </tr>
                 {% endif %}
-                {% if baseInfo["demands"]["by-type"]["in-time"]|length > 0 %}
-                    {% for baseId in baseInfo["demands"]["by-type"]["in-time"] %}
+                {% if baseInfo["registrations"]["by-type"]["in-time"]|length > 0 %}
+                    {% for baseId in baseInfo["registrations"]["by-type"]["in-time"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
                                 <span>{{ "login::register: acces temporaire sur" | trans }} {{ sbasId |sbas_labels(app) }}</span>
@@ -83,8 +83,8 @@
                         </td>
                     </tr>
                 {% endif %}
-                {% if baseInfo["demands"]["by-type"]["out-dated"]|length > 0 %}
-                    {% for baseId in baseInfo["demands"]["by-type"]["out-dated"] %}
+                {% if baseInfo["registrations"]["by-type"]["out-dated"]|length > 0 %}
+                    {% for baseId in baseInfo["registrations"]["by-type"]["out-dated"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
                                 <span style="color:red;">{{ "login::register: acces temporaire termine sur" | trans }}{{ sbasId |sbas_labels(app) }}</span>
@@ -99,8 +99,8 @@
                         </td>
                     </tr>
                 {% endif %}
-                {% if baseInfo["demands"]["by-type"]["inactive"]|length > 0 %}
-                    {% for baseId in baseInfo["demands"]["by-type"]["inactive"] %}
+                {% if baseInfo["registrations"]["by-type"]["inactive"]|length > 0 %}
+                    {% for baseId in baseInfo["registrations"]["by-type"]["inactive"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
                                 <span style="color:red;">{{ "login::register: acces supendu sur" | trans }} {{ sbasId |sbas_labels(app) }}</span>
@@ -127,7 +127,7 @@
                         <td colspan="3" style="text-align: center;"><div style="width: 90%; height: 120px; text-align: left; overflow: auto;">{{ baseInfo["config"]["cgu"] }}</div></td>
                     </tr>
                 {% endif %}
-                {% for baseId, collInfo in baseInfo["config"]["collections"] if (collInfo['demand'] is none and collInfo['can-register']) %}
+                {% for baseId, collInfo in baseInfo["config"]["collections"] if (collInfo['registration'] is none and collInfo['can-register']) %}
                     {% if collInfo["cgu"] is not none %}
                         <tr>
                             <td colspan="3" style="text-align: center;">{{ "login::register: L\'acces aux bases ci-dessous implique l\'acceptation des Conditions Generales d\'Utilisation (CGU) suivantes" | trans }}</td>

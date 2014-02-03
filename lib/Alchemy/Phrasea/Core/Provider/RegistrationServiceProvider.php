@@ -27,7 +27,14 @@ class RegistrationServiceProvider implements ServiceProviderInterface
         });
 
         $app['registration.enabled'] = $app->share(function (Application $app) {
-            return $app['registration-manager']->isRegistrationEnabled();
+            foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+                foreach($databox->get_collections() as $collection) {
+                    if ($collection->isRegistrationEnabled()) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         });
 
         $app['registration.optional-fields'] = $app->share(function (Application $app) {

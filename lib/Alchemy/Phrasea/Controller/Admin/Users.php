@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Controller\Admin;
 use Alchemy\Phrasea\Helper\User as UserHelper;
 use Alchemy\Phrasea\Model\Entities\FtpCredential;
 use Alchemy\Phrasea\Model\Entities\User;
+use igorw;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -354,37 +355,27 @@ class Users implements ControllerProviderInterface
         })->bind('admin_users_export_csv');
 
         $controllers->get('/demands/', function (Application $app) {
-            $app['registration-manager']->deleteOldDemand();
+            $app['registration-manager']->deleteOldRegistrations();
 
             $models = $app['manipulator.user']->getRepository()->findModelOf($app['authentication']->getUser());
 
-            $demands = $app['registration-manager']->getRepository()->getDemandsForUser(
+            $users = $registrations = [];
+            foreach ($app['registration-manager']->getRepository()->getDemandsForUser(
                 $app['authentication']->getUser(),
                 array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['canadmin']))
-            );
+            ) as $registration) {
+                $user = $registration->getUser();
+                $users[$user->getId()] = $user;
 
-            $currentUsr = null;
-            $table = ['user' => [], 'demand' => []];
 
-            foreach ($demands as $demand) {
-                $user = $demand->getUser();
-
-                if ($user->getId() !== $currentUsr) {
-                    $currentUsr = $user->getId();
-                    $table['user'][$user->getId()] = $user;
-                }
-
-                if (!isset($table['demand'][$user->getId()])) {
-                    $table['demand'][$user->getId()] = [];
-                }
-
-                if (!array_key_exists($demand->getBaseId(), $table['demand'][$user->getId()][$demand->getBaseId()])) {
-                    $table['demand'][$user->getId()][$demand->getBaseId()] = $demand;
+                if (null !== igorw::get_in($registrations, [$user->getId(), $registration->getBaseId()])) {
+                    $registrations[$user->getId()][$registration->getBaseId()] = $registration;
                 }
             }
 
             return $app['twig']->render('admin/user/demand.html.twig', [
-                'table'  => $table,
+                'users' => $users,
+                'registrations' => $registrations,
                 'models' => $models,
             ]);
         })->bind('users_display_demands');
@@ -444,27 +435,23 @@ class Users implements ControllerProviderInterface
 
                     $app['acl']->get($user)->apply_model($user_template, $base_ids);
 
-                    if (!isset($done[$usr])) {
-                        $done[$usr] = [];
-                    }
-
                     foreach ($base_ids as $base_id) {
                         $done[$usr][$base_id] = true;
                     }
 
-                    $app['registration-manager']->getRepository()->deleteUserDemands($user, $base_ids);
+                    $app['registration-manager']->deleteRegistrationsForUser($user->get_id(), $base_ids);
                 }
 
                 foreach ($deny as $usr => $bases) {
                     $cache_to_update[$usr] = true;
                     foreach ($bases as $bas) {
-                        $app['registration-manager']->rejectDemand($usr, $bas);
-
-                        if (!isset($done[$usr])) {
-                            $done[$usr] = [];
+                        if (null !== $registration = $this->getRepository()->findOneBy([
+                            'user' => $usr,
+                            'baseId' => $bas
+                        ])) {
+                            $app['registration-manager']->rejectDemand($registration);
+                            $done[$usr][$bas] = false;
                         }
-
-                        $done[$usr][$bas] = false;
                     }
                 }
 
@@ -474,12 +461,13 @@ class Users implements ControllerProviderInterface
 
                     foreach ($bases as $bas) {
                         $collection = \collection::get_from_base_id($app, $bas);
-                        if (!isset($done[$usr])) {
-                            $done[$usr] = [];
+                        if (null !== $registration = $this->getRepository()->findOneBy([
+                            'user' => $user->get_id(),
+                            'baseId' => $collection->get_base_id()
+                        ])) {
+                            $done[$usr][$bas] = true;
+                            $app['registration-manager']->acceptDemand($registration, $user, $collection, $options[$usr][$bas]['HD'], $options[$usr][$bas]['WM']);
                         }
-                        $done[$usr][$bas] = true;
-
-                        $app['registration-manager']->acceptDemand($user, $collection, $options[$usr][$bas]['HD'], $options[$usr][$bas]['WM']);
                     }
                 }
 

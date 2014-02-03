@@ -23,6 +23,7 @@ use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Alchemy\Phrasea\Model\Entities\FeedToken;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
+use Alchemy\Phrasea\Model\Entities\Registration;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -36,6 +37,7 @@ use Alchemy\Phrasea\Model\Entities\StoryWZ;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
+use Gedmo\Timestampable\TimestampableListener;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -94,6 +96,10 @@ class RegenerateSqliteDb extends Command
             $this->insertOneAggregateToken($this->container['EM'], $DI);
             $this->insertLazaretFiles($this->container['EM'], $DI);
             $this->insertAuthFailures($this->container['EM'], $DI);
+            $this->insertOneRegistration($this->container['EM'],$DI['user_alt1'], $DI['coll']);
+            $this->insertOneRegistration($this->container['EM'],$DI['user_alt2'], $DI['coll'], '-3 months');
+            $this->insertOneRegistration($this->container['EM'],$DI['user_alt2'], $DI['coll']);
+
 
             $fixtures['user']['test_phpunit'] = $DI['user']->getId();
             $fixtures['user']['test_phpunit_not_admin'] = $DI['user_notAdmin']->getId();
@@ -636,5 +642,18 @@ class RegenerateSqliteDb extends Command
         }
 
         $em->persist($entry);
+    }
+
+    private function insertOneRegistration(EntityManager $em, \User_Adapter $user, \collection $collection, $when = 'now')
+    {
+        $em->getEventManager()->removeEventSubscriber(new TimestampableListener());
+        $registration = new Registration();
+        $registration->setBaseId($collection->get_base_id());
+        $registration->setUser($user->get_id());
+        $registration->setUpdated(new \DateTime($when));
+        $registration->setCreated(new \DateTime($when));
+        $em->persist($registration);
+        $em->flush();
+        $em->getEventManager()->addEventSubscriber(new TimestampableListener());
     }
 }

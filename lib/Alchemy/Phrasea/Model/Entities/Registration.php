@@ -15,10 +15,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="RegistrationDemand")
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\RegistrationDemandRepository")
+ * @ORM\Table(name="Registration")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\RegistrationRepository")
  */
-class RegistrationDemand
+class Registration
 {
    /**
      * @ORM\Column(type="integer")
@@ -72,7 +72,7 @@ class RegistrationDemand
     /**
      * @param mixed $pending
      *
-     * @return RegistrationDemand
+     * @return Registration
      */
     public function setPending($pending)
     {
@@ -92,7 +92,7 @@ class RegistrationDemand
     /**
      * @param mixed $rejected
      *
-     * @return RegistrationDemand
+     * @return Registration
      */
     public function setRejected($rejected)
     {
@@ -112,7 +112,7 @@ class RegistrationDemand
     /**
      * @param mixed $user
      *
-     * @return RegistrationDemand
+     * @return Registration
      */
     public function setUser($user)
     {
@@ -132,7 +132,7 @@ class RegistrationDemand
     /**
      * @param mixed $baseId
      *
-     * @return RegistrationDemand
+     * @return Registration
      */
     public function setBaseId($baseId)
     {

@@ -3,256 +3,163 @@
 namespace Alchemy\Tests\Phrasea\Registration;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Authentication\ProvidersCollection;
-use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Alchemy\Phrasea\Model\Entities\RegistrationDemand;
+use Alchemy\Phrasea\Model\Entities\Registration;
 use Alchemy\Phrasea\Registration\RegistrationManager;
 
 class RegistrationManagerTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider registrationConfigProvider
-     */
-    public function testRegistrationIsEnable($data, $value)
+    public function testCreateRegistration()
     {
-        $service = $this->getMockBuilder('Alchemy\Phrasea\Registration\RegistrationManager')
-            ->setConstructorArgs([self::$DI['app']['EM'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']])
-            ->setMethods(['getRegistrationInformations'])
+        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
             ->getMock();
+        $em->expects($this->once())->method('persist')->with($this->isInstanceOf('Alchemy\Phrasea\Model\Entities\Registration'));
+        $em->expects($this->once())->method('flush');
 
-        $service->expects($this->once())->method('getRegistrationInformations')->will($this->returnValue($data));
-        $this->assertEquals($value, $service->isRegistrationEnabled());
+        $service = new RegistrationManager($em, self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']);
+
+        $registration = $service->createRegistration(self::$DI['user']->get_id(), self::$DI['collection']->get_base_id());
+
+        $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\Registration', $registration);
+        $this->assertEquals(self::$DI['collection']->get_base_id(), $registration->getBaseId());
+        $this->assertEquals(self::$DI['user']->get_id(), $registration->getUser());
+
+        return $registration;
     }
 
     /**
-     * @dataProvider databoxXmlConfiguration
+     * @depends testCreateRegistration
      */
-    public function testIsRegistrationEnabledForDatabox($data, $value)
+    public function testRejectRegistration($registration)
     {
-        $service = new RegistrationManager(self::$DI['app']['EM'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']);
-
-        $mock = $this->getMockBuilder('\databox')
+        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
-            ->setMethods(['get_sxml_structure'])
             ->getMock();
+        $em->expects($this->once())->method('persist')->with($this->isInstanceOf('Alchemy\Phrasea\Model\Entities\Registration'));
+        $em->expects($this->once())->method('flush');
 
-        $mock->expects($this->once())->method('get_sxml_structure')->will($this->returnValue($data));
-        $this->assertEquals($value, $service->isRegistrationEnabledForDatabox($mock));
+        $service = new RegistrationManager($em, self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']);
+
+        $service->rejectRegistration($registration);
+        $this->assertFalse($registration->isPending());
+        $this->assertTrue($registration->isRejected());
+
+        return $registration;
     }
 
     /**
-     * @dataProvider collectionXmlConfiguration
+     * @depends testCreateRegistration
      */
-    public function testIsRegistrationEnabledForCollection($data, $value)
+    public function testAcceptRegistration($registration)
+    {
+        $aclMock = $this->getMockBuilder('ACL')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $aclMock->expects($this->once())->method('give_access_to_sbas')->with($this->equalTo([self::$DI['collection']->get_sbas_id()]));
+        $aclMock->expects($this->once())->method('give_access_to_base')->with($this->equalTo([self::$DI['collection']->get_base_id()]));
+        $aclMock->expects($this->once())->method('update_rights_to_base')->with($this->equalTo(self::$DI['collection']->get_base_id()), $this->equalTo([
+            'canputinalbum'   => '1',
+            'candwnldhd'      => '1',
+            'nowatermark'     => '0',
+            'candwnldpreview' => '1',
+            'actif'           => '1',
+        ]));
+        $aclProviderMock = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $aclProviderMock->expects($this->any())->method('get')->with($this->equalTo(self::$DI['user']))->will($this->returnvalue($aclMock));
+        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $em->expects($this->once())->method('remove')->with($this->isInstanceOf('Alchemy\Phrasea\Model\Entities\Registration'));
+        $em->expects($this->once())->method('flush');
+
+        $service = new RegistrationManager($em, self::$DI['app']['phraseanet.appbox'], $aclProviderMock);
+        $service->acceptRegistration($registration, self::$DI['user'], self::$DI['collection'], true, false);
+    }
+
+    public function testDeleteRegistrationForUser()
     {
         $service = new RegistrationManager(self::$DI['app']['EM'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']);
+        $qb = $service->getRepository()->createQueryBuilder('r');
+        $nbRegistrationBefore = $qb->select('COUNT(r)')
+            ->where($qb->expr()->eq('r.user', ':user'))
+            ->setParameter(':user', self::$DI['user_alt1']->get_id())
+            ->getQuery()
+            ->getSingleScalarResult();
+        $service->deleteRegistrationsForUser(self::$DI['user_alt1']->get_id(), [self::$DI['collection']->get_base_id()]);
+        $nbRegistrationAfter = $qb->getQuery()->getSingleScalarResult();
+        $this->assertGreaterThan($nbRegistrationAfter, $nbRegistrationBefore);
+    }
 
-        $mock = $this->getMockBuilder('\collection')
-            ->disableOriginalConstructor()
-            ->setMethods(['get_prefs'])
-            ->getMock();
+    public function testDeleteOldRegistrations()
+    {
+        $service = new RegistrationManager(self::$DI['app']['EM'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']);
+        $qb = $service->getRepository()->createQueryBuilder('r');
+        $nbRegistrationBefore = $qb->select('COUNT(r)')
+            ->getQuery()
+            ->getSingleScalarResult();
+        $service->deleteOldRegistrations();
+        $nbRegistrationAfter = $qb->getQuery()->getSingleScalarResult();
+        $this->assertGreaterThan($nbRegistrationAfter, $nbRegistrationBefore);
+    }
 
-        $mock->expects($this->once())->method('get_prefs')->will($this->returnValue($data));
-        $this->assertEquals($value, $service->isRegistrationEnabledForCollection($mock));
+    public function testDeleteRegistrationOnCollection()
+    {
+        $service = new RegistrationManager(self::$DI['app']['EM'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']);
+        $qb = $service->getRepository()->createQueryBuilder('r');
+        $nbRegistrationBefore = $qb->select('COUNT(r)')
+            ->getQuery()
+            ->getSingleScalarResult();
+        $service->deleteRegistrationsOnCollection(self::$DI['collection']->get_base_id());
+        $nbRegistrationAfter = $qb->getQuery()->getSingleScalarResult();
+        $this->assertGreaterThan($nbRegistrationAfter, $nbRegistrationBefore);
     }
 
     /**
      * @dataProvider userDataProvider
      */
-    public function testGetRegistrationInformationsWithUserData($data, $type, $value)
+    public function testGetRegistrationSummaryWithUserData($data, $type, $value)
     {
-        $service = $this->getMockBuilder('Alchemy\Phrasea\Registration\RegistrationManager')
-            ->setConstructorArgs([self::$DI['app']['EM'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']])
-            ->setMethods(['getRegistrationDemandsForUser'])
+        $repoMock = $this->getMockBuilder('Alchemy\Phrasea\Model\Repositories\RegistrationRepository')
+            ->disableOriginalConstructor()
+            ->setMethods(['getRegistrationsSummaryForUser'])
             ->getMock();
+        $repoMock->expects($this->once())->method('getRegistrationsSummaryForUser')->will($this->returnValue($data));
+        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $em->expects($this->once())->method('getRepository')->will($this->returnValue($repoMock));
 
-        $service->expects($this->once())->method('getRegistrationDemandsForUser')->will($this->returnValue($data));
+        $service = new RegistrationManager($em, self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']);
 
-        $rs = $service->getRegistrationInformations(4);
+        $rs = $service->getRegistrationSummary(4);
 
         $databox = current(self::$DI['app']['phraseanet.appbox']->get_databoxes());
         $collection = current($databox->get_collections());
 
-        $this->assertEquals($value, count($rs[$databox->get_sbas_id()]['demands']['by-type'][$type]));
-        $this->assertNotNull($rs[$databox->get_sbas_id()]['demands']['by-collection'][$collection->get_base_id()]);
-    }
-
-    public function databoxXmlConfiguration()
-    {
-        $xmlInscript =
-<<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<record><caninscript>1</caninscript>1</record>
-XML;
-        $xmlNoInscript =
-            <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<record><caninscript>0</caninscript>1</record>
-XML;
-        $xmlNoInscriptEmpty =
-    <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<record><caninscript></caninscript></record>
-XML;
-
-        return [
-            [simplexml_load_string($xmlInscript), true],
-            [simplexml_load_string($xmlNoInscript), false],
-            [simplexml_load_string($xmlNoInscriptEmpty), false],
-        ];
-    }
-
-    public function collectionXmlConfiguration()
-    {
-        $xmlInscript =
-<<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<baseprefs><caninscript>1</caninscript>1</baseprefs>
-XML;
-        $xmlNoInscript =
-<<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<baseprefs><caninscript>0</caninscript>1</baseprefs>
-XML;
-        $xmlNoInscriptEmpty =
-<<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<baseprefs><caninscript></caninscript></baseprefs>
-XML;
-
-        return [
-            [$xmlInscript, true],
-            [$xmlNoInscript, false],
-            [$xmlNoInscriptEmpty, false],
-        ];
-    }
-
-    public function registrationConfigProvider()
-    {
-        $enableDataboxConfig = [
-            [
-                [
-                    'config' => [
-                        'db-name'       => 'a_db_name',
-                        'cgu'           => null,
-                        'cgu-release'   => null,
-                        'can-register'  => true,
-                        'collections'   => [],
-                    ]
-                ]
-            ],
-            false
-        ];
-
-        $enableCollectionConfig = [
-            [
-                [
-                    'config' => [
-                        'db-name'       => 'a_db_name',
-                        'cgu'           => null,
-                        'cgu-release'   => null,
-                        'can-register'  => false,
-                        'collections'   => [
-                            [
-                                'coll-name'     => 'a_coll_name',
-                                'can-register'  => true,
-                                'cgu'           => null,
-                                'cgu-release'   => null,
-                                'demand'        => null
-                            ]
-                        ],
-                    ]
-                ]
-            ],
-            true
-        ];
-
-        $nothingEnabledConfig = [
-            [
-                [
-                    'config' => [
-                        'db-name'       => 'a_db_name',
-                        'cgu'           => null,
-                        'cgu-release'   => null,
-                        'can-register'  => false,
-                        'collections'   => [
-                            [
-                                'coll-name'     => 'a_coll_name',
-                                'can-register'  => false,
-                                'cgu'           => null,
-                                'cgu-release'   => null,
-                                'demand'        => null
-                            ],
-                            [
-                                'coll-name'     => 'an_other_coll_name',
-                                'can-register'  => false,
-                                'cgu'           => null,
-                                'cgu-release'   => null,
-                                'demand'        => null
-                            ]
-                        ],
-                    ]
-                ]
-            ],
-            false
-        ];
-
-        $noCollectionEnabledButBaseEnabledConfig = [
-            [
-                [
-                    'config' => [
-                        'db-name'       => 'a_db_name',
-                        'cgu'           => null,
-                        'cgu-release'   => null,
-                        'can-register'  => true,
-                        'collections'   => [
-                            [
-                                'coll-name'     => 'a_coll_name',
-                                'can-register'  => false,
-                                'cgu'           => null,
-                                'cgu-release'   => null,
-                                'demand'        => null
-                            ],
-                            [
-                                'coll-name'     => 'an_other_coll_name',
-                                'can-register'  => false,
-                                'cgu'           => null,
-                                'cgu-release'   => null,
-                                'demand'        => null
-                            ]
-                        ],
-                    ]
-                ]
-            ],
-            false
-        ];
-
-        return [
-            $enableDataboxConfig,
-            $enableCollectionConfig,
-            $nothingEnabledConfig,
-            $noCollectionEnabledButBaseEnabledConfig
-        ];
+        $this->assertEquals($value, count($rs[$databox->get_sbas_id()]['registrations']['by-type'][$type]));
+        $this->assertNotNull($rs[$databox->get_sbas_id()]['registrations']['by-collection'][$collection->get_base_id()]);
     }
 
     public function userDataProvider()
     {
-        $pendingDemand = new RegistrationDemand();
-        $pendingDemand->setBaseId(1);
-        $pendingDemand->setUser(3);
-        $pendingDemand->setPending(true);
-        $pendingDemand->setRejected(false);
+        $pendingRegistration = new Registration();
+        $pendingRegistration->setBaseId(1);
+        $pendingRegistration->setUser(3);
+        $pendingRegistration->setPending(true);
+        $pendingRegistration->setRejected(false);
 
-        $rejectedDemand = new RegistrationDemand();
-        $rejectedDemand->setBaseId(1);
-        $rejectedDemand->setUser(3);
-        $rejectedDemand->setPending(true);
-        $rejectedDemand->setRejected(true);
+        $rejectedRegistration = new Registration();
+        $rejectedRegistration->setBaseId(1);
+        $rejectedRegistration->setUser(3);
+        $rejectedRegistration->setPending(true);
+        $rejectedRegistration->setRejected(true);
 
         $databox = current((new \appbox(new Application()))->get_databoxes());
         $collection = current($databox->get_collections());
 
-        $noLimitedPendingDemand = [
+        $noLimitedPendingRegistration = [
             [
                 $databox->get_sbas_id() => [
                     $collection->get_base_id() => [
@@ -261,7 +168,7 @@ XML;
                         'active' => true,
                         'time-limited' => false,
                         'in-time' => null,
-                        'demand' => $pendingDemand
+                        'registration' => $pendingRegistration
                     ]
                 ]
             ],
@@ -270,7 +177,7 @@ XML;
         ];
 
 
-        $rejectedDemand = [
+        $rejectedRegistration = [
             [
                 $databox->get_sbas_id() => [
                     $collection->get_base_id() => [
@@ -279,7 +186,7 @@ XML;
                         'active' => true,
                         'time-limited' => false,
                         'in-time' => null,
-                        'demand' => $rejectedDemand
+                        'registration' => $rejectedRegistration
                     ]
                 ]
             ],
@@ -287,7 +194,7 @@ XML;
             1
         ];
 
-        $noActiveDemand = [
+        $noActiveRegistration = [
             [
                 $databox->get_sbas_id() => [
                     $collection->get_base_id() => [
@@ -296,7 +203,7 @@ XML;
                         'active' => false,
                         'time-limited' => false,
                         'in-time' => null,
-                        'demand' => $pendingDemand
+                        'registration' => $pendingRegistration
                     ]
                 ]
             ],
@@ -304,7 +211,7 @@ XML;
             1
         ];
 
-        $limitedActiveIntimePendingDemand = [
+        $limitedActiveIntimePendingRegistration = [
             [
                 $databox->get_sbas_id() => [
                     $collection->get_base_id() => [
@@ -313,7 +220,7 @@ XML;
                         'active' => true,
                         'time-limited' => true,
                         'in-time' => true,
-                        'demand' => $pendingDemand
+                        'registration' => $pendingRegistration
                     ]
                 ]
             ],
@@ -321,7 +228,7 @@ XML;
             1
         ];
 
-        $limitedActiveOutdatedPendingDemand = [
+        $limitedActiveOutdatedPendingRegistration = [
             [
                 $databox->get_sbas_id() => [
                     $collection->get_base_id() => [
@@ -330,7 +237,7 @@ XML;
                         'active' => true,
                         'time-limited' => true,
                         'in-time' => false,
-                        'demand' => $pendingDemand
+                        'registration' => $pendingRegistration
                     ]
                 ]
             ],
@@ -339,11 +246,11 @@ XML;
         ];
 
         return [
-            $noLimitedPendingDemand,
-            $noActiveDemand,
-            $limitedActiveIntimePendingDemand,
-            $limitedActiveOutdatedPendingDemand,
-            $rejectedDemand
+            $noLimitedPendingRegistration,
+            $noActiveRegistration,
+            $limitedActiveIntimePendingRegistration,
+            $limitedActiveOutdatedPendingRegistration,
+            $rejectedRegistration
         ];
     }
 }

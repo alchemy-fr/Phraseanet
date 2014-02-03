@@ -9,7 +9,7 @@ use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Authentication\ProvidersCollection;
-use Alchemy\Phrasea\Model\Entities\RegistrationDemand;
+use Alchemy\Phrasea\Model\Entities\Registration;
 use Alchemy\Phrasea\Model\Entities\User;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -209,7 +209,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['user']->setMailLocked(true);
         $this->deleteRequest();
-        $demand = new RegistrationDemand();
+        $demand = new Registration();
         $demand->setUser(self::$DI['user']);
         $demand->setBaseId(self::$DI['collection']->get_base_id());
 
@@ -1797,7 +1797,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
      */
     private function deleteRequest()
     {
-        $query = self::$DI['app']['EM']->createQuery('DELETE FROM Alchemy\Phrasea\Model\Entities\RegistrationDemand d WHERE d.user=?1');
+        $query = self::$DI['app']['EM']->createQuery('DELETE FROM Alchemy\Phrasea\Model\Entities\Registration d WHERE d.user=?1');
         $query->setParameter(1, self::$DI['user']->getId());
         $query->execute();
     }
