@@ -813,7 +813,7 @@ abstract class task_abstract
         $this->logger->addDebug(memory_get_usage() . " -- " . memory_get_usage(true));
     }
 
-    public function log($message, $level = Logger::LOG_DEBUG)
+    public function log($message, $level = self::LOG_DEBUG)
     {
         $this->logger->addRecord($level, $message);
 
