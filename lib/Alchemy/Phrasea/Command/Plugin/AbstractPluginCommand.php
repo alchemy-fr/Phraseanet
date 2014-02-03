@@ -30,6 +30,19 @@ abstract class AbstractPluginCommand extends Command
         return $manifests;
     }
 
+    protected function doExecute(InputInterface $input, OutputInterface $output)
+    {
+        if (basename($_SERVER['PHP_SELF']) === 'console') {
+            $output->writeln("");
+            $output->writeln(sprintf('<error> /!\ </error> <comment>Warning</comment>, this command is deprecated and will be removed as of Phraseanet 3.9, please use <info>bin/setup %s</info> instead <error> /!\ </error>', $this->getName()));
+            $output->writeln("");
+        }
+
+        return $this->doExecutePluginAction($input, $output);
+    }
+
+    abstract protected function doExecutePluginAction(InputInterface $input, OutputInterface $output);
+
     protected function updateConfigFiles(InputInterface $input, OutputInterface $output)
     {
         $manifests = $this->validatePlugins($input, $output);

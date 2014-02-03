@@ -20,6 +20,9 @@ use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Command\Setup\Install;
 use Alchemy\Phrasea\Command\Setup\PluginsReset;
+use Alchemy\Phrasea\Command\Plugin\ListPlugin;
+use Alchemy\Phrasea\Command\Plugin\AddPlugin;
+use Alchemy\Phrasea\Command\Plugin\RemovePlugin;
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Command\Setup\CheckEnvironment;
 
@@ -60,6 +63,9 @@ if ($app['phraseanet.configuration-tester']->isInstalled()) {
     $app->command(new UpgradeDBDatas('system:upgrade-datas'));
 }
 
+$app->command(new AddPlugin());
+$app->command(new ListPlugin());
+$app->command(new RemovePlugin());
 $app->command(new PluginsReset());
 $app->command(new CheckEnvironment('check:system'));
 $app->command(new Install('system:install'));

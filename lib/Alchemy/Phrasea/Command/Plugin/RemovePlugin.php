@@ -26,7 +26,7 @@ class RemovePlugin extends AbstractPluginCommand
             ->addArgument('name', InputArgument::REQUIRED, 'The name of the plugin');
     }
 
-    protected function doExecute(InputInterface $input, OutputInterface $output)
+    protected function doExecutePluginAction(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument('name');
 

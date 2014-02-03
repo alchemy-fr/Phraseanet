@@ -27,7 +27,7 @@ class ListPlugin extends AbstractPluginCommand
             ->addOption('json', 'j', InputOption::VALUE_NONE, 'Output result in JSON');
     }
 
-    protected function doExecute(InputInterface $input, OutputInterface $output)
+    protected function doExecutePluginAction(InputInterface $input, OutputInterface $output)
     {
         $plugins = array_map(function (Plugin $plugin) use ($input) {
             if ($plugin->isErroneous()) {
