@@ -1137,7 +1137,7 @@ form.phrasea_query input.query {
 }
 
 .history-validate, .history-push {
-    background-image: url('icons/push16.png');
+    background-image: url('/skins/icons/push16.png');
     background-repeat: no-repeat;
     background-position: center left;
     padding-left: 30px;
