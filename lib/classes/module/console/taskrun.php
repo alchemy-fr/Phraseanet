@@ -79,7 +79,7 @@ class module_console_taskrun extends Command
         }
 
         $task_manager = $this->container['task-manager'];
-        $logger = $task_manager->getLogger();
+        $logger = $this->container['task-manager.logger'];
 
         if ($input->getOption('runner') === task_abstract::RUNNER_MANUAL) {
             $schedStatus = $task_manager->getSchedulerState();

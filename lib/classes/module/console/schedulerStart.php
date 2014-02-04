@@ -36,7 +36,7 @@ class module_console_schedulerStart extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $logger = new Logger('Task logger');
+        $logger = $this->container['task-manager.logger'];
 
         $streamHandler = new Handler\StreamHandler('php://stdout', $input->getOption('verbose') ? Logger::DEBUG : Logger::WARNING);
         $logger->pushHandler($streamHandler);
