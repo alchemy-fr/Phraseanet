@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Form\Constraint\NewLogin;
-use Alchemy\Phrasea\Registration\RegistrationManager;
+use Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator;
 use Alchemy\Phrasea\Model\Entities\User;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
@@ -132,7 +132,7 @@ class RegistrationServiceProvider implements ServiceProviderInterface
         });
 
         $app['registration-manager'] = $app->share(function (Application $app) {
-            return new RegistrationManager($app['EM'], $app['phraseanet.appbox'], $app['acl']);
+            return new RegistrationManipulator($app['EM'], $app['phraseanet.appbox'], $app['acl']);
         });
     }
 

@@ -822,7 +822,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['app']['registration.fields'] = [];
         $this->logout(self::$DI['app']);
 
-        $managerMock = $this->getMockBuilder('Alchemy\Phrasea\Registration\RegistrationManager')
+        $managerMock = $this->getMockBuilder('Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator')
             ->setConstructorArgs([self::$DI['app']['EM'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']])
             ->setMethods(['getRepository'])
             ->getMock();
@@ -1468,7 +1468,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAuthenticateProviderCallbackAlreadyBound()
     {
-        $managerMock = $this->getMockBuilder('Alchemy\Phrasea\Registration\RegistrationManager')
+        $managerMock = $this->getMockBuilder('Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator')
             ->setConstructorArgs([self::$DI['app']['EM'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']])
             ->setMethods(['getRepository'])
             ->getMock();

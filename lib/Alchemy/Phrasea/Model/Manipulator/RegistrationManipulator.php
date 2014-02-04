@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Registration;
+namespace Alchemy\Phrasea\Model\Manipulator;
 
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Model\Entities\Registration;
@@ -17,7 +17,7 @@ use Alchemy\Phrasea\Model\Repositories\RegistrationRepository;
 use Doctrine\ORM\EntityManager;
 use igorw;
 
-class RegistrationManager
+class RegistrationManipulator implements ManipulatorInterface
 {
     private $em;
     private $appbox;

@@ -84,7 +84,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
             ]
         ];
 
-        $service = $this->getMockBuilder('Alchemy\Phrasea\Registration\RegistrationManager')
+        $service = $this->getMockBuilder('Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator')
             ->setConstructorArgs([self::$DI['app']['EM'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']])
             ->setMethods(['getRegistrationSummary'])
             ->getMock();

@@ -4,9 +4,9 @@ namespace Alchemy\Tests\Phrasea\Registration;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Registration;
-use Alchemy\Phrasea\Registration\RegistrationManager;
+use Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator;
 
-class RegistrationManagerTest extends \PhraseanetTestCase
+class RegistrationManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreateRegistration()
     {
@@ -16,7 +16,7 @@ class RegistrationManagerTest extends \PhraseanetTestCase
         $em->expects($this->once())->method('persist')->with($this->isInstanceOf('Alchemy\Phrasea\Model\Entities\Registration'));
         $em->expects($this->once())->method('flush');
 
-        $service = new RegistrationManager($em, self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']);
+        $service = new RegistrationManipulator($em, self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']);
 
         $registration = $service->createRegistration(self::$DI['user']->get_id(), self::$DI['collection']->get_base_id());
 
@@ -38,7 +38,7 @@ class RegistrationManagerTest extends \PhraseanetTestCase
         $em->expects($this->once())->method('persist')->with($this->isInstanceOf('Alchemy\Phrasea\Model\Entities\Registration'));
         $em->expects($this->once())->method('flush');
 
-        $service = new RegistrationManager($em, self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']);
+        $service = new RegistrationManipulator($em, self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']);
 
         $service->rejectRegistration($registration);
         $this->assertFalse($registration->isPending());
@@ -74,13 +74,13 @@ class RegistrationManagerTest extends \PhraseanetTestCase
         $em->expects($this->once())->method('remove')->with($this->isInstanceOf('Alchemy\Phrasea\Model\Entities\Registration'));
         $em->expects($this->once())->method('flush');
 
-        $service = new RegistrationManager($em, self::$DI['app']['phraseanet.appbox'], $aclProviderMock);
+        $service = new RegistrationManipulator($em, self::$DI['app']['phraseanet.appbox'], $aclProviderMock);
         $service->acceptRegistration($registration, self::$DI['user'], self::$DI['collection'], true, false);
     }
 
     public function testDeleteRegistrationForUser()
     {
-        $service = new RegistrationManager(self::$DI['app']['EM'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']);
+        $service = new RegistrationManipulator(self::$DI['app']['EM'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']);
         $qb = $service->getRepository()->createQueryBuilder('r');
         $nbRegistrationBefore = $qb->select('COUNT(r)')
             ->where($qb->expr()->eq('r.user', ':user'))
@@ -94,7 +94,7 @@ class RegistrationManagerTest extends \PhraseanetTestCase
 
     public function testDeleteOldRegistrations()
     {
-        $service = new RegistrationManager(self::$DI['app']['EM'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']);
+        $service = new RegistrationManipulator(self::$DI['app']['EM'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']);
         $qb = $service->getRepository()->createQueryBuilder('r');
         $nbRegistrationBefore = $qb->select('COUNT(r)')
             ->getQuery()
@@ -106,7 +106,7 @@ class RegistrationManagerTest extends \PhraseanetTestCase
 
     public function testDeleteRegistrationOnCollection()
     {
-        $service = new RegistrationManager(self::$DI['app']['EM'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']);
+        $service = new RegistrationManipulator(self::$DI['app']['EM'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']);
         $qb = $service->getRepository()->createQueryBuilder('r');
         $nbRegistrationBefore = $qb->select('COUNT(r)')
             ->getQuery()
@@ -131,7 +131,7 @@ class RegistrationManagerTest extends \PhraseanetTestCase
             ->getMock();
         $em->expects($this->once())->method('getRepository')->will($this->returnValue($repoMock));
 
-        $service = new RegistrationManager($em, self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']);
+        $service = new RegistrationManipulator($em, self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']);
 
         $rs = $service->getRegistrationSummary(4);
 
