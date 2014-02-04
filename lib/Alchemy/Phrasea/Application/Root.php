@@ -17,6 +17,8 @@ use Alchemy\Phrasea\Core\Event\Subscriber\BridgeExceptionSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\FirewallSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\JsonRequestSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\DebuggerSubscriber;
+use Monolog\Logger;
+use Monolog\Processor\WebProcessor;
 use Silex\Provider\WebProfilerServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -28,6 +30,11 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     $app['exception_handler'] = $app->share(function ($app) {
         return new PhraseaExceptionHandlerSubscriber($app['phraseanet.exception_handler']);
     });
+    $app['monolog'] = $app->share($app->extend('monolog', function (Logger $monolog) {
+        $monolog->pushProcessor(new WebProcessor());
+
+        return $monolog;
+    }));
 
     $app->before(function (Request $request) use ($app) {
         if (0 === strpos($request->getPathInfo(), '/setup')) {

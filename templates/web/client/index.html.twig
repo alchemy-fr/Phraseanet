@@ -197,16 +197,16 @@
                                                                         {% set status_bit_filters = '' %}
                                                                         {% for bit, data in databox.get_statusbits() if data['searchable'] %}
                                                                             {% set html_status_bit %}
-                                                                                <div style="text-align:center;overflow:hidden;">' .
+                                                                                <div style="text-align:center;overflow:hidden;">
                                                                                     <table style="table-layout:fixed;width:90%;text-align:left;" cellspacing="0" cellpadding="0">
                                                                                         <tr>
                                                                                             <td style="width:50%" nowrap>
                                                                                                 <input class="checkbox" db="{{ sbasId }}" onchange="checkFilters();" type="checkbox" name="status[]" id="statusfil_{{ sbasId }}_off{{ sbasId }}" value="{{ sbasId }}_of{{ sbasId }}"/>
-                                                                                                <label title="{{ data['labels_off_i18n'][app['locale']] }}" for="statusfil_{{ sbasId }}_off{{ bit }}">{% if data['img_off'] %}<img src="'{{ datas['img_off'] }}" title="{{ datas['labels_off_i18n'][app['locale']] }}" style="width:16px;height:16px;vertical-align:bottom" />{% endif %}{{ data['labels_off_i18n'][app['locale']] }}</label>
+                                                                                                <label title="{{ data['labels_off_i18n'][app['locale']] }}" for="statusfil_{{ sbasId }}_off{{ bit }}">{% if data['img_off'] %}<img src="'{{ data['img_off'] }}" title="{{ data['labels_off_i18n'][app['locale']] }}" style="width:16px;height:16px;vertical-align:bottom" />{% endif %}{{ data['labels_off_i18n'][app['locale']] }}</label>
                                                                                             </td>
                                                                                             <td style="width:50%" nowrap>
                                                                                                 <input class="checkbox" db="{{ sbasId }}" onchange="checkFilters();" type="checkbox" name="status[]" id="statusfil_{{ sbasId }}_on{{ sbasId }}" value="{{ sbasId }}_on{{ sbasId }}"/>
-                                                                                                <label title="{{ data['labels_on_i18n'][app['locale']] }}" for="statusfil_{{ sbasId }}_on{{ bit }}">{% if data['img_on']%}<img src="{{ datas['img_on'] }}" title="{{ datas['labels_on_i18n'][app['locale']] }}" style="width:16px;height:16px;vertical-align:bottom" />{% endif %}{{ data['labels_on_i18n'][app['locale']] }}</label>
+                                                                                                <label title="{{ data['labels_on_i18n'][app['locale']] }}" for="statusfil_{{ sbasId }}_on{{ bit }}">{% if data['img_on']%}<img src="{{ data['img_on'] }}" title="{{ data['labels_on_i18n'][app['locale']] }}" style="width:16px;height:16px;vertical-align:bottom" />{% endif %}{{ data['labels_on_i18n'][app['locale']] }}</label>
                                                                                             </td>
                                                                                         </tr>
                                                                                     </table>

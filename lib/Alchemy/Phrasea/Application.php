@@ -117,6 +117,8 @@ use Alchemy\Phrasea\Twig\Camelize;
 use Alchemy\Phrasea\Twig\BytesConverter;
 use Alchemy\Phrasea\Utilities\CachedTranslator;
 use FFMpeg\FFMpegServiceProvider;
+use Monolog\Logger;
+use Monolog\Processor\IntrospectionProcessor;
 use Neutron\Silex\Provider\ImagineServiceProvider;
 use MediaVorus\MediaVorusServiceProvider;
 use MediaVorus\Utils\RawImageMimeTypeGuesser;
@@ -274,6 +276,11 @@ class Application extends SilexApplication
         $this['monolog.handler'] = $this->share(function () {
             return new NullHandler();
         });
+        $this['monolog'] = $this->share($this->extend('monolog', function (Logger $monolog) {
+            $monolog->pushProcessor(new IntrospectionProcessor());
+
+            return $monolog;
+        }));
         $this->register(new MP4BoxServiceProvider());
         $this->register(new NotificationDelivererServiceProvider());
         $this->register(new ORMServiceProvider());

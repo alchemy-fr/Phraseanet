@@ -19,6 +19,8 @@ use Alchemy\Phrasea\Core\Event\ApiLoadEndEvent;
 use Alchemy\Phrasea\Core\Event\ApiLoadStartEvent;
 use Alchemy\Phrasea\Core\Event\Subscriber\ApiOauth2ErrorsSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ApiExceptionHandlerSubscriber;
+use Monolog\Logger;
+use Monolog\Processor\WebProcessor;
 use Silex\Application as SilexApplication;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -30,6 +32,11 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     $app['exception_handler'] = $app->share(function ($app) {
         return new ApiExceptionHandlerSubscriber($app);
     });
+    $app['monolog'] = $app->share($app->extend('monolog', function (Logger $monolog) {
+        $monolog->pushProcessor(new WebProcessor());
+
+        return $monolog;
+    }));
 
     $app->register(new \API_V1_Timer());
     $app['dispatcher']->dispatch(PhraseaEvents::API_LOAD_START, new ApiLoadStartEvent());
