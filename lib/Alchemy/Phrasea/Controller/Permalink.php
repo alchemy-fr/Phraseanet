@@ -30,8 +30,17 @@ class Permalink extends AbstractDelivery
                     ->assert('sbas_id', '\d+')->assert('record_id', '\d+')
                     ->bind('permalinks_caption');
 
+        $controllers->match('/v1/{sbas_id}/{record_id}/caption/', 'controller.permalink:getOptionsResponse')
+                    ->assert('sbas_id', '\d+')->assert('record_id', '\d+')
+                    ->method('OPTIONS');
+
         $controllers->get('/v1/{sbas_id}/{record_id}/{subdef}/', 'controller.permalink:deliverPermaview')
                     ->bind('permalinks_permaview')
+                    ->assert('sbas_id', '\d+')
+                    ->assert('record_id', '\d+');
+
+        $controllers->match('/v1/{sbas_id}/{record_id}/{subdef}/', 'controller.permalink:getOptionsResponse')
+                    ->method('OPTIONS')
                     ->assert('sbas_id', '\d+')
                     ->assert('record_id', '\d+');
 
@@ -45,12 +54,30 @@ class Permalink extends AbstractDelivery
                     ->assert('sbas_id', '\d+')
                     ->assert('record_id', '\d+');
 
+        $controllers->match('/v1/{sbas_id}/{record_id}/{subdef}/{label}', 'controller.permalink:getOptionsResponse')
+                    ->method('OPTIONS')
+                    ->assert('sbas_id', '\d+')
+                    ->assert('record_id', '\d+');
+
         $controllers->get('/v1/{label}/{sbas_id}/{record_id}/{token}/{subdef}/', 'controller.permalink:deliverPermalinkOldWay')
                     ->bind('permalinks_permalink_old')
                     ->assert('sbas_id', '\d+')
                     ->assert('record_id', '\d+');
 
         return $controllers;
+    }
+
+    public function getOptionsResponse(PhraseaApplication $app, Request $request, $sbas_id, $record_id)
+    {
+        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
+
+        $record = $this->retrieveRecord($app, $databox, $request->query->get('token'), $record_id, $request->get('subdef', 'thumbnail'));
+
+        if (null === $record) {
+            throw new NotFoundHttpException("Record not found");
+        }
+
+        return new Response('', 200, array('Allow' => 'GET, HEAD, OPTIONS'));
     }
 
     public function deliverCaption(PhraseaApplication $app, Request $request, $sbas_id, $record_id)

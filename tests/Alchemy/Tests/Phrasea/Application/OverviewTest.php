@@ -183,6 +183,12 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         $caption = self::$DI['app']['serializer.caption']->serialize(self::$DI['record_1']->get_caption(), CaptionSerializer::SERIALIZE_JSON);
         $this->assertEquals($caption, $response->getContent());
         $this->assertEquals(200, $response->getStatusCode());
+
+        self::$DI['client']->request('OPTIONS', $url);
+        $response = self::$DI['client']->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('', $response->getContent());
+        $this->assertEquals('GET, HEAD, OPTIONS', $response->headers->get('Allow'));
     }
 
     private function get_a_permalinkBCcompatibility(array $headers = [])
@@ -244,6 +250,12 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertEquals(rtrim(self::$DI['app']['conf']->get(['servername']), '/') . "/permalink/v1/1/". self::$DI['record_1']->get_record_id()."/caption/?token=".$token, $response->headers->get("Link"));
         $this->assertEquals(200, $response->getStatusCode());
+
+        self::$DI['client']->request('OPTIONS', $url);
+        $response = self::$DI['client']->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('', $response->getContent());
+        $this->assertEquals('GET, HEAD, OPTIONS', $response->headers->get('Allow'));
     }
 
     private function get_a_permaview(array $headers = [])
@@ -259,5 +271,11 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         }
 
         $this->assertEquals(200, $response->getStatusCode());
+
+        self::$DI['client']->request('OPTIONS', $url);
+        $response = self::$DI['client']->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('', $response->getContent());
+        $this->assertEquals('GET, HEAD, OPTIONS', $response->headers->get('Allow'));
     }
 }
