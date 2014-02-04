@@ -81,11 +81,6 @@ class PhraseaRegisterForm extends AbstractType
                 if (false === $collInfo['can-register']) {
                     continue;
                 }
-
-                if (!isset($choices[$dbName])) {
-                    $choices[$dbName] = [];
-                }
-
                 $choices[$dbName][$baseId] = \phrasea::bas_labels($baseId, $this->app);
                 $baseIds[] = $baseId;
             }

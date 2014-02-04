@@ -368,18 +368,6 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRenderDemands()
     {
-        $nativeQueryMock = $this->getMockBuilder('Alchemy\Phrasea\Model\NativeQueryProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $nativeQueryMock->expects($this->once())->method('getUsersRegistrationDemand')->will($this->returnValue([[
-            self::$DI['user'],
-            'date_demand' => new \DateTime(),
-            'base_demand' => 1
-        ]]));
-
-        self::$DI['app']['EM.native-query'] = $nativeQueryMock;
-
         self::$DI['client']->request('GET', '/admin/users/demands/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }

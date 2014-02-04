@@ -54,8 +54,7 @@ class RegistrationManager
     /**
      * Rejects a registration.
      *
-     * @param $usrId
-     * @param $baseId
+     * @param Registration $registration
      */
     public function rejectRegistration(Registration $registration)
     {
@@ -68,8 +67,11 @@ class RegistrationManager
     /**
      * Accepts a registration.
      *
-     * @param $userId
-     * @param $basId
+     * @param Registration  $registration
+     * @param \User_Adapter $user
+     * @param \Collection   $collection
+     * @param bool          $grantHd
+     * @param bool          $grantWatermark
      */
     public function acceptRegistration(Registration $registration, \User_Adapter $user, \Collection $collection, $grantHd = false, $grantWatermark = false)
     {
@@ -208,6 +210,8 @@ class RegistrationManager
     }
 
     /**
+     * Deletes registration for given user.
+     *
      * @param       $userId
      * @param array $baseList
      *

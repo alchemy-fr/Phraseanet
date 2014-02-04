@@ -1484,7 +1484,7 @@ class databox extends base
     }
 
     /**
-     * Tells whether the registration is enable for provided databox or not.
+     * Tells whether the registration is enable or not.
      *
      * @return boolean
      */

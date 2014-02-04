@@ -445,7 +445,7 @@ class Users implements ControllerProviderInterface
                 foreach ($deny as $usr => $bases) {
                     $cache_to_update[$usr] = true;
                     foreach ($bases as $bas) {
-                        if (null !== $registration = $this->getRepository()->findOneBy([
+                        if (null !== $registration = $app['registration-manager']->getRepository()->findOneBy([
                             'user' => $usr,
                             'baseId' => $bas
                         ])) {
@@ -461,12 +461,12 @@ class Users implements ControllerProviderInterface
 
                     foreach ($bases as $bas) {
                         $collection = \collection::get_from_base_id($app, $bas);
-                        if (null !== $registration = $this->getRepository()->findOneBy([
+                        if (null !== $registration = $app['registration-manager']->getRepository()->findOneBy([
                             'user' => $user->get_id(),
                             'baseId' => $collection->get_base_id()
                         ])) {
                             $done[$usr][$bas] = true;
-                            $app['registration-manager']->acceptDemand($registration, $user, $collection, $options[$usr][$bas]['HD'], $options[$usr][$bas]['WM']);
+                            $app['registration-manager']->acceptRegistration($registration, $user, $collection, $options[$usr][$bas]['HD'], $options[$usr][$bas]['WM']);
                         }
                     }
                 }
