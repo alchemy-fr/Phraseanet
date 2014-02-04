@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Security;
 
 use Silex\Application;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class Firewall
 {
@@ -135,12 +136,8 @@ class Firewall
     public function requireNotAuthenticated()
     {
         if ($this->app['authentication']->isAuthenticated()) {
-            $this->app->abort(302, 'You are authenticated', [
-                'X-Phraseanet-Redirect' => $this->app->path('prod')
-            ]);
+            return new RedirectResponse($this->app->path('prod'));
         }
-
-        return $this;
     }
 
     public function requireOrdersAdmin()

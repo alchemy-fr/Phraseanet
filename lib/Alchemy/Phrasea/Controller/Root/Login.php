@@ -102,7 +102,9 @@ class Login implements ControllerProviderInterface
         // Displays the homepage
         $controllers->get('/', 'login.controller:login')
             ->before(function (Request $request) use ($app) {
-                    $app['firewall']->requireNotAuthenticated();
+                    if (null !== $response = $app['firewall']->requireNotAuthenticated()) {
+                        return $response;
+                    }
 
                     if (null !== $request->query->get('postlog')) {
 
@@ -127,14 +129,18 @@ class Login implements ControllerProviderInterface
         // Authentication end point
         $controllers->post('/authenticate/', 'login.controller:authenticate')
             ->before(function (Request $request) use ($app) {
-                $app['firewall']->requireNotAuthenticated();
+                if (null !== $response = $app['firewall']->requireNotAuthenticated()) {
+                    return $response;
+                }
             })
             ->bind('login_authenticate');
 
         // Guest access end point
         $controllers->match('/authenticate/guest/', 'login.controller:authenticateAsGuest')
             ->before(function (Request $request) use ($app) {
-                $app['firewall']->requireNotAuthenticated();
+                if (null !== $response = $app['firewall']->requireNotAuthenticated()) {
+                    return $response;
+                }
             })
             ->bind('login_authenticate_as_guest')
             ->method('GET|POST');
@@ -142,14 +148,18 @@ class Login implements ControllerProviderInterface
         // Authenticate with an AuthProvider
         $controllers->get('/provider/{providerId}/authenticate/', 'login.controller:authenticateWithProvider')
             ->before(function (Request $request) use ($app) {
-                $app['firewall']->requireNotAuthenticated();
+                if (null !== $response = $app['firewall']->requireNotAuthenticated()) {
+                    return $response;
+                }
             })
             ->bind('login_authentication_provider_authenticate');
 
         // AuthProviders callbacks
         $controllers->get('/provider/{providerId}/callback/', 'login.controller:authenticationCallback')
             ->before(function (Request $request) use ($app) {
-                $app['firewall']->requireNotAuthenticated();
+                if (null !== $response = $app['firewall']->requireNotAuthenticated()) {
+                    return $response;
+                }
             })->bind('login_authentication_provider_callback');
 
         // Logout end point
@@ -161,13 +171,17 @@ class Login implements ControllerProviderInterface
         // Registration end point ; redirects to classic registration or AuthProvider registration
         $controllers->get('/register/', 'login.controller:displayRegisterForm')
             ->before(function (Request $request) use ($app) {
-                $app['firewall']->requireNotAuthenticated();
+                if (null !== $response = $app['firewall']->requireNotAuthenticated()) {
+                    return $response;
+                }
             })->bind('login_register');
 
         // Classic registration end point
         $controllers->match('/register-classic/', 'login.controller:doRegistration')
             ->before(function (Request $request) use ($app) {
-                $app['firewall']->requireNotAuthenticated();
+                if (null !== $response = $app['firewall']->requireNotAuthenticated()) {
+                    return $response;
+                }
             })
             ->bind('login_register_classic');
 
@@ -179,25 +193,33 @@ class Login implements ControllerProviderInterface
         // Unlocks an email address that is currently locked
         $controllers->get('/register-confirm/', 'login.controller:registerConfirm')
             ->before(function (Request $request) use ($app) {
-                $app['firewall']->requireNotAuthenticated();
+                if (null !== $response = $app['firewall']->requireNotAuthenticated()) {
+                    return $response;
+                }
             })->bind('login_register_confirm');
 
         // Displays a form to send an account unlock email again
         $controllers->get('/send-mail-confirm/', 'login.controller:sendConfirmMail')
             ->before(function (Request $request) use ($app) {
-                $app['firewall']->requireNotAuthenticated();
+                if (null !== $response = $app['firewall']->requireNotAuthenticated()) {
+                    return $response;
+                }
             })->bind('login_send_mail');
 
         // Forgot password end point
         $controllers->match('/forgot-password/', 'login.controller:forgotPassword')
             ->before(function (Request $request) use ($app) {
-                $app['firewall']->requireNotAuthenticated();
+                if (null !== $response = $app['firewall']->requireNotAuthenticated()) {
+                    return $response;
+                }
             })->bind('login_forgot_password');
 
         // Renew password end point
         $controllers->match('/renew-password/', 'login.controller:renewPassword')
             ->before(function (Request $request) use ($app) {
-                $app['firewall']->requireNotAuthenticated();
+                if (null !== $response = $app['firewall']->requireNotAuthenticated()) {
+                    return $response;
+                }
             })->bind('login_renew_password');
 
         // Displays Terms of use

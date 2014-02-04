@@ -76,6 +76,15 @@ class RemovePluginTest extends PluginCommandTestCase
         $command = new RemovePlugin();
         $command->setContainer(self::$DI['cli']);
 
+        self::$DI['cli']['plugins.manager'] = $this->getMockBuilder('Alchemy\Phrasea\Plugin\PluginManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        self::$DI['cli']['plugins.manager']->expects($this->once())
+            ->method('hasPlugin')
+            ->with('test-plugin')
+            ->will($this->returnValue(true));
+
         $data = $this->addPluginData();
 
         self::$DI['cli']['filesystem'] = $this->createFilesystemMock();

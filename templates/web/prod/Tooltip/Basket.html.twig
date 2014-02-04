@@ -3,12 +3,12 @@
 {% extends 'prod/Tooltip/Tooltip.html.twig' %}
 
 {% set title %} {{ basket.getName() }} {% endset %}
-{% set width = 300 %}
+{% set width = 500 %}
 {% set maxwidth = null %}
 
 {% block content %}
-    <div class="noToolTipResize" style="margin:5px;width:{{ width - 40 }}px;height:300px;position:relative;">
-    <div style="margin:5px 0">
+    <div class="noToolTipResize" style="margin:5px;width:{{ width - 40 }}px;height:auto !important;height:380px;max-height:380px;min-height:220px;position:relative;">
+    <div style="margin:5px 0;max-height:160px;overflow:hidden;text-overflow:ellipsis;">
         {{ basket.getDescription()|nl2br }}
     </div>
     <div style="margin:5px 0;text-align:right;font-style:italic;position:relative;">
@@ -17,9 +17,9 @@
         {% trans with {'%nb_records%' : nb_records} %}%nb_records% records{% endtrans %}
         - {{ date }}
         <hr/>
-        <div style="position:relative;float:left;width:270px;">
+        <div style="position:relative;float:left;width:470px;">
         {% for element in basket.getElements() %}
-            {% if loop.index <= 9 %}
+            {% if loop.index <= 10 %}
             <div style="margin:5px;position:relative;float:left;width:80px;height:80px;overflow:hidden;">
                 {{ thumbnail.format(element.getRecord(app).get_thumbnail(), 80, 80 , '', false, false) }}
             </div>
