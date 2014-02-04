@@ -78,7 +78,7 @@ class patch_390alpha4a implements patchInterface
                 continue;
             }
 
-            $user = Upgrade39::getUserFromOldId($em, $row['usr_id'], false);
+            $user = Upgrade39::getUserReferences($em, $row['usr_id']);
 
             $userSetting = new UserSetting();
             $userSetting->setName($row['prop']);

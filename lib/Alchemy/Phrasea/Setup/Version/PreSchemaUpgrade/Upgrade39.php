@@ -25,42 +25,28 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 
 class Upgrade39 implements PreSchemaUpgradeInterface
 {
+    private static $batchSize = 100;
+
     private $backupFeeds = false;
     private $migrateUsers = false;
-
-    private $tablesStatus;
-
-    private static $users = [];
+    private $tableNames;
 
     /**
      * Returns the corresponding user entity from old user id in 'usr' table.
      *
      * @param EntityManager $em
-     * @param               $oldId
-     * @param bool          $fromCache
+     * @param               $id
      *
      * @return mixed
      * @throws RuntimeException
      */
-    public static function getUserFromOldId(EntityManager $em, $oldId, $fromCache = true)
+    public static function getUserReferences(EntityManager $em, $id)
     {
-        if ($fromCache && array_key_exists($oldId, self::$users)) {
-            return self::$users[$oldId];
-        }
-
-        try {
-            $id = $em->createNativeQuery(
-                sprintf('SELECT new_usr_id FROM user_migration_mapping WHERE old_usr_id = %d', $oldId), (new ResultSetMapping())->addScalarResult('new_usr_id', 'new_usr_id')
-            )->getSingleScalarResult();
-        } catch (NoResultException $e) {
-            throw new RuntimeException(sprintf('Old user id `%d` could not be found from user_migration_mapping', $oldId), null, $e);
-        }
-
         $q = $em->createQuery('SELECT PARTIAL u.{id,login} FROM Alchemy\Phrasea\Model\Entities\User u WHERE u.id = :id');
         $q->setParameters(['id' => $id]);
         $q->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true);
 
-        return self::$users[$oldId] = $q->getSingleResult();
+        return $q->getSingleResult();
     }
 
     /**
@@ -122,6 +108,8 @@ class Upgrade39 implements PreSchemaUpgradeInterface
         if (!$this->migrateUsers) {
             return;
         }
+        $this->tableNames = $em->getConnection()->getSchemaManager()->listTableNames();
+
         // Sanitize usr table
         $this->sanitizeUsrTable($em);
         // Creates User schema
@@ -139,8 +127,8 @@ class Upgrade39 implements PreSchemaUpgradeInterface
         $this->migrateModels($em, $conn);
         // Renames usr_id columns to user_id
         $this->renameUserFields($em);
-        // Updates user references
-        $this->updateUserReferences($em);
+        // Replace ids created by doctrine with old ids
+        $this->updateUserIds($em);
     }
 
     /**
@@ -234,182 +222,6 @@ class Upgrade39 implements PreSchemaUpgradeInterface
     }
 
     /**
-     * Updates all foreign key references to old user id with the new one.
-     *
-     * @param EntityManager $em
-     */
-    private function updateUserReferences(EntityManager $em)
-    {
-        $tables = [
-            'Baskets' => [['to_update' => 'user_id', 'primary' => 'id'], ['to_update' => 'pusher_id', 'primary' => 'id']],
-            'LazaretSessions' => [['to_update' => 'user_id', 'primary' => 'id']],
-            'Sessions' => [['to_update' => 'user_id', 'primary' => 'id']],
-            'StoryWZ' => [['to_update' => 'user_id', 'primary' => 'id']],
-            'UsrListOwners' => [['to_update' => 'user_id', 'primary' => 'id']],
-            'UsrAuthProviders' => [['to_update' => 'user_id', 'primary' => 'id']],
-            'UsrListsContent' => [['to_update' => 'user_id', 'primary' => 'id']],
-            'ValidationParticipants' => [['to_update' => 'user_id', 'primary' => 'id']],
-            'api_accounts' => [['to_update' => 'usr_id', 'primary' => 'api_account_id']],
-            'basusr' => [['to_update' => 'usr_id', 'primary' => 'id']],
-            'bridge_accounts' => [['to_update' => 'usr_id', 'primary' => 'id']],
-            'sbasusr' => [['to_update' => 'usr_id', 'primary' => 'sbasusr_id']],
-            'demand' => [['to_update' => 'usr_id', 'primary' => ['usr_id', 'base_id', 'en_cours']]],
-            'edit_presets' => [['to_update' => 'usr_id', 'primary' => 'edit_preset_id']],
-            'notifications' => [['to_update' => 'usr_id', 'primary' => 'id']],
-            'ValidationSessions' => [['to_update' => 'initiator_id', 'primary' => 'id']],
-        ];
-
-        // drop indexes where 'user_id' field is part of the index
-        $this->indexes($em, 'drop');
-
-        // start transaction to be sure that references update went ok
-        $em->getConnection()->beginTransaction();
-        try {
-            foreach ($tables as $tableName => $fields) {
-                if (false === $this->tableExists($em, $tableName)) {
-                    continue;
-                }
-                $this->doUpdateFields($em, $tableName, $fields);
-            }
-            $em->getConnection()->commit();
-        } catch (\Exception $e) {
-            $em->getConnection()->rollback();
-            throw $e;
-        }
-        // restore indexes
-        $this->indexes($em, 'restore');
-    }
-
-    /**
-     * Drops or restores indexes that contains a user id field.
-     *
-     * @param EntityManager $em
-     * @param               $action
-     */
-    private function indexes(EntityManager $em, $action)
-    {
-        if ($action === 'drop') {
-            if ($this->tableExists($em, 'demand') && $this->indexExists($em, 'demand', 'PRIMARY')) {
-                $em->getConnection()->executeQuery('ALTER TABLE demand DROP PRIMARY KEY');
-            }
-
-            if ($this->tableExists($em, 'UsrListsContent') && $this->indexExists($em, 'UsrListsContent', 'unique_usr_per_list')) {
-                $em->getConnection()->executeQuery('ALTER TABLE UsrListsContent DROP INDEX `unique_usr_per_list`');
-            }
-        }
-
-        if ($action === 'restore') {
-            if ($this->tableExists($em, 'demand') && !$this->indexExists($em, 'demand', 'PRIMARY')) {
-                $em->getConnection()->executeQuery('ALTER TABLE demand ADD PRIMARY KEY (`usr_id`, `base_id`, `en_cours`);');
-            }
-
-            if ($this->tableExists($em, 'UsrListsContent') && !$this->indexExists($em, 'UsrListsContent', 'unique_usr_per_list')) {
-                $em->getConnection()->executeQuery('ALTER TABLE UsrListsContent ADD INDEX `unique_usr_per_list` (`user_id`, `list_id`);');
-            }
-        }
-    }
-
-    /**
-     * Checks whether an index exists or not.
-     *
-     * @param EntityManager $em
-     * @param               $tableName
-     * @param               $indexName
-     *
-     * @return bool
-     */
-    private function indexExists(EntityManager $em, $tableName, $indexName)
-    {
-        $rs = $em->createNativeQuery(
-            sprintf('SHOW INDEX FROM %s WHERE Key_name="%s"', $tableName, $indexName),
-            (new ResultSetMapping())->addScalarResult('Key_name', 'Key_name')
-        )->getResult();
-
-        return count($rs) >= 1;
-    }
-
-    /**
-     * Updates user id fields for one table.
-     *
-     * @param EntityManager $em
-     * @param               $tableName
-     * @param               $fields
-     */
-    private function doUpdateFields(EntityManager $em, $tableName, $fields)
-    {
-        foreach ($fields as $field) {
-            $this->doUpdateField($em, $tableName, $field);
-        }
-    }
-
-    /**
-     * Updates user id field for one table.
-     *
-     * @param EntityManager $em
-     * @param               $tableName
-     * @param               $field
-     *
-     * @throws RuntimeException if old user id could not be converted to a new one.
-     */
-    private function doUpdateField(EntityManager $em, $tableName, $field)
-    {
-        $error = false;
-        $fieldValues = [];
-        $primaryFields = is_array($field['primary']) ? $field['primary'] : [$field['primary']];
-        $selectFields = array_unique(array_merge($primaryFields, [$field['to_update']]));
-        $rsm = new ResultSetMapping();
-
-        foreach ($selectFields as $fieldName) {
-            $rsm->addScalarResult($fieldName, $fieldName);
-        }
-
-        $results = $em->createNativeQuery(
-            sprintf('SELECT %s FROM %s', implode(', ', $selectFields), $tableName),
-            $rsm
-        )->getResult();
-
-        foreach ($results as $result) {
-            if (($id = (int) $result[$field['to_update']]) < 1) {
-                continue;
-            }
-
-            $whereClauses = array_map(function ($fieldName) use ($result) {
-                return $fieldName . '=' . $result[$fieldName];
-            }, $primaryFields);
-
-            try {
-                $user = self::getUserFromOldId($em, $id);
-            } catch (RuntimeException $e) {
-                $error = true;
-                $result[] = $tableName;
-                $table = (new TableHelper())
-                    ->setHeaders(array_merge($primaryFields, [$field['to_update'], 'TableName']))
-                    ->addRow($result);
-                continue;
-            }
-            $fieldValues[] = [
-                'user-id' => $user->getId(),
-                'where-clauses' => $whereClauses,
-            ];
-        }
-
-        if ($error) {
-            echo ("The '".$field['to_update']."' field value for the following lines with the corresponding id".
-            " of the '".$tableName."' table point to users that no longer exist.\n"
-            . $table->render(new ConsoleOutput()) . "\n");
-        }
-
-        foreach ($fieldValues as $fieldValue) {
-            $em->getConnection()->executeQuery($sql = sprintf('UPDATE %s SET %s=%d WHERE %s',
-                $tableName,
-                $field['to_update'],
-                $fieldValue['user-id'],
-                implode(' AND ', $fieldValue['where-clauses'])
-            ));
-        }
-    }
-
-    /**
      * Renames all usr_id property from entities to user_id.
      *
      * @param EntityManager $em
@@ -429,7 +241,7 @@ class Upgrade39 implements PreSchemaUpgradeInterface
 
         $sql = 'ALTER TABLE %s CHANGE '.($direction === 'up' ? 'usr_id user_id' : 'user_id usr_id').' INT';
         foreach ($tables as $tableName) {
-            if (false === $this->tableExists($em, $tableName)) {
+            if (false === $this->tableExists($tableName)) {
                 continue;
             }
             $em->getConnection()->executeQuery(sprintf($sql, $tableName));
@@ -510,29 +322,33 @@ class Upgrade39 implements PreSchemaUpgradeInterface
      * Migrates models to doctrine entity.
      *
      * @param EntityManager $em
-     * @param \PDO          $conn
      */
-    private function migrateModels(EntityManager $em, \PDO $conn)
+    private function migrateModels(EntityManager $em)
     {
         $em->getEventManager()->removeEventSubscriber(new TimestampableListener());
-        $this->updateModels($em, $conn);
+        $this->updateModels($em);
         $em->getEventManager()->addEventSubscriber(new TimestampableListener());
     }
 
-    private function tableExists(EntityManager $em , $tableName)
+    /**
+     * Checks whether the table exists or not.
+     *
+     * @param $tableName
+     *
+     * @return boolean
+     */
+    private function tableExists($tableName)
     {
-        if (null === $this->tablesStatus) {
-            $this->tablesStatus = array_map(function($row) {
-                return $row['Name'];
-            }, $em->createNativeQuery(
-                "SHOW TABLE STATUS",
-                new ResultSetMapping()
-            )->getResult());
-        }
-
-        return in_array($tableName, $this->tablesStatus);
+        return in_array($tableName, $this->tableNames);
     }
 
+    /**
+     * Check whether the usr table has a nonce column or not.
+     *
+     * @param EntityManager $em
+     *
+     * @return boolean
+     */
     private function hasNonceColumn(EntityManager $em)
     {
         return (Boolean) $em->createNativeQuery(
@@ -544,7 +360,7 @@ class Upgrade39 implements PreSchemaUpgradeInterface
     /**
      * Sets user entity from usr table.
      */
-    private function updateUsers(EntityManager $em, $conn)
+    private function updateUsers(EntityManager $em, \PDO $conn)
     {
         if ($this->hasNonceColumn($em)) {
             $sql = 'SELECT activite, adresse, create_db, canchgftpprofil, canchgprofil, ville,
@@ -570,7 +386,6 @@ class Upgrade39 implements PreSchemaUpgradeInterface
         $stmt->closeCursor();
 
         $n = 0;
-
         foreach ($rows as $row) {
             $user = new User();
             $user->setActivity($row['activite']);
@@ -636,8 +451,7 @@ class Upgrade39 implements PreSchemaUpgradeInterface
             $em->persist($user);
 
             $n++;
-
-            if ($n % 100 === 0) {
+            if ($n % self::$batchSize === 0) {
                 $em->flush();
                 $em->clear();
             }
@@ -650,24 +464,17 @@ class Upgrade39 implements PreSchemaUpgradeInterface
     /**
      * Sets last_model from usr table.
      */
-    private function updateLastModels(EntityManager $em, $conn)
+    private function updateLastModels(EntityManager $em)
     {
-        $sql = "SELECT lastModel, usr_id
-                FROM usr
-                WHERE lastModel > 0";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
         $n = 0;
-
-        foreach ($rows as $row) {
-            $user = self::getUserFromOldId($em, $row['usr_id']);
+        foreach ($em->createNativeQuery(
+             "SELECT lastModel AS last_model, usr_id FROM usr WHERE lastModel > 0",
+             (new ResultSetMapping())->addScalarResult('last_model', 'last_model')->addScalarResult('usr_id', 'usr_id')
+         )->getResult() as $row) {
+            $user = self::getUserReferences($em, $row['usr_id']);
 
             try {
-                $lastModel = self::getUserFromOldId($em, $row['lastModel']);
+                $lastModel = self::getUserReferences($em, $row['last_model']);
             } catch (NoResultException $e) {
                continue;
             }
@@ -677,11 +484,11 @@ class Upgrade39 implements PreSchemaUpgradeInterface
             }
 
             $user->setLastModel($lastModel);
+
             $em->persist($user);
 
             $n++;
-
-            if ($n % 100 === 0) {
+            if ($n % self::$batchSize === 0) {
                 $em->flush();
                 $em->clear();
             }
@@ -694,21 +501,16 @@ class Upgrade39 implements PreSchemaUpgradeInterface
     /**
      * Sets model from usr table.
      */
-    private function updateModels(EntityManager $em, $conn)
+    private function updateModels(EntityManager $em)
     {
-        $sql = "SELECT model_of, usr_id
-                FROM usr
-                WHERE model_of > 0";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
         $n = 0;
-        foreach ($rows as $row) {
-            $template = self::getUserFromOldId($em, $row['usr_id']);
+        foreach ($em->createNativeQuery(
+             "SELECT model_of, usr_id FROM usr WHERE model_of > 0",
+             (new ResultSetMapping())->addScalarResult('model_of', 'model_of')->addScalarResult('usr_id', 'usr_id')
+         )->getResult() as $row) {
+            $template = self::getUserReferences($em, $row['usr_id']);
             try {
-                $owner = self::getUserFromOldId($em, $row['model_of']);
+                $owner = self::getUserReferences($em, $row['model_of']);
                 $template->setModelOf($owner);
                 $em->persist($owner);
             } catch (NoResultException $e) {
@@ -717,16 +519,72 @@ class Upgrade39 implements PreSchemaUpgradeInterface
             }
 
             $n++;
-
-            if ($n % 100 === 0) {
+            if ($n % self::$batchSize === 0) {
                 $em->flush();
                 $em->clear();
             }
         }
-
         $em->flush();
         $em->clear();
 
-        $this->updateLastModels($em, $conn);
+        $this->updateLastModels($em);
+    }
+
+    /**
+     * Replaces the new doctrine user entity id by the old ones.
+     *
+     * @param EntityManager $em
+     *
+     * @throws \Exception
+     */
+    private function updateUserIds(EntityManager $em)
+    {
+        $sqlPreUpdate = $sqlPostUpdate = $sqlUpdate = [];
+        $connection = $em->getConnection();
+        $dbPlatform = $connection->getDatabasePlatform();
+        $schemaManager = $connection->getSchemaManager();
+
+        // Sets primary key
+        $sqlPostUpdate[] = 'ALTER TABLE Users ADD PRIMARY KEY (`id`)';
+
+        foreach ($schemaManager->listTableColumns('Users') as $column) {
+            if ($column->getName() === 'id') {
+                // Sets auto increment
+                $sqlPostUpdate[] = 'ALTER TABLE Users MODIFY ' . $dbPlatform->getColumnDeclarationSQL($column->getQuotedName($dbPlatform), $column->toArray());
+                $column->setAutoincrement(false);
+                // Remove auto increment
+                $sqlPreUpdate[] = 'ALTER TABLE Users MODIFY ' . $dbPlatform->getColumnDeclarationSQL($column->getQuotedName($dbPlatform), $column->toArray());
+                break;
+            }
+        }
+        // Remove FK
+        foreach ($schemaManager->listTableForeignKeys('Users') as $fk) {
+            $cols = $fk->getColumns();
+            $fcols = $fk->getForeignColumns();
+            if ((count($cols) === 1 && in_array('model_of', $cols)) && (count($fcols) === 1 && in_array('id', $fcols))) {
+                $sqlPreUpdate[] = $dbPlatform->getDropForeignKeySQL($fk, 'Users');
+                $sqlPostUpdate[] = $dbPlatform->getCreateForeignKeySQL($fk, 'Users');
+                break;
+            }
+        }
+        // Drop PK
+        $sqlPreUpdate[] = 'ALTER TABLE Users DROP PRIMARY KEY';
+        // Update ids value using embedded SQL
+        $sqlUpdate[] = 'UPDATE Users u JOIN user_migration_mapping m ON u.id = m.new_usr_id SET u.id = m.old_usr_id';
+        $sqlUpdate[] = 'UPDATE Users u JOIN user_migration_mapping m ON u.model_of = m.new_usr_id SET u.model_of = m.old_usr_id';
+        // Sets proper value for autoincrement
+        $maxId = $em->createNativeQuery('SELECT MAX(usr_id) as max_id FROM usr', (new ResultSetMapping())->addScalarResult('max_id', 'max_id'))->getSingleScalarResult();
+        $sqlPostUpdate[] = 'ALTER TABLE Users AUTO_INCREMENT='.$maxId;
+        // executes SQLS
+        $connection->beginTransaction();
+        try {
+            foreach(array_merge($sqlPreUpdate, $sqlUpdate, $sqlPostUpdate) as $sql) {
+                $connection->executeQuery($sql);
+            }
+            $connection->commit();
+        } catch (\Exception $e) {
+            $connection->rollback();
+            throw $e;
+        }
     }
 }

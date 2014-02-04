@@ -134,7 +134,7 @@ class patch_390alpha7a implements patchInterface
             $fpRes = $fpStmt->fetchAll(\PDO::FETCH_ASSOC);
 
             foreach ($fpRes as $fpRow) {
-                $user = Upgrade39::getUserFromOldId($em, $fpRow['usr_id'], false);
+                $user = Upgrade39::getUserReferences($em, $fpRow['usr_id']);
 
                 $feedPublisher = new FeedPublisher();
                 $feedPublisher->setFeed($feed);
@@ -180,7 +180,7 @@ class patch_390alpha7a implements patchInterface
             $ftRes = $ftStmt->fetchAll(\PDO::FETCH_ASSOC);
 
             foreach ($ftRes as $ftRow) {
-                $user = Upgrade39::getUserFromOldId($em, $ftRow['usr_id'], false);
+                $user = Upgrade39::getUserReferences($em, $ftRow['usr_id']);
 
                 $token = new FeedToken();
                 $token->setFeed($feed);
@@ -209,7 +209,7 @@ class patch_390alpha7a implements patchInterface
         $faRes = $faStmt->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($faRes as $faRow) {
-            $user = Upgrade39::getUserFromOldId($em, $faRow['usr_id'], false);
+            $user = Upgrade39::getUserReferences($em, $faRow['usr_id']);
 
             $token = new AggregateToken();
             $token->setUser($user);

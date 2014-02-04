@@ -96,7 +96,7 @@ class patch_390alpha6a implements patchInterface
 
         foreach ($rs as $row) {
             try {
-                $user = Upgrade39::getUserFromOldId($em, $row['usr_id'], false);
+                $user = Upgrade39::getUserReferences($em, $row['usr_id']);
             } catch (NoResultException $e) {
                 continue;
             }

@@ -110,7 +110,7 @@ class patch_370alpha7a implements patchInterface
 
                 $borderFile = new \Alchemy\Phrasea\Border\File($app, $media, $collection);
 
-                $user = $user = Upgrade39::getUserFromOldId($app['EM'], $row['usr_id']);
+                $user = $user = Upgrade39::getUserReferences($app['EM'], $row['usr_id']);
 
                 $lazaretSession = new LazaretSession();
                 $lazaretSession->setUser($user);

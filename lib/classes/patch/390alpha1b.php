@@ -92,7 +92,7 @@ class patch_390alpha1b implements patchInterface
             $todo = $stmt->fetch(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
-            $user = Upgrade39::getUserFromOldId($em, $row['usr_id'], false);
+            $user = Upgrade39::getUserReferences($em, $row['usr_id']);
 
             $order = new Order();
             $order->setUser($user)

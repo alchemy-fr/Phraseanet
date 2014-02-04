@@ -27,7 +27,6 @@ use Symfony\Component\Translation\TranslatorInterface;
  *      indexes={
  *          @ORM\index(name="login", columns={"login"}),
  *          @ORM\index(name="mail", columns={"email"}),
- *          @ORM\index(name="model_of", columns={"model_of"}),
  *          @ORM\index(name="salted_password", columns={"salted_password"}),
  *          @ORM\index(name="admin", columns={"admin"}),
  *          @ORM\index(name="guest", columns={"guest"})
