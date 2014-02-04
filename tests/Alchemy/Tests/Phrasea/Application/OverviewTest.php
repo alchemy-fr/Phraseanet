@@ -201,6 +201,12 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $caption = self::$DI['record_1']->get_caption()->serialize(\caption_record::SERIALIZE_JSON);
         $this->assertEquals($caption, $response->getContent());
         $this->assertEquals(200, $response->getStatusCode());
+
+        self::$DI['client']->request('OPTIONS', $url);
+        $response = self::$DI['client']->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('', $response->getContent());
+        $this->assertEquals('GET, HEAD, OPTIONS', $response->headers->get('Allow'));
     }
 
     protected function get_a_permalinkBCcompatibility(array $headers = array())
@@ -208,7 +214,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
         $url = '/permalink/v1/whateverIwannt/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/' . $token . '/preview/';
 
-        $crawler = self::$DI['client']->request('GET', $url);
+        self::$DI['client']->request('GET', $url);
         $response = self::$DI['client']->getResponse();
 
         foreach ($headers as $name => $value) {
@@ -265,6 +271,12 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
         $this->assertEquals(rtrim(self::$DI['app']['phraseanet.configuration']['main']['servername'], '/') . "/permalink/v1/1/". self::$DI['record_1']->get_record_id()."/caption/?token=".$token, $response->headers->get("Link"));
         $this->assertEquals(200, $response->getStatusCode());
+
+        self::$DI['client']->request('OPTIONS', $url);
+        $response = self::$DI['client']->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('', $response->getContent());
+        $this->assertEquals('GET, HEAD, OPTIONS', $response->headers->get('Allow'));
     }
 
     protected function get_a_permaview(array $headers = array())
@@ -280,5 +292,11 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         }
 
         $this->assertEquals(200, $response->getStatusCode());
+
+        self::$DI['client']->request('OPTIONS', $url);
+        $response = self::$DI['client']->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('', $response->getContent());
+        $this->assertEquals('GET, HEAD, OPTIONS', $response->headers->get('Allow'));
     }
 }
