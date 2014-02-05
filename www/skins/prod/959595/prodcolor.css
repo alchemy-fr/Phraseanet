@@ -4051,8 +4051,7 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     height: 100%;
 }
 
-#uploadBox #tab-upload,
-#uploadBox #tab-lazaret {
+#uploadBox .ui-tabs .ui-tabs-panel {
     height: 90%;
     padding: 20px;
 }

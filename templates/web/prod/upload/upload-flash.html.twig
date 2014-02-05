@@ -152,7 +152,11 @@
             load: function(event, ui)
             {
               ui.tab.find('span').empty();
-            }
+            },
+            create : function () {
+                $('#tab-upload').css('overflow', 'hidden');
+            },
+            heightStyle: "fill"
         });
 
         //Show the good collection status box
