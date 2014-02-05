@@ -18,7 +18,7 @@
 
       {% set tooltip = '' %}
       {% if app['phraseanet.registry'].get('GV_rollover_reg_preview') %}
-        {% set tooltip = 'tooltipsrc="' ~ path('prod_tooltip_caption', { 'sbas_id' : child.getRecord(app).get_sbas_id(), 'record_id' : child.getRecord(app).get_record_id(), 'context' : 'basket' }) ~ '"' %}
+        {% set tooltip = path('prod_tooltip_caption', { 'sbas_id' : child.getRecord(app).get_sbas_id(), 'record_id' : child.getRecord(app).get_record_id(), 'context' : 'basket' }) %}
       {% endif %}
 
       {% set class = '' %}
@@ -27,7 +27,7 @@
       {% endif %}
 
       <li class="{{class}} prevTrainCurrent">
-        <img {{tooltip|raw}} jsargs="BASK|{{child.getOrd()}}|{{record.get_container().getId()}}"
+        <img {% if tooltip %}tooltipsrc="{{ tooltip }}"{% endif %} jsargs="BASK|{{child.getOrd()}}|{{record.get_container().getId()}}"
           class="openPreview prevRegToolTip" return(false);" src="{{thumbnail.get_url()}}"
             style="{{style}}margin:7px;position:relative;"/></li>
     {% endfor %}
