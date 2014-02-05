@@ -120,16 +120,16 @@
         },
         {
             "name": "alchemy/geonames-api-consumer",
-            "version": "0.1.1",
+            "version": "0.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/GeonamesServer-PHP-Plugin.git",
-                "reference": "c01f5d2d132e215524860c336693ed043a94118f"
+                "reference": "111a38233da7a5503f86e96877e044381698f647"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/GeonamesServer-PHP-Plugin/zipball/c01f5d2d132e215524860c336693ed043a94118f",
-                "reference": "c01f5d2d132e215524860c336693ed043a94118f",
+                "url": "https://api.github.com/repos/alchemy-fr/GeonamesServer-PHP-Plugin/zipball/111a38233da7a5503f86e96877e044381698f647",
+                "reference": "111a38233da7a5503f86e96877e044381698f647",
                 "shasum": ""
             },
             "require": {
@@ -154,7 +154,7 @@
             "keywords": [
                 "geonames"
             ],
-            "time": "2013-07-02 11:28:34"
+            "time": "2014-02-05 15:29:39"
         },
         {
             "name": "alchemy/ghostscript",
