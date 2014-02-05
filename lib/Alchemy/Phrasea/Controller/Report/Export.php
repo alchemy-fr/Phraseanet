@@ -23,8 +23,9 @@ class Export implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $app['firewall']->addMandatoryAuthentication($controllers);
+
         $controllers->before(function () use ($app) {
-            $app['firewall']->requireAuthentication();
             $app['firewall']->requireAccessToModule('report');
         });
 

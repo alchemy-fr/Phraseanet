@@ -42,11 +42,9 @@ class TOU implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/deny/{sbas_id}/', $this->call('denyTermsOfUse'))
-            ->bind('deny_tou')
-            ->before(function (Request $request) use ($app) {
-                $app['firewall']->requireAuthentication();
-            });
+        $controller = $controllers->post('/deny/{sbas_id}/', $this->call('denyTermsOfUse'))
+            ->bind('deny_tou');
+        $app['firewall']->addMandatoryAuthentication($controller);
 
         /**
          * Display Terms of use

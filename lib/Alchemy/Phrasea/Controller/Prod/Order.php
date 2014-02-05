@@ -35,9 +35,10 @@ class Order implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $app['firewall']->addMandatoryAuthentication($controllers);
+
         $controllers->before(function (Request $request) use ($app) {
-            $app['firewall']->requireAuthentication()
-                ->requireRight('order');
+            $app['firewall']->requireRight('order');
         });
 
         /**

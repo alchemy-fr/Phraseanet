@@ -28,9 +28,7 @@ class Tooltip implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function (Request $request) use ($app) {
-            $app['firewall']->requireAuthentication();
-        });
+        $app['firewall']->addMandatoryAuthentication($controllers);
 
         $controllers->post('/basket/{basket_id}/', $this->call('displayBasket'))
             ->assert('basket_id', '\d+')

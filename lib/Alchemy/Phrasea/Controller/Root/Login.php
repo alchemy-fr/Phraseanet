@@ -162,10 +162,10 @@ class Login implements ControllerProviderInterface
             })->bind('login_authentication_provider_callback');
 
         // Logout end point
-        $controllers->get('/logout/', 'login.controller:logout')
-            ->before(function (Request $request) use ($app) {
-                $app['firewall']->requireAuthentication();
-            })->bind('logout');
+        $logoutController = $controllers->get('/logout/', 'login.controller:logout')
+            ->bind('logout');
+
+        $app['firewall']->addMandatoryAuthentication($logoutController);
 
         // Registration end point ; redirects to classic registration or AuthProvider registration
         $controllers->get('/register/', 'login.controller:displayRegisterForm')

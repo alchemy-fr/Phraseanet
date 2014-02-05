@@ -24,9 +24,7 @@ class Xmlhttp implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function () use ($app) {
-            $app['firewall']->requireAuthentication();
-        });
+        $app['firewall']->addMandatoryAuthentication($controllers);
 
         $controllers->match('acceptcandidates.j.php', $this->call('AcceptCandidatesJson'))
             ->before(function () use ($app) {
