@@ -37,7 +37,7 @@
 
       {% set tooltip = '' %}
       {% if app['conf'].get(['registry', 'classic', 'stories-preview']) %}
-        {% set tooltip = 'tooltipsrc="' ~ path('prod_tooltip_caption', { 'sbas_id' : contained.get_sbas_id(), 'record_id' : contained.get_record_id(), 'context' : 'preview', 'number' : contained.get_number() }) ~ '"' %}
+        {% set tooltip = path('prod_tooltip_caption', { 'sbas_id' : contained.get_sbas_id(), 'record_id' : contained.get_record_id(), 'context' : 'preview', 'number' : contained.get_number() }) %}
       {% endif %}
 
       {% set class = '' %}
@@ -46,7 +46,7 @@
       {% endif %}
 
       <li class="{{class}} prevTrainCurrent" style="">
-        <img {{tooltip}} jsargs="REG|{{loop.index}}|{{regroupement.get_serialize_key}}"
+        <img {% if tooltip %}tooltipsrc="{{ tooltip }}"{% endif %} jsargs="REG|{{loop.index}}|{{regroupement.get_serialize_key}}"
           class="openPreview prevRegToolTip" src="{{thumbnail.get_url()}}"
           style="{{style}}margin:7px;position:relative;"/></li>
     {% endfor %}

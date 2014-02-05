@@ -94,14 +94,14 @@
 
             {% set tooltip = '' %}
             {% if app['conf'].get(['registry', 'classic', 'basket-rollover']) %}
-                {% set tooltip = 'tooltipsrc="' ~ path('prod_tooltip_caption', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id(), 'context' : 'basket', 'number' : record.get_number() }) ~ '"' %}
+                {% set tooltip = path('prod_tooltip_caption', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id(), 'context' : 'basket', 'number' : record.get_number() }) %}
             {% endif %}
 
             <div class="diapochu">
                 <div class="image">
                     <img
                         onclick="openPreview('BASK',{{ record.get_number() }}, {{ selected_basket.getId() }}); return(false);"
-                        {{ tooltip }}
+                        {% if tooltip %}tooltipsrc="{{ tooltip }}"{% endif %}
                         style="position:relative; top:{{ top }}px; {{ dim }}"
                         class="{{ thumbnail.get_height() > 42 ? 'hThumbnail' : 'vThumbnail' }} baskTips"
                         src="{{ thumbnail.get_url() }}"
