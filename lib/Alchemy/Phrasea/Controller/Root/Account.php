@@ -33,9 +33,7 @@ class Account implements ControllerProviderInterface
 
         $app['account.controller'] = $this;
 
-        $controllers->before(function () use ($app) {
-                $app['firewall']->requireAuthentication();
-            });
+        $app['firewall']->addMandatoryAuthentication($controllers);
 
         // Displays current logged in user account
         $controllers->get('/', 'account.controller:displayAccount')

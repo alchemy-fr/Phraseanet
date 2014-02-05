@@ -27,9 +27,7 @@ class Download implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function (Request $request) use ($app) {
-            $app['firewall']->requireAuthentication();
-        });
+        $app['firewall']->addMandatoryAuthentication($controllers);
 
         $controllers->post('/', 'controller.prod.download:checkDownload')
             ->bind('check_download');

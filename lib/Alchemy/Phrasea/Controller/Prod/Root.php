@@ -33,7 +33,9 @@ class Root implements ControllerProviderInterface
                 return $app->redirectPath('login_authenticate_as_guest');
             }
 
-            $app['firewall']->requireAuthentication();
+            if (null !== $response = $app['firewall']->requireAuthentication()) {
+                return $response;
+            }
         });
 
         $controllers->get('/', function (Application $app) {

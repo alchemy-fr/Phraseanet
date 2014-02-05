@@ -801,7 +801,7 @@ body .ui-tooltip {
 }
 .ui-widget-content {
 	border: 1px solid #202020;
-	background: #555555 url(images/ui-bg_flat_75_555555_40x100.png) 50% 50% repeat-x;
+	background: #555555 url(images/ui-bg_flat_75_d2d1cf_40x100.png) 50% 50% repeat-x;
 	color: #ff9000;
 }
 .ui-widget-content a {
@@ -809,7 +809,7 @@ body .ui-tooltip {
 }
 .ui-widget-header {
 	border: 1px solid #202020;
-	background: #202020 url(images/ui-bg_flat_75_202020_40x100.png) 50% 50% repeat-x;
+	background: #202020 url(images/ui-bg_flat_75_d2d1cf_40x100.png) 50% 50% repeat-x;
 	color: #222222;
 	font-weight: bold;
 }

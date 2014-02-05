@@ -25,6 +25,8 @@ class Root implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
+        $app['firewall']->addMandatoryAuthentication($controllers);
+
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAccessToModule('admin');
         });

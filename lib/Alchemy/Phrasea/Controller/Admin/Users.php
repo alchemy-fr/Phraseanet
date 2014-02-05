@@ -28,7 +28,9 @@ class Users implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function (Request $request, Application $app) {
+        $app['firewall']->addMandatoryAuthentication($controllers);
+
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAccessToModule('admin')
                 ->requireRight('manageusers');
         });

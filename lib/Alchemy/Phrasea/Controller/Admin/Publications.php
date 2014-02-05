@@ -26,6 +26,8 @@ class Publications implements ControllerProviderInterface
         $app['controller.admin.publications'] = $this;
         $controllers = $app['controllers_factory'];
 
+        $app['firewall']->addMandatoryAuthentication($controllers);
+
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAccessToModule('admin')
                 ->requireRight('bas_chupub');

@@ -26,13 +26,13 @@ class TaskManager implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers
-            ->before(function (Request $request) use ($app) {
-                $app['firewall']->requireRight('taskmanager');
-            })
-            ->convert('task', function ($id) use ($app) {
-                return $app['converter.task']->convert($id);
-            });
+        $app['firewall']->addMandatoryAuthentication($controllers);
+
+        $controllers->before(function (Request $request) use ($app) {
+            $app['firewall']->requireRight('taskmanager');
+        })->convert('task', function ($id) use ($app) {
+            return $app['converter.task']->convert($id);
+        });
 
         $controllers
             ->get('/', 'controller.admin.task:getRoot')

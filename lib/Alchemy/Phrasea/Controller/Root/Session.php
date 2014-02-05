@@ -28,11 +28,10 @@ class Session implements ControllerProviderInterface
         $controllers->post('/update/', 'controller.session:updateSession')
             ->bind('update_session');
 
-        $controllers->post('/delete/{id}', 'controller.session:deleteSession')
-            ->before(function () use ($app) {
-                $app['firewall']->requireAuthentication();
-            })
+        $controller = $controllers->post('/delete/{id}', 'controller.session:deleteSession')
             ->bind('delete_session');
+        
+        $app['firewall']->addMandatoryAuthentication($controller);
 
         return $controllers;
     }

@@ -25,6 +25,8 @@ class ConnectedUsers implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
+        $app['firewall']->addMandatoryAuthentication($controllers);
+
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAccessToModule('Admin');
         });
@@ -72,9 +74,7 @@ class ConnectedUsers implements ControllerProviderInterface
                     $info = '';
                 }
             } catch (GeonamesExceptionInterface $e) {
-                $app['monolog']->error(sprintf(
-                    "Unable to get IP information for %s : %s", $session->getIpAddress(), $e->getMessage()
-                ));
+                $app['monolog']->error(sprintf("Unable to get IP information for %s", $session->getIpAddress()), array('exception' => $e));
             }
 
             $result[] = [

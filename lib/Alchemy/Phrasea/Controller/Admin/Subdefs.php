@@ -23,6 +23,8 @@ class Subdefs implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
+        $app['firewall']->addMandatoryAuthentication($controllers);
+
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAccessToModule('admin')
                 ->requireRightOnSbas($request->attributes->get('sbas_id'), 'bas_modify_struct');

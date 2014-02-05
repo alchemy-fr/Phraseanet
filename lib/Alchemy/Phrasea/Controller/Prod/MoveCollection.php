@@ -24,9 +24,10 @@ class MoveCollection implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
+        $app['firewall']->addMandatoryAuthentication($controllers);
+
         $controllers->before(function (Request $request) use ($app) {
-            $app['firewall']->requireAuthentication()
-                ->requireRight('addrecord')
+            $app['firewall']->requireRight('addrecord')
                 ->requireRight('deleterecord');
         });
 

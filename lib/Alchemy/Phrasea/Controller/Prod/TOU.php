@@ -24,12 +24,10 @@ class TOU implements ControllerProviderInterface
         $app['controller.prod.tou'] = $this;
 
         $controllers = $app['controllers_factory'];
-
-        $controllers->post('/deny/{sbas_id}/', 'controller.prod.tou:denyTermsOfUse')
-            ->bind('deny_tou')
-            ->before(function (Request $request) use ($app) {
-                $app['firewall']->requireAuthentication();
-            });
+        
+        $controller = $controllers->post('/deny/{sbas_id}/', 'controller.prod.tou:denyTermsOfUse')
+            ->bind('deny_tou');
+        $app['firewall']->addMandatoryAuthentication($controller);
 
         $controllers->get('/', 'controller.prod.tou:displayTermsOfUse')
             ->bind('get_tou');

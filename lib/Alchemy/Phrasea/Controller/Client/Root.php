@@ -34,7 +34,9 @@ class Root implements ControllerProviderInterface
             if (!$app['authentication']->isAuthenticated() && null !== $request->query->get('nolog')) {
                 return $app->redirectPath('login_authenticate_as_guest', ['redirect' => 'client']);
             }
-            $app['firewall']->requireAuthentication();
+            if (null !== $response = $app['firewall']->requireAuthentication()) {
+                return $response;
+            }
         });
 
         $controllers->get('/', 'controller.client:getClient')

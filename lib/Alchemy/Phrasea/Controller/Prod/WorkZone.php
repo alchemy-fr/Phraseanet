@@ -29,9 +29,9 @@ class WorkZone implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function (Request $request) use ($app) {
-            $app['firewall']->requireAuthentication();
-        })
+        $app['firewall']->addMandatoryAuthentication($controllers);
+        
+        $controllers
             // Silex\Route::convert is not used as this should be done prior the before middleware
             ->before($app['middleware.basket.converter'])
             ->before($app['middleware.basket.user-access']);;

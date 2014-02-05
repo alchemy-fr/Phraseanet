@@ -26,9 +26,7 @@ class Developers implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function () use ($app) {
-            $app['firewall']->requireAuthentication();
-        });
+        $app['firewall']->addMandatoryAuthentication($controllers);
 
         $controllers->get('/applications/', 'controller.account.developers:listApps')
             ->bind('developers_applications');
