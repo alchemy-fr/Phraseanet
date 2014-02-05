@@ -30,9 +30,7 @@ class Query implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function (Request $request) use ($app) {
-            $app['firewall']->requireAuthentication();
-        });
+        $app['firewall']->addMandatoryAuthentication($controllers);
 
         /**
          * Query Phraseanet

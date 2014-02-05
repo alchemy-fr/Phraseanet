@@ -30,9 +30,10 @@ class Tools implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $app['firewall']->addMandatoryAuthentication($controllers);
+
         $controllers->before(function (Request $request) use ($app) {
-            $app['firewall']->requireAuthentication()
-                ->requireRight('doctools');
+            $app['firewall']->requireRight('doctools');
         });
 
         $controllers->get('/', function (Application $app, Request $request) {

@@ -31,9 +31,7 @@ class Feed implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function (Request $request) use ($app) {
-            $app['firewall']->requireAuthentication();
-        });
+        $app['firewall']->addMandatoryAuthentication($controllers);
 
         /**
          * I got a selection of docs, which publications are available forthese docs ?

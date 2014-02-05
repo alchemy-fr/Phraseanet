@@ -3,7 +3,10 @@
 namespace Alchemy\Phrasea\Security;
 
 use Silex\Application;
+use Silex\Controller;
+use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class Firewall
 {
@@ -38,8 +41,6 @@ class Firewall
 
     public function requireAccessToModule($module)
     {
-        $this->requireAuthentication();
-
         if (!$this->app['authentication']->getUser()->ACL()->has_access_to_module($module)) {
             $this->app->abort(403, 'You do not have required rights');
         }
@@ -49,8 +50,6 @@ class Firewall
 
     public function requireAccessToSbas($sbas_id)
     {
-        $this->requireAuthentication();
-
         if (!$this->app['authentication']->getUser()->ACL()->has_access_to_sbas($sbas_id)) {
             $this->app->abort(403, 'You do not have required rights');
         }
@@ -60,8 +59,6 @@ class Firewall
 
     public function requireAccessToBase($base_id)
     {
-        $this->requireAuthentication();
-
         if (!$this->app['authentication']->getUser()->ACL()->has_access_to_base($base_id)) {
             $this->app->abort(403, 'You do not have required rights');
         }
@@ -71,8 +68,6 @@ class Firewall
 
     public function requireRight($right)
     {
-        $this->requireAuthentication();
-
         if (!$this->app['authentication']->getUser()->ACL()->has_right($right)) {
             $this->app->abort(403, 'You do not have required rights');
         }
@@ -82,8 +77,6 @@ class Firewall
 
     public function requireRightOnBase($base_id, $right)
     {
-        $this->requireAuthentication();
-
         if (!$this->app['authentication']->getUser()->ACL()->has_right_on_base($base_id, $right)) {
             $this->app->abort(403, 'You do not have required rights');
         }
@@ -93,8 +86,6 @@ class Firewall
 
     public function requireRightOnSbas($sbas_id, $right)
     {
-        $this->requireAuthentication();
-
         if (!$this->app['authentication']->getUser()->ACL()->has_right_on_sbas($sbas_id, $right)) {
             $this->app->abort(403, 'You do not have required rights');
         }
@@ -104,8 +95,6 @@ class Firewall
 
     public function requireNotGuest()
     {
-        $this->requireAuthentication();
-
         if ($this->app['authentication']->getUser()->is_guest()) {
             $this->app->abort(403, 'Guests do not have admin role');
         }
@@ -116,12 +105,23 @@ class Firewall
     public function requireAuthentication()
     {
         if (!$this->app['authentication']->isAuthenticated()) {
-            $this->app->abort(302, 'You are not authenticated', array(
-                'X-Phraseanet-Redirect' => $this->app->path('homepage')
-            ));
+            return new RedirectResponse($this->app->path('homepage'));
+        }
+    }
+
+    public function addMandatoryAuthentication($controllers)
+    {
+        if (!$controllers instanceof ControllerCollection && !$controllers instanceof Controller) {
+            throw new \InvalidArgumentException('Controllers must be either a Controller or a ControllerCollection.');
         }
 
-        return $this;
+        $app = $this->app;
+
+        $controllers->before(function (Request $request) use ($app) {
+            if (null !== $response = $app['firewall']->requireAuthentication()) {
+                return $response;
+            }
+        });
     }
 
     public function requireNotAuthenticated()

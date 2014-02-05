@@ -58,9 +58,7 @@ class Lightbox implements ControllerProviderInterface
             }
         });
 
-        $controllers->before(function (Request $request) use ($app) {
-            $app['firewall']->requireAuthentication();
-        });
+        $app['firewall']->addMandatoryAuthentication($controllers);
 
         $controllers->get('/', function (SilexApplication $app) {
             try {
