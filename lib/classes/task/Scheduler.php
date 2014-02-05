@@ -281,7 +281,7 @@ class task_Scheduler
 
                     $this->log(
                         sprintf(
-                            "Got task %s (%) with status %s",
+                            "Got task %s (%s) with status %s",
                             $taskPoll[$tkey]["task"]->getID(),
                             $taskPoll[$tkey]["task"]->getName(),
                             $status
