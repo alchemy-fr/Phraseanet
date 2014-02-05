@@ -176,7 +176,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
      */
     public function is_available($usr_id)
     {
-        if (!$this->app['registration.enabled']) {
+        if (!$this->app['registration.manager']->isRegistrationEnabled()) {
             return false;
         }
 

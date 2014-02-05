@@ -68,7 +68,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
                 }
             }, $authConf['auto-create']['templates']));
 
-            $enabled = $app['conf']->get(['registry', 'registration', 'auto-register-enabled']) && $app['registration.enabled'];
+            $enabled = $app['conf']->get(['registry', 'registration', 'auto-register-enabled']) && $app['registration.manager']->isRegistrationEnabled();
 
             return new AccountCreator($app['tokens'], $app['phraseanet.appbox'], $enabled, $templates);
         });

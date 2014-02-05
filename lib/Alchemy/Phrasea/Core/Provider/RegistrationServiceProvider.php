@@ -26,15 +26,8 @@ class RegistrationServiceProvider implements ServiceProviderInterface
             return $app['conf']->get('registration-fields', []);
         });
 
-        $app['registration.enabled'] = $app->share(function (Application $app) {
-            foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
-                foreach($databox->get_collections() as $collection) {
-                    if ($collection->isRegistrationEnabled()) {
-                        return true;
-                    }
-                }
-            }
-            return false;
+        $app['registration.manager'] = $app->share(function (Application $app) {
+            return new RegistrationManager($app['phraseanet.appbox']);
         });
 
         $app['registration.optional-fields'] = $app->share(function (Application $app) {
@@ -129,10 +122,6 @@ class RegistrationServiceProvider implements ServiceProviderInterface
                     ]
                 ],
             ];
-        });
-
-        $app['registration-manager'] = $app->share(function (Application $app) {
-            return new RegistrationManipulator($app['EM'], $app['phraseanet.appbox'], $app['acl']);
         });
     }
 

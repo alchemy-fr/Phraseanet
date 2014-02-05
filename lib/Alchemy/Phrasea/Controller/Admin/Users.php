@@ -355,12 +355,12 @@ class Users implements ControllerProviderInterface
         })->bind('admin_users_export_csv');
 
         $controllers->get('/demands/', function (Application $app) {
-            $app['registration-manager']->deleteOldRegistrations();
+            $app['manipulator.registration']->deleteOldRegistrations();
 
             $models = $app['manipulator.user']->getRepository()->findModelOf($app['authentication']->getUser());
 
             $users = $registrations = [];
-            foreach ($app['registration-manager']->getRepository()->getDemandsForUser(
+            foreach ($app['manipulator.registration']->getRepository()->getDemandsForUser(
                 $app['authentication']->getUser(),
                 array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['canadmin']))
             ) as $registration) {
@@ -439,17 +439,17 @@ class Users implements ControllerProviderInterface
                         $done[$usr][$base_id] = true;
                     }
 
-                    $app['registration-manager']->deleteRegistrationsForUser($user->get_id(), $base_ids);
+                    $app['manipulator.registration']->deleteRegistrationsForUser($user->get_id(), $base_ids);
                 }
 
                 foreach ($deny as $usr => $bases) {
                     $cache_to_update[$usr] = true;
                     foreach ($bases as $bas) {
-                        if (null !== $registration = $app['registration-manager']->getRepository()->findOneBy([
+                        if (null !== $registration = $app['manipulator.registration']->getRepository()->findOneBy([
                             'user' => $usr,
                             'baseId' => $bas
                         ])) {
-                            $app['registration-manager']->rejectDemand($registration);
+                            $app['manipulator.registration']->rejectDemand($registration);
                             $done[$usr][$bas] = false;
                         }
                     }
@@ -461,12 +461,12 @@ class Users implements ControllerProviderInterface
 
                     foreach ($bases as $bas) {
                         $collection = \collection::get_from_base_id($app, $bas);
-                        if (null !== $registration = $app['registration-manager']->getRepository()->findOneBy([
+                        if (null !== $registration = $app['manipulator.registration']->getRepository()->findOneBy([
                             'user' => $user->get_id(),
                             'baseId' => $collection->get_base_id()
                         ])) {
                             $done[$usr][$bas] = true;
-                            $app['registration-manager']->acceptRegistration($registration, $user, $collection, $options[$usr][$bas]['HD'], $options[$usr][$bas]['WM']);
+                            $app['manipulator.registration']->acceptRegistration($registration, $user, $collection, $options[$usr][$bas]['HD'], $options[$usr][$bas]['WM']);
                         }
                     }
                 }

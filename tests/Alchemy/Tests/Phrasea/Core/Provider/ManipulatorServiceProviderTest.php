@@ -17,6 +17,11 @@ class ManipulatorServiceProviderTest extends ServiceProviderTestCase
                 'manipulator.acl',
                 'Alchemy\Phrasea\Model\Manipulator\ACLManipulator'
             ],
+            [
+                'Alchemy\Phrasea\Core\Provider\ManipulatorServiceProvider',
+                'manipulator.registration',
+                'Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator'
+            ],
         ];
     }
 }

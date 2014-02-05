@@ -232,7 +232,7 @@ class Account implements ControllerProviderInterface
     public function accountAccess(Application $app, Request $request)
     {
         return $app['twig']->render('account/access.html.twig', [
-            'inscriptions' => $app['registration-manager']->getRegistrationSummary($app['authentication']->getUser()->getId())
+            'inscriptions' => $app['manipulator.registration']->getRegistrationSummary($app['authentication']->getUser()->getId())
         ]);
     }
 
@@ -332,7 +332,7 @@ class Account implements ControllerProviderInterface
         }
         if (0 !== count($demands)) {
             foreach ($demands as $baseId) {
-                $app['registration-manager']->createRegistration($app['authentication']->getUser()->getId(), $baseId);
+                $app['registration-manager']->createRegistration($app['authentication']->getUser()->get_id(), $baseId);
             }
             $app->addFlash('success', $app->trans('Your registration requests have been taken into account.'));
         }

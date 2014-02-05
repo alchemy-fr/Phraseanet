@@ -81,7 +81,7 @@ class Login implements ControllerProviderInterface
             'recaptcha_display' => $app->isCaptchaRequired(),
             'unlock_usr_id' => $app->getUnlockAccountData(),
             'guest_allowed' => $app->isGuestAllowed(),
-            'register_enable' => $app['registration.enabled'],
+            'register_enable' => $app['registration.manager']->isRegistrationEnabled(),
             'display_layout' => $app['conf']->get(['registry', 'general', 'home-presentation-mode']),
             'authentication_providers' => $app['authentication.providers'],
             'registration_fields' => $app['registration.fields'],
@@ -267,7 +267,7 @@ class Login implements ControllerProviderInterface
 
     public function doRegistration(PhraseaApplication $app, Request $request)
     {
-        if (!$app['registration.enabled']) {
+        if (! $app['registration.manager']->isRegistrationEnabled()) {
             $app->abort(404, 'Registration is disabled');
         }
 
@@ -335,7 +335,7 @@ class Login implements ControllerProviderInterface
                     } else {
                         $selected = isset($data['collections']) ? $data['collections'] : null;
                     }
-                    $inscriptions = $app['registration-manager']->getRegistrationSummary();
+                    $inscriptions = $app['manipulator.registration']->getRegistrationSummary();
                     $inscOK = [];
 
                     foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
@@ -406,7 +406,7 @@ class Login implements ControllerProviderInterface
                             continue;
                         }
 
-                        $app['registration-manager']->createRegistration($user->getId(), $base_id);
+                        $app['manipulator.registration']->createRegistration($user->getId(), $base_id);
                         $demandOK[$base_id] = true;
                     }
 
@@ -696,7 +696,7 @@ class Login implements ControllerProviderInterface
      */
     public function displayRegisterForm(PhraseaApplication $app, Request $request)
     {
-        if (!$app['registration.enabled']) {
+        if (!$app['registration.manager']->isRegistrationEnabled()) {
             $app->abort(404, 'Registration is disabled');
         }
 
@@ -962,7 +962,7 @@ class Login implements ControllerProviderInterface
             }
 
             return $app->redirect($redirection);
-        } elseif ($app['registration.enabled']) {
+        } elseif ($app['registration.manager']->isRegistrationEnabled()) {
             return $app->redirectPath('login_register_classic', ['providerId' => $providerId]);
         }
 
