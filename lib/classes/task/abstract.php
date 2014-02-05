@@ -603,7 +603,7 @@ abstract class task_abstract
 
         $locker = true;
         if (flock($lockFD, LOCK_EX | LOCK_NB, $locker) === FALSE) {
-            $this->log("runtask::ERROR : task already running.", self::LOG_ERROR);
+            $this->log("Unable to get lock, task might already be running.", self::LOG_ERROR);
             fclose($lockFD);
 
             throw new Exception('task already running.', self::ERR_ALREADY_RUNNING);
@@ -815,7 +815,7 @@ abstract class task_abstract
 
     public function log($message, $level = self::LOG_DEBUG)
     {
-        $this->logger->addRecord($level, $message);
+        $this->logger->addRecord($level, sprintf("%s (%s) : %s", $this->getID(), $this->getName(), $message));
 
         return $this;
     }
