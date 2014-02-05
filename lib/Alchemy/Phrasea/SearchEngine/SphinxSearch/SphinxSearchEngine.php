@@ -1061,12 +1061,4 @@ class SphinxSearchEngine implements SearchEngineInterface
     {
         return $this;
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function clearAllCache(\DateTime $date = null)
-    {
-        return $this;
-    }
 }

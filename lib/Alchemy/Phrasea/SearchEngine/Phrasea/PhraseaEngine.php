@@ -341,6 +341,7 @@ class PhraseaEngine implements SearchEngineInterface
 
         $this->initialize();
         $this->checkSession();
+        $this->clearAllCache(new \DateTime('-1 hour'));
 
         assert(is_int($offset));
         assert($offset >= 0);
