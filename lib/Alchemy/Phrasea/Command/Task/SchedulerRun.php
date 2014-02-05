@@ -43,7 +43,7 @@ class SchedulerRun extends Command
 
         if ($this->container['task-manager.logger.configuration']['enabled']) {
             $file = $this->container['task-manager.log-file.factory']->forManager();
-            $this->container['task-manager.logger']->pushHandler(new RotatingFileHandler($file, $this->container['task-manager.logger.configuration']['max-files'], $this->container['task-manager.logger.configuration']['level']));
+            $this->container['task-manager.logger']->pushHandler(new RotatingFileHandler($file->getPath(), $this->container['task-manager.logger.configuration']['max-files'], $this->container['task-manager.logger.configuration']['level']));
         }
 
         $this->container['signal-handler']->register([SIGINT, SIGTERM], [$this, 'signalHandler']);

@@ -59,7 +59,7 @@ class ManifestValidator
         if (isset($data->{'minimum-phraseanet-version'})) {
             if (version::lt($this->version->getNumber(), $data->{'minimum-phraseanet-version'})) {
                 throw new JsonValidationException(sprintf(
-                    'Version incomptibility : Minimum Phraseanet version required is %s, current version is %s',
+                    'Version incompatibility : Minimum Phraseanet version required is %s, current version is %s',
                     $data->{'minimum-phraseanet-version'},
                     $this->version->getNumber()
                 ));
@@ -69,7 +69,7 @@ class ManifestValidator
         if (isset($data->{'maximum-phraseanet-version'})) {
             if (version::gte($this->version->getNumber(), $data->{'maximum-phraseanet-version'})) {
                 throw new JsonValidationException(sprintf(
-                    'Version incomptibility : Maximum Phraseanet version required is %s, current version is %s',
+                    'Version incompatibility : Maximum Phraseanet version required is %s, current version is %s',
                     $data->{'maximum-phraseanet-version'},
                     $this->version->getNumber()
                 ));

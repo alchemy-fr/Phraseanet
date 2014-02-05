@@ -54,7 +54,7 @@ class TaskRun extends Command
 
         if ($this->container['task-manager.logger.configuration']['enabled']) {
             $file = $this->container['task-manager.log-file.factory']->forTask($task);
-            $logger->pushHandler(new RotatingFileHandler($file, $this->container['task-manager.logger.configuration']['max-files'], $this->container['task-manager.logger.configuration']['level']));
+            $logger->pushHandler(new RotatingFileHandler($file->getPath(), $this->container['task-manager.logger.configuration']['max-files'], $this->container['task-manager.logger.configuration']['level']));
         }
 
         $job->addSubscriber(new LockFileSubscriber('task-'.$task->getId(), $logger, $this->container['root.path'].'/tmp/locks'));
