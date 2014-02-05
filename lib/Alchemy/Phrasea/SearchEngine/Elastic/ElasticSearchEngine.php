@@ -339,13 +339,6 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function clearAllCache(\DateTime $date = null)
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public static function createSubscriber(Application $app)
     {
         return new ElasticSearchEngineSubscriber();
