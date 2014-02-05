@@ -224,15 +224,6 @@ interface SearchEngineInterface
     public function clearCache();
 
     /**
-     * Clear all cache prior to the given date (if applicable)
-     *
-     * If no date provided, clear all entries
-     *
-     * @return SearchEngineInterface
-     */
-    public function clearAllCache(\DateTime $date = null);
-
-    /**
      * Returns a subscriber
      *
      * @return EventSubscriberInterface
