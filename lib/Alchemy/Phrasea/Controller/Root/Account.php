@@ -364,7 +364,6 @@ class Account implements ControllerProviderInterface
         if (0 === count(array_diff($accountFields, array_keys($request->request->all())))) {
 
             try {
-                $app['phraseanet.appbox']->get_connection()->beginTransaction();
 
                 $app['authentication']->getUser()
                     ->setGender($request->request->get("form_gender"))
@@ -377,8 +376,7 @@ class Account implements ControllerProviderInterface
                     ->setJob($request->request->get("form_activity"))
                     ->setCompany($request->request->get("form_company"))
                     ->setActivity($request->request->get("form_function"))
-                    ->setGeonanameId($request->request->get("form_geonameid"))
-                    ->set_mail_notifications((Boolean) $request->request->get("mail_notifications"));
+                    ->setMailNotificationsActivated((Boolean) $request->request->get("mail_notifications"));
 
                 $app['manipulator.user']->setGeonameId($app['authentication']->getUser(), $request->request->get("form_geonameid"));
 
@@ -396,8 +394,9 @@ class Account implements ControllerProviderInterface
                 $ftpCredential->setReceptionFolder($request->request->get("form_destFTP"));
                 $ftpCredential->setRepositoryPrefixName($request->request->get("form_prefixFTPfolder"));
 
-                $app['phraseanet.appbox']->get_connection()->commit();
                 $app['EM']->persist($ftpCredential);
+                $app['EM']->persist($app['authentication']->getUser());
+
                 $app['EM']->flush();
                 $app->addFlash('success', $app->trans('login::notification: Changements enregistres'));
             } catch (\Exception $e) {
