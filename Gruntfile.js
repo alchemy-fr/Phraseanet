@@ -31,12 +31,21 @@ module.exports = function(grunt) {
                         "jquery.ui": ["npm", {"grunt": "build"}],
                         "jquery-mobile": ["npm", {"grunt": "dist"}],
                         "tinymce": ["npm", "jake"],
-                        "bootstrap": ["npm", {"make": "bootstrap"}]
+                        "bootstrap": ["npm", {"make": "bootstrap"}],
+                        "autobahnjs": [{"make":"build"}]
                     }
                 }
             }
         },
         copy: {
+            "autobahnjs": {
+                "expand": true,
+                "src": [
+                    "<%= path.bower %>/autobahnjs/build/autobahn.min.js"
+                ],
+                "dest": "<%= path.asset %>/autobahnjs/",
+                "flatten": true
+            },
             "backbone": {
                 "expand": true,
                 "src": [
@@ -82,6 +91,12 @@ module.exports = function(grunt) {
                 "src": "<%= path.bower %>/chai/chai.js",
                 "dest": "<%= path.asset %>/chai/",
                 "flatten": true
+            },
+            "deps-when": {
+                "expand": true,
+                "cwd": "<%= path.bower %>/autobahnjs",
+                "src": "../when/when.js",
+                "dest": "<%= path.bower %>/autobahnjs/when"
             },
             "font-awesome": {
                 "expand": true,
@@ -314,6 +329,46 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-bower-postinst");
     grunt.loadNpmTasks('grunt-mocha-phantomjs');
 
-    grunt.registerTask("install-assets", ["clean:assets", "bower", "bower_postinst", "copy"]);
+    // This task is here to copy bower module into an other bower module
+    // Because bower removes .git folder you can not use git submodule update
+    // So fetch them with bower and copy them to appropriate path
+    grunt.registerTask("copy-deps", [
+        "copy:deps-when"
+    ]);
+    grunt.registerTask("copy-assets", [
+        "copy:autobahnjs",
+        "copy:backbone",
+        "copy:blueimp",
+        "copy:bootstrap",
+        "copy:bootstrap-multiselect",
+        "copy:chai",
+        "copy:font-awesome",
+        "copy:geonames-server-jquery-plugin",
+        "copy:humane-js",
+        "copy:i18next",
+        "copy:jquery",
+        "copy:jquery-file-upload",
+        "copy:jquery-mobile",
+        "copy:jquery.cookie",
+        "copy:jquery-ui",
+        "copy:js-fixtures",
+        "copy:json2",
+        "copy:mocha",
+        "copy:modernizr",
+        "copy:normalize",
+        "copy:qunit",
+        "copy:requirejs",
+        "copy:swfobject",
+        "copy:tinymce",
+        "copy:underscore",
+        "copy:zxcvbn"
+    ]);
+    grunt.registerTask("install-assets", [
+        "clean:assets",
+        "bower",
+        "copy-deps",
+        "bower_postinst",
+        "copy-assets"
+    ]);
     grunt.registerTask('test', ["qunit", "mocha_phantomjs"]);
 };

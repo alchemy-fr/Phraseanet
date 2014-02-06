@@ -23,7 +23,9 @@
         "swfobject": "latest",
         "tinymce": "~4.0",
         "jquery-galleria": "1.2.9",
-        "jquery.cookie": "~1.4"
+        "jquery.cookie": "~1.4",
+        "autobahnjs": "~0.8.0",
+        "when": "~2.7.0"
     },
     "devDependencies": {
         "mocha": "latest",
