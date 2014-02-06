@@ -292,3 +292,7 @@ div.switch_right.unchecked {
 #tab_demandes .dl-horizontal dt {
     width: 130px;
 }
+
+#tab_demandes .table .btn-group {
+    display: block;
+}
