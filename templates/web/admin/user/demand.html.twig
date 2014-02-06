@@ -199,6 +199,7 @@
             </thead>
         </table>
 
+        <div class="registration-wrapper PNB" style="top:160px;bottom: 50px;overflow: auto">
         <div  id="tab_demandes">
             {% set tableColls = table['coll'] %}
             {% for row in table['user'] %}
@@ -270,8 +271,9 @@
                 </div>
             {% endfor %}
         </div>
+        </div>
 
-        <div class="form-actions">
+        <div class="PNB" style="top:auto;height: 30px;">
             <button type="button" class="btn btn-primary submit">{% trans 'boutton::valider' %}</button>
         </div>
     </form>
