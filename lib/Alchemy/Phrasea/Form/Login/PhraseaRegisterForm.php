@@ -72,16 +72,15 @@ class PhraseaRegisterForm extends AbstractType
 
         $builder->add('provider-id', 'hidden');
 
-        $choices = [];
-        $baseIds = [];
+        $choices = $baseIds = [];
 
-        foreach ($this->app['manipulator.registration']->getRegistrationSummary() as $baseInfo) {
+        foreach ($this->app['registration.manager']->getRegistrationSummary() as $baseInfo) {
             $dbName = $baseInfo['config']['db-name'];
             foreach ($baseInfo['config']['collections'] as $baseId => $collInfo) {
                 if (false === $collInfo['can-register']) {
                     continue;
                 }
-                $choices[$dbName][$baseId] = \phrasea::bas_labels($baseId, $this->app);
+                $choices[$dbName][$baseId] = $collInfo['coll-name'];
                 $baseIds[] = $baseId;
             }
         }

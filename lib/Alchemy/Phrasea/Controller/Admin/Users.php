@@ -14,7 +14,6 @@ namespace Alchemy\Phrasea\Controller\Admin;
 use Alchemy\Phrasea\Helper\User as UserHelper;
 use Alchemy\Phrasea\Model\Entities\FtpCredential;
 use Alchemy\Phrasea\Model\Entities\User;
-use igorw;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -354,42 +353,39 @@ class Users implements ControllerProviderInterface
             return $response;
         })->bind('admin_users_export_csv');
 
-        $controllers->get('/demands/', function (Application $app) {
+        $controllers->get('/registrations/', function (Application $app) {
             $app['manipulator.registration']->deleteOldRegistrations();
 
             $models = $app['manipulator.user']->getRepository()->findModelOf($app['authentication']->getUser());
 
-            $users = $registrations = [];
-            foreach ($app['manipulator.registration']->getRepository()->getDemandsForUser(
-                $app['authentication']->getUser(),
-                array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['canadmin']))
+            $userRegistrations = [];
+            foreach ($app['manipulator.registration']->getRepository()->getUserRegistrations(
+                 $app['authentication']->getUser(),
+                 $app['acl']->get($app['authentication']->getUser())->get_granted_base(['canadmin'])
             ) as $registration) {
                 $user = $registration->getUser();
-                $users[$user->getId()] = $user;
-
-
-                if (null !== igorw::get_in($registrations, [$user->getId(), $registration->getBaseId()])) {
-                    $registrations[$user->getId()][$registration->getBaseId()] = $registration;
-                }
+                $userRegistrations[$user->getId()]['user'] = $user;
+                $userRegistrations[$user->getId()]['registrations'][$registration->getBaseid()] = $registration;
             }
 
-            return $app['twig']->render('admin/user/demand.html.twig', [
-                'users' => $users,
-                'registrations' => $registrations,
+            return $app['twig']->render('admin/user/registrations.html.twig', [
+                'user_registrations' => $userRegistrations,
                 'models' => $models,
             ]);
-        })->bind('users_display_demands');
+        })->bind('users_display_registrations');
 
-        $controllers->post('/demands/', function (Application $app, Request $request) {
+        $controllers->post('/registrations/', function (Application $app, Request $request) {
             $templates = $deny = $accept = $options = [];
 
             foreach ($request->request->get('template', []) as $tmp) {
-                if (trim($tmp) != '') {
-                    $tmp = explode('_', $tmp);
+                if ('' === trim($tmp)) {
+                    continue;
+                }
 
-                    if (count($tmp) == 2) {
-                        $templates[$tmp[0]] = $tmp[1];
-                    }
+                $tmp = explode('_', $tmp);
+
+                if (count($tmp) == 2) {
+                    $templates[$tmp[0]] = $tmp[1];
                 }
             }
 
@@ -423,92 +419,102 @@ class Users implements ControllerProviderInterface
             }
 
             if (count($templates) > 0 || count($deny) > 0 || count($accept) > 0) {
-                $done = [];
-                $cache_to_update = [];
+                $cacheToUpdate = $done = [];
 
                 foreach ($templates as $usr => $template_id) {
-                    $user = $app['manipulator.user']->getRepository()->find($usr);
-                    $cache_to_update[$usr] = true;
+                    if (null === $user = $app['manipulator.user']->getRepository()->find($usr)) {
+                        $app->abort(400, srpintf("User with id % in provided in 'template' request variable could not be found", $usr));
+                    }
+                    $cacheToUpdate[$usr] = $user;
 
                     $user_template = $app['manipulator.user']->getRepository()->find($template_id);
-                    $base_ids = array_keys($app['acl']->get($user_template)->get_granted_base());
+                    $collections = $app['acl']->get($user_template)->get_granted_base();
+                    $baseIds = array_keys($collections);
 
-                    $app['acl']->get($user)->apply_model($user_template, $base_ids);
+                    $app['acl']->get($user)->apply_model($user_template, $baseIds);
 
-                    foreach ($base_ids as $base_id) {
-                        $done[$usr][$base_id] = true;
+                    foreach ($collections as $collection) {
+                        $done[$usr][$collection->get_base_id()] = true;
                     }
 
-                    $app['manipulator.registration']->deleteRegistrationsForUser($user->get_id(), $base_ids);
+                    $app['manipulator.registration']->deleteUserRegistrations($user, $collections);
                 }
 
                 foreach ($deny as $usr => $bases) {
-                    $cache_to_update[$usr] = true;
-                    foreach ($bases as $bas) {
-                        if (null !== $registration = $app['manipulator.registration']->getRepository()->findOneBy([
-                            'user' => $usr,
-                            'baseId' => $bas
-                        ])) {
-                            $app['manipulator.registration']->rejectDemand($registration);
-                            $done[$usr][$bas] = false;
-                        }
+                    if (null === $user = $app['manipulator.user']->getRepository()->find($usr)) {
+                        $app->abort(400, srpintf("User with id % in provided in 'deny' request variable could not be found", $usr));
+                    }
+                    $cacheToUpdate[$usr] = $user;
+                    foreach ($app['manipulator.registration']->getRepository()->getUserRegistrations(
+                        $user,
+                        array_map(function ($baseId) use ($app) {
+                            return \collection::get_from_base_id($app, $baseId);
+                        }, $bases)
+                    ) as $registration) {
+                        $app['manipulator.registration']->rejectRegistration($registration);
+                        $done[$usr][$registration->getBaseId()] = false;
                     }
                 }
 
                 foreach ($accept as $usr => $bases) {
-                    $user = $app['manipulator.user']->getRepository()->find($usr);
-                    $cache_to_update[$usr] = true;
-
-                    foreach ($bases as $bas) {
-                        $collection = \collection::get_from_base_id($app, $bas);
-                        if (null !== $registration = $app['manipulator.registration']->getRepository()->findOneBy([
-                            'user' => $user->get_id(),
-                            'baseId' => $collection->get_base_id()
-                        ])) {
-                            $done[$usr][$bas] = true;
-                            $app['manipulator.registration']->acceptRegistration($registration, $user, $collection, $options[$usr][$bas]['HD'], $options[$usr][$bas]['WM']);
-                        }
+                    if (null === $user = $app['manipulator.user']->getRepository()->find($usr)) {
+                        $app->abort(400, srpintf("User with id % in provided in 'accept' request variable could not be found", $usr));
+                    }
+                    $cacheToUpdate[$usr] = $user;
+                    foreach ($app['manipulator.registration']->getRepository()->getUserRegistrations(
+                        $user,
+                        array_map(function ($baseId) use ($app) {
+                            return \collection::get_from_base_id($app, $baseId);
+                        }, $bases)
+                    ) as $registration) {
+                        $done[$usr][$registration->getBaseId()] = true;
+                        $app['manipulator.registration']->acceptRegistration(
+                            $registration,
+                            $options[$usr][$registration->getBaseId()]['HD'],
+                            $options[$usr][$registration->getBaseId()]['WM']
+                        );
                     }
                 }
 
-                foreach (array_keys($cache_to_update) as $usr_id) {
-                    $user = $app['manipulator.user']->getRepository()->find($usr_id);
+                array_walk($cacheToUpdate, function (User $user) use ($app) {
                     $app['acl']->get($user)->delete_data_from_cache();
-                    unset($user);
-                }
+                });
+                unset ($cacheToUpdate);
 
                 foreach ($done as $usr => $bases) {
+                    $user = $app['manipulator.user']->getRepository()->find($usr);
                     $acceptColl = $denyColl = [];
-                    if (null !== $user = $app['manipulator.user']->getRepository()->find($usr)) {
-                        if (\Swift_Validate::email($user->getEmail())) {
-                            foreach ($bases as $bas => $isok) {
-                                if ($isok) {
-                                    $acceptColl[] = \phrasea::bas_labels($bas, $app);
-                                } else {
-                                    $denyColl[] = \phrasea::bas_labels($bas, $app);
-                                }
-                            }
-                            if (0 !== count($acceptColl) || 0 !== count($denyColl)) {
-                                $message = '';
-                                if (0 !== count($acceptColl)) {
-                                    $message .= "\n" . $app->trans('login::register:email: Vous avez ete accepte sur les collections suivantes : ') . implode(', ', $acceptColl). "\n";
-                                }
-                                if (0 !== count($denyColl)) {
-                                    $message .= "\n" . $app->trans('login::register:email: Vous avez ete refuse sur les collections suivantes : ') . implode(', ', $denyColl) . "\n";
-                                }
 
-                                $receiver = new Receiver(null, $user->getEmail());
-                                $mail = MailSuccessEmailUpdate::create($app, $receiver, null, $message);
+                    foreach ($bases as $bas => $isok) {
+                        $collection = \collection::get_from_base_id($app, $bas);
 
-                                $app['notification.deliverer']->deliver($mail);
-                            }
+                        if ($isok) {
+                            $acceptColl[] = $collection->get_label($app['locale']);
+                            continue;
                         }
+
+                        $denyColl[] = $collection->get_label($app['locale']);
+                    }
+
+                    if (0 !== count($acceptColl) || 0 !== count($denyColl)) {
+                        $message = '';
+                        if (0 !== count($acceptColl)) {
+                            $message .= "\n" . $app->trans('login::register:email: Vous avez ete accepte sur les collections suivantes : ') . implode(', ', $acceptColl). "\n";
+                        }
+                        if (0 !== count($denyColl)) {
+                            $message .= "\n" . $app->trans('login::register:email: Vous avez ete refuse sur les collections suivantes : ') . implode(', ', $denyColl) . "\n";
+                        }
+
+                        $receiver = new Receiver(null, $user->getEmail());
+                        $mail = MailSuccessEmailUpdate::create($app, $receiver, null, $message);
+
+                        $app['notification.deliverer']->deliver($mail);
                     }
                 }
             }
 
-            return $app->redirectPath('users_display_demands', ['success' => 1]);
-        })->bind('users_submit_demands');
+            return $app->redirectPath('users_display_registrations', ['success' => 1]);
+        })->bind('users_submit_registrations');
 
         $controllers->get('/import/file/', function (Application $app, Request $request) {
             return $app['twig']->render('admin/user/import/file.html.twig');

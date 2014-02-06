@@ -38,13 +38,10 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = [
-            'usr_id' => ''
-            , 'demand' => []
-        ];
+        $default = ['usr_id' => '', 'registrations' => []];
 
         $params = array_merge($default, $params);
-        $base_ids = $params['demand'];
+        $base_ids = $params['registrations'];
 
         if (count($base_ids) == 0) {
             return;
@@ -79,7 +76,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 
         $usr_id->appendChild($dom_xml->createTextNode($params['usr_id']));
 
-        foreach ($params['demand'] as $base_id => $is_ok) {
+        foreach ($params['registrations'] as $base_id => $is_ok) {
             $base_id_node = $dom_xml->createElement('base_id');
             $base_id_node->appendChild($dom_xml->createTextNode($base_id));
             $base_ids->appendChild($base_id_node);

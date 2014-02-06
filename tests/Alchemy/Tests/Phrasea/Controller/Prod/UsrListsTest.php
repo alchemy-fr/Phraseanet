@@ -168,7 +168,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $entry = self::$DI['app']['EM']->find('Phraseanet:UsrListEntry', 2);
         $list_id = $entry->getList()->getId();
-        $usr_id = $entry->getUser(self::$DI['app'])->getId();
+        $usr_id = $entry->getUser()->getId();
         $entry_id = $entry->getId();
 
         $route = '/prod/lists/list/' . $list_id . '/remove/' . $usr_id . '/';

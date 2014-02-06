@@ -7,7 +7,7 @@ use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
 /**
  * @covers Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider
  */
-class RegistrationServiceProviderTest  extends ServiceProviderTestCase
+class RegistrationServiceProviderTest extends ServiceProviderTestCase
 {
     private $fields;
 
@@ -37,7 +37,7 @@ class RegistrationServiceProviderTest  extends ServiceProviderTestCase
     public function provideServiceDescription()
     {
         return [
-            ['Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider', 'registration.manager', 'Alchemy\Phrasea\Registration\RegistrationManager'],
+            ['Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider', 'registration.manager', 'Alchemy\Phrasea\Core\Configuration\RegistrationManager'],
         ];
     }
 }

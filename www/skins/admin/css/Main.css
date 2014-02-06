@@ -284,12 +284,12 @@ div.switch_right.unchecked {
   line-height: 22px;
 }
 
-#tab_demandes .dl-horizontal dd {
+#tab-registrations .dl-horizontal dd {
     word-break: break-all;
     margin-left: 140px;
 }
 
-#tab_demandes .dl-horizontal dt {
+#tab-registrations .dl-horizontal dt {
     width: 130px;
 }
 

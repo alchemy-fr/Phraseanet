@@ -40,7 +40,7 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
         });
 
         $app['manipulator.registration'] = $app->share(function ($app) {
-            return new RegistrationManipulator($app['EM'], $app['phraseanet.appbox'], $app['acl']);
+            return new RegistrationManipulator($app, $app['EM'], $app['acl'], $app['phraseanet.appbox']);
         });
     }
 

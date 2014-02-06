@@ -11,40 +11,43 @@
 
 namespace Alchemy\Phrasea\Model\Manipulator;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Model\Entities\Registration;
+use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Repositories\RegistrationRepository;
 use Doctrine\ORM\EntityManager;
-use igorw;
 
 class RegistrationManipulator implements ManipulatorInterface
 {
     private $em;
+    private $app;
     private $appbox;
     private $repository;
     private $aclProvider;
 
-    public function __construct(EntityManager $em, \appbox $appbox, ACLProvider $aclProvider)
+    public function __construct(Application $app, EntityManager $em, ACLProvider $aclProvider, \appbox $appbox)
     {
+        $this->app = $app;
         $this->em = $em;
         $this->appbox = $appbox;
-        $this->repository = $this->em->getRepository('Alchemy\Phrasea\Model\Entities\Registration');
         $this->aclProvider = $aclProvider;
+        $this->repository = $this->em->getRepository('Phraseanet:Registration');
     }
 
     /**
      * Creates a new registration.
      *
-     * @param $userId
-     * @param $baseId
+     * @param User        $user
+     * @param \collection $collection
      *
      * @return Registration
      */
-    public function createRegistration($userId, $baseId)
+    public function createRegistration(User $user, \collection $collection)
     {
         $registration = new Registration();
-        $registration->setUser($userId);
-        $registration->setBaseId($baseId);
+        $registration->setUser($user);
+        $registration->setCollection($collection);
         $this->em->persist($registration);
         $this->em->flush();
 
@@ -67,14 +70,15 @@ class RegistrationManipulator implements ManipulatorInterface
     /**
      * Accepts a registration.
      *
-     * @param Registration  $registration
-     * @param \User_Adapter $user
-     * @param \Collection   $collection
-     * @param bool          $grantHd
-     * @param bool          $grantWatermark
+     * @param Registration $registration
+     * @param bool         $grantHd
+     * @param bool         $grantWatermark
      */
-    public function acceptRegistration(Registration $registration, \User_Adapter $user, \Collection $collection, $grantHd = false, $grantWatermark = false)
+    public function acceptRegistration(Registration $registration, $grantHd = false, $grantWatermark = false)
     {
+        $user = $registration->getUser();
+        $collection = $registration->getCollection($this->app);
+
         $this->aclProvider->get($user)->give_access_to_sbas([$collection->get_sbas_id()]);
         $this->aclProvider->get($user)->give_access_to_base([$collection->get_base_id()]);
         $this->aclProvider->get($user)->update_rights_to_base($collection->get_base_id(), [
@@ -86,117 +90,6 @@ class RegistrationManipulator implements ManipulatorInterface
         ]);
         $this->em->remove($registration);
         $this->em->flush();
-    }
-
-    /**
-     * Gets information about registration configuration and registration status if a user id is provided.
-     *
-     * @param null|integer $userId
-     *
-     * @return array
-     */
-    public function getRegistrationSummary($userId = null)
-    {
-        $data = $userData = [];
-
-        if (null !== $userId) {
-            $userData = $this->getRepository()->getRegistrationsSummaryForUser($userId);
-        }
-
-        foreach ($this->appbox->get_databoxes() as $databox) {
-            $ddata = [
-                'registrations' => [
-                    'by-type' => [
-                        'inactive'  => [],
-                        'accepted'  => [],
-                        'in-time'   => [],
-                        'out-dated' => [],
-                        'pending'   => [],
-                        'rejected'  => [],
-                    ],
-                    'by-collection' => []
-                ],
-                'config' => [
-                    'db-name'       => $databox->get_dbname(),
-                    'cgu'           => $databox->get_cgus(),
-                    'can-register'  => $databox->isRegistrationEnabled(),
-                    'collections'   => [],
-                ]
-            ];
-
-            foreach ($databox->get_collections() as $collection) {
-                // sets collection info
-                $ddata['config']['collections'][$collection->get_base_id()] = [
-                    'coll-name'     => $collection->get_name(),
-                    // gets collection registration or fallback to databox configuration
-                    'can-register'  => $collection->isRegistrationEnabled(),
-                    'cgu'           => $collection->getTermsOfUse(),
-                    'registration'        => null
-                ];
-
-                if (null === $userRegistration = igorw\get_in($userData, [$databox->get_sbas_id(), $collection->get_base_id()])) {
-                    continue;
-                }
-
-                // sets collection name
-                $userRegistration['coll-name'] = $collection->get_name();
-                // gets registration entity
-                $registration = $userRegistration['registration'];
-
-                $noRegistrationMade = is_null($userRegistration['active']);
-                $registrationMade = !$noRegistrationMade;
-                $registrationStillExists = !is_null($registration);
-                $registrationNoMoreExists = !$registrationStillExists;
-                $isPending = $registrationStillExists && $registration->isPending() && !$registration->isRejected();
-                $isRejected = $registrationStillExists && $registration->isRejected();
-                $isDone = ($registrationNoMoreExists && $registrationMade) || (!$isPending && !$isRejected);
-                $isActive = (Boolean) $userRegistration['active'];
-                $isTimeLimited = (Boolean) $userRegistration['time-limited'];
-                $isNotTimeLimited = !$isTimeLimited;
-                $isOnTime = (Boolean) $userRegistration['in-time'];
-                $isOutDated = !$isOnTime;
-
-                if ($noRegistrationMade) {
-                    continue;
-                }
-                // sets registrations
-                $ddata['config']['collections'][$collection->get_base_id()]['registration'] = $userRegistration;
-                $ddata['registrations']['by-collection'][$collection->get_base_id()] = $userRegistration;
-
-                if (!$isActive) {
-                    $ddata['registrations']['by-type']['inactive'][] = $userRegistration;
-                    continue;
-                }
-
-                if ($isDone) {
-                    $ddata['registrations']['by-type']['accepted'][] = $userRegistration;
-                    continue;
-                }
-
-                if ($isRejected) {
-                    $ddata['registrations']['by-type']['rejected'][] = $userRegistration;
-                    continue;
-                }
-
-                if ($isTimeLimited && $isOnTime && $isPending) {
-                    $ddata['registrations']['by-type']['in-time'][] = $userRegistration;
-                    continue;
-                }
-
-                if ($isTimeLimited && $isOutDated && $isPending) {
-                    $ddata['registrations']['by-type']['out-time'][] = $userRegistration;
-                    continue;
-                }
-
-                if ($isNotTimeLimited && $isPending) {
-                    $ddata['registrations']['by-type']['pending'][] = $userRegistration;
-                }
-            }
-        }
-
-        $data[$databox->get_sbas_id()] = $ddata;
-
-       return $data;
     }
 
     /**
@@ -212,21 +105,23 @@ class RegistrationManipulator implements ManipulatorInterface
     /**
      * Deletes registration for given user.
      *
-     * @param       $userId
-     * @param array $baseList
+     * @param User          $user
+     * @param \collection[] $collections
      *
      * @return mixed
      */
-    public function deleteRegistrationsForUser($userId, array $baseList)
+    public function deleteUserRegistrations(User $user, array $collections)
     {
         $qb = $this->getRepository()->createQueryBuilder('d');
-        $qb->delete('Alchemy\Phrasea\Model\Entities\Registration', 'd');
+        $qb->delete('Phraseanet:Registration', 'd');
         $qb->where($qb->expr()->eq('d.user', ':user'));
-        $qb->setParameter(':user', $userId);
+        $qb->setParameter(':user', $user->getId());
 
-        if (count($baseList) > 0) {
+        if (count($collections) > 0) {
             $qb->andWhere('d.baseId IN (:bases)');
-            $qb->setParameter(':bases', $baseList);
+            $qb->setParameter(':bases', array_map(function ($collection) {
+                return $collection->get_base_id();
+            }, $collections));
         }
 
         return $qb->getQuery()->execute();
@@ -238,7 +133,7 @@ class RegistrationManipulator implements ManipulatorInterface
     public function deleteOldRegistrations()
     {
         $qb = $this->getRepository()->createQueryBuilder('d');
-        $qb->delete('Alchemy\Phrasea\Model\Entities\Registration', 'd');
+        $qb->delete('Phraseanet:Registration', 'd');
         $qb->where($qb->expr()->lt('d.created', ':date'));
         $qb->setParameter(':date', new \DateTime('-1 month'));
         $qb->getQuery()->execute();
@@ -249,12 +144,12 @@ class RegistrationManipulator implements ManipulatorInterface
      *
      * @param $baseId
      */
-    public function deleteRegistrationsOnCollection($baseId)
+    public function deleteRegistrationsOnCollection(\collection $collection)
     {
         $qb = $this->getRepository()->createQueryBuilder('d');
-        $qb->delete('Alchemy\Phrasea\Model\Entities\Registration', 'd');
+        $qb->delete('Phraseanet:Registration', 'd');
         $qb->where($qb->expr()->eq('d.baseId', ':base'));
-        $qb->setParameter(':base', $baseId);
+        $qb->setParameter(':base', $collection->get_base_id());
         $qb->getQuery()->execute();
     }
 }

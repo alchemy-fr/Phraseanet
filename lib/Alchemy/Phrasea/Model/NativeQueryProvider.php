@@ -82,6 +82,6 @@ class NativeQueryProvider
                 AND u.deleted="0"', $rsm
         );
 
-        return $query->getResults();
+        return $query->getResult();
     }
 }

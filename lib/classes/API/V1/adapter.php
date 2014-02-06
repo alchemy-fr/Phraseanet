@@ -1089,7 +1089,7 @@ class API_V1_adapter extends API_V1_Abstract
             }
 
             $record->set_metadatas($metadatas);
-            $result->set_datas(array("record_metadatas" => $this->list_record_caption($record->get_caption())));
+            $result->set_datas(["record_metadatas" => $this->list_record_caption($record->get_caption())]);
         } catch (\Exception $e) {
             $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('An error occured'));
         }

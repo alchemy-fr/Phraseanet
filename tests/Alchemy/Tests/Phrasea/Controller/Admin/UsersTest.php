@@ -366,19 +366,17 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['app']['manipulator.user']->delete($user);
     }
 
-    public function testRenderDemands()
+    public function testRenderRegistrations()
     {
-        self::$DI['client']->request('GET', '/admin/users/demands/');
+        self::$DI['client']->request('GET', '/admin/users/registrations/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
-    public function testPostDemands()
+    public function testPostRegistrations()
     {
         $id = self::$DI['user_alt1']->getId();
         $baseId = self::$DI['collection']->get_base_id();
         $param = sprintf('%s_%s', $id, $baseId);
-
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $stmt = $this->getMock('PDOStatement');
 
@@ -408,7 +406,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate');
 
-        self::$DI['client']->request('POST', '/admin/users/demands/', [
+        self::$DI['client']->request('POST', '/admin/users/registrations/', [
             'template' => [],
             'accept' => [$param],
             'accept_hd' => [$param],

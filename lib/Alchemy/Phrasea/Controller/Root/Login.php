@@ -267,7 +267,7 @@ class Login implements ControllerProviderInterface
 
     public function doRegistration(PhraseaApplication $app, Request $request)
     {
-        if (! $app['registration.manager']->isRegistrationEnabled()) {
+        if (!$app['registration.manager']->isRegistrationEnabled()) {
             $app->abort(404, 'Registration is disabled');
         }
 
@@ -335,7 +335,7 @@ class Login implements ControllerProviderInterface
                     } else {
                         $selected = isset($data['collections']) ? $data['collections'] : null;
                     }
-                    $inscriptions = $app['manipulator.registration']->getRegistrationSummary();
+                    $inscriptions = $app['registration.manager']->getRegistrationSummary();
                     $inscOK = [];
 
                     foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
@@ -385,33 +385,25 @@ class Login implements ControllerProviderInterface
                         $app['EM']->flush();
                     }
 
-                    $demandOK = [];
-
+                    $registrationsOK = [];
                     if ($app['conf']->get(['registry', 'registration', 'auto-register-enabled'])) {
                         $template_user = $app['manipulator.user']->getRepository()->findByLogin(User::USER_AUTOREGISTER);
-
-                        $base_ids = [];
-
-                        foreach (array_keys($inscOK) as $base_id) {
-                            $base_ids[] = $base_id;
-                        }
-
-                        $app['acl']->get($user)->apply_model($template_user, $base_ids);
+                        $app['acl']->get($user)->apply_model($template_user, array_keys($inscOK));
                     }
 
                     $autoReg = $app['acl']->get($user)->get_granted_base();
 
-                    foreach ($inscOK as $base_id => $autorisation) {
-                        if (false === $autorisation || $app['acl']->get($user)->has_access_to_base($base_id)) {
+                    foreach ($inscOK as $baseId => $authorization) {
+                        if (false === $authorization || $app['acl']->get($user)->has_access_to_base($baseId)) {
                             continue;
                         }
 
-                        $app['manipulator.registration']->createRegistration($user->getId(), $base_id);
-                        $demandOK[$base_id] = true;
+                        $app['manipulator.registration']->createRegistration($user, \collection::get_from_base_id($app, $baseId));
+                        $registrationsOK[$baseId] = true;
                     }
 
                     $params = [
-                        'demand'       => $demandOK,
+                        'registrations'=> $registrationsOK,
                         'autoregister' => $autoReg,
                         'usr_id'       => $user->getId()
                     ];

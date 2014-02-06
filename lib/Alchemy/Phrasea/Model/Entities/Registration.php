@@ -11,11 +11,14 @@
 
 namespace Alchemy\Phrasea\Model\Entities;
 
+use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="Registration")
+ * @ORM\Table(name="Registration",uniqueConstraints={
+ *      @ORM\UniqueConstraint(name="unique_registration", columns={"user_id","base_id","pending"})
+ * })
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\RegistrationRepository")
  */
 class Registration
@@ -28,8 +31,11 @@ class Registration
     private $id;
 
     /**
-     * @ORM\Column(type="integer", name="user_id")
-     */
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
+     *
+     * @return User
+     **/
     private $user;
 
     /**
@@ -110,23 +116,43 @@ class Registration
     }
 
     /**
-     * @param mixed $user
-     *
      * @return Registration
      */
-    public function setUser($user)
+    public function setUser(User $user)
     {
-        $this->user = $user;
+        $this->user  = $user;
 
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return integer
      */
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * @param Application $app
+     *
+     * @return \collection
+     */
+    public function getCollection(Application $app)
+    {
+        return \collection::get_from_base_id($app, $this->baseId);
+    }
+
+    /**
+     * @param \collection $collection
+     *
+     * @return $this
+     */
+    public function setCollection(\collection $collection)
+    {
+        $this->baseId = $collection->get_base_id();
+
+        return $this;
     }
 
     /**

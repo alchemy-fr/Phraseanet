@@ -7,7 +7,7 @@
             resize();
         });
 
-        var $form = $("form#accept-demand");
+        var $form = $("form#accept-registration");
         var $mainBtnAction = $(".btn-all-action", $form);
         var $basesBtnAction = $(".btn-single-action", $form);
 
@@ -172,8 +172,8 @@
         </div>
 {% endif %}
 
-{% if users | length > 0 %}
-    <form id="accept-demand" action="{{ path('users_submit_demands') }}" method="post">
+{% if user_registrations | length > 0 %}
+    <form id="accept-registration" action="{{ path('users_submit_registrations') }}" method="post">
         <div class="btn-group btn-all-action">
             <button data-event="deny" class="btn deny-checker" type="button">
                 <img title="{{ 'admin:: refuser l\'acces' | trans }}" src="/skins/icons/delete.gif"/>
@@ -200,9 +200,9 @@
         </table>
 
         <div class="registration-wrapper PNB" style="top:160px;bottom: 50px;overflow: auto">
-        <div  id="tab_demandes">
-            {% for user in users %}
-                {% set userRegistrations = registrations[user.getId()] %}
+        <div  id="registrations">
+            {% for user_registration in user_registrations %}
+                {% set user = user_registration['user'] %}
                 <div class="well well-small">
                     <table class="table" style="table-layout: fixed;">
                         <tr>
@@ -230,9 +230,9 @@
                                 </dl>
                             </td>
                             <td>
-                                {% for baseId, demand in userRegistrations %}
+                                {% for basId, registration in user_registration['registrations'] %}
                                     <div>
-                                        {{ app['date-formatter'].getPrettyString(demand.getUpdated()) }}
+                                        {{ app['date-formatter'].getPrettyString(registration.getUpdated()) }}
                                     </div>
                                     <span style="font-weight:bold;font-size:14px;word-wrap: break-word;">
                                         {{ basId| bas_labels(app) }}

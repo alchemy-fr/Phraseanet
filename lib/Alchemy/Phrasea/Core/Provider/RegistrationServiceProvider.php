@@ -12,8 +12,8 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Form\Constraint\NewLogin;
-use Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Core\Configuration\RegistrationManager;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -27,7 +27,7 @@ class RegistrationServiceProvider implements ServiceProviderInterface
         });
 
         $app['registration.manager'] = $app->share(function (Application $app) {
-            return new RegistrationManager($app['phraseanet.appbox']);
+            return new RegistrationManager($app['phraseanet.appbox'], $app['manipulator.registration']->getRepository(), $app['locale']);
         });
 
         $app['registration.optional-fields'] = $app->share(function (Application $app) {

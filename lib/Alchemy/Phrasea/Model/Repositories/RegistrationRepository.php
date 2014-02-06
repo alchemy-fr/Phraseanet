@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Model\Repositories;
 
 use Doctrine\ORM\EntityRepository;
+use Alchemy\Phrasea\Model\Entities\User;
 
 /**
  * RegistrationRepository
@@ -24,20 +25,22 @@ class RegistrationRepository extends EntityRepository
     /**
      * Displays registrations for user on provided collection.
      *
-     * @param \User_Adapter $user
-     * @param array         $baseList
+     * @param User          $user
+     * @param \collection[] $collections
      *
      * @return array
      */
-    public function getRegistrationsForUser(\User_Adapter $user, array $baseList)
+    public function getUserRegistrations(User $user, array $collections)
     {
         $qb = $this->createQueryBuilder('d');
         $qb->where($qb->expr()->eq('d.user', ':user'));
-        $qb->setParameter(':user', $user->get_id());
+        $qb->setParameter(':user', $user->getId());
 
-        if (count($baseList) > 0) {
+        if (count($collections) > 0) {
             $qb->andWhere('d.baseId IN (:bases)');
-            $qb->setParameter(':bases', $baseList);
+            $qb->setParameter(':bases', array_map(function ($collection) {
+                return $collection->get_base_id();
+            }, $collections));
         }
 
         $qb->orderBy('d.created', 'DESC');
@@ -48,11 +51,11 @@ class RegistrationRepository extends EntityRepository
     /**
      * Gets registration registrations for a user.
      *
-     * @param $usrId
+     * @param User $user
      *
      * @return array
      */
-    public function getRegistrationsSummaryForUser($usrId)
+    public function getRegistrationsSummaryForUser(User $user)
     {
         $data = [];
         $rsm = $this->createResultSetMappingBuilder('d');
@@ -78,7 +81,7 @@ class RegistrationRepository extends EntityRepository
         AND model_of = 0";
 
         $query = $this->_em->createNativeQuery($sql, $rsm);
-        $query->setParameter(1, $usrId);
+        $query->setParameter(1, $user->getId());
 
         foreach ($query->getResult() as $row) {
             $registrationEntity = $row[0];

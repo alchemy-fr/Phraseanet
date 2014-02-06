@@ -84,14 +84,14 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
             ]
         ];
 
-        $service = $this->getMockBuilder('Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator')
-            ->setConstructorArgs([self::$DI['app']['EM'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['acl']])
+        $service = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\RegistrationManager')
+            ->setConstructorArgs([self::$DI['app']['phraseanet.appbox'], self::$DI['app']['manipulator.registration']->getRepository(), self::$DI['app']['locale']])
             ->setMethods(['getRegistrationSummary'])
             ->getMock();
 
         $service->expects($this->once())->method('getRegistrationSummary')->will($this->returnValue($data));
 
-        self::$DI['app']['registration-manager'] = $service;
+        self::$DI['app']['registration.manager'] = $service;
         self::$DI['client']->request('GET', '/account/access/');
 
         $response = self::$DI['client']->getResponse();
@@ -320,7 +320,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         array_shift($notifs);
 
         self::$DI['client']->request('POST', '/account/', [
-            'demand'               => $bases,
+            'registrations'        => $bases,
             'form_gender'          => User::GENDER_MR,
             'form_firstname'       => 'gros',
             'form_lastname'        => 'minet',
@@ -347,7 +347,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('minet', self::$DI['app']['authentication']->getUser()->getLastName());
 
-        $rs = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Registration')->findBy([
+        $rs = self::$DI['app']['EM']->getRepository('Phraseanet:Registration')->findBy([
             'user' => self::$DI['app']['authentication']->getUser()->getId(),
             'pending' => true
         ]);

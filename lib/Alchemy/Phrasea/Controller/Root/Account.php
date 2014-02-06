@@ -232,7 +232,7 @@ class Account implements ControllerProviderInterface
     public function accountAccess(Application $app, Request $request)
     {
         return $app['twig']->render('account/access.html.twig', [
-            'inscriptions' => $app['manipulator.registration']->getRegistrationSummary($app['authentication']->getUser()->getId())
+            'inscriptions' => $app['registration.manager']->getRegistrationSummary($app['authentication']->getUser())
         ]);
     }
 
@@ -326,13 +326,13 @@ class Account implements ControllerProviderInterface
      */
     public function updateAccount(PhraseaApplication $app, Request $request)
     {
-        $demands = $request->request->get('demand');
-        if (false === is_array($demands)) {
-            $app->abort(400, '"demand" parameter must be an array of base id ');
+        $registrations = $request->request->get('registrations');
+        if (false === is_array($registrations)) {
+            $app->abort(400, '"registrations" parameter must be an array of base ids.');
         }
-        if (0 !== count($demands)) {
-            foreach ($demands as $baseId) {
-                $app['registration-manager']->createRegistration($app['authentication']->getUser()->get_id(), $baseId);
+        if (0 !== count($registrations)) {
+            foreach ($registrations as $baseId) {
+                $app['manipulator.registration']->createRegistration($app['authentication']->getUser(), \collection::get_from_base_id($app, $baseId));
             }
             $app->addFlash('success', $app->trans('Your registration requests have been taken into account.'));
         }
