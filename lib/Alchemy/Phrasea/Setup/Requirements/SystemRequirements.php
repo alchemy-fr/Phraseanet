@@ -237,9 +237,15 @@ class SystemRequirements extends RequirementCollection implements RequirementInt
         );
 
         $this->addRecommendation(
-            extension_loaded('twig'),
-            'Twig extension is strongly recommended in production',
-            'Install and enable the <strong>twig</strong> extension.'
+             extension_loaded('twig'),
+             'Twig extension is strongly recommended in production',
+             'Install and enable the <strong>twig</strong> extension.'
+        );
+
+        $this->addRecommendation(
+             function_exists('event_base_new'),
+             'LibEvent extension is strongly recommended in production',
+             'Install and enable the <strong>LibEvent</strong> extension.'
         );
 
         $this->addRequirement(
