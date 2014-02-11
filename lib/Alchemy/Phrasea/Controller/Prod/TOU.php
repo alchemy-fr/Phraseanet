@@ -24,7 +24,7 @@ class TOU implements ControllerProviderInterface
         $app['controller.prod.tou'] = $this;
 
         $controllers = $app['controllers_factory'];
-        
+
         $controller = $controllers->post('/deny/{sbas_id}/', 'controller.prod.tou:denyTermsOfUse')
             ->bind('deny_tou');
         $app['firewall']->addMandatoryAuthentication($controller);

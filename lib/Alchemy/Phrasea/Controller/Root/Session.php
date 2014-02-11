@@ -30,7 +30,7 @@ class Session implements ControllerProviderInterface
 
         $controller = $controllers->post('/delete/{id}', 'controller.session:deleteSession')
             ->bind('delete_session');
-        
+
         $app['firewall']->addMandatoryAuthentication($controller);
 
         return $controllers;

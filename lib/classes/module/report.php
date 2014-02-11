@@ -771,7 +771,7 @@ class module_report
      *                    array( 'field' =>
      *                    array('title of the colum', '1 = order ON / 0 = order OFF',
      *                    '1 = bound ON / 0 = bound OFF')
-     *                    @example $tab = array('user' => array('user list', 1, 0),
+     * @example $tab = array('user' => array('user list', 1, 0),
      *                    'id'   => array(user id, 0, 0)); etc ..
      * @return void
      */
