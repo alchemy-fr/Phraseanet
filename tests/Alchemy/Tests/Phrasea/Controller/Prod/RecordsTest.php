@@ -4,8 +4,8 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
-use Entities\Basket;
-use Entities\BasketElement;
+use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\BasketElement;
 
 /**
  * @todo Test Alchemy\Phrasea\Controller\Prod\Export::exportMail
