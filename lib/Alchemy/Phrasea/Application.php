@@ -334,14 +334,14 @@ class Application extends SilexApplication
         ]);
 
         $this['translator'] = $this->share($this->extend('translator', function (CachedTranslator $translator, $app) {
-            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.fr.xliff', 'fr', 'messages');
-            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.fr.xliff', 'fr', 'validators');
-            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.en.xliff', 'en', 'messages');
-            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.en.xliff', 'en', 'validators');
-            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.de.xliff', 'de', 'messages');
-            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.de.xliff', 'de', 'validators');
-            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/messages.nl.xliff', 'nl', 'messages');
-            $translator->addResource('xliff', __DIR__.'/../../../resources/locales/validators.nl.xliff', 'nl', 'validators');
+            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/messages.fr.xlf', 'fr', 'messages');
+            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/validators.fr.xlf', 'fr', 'validators');
+            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/messages.en.xlf', 'en', 'messages');
+            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/validators.en.xlf', 'en', 'validators');
+            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/messages.de.xlf', 'de', 'messages');
+            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/validators.de.xlf', 'de', 'validators');
+            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/messages.nl.xlf', 'nl', 'messages');
+            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/validators.nl.xlf', 'nl', 'validators');
 
             return $translator;
         }));

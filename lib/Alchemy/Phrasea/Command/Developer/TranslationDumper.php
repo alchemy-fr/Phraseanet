@@ -33,10 +33,9 @@ class TranslationDumper extends Command
         foreach (array_keys($this->container->getAvailableLanguages()) as $code) {
             $builder = new ConfigBuilder();
             $config = $builder->setLocale($code)
-                ->setOutputFormat('xliff')
+                ->setOutputFormat('xlf')
                 ->setTranslationsDir(__DIR__ . '/../../../../../resources/locales')
                 ->setScanDirs([
-                    $this->container['root.path'].'/templates/web/admin/user',
                     $this->container['root.path'].'/lib',
                     $this->container['root.path'].'/templates',
                     $this->container['root.path'].'/bin',

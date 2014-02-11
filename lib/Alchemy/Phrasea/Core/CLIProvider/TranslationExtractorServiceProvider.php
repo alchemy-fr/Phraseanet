@@ -71,7 +71,7 @@ class TranslationExtractorServiceProvider implements ServiceProviderInterface
         $app['translation-extractor.writers'] = $app->share(function () {
             return [
                 'po' => new SymfonyDumperAdapter(new PoFileDumper(), 'po'),
-                'xliff' => new XliffDumper(),
+                'xlf' => new XliffDumper(),
             ];
         });
 
@@ -81,7 +81,7 @@ class TranslationExtractorServiceProvider implements ServiceProviderInterface
         $app['translation-extractor.loaders'] = $app->share(function () {
             return [
                 'po' => new SymfonyLoaderAdapter(new PoFileLoader()),
-                'xliff' => new XliffLoader()
+                'xlf' => new XliffLoader()
             ];
         });
 

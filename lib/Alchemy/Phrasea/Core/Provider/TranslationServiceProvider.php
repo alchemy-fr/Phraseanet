@@ -32,7 +32,10 @@ class TranslationServiceProvider implements ServiceProviderInterface
             $translator->setFallbackLocales($app['locale_fallbacks']);
 
             $translator->addLoader('array', new ArrayLoader());
+            // to load Symfony resources
             $translator->addLoader('xliff', new XliffLoader());
+            // to load Phraseanet resources
+            $translator->addLoader('xlf', new XliffLoader());
 
             foreach ($app['translator.domains'] as $domain => $data) {
                 foreach ($data as $locale => $messages) {
