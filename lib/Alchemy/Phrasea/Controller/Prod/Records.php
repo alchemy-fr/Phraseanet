@@ -30,10 +30,6 @@ class Records implements ControllerProviderInterface
 
         $app['firewall']->addMandatoryAuthentication($controllers);
 
-        $controllers->before(function (Request $request) use ($app) {
-            $app['firewall']->requireNotGuest();
-        });
-
          /**
          * Get  the record detailed view
          *
@@ -65,7 +61,10 @@ class Records implements ControllerProviderInterface
          * return       : JSON Response
          */
         $controllers->post('/delete/', $this->call('doDeleteRecords'))
-            ->bind('record_delete');
+            ->bind('record_delete')
+            ->before(function (Request $request) use ($app) {
+                $app['firewall']->requireNotGuest();
+            });
 
         /**
          * Verify if I can delete records
@@ -81,7 +80,10 @@ class Records implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->post('/delete/what/', $this->call('whatCanIDelete'))
-            ->bind('record_what_can_i_delete');
+            ->bind('record_what_can_i_delete')
+            ->before(function (Request $request) use ($app) {
+                $app['firewall']->requireNotGuest();
+            });
 
         /**
          * Renew a record URL
