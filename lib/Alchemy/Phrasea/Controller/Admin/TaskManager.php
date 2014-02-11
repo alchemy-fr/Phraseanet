@@ -43,6 +43,10 @@ class TaskManager implements ControllerProviderInterface
             ->bind('admin_tasks_list');
 
         $controllers
+            ->get('/scheduler', 'controller.admin.task:getScheduler')
+            ->bind('admin_scheduler');
+
+        $controllers
             ->post('/tasks/create', 'controller.admin.task:postCreateTask')
             ->bind('admin_tasks_task_create');
 
@@ -120,11 +124,51 @@ class TaskManager implements ControllerProviderInterface
         return $app->redirectPath('admin_tasks_list');
     }
 
+    public function getScheduler(Application $app, Request $request)
+    {
+        if ($request->getRequestFormat() !== "json") {
+            $app->abort(406, 'Only JSON format is accepted.');
+        }
+
+        $scheduler = array_replace($app['task-manager.live-information']->getManager(), [
+            'name' => $app->trans('Task Scheduler'),
+            'urls' => [
+                'start' => $app->path('admin_tasks_scheduler_start'),
+                'stop' => $app->path('admin_tasks_scheduler_stop'),
+                'log' => $app->path('admin_tasks_scheduler_log'),
+            ]
+        ]);
+
+        return $app->json($scheduler);
+    }
+
     public function getTasks(Application $app, Request $request)
     {
-        return $app['twig']->render('admin/task-manager/list.html.twig', [
-            'available_jobs'  => $app['task-manager.available-jobs'],
-            'tasks'           => $app['manipulator.task']->getRepository()->findAll(),
+        $tasks = [];
+
+        foreach ($app['manipulator.task']->getRepository()->findAll() as $task) {
+            $tasks[] = array_replace(
+                $app['task-manager.live-information']->getTask($task), [
+                'id' => $task->getId(),
+                'name' => $task->getName()
+            ]);
+        }
+
+        if ($request->getRequestFormat() === "json") {
+            foreach ($tasks as $k => $task) {
+                $tasks[$k]['urls'] = $this->getTaskResourceUrls($app, $task['id']);
+            }
+
+            return $app->json($tasks);
+        }
+
+        return $app['twig']->render('admin/task-manager/index.html.twig', [
+            'available_jobs' => $app['task-manager.available-jobs'],
+            'tasks' => $tasks,
+            'scheduler' => array_replace(
+                $app['task-manager.live-information']->getManager(), [
+                'name' => $app->trans('Task Scheduler')
+            ])
         ]);
     }
 
@@ -239,6 +283,16 @@ class TaskManager implements ControllerProviderInterface
 
     public function getTask(Application $app, Request $request, Task $task)
     {
+        if ('json' === $request->getContentType()) {
+            return $app->json(array_replace([
+                    'id' => $task->getId(),
+                    'name' => $task->getName(),
+                    'urls' => $this->getTaskResourceUrls($app, $task->getId())
+                ],
+                $app['task-manager.live-information']->getTask($task)
+            ));
+        }
+
         $editor = $app['task-manager.job-factory']
             ->create($task->getJobId())
             ->getEditor();
@@ -264,5 +318,16 @@ class TaskManager implements ControllerProviderInterface
         $dom->strictErrorChecking = true;
 
         return (Boolean) @$dom->loadXML($string);
+    }
+
+    private function getTaskResourceUrls(Application $app, $taskId)
+    {
+        return [
+            'show' => $app->path('admin_tasks_task_show', ['task' => $taskId]),
+            'start' => $app->path('admin_tasks_task_start', ['task' => $taskId]),
+            'stop' => $app->path('admin_tasks_task_stop', ['task' => $taskId]),
+            'delete' => $app->path('admin_tasks_task_delete', ['task' => $taskId]),
+            'log' => $app->path('admin_tasks_task_log', ['task' => $taskId]),
+        ];
     }
 }

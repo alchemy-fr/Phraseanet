@@ -1,6 +1,3 @@
-{# include js templates #}
-{% include 'admin/fields/templates.html.twig' %}
-
 <div id="admin-field-app" class="container-fluid">
     {# sbas_id is saved in the dom and used to fetch right models and collections #}
     <input type="hidden" name="current_sbas_id" value="{{ sbas_id }}">
@@ -19,6 +16,9 @@
         <div class="right-block span8"></div>
     </div>
 </div>
+
+{# include js templates #}
+{% include 'admin/fields/templates.html.twig' %}
 
 {# bootstrap admin field backbone application #}
 <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/requirejs/require.js,/scripts/apps/admin/fields/main.js' }) }}"></script>

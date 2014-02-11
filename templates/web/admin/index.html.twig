@@ -107,24 +107,27 @@
     }
 
     function enableLink(link) {
-
         $(link).bind('click',function(event){
-
             var dest = link.attr('href');
+            var method = link.attr("method");
 
             if(dest && dest.indexOf('#') !== 0) {
-                loadRightAjax(dest);
+                loadRightAjax(dest, method || "GET");
                 return false;
             }
-
         });
     }
 
-    function loadRightAjax(url)
+    function loadRightAjax(url, method)
     {
         $('#right-ajax').empty().addClass('loading').parent().show();
-        $.get(url, function(data) {
-            enableFormsCallback(data);
+
+        $.ajax({
+            type: method,
+            url: url,
+            success: function(data) {
+                enableFormsCallback(data);
+            }
         });
     }
 

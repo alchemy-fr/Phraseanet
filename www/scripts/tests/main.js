@@ -4,7 +4,6 @@ require.config({
         specs: "tests/specs",
         chai: "../assets/chai/chai",
         fixtures: "../assets/js-fixtures/fixtures",
-        app: "apps/admin/fields/app",
         jquery: "../assets/jquery/jquery",
         jqueryui: "../assets/jquery.ui/jquery-ui",
         underscore: "../assets/underscore-amd/underscore",

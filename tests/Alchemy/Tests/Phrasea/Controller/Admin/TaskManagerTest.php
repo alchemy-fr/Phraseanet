@@ -19,6 +19,20 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
+    public function testRootListTasksJson()
+    {
+        self::$DI['client']->request('GET', '/admin/task-manager/tasks', [], [], ["HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT" => "application/json"]);
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $tasks = json_decode(self::$DI['client']->getResponse()->getContent());
+        foreach ($tasks as $task) {
+            $this->assertObjectHasAttribute('id', $task);
+            $this->assertObjectHasAttribute('name', $task);
+            $this->assertObjectHasAttribute('configuration', $task);
+            $this->assertObjectHasAttribute('actual', $task);
+            $this->assertObjectHasAttribute('urls', $task);
+        }
+    }
+
     public function testRootPostCreateTask()
     {
         $parameters = [
@@ -153,6 +167,35 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
     {
         self::$DI['client']->request('GET', '/admin/task-manager/task/1');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+    }
+
+    public function testGetTaskJson()
+    {
+        self::$DI['client']->request('GET', '/admin/task-manager/task/1', [], [], ["HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT" => "application/json"]);
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $json = json_decode(self::$DI['client']->getResponse()->getContent());
+        $this->assertObjectHasAttribute('id', $json);
+        $this->assertObjectHasAttribute('name', $json);
+        $this->assertObjectHasAttribute('configuration', $json);
+        $this->assertObjectHasAttribute('actual', $json);
+        $this->assertObjectHasAttribute('urls', $json);
+    }
+
+    public function testGetSchedulerJson()
+    {
+        self::$DI['client']->request('GET', '/admin/task-manager/scheduler', [], [], ["HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT" => "application/json"]);
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $json = json_decode(self::$DI['client']->getResponse()->getContent());
+        $this->assertObjectHasAttribute('name', $json);
+        $this->assertObjectHasAttribute('configuration', $json);
+        $this->assertObjectHasAttribute('actual', $json);
+        $this->assertObjectHasAttribute('urls', $json);
+    }
+
+    public function testGetSchedulerJsonBadRequest()
+    {
+        self::$DI['client']->request('GET', '/admin/task-manager/scheduler');
+        $this->assertEquals(406, self::$DI['client']->getResponse()->getStatusCode());
     }
 
     public function testGetInvalidTask()

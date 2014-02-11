@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Command\Developer\Behat;
 use Alchemy\Phrasea\Command\Developer\BowerInstall;
 use Alchemy\Phrasea\Command\Developer\ComposerInstall;
 use Alchemy\Phrasea\Command\Developer\InstallAll;
+use Alchemy\Phrasea\Command\Developer\JsFixtures;
 use Alchemy\Phrasea\Command\Developer\LessCompiler;
 use Alchemy\Phrasea\Command\Developer\RegenerateSqliteDb;
 use Alchemy\Phrasea\Command\Developer\RoutesDumper;
@@ -87,6 +88,7 @@ $cli->command(new RoutesDumper());
 $cli->command(new Behat());
 $cli->command(new LessCompiler());
 $cli->command(new Uninstaller());
+$cli->command(new JsFixtures());
 $cli->command(new \module_console_systemTemplateGenerator('system:generate-templates'));
 
 

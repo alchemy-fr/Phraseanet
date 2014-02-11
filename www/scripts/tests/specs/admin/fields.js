@@ -2,7 +2,7 @@ define([
     'chai',
     'fixtures',
     'jquery',
-    'app',
+    'apps/admin/fields/app',
     'models/field',
     'apps/admin/fields/collections/fields',
     'apps/admin/fields/collections/dcFields',
@@ -20,12 +20,15 @@ define([
     var assert = chai.assert;
     var should = chai.should();
 
-    // load fixtures in dom
+    // Note: fixture are loaded into scripts/tests/fixtures directory using
+    // bin/developer phraseanet:regenerate-js-fixtures
     fixtures.path = 'fixtures';
-    $("body").append(fixtures.read('admin/fields/dom', 'admin/fields/templates'));
+    $("body").append(fixtures.read('admin/fields/index.html', 'admin/fields/templates.html'));
     var sbasId = 1;
 
     App.create();
+
+    AdminFieldApp.languages = {"de":"Deutsch","en":"English","fr":"Francais","nl":"Dutch"};
 
     describe("Admin field", function () {
         describe("Initialization", function () {
