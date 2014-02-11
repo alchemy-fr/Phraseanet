@@ -271,7 +271,11 @@ class Users implements ControllerProviderInterface
                 $datas['data'] = $user->get_id();
             } catch (\Exception $e) {
                 $datas['error'] = true;
-                $datas['message'] = $e->getMessage();
+                if ($request->request->get('template') == '1') {
+                    $datas['message'] = _('Unable to create template, the name is already used.');
+                } else {
+                    $datas['message'] = _('Unable to create the user.');
+                }
             }
 
             return $app->json($datas);
