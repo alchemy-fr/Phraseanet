@@ -32,7 +32,7 @@ class FinishedJobRemoverSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            JobEvents::FINISHED => [$this, 'onJobFinish'],
+            JobEvents::FINISHED => 'onJobFinish',
         ];
     }
 
