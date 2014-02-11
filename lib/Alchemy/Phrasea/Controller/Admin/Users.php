@@ -269,9 +269,9 @@ class Users implements ControllerProviderInterface
             } catch (\Exception $e) {
                 $datas['error'] = true;
                 if ($request->request->get('template') == '1') {
-                    $datas['message'] = _('Unable to create template, the name is already used.');
+                    $datas['message'] = $app->trans('Unable to create template, the name is already used.');
                 } else {
-                    $datas['message'] = _('Unable to create the user.');
+                    $datas['message'] = $app->trans('Unable to create the user.');
                 }
             }
 
