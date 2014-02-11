@@ -427,7 +427,7 @@ class Xmlhttp implements ControllerProviderInterface
                 $stmt->closeCursor();
 
                 $fields = [];
-                if ($row && ($sx = simplexml_load_string($row['xml']))) {
+                if ($row && ($sx = @simplexml_load_string($row['xml']))) {
                     foreach ($sx->fields->children() as $fn => $fv) {
                         if (!array_key_exists($fn, $fields)) {
                             $fields[$fn] = [];
@@ -462,7 +462,7 @@ class Xmlhttp implements ControllerProviderInterface
         $stmt->closeCursor();
 
         foreach ($rs as $row) {
-            if (!($sx = simplexml_load_string($row['xml']))) {
+            if (!($sx = @simplexml_load_string($row['xml']))) {
                 continue;
             }
             $t_desc = [];

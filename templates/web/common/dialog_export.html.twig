@@ -593,9 +593,6 @@
         $(document).ready(function(){
             var dialog = p4.Dialog.get(1);
             var tabs = $('.tabs', dialog.getDomElement());
-            if (tabs.data('ui-tabs')) {
-                tabs.tabs('active',1);
-            }
 
             $('a.TOUview').bind('click', function(){
                 var options = {
@@ -658,9 +655,7 @@
                         $('input[name="destmail"]', $('#sendmail')).val("{{app['authentication'].getUser().get_email()}}");
 
                         var tabs = $('.tabs', dialog.getDomElement());
-                        if (tabs.data('ui-tabs')) {
-                            tabs.tabs('active',1);
-                        }
+                        tabs.tabs("option", "active", 1);
                     }
 
                     return;

@@ -2104,7 +2104,11 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertArrayHasKey("label", $permalink);
         $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['label']);
         $this->assertArrayHasKey("updated_on", $permalink);
-        $this->assertEquals($subdef->get_permalink()->get_last_modified()->format(DATE_ATOM), $permalink['updated_on']);
+
+        $expected = $subdef->get_permalink()->get_last_modified();
+        $found = \DateTime::createFromFormat(DATE_ATOM, $permalink['updated_on']);
+
+        $this->assertLessThanOrEqual(1, $expected->diff($found)->format('U'));
         $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['updated_on']);
         $this->assertDateAtom($permalink['updated_on']);
         $this->assertArrayHasKey("page_url", $permalink);

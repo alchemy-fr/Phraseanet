@@ -499,13 +499,16 @@ abstract class PhraseanetTestCase extends WebTestCase
      * Authenticates self::['user'] against application.
      *
      * @param Application $app
+     * @param User_Adapter $user
      */
-    protected function authenticate(Application $app)
+    protected function authenticate(Application $app, $user = null)
     {
+        $user = $user ?: self::$DI['user'];
+
         $app['session']->clear();
-        $app['session']->set('usr_id', self::$DI['user']->get_id());
+        $app['session']->set('usr_id', $user->get_id());
         $session = new Session();
-        $session->setUsrId(self::$DI['user']->get_id());
+        $session->setUsrId($user->get_id());
         $session->setUserAgent('');
         self::$DI['app']['EM']->persist($session);
         self::$DI['app']['EM']->flush();

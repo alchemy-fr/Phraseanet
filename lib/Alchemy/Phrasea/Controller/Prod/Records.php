@@ -31,10 +31,6 @@ class Records implements ControllerProviderInterface
 
         $app['firewall']->addMandatoryAuthentication($controllers);
 
-        $controllers->before(function (Request $request) use ($app) {
-            $app['firewall']->requireNotGuest();
-        });
-
         $controllers->match('/', 'controller.prod.records:getRecord')
             ->bind('record_details')
             ->method('GET|POST');

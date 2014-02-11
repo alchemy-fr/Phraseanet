@@ -4,6 +4,8 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
+use Entities\Basket;
+use Entities\BasketElement;
 
 /**
  * @todo Test Alchemy\Phrasea\Controller\Prod\Export::exportMail
@@ -71,6 +73,49 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request('POST', '/prod/records/');
 
         $this->assertBadResponse(self::$DI['client']->getResponse());
+    }
+
+    public function testGetRecordDetailAsGuest()
+    {
+        $inviteUsrid = \User_Adapter::get_usr_id_from_login(self::$DI['app'], 'invite');
+        $invite_user = \User_Adapter::getInstance($inviteUsrid, self::$DI['app']);
+
+        $this->authenticate(self::$DI['app'], $invite_user);
+
+        $basket = new Basket();
+        $basket->setUsrId($inviteUsrid);
+        $basket->setName('test');
+
+        self::$DI['app']['EM']->persist($basket);
+
+        $element = new BasketElement();
+        $element->setRecord(self::$DI['record_24']);
+        $element->setBasket($basket);
+        $basket->addElement($element);
+
+        self::$DI['app']['EM']->persist($element);
+        self::$DI['app']['EM']->flush();
+
+        $this->XMLHTTPRequest('POST', '/prod/records/', array(
+            'env'            => 'BASK',
+            'pos'            => 0,
+            'query'          => '',
+            'cont'           => $basket->getId(),
+        ));
+        $response = self::$DI['client']->getResponse();
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $data = json_decode($response->getContent(), true);
+
+        $this->assertArrayHasKey('desc', $data);
+        $this->assertArrayHasKey('html_preview', $data);
+        $this->assertArrayHasKey('current', $data);
+        $this->assertArrayHasKey('others', $data);
+        $this->assertArrayHasKey('history', $data);
+        $this->assertArrayHasKey('popularity', $data);
+        $this->assertArrayHasKey('tools', $data);
+        $this->assertArrayHasKey('pos', $data);
+        $this->assertArrayHasKey('title', $data);
     }
 
     /**
