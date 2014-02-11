@@ -38,11 +38,11 @@ class ListPlugin extends AbstractPluginCommand
         }, $this->container['plugins.manager']->listPlugins());
 
         if ($input->getOption('json')) {
-            $output->writeln(json_encode(array('plugins' => array_values($plugins))));
+            $output->writeln(json_encode(['plugins' => array_values($plugins)]));
         } else {
             $table = $this->getHelperSet()->get('table');
             $table
-                ->setHeaders(array('Name', 'Version', 'Description'))
+                ->setHeaders(['Name', 'Version', 'Description'])
                 ->setRows($plugins)
             ;
 
@@ -55,36 +55,36 @@ class ListPlugin extends AbstractPluginCommand
     private function formatPlugin(InputInterface $input, Plugin $plugin)
     {
         if ($input->getOption('json')) {
-            return array(
+            return [
                 'name'        => $plugin->getName(),
                 'version'     => $plugin->getManifest()->getVersion(),
                 'description' => $plugin->getManifest()->getDescription(),
                 'error'       => false,
-            );
+            ];
         }
 
-        return array(
+        return [
             $plugin->getName(),
             $plugin->getManifest()->getVersion(),
             $plugin->getManifest()->getDescription(),
-        );
+        ];
     }
 
     private function formatErroneousPlugin(InputInterface $input, Plugin $plugin)
     {
         if ($input->getOption('json')) {
-            return array(
+            return [
                 'name'        => $plugin->getName(),
                 'error'       => true,
                 'description' => 'Error : '.$plugin->getError()->getMessage(),
                 'version'     => null,
-            );
+            ];
         }
 
-        return array(
+        return [
             '<error>' . $plugin->getName() . '</error>',
             '<error>Error : ' . $plugin->getError()->getMessage() . '</error>',
             '',
-        );
+        ];
     }
 }

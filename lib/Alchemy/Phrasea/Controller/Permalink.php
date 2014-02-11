@@ -77,7 +77,7 @@ class Permalink extends AbstractDelivery
             throw new NotFoundHttpException("Record not found");
         }
 
-        return new Response('', 200, array('Allow' => 'GET, HEAD, OPTIONS'));
+        return new Response('', 200, ['Allow' => 'GET, HEAD, OPTIONS']);
     }
 
     public function deliverCaption(PhraseaApplication $app, Request $request, $sbas_id, $record_id)

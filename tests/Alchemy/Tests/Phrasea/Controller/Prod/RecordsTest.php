@@ -96,12 +96,12 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['app']['EM']->persist($element);
         self::$DI['app']['EM']->flush();
 
-        $this->XMLHTTPRequest('POST', '/prod/records/', array(
+        $this->XMLHTTPRequest('POST', '/prod/records/', [
             'env'            => 'BASK',
             'pos'            => 0,
             'query'          => '',
             'cont'           => $basket->getId(),
-        ));
+        ]);
         $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());

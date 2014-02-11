@@ -37,7 +37,7 @@ class PluginManager
             ->in($this->pluginDir)
             ->directories();
 
-        $plugins = array();
+        $plugins = [];
 
         foreach ($finder as $pluginDir) {
             $manifest = $error = null;

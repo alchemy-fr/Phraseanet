@@ -106,7 +106,7 @@ class RemovePluginTest extends PluginCommandTestCase
 
     private function addPluginData()
     {
-        $data = array('key' => 'value');
+        $data = ['key' => 'value'];
 
         $conf = self::$DI['cli']['phraseanet.configuration']->getConfig();
         $conf['plugins']['test-plugin'] = $data;

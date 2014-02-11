@@ -74,7 +74,7 @@ class ConnectedUsers implements ControllerProviderInterface
                     $info = '';
                 }
             } catch (GeonamesExceptionInterface $e) {
-                $app['monolog']->error(sprintf("Unable to get IP information for %s", $session->getIpAddress()), array('exception' => $e));
+                $app['monolog']->error(sprintf("Unable to get IP information for %s", $session->getIpAddress()), ['exception' => $e]);
             }
 
             $result[] = [

@@ -17,7 +17,7 @@ class patch_383alpha5a implements patchInterface
     private $release = '3.8.3-alpha.5';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -58,11 +58,11 @@ class patch_383alpha5a implements patchInterface
     {
         $config = $app['phraseanet.configuration']->getConfig();
 
-        $config['main']['task-manager']['logger'] = array(
+        $config['main']['task-manager']['logger'] = [
             'enabled'   => true,
             'max-files' => 10,
             'level'     => 'INFO',
-        );
+        ];
 
         $app['phraseanet.configuration']->setConfig($config);
 
