@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Websocket\Subscriber;
 
-use Alchemy\Phrasea\TaskManager\PhraseanetWampServer;
+use Alchemy\Phrasea\Websocket\PhraseanetWampServer;
 use Alchemy\TaskManager\Event\StateFormater;
 use Alchemy\TaskManager\Event\TaskManagerEvent;
 use Alchemy\TaskManager\Event\TaskManagerRequestEvent;

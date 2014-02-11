@@ -3,6 +3,7 @@
 namespace Alchemy\Test\Phrasea\Websocket\Subscriber;
 
 use Alchemy\Phrasea\Websocket\Subscriber\TaskManagerBroadcasterSubscriber;
+use Alchemy\Phrasea\Websocket\PhraseanetWampServer;
 use Alchemy\TaskManager\Event\TaskManagerEvent;
 use Alchemy\TaskManager\Event\TaskManagerEvents;
 use Alchemy\TaskManager\Event\TaskManagerRequestEvent;
