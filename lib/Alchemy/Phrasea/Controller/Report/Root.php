@@ -182,6 +182,8 @@ class Root implements ControllerProviderInterface
             $cnx->setHasLimit(false);
             $cnx->setPrettyString(false);
 
+            $this->doReport($app, $request, $cnx, $conf);
+
             try {
                 $csv = \format::arr_to_csv($cnx->getResult(), $cnx->getDisplay());
             } catch (\Exception $e) {
@@ -246,6 +248,8 @@ class Root implements ControllerProviderInterface
         if ($request->request->get('printcsv') == 'on') {
             $questions->setHasLimit(false);
             $questions->setPrettyString(false);
+
+            $this->doReport($app, $request, $questions, $conf);
 
             try {
                 $csv = \format::arr_to_csv($questions->getResult(), $questions->getDisplay());
@@ -321,6 +325,8 @@ class Root implements ControllerProviderInterface
             $download->setHasLimit(false);
             $download->setPrettyString(false);
 
+            $this->doReport($app, $request, $download, $conf);
+
             try {
                 $csv = \format::arr_to_csv($download->getResult(), $download->getDisplay());
             } catch (\Exception $e) {
@@ -390,6 +396,8 @@ class Root implements ControllerProviderInterface
         if ($request->request->get('printcsv') == 'on') {
             $document->setHasLimit(false);
             $document->setPrettyString(false);
+
+            $this->doReport($app, $request, $document, $conf, 'record_id');
 
             try {
                 $csv = \format::arr_to_csv($document->getResult(), $document->getDisplay());
