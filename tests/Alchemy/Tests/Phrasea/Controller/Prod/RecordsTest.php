@@ -89,7 +89,7 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['app']['EM']->persist($basket);
 
         $element = new BasketElement();
-        $element->setRecord(self::$DI['record_24']);
+        $element->setRecord(self::$DI['record_1']);
         $element->setBasket($basket);
         $basket->addElement($element);
 
