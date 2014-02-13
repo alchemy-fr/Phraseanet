@@ -25,7 +25,7 @@ define([
     $("body").append(fixtures.read('admin/fields/dom', 'admin/fields/templates'));
     var sbasId = 1;
 
-    App.initialize();
+    App.create();
 
     describe("Admin field", function () {
         describe("Initialization", function () {
