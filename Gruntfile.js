@@ -31,9 +31,9 @@ module.exports = function(grunt) {
             dist: {
                 options: {
                     components: {
-                        "jquery.ui": ["npm", {"grunt": "build"}],
-                        "jquery-mobile": ["npm", {"grunt": "dist"}],
-                        "tinymce": ["npm", "jake"],
+                        "jquery.ui": ["npm", {"../../node_modules/.bin/grunt": "build"}],
+                        "jquery-mobile": ["npm", {"../../node_modules/.bin/grunt": "dist"}],
+                        "tinymce": ["npm", "../../node_modules/.bin/jake"],
                         "bootstrap": ["npm", {"make": "bootstrap"}],
                         "autobahnjs": [{"make":"build"}]
                     }

@@ -17,7 +17,6 @@ before_script:
   - node --version
   - npm --version
   - travis_retry npm install
-  - travis_retry npm install grunt-cli jake -g
   - echo '' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
   - sh -c 'if [ $(php -r "echo PHP_MINOR_VERSION;") -le 4 ]; then echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;'
   - echo 'extension="redis.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/redis.ini
@@ -62,5 +61,5 @@ script:
   - php hudson/cleanupSubdefs.php
 #sqlite db generation should occur once Phraseanet is up to date :
   - bin/developer phraseanet:regenerate-sqlite
-  - grunt test
+  - ./node_modules/.bin/grunt test
   - bin/phpunit
