@@ -20,8 +20,8 @@ define([
     "apps/admin/fields/views/fieldError",
     "apps/admin/fields/errors/errorManager"
 ], function ($, _, Backbone, i18n, FieldsCollection, VocabulariesCollection, DcFieldsCollection, FieldListView, SaveView, FieldErrorView, ErrorManager) {
-    var initialize = function () {
-        AdminFieldApp = {
+    var create = function () {
+        window.AdminFieldApp = {
             $window: $(window),
             $scope: $("#admin-field-app"),
             $top: $(".row-top", this.$scope),
@@ -58,7 +58,9 @@ define([
         });
         AdminFieldApp.vocabularyCollection = new VocabulariesCollection();
         AdminFieldApp.dcFieldsCollection = new DcFieldsCollection();
+    };
 
+    var load = function() {
         // load strings
         i18n.init({resGetPath: "/admin/fields/language.json"});
 
@@ -101,7 +103,14 @@ define([
         );
     };
 
+    var initialize = function () {
+        create();
+        load();
+    };
+
     return {
+        create: create,
+        load: load,
         initialize: initialize
     };
 });

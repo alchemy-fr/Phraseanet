@@ -7,7 +7,10 @@ module.exports = function(grunt) {
         },
         mocha_phantomjs: {
             options: {
-                'reporter': 'dot'
+                'reporter': 'dot',
+                'setting': [
+                    'loadImages=false'
+                ]
             },
             all: ['www/scripts/tests/index.html']
         },
