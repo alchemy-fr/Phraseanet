@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Feed;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\LogicException;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Alchemy\Phrasea\Model\Entities\AggregateToken;
 
@@ -111,7 +112,7 @@ class Aggregate implements FeedInterface
     public function getEntries($offset_start = null, $how_many = null)
     {
         if (0 === count($this->feeds)) {
-            return null;
+            return new ArrayCollection();
         }
 
         $feedIds = [];
