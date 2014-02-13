@@ -2,7 +2,7 @@
     "name": "phraseanet",
     "version": "3.9.0",
     "devDependencies": {
-        "bower-canary": "latest",
+        "bower": "latest",
         "mocha-phantomjs": ">=2.0 <3.0",
         "recess": ">=1.1.0 <1.1.7",
         "uglify-js": "latest",
