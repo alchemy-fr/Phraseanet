@@ -79,7 +79,7 @@ class Manager
             $cache = $this->factory->create('array', []);
         }
 
-        $cache->setNamespace(md5(__DIR__));
+        $cache->setNamespace(md5(gethostname().'-'.__DIR__));
 
         $this->drivers[$label] = $cache;
 
