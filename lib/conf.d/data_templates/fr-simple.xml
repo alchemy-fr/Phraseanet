@@ -253,7 +253,7 @@
             <subdef class="preview" name="preview" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
-                <size>200</size>
+                <size>800</size>
                 <writeDatas>no</writeDatas>
                 <method>resample</method>
                 <dpi>72</dpi>
@@ -264,6 +264,7 @@
             <subdef class="thumbnail" name="thumbnail" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
+                <size>200</size>
                 <writeDatas>no</writeDatas>
                 <method>resample</method>
                 <dpi>72</dpi>
