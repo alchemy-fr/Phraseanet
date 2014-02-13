@@ -55,6 +55,7 @@ binaries:
     unoconv_timeout: 60
 border-manager:
     enabled: true
+    extension-mapping: { }
     checkers:
         -
             type: Checker\Sha256
