@@ -64,8 +64,6 @@ class Authenticator
         $this->session->remove('usr_id');
         $this->session->remove('session_id');
 
-        $this->session->set('usr_id', $user->get_id());
-
         $session = new Session();
         $session->setBrowserName($this->browser->getBrowser())
             ->setBrowserVersion($this->browser->getVersion())
@@ -76,7 +74,7 @@ class Authenticator
         $this->em->persist($session);
         $this->em->flush();
 
-        $this->session->set('session_id', $session->getId());
+        $this->populateSession($session);
 
         foreach ($this->app['acl']->get($user)->get_granted_sbas() as $databox) {
             \cache_databox::insertClient($this->app, $databox);
@@ -84,6 +82,20 @@ class Authenticator
         $this->reinitUser();
 
         return $session;
+    }
+
+    private function populateSession(Session $session)
+    {
+        $user = $session->getUser($this->app);
+
+        $rights = [];
+        if ($this->app['acl']->get($user)->has_right('taskmanager')) {
+            $rights[] = 'task-manager';
+        }
+
+        $this->session->set('usr_id', $user->get_id());
+        $this->session->set('websockets_rights', $rights);
+        $this->session->set('session_id', $session->getId());
     }
 
     public function refreshAccount(Session $session)
@@ -99,8 +111,7 @@ class Authenticator
         }
 
         $this->session->clear();
-        $this->session->set('usr_id', $session->getUsrId());
-        $this->session->set('session_id', $session->getId());
+        $this->populateSession($session);
 
         foreach ($this->app['acl']->get($user)->get_granted_sbas() as $databox) {
             \cache_databox::insertClient($this->app, $databox);
