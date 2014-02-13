@@ -294,16 +294,16 @@
         },
         {
             "name": "alchemy/task-manager",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/task-manager.git",
-                "reference": "58cc74d41e89cabf1f76c81fdc4e477569e709df"
+                "reference": "795b9d9781c01cfd82651f66cf3306f53661540c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/task-manager/zipball/58cc74d41e89cabf1f76c81fdc4e477569e709df",
-                "reference": "58cc74d41e89cabf1f76c81fdc4e477569e709df",
+                "url": "https://api.github.com/repos/alchemy-fr/task-manager/zipball/795b9d9781c01cfd82651f66cf3306f53661540c",
+                "reference": "795b9d9781c01cfd82651f66cf3306f53661540c",
                 "shasum": ""
             },
             "require": {
@@ -323,7 +323,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.1-dev"
+                    "dev-master": "1.0-dev"
                 }
             },
             "autoload": {
@@ -353,7 +353,7 @@
                 "parallel",
                 "process"
             ],
-            "time": "2013-12-03 18:53:49"
+            "time": "2014-02-12 11:21:06"
         },
         {
             "name": "cboden/ratchet",

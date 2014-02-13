@@ -11,12 +11,16 @@
 
 namespace Alchemy\Phrasea\Core\CLIProvider;
 
+use Alchemy\Phrasea\Websocket\Consumer\ConsumerManager;
+use Alchemy\Phrasea\Websocket\Topics\Directive;
+use Alchemy\Phrasea\Websocket\Topics\DirectivesManager;
 use Alchemy\Phrasea\Websocket\Subscriber\TaskManagerBroadcasterSubscriber;
 use Alchemy\Phrasea\Websocket\PhraseanetWampServer;
+use Alchemy\Phrasea\Websocket\Topics\Plugin\TaskManagerSubscriberPlugin;
+use Alchemy\Phrasea\Websocket\Topics\TopicsManager;
 use Ratchet\App;
 use Ratchet\Session\SessionProvider;
 use Ratchet\Wamp\WampServer;
-use React\ZMQ\Context;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use React\EventLoop\Factory as EventLoopFactory;
@@ -42,19 +46,7 @@ class WebsocketServerServiceProvider implements ServiceProviderInterface
         });
 
         $app['ws.server.subscriber'] = $app->share(function (Application $app) {
-            $options = $app['ws.publisher.options'];
-            $context = new Context($app['ws.event-loop']);
-
-            $pull = $context->getSocket(\ZMQ::SOCKET_SUB);
-            $pull->setSockOpt(\ZMQ::SOCKOPT_SUBSCRIBE, "");
-            $pull->connect(sprintf('%s://%s:%s', $options['protocol'], $options['host'], $options['port']));
-
-            $logger = $app['ws.server.logger'];
-            $pull->on('error', function ($e) use ($logger) {
-                $logger->error('TaskManager Subscriber received an error.', ['exception' => $e]);
-            });
-
-            return $pull;
+            return new TaskManagerSubscriberPlugin($app['ws.publisher.options'], $app['ws.event-loop'], $app['ws.server.logger']);
         });
 
         $app['ws.server.application'] = $app->share(function (Application $app) {
@@ -64,11 +56,32 @@ class WebsocketServerServiceProvider implements ServiceProviderInterface
         });
 
         $app['ws.server.phraseanet-server'] = $app->share(function (Application $app) {
-            return new PhraseanetWampServer($app['ws.server.subscriber'], $app['ws.server.logger']);
+            return new PhraseanetWampServer($app['ws.server.topics-manager'], $app['ws.server.logger']);
         });
 
         $app['ws.server.logger'] = $app->share(function (Application $app) {
             return $app['task-manager.logger'];
+        });
+
+        $app['ws.server.topics-manager.directives.conf'] = $app->share(function (Application $app) {
+            return [
+                new Directive(TopicsManager::TOPIC_TASK_MANAGER, true, ['task-manager']),
+            ];
+        });
+
+        $app['ws.server.topics-manager.directives'] = $app->share(function (Application $app) {
+            return new DirectivesManager($app['ws.server.topics-manager.directives.conf']);
+        });
+
+        $app['ws.server.consumer-manager'] = $app->share(function (Application $app) {
+            return new ConsumerManager();
+        });
+
+        $app['ws.server.topics-manager'] = $app->share(function (Application $app) {
+            $manager = new TopicsManager($app['ws.server.topics-manager.directives'], $app['ws.server.consumer-manager']);
+            $manager->attach($app['ws.server.subscriber']);
+
+            return $manager;
         });
 
         $app['ws.server.options'] = $app->share(function (Application $app) {

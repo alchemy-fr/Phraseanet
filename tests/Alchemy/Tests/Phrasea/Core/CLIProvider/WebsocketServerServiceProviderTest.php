@@ -20,7 +20,7 @@ class WebsocketServerServiceProviderTest extends ServiceProviderTestCase
             [
                 'Alchemy\Phrasea\Core\CLIProvider\WebsocketServerServiceProvider',
                 'ws.server.subscriber',
-                'React\ZMQ\SocketWrapper',
+                'Alchemy\Phrasea\Websocket\Topics\Plugin\TaskManagerSubscriberPlugin',
             ],
             [
                 'Alchemy\Phrasea\Core\CLIProvider\WebsocketServerServiceProvider',
@@ -41,6 +41,16 @@ class WebsocketServerServiceProviderTest extends ServiceProviderTestCase
                 'Alchemy\Phrasea\Core\CLIProvider\WebsocketServerServiceProvider',
                 'ws.server.logger',
                 'Psr\Log\LoggerInterface',
+            ],
+            [
+                'Alchemy\Phrasea\Core\CLIProvider\WebsocketServerServiceProvider',
+                'ws.server.topics-manager.directives',
+                'Alchemy\Phrasea\Websocket\Topics\DirectivesManager',
+            ],
+            [
+                'Alchemy\Phrasea\Core\CLIProvider\WebsocketServerServiceProvider',
+                'ws.server.consumer-manager',
+                'Alchemy\Phrasea\Websocket\Consumer\ConsumerManager',
             ],
         ];
     }

@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Websocket\Subscriber;
 
-use Alchemy\Phrasea\Websocket\PhraseanetWampServer;
+use Alchemy\Phrasea\Websocket\Topics\TopicsManager;
 use Alchemy\TaskManager\Event\StateFormater;
 use Alchemy\TaskManager\Event\TaskManagerEvent;
 use Alchemy\TaskManager\Event\TaskManagerRequestEvent;
@@ -37,7 +37,7 @@ class TaskManagerBroadcasterSubscriber implements EventSubscriberInterface
     public function onManagerStart(TaskManagerEvent $event)
     {
         $this->broadcaster->send(json_encode([
-            'topic' => PhraseanetWampServer::TOPIC_TASK_MANAGER,
+            'topic' => TopicsManager::TOPIC_TASK_MANAGER,
             'event' => TaskManagerEvents::MANAGER_START,
         ]));
     }
@@ -45,7 +45,7 @@ class TaskManagerBroadcasterSubscriber implements EventSubscriberInterface
     public function onManagerStop(TaskManagerEvent $event)
     {
         $this->broadcaster->send(json_encode([
-            'topic' => PhraseanetWampServer::TOPIC_TASK_MANAGER,
+            'topic' => TopicsManager::TOPIC_TASK_MANAGER,
             'event' => TaskManagerEvents::MANAGER_STOP,
         ]));
     }
@@ -53,7 +53,7 @@ class TaskManagerBroadcasterSubscriber implements EventSubscriberInterface
     public function onManagerRequest(TaskManagerRequestEvent $event)
     {
         $this->broadcaster->send(json_encode([
-            'topic' => PhraseanetWampServer::TOPIC_TASK_MANAGER,
+            'topic' => TopicsManager::TOPIC_TASK_MANAGER,
             'event' => TaskManagerEvents::MANAGER_REQUEST,
             'request' => $event->getRequest(),
             'response' => $event->getResponse(),
@@ -63,7 +63,7 @@ class TaskManagerBroadcasterSubscriber implements EventSubscriberInterface
     public function onManagerTick(TaskManagerEvent $event)
     {
         $this->broadcaster->send(json_encode([
-            'topic' => PhraseanetWampServer::TOPIC_TASK_MANAGER,
+            'topic' => TopicsManager::TOPIC_TASK_MANAGER,
             'event' => TaskManagerEvents::MANAGER_TICK,
             'message' => $this->formater->toArray(
                 $event->getManager()->getProcessManager()->getManagedProcesses()

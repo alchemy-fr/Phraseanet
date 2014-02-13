@@ -11,45 +11,20 @@
 
 namespace Alchemy\Phrasea\Websocket;
 
+use Alchemy\Phrasea\Websocket\Topics\TopicsManager;
 use Psr\Log\LoggerInterface;
-use React\ZMQ\SocketWrapper;
 use Ratchet\ConnectionInterface as Conn;
 use Ratchet\Wamp\WampServerInterface;
 
 class PhraseanetWampServer implements WampServerInterface
 {
-    const TOPIC_TASK_MANAGER = 'http://phraseanet.com/topics/admin/task-manager';
-
-    private $pull;
     private $logger;
-    private $topics = [];
+    private $manager;
 
-    public function __construct(SocketWrapper $pull, LoggerInterface $logger)
+    public function __construct(TopicsManager $manager, LoggerInterface $logger)
     {
-        $this->pull = $pull;
         $this->logger = $logger;
-
-        $pull->on('message', function ($msg) {
-            $data = @json_decode($msg, true);
-
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                $this->logger->error(sprintf('[WS] Received invalid message %s : invalid json', $msg));
-
-                return;
-            }
-
-            if (!isset($data['topic'])) {
-                $this->logger->error(sprintf('[WS] Received invalid message %s : no topic', $msg));
-
-                return;
-            }
-
-            $this->logger->debug(sprintf('[WS] Received message %s', $msg));
-
-            if (isset($this->topics[$data['topic']])) {
-                $this->topics[$data['topic']]->broadcast(json_encode($msg));
-            }
-        });
+        $this->manager = $manager;
     }
 
     public function onPublish(Conn $conn, $topic, $event, array $exclude, array $eligible)
@@ -66,54 +41,33 @@ class PhraseanetWampServer implements WampServerInterface
 
     public function onSubscribe(Conn $conn, $topic)
     {
-        $this->logger->debug(sprintf('Subscription received on topic %s', $topic->getId()), array('topic' => $topic));
-        $this->topics[$topic->getId()] = $topic;
+        if ($this->manager->subscribe($conn, $topic)) {
+            $this->logger->debug(sprintf('Subscription received on topic %s', $topic->getId()), array('topic' => $topic));
+        } else {
+            $this->logger->error(sprintf('Subscription received on topic %s, user is not allowed', $topic->getId()), array('topic' => $topic));
+        }
     }
 
     public function onUnSubscribe(Conn $conn, $topic)
     {
         $this->logger->debug(sprintf('Unsubscription received on topic %s', $topic->getId()), array('topic' => $topic));
-        $this->cleanupReferences($conn, $topic->getId());
+        $this->manager->unsubscribe($conn, $topic);
     }
 
     public function onOpen(Conn $conn)
     {
-        if (!$conn->Session->has('usr_id')) {
-            $this->logger->error('[WS] Connection request aborted, no usr_id in session.');
-            $conn->close();
-        }
-        $this->logger->error('[WS] Connection request accepted');
+        $this->logger->debug('[WS] Connection request accepted');
+        $this->manager->openConnection($conn);
     }
 
     public function onClose(Conn $conn)
     {
-        $this->cleanupReferences($conn);
-        $this->logger->error('[WS] Connection closed');
+        $this->logger->debug('[WS] Connection closed');
+        $this->manager->closeConnection($conn);
     }
 
     public function onError(Conn $conn, \Exception $e)
     {
         $this->logger->error('[WS] Connection error', ['exception' => $e]);
-    }
-
-    private function cleanupReferences(Conn $conn, $topicId = null)
-    {
-        $storage = $this->topics;
-        $ret = array();
-
-        foreach ($storage as $id => $topic) {
-            if (null !== $topicId && $id !== $topicId) {
-                continue;
-            }
-            if ($topic->has($conn)) {
-                $topic->remove($conn);
-            }
-            if (count($topic) > 0) {
-                $ret[] = $topic;
-            }
-            $this->logger->debug(sprintf('%d subscribers remaining on topic %s', count($topic), $topic->getId()), array('topic' => $topic));
-        }
-
-        $this->topics = $ret;
     }
 }

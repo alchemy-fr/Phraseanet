@@ -6,43 +6,21 @@ use Alchemy\Phrasea\Websocket\PhraseanetWampServer;
 
 class PhraseanetWampServerTest extends \PhraseanetTestCase
 {
-    public function testOpenConnectionNotConnected()
-    {
-        $conn = $this->getMock('Ratchet\ConnectionInterface');
-        $conn->Session = $this->getMockBuilder('Symfony\Component\HttpFoundation\Session\Session')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $conn->Session->expects($this->once())
-            ->method('has')
-            ->with('usr_id')
-            ->will($this->returnValue(false));
-        $conn->expects($this->once())
-             ->method('close');
-
-        $server = new PhraseanetWampServer($this->createSocketWrapperMock(), $this->createLoggerMock());
-        $server->onOpen($conn);
-    }
-
     public function testOpenConnectionConnected()
     {
+        $topicsManager = $this->createTopicsManagerMock();
         $conn = $this->getMock('Ratchet\ConnectionInterface');
-        $conn->Session = $this->getMockBuilder('Symfony\Component\HttpFoundation\Session\Session')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $conn->Session->expects($this->once())
-            ->method('has')
-            ->with('usr_id')
-            ->will($this->returnValue(true));
-        $conn->expects($this->never())
-             ->method('close');
+        $topicsManager->expects($this->once())
+            ->method('openConnection')
+            ->with($conn);
 
-        $server = new PhraseanetWampServer($this->createSocketWrapperMock(), $this->createLoggerMock());
+        $server = new PhraseanetWampServer($topicsManager, $this->createLoggerMock());
         $server->onOpen($conn);
     }
 
-    private function createSocketWrapperMock()
+    private function createTopicsManagerMock()
     {
-        return $this->getMockBuilder('React\ZMQ\SocketWrapper')
+        return $this->getMockBuilder('Alchemy\Phrasea\Websocket\Topics\TopicsManager')
             ->disableOriginalConstructor()
             ->getMock();
     }

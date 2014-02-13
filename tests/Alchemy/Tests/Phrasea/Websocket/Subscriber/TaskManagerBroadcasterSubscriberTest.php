@@ -1,9 +1,9 @@
 <?php
 
-namespace Alchemy\Test\Phrasea\Websocket\Subscriber;
+namespace Alchemy\Tests\Phrasea\Websocket\Subscriber;
 
 use Alchemy\Phrasea\Websocket\Subscriber\TaskManagerBroadcasterSubscriber;
-use Alchemy\Phrasea\Websocket\PhraseanetWampServer;
+use Alchemy\Phrasea\Websocket\Topics\TopicsManager;
 use Alchemy\TaskManager\Event\TaskManagerEvent;
 use Alchemy\TaskManager\Event\TaskManagerEvents;
 use Alchemy\TaskManager\Event\TaskManagerRequestEvent;
@@ -20,7 +20,7 @@ class TaskManagerBroadcasterSubscriberTest extends \PhraseanetTestCase
         $subscriber = new TaskManagerBroadcasterSubscriber($socket);
         $subscriber->onManagerStart($this->createTaskManagerEvent());
 
-        $this->assertValidJson($json, PhraseanetWampServer::TOPIC_TASK_MANAGER, TaskManagerEvents::MANAGER_START);
+        $this->assertValidJson($json, TopicsManager::TOPIC_TASK_MANAGER, TaskManagerEvents::MANAGER_START);
     }
 
     public function testOnManagerStop()
@@ -33,7 +33,7 @@ class TaskManagerBroadcasterSubscriberTest extends \PhraseanetTestCase
         $subscriber = new TaskManagerBroadcasterSubscriber($socket);
         $subscriber->onManagerStop($this->createTaskManagerEvent());
 
-        $this->assertValidJson($json, PhraseanetWampServer::TOPIC_TASK_MANAGER, TaskManagerEvents::MANAGER_STOP);
+        $this->assertValidJson($json, TopicsManager::TOPIC_TASK_MANAGER, TaskManagerEvents::MANAGER_STOP);
     }
 
     public function testOnManagerRequest()
@@ -46,7 +46,7 @@ class TaskManagerBroadcasterSubscriberTest extends \PhraseanetTestCase
         $subscriber = new TaskManagerBroadcasterSubscriber($socket);
         $subscriber->onManagerRequest(new TaskManagerRequestEvent($this->createTaskManagerMock(), 'PING', 'PONG'));
 
-        $data = $this->assertValidJson($json, PhraseanetWampServer::TOPIC_TASK_MANAGER, TaskManagerEvents::MANAGER_REQUEST);
+        $data = $this->assertValidJson($json, TopicsManager::TOPIC_TASK_MANAGER, TaskManagerEvents::MANAGER_REQUEST);
 
         $this->assertEquals('PING', $data['request']);
         $this->assertEquals('PONG', $data['response']);
@@ -62,7 +62,7 @@ class TaskManagerBroadcasterSubscriberTest extends \PhraseanetTestCase
         $subscriber = new TaskManagerBroadcasterSubscriber($socket);
         $subscriber->onManagerTick($this->createTaskManagerEvent());
 
-        $data = $this->assertValidJson($json, PhraseanetWampServer::TOPIC_TASK_MANAGER, TaskManagerEvents::MANAGER_TICK);
+        $data = $this->assertValidJson($json, TopicsManager::TOPIC_TASK_MANAGER, TaskManagerEvents::MANAGER_TICK);
 
         $this->assertArrayHasKey('message', $data);
         $this->assertInternalType('array', $data['message']);
