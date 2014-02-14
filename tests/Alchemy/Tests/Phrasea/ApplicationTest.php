@@ -434,6 +434,9 @@ class ApplicationTest extends \PhraseanetTestCase
                     case ['languages', 'available']:
                         return [];
                         break;
+                    case ['border-manager', 'extension-mapping']:
+                        return [];
+                        break;
                     case ['main', 'maintenance']:
                         return false;
                         break;

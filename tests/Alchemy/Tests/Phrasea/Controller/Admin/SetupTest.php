@@ -34,8 +34,14 @@ class SetupTest extends \PhraseanetAuthenticatedWebTestCase
     public function testPostGlobals()
     {
         $registry = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
-                    ->disableOriginalConstructor()
-                    ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $registry->expects($this->any())
+            ->method('get')
+            ->will($this->returnCallback(function ($prop, $default = null) {
+                return $default;
+            }));
 
         $registry->expects($this->once())
             ->method('set')
