@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Border;
 
 use Alchemy\Phrasea\Core\Configuration\Configuration;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use MediaVorus\Utils\AudioMimeTypeGuesser;
 use MediaVorus\Utils\PostScriptMimeTypeGuesser;
 use MediaVorus\Utils\RawImageMimeTypeGuesser;
@@ -21,11 +22,14 @@ use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 
 class MimeGuesserConfiguration
 {
+    /** @var PropertyAccess  */
     private $conf;
+    private $store;
 
-    public function __construct(Configuration $conf)
+    public function __construct(PropertyAccess $conf, Configuration $store)
     {
         $this->conf = $conf;
+        $this->store = $store;
     }
 
     /**
@@ -41,12 +45,8 @@ class MimeGuesserConfiguration
         $guesser->register(new AudioMimeTypeGuesser());
         $guesser->register(new VideoMimeTypeGuesser());
 
-        if ($this->conf->isSetup()) {
-            $conf = $this->conf->getConfig();
-
-            if (isset($conf['border-manager']['extension-mapping']) && is_array($conf['border-manager']['extension-mapping'])) {
-                $guesser->register(new CustomExtensionGuesser($conf['border-manager']['extension-mapping']));
-            }
+        if ($this->store->isSetup()) {
+            $guesser->register(new CustomExtensionGuesser($this->conf->get(['border-manager', 'extension-mapping'], [])));
         }
     }
 }

@@ -100,7 +100,7 @@ class BorderManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['border-manager.mime-guesser-configuration'] = $app->share(function (Application $app) {
-            return new MimeGuesserConfiguration($app['phraseanet.configuration']);
+            return new MimeGuesserConfiguration($app['conf'], $app['configuration.store']);
         });
     }
 
