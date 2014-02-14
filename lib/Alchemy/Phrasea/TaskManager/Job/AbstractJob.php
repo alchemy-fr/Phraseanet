@@ -11,8 +11,8 @@
 
 namespace Alchemy\Phrasea\TaskManager\Job;
 
-use Alchemy\TaskManager\AbstractJob as AbstractTMJob;
-use Alchemy\TaskManager\JobDataInterface;
+use Alchemy\TaskManager\Job\AbstractJob as AbstractTMJob;
+use Alchemy\TaskManager\Job\JobDataInterface;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -53,10 +53,10 @@ abstract class AbstractJob extends AbstractTMJob implements JobInterface
     /**
      * {@inheritdoc}
      */
-    final protected function doRun(JobDataInterface $data = null)
+    final protected function doRun(JobDataInterface $data)
     {
         if (!$data instanceof JobData) {
-            throw new InvalidArgumentException('JobData must be passed to a JobInterface::Run command.');
+            throw new InvalidArgumentException(sprintf('Phraseanet jobs require Phraseanet JobData, got %s.', get_class($data)));
         }
 
         $this->setPauseDuration($data->getTask()->getPeriod());

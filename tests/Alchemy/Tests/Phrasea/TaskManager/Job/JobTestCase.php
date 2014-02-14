@@ -3,7 +3,7 @@
 namespace Alchemy\Tests\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\TaskManager\Job\JobInterface;
-use Alchemy\TaskManager\JobDataInterface;
+use Alchemy\TaskManager\Job\JobDataInterface;
 use Alchemy\Phrasea\TaskManager\Job\Factory;
 
 abstract class JobTestCase extends \PhraseanetTestCase
@@ -46,7 +46,7 @@ abstract class JobTestCase extends \PhraseanetTestCase
 
     /**
      * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
-     * @expectedExceptionMessage JobData must be passed to a JobInterface::Run command.
+     * @expectedExceptionMessage Phraseanet jobs require Phraseanet JobData, got Alchemy\Tests\Phrasea\TaskManager\Job\WrongJobDataTest.
      */
     public function testRunningTheJobWithWrongValueThrowsAnException()
     {
@@ -62,4 +62,8 @@ abstract class JobTestCase extends \PhraseanetTestCase
 
 class WrongJobDataTest implements JobDataInterface
 {
+    public function __toString()
+    {
+        return 'wrong data';
+    }
 }
