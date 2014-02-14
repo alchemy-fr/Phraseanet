@@ -8,6 +8,8 @@ class SetupTest extends \PhraseanetWebTestCase
 {
     public function setUp()
     {
+        parent::setUp();
+
         $this->app = $this->loadApp('lib/Alchemy/Phrasea/Application/Root.php');
 //        // set test environment
 //        $environment = 'test';
