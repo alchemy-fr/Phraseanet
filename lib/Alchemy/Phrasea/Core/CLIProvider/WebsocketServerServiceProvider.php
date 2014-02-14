@@ -34,7 +34,7 @@ class WebsocketServerServiceProvider implements ServiceProviderInterface
                 'protocol' => 'tcp',
                 'host' => '127.0.0.1',
                 'port' => 13598,
-            ], $app['conf']->get(['main', 'task-manager', 'publisher'], []));
+            ], $app['conf']->get(['main', 'websocket-server', 'subscriber'], []));
         });
 
         $app['ws.task-manager.broadcaster'] = $app->share(function (Application $app) {

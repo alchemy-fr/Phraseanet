@@ -69,7 +69,7 @@ class patch_390alpha11a implements patchInterface
             'port'     => 6660,
             'linger'   => 500,
         ]);
-        $app['conf']->set(['main', 'task-manager', 'publisher'], [
+        $app['conf']->set(['main', 'websocket-server', 'subscriber'], [
             'protocol' => 'tcp',
             'host'     => '127.0.0.1',
             'port'     => 13598,

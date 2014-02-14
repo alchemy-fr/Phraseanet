@@ -105,7 +105,7 @@ class SetupTest extends \PhraseanetWebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $user->expects($this->exactly(2))
+        $user->expects($this->exactly(1))
             ->method('get_id')
             ->will($this->returnValue(self::$DI['user']->get_id()));
 

@@ -21,8 +21,7 @@ class WebsocketServer extends Command
     {
         parent::__construct($name);
 
-        $this
-            ->setDescription("Runs the websocket server");
+        $this->setDescription("Runs the websocket server");
     }
 
     public function doExecute(InputInterface $input, OutputInterface $output)

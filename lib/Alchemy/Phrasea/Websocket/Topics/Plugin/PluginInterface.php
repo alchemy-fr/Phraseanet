@@ -16,7 +16,7 @@ use Alchemy\Phrasea\Websocket\Topics\TopicsManager;
 interface PluginInterface
 {
     /**
-     * Attaches a Plugn to the TopicsManager
+     * Attaches a Plugin to the TopicsManager
      *
      * @param TopicsManager $manager
      */

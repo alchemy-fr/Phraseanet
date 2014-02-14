@@ -39,14 +39,14 @@ main:
             host: 127.0.0.1
             port: 6660
             linger: 500
-        publisher:
-            protocol: tcp
-            host: 127.0.0.1
-            port: 13598
     websocket-server:
         host: local.phrasea
         port: 9090
         ip: 0.0.0.0
+        subscriber:
+            protocol: tcp
+            host: 127.0.0.1
+            port: 13598
     session:
         type: 'file'
         options: []
