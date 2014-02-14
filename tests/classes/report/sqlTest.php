@@ -1,6 +1,6 @@
 <?php
 
-class sqlTest extends \PhraseanetAuthenticatedTestCase
+class report_sqlTest extends \PhraseanetAuthenticatedTestCase
 {
 
     public function setUp()

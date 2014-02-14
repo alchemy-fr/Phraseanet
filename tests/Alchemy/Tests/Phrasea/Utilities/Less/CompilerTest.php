@@ -1,6 +1,6 @@
 <?php
 
-namespace Alchemy\Tests\Phrasea\Utilities\Compiler;
+namespace Alchemy\Tests\Phrasea\Utilities\Less;
 
 use Alchemy\Phrasea\Utilities\Less\Compiler;
 use Alchemy\BinaryDriver\Exception\ExecutionFailureException;

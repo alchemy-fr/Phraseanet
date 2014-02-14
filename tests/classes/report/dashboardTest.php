@@ -1,6 +1,6 @@
 <?php
 
-class dashboardTest extends \PhraseanetAuthenticatedTestCase
+class report_dashboardTest extends \PhraseanetAuthenticatedTestCase
 {
     protected $dashboard;
 

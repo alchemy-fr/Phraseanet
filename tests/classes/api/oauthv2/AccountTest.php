@@ -1,6 +1,6 @@
 <?php
 
-class API_OAuth2_AccountTest extends \PhraseanetTestCase
+class api_oauthv2_AccountTest extends \PhraseanetTestCase
 {
     /**
      * @var API_OAuth2_Account

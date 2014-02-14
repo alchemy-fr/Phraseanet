@@ -1,7 +1,8 @@
 <?php
 
-namespace Alchemy\Phrasea\Plugin\Management;
+namespace Alchemy\Tests\Phrasea\Plugin\Management;
 
+use Alchemy\Phrasea\Plugin\Management\ComposerInstaller;
 use Alchemy\Phrasea\Utilities\ComposerSetup;
 use Guzzle\Http\Client as Guzzle;
 use Symfony\Component\Process\ExecutableFinder;

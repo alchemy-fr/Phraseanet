@@ -1,6 +1,6 @@
 <?php
 
-class API_OAuth2_ApplicationTest extends \PhraseanetTestCase
+class api_oauthv2_ApplicationTest extends \PhraseanetTestCase
 {
     public function testLoad_from_client_id()
     {

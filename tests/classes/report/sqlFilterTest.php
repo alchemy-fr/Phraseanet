@@ -1,6 +1,6 @@
 <?php
 
-class sqlFilterTest extends \PhraseanetAuthenticatedTestCase
+class report_sqlFilterTest extends \PhraseanetAuthenticatedTestCase
 {
     /**
      *

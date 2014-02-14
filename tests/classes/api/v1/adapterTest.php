@@ -3,7 +3,7 @@
 use Alchemy\Phrasea\Border\File as BorderFile;
 use Symfony\Component\HttpFoundation\Request;
 
-class API_V1_adapterTest extends \PhraseanetAuthenticatedTestCase
+class api_v1_adapterTest extends \PhraseanetAuthenticatedTestCase
 {
     /**
      * @var API_V1_adapter

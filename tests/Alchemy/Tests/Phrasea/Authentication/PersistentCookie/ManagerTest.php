@@ -1,8 +1,9 @@
 <?php
 
-namespace Alchemy\Phrasea\Authentication\PersistentCookie;
+namespace Alchemy\Tests\Phrasea\Authentication\PersistentCookie;
 
 use Alchemy\Phrasea\Model\Entities\Session;
+use Alchemy\Phrasea\Authentication\PersistentCookie\Manager;
 
 class ManagerTest extends \PhraseanetTestCase
 {

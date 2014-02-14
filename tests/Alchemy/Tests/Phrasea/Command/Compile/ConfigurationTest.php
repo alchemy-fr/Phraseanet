@@ -1,6 +1,8 @@
 <?php
 
-namespace Alchemy\Phrasea\Command\Compile;
+namespace Alchemy\Tests\Phrasea\Command\Compile;
+
+use Alchemy\Phrasea\Command\Compile\Configuration;
 
 class ConfigurationTest extends \PhraseanetTestCase
 {

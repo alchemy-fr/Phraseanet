@@ -1,6 +1,6 @@
 <?php
 
-namespace Alchemy\Tests\Phrasea\Authentication;
+namespace Alchemy\Tests\Phrasea\Authentication\Token;
 
 use Alchemy\Phrasea\Authentication\Token\TokenValidator;
 
