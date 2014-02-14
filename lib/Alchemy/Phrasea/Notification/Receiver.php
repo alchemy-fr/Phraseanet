@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Notification;
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
-use Symfony\Component\Translation\TranslatorInterface;
 
 class Receiver implements ReceiverInterface
 {

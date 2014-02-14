@@ -9,7 +9,6 @@
  * file that was distributed with this source code.
  */
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Doctrine\ORM\EntityManager;

@@ -15,7 +15,6 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Vocabulary\Term;
-use Symfony\Component\Translation\TranslatorInterface;
 
 class UserProvider implements ControlProviderInterface
 {

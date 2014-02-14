@@ -297,7 +297,7 @@ class appbox extends base
 
         // Executes stuff before applying patches
         $app['phraseanet.pre-schema-upgrader']->apply($app);
-        
+
         $upgrader->add_steps_complete(1);
 
         /**

@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Vocabulary\ControlProvider;
 
 use Alchemy\Phrasea\Model\Entities\User;
-use Symfony\Component\Translation\TranslatorInterface;
 
 interface ControlProviderInterface
 {
@@ -50,9 +49,9 @@ interface ControlProviderInterface
     /**
      * Find matching Term in the vocabulary repository
      *
-     * @param string              $query      A scalar quaery
-     * @param User                $for_user   The user doing the query
-     * @param \databox            $on_databox The databox where vocabulary should be requested
+     * @param string   $query      A scalar quaery
+     * @param User     $for_user   The user doing the query
+     * @param \databox $on_databox The databox where vocabulary should be requested
      *
      * @return Doctrine\Common\Collections\ArrayCollection
      */

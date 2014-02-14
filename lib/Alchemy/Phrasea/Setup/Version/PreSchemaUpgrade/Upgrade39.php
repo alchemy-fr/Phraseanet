@@ -578,7 +578,7 @@ class Upgrade39 implements PreSchemaUpgradeInterface
         // executes SQLS
         $connection->beginTransaction();
         try {
-            foreach(array_merge($sqlPreUpdate, $sqlUpdate, $sqlPostUpdate) as $sql) {
+            foreach (array_merge($sqlPreUpdate, $sqlUpdate, $sqlPostUpdate) as $sql) {
                 $connection->executeQuery($sql);
             }
             $connection->commit();
