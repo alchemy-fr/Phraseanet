@@ -135,6 +135,16 @@ module.exports = function(grunt) {
                 "dest": "<%= path.asset %>/jquery/",
                 "flatten": true
             },
+            "jquery-galleria": {
+                "expand": true,
+                "cwd": "<%= path.bower %>/jquery-galleria/src",
+                "src": [
+                    "galleria.js",
+                    "themes/classic/!(classic-demo.html)*",
+                ],
+                "dest": "<%= path.asset %>/jquery-galleria/",
+                "flatten": true
+            },
             "jquery-file-upload": {
                 "expand": true,
                 "src": [
@@ -350,6 +360,7 @@ module.exports = function(grunt) {
         "copy:humane-js",
         "copy:i18next",
         "copy:jquery",
+        "copy:jquery-galleria",
         "copy:jquery-file-upload",
         "copy:jquery-mobile",
         "copy:jquery.cookie",
