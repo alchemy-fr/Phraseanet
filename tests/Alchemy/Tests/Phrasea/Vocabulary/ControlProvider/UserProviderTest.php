@@ -1,6 +1,6 @@
 <?php
 
-namespace Alchemy\Tests\Phrasea\Vocabulary\ControllerProvider;
+namespace Alchemy\Tests\Phrasea\Vocabulary\ControlProvider;
 
 use Alchemy\Phrasea\Vocabulary\ControlProvider\UserProvider;
 

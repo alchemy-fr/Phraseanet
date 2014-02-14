@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../../../vendor/alchemy/oauth2php/lib/OAuth2.php';
 
 use Symfony\Component\HttpFoundation\Request;
 
-class API_V1_resultTest extends \PhraseanetAuthenticatedTestCase
+class api_v1_resultTest extends \PhraseanetAuthenticatedTestCase
 {
     /**
      * @var API_V1_result

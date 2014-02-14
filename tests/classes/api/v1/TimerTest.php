@@ -3,7 +3,7 @@
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Symfony\Component\EventDispatcher\Event;
 
-class API_V1_TimerTest extends \PhraseanetTestCase
+class api_v1_TimerTest extends \PhraseanetTestCase
 {
     public function testRegister()
     {

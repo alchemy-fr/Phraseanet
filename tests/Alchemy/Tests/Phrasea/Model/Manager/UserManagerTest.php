@@ -1,6 +1,6 @@
 <?php
 
-namespace Alchemy\Tests\Phrasea\Model\Manipulator;
+namespace Alchemy\Tests\Phrasea\Model\Manager;
 
 class UserManagerTest extends \PhraseanetTestCase
 {

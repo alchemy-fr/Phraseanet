@@ -1,6 +1,6 @@
 <?php
 
-namespace Alchemy\Tests\Phrasea\Command;
+namespace Alchemy\Tests\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Setup\CheckEnvironment;
 

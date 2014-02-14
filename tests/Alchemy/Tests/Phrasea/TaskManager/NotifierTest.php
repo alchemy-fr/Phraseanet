@@ -1,8 +1,9 @@
 <?php
 
-namespace Alchemy\Phrasea\TaskManager;
+namespace Alchemy\Tests\Phrasea\TaskManager;
 
 use Alchemy\TaskManager\TaskManager;
+use Alchemy\Phrasea\TaskManager\Notifier;
 
 class NotifierTest extends \PhraseanetTestCase
 {

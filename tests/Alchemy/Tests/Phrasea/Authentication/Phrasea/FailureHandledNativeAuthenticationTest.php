@@ -1,6 +1,6 @@
 <?php
 
-namespace Alchemy\Tests\Phrasea;
+namespace Alchemy\Tests\Phrasea\Authentication\Phrasea;
 
 use Alchemy\Phrasea\Authentication\Phrasea\FailureHandledNativeAuthentication;
 

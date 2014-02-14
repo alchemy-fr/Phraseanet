@@ -1,8 +1,8 @@
 <?php
 
-namespace Alchemy\Phrasea\Model\Converter;
+namespace Alchemy\Tests\Phrasea\Model\Converter;
 
-use Alchemy\Phrasea\Model\Entities\Task;
+use Alchemy\Phrasea\Model\Converter\TaskConverter;
 
 class TaskConverterTest extends \PhraseanetTestCase
 {
