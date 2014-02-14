@@ -42,7 +42,7 @@ class TaskList implements TaskListInterface
     public function entityToTask(TaskEntity $task)
     {
         $name = $task->getId() ;
-        $arguments = [$this->phpExec];
+        $arguments = ['exec', $this->phpExec];
 
         if ($this->phpConf) {
             $arguments[] = '-c';

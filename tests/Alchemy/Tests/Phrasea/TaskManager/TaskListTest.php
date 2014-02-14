@@ -58,7 +58,7 @@ class TaskListTest extends \PhraseanetTestCase
         $list = $this->getTaskList();
         $n = 1;
         foreach ($list->refresh() as $task) {
-            $this->assertEquals("'/path/to/php' '-c' '/path/to/php-conf' '-f' '".self::$DI['app']['root.path']."/bin/console' '--' '-q' 'task-manager:task:run' '".$n."' '--listen-signal' '--max-duration' '1800' '--max-memory' '134217728'", $task->createProcess()->getCommandLine());
+            $this->assertEquals("'exec' '/path/to/php' '-c' '/path/to/php-conf' '-f' '".self::$DI['app']['root.path']."/bin/console' '--' '-q' 'task-manager:task:run' '".$n."' '--listen-signal' '--max-duration' '1800' '--max-memory' '134217728'", $task->createProcess()->getCommandLine());
             $n++;
         }
         $this->assertSame(3, $n);
