@@ -45,7 +45,7 @@ class TasksServiceProvider implements ServiceProviderInterface
         });
 
         $app['task-manager.job-factory'] = $app->share(function (Application $app) {
-            return new JobFactory($app['dispatcher'],isset($app['task-manager.logger']) ? $app['task-manager.logger'] : $app['logger'], $app['translator']);
+            return new JobFactory($app['dispatcher'], isset($app['task-manager.logger']) ? $app['task-manager.logger'] : $app['monolog'], $app['translator']);
         });
 
         $app['task-manager.status'] = $app->share(function (Application $app) {
@@ -65,15 +65,17 @@ class TasksServiceProvider implements ServiceProviderInterface
         });
 
         $app['task-manager.available-jobs'] = $app->share(function (Application $app) {
+            $logger = isset($app['task-manager.logger']) ? $app['task-manager.logger'] : $app['monolog'];
+
             return [
-                new FtpJob($app['dispatcher'], $app['logger'], $app['translator']),
-                new ArchiveJob($app['dispatcher'], $app['logger'], $app['translator']),
-                new BridgeJob($app['dispatcher'], $app['logger'], $app['translator']),
-                new FtpPullJob($app['dispatcher'], $app['logger'], $app['translator']),
-                new PhraseanetIndexerJob($app['dispatcher'], $app['logger'], $app['translator']),
-                new RecordMoverJob($app['dispatcher'], $app['logger'], $app['translator']),
-                new SubdefsJob($app['dispatcher'], $app['logger'], $app['translator']),
-                new WriteMetadataJob($app['dispatcher'], $app['logger'], $app['translator']),
+                new FtpJob($app['dispatcher'], $logger, $app['translator']),
+                new ArchiveJob($app['dispatcher'], $logger, $app['translator']),
+                new BridgeJob($app['dispatcher'], $logger, $app['translator']),
+                new FtpPullJob($app['dispatcher'], $logger, $app['translator']),
+                new PhraseanetIndexerJob($app['dispatcher'], $logger, $app['translator']),
+                new RecordMoverJob($app['dispatcher'], $logger, $app['translator']),
+                new SubdefsJob($app['dispatcher'], $logger, $app['translator']),
+                new WriteMetadataJob($app['dispatcher'], $logger, $app['translator']),
             ];
         });
     }
