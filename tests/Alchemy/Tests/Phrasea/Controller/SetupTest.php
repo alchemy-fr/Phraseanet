@@ -15,6 +15,8 @@ class SetupTest extends \Silex\WebTestCase
 
     public function setUp()
     {
+        parent::setUp();
+
         // set test environment
         $environment = 'test';
         $this->app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Root.php';
