@@ -81,6 +81,7 @@ main:
             client_secret: null
 border-manager:
     enabled: true
+    extension-mapping: { }
     checkers:
         -
             type: Checker\Sha256

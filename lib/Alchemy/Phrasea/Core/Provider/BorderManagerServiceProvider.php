@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Border\Manager;
+use Alchemy\Phrasea\Border\MimeGuesserConfiguration;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use XPDF\Exception\BinaryNotFoundException;
@@ -97,9 +98,14 @@ class BorderManagerServiceProvider implements ServiceProviderInterface
 
             return $borderManager;
         });
+
+        $app['border-manager.mime-guesser-configuration'] = $app->share(function (Application $app) {
+            return new MimeGuesserConfiguration($app['phraseanet.configuration']);
+        });
     }
 
     public function boot(Application $app)
     {
+        $app['border-manager.mime-guesser-configuration']->register();
     }
 }

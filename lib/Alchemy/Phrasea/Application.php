@@ -121,10 +121,6 @@ use Monolog\Logger;
 use Monolog\Processor\IntrospectionProcessor;
 use Neutron\Silex\Provider\ImagineServiceProvider;
 use MediaVorus\MediaVorusServiceProvider;
-use MediaVorus\Utils\RawImageMimeTypeGuesser;
-use MediaVorus\Utils\PostScriptMimeTypeGuesser;
-use MediaVorus\Utils\AudioMimeTypeGuesser;
-use MediaVorus\Utils\VideoMimeTypeGuesser;
 use MediaAlchemyst\MediaAlchemystServiceProvider;
 use Monolog\Handler\NullHandler;
 use MP4Box\MP4BoxServiceProvider;
@@ -151,8 +147,6 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
-use Symfony\Component\HttpFoundation\File\MimeType\FileBinaryMimeTypeGuesser;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Form\FormFactory;
@@ -475,14 +469,6 @@ class Application extends SilexApplication
         $this->mount('/include/minify/', new Minifier());
         $this->mount('/permalink/', new Permalink());
         $this->mount('/lightbox/', new Lightbox());
-
-        $guesser = MimeTypeGuesser::getInstance();
-
-        $guesser->register(new FileBinaryMimeTypeGuesser());
-        $guesser->register(new RawImageMimeTypeGuesser());
-        $guesser->register(new PostScriptMimeTypeGuesser());
-        $guesser->register(new AudioMimeTypeGuesser());
-        $guesser->register(new VideoMimeTypeGuesser());
 
         $app['plugins.directory'] = $app->share(function () {
             $dir = __DIR__ . '/../../../plugins';

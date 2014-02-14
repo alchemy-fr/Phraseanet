@@ -84,6 +84,7 @@ debugger:
     allowed-ips: []
 border-manager:
     enabled: true
+    extension-mapping: { }
     checkers:
         -
             type: Checker\Sha256
