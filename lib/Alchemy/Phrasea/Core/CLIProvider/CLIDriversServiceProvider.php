@@ -29,15 +29,21 @@ class CLIDriversServiceProvider implements ServiceProviderInterface
         });
 
         $app['driver.binary-finder'] = $app->protect(function ($name, $configName) use ($app) {
+            $extraDirs = array();
+
+            if (is_dir($app['root.path'] . '/node_modules')) {
+                $extraDirs[] = $app['root.path'] . '/node_modules/.bin';
+            }
+
             if (!$app['phraseanet.configuration']->isSetup()) {
-                return $app['executable-finder']->find($name);
+                return $app['executable-finder']->find($name, null, $extraDirs);
             }
 
             if (isset($app['phraseanet.configuration']['binaries'][$configName])) {
                 return $app['phraseanet.configuration']['binaries'][$configName];
             }
 
-            return $app['executable-finder']->find($name);
+            return $app['executable-finder']->find($name, null, $extraDirs);
         });
 
         $app['driver.bower'] = $app->share(function (Application $app) {
