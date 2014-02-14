@@ -40,6 +40,9 @@ class GruntDriver extends AbstractBinary
 
         $binaries = $conf->get('grunt.binaries', ['grunt']);
 
-        return static::load($binaries, $logger, $conf);
+        $driver = static::load($binaries, $logger, $conf);
+        $driver->getProcessBuilderFactory()->getBuilder()->setWorkingDirectory(__DIR__.'/../../../../../..');
+
+        return $driver;
     }
 }
