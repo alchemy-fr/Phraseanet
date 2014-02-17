@@ -303,6 +303,7 @@ class Application extends SilexApplication
         $this->register(new SessionServiceProvider(), [
             'session.test' => $this->getEnvironment() === static::ENV_TEST
         ]);
+
         $this['session.storage.handler'] = $this->share(function ($app) {
             return $this['session.storage.handler.factory']->create($app['conf']);
         });

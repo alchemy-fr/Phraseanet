@@ -27,6 +27,14 @@ module.exports = function(grunt) {
                 }
             }
         },
+        shell : {
+            generate_js_fixtures: {
+                options: {
+                    stdout: true
+                },
+                command  : 'bin/developer phraseanet:generate-js-fixtures'
+            }
+        },
         bower_postinst: {
             dist: {
                 options: {
@@ -338,6 +346,7 @@ module.exports = function(grunt) {
     });
 
     grunt.loadNpmTasks("grunt-contrib");
+    grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks("grunt-bower-task");
     grunt.loadNpmTasks("grunt-bower-postinst");
     grunt.loadNpmTasks('grunt-mocha-phantomjs');
@@ -348,6 +357,7 @@ module.exports = function(grunt) {
     grunt.registerTask("copy-deps", [
         "copy:deps-when"
     ]);
+
     grunt.registerTask("copy-assets", [
         "copy:autobahnjs",
         "copy:backbone",
@@ -384,5 +394,5 @@ module.exports = function(grunt) {
         "bower_postinst",
         "copy-assets"
     ]);
-    grunt.registerTask('test', ["qunit", "mocha_phantomjs"]);
+    grunt.registerTask('test', ["shell:generate_js_fixtures", "qunit", "mocha_phantomjs"]);
 };

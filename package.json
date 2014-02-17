@@ -9,6 +9,7 @@
         "jake": "latest",
         "grunt-cli": "latest",
         "grunt": "~0.4.1",
+        "grunt-shell": "~0.6",
         "grunt-contrib": "~0.4.0",
         "grunt-bower-task": "~0.3.0",
         "grunt-bower-postinst": "~0.2.0",

@@ -9,9 +9,10 @@ define([
     var expect = chai.expect;
     var assert = chai.assert;
     var should = chai.should();
-
+    // Note: fixture are loaded into scripts/tests/fixtures directory using
+    // bin/developer phraseanet:regenerate-js-fixtures
     fixtures.path = 'fixtures';
-    $("body").append(fixtures.read('home/login/form', 'home/login/templates'));
+    $("body").append(fixtures.read('home/login/index.html', 'home/login/templates.html'));
 
     describe("Login Home", function () {
         describe("Form View", function () {
