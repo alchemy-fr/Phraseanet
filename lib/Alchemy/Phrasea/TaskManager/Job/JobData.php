@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\TaskManager\JobDataInterface;
+use Alchemy\TaskManager\Job\JobDataInterface;
 use Alchemy\Phrasea\Model\Entities\Task;
 
 class JobData implements JobDataInterface
@@ -40,5 +40,10 @@ class JobData implements JobDataInterface
     public function getTask()
     {
         return $this->task;
+    }
+
+    public function __toString()
+    {
+        return sprintf('Task %d (%s)', $this->task->getId(), $this->task->getName());
     }
 }

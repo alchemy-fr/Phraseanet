@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\TaskManager\Editor\EditorInterface;
-use Alchemy\TaskManager\JobInterface as JobTMInterface;
+use Alchemy\TaskManager\Job\JobInterface as JobTMInterface;
 
 interface JobInterface extends JobTMInterface
 {
