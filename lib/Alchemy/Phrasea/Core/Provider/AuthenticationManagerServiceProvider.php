@@ -37,7 +37,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['authentication.token-validator'] = $app->share(function (Application $app) {
-            return new TokenValidator($app);
+            return new TokenValidator($app['tokens']);
         });
 
         $app['authentication.persistent-manager'] = $app->share(function (Application $app) {

@@ -11,12 +11,10 @@ class TokenValidatorTest extends \PhraseanetTestCase
      */
     public function testValidTokenIsValid()
     {
-        $app = self::$DI['app'];
         $usr_id = 42;
-
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_VALIDATE, $usr_id);
 
-        $validator = new TokenValidator($app);
+        $validator = new TokenValidator(self::$DI['app']['tokens']);
         $this->assertEquals($usr_id, $validator->isValid($token));
     }
     /**
@@ -24,12 +22,10 @@ class TokenValidatorTest extends \PhraseanetTestCase
      */
     public function testInvalidTokenIsNotValid()
     {
-        $app = self::$DI['app'];
         $usr_id = 42;
-
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_VALIDATE, $usr_id, new \DateTime('-2 hours'));
 
-        $validator = new TokenValidator($app);
+        $validator = new TokenValidator(self::$DI['app']['tokens']);
         $this->assertFalse($validator->isValid($token));
     }
 }
