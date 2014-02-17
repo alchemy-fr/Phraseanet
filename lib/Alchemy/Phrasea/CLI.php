@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea;
 
 use Alchemy\Phrasea\Command\CommandInterface;
 use Alchemy\Phrasea\Core\CLIProvider\TranslationExtractorServiceProvider;
+use Alchemy\Phrasea\Core\CLIProvider\WebsocketServerServiceProvider;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Symfony\Component\Console;
 use Alchemy\Phrasea\Core\CLIProvider\CLIDriversServiceProvider;
@@ -55,6 +56,7 @@ class CLI extends Application
         });
 
         $this->register(new PluginServiceProvider());
+        $this->register(new WebsocketServerServiceProvider());
         $this->register(new ComposerSetupServiceProvider());
         $this->register(new CLIDriversServiceProvider());
         $this->register(new LessBuilderServiceProvider());

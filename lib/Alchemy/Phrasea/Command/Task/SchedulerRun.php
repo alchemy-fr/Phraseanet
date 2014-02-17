@@ -32,6 +32,7 @@ class SchedulerRun extends Command
         switch ($signal) {
             case SIGTERM:
             case SIGINT:
+                $this->container['signal-handler']->unregisterAll();
                 $this->container['task-manager']->stop();
                 break;
         }
