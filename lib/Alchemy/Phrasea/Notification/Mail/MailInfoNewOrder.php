@@ -46,7 +46,7 @@ class MailInfoNewOrder extends AbstractMail
             throw new LogicException('You must set a user before calling getMessage()');
         }
 
-        return $this->app->trans('%user% has ordered documents', ['%user%' => $this->user->getDisplayName($this->app['translator'])]);
+        return $this->app->trans('%user% has ordered documents', ['%user%' => $this->user->getDisplayName()]);
     }
 
     /**

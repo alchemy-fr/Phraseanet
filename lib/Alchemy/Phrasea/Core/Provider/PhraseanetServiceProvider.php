@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Authentication\ACLProvider;
-use Alchemy\Phrasea\Model\NativeQueryProvider;
 use Alchemy\Phrasea\Security\Firewall;
 use Silex\Application as SilexApplication;
 use Silex\ServiceProviderInterface;
@@ -38,10 +37,6 @@ class PhraseanetServiceProvider implements ServiceProviderInterface
 
         $app['acl'] = $app->share(function (SilexApplication $app) {
             return new ACLProvider($app);
-        });
-
-        $app['phraseanet.native-query'] = $app->share(function ($app) {
-            return new NativeQueryProvider($app['EM']);
         });
 
         $app['phraseanet.appbox-register'] = $app->share(function ($app) {

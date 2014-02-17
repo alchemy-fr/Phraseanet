@@ -232,7 +232,7 @@ class Export implements ControllerProviderInterface
 
             $url = $app->url('prepare_download', ['token' => $token, 'anonymous']);
 
-            $emitter = new Emitter($app['authentication']->getUser()->getDisplayName($app['translator']), $app['authentication']->getUser()->getEmail());
+            $emitter = new Emitter($app['authentication']->getUser()->getDisplayName(), $app['authentication']->getUser()->getEmail());
 
             foreach ($destMails as $key => $mail) {
                 try {

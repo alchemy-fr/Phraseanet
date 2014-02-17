@@ -378,7 +378,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
             'base_demand' => 1
         ]]));
 
-        self::$DI['app']['phraseanet.native-query'] = $nativeQueryMock;
+        self::$DI['app']['EM.native-query'] = $nativeQueryMock;
 
         self::$DI['client']->request('GET', '/admin/users/demands/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());

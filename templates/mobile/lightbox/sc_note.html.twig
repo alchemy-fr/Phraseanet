@@ -7,7 +7,7 @@
       <img style="vertical-align:middle;"
            src="/skins/lightbox/{% if validationDatas.getAgreement() == true %}agree.png{% else %}disagree.png{% endif %}" />
       {% endif %}
-      {{ validationDatas.getParticipant().getUser().getDisplayName(app['translator']) }}
+      {{ validationDatas.getParticipant().getUser().getDisplayName() }}
     </h3>
     {% if validationDatas.getNote() != '' %}
     <p style="text-align:left;">{{ 'validation:: note' | trans }} : {{ validationDatas.getNote()|nl2br }}</p>

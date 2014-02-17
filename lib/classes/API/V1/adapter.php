@@ -1363,7 +1363,7 @@ class API_V1_adapter extends API_V1_Abstract
                 $choices[] = [
                     'validation_user' => [
                         'usr_id'         => $user->getId(),
-                        'usr_name'       => $user->getDisplayName($this->app['translator']),
+                        'usr_name'       => $user->getDisplayName(),
                         'confirmed'      => $participant->getIsConfirmed(),
                         'can_agree'      => $participant->getCanAgree(),
                         'can_see_others' => $participant->getCanSeeOthers(),
@@ -1778,7 +1778,7 @@ class API_V1_adapter extends API_V1_Abstract
             'created_on'        => $basket->getCreated()->format(DATE_ATOM),
             'description'       => (string) $basket->getDescription(),
             'name'              => $basket->getName(),
-            'pusher_usr_id'     => $basket->getPusherId(),
+            'pusher_usr_id'     => $basket->getPusher()->getId(),
             'updated_on'        => $basket->getUpdated()->format(DATE_ATOM),
             'unread'            => !$basket->getIsRead(),
             'validation_basket' => !!$basket->getValidation()
@@ -1793,7 +1793,7 @@ class API_V1_adapter extends API_V1_Abstract
 
                 $users[] = [
                     'usr_id'         => $user->getId(),
-                    'usr_name'       => $user->getDisplayName($this->app['translator']),
+                    'usr_name'       => $user->getDisplayName(),
                     'confirmed'      => $participant->getIsConfirmed(),
                     'can_agree'      => $participant->getCanAgree(),
                     'can_see_others' => $participant->getCanSeeOthers(),
@@ -1812,7 +1812,7 @@ class API_V1_adapter extends API_V1_Abstract
                 'validation_users'     => $users,
                 'expires_on'           => $expires_on_atom,
                 'validation_infos'     => $basket->getValidation()->getValidationString($this->app, $this->app['authentication']->getUser()),
-                'validation_confirmed' => $basket->getValidation()->getParticipant($this->app['authentication']->getUser(), $this->app)->getIsConfirmed(),
+                'validation_confirmed' => $basket->getValidation()->getParticipant($this->app['authentication']->getUser())->getIsConfirmed(),
                 'validation_initiator' => $basket->getValidation()->isInitiator($this->app['authentication']->getUser()),
                     ], $ret
             );

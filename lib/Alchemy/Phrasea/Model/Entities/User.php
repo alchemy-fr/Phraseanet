@@ -27,6 +27,7 @@ use Symfony\Component\Translation\TranslatorInterface;
  *      indexes={
  *          @ORM\index(name="login", columns={"login"}),
  *          @ORM\index(name="mail", columns={"email"}),
+ *          @ORM\index(name="model_of", columns={"model_of"}),
  *          @ORM\index(name="salted_password", columns={"salted_password"}),
  *          @ORM\index(name="admin", columns={"admin"}),
  *          @ORM\index(name="guest", columns={"guest"})
@@ -1030,7 +1031,7 @@ class User
     /**
      * @return string
      */
-    public function getDisplayName(TranslatorInterface $translator = null)
+    public function getDisplayName()
     {
         if ($this->isTemplate()) {
             return $this->getLogin();
@@ -1042,6 +1043,10 @@ class User
 
         if (trim($this->email) !== '') {
             return $this->email;
+        }
+
+        if ('' !== trim($this->getLogin())) {
+            return $this->getLogin();
         }
 
         return 'Unnamed user';

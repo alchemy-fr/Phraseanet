@@ -29,7 +29,7 @@ class FeedPublisher
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      *
      * @return User
      **/
@@ -67,7 +67,7 @@ class FeedPublisher
      *
      * @return FeedPublisher
      */
-    public function setUser(User $user = null)
+    public function setUser(User $user)
     {
         $this->user = $user;
 

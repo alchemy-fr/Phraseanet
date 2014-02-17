@@ -110,9 +110,9 @@
                                 />
                             </td>
                         {% endif %}
-                        {% if basket.getPusher(app) %}
+                        {% if basket.getPusher() %}
                             <td>
-                                {% set pusher = basket.getPusher(app).getDisplayName(app['translator']) %}
+                                {% set pusher = basket.getPusher().getDisplayName() %}
                                 <img
                                     class="basketTips"
                                     title="{% trans with {'%pusher%' : pusher} %}paniers:: panier recu de %pusher%{% endtrans %}"
@@ -353,9 +353,9 @@
                   <td style="width:100%;">
                       <table style=width:100%>
                           {% for choice in basket_element.getValidationDatas() %}
-                              {% if basket.getValidation().getParticipant(app['authentication'].getUser(), app).getCanSeeOthers() or choice.getParticipant().getUser() == app['authentication'].getUser() %}
+                              {% if basket.getValidation().getParticipant(app['authentication'].getUser()).getCanSeeOthers() or choice.getParticipant().getUser() == app['authentication'].getUser() %}
                               <tr>
-                                  <td> {{ choice.getParticipant().getUser().getDisplayName(app['translator']) }} </td>
+                                  <td> {{ choice.getParticipant().getUser().getDisplayName() }} </td>
                                   <td>
                                   {% if choice.getParticipant().getCanAgree() %}
                                         {% if choice.getAgreement() == true %}

@@ -50,7 +50,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
         $mailColl = [];
 
         try {
-            $rs = $this->app['phraseanet.native-query']->getAdminsOfBases(array_keys($base_ids));
+            $rs = $this->app['EM.native-query']->getAdminsOfBases(array_keys($base_ids));
 
             foreach ($rs as $row) {
                 $user = $row[0];
@@ -129,7 +129,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
         }
 
         $ret = [
-            'text'  => $this->app->trans('%user% s\'est enregistre sur une ou plusieurs %before_link% scollections %after_link%', ['%user%' => $user->getDisplayName($this->app['translator']), '%before_link%' => '<a href="/admin/?section=users" target="_blank">', '%after_link%' => '</a>'])
+            'text'  => $this->app->trans('%user% s\'est enregistre sur une ou plusieurs %before_link% scollections %after_link%', ['%user%' => $user->getDisplayName(), '%before_link%' => '<a href="/admin/?section=users" target="_blank">', '%after_link%' => '</a>'])
             , 'class' => ''
         ];
 

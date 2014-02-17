@@ -123,7 +123,7 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
             return [];
         }
 
-        $sender = $user->getDisplayName($this->app['translator']);
+        $sender = $user->getDisplayName();
 
         $ret = [
             'text'  => $this->app->trans('%user% vous a envoye un %before_link% panier %after_link%', ['%user%' => $sender, '%before_link%' => '<a href="#" onclick="openPreview(\'BASK\',1,\''

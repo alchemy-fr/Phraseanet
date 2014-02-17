@@ -106,7 +106,7 @@
                                         {% set recommendation = recommendation
                                         ~ ' <a href="#" class="recommended_users UserTips" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : user.getId() }) ~ '">'
                                         ~ '<input type="hidden" name="usr_id" value="' ~ user.getId() ~ '" />'
-                                        ~ user.getDisplayName(app['translator'])
+                                        ~ user.getDisplayName()
                                         ~ '</a>' %}
                                     {% endif %}
                                 {% endfor %}
@@ -139,7 +139,7 @@
                                                 <img src="/skins/icons/user.png"/>
                                             </td>
                                             <td>
-                                                {{ user.getDisplayName(app['translator']) }}
+                                                {{ user.getDisplayName() }}
                                                 <input type="hidden" name="usr_id" value="{{ user.getId() }}" />
                                             </td>
                                             <td>

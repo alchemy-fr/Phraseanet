@@ -243,7 +243,7 @@ class Users implements ControllerProviderInterface
                 $datas[] = [
                     'email' => $user->getEmail() ? : '',
                     'login' => $user->getLogin() ? : '',
-                    'name'  => $user->getDisplayName($app['translator']) ? : '',
+                    'name'  => $user->getDisplayName(),
                     'id'    => $user->getId(),
                 ];
             }
@@ -366,7 +366,7 @@ class Users implements ControllerProviderInterface
             $currentUsr = null;
             $table = ['users' => [], 'coll' => []];
 
-            foreach ($app['phraseanet.native-query']->getUsersRegistrationDemand($basList) as $row) {
+            foreach ($app['EM.native-query']->getUsersRegistrationDemand($basList) as $row) {
                 $user = $row[0];
 
                 if ($user->getId() !== $currentUsr) {
@@ -693,7 +693,7 @@ class Users implements ControllerProviderInterface
             }
 
             $basList = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['manage']));
-            $models = $app['phraseanet.native-query']->getModelForUser($app['authentication']->getUser(), $basList);
+            $models = $app['EM.native-query']->getModelForUser($app['authentication']->getUser(), $basList);
 
             return $app['twig']->render('/admin/user/import/view.html.twig', [
                 'nb_user_to_add'   => $nbUsrToAdd,

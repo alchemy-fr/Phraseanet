@@ -1,5 +1,5 @@
 {% import 'common/thumbnail.html.twig' as thumbnail %}
-{% set displayName = order.getUser().getDisplayName(app['translator']) %}
+{% set displayName = order.getUser().getDisplayName() %}
 
 <div class="page-header">
   <h1>{% trans with {'%displayName%' : displayName} %}%displayName% wants to place an order{% endtrans %}</h1>
@@ -57,10 +57,10 @@
         <ul>
             {% for element in order.getElements() %}
                 <li>
-                    <div id="order_wrapper_{{order.getId()}}_{{element.getBaseId()}}_{{element.getRecordId()}}" class="order_wrapper {% if element.getOrderMasterId() == false %}selectable{% endif %}">
+                    <div id="order_wrapper_{{order.getId()}}_{{element.getBaseId()}}_{{element.getRecordId()}}" class="order_wrapper {% if element.getOrderMaster() is none %}selectable{% endif %}">
                         {{ thumbnail.format(element.getRecord(app).get_thumbnail() ,80, 80, '', true, false) }}
-                        {% if element.getOrderMasterId() %}
-                            {% set name = element.getOrderMasterName(app) %}
+                        {% if element.getOrderMaster() %}
+                            {% set name = element.getOrderMaster().getDisplayName() %}
                             {% if element.getDeny() == true %}
                                 {% set title %}
                                      {% trans with {'%name%' : name} %}Document refuse par %name%{% endtrans %}

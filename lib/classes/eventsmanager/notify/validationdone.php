@@ -135,12 +135,12 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
             return [];
         }
 
-        $sender = $registered_user->getDisplayName($this->app['translator']);
+        $sender = $registered_user->getDisplayName();
 
         try {
             $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-            $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['authentication']->getUser(), false);
+            $basket = $repository->findUserBasket($ssel_id, $this->app['authentication']->getUser(), false);
         } catch (Exception $e) {
             return [];
         }

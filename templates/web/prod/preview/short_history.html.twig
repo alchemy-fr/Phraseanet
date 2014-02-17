@@ -57,7 +57,7 @@
           <span class="actor">
           {% if app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'canreport') %}
             {% if done['user'] and done['user'].getId() != app['authentication'].getUser().getId() %}
-              {% set user_infos = done['user'].getDisplayName(app['translator']) %}
+              {% set user_infos = done['user'].getDisplayName() %}
               {% trans with {'%user_infos%' : user_infos} %}report:: par %user_infos%{% endtrans %}
             {% endif %}
           {% endif %}

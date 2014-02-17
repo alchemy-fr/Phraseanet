@@ -54,7 +54,7 @@ class record_orderElement extends record_adapter
         if ($this->order_master_id) {
             $user = $this->app['manipulator.user']->getRepository()->find($this->order_master_id);
 
-            return $user->getDisplayName($this->app['translator']);
+            return $user->getDisplayName();
         }
 
         return '';

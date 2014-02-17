@@ -57,7 +57,7 @@
         </thead>
         <tbody>
           {% for user in results %}
-          <tr class="{% if list.has(user, app) %} selected {% endif %}{% if loop.index is odd %} odd {% endif %}">
+          <tr class="{% if list.has(user) %} selected {% endif %}{% if loop.index is odd %} odd {% endif %}">
             <td>
               {{ user.getLogin() }}
               <input name="usr_id" value="{{ user.getId() }}" type="hidden" />
@@ -188,7 +188,7 @@
           <img src="/skins/icons/user.png"/>
         </td>
         <td class="infos" >
-          <span class="name">{{ entry.getUser().getDisplayName(app['translator']) }}</span>
+          <span class="name">{{ entry.getUser().getDisplayName() }}</span>
           <span class="subtite"></span>
         </td>
       </tr>

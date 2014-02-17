@@ -57,7 +57,7 @@ class set_export extends set_abstract
             $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
             /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
-            $Basket = $repository->findUserBasket($this->app, $sstid, $app['authentication']->getUser(), false);
+            $Basket = $repository->findUserBasket($sstid, $app['authentication']->getUser(), false);
             $this->exportName = str_replace([' ', '\\', '/'], '_', $Basket->getName()) . "_" . date("Y-n-d");
 
             foreach ($Basket->getElements() as $basket_element) {

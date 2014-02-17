@@ -34,12 +34,12 @@
 
   {% set top = 0 %}
 
-  {% if Basket.getPusher(app) %}
+  {% if Basket.getPusher() %}
     {% set top = top + 40 %}
     <div class="PNB" style="top:40px;bottom:auto;height:40px;background-color:#404040;">
       <div class="PNB10">
         <p>
-          {% set user_name = '<a tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : Basket.getPusher(app).getId() }) ~ '" href="/user/' ~ Basket.getPusher(app).get_id() ~ '/" class="UserTips">' ~ Basket.getPusher(app).get_display_name() ~ '</a>' %}
+          {% set user_name = '<a tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : Basket.getPusher().getId() }) ~ '" href="/user/' ~ Basket.getPusher(app).get_id() ~ '/" class="UserTips">' ~ Basket.getPusher(app).get_display_name() ~ '</a>' %}
           {% trans with {'%user_name%' : user_name} %}Received from %user_name%{% endtrans %}
         </p>
       </div>
@@ -60,7 +60,7 @@
 
             {% set list_participants = list_participants ~ '<a class="UserTips" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : Participant.getUser().getId() }) ~ '" href="/user/'
                                         ~ Participant.getUser().getId() ~ '/">'
-                                        ~ Participant.getUser().getDisplayName(app['translator'])
+                                        ~ Participant.getUser().getDisplayName()
                                         ~ '</a>' %}
           {% endfor %}
           {% trans with {'%list_participants%' : list_participants} %}Sent for validation to %list_participants%{% endtrans %}

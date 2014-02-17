@@ -10,14 +10,14 @@
             {% if validationDatas.getNote() != '' %}
                 <div class="note_wrapper ui-corner-all {% if validationDatas.getParticipant().getUser().getId() == app['authentication'].getUser().getId() %}my_note{% endif %} ">
                     <span class="note_author title15">
-                      {{validationDatas.getParticipant().getUser().getDisplayName(app['translator'])}}
+                      {{validationDatas.getParticipant().getUser().getDisplayName()}}
                     </span> : {{ validationDatas.getNote()|nl2br }}
                 </div>
           {% endif %}
         {% endfor %}
 
         <form>
-            <textarea>{{basket_element.getUserValidationDatas(app['authentication'].getUser(), app).getNote()}}</textarea>
+            <textarea>{{basket_element.getUserValidationDatas(app['authentication'].getUser()).getNote()}}</textarea>
             <div class="buttons">
                 <button class="note_closer ui-corner-all">
                   {{ 'boutton::fermer' | trans }}

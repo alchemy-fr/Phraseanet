@@ -140,7 +140,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
             return [];
         }
 
-        $sender = $user->getDisplayName($this->app['translator']);
+        $sender = $user->getDisplayName();
 
         try {
             $basket = $this->app['converter.basket']->convert($ssel_id);

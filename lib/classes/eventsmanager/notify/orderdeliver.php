@@ -148,12 +148,12 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
             return [];
         }
 
-        $sender = $user->getDisplayName($this->app['translator']);
+        $sender = $user->getDisplayName();
 
         try {
             $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-            $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['authentication']->getUser(), false);
+            $basket = $repository->findUserBasket($ssel_id, $this->app['authentication']->getUser(), false);
         } catch (Exception $e) {
             return [];
         }

@@ -40,7 +40,7 @@ class Push implements ControllerProviderInterface
                 'firstname'    => $user->getFirstName(),
                 'lastname'     => $user->getLastName(),
                 'email'        => $user->getEmail(),
-                'display_name' => $user->getDisplayName($app['translator']),
+                'display_name' => $user->getDisplayName(),
                 'subtitle'     => implode(', ', $subtitle),
             ];
         };
@@ -162,7 +162,7 @@ class Push implements ControllerProviderInterface
             try {
                 $pusher = new RecordHelper\Push($app, $app['request']);
 
-                $push_name = $request->request->get('name', $app->trans('Push from %user%', ['%user%' => $app['authentication']->getUser()->getDisplayName($app['translator'])]));
+                $push_name = $request->request->get('name', $app->trans('Push from %user%', ['%user%' => $app['authentication']->getUser()->getDisplayName()]));
                 $push_description = $request->request->get('push_description');
 
                 $receivers = $request->request->get('participants');
@@ -234,7 +234,7 @@ class Push implements ControllerProviderInterface
                         'from_email' => $app['authentication']->getUser()->getEmail(),
                         'to'         => $user_receiver->getId(),
                         'to_email'   => $user_receiver->getEmail(),
-                        'to_name'    => $user_receiver->getDisplayName($app['translator']),
+                        'to_name'    => $user_receiver->getDisplayName(),
                         'url'        => $url,
                         'accuse'     => $receipt,
                         'message'    => $request->request->get('message'),
@@ -278,7 +278,7 @@ class Push implements ControllerProviderInterface
             try {
                 $pusher = new RecordHelper\Push($app, $app['request']);
 
-                $validation_name = $request->request->get('name', $app->trans('Validation from %user%', ['%user%' => $app['authentication']->getUser()->getDisplayName($app['translator'])]));
+                $validation_name = $request->request->get('name', $app->trans('Validation from %user%', ['%user%' => $app['authentication']->getUser()->getDisplayName()]));
                 $validation_description = $request->request->get('validation_description');
 
                 $participants = $request->request->get('participants');
@@ -364,7 +364,7 @@ class Push implements ControllerProviderInterface
                     }
 
                     try {
-                        $Participant = $Validation->getParticipant($participant_user, $app);
+                        $Participant = $Validation->getParticipant($participant_user);
                         continue;
                     } catch (NotFoundHttpException $e) {
 
@@ -429,7 +429,7 @@ class Push implements ControllerProviderInterface
                         'from_email' => $app['authentication']->getUser()->getEmail(),
                         'to'         => $participant_user->getId(),
                         'to_email'   => $participant_user->getEmail(),
-                        'to_name'    => $participant_user->getDisplayName($app['translator']),
+                        'to_name'    => $participant_user->getDisplayName(),
                         'url'        => $url,
                         'accuse'     => $receipt,
                         'message'    => $request->request->get('message'),

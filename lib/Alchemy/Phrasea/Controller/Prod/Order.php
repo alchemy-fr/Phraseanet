@@ -263,7 +263,7 @@ class Order implements ControllerProviderInterface
                 $basketElement->setRecord($record);
                 $basketElement->setBasket($basket);
 
-                $orderElement->setOrderMasterId($app['authentication']->getUser()->getId());
+                $orderElement->setOrderMaster($app['authentication']->getUser());
                 $orderElement->setDeny(false);
                 $orderElement->getOrder()->setBasket($basket);
 
@@ -329,7 +329,7 @@ class Order implements ControllerProviderInterface
         $elements = $request->request->get('elements', []);
         foreach ($order->getElements() as $orderElement) {
             if (in_array($orderElement->getId(),$elements)) {
-                $orderElement->setOrderMasterId($app['authentication']->getUser()->getId());
+                $orderElement->setOrderMaster($app['authentication']->getUser());
                 $orderElement->setDeny(true);
 
                 $app['EM']->persist($orderElement);

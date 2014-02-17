@@ -1,7 +1,7 @@
 {% extends 'prod/Tooltip/Tooltip.html.twig' %}
 
 {% set title %}
-    app['authentication'].getUser().getDisplayName(app['translator'])
+    app['authentication'].getUser().getDisplayName()
 {% endset %}
 {% set width = 300 %}
 {% set maxwidth = null %}
@@ -12,7 +12,7 @@
             <img style="margin:14px 8px;" src="/skins/icons/user.png"/>
         </div>
         <div class="PNB" style="left:100px;">
-            <h1> {{ app['authentication'].getUser().getDisplayName(app['translator']) }}</h1>
+            <h1> {{ app['authentication'].getUser().getDisplayName() }}</h1>
             <ul>
                 <li>{{ app['authentication'].getUser().getEmail() }}</li>
                 <li>{{ app['authentication'].getUser().getCompany() }}</li>

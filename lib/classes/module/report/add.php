@@ -78,7 +78,7 @@ class module_report_add extends module_report
             $caption = $value;
             if ($field == "getter") {
                 if (null !== $user = $this->app['manipulator.user']->getRepository()->find($value)) {
-                    $caption = $user->getDisplayName($this->app['translator']);
+                    $caption = $user->getDisplayName();
                 }
             } elseif ($field == 'date')
                 $caption = $this->app['date-formatter']->getPrettyString(new DateTime($value));

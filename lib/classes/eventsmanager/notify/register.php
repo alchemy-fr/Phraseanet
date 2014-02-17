@@ -53,7 +53,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
         $mailColl = [];
 
         try {
-            $rs = $this->app['phraseanet.native-query']->getAdminsOfBases(array_keys($base_ids));
+            $rs = $this->app['EM.native-query']->getAdminsOfBases(array_keys($base_ids));
 
             foreach ($rs as $row) {
                 $user = $row[0];
@@ -141,7 +141,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
             return [];
         }
 
-        $sender = $user->getDisplayName($this->app['translator']);
+        $sender = $user->getDisplayName();
 
         $ret = [
             'text'  => $this->app->trans('%user% demande votre approbation sur une ou plusieurs %before_link% collections %after_link%', ['%user%' => $sender, '%before_link%' => '<a href="' . $this->app->url('admin', ['section' => 'registrations']) . '" target="_blank">', '%after_link%' => '</a>'])

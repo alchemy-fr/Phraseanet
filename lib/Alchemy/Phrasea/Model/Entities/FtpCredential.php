@@ -29,7 +29,7 @@ class FtpCredential
 
     /**
      * @ORM\OneToOne(targetEntity="User", inversedBy="ftpCredential")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      **/
     private $user;
 
@@ -105,7 +105,7 @@ class FtpCredential
      *
      * @return FtpCredential
      */
-    public function setUser(User $user = null)
+    public function setUser(User $user)
     {
         $this->user = $user;
 

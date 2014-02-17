@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -176,41 +177,45 @@ class Collection implements ControllerProviderInterface
     public function setOrderAdmins(Application $app, Request $request, $bas_id)
     {
         $success = false;
+        $admins = array_values($request->request->get('admins', []));
 
-        if (count($admins = $request->request->get('admins', [])) > 0) {
-            $newAdmins = [];
+        if (count($admins) === 0) {
+            $app->abort(400, 'No admins provided.');
+        }
+        if (!is_array($admins)) {
+            $app->abort(400, 'Admins must be an array.');
+        }
+
+        $admins = array_map(function ($usrId) use ($app) {
+            if (null === $user = $app['manipulator.user']->getRepository()->find($usrId)) {
+                throw new RuntimeException(sprintf('Invalid usrId %s provided.', $usrId));
+            }
+
+            return $user;
+        }, $admins);
+
+        $conn = $app['phraseanet.appbox']->get_connection();
+        $conn->beginTransaction();
+
+        try {
+            $userQuery = new \User_Query($app);
+
+            $result = $userQuery->on_base_ids([$bas_id])
+                    ->who_have_right(['order_master'])
+                    ->execute()->get_results();
+
+            foreach ($result as $user) {
+                $app['acl']->get($user)->update_rights_to_base($bas_id, ['order_master' => false]);
+            }
 
             foreach ($admins as $admin) {
-                $newAdmins[] = $admin;
+                $app['acl']->get($admin)->update_rights_to_base($bas_id, ['order_master' => true]);
             }
-
-            if (count($newAdmins) > 0) {
-                $conn = $app['phraseanet.appbox']->get_connection();
-                $conn->beginTransaction();
-
-                try {
-                    $userQuery = new \User_Query($app);
-
-                    $result = $userQuery->on_base_ids([$bas_id])
-                            ->who_have_right(['order_master'])
-                            ->execute()->get_results();
-
-                    foreach ($result as $user) {
-                        $app['acl']->get($user)->update_rights_to_base($bas_id, ['order_master' => false]);
-                    }
-
-                    foreach (array_filter($newAdmins) as $admin) {
-                        if (null !== $user = $app['manipulator.user']->getRepository()->find($admin)) {
-                            $app['acl']->get($user)->update_rights_to_base($bas_id, ['order_master' => true]);
-                        }
-                    }
-                    $conn->commit();
-
-                    $success = true;
-                } catch (\Exception $e) {
-                    $conn->rollBack();
-                }
-            }
+            $conn->commit();
+            $success = true;
+        } catch (\Exception $e) {
+            $conn->rollBack();
+            throw $e;
         }
 
         return $app->redirectPath('admin_display_collection', [

@@ -186,6 +186,7 @@ class RegenerateSqliteDb extends Command
     private function insertLazaretFiles(EntityManager $em, \Pimple $DI)
     {
         $session = new LazaretSession();
+        $session->setUser($DI['user']);
         $em->persist($session);
         $em->flush();
 

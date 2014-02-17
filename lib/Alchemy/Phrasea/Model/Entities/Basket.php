@@ -44,7 +44,7 @@ class Basket
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      *
      * @return User
      **/
@@ -56,9 +56,12 @@ class Basket
     private $is_read = false;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $pusher_id;
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="pusher_id", referencedColumnName="id")
+     *
+     * @return User
+     **/
+    private $pusher;
 
     /**
      * @ORM\Column(type="boolean")
@@ -92,8 +95,6 @@ class Basket
      * @ORM\OneToOne(targetEntity="Order", mappedBy="basket", cascade={"ALL"})
      */
     private $order;
-
-    private $pusher;
 
     /**
      * Constructor
@@ -164,7 +165,7 @@ class Basket
      *
      * @return Basket
      */
-    public function setUser(User $user = null)
+    public function setUser(User $user)
     {
         $this->user = $user;
 
@@ -203,39 +204,23 @@ class Basket
     }
 
     /**
-     * Set pusher_id
+     * @param User $user
      *
-     * @param  integer $pusherId
-     * @return Basket
+     * @return $this
      */
-    public function setPusherId($pusherId)
+    public function setPusher(User $user = null)
     {
-        $this->pusher_id = $pusherId;
+        $this->pusher = $user;
 
         return $this;
     }
 
     /**
-     * Get pusher_id
-     *
-     * @return integer
+     * @return mixed
      */
-    public function getPusherId()
+    public function getPusher()
     {
-        return $this->pusher_id;
-    }
-
-    public function setPusher(User $user)
-    {
-        $this->setPusherId($user->getId());
-        $this->pusher = $user;
-    }
-
-    public function getPusher(Application $app)
-    {
-        if ($this->getPusherId()) {
-            return $app['manipulator.user']->getRepository()->find($this->getPusherId());
-        }
+        return $this->pusher;
     }
 
     /**

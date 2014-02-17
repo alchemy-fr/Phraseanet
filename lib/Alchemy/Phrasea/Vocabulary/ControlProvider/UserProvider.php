@@ -68,7 +68,7 @@ class UserProvider implements ControlProviderInterface
 
         foreach ($users as $user) {
             $results->add(
-                new Term($user->getDisplayName($this->app['translator']), '', $this, $user->getId())
+                new Term($user->getDisplayName(), '', $this, $user->getId())
             );
         }
 
@@ -98,7 +98,7 @@ class UserProvider implements ControlProviderInterface
             throw new \Exception('User unknown');
         }
 
-        return $user->getDisplayName($this->app['translator']);
+        return $user->getDisplayName();
     }
 
     /**

@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="Sessions")
+ * @ORM\Table(name="Sessions", indexes={@ORM\index(name="user_id", columns={"user_id"})})
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\SessionRepository")
  */
 class Session
@@ -29,7 +29,7 @@ class Session
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      *
      * @return User
      **/
@@ -121,7 +121,7 @@ class Session
      *
      * @return Session
      */
-    public function setUser(User $user = null)
+    public function setUser(User $user)
     {
         $this->user = $user;
 

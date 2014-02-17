@@ -63,7 +63,7 @@ class MailInfoOrderDelivered extends AbstractMail
             throw new LogicException('You must set a deliverer before calling getMessage');
         }
 
-        return $this->app->trans('%user% vous a delivre votre commande, consultez la en ligne a l\'adresse suivante', ['%user%' => $this->deliverer->getDisplayName($this->app['translator'])]);
+        return $this->app->trans('%user% vous a delivre votre commande, consultez la en ligne a l\'adresse suivante', ['%user%' => $this->deliverer->getDisplayName()]);
     }
 
     /**

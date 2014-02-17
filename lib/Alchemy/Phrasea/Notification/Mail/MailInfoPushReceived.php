@@ -62,7 +62,7 @@ class MailInfoPushReceived extends AbstractMailWithLink
         }
 
         return
-            $this->app->trans('You just received a push containing %quantity% documents from %user%', ['%quantity%' => count($this->basket->getElements()), '%user%' => $this->pusher->getDisplayName($this->app['translator'])])
+            $this->app->trans('You just received a push containing %quantity% documents from %user%', ['%quantity%' => count($this->basket->getElements()), '%user%' => $this->pusher->getDisplayName()])
             . "\n" . $this->message;
     }
 

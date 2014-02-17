@@ -958,7 +958,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             'base_id' => 1
         ]]));
 
-        self::$DI['app']['phraseanet.native-query'] = $nativeQueryMock;
+        self::$DI['app']['EM.native-query'] = $nativeQueryMock;
 
         $this->mockNotificationsDeliverer($emails);
         $this->mockUserNotificationSettings('eventsmanager_notify_register');
@@ -1040,7 +1040,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             'base_id' => 1
         ]]));
 
-        self::$DI['app']['phraseanet.native-query'] = $nativeQueryMock;
+        self::$DI['app']['EM.native-query'] = $nativeQueryMock;
 
         self::$DI['app']['registration.fields'] = $extraParameters;
 

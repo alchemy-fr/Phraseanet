@@ -92,7 +92,7 @@ class UsrLists implements ControllerProviderInterface
                 foreach ($list->getOwners() as $owner) {
                     $owners[] = [
                         'usr_id'       => $owner->getUser()->getId(),
-                        'display_name' => $owner->getUser()->getDisplayName($app['translator']),
+                        'display_name' => $owner->getUser()->getDisplayName(),
                         'position'     => $owner->getUser()->getActivity(),
                         'job'          => $owner->getUser()->getJob(),
                         'company'      => $owner->getUser()->getCompany(),
@@ -104,7 +104,7 @@ class UsrLists implements ControllerProviderInterface
                 foreach ($list->getEntries() as $entry) {
                     $entries[] = [
                         'usr_id'       => $entry->getUser()->getId(),
-                        'display_name' => $entry->getUser()->getDisplayName($app['translator']),
+                        'display_name' => $entry->getUser()->getDisplayName(),
                         'position'     => $entry->getUser()->getActivity(),
                         'job'          => $entry->getUser()->getJob(),
                         'company'      => $entry->getUser()->getCompany(),
@@ -203,7 +203,7 @@ class UsrLists implements ControllerProviderInterface
         foreach ($list->getOwners() as $owner) {
             $owners[] = [
                 'usr_id'       => $owner->getUser()->getId(),
-                'display_name' => $owner->getUser()->getDisplayName($app['translator']),
+                'display_name' => $owner->getUser()->getDisplayName(),
                 'position'     => $owner->getUser()->getActivity(),
                 'job'          => $owner->getUser()->getJob(),
                 'company'      => $owner->getUser()->getCompany(),
@@ -215,7 +215,7 @@ class UsrLists implements ControllerProviderInterface
         foreach ($list->getEntries() as $entry) {
             $entries[] = [
                 'usr_id'       => $entry->getUser()->getId(),
-                'display_name' => $entry->getUser()->getDisplayName($app['translator']),
+                'display_name' => $entry->getUser()->getDisplayName(),
                 'position'     => $entry->getUser()->getActivity(),
                 'job'          => $entry->getUser()->getJob(),
                 'company'      => $entry->getUser()->getCompany(),
@@ -372,7 +372,7 @@ class UsrLists implements ControllerProviderInterface
             foreach ($request->request->get('usr_ids') as $usr_id) {
                 $user_entry = $app['manipulator.user']->getRepository()->find($usr_id);
 
-                if ($list->has($user_entry, $app))
+                if ($list->has($user_entry))
                     continue;
 
                 $entry = new UsrListEntry();

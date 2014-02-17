@@ -124,7 +124,7 @@ class BasketRepository extends EntityRepository
      * @param  User                      $user
      * @return Basket
      */
-    public function findUserBasket(Application $app, $basket_id, User $user, $requireOwner)
+    public function findUserBasket($basket_id, User $user, $requireOwner)
     {
         $dql = 'SELECT b
             FROM Alchemy\Phrasea\Model\Entities\Basket b
@@ -146,7 +146,7 @@ class BasketRepository extends EntityRepository
 
             if ($basket->getValidation() && !$requireOwner) {
                 try {
-                    $basket->getValidation()->getParticipant($user, $app);
+                    $basket->getValidation()->getParticipant($user);
                     $participant = true;
                 } catch (\Exception $e) {
 

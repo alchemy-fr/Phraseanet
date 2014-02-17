@@ -364,6 +364,10 @@ class Login implements ControllerProviderInterface
 
                     $user = $app['manipulator.user']->createUser($data['login'], $data['password'], $data['email'], false);
 
+                    if (isset($data['geonameid'])) {
+                        $app['manipulator.user']->setGeonameId($user, $data['geonameid']);
+                    }
+
                     foreach ([
                         'gender'    => 'setGender',
                         'firstname' => 'setFirstName',
@@ -375,13 +379,8 @@ class Login implements ControllerProviderInterface
                         'job'       => 'setJob',
                         'company'   => 'setCompany',
                         'position'  => 'setActivity',
-                        'geonameid' => 'setGeonameId',
                     ] as $property => $method) {
                         if (isset($data[$property])) {
-                            if ($property === 'geonameid') {
-                                $app['manipulator.user']->setGeonameId($user, $data[$property]);
-                                continue;
-                            }
                             call_user_func([$user, $method], $data[$property]);
                         }
                     }
@@ -866,7 +865,7 @@ class Login implements ControllerProviderInterface
             $app['events-manager']->trigger('__VALIDATION_REMINDER__', [
                 'to'          => $participantId,
                 'ssel_id'     => $basketId,
-                'from'        => $validationSession->getInitiatorId(),
+                'from'        => $validationSession->getInitiator()->getId(),
                 'validate_id' => $validationSession->getId(),
                 'url'         => $app->url('lightbox_validation', ['basket' => $basketId, 'LOG' => $token]),
             ]);

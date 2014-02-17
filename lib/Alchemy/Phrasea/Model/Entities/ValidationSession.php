@@ -30,9 +30,12 @@ class ValidationSession
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $initiator_id;
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="initiator_id", referencedColumnName="id", nullable=false)
+     *
+     * @return User
+     **/
+    private $initiator;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -81,14 +84,13 @@ class ValidationSession
     }
 
     /**
-     * Set initiator_id
+     * @param User $user
      *
-     * @param  integer           $initiatorId
-     * @return ValidationSession
+     * @return $this
      */
-    public function setInitiatorId($initiatorId)
+    public function setInitiator(User $user)
     {
-        $this->initiator_id = $initiatorId;
+        $this->initiator = $user;
 
         return $this;
     }
@@ -98,28 +100,19 @@ class ValidationSession
      *
      * @return integer
      */
-    public function getInitiatorId()
+    public function getInitiator()
     {
         return $this->initiator_id;
     }
 
+    /**
+     * @param User $user
+     *
+     * @return boolean
+     */
     public function isInitiator(User $user)
     {
-        return $this->getInitiatorId() == $user->getId();
-    }
-
-    public function setInitiator(User $user)
-    {
-        $this->initiator_id = $user->getId();
-
-        return;
-    }
-
-    public function getInitiator(Application $app)
-    {
-        if ($this->initiator_id) {
-            return $app['manipulator.user']->getRepository()->find($this->initiator_id);
-        }
+        return $this->getInitiator()->getId() == $user->getId();
     }
 
     /**
@@ -267,10 +260,10 @@ class ValidationSession
                 return $app->trans('Vous avez envoye cette demande a %n% utilisateurs', ['%n%' => count($this->getParticipants()) - 1]);
             }
         } else {
-            if ($this->getParticipant($user, $app)->getCanSeeOthers()) {
-                return $app->trans('Processus de validation recu de %user% et concernant %n% utilisateurs', ['%user%' => $this->getInitiator($app)->getDisplayName($app['translator']), '%n%' => count($this->getParticipants()) - 1]);
+            if ($this->getParticipant($user)->getCanSeeOthers()) {
+                return $app->trans('Processus de validation recu de %user% et concernant %n% utilisateurs', ['%user%' => $this->getInitiator($app)->getDisplayName(), '%n%' => count($this->getParticipants()) - 1]);
             } else {
-                return $app->trans('Processus de validation recu de %user%', ['%user%' => $this->getInitiator($app)->getDisplayName($app['translator'])]);
+                return $app->trans('Processus de validation recu de %user%', ['%user%' => $this->getInitiator($app)->getDisplayName()]);
             }
         }
     }
@@ -280,7 +273,7 @@ class ValidationSession
      *
      * @return ValidationParticipant
      */
-    public function getParticipant(User $user, Application $app)
+    public function getParticipant(User $user)
     {
         foreach ($this->getParticipants() as $participant) {
             if ($participant->getUser()->getId() == $user->getId()) {

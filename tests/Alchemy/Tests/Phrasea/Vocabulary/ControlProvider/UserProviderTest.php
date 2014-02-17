@@ -94,6 +94,6 @@ class UserProviderTest extends \PhraseanetTestCase
 
         }
 
-        $this->assertEquals(self::$DI['user']->getDisplayName(self::$DI['app']['translator']), $this->object->getValue(self::$DI['user']->getId()));
+        $this->assertEquals(self::$DI['user']->getDisplayName(), $this->object->getValue(self::$DI['user']->getId()));
     }
 }

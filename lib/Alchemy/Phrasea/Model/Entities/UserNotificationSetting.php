@@ -33,7 +33,7 @@ class UserNotificationSetting
 
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="notificationSettings")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      **/
     private $user;
 
@@ -80,7 +80,7 @@ class UserNotificationSetting
      *
      * @return UserNotificationSetting
      */
-    public function setUser(User $user = null)
+    public function setUser(User $user)
     {
         $this->user = $user;
 

@@ -221,9 +221,9 @@ class Lightbox implements ControllerProviderInterface
                 $app['EM']->flush();
             }
 
-            if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->getIsAware() === false) {
+            if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['authentication']->getUser())->getIsAware() === false) {
                 $basket = $app['EM']->merge($basket);
-                $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->setIsAware(true);
+                $basket->getValidation()->getParticipant($app['authentication']->getUser())->setIsAware(true);
                 $app['EM']->flush();
             }
 
@@ -268,9 +268,9 @@ class Lightbox implements ControllerProviderInterface
                 $app['EM']->flush();
             }
 
-            if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->getIsAware() === false) {
+            if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['authentication']->getUser())->getIsAware() === false) {
                 $basket = $app['EM']->merge($basket);
-                $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->setIsAware(true);
+                $basket->getValidation()->getParticipant($app['authentication']->getUser())->setIsAware(true);
                 $app['EM']->flush();
             }
 
@@ -350,7 +350,7 @@ class Lightbox implements ControllerProviderInterface
 
             $basket_element = $repository->findUserElement($sselcont_id, $app['authentication']->getUser());
 
-            $validationDatas = $basket_element->getUserValidationDatas($app['authentication']->getUser(), $app);
+            $validationDatas = $basket_element->getUserValidationDatas($app['authentication']->getUser());
 
             $validationDatas->setNote($note);
 
@@ -400,11 +400,11 @@ class Lightbox implements ControllerProviderInterface
                     , $app['authentication']->getUser()
                 );
                 /* @var $basket_element BasketElement */
-                $validationDatas = $basket_element->getUserValidationDatas($app['authentication']->getUser(), $app);
+                $validationDatas = $basket_element->getUserValidationDatas($app['authentication']->getUser());
 
                 if (!$basket_element->getBasket()
                         ->getValidation()
-                        ->getParticipant($app['authentication']->getUser(), $app)->getCanAgree()) {
+                        ->getParticipant($app['authentication']->getUser())->getCanAgree()) {
                     throw new ControllerException('You can not agree on this');
                 }
 
@@ -412,7 +412,7 @@ class Lightbox implements ControllerProviderInterface
 
                 $participant = $basket_element->getBasket()
                     ->getValidation()
-                    ->getParticipant($app['authentication']->getUser(), $app);
+                    ->getParticipant($app['authentication']->getUser());
 
                 $app['EM']->merge($basket_element);
 
@@ -446,14 +446,14 @@ class Lightbox implements ControllerProviderInterface
                     throw new ControllerException('There is no validation session attached to this basket');
                 }
 
-                if (!$basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->getCanAgree()) {
+                if (!$basket->getValidation()->getParticipant($app['authentication']->getUser())->getCanAgree()) {
                     throw new ControllerException('You have not right to agree');
                 }
 
                 $agreed = false;
                 /* @var $basket Basket */
                 foreach ($basket->getElements() as $element) {
-                    if (null !== $element->getUserValidationDatas($app['authentication']->getUser(), $app)->getAgreement()) {
+                    if (null !== $element->getUserValidationDatas($app['authentication']->getUser())->getAgreement()) {
                         $agreed = true;
                     }
                 }
@@ -463,7 +463,7 @@ class Lightbox implements ControllerProviderInterface
                 }
 
                 /* @var $basket Basket */
-                $participant = $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app);
+                $participant = $basket->getValidation()->getParticipant($app['authentication']->getUser());
 
                 $expires = new \DateTime('+10 days');
                 $url = $app->url('lightbox', ['LOG' => $app['tokens']->getUrlToken(

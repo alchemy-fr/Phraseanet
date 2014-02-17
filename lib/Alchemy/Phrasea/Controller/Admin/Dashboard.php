@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Controller\Admin;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailTest;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -146,18 +147,24 @@ class Dashboard implements ControllerProviderInterface
      */
     public function addAdmins(Application $app, Request $request)
     {
-        if (count($admins = $request->request->get('admins', [])) > 0) {
-            if (!in_array($app['authentication']->getUser()->getId(), $admins)) {
-                $admins[] = $app['authentication']->getUser()->getId();
+        $admins = $request->request->get('admins', []);
+        if (count($admins) === 0 || !is_array($admins)) {
+            $app->abort(400, '"admins" parameter must contains at least one value.');
+        }
+        if (!in_array($app['authentication']->getUser()->getId(), $admins)) {
+            $admins[] = $app['authentication']->getUser()->getId();
+        }
+
+        $admins = array_map(function ($usrId) use ($app) {
+            if (null === $user = $app['manipulator.user']->getRepository()->find($usrId)) {
+                throw new RuntimeException(sprintf('Invalid usrId %s provided.', $usrId));
             }
 
-            if ($admins > 0) {
-                $app['manipulator.user']->promote(array_filter(array_map(function ($id) use ($app) {
-                    return $app['manipulator.user']->getRepository()->find($id);
-                }, $admins)));
-                $app['manipulator.acl']->resetAdminRights($app['manipulator.user']->getRepository()->findAdmins());
-            }
-        }
+            return $user;
+        }, $admins);
+
+        $app['manipulator.user']->promote($admins);
+        $app['manipulator.acl']->resetAdminRights($admins);
 
         return $app->redirectPath('admin_dashbord');
     }

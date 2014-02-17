@@ -118,7 +118,7 @@
                       {{ 'Reglages:: reglages d inscitpition automatisee' | trans }}
                   {% endif %}
                 {% else %}
-                  {% set display_name = main_user.getDisplayName(app['translator']) %}
+                  {% set display_name = main_user.getDisplayName() %}
                   {% trans with {'%display_name%' : display_name} %}Edition des droits de %display_name%{% endtrans %}
                 {% endif %}
               {% else %}

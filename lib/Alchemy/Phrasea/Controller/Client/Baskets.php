@@ -180,7 +180,7 @@ class Baskets implements ControllerProviderInterface
         }
 
         $basketCollections = $baskets->partition(function ($key, $basket) {
-            return (Boolean) $basket->getPusherId();
+            return null !== $basket->getPusher();
         });
 
         return $app['twig']->render('client/baskets.html.twig', [

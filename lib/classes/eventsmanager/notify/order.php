@@ -140,7 +140,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
             return [];
         }
 
-        $sender = $user->getDisplayName($this->app['translator']);
+        $sender = $user->getDisplayName();
 
         $ret = [
             'text'  => $this->app->trans('%user% a passe une %opening_link% commande %end_link%', [

@@ -39,7 +39,7 @@ class set_exportftp extends set_export
 
         $text_mail_receiver = "Bonjour,\n"
             . "L'utilisateur "
-            . $this->app['authentication']->getUser()->getDisplayName($this->app['translator']) . " (login : " . $this->app['authentication']->getUser()->getLogin() . ") "
+            . $this->app['authentication']->getUser()->getDisplayName() . " (login : " . $this->app['authentication']->getUser()->getLogin() . ") "
             . "a fait un transfert FTP sur le serveur ayant comme adresse \""
             . $host . "\" avec le login \"" . $login . "\"  "
             . "et pour repertoire de destination \""

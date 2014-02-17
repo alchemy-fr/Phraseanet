@@ -242,10 +242,10 @@ class UsrList
      * @param  User    $user
      * @return boolean
      */
-    public function has(User $user, Application $app)
+    public function has(User $user)
     {
         return $this->entries->exists(
-            function ($key, $entry) use ($user, $app) {
+            function ($key, $entry) use ($user) {
                 return $entry->getUser()->getId() === $user->getId();
             }
         );
