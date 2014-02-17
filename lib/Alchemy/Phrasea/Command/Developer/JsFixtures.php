@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Command\Developer;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Model\Entities\User;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpKernel\Client;
@@ -36,15 +37,12 @@ class JsFixtures extends Command
 
         copy($dbRefPath, '/tmp/db.sqlite');
 
-        $user = $this->createUser($this->container);
-        $sbasId = current($this->container['phraseanet.appbox']->get_databoxes())->get_sbas_id();
-
         try {
+            $sbasId = current($this->container['phraseanet.appbox']->get_databoxes())->get_sbas_id();
             $this->writeResponse($output, 'GET', '/login/', '/home/login/index.html');
-            $this->writeResponse($output, 'GET', '/admin/fields/'.$sbasId , '/admin/fields/index.html', $user);
-            $this->writeResponse($output, 'GET', '/admin/task-manager/tasks', '/admin/task-manager/index.html', $user);
-        } catch (RuntimeException $e) {
-            $user->delete();
+            $this->writeResponse($output, 'GET', '/admin/fields/'.$sbasId , '/admin/fields/index.html', true);
+            $this->writeResponse($output, 'GET', '/admin/task-manager/tasks', '/admin/task-manager/index.html', true);
+        } catch (\Exception $e) {
             throw $e;
         }
 
@@ -54,9 +52,14 @@ class JsFixtures extends Command
             ['source' => 'admin/task-manager/templates.html.twig', 'target' => 'admin/task-manager/templates.html'],
         ]);
 
-        $user->delete();
-
         return 0;
+    }
+
+    private function deleteUser(User $user)
+    {
+        $this->container['model.user-manager']->delete($user ,false);
+        $this->container['EM']->remove($user);
+        $this->container['EM']->flush();
     }
 
     private function copy(OutputInterface $output, $data)
@@ -82,7 +85,7 @@ class JsFixtures extends Command
 
     private function createUser(Application $app)
     {
-        $user = \User_Adapter::create($app, uniqid('fixturejs'), uniqid('fixturejs'), uniqid('fixturejs') . '@js.js', true);
+        $user = $app['manipulator.user']->createUser(uniqid('fixturejs'), uniqid('fixturejs'), uniqid('fixturejs') . '@js.js', true);
 
         $app['acl']->get($user)->set_admin(true);
         $app['manipulator.acl']->resetAdminRights($user);
@@ -90,7 +93,7 @@ class JsFixtures extends Command
         return $user;
     }
 
-    private function loginUser(Application $app, \User_Adapter $user)
+    private function loginUser(Application $app, User $user)
     {
         $app['authentication']->openAccount($user);
     }
@@ -100,10 +103,13 @@ class JsFixtures extends Command
         $app['authentication']->closeAccount();
     }
 
-    private function writeResponse(OutputInterface $output, $method, $path, $to, \User_Adapter $user = null)
+    private function writeResponse(OutputInterface $output, $method, $path, $to, $authenticateUser = false)
     {
         $environment = Application::ENV_TEST;
         $app = require __DIR__ . '/../../Application/Root.php';
+
+        $user = $this->createUser($app);
+
         // force load of non cached template
         $app['twig']->enableAutoReload();
         $client = new Client($app);
@@ -111,19 +117,21 @@ class JsFixtures extends Command
         $target = sprintf('%s/%s/%s', $app['root.path'],$fixturePath, $to);
         $output->writeln(sprintf("Generating %s", $target));
 
-        if (null !== $user) {
+        if ($authenticateUser) {
             $this->loginUser($app, $user);
         }
         $client->request($method, $path);
         $response = $client->getResponse();
-        if (null !== $user) {
+        if ($authenticateUser) {
             $this->logoutUser($app);
         }
         if (false === $response->isOk()) {
+            $this->deleteUser($user);
             throw new RuntimeException(sprintf('Request %s %s returns %d code error', $method, $path, $response->getStatusCode()));
         }
 
         $this->container['filesystem']->mkdir(str_replace(basename($target), '', $target));
         $this->container['filesystem']->dumpFile($target, $this->removeHeadTag($this->removeScriptTags($response->getContent())));
+        $this->deleteUser($user);
     }
 }

@@ -422,7 +422,7 @@ abstract class PhraseanetTestCase extends WebTestCase
     /**
      * Gives Bases Rights to User.
      *
-     * @param \User_Adapter $user
+     * @param User $user
      */
     public static function giveRightsToUser(Application $app, User $user, $base_ids = null)
     {
@@ -515,8 +515,8 @@ abstract class PhraseanetTestCase extends WebTestCase
     /**
      * Authenticates self::['user'] against application.
      *
-     * @param Application  $app
-     * @param User_Adapter $user
+     * @param Application $app
+     * @param User        $user
      */
     protected function authenticate(Application $app, $user = null)
     {

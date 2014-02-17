@@ -93,7 +93,7 @@ class Authenticator
             $rights[] = 'task-manager';
         }
 
-        $this->session->set('usr_id', $user->get_id());
+        $this->session->set('usr_id', $user->getId());
         $this->session->set('websockets_rights', $rights);
         $this->session->set('session_id', $session->getId());
     }
