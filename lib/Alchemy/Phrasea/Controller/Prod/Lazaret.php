@@ -85,7 +85,7 @@ class Lazaret implements ControllerProviderInterface
         $lazaretFiles = null;
 
         if (count($baseIds) > 0) {
-            $lazaretRepository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\LazaretFile');
+            $lazaretRepository = $app['EM']->getRepository('Phraseanet:LazaretFile');
 
             $lazaretFiles = $lazaretRepository->findPerPage(
                 $baseIds, $request->query->get('offset', 0), $request->query->get('limit', 10)
@@ -110,7 +110,7 @@ class Lazaret implements ControllerProviderInterface
     {
         $ret = ['success' => false, 'message' => '', 'result'  => []];
 
-        $lazaretFile = $app['EM']->find('Alchemy\Phrasea\Model\Entities\LazaretFile', $file_id);
+        $lazaretFile = $app['EM']->find('Phraseanet:LazaretFile', $file_id);
 
         /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {
@@ -163,7 +163,7 @@ class Lazaret implements ControllerProviderInterface
             return $app->json($ret);
         }
 
-        $lazaretFile = $app['EM']->find('Alchemy\Phrasea\Model\Entities\LazaretFile', $file_id);
+        $lazaretFile = $app['EM']->find('Phraseanet:LazaretFile', $file_id);
 
         /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {
@@ -272,7 +272,7 @@ class Lazaret implements ControllerProviderInterface
     {
         $ret = ['success' => false, 'message' => '', 'result'  => []];
 
-        $lazaretFile = $app['EM']->find('Alchemy\Phrasea\Model\Entities\LazaretFile', $file_id);
+        $lazaretFile = $app['EM']->find('Phraseanet:LazaretFile', $file_id);
         /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {
             $ret['message'] = $app->trans('File is not present in quarantine anymore, please refresh');
@@ -319,7 +319,7 @@ class Lazaret implements ControllerProviderInterface
     {
         $ret = ['success' => false, 'message' => '', 'result'  => []];
 
-        $lazaretFiles = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\LazaretFile')->findAll();
+        $lazaretFiles = $app['EM']->getRepository('Phraseanet:LazaretFile')->findAll();
 
         $app['EM']->beginTransaction();
 
@@ -357,7 +357,7 @@ class Lazaret implements ControllerProviderInterface
             return $app->json($ret);
         }
 
-        $lazaretFile = $app['EM']->find('Alchemy\Phrasea\Model\Entities\LazaretFile', $file_id);
+        $lazaretFile = $app['EM']->find('Phraseanet:LazaretFile', $file_id);
 
         /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {
@@ -428,7 +428,7 @@ class Lazaret implements ControllerProviderInterface
      */
     public function thumbnailElement(Application $app, Request $request, $file_id)
     {
-        $lazaretFile = $app['EM']->find('Alchemy\Phrasea\Model\Entities\LazaretFile', $file_id);
+        $lazaretFile = $app['EM']->find('Phraseanet:LazaretFile', $file_id);
 
         /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {

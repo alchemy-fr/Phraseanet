@@ -190,7 +190,7 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
     public function testGetRecordDetailBasket()
     {
         $this->authenticate(self::$DI['app']);
-        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
+        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
 
         $this->XMLHTTPRequest('POST', '/prod/records/', [
             'env'   => 'BASK',
@@ -226,7 +226,7 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
         $feedEntry = $feed->getEntries()->first();
 
         $this->XMLHTTPRequest('POST', '/prod/records/', [

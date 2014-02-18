@@ -81,7 +81,7 @@ class Session implements ControllerProviderInterface
             return $app->json($ret);
         }
 
-        $session = $app['EM']->find('Alchemy\Phrasea\Model\Entities\Session', $app['session']->get('session_id'));
+        $session = $app['EM']->find('Phraseanet:Session', $app['session']->get('session_id'));
         $session->setUpdated(new \DateTime());
 
         if (!$session->hasModuleId($moduleId)) {
@@ -102,7 +102,7 @@ class Session implements ControllerProviderInterface
             'notifications' => $app['events-manager']->get_notifications()
         ]);
 
-        $baskets = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket')->findUnreadActiveByUser($app['authentication']->getUser());
+        $baskets = $app['EM']->getRepository('Phraseanet:Basket')->findUnreadActiveByUser($app['authentication']->getUser());
 
         foreach ($baskets as $basket) {
             $ret['changed'][] = $basket->getId();
@@ -132,7 +132,7 @@ class Session implements ControllerProviderInterface
      */
     public function deleteSession(Application $app, Request $request, $id)
     {
-        $session = $app['EM']->find('Alchemy\Phrasea\Model\Entities\Session', $id);
+        $session = $app['EM']->find('Phraseanet:Session', $id);
 
         if (null === $session) {
             $app->abort(404, 'Unknown session');

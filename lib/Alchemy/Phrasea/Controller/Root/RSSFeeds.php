@@ -25,7 +25,7 @@ class RSSFeeds implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/feed/{id}/{format}/', function (Application $app, $id, $format) {
-            $feed = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->find($id);
+            $feed = $app['EM']->getRepository('Phraseanet:Feed')->find($id);
 
             if (null === $feed) {
                 $app->abort(404, 'Feed not found');
@@ -47,7 +47,7 @@ class RSSFeeds implements ControllerProviderInterface
             ->assert('format', '(rss|atom)');
 
         $controllers->get('/userfeed/{token}/{id}/{format}/', function (Application $app, $token, $id, $format) {
-            $token = $app["EM"]->find('Alchemy\Phrasea\Model\Entities\FeedToken', $id);
+            $token = $app["EM"]->find('Phraseanet:FeedToken', $id);
 
             $request = $app['request'];
 
@@ -62,10 +62,10 @@ class RSSFeeds implements ControllerProviderInterface
             ->assert('format', '(rss|atom)');
 
         $controllers->get('/userfeed/aggregated/{token}/{format}/', function (Application $app, $token, $format) {
-            $token = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')->findOneBy(["value" => $token]);
+            $token = $app['EM']->getRepository('Phraseanet:AggregateToken')->findOneBy(["value" => $token]);
             $user = \User_Adapter::getInstance($token->getUsrId(), $app);
 
-            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['acl']->get($user));
+            $feeds = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser($app['acl']->get($user));
 
             $aggregate = new Aggregate($app['EM'], $feeds, $token);
 

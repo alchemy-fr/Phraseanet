@@ -58,7 +58,7 @@ class UsrListOwnerRepository extends EntityRepository
      */
     public function findByListAndUsrId(UsrList $list, $usr_id)
     {
-        $dql = 'SELECT o FROM Alchemy\Phrasea\Model\Entities\UsrListOwner o
+        $dql = 'SELECT o FROM Phraseanet:UsrListOwner o
               JOIN o.list l
             WHERE l.id = :list_id AND o.usr_id = :usr_id';
 

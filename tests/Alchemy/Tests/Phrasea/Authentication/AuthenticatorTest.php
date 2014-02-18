@@ -155,7 +155,7 @@ class AuthenticatorTest extends \PhraseanetTestCase
 
         $em->expects($this->once())
             ->method('getRepository')
-            ->with($this->equalTo('Alchemy\Phrasea\Model\Entities\Session'))
+            ->with($this->equalTo('Phraseanet:Session'))
             ->will($this->returnValue($repo));
 
         $authenticator = new Authenticator($app, $browser, $SFsession, $em);
@@ -197,7 +197,7 @@ class AuthenticatorTest extends \PhraseanetTestCase
 
         $em->expects($this->once())
             ->method('getRepository')
-            ->with($this->equalTo('Alchemy\Phrasea\Model\Entities\Session'))
+            ->with($this->equalTo('Phraseanet:Session'))
             ->will($this->returnValue($repo));
 
         $authenticator = new Authenticator($app, $browser, $SFsession, $em);

@@ -24,7 +24,7 @@ class SessionRepository extends EntityRepository
     public function findByUser(\User_Adapter $user)
     {
         $dql = 'SELECT s
-            FROM Alchemy\Phrasea\Model\Entities\Session s
+            FROM Phraseanet:Session s
             WHERE s.usr_id = :usr_id';
 
         $query = $this->_em->createQuery($dql);

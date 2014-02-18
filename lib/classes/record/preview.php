@@ -170,7 +170,7 @@ class record_preview extends record_adapter
                 }
                 break;
             case "FEED":
-                $entry = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($contId);
+                $entry = $app['EM']->getRepository('Phraseanet:FeedEntry')->find($contId);
 
                 $this->container = $entry;
                 $this->total = count($entry->getItems());

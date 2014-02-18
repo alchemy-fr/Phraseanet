@@ -337,7 +337,7 @@ class api_v1_adapterTest extends \PhraseanetAuthenticatedTestCase
 
     public function testGet_record_related()
     {
-        $basketElement = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\BasketElement', 1);
+        $basketElement = self::$DI['app']['EM']->find('Phraseanet:BasketElement', 1);
         $story = self::$DI['record_story_1'];
         $story->appendChild(self::$DI['record_1']);
 
@@ -553,7 +553,7 @@ class api_v1_adapterTest extends \PhraseanetAuthenticatedTestCase
 
     public function testDelete_basket()
     {
-        $Basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
+        $Basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
 
         $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->delete_basket($request, $Basket);
@@ -567,7 +567,7 @@ class api_v1_adapterTest extends \PhraseanetAuthenticatedTestCase
 
     public function testGet_basket()
     {
-        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
+        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
 
         $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->get_basket($request, $basket);
@@ -578,7 +578,7 @@ class api_v1_adapterTest extends \PhraseanetAuthenticatedTestCase
 
     public function testSet_basket_title()
     {
-        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
+        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
 
         $request = new Request([], [], ['name' => 'PROUTO'], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->set_basket_title($request, $basket);
@@ -586,7 +586,7 @@ class api_v1_adapterTest extends \PhraseanetAuthenticatedTestCase
         $this->assertEquals('application/json', $result->get_content_type());
         $this->assertTrue(is_array(json_decode($result->format(), true)));
 
-        $repository = self::$DI['app']['EM']->getRepository('\Alchemy\Phrasea\Model\Entities\Basket');
+        $repository = self::$DI['app']['EM']->getRepository('Phraseanet:Basket');
 
         $ret_bask = $repository->find($basket->getId());
 
@@ -595,7 +595,7 @@ class api_v1_adapterTest extends \PhraseanetAuthenticatedTestCase
 
     public function testSet_basket_description()
     {
-        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
+        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
 
         $request = new Request([], [], ['description' => 'une belle description'], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->set_basket_description($request, $basket);
@@ -603,7 +603,7 @@ class api_v1_adapterTest extends \PhraseanetAuthenticatedTestCase
         $this->assertEquals('application/json', $result->get_content_type());
         $this->assertTrue(is_array(json_decode($result->format(), true)));
 
-        $repository = self::$DI['app']['EM']->getRepository('\Alchemy\Phrasea\Model\Entities\Basket');
+        $repository = self::$DI['app']['EM']->getRepository('Phraseanet:Basket');
 
         $ret_bask = $repository->find($basket->getId());
 
@@ -613,7 +613,7 @@ class api_v1_adapterTest extends \PhraseanetAuthenticatedTestCase
     public function testSearch_publications()
     {
         $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
         $result = $this->object->search_publications($request, self::$DI['user']);
         $this->checkResponseField($result, "feeds", 'array');
     }
@@ -635,7 +635,7 @@ class api_v1_adapterTest extends \PhraseanetAuthenticatedTestCase
         $date = new DateTime();
         $request = new Request([], [], [], [], [], ['HTTP_Accept'    => 'application/json']);
 
-        $feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
+        $feeds = self::$DI['app']['EM']->getRepository('Phraseanet:Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
         foreach ($feeds as $feed) {
             $result = $this->object->get_publication($request, $feed->getId(), self::$DI['user']);
             $this->checkResponseField($result, "feed", 'array');

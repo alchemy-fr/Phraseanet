@@ -46,7 +46,7 @@ class UserManipulator implements ManipulatorInterface
      */
     public function getRepository()
     {
-        return $this->manager->getObjectManager()->getRepository('Alchemy\Phrasea\Model\Entities\User');
+        return $this->manager->getObjectManager()->getRepository('Phraseanet:User');
     }
 
     /**

@@ -85,12 +85,12 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(302, self::$DI['client']->getResponse()->getStatusCode());
         $this->assertEquals('/admin/task-manager/tasks', self::$DI['client']->getResponse()->headers->get('location'));
 
-        $this->assertNull(self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Task', 1));
+        $this->assertNull(self::$DI['app']['EM']->find('Phraseanet:Task', 1));
     }
 
     public function testPostTaskStart()
     {
-        $task = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
+        $task = self::$DI['app']['EM']->find('Phraseanet:Task', 1);
 
         self::$DI['client']->request('POST', '/admin/task-manager/task/'.$task->getId().'/start');
         $this->assertEquals(302, self::$DI['client']->getResponse()->getStatusCode());
@@ -101,7 +101,7 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostTaskStop()
     {
-        $task = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
+        $task = self::$DI['app']['EM']->find('Phraseanet:Task', 1);
 
         self::$DI['client']->request('POST', '/admin/task-manager/task/'.$task->getId().'/stop');
         $this->assertEquals(302, self::$DI['client']->getResponse()->getStatusCode());
@@ -112,7 +112,7 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostResetCrashes()
     {
-        $task = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
+        $task = self::$DI['app']['EM']->find('Phraseanet:Task', 1);
 
         self::$DI['client']->request('POST', '/admin/task-manager/task/'.$task->getId().'/resetcrashcounter');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
@@ -123,7 +123,7 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostSaveTask()
     {
-        $task = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
+        $task = self::$DI['app']['EM']->find('Phraseanet:Task', 1);
 
         $name = 'renamed';
         $period = 366;

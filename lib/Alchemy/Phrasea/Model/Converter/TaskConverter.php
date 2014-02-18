@@ -31,7 +31,7 @@ class TaskConverter implements ConverterInterface
      */
     public function convert($id)
     {
-        if (null === $task = $this->om->find('Alchemy\Phrasea\Model\Entities\Task', (int) $id)) {
+        if (null === $task = $this->om->find('Phraseanet:Task', (int) $id)) {
             throw new NotFoundHttpException(sprintf('Task %s not found.', $id));
         }
 

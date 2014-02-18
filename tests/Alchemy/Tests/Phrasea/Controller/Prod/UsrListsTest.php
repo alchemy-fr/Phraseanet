@@ -84,7 +84,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testGetList()
     {
-        $entry = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\UsrListEntry', 2);
+        $entry = self::$DI['app']['EM']->find('Phraseanet:UsrListEntry', 2);
         $list_id = $entry->getList()->getId();
 
         $route = '/prod/lists/list/' . $list_id . '/';
@@ -104,7 +104,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostUpdate()
     {
-        $entry = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\UsrListEntry', 2);
+        $entry = self::$DI['app']['EM']->find('Phraseanet:UsrListEntry', 2);
         $list_id = $entry->getList()->getId();
 
         $route = '/prod/lists/list/' . $list_id . '/update/';
@@ -140,7 +140,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostDelete()
     {
-        $entry = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\UsrListEntry', 2);
+        $entry = self::$DI['app']['EM']->find('Phraseanet:UsrListEntry', 2);
         $list_id = $entry->getList()->getId();
 
         $route = '/prod/lists/list/' . $list_id . '/delete/';
@@ -159,14 +159,14 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
+        $repository = self::$DI['app']['EM']->getRepository('Phraseanet:UsrList');
 
         $this->assertNull($repository->find($list_id));
     }
 
     public function testPostRemoveEntry()
     {
-        $entry = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\UsrListEntry', 2);
+        $entry = self::$DI['app']['EM']->find('Phraseanet:UsrListEntry', 2);
         $list_id = $entry->getList()->getId();
         $usr_id = $entry->getUser(self::$DI['app'])->get_id();
         $entry_id = $entry->getId();
@@ -187,14 +187,14 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrListEntry');
+        $repository = self::$DI['app']['EM']->getRepository('Phraseanet:UsrListEntry');
 
         $this->assertNull($repository->find($entry_id));
     }
 
     public function testPostAddEntry()
     {
-        $list = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\UsrList', 1);
+        $list = self::$DI['app']['EM']->find('Phraseanet:UsrList', 1);
 
         $this->assertEquals(2, $list->getEntries()->count());
 
@@ -218,7 +218,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostShareList()
     {
-        $list = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\UsrList', 1);
+        $list = self::$DI['app']['EM']->find('Phraseanet:UsrList', 1);
 
         $this->assertEquals(1, $list->getOwners()->count());
 
@@ -256,7 +256,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
+        $repository = self::$DI['app']['EM']->getRepository('Phraseanet:UsrList');
 
         $list = $repository->find($list->getId());
 
@@ -265,7 +265,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostUnShareList()
     {
-        $list = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\UsrList', 1);
+        $list = self::$DI['app']['EM']->find('Phraseanet:UsrList', 1);
 
         $this->assertEquals(1, $list->getOwners()->count());
 
@@ -285,7 +285,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
+        $repository = self::$DI['app']['EM']->getRepository('Phraseanet:UsrList');
 
         $list = $repository->find($list->getId());
 
@@ -304,7 +304,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
+        $repository = self::$DI['app']['EM']->getRepository('Phraseanet:UsrList');
 
         $list = $repository->find($list->getId());
 
@@ -315,7 +315,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostUnShareFail()
     {
-        $list = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\UsrList', 1);
+        $list = self::$DI['app']['EM']->find('Phraseanet:UsrList', 1);
 
         $this->assertEquals(1, $list->getOwners()->count());
 
@@ -367,7 +367,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
+        $repository = self::$DI['app']['EM']->getRepository('Phraseanet:UsrList');
 
         $list = $repository->find($list->getId());
 

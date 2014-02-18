@@ -98,7 +98,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
             $readyToSend = false;
             try {
                 $basket = $this->app['EM']
-                    ->getRepository('Alchemy\Phrasea\Model\Entities\Basket')
+                    ->getRepository('Phraseanet:Basket')
                     ->find($params['ssel_id']);
                 $title = $basket->getName();
 

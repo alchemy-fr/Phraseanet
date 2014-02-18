@@ -101,7 +101,7 @@ class patch_390alpha9a implements patchInterface
 
     private function updateDoctrineUsers(Application $app)
     {
-        $dql = 'SELECT u FROM Alchemy\Phrasea\Model\Entities\User u WHERE u.locale IS NOT NULL';
+        $dql = 'SELECT u FROM Phraseanet:User u WHERE u.locale IS NOT NULL';
         $users = $app['EM']->createQuery($dql)->getResult();
 
         foreach ($users as $user) {

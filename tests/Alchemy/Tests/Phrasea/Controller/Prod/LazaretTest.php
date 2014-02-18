@@ -57,7 +57,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
 
         $em->expects($this->once())
             ->method('getRepository')
-            ->with($this->EqualTo('Alchemy\Phrasea\Model\Entities\LazaretFile'))
+            ->with($this->equalTo('Phraseanet:LazaretFile'))
             ->will($this->returnValue($repo));
 
         $route = '/prod/lazaret/';
@@ -94,7 +94,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
 
         $em->expects($this->any())
             ->method('find')
-            ->with($this->EqualTo('Alchemy\Phrasea\Model\Entities\LazaretFile'), $this->EqualTo($id))
+            ->with($this->equalTo('Phraseanet:LazaretFile'), $this->equalTo($id))
             ->will($this->returnValue($lazaretFile));
 
         self::$DI['app']['EM'] = $em;
@@ -138,7 +138,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
 
         $em->expects($this->any())
             ->method('find')
-            ->with($this->EqualTo('Alchemy\Phrasea\Model\Entities\LazaretFile'), $this->EqualTo($id))
+            ->with($this->equalTo('Phraseanet:LazaretFile'), $this->equalTo($id))
             ->will($this->returnValue(null));
 
         self::$DI['app']['EM'] = $em;
@@ -208,13 +208,13 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         //Expect the retrieval of the lazaret file with the provided id
         $em->expects($this->any())
             ->method('find')
-            ->with($this->EqualTo('Alchemy\Phrasea\Model\Entities\LazaretFile'), $this->EqualTo($id))
+            ->with($this->equalTo('Phraseanet:LazaretFile'), $this->equalTo($id))
             ->will($this->returnValue($lazaretFile));
 
         //In any case we expect the deletion of the lazaret file
         $em->expects($this->once())
             ->method('remove')
-            ->with($this->EqualTo($lazaretFile));
+            ->with($this->equalTo($lazaretFile));
 
         //Then flush
         $em->expects($this->once())
@@ -259,7 +259,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         //Expect the retrieval of the lazaret file with the provided id
         $em->expects($this->any())
             ->method('find')
-            ->with($this->EqualTo('Alchemy\Phrasea\Model\Entities\LazaretFile'), $this->EqualTo($id))
+            ->with($this->equalTo('Phraseanet:LazaretFile'), $this->equalTo($id))
             ->will($this->returnValue($lazaretFile));
 
         self::$DI['app']['EM'] = $em;
@@ -321,7 +321,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertResponseOk($response);
         $this->assertGoodJsonContent(json_decode($response->getContent()));
 
-        $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(l.id) FROM \Alchemy\Phrasea\Model\Entities\LazaretFile l');
+        $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(l.id) FROM Phraseanet:LazaretFile l');
 
         $count = $query->getSingleScalarResult();
 
@@ -344,7 +344,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertGoodJsonContent(json_decode($response->getContent()));
 
         $query = self::$DI['app']['EM']->createQuery(
-            'SELECT COUNT(l.id) FROM \Alchemy\Phrasea\Model\Entities\LazaretFile l'
+            'SELECT COUNT(l.id) FROM Phraseanet:LazaretFile l'
         );
 
         $count = $query->getSingleScalarResult();
@@ -430,13 +430,13 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         //Expect the retrieval of the lazaret file with the provided id
         $em->expects($this->any())
             ->method('find')
-            ->with($this->EqualTo('Alchemy\Phrasea\Model\Entities\LazaretFile'), $this->EqualTo($id))
+            ->with($this->equalTo('Phraseanet:LazaretFile'), $this->equalTo($id))
             ->will($this->returnValue($lazaretFile));
 
         //In any case we expect the deletion of the lazaret file
         $em->expects($this->once())
             ->method('remove')
-            ->with($this->EqualTo($lazaretFile));
+            ->with($this->equalTo($lazaretFile));
 
         //Then flush
         $em->expects($this->once())
@@ -496,7 +496,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         //Expect the retrieval of the lazaret file with the provided id
         $em->expects($this->any())
             ->method('find')
-            ->with($this->EqualTo('Alchemy\Phrasea\Model\Entities\LazaretFile'), $this->EqualTo($id))
+            ->with($this->equalTo('Phraseanet:LazaretFile'), $this->equalTo($id))
             ->will($this->returnValue($lazaretFile));
 
         $id = 1;
@@ -551,7 +551,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         //Expect the retrieval of the lazaret file with the provided id
         $em->expects($this->any())
             ->method('find')
-            ->with($this->EqualTo('Alchemy\Phrasea\Model\Entities\LazaretFile'), $this->EqualTo($id))
+            ->with($this->equalTo('Phraseanet:LazaretFile'), $this->equalTo($id))
             ->will($this->returnValue($lazaretFile));
 
         self::$DI['app']['EM'] = $em;
@@ -598,7 +598,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         //Expect the retrieval of the lazaret file with the provided id
         $em->expects($this->any())
             ->method('find')
-            ->with($this->EqualTo('Alchemy\Phrasea\Model\Entities\LazaretFile'), $this->EqualTo($id))
+            ->with($this->equalTo('Phraseanet:LazaretFile'), $this->equalTo($id))
             ->will($this->returnValue($lazaretFile));
 
         self::$DI['app']['EM'] = $em;

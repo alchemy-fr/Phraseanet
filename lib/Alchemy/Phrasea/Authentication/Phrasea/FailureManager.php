@@ -80,7 +80,7 @@ class FailureManager
     public function checkFailures($username, Request $request)
     {
         $failures = $this->em
-            ->getRepository('Alchemy\Phrasea\Model\Entities\AuthFailure')
+            ->getRepository('Phraseanet:AuthFailure')
             ->findLockedFailuresMatching($username, $request->getClientIp());
 
         if (0 === count($failures)) {
@@ -109,7 +109,7 @@ class FailureManager
     private function removeOldFailures()
     {
         $failures = $this->em
-            ->getRepository('Alchemy\Phrasea\Model\Entities\AuthFailure')
+            ->getRepository('Phraseanet:AuthFailure')
             ->findOldFailures('-2 months');
 
         if (0 < count($failures)) {

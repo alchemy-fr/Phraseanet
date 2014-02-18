@@ -38,7 +38,7 @@ class Sha256Test extends \PhraseanetTestCase
      */
     public function testCheck()
     {
-        $session = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\LazaretSession', 1);
+        $session = self::$DI['app']['EM']->find('Phraseanet:LazaretSession', 1);
 
         self::$DI['app']['border-manager']->process($session, File::buildFromPathfile($this->media->getFile()->getPathname(), self::$DI['collection'], self::$DI['app']), null, Manager::FORCE_RECORD);
 

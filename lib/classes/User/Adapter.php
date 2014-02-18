@@ -676,7 +676,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     public function getFtpCredential()
     {
         if (null === $this->ftpCredential) {
-            $this->ftpCredential = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FtpCredential')->findOneBy([
+            $this->ftpCredential = $this->app['EM']->getRepository('Phraseanet:FtpCredential')->findOneBy([
                 'usrId' => $this->get_id()
             ]);
 
@@ -731,22 +731,22 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
      */
     public function delete()
     {
-        $repo = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider');
+        $repo = $this->app['EM']->getRepository('Phraseanet:UsrAuthProvider');
         foreach ($repo->findByUser($this) as $provider) {
             $this->app['EM']->remove($provider);
         }
 
-        $repo = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FtpExport');
+        $repo = $this->app['EM']->getRepository('Phraseanet:FtpExport');
         foreach ($repo->findByUser($this) as $export) {
             $this->app['EM']->remove($export);
         }
 
-        $repo = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order');
+        $repo = $this->app['EM']->getRepository('Phraseanet:Order');
         foreach ($repo->findByUser($this) as $order) {
             $this->app['EM']->remove($order);
         }
 
-        $repo = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Session');
+        $repo = $this->app['EM']->getRepository('Phraseanet:Session');
 
         foreach ($repo->findByUser($this) as $session) {
             $this->app['EM']->remove($session);

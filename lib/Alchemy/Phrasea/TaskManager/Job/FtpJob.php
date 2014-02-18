@@ -74,7 +74,7 @@ class FtpJob extends AbstractJob
     private function removeDeadExports(Application $app)
     {
         foreach ($app['EM']
-                ->getRepository('Alchemy\Phrasea\Model\Entities\FtpExport')
+                ->getRepository('Phraseanet:FtpExport')
                 ->findCrashedExports(new \DateTime('-1 month')) as $export) {
             $app['EM']->remove($export);
         }
@@ -84,7 +84,7 @@ class FtpJob extends AbstractJob
     private function retrieveExports(Application $app)
     {
         return $app['EM']
-                ->getRepository('Alchemy\Phrasea\Model\Entities\FtpExport')
+                ->getRepository('Phraseanet:FtpExport')
                 ->findDoableExports();
     }
 

@@ -41,7 +41,7 @@ class TaskManipulatorTest extends \PhraseanetTestCase
         $task->setName('new name');
         $this->assertSame($task, $manipulator->update($task));
         self::$DI['app']['EM']->clear();
-        $updated = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
+        $updated = self::$DI['app']['EM']->find('Phraseanet:Task', 1);
         $this->assertEquals($task, $updated);
     }
 
@@ -107,7 +107,7 @@ class TaskManipulatorTest extends \PhraseanetTestCase
     public function testGetRepository()
     {
         $manipulator = new TaskManipulator(self::$DI['app']['EM'], $this->createNotifierMock(), self::$DI['app']['translator']);
-        $this->assertSame(self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Task'), $manipulator->getRepository());
+        $this->assertSame(self::$DI['app']['EM']->getRepository('Phraseanet:Task'), $manipulator->getRepository());
     }
 
     public function testCreateEmptyCollection()
@@ -122,7 +122,7 @@ class TaskManipulatorTest extends \PhraseanetTestCase
         $manipulator = new TaskManipulator(self::$DI['app']['EM'], $this->createNotifierMock(), self::$DI['app']['translator']);
         $task = $manipulator->createEmptyCollectionJob($collection);
 
-        $tasks = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Task')->findAll();
+        $tasks = self::$DI['app']['EM']->getRepository('Phraseanet:Task')->findAll();
         $this->assertSame('EmptyCollection', $task->getJobId());
         $this->assertContains($task, $tasks);
         $settings = simplexml_load_string($task->getSettings());
@@ -130,12 +130,12 @@ class TaskManipulatorTest extends \PhraseanetTestCase
     }
     private function findAllTasks()
     {
-        return self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Task')->findAll();
+        return self::$DI['app']['EM']->getRepository('Phraseanet:Task')->findAll();
     }
 
     private function loadTask()
     {
-        return self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
+        return self::$DI['app']['EM']->find('Phraseanet:Task', 1);
     }
 
     private function createNotifierMock()

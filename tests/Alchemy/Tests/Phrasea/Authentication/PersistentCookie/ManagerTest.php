@@ -41,7 +41,7 @@ class ManagerTest extends \PhraseanetTestCase
 
         $em->expects($this->once())
             ->method('getRepository')
-            ->with($this->equalTo('Alchemy\Phrasea\Model\Entities\Session'))
+            ->with($this->equalTo('Phraseanet:Session'))
             ->will($this->returnValue($repo));
 
         $encoder->expects($this->once())
@@ -86,7 +86,7 @@ class ManagerTest extends \PhraseanetTestCase
 
         $em->expects($this->once())
             ->method('getRepository')
-            ->with($this->equalTo('Alchemy\Phrasea\Model\Entities\Session'))
+            ->with($this->equalTo('Phraseanet:Session'))
             ->will($this->returnValue($repo));
 
         $encoder->expects($this->once())
@@ -119,7 +119,7 @@ class ManagerTest extends \PhraseanetTestCase
 
         $em->expects($this->once())
             ->method('getRepository')
-            ->with($this->equalTo('Alchemy\Phrasea\Model\Entities\Session'))
+            ->with($this->equalTo('Phraseanet:Session'))
             ->will($this->returnValue($repo));
 
         $this->assertFalse($manager->getSession($tokenValue));

@@ -45,7 +45,7 @@ class FtpExportRepositoryTest extends \PhraseanetTestCase
         self::$DI['app']['EM']->flush();
 
         $crashed = self::$DI['app']['EM']
-                ->getRepository('Alchemy\Phrasea\Model\Entities\FtpExport')
+                ->getRepository('Phraseanet:FtpExport')
                 ->findCrashedExports();
 
         $this->assertCount(2, $crashed);
@@ -105,7 +105,7 @@ class FtpExportRepositoryTest extends \PhraseanetTestCase
         self::$DI['app']['EM']->flush();
 
         $crashed = self::$DI['app']['EM']
-                ->getRepository('Alchemy\Phrasea\Model\Entities\FtpExport')
+                ->getRepository('Phraseanet:FtpExport')
                 ->findCrashedExports(new \DateTime('-6 days'));
 
         $this->assertCount(2, $crashed);
@@ -187,7 +187,7 @@ class FtpExportRepositoryTest extends \PhraseanetTestCase
         self::$DI['app']['EM']->flush();
 
         $doables = self::$DI['app']['EM']
-                ->getRepository('Alchemy\Phrasea\Model\Entities\FtpExport')
+                ->getRepository('Phraseanet:FtpExport')
                 ->findDoableExports();
 
         $this->assertCount(2, $doables);
@@ -219,7 +219,7 @@ class FtpExportRepositoryTest extends \PhraseanetTestCase
         self::$DI['app']['EM']->flush();
 
         $exports = self::$DI['app']['EM']
-                ->getRepository('Alchemy\Phrasea\Model\Entities\FtpExport')
+                ->getRepository('Phraseanet:FtpExport')
                 ->findByUser(self::$DI['user']);
 
         $this->assertCount(2, $exports);

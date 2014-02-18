@@ -8,7 +8,7 @@ class TaskConverterTest extends \PhraseanetTestCase
 {
     public function testConvert()
     {
-        $task = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
+        $task = self::$DI['app']['EM']->find('Phraseanet:Task', 1);
 
         $converter = new TaskConverter(self::$DI['app']['EM']);
         $this->assertSame($task, $converter->convert(1));

@@ -185,7 +185,7 @@ class patch_390alpha2a implements patchInterface
 
         $n = 0;
 
-        $repository = $em->getRepository('Alchemy\Phrasea\Model\Entities\User');
+        $repository = $em->getRepository('Phraseanet:User');
 
         foreach ($rows as $row) {
             $template = $repository->findOneByLogin($row['usr_login']);

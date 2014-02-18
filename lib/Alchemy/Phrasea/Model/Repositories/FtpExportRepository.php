@@ -50,7 +50,7 @@ class FtpExportRepository extends EntityRepository
     public function findDoableExports()
     {
         $dql = 'SELECT f
-            FROM Alchemy\Phrasea\Model\Entities\FtpExport f
+            FROM Phraseanet:FtpExport f
                 INNER JOIN f.elements e
             WHERE e.done = false';
 

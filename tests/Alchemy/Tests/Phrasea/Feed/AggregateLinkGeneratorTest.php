@@ -30,7 +30,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
             ->getMock();
 
         if ($alreadyCreated) {
-            $token = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\AggregateToken', 1);
+            $token = self::$DI['app']['EM']->find('Phraseanet:AggregateToken', 1);
             $tokenValue = $token->getValue();
         }
 
@@ -67,10 +67,10 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
                 $this->assertNotEquals($tokenValue, $capture['token']);
 
                 $this->assertCount(0, self::$DI['app']['EM']
-                    ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
+                    ->getRepository('Phraseanet:AggregateToken')
                     ->findBy(['value' => $tokenValue]));
                 $this->assertCount(1, self::$DI['app']['EM']
-                    ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
+                    ->getRepository('Phraseanet:AggregateToken')
                     ->findBy(['value' => $capture['token']]));
             } else {
                 $expectedParams = [
@@ -85,7 +85,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
                 $this->assertEquals($expectedParams, $capture);
 
                 $this->assertCount(1, self::$DI['app']['EM']
-                    ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
+                    ->getRepository('Phraseanet:AggregateToken')
                     ->findBy(['value' => $tokenValue]));
             }
         } else {
@@ -96,7 +96,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
             $this->assertEquals(12, strlen($capture['token']));
 
             $this->assertCount(1, self::$DI['app']['EM']
-                ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
+                ->getRepository('Phraseanet:AggregateToken')
                 ->findBy(['value' => $capture['token']]));
         }
     }

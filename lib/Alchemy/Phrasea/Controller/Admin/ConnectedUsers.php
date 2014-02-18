@@ -39,7 +39,7 @@ class ConnectedUsers implements ControllerProviderInterface
 
     public function listConnectedUsers(Application $app, Request $request)
     {
-        $dql = 'SELECT s FROM Alchemy\Phrasea\Model\Entities\Session s
+        $dql = 'SELECT s FROM Phraseanet:Session s
             WHERE
                 s.updated > :date
             ORDER BY s.updated DESC';

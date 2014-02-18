@@ -12,7 +12,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/requestavailable/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
+        $feeds = self::$DI['app']['EM']->getRepository('Phraseanet:Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
         foreach ($feeds as $one_feed) {
             if ($one_feed->isPublisher(self::$DI['user'])) {
                 $this->assertEquals(1, $crawler->filterXPath("//input[@value='" . $one_feed->getId() . "' and @name='feed_proposal[]']")->count());
@@ -30,7 +30,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
             ->method('deliver')
             ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication'), $this->equalTo(null));
 
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
         $params = [
             "feed_id"        => $feed->getId()
             , "notify"        => 1
@@ -67,7 +67,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testEntryCreateUnauthorized()
     {
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 3);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 3);
 
         self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
             ->disableOriginalConstructor()
@@ -91,7 +91,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testEntryEdit()
     {
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
         $entry = $feed->getEntries()->first();
         $crawler = self::$DI['client']->request('GET', '/prod/feeds/entry/' . $entry->getId() . '/edit/');
 
@@ -108,7 +108,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testEntryEditUnauthorized()
     {
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 3);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 3);
         $entry = $feed->getEntries()->first();
 
         self::$DI['client']->request('GET', '/prod/feeds/entry/' . $entry->getId() . '/edit/');
@@ -118,7 +118,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testEntryUpdate()
     {
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
         $entry = $feed->getEntries()->first();
 
         $params = [
@@ -142,9 +142,9 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testEntryUpdateChangeFeed()
     {
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
         $entry = $feed->getEntries()->first();
-        $newfeed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 2);
+        $newfeed = self::$DI['app']['EM']->find('Phraseanet:Feed', 2);
 
         $params = [
             "feed_id"      => $newfeed->getId(),
@@ -164,15 +164,15 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(is_string($pageContent->datas));
         $this->assertRegExp("/entry_" . $entry->getId() . "/", $pageContent->datas);
 
-        $retrievedentry = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($entry->getId());
+        $retrievedentry = self::$DI['app']['EM']->getRepository('Phraseanet:FeedEntry')->find($entry->getId());
         $this->assertEquals($newfeed->getId(), $retrievedentry->getFeed()->getId());
     }
 
     public function testEntryUpdateChangeFeedNoAccess()
     {
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
         $entry = $feed->getEntries()->first();
-        $newfeed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 3);
+        $newfeed = self::$DI['app']['EM']->find('Phraseanet:Feed', 3);
         $newfeed->setCollection(self::$DI['collection_no_access']);
         self::$DI['app']['EM']->persist($newfeed);
         self::$DI['app']['EM']->flush();
@@ -192,7 +192,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testEntryUpdateChangeFeedInvalidFeed()
     {
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
         $entry = $feed->getEntries()->first();
 
         $params = [
@@ -225,7 +225,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testEntryUpdateFailed()
     {
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
         $entry = $feed->getEntries()->first(['user']);
 
         $params = [
@@ -243,7 +243,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testEntryUpdateUnauthorized()
     {
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 3);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 3);
         $entry = $feed->getEntries()->first();
 
         $params = [
@@ -261,7 +261,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testEntryUpdateChangeOrder()
     {
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
         $entry = $feed->getEntries()->first();
 
         $items = $entry->getItems()->toArray();
@@ -282,8 +282,8 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
-        $newItem1 = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedItem')->find($item1->getId());
-        $newItem2 = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedItem')->find($item2->getId());
+        $newItem1 = self::$DI['app']['EM']->getRepository('Phraseanet:FeedItem')->find($item1->getId());
+        $newItem2 = self::$DI['app']['EM']->getRepository('Phraseanet:FeedItem')->find($item2->getId());
 
         $this->assertEquals($ord1, (int) $newItem2->getOrd());
         $this->assertEquals($ord2, (int) $newItem1->getOrd());
@@ -291,7 +291,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDelete()
     {
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
         $entry = $feed->getEntries()->first();
 
         self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/delete/');
@@ -306,7 +306,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(is_string($pageContent->message));
 
         try {
-            self::$DI["app"]['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($entry->getId());
+            self::$DI["app"]['EM']->getRepository('Phraseanet:FeedEntry')->find($entry->getId());
             $this->fail("Failed to delete entry");
         } catch (\Exception $e) {
 
@@ -321,7 +321,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDeleteUnauthorized()
     {
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 3);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 3);
         $entry = $feed->getEntries()->first();
 
         self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/delete/');
@@ -332,7 +332,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $crawler = self::$DI['client']->request('GET', '/prod/feeds/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
+        $feeds = self::$DI['app']['EM']->getRepository('Phraseanet:Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
 
         foreach ($feeds as $one_feed) {
             $path = CssSelector::toXPath("ul.submenu a[href='/prod/feeds/feed/" . $one_feed->getId() . "/']");
@@ -348,8 +348,8 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testGetFeed()
     {
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
-        $feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
+        $feeds = self::$DI['app']['EM']->getRepository('Phraseanet:Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
         $crawler = self::$DI['client']->request('GET', '/prod/feeds/feed/' . $feed->getId() . "/");
 
         foreach ($feeds as $one_feed) {
@@ -398,7 +398,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testSuscribe()
     {
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
 
         self::$DI['app']['feed.user-link-generator'] = $this->getMockBuilder('Alchemy\Phrasea\Feed\Link\FeedLinkGenerator')
             ->disableOriginalConstructor()

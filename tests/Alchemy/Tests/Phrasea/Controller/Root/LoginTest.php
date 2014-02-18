@@ -1017,7 +1017,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $user = new \User_Adapter((int) $userId, self::$DI['app']);
 
-        $ret = self::$DI['app']['EM']->getRepository('\Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
+        $ret = self::$DI['app']['EM']->getRepository('Phraseanet:UsrAuthProvider')
             ->findBy(['usr_id' => $userId, 'provider' => 'provider-test']);
         $this->assertCount(1, $ret);
 
@@ -1520,7 +1520,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
 
-        $ret = self::$DI['app']['EM']->getRepository('\Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
+        $ret = self::$DI['app']['EM']->getRepository('Phraseanet:UsrAuthProvider')
             ->findBy(['usr_id' => self::$DI['user']->get_id(), 'provider' => 'provider-test']);
 
         $this->assertCount(1, $ret);
@@ -1595,7 +1595,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
 
-        $ret = self::$DI['app']['EM']->getRepository('\Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
+        $ret = self::$DI['app']['EM']->getRepository('Phraseanet:UsrAuthProvider')
             ->findBy(['usr_id' => $createdUser->get_id(), 'provider' => 'provider-test']);
 
         $this->assertCount(1, $ret);
@@ -1760,7 +1760,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['app']['EM']->expects($this->at(0))
             ->method('getRepository')
-            ->with('Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
+            ->with('Phraseanet:UsrAuthProvider')
             ->will($this->returnValue($repo));
 
         if ($participants) {
@@ -1774,7 +1774,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
             self::$DI['app']['EM']->expects($this->at(1))
                 ->method('getRepository')
-                ->with('Alchemy\Phrasea\Model\Entities\ValidationParticipant')
+                ->with('Phraseanet:ValidationParticipant')
                 ->will($this->returnValue($repo));
         }
     }

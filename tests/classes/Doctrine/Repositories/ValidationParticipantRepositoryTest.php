@@ -6,7 +6,7 @@ class ValidationParticipantRepositoryTest extends \PhraseanetAuthenticatedTestCa
     public function testFindNotConfirmedAndNotRemindedParticipants()
     {
         $em = self::$DI['app']['EM'];
-        $repo = $em->getRepository('Alchemy\Phrasea\Model\Entities\ValidationParticipant');
+        $repo = $em->getRepository('Phraseanet:ValidationParticipant');
         /* @var $repo Alchemy\Phrasea\Model\Repositories\ValidationParticipantRepository */
         $expireDate = new \DateTime('+8 days');
         $participants = $repo->findNotConfirmedAndNotRemindedParticipantsByExpireDate($expireDate);

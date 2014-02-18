@@ -250,17 +250,17 @@ class FailureManagerTest extends \PhraseanetTestCase
             ->method('getClientIp')
             ->will($this->returnValue($ip));
 
-        $this->assertCount(10, self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\AuthFailure')
+        $this->assertCount(10, self::$DI['app']['EM']->getRepository('Phraseanet:AuthFailure')
                 ->findOldFailures());
-        $this->assertCount(12, self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\AuthFailure')
+        $this->assertCount(12, self::$DI['app']['EM']->getRepository('Phraseanet:AuthFailure')
                 ->findAll());
 
         $manager = new FailureManager(self::$DI['app']['EM'], $recaptcha, 9);
         $manager->saveFailure($username, $request);
 
-        $this->assertCount(0, self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\AuthFailure')
+        $this->assertCount(0, self::$DI['app']['EM']->getRepository('Phraseanet:AuthFailure')
                 ->findOldFailures());
-        $this->assertCount(3, self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\AuthFailure')
+        $this->assertCount(3, self::$DI['app']['EM']->getRepository('Phraseanet:AuthFailure')
                 ->findAll());
 
         self::$DI['app']['EM']->getEventManager()->addEventSubscriber(new TimestampableListener());
@@ -285,7 +285,7 @@ class FailureManagerTest extends \PhraseanetTestCase
 
         $em->expects($this->once())
             ->method('getRepository')
-            ->with($this->equalTo('Alchemy\Phrasea\Model\Entities\AuthFailure'))
+            ->with($this->equalTo('Phraseanet:AuthFailure'))
             ->will($this->returnValue($repo));
 
         return $em;

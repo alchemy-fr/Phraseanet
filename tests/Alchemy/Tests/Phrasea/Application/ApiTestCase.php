@@ -100,10 +100,10 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testThatSessionIsClosedAfterRequest()
     {
-        $this->assertCount(0, self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Session')->findAll());
+        $this->assertCount(0, self::$DI['app']['EM']->getRepository('Phraseanet:Session')->findAll());
         $this->setToken(self::$token);
         self::$DI['client']->request('GET', '/api/v1/databoxes/list/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $this->assertCount(0, self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Session')->findAll());
+        $this->assertCount(0, self::$DI['app']['EM']->getRepository('Phraseanet:Session')->findAll());
     }
 
     public function provideEventNames()
@@ -1331,7 +1331,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken(self::$adminToken);
 
-        $basketElement = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\BasketElement', 1);
+        $basketElement = self::$DI['app']['EM']->find('Phraseanet:BasketElement', 1);
         $basket = $basketElement->getBasket();
 
         $route = '/api/v1/baskets/' . $basket->getId() . '/content/';
@@ -1371,7 +1371,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken(self::$adminToken);
 
-        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
+        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
 
         $route = '/api/v1/baskets/' . $basket->getId() . '/setname/';
 
@@ -1424,7 +1424,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken(self::$adminToken);
 
-        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
+        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
 
         $route = '/api/v1/baskets/' . $basket->getId() . '/setdescription/';
 
@@ -1643,7 +1643,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
      */
     public function testFeedList()
     {
-        $created_feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $created_feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
 
         $this->setToken(self::$token);
         $route = '/api/v1/feeds/list/';
@@ -1693,7 +1693,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $author = "W. Shakespeare";
         $author_email = "gontran.bonheur@gmail.com";
 
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
         $created_entry = $feed->getEntries()->first();
 
         $created_entry->setAuthorEmail($author_email);
@@ -1749,7 +1749,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
         $created_entry = $feed->getEntries()->first();
 
         $this->setToken(self::$token);
@@ -1780,7 +1780,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $created_feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $created_feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
         $created_entry = $created_feed->getEntries()->first();
 
         $created_feed->setCollection(self::$DI['collection_no_access']);
@@ -1813,7 +1813,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $entry_title = 'Superman';
         $entry_subtitle = 'Wonder Woman';
 
-        $created_feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $created_feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
         $created_entry = $created_feed->getEntries()->first();
         $created_entry->setTitle($entry_title);
         $created_entry->setSubtitle($entry_subtitle);

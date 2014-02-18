@@ -79,7 +79,7 @@ class patch_390alpha1b implements patchInterface
         $n = 0;
         $em = $app['EM'];
         $em->getEventManager()->removeEventSubscriber(new TimestampableListener());
-        $basketRepository = $em->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
+        $basketRepository = $em->getRepository('Phraseanet:Basket');
 
         foreach ($rs as $row) {
             $sql = 'SELECT count(id) as todo

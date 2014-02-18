@@ -80,7 +80,7 @@ class Datafiles extends AbstractDelivery
 
                 if ($watermark && !$all_access) {
 
-                    $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
+                    $repository = $app['EM']->getRepository('Phraseanet:BasketElement');
 
                     /* @var $repository BasketElementRepository */
 
