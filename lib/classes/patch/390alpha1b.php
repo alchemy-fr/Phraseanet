@@ -92,7 +92,7 @@ class patch_390alpha1b implements patchInterface
             $todo = $stmt->fetch(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
-            $user = Upgrade39::getUserReferences($em, $row['usr_id']);
+            $user = $em->getPartialReference('Alchemy\Phrasea\Model\Entities\User', $row['usr_id']);
 
             $order = new Order();
             $order->setUser($user)
@@ -118,7 +118,7 @@ class patch_390alpha1b implements patchInterface
                 $orderElement->setBaseId($element['base_id'])
                     ->setDeny($element['deny'] === null ? null : (Boolean) $element['deny'])
                     ->setOrder($order)
-                    ->setOrderMasterId($element['order_master_id'])
+                    ->setOrderMaster($em->getPartialReference('Alchemy\Phrasea\Model\Entities\User',$element['order_master_id']))
                     ->setRecordId($element['record_id']);
 
                 $order->addElement($orderElement);

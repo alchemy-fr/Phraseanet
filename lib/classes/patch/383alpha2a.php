@@ -64,7 +64,7 @@ class patch_383alpha2a implements patchInterface
         $stmt->closeCursor();
 
         foreach ($rows as $row) {
-            if (null !== $vsession = $app['EM']->getReference('Alchemy\Phrasea\Model\Entities\ValidationSession', $row['validation_session_id'])) {
+            if (null !== $vsession = $app['EM']->getPartialReference('Alchemy\Phrasea\Model\Entities\ValidationSession', $row['validation_session_id'])) {
                 $app['EM']->remove($vsession);
             }
         }

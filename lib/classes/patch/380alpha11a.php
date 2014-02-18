@@ -81,7 +81,7 @@ class patch_380alpha11a implements patchInterface
                 $updated = \DateTime::createFromFormat('Y-m-d H:i:s', $row['lastaccess']);
             }
 
-            $user = Upgrade39::getUserReferences($app['EM'], $row['usr_id']);
+            $user = $app['EM']->getPartialReference('Alchemy\Phrasea\Model\Entities\User', $row['usr_id']);
 
             $session = new Session();
             $session

@@ -87,7 +87,7 @@ class patch_320alpha4b implements patchInterface
 
         $app['EM']->getEventManager()->removeEventSubscriber(new TimestampableListener());
         foreach ($rs as $row) {
-            $user =  Upgrade39::getUserReferences($app['EM'], $row['usr_id']);
+            $user =  $app['EM']->getPartialReference('Alchemy\Phrasea\Model\Entities\User', $row['usr_id']);
 
             $feed = $this->get_feed($appbox, $user, $row['pub_restrict'], $row['homelink'], $app);
 

@@ -75,7 +75,7 @@ class patch_390alpha5a implements patchInterface
         $em = $app['EM'];
 
         foreach ($rs as $row) {
-            $user = Upgrade39::getUserReferences($em, $row['usr_id']);
+            $user = $em->getPartialReference('Alchemy\Phrasea\Model\Entities\User', $row['usr_id']);
 
             $userSetting = new UserNotificationSetting();
             $userSetting->setName($row['prop']);
