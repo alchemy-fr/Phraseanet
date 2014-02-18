@@ -25,7 +25,8 @@ class UserAuthProviderMigration extends AbstractMigration
 
     public function doUpSql(Schema $schema)
     {
-        $this->addSql("CREATE TABLE UsrAuthProviders (id INT AUTO_INCREMENT NOT NULL, user_id INT NOT NULL, provider VARCHAR(32) NOT NULL, distant_id VARCHAR(192) NOT NULL, created DATETIME NOT NULL, updated DATETIME NOT NULL, UNIQUE INDEX unique_provider_per_user (user_id, provider), UNIQUE INDEX provider_ids (provider, distant_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB");
+        $this->addSql("CREATE TABLE UsrAuthProviders (id INT AUTO_INCREMENT NOT NULL, user_id INT NOT NULL, provider VARCHAR(32) NOT NULL, distant_id VARCHAR(192) NOT NULL, created DATETIME NOT NULL, updated DATETIME NOT NULL, INDEX IDX_947F003FA76ED395 (user_id), UNIQUE INDEX unique_provider_per_user (user_id, provider), UNIQUE INDEX provider_ids (provider, distant_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB");
+        $this->addSql("ALTER TABLE UsrAuthProviders ADD CONSTRAINT FK_947F003FA76ED395 FOREIGN KEY (user_id) REFERENCES Users (id)");
     }
 
     public function doDownSql(Schema $schema)
