@@ -32,7 +32,7 @@ class PhraseanetWampServer implements WampServerInterface
      */
     public function onPublish(Conn $conn, $topic, $event, array $exclude, array $eligible)
     {
-        $this->logger->error(sprintf('Publishing on topic %s', $topic->getId()), array('event' => $event, 'topic' => $topic));
+        $this->logger->error(sprintf('Publishing on topic %s', $topic->getId()), ['event' => $event, 'topic' => $topic]);
         $topic->broadcast($event);
     }
 
@@ -41,7 +41,7 @@ class PhraseanetWampServer implements WampServerInterface
      */
     public function onCall(Conn $conn, $id, $topic, array $params)
     {
-        $this->logger->error(sprintf('Received RPC call on topic %s', $topic->getId()), array('topic' => $topic));
+        $this->logger->error(sprintf('Received RPC call on topic %s', $topic->getId()), ['topic' => $topic]);
         $conn->callError($id, $topic, 'RPC not supported on this demo');
     }
 
@@ -51,9 +51,9 @@ class PhraseanetWampServer implements WampServerInterface
     public function onSubscribe(Conn $conn, $topic)
     {
         if ($this->manager->subscribe($conn, $topic)) {
-            $this->logger->debug(sprintf('Subscription received on topic %s', $topic->getId()), array('topic' => $topic));
+            $this->logger->debug(sprintf('Subscription received on topic %s', $topic->getId()), ['topic' => $topic]);
         } else {
-            $this->logger->error(sprintf('Subscription received on topic %s, user is not allowed', $topic->getId()), array('topic' => $topic));
+            $this->logger->error(sprintf('Subscription received on topic %s, user is not allowed', $topic->getId()), ['topic' => $topic]);
         }
     }
 
@@ -62,7 +62,7 @@ class PhraseanetWampServer implements WampServerInterface
      */
     public function onUnSubscribe(Conn $conn, $topic)
     {
-        $this->logger->debug(sprintf('Unsubscription received on topic %s', $topic->getId()), array('topic' => $topic));
+        $this->logger->debug(sprintf('Unsubscription received on topic %s', $topic->getId()), ['topic' => $topic]);
         $this->manager->unsubscribe($conn, $topic);
     }
 

@@ -144,7 +144,7 @@ class TopicsManager
     private function cleanupReferences(Conn $conn, Topic $topic = null)
     {
         $storage = $this->topics;
-        $updated = array();
+        $updated = [];
 
         foreach ($storage as $id => $storedTopic) {
             if (null !== $topic && $id !== $topic->getId()) {
