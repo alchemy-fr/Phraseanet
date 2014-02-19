@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Authentication\Token;
 
-use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TokenValidator
