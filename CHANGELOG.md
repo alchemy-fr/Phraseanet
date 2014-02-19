@@ -1,5 +1,52 @@
 # CHANGELOG
 
+* 3.8.3 (2014-xx-xx)
+
+  - Fix scheduler timeout.
+  - Fix thesaurus tab javascript errors.
+  - Fix IE slow script error messages.
+  - Fix basket records sorting.
+  - Fix admin field editing on a field delete.
+  - Fix HTTP 400 on email test.
+  - Add datepicker input placeholder.
+  - Fix records export names.
+  - Fix collection rights injection on create.
+  - Add support for portait videos.
+  - Fix disconnection of removed users.
+  - Display terms of use in a new window.
+  - Fix language selection on mobile devices.
+  - Increase tasks memory limit.
+  - Fix collection and databox popus in admin views.
+  - Fix suggested values editing on Firefox.
+  - Fix lightbox that could not be load in case some validation have been removed.
+  - Fix user settings precedence.
+  - Add an option to reset advanced search on production reload.
+  - Fix user search by last applied template.
+  - Fix thesaurus highlight.
+  - Fix collection sorting.
+  - Fix FTP test messages.
+  - Fix video width and height extraction.
+  - Fix caption sanitization.
+  - Fix report locales.
+  - Fix FTP receiver email reception.
+  - Fix user registration management display.
+  - Fix report icons.
+  - Fix report pagination.
+  - Fix Phrasea SearchEngine cache duration.
+  - Fix basket caption display.
+  - Fix collection mount.
+  - Fix password grant authorization in API.
+  - Update task manager log messages.
+  - Update to Symfony 2.3.9.
+  - Add plugins:list command.
+  - Images and Videos are not interpolated anymore.
+  - Add option to disable filesystem logs.
+  - Fix video display on mobile devices.
+  - Fix record mover task.
+  - Fix bug on edit presets load.
+  - Fix detailed view access by guests users.
+  - Add compatibility with PHP 5.6.
+
 * 3.8.2 (2013-11-15)
 
   - BugFix : Locale translation may block administration module load.
