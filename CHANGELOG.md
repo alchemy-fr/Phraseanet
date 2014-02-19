@@ -2,39 +2,39 @@
 
 ## 3.8.3 (2014-xx-xx)
 
-  - BugFix : scheduler timeout.
-  - BugFix : thesaurus tab javascript errors.
-  - BugFix : IE slow script error messages.
-  - BugFix : basket records sorting.
-  - BugFix : admin field editing on a field delete.
-  - BugFix : HTTP 400 on email test.
-  - BugFix : records export names.
-  - BugFix : collection rights injection on create.
-  - BugFix : disconnection of removed users.
-  - BugFix : language selection on mobile devices.
-  - BugFix : collection and databox popups in admin views.
-  - BugFix : suggested values editing on Firefox.
-  - BugFix : lightbox that could not be load in case some validation have been removed.
-  - BugFix : user settings precedence.
-  - BugFix : user search by last applied template.
-  - BugFix : thesaurus highlight.
-  - BugFix : collection sorting.
-  - BugFix : FTP test messages.
-  - BugFix : video width and height extraction.
-  - BugFix : caption sanitization.
-  - BugFix : report locales.
-  - BugFix : FTP receiver email reception.
-  - BugFix : user registration management display.
-  - BugFix : report icons.
-  - BugFix : report pagination.
-  - BugFix : Phrasea SearchEngine cache duration.
-  - BugFix : basket caption display.
-  - BugFix : collection mount.
-  - BugFix : password grant authorization in API.
-  - BugFix : video display on mobile devices.
-  - BugFix : record mover task.
-  - BugFix : bug on edit presets load.
-  - BugFix : detailed view access by guests users.
+  - BugFix : Fix scheduler timeout.
+  - BugFix : Fix thesaurus tab javascript errors.
+  - BugFix : Fix IE slow script error messages.
+  - BugFix : Fix basket records sorting.
+  - BugFix : Fix admin field editing on a field delete.
+  - BugFix : Fix HTTP 400 on email test.
+  - BugFix : Fix records export names.
+  - BugFix : Fix collection rights injection on create.
+  - BugFix : Fix disconnection of removed users.
+  - BugFix : Fix language selection on mobile devices.
+  - BugFix : Fix collection and databox popups in admin views.
+  - BugFix : Fix suggested values editing on Firefox.
+  - BugFix : Fix lightbox that could not be load in case some validation have been removed.
+  - BugFix : Fix user settings precedence.
+  - BugFix : Fix user search by last applied template.
+  - BugFix : Fix thesaurus highlight.
+  - BugFix : Fix collection sorting.
+  - BugFix : Fix FTP test messages.
+  - BugFix : Fix video width and height extraction.
+  - BugFix : Fix caption sanitization.
+  - BugFix : Fix report locales.
+  - BugFix : Fix FTP receiver email reception.
+  - BugFix : Fix user registration management display.
+  - BugFix : Fix report icons.
+  - BugFix : Fix report pagination.
+  - BugFix : Fix Phrasea SearchEngine cache duration.
+  - BugFix : Fix basket caption display.
+  - BugFix : Fix collection mount.
+  - BugFix : Fix password grant authorization in API.
+  - BugFix : Fix video display on mobile devices.
+  - BugFix : Fix record mover task.
+  - BugFix : Fix bug on edit presets load.
+  - BugFix : Fix detailed view access by guests users.
   - Enhancement : Add datepicker input placeholder.
   - Enhancement : Add support for portrait videos.
   - Enhancement : Display terms of use in a new window.
