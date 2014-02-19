@@ -261,7 +261,7 @@ class Account implements ControllerProviderInterface
      */
     public function accountSessionsAccess(Application $app, Request $request)
     {
-        $dql = 'SELECT s FROM Alchemy\Phrasea\Model\Entities\Session s
+        $dql = 'SELECT s FROM Phraseanet:Session s
             WHERE s.user = :usr_id
             ORDER BY s.created DESC';
 

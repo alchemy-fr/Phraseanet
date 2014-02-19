@@ -138,7 +138,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
         $sender = $registered_user->getDisplayName();
 
         try {
-            $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
+            $repository = $this->app['EM']->getRepository('Phraseanet:Basket');
 
             $basket = $repository->findUserBasket($ssel_id, $this->app['authentication']->getUser(), false);
         } catch (Exception $e) {

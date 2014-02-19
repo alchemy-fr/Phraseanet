@@ -49,7 +49,7 @@ class TaskForm extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'Alchemy\Phrasea\Model\Entities\Task',
+            'data_class' => 'Phraseanet:Task',
         ]);
     }
 

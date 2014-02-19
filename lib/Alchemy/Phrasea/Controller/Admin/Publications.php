@@ -194,7 +194,7 @@ class Publications implements ControllerProviderInterface
             try {
                 $request = $app['request'];
                 $user = $app['manipulator.user']->getRepository()->find($request->request->get('usr_id'));
-                $feed = $app["EM"]->find('Alchemy\Phrasea\Model\Entities\Feed', $id);
+                $feed = $app["EM"]->find('Phraseanet:Feed', $id);
 
                 $publisher = new FeedPublisher();
                 $publisher->setUser($user);

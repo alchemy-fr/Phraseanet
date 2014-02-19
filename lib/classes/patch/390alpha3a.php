@@ -74,7 +74,7 @@ class patch_390alpha3a implements patchInterface
         $em = $app['EM'];
 
         foreach ($rs as $row) {
-            $user = $em->getPartialReference('Alchemy\Phrasea\Model\Entities\User', $row['usr_id']);
+            $user = $em->getPartialReference('Phraseanet:User', $row['usr_id']);
 
             $userQuery = new UserQuery();
             $userQuery->setQuery($row['query']);

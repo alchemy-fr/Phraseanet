@@ -78,7 +78,7 @@ class patch_390alpha4a implements patchInterface
                 continue;
             }
 
-            $user = $em->getPartialReference('Alchemy\Phrasea\Model\Entities\User', $row['usr_id']);
+            $user = $em->getPartialReference('Phraseanet:User', $row['usr_id']);
 
             $userSetting = new UserSetting();
             $userSetting->setName($row['prop']);

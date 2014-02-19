@@ -139,7 +139,7 @@ class FeedLinkGenerator implements LinkGeneratorInterface
     private function getFeedToken(Feed $feed, User $user, $renew = false)
     {
         $token = $this->em
-            ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
+            ->getRepository('Phraseanet:FeedToken')
             ->findOneBy(['user' => $user, 'feed' => $feed]);
 
         if (null === $token || true === $renew) {

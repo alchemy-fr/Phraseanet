@@ -127,7 +127,7 @@ class BasketRepository extends EntityRepository
     public function findUserBasket($basket_id, User $user, $requireOwner)
     {
         $dql = 'SELECT b
-            FROM Alchemy\Phrasea\Model\Entities\Basket b
+            FROM Phraseanet:Basket b
             LEFT JOIN b.elements e
             WHERE b.id = :basket_id';
 

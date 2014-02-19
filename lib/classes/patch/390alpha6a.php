@@ -96,7 +96,7 @@ class patch_390alpha6a implements patchInterface
 
         foreach ($rs as $row) {
             try {
-                $user = $em->getPartialReference('Alchemy\Phrasea\Model\Entities\User', $row['usr_id']);
+                $user = $em->getPartialReference('Phraseanet:User', $row['usr_id']);
             } catch (NoResultException $e) {
                 continue;
             }

@@ -237,7 +237,7 @@ class Order implements ControllerProviderInterface
     public function sendOrder(Application $app, Request $request, $order_id)
     {
         $success = false;
-        if (null === $order = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->find($order_id)) {
+        if (null === $order = $app['EM']->getRepository('Phraseanet:Order')->find($order_id)) {
             throw new NotFoundHttpException('Order not found');
         }
         $basket = $order->getBasket();

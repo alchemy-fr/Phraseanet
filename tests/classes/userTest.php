@@ -33,7 +33,7 @@ class userTest extends \PhraseanetTestCase
 
         self::$DI['app']['model.user-manager']->delete($user);
 
-        $this->assertNull(self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider')->findWithProviderAndId('custom-one', 12345));
+        $this->assertNull(self::$DI['app']['EM']->getRepository('Phraseanet:UsrAuthProvider')->findWithProviderAndId('custom-one', 12345));
     }
 
     public function testDeleteSetMailToNullAndRemovesSessions()

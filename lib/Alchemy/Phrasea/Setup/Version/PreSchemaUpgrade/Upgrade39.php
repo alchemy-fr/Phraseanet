@@ -42,7 +42,7 @@ class Upgrade39 implements PreSchemaUpgradeInterface
      */
     public static function getUserReferences(EntityManager $em, $id)
     {
-        $q = $em->createQuery('SELECT PARTIAL u.{id,login} FROM Alchemy\Phrasea\Model\Entities\User u WHERE u.id = :id');
+        $q = $em->createQuery('SELECT PARTIAL u.{id,login} FROM Phraseanet:User u WHERE u.id = :id');
         $q->setParameters(['id' => $id]);
         $q->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true);
 

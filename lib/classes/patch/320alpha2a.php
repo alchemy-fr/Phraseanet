@@ -57,7 +57,7 @@ class patch_320alpha2a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $dql = 'SELECT u FROM Alchemy\Phrasea\Model\Entities\User u WHERE u.nonce IS NULL';
+        $dql = 'SELECT u FROM Phraseanet:User u WHERE u.nonce IS NULL';
         $q = $app['EM']->createQuery($dql);
         $q->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true);
         $users = $q->getResult();

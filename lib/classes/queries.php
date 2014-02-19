@@ -189,7 +189,7 @@ class queries
         $history = '<ul>';
 
         $queries = $app['EM']
-            ->getRepository('Alchemy\Phrasea\Model\Entities\UserQuery')
+            ->getRepository('Phraseanet:UserQuery')
             ->findBy(['user' => $usrId], ['created' => 'ASC'], 25, 0);
 
         foreach ($queries as $query) {

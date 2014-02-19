@@ -137,7 +137,7 @@ class UserManager
      */
     private function cleanFtpExports(User $user)
     {
-       $elements = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\FtpExport')
+       $elements = $this->objectManager->getRepository('Phraseanet:FtpExport')
                ->findBy(['user' => $user]);
 
        foreach ($elements as $element) {
@@ -152,7 +152,7 @@ class UserManager
      */
     private function cleanOrders(User $user)
     {
-       $orders = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\Order')
+       $orders = $this->objectManager->getRepository('Phraseanet:Order')
                ->findBy(['user' => $user]);
 
        foreach ($orders as $order) {
@@ -167,7 +167,7 @@ class UserManager
      */
     private function cleanUserSessions(User $user)
     {
-        $sessions = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\Session')
+        $sessions = $this->objectManager->getRepository('Phraseanet:Session')
             ->findByUser(['user' => $user]);
 
         foreach ($sessions as $session) {
@@ -182,7 +182,7 @@ class UserManager
      */
     private function cleanAuthProvider(User $user)
     {
-        $providers = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
+        $providers = $this->objectManager->getRepository('Phraseanet:UsrAuthProvider')
             ->findBy(['user' => $user]);
 
         foreach ($providers as $provider) {

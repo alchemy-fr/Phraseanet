@@ -25,7 +25,7 @@ class UsrAuthProviderRepository extends EntityRepository
     public function findByUser(User $user)
     {
         $dql = 'SELECT u
-                FROM Alchemy\Phrasea\Model\Entities\UsrAuthProvider u
+                FROM Phraseanet:UsrAuthProvider u
                 WHERE u.user = :usrId';
 
         $params = ['usrId' => $user->getId()];

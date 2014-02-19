@@ -92,7 +92,7 @@ class patch_390alpha1b implements patchInterface
             $todo = $stmt->fetch(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
-            $user = $em->getPartialReference('Alchemy\Phrasea\Model\Entities\User', $row['usr_id']);
+            $user = $em->getPartialReference('Phraseanet:User', $row['usr_id']);
 
             $order = new Order();
             $order->setUser($user)
@@ -100,7 +100,7 @@ class patch_390alpha1b implements patchInterface
                 ->setOrderUsage($row['usage'])
                 ->setDeadline(new \DateTime($row['deadline']))
                 ->setCreatedOn(new \DateTime($row['created_on']))
-                ->setBasket($em->getPartialReference('Alchemy\Phrasea\Model\Entities\Basket', $row['ssel_id']));
+                ->setBasket($em->getPartialReference('Phraseanet:Basket', $row['ssel_id']));
 
             $em->persist($order);
 
@@ -118,7 +118,7 @@ class patch_390alpha1b implements patchInterface
                 $orderElement->setBaseId($element['base_id'])
                     ->setDeny($element['deny'] === null ? null : (Boolean) $element['deny'])
                     ->setOrder($order)
-                    ->setOrderMaster($em->getPartialReference('Alchemy\Phrasea\Model\Entities\User',$element['order_master_id']))
+                    ->setOrderMaster($em->getPartialReference('Phraseanet:User',$element['order_master_id']))
                     ->setRecordId($element['record_id']);
 
                 $order->addElement($orderElement);
