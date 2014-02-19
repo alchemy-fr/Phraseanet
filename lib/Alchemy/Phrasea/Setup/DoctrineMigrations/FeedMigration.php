@@ -29,7 +29,7 @@ class FeedMigration extends AbstractMigration
         }
 
         if ($backup) {
-            $this->getEntityManager()->executeQuery('RENAME TABLE `feeds` TO `feeds_backup`');
+            $this->getEntityManager()->getConnection()->executeQuery('RENAME TABLE `feeds` TO `feeds_backup`');
         }
 
         $this->addSql("CREATE TABLE IF NOT EXISTS Feeds (id INT AUTO_INCREMENT NOT NULL, public TINYINT(1) NOT NULL, icon_url TINYINT(1) NOT NULL, base_id INT DEFAULT NULL, title VARCHAR(128) NOT NULL, subtitle VARCHAR(1024) DEFAULT NULL, created_on DATETIME NOT NULL, updated_on DATETIME NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB");
