@@ -191,7 +191,7 @@ class AggregateToken extends \Alchemy\Phrasea\Model\Entities\AggregateToken impl
     /**
      * {@inheritDoc}
      */
-    public function setUser(\Alchemy\Phrasea\Model\Entities\User $user = NULL)
+    public function setUser(\Alchemy\Phrasea\Model\Entities\User $user)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', array($user));

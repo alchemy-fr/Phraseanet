@@ -64,10 +64,10 @@ class OrderElement extends \Alchemy\Phrasea\Model\Entities\OrderElement implemen
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'baseId', 'recordId', 'orderMasterId', 'deny', 'order');
+            return array('__isInitialized__', 'id', 'baseId', 'recordId', 'orderMaster', 'deny', 'order');
         }
 
-        return array('__isInitialized__', 'id', 'baseId', 'recordId', 'orderMasterId', 'deny', 'order');
+        return array('__isInitialized__', 'id', 'baseId', 'recordId', 'orderMaster', 'deny', 'order');
     }
 
     /**
@@ -191,34 +191,23 @@ class OrderElement extends \Alchemy\Phrasea\Model\Entities\OrderElement implemen
     /**
      * {@inheritDoc}
      */
-    public function setOrderMasterId($orderMasterId)
+    public function setOrderMaster(\Alchemy\Phrasea\Model\Entities\User $user = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOrderMasterId', array($orderMasterId));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOrderMaster', array($user));
 
-        return parent::setOrderMasterId($orderMasterId);
+        return parent::setOrderMaster($user);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getOrderMasterId()
+    public function getOrderMaster()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOrderMasterId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOrderMaster', array());
 
-        return parent::getOrderMasterId();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getOrderMasterName(\Alchemy\Phrasea\Application $app)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOrderMasterName', array($app));
-
-        return parent::getOrderMasterName($app);
+        return parent::getOrderMaster();
     }
 
     /**

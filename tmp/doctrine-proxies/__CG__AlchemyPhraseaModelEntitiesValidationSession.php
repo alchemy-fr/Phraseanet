@@ -64,10 +64,10 @@ class ValidationSession extends \Alchemy\Phrasea\Model\Entities\ValidationSessio
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'initiator_id', 'created', 'updated', 'expires', 'basket', 'participants');
+            return array('__isInitialized__', 'id', 'initiator', 'created', 'updated', 'expires', 'basket', 'participants');
         }
 
-        return array('__isInitialized__', 'id', 'initiator_id', 'created', 'updated', 'expires', 'basket', 'participants');
+        return array('__isInitialized__', 'id', 'initiator', 'created', 'updated', 'expires', 'basket', 'participants');
     }
 
     /**
@@ -191,39 +191,6 @@ class ValidationSession extends \Alchemy\Phrasea\Model\Entities\ValidationSessio
     /**
      * {@inheritDoc}
      */
-    public function setInitiatorId($initiatorId)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setInitiatorId', array($initiatorId));
-
-        return parent::setInitiatorId($initiatorId);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getInitiatorId()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getInitiatorId', array());
-
-        return parent::getInitiatorId();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function isInitiator(\Alchemy\Phrasea\Model\Entities\User $user)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isInitiator', array($user));
-
-        return parent::isInitiator($user);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function setInitiator(\Alchemy\Phrasea\Model\Entities\User $user)
     {
 
@@ -235,12 +202,23 @@ class ValidationSession extends \Alchemy\Phrasea\Model\Entities\ValidationSessio
     /**
      * {@inheritDoc}
      */
-    public function getInitiator(\Alchemy\Phrasea\Application $app)
+    public function getInitiator()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getInitiator', array($app));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getInitiator', array());
 
-        return parent::getInitiator($app);
+        return parent::getInitiator();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isInitiator(\Alchemy\Phrasea\Model\Entities\User $user)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isInitiator', array($user));
+
+        return parent::isInitiator($user);
     }
 
     /**
@@ -389,12 +367,12 @@ class ValidationSession extends \Alchemy\Phrasea\Model\Entities\ValidationSessio
     /**
      * {@inheritDoc}
      */
-    public function getParticipant(\Alchemy\Phrasea\Model\Entities\User $user, \Alchemy\Phrasea\Application $app)
+    public function getParticipant(\Alchemy\Phrasea\Model\Entities\User $user)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getParticipant', array($user, $app));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getParticipant', array($user));
 
-        return parent::getParticipant($user, $app);
+        return parent::getParticipant($user);
     }
 
 }

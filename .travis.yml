@@ -31,7 +31,7 @@ before_script:
   - sh -c "cd sphinx-2.0.6-release && wget http://snowball.tartarus.org/dist/libstemmer_c.tgz && tar xzf libstemmer_c.tgz && ./configure --with-libstemmer --with-iconv --with-mysql --enable-id64 --quiet && make -j --quiet && sudo make install"
   - sudo mkdir -p /var/sphinx/datas
   - sudo chmod -R 0777 /var/sphinx
-  - mysql -e 'create database ab_test;create database db_test; create database ab_unitTests; create database db_unitTests;'
+  - mysql -e 'create database update39_test;create database ab_test;create database db_test; create database ab_unitTests; create database db_unitTests;'
   - sudo mysql -e "GRANT ALL PRIVILEGES ON ab_unitTests.* TO 'phraseaUnitTests'@'localhost' IDENTIFIED BY 'iWvGxPE8' WITH GRANT OPTION"
   - sudo mysql -e "GRANT ALL PRIVILEGES ON db_unitTests.* TO 'phraseaUnitTests'@'localhost' IDENTIFIED BY 'iWvGxPE8' WITH GRANT OPTION"
   - mysql -e 'SET @@global.sql_mode= "";'

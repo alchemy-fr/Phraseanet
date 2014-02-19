@@ -191,7 +191,7 @@ class Order extends \Alchemy\Phrasea\Model\Entities\Order implements \Doctrine\O
     /**
      * {@inheritDoc}
      */
-    public function setUser(\Alchemy\Phrasea\Model\Entities\User $user = NULL)
+    public function setUser(\Alchemy\Phrasea\Model\Entities\User $user)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', array($user));

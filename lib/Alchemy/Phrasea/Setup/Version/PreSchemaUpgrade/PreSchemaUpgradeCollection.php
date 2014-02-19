@@ -21,9 +21,9 @@ class PreSchemaUpgradeCollection
     /** @var PreSchemaUpgradeInterface[] */
     private $upgrades = [];
 
-    public function __construct()
+    public function __construct(array $upgrades)
     {
-        $this->upgrades[] = new Upgrade39();
+        $this->upgrades = $upgrades;
     }
 
     /**
@@ -33,13 +33,32 @@ class PreSchemaUpgradeCollection
      */
     public function apply(Application $app)
     {
+        $applied = [];
+
         foreach ($this->upgrades as $upgrade) {
             if ($upgrade->isApplyable($app)) {
-                $upgrade->apply(
-                    $app['EM'],
-                    $app['phraseanet.appbox'],
-                    $app['doctrine-migration.configuration']
-                );
+                try {
+                    $upgrade->apply(
+                        $app['EM'],
+                        $app['phraseanet.appbox'],
+                        $app['doctrine-migration.configuration']
+                    );
+                    $applied[] = $upgrade;
+                } catch (\Exception $e) {
+                    $upgrade->rollback(
+                        $app['EM'],
+                        $app['phraseanet.appbox'],
+                        $app['doctrine-migration.configuration']
+                    );
+                    foreach (array_reverse($applied) as $done) {
+                        $done->rollback(
+                            $app['EM'],
+                            $app['phraseanet.appbox'],
+                            $app['doctrine-migration.configuration']
+                        );
+                    }
+                    throw $e;
+                }
             }
         }
     }

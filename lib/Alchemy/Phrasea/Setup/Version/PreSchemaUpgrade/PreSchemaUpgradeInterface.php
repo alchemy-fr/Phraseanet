@@ -33,6 +33,14 @@ interface PreSchemaUpgradeInterface
     public function apply(EntityManager $em, \appbox $appbox, Configuration $conf);
 
     /**
+     * Rollback migration to origin state.
+     *
+     * @param EntityManager $em
+     * @param Configuration $conf
+     */
+    public function rollback(EntityManager $em, \appbox $appbox, Configuration $conf);
+
+    /**
      * Returns true if the Upgrade is applyable.
      *
      * @param Application $app

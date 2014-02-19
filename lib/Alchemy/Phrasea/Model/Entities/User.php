@@ -36,9 +36,9 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class User
 {
-    const GENDER_MR = 'mr';
-    const GENDER_MRS = 'mrs';
-    const GENDER_MISS = 'miss';
+    const GENDER_MR = 2;
+    const GENDER_MRS = 1;
+    const GENDER_MISS = 0;
 
     const USER_GUEST = 'guest';
     const USER_AUTOREGISTER = 'autoregister';
@@ -86,7 +86,7 @@ class User
     private $lastName = '';
 
     /**
-     * @ORM\Column(type="string", length=8, nullable=true)
+     * @ORM\Column(type="smallint", nullable=true)
      */
     private $gender;
 
@@ -101,7 +101,7 @@ class User
     private $city = '';
 
     /**
-     * @ORM\Column(type="string", length=64)
+     * @ORM\Column(type="string", length=64, nullable=true)
      */
     private $country = '';
 
@@ -176,7 +176,7 @@ class User
     private $ldapCreated = false;
 
     /**
-     * @ORM\OneToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="last_model", referencedColumnName="id")
      **/
     private $lastModel;

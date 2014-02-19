@@ -345,12 +345,12 @@ class UsrList extends \Alchemy\Phrasea\Model\Entities\UsrList implements \Doctri
     /**
      * {@inheritDoc}
      */
-    public function has(\Alchemy\Phrasea\Model\Entities\User $user, \Alchemy\Phrasea\Application $app)
+    public function has(\Alchemy\Phrasea\Model\Entities\User $user)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'has', array($user, $app));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'has', array($user));
 
-        return parent::has($user, $app);
+        return parent::has($user);
     }
 
 }
