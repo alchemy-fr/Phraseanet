@@ -1511,7 +1511,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
 
-        $ret = self::$DI['app']['EM']->getRepository('\Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
+        $ret = self::$DI['app']['EM']->getRepository('Phraseanet:UsrAuthProvider')
             ->findBy(['user' => self::$DI['user']->getId(), 'provider' => 'provider-test']);
 
         $this->assertCount(1, $ret);
@@ -1582,7 +1582,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
 
-        $ret = self::$DI['app']['EM']->getRepository('\Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
+        $ret = self::$DI['app']['EM']->getRepository('Phraseanet:UsrAuthProvider')
             ->findBy(['user' => $user->getId(), 'provider' => 'provider-test']);
 
         $this->assertCount(1, $ret);

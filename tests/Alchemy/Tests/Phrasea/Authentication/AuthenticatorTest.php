@@ -219,7 +219,7 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $app['EM'] = $em = $this->getEntityManagerMock();
 
         $app['EM']->expects($this->any())->method('find')->with(
-            $this->equalTo('Alchemy\Phrasea\Model\Entities\Session'),
+            $this->equalTo('Phraseanet:Session'),
             $this->equalTo(1)
         )->will($this->returnValue($sessionEntity));
 
