@@ -9,11 +9,58 @@
   - Convert Ftp Export custom adapter to Doctrine entity.
   - Session management is now part of Phraseanet configuration.
 
-* 3.8.2 (2013-11-15)
+## 3.8.3 (2014-xx-xx)
+
+  - BugFix : Fix scheduler timeout.
+  - BugFix : Fix thesaurus tab javascript errors.
+  - BugFix : Fix IE slow script error messages.
+  - BugFix : Fix basket records sorting.
+  - BugFix : Fix admin field editing on a field delete.
+  - BugFix : Fix HTTP 400 on email test.
+  - BugFix : Fix records export names.
+  - BugFix : Fix collection rights injection on create.
+  - BugFix : Fix disconnection of removed users.
+  - BugFix : Fix language selection on mobile devices.
+  - BugFix : Fix collection and databox popups in admin views.
+  - BugFix : Fix suggested values editing on Firefox.
+  - BugFix : Fix lightbox that could not be load in case some validation have been removed.
+  - BugFix : Fix user settings precedence.
+  - BugFix : Fix user search by last applied template.
+  - BugFix : Fix thesaurus highlight.
+  - BugFix : Fix collection sorting.
+  - BugFix : Fix FTP test messages.
+  - BugFix : Fix video width and height extraction.
+  - BugFix : Fix caption sanitization.
+  - BugFix : Fix report locales.
+  - BugFix : Fix FTP receiver email reception.
+  - BugFix : Fix user registration management display.
+  - BugFix : Fix report icons.
+  - BugFix : Fix report pagination.
+  - BugFix : Fix Phrasea SearchEngine cache duration.
+  - BugFix : Fix basket caption display.
+  - BugFix : Fix collection mount.
+  - BugFix : Fix password grant authorization in API.
+  - BugFix : Fix video display on mobile devices.
+  - BugFix : Fix record mover task.
+  - BugFix : Fix bug on edit presets load.
+  - BugFix : Fix detailed view access by guests users.
+  - Enhancement : Add datepicker input placeholder.
+  - Enhancement : Add support for portrait videos.
+  - Enhancement : Display terms of use in a new window.
+  - Enhancement : Increase tasks memory limit.
+  - Enhancement : Add an option to reset advanced search on production reload.
+  - Enhancement : Update task manager log messages.
+  - Enhancement : Update to Symfony 2.3.9.
+  - Enhancement : Add plugins:list command.
+  - Enhancement : Images and Videos are not interpolated anymore.
+  - Enhancement : Add option to disable filesystem logs.
+  - Enhancement : Add compatibility with PHP 5.6.
+
+## 3.8.2 (2013-11-15)
 
   - BugFix : Locale translation may block administration module load.
 
-* 3.8.1 (2013-11-15)
+## 3.8.1 (2013-11-15)
 
   - BugFix : IE 6 homepage error message is broken.
   - BugFix : Databox fields administration is broken on firefox.
@@ -59,7 +106,7 @@
   - Enhancement : Add Phraseanet twig namespace.
   - Enhancement : Allow video bitrate up to 12M.
 
-* 3.8.0 (2013-09-26)
+## 3.8.0 (2013-09-26)
 
   - BC Break : Removed `bin/console check:system` command, replaced by `bin/setup check:system`.
   - BC Break : Removed `bin/console system:upgrade` command, replaced by `bin/setup system:upgrade`.
@@ -102,128 +149,128 @@
         host configuration depending on Phraseanet configuration
   - Phraseanet enabled languages is now configurable.
 
-* 3.7.15 (2013-09-14)
+## 3.7.15 (2013-09-14)
 
   - Add Office Plugin client id and secret.
 
-* 3.7.14 (2013-07-23)
+## 3.7.14 (2013-07-23)
 
   - BugFix : Multi layered images are not rendered properly.
   - BugFix : Status editing can be accessed on some records by users that are not granted.
   - BugFix : Records index is not updated after databox structure field rename.
   - Enhancement : Add support for grayscale colorspaces.
 
-* 3.7.13 (2013-07-04)
+## 3.7.13 (2013-07-04)
 
   - Some users were able to access story creation form whereas they were not allowed to.
   - Disable detailed view keyboard shortcuts when export modal is open.
   - Update to PHP-FFMpeg 0.2.4, better support for video resizing.
   - BugFix : Unablt to reject a thesaurus term from thesaurus module.
 
-* 3.7.12 (2013-05-13)
+## 3.7.12 (2013-05-13)
 
-  - Fix : Removed "required" attribute on non-required fields in order form.
-  - Fix : Fix advanced search dialog CSS.
-  - Fix : Grouped status bits are not displayed in advanced search dialog.
+  - BugFix : : Removed "required" attribute on non-required fields in order form.
+  - BugFix : : Fix advanced search dialog CSS.
+  - BugFix : : Grouped status bits are not displayed in advanced search dialog.
   - Enhancement : Locales update.
 
-* 3.7.11 (2013-04-23)
+## 3.7.11 (2013-04-23)
 
   - Enhancement : Animated Gifs (video support) does not requir Gmagick anymore to work properly.
-  - Fix : When importing users from CSV file, some properties were missing.
-  - Fix : In Report, CSV export is limited to 30 lines.
+  - BugFix : : When importing users from CSV file, some properties were missing.
+  - BugFix : : In Report, CSV export is limited to 30 lines.
 
-* 3.7.10 (2013-04-03)
+## 3.7.10 (2013-04-03)
 
-  - Fix : Permalinks pages may be broken.
-  - Fix : Permalinks always expose the file extension of the original document.
-  - Fix : Thesaurus multi-bases queries may return incorrect proposals.
-  - Fix : Phraseanet installation fails.
-  - Fix : Consecutive calls to image tools may fail.
+  - BugFix : : Permalinks pages may be broken.
+  - BugFix : : Permalinks always expose the file extension of the original document.
+  - BugFix : : Thesaurus multi-bases queries may return incorrect proposals.
+  - BugFix : : Phraseanet installation fails.
+  - BugFix : : Consecutive calls to image tools may fail.
 
-* 3.7.9 (2013-03-27)
+## 3.7.9 (2013-03-27)
 
-  - Fix : Detailed view does not display the right search result.
-  - Fix : Twitter and Facebook share are available even if it's disabled in system settings.
+  - BugFix : : Detailed view does not display the right search result.
+  - BugFix : : Twitter and Facebook share are available even if it's disabled in system settings.
   - Add timers in API.
   - Permalinks now expose a filename.
   - Permalinks returned by the API now embed a download URL.
   - Bump to API version 1.3.1 (see https://docs.phraseanet.com/3.7/en/Devel/API/Changelog.html).
 
-* 3.7.8 (2013-03-22)
+## 3.7.8 (2013-03-22)
 
-  - Fix : Phraseanet API does not return results at correct offset.
-  - Fix : Manual thumbnail extraction for videos returns images with anamorphosis.
-  - Fix : Rollover images have light anamorphosis.
-  - Fix : Document and sub-definitions substitution may not work properly.
+  - BugFix : : Phraseanet API does not return results at correct offset.
+  - BugFix : : Manual thumbnail extraction for videos returns images with anamorphosis.
+  - BugFix : : Rollover images have light anamorphosis.
+  - BugFix : : Document and sub-definitions substitution may not work properly.
   - Add preview and caption to order manager.
   - Add support for CMYK images.
   - Preserve ICC profiles data in sub-definitions.
 
-* 3.7.7 (2013-03-08)
+## 3.7.7 (2013-03-08)
 
-  - Fix : Archive task fails with stories.
+  - BugFix : : Archive task fails with stories.
   - Update of dutch locales.
-  - Fix : Fix feeds entry notification display.
-  - Fix : Read receipts are not associated to email for push and validation.
+  - BugFix : : Fix feeds entry notification display.
+  - BugFix : : Read receipts are not associated to email for push and validation.
 
-* 3.7.6 (2013-02-01)
+## 3.7.6 (2013-02-01)
 
-  - Fix : Load of a publication entry with a publisher that refers to a deleted users fails.
-  - Fix : Wrong ACL check for displaying feeds in Lightbox (thumbnails are displayed instead of preview).
+  - BugFix : : Load of a publication entry with a publisher that refers to a deleted users fails.
+  - BugFix : : Wrong ACL check for displaying feeds in Lightbox (thumbnails are displayed instead of preview).
   - Releasing a validation feedback now requires at least one agreement.
-  - Fix : Lightbox zoom fails when image is larger than container.
-  - Fix : Landscape format images are displayed with a wrong ratio in quarantine.
+  - BugFix : : Lightbox zoom fails when image is larger than container.
+  - BugFix : : Landscape format images are displayed with a wrong ratio in quarantine.
   - General enhancement of Lightbox display on IE 7/8/9.
 
-* 3.7.5 (2013-01-09)
+## 3.7.5 (2013-01-09)
 
   - Support of Dailymotion latest API.
-  - Fix : Bridge application creation is not possible after having upload a file.
+  - BugFix : : Bridge application creation is not possible after having upload a file.
   - Upload speed is now in octet (previously in bytes).
   - Upload is de-activated when no data box is mounted.
-  - Fix : Lightbox display is broken on IE 7/8.
-  - Fix : Collection setup via console throws an exception.
-  - Fix : Metadata extraction via Dublin Core mapping returns broken data.
-  - Fix : Minilogos with a size less than 24px are resized.
-  - Fix : Watermark custom files are not handled correctly.
-  - Fix : XML import to metadata fields that do not have proper source do not work correctly.
-  - Fix : Databox unmount can provide 500's to users that have attached stories to their work zone.
+  - BugFix : : Lightbox display is broken on IE 7/8.
+  - BugFix : : Collection setup via console throws an exception.
+  - BugFix : : Metadata extraction via Dublin Core mapping returns broken data.
+  - BugFix : : Minilogos with a size less than 24px are resized.
+  - BugFix : : Watermark custom files are not handled correctly.
+  - BugFix : : XML import to metadata fields that do not have proper source do not work correctly.
+  - BugFix : : Databox unmount can provide 500's to users that have attached stories to their work zone.
 
-* 3.7.4 (2012-12-20)
+## 3.7.4 (2012-12-20)
 
-  - Fix : Upgrade from 3.5 may lose metadatas.
-  - Fix : Selection of a metadata source do not behave correctly.
-  - Fix : Remember collections selection on production reload.
-  - Fix : Manually renew a developer token fails.
-  - Fix : Terms Of Use template displays HTML entitites.
+  - BugFix : : Upgrade from 3.5 may lose metadatas.
+  - BugFix : : Selection of a metadata source do not behave correctly.
+  - BugFix : : Remember collections selection on production reload.
+  - BugFix : : Manually renew a developer token fails.
+  - BugFix : : Terms Of Use template displays HTML entitites.
   - Replace javascript alert by Phraseanet dialog box in export dialog box.
   - Video subdef GOP option has now 300 as max value with steps of 10.
-  - Fix : Some subdef options are not saved correctly (audio samplerate, GOP).
+  - BugFix : : Some subdef options are not saved correctly (audio samplerate, GOP).
   - Support for multi-layered tiff.
-  - Fix : Long collection names are not displayed correctly.
-  - Fix : Document permalinks were not correctly supported.
-  - Fix : Export name containing non ASCII are now escaped.
+  - BugFix : : Long collection names are not displayed correctly.
+  - BugFix : : Document permalinks were not correctly supported.
+  - BugFix : : Export name containing non ASCII are now escaped.
   - Default structure now have a the thumbtitle attribute correctly set up.
   - Chrome mobile User Agent is now supported.
-  - Fix : Remove minilogos do not work.
-  - Fix : Send orders do not triggers notifications.
-  - Fix : Story thumbnails are not displayed correctly.
-  - Fix : Add dutch (nl_NL) support.
+  - BugFix : : Remove minilogos do not work.
+  - BugFix : : Send orders do not triggers notifications.
+  - BugFix : : Story thumbnails are not displayed correctly.
+  - BugFix : : Add dutch (nl_NL) support.
 
-* 3.7.3 (2012-11-09)
+## 3.7.3 (2012-11-09)
 
-  - Fix : Security flaw (thanks TEHTRI-Security http://www.tehtri-security.com/).
-  - Fix : Thesaurus issue when a term contains HTML entity.
-  - Fix : Video width and height are now multiple of 16.
-  - Fix : Download over HTTPS on IE 6 fails.
-  - Fix : Permalinks that embeds PDF are broken.
-  - Fix : Lightbox shows record preview at load even if the user does not have the right to access it.
-  - Fix : Reminders that have been sent to validation participants are not saved.
-  - Fix : IE 6 is now correctly handled in Classic module.
-  - Fix : Download of a basket with a title containing a slash ('/') fails.
-  - Fix : Add check on posix extension alongside pcntl extension.
-  - Fix : Some process may fail with pcntl extension.
+  - BugFix : : Security flaw (thanks TEHTRI-Security http://www.tehtri-security.com/).
+  - BugFix : : Thesaurus issue when a term contains HTML entity.
+  - BugFix : : Video width and height are now multiple of 16.
+  - BugFix : : Download over HTTPS on IE 6 fails.
+  - BugFix : : Permalinks that embeds PDF are broken.
+  - BugFix : : Lightbox shows record preview at load even if the user does not have the right to access it.
+  - BugFix : : Reminders that have been sent to validation participants are not saved.
+  - BugFix : : IE 6 is now correctly handled in Classic module.
+  - BugFix : : Download of a basket with a title containing a slash ('/') fails.
+  - BugFix : : Add check on posix extension alongside pcntl extension.
+  - BugFix : : Some process may fail with pcntl extension.
   - File-info mime-type guesser is deprecated in favor of binary mime-type guesser.
   - Add an option to force Terms of Use re-validation for each export.
   - Move binary configuration to config file (config/binaries.yml).
@@ -238,25 +285,25 @@
   - Mails links are now clickable in Thunderbird and Outlook.
   - Emails list in mail export now supports comma and space separators.
 
-* 3.7.2 (2012-10-04)
+## 3.7.2 (2012-10-04)
 
   - Significant speed enhancement on thumbnail display.
   - Add a purge option to quarantine.
-  - Fix ascending date sort in search results.
+  - BugFix : ascending date sort in search results.
   - Multiple thesaurus fixes on IE.
-  - Fix description field source selection.
+  - BugFix : description field source selection.
   - Add option to rotate multiple image.
   - `Remember-me` was applied even if the box was not checked.
 
-* 3.7.1 (2012-09-18)
+## 3.7.1 (2012-09-18)
 
   - Multiple fixes in archive task.
   - Add options -f and -y to upgrade command.
   - Add a Flash fallback for browser that does not support HTML5 file API.
-  - Fix upgrade from version 3.1 and 3.5.
-  - Fix : Print tool is not working on IE version 8 and less over HTTPS.
+  - BugFix : upgrade from version 3.1 and 3.5.
+  - BugFix : : Print tool is not working on IE version 8 and less over HTTPS.
 
-* 3.7.0 (2012-07-24)
+## 3.7.0 (2012-07-24)
 
   - Lots of graphics enhancements.
   - Windows Server 2008 support.
@@ -267,39 +314,39 @@
   - Upgrade of the Phraseanet API to version 1.2 (see https://docs.phraseanet.com/3.7/en/Devel/API/Changelog.html#id1).
   - Phraseanet PHP SDK http://phraseanet-php-sdk.readthedocs.org/.
 
-* 3.6.5 (2012-05-11)
+## 3.6.5 (2012-05-11)
 
-  - Fix : Bridge buttons are not visible on some browsers.
+  - BugFix : : Bridge buttons are not visible on some browsers.
   - Youtube and Dailymotion APIs updates.
   - Stories can now be deleted from the work zone.
   - Push and validation logs were missing.
 
-* 3.6.4 (2012-04-30)
+## 3.6.4 (2012-04-30)
 
-  - Fix DatePicker menus do not format date correctly.
-  - Fix Dead records can remain in orders and may broke order window.
+  - BugFix : DatePicker menus do not format date correctly.
+  - BugFix : Dead records can remain in orders and may broke order window.
 
-* 3.6.3 (2012-04-26)
+## 3.6.3 (2012-04-26)
 
-  - Fix selection in webkit based browers.
+  - BugFix : selection in webkit based browers.
 
-* 3.6.2 (2012-04-19)
+## 3.6.2 (2012-04-19)
 
-  - Fix : Users can be created by some pushers.
-  - Fix : Collection owner can not disable watermark.
-  - Fix : Basket element reorder issues.
-  - Fix : Multiple order managers can not be added.
-  - Fix : Basket editing can fail.
+  - BugFix : : Users can be created by some pushers.
+  - BugFix : : Collection owner can not disable watermark.
+  - BugFix : : Basket element reorder issues.
+  - BugFix : : Multiple order managers can not be added.
+  - BugFix : : Basket editing can fail.
   - Remove original file extension for downloaded files.
   - Template is not applied when importing users from a file.
   - Document + XML hot folder import produces corrupted files.
   - Enhanced Push list view on small device.
 
-* 3.6.1 (2012-03-27)
+## 3.6.1 (2012-03-27)
 
-  - Fix upgrade from 3.5 versions with large datasets.
+  - BugFix : upgrade from 3.5 versions with large datasets.
 
-* 3.6.0 (2012-03-20)
+## 3.6.0 (2012-03-20)
 
   - Add a Vocabulary mapping to multivalued fields.
   - Redesign of Push and Feedback.
