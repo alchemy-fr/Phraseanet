@@ -12,7 +12,6 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\FtpExport;
 use Alchemy\Phrasea\Model\Entities\FtpExportElement;
-use Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade\Upgrade39;
 use Gedmo\Timestampable\TimestampableListener;
 use Doctrine\ORM\NoResultException;
 

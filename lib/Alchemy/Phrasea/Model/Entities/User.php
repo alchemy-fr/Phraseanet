@@ -16,7 +16,6 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @ORM\Table(name="Users",

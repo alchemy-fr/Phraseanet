@@ -282,7 +282,7 @@ class Upgrade39 implements PreSchemaUpgradeInterface
         if (count($users) > 0) {
             $table = new TableHelper();
             $table
-                ->setHeaders(array('id', 'login', 'email'))
+                ->setHeaders(['id', 'login', 'email'])
                 ->setRows($users);
 
             throw new RuntimeException("Some users could not be migrated \n" . $table->render(new ConsoleOutput()));

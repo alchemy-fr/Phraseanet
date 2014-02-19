@@ -12,7 +12,6 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
-use Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade\Upgrade39;
 use Gedmo\Timestampable\TimestampableListener;
 
 class patch_390alpha1b implements patchInterface

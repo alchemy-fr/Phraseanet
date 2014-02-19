@@ -12,7 +12,6 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
-use Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade\Upgrade39;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use MediaAlchemyst\Specification\Image as ImageSpec;
 

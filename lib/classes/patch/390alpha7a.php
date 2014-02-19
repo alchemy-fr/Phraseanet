@@ -16,7 +16,6 @@ use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Alchemy\Phrasea\Model\Entities\FeedToken;
-use Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade\Upgrade39;
 use Doctrine\ORM\Query\ResultSetMapping;
 
 class patch_390alpha7a implements patchInterface

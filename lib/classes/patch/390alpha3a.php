@@ -11,7 +11,6 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\UserQuery;
-use Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade\Upgrade39;
 
 class patch_390alpha3a implements patchInterface
 {
