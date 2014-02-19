@@ -3,6 +3,7 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * LazaretFileRepository
@@ -12,12 +13,11 @@ use Doctrine\ORM\EntityRepository;
  */
 class LazaretFileRepository extends EntityRepository
 {
-
     public function findPerPage(array $base_ids, $offset = 0, $perPage = 10)
     {
         $base_ids = implode(', ', array_map(function ($int) {
-                    return (int) $int;
-                }, $base_ids));
+            return (int) $int;
+        }, $base_ids));
 
         $dql = '
             SELECT f
@@ -29,8 +29,6 @@ class LazaretFileRepository extends EntityRepository
         $query->setFirstResult($offset)
             ->setMaxResults($perPage);
 
-        $paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($query, true);
-
-        return $paginator;
+        return new Paginator($query, true);
     }
 }

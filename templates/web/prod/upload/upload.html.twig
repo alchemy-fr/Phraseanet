@@ -10,7 +10,7 @@
             </li>
             <li>
                 {# template prod/upload/lazaret.html.twig loaded via ajax #}
-                <a href="{{ path('lazaret_elements') }}">
+                <a class="lazaret-target" href="{{ path('lazaret_elements') }}">
                     {# <span>&nbsp;</span> element is required for the jQuery loading spinner appears && disappears properly #}
                     {% trans 'Quarantine' %}<span>&nbsp;</span>
                 </a>
@@ -174,11 +174,18 @@ $(document).ready(function () {
                 $( anchor.hash ).html(language.error);
             });
 
-            ui.tab.find('span').html(language.loading + '<img src="/skins/icons/loader404040.gif"/>');
+            ui.tab.find('span').html(' <img src="/skins/icons/loader404040.gif"/>');
         },
         load: function(event, ui)
         {
           ui.tab.find('span').empty();
+          $('.btn.page-lazaret', UploaderManager.getContainer()).bind('click', function () {
+              $('.lazaret-target').attr('href', $('a', $(this)).attr('href'));
+              $(".upload-tabs", UploaderManager.getContainer()).tabs('load', 1);
+              $('#lazaretBox').empty();
+
+              return false;
+          });
         },
         create : function () {
             $('#tab-upload').css('overflow', 'hidden');
@@ -488,3 +495,8 @@ $(document).ready(function () {
     });
 });
 </script>
+<style>
+    .btn.page-lazaret a {
+        color: black;
+    }
+</style>
