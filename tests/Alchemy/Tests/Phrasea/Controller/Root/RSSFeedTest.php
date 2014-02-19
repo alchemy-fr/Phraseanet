@@ -14,7 +14,7 @@ class RSSFeedTest extends \PhraseanetWebTestCase
 {
     public function testPublicFeedAggregated()
     {
-        self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 2);
+        self::$DI['app']['EM']->find('Phraseanet:Feed', 2);
 
         self::$DI['client']->request('GET', '/feeds/aggregated/atom/');
         $response = self::$DI['client']->getResponse();
@@ -59,7 +59,7 @@ class RSSFeedTest extends \PhraseanetWebTestCase
     public function testPublicFeed()
     {
         $this->authenticate(self::$DI['app']);
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 2);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 2);
 
         self::$DI['client']->request('GET', "/feeds/feed/" . $feed->getId() . "/atom/");
         $response = self::$DI['client']->getResponse();
@@ -72,7 +72,7 @@ class RSSFeedTest extends \PhraseanetWebTestCase
 
     public function testUserFeedAggregated()
     {
-        $token = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\AggregateToken', 1);
+        $token = self::$DI['app']['EM']->find('Phraseanet:AggregateToken', 1);
         $tokenValue = $token->getValue();
 
         $this->logout(self::$DI['app']);
@@ -88,7 +88,7 @@ class RSSFeedTest extends \PhraseanetWebTestCase
 
     public function testUserFeed()
     {
-        $token = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\FeedToken', 1);
+        $token = self::$DI['app']['EM']->find('Phraseanet:FeedToken', 1);
         $tokenValue = $token->getValue();
         $this->logout(self::$DI['app']);
 
@@ -103,7 +103,7 @@ class RSSFeedTest extends \PhraseanetWebTestCase
 
     public function testGetFeedFormat()
     {
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 2);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 2);
         self::$DI['client']->request("GET", "/feeds/feed/" . $feed->getId() . "/rss/");
 
         $this->assertEquals("application/rss+xml", self::$DI['client']->getResponse()->headers->get("content-type"));
@@ -121,7 +121,7 @@ class RSSFeedTest extends \PhraseanetWebTestCase
 
     public function testCooliris()
     {
-        self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 2);
+        self::$DI['app']['EM']->find('Phraseanet:Feed', 2);
 
         self::$DI['client']->request("GET", "/feeds/cooliris/");
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
@@ -132,7 +132,7 @@ class RSSFeedTest extends \PhraseanetWebTestCase
 
     public function testAggregatedRss()
     {
-        $all_feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(['public' => true], ['updatedOn' => 'DESC']);
+        $all_feeds = self::$DI['app']['EM']->getRepository('Phraseanet:Feed')->findBy(['public' => true], ['updatedOn' => 'DESC']);
 
         foreach ($all_feeds as $feed) {
             $this->assertTrue($feed->isPublic());
@@ -146,7 +146,7 @@ class RSSFeedTest extends \PhraseanetWebTestCase
 
     public function testAggregatedAtom()
     {
-        $all_feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(['public' => true], ['updatedOn' => 'DESC']);
+        $all_feeds = self::$DI['app']['EM']->getRepository('Phraseanet:Feed')->findBy(['public' => true], ['updatedOn' => 'DESC']);
 
         foreach ($all_feeds as $feed) {
             $this->assertTrue($feed->isPublic());
@@ -173,7 +173,7 @@ class RSSFeedTest extends \PhraseanetWebTestCase
 
     public function testGetFeedId()
     {
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 2);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 2);
 
         self::$DI['client']->request("GET", "/feeds/feed/" . $feed->getId() . "/rss/");
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
@@ -189,7 +189,7 @@ class RSSFeedTest extends \PhraseanetWebTestCase
 
     public function testPrivateFeedAccess()
     {
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
         self::$DI['client']->request("GET", "/feeds/feed/" . $feed->getId() . "/rss/");
         $this->assertFalse(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals(403, self::$DI['client']->getResponse()->getStatusCode());

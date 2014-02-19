@@ -30,7 +30,7 @@ class BasketRepository extends EntityRepository
     public function findActiveByUser(\User_Adapter $user, $sort = null)
     {
         $dql = 'SELECT b
-            FROM Alchemy\Phrasea\Model\Entities\Basket b
+            FROM Phraseanet:Basket b
             LEFT JOIN b.elements e
             WHERE b.usr_id = :usr_id
             AND b.archived = false';
@@ -56,7 +56,7 @@ class BasketRepository extends EntityRepository
     public function findUnreadActiveByUser(\User_Adapter $user)
     {
         $dql = 'SELECT b
-            FROM Alchemy\Phrasea\Model\Entities\Basket b
+            FROM Phraseanet:Basket b
             JOIN b.elements e
             LEFT JOIN b.validation s
             LEFT JOIN s.participants p
@@ -91,7 +91,7 @@ class BasketRepository extends EntityRepository
     public function findActiveValidationByUser(\User_Adapter $user, $sort = null)
     {
         $dql = 'SELECT b
-            FROM Alchemy\Phrasea\Model\Entities\Basket b
+            FROM Phraseanet:Basket b
             JOIN b.elements e
             JOIN e.validation_datas v
             JOIN b.validation s
@@ -115,7 +115,7 @@ class BasketRepository extends EntityRepository
     {
 
         $dql = 'SELECT b
-            FROM Alchemy\Phrasea\Model\Entities\Basket b
+            FROM Phraseanet:Basket b
             JOIN b.elements e
             WHERE e.record_id = :record_id AND e.sbas_id = e.sbas_id
               AND b.usr_id = :usr_id';
@@ -138,7 +138,7 @@ class BasketRepository extends EntityRepository
         switch ($type) {
             case self::RECEIVED:
                 $dql = 'SELECT b
-                FROM Alchemy\Phrasea\Model\Entities\Basket b
+                FROM Phraseanet:Basket b
                 JOIN b.elements e
                 WHERE b.usr_id = :usr_id AND b.pusher_id IS NOT NULL';
                 $params = [
@@ -147,7 +147,7 @@ class BasketRepository extends EntityRepository
                 break;
             case self::VALIDATION_DONE:
                 $dql = 'SELECT b
-                FROM Alchemy\Phrasea\Model\Entities\Basket b
+                FROM Phraseanet:Basket b
                 JOIN b.elements e
                 JOIN b.validation s
                 JOIN s.participants p
@@ -159,7 +159,7 @@ class BasketRepository extends EntityRepository
                 break;
             case self::VALIDATION_SENT:
                 $dql = 'SELECT b
-                FROM Alchemy\Phrasea\Model\Entities\Basket b
+                FROM Phraseanet:Basket b
                 JOIN b.elements e
                 JOIN b.validation v
                 WHERE b.usr_id = :usr_id';
@@ -169,7 +169,7 @@ class BasketRepository extends EntityRepository
                 break;
             default:
                 $dql = 'SELECT b
-                FROM Alchemy\Phrasea\Model\Entities\Basket b
+                FROM Phraseanet:Basket b
                 LEFT JOIN b.elements e
                 LEFT JOIN b.validation s
                 LEFT JOIN s.participants p
@@ -181,7 +181,7 @@ class BasketRepository extends EntityRepository
                 break;
             case self::MYBASKETS:
                 $dql = 'SELECT b
-                FROM Alchemy\Phrasea\Model\Entities\Basket b
+                FROM Phraseanet:Basket b
                 LEFT JOIN b.elements e
                 LEFT JOIN b.validation s
                 LEFT JOIN s.participants p
@@ -228,7 +228,7 @@ class BasketRepository extends EntityRepository
     public function findActiveValidationAndBasketByUser(\User_Adapter $user, $sort = null)
     {
         $dql = 'SELECT b
-            FROM Alchemy\Phrasea\Model\Entities\Basket b
+            FROM Phraseanet:Basket b
             LEFT JOIN b.elements e
             LEFT JOIN b.validation s
             LEFT JOIN s.participants p

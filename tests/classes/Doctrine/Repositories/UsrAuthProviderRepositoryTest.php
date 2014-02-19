@@ -6,14 +6,14 @@ class UsrAuthProviderRepositoryTest extends \PhraseanetTestCase
 {
     public function testFindWithProviderAndIdIsNullWhenNotFound()
     {
-        $repo = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider');
+        $repo = self::$DI['app']['EM']->getRepository('Phraseanet:UsrAuthProvider');
 
         $this->assertNull($repo->findWithProviderAndId('provider-test', 12345));
     }
 
     public function testFindWithProviderAndIdReturnsOneResultWhenFound()
     {
-        $repo = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider');
+        $repo = self::$DI['app']['EM']->getRepository('Phraseanet:UsrAuthProvider');
 
         $auth = new UsrAuthProvider();
         $auth->setUsrId(42);

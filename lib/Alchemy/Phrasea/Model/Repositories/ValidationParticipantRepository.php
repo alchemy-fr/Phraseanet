@@ -27,7 +27,7 @@ class ValidationParticipantRepository extends EntityRepository
     {
         $dql = '
             SELECT p, s
-            FROM Alchemy\Phrasea\Model\Entities\ValidationParticipant p
+            FROM Phraseanet:ValidationParticipant p
             JOIN p.session s
             JOIN s.basket b
             WHERE p.is_confirmed = 0

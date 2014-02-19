@@ -31,7 +31,7 @@ class BasketConverter implements ConverterInterface
      */
     public function convert($id)
     {
-        if (null === $basket = $this->om->find('Alchemy\Phrasea\Model\Entities\Basket', (int) $id)) {
+        if (null === $basket = $this->om->find('Phraseanet:Basket', (int) $id)) {
             throw new NotFoundHttpException(sprintf('Basket %s not found.', $id));
         }
 

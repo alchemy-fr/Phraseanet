@@ -52,7 +52,7 @@ class Login implements ControllerProviderInterface
     {
         $items = [];
 
-        foreach ($app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedItem')->loadLatest($app, 20) as $item) {
+        foreach ($app['EM']->getRepository('Phraseanet:FeedItem')->loadLatest($app, 20) as $item) {
             $record = $item->getRecord($app);
             $preview = $record->get_subdef('preview');
             $permalink = $preview->get_permalink();
@@ -304,7 +304,7 @@ class Login implements ControllerProviderInterface
                 }
 
                 $userAuthProvider = $app['EM']
-                    ->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
+                    ->getRepository('Phraseanet:UsrAuthProvider')
                     ->findWithProviderAndId($token->getProvider()->getId(), $token->getId());
 
                 if (null !== $userAuthProvider) {
@@ -762,7 +762,7 @@ class Login implements ControllerProviderInterface
             $app->addFlash('error', $app->trans('login::erreur: No available connection - Please contact sys-admin'));
         }
 
-        $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(['public' => true], ['updatedOn' => 'DESC']);
+        $feeds = $app['EM']->getRepository('Phraseanet:Feed')->findBy(['public' => true], ['updatedOn' => 'DESC']);
 
         $form = $app->form(new PhraseaAuthenticationForm());
         $form->setData([
@@ -854,7 +854,7 @@ class Login implements ControllerProviderInterface
         $date = new \DateTime('+' . (int) $app['conf']->get(['registry', 'actions', 'validation-reminder-days']) . ' days');
 
         foreach ($app['EM']
-            ->getRepository('Alchemy\Phrasea\Model\Entities\ValidationParticipant')
+            ->getRepository('Phraseanet:ValidationParticipant')
             ->findNotConfirmedAndNotRemindedParticipantsByExpireDate($date) as $participant) {
 
             /* @var $participant ValidationParticipant */
@@ -927,7 +927,7 @@ class Login implements ControllerProviderInterface
         }
 
         $userAuthProvider = $app['EM']
-            ->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
+            ->getRepository('Phraseanet:UsrAuthProvider')
             ->findWithProviderAndId($token->getProvider()->getId(), $token->getId());
 
         if (null !== $userAuthProvider) {
@@ -1058,7 +1058,7 @@ class Login implements ControllerProviderInterface
             if (!$user->is_guest() && $request->cookies->has('invite-usr_id')) {
                 if ($user->get_id() != $inviteUsrId = $request->cookies->get('invite-usr_id')) {
 
-                    $repo = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
+                    $repo = $app['EM']->getRepository('Phraseanet:Basket');
                     $baskets = $repo->findBy(['usr_id' => $inviteUsrId]);
 
                     foreach ($baskets as $basket) {

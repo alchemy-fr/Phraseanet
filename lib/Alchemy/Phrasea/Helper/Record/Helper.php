@@ -116,7 +116,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
             $this->is_basket = true;
             $this->original_basket = $Basket;
         } elseif (trim($Request->get('story')) !== '') {
-            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\StoryWZ');
+            $repository = $app['EM']->getRepository('Phraseanet:StoryWZ');
 
             $storyWZ = $repository->findByUserAndId($app, $app['authentication']->getUser(), $Request->get('story'));
 

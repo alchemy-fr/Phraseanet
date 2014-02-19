@@ -117,7 +117,7 @@ class Permalink extends AbstractDelivery
 
     private function retrieveRecord($app, $databox, $token, $record_id, $subdef)
     {
-        if (in_array($subdef, [\databox_subdef::CLASS_PREVIEW, \databox_subdef::CLASS_THUMBNAIL]) && $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedItem')->isRecordInPublicFeed($app, $databox->get_sbas_id(), $record_id)) {
+        if (in_array($subdef, [\databox_subdef::CLASS_PREVIEW, \databox_subdef::CLASS_THUMBNAIL]) && $app['EM']->getRepository('Phraseanet:FeedItem')->isRecordInPublicFeed($app, $databox->get_sbas_id(), $record_id)) {
             $record = $databox->get_record($record_id);
         } else {
             $record = \media_Permalink_Adapter::challenge_token($app, $databox, $token, $record_id, $subdef);
@@ -159,7 +159,7 @@ class Permalink extends AbstractDelivery
             $watermark = !$app['acl']->get($user)->has_right_on_base($record->get_base_id(), 'nowatermark');
 
             if ($watermark) {
-                $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
+                $repository = $app['EM']->getRepository('Phraseanet:BasketElement');
 
                 if (count($repository->findReceivedValidationElementsByRecord($record, $user)) > 0) {
                     $watermark = false;

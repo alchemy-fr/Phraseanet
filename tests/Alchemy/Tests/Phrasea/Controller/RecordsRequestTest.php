@@ -158,7 +158,7 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
 
     public function testSimpleBasket()
     {
-        $basketElement = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\BasketElement', 1);
+        $basketElement = self::$DI['app']['EM']->find('Phraseanet:BasketElement', 1);
         $request = new Request(['ssel' => $basketElement->getBasket()->getId()]);
 
         $records = RecordsRequest::fromRequest(self::$DI['app'], $request);
@@ -240,6 +240,6 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
 
     private function getStoryWZ()
     {
-        return self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\StoryWZ', 1);
+        return self::$DI['app']['EM']->find('Phraseanet:StoryWZ', 1);
     }
 }

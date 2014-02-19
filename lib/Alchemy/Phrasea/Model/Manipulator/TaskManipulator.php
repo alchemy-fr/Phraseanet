@@ -178,6 +178,6 @@ class TaskManipulator implements ManipulatorInterface
      */
     public function getRepository()
     {
-        return $this->om->getRepository('Alchemy\Phrasea\Model\Entities\Task');
+        return $this->om->getRepository('Phraseanet:Task');
     }
 }

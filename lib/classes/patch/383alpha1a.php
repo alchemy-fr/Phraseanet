@@ -69,13 +69,13 @@ class patch_383alpha1a implements patchInterface
         $stmt->closeCursor();
 
         foreach ($rows as $row) {
-            if (null !== $session = $app['EM']->find('Alchemy\Phrasea\Model\Entities\Session', $row['id'])) {
+            if (null !== $session = $app['EM']->find('Phraseanet:Session', $row['id'])) {
                 $app['EM']->remove($session);
             }
         }
 
         // Remove API sessions
-        $query = $app['EM']->createQuery('SELECT s FROM Alchemy\Phrasea\Model\Entities\Session s WHERE s.user_agent LIKE :guzzle');
+        $query = $app['EM']->createQuery('SELECT s FROM Phraseanet:Session s WHERE s.user_agent LIKE :guzzle');
         $query->setParameter(':guzzle', 'Guzzle%');
 
         foreach ($query->getResult() as $session) {

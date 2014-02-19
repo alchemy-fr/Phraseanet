@@ -24,6 +24,7 @@ use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\UserQuery;
+use Alchemy\Phrasea\Model\Entities\ValidationData;
 use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
@@ -724,7 +725,7 @@ class API_V1_adapter extends API_V1_Abstract
         $lazaretFiles = [];
 
         if (count($baseIds) > 0) {
-            $lazaretRepository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\LazaretFile');
+            $lazaretRepository = $app['EM']->getRepository('Phraseanet:LazaretFile');
 
             $lazaretFiles = $lazaretRepository->findPerPage(
                     $baseIds, $offset_start, $per_page
@@ -750,7 +751,7 @@ class API_V1_adapter extends API_V1_Abstract
 
     public function list_quarantine_item($lazaret_id, Application $app, Request $request)
     {
-        $lazaretFile = $app['EM']->find('Alchemy\Phrasea\Model\Entities\LazaretFile', $lazaret_id);
+        $lazaretFile = $app['EM']->find('Phraseanet:LazaretFile', $lazaret_id);
 
         /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {
@@ -1240,7 +1241,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     protected function list_baskets($usr_id)
     {
-        $repo = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
+        $repo = $this->app['EM']->getRepository('Phraseanet:Basket');
         /* @var $repo Alchemy\Phrasea\Model\Repositories\BasketRepository */
 
         $baskets = $repo->findActiveByUser($this->app['authentication']->getUser());
@@ -1357,7 +1358,7 @@ class API_V1_adapter extends API_V1_Abstract
             foreach ($basket_element->getValidationDatas() as $validation_datas) {
                 $participant = $validation_datas->getParticipant();
                 $user = $participant->getUser($this->app);
-                /* @var $validation_datas Alchemy\Phrasea\Model\Entities\ValidationData */
+                /* @var $validation_datas ValidationData */
                 $choices[] = [
                     'validation_user' => [
                         'usr_id'         => $user->get_id(),
@@ -1440,7 +1441,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($this->app, $request, $this);
 
-        $coll = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($this->app['acl']->get($user));
+        $coll = $this->app['EM']->getRepository('Phraseanet:Feed')->getAllForUser($this->app['acl']->get($user));
 
         $datas = [];
         foreach ($coll as $feed) {
@@ -1473,7 +1474,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($this->app, $request, $this);
 
-        $feed = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->find($publication_id);
+        $feed = $this->app['EM']->getRepository('Phraseanet:Feed')->find($publication_id);
         if (!$feed->isAccessible($user, $this->app)) {
             return $result->set_datas([]);
         }
@@ -1521,7 +1522,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($this->app, $request, $this);
 
-        $entry = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($entry_id);
+        $entry = $this->app['EM']->getRepository('Phraseanet:FeedEntry')->find($entry_id);
 
         $collection = $entry->getFeed()->getCollection($this->app);
 

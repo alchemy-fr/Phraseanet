@@ -34,7 +34,7 @@ class Feed implements ControllerProviderInterface
         $app['firewall']->addMandatoryAuthentication($controllers);
 
         $controllers->post('/requestavailable/', function (Application $app, Request $request) {
-            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(
+            $feeds = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser(
                 $app['acl']->get($app['authentication']->getUser())
             );
             $publishing = RecordsRequest::fromRequest($app, $request, true, [], ['bas_chupub']);
@@ -43,13 +43,13 @@ class Feed implements ControllerProviderInterface
         });
 
         $controllers->post('/entry/create/', function (Application $app, Request $request) {
-            $feed = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->find($request->request->get('feed_id'));
+            $feed = $app['EM']->getRepository('Phraseanet:Feed')->find($request->request->get('feed_id'));
 
             if (null === $feed) {
                 $app->abort(404, "Feed not found");
             }
 
-            $publisher = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedPublisher')->findOneBy(['feed' => $feed, 'usrId' => $app['authentication']->getUser()->get_id()]);
+            $publisher = $app['EM']->getRepository('Phraseanet:FeedPublisher')->findOneBy(['feed' => $feed, 'usrId' => $app['authentication']->getUser()->get_id()]);
 
             if ('' === $title = trim($request->request->get('title', ''))) {
                 $app->abort(400, "Bad request");
@@ -95,13 +95,13 @@ class Feed implements ControllerProviderInterface
             });
 
         $controllers->get('/entry/{id}/edit/', function (Application $app, Request $request, $id) {
-            $entry = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($id);
+            $entry = $app['EM']->getRepository('Phraseanet:FeedEntry')->find($id);
 
             if (!$entry->isPublisher($app['authentication']->getUser())) {
                 throw new AccessDeniedHttpException();
             }
 
-            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['acl']->get($app['authentication']->getUser()));
+            $feeds = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser($app['acl']->get($app['authentication']->getUser()));
 
             $datas = $app['twig']->render('prod/actions/publish/publish_edit.html.twig', ['entry' => $entry, 'feeds' => $feeds]);
 
@@ -115,7 +115,7 @@ class Feed implements ControllerProviderInterface
 
         $controllers->post('/entry/{id}/update/', function (Application $app, Request $request, $id) {
             $datas = ['error' => true, 'message' => '', 'datas' => ''];
-            $entry = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($id);
+            $entry = $app['EM']->getRepository('Phraseanet:FeedEntry')->find($id);
 
             if (null === $entry) {
                 $app->abort(404, 'Entry not found');
@@ -136,7 +136,7 @@ class Feed implements ControllerProviderInterface
             $new_feed_id = $request->request->get('feed_id', $currentFeedId);
             if ($currentFeedId !== (int) $new_feed_id) {
 
-                $new_feed = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->find($new_feed_id);
+                $new_feed = $app['EM']->getRepository('Phraseanet:Feed')->find($new_feed_id);
 
                 if ($new_feed === null) {
                     $app->abort(404, 'Feed not found');
@@ -155,7 +155,7 @@ class Feed implements ControllerProviderInterface
                 if (count($item_sort_datas) != 2) {
                     continue;
                 }
-                $item = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedItem')->find($item_sort_datas[0]);
+                $item = $app['EM']->getRepository('Phraseanet:FeedItem')->find($item_sort_datas[0]);
                 $item->setOrd($item_sort_datas[1]);
                 $app['EM']->persist($item);
             }
@@ -179,7 +179,7 @@ class Feed implements ControllerProviderInterface
         $controllers->post('/entry/{id}/delete/', function (Application $app, Request $request, $id) {
             $datas = ['error' => true, 'message' => ''];
 
-            $entry = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($id);
+            $entry = $app['EM']->getRepository('Phraseanet:FeedEntry')->find($id);
 
             if (null === $entry) {
                 $app->abort(404, 'Entry not found');
@@ -203,7 +203,7 @@ class Feed implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page > 0 ? $page : 1;
 
-            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['acl']->get($app['authentication']->getUser()));
+            $feeds = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser($app['acl']->get($app['authentication']->getUser()));
 
             $datas = $app['twig']->render('prod/feeds/feeds.html.twig', [
                 'feeds' => $feeds,
@@ -218,11 +218,11 @@ class Feed implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page > 0 ? $page : 1;
 
-            $feed = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->find($id);
+            $feed = $app['EM']->getRepository('Phraseanet:Feed')->find($id);
             if (!$feed->isAccessible($app['authentication']->getUser(), $app)) {
                 $app->abort(404, 'Feed not found');
             }
-            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['acl']->get($app['authentication']->getUser()));
+            $feeds = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser($app['acl']->get($app['authentication']->getUser()));
 
             $datas = $app['twig']->render('prod/feeds/feeds.html.twig', ['feed' => $feed, 'feeds' => $feeds, 'page' => $page]);
 
@@ -234,7 +234,7 @@ class Feed implements ControllerProviderInterface
         $controllers->get('/subscribe/aggregated/', function (Application $app, Request $request) {
             $renew = ($request->query->get('renew') === 'true');
 
-            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['acl']->get($app['authentication']->getUser()));
+            $feeds = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser($app['acl']->get($app['authentication']->getUser()));
 
             $link = $app['feed.aggregate-link-generator']->generate(new Aggregate($app['EM'], $feeds),
                 $app['authentication']->getUser(),
@@ -255,7 +255,7 @@ class Feed implements ControllerProviderInterface
         $controllers->get('/subscribe/{id}/', function (Application $app, Request $request, $id) {
             $renew = ($request->query->get('renew') === 'true');
 
-            $feed = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->find($id);
+            $feed = $app['EM']->getRepository('Phraseanet:Feed')->find($id);
             if (!$feed->isAccessible($app['authentication']->getUser(), $app)) {
                 $app->abort(404, 'Feed not found');
             }

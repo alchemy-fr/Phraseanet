@@ -17,6 +17,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\FileCacheReader;
 use Doctrine\Common\EventManager;
+use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\EntityManager;
@@ -54,7 +55,7 @@ class ORMServiceProvider implements ServiceProviderInterface
                 $app['debug']
             );
 
-            $driverChain = new DriverChain();
+            $driverChain = new MappingDriverChain();
             DoctrineExtensions::registerAbstractMappingIntoDriverChainORM(
                 $driverChain,
                 $fileCacheReader
@@ -95,6 +96,7 @@ class ORMServiceProvider implements ServiceProviderInterface
             $config->setProxyDir($app['root.path'] . '/tmp/doctrine-proxies');
             $config->setProxyNamespace('Alchemy\Phrasea\Model\Proxies');
             $config->setAutoGenerateProxyClasses($app['debug']);
+            $config->addEntityNamespace('Phraseanet', 'Alchemy\Phrasea\Model\Entities');
 
             return $config;
         });

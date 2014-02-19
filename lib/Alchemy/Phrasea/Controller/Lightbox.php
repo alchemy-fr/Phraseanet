@@ -76,7 +76,7 @@ class Lightbox implements ControllerProviderInterface
                 return $app->redirectPath('logout');
             }
 
-            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
+            $repository = $app['EM']->getRepository('Phraseanet:Basket');
 
             $basket_collection = array_merge(
                 $repository->findActiveByUser($app['authentication']->getUser())
@@ -104,7 +104,7 @@ class Lightbox implements ControllerProviderInterface
             }
 
             $basketElement = $app['EM']
-                ->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement')
+                ->getRepository('Phraseanet:BasketElement')
                 ->findUserElement($sselcont_id, $app['authentication']->getUser());
 
             $parameters = [
@@ -118,7 +118,7 @@ class Lightbox implements ControllerProviderInterface
             ->assert('sselcont_id', '\d+');
 
         $controllers->get('/ajax/LOAD_BASKET_ELEMENT/{sselcont_id}/', function (SilexApplication $app, $sselcont_id) {
-            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
+            $repository = $app['EM']->getRepository('Phraseanet:BasketElement');
 
             $BasketElement = $repository->findUserElement($sselcont_id, $app['authentication']->getUser());
 
@@ -164,7 +164,7 @@ class Lightbox implements ControllerProviderInterface
 
         $controllers->get('/ajax/LOAD_FEED_ITEM/{entry_id}/{item_id}/', function (SilexApplication $app, $entry_id, $item_id) {
 
-            $entry = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($entry_id);
+            $entry = $app['EM']->getRepository('Phraseanet:FeedEntry')->find($entry_id);
             $item = $entry->getItem($item_id);
 
             if ($app['browser']->isMobile()) {
@@ -209,7 +209,7 @@ class Lightbox implements ControllerProviderInterface
                 return $app->redirectPath('logout');
             }
 
-            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
+            $repository = $app['EM']->getRepository('Phraseanet:Basket');
 
             $basket_collection = $repository->findActiveValidationAndBasketByUser(
                 $app['authentication']->getUser()
@@ -256,7 +256,7 @@ class Lightbox implements ControllerProviderInterface
                 return $app->redirectPath('logout');
             }
 
-            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
+            $repository = $app['EM']->getRepository('Phraseanet:Basket');
 
             $basket_collection = $repository->findActiveValidationAndBasketByUser(
                 $app['authentication']->getUser()
@@ -303,7 +303,7 @@ class Lightbox implements ControllerProviderInterface
                 return $app->redirectPath('logout');
             }
 
-            $feed_entry = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($entry_id);
+            $feed_entry = $app['EM']->getRepository('Phraseanet:FeedEntry')->find($entry_id);
 
             $template = 'lightbox/feed.html.twig';
 
@@ -346,7 +346,7 @@ class Lightbox implements ControllerProviderInterface
                 Return new Response('You must provide a note value', 400);
             }
 
-            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
+            $repository = $app['EM']->getRepository('Phraseanet:BasketElement');
 
             $basket_element = $repository->findUserElement($sselcont_id, $app['authentication']->getUser());
 
@@ -393,7 +393,7 @@ class Lightbox implements ControllerProviderInterface
                     'datas'      => $app->trans('Erreur lors de la mise a jour des donnes')
                 ];
 
-                $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
+                $repository = $app['EM']->getRepository('Phraseanet:BasketElement');
 
                 $basket_element = $repository->findUserElement(
                     $sselcont_id

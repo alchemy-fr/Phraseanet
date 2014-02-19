@@ -38,7 +38,7 @@ class Manager
     public function getSession($cookieValue)
     {
         $session = $this->em
-            ->getRepository('Alchemy\Phrasea\Model\Entities\Session')
+            ->getRepository('Phraseanet:Session')
             ->findOneBy(['token' => $cookieValue]);
 
         if (!$session) {

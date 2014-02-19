@@ -80,7 +80,7 @@ class WorkZone implements ControllerProviderInterface
     {
         $request = $app['request'];
 
-        $BasketRepo = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
+        $BasketRepo = $app['EM']->getRepository('Phraseanet:Basket');
 
         $Page = (int) $request->query->get('Page', 0);
 
@@ -123,7 +123,7 @@ class WorkZone implements ControllerProviderInterface
             throw new BadRequestHttpException('Missing parameters stories');
         }
 
-        $StoryWZRepo = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\StoryWZ');
+        $StoryWZRepo = $app['EM']->getRepository('Phraseanet:StoryWZ');
 
         $alreadyFixed = $done = 0;
 
@@ -184,7 +184,7 @@ class WorkZone implements ControllerProviderInterface
     {
         $Story = new \record_adapter($app, $sbas_id, $record_id);
 
-        $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\StoryWZ');
+        $repository = $app['EM']->getRepository('Phraseanet:StoryWZ');
 
         $StoryWZ = $repository->findUserStory($app, $app['authentication']->getUser(), $Story);
 

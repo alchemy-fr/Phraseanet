@@ -209,7 +209,7 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPermalinkRouteNotAuthenticatedIsOkInPublicFeed()
     {
-        $feed = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Feed', 2);
+        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 2);
         $entry = $feed->getEntries()->first();
         $item = $entry->getItems()->first();
 

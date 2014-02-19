@@ -97,7 +97,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
                 $user_to = User_Adapter::getInstance($params['to'], $this->app);
 
                 $basket = $this->app['EM']
-                    ->getRepository('Alchemy\Phrasea\Model\Entities\Basket')
+                    ->getRepository('Phraseanet:Basket')
                     ->find($params['ssel_id']);
                 $title = $basket->getName();
 

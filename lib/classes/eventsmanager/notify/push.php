@@ -80,7 +80,7 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
 
             $readyToSend = false;
             try {
-                $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
+                $repository = $this->app['EM']->getRepository('Phraseanet:Basket');
                 $basket = $repository->find($params['ssel_id']);
 
                 $user_from = User_Adapter::getInstance($params['from'], $this->app);

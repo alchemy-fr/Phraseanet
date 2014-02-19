@@ -117,7 +117,7 @@ class Push implements ControllerProviderInterface
         $controllers->post('/sendform/', function (Application $app) use ($userSelection) {
             $push = new RecordHelper\Push($app, $app['request']);
 
-            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
 
             $RecommendedUsers = $userSelection($push->get_elements());
 
@@ -135,7 +135,7 @@ class Push implements ControllerProviderInterface
         $controllers->post('/validateform/', function (Application $app) use ($userSelection) {
             $push = new RecordHelper\Push($app, $app['request']);
 
-            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
 
             $RecommendedUsers = $userSelection($push->get_elements());
 
@@ -277,7 +277,7 @@ class Push implements ControllerProviderInterface
             try {
                 $pusher = new RecordHelper\Push($app, $app['request']);
 
-                $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
+                $repository = $app['EM']->getRepository('Phraseanet:Basket');
 
                 $validation_name = $request->request->get('name', $app->trans('Validation from %user%', ['%user%' => $app['authentication']->getUser()->get_display_name()]));
                 $validation_description = $request->request->get('validation_description');
@@ -492,7 +492,7 @@ class Push implements ControllerProviderInterface
         $controllers->get('/list/{list_id}/', function (Application $app, $list_id) use ($listFormatter) {
             $datas = null;
 
-            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
 
             $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
 
@@ -592,7 +592,7 @@ class Push implements ControllerProviderInterface
                     ->limit(0, 50)
                     ->execute()->get_results();
 
-            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
 
             $lists = $repository->findUserListLike($app['authentication']->getUser(), $request->query->get('query'));
 
@@ -615,7 +615,7 @@ class Push implements ControllerProviderInterface
 
         $controllers->match('/edit-list/{list_id}/', function (Application $app, Request $request, $list_id) {
 
-            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
 
             $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
 

@@ -186,7 +186,7 @@ class Session_Logger
             return;
         }
 
-        $session = $app['EM']->find('Alchemy\Phrasea\Model\Entities\Session', $app['session']->get('session_id'));
+        $session = $app['EM']->find('Phraseanet:Session', $app['session']->get('session_id'));
 
         if (!$session) {
             throw new SessionNotFound('No session found');

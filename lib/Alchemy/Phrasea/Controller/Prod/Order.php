@@ -193,8 +193,8 @@ class Order implements ControllerProviderInterface
 
         $baseIds = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['order_master']));
 
-        $ordersList = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->listOrders($baseIds, $offsetStart, $perPage, $sort);
-        $total = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->countTotalOrders($baseIds);
+        $ordersList = $app['EM']->getRepository('Phraseanet:Order')->listOrders($baseIds, $offsetStart, $perPage, $sort);
+        $total = $app['EM']->getRepository('Phraseanet:Order')->countTotalOrders($baseIds);
 
         return $app['twig']->render('prod/orders/order_box.html.twig', [
             'page'         => $page,
@@ -216,7 +216,7 @@ class Order implements ControllerProviderInterface
      */
     public function displayOneOrder(Application $app, Request $request, $order_id)
     {
-        $order = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->find($order_id);
+        $order = $app['EM']->getRepository('Phraseanet:Order')->find($order_id);
         if (null === $order) {
             throw new NotFoundHttpException('Order not found');
         }
@@ -237,7 +237,7 @@ class Order implements ControllerProviderInterface
     public function sendOrder(Application $app, Request $request, $order_id)
     {
         $success = false;
-        $order = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->find($order_id);
+        $order = $app['EM']->getRepository('Phraseanet:Order')->find($order_id);
         if (null === $order) {
             throw new NotFoundHttpException('Order not found');
         }
@@ -324,7 +324,7 @@ class Order implements ControllerProviderInterface
     public function denyOrder(Application $app, Request $request, $order_id)
     {
         $success = false;
-        $order = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->find($order_id);
+        $order = $app['EM']->getRepository('Phraseanet:Order')->find($order_id);
         if (null === $order) {
             throw new NotFoundHttpException('Order not found');
         }

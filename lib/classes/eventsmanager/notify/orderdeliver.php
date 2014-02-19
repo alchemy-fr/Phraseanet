@@ -98,7 +98,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
                 $receiver = Receiver::fromUser($user_to);
                 $emitter = Emitter::fromUser($user_from);
 
-                $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
+                $repository = $this->app['EM']->getRepository('Phraseanet:Basket');
                 $basket = $repository->find($params['ssel_id']);
 
                 $readyToSend = true;

@@ -27,7 +27,7 @@ class BasketElementRepository extends EntityRepository
     public function findUserElement($element_id, \User_Adapter $user)
     {
         $dql = 'SELECT e
-            FROM Alchemy\Phrasea\Model\Entities\BasketElement e
+            FROM Phraseanet:BasketElement e
             JOIN e.basket b
             LEFT JOIN e.validation_datas vd
             LEFT JOIN b.validation s
@@ -57,7 +57,7 @@ class BasketElementRepository extends EntityRepository
     public function findElementsByRecord(\record_adapter $record)
     {
         $dql = 'SELECT e
-            FROM Alchemy\Phrasea\Model\Entities\BasketElement e
+            FROM Phraseanet:BasketElement e
             JOIN e.basket b
             LEFT JOIN b.validation s
             LEFT JOIN s.participants p
@@ -78,7 +78,7 @@ class BasketElementRepository extends EntityRepository
     public function findElementsByDatabox(\databox $databox)
     {
         $dql = 'SELECT e
-            FROM Alchemy\Phrasea\Model\Entities\BasketElement e
+            FROM Phraseanet:BasketElement e
             JOIN e.basket b
             LEFT JOIN b.validation s
             LEFT JOIN s.participants p
@@ -103,7 +103,7 @@ class BasketElementRepository extends EntityRepository
     public function findReceivedElementsByRecord(\record_adapter $record, \User_Adapter $user)
     {
         $dql = 'SELECT e
-            FROM Alchemy\Phrasea\Model\Entities\BasketElement e
+            FROM Phraseanet:BasketElement e
             JOIN e.basket b
             LEFT JOIN b.validation s
             LEFT JOIN s.participants p
@@ -127,7 +127,7 @@ class BasketElementRepository extends EntityRepository
     public function findReceivedValidationElementsByRecord(\record_adapter $record, \User_Adapter $user)
     {
         $dql = 'SELECT e
-            FROM Alchemy\Phrasea\Model\Entities\BasketElement e
+            FROM Phraseanet:BasketElement e
             JOIN e.basket b
             JOIN b.validation v
             JOIN v.participants p

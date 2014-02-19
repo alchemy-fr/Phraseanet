@@ -77,8 +77,8 @@ class Aggregate implements FeedInterface
      */
     public static function createFromUser(Application $app, \User_Adapter $user)
     {
-        $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['acl']->get($user));
-        $token = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')->findOneBy(['usrId' => $user->get_id()]);
+        $feeds = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser($app['acl']->get($user));
+        $token = $app['EM']->getRepository('Phraseanet:AggregateToken')->findOneBy(['usrId' => $user->get_id()]);
 
         return new static($app['EM'], $feeds, $token);
     }
@@ -93,7 +93,7 @@ class Aggregate implements FeedInterface
      */
     public static function create(Application $app, array $feed_ids)
     {
-        $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findByIds($feed_ids);
+        $feeds = $app['EM']->getRepository('Phraseanet:Feed')->findByIds($feed_ids);
 
         return new static($app, $feeds);
     }
@@ -120,7 +120,7 @@ class Aggregate implements FeedInterface
             $feedIds[] = $feed->getId();
         }
 
-        return $this->em->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->findByFeeds($feedIds, $offset_start, $how_many);
+        return $this->em->getRepository('Phraseanet:FeedEntry')->findByFeeds($feedIds, $offset_start, $how_many);
     }
 
     /**
@@ -206,7 +206,7 @@ class Aggregate implements FeedInterface
                 $feedIds[] = $feed->getId();
             }
 
-            return count($this->em->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->findByFeeds($feedIds));
+            return count($this->em->getRepository('Phraseanet:FeedEntry')->findByFeeds($feedIds));
         }
 
         return 0;
@@ -238,6 +238,6 @@ class Aggregate implements FeedInterface
      */
     public static function getPublic(Application $app)
     {
-        return new static($app['EM'], $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(['public' => true], ['updatedOn' => 'DESC']));
+        return new static($app['EM'], $app['EM']->getRepository('Phraseanet:Feed')->findBy(['public' => true], ['updatedOn' => 'DESC']));
     }
 }

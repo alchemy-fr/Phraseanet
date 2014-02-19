@@ -49,7 +49,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
         $users = [];
 
         try {
-            $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\OrderElement');
+            $repository = $this->app['EM']->getRepository('Phraseanet:OrderElement');
 
             $results = $repository->findBy(['orderId' => $order_id]);
 

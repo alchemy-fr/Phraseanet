@@ -463,7 +463,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 
     public function testGet_container_baskets()
     {
-        $basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
+        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
         $found = $sselcont_id = false;
 
         $sbas_id = self::$DI['record_1']->get_sbas_id();

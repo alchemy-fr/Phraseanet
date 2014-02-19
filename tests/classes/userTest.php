@@ -45,7 +45,7 @@ class userTest extends \PhraseanetTestCase
 
         $user->delete();
 
-        $repo = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider');
+        $repo = self::$DI['app']['EM']->getRepository('Phraseanet:UsrAuthProvider');
         $this->assertNull($repo->findWithProviderAndId('custom-one', 12345));
     }
 
@@ -68,7 +68,7 @@ class userTest extends \PhraseanetTestCase
 
         $user->delete();
 
-        $repo = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Session');
+        $repo = self::$DI['app']['EM']->getRepository('Phraseanet:Session');
         $this->assertCount(0, $repo->findByUser($user));
     }
 
