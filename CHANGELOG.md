@@ -1,6 +1,6 @@
 # CHANGELOG
 
-* 3.8.3 (2014-xx-xx)
+## 3.8.3 (2014-xx-xx)
 
   - Fix scheduler timeout.
   - Fix thesaurus tab javascript errors.
@@ -47,11 +47,11 @@
   - Fix detailed view access by guests users.
   - Add compatibility with PHP 5.6.
 
-* 3.8.2 (2013-11-15)
+## 3.8.2 (2013-11-15)
 
   - BugFix : Locale translation may block administration module load.
 
-* 3.8.1 (2013-11-15)
+## 3.8.1 (2013-11-15)
 
   - BugFix : IE 6 homepage error message is broken.
   - BugFix : Databox fields administration is broken on firefox.
@@ -97,7 +97,7 @@
   - Enhancement : Add Phraseanet twig namespace.
   - Enhancement : Allow video bitrate up to 12M.
 
-* 3.8.0 (2013-09-26)
+## 3.8.0 (2013-09-26)
 
   - BC Break : Removed `bin/console check:system` command, replaced by `bin/setup check:system`.
   - BC Break : Removed `bin/console system:upgrade` command, replaced by `bin/setup system:upgrade`.
@@ -140,38 +140,38 @@
         host configuration depending on Phraseanet configuration
   - Phraseanet enabled languages is now configurable.
 
-* 3.7.15 (2013-09-14)
+## 3.7.15 (2013-09-14)
 
   - Add Office Plugin client id and secret.
 
-* 3.7.14 (2013-07-23)
+## 3.7.14 (2013-07-23)
 
   - BugFix : Multi layered images are not rendered properly.
   - BugFix : Status editing can be accessed on some records by users that are not granted.
   - BugFix : Records index is not updated after databox structure field rename.
   - Enhancement : Add support for grayscale colorspaces.
 
-* 3.7.13 (2013-07-04)
+## 3.7.13 (2013-07-04)
 
   - Some users were able to access story creation form whereas they were not allowed to.
   - Disable detailed view keyboard shortcuts when export modal is open.
   - Update to PHP-FFMpeg 0.2.4, better support for video resizing.
   - BugFix : Unablt to reject a thesaurus term from thesaurus module.
 
-* 3.7.12 (2013-05-13)
+## 3.7.12 (2013-05-13)
 
   - Fix : Removed "required" attribute on non-required fields in order form.
   - Fix : Fix advanced search dialog CSS.
   - Fix : Grouped status bits are not displayed in advanced search dialog.
   - Enhancement : Locales update.
 
-* 3.7.11 (2013-04-23)
+## 3.7.11 (2013-04-23)
 
   - Enhancement : Animated Gifs (video support) does not requir Gmagick anymore to work properly.
   - Fix : When importing users from CSV file, some properties were missing.
   - Fix : In Report, CSV export is limited to 30 lines.
 
-* 3.7.10 (2013-04-03)
+## 3.7.10 (2013-04-03)
 
   - Fix : Permalinks pages may be broken.
   - Fix : Permalinks always expose the file extension of the original document.
@@ -179,7 +179,7 @@
   - Fix : Phraseanet installation fails.
   - Fix : Consecutive calls to image tools may fail.
 
-* 3.7.9 (2013-03-27)
+## 3.7.9 (2013-03-27)
 
   - Fix : Detailed view does not display the right search result.
   - Fix : Twitter and Facebook share are available even if it's disabled in system settings.
@@ -188,7 +188,7 @@
   - Permalinks returned by the API now embed a download URL.
   - Bump to API version 1.3.1 (see https://docs.phraseanet.com/3.7/en/Devel/API/Changelog.html).
 
-* 3.7.8 (2013-03-22)
+## 3.7.8 (2013-03-22)
 
   - Fix : Phraseanet API does not return results at correct offset.
   - Fix : Manual thumbnail extraction for videos returns images with anamorphosis.
@@ -198,14 +198,14 @@
   - Add support for CMYK images.
   - Preserve ICC profiles data in sub-definitions.
 
-* 3.7.7 (2013-03-08)
+## 3.7.7 (2013-03-08)
 
   - Fix : Archive task fails with stories.
   - Update of dutch locales.
   - Fix : Fix feeds entry notification display.
   - Fix : Read receipts are not associated to email for push and validation.
 
-* 3.7.6 (2013-02-01)
+## 3.7.6 (2013-02-01)
 
   - Fix : Load of a publication entry with a publisher that refers to a deleted users fails.
   - Fix : Wrong ACL check for displaying feeds in Lightbox (thumbnails are displayed instead of preview).
@@ -214,7 +214,7 @@
   - Fix : Landscape format images are displayed with a wrong ratio in quarantine.
   - General enhancement of Lightbox display on IE 7/8/9.
 
-* 3.7.5 (2013-01-09)
+## 3.7.5 (2013-01-09)
 
   - Support of Dailymotion latest API.
   - Fix : Bridge application creation is not possible after having upload a file.
@@ -228,7 +228,7 @@
   - Fix : XML import to metadata fields that do not have proper source do not work correctly.
   - Fix : Databox unmount can provide 500's to users that have attached stories to their work zone.
 
-* 3.7.4 (2012-12-20)
+## 3.7.4 (2012-12-20)
 
   - Fix : Upgrade from 3.5 may lose metadatas.
   - Fix : Selection of a metadata source do not behave correctly.
@@ -249,7 +249,7 @@
   - Fix : Story thumbnails are not displayed correctly.
   - Fix : Add dutch (nl_NL) support.
 
-* 3.7.3 (2012-11-09)
+## 3.7.3 (2012-11-09)
 
   - Fix : Security flaw (thanks TEHTRI-Security http://www.tehtri-security.com/).
   - Fix : Thesaurus issue when a term contains HTML entity.
@@ -276,7 +276,7 @@
   - Mails links are now clickable in Thunderbird and Outlook.
   - Emails list in mail export now supports comma and space separators.
 
-* 3.7.2 (2012-10-04)
+## 3.7.2 (2012-10-04)
 
   - Significant speed enhancement on thumbnail display.
   - Add a purge option to quarantine.
@@ -286,7 +286,7 @@
   - Add option to rotate multiple image.
   - `Remember-me` was applied even if the box was not checked.
 
-* 3.7.1 (2012-09-18)
+## 3.7.1 (2012-09-18)
 
   - Multiple fixes in archive task.
   - Add options -f and -y to upgrade command.
@@ -294,7 +294,7 @@
   - Fix upgrade from version 3.1 and 3.5.
   - Fix : Print tool is not working on IE version 8 and less over HTTPS.
 
-* 3.7.0 (2012-07-24)
+## 3.7.0 (2012-07-24)
 
   - Lots of graphics enhancements.
   - Windows Server 2008 support.
@@ -305,23 +305,23 @@
   - Upgrade of the Phraseanet API to version 1.2 (see https://docs.phraseanet.com/3.7/en/Devel/API/Changelog.html#id1).
   - Phraseanet PHP SDK http://phraseanet-php-sdk.readthedocs.org/.
 
-* 3.6.5 (2012-05-11)
+## 3.6.5 (2012-05-11)
 
   - Fix : Bridge buttons are not visible on some browsers.
   - Youtube and Dailymotion APIs updates.
   - Stories can now be deleted from the work zone.
   - Push and validation logs were missing.
 
-* 3.6.4 (2012-04-30)
+## 3.6.4 (2012-04-30)
 
   - Fix DatePicker menus do not format date correctly.
   - Fix Dead records can remain in orders and may broke order window.
 
-* 3.6.3 (2012-04-26)
+## 3.6.3 (2012-04-26)
 
   - Fix selection in webkit based browers.
 
-* 3.6.2 (2012-04-19)
+## 3.6.2 (2012-04-19)
 
   - Fix : Users can be created by some pushers.
   - Fix : Collection owner can not disable watermark.
@@ -333,11 +333,11 @@
   - Document + XML hot folder import produces corrupted files.
   - Enhanced Push list view on small device.
 
-* 3.6.1 (2012-03-27)
+## 3.6.1 (2012-03-27)
 
   - Fix upgrade from 3.5 versions with large datasets.
 
-* 3.6.0 (2012-03-20)
+## 3.6.0 (2012-03-20)
 
   - Add a Vocabulary mapping to multivalued fields.
   - Redesign of Push and Feedback.
