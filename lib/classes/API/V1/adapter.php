@@ -1778,7 +1778,7 @@ class API_V1_adapter extends API_V1_Abstract
             'created_on'        => $basket->getCreated()->format(DATE_ATOM),
             'description'       => (string) $basket->getDescription(),
             'name'              => $basket->getName(),
-            'pusher_usr_id'     => $basket->getPusher()->getId(),
+            'pusher_usr_id'     => $basket->getPusher() ? $basket->getPusher()->getId() : null,
             'updated_on'        => $basket->getUpdated()->format(DATE_ATOM),
             'unread'            => !$basket->getIsRead(),
             'validation_basket' => !!$basket->getValidation()

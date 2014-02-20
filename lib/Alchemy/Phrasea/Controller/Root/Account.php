@@ -362,47 +362,41 @@ class Account implements ControllerProviderInterface
         ];
 
         if (0 === count(array_diff($accountFields, array_keys($request->request->all())))) {
+            $app['authentication']->getUser()
+                ->setGender($request->request->get("form_gender"))
+                ->setFirstName($request->request->get("form_firstname"))
+                ->setLastName($request->request->get("form_lastname"))
+                ->setAddress($request->request->get("form_address"))
+                ->setZipCode($request->request->get("form_zip"))
+                ->setPhone($request->request->get("form_phone"))
+                ->setFax($request->request->get("form_fax"))
+                ->setJob($request->request->get("form_activity"))
+                ->setCompany($request->request->get("form_company"))
+                ->setActivity($request->request->get("form_function"))
+                ->setMailNotificationsActivated((Boolean) $request->request->get("mail_notifications"));
 
-            try {
+            $app['manipulator.user']->setGeonameId($app['authentication']->getUser(), $request->request->get("form_geonameid"));
 
-                $app['authentication']->getUser()
-                    ->setGender($request->request->get("form_gender"))
-                    ->setFirstName($request->request->get("form_firstname"))
-                    ->setLastName($request->request->get("form_lastname"))
-                    ->setAddress($request->request->get("form_address"))
-                    ->setZipCode($request->request->get("form_zip"))
-                    ->setPhone($request->request->get("form_phone"))
-                    ->setFax($request->request->get("form_fax"))
-                    ->setJob($request->request->get("form_activity"))
-                    ->setCompany($request->request->get("form_company"))
-                    ->setActivity($request->request->get("form_function"))
-                    ->setMailNotificationsActivated((Boolean) $request->request->get("mail_notifications"));
+            $ftpCredential = $app['authentication']->getUser()->getFtpCredential();
 
-                $app['manipulator.user']->setGeonameId($app['authentication']->getUser(), $request->request->get("form_geonameid"));
-
-                $ftpCredential = $app['authentication']->getUser()->getFtpCredential();
-
-                if (null === $ftpCredential) {
-                    $ftpCredential = new FtpCredential();
-                }
-
-                $ftpCredential->setActive($request->request->get("form_activeFTP"));
-                $ftpCredential->setAddress($request->request->get("form_addressFTP"));
-                $ftpCredential->setLogin($request->request->get("form_loginFTP"));
-                $ftpCredential->setPassword($request->request->get("form_pwdFTP"));
-                $ftpCredential->setPassive($request->request->get("form_passifFTP"));
-                $ftpCredential->setReceptionFolder($request->request->get("form_destFTP"));
-                $ftpCredential->setRepositoryPrefixName($request->request->get("form_prefixFTPfolder"));
-
-                $app['EM']->persist($ftpCredential);
-                $app['EM']->persist($app['authentication']->getUser());
-
-                $app['EM']->flush();
-                $app->addFlash('success', $app->trans('login::notification: Changements enregistres'));
-            } catch (\Exception $e) {
-                $app->addFlash('error', $app->trans('forms::erreurs lors de l\'enregistrement des modifications'));
-                $app['phraseanet.appbox']->get_connection()->rollBack();
+            if (null === $ftpCredential) {
+                $ftpCredential = new FtpCredential();
+                $ftpCredential->setUser($app['authentication']->getUser());
             }
+
+            $ftpCredential->setActive($request->request->get("form_activeFTP"));
+            $ftpCredential->setAddress($request->request->get("form_addressFTP"));
+            $ftpCredential->setLogin($request->request->get("form_loginFTP"));
+            $ftpCredential->setPassword($request->request->get("form_pwdFTP"));
+            $ftpCredential->setPassive($request->request->get("form_passifFTP"));
+            $ftpCredential->setReceptionFolder($request->request->get("form_destFTP"));
+            $ftpCredential->setRepositoryPrefixName($request->request->get("form_prefixFTPfolder"));
+
+            $app['EM']->persist($ftpCredential);
+            $app['EM']->persist($app['authentication']->getUser());
+
+            $app['EM']->flush();
+            $app->addFlash('success', $app->trans('login::notification: Changements enregistres'));
         }
 
         $requestedNotifications = (array) $request->request->get('notifications', []);
