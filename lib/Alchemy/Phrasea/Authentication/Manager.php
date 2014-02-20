@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Authentication;
 
 use Alchemy\Phrasea\Model\Entities\Session;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class Manager
 {
@@ -26,11 +27,11 @@ class Manager
 
     /**
      *
-     * @param \User_Adapter $user
+     * @param User $user
      *
      * @return Session
      */
-    public function openAccount(\User_Adapter $user)
+    public function openAccount(User $user)
     {
         return $this->authenticator->openAccount($user);
     }

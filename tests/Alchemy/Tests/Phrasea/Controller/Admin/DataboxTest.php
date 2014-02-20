@@ -16,10 +16,15 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['app'] = $this->loadApp();
         self::dropDatabase();
         parent::setUp();
+        self::dropDatabase();
     }
 
-    public static function tearDownAfterClass()
+    public function tearDown()
     {
+        if (!self::$createdCollections) {
+            return;
+        }
+
         foreach (self::$createdCollections as $collection) {
             try {
                 $collection->unmount_collection(self::$DI['app']);
@@ -35,15 +40,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         }
 
         self::$createdCollections = null;
-
-        self::dropDatabase();
-        parent::tearDownAfterClass();
-    }
-
-    public function tearDown()
-    {
-        self::dropDatabase();
-        parent::tearDown();
     }
 
     public function getJson($response)

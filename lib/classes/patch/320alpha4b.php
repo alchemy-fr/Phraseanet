@@ -38,7 +38,7 @@ class patch_320alpha4b implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return ['feed'];
+        return ['user', 'feed'];
     }
 
     /**
@@ -46,7 +46,7 @@ class patch_320alpha4b implements patchInterface
      */
     public function require_all_upgrades()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -62,8 +62,6 @@ class patch_320alpha4b implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $feeds = [];
-
         try {
             $sql = 'ALTER TABLE `ssel` ADD `migrated` INT NOT NULL DEFAULT "0"';
             $stmt = $appbox->get_connection()->prepare($sql);
@@ -88,7 +86,7 @@ class patch_320alpha4b implements patchInterface
 
         $app['EM']->getEventManager()->removeEventSubscriber(new TimestampableListener());
         foreach ($rs as $row) {
-            $user = User_Adapter::getInstance($row['usr_id'], $app);
+            $user =  $app['EM']->getPartialReference('Phraseanet:User', $row['usr_id']);
 
             $feed = $this->get_feed($appbox, $user, $row['pub_restrict'], $row['homelink'], $app);
 
@@ -99,8 +97,8 @@ class patch_320alpha4b implements patchInterface
             $publishers = $feed->getPublishers();
 
             $entry = new FeedEntry();
-            $entry->setAuthorEmail($user->get_email());
-            $entry->setAuthorName($user->get_display_name());
+            $entry->setAuthorEmail($user->getEmail());
+            $entry->setAuthorName($user->getDisplayName());
             $entry->setFeed($feed);
             $entry->setPublisher($publishers->first());
             $entry->setTitle($row['name']);
@@ -175,9 +173,9 @@ class patch_320alpha4b implements patchInterface
     }
     protected static $feeds = [];
 
-    protected function get_feed(appbox $appbox, User_Adapter $user, $pub_restrict, $homelink, Application $app)
+    protected function get_feed(appbox $appbox, User $user, $pub_restrict, $homelink, Application $app)
     {
-        $user_key = 'user_' . $user->get_id();
+        $user_key = 'user_' . $user->getId();
         if ($homelink == '1') {
             $feed_key = 'feed_homelink';
         } elseif ($pub_restrict == '1') {
@@ -188,11 +186,11 @@ class patch_320alpha4b implements patchInterface
 
         if ( ! array_key_exists($user_key, self::$feeds) || ! isset(self::$feeds[$user_key][$feed_key])) {
             if ($homelink == '1')
-                $title = $user->get_display_name() . ' - ' . 'homelink Feed';
+                $title = $user->getDisplayName() . ' - ' . 'homelink Feed';
             elseif ($pub_restrict == '1')
-                $title = $user->get_display_name() . ' - ' . 'private Feed';
+                $title = $user->getDisplayName() . ' - ' . 'private Feed';
             else
-                $title = $user->get_display_name() . ' - ' . 'public Feed';
+                $title = $user->getDisplayName() . ' - ' . 'public Feed';
 
             $feed = new Feed();
             $publisher = new FeedPublisher();
@@ -201,7 +199,7 @@ class patch_320alpha4b implements patchInterface
             $feed->addPublisher($publisher);
             $publisher->setFeed($feed);
             $publisher->setOwner(true);
-            $publisher->setUsrId($user->get_id());
+            $publisher->setUser($user);
 
             if ($homelink) {
                 $feed->setPublic(true);

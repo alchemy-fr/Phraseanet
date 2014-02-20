@@ -7,6 +7,8 @@ use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Model\Entities\Task;
+use Alchemy\Phrasea\Model\Entities\LazaretSession;
+use Doctrine\Common\Collections\ArrayCollection;
 use Guzzle\Common\Exception\GuzzleException;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
@@ -60,9 +62,11 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         if (!self::$apiInitialized) {
             self::$account = \API_OAuth2_Account::load_with_user(self::$DI['app'], self::$DI['oauth2-app-user_notAdmin'], self::$DI['user_notAdmin']);
+            self::$account->set_revoked(false);
             self::$token = self::$account->get_token()->get_value();
 
             self::$adminAccount = \API_OAuth2_Account::load_with_user(self::$DI['app'], self::$DI['oauth2-app-user'], self::$DI['user']);
+            self::$adminAccount->set_revoked(false);
             self::$adminToken = self::$adminAccount->get_token()->get_value();
 
             self::$apiInitialized = true;
@@ -548,8 +552,10 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testStoryRoute()
     {
         $this->setToken(self::$token);
-        self::$DI['app']['session']->set('usr_id', self::$DI['user']->get_id());
-        self::$DI['record_story_1']->appendChild(self::$DI['record_1']);
+        self::$DI['app']['session']->set('usr_id', self::$DI['user']->getId());
+        if (false ===  self::$DI['record_story_1']->hasChild(self::$DI['record_1'])) {
+            self::$DI['record_story_1']->appendChild(self::$DI['record_1']);
+        }
 
         self::$DI['app']['session']->remove('usr_id');
 
@@ -893,7 +899,16 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testRecordsSearchRouteWithQuery($method)
     {
         $this->setToken(self::$token);
+        $searchEngine = $this->getMockBuilder('Alchemy\Phrasea\SearchEngine\SearchEngineResult')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $searchEngine->expects($this->any())
+            ->method('getSuggestions')
+            ->will($this->returnValue(new ArrayCollection()));
+
         self::$DI['app']['phraseanet.SE'] = $this->getMock('Alchemy\Phrasea\SearchEngine\SearchEngineInterface');
+
         self::$DI['app']['phraseanet.SE']->expects($this->once())
                 ->method('query')
                 ->with('koala', 0, 10)
@@ -1908,6 +1923,25 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $this->evaluateGoodQuarantineItem($content['response']['quarantine_item']);
         $this->assertEquals($quarantineItemId, $content['response']['quarantine_item']['id']);
+    }
+
+    protected function getQuarantineItem()
+    {
+        $lazaretSession = new LazaretSession();
+        self::$DI['app']['EM']->persist($lazaretSession);
+
+        $quarantineItem = null;
+        $callback = function ($element, $visa, $code) use (&$quarantineItem) {
+                $quarantineItem = $element;
+            };
+
+        $tmpname = tempnam(sys_get_temp_dir(), 'test_quarantine');
+        copy(__DIR__ . '/../../../../files/iphone_pic.jpg', $tmpname);
+
+        $file = File::buildFromPathfile($tmpname, self::$DI['collection'], self::$DI['app']);
+        self::$DI['app']['border-manager']->process($lazaretSession, $file, $callback, Manager::FORCE_LAZARET);
+
+        return $quarantineItem;
     }
 
     protected function evaluateGoodQuarantineItem($item)

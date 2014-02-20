@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Feed\Link;
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Feed\FeedInterface;
+use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\ORM\EntityManager;
 use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\FeedToken;
@@ -42,7 +43,7 @@ class FeedLinkGenerator implements LinkGeneratorInterface
     /**
      * {@inheritdoc}
      */
-    public function generate(FeedInterface $feed, \User_Adapter $user, $format, $page = null, $renew = false)
+    public function generate(FeedInterface $feed, User $user, $format, $page = null, $renew = false)
     {
         if (!$this->supports($feed)) {
             throw new InvalidArgumentException('FeedLinkGenerator only support aggregate feeds.');
@@ -135,17 +136,17 @@ class FeedLinkGenerator implements LinkGeneratorInterface
         }
     }
 
-    private function getFeedToken(Feed $feed, \User_Adapter $user, $renew = false)
+    private function getFeedToken(Feed $feed, User $user, $renew = false)
     {
         $token = $this->em
             ->getRepository('Phraseanet:FeedToken')
-            ->findOneBy(['usrId' => $user->get_id(), 'feed' => $feed->getId()]);
+            ->findOneBy(['user' => $user, 'feed' => $feed]);
 
         if (null === $token || true === $renew) {
             if (null === $token) {
                 $token = new FeedToken();
                 $token->setFeed($feed);
-                $token->setUsrId($user->get_id());
+                $token->setUser($user);
                 $feed->addToken($token);
 
                 $this->em->persist($feed);

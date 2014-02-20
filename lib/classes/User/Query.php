@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Collections\ArrayCollection;
 
 class User_Query implements User_QueryInterface
@@ -152,22 +153,22 @@ class User_Query implements User_QueryInterface
 
     const ORD_ASC = 'asc';
     const ORD_DESC = 'desc';
-    const SORT_FIRSTNAME = 'usr_prenom';
-    const SORT_LASTNAME = 'usr_nom';
-    const SORT_COMPANY = 'societe';
-    const SORT_LOGIN = 'usr_login';
-    const SORT_EMAIL = 'usr_mail';
-    const SORT_ID = 'usr_id';
-    const SORT_CREATIONDATE = 'usr_creationdate';
-    const SORT_COUNTRY = 'pays';
-    const SORT_LASTMODEL = 'lastModel';
-    const LIKE_FIRSTNAME = 'usr_prenom';
-    const LIKE_LASTNAME = 'usr_nom';
+    const SORT_FIRSTNAME = 'first_name';
+    const SORT_LASTNAME = 'last_name';
+    const SORT_COMPANY = 'company';
+    const SORT_LOGIN = 'login';
+    const SORT_EMAIL = 'email';
+    const SORT_ID = 'id';
+    const SORT_CREATIONDATE = 'created';
+    const SORT_COUNTRY = 'country';
+    const SORT_LASTMODEL = 'last_model';
+    const LIKE_FIRSTNAME = 'first_name';
+    const LIKE_LASTNAME = 'last_name';
     const LIKE_NAME = 'name';
-    const LIKE_COMPANY = 'societe';
-    const LIKE_LOGIN = 'usr_login';
-    const LIKE_EMAIL = 'usr_mail';
-    const LIKE_COUNTRY = 'pays';
+    const LIKE_COMPANY = 'company';
+    const LIKE_LOGIN = 'login';
+    const LIKE_EMAIL = 'email';
+    const LIKE_COUNTRY = 'country';
     const LIKE_MATCH_AND = 'AND';
     const LIKE_MATCH_OR = 'OR';
 
@@ -208,36 +209,36 @@ class User_Query implements User_QueryInterface
         $this->sql_params = [];
 
         $sql = '
-      FROM usr LEFT JOIN basusr ON (usr.usr_id = basusr.usr_id)
-       LEFT JOIN sbasusr ON (usr.usr_id = sbasusr.usr_id)
+      FROM Users LEFT JOIN basusr ON (Users.id = basusr.usr_id)
+       LEFT JOIN sbasusr ON (Users.id = sbasusr.usr_id)
       WHERE 1 ';
 
         if (! $this->include_special_users) {
-            $sql .= ' AND usr_login != "autoregister"
-              AND usr_login != "invite" ';
+            $sql .= ' AND Users.login != "autoregister"
+              AND Users.login != "invite" ';
         }
 
-        $sql .= ' AND usr_login NOT LIKE "(#deleted_%" ';
+        $sql .= ' AND Users.deleted="0" ';
 
         if (! $this->include_invite) {
-            $sql .= ' AND usr.invite=0 ';
+            $sql .= ' AND Users.guest="0" ';
         }
 
         if ($this->email_not_null) {
-            $sql .= ' AND usr.usr_mail IS NOT NULL ';
+            $sql .= ' AND Users.email IS NOT NULL ';
         }
 
         if ($this->only_templates === true) {
             if (!$this->app['authentication']->getUser()) {
                 throw new InvalidArgumentException('Unable to load templates while disconnected');
             }
-            $sql .= ' AND model_of = ' . $this->app['authentication']->getUser()->get_id();
+            $sql .= ' AND model_of = ' . $this->app['authentication']->getUser()->getId();
         } elseif ($this->include_templates === false) {
-            $sql .= ' AND model_of=0';
+            $sql .= ' AND model_of IS NULL';
         } elseif ($this->app['authentication']->getUser()) {
-            $sql .= ' AND (model_of=0 OR model_of = ' . $this->app['authentication']->getUser()->get_id() . ' ) ';
+            $sql .= ' AND (model_of IS NULL OR model_of = ' . $this->app['authentication']->getUser()->getId() . ' ) ';
         } else {
-            $sql .= ' AND model_of=0';
+            $sql .= ' AND model_of IS NULL';
         }
 
         if ($this->activities) {
@@ -299,7 +300,7 @@ class User_Query implements User_QueryInterface
         }
 
         if ($this->in_ids) {
-            $sql .= 'AND (usr.usr_id = ' . implode(' OR usr.usr_id = ', $this->in_ids) . ')';
+            $sql .= 'AND (Users.id = ' . implode(' OR Users.id = ', $this->in_ids) . ')';
         }
 
         if ($this->have_rights) {
@@ -315,7 +316,7 @@ class User_Query implements User_QueryInterface
         }
 
         if ($this->last_model) {
-            $sql .= ' AND usr.lastModel = ' . $this->app['phraseanet.appbox']->get_connection()->quote($this->last_model) . ' ';
+            $sql .= ' AND Users.lastModel = ' . $this->app['phraseanet.appbox']->get_connection()->quote($this->last_model) . ' ';
         }
 
         $sql_like = [];
@@ -329,8 +330,8 @@ class User_Query implements User_QueryInterface
                             continue;
 
                         $qrys[] = sprintf(
-                            ' (usr.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci
-                OR usr.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci)  '
+                            ' (Users.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci
+                OR Users.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci)  '
                             , self::LIKE_FIRSTNAME
                             , str_replace(['"', '%'], ['\"', '\%'], $like_val)
                             , self::LIKE_LASTNAME
@@ -349,7 +350,7 @@ class User_Query implements User_QueryInterface
                 case self::LIKE_LOGIN:
                 case self::LIKE_COUNTRY:
                     $sql_like[] = sprintf(
-                        ' usr.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci '
+                        ' Users.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci '
                         , $like_field
                         , str_replace(['"', '%'], ['\"', '\%'], $like_value)
                     );
@@ -396,7 +397,7 @@ class User_Query implements User_QueryInterface
 
     public function last_model_is($login = null)
     {
-        $this->last_model = $login instanceof \User_Adapter ? $login->get_login() : $login;
+        $this->last_model = $login instanceof User ? $login->getLogin() : $login;
 
         return $this;
     }
@@ -489,7 +490,7 @@ class User_Query implements User_QueryInterface
     public function execute()
     {
         $conn = $this->app['phraseanet.appbox']->get_connection();
-        $sql = 'SELECT DISTINCT usr.usr_id ' . $this->generate_sql_constraints();
+        $sql = 'SELECT DISTINCT Users.id ' . $this->generate_sql_constraints();
 
         if ('' !== $sorter = $this->generate_sort_constraint()) {
             $sql .= ' ORDER BY ' . $sorter;
@@ -511,7 +512,7 @@ class User_Query implements User_QueryInterface
         $users = new ArrayCollection();
 
         foreach ($rs as $row) {
-            $users[] = User_Adapter::getInstance($row['usr_id'], $this->app);
+            $users[] = $this->app['manipulator.user']->getRepository()->find($row['id']);
         }
 
         $this->results = $users;
@@ -531,7 +532,7 @@ class User_Query implements User_QueryInterface
 
         $conn = $this->app['phraseanet.appbox']->get_connection();
 
-        $sql_count = 'SELECT COUNT(DISTINCT usr.usr_id) as total '
+        $sql_count = 'SELECT COUNT(DISTINCT Users.id) as total '
             . $this->generate_sql_constraints();
 
         $stmt = $conn->prepare($sql_count);
@@ -864,9 +865,9 @@ class User_Query implements User_QueryInterface
     {
         $conn = $this->app['phraseanet.appbox']->get_connection();
 
-        $sql = 'SELECT DISTINCT usr.activite ' . $this->generate_sql_constraints();
+        $sql = 'SELECT DISTINCT Users.activity ' . $this->generate_sql_constraints();
 
-        $sql .= ' ORDER BY usr.activite';
+        $sql .= ' ORDER BY Users.activity';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($this->sql_params);
@@ -876,7 +877,7 @@ class User_Query implements User_QueryInterface
         $activities = [];
 
         foreach ($rs as $row) {
-            if (trim($row['activite']) === '')
+            if (trim($row['activity']) === '')
                 continue;
 
             $activities[] = $row['activite'];
@@ -889,9 +890,9 @@ class User_Query implements User_QueryInterface
     {
         $conn = $this->app['phraseanet.appbox']->get_connection();
 
-        $sql = 'SELECT DISTINCT usr.fonction ' . $this->generate_sql_constraints();
+        $sql = 'SELECT DISTINCT Users.job ' . $this->generate_sql_constraints();
 
-        $sql .= ' ORDER BY usr.fonction';
+        $sql .= ' ORDER BY Users.job';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($this->sql_params);
@@ -901,10 +902,10 @@ class User_Query implements User_QueryInterface
         $fonction = [];
 
         foreach ($rs as $row) {
-            if (trim($row['fonction']) === '')
+            if (trim($row['job']) === '')
                 continue;
 
-            $fonction[] = $row['fonction'];
+            $fonction[] = $row['job'];
         }
 
         return $fonction;
@@ -916,9 +917,9 @@ class User_Query implements User_QueryInterface
 
         $conn = $this->app['phraseanet.appbox']->get_connection();
 
-        $sql = 'SELECT DISTINCT usr.pays ' . $this->generate_sql_constraints();
+        $sql = 'SELECT DISTINCT Users.country ' . $this->generate_sql_constraints();
 
-        $sql .= ' ORDER BY usr.pays';
+        $sql .= ' ORDER BY Users.country';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($this->sql_params);
@@ -930,11 +931,11 @@ class User_Query implements User_QueryInterface
         $ctry = \getCountries($this->app['locale']);
 
         foreach ($rs as $row) {
-            if (trim($row['pays']) === '')
+            if (trim($row['country']) === '')
                 continue;
 
-            if (isset($ctry[$row['pays']]))
-                $pays[$row['pays']] = $ctry[$row['pays']];
+            if (isset($ctry[$row['country']]))
+                $pays[$row['country']] = $ctry[$row['country']];
         }
 
         return $pays;
@@ -944,9 +945,9 @@ class User_Query implements User_QueryInterface
     {
         $conn = $this->app['phraseanet.appbox']->get_connection();
 
-        $sql = 'SELECT DISTINCT usr.societe ' . $this->generate_sql_constraints();
+        $sql = 'SELECT DISTINCT Users.company ' . $this->generate_sql_constraints();
 
-        $sql .= ' ORDER BY usr.societe';
+        $sql .= ' ORDER BY Users.company';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($this->sql_params);
@@ -956,10 +957,10 @@ class User_Query implements User_QueryInterface
         $societe = [];
 
         foreach ($rs as $row) {
-            if (trim($row['societe']) === '')
+            if (trim($row['company']) === '')
                 continue;
 
-            $societe[] = $row['societe'];
+            $societe[] = $row['company'];
         }
 
         return $societe;
@@ -969,9 +970,9 @@ class User_Query implements User_QueryInterface
     {
         $conn = $this->app['phraseanet.appbox']->get_connection();
 
-        $sql = 'SELECT DISTINCT usr.lastModel ' . $this->generate_sql_constraints();
+        $sql = 'SELECT DISTINCT Users.last_model ' . $this->generate_sql_constraints();
 
-        $sql .= ' ORDER BY usr.lastModel';
+        $sql .= ' ORDER BY Users.last_model';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($this->sql_params);
@@ -981,10 +982,10 @@ class User_Query implements User_QueryInterface
         $lastModel = [];
 
         foreach ($rs as $row) {
-            if (trim($row['lastModel']) === '')
+            if (trim($row['last_model']) === '')
                 continue;
 
-            $lastModel[] = $row['lastModel'];
+            $lastModel[] = $row['last_model'];
         }
 
         return $lastModel;
@@ -1004,13 +1005,13 @@ class User_Query implements User_QueryInterface
                 case self::SORT_COMPANY:
                 case self::SORT_LOGIN:
                 case self::SORT_EMAIL:
-                    $sorter[$k] = ' usr.`' . $sort . '` COLLATE utf8_unicode_ci ';
+                    $sorter[$k] = ' Users.`' . $sort . '` COLLATE utf8_unicode_ci ';
                     break;
                 case self::SORT_ID:
                 case self::SORT_CREATIONDATE:
                 case self::SORT_COUNTRY:
                 case self::SORT_LASTMODEL:
-                    $sorter[$k] = ' usr.`' . $sort . '` ';
+                    $sorter[$k] = ' Users.`' . $sort . '` ';
                     break;
                 default:
                     break;

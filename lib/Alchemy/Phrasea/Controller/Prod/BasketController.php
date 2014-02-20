@@ -99,8 +99,8 @@ class BasketController implements ControllerProviderInterface
         }
 
         if ($basket->getValidation()) {
-            if ($basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->getIsAware() === false) {
-                $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->setIsAware(true);
+            if ($basket->getValidation()->getParticipant($app['authentication']->getUser())->getIsAware() === false) {
+                $basket->getValidation()->getParticipant($app['authentication']->getUser())->setIsAware(true);
                 $app['EM']->flush();
             }
         }
@@ -118,7 +118,7 @@ class BasketController implements ControllerProviderInterface
         $Basket = new BasketEntity();
 
         $Basket->setName($request->request->get('name', ''));
-        $Basket->setOwner($app['authentication']->getUser());
+        $Basket->setUser($app['authentication']->getUser());
         $Basket->setDescription($request->request->get('desc'));
 
         $app['EM']->persist($Basket);

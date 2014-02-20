@@ -49,7 +49,7 @@ class patch_390alpha3a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return ['user-query'];
+        return ['user', 'user-query'];
     }
 
     /**
@@ -73,9 +73,11 @@ class patch_390alpha3a implements patchInterface
         $em = $app['EM'];
 
         foreach ($rs as $row) {
+            $user = $em->getPartialReference('Phraseanet:User', $row['usr_id']);
+
             $userQuery = new UserQuery();
             $userQuery->setQuery($row['query']);
-            $userQuery->setUsrId($row['usr_id']);
+            $userQuery->setUser($user);
 
             $em->persist($userQuery);
 

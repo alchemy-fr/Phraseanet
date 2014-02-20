@@ -138,14 +138,14 @@
     {% endif %}
         <li>
           {% if app['authentication'].isAuthenticated() %}
-            {% if app['authentication'].getUser().is_guest %}
+            {% if app['authentication'].getUser().isGuest %}
               <span>
                 {{ 'Guest' | trans }}
               </span>
             {% else %}
               <a target="_blank" href="{{ path('account') }}" title="{{ 'login:: Mon compte' | trans }}">
                 <span>
-                  {{app['authentication'].getUser().get_login()}}
+                  {{app['authentication'].getUser().getLogin()}}
                 </span>
               </a>
             {% endif %}

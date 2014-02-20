@@ -387,8 +387,8 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
     public function acceptable_records()
     {
         $func = function($record) {
-                return true;
-            };
+            return true;
+        };
 
         return $func;
     }

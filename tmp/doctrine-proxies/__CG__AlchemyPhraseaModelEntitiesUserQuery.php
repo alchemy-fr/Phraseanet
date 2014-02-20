@@ -64,10 +64,10 @@ class UserQuery extends \Alchemy\Phrasea\Model\Entities\UserQuery implements \Do
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'usrId', 'user', 'query', 'created');
+            return array('__isInitialized__', 'id', 'user', 'query', 'created');
         }
 
-        return array('__isInitialized__', 'id', 'usrId', 'user', 'query', 'created');
+        return array('__isInitialized__', 'id', 'user', 'query', 'created');
     }
 
     /**
@@ -191,28 +191,6 @@ class UserQuery extends \Alchemy\Phrasea\Model\Entities\UserQuery implements \Do
     /**
      * {@inheritDoc}
      */
-    public function getUsrId()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUsrId', array());
-
-        return parent::getUsrId();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setUsrId($usrId)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUsrId', array($usrId));
-
-        return parent::setUsrId($usrId);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getUser()
     {
 
@@ -224,7 +202,7 @@ class UserQuery extends \Alchemy\Phrasea\Model\Entities\UserQuery implements \Do
     /**
      * {@inheritDoc}
      */
-    public function setUser(\Alchemy\Phrasea\Model\Entities\User $user = NULL)
+    public function setUser(\Alchemy\Phrasea\Model\Entities\User $user)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', array($user));

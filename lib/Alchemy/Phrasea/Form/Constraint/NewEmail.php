@@ -27,9 +27,7 @@ class NewEmail extends Constraint
 
     public function isAlreadyRegistered($email)
     {
-        $ret = (Boolean) \User_Adapter::get_usr_id_from_email($this->app, $email);
-
-        return $ret;
+        return (Boolean) $this->app['manipulator.user']->getRepository()->findByEmail($email);
     }
 
     public static function create(Application $app)

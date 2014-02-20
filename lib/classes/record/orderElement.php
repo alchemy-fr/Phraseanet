@@ -52,9 +52,9 @@ class record_orderElement extends record_adapter
     public function get_order_master_name()
     {
         if ($this->order_master_id) {
-            $user = User_Adapter::getInstance($this->order_master_id, $this->app);
+            $user = $this->app['manipulator.user']->getRepository()->find($this->order_master_id);
 
-            return $user->get_display_name();
+            return $user->getDisplayName();
         }
 
         return '';

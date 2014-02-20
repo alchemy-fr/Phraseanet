@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Event;
 
 use Alchemy\Phrasea\Authentication\Context;
+use Alchemy\Phrasea\Model\Entities\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\EventDispatcher\Event as SfEvent;
@@ -23,7 +24,7 @@ class PostAuthenticate extends SfEvent
     private $request;
     private $response;
 
-    public function __construct(Request $request, Response $response, \User_Adapter $user, Context $context)
+    public function __construct(Request $request, Response $response, User $user, Context $context)
     {
         $this->request = $request;
         $this->response = $response;

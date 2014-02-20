@@ -98,11 +98,11 @@
         <fieldset>
             <legend>{{ 'setup:: administrateurs de l\'application' | trans }}</legend>
             <ul class="unstyled">
-                {% for usr_id, usr_login in admins %}
+                {% for user in admins %}
                     <li>
-                        <label class="checkbox" for="adm_{{ usr_id }}">
-                            <input type="checkbox" id="adm_{{ usr_id }}" name="admins[]" value="{{ usr_id }}" checked />
-                            {{ usr_login }}
+                        <label class="checkbox" for="adm_{{ user.getId() }}">
+                            <input type="checkbox" id="adm_{{ user.getId() }}" name="admins[]" value="{{ user.getId() }}" checked />
+                            {{ user.getLogin() }}
                         </label>
                     </li>
                 {% endfor %}

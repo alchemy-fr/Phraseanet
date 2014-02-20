@@ -47,7 +47,7 @@ class DisplaySettingServiceTest extends \PhraseanetTestCase
             'lalala'          => 'didou',
         ]);
 
-        $user = $this->getMock('Alchemy\Phrasea\Model\Entities\User');
+        $user = $this->createUserMock();
         $user->expects($this->any())->method('getSettings')->will($this->returnValue(new ArrayCollection()));
 
         $this->assertNull(self::$DI['app']['settings']->getUserSetting($user, 'lalala'));

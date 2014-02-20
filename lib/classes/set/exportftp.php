@@ -33,13 +33,13 @@ class set_exportftp extends set_export
     {
         $email_dest = '';
         if ($usr_to) {
-            $user_t = User_Adapter::getInstance($usr_to, $this->app);
-            $email_dest = $user_t->get_email();
+            $user_t = $this->app['manipulator.user']->getRepository()->find($usr_to);
+            $email_dest = $user_t->getEmail();
         }
 
         $text_mail_receiver = "Bonjour,\n"
             . "L'utilisateur "
-            . $this->app['authentication']->getUser()->get_display_name() . " (login : " . $this->app['authentication']->getUser()->get_login() . ") "
+            . $this->app['authentication']->getUser()->getDisplayName() . " (login : " . $this->app['authentication']->getUser()->getLogin() . ") "
             . "a fait un transfert FTP sur le serveur ayant comme adresse \""
             . $host . "\" avec le login \"" . $login . "\"  "
             . "et pour repertoire de destination \""
@@ -61,7 +61,7 @@ class set_exportftp extends set_export
             ->setUser($this->app['authentication']->getUser())
             ->setTextMailSender($text_mail_sender)
             ->setTextMailReceiver($text_mail_receiver)
-            ->setSendermail($this->app['authentication']->getUser()->get_email())
+            ->setSendermail($this->app['authentication']->getUser()->getEmail())
             ->setDestfolder($destfolder)
             ->setPassif($passif == '1')
             ->setPwd($password)

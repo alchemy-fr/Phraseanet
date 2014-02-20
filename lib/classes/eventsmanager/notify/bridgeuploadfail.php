@@ -79,7 +79,7 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
 
             $readyToSend = false;
             try {
-                $user = User_Adapter::getInstance($params['usr_id'], $this->app);
+                $user = $this->app['manipulator.user']->getRepository()->find($params['usr_id']);
                 $account = Bridge_Account::load_account($this->app, $params['account_id']);
                 $receiver = Receiver::fromUser($user);
                 $readyToSend = true;

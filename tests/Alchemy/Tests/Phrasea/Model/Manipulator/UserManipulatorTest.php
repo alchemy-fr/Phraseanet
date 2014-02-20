@@ -14,6 +14,14 @@ class UserManipulatorTest extends \PhraseanetTestCase
         $this->assertInstanceOf('\Alchemy\Phrasea\Model\Entities\User', self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login'));
     }
 
+    public function testDeleteUser()
+    {
+        $user = self::$DI['app']['manipulator.user']->createUser(uniqid('login'), 'password');
+        self::$DI['app']['manipulator.user']->delete($user);
+        $this->assertTrue($user->isDeleted());
+        $this->assertNull($user->getEmail());
+    }
+
     public function testCreateAdminUser()
     {
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'pass', 'admin@admin.com', true);
@@ -161,18 +169,18 @@ class UserManipulatorTest extends \PhraseanetTestCase
         self::$DI['app']['manipulator.user']->createTemplate('login', $user);
     }
 
-    public function testAddUserSetting()
+    public function testSetUserSetting()
     {
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
-        self::$DI['app']['manipulator.user']->addUserSetting($user, 'name' ,'value');
+        self::$DI['app']['manipulator.user']->setUserSetting($user, 'name' ,'value');
         $user = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login');
         $this->assertCount(1, $user->getSettings());
     }
 
-    public function testAddNotificationSetting()
+    public function testSetNotificationSetting()
     {
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
-        self::$DI['app']['manipulator.user']->addNotificationSetting($user, 'name', 'value');
+        self::$DI['app']['manipulator.user']->setNotificationSetting($user, 'name', 'value');
         $user = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login');
         $this->assertCount(1, $user->getNotificationSettings());
     }

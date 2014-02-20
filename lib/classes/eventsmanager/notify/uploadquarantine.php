@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Model\Entities\LazaretCheck;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
+use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailInfoRecordQuarantined;
 
@@ -71,9 +72,9 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
             $datas = $domXML->saveXml();
 
             //Sender
-            if (null !== $user = $lazaretFile->getSession()->getUser($this->app)) {
+            if (null !== $user = $lazaretFile->getSession()->getUser()) {
                 $sender = $domXML->createElement('sender');
-                $sender->appendChild($domXML->createTextNode($user->get_display_name()));
+                $sender->appendChild($domXML->createTextNode($user->getDisplayName()));
                 $root->appendChild($sender);
 
                 $this->notifyUser($user, $datas);
@@ -98,14 +99,14 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
     /**
      * Notifiy an user using the specified datas
      *
-     * @param \User_Adapter $user
-     * @param string        $datas
+     * @param User   $user
+     * @param string $datas
      */
-    private function notifyUser(\User_Adapter $user, $datas)
+    private function notifyUser(User $user, $datas)
     {
         $mailed = false;
 
-        if ($this->shouldSendNotificationFor($user->get_id())) {
+        if ($this->shouldSendNotificationFor($user->getId())) {
             $readyToSend = false;
             try {
                 $receiver = Receiver::fromUser($user);
@@ -121,7 +122,7 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
             }
         }
 
-        $this->broker->notify($user->get_id(), __CLASS__, $datas, $mailed);
+        $this->broker->notify($user->getId(), __CLASS__, $datas, $mailed);
     }
 
     /**
@@ -182,9 +183,7 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
      */
     public function is_available($usr_id)
     {
-        try {
-            $user = \User_Adapter::getInstance($usr_id, $this->app);
-        } catch (\Exception $e) {
+        if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
             return false;
         }
 

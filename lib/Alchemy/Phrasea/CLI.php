@@ -18,6 +18,7 @@ use Alchemy\Phrasea\Exception\RuntimeException;
 use Symfony\Component\Console;
 use Alchemy\Phrasea\Core\CLIProvider\CLIDriversServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\ComposerSetupServiceProvider;
+use Alchemy\Phrasea\Core\CLIProvider\DoctrineMigrationServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\LessBuilderServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\SignalHandlerServiceProvider;
@@ -31,7 +32,6 @@ use Alchemy\Phrasea\Core\CLIProvider\TaskManagerServiceProvider;
  */
 class CLI extends Application
 {
-
     /**
      * Registers the autoloader and necessary components.
      *
@@ -63,6 +63,7 @@ class CLI extends Application
         $this->register(new SignalHandlerServiceProvider());
         $this->register(new TaskManagerServiceProvider());
         $this->register(new TranslationExtractorServiceProvider());
+        $this->register(new DoctrineMigrationServiceProvider());
 
         $this->bindRoutes();
     }

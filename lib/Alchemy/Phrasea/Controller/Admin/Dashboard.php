@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Controller\Admin;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailTest;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,7 +70,7 @@ class Dashboard implements ControllerProviderInterface
 
         $parameters = [
             'cache_flushed'                 => $request->query->get('flush_cache') === 'ok',
-            'admins'                        => \User_Adapter::get_sys_admins($app),
+            'admins'                        => $app['manipulator.user']->getRepository()->findAdmins(),
             'email_status'                  => $emailStatus,
         ];
 
@@ -132,9 +133,7 @@ class Dashboard implements ControllerProviderInterface
      */
     public function resetAdminRights(Application $app, Request $request)
     {
-        $app['manipulator.acl']->resetAdminRights(array_map(function ($id) use ($app) {
-            return \User_Adapter::getInstance($id, $app);
-        }, array_keys(\User_Adapter::get_sys_admins($app))));
+        $app['manipulator.acl']->resetAdminRights($app['manipulator.user']->getRepository()->findAdmins());
 
         return $app->redirectPath('admin_dashbord');
     }
@@ -148,19 +147,24 @@ class Dashboard implements ControllerProviderInterface
      */
     public function addAdmins(Application $app, Request $request)
     {
-        if (count($admins = $request->request->get('admins', [])) > 0) {
-
-            if (!in_array($app['authentication']->getUser()->get_id(), $admins)) {
-                $admins[] = $app['authentication']->getUser()->get_id();
-            }
-
-            if ($admins > 0) {
-                \User_Adapter::set_sys_admins($app, array_filter($admins));
-                $app['manipulator.acl']->resetAdminRights(array_map(function ($id) use ($app) {
-                    return \User_Adapter::getInstance($id, $app);
-                }, array_keys(\User_Adapter::get_sys_admins($app))));
-            }
+        $admins = $request->request->get('admins', []);
+        if (count($admins) === 0 || !is_array($admins)) {
+            $app->abort(400, '"admins" parameter must contains at least one value.');
         }
+        if (!in_array($app['authentication']->getUser()->getId(), $admins)) {
+            $admins[] = $app['authentication']->getUser()->getId();
+        }
+
+        $admins = array_map(function ($usrId) use ($app) {
+            if (null === $user = $app['manipulator.user']->getRepository()->find($usrId)) {
+                throw new RuntimeException(sprintf('Invalid usrId %s provided.', $usrId));
+            }
+
+            return $user;
+        }, $admins);
+
+        $app['manipulator.user']->promote($admins);
+        $app['manipulator.acl']->resetAdminRights($admins);
 
         return $app->redirectPath('admin_dashbord');
     }

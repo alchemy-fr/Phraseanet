@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Feed\FeedInterface;
 use Alchemy\Phrasea\Model\Entities\AggregateToken;
+use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
@@ -42,7 +43,7 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
     /**
      * {@inheritdoc}
      */
-    public function generate(FeedInterface $aggregate, \User_Adapter $user, $format, $page = null, $renew = false)
+    public function generate(FeedInterface $aggregate, User $user, $format, $page = null, $renew = false)
     {
         if (!$this->supports($aggregate)) {
             throw new InvalidArgumentException('AggregateLinkGenerator only support aggregate feeds.');
@@ -127,16 +128,16 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
         }
     }
 
-    private function getAggregateToken(\User_Adapter $user, $renew = false)
+    private function getAggregateToken(User $user, $renew = false)
     {
         $token = $this->em
             ->getRepository('Phraseanet:AggregateToken')
-            ->findOneBy(['usrId' => $user->get_id()]);
+            ->findOneBy(['user' => $user]);
 
         if (null === $token || true === $renew) {
             if (null === $token) {
                 $token = new AggregateToken();
-                $token->setUsrId($user->get_id());
+                $token->setUser($user);
             }
 
             $token->setValue($this->random->generatePassword(12, \random::LETTERS_AND_NUMBERS));

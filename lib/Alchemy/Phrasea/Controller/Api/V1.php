@@ -82,7 +82,7 @@ class V1 implements ControllerProviderInterface
                 return;
             }
 
-            $user = \User_Adapter::getInstance($oauth2_adapter->get_usr_id(), $app);
+            $user = $app['manipulator.user']->getRepository()->find($oauth2_adapter->get_usr_id());
 
             $app['authentication']->openAccount($user);
             $oauth2_adapter->remember_this_ses_id($app['session']->get('session_id'));

@@ -97,7 +97,7 @@
       <li>
         <a href="#rights_tab">{{ 'Rights' | trans }}</a>
       </li>
-      {% if main_user is not empty and main_user.is_template is empty and main_user.is_special is empty %}
+      {% if main_user is not empty and main_user.isTemplate is empty and main_user.isSpecial is empty %}
       <li>
         <a href="#user_infos_tab">{{ 'Infos' | trans }}</a>
       </li>
@@ -111,14 +111,14 @@
             <td>
               {% if main_user is not empty %}
 
-                {% if main_user.is_special is not empty %}
-                  {% if main_user.get_login() == 'invite' %}
-                    {{ 'Reglages:: reglages d acces guest' | trans }}
-                  {% elseif main_user.get_login() == 'autoregister' %}
-                    {{ 'Reglages:: reglages d inscitpition automatisee' | trans }}
+                {% if main_user.isSpecial is not empty %}
+                  {% if main_user.getLogin() == 'invite' %}
+                      {{ 'Reglages:: reglages d acces guest' | trans }}
+                  {% elseif main_user.getLogin() == 'autoregister' %}
+                      {{ 'Reglages:: reglages d inscitpition automatisee' | trans }}
                   {% endif %}
                 {% else %}
-                  {% set display_name = main_user.get_display_name() %}
+                  {% set display_name = main_user.getDisplayName() %}
                   {% trans with {'%display_name%' : display_name} %}Edition des droits de %display_name%{% endtrans %}
                 {% endif %}
               {% else %}
@@ -131,7 +131,7 @@
               <select name="template">
                 <option value="">{{ 'boutton::choisir' | trans }}</option>
                 {% for template in templates %}
-                <option value="{{ template.get_id() }}">{{ template.get_display_name() }}</option>
+                    <option value="{{ template.getId() }}">{{ template.getLogin() }}</option>
                 {% endfor %}
               </select>
                <button class="btn" type='button' id='reset_rights'>{{ 'Delete all users rights' | trans }}</button>
@@ -435,7 +435,7 @@
       </form>
     </div>
 
-    {% if main_user is not empty and main_user.is_template is empty and main_user.is_special is empty %}
+    {% if main_user is not empty and main_user.isTemplate is empty and main_user.isSpecial is empty %}
     <div id="user_infos_tab" class="PNB" style="top:40px;overflow:auto;">
       <form id="user_infos_form">
         <table>
@@ -444,7 +444,7 @@
               {{ 'admin::compte-utilisateur identifiant' | trans }}
             </td>
             <td>
-              <input type="text" value="{{main_user.get_login()}}" readonly="readonly" />
+              <input type="text" value="{{main_user.getLogin()}}" readonly="readonly" />
             </td>
           </tr>
           <tr>
@@ -453,9 +453,9 @@
             </td>
             <td>
               <select name="gender">
-                <option {% if main_user.get_gender() == 0 %}selected="selected"{% endif %} value="0" >{{ 'admin::compte-utilisateur:sexe: mademoiselle' | trans }}</option>
-                <option {% if main_user.get_gender() == 1 %}selected="selected"{% endif %} value="1" >{{ 'admin::compte-utilisateur:sexe: madame' | trans }}</option>
-                <option {% if main_user.get_gender() == 2 %}selected="selected"{% endif %} value="2" >{{ 'admin::compte-utilisateur:sexe: monsieur' | trans }}</option>
+                <option {% if main_user.getGender() == 0 %}selected="selected"{% endif %} value="0" >{{ 'admin::compte-utilisateur:sexe: mademoiselle' | trans }}</option>
+                <option {% if main_user.getGender() == 1 %}selected="selected"{% endif %} value="1" >{{ 'admin::compte-utilisateur:sexe: madame' | trans }}</option>
+                <option {% if main_user.getGender() == 2 %}selected="selected"{% endif %} value="2" >{{ 'admin::compte-utilisateur:sexe: monsieur' | trans }}</option>
               </select>
             </td>
           </tr>
@@ -464,7 +464,7 @@
               {{ 'admin::compte-utilisateur prenom' | trans }}
             </td>
             <td>
-              <input type="text" name="first_name" value="{{main_user.get_firstname()}}"/>
+              <input type="text" name="first_name" value="{{main_user.getFirstName()}}"/>
             </td>
           </tr>
           <tr>
@@ -472,7 +472,7 @@
               {{ 'admin::compte-utilisateur nom' | trans }}
             </td>
             <td>
-              <input type="text" name="last_name" value="{{main_user.get_lastname()}}"/>
+              <input type="text" name="last_name" value="{{main_user.getLastName()}}"/>
             </td>
           </tr>
           <tr>
@@ -480,7 +480,7 @@
               {{ 'admin::compte-utilisateur email' | trans }}
             </td>
             <td>
-              <input type="text" name="email" value="{{main_user.get_email()}}"/>
+              <input type="text" name="email" value="{{main_user.getEmail()}}"/>
             </td>
           </tr>
           <tr>
@@ -488,7 +488,7 @@
               {{ 'admin::compte-utilisateur adresse' | trans }}
             </td>
             <td>
-              <input type="text" name="address" value="{{main_user.get_address()}}"/>
+              <input type="text" name="address" value="{{main_user.getAddress()}}"/>
             </td>
           </tr>
           <tr>
@@ -496,7 +496,7 @@
               {{ 'admin::compte-utilisateur code postal' | trans }}
             </td>
             <td>
-              <input type="text" name="zip" value="{{main_user.get_zipcode()}}"/>
+              <input type="text" name="zip" value="{{main_user.getZipCode()}}"/>
             </td>
           </tr>
           <tr>
@@ -504,7 +504,7 @@
               {{ 'admin::compte-utilisateur ville' | trans }}
             </td>
             <td>
-              <input type="text" value="{{ main_user.get_geonameid() }}" class="geoname_field" name="geonameid" />
+              <input type="text" value="{{ main_user.getGeonameId() }}" class="geoname_field" name="geonameid" />
             </td>
           </tr>
           <tr>
@@ -512,7 +512,7 @@
               {{ 'admin::compte-utilisateur poste' | trans }}
             </td>
             <td>
-              <input type="text" name="function" value="{{main_user.get_position()}}"/>
+              <input type="text" name="function" value="{{main_user.getActivity()}}"/>
             </td>
           </tr>
           <tr>
@@ -520,7 +520,7 @@
               {{ 'admin::compte-utilisateur societe' | trans }}
             </td>
             <td>
-              <input type="text" name="company" value="{{main_user.get_company()}}"/>
+              <input type="text" name="company" value="{{main_user.getCompany()}}"/>
             </td>
           </tr>
           <tr>
@@ -528,7 +528,7 @@
               {{ 'admin::compte-utilisateur activite' | trans }}
             </td>
             <td>
-              <input type="text" name="activite" value="{{main_user.get_job()}}"/>
+              <input type="text" name="activite" value="{{main_user.getJob()}}"/>
             </td>
           </tr>
 
@@ -537,7 +537,7 @@
               {{ 'admin::compte-utilisateur telephone' | trans }}
             </td>
             <td>
-              <input type="text" name="telephone" value="{{main_user.get_tel()}}"/>
+              <input type="text" name="telephone" value="{{main_user.getPhone()}}"/>
             </td>
           </tr>
           <tr>
@@ -545,7 +545,7 @@
               {{ 'admin::compte-utilisateur fax' | trans }}
             </td>
             <td>
-              <input type="text" name="fax" value="{{main_user.get_fax()}}"/>
+              <input type="text" name="fax" value="{{main_user.getFax()}}"/>
             </td>
           </tr>
         </table>

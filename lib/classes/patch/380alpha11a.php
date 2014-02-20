@@ -50,7 +50,7 @@ class patch_380alpha11a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return ['session'];
+        return ['user', 'session'];
     }
 
     /**
@@ -80,9 +80,11 @@ class patch_380alpha11a implements patchInterface
                 $updated = \DateTime::createFromFormat('Y-m-d H:i:s', $row['lastaccess']);
             }
 
+            $user = $app['EM']->getPartialReference('Phraseanet:User', $row['usr_id']);
+
             $session = new Session();
             $session
-                ->setUsrId($row['usr_id'])
+                ->setUser($user)
                 ->setUserAgent($row['user_agent'])
                 ->setUpdated($updated)
                 ->setToken($row['token'])

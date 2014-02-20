@@ -118,9 +118,9 @@ class Session_Logger
 
         $params = [
             ':ses_id'          => $app['session']->get('session_id'),
-            ':usr_login'       => $app['authentication']->getUser() ? $app['authentication']->getUser()->get_login() : null,
+            ':usr_login'       => $app['authentication']->getUser() ? $app['authentication']->getUser()->getLogin() : null,
             ':site_id'         => $app['conf']->get(['main', 'key']),
-            ':usr_id'          => $app['authentication']->isAuthenticated() ? $app['authentication']->getUser()->get_id() : null,
+            ':usr_id'          => $app['authentication']->isAuthenticated() ? $app['authentication']->getUser()->getId() : null,
             ':browser'         => $browser->getBrowser(),
             ':browser_version' => $browser->getExtendedVersion(),
             ':platform'        => $browser->getPlatform(),
@@ -128,10 +128,10 @@ class Session_Logger
             ':ip'              => $browser->getIP(),
             ':user_agent'      => $browser->getUserAgent(),
             ':appli'           => serialize([]),
-            ':fonction' => $app['authentication']->getUser() ? $app['authentication']->getUser()->get_job() : null,
-            ':company'  => $app['authentication']->getUser() ? $app['authentication']->getUser()->get_company() : null,
-            ':activity' => $app['authentication']->getUser() ? $app['authentication']->getUser()->get_position() : null,
-            ':country'  => $app['authentication']->getUser() ? $app['authentication']->getUser()->get_country() : null
+            ':fonction' => $app['authentication']->getUser() ? $app['authentication']->getUser()->getJob() : null,
+            ':company'  => $app['authentication']->getUser() ? $app['authentication']->getUser()->getCompany() : null,
+            ':activity' => $app['authentication']->getUser() ? $app['authentication']->getUser()->getActivity() : null,
+            ':country'  => $app['authentication']->getUser() ? $app['authentication']->getUser()->getCountry() : null
         ];
 
         $stmt = $conn->prepare($sql);
@@ -205,10 +205,6 @@ class Session_Logger
             $app['EM']->flush();
         }
 
-        $usrId = $app['authentication']->getUser()->get_id();
-
-        $user = User_Adapter::getInstance($usrId, $app);
-
         $appName = [
             '1' => 'Prod',
             '2' => 'Client',
@@ -222,7 +218,7 @@ class Session_Logger
         ];
 
         if (isset($appName[$appId])) {
-            $sbas_ids = array_keys($app['acl']->get($user)->get_granted_sbas());
+            $sbas_ids = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_sbas());
 
             foreach ($sbas_ids as $sbas_id) {
                 try {

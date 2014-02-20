@@ -18,7 +18,7 @@
   <br/>
 {% endif %}
 
-{% set th_size = app['authentication'].getUser().getPrefs('images_size')%}
+{% set th_size = app['settings'].getUserSetting(app['authentication'].getUser(), 'images_size')%}
 
 {% if app['locale'] == 'fr' %}
     <div class="client_help">

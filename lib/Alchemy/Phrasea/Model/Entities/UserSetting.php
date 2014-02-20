@@ -32,13 +32,8 @@ class UserSetting
     private $id;
 
     /**
-     * @ORM\Column(type="integer", name="usr_id")
-     */
-    private $usrId;
-
-    /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="settings")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      **/
     private $user;
 
@@ -85,29 +80,9 @@ class UserSetting
      *
      * @return UserSetting
      */
-    public function setUser(User $user = null)
+    public function setUser(User $user)
     {
         $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getUsrId()
-    {
-        return $this->usrId;
-    }
-
-    /**
-     * @param integer $usrId
-     *
-     * @return UserSetting
-     */
-    public function setUsrId($usrId)
-    {
-        $this->usrId = $usrId;
 
         return $this;
     }

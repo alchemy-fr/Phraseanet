@@ -49,7 +49,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->logout(self::$DI['app']);
 
         $Basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
-        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_VIEW, self::$DI['user_alt2']->get_id(), null, $Basket->getId());
+        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_VIEW, self::$DI['user_alt2']->getId(), null, $Basket->getId());
 
         self::$DI['client']->request('GET', '/lightbox/?LOG='.$token);
 
@@ -321,9 +321,10 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
         $validationBasket = self::$DI['app']['EM']->find('Phraseanet:Basket', 4);
 
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoValidationDone');
+        $this->mockUserNotificationSettings('eventsmanager_notify_validationdone');
 
         foreach ($validationBasket->getElements() as $element) {
-            $element->getUserValidationDatas(self::$DI['user'], self::$DI['app'])->setAgreement(true);
+            $element->getUserValidationDatas(self::$DI['user'])->setAgreement(true);
             break;
         }
 

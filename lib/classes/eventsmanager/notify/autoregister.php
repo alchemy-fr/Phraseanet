@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailInfoSomebodyAutoregistered;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
 {
@@ -38,11 +39,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = [
-            'usr_id'       => ''
-            , 'autoregister' => []
-        ];
-
+        $default = ['usr_id' => '' , 'autoregister' => []];
         $params = array_merge($default, $params);
         $base_ids = array_keys($params['autoregister']);
 
@@ -52,29 +49,19 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
 
         $mailColl = [];
 
-        $sql = 'SELECT u.usr_id, b.base_id FROM usr u, basusr b
-      WHERE u.usr_id = b.usr_id
-      AND b.base_id
-        IN (' . implode(', ', array_keys($base_ids)) . ')
-      AND model_of="0"
-      AND b.actif="1"
-      AND b.canadmin="1"
-          AND u.usr_login NOT LIKE "(#deleted%"';
-
         try {
-            $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute();
-            $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $rs = $this->app['EM.native-query']->getAdminsOfBases(array_keys($base_ids));
 
             foreach ($rs as $row) {
-                if ( ! isset($mailColl[$row['usr_id']]))
-                    $mailColl[$row['usr_id']] = [];
+                $user = $row[0];
 
-                $mailColl[$row['usr_id']][] = $row['base_id'];
+                if (!isset($mailColl[$user->getId()])) {
+                    $mailColl[$user->getId()] = [];
+                }
+
+                $mailColl[$user->getId()][] = $row['base_id'];
             }
         } catch (Exception $e) {
-
         }
 
         $dom_xml = new DOMDocument('1.0', 'UTF-8');
@@ -102,9 +89,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
 
         $datas = $dom_xml->saveXml();
 
-        try {
-            $registered_user = User_Adapter::getInstance($params['usr_id'], $this->app);
-        } catch (Exception $e) {
+        if (null === $registered_user = $this->app['manipulator.user']->getRepository()->find($params['usr_id'])) {
             return;
         }
 
@@ -113,9 +98,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
             $mailed = false;
 
             if ($this->shouldSendNotificationFor($usr_id)) {
-                try {
-                    $admin_user = User_Adapter::getInstance($usr_id, $this->app);
-                } catch (Exception $e) {
+                if (null === $admin_user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
                     continue;
                 }
 
@@ -140,16 +123,13 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
         $sx = simplexml_load_string($datas);
 
         $usr_id = (string) $sx->usr_id;
-        try {
-            User_Adapter::getInstance($usr_id, $this->app);
-        } catch (Exception $e) {
+
+        if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
             return [];
         }
 
-        $sender = User_Adapter::getInstance($usr_id, $this->app)->get_display_name();
-
         $ret = [
-            'text'  => $this->app->trans('%user% s\'est enregistre sur une ou plusieurs %before_link% scollections %after_link%', ['%user%' => $sender, '%before_link%' => '<a href="/admin/?section=users" target="_blank">', '%after_link%' => '</a>'])
+            'text'  => $this->app->trans('%user% s\'est enregistre sur une ou plusieurs %before_link% scollections %after_link%', ['%user%' => $user->getDisplayName(), '%before_link%' => '<a href="/admin/?section=users" target="_blank">', '%after_link%' => '</a>'])
             , 'class' => ''
         ];
 
@@ -176,18 +156,19 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param \User_Adapter $to
-     * @param \User_Adapter $registeredUser
+     * @param User $to
+     * @param User $registeredUser
      *
      * @return boolean
      */
-    public function mail(\User_Adapter $to, \User_Adapter $registeredUser)
+    public function mail(User $to, User $registeredUser)
     {
-        $body .= sprintf("Login : %s\n", $registeredUser->get_login());
-        $body .= sprintf("%s : %s\n", $this->app->trans('admin::compte-utilisateur nom'), $registeredUser->get_firstname());
-        $body .= sprintf("%s : %s\n", $this->app->trans('admin::compte-utilisateur prenom'), $registeredUser->get_lastname());
-        $body .= sprintf("%s : %s\n", $this->app->trans('admin::compte-utilisateur email'), $registeredUser->get_email());
-        $body .= sprintf("%s/%s\n", $registeredUser->get_job(), $registeredUser->get_company());
+        $body = '';
+        $body .= sprintf("Login : %s\n", $registeredUser->getLogin());
+        $body .= sprintf("%s : %s\n", _('admin::compte-utilisateur nom'), $registeredUser->getFirstName());
+        $body .= sprintf("%s : %s\n", _('admin::compte-utilisateur prenom'), $registeredUser->getLastName());
+        $body .= sprintf("%s : %s\n", _('admin::compte-utilisateur email'), $registeredUser->getEmail());
+        $body .= sprintf("%s/%s\n", $registeredUser->get_job(), $registeredUser->getCompany());
 
         $readyToSend = false;
         try {
@@ -216,9 +197,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
             return false;
         }
 
-        try {
-            $user = \User_Adapter::getInstance($usr_id, $this->app);
-        } catch (\Exception $e) {
+        if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
             return false;
         }
 

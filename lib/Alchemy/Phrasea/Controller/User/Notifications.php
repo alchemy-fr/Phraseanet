@@ -59,7 +59,7 @@ class Notifications implements ControllerProviderInterface
         try {
             $app['events-manager']->read(
                 explode('_', (string) $request->request->get('notifications')),
-                $app['authentication']->getUser()->get_id()
+                $app['authentication']->getUser()->getId()
             );
 
             return $app->json(['success' => true, 'message' => '']);

@@ -36,7 +36,7 @@ class patch_370alpha7a implements patchInterface
      */
     public function require_all_upgrades()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -52,7 +52,7 @@ class patch_370alpha7a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return ['lazaret'];
+        return ['user', 'lazaret'];
     }
 
     /**
@@ -87,11 +87,9 @@ class patch_370alpha7a implements patchInterface
         $i = 0;
 
         foreach ($rs as $row) {
-
             $filePath = $app['root.path'] . '/tmp/lazaret/' . $row['filepath'];
 
             if (file_exists($filePath)) {
-
                 $spec = new ImageSpec();
 
                 $spec->setResizeMode(ImageSpec::RESIZE_MODE_INBOUND_FIXEDRATIO);
@@ -111,8 +109,10 @@ class patch_370alpha7a implements patchInterface
 
                 $borderFile = new \Alchemy\Phrasea\Border\File($app, $media, $collection);
 
+                $user = $user = $app['EM']->getPartialReference('Phraseanet:User', $row['usr_id']);
+
                 $lazaretSession = new LazaretSession();
-                $lazaretSession->setUsrId($row['usr_id']);
+                $lazaretSession->setUser($user);
 
                 $lazaretFile = new LazaretFile();
                 $lazaretFile->setBaseId($row['base_id']);

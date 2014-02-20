@@ -109,7 +109,7 @@ class OAuth2Test extends \PhraseanetAuthenticatedWebTestCase
     public static function getAccount()
     {
         $sql = "SELECT api_account_id FROM api_accounts WHERE application_id = :app_id AND usr_id = :usr_id";
-        $t = [":app_id" => self::$DI['oauth2-app-user']->get_id(), ":usr_id" => self::$DI['user']->get_id()];
+        $t = [":app_id" => self::$DI['oauth2-app-user']->get_id(), ":usr_id" => self::$DI['user']->getId()];
         $conn = self::$DI['app']['phraseanet.appbox']->get_connection();
         $stmt = $conn->prepare($sql);
         $stmt->execute($t);

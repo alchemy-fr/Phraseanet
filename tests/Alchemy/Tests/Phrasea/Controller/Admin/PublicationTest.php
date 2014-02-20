@@ -192,7 +192,7 @@ class PublicationTest extends \PhraseanetAuthenticatedWebTestCase
         $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
 
         self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/addpublisher/", [
-            'usr_id' => self::$DI['user_alt1']->get_id()
+            'usr_id' => self::$DI['user_alt1']->getId()
         ]);
 
         $response = self::$DI['client']->getResponse();
@@ -230,7 +230,7 @@ class PublicationTest extends \PhraseanetAuthenticatedWebTestCase
         $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
 
         self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/removepublisher/", [
-            'usr_id' => self::$DI['user_alt1']->get_id()
+            'usr_id' => self::$DI['user_alt1']->getId()
         ]);
 
         $response = self::$DI['client']->getResponse();
@@ -239,7 +239,7 @@ class PublicationTest extends \PhraseanetAuthenticatedWebTestCase
         $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', $feed->getId());
         $publishers = $feed->getPublishers();
 
-        $this->assertFalse(isset($publishers[self::$DI['user_alt1']->get_id()]));
+        $this->assertFalse(isset($publishers[self::$DI['user_alt1']->getId()]));
         $this->assertTrue(
             strpos(
                 self::$DI['client']->getResponse()->headers->get('Location')

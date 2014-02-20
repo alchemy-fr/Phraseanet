@@ -43,9 +43,12 @@ class Basket
     private $description;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $usr_id;
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
+     *
+     * @return User
+     **/
+    private $user;
 
     /**
      * @ORM\Column(type="boolean")
@@ -53,9 +56,12 @@ class Basket
     private $is_read = false;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $pusher_id;
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="pusher_id", referencedColumnName="id")
+     *
+     * @return User
+     **/
+    private $pusher;
 
     /**
      * @ORM\Column(type="boolean")
@@ -155,38 +161,23 @@ class Basket
     }
 
     /**
-     * Set usr_id
+     * @param User $user
      *
-     * @param  integer $usrId
      * @return Basket
      */
-    public function setUsrId($usrId)
+    public function setUser(User $user)
     {
-        $this->usr_id = $usrId;
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get usr_id
-     *
-     * @return integer
+     * @return User
      */
-    public function getUsrId()
+    public function getUser()
     {
-        return $this->usr_id;
-    }
-
-    public function setOwner(\User_Adapter $user)
-    {
-        $this->setUsrId($user->get_id());
-    }
-
-    public function getOwner(Application $app)
-    {
-        if ($this->getUsrId()) {
-            return \User_Adapter::getInstance($this->getUsrId(), $app);
-        }
+        return $this->user;
     }
 
     /**
@@ -213,38 +204,23 @@ class Basket
     }
 
     /**
-     * Set pusher_id
+     * @param User $user
      *
-     * @param  integer $pusherId
-     * @return Basket
+     * @return $this
      */
-    public function setPusherId($pusherId)
+    public function setPusher(User $user = null)
     {
-        $this->pusher_id = $pusherId;
+        $this->pusher = $user;
 
         return $this;
     }
 
     /**
-     * Get pusher_id
-     *
-     * @return integer
+     * @return mixed
      */
-    public function getPusherId()
+    public function getPusher()
     {
-        return $this->pusher_id;
-    }
-
-    public function setPusher(\User_Adapter $user)
-    {
-        $this->setPusherId($user->get_id());
-    }
-
-    public function getPusher(Application $app)
-    {
-        if ($this->getPusherId()) {
-            return \User_Adapter::getInstance($this->getPusherId(), $app);
-        }
+        return $this->pusher;
     }
 
     /**

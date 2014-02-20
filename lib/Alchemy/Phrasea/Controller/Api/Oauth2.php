@@ -91,7 +91,7 @@ class Oauth2 implements ControllerProviderInterface
                         return $app->redirectPath('oauth2_authorize', ['error' => 'account-locked']);
                     }
 
-                    $app['authentication']->openAccount(\User_Adapter::getInstance($usr_id, $app));
+                    $app['authentication']->openAccount($app['manipulator.user']->getRepository()->find($usr_id));
                 }
 
                 return new Response($app['twig']->render($template, ["auth" => $oauth2_adapter]));
@@ -109,7 +109,7 @@ class Oauth2 implements ControllerProviderInterface
                 }
             }
 
-            $account = $oauth2_adapter->updateAccount($app['authentication']->getUser()->get_id());
+            $account = $oauth2_adapter->updateAccount($app['authentication']->getUser()->getId());
 
             $params['account_id'] = $account->get_id();
 

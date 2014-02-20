@@ -358,7 +358,7 @@ class Xmlhttp implements ControllerProviderInterface
 
     public function EditingPresetsJson(Application $app, Request $request)
     {
-        $usr_id = $app['authentication']->getUser()->get_id();
+        $usr_id = $app['authentication']->getUser()->getId();
 
         $ret = ['parm' => [
                 'act'      => $request->get('act'),

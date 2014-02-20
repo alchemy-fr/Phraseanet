@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class Bridge_Account
 {
@@ -39,7 +40,7 @@ class Bridge_Account
 
     /**
      *
-     * @var User_Adapter
+     * @var User
      */
     protected $user;
 
@@ -94,7 +95,7 @@ class Bridge_Account
             throw new Bridge_Exception_AccountNotFound('Account Not Found');
 
         $this->dist_id = $row['dist_id'];
-        $this->user = User_Adapter::getInstance($row['usr_id'], $this->app);
+        $this->user = $this->app['manipulator.user']->getRepository()->find($row['usr_id']);
         $this->name = $row['name'];
         $this->updated_on = new DateTime($row['updated_on']);
         $this->created_on = new DateTime($row['created_on']);
@@ -143,7 +144,7 @@ class Bridge_Account
 
     /**
      *
-     * @return User_Adapter
+     * @return User
      */
     public function get_user()
     {
@@ -253,18 +254,18 @@ class Bridge_Account
      *
      * @param  Application    $app
      * @param  Bridge_Api     $api
-     * @param  User_Adapter   $user
+     * @param  User           $user
      * @param  string         $distant_id
      * @return Bridge_Account
      */
-    public static function load_account_from_distant_id(Application $app, Bridge_Api $api, User_Adapter $user, $distant_id)
+    public static function load_account_from_distant_id(Application $app, Bridge_Api $api, User $user, $distant_id)
     {
         $sql = 'SELECT id FROM bridge_accounts
             WHERE api_id = :api_id AND usr_id = :usr_id AND dist_id = :dist_id';
 
         $params = [
             ':api_id'  => $api->get_id()
-            , ':usr_id'  => $user->get_id()
+            , ':usr_id'  => $user->getId()
             , ':dist_id' => $distant_id
         ];
 
@@ -308,15 +309,15 @@ class Bridge_Account
     /**
      *
      * @param  Application    $app
-     * @param  user_adapter   $user
+     * @param  User           $user
      * @return Bridge_Account
      */
-    public static function get_accounts_by_user(Application $app, user_adapter $user)
+    public static function get_accounts_by_user(Application $app, User $user)
     {
         $sql = 'SELECT id, api_id FROM bridge_accounts WHERE usr_id = :usr_id';
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $user->get_id()]);
+        $stmt->execute([':usr_id' => $user->getId()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -340,15 +341,15 @@ class Bridge_Account
 
     /**
      *
-     * @param Application  $app
-     * @param Bridge_Api   $api
-     * @param User_Adapter $user
-     * @param string       $dist_id
-     * @param string       $name
+     * @param Application $app
+     * @param Bridge_Api  $api
+     * @param User        $user
+     * @param string      $dist_id
+     * @param string      $name
      *
      * @return Bridge_Account
      */
-    public static function create(Application $app, Bridge_Api $api, User_Adapter $user, $dist_id, $name)
+    public static function create(Application $app, Bridge_Api $api, User $user, $dist_id, $name)
     {
         $sql = 'INSERT INTO bridge_accounts
             (id, api_id, dist_id, usr_id, name, created_on, updated_on)
@@ -357,7 +358,7 @@ class Bridge_Account
         $params = [
             ':api_id'  => $api->get_id()
             , ':dist_id' => $dist_id
-            , ':usr_id'  => $user->get_id()
+            , ':usr_id'  => $user->getId()
             , ':name'    => $name
         ];
 

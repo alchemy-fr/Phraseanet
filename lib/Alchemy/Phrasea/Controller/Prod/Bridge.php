@@ -173,7 +173,7 @@ class Bridge implements ControllerProviderInterface
         try {
             $account = \Bridge_Account::load_account($app, $account_id);
 
-             if ($account->get_user()->get_id() !== $app['authentication']->getUser()->get_id()) {
+             if ($account->get_user()->getId() !== $app['authentication']->getUser()->getId()) {
                  throw new HttpException(403, 'Access forbiden');
              }
 

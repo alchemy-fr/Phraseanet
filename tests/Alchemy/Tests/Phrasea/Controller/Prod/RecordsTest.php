@@ -77,13 +77,10 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testGetRecordDetailAsGuest()
     {
-        $inviteUsrid = \User_Adapter::get_usr_id_from_login(self::$DI['app'], 'invite');
-        $invite_user = \User_Adapter::getInstance($inviteUsrid, self::$DI['app']);
-
-        $this->authenticate(self::$DI['app'], $invite_user);
+        $this->authenticate(self::$DI['app'], self::$DI['user_guest']);
 
         $basket = new Basket();
-        $basket->setUsrId($inviteUsrid);
+        $basket->setUser(self::$DI['user_guest']);
         $basket->setName('test');
 
         self::$DI['app']['EM']->persist($basket);

@@ -92,16 +92,14 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
 
         $datas = $dom_xml->saveXml();
 
-        try {
-            $orderInitiator = User_Adapter::getInstance($params['usr_id'], $this->app);
-        } catch (\Exception $e) {
+        if (null === $orderInitiator = $this->app['manipulator.user']->getRepository()->find($params['usr_id'])) {
             return;
         }
 
         foreach ($users as $user) {
             $mailed = false;
 
-            if ($this->shouldSendNotificationFor($user->get_id())) {
+            if ($this->shouldSendNotificationFor($user->getId())) {
                 $readyToSend = false;
                 try {
                     $receiver = Receiver::fromUser($user);
@@ -119,7 +117,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
                 }
             }
 
-            $this->broker->notify($user->get_id(), __CLASS__, $datas, $mailed);
+            $this->broker->notify($user->getId(), __CLASS__, $datas, $mailed);
         }
 
         return;
@@ -138,13 +136,11 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
         $usr_id = (string) $sx->usr_id;
         $order_id = (string) $sx->order_id;
 
-        try {
-            User_Adapter::getInstance($usr_id, $this->app);
-        } catch (Exception $e) {
+        if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
             return [];
         }
 
-        $sender = User_Adapter::getInstance($usr_id, $this->app)->get_display_name();
+        $sender = $user->getDisplayName();
 
         $ret = [
             'text'  => $this->app->trans('%user% a passe une %opening_link% commande %end_link%', [
@@ -182,9 +178,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
      */
     public function is_available($usr_id)
     {
-        try {
-            $user = \User_Adapter::getInstance($usr_id, $this->app);
-        } catch (\Exception $e) {
+        if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
             return false;
         }
 

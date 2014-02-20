@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\FtpExport;
 use Alchemy\Phrasea\Model\Entities\FtpExportElement;
 use Gedmo\Timestampable\TimestampableListener;
+use Doctrine\ORM\NoResultException;
 
 class patch_390alpha6a implements patchInterface
 {
@@ -94,8 +95,8 @@ class patch_390alpha6a implements patchInterface
 
         foreach ($rs as $row) {
             try {
-                $user = \User_Adapter::getInstance($row['usr_id'], $app);
-            } catch (\Exception $e) {
+                $user = $em->getPartialReference('Phraseanet:User', $row['usr_id']);
+            } catch (NoResultException $e) {
                 continue;
             }
 

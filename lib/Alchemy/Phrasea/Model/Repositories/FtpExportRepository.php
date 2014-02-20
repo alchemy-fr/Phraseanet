@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
+use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -62,12 +63,12 @@ class FtpExportRepository extends EntityRepository
     /**
      * Returns the exports initiated by a given user.
      *
-     * @param \User_Adapter $user
+     * @param User $user
      *
      * @return array
      */
-    public function findByUser(\User_Adapter $user)
+    public function findByUser(User $user)
     {
-        return $this->findBy(['usrId' => $user->get_id()]);
+        return $this->findBy(['user' => $user]);
     }
 }

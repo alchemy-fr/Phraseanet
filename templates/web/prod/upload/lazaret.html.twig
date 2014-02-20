@@ -266,9 +266,9 @@
                     <div class="caption">
                         <p>{{ "Filename" | trans }} : <span class="info">{{ file.getOriginalName() }}</span></p>
                         <p>{{ "Date" | trans }} : <span class="info">{{ app['date-formatter'].getPrettyString(file.getCreated()) }}</span></p>
-                        {% if file.getSession().getUser(app) is not none %}
+                        {% if file.getSession().getUser() is not none %}
                             <p>
-                                {% set username = '<a href="#" class="username userTips" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : file.getSession().getUser(app).get_id() }) ~ '/">' ~ file.getSession().getUser(app).get_display_name() ~ '</a>' %}
+                                {% set username = '<a href="#" class="username userTips" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : file.getSession().getUser(app).getId() }) ~ '/">' ~ file.getSession().getUser().getDisplayName() ~ '</a>' %}
                                 {% trans with {'%username%' : username} %}Uploaded by : %username%{% endtrans %}
                             </p>
                         {% endif %}

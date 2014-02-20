@@ -15,7 +15,7 @@ class NewLoginTest extends \PhraseanetTestCase
     public function testARegisteredLoginIsAlreadyRegistered()
     {
         $constraint = new NewLogin(self::$DI['app']);
-        $this->assertTrue($constraint->isAlreadyRegistered(self::$DI['user']->get_login()));
+        $this->assertTrue($constraint->isAlreadyRegistered(self::$DI['user']->getLogin()));
     }
 
     public function testNullIsNotAlreadyRegistered()

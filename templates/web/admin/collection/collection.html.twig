@@ -42,9 +42,9 @@
             <ul class="unstyled">
                 {% for user in admins %}
                     <li>
-                        <label for="adm_{{ user.get_id() }}" class="checkbox">
-                            <input name="admins[]" type="checkbox" value="{{ user.get_id() }}" id="adm_{{ user.get_id() }}" checked />
-                            {{ user.get_display_name() }}
+                        <label for="adm_{{ user.getId() }}" class="checkbox">
+                            <input name="admins[]" type="checkbox" value="{{ user.getId() }}" id="adm_{{ user.getId() }}" checked />
+                            {{ user.getDisplayName() }}
                         </label>
                     </li>
                 {% endfor %}

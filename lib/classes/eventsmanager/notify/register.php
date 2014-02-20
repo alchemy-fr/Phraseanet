@@ -53,29 +53,18 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
         $mailColl = [];
 
         try {
-            $sql = 'SELECT u.usr_id, b.base_id
-      FROM usr u, basusr b
-      WHERE u.usr_id = b.usr_id
-      AND b.base_id
-      IN (' . implode(', ', array_keys($base_ids)) . ')
-      AND model_of="0"
-      AND b.canadmin="1"
-      AND b.actif="1"
-          AND u.usr_login NOT LIKE "(#deleted%"';
-
-            $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute();
-            $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $rs = $this->app['EM.native-query']->getAdminsOfBases(array_keys($base_ids));
 
             foreach ($rs as $row) {
-                if ( ! isset($mailColl[$row['usr_id']]))
-                    $mailColl[$row['usr_id']] = [];
+                $user = $row[0];
 
-                $mailColl[$row['usr_id']][] = $row['base_id'];
+                if (!isset($mailColl[$user->getId()])) {
+                    $mailColl[$user->getId()] = [];
+                }
+
+                $mailColl[$user->getId()][] = $row['base_id'];
             }
         } catch (Exception $e) {
-
         }
 
         $dom_xml = new DOMDocument('1.0', 'UTF-8');
@@ -103,10 +92,8 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 
         $datas = $dom_xml->saveXml();
 
-        try {
-            $registeredUser = \User_Adapter::getInstance($params['usr_id'], $this->app);
-        } catch (\Exception $e) {
-            return;
+        if (null === $registeredUser = $this->app['manipulator.user']->getRepository()->find($params['usr_id'])) {
+          return;
         }
 
         foreach ($mailColl as $usr_id => $base_ids) {
@@ -115,7 +102,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
             if ($this->shouldSendNotificationFor($usr_id)) {
                 $readyToSend = false;
                 try {
-                    $admin_user = User_Adapter::getInstance($usr_id, $this->app);
+                    $admin_user = $this->app['manipulator.user']->getRepository()->find($usr_id);
                     $receiver = Receiver::fromUser($admin_user);
                     $readyToSend = true;
                 } catch (\Exception $e) {
@@ -150,13 +137,11 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 
         $usr_id = (string) $sx->usr_id;
 
-        try {
-            User_Adapter::getInstance($usr_id, $this->app);
-        } catch (Exception $e) {
+        if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
             return [];
         }
 
-        $sender = User_Adapter::getInstance($usr_id, $this->app)->get_display_name();
+        $sender = $user->getDisplayName();
 
         $ret = [
             'text'  => $this->app->trans('%user% demande votre approbation sur une ou plusieurs %before_link% collections %after_link%', ['%user%' => $sender, '%before_link%' => '<a href="' . $this->app->url('admin', ['section' => 'registrations']) . '" target="_blank">', '%after_link%' => '</a>'])
@@ -195,9 +180,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
             return false;
         }
 
-        try {
-            $user = \User_Adapter::getInstance($usr_id, $this->app);
-        } catch (\Exception $e) {
+        if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
             return false;
         }
 

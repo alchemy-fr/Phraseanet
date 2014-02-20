@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Feed;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\LogicException;
+use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Alchemy\Phrasea\Model\Entities\AggregateToken;
@@ -71,14 +72,14 @@ class Aggregate implements FeedInterface
      * Creates an aggregate from all the feeds available to a given user.
      *
      * @param EntityManager $em
-     * @param \User_Adapter $user
+     * @param User          $user
      *
      * @return Aggregate
      */
-    public static function createFromUser(Application $app, \User_Adapter $user)
+    public static function createFromUser(Application $app, User $user)
     {
         $feeds = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser($app['acl']->get($user));
-        $token = $app['EM']->getRepository('Phraseanet:AggregateToken')->findOneBy(['usrId' => $user->get_id()]);
+        $token = $app['EM']->getRepository('Phraseanet:AggregateToken')->findOneBy(['user' => $user]);
 
         return new static($app['EM'], $feeds, $token);
     }

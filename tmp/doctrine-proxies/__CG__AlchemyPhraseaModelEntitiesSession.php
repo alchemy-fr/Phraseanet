@@ -64,10 +64,10 @@ class Session extends \Alchemy\Phrasea\Model\Entities\Session implements \Doctri
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'usr_id', 'user_agent', 'ip_address', 'platform', 'browser_name', 'browser_version', 'screen_width', 'screen_height', 'token', 'nonce', 'created', 'updated', 'modules');
+            return array('__isInitialized__', 'id', 'user', 'user_agent', 'ip_address', 'platform', 'browser_name', 'browser_version', 'screen_width', 'screen_height', 'token', 'nonce', 'created', 'updated', 'modules');
         }
 
-        return array('__isInitialized__', 'id', 'usr_id', 'user_agent', 'ip_address', 'platform', 'browser_name', 'browser_version', 'screen_width', 'screen_height', 'token', 'nonce', 'created', 'updated', 'modules');
+        return array('__isInitialized__', 'id', 'user', 'user_agent', 'ip_address', 'platform', 'browser_name', 'browser_version', 'screen_width', 'screen_height', 'token', 'nonce', 'created', 'updated', 'modules');
     }
 
     /**
@@ -191,7 +191,7 @@ class Session extends \Alchemy\Phrasea\Model\Entities\Session implements \Doctri
     /**
      * {@inheritDoc}
      */
-    public function setUser(\User_Adapter $user)
+    public function setUser(\Alchemy\Phrasea\Model\Entities\User $user)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', array($user));
@@ -202,34 +202,12 @@ class Session extends \Alchemy\Phrasea\Model\Entities\Session implements \Doctri
     /**
      * {@inheritDoc}
      */
-    public function setUsrId($usrId)
+    public function getUser()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUsrId', array($usrId));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', array());
 
-        return parent::setUsrId($usrId);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getUser(\Alchemy\Phrasea\Application $app)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', array($app));
-
-        return parent::getUser($app);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getUsrId()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUsrId', array());
-
-        return parent::getUsrId();
+        return parent::getUser();
     }
 
     /**

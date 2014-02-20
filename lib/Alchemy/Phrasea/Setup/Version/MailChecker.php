@@ -26,7 +26,7 @@ class MailChecker
      * @param \Application $app
      * @param string       $table The table name where to look
      *
-     * @return array An array of User_Adapter
+     * @return array An array of User
      */
     public static function getWrongEmailUsers(Application $app, $table = 'usr')
     {

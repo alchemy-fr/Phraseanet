@@ -4,67 +4,51 @@ namespace Alchemy\Tests\Phrasea\Authentication\Phrasea;
 
 use Alchemy\Phrasea\Authentication\Phrasea\NativeAuthentication;
 use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class NativeAuthenticationTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider provideReservedUsernames
-     */
-    public function testReservedAreValid($username)
+    public function testAuthenticationSpecialUser()
     {
-        $password = 'popo42';
-
         $encoder = $this->getEncoderMock();
         $oldEncoder = $this->getOldEncoderMock();
-        $conn = $this->getMock('connection_interface');
         $request = $this->getRequestMock();
 
-        $auth = new NativeAuthentication($encoder, $oldEncoder, $conn);
-        $this->assertNull($auth->getUsrId($username, $password, $request));
-    }
+        $specialUser = $this->createUserMock();
+        $specialUser->expects($this->any())->method('isSpecial')->will($this->returnValue(true));
 
-    public function provideReservedUsernames()
-    {
-        return [
-            ['autoregister'],
-            ['invite'],
-        ];
+        $manipulator = $this->getUserManipulatorMock($specialUser);
+
+        $auth = new NativeAuthentication($encoder, $oldEncoder, $manipulator);
+        $this->assertNull($auth->getUsrId('a_login', 'a_password', $request));
     }
 
     public function testNotFoundIsNotValid()
     {
-        $username = 'romainneutron';
-        $password = 'popo42';
-
         $encoder = $this->getEncoderMock();
         $oldEncoder = $this->getOldEncoderMock();
-        $conn = $this->getConnectionMock($username, null);
         $request = $this->getRequestMock();
+        $manipulator = $this->getUserManipulatorMock(null);
 
-        $auth = new NativeAuthentication($encoder, $oldEncoder, $conn);
-        $this->assertNull($auth->getUsrId($username, $password, $request));
+        $auth = new NativeAuthentication($encoder, $oldEncoder, $manipulator);
+        $this->assertNull($auth->getUsrId('a_login', 'a_password', $request));
     }
 
     public function testLockAccountThrowsAnException()
     {
-        $username = 'romainneutron';
-        $password = 'popo42';
-
         $encoder = $this->getEncoderMock();
         $oldEncoder = $this->getOldEncoderMock();
-        $conn = $this->getConnectionMock($username, [
-            'nonce' => 'dfqsdgqsd',
-            'salted_password' => '1',
-            'mail_locked' => '1',
-            'usr_id' => '1',
-            'usr_password' => 'qsdfsqdfqsd',
-        ]);
         $request = $this->getRequestMock();
 
-        $auth = new NativeAuthentication($encoder, $oldEncoder, $conn);
+        $mailLockedUser = $this->createUserMock();
+        $mailLockedUser->expects($this->any())->method('isMailLocked')->will($this->returnValue(true));
+
+        $manipulator = $this->getUserManipulatorMock($mailLockedUser);
+
+        $auth = new NativeAuthentication($encoder, $oldEncoder, $manipulator);
 
         try {
-            $auth->getUsrId($username, $password, $request);
+            $auth->getUsrId('a_login', 'a_password', $request);
             $this->fail('Should have raised an exception');
         } catch (AccountLockedException $e) {
 
@@ -73,22 +57,25 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
 
     public function testGetUsrIdWithCorrectCredentials()
     {
-        $username = 'romainneutron';
         $password = 'popo42';
         $encoded = 'qsdfsqdfqsd';
         $nonce = 'dfqsdgqsd';
-        $usr_id = '42';
+        $userId = 42;
 
         $encoder = $this->getEncoderMock();
         $oldEncoder = $this->getOldEncoderMock();
-        $conn = $this->getConnectionMock($username, [
-            'nonce' => $nonce,
-            'salted_password' => '1',
-            'mail_locked' => '0',
-            'usr_id' => $usr_id,
-            'usr_password' => $encoded,
-        ]);
         $request = $this->getRequestMock();
+
+        $user = $this->createUserMock();
+
+        $user->expects($this->any())->method('getId')->will($this->returnValue($userId));
+        $user->expects($this->any())->method('isSpecial')->will($this->returnValue(false));
+        $user->expects($this->any())->method('isMailLocked')->will($this->returnValue(false));
+        $user->expects($this->any())->method('isSaltedPassword')->will($this->returnValue(true));
+        $user->expects($this->any())->method('getPassword')->will($this->returnValue($encoded));
+        $user->expects($this->any())->method('getNonce')->will($this->returnValue($nonce));
+
+        $manipulator = $this->getUserManipulatorMock($user);
 
         $oldEncoder->expects($this->never())
             ->method('isPasswordValid');
@@ -98,29 +85,32 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
             ->with($this->equalTo($encoded), $this->equalTo($password), $this->equalTo($nonce))
             ->will($this->returnValue(true));
 
-        $auth = new NativeAuthentication($encoder, $oldEncoder, $conn);
+        $auth = new NativeAuthentication($encoder, $oldEncoder, $manipulator);
 
-        $this->assertEquals($usr_id, $auth->getUsrId($username, $password, $request));
+        $this->assertEquals($userId, $auth->getUsrId('a_login', $password, $request));
     }
 
     public function testIsNotValidWithIncorrectCredentials()
     {
-        $username = 'romainneutron';
         $password = 'popo42';
         $encoded = 'qsdfsqdfqsd';
         $nonce = 'dfqsdgqsd';
-        $usr_id = '42';
+        $userId = 42;
 
         $encoder = $this->getEncoderMock();
         $oldEncoder = $this->getOldEncoderMock();
-        $conn = $this->getConnectionMock($username, [
-            'nonce' => $nonce,
-            'salted_password' => '1',
-            'mail_locked' => '0',
-            'usr_id' => $usr_id,
-            'usr_password' => $encoded,
-        ]);
         $request = $this->getRequestMock();
+
+        $user = $this->createUserMock();
+
+        $user->expects($this->any())->method('getId')->will($this->returnValue($userId));
+        $user->expects($this->any())->method('isSpecial')->will($this->returnValue(false));
+        $user->expects($this->any())->method('isMailLocked')->will($this->returnValue(false));
+        $user->expects($this->any())->method('isSaltedPassword')->will($this->returnValue(true));
+        $user->expects($this->any())->method('getPassword')->will($this->returnValue($encoded));
+        $user->expects($this->any())->method('getNonce')->will($this->returnValue($nonce));
+
+        $manipulator = $this->getUserManipulatorMock($user);
 
         $oldEncoder->expects($this->never())
             ->method('isPasswordValid');
@@ -130,29 +120,32 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
             ->with($this->equalTo($encoded), $this->equalTo($password), $this->equalTo($nonce))
             ->will($this->returnValue(false));
 
-        $auth = new NativeAuthentication($encoder, $oldEncoder, $conn);
+        $auth = new NativeAuthentication($encoder, $oldEncoder, $manipulator);
 
-        $this->assertEquals(false, $auth->getUsrId($username, $password, $request));
+        $this->assertEquals(false, $auth->getUsrId('a_login', $password, $request));
     }
 
     public function testIsNotValidWithIncorrectOldCredentials()
     {
-        $username = 'romainneutron';
         $password = 'popo42';
         $encoded = 'qsdfsqdfqsd';
         $nonce = 'dfqsdgqsd';
-        $usr_id = '42';
+        $userId = 42;
 
         $encoder = $this->getEncoderMock();
         $oldEncoder = $this->getOldEncoderMock();
-        $conn = $this->getConnectionMock($username, [
-            'nonce' => $nonce,
-            'salted_password' => '0',
-            'mail_locked' => '0',
-            'usr_id' => $usr_id,
-            'usr_password' => $encoded,
-        ]);
         $request = $this->getRequestMock();
+
+        $user = $this->createUserMock();
+
+        $user->expects($this->any())->method('getId')->will($this->returnValue($userId));
+        $user->expects($this->any())->method('isSpecial')->will($this->returnValue(false));
+        $user->expects($this->any())->method('isMailLocked')->will($this->returnValue(false));
+        $user->expects($this->any())->method('isSaltedPassword')->will($this->returnValue(false));
+        $user->expects($this->any())->method('getPassword')->will($this->returnValue($encoded));
+        $user->expects($this->any())->method('getNonce')->will($this->returnValue($nonce));
+
+        $manipulator = $this->getUserManipulatorMock($user);
 
         $oldEncoder->expects($this->once())
             ->method('isPasswordValid')
@@ -164,61 +157,34 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
             ->with($this->equalTo($encoded), $this->equalTo($password), $this->equalTo($nonce))
             ->will($this->returnValue(false));
 
-        $auth = new NativeAuthentication($encoder, $oldEncoder, $conn);
+        $auth = new NativeAuthentication($encoder, $oldEncoder, $manipulator);
 
-        $this->assertEquals(false, $auth->getUsrId($username, $password, $request));
+        $this->assertEquals(false, $auth->getUsrId('a_login', $password, $request));
     }
 
     public function testGetUsrIdWithCorrectOldCredentials()
     {
-        $username = 'romainneutron';
         $password = 'popo42';
         $encoded = 'qsdfsqdfqsd';
         $nonce = 'dfqsdgqsd';
-        $usr_id = '42';
+        $userId = 42;
 
         $encoder = $this->getEncoderMock();
         $oldEncoder = $this->getOldEncoderMock();
-
-        $conn = $this->getMock('connection_interface');
-
-        $statement = $this->getMock('PDOStatement');
-        $statement
-            ->expects($this->once())
-            ->method('execute')
-            ->with($this->equalTo([':login' => $username]));
-        $statement->expects($this->once())
-            ->method('fetch')
-            ->with($this->equalTo(\PDO::FETCH_ASSOC))
-            ->will($this->returnValue([
-            'nonce' => $nonce,
-            'salted_password' => '0',
-            'mail_locked' => '0',
-            'usr_id' => $usr_id,
-            'usr_password' => $encoded,
-        ]));
-
-        $catchParameters = $catchTestPassword = null;
-
-        $statement2 = $this->getMock('PDOStatement');
-        $statement2
-            ->expects($this->once())
-            ->method('execute')
-            ->will($this->returnCallback(function ($parameters) use (&$catchParameters) {
-                $catchParameters = $parameters;
-            }));
-
-        $conn->expects($this->at(0))
-            ->method('prepare')
-            ->with($this->isType('string'))
-            ->will($this->returnValue($statement));
-
-        $conn->expects($this->at(1))
-            ->method('prepare')
-            ->with($this->isType('string'))
-            ->will($this->returnValue($statement2));
-
         $request = $this->getRequestMock();
+
+        $user = $this->createUserMock();
+
+        $user->expects($this->any())->method('getId')->will($this->returnValue($userId));
+        $user->expects($this->any())->method('isSpecial')->will($this->returnValue(false));
+        $user->expects($this->any())->method('isMailLocked')->will($this->returnValue(false));
+        $user->expects($this->any())->method('isSaltedPassword')->will($this->returnValue(false));
+        $user->expects($this->any())->method('getPassword')->will($this->returnValue($encoded));
+        $user->expects($this->any())->method('getNonce')->will($this->returnValue($nonce));
+
+        $manipulator = $this->getUserManipulatorMock($user);
+
+        $manipulator->expects($this->once())->method('setPassword')->with($this->equalTo($user), $this->equalTo($password));
 
         $oldEncoder->expects($this->once())
             ->method('isPasswordValid')
@@ -237,37 +203,8 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
                 return true;
             }));
 
-        $auth = new NativeAuthentication($encoder, $oldEncoder, $conn);
-        $this->assertEquals($usr_id, $auth->getUsrId($username, $password, $request));
-
-        $this->assertEquals($catchParameters[':password'], $catchTestPassword['encoded']);
-        $this->assertEquals($password, $catchTestPassword['pass']);
-        $this->assertEquals($catchParameters[':nonce'], $catchTestPassword['nonce']);
-        $this->assertEquals($usr_id, $catchParameters[':usr_id']);
-    }
-
-    private function getConnectionMock($username, $row = null)
-    {
-        $conn = $this->getMock('connection_interface');
-
-        $statement = $this->getMock('PDOStatement');
-
-        $statement
-            ->expects($this->once())
-            ->method('execute')
-            ->with($this->equalTo([':login' => $username]));
-
-        $statement->expects($this->once())
-            ->method('fetch')
-            ->with($this->equalTo(\PDO::FETCH_ASSOC))
-            ->will($this->returnValue($row));
-
-        $conn->expects($this->once())
-            ->method('prepare')
-            ->with($this->isType('string'))
-            ->will($this->returnValue($statement));
-
-        return $conn;
+        $auth = new NativeAuthentication($encoder, $oldEncoder, $manipulator);
+        $this->assertEquals($userId, $auth->getUsrId('a_login', $password, $request));
     }
 
     private function getEncoderMock()
@@ -296,5 +233,16 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
         return $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')
             ->disableOriginalConstructor()
             ->getMock();
+    }
+
+    private function getUserManipulatorMock(User $user = null)
+    {
+        $repoMock = $this->getMockBuilder('Alchemy\Phrasea\Model\Repositories\UserRepository')->disableOriginalConstructor()->getMock();
+        $repoMock->expects($this->any())->method('findRealUserByLogin')->will($this->returnValue($user));
+
+        $manipulator = $this->getMockBuilder('Alchemy\Phrasea\Model\Manipulator\UserManipulator')->disableOriginalConstructor()->getMock();
+        $manipulator->expects($this->any())->method('getRepository')->will($this->returnValue($repoMock));
+
+        return $manipulator;
     }
 }

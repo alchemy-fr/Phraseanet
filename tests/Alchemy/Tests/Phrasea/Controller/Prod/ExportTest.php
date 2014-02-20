@@ -28,7 +28,6 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request('POST', '/prod/export/multi-export/', ['lst' => self::$DI['record_1']->get_serialize_key()]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
-        unset($response);
     }
 
     /**
@@ -134,9 +133,9 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
         //inserted rows from this function are deleted in tearDownAfterClass
         self::$DI['client']->request('POST', '/prod/export/ftp/', [
             'lst'        => self::$DI['record_1']->get_serialize_key(),
-            'user_dest'  => self::$DI['user']->get_id(),
+            'user_dest'  => self::$DI['user']->getId(),
             'address'    => 'local.phrasea.test',
-            'login'      => self::$DI['user']->get_email(),
+            'login'      => self::$DI['user']->getEmail(),
             'dest_folder' => '/home/test/',
             'prefix_folder' => 'test2/',
             'obj'        => ['preview']

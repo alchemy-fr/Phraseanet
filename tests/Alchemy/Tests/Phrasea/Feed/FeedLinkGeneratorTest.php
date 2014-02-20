@@ -38,7 +38,7 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
 
         $linkGenerator = new FeedLinkGenerator($generator, self::$DI['app']['EM'], $random);
 
-        $link = $linkGenerator->generate($feed, $user, $format, $page, $renew);
+        $link = $linkGenerator->generate($feed, self::$DI['user'], $format, $page, $renew);
 
         $this->assertSame($expected, $link->getUri());
         if ($format == "atom") {

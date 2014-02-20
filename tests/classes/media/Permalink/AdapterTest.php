@@ -13,11 +13,6 @@ class media_Permalink_AdapterTest extends \PhraseanetTestCase
         $this->object = media_Permalink_Adapter::getPermalink(self::$DI['app'], self::$DI['record_1']->get_databox(), self::$DI['record_1']->get_subdef('document'));
     }
 
-    public function testGet_label()
-    {
-        $this->assertSame('test001', $this->object->get_label());
-    }
-
     public function testGetPermalink()
     {
         $this->assertTrue(($this->object instanceof media_Permalink_Adapter));
@@ -33,7 +28,7 @@ class media_Permalink_AdapterTest extends \PhraseanetTestCase
         $this->assertTrue($this->object->get_is_activated());
     }
 
-    public function testSet_label()
+    public function testGettersAndSetters()
     {
         $this->object->set_label('coucou les chicos');
         $this->assertEquals('coucou-les-chicos', $this->object->get_label());

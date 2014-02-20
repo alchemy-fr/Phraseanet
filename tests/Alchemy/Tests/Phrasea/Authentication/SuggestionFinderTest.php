@@ -9,13 +9,13 @@ class SuggestionFinderTest extends \PhraseanetTestCase
 {
     public function testSuggestionIsFound()
     {
-        $token = $this->getToken(self::$DI['user']->get_email());
+        $token = $this->getToken(self::$DI['user']->getEmail());
 
         $finder = new SuggestionFinder(self::$DI['app']);
         $user = $finder->find($token);
 
-        $this->assertInstanceOf('User_Adapter', $user);
-        $this->assertEquals(self::$DI['user']->get_id(), $user->get_id());
+        $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\User', $user);
+        $this->assertEquals(self::$DI['user']->getId(), $user->getId());
     }
 
     public function testSuggestionIsNotFound()

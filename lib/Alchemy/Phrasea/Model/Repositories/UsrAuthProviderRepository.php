@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
+use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -21,13 +22,13 @@ use Doctrine\ORM\EntityRepository;
  */
 class UsrAuthProviderRepository extends EntityRepository
 {
-    public function findByUser(\User_Adapter $user)
+    public function findByUser(User $user)
     {
         $dql = 'SELECT u
                 FROM Phraseanet:UsrAuthProvider u
-                WHERE u.usr_id = :usrId';
+                WHERE u.user = :usrId';
 
-        $params = ['usrId' => $user->get_id()];
+        $params = ['usrId' => $user->getId()];
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);

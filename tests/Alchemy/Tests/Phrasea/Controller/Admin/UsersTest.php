@@ -4,13 +4,12 @@ namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
 class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 {
-    protected $client;
     protected $usersParameters;
 
     public function setUp()
     {
         parent::setUp();
-        $this->usersParameters = ["users" => implode(';', [self::$DI['user']->get_id(), self::$DI['user_alt1']->get_id()])];
+        $this->usersParameters = ["users" => implode(';', [self::$DI['user']->getId(), self::$DI['user_alt1']->getId()])];
     }
 
     public function testRouteRightsPost()
@@ -29,46 +28,32 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRouteDelete()
     {
-
-        $username = uniqid('user_');
-        $user = \User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
-        $id = $user->get_id();
-
-        self::$DI['client']->request('POST', '/admin/users/delete/', ['users'   => $id]);
-        $response = self::$DI['client']->getResponse();
-        $this->assertTrue($response->isRedirect());
-        try {
-            $user = \User_Adapter::getInstance($id, self::$DI['app']);
-            $user->delete();
-            $this->fail("user not deleted");
-        } catch (\Exception $e) {
-
-        }
+        $user = self::$DI['app']['manipulator.user']->createUser('login', "test");
+        self::$DI['client']->request('POST', '/admin/users/delete/', ['users'   => $user->getId()]);
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+        $this->assertTrue($user->isDeleted());
     }
 
     public function testRouteDeleteCurrentUserDoesNothing()
     {
-        self::$DI['client']->request('POST', '/admin/users/delete/', ['users'   => self::$DI['user']->get_id()]);
+        self::$DI['client']->request('POST', '/admin/users/delete/', ['users'   => self::$DI['user']->getId()]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
-
-        $this->assertTrue(false !== \User_Adapter::get_usr_id_from_login(self::$DI['app'], self::$DI['user']->get_login()));
+        $this->assertNotNull(self::$DI['app']['manipulator.user']->getRepository()->findByLogin(self::$DI['user']->getLogin()));
     }
 
     public function testRouteRightsApply()
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate', 2);
 
-        $username = uniqid('user_');
-        $user = \User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
-
-        $base_id = self::$DI['collection']->get_base_id();
+        $user = self::$DI['app']['manipulator.user']->createUser(uniqid('user_'), 'test', 'titi@titi.fr');
 
         self::$DI['client']->request('POST', '/admin/users/rights/apply/', [
-            'users' => $user->get_id(),
-            'values' => 'canreport_' . $base_id . '=1&manage_' . self::$DI['collection']->get_base_id() . '=1&canpush_' . self::$DI['collection']->get_base_id() . '=1',
-            'user_infos' => "email=" . $username . "-lambda@email.com",
+            'users'   => $user->getId(),
+            'values'  => 'canreport_' . self::$DI['collection']->get_base_id() . '=1&manage_' . self::$DI['collection']->get_base_id() . '=1&canpush_' . self::$DI['collection']->get_base_id() . '=1',
+            'user_infos' => ['email' => 'toto@toto.fr' ]
         ]);
+
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOK());
         $this->assertEquals("application/json", $response->headers->get("content-type"));
@@ -76,39 +61,36 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(is_object($datas));
         $datas = json_decode($response->getContent());
         $this->assertFalse($datas->error);
-        $this->assertTrue(self::$DI['app']['acl']->get($user)->has_right_on_base($base_id, "manage"));
-        $this->assertTrue(self::$DI['app']['acl']->get($user)->has_right_on_base($base_id, "canpush"));
-        $this->assertTrue(self::$DI['app']['acl']->get($user)->has_right_on_base($base_id, "canreport"));
-        $user->delete();
+
+        $this->assertTrue(self::$DI['app']['acl']->get($user)->has_right_on_base(self::$DI['collection']->get_base_id(), "manage"));
+        $this->assertTrue(self::$DI['app']['acl']->get($user)->has_right_on_base(self::$DI['collection']->get_base_id(), "canpush"));
+        $this->assertTrue(self::$DI['app']['acl']->get($user)->has_right_on_base(self::$DI['collection']->get_base_id(), "canreport"));
+
+        self::$DI['app']['EM']->refresh($user);
+        self::$DI['app']['manipulator.user']->delete($user);
     }
 
     public function testRouteRightsApplyException()
     {
         $this->markTestIncomplete();
-        $_GET = [];
-        $username = uniqid('user_');
-        $user = \User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
-        $base_id = self::$DI['collection']->get_base_id();
         self::$DI['client']->request('POST', '/admin/users/rights/apply/', [
-            'users' => $user->get_id(),
-            'values' => 'canreport_' . $base_id . '=1&manage_' . self::$DI['collection']->get_base_id() . '=1&canpush_' . self::$DI['collection']->get_base_id() . '=1',
-            'user_infos' => "user_infos[email]=" . $user->get_email(),
+            'users'   => 'unknow_id',
+            'values'  => 'canreport_' . self::$DI['collection']->get_base_id() . '=1&manage_' . self::$DI['collection']->get_base_id() . '=1&canpush_' . self::$DI['collection']->get_base_id() . '=1',
+            'user_infos' => "user_infos[email]=toto@toto.fr"
         ]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOK());
         $this->assertEquals("application/json", $response->headers->get("content-type"));
-        $datas = json_decode($response->getContent());
-        $this->assertTrue(is_object($datas));
-        $this->assertTrue($datas->error);
-        $user->delete();
+        $data = json_decode($response->getContent());
+        $this->assertTrue(is_object($data));
+        $this->assertTrue($data->error);
     }
 
     public function testRouteQuota()
     {
         $keys = array_keys(self::$DI['app']['acl']->get(self::$DI['user'])->get_granted_base());
         $base_id = array_pop($keys);
-        $params = ['base_id' => $base_id, 'users'   => self::$DI['user']->get_id()];
-
+        $params = ['base_id' => $base_id, 'users'   => self::$DI['user']->getId()];
         self::$DI['client']->request('POST', '/admin/users/rights/quotas/', $params);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOK());
@@ -128,7 +110,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $keys = array_keys(self::$DI['app']['acl']->get(self::$DI['user'])->get_granted_base());
         $base_id = array_pop($keys);
-        $params = ['base_id' => $base_id, 'users'   => self::$DI['user']->get_id()];
+        $params = ['base_id' => $base_id, 'users'   => self::$DI['user']->getId()];
 
         self::$DI['client']->request('POST', '/admin/users/rights/quotas/apply/', $params);
         $response = self::$DI['client']->getResponse();
@@ -139,7 +121,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $keys = array_keys(self::$DI['app']['acl']->get(self::$DI['user'])->get_granted_base());
         $base_id = array_pop($keys);
-        $params = ['base_id' => $base_id, 'users'   => self::$DI['user']->get_id()];
+        $params = ['base_id' => $base_id, 'users'   => self::$DI['user']->getId()];
 
         self::$DI['client']->request('POST', '/admin/users/rights/time/', $params);
         $response = self::$DI['client']->getResponse();
@@ -149,65 +131,60 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
     public function testRouteRightTimeSbas()
     {
         $sbas_id = self::$DI['record_1']->get_databox()->get_sbas_id();
-        $params = ['sbas_id' => $sbas_id, 'users'   => self::$DI['user']->get_id()];
-
-        self::$DI['client']->request('POST', '/admin/users/rights/time/sbas/', $params);
+        self::$DI['client']->request('POST', '/admin/users/rights/time/sbas/', ['sbas_id' => $sbas_id, 'users'   => self::$DI['user']->getId()]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOK());
     }
 
     public function testRouteRightTimeApply()
     {
-        $username = uniqid('user_');
-        $user = \User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
+        $user = self::$DI['app']['manipulator.user']->createUser(uniqid('user_'), "test");
         $base_id = self::$DI['collection']->get_base_id();
         $date = new \Datetime();
         $date->modify("-10 days");
         $dmin = $date->format(DATE_ATOM);
         $date->modify("+30 days");
         $dmax = $date->format(DATE_ATOM);
-        self::$DI['client']->request('POST', '/admin/users/rights/time/apply/', ['base_id' => $base_id, 'dmin'    => $dmin, 'dmax'    => $dmax, 'limit'   => 1, 'users'   => $user->get_id()]);
+        self::$DI['client']->request('POST', '/admin/users/rights/time/apply/', ['base_id' => $base_id, 'dmin'    => $dmin, 'dmax'    => $dmax, 'limit'   => 1, 'users'   => $user->getId()]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOK());
-        $user->delete();
+        self::$DI['app']['manipulator.user']->delete($user);
     }
 
     public function testRouteRightTimeApplySbas()
     {
-        $username = uniqid('user_');
-        $user = \User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
+        $user = self::$DI['app']['manipulator.user']->createUser(uniqid('user_'), "test");
         $sbas_id = self::$DI['record_1']->get_databox()->get_sbas_id();
         $date = new \Datetime();
         $date->modify("-10 days");
         $dmin = $date->format(DATE_ATOM);
         $date->modify("+30 days");
         $dmax = $date->format(DATE_ATOM);
-        self::$DI['client']->request('POST', '/admin/users/rights/time/apply/', ['sbas_id' => $sbas_id, 'dmin'    => $dmin, 'dmax'    => $dmax, 'limit'   => 1, 'users'   => $user->get_id()]);
+        self::$DI['client']->request('POST', '/admin/users/rights/time/apply/', ['sbas_id' => $sbas_id, 'dmin'    => $dmin, 'dmax'    => $dmax, 'limit'   => 1, 'users'   => $user->getId()]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOK());
-        $user->delete();
+        self::$DI['app']['manipulator.user']->delete($user);
     }
 
     public function testRouteRightTimeApplyWithtoutBasOrSbas()
     {
-        $username = uniqid('user_');
-        $user = \User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
+        $user = self::$DI['app']['manipulator.user']->createUser(uniqid('user_'), "test");
         $date = new \Datetime();
         $date->modify("-10 days");
         $dmin = $date->format(DATE_ATOM);
         $date->modify("+30 days");
         $dmax = $date->format(DATE_ATOM);
-        self::$DI['client']->request('POST', '/admin/users/rights/time/apply/', ['dmin'    => $dmin, 'dmax'    => $dmax, 'limit'   => 1, 'users'   => $user->get_id()]);
+        self::$DI['client']->request('POST', '/admin/users/rights/time/apply/', ['dmin'    => $dmin, 'dmax'    => $dmax, 'limit'   => 1, 'users'   => $user->getId()]);
         $response = self::$DI['client']->getResponse();
         $this->assertEquals(400, $response->getStatusCode());
-        $user->delete();
+        self::$DI['app']['manipulator.user']->delete($user);
     }
 
     public function testRouteRightMask()
     {
         $keys = array_keys(self::$DI['app']['acl']->get(self::$DI['user'])->get_granted_base());
         $base_id = array_pop($keys);
-        $params = ['base_id' => $base_id, 'users'   => self::$DI['user']->get_id()];
+        $params = ['base_id' => $base_id, 'users'   => self::$DI['user']->getId()];
 
         self::$DI['client']->request('POST', '/admin/users/rights/masks/', $params);
         $response = self::$DI['client']->getResponse();
@@ -218,14 +195,13 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->markTestIncomplete();
         $base_id = self::$DI['collection']->get_base_id();
-        $username = uniqid('user_');
-        $user = \User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
+        $user = self::$DI['app']['manipulator.user']->createUser(uniqid('user_'), "test");
         self::$DI['client']->request('POST', '/admin/users/rights/masks/apply/', [
             'base_id' => $base_id, 'vand_and', 'vand_or', 'vxor_or', 'vxor_and'
         ]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOK());
-        $user->delete();
+        self::$DI['app']['manipulator.user']->delete($user);
     }
 
     public function testRouteSearch()
@@ -254,24 +230,19 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRouteApplyTp()
     {
-
-        $templateName = uniqid('template_');
-        $template = \User_Adapter::create(self::$DI['app'], $templateName, "test", $templateName . "@email.com", false);
-        $template->set_template(self::$DI['user']);
-
-        $username = uniqid('user_');
-        $user = \User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
-
+        $this->authenticate(self::$DI['app']);
+        $template = self::$DI['app']['manipulator.user']->createUser(uniqid('template_'), "test");
+        $template->setModelOf(self::$DI['user']);
+        $user = self::$DI['app']['manipulator.user']->createUser(uniqid('user_'), "test");
         self::$DI['client']->request('POST', '/admin/users/apply_template/', [
-            'template' => $template->get_id()
-            , 'users'    => $user->get_id()]
+            'template' => $template->getId(),
+            'users'    => $user->getId()]
         );
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
-
-        $template->delete();
-        $user->delete();
+        self::$DI['app']['manipulator.user']->delete($template);
+        self::$DI['app']['manipulator.user']->delete($user);
     }
 
     public function testRouteCreateException()
@@ -299,10 +270,9 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
     public function testRouteCreateUserAndValidateEmail()
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation');
-        $username = uniqid('user_');
 
         self::$DI['client']->request('POST', '/admin/users/create/', [
-            'value'         => $username . "@email.com",
+            'value'         => uniqid('user_') . "@email.com",
             'template'      => '0',
             'validate_mail' => true,
         ]);
@@ -315,12 +285,8 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(is_object($datas));
         $this->assertFalse($datas->error);
 
-        try {
-            $user = \User_Adapter::getInstance((int) $datas->data, self::$DI['app']);
-            $user->delete();
-        } catch (\Exception $e) {
-            $this->fail("could not delete created user " . $e->getMessage());
-        }
+        $this->assertNotNull($user = (self::$DI['app']['manipulator.user']->getRepository()->find((int) $datas->data)));
+        self::$DI['app']['manipulator.user']->delete($user);
     }
 
     public function testRouteCreateUserAndSendCredentials()
@@ -342,12 +308,8 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(is_object($datas));
         $this->assertFalse($datas->error);
 
-        try {
-            $user = \User_Adapter::getInstance((int) $datas->data, self::$DI['app']);
-            $user->delete();
-        } catch (\Exception $e) {
-            $this->fail("could not delete created user " . $e->getMessage());
-        }
+        $this->assertNotNull($user = (self::$DI['app']['manipulator.user']->getRepository()->find((int) $datas->data)));
+        self::$DI['app']['manipulator.user']->delete($user);
     }
 
     public function testRouteExportCsv()
@@ -362,8 +324,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testResetRights()
     {
-        $username = uniqid('user_');
-        $user = \User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
+        $user = self::$DI['app']['manipulator.user']->createUser(uniqid('user_'), "test");
 
         self::$DI['app']['acl']->get($user)->give_access_to_sbas(array_keys(self::$DI['app']['phraseanet.appbox']->get_databoxes()));
 
@@ -394,7 +355,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
             }
         }
 
-        self::$DI['client']->request('POST', '/admin/users/rights/reset/', ['users'   => $user->get_id()]);
+        self::$DI['client']->request('POST', '/admin/users/rights/reset/', ['users'   => $user->getId()]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOK());
         $this->assertEquals("application/json", $response->headers->get("content-type"));
@@ -402,19 +363,30 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(is_object($datas));
         $this->assertFalse($datas->error);
         $this->assertFalse(self::$DI['app']['acl']->get($user)->has_access_to_base($base_id));
-        $user->delete();
+        self::$DI['app']['manipulator.user']->delete($user);
     }
 
     public function testRenderDemands()
     {
-        self::$DI['client']->request('GET', '/admin/users/demands/');
+        $nativeQueryMock = $this->getMockBuilder('Alchemy\Phrasea\Model\NativeQueryProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
 
+        $nativeQueryMock->expects($this->once())->method('getUsersRegistrationDemand')->will($this->returnValue([[
+            self::$DI['user'],
+            'date_demand' => new \DateTime(),
+            'base_demand' => 1
+        ]]));
+
+        self::$DI['app']['EM.native-query'] = $nativeQueryMock;
+
+        self::$DI['client']->request('GET', '/admin/users/demands/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
     public function testPostDemands()
     {
-        $id = self::$DI['user_alt1']->get_id();
+        $id = self::$DI['user_alt1']->getId();
         $baseId = self::$DI['collection']->get_base_id();
         $param = sprintf('%s_%s', $id, $baseId);
 

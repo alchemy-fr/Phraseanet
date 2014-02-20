@@ -323,34 +323,34 @@ class UsrList extends \Alchemy\Phrasea\Model\Entities\UsrList implements \Doctri
     /**
      * {@inheritDoc}
      */
-    public function hasAccess(\User_Adapter $user, \Alchemy\Phrasea\Application $app)
+    public function hasAccess(\Alchemy\Phrasea\Model\Entities\User $user)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'hasAccess', array($user, $app));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'hasAccess', array($user));
 
-        return parent::hasAccess($user, $app);
+        return parent::hasAccess($user);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getOwner(\User_Adapter $user, \Alchemy\Phrasea\Application $app)
+    public function getOwner(\Alchemy\Phrasea\Model\Entities\User $user)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOwner', array($user, $app));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOwner', array($user));
 
-        return parent::getOwner($user, $app);
+        return parent::getOwner($user);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function has(\User_Adapter $user, \Alchemy\Phrasea\Application $app)
+    public function has(\Alchemy\Phrasea\Model\Entities\User $user)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'has', array($user, $app));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'has', array($user));
 
-        return parent::has($user, $app);
+        return parent::has($user);
     }
 
 }

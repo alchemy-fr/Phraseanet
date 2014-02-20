@@ -38,9 +38,12 @@ class OrderElement
     private $recordId;
 
     /**
-     * @ORM\Column(type="integer", nullable=true, name="order_master_id")
-     */
-    private $orderMasterId;
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="order_master", referencedColumnName="id")
+     *
+     * @return User
+     **/
+    private $orderMaster;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
@@ -64,44 +67,23 @@ class OrderElement
     }
 
     /**
-     * Set order_master_id
+     * @param User $user
      *
-     * @param  integer      $orderMasterId
-     * @return OrderElement
+     * @return $this
      */
-    public function setOrderMasterId($orderMasterId)
+    public function setOrderMaster(User $user = null)
     {
-        $this->orderMasterId = $orderMasterId;
+        $this->orderMaster = $user;
 
         return $this;
     }
 
     /**
-     * Get order_master_id
-     *
-     * @return integer
+     * @return mixed
      */
-    public function getOrderMasterId()
+    public function getOrderMaster()
     {
-        return $this->orderMasterId;
-    }
-
-    /**
-     *
-     * Returns the username matching to the order_master_id
-     *
-     * @param  Application $app
-     * @return string
-     */
-    public function getOrderMasterName(Application $app)
-    {
-        if (isset($this->orderMasterId) && null !== $this->orderMasterId) {
-            $user = \User_Adapter::getInstance($this->orderMasterId, $app);
-
-            return $user->get_firstname();
-        }
-
-        return null;
+        return $this->orderMaster;
     }
 
     /**
