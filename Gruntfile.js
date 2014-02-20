@@ -286,6 +286,16 @@ module.exports = function(grunt) {
                 "dest": "<%= path.asset %>/underscore-amd/",
                 "flatten": true
             },
+            "web-socket-js": {
+                "expand": true,
+                "src": [
+                    "<%= path.bower %>/web-socket-js/LICENSE.txt",
+                    "<%= path.bower %>/web-socket-js/WebSocketMain.swf",
+                    "<%= path.bower %>/web-socket-js/web_socket.js"
+                ],
+                "dest": "<%= path.asset %>/web-socket-js",
+                "flatten": true
+            },
             "zxcvbn": {
                 "expand": true,
                 "src": [
@@ -385,6 +395,7 @@ module.exports = function(grunt) {
         "copy:swfobject",
         "copy:tinymce",
         "copy:underscore",
+        "copy:web-socket-js",
         "copy:zxcvbn"
     ]);
     grunt.registerTask("install-assets", [
