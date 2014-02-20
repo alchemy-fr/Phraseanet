@@ -35,6 +35,7 @@ before_script:
   - sudo mysql -e "GRANT ALL PRIVILEGES ON ab_unitTests.* TO 'phraseaUnitTests'@'localhost' IDENTIFIED BY 'iWvGxPE8' WITH GRANT OPTION"
   - sudo mysql -e "GRANT ALL PRIVILEGES ON db_unitTests.* TO 'phraseaUnitTests'@'localhost' IDENTIFIED BY 'iWvGxPE8' WITH GRANT OPTION"
   - mysql -e 'SET @@global.sql_mode= "";'
+  - mysql -e 'SET @@global.max_allowed_packet= 33554432;'
   - mysql -e 'SET @@global.wait_timeout= 999999;'
   - git clone git://github.com/alchemy-fr/Phraseanet-Extension.git
   - sh -c "cd Phraseanet-Extension && phpize && ./configure --quiet && make -j --quiet && sudo make install"

@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\UserQuery;
 
-class patch_390alpha3a implements patchInterface
+class patch_390alpha3a extends patchAbstract
 {
     /** @var string */
     private $release = '3.9.0-alpha.3';
@@ -73,7 +73,9 @@ class patch_390alpha3a implements patchInterface
         $em = $app['EM'];
 
         foreach ($rs as $row) {
-            $user = $em->getPartialReference('Phraseanet:User', $row['usr_id']);
+            if (null === $user = $this->loadUser($app['EM'], $row['usr_id'])) {
+                continue;
+            }
 
             $userQuery = new UserQuery();
             $userQuery->setQuery($row['query']);

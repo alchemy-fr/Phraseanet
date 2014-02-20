@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\FtpCredential;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\ResultSetMapping;
 
@@ -268,7 +269,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
         }
 
         $sql = sprintf('SELECT id FROM %s WHERE %s %s', $tableName, $field, $wrongIds);
-        $rs = $em->getConnection()->fetchAll(\PDO::FETCH_COLUMN);
+        $rs = $em->getConnection()->executeQuery($sql)->fetchAll(\PDO::FETCH_COLUMN);
 
         if (count($rs) === 0) {
             return;
@@ -379,9 +380,15 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
             $rs = $em->getConnection()->fetchAll($sql);
 
             foreach ($rs as $row) {
-                if (null === $user = $em->getPartialReference('Phraseanet:User', $row['usr_id'])) {
+                try {
+                    $user = $em->createQuery('SELECT PARTIAL u.{id} FROM Phraseanet:User u WHERE u.id = :id')
+                        ->setParameters(['id' => $row['usr_id']])
+                        ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true)
+                        ->getSingleResult();
+                } catch (NoResultException $e) {
                     continue;
                 }
+
                 $credential = new FtpCredential();
                 $credential->setActive($row['activeFTP']);
                 $credential->setAddress($row['addrFTP']);

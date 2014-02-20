@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\UserSetting;
 
-class patch_390alpha4a implements patchInterface
+class patch_390alpha4a extends patchAbstract
 {
     /** @var string */
     private $release = '3.9.0-alpha.4';
@@ -77,7 +77,9 @@ class patch_390alpha4a implements patchInterface
                 continue;
             }
 
-            $user = $em->getPartialReference('Phraseanet:User', $row['usr_id']);
+            if (null === $user = $this->loadUser($app['EM'], $row['usr_id'])) {
+                continue;
+            }
 
             $userSetting = new UserSetting();
             $userSetting->setName($row['prop']);

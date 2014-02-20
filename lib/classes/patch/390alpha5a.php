@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\UserNotificationSetting;
 
-class patch_390alpha5a implements patchInterface
+class patch_390alpha5a extends patchAbstract
 {
     /** @var string */
     private $release = '3.9.0-alpha.5';
@@ -74,7 +74,9 @@ class patch_390alpha5a implements patchInterface
         $em = $app['EM'];
 
         foreach ($rs as $row) {
-            $user = $em->getPartialReference('Phraseanet:User', $row['usr_id']);
+            if (null === $user = $this->loadUser($app['EM'], $row['usr_id'])) {
+                continue;
+            }
 
             $userSetting = new UserNotificationSetting();
             $userSetting->setName($row['prop']);

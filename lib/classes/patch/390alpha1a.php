@@ -12,9 +12,10 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
+use Doctrine\ORM\NoResultException;
 use Gedmo\Timestampable\TimestampableListener;
 
-class patch_390alpha1a implements patchInterface
+class patch_390alpha1a extends patchAbstract
 {
     /** @var string */
     private $release = '3.9.0-alpha.1';
@@ -91,7 +92,16 @@ class patch_390alpha1a implements patchInterface
             $todo = $stmt->fetch(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
-            $user = $em->getPartialReference('Phraseanet:User', $row['usr_id']);
+            $user = $this->loadUser($app['EM'], $row['usr_id']);
+
+            try {
+                $basket = $app['EM']->createQuery('SELECT PARTIAL b.{id} FROM Phraseanet:Basket b WHERE b.id = :id')
+                    ->setParameters(['id' => $row['ssel_id']])
+                    ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true)
+                    ->getSingleResult();
+            } catch (NoResultException $e) {
+                continue;
+            }
 
             $order = new Order();
             $order->setUser($user)
@@ -99,7 +109,7 @@ class patch_390alpha1a implements patchInterface
                 ->setOrderUsage($row['usage'])
                 ->setDeadline(new \DateTime($row['deadline']))
                 ->setCreatedOn(new \DateTime($row['created_on']))
-                ->setBasket($em->getPartialReference('Phraseanet:Basket', $row['ssel_id']));
+                ->setBasket($basket);
 
             $em->persist($order);
 
@@ -114,10 +124,11 @@ class patch_390alpha1a implements patchInterface
 
             foreach ($elements as $element) {
                 $orderElement = new OrderElement();
+                $user = $this->loadUser($app['EM'], $row['usr_id']);
                 $orderElement->setBaseId($element['base_id'])
                     ->setDeny($element['deny'] === null ? null : (Boolean) $element['deny'])
                     ->setOrder($order)
-                    ->setOrderMaster($em->getPartialReference('Phraseanet:User',$element['order_master_id']))
+                    ->setOrderMaster($user)
                     ->setRecordId($element['record_id']);
 
                 $order->addElement($orderElement);

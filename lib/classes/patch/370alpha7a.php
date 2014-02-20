@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use MediaAlchemyst\Specification\Image as ImageSpec;
 
-class patch_370alpha7a implements patchInterface
+class patch_370alpha7a extends patchAbstract
 {
     /** @var string */
     private $release = '3.7.0-alpha.7';
@@ -88,6 +88,9 @@ class patch_370alpha7a implements patchInterface
 
         foreach ($rs as $row) {
             $filePath = $app['root.path'] . '/tmp/lazaret/' . $row['filepath'];
+            if (null === $user = $this->loadUser($app['EM'], $row['usr_id'])) {
+                continue;
+            }
 
             if (file_exists($filePath)) {
                 $spec = new ImageSpec();
@@ -108,8 +111,6 @@ class patch_370alpha7a implements patchInterface
                 $collection = \collection::get_from_base_id($app, $row['base_id']);
 
                 $borderFile = new \Alchemy\Phrasea\Border\File($app, $media, $collection);
-
-                $user = $user = $app['EM']->getPartialReference('Phraseanet:User', $row['usr_id']);
 
                 $lazaretSession = new LazaretSession();
                 $lazaretSession->setUser($user);
