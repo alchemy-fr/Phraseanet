@@ -120,7 +120,7 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
         try {
             $account = Bridge_Account::load_account($this->app, $account_id);
             $record = new record_adapter($this->app, $sbas_id, $rid);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return [];
         }
 

@@ -83,18 +83,20 @@ class Lazaret implements ControllerProviderInterface
         $baseIds = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['canaddrecord']));
 
         $lazaretFiles = null;
+        $perPage = 10;
+        $page = max(1, $request->query->get('page', 1));
+        $offset = ($page - 1) * $perPage;
 
         if (count($baseIds) > 0) {
             $lazaretRepository = $app['EM']->getRepository('Phraseanet:LazaretFile');
-
-            $lazaretFiles = $lazaretRepository->findPerPage(
-                $baseIds, $request->query->get('offset', 0), $request->query->get('limit', 10)
-            );
+            $lazaretFiles = $lazaretRepository->findPerPage($baseIds, $offset, $perPage);
         }
 
-        return $app['twig']->render(
-            'prod/upload/lazaret.html.twig', ['lazaretFiles' => $lazaretFiles]
-        );
+        return $app['twig']->render('prod/upload/lazaret.html.twig', array(
+            'lazaretFiles' => $lazaretFiles,
+            'currentPage'  => $page,
+            'perPage'      => $perPage,
+        ));
     }
 
     /**

@@ -139,7 +139,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
 
         try {
             User_Adapter::getInstance($from, $this->app);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return [];
         }
 
@@ -148,7 +148,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
         try {
             $basket = $this->app['converter.basket']->convert($ssel_id);
             $basket_name = trim($basket->getName()) ? : $this->app->trans('Une selection');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $basket_name = $this->app->trans('Une selection');
         }
 

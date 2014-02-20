@@ -328,7 +328,7 @@ class Bridge_Account
             if ( ! isset($apis[$api_id])) {
                 try {
                     $apis[$api_id] = new Bridge_Api($app, $api_id);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     continue;
                 }
             }

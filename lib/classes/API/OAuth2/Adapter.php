@@ -181,7 +181,7 @@ class API_OAuth2_Adapter extends OAuth2
             }
 
             return ($application->get_client_secret() === $client_secret);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -226,7 +226,7 @@ class API_OAuth2_Adapter extends OAuth2
                 , 'oauth_token' => $token->get_value()
             ];
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -295,7 +295,7 @@ class API_OAuth2_Adapter extends OAuth2
                 , 'expires'      => $code->get_expires()
                 , 'account_id'   => $code->get_account()->get_id()
             ];
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -346,7 +346,7 @@ class API_OAuth2_Adapter extends OAuth2
                 , 'expires'   => $token->get_expires()->format('U')
                 , 'client_id' => $token->get_account()->get_application()->get_client_id()
             ];
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -508,7 +508,7 @@ class API_OAuth2_Adapter extends OAuth2
         try {
             $user = User_Adapter::getInstance($usr_id, $this->app);
             $account = API_OAuth2_Account::load_with_user($this->app, $this->client, $user);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $account = $this->createAccount($usr_id);
         }
 
@@ -575,7 +575,7 @@ class API_OAuth2_Adapter extends OAuth2
             $token->set_session_id($ses_id);
 
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 

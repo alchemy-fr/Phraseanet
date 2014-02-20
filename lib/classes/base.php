@@ -312,7 +312,7 @@ abstract class base implements cache_cacheableInterface
                         $stmt = $this->get_connection()->prepare($sql);
                         $stmt->execute();
                         $stmt->closeCursor();
-                    } catch (Exception $e) {
+                    } catch (\Exception $e) {
                         $recommends[] = [
                             'message' => $app->trans('Erreur lors de la tentative ; errreur : %message%', ['%message%' => $e->getMessage()]),
                             'sql'     => $sql
@@ -368,7 +368,7 @@ abstract class base implements cache_cacheableInterface
 
                 return true;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new Exception('Unable to set the database version : '.$e->getMessage());
         }
 
@@ -534,7 +534,7 @@ abstract class base implements cache_cacheableInterface
                 $stmt = $this->get_connection()->prepare($def['sql']);
                 $stmt->execute($def['params']);
                 $stmt->closeCursor();
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $recommends[] = [
                     'message' => $this->app->trans('Erreur lors de la tentative ; errreur : %message%', ['%message%' => $e->getMessage()]),
                     'sql'     => $def['sql']
@@ -748,7 +748,7 @@ abstract class base implements cache_cacheableInterface
                 $stmt = $this->get_connection()->prepare($a);
                 $stmt->execute();
                 $stmt->closeCursor();
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $return[] = [
                     'message' => $this->app->trans('Erreur lors de la tentative ; errreur : %message%', ['%message%' => $e->getMessage()]),
                     'sql'     => $a
@@ -761,7 +761,7 @@ abstract class base implements cache_cacheableInterface
                 $stmt = $this->get_connection()->prepare($a);
                 $stmt->execute();
                 $stmt->closeCursor();
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $return[] = [
                     'message' => $this->app->trans('Erreur lors de la tentative ; errreur : %message%', ['%message%' => $e->getMessage()]),
                     'sql'     => $a

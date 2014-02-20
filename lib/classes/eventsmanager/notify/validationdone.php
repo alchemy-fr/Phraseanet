@@ -133,7 +133,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
 
         try {
             $registered_user = User_Adapter::getInstance($from, $this->app);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return [];
         }
 
@@ -141,7 +141,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
 
         try {
             $basket = $this->app['converter.basket']->convert($ssel_id);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return [];
         }
 

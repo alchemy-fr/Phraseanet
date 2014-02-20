@@ -74,7 +74,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 
                 $mailColl[$row['usr_id']][] = $row['base_id'];
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -152,7 +152,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 
         try {
             User_Adapter::getInstance($usr_id, $this->app);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return [];
         }
 

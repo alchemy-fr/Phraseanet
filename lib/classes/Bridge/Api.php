@@ -430,7 +430,7 @@ class Bridge_Api
                 $ret = $action($this);
 
                 return $ret;
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->get_connector()->handle_Exception($e);
 
                 if ($e instanceof Bridge_Exception_ActionAuthNeedReconnect) {
@@ -524,7 +524,7 @@ class Bridge_Api
         foreach ($rs as $row) {
             try {
                 $results[] = new Bridge_Api($app, $row['id']);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
             }
         }

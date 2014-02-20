@@ -67,7 +67,7 @@ class databox_cgu
 
                 if ($userValidation)
                     $terms[$name] = ['sbas_id' => $databox->get_sbas_id(), 'terms'   => $value, 'date'    => $update];
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
             }
         }

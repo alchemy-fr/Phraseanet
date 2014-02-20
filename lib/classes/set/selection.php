@@ -100,7 +100,7 @@ class set_selection extends set_abstract
                 if ($num_rows == 0) {
                     $to_remove[] = $id;
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
             }
         }
@@ -125,7 +125,7 @@ class set_selection extends set_abstract
             if (count($basrec) == 2) {
                 try {
                     $record = new record_adapter($this->app, (int) $basrec[0], (int) $basrec[1], count($this->elements));
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     continue;
                 }
                 if ($record->is_grouping() && $flatten_groupings === true) {

@@ -63,7 +63,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
             $users = $query->on_base_ids($base_ids)
                     ->who_have_right(['order_master'])
                     ->execute()->get_results();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -140,7 +140,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
 
         try {
             User_Adapter::getInstance($usr_id, $this->app);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return [];
         }
 

@@ -49,7 +49,7 @@ class module_console_systemTemplateGenerator extends Command
                     $this->container['twig']->loadTemplate(str_replace($tplDir, '', $file->getPathname()));
                     $output->writeln('' . $file . '');
                     $n_ok ++;
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $output->writeln('<error>' . $e->getMessage() . '</error>');
                     $n_error ++;
                 }

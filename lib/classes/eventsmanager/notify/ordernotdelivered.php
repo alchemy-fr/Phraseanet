@@ -82,7 +82,7 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
                 $emitter = Emitter::fromUser($user_from);
 
                 $readyToSend = true;
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
             }
 
@@ -109,7 +109,7 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
 
         try {
             User_Adapter::getInstance($from, $this->app);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return [];
         }
 

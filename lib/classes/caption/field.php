@@ -334,7 +334,7 @@ class caption_field implements cache_cacheableInterface
                      */
                     $app['phraseanet.SE']->updateRecord($record);
                     unset($record);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
 
                 }
             }
@@ -388,7 +388,7 @@ class caption_field implements cache_cacheableInterface
                     $app['phraseanet.SE']->updateRecord($record);
                     unset($caption_field);
                     unset($record);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
 
                 }
             }

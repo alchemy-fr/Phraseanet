@@ -112,7 +112,7 @@ class eventsmanager_broker
             $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
             $stmt->execute($params);
             $stmt->closeCursor();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
 

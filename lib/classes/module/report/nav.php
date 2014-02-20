@@ -496,7 +496,7 @@ class module_report_nav extends module_report
 
         try {
             $record = new record_adapter($this->app, $sbas_id, $rid);
-        } catch (Exception_Record_AdapterNotFound $e) {
+        } catch (\Exception_Record_AdapterNotFound $e) {
             return $this->report;
         }
 

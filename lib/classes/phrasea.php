@@ -49,7 +49,7 @@ class phrasea
             self::$_sbas_params = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_PARAMS);
 
             return self::$_sbas_params;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -98,7 +98,7 @@ class phrasea
         if (!self::$_bas2sbas) {
             try {
                 self::$_bas2sbas = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_FROM_BAS);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $sql = 'SELECT base_id, sbas_id FROM bas';
                 $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
                 $stmt->execute();
@@ -189,7 +189,7 @@ class phrasea
         if (!self::$_sbas_names) {
             try {
                 self::$_sbas_names = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_NAMES);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
                     self::$_sbas_names[$databox->get_sbas_id()] = $databox->get_viewname();
                 }
@@ -205,7 +205,7 @@ class phrasea
         if (!self::$_sbas_labels) {
             try {
                 self::$_sbas_labels = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_LABELS);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
                     self::$_sbas_labels[$databox->get_sbas_id()] = [
                         'fr' => $databox->get_label('fr'),
@@ -230,7 +230,7 @@ class phrasea
         if (!self::$_bas_labels) {
             try {
                 self::$_bas_labels = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_BAS_LABELS);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
                     foreach ($databox->get_collections() as $collection) {
                         self::$_bas_labels[$collection->get_base_id()] = [

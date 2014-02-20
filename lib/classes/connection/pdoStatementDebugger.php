@@ -30,7 +30,7 @@ class connection_pdoStatementDebugger
         $exception = null;
         try {
             $result = $this->statement->execute($params);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $exception = $e;
         }
         $time = microtime(true) - $start;

@@ -89,7 +89,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
         try {
             $user_from = User_Adapter::getInstance($params['from'], $this->app);
             $user_to = User_Adapter::getInstance($params['to'], $this->app);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
 
@@ -138,7 +138,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
 
         try {
             User_Adapter::getInstance($from, $this->app);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return [];
         }
 
@@ -147,7 +147,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
         try {
             $basket = $this->app['converter.basket']->convert($ssel_id);
             $basket_name = trim($basket->getName()) ? : $this->app->trans('Une selection');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $basket_name = $this->app->trans('Une selection');
         }
 

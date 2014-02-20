@@ -93,7 +93,7 @@ class set_export extends set_abstract
 
                 try {
                     $record = new record_adapter($this->app, $basrec[0], $basrec[1]);
-                } catch (Exception_Record_AdapterNotFound $e) {
+                } catch (\Exception_Record_AdapterNotFound $e) {
                     continue;
                 }
 

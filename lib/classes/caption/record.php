@@ -67,7 +67,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
         $fields = [];
         try {
             $fields = $this->get_data_from_cache();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $sql = "SELECT m.id as meta_id, s.id as structure_id
           FROM metadatas m, metadatas_structure s
           WHERE m.record_id = :record_id AND s.id = m.meta_struct_id

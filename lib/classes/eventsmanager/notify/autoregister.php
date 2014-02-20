@@ -73,7 +73,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
 
                 $mailColl[$row['usr_id']][] = $row['base_id'];
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -104,7 +104,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
 
         try {
             $registered_user = User_Adapter::getInstance($params['usr_id'], $this->app);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return;
         }
 
@@ -115,7 +115,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
             if ($this->shouldSendNotificationFor($usr_id)) {
                 try {
                     $admin_user = User_Adapter::getInstance($usr_id, $this->app);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     continue;
                 }
 
@@ -142,7 +142,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
         $usr_id = (string) $sx->usr_id;
         try {
             User_Adapter::getInstance($usr_id, $this->app);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return [];
         }
 
@@ -193,7 +193,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
         try {
             $receiver = Receiver::fromUser($to);
             $readyToSend = true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 

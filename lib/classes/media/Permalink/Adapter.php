@@ -254,7 +254,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
             $this->label = $datas['label'];
 
             return $this;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -303,7 +303,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
     {
         try {
             return new self($app, $databox, $media_subdef);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 

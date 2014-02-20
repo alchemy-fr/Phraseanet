@@ -76,7 +76,7 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
             $result->setApplication($app);
 
             return $result;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 

@@ -137,7 +137,7 @@ class databox_status
         foreach ($sbas_ids as $databox) {
             try {
                 $statuses[$databox->get_sbas_id()] = $databox->get_statusbits();
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
             }
         }
@@ -166,7 +166,7 @@ class databox_status
             }
             try {
                 $statuses[$databox->get_sbas_id()] = $databox->get_statusbits();
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
             }
         }

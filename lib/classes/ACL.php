@@ -234,7 +234,7 @@ class ACL implements cache_cacheableInterface
             $subdef_class = $record->get_databox()->get_subdef_structure()
                 ->get_subdef($record->get_type(), $subdef_name)
                 ->get_class();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
 
@@ -741,7 +741,7 @@ class ACL implements cache_cacheableInterface
 
             try {
                 $ret[$sbas_id] = $this->app['phraseanet.appbox']->get_databox((int) $sbas_id);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
             }
         }
@@ -792,7 +792,7 @@ class ACL implements cache_cacheableInterface
             $this->_rights_records_document = $tmp_rights['document'];
 
             return $this;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
         $sql = 'SELECT sbas_id, record_id, preview, document
@@ -834,7 +834,7 @@ class ACL implements cache_cacheableInterface
             $this->is_admin = $this->get_data_from_cache(self::CACHE_IS_ADMIN);
 
             return $this;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
         $sql = 'SELECT create_db
@@ -928,7 +928,7 @@ class ACL implements cache_cacheableInterface
             $this->_limited = $this->get_data_from_cache(self::CACHE_LIMITS_BAS);
 
             return $this;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
