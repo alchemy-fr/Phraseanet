@@ -381,7 +381,7 @@ class record_preview extends record_adapter
 
                 try {
                     $user = \User_Adapter::getInstance($row['usr_id'], $this->app);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
 
                 }
 

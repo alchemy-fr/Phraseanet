@@ -114,7 +114,7 @@ class module_report_download extends module_report
             if (array_key_exists('record_id', $row)) {
                 try {
                     $record = new \record_adapter($app, $this->sbas_id, $row['record_id']);
-                } catch (Exception_Record_AdapterNotFound $e) {
+                } catch (\Exception_Record_AdapterNotFound $e) {
                     continue;
                 }
 

@@ -80,7 +80,7 @@ class module_report_edit extends module_report
                 try {
                     $user = User_Adapter::getInstance($value, $this->app);
                     $caption = $user->get_display_name();
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
 
                 }
             } elseif ($field == 'date') {

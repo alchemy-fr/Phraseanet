@@ -370,7 +370,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             try {
                 self::$_instance[$id] = $app['phraseanet.appbox']->get_data_from_cache('_user_' . $id);
                 self::$_instance[$id]->set_app($app);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 self::$_instance[$id] = new self($id, $app);
                 $app['phraseanet.appbox']->set_data_to_cache(self::$_instance[$id], '_user_' . $id);
             }
@@ -517,7 +517,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
             if ($app['authentication']->getUser()->getPrefs('start_page') == 'LAST_QUERY')
                 $app['authentication']->getUser()->setPrefs('start_page_query', $query);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
 
@@ -1421,7 +1421,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
                 ':value'  => $value
             ));
             $this->delete_data_from_cache();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -1596,7 +1596,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
                     $stmt = $connbas->prepare($sql);
                     $stmt->execute($params);
                     $stmt->closeCursor();
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
 
                 }
             }
@@ -1639,7 +1639,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             $stmt->closeCursor();
 
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 

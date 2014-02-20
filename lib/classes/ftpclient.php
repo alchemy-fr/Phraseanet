@@ -200,7 +200,7 @@ class ftpclient
                 echo "Resume seems not to be supported, try again from scratch\n<br>";
             try {
                 $this->unlink($remotefile);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 echo $e;
             }
             $ret = $this->nb_put($remotefile, $localfile, 0);
@@ -243,7 +243,7 @@ class ftpclient
                 echo "Resume seems not to be supported, try again from scratch\n<br>";
             try {
                 $this->unlink($localfile);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 echo $e;
             }
             $ret = $this->nb_get($localfile, $remotefile, 0);

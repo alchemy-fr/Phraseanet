@@ -127,7 +127,7 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
 
         try {
             $registered_user = User_Adapter::getInstance($from, $this->app);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return array();
         }
 

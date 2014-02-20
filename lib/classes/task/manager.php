@@ -108,7 +108,7 @@ class task_manager
             }
             try {
                 $tasks[$row['task_id']] = new $classname($row['task_id'], $this->app, $this->logger);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
             }
         }
@@ -259,7 +259,7 @@ class task_manager
                         "err" => null
                     );
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
             }
         }

@@ -325,7 +325,7 @@ class task_period_ftpPull extends task_appboxAbstract
                 $stmt->closeCursor();
 
                 return true;
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 return false;
             }
         } else {
@@ -423,7 +423,7 @@ class task_period_ftpPull extends task_appboxAbstract
 
                     $ftp->get($finalpath, $filepath);
                     $ftp->delete($filepath);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $this->logger->addDebug("Erreur lors du rappatriement de $filepath : " . $e->getMessage());
                 }
             }
@@ -431,7 +431,7 @@ class task_period_ftpPull extends task_appboxAbstract
             $ftp->close();
 
             $this->setProgress(0, 0);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             if (isset($ftp) && $ftp instanceof ftpclient) {
                 $ftp->close();
             }

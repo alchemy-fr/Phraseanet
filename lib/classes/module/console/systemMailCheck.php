@@ -93,7 +93,7 @@ class module_console_systemMailCheck extends Command
                     $tmp_user->set_email(null);
 
                     unset($users[$id]);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $output->writeln('<error>Wrong id</error>');
                 }
             }

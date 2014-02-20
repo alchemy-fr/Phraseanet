@@ -76,7 +76,7 @@ class random
             $stmt->closeCursor();
 
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -185,7 +185,7 @@ class random
             $stmt->closeCursor();
 
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -205,7 +205,7 @@ class random
             $stmt->closeCursor();
 
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 

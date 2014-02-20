@@ -446,7 +446,7 @@ class appbox extends base
     {
         try {
             return $this->get_data_from_cache(self::CACHE_SBAS_IDS);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
         $sql = 'SELECT sbas_id FROM sbas';

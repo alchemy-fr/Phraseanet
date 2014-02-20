@@ -282,7 +282,7 @@ class databox_field implements cache_cacheableInterface
         if ( ! isset(self::$_instance[$instance_id]) || (self::$_instance[$instance_id] instanceof self) === false) {
             try {
                 self::$_instance[$instance_id] = $databox->get_data_from_cache($cache_key);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 self::$_instance[$instance_id] = new self($app, $databox, $id);
                 $databox->set_data_to_cache(self::$_instance[$instance_id], $cache_key);
             }

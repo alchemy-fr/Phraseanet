@@ -850,7 +850,7 @@ class module_report
             $this->setReport();
 
             return $this->report;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             echo $e->getMessage();
         }
     }

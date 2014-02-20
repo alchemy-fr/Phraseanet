@@ -148,7 +148,7 @@ class module_console_taskrun extends Command
 
         try {
             $this->task->run($runner);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->task->log(sprintf("taskrun : exception from 'run()', %s \n", $e->getMessage()));
 
             return($e->getCode());

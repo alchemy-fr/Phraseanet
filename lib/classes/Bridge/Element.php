@@ -301,7 +301,7 @@ class Bridge_Element
         if (! $this->connector_element) {
             try {
                 $this->connector_element = $this->account->get_api()->get_element_from_id($this->dist_id, $this->type);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 return null;
             }
         }

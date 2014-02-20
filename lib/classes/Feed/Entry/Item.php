@@ -85,7 +85,7 @@ class Feed_Entry_Item implements Feed_Entry_ItemInterface, cache_cacheableInterf
             $this->ord = $datas['ord'];
 
             return $this;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 

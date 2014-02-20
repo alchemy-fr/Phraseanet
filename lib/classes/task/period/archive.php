@@ -379,7 +379,7 @@ class task_period_archive extends task_abstract
             while ($this->running) {
                 try {
                     $conn = connection::getPDOConnection($this->dependencyContainer);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $this->log($e->getMessage());
                     if ($this->getRunner() == self::RUNNER_SCHEDULER) {
                         $this->log(("Warning : abox connection lost, restarting in 10 min."));
@@ -436,7 +436,7 @@ class task_period_archive extends task_abstract
                             $cold = 30;
                         }
                     }
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     if ($this->getRunner() == self::RUNNER_SCHEDULER) {
                         $this->log(sprintf(('Warning : error fetching or reading settings of the task \'%d\', restarting in 10 min.'), $this->getID()));
 
@@ -787,7 +787,7 @@ class task_period_archive extends task_abstract
 
                 $n->setAttribute('temperature', 'hot');
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -893,7 +893,7 @@ class task_period_archive extends task_abstract
                     }
                 }
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -1585,7 +1585,7 @@ class task_period_archive extends task_abstract
                     $this->movedFiles++;
                 }
                 $node->setAttribute('grp', 'tocomplete');
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->logger->addDebug($e->getMessage());
             }
         }

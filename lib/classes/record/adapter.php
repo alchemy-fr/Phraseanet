@@ -192,7 +192,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $this->base_id = $datas['base_id'];
 
             return $this;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -522,7 +522,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         try {
             return $this->get_subdef('thumbnailGIF');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -568,7 +568,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     {
         try {
             return $this->get_data_from_cache(self::CACHE_STATUS);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
         $sql = 'SELECT BIN(status) as status FROM record
@@ -714,7 +714,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     {
         try {
             return $this->get_data_from_cache(self::CACHE_SUBDEFS);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -759,7 +759,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         if (!$this->technical_datas) {
             try {
                 $this->technical_datas = $this->get_data_from_cache(self::CACHE_TECHNICAL_DATAS);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->technical_datas = array();
                 $connbas = $this->get_databox()->get_connection();
                 $sql = 'SELECT name, value FROM technical_datas WHERE record_id = :record_id';
@@ -944,7 +944,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $this->get_subdef('preview');
 
             return $this->get_subdef('preview')->is_physically_present();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             unset($e);
         }
 
@@ -1282,7 +1282,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 ':coll_id'   => $collection->get_coll_id()
             ));
             $stmt->closeCursor();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             unset($e);
         }
 
@@ -1337,7 +1337,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 ':coll_id'   => $file->getCollection()->get_coll_id()
             ));
             $stmt->closeCursor();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             unset($e);
         }
 

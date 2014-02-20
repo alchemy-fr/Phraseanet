@@ -457,7 +457,7 @@ class Basket
                 $totSize += $basket_element->getRecord($app)
                     ->get_subdef('document')
                     ->get_size();
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
             }
         }

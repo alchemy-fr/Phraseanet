@@ -351,7 +351,7 @@ class task_period_RecordMover extends task_appboxAbstract
 
             try {
                 $connbas = connection::getPDOConnection($this->dependencyContainer, $task['sbas_id']);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->log(sprintf("can't connect sbas %s", $task['sbas_id']), self::LOG_ERROR);
                 continue;
             }
@@ -513,7 +513,7 @@ class task_period_RecordMover extends task_appboxAbstract
                     $ret['err_htmlencoded'] = htmlentities($ret['err']);
                     break;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $ret['err'] = "bad sbas '" . $sbas_id . "'";
             $ret['err_htmlencoded'] = htmlentities($ret['err']);
         }
