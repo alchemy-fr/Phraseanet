@@ -109,7 +109,7 @@ class BasketElementRepository extends EntityRepository
             LEFT JOIN b.validation s
             LEFT JOIN s.participants p
             WHERE b.user = :usr_id
-            AND b.pusher_id IS NOT NULL
+            AND b.pusher IS NOT NULL
             AND e.record_id = :record_id
             AND e.sbas_id = :sbas_id';
 

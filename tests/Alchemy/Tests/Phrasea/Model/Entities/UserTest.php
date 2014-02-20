@@ -7,6 +7,7 @@ use Alchemy\Phrasea\Model\Entities\User;
 
 class UserTest extends \PhraseanetTestCase
 {
+    /** @var User */
     private $user;
 
     public function setUp()
@@ -140,7 +141,7 @@ class UserTest extends \PhraseanetTestCase
         return [
             [false],
             [''],
-            [1],
+            [4],
             ['madame']
         ];
     }

@@ -96,13 +96,13 @@ class ValidationSession
     }
 
     /**
-     * Get initiator_id
+     * Get validation initiator
      *
-     * @return integer
+     * @return User
      */
     public function getInitiator()
     {
-        return $this->initiator_id;
+        return $this->initiator;
     }
 
     /**
