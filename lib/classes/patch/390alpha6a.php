@@ -94,9 +94,7 @@ class patch_390alpha6a implements patchInterface
         $n = 0;
 
         foreach ($rs as $row) {
-            try {
-                $user = $em->getPartialReference('Phraseanet:User', $row['usr_id']);
-            } catch (NoResultException $e) {
+            if (null === $user = $em->getPartialReference('Phraseanet:User', $row['usr_id'])) {
                 continue;
             }
 
