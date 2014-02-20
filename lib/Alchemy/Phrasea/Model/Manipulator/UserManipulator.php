@@ -84,7 +84,6 @@ class UserManipulator implements ManipulatorInterface
         foreach ($this->makeTraversable($users) as $user) {
             $user->setDeleted(true);
             $user->setEmail(null);
-            $user->setLogin(sprintf('(#deleted_%s', $user->getLogin()));
 
             $this->manager->delete($user);
         }

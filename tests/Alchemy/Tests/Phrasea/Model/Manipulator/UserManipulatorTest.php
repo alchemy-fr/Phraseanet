@@ -20,7 +20,6 @@ class UserManipulatorTest extends \PhraseanetTestCase
         self::$DI['app']['manipulator.user']->delete($user);
         $this->assertTrue($user->isDeleted());
         $this->assertNull($user->getEmail());
-        $this->assertEquals('(#deleted_', substr($user->getLogin(), 0, 10));
     }
 
     public function testCreateAdminUser()
