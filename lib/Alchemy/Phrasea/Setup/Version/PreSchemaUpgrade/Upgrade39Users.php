@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Entities\FtpCredential;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
@@ -32,6 +33,10 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
         if (false === $version->isMigrated()) {
             $version->execute('up');
         }
+        $version = $conf->getVersion('ftp-credential');
+        if (false === $version->isMigrated()) {
+            $version->execute('up');
+        }
         $this->alterTablesUp($em);
 
         try {
@@ -39,6 +44,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
             $em->getConnection()->query('SET FOREIGN_KEY_CHECKS=0');
             // Creates user entities
             $this->updateUsers($em);
+            $this->updateFtpSettings($em);
             // Creates user model references
             $this->updateTemplateOwner($em);
             $this->updateLastAppliedModels($em);
@@ -46,7 +52,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
             $em->getConnection()->query('SET FOREIGN_KEY_CHECKS=1');
             $em->getConnection()->commit();
             $this->renameTable($em, 'up');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $em->getConnection()->rollback();
             $em->close();
             throw $e;
@@ -71,6 +77,10 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
         $this->emptyTables($em);
         // rollback schema
         $this->alterTablesDown($em);
+        $version = $conf->getVersion('ftp-credential');
+        if ($version->isMigrated()) {
+            $version->execute('down');
+        }
         $version = $conf->getVersion('user');
         if ($version->isMigrated()) {
             $version->execute('down');
@@ -349,6 +359,50 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
         $em->getConnection()->executeQuery('UPDATE Users SET geoname_id=NULL WHERE geoname_id=0');
         $em->getConnection()->executeQuery('UPDATE Users SET locale=NULL WHERE locale NOT IN ("'.implode('", "', array_keys(Application::getAvailableLanguages())).'")');
         $em->getConnection()->executeQuery('UPDATE Users SET deleted=1, login=SUBSTRING(login, 11) WHERE login LIKE "(#deleted_%"');
+    }
+
+    private function updateFtpSettings(EntityManager $em)
+    {
+        $offset = 0;
+        $perBatch = 100;
+
+        do {
+            $sql = 'SELECT usr_id, activeFTP, addrFTP, loginFTP,
+                        retryFTP, passifFTP, pwdFTP, destFTP, prefixFTPfolder
+                    FROM usr
+                    WHERE usr_login NOT LIKE "(#deleted_%" AND model_of = 0'
+                    .sprintf(' LIMIT %d, %d', $offset, $perBatch);
+
+            $stmt = $em->getConnection()->prepare($sql);
+            $stmt->execute();
+            $rs = $stmt->fetchAll();
+            $stmt->closeCursor();
+
+            foreach ($rs as $row) {
+                if (null === $user = $em->getPartialReference('Phraseanet:User', $row['usr_id'])) {
+                    continue;
+                }
+                $credential = new FtpCredential();
+                $credential->setActive($row['activeFTP']);
+                $credential->setAddress($row['addrFTP']);
+                $credential->setLogin($row['loginFTP']);
+                $credential->setMaxRetry((Integer) $row['retryFTP']);
+                $credential->setPassive($row['passifFTP']);
+                $credential->setPassword($row['pwdFTP']);
+                $credential->setReceptionFolder($row['destFTP']);
+                $credential->setRepositoryPrefixName($row['prefixFTPfolder']);
+                $credential->setUser($user);
+
+                $em->persist($credential);
+            }
+
+            $em->flush();
+            $em->clear();
+
+            $offset += $perBatch;
+        } while (count($rs) > 0);
+
+        return true;
     }
 
     /**

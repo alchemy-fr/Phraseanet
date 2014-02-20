@@ -10,7 +10,9 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Model\Entities\FtpCredential;
+use Alchemy\Phrasea\Model\Entities\Order;
+use Alchemy\Phrasea\Model\Entities\OrderElement;
+use Gedmo\Timestampable\TimestampableListener;
 
 class patch_390alpha1a implements patchInterface
 {
@@ -49,7 +51,7 @@ class patch_390alpha1a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return ['user', 'ftp-credential'];
+        return ['user', 'order'];
     }
 
     /**
@@ -57,10 +59,18 @@ class patch_390alpha1a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
+        $sql = 'DELETE FROM Orders';
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
+
+        $sql = 'DELETE FROM OrderElements';
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
+
         $conn = $app['phraseanet.appbox']->get_connection();
-        $sql = 'SELECT usr_id, activeFTP, addrFTP, loginFTP,
-                    retryFTP, passifFTP, pwdFTP, destFTP, prefixFTPfolder
-                FROM usr';
+        $sql = 'SELECT id, usr_id, created_on, `usage`, deadline, ssel_id FROM `order`';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -68,23 +78,51 @@ class patch_390alpha1a implements patchInterface
 
         $n = 0;
         $em = $app['EM'];
+        $em->getEventManager()->removeEventSubscriber(new TimestampableListener());
 
         foreach ($rs as $row) {
+            $sql = 'SELECT count(id) as todo
+                    FROM order_elements
+                    WHERE deny = NULL
+                        AND order_id = :id';
+
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([':id' => $row['id']]);
+            $todo = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+
             $user = $em->getPartialReference('Phraseanet:User', $row['usr_id']);
-            $credential = new FtpCredential();
-            $credential->setActive($row['activeFTP']);
-            $credential->setAddress($row['addrFTP']);
-            $credential->setLogin($row['loginFTP']);
-            $credential->setMaxRetry((Integer) $row['retryFTP']);
-            $credential->setPassive($row['passifFTP']);
-            $credential->setPassword($row['pwdFTP']);
-            $credential->setReceptionFolder($row['destFTP']);
-            $credential->setRepositoryPrefixName($row['prefixFTPfolder']);
-            $credential->setUser($user);
 
-            $em->persist($credential);
+            $order = new Order();
+            $order->setUser($user)
+                ->setTodo($todo['todo'])
+                ->setOrderUsage($row['usage'])
+                ->setDeadline(new \DateTime($row['deadline']))
+                ->setCreatedOn(new \DateTime($row['created_on']))
+                ->setBasket($em->getPartialReference('Phraseanet:Basket', $row['ssel_id']));
 
-            $n++;
+            $em->persist($order);
+
+            $sql = 'SELECT base_id, record_id, order_master_id, deny
+                    FROM order_elements
+                    WHERE order_id = :id';
+
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([':id' => $row['id']]);
+            $elements = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+
+            foreach ($elements as $element) {
+                $orderElement = new OrderElement();
+                $orderElement->setBaseId($element['base_id'])
+                    ->setDeny($element['deny'] === null ? null : (Boolean) $element['deny'])
+                    ->setOrder($order)
+                    ->setOrderMaster($em->getPartialReference('Phraseanet:User',$element['order_master_id']))
+                    ->setRecordId($element['record_id']);
+
+                $order->addElement($orderElement);
+                $em->persist($orderElement);
+            }
 
             if ($n % 100 === 0) {
                 $em->flush();
@@ -94,6 +132,8 @@ class patch_390alpha1a implements patchInterface
 
         $em->flush();
         $em->clear();
+
+        $em->getEventManager()->addEventSubscriber(new TimestampableListener());
 
         return true;
     }
