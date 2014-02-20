@@ -51,7 +51,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request('POST', '/admin/users/rights/apply/', [
             'users'   => $user->getId(),
             'values'  => 'canreport_' . self::$DI['collection']->get_base_id() . '=1&manage_' . self::$DI['collection']->get_base_id() . '=1&canpush_' . self::$DI['collection']->get_base_id() . '=1',
-            'user_infos' => [ 'email' => 'toto@toto.fr' ]
+            'user_infos' => ['email' => 'toto@toto.fr' ]
         ]);
 
         $response = self::$DI['client']->getResponse();

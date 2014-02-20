@@ -39,7 +39,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = [ 'usr_id' => '' , 'autoregister' => []];
+        $default = ['usr_id' => '' , 'autoregister' => []];
         $params = array_merge($default, $params);
         $base_ids = array_keys($params['autoregister']);
 
