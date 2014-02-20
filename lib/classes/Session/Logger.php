@@ -253,7 +253,7 @@ class Session_Logger
                     $stmt = $connbas->prepare($sql);
                     $stmt->execute($params);
                     $stmt->closeCursor();
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
 
                 }
             }

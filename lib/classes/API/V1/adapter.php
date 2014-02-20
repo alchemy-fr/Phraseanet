@@ -1183,7 +1183,7 @@ class API_V1_adapter extends API_V1_Abstract
         try {
             $record = $databox->get_record($record_id);
             $result->set_datas(['record' => $this->list_record($record)]);
-        } catch (\NotFoundHttpException $e) {
+        } catch (NotFoundHttpException $e) {
             $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, $this->app->trans('Record Not Found'));
         } catch (\Exception $e) {
             $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, $this->app->trans('An error occured'));
@@ -1207,7 +1207,7 @@ class API_V1_adapter extends API_V1_Abstract
         try {
             $story = $databox->get_record($story_id);
             $result->set_datas(['story' => $this->list_story($story)]);
-        } catch (\NotFoundHttpException $e) {
+        } catch (NotFoundHttpException $e) {
             $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, $this->app->trans('Story Not Found'));
         } catch (\Exception $e) {
             $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, $this->app->trans('An error occured'));
