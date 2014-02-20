@@ -52,7 +52,8 @@ module.exports = function(grunt) {
             "autobahnjs": {
                 "expand": true,
                 "src": [
-                    "<%= path.bower %>/autobahnjs/build/autobahn.min.js"
+                    "<%= path.bower %>/autobahnjs/build/autobahn.min.js",
+                    "<%= path.bower %>/autobahnjs/LICENSE"
                 ],
                 "dest": "<%= path.asset %>/autobahnjs/",
                 "flatten": true
@@ -133,7 +134,10 @@ module.exports = function(grunt) {
             },
             "i18next": {
                 "expand": true,
-                "src": "<%= path.bower %>/i18next/release/i18next.amd-1.6.3.js",
+                "src": [
+                    "<%= path.bower %>/i18next/release/i18next.amd-1.6.3.js",
+                    "<%= path.bower %>/i18next/license"
+                ],
                 "dest": "<%= path.asset %>/i18next/",
                 "flatten": true
             },
@@ -145,10 +149,10 @@ module.exports = function(grunt) {
             },
             "jquery-galleria": {
                 "expand": true,
-                "cwd": "<%= path.bower %>/jquery-galleria/src",
                 "src": [
-                    "galleria.js",
-                    "themes/classic/!(classic-demo.html)*",
+                    "<%= path.bower %>/jquery-galleria/src/galleria.js",
+                    "<%= path.bower %>/jquery-galleria/src/themes/classic/!(classic-demo.html)*",
+                    "<%= path.bower %>/jquery-galleria/LICENSE"
                 ],
                 "dest": "<%= path.asset %>/jquery-galleria/",
                 "flatten": true
@@ -190,7 +194,8 @@ module.exports = function(grunt) {
                     "themes/base/*",
                     "themes/base/images/*",
                     "dist/jquery-ui.css",
-                    "dist/jquery-ui.js"
+                    "dist/jquery-ui.js",
+                    "MIT-LICENSE.txt"
                 ],
                 "rename": function(dest, src) {
                     return dest + src.replace("dist", "");
@@ -273,7 +278,7 @@ module.exports = function(grunt) {
                     "skins/**",
                     "themes/**",
                     "tinymce.js",
-                    "license.txt"
+                    "LICENSE.txt"
                 ],
                 "dest": "<%= path.asset %>/tinymce"
             },
