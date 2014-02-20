@@ -1,8 +1,8 @@
 language: php
 
 env:
-  - SETUP_MODE=update JS_COMPILER=$TRAVIS_BUILD_DIR/closure/compiler.jar
-  - SETUP_MODE=install JS_COMPILER=$TRAVIS_BUILD_DIR/closure/compiler.jar
+  - SETUP_MODE=update
+  - SETUP_MODE=install
 
 services:
   - mysql
@@ -11,6 +11,7 @@ services:
   - elasticsearch
 
 before_script:
+  - export JS_COMPILER=$TRAVIS_BUILD_DIR/closure/compiler.jar
   - sudo apt-get update -qq && sudo apt-get install -qq scons inkscape python-setuptools
   - sudo easy_install -U taschenmesser scour boto
   - wget http://dl.google.com/closure-compiler/compiler-latest.zip && unzip compiler-latest.zip -d closure
