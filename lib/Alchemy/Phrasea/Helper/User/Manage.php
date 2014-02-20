@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Helper\Helper;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordSetup;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class Manage extends Helper
 {
@@ -110,18 +111,12 @@ class Manage extends Helper
             ->limit($offset_start, $results_quantity)
             ->execute();
 
-        try {
-            $invite_id = \User_Adapter::get_usr_id_from_login($this->app, 'invite');
-            $invite = \User_Adapter::getInstance($invite_id, $this->app);
-        } catch (\Exception $e) {
-            $invite = \User_Adapter::create($this->app, 'invite', 'invite', '', false);
+        if (null === $invite = $this->app['manipulator.user']->getRepository()->findByLogin(User::USER_GUEST)) {
+            $invite = $this->app['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
         }
 
-        try {
-            $autoregister_id = \User_Adapter::get_usr_id_from_login($this->app, 'autoregister');
-            $autoregister = \User_Adapter::getInstance($autoregister_id, $this->app);
-        } catch (\Exception $e) {
-            $autoregister = \User_Adapter::create($this->app, 'autoregister', 'autoregister', '', false);
+        if (null == $autoregister = $this->app['manipulator.user']->getRepository()->findByLogin(User::USER_AUTOREGISTER)) {
+            $autoregister = $this->app['manipulator.user']->createUser(User::USER_AUTOREGISTER, User::USER_AUTOREGISTER);
         }
 
         foreach ($this->query_parms as $k => $v) {
@@ -151,19 +146,11 @@ class Manage extends Helper
             throw new \Exception_InvalidArgument('Invalid mail address');
         }
 
-        $conn = $this->app['phraseanet.appbox']->get_connection();
-        $sql = 'SELECT usr_id FROM usr WHERE usr_mail = :email';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([':email' => $email]);
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $count = count($row);
-
-        if (!is_array($row) || $count == 0) {
+        if (null === $createdUser = $this->app['manipulator.user']->getRepository()->findByEmail($email)) {
             $sendCredentials = !!$this->request->get('send_credentials', false);
             $validateMail = !!$this->request->get('validate_mail', false);
 
-            $createdUser = \User_Adapter::create($this->app, $email, \random::generatePassword(16), $email, false, false);
-            /* @var $createdUser \User_Adapter */
+            $createdUser = $this->app['manipulator.user']->createUser($email, \random::generatePassword(16), $email);
 
             $receiver = null;
             try {
@@ -173,34 +160,31 @@ class Manage extends Helper
             }
 
             if ($sendCredentials) {
-                $urlToken = $this->app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $createdUser->get_id());
+                $urlToken = $this->app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $createdUser->getId());
 
                 if ($receiver && false !== $urlToken) {
                     $url = $this->app->url('login_renew_password', ['token' => $urlToken]);
                     $mail = MailRequestPasswordSetup::create($this->app, $receiver, null, '', $url);
-                    $mail->setLogin($createdUser->get_login());
+                    $mail->setLogin($createdUser->getLogin());
                     $this->app['notification.deliverer']->deliver($mail);
                 }
             }
 
             if ($validateMail) {
-                $createdUser->set_mail_locked(true);
+                $createdUser->setMailLocked(true);
 
                 if ($receiver) {
                     $expire = new \DateTime('+3 days');
-                    $token = $this->app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $createdUser->get_id(), $expire, $createdUser->get_email());
+                    $token = $this->app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $createdUser->getId(), $expire, $createdUser->getEmail());
                     $url = $this->app->url('login_register_confirm', ['code' => $token]);
 
                     $mail = MailRequestEmailConfirmation::create($this->app, $receiver, null, '', $url, $expire);
                     $this->app['notification.deliverer']->deliver($mail);
                 }
             }
-
-            $this->usr_id = $createdUser->get_id();
-        } else {
-            $this->usr_id = $row['usr_id'];
-            $createdUser = \User_Adapter::getInstance($this->usr_id, $this->app);
         }
+
+        $this->usr_id = $createdUser->getId();
 
         return $createdUser;
     }
@@ -213,9 +197,9 @@ class Manage extends Helper
             throw new \Exception_InvalidArgument('Invalid template name');
         }
 
-        $created_user = \User_Adapter::create($this->app, $name, \random::generatePassword(16), null, false, false);
-        $created_user->set_template($this->app['authentication']->getUser());
-        $this->usr_id = $this->app['authentication']->getUser()->get_id();
+        $created_user = $this->app['manipulator.user']->getRepository()->find($name, \random::generatePassword(16));
+        $created_user->setModelOf($this->app['authentication']->getUser());
+        $this->usr_id = $this->app['authentication']->getUser()->getId();
 
         return $created_user;
     }

@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Feed\Link;
 
 use Alchemy\Phrasea\Feed\FeedInterface;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class LinkGeneratorCollection implements LinkGeneratorInterface
 {
@@ -31,7 +32,7 @@ class LinkGeneratorCollection implements LinkGeneratorInterface
     /**
      * {@inheritdoc}
      */
-    public function generate(FeedInterface $feed, \User_Adapter $user, $format, $page = null, $renew = false)
+    public function generate(FeedInterface $feed, User $user, $format, $page = null, $renew = false)
     {
         if (null === $generator = $this->findGenerator($feed)) {
             throw new InvalidArgumentException(sprintf('Unable to find a valid generator for %s', get_class($feed)));

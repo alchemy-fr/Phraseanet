@@ -57,7 +57,7 @@ class Session implements ControllerProviderInterface
         ];
 
         if ($app['authentication']->isAuthenticated()) {
-            $usr_id = $app['authentication']->getUser()->get_id();
+            $usr_id = $app['authentication']->getUser()->getId();
             if ($usr_id != $request->request->get('usr')) { // I logged with another user
                 $ret['status'] = 'disconnected';
 
@@ -138,7 +138,11 @@ class Session implements ControllerProviderInterface
             $app->abort(404, 'Unknown session');
         }
 
-        if ($session->getUsrId() !== $app['authentication']->getUser()->get_id()) {
+        if (null === $session->getUser()) {
+            $app->abort(403, 'Unauthorized');
+        }
+
+        if ($session->getUser()->getId() !== $app['authentication']->getUser()->getId()) {
             $app->abort(403, 'Unauthorized');
         }
 

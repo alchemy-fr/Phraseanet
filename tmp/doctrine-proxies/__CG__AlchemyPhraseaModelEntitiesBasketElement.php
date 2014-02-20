@@ -389,12 +389,12 @@ class BasketElement extends \Alchemy\Phrasea\Model\Entities\BasketElement implem
     /**
      * {@inheritDoc}
      */
-    public function getUserValidationDatas(\User_Adapter $user, \Alchemy\Phrasea\Application $app)
+    public function getUserValidationDatas(\Alchemy\Phrasea\Model\Entities\User $user)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUserValidationDatas', array($user, $app));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUserValidationDatas', array($user));
 
-        return parent::getUserValidationDatas($user, $app);
+        return parent::getUserValidationDatas($user);
     }
 
 }

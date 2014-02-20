@@ -23,6 +23,7 @@ use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\Task;
+use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UserQuery;
 use Alchemy\Phrasea\Model\Entities\ValidationData;
 use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
@@ -658,7 +659,7 @@ class API_V1_adapter extends API_V1_Abstract
         }
 
         $session = new Alchemy\Phrasea\Model\Entities\LazaretSession();
-        $session->setUsrId($app['authentication']->getUser()->get_id());
+        $session->setUser($app['authentication']->getUser());
 
         $app['EM']->persist($session);
         $app['EM']->flush();
@@ -783,8 +784,8 @@ class API_V1_adapter extends API_V1_Abstract
         }
 
         $usr_id = null;
-        if ($file->getSession()->getUser($this->app)) {
-            $usr_id = $file->getSession()->getUser($this->app)->get_id();
+        if ($file->getSession()->getUser()) {
+            $usr_id = $file->getSession()->getUser()->getId();
         }
 
         $session = [
@@ -876,7 +877,7 @@ class API_V1_adapter extends API_V1_Abstract
         $search_result = $this->app['phraseanet.SE']->query($query, $offsetStart, $perPage, $options);
 
         $userQuery = new UserQuery();
-        $userQuery->setUsrId($this->app['authentication']->getUser()->get_id());
+        $userQuery->setUser($this->app['authentication']->getUser());
         $userQuery->setQuery($query);
 
         $this->app['EM']->persist($userQuery);
@@ -1226,7 +1227,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($this->app, $request, $this);
 
-        $usr_id = $this->app['authentication']->getUser()->get_id();
+        $usr_id = $this->app['authentication']->getUser()->getId();
 
         $result->set_datas(['baskets' => $this->list_baskets($usr_id)]);
 
@@ -1271,7 +1272,7 @@ class API_V1_adapter extends API_V1_Abstract
         }
 
         $Basket = new Basket();
-        $Basket->setOwner($this->app['authentication']->getUser());
+        $Basket->setUser($this->app['authentication']->getUser());
         $Basket->setName($name);
 
         $this->app['EM']->persist($Basket);
@@ -1309,10 +1310,10 @@ class API_V1_adapter extends API_V1_Abstract
         $result = new API_V1_result($this->app, $request, $this);
 
         $result->set_datas(
-                [
-                    "basket"          => $this->list_basket($basket),
-                    "basket_elements" => $this->list_basket_content($basket)
-                ]
+            [
+                "basket"          => $this->list_basket($basket),
+                "basket_elements" => $this->list_basket_content($basket)
+            ]
         );
 
         return $result;
@@ -1357,23 +1358,23 @@ class API_V1_adapter extends API_V1_Abstract
 
             foreach ($basket_element->getValidationDatas() as $validation_datas) {
                 $participant = $validation_datas->getParticipant();
-                $user = $participant->getUser($this->app);
+                $user = $participant->getUser();
                 /* @var $validation_datas ValidationData */
                 $choices[] = [
                     'validation_user' => [
-                        'usr_id'         => $user->get_id(),
-                        'usr_name'       => $user->get_display_name(),
+                        'usr_id'         => $user->getId(),
+                        'usr_name'       => $user->getDisplayName(),
                         'confirmed'      => $participant->getIsConfirmed(),
                         'can_agree'      => $participant->getCanAgree(),
                         'can_see_others' => $participant->getCanSeeOthers(),
-                        'readonly'       => $user->get_id() != $this->app['authentication']->getUser()->get_id(),
+                        'readonly'       => $user->getId() != $this->app['authentication']->getUser()->getId(),
                     ],
                     'agreement'      => $validation_datas->getAgreement(),
                     'updated_on'     => $validation_datas->getUpdated()->format(DATE_ATOM),
                     'note'           => null === $validation_datas->getNote() ? '' : $validation_datas->getNote(),
                 ];
 
-                if ($user->get_id() == $this->app['authentication']->getUser()->get_id()) {
+                if ($user->getId() == $this->app['authentication']->getUser()->getId()) {
                     $agreement = $validation_datas->getAgreement();
                     $note = null === $validation_datas->getNote() ? '' : $validation_datas->getNote();
                 }
@@ -1434,10 +1435,10 @@ class API_V1_adapter extends API_V1_Abstract
      * List all avalaible feeds
      *
      * @param  Request       $request
-     * @param  User_Adapter  $user
+     * @param  User          $user
      * @return API_V1_result
      */
-    public function search_publications(Request $request, User_Adapter $user)
+    public function search_publications(Request $request, User $user)
     {
         $result = new API_V1_result($this->app, $request, $this);
 
@@ -1467,10 +1468,10 @@ class API_V1_adapter extends API_V1_Abstract
      *
      * @param  Request       $request
      * @param  int           $publication_id
-     * @param  User_Adapter  $user
+     * @param  User          $user
      * @return API_V1_result
      */
-    public function get_publication(Request $request, $publication_id, User_Adapter $user)
+    public function get_publication(Request $request, $publication_id, User $user)
     {
         $result = new API_V1_result($this->app, $request, $this);
 
@@ -1495,7 +1496,7 @@ class API_V1_adapter extends API_V1_Abstract
         return $result;
     }
 
-    public function get_publications(Request $request, User_Adapter $user)
+    public function get_publications(Request $request, User $user)
     {
         $result = new API_V1_result($this->app, $request, $this);
 
@@ -1518,7 +1519,7 @@ class API_V1_adapter extends API_V1_Abstract
         return $result;
     }
 
-    public function get_feed_entry(Request $request, $entry_id, User_Adapter $user)
+    public function get_feed_entry(Request $request, $entry_id, User $user)
     {
         $result = new API_V1_result($this->app, $request, $this);
 
@@ -1777,7 +1778,7 @@ class API_V1_adapter extends API_V1_Abstract
             'created_on'        => $basket->getCreated()->format(DATE_ATOM),
             'description'       => (string) $basket->getDescription(),
             'name'              => $basket->getName(),
-            'pusher_usr_id'     => $basket->getPusherId(),
+            'pusher_usr_id'     => $basket->getPusher() ? $basket->getPusher()->getId() : null,
             'updated_on'        => $basket->getUpdated()->format(DATE_ATOM),
             'unread'            => !$basket->getIsRead(),
             'validation_basket' => !!$basket->getValidation()
@@ -1788,15 +1789,15 @@ class API_V1_adapter extends API_V1_Abstract
 
             foreach ($basket->getValidation()->getParticipants() as $participant) {
                 /* @var $participant ValidationParticipant */
-                $user = $participant->getUser($this->app);
+                $user = $participant->getUser();
 
                 $users[] = [
-                    'usr_id'         => $user->get_id(),
-                    'usr_name'       => $user->get_display_name(),
+                    'usr_id'         => $user->getId(),
+                    'usr_name'       => $user->getDisplayName(),
                     'confirmed'      => $participant->getIsConfirmed(),
                     'can_agree'      => $participant->getCanAgree(),
                     'can_see_others' => $participant->getCanSeeOthers(),
-                    'readonly'       => $user->get_id() != $this->app['authentication']->getUser()->get_id(),
+                    'readonly'       => $user->getId() != $this->app['authentication']->getUser()->getId(),
                 ];
             }
 
@@ -1811,7 +1812,7 @@ class API_V1_adapter extends API_V1_Abstract
                 'validation_users'     => $users,
                 'expires_on'           => $expires_on_atom,
                 'validation_infos'     => $basket->getValidation()->getValidationString($this->app, $this->app['authentication']->getUser()),
-                'validation_confirmed' => $basket->getValidation()->getParticipant($this->app['authentication']->getUser(), $this->app)->getIsConfirmed(),
+                'validation_confirmed' => $basket->getValidation()->getParticipant($this->app['authentication']->getUser())->getIsConfirmed(),
                 'validation_initiator' => $basket->getValidation()->isInitiator($this->app['authentication']->getUser()),
                     ], $ret
             );

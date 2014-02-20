@@ -339,7 +339,9 @@ class api_v1_adapterTest extends \PhraseanetAuthenticatedTestCase
     {
         $basketElement = self::$DI['app']['EM']->find('Phraseanet:BasketElement', 1);
         $story = self::$DI['record_story_1'];
-        $story->appendChild(self::$DI['record_1']);
+        if (false === $story->hasChild(self::$DI['record_1'])) {
+            $story->appendChild(self::$DI['record_1']);
+        }
 
         $request = new Request([], [], [], [], [], ['HTTP_Accept' => 'application/json']);
         $result = $this->object->get_record_related($request, self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());

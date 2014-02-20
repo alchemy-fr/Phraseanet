@@ -12,8 +12,7 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request('GET', '/prod/');
 
         $response = self::$DI['client']->getResponse();
-        /* @var $response \Symfony\Component\HttpFoundation\Response */
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->isOk());
         $this->assertEquals('UTF-8', $response->getCharset());
     }
 }

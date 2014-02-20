@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
+use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UsrList;
 use Alchemy\Phrasea\Model\Entities\UsrListEntry;
 use Alchemy\Phrasea\Model\Entities\ValidationSession;
@@ -28,26 +29,26 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Push implements ControllerProviderInterface
 {
-    protected function getUserFormatter()
+    protected function getUserFormatter(Application $app)
     {
-        return function (\User_Adapter $user) {
-            $subtitle = array_filter([$user->get_job(), $user->get_company()]);
+        return function (User $user) use ($app) {
+            $subtitle = array_filter([$user->getJob(), $user->getCompany()]);
 
             return [
-                'type'         => 'USER'
-                , 'usr_id'       => $user->get_id()
-                , 'firstname'    => $user->get_firstname()
-                , 'lastname'     => $user->get_lastname()
-                , 'email'        => $user->get_email()
-                , 'display_name' => $user->get_display_name()
-                , 'subtitle'     => implode(', ', $subtitle)
+                'type'         => 'USER',
+                'usr_id'       => $user->getId(),
+                'firstname'    => $user->getFirstName(),
+                'lastname'     => $user->getLastName(),
+                'email'        => $user->getEmail(),
+                'display_name' => $user->getDisplayName(),
+                'subtitle'     => implode(', ', $subtitle),
             ];
         };
     }
 
     protected function getListFormatter($app)
     {
-        $userFormatter = $this->getUserFormatter();
+        $userFormatter = $this->getUserFormatter($app);
 
         return function (UsrList $List) use ($userFormatter, $app) {
             $entries = [];
@@ -56,16 +57,16 @@ class Push implements ControllerProviderInterface
                 /* @var $entry UsrListEntry */
                 $entries[] = [
                     'Id'   => $entry->getId(),
-                    'User' => $userFormatter($entry->getUser($app))
+                    'User' => $userFormatter($entry->getUser())
                 ];
             }
 
             return [
-                'type'    => 'LIST'
-                , 'list_id' => $List->getId()
-                , 'name'    => $List->getName()
-                , 'length'  => count($entries)
-                , 'entries' => $entries
+                'type'    => 'LIST',
+                'list_id' => $List->getId(),
+                'name'    => $List->getName(),
+                'length'  => count($entries),
+                'entries' => $entries,
             ];
         };
     }
@@ -87,7 +88,7 @@ class Push implements ControllerProviderInterface
 
                         $user = $value->getRessource();
 
-                        $Users->set($user->get_id(), $user);
+                        $Users->set($user->getId(), $user);
                     }
                 }
             }
@@ -108,7 +109,7 @@ class Push implements ControllerProviderInterface
             $app['firewall']->requireRight('push');
         });
 
-        $userFormatter = $this->getUserFormatter();
+        $userFormatter = $this->getUserFormatter($app);
 
         $listFormatter = $this->getListFormatter($app);
 
@@ -161,7 +162,7 @@ class Push implements ControllerProviderInterface
             try {
                 $pusher = new RecordHelper\Push($app, $app['request']);
 
-                $push_name = $request->request->get('name', $app->trans('Push from %user%', ['%user%' => $app['authentication']->getUser()->get_display_name()]));
+                $push_name = $request->request->get('name', $app->trans('Push from %user%', ['%user%' => $app['authentication']->getUser()->getDisplayName()]));
                 $push_description = $request->request->get('push_description');
 
                 $receivers = $request->request->get('participants');
@@ -176,7 +177,7 @@ class Push implements ControllerProviderInterface
 
                 foreach ($receivers as $receiver) {
                     try {
-                        $user_receiver = \User_Adapter::getInstance($receiver['usr_id'], $app);
+                        $user_receiver = $app['manipulator.user']->getRepository()->find($receiver['usr_id']);
                     } catch (\Exception $e) {
                         throw new ControllerException($app->trans('Unknown user %user_id%', ['%user_id%' => $receiver['usr_id']]));
                     }
@@ -184,7 +185,7 @@ class Push implements ControllerProviderInterface
                     $Basket = new Basket();
                     $Basket->setName($push_name);
                     $Basket->setDescription($push_description);
-                    $Basket->setOwner($user_receiver);
+                    $Basket->setUser($user_receiver);
                     $Basket->setPusher($app['authentication']->getUser());
                     $Basket->setIsRead(false);
 
@@ -220,31 +221,31 @@ class Push implements ControllerProviderInterface
                         'basket' => $Basket->getId(),
                         'LOG' => $app['tokens']->getUrlToken(
                             \random::TYPE_VIEW,
-                            $user_receiver->get_id(),
+                            $user_receiver->getId(),
                             null,
                             $Basket->getId()
                         )
                     ]);
 
-                    $receipt = $request->get('recept') ? $app['authentication']->getUser()->get_email() : '';
+                    $receipt = $request->get('recept') ? $app['authentication']->getUser()->getEmail() : '';
 
                     $params = [
-                        'from'       => $app['authentication']->getUser()->get_id()
-                        , 'from_email' => $app['authentication']->getUser()->get_email()
-                        , 'to'         => $user_receiver->get_id()
-                        , 'to_email'   => $user_receiver->get_email()
-                        , 'to_name'    => $user_receiver->get_display_name()
-                        , 'url'        => $url
-                        , 'accuse'     => $receipt
-                        , 'message'    => $request->request->get('message')
-                        , 'ssel_id'    => $Basket->getId()
+                        'from'       => $app['authentication']->getUser()->getId(),
+                        'from_email' => $app['authentication']->getUser()->getEmail(),
+                        'to'         => $user_receiver->getId(),
+                        'to_email'   => $user_receiver->getEmail(),
+                        'to_name'    => $user_receiver->getDisplayName(),
+                        'url'        => $url,
+                        'accuse'     => $receipt,
+                        'message'    => $request->request->get('message'),
+                        'ssel_id'    => $Basket->getId(),
                     ];
 
                     $app['events-manager']->trigger('__PUSH_DATAS__', $params);
                 }
 
                 $app['phraseanet.logger']($BasketElement->getRecord($app)->get_databox())
-                    ->log($BasketElement->getRecord($app), \Session_Logger::EVENT_VALIDATE, $user_receiver->get_id(), '');
+                    ->log($BasketElement->getRecord($app), \Session_Logger::EVENT_VALIDATE, $user_receiver->getId(), '');
 
                 $app['EM']->flush();
 
@@ -277,9 +278,7 @@ class Push implements ControllerProviderInterface
             try {
                 $pusher = new RecordHelper\Push($app, $app['request']);
 
-                $repository = $app['EM']->getRepository('Phraseanet:Basket');
-
-                $validation_name = $request->request->get('name', $app->trans('Validation from %user%', ['%user%' => $app['authentication']->getUser()->get_display_name()]));
+                $validation_name = $request->request->get('name', $app->trans('Validation from %user%', ['%user%' => $app['authentication']->getUser()->getDisplayName()]));
                 $validation_description = $request->request->get('validation_description');
 
                 $participants = $request->request->get('participants');
@@ -298,7 +297,7 @@ class Push implements ControllerProviderInterface
                     $Basket = new Basket();
                     $Basket->setName($validation_name);
                     $Basket->setDescription($validation_description);
-                    $Basket->setOwner($app['authentication']->getUser());
+                    $Basket->setUser($app['authentication']->getUser());
                     $Basket->setIsRead(false);
 
                     $app['EM']->persist($Basket);
@@ -336,17 +335,17 @@ class Push implements ControllerProviderInterface
                 }
 
                 $found = false;
-                foreach ($participants as $key => $participant) {
-                    if ($participant['usr_id'] == $app['authentication']->getUser()->get_id()) {
+                foreach ($participants as $participant) {
+                    if ($participant['usr_id'] === $app['authentication']->getUser()->getId()) {
                         $found = true;
                         break;
                     }
                 }
 
                 if (!$found) {
-                    $participants[$app['authentication']->getUser()->get_id()] = [
+                    $participants[] = [
                         'see_others' => 1,
-                        'usr_id'     => $app['authentication']->getUser()->get_id(),
+                        'usr_id'     => $app['authentication']->getUser()->getId(),
                         'agree'      => 0,
                         'HD'         => 0
                     ];
@@ -359,13 +358,13 @@ class Push implements ControllerProviderInterface
                     }
 
                     try {
-                        $participant_user = \User_Adapter::getInstance($participant['usr_id'], $app);
+                        $participant_user = $app['manipulator.user']->getRepository()->find($participant['usr_id']);
                     } catch (\Exception $e) {
                         throw new ControllerException($app->trans('Unknown user %usr_id%', ['%usr_id%' => $participant['usr_id']]));
                     }
 
                     try {
-                        $Participant = $Validation->getParticipant($participant_user, $app);
+                        $Participant = $Validation->getParticipant($participant_user);
                         continue;
                     } catch (NotFoundHttpException $e) {
 
@@ -404,7 +403,7 @@ class Push implements ControllerProviderInterface
                         $app['EM']->persist($ValidationData);
 
                         $app['phraseanet.logger']($BasketElement->getRecord($app)->get_databox())
-                            ->log($BasketElement->getRecord($app), \Session_Logger::EVENT_PUSH, $participant_user->get_id(), '');
+                            ->log($BasketElement->getRecord($app), \Session_Logger::EVENT_PUSH, $participant_user->getId(), '');
 
                         $Participant->addData($ValidationData);
                     }
@@ -417,20 +416,20 @@ class Push implements ControllerProviderInterface
                         'basket' => $Basket->getId(),
                         'LOG' => $app['tokens']->getUrlToken(
                             \random::TYPE_VALIDATE,
-                            $participant_user->get_id(),
+                            $participant_user->getId(),
                             null,
                             $Basket->getId()
                         )
                     ]);
 
-                    $receipt = $request->get('recept') ? $app['authentication']->getUser()->get_email() : '';
+                    $receipt = $request->get('recept') ? $app['authentication']->getUser()->getEmail() : '';
 
                     $params = [
-                        'from'       => $app['authentication']->getUser()->get_id(),
-                        'from_email' => $app['authentication']->getUser()->get_email(),
-                        'to'         => $participant_user->get_id(),
-                        'to_email'   => $participant_user->get_email(),
-                        'to_name'    => $participant_user->get_display_name(),
+                        'from'       => $app['authentication']->getUser()->getId(),
+                        'from_email' => $app['authentication']->getUser()->getEmail(),
+                        'to'         => $participant_user->getId(),
+                        'to_email'   => $participant_user->getEmail(),
+                        'to_name'    => $participant_user->getDisplayName(),
                         'url'        => $url,
                         'accuse'     => $receipt,
                         'message'    => $request->request->get('message'),
@@ -494,7 +493,7 @@ class Push implements ControllerProviderInterface
 
             $repository = $app['EM']->getRepository('Phraseanet:UsrList');
 
-            $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
+            $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
 
             if ($list) {
                 $datas = $listFormatter($list);
@@ -533,8 +532,7 @@ class Push implements ControllerProviderInterface
             $email = $request->request->get('email');
 
             try {
-                $usr_id = \User_Adapter::get_usr_id_from_email($app, $email);
-                $user = \User_Adapter::getInstance($usr_id, $app);
+                $user = $app['manipulator.user']->getRepository()->findByEmail($email);
 
                 $result['message'] = $app->trans('User already exists');
                 $result['success'] = true;
@@ -543,21 +541,24 @@ class Push implements ControllerProviderInterface
 
             }
 
-            if (!$user instanceof \User_Adapter) {
+            if (!$user instanceof User) {
                 try {
                     $password = \random::generatePassword();
 
-                    $user = \User_Adapter::create($app, $email, $password, $email, false);
+                    $user = $app['manipulator.user']->getRepository()->createUser($email, $password, $email);
 
-                    $user->set_firstname($request->request->get('firstname'))
-                        ->set_lastname($request->request->get('lastname'));
+                    $user->setFirstName($request->request->get('firstname'))
+                        ->setLastName($request->request->get('lastname'));
 
-                    if ($request->request->get('company'))
-                        $user->set_company($request->request->get('company'));
-                    if ($request->request->get('job'))
-                        $user->set_company($request->request->get('job'));
-                    if ($request->request->get('form_geonameid'))
-                        $user->set_geonameid($request->request->get('form_geonameid'));
+                    if ($request->request->get('company')) {
+                        $user->setCompany($request->request->get('company'));
+                    }
+                    if ($request->request->get('job')) {
+                        $user->setCompany($request->request->get('job'));
+                    }
+                    if ($request->request->get('form_geonameid')) {
+                        $app['manipulator.user']->setGeonameId($user, $request->request->get('form_geonameid'));
+                    }
 
                     $result['message'] = $app->trans('User successfully created');
                     $result['success'] = true;
@@ -617,7 +618,7 @@ class Push implements ControllerProviderInterface
 
             $repository = $app['EM']->getRepository('Phraseanet:UsrList');
 
-            $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
+            $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
 
             $query = new \User_Query($app);
 

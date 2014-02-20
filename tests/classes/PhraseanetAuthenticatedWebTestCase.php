@@ -1,7 +1,6 @@
 <?php
 
 use Silex\Application;
-use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\DomCrawler\Crawler;
 
 abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticatedTestCase
@@ -20,8 +19,8 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
 
     public function setAdmin($bool)
     {
-        $stubAuthenticatedUser = $this->getMockBuilder('\User_Adapter')//, array('is_admin', 'ACL'), array(self::$DI['app']['authentication']->getUser()->get_id(), self::$DI['app']))
-            ->setMethods(['get_id'])
+        $stubAuthenticatedUser = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
+            ->setMethods(['getId'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -82,23 +81,13 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
             ->will($this->returnValue($this->StubbedACL));
 
         self::$DI['app']['acl'] = $aclProvider;
-
-        $stubAuthenticatedUser->expects($this->any())
-            ->method('get_id')
-            ->will($this->returnValue(self::$DI['user']->get_id()));
-
-        self::$DI['app']['authentication']->setUser($stubAuthenticatedUser);
-
-        self::$DI['client'] = self::$DI->share(function ($DI) {
-                return new Client($DI['app'], []);
-            });
     }
 
     public function createDatabox()
     {
         $this->createDatabase();
 
-        $connexion = self::$DI['app']['conf']->get(['main', 'database']);
+        $connexion = self::$DI['app']['phraseanet.configuration']['main']['database'];
 
         try {
             $conn = new \connection_pdo(

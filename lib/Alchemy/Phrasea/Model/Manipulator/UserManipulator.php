@@ -75,6 +75,21 @@ class UserManipulator implements ManipulatorInterface
     }
 
     /**
+     * Deletes a user.
+     *
+     * @param User|User[] $users
+     */
+    public function delete($users)
+    {
+        foreach ($this->makeTraversable($users) as $user) {
+            $user->setDeleted(true);
+            $user->setEmail(null);
+
+            $this->manager->delete($user);
+        }
+    }
+
+    /**
      * Creates a template user and returns it.
      *
      * @param string $login
@@ -184,13 +199,17 @@ class UserManipulator implements ManipulatorInterface
      * @param string $name
      * @param string $value
      */
-    public function addUserSetting(User $user, $name, $value)
+    public function setUserSetting(User $user, $name, $value)
     {
-        $userSetting = new UserSetting();
-        $userSetting->setUsrId($user->getId());
-        $userSetting->setName($name);
-        $userSetting->setValue($value);
-        $user->addSetting($userSetting);
+        if ($user->getSettings()->containsKey($name)) {
+            $user->getSettings()->get($name)->setValue($value);
+        } else {
+            $userSetting = new UserSetting();
+            $userSetting->setUser($user);
+            $userSetting->setName($name);
+            $userSetting->setValue($value);
+            $user->addSetting($userSetting);
+        }
 
         $this->manager->update($user);
     }
@@ -202,13 +221,17 @@ class UserManipulator implements ManipulatorInterface
      * @param string $name
      * @param string $value
      */
-    public function addNotificationSetting(User $user, $name, $value)
+    public function setNotificationSetting(User $user, $name, $value)
     {
-        $notifSetting = new UserNotificationSetting();
-        $notifSetting->setName($name);
-        $notifSetting->setValue($value);
-        $notifSetting->setUsrId($user->getId());
-        $user->addNotificationSettings($notifSetting);
+        if ($user->getNotificationSettings()->containsKey($name)) {
+            $user->getNotificationSettings()->get($name)->setValue((Boolean) $value);
+        } else {
+            $userSetting = new UserNotificationSetting();
+            $userSetting->setUser($user);
+            $userSetting->setName($name);
+            $userSetting->setValue($value);
+            $user->addNotificationSettings($userSetting);
+        }
 
         $this->manager->update($user);
     }
@@ -224,7 +247,7 @@ class UserManipulator implements ManipulatorInterface
         $userQuery = new UserQuery();
         $userQuery->setUser($user);
         $userQuery->setQuery($query);
-        $userQuery->setUsrId($user->getId());
+        $userQuery->setUser($user);
 
         $user->addQuery($userQuery);
 
@@ -241,6 +264,7 @@ class UserManipulator implements ManipulatorInterface
     {
         $user->setNonce(base_convert(sha1(uniqid(mt_rand(), true)), 16, 36));
         $user->setPassword($this->passwordEncoder->encodePassword($password, $user->getNonce()));
+        $user->setSaltedPassword(true);
     }
 
     /**

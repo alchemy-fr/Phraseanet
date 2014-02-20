@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Controller\Root;
 use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Entities\FtpCredential;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate;
 use Alchemy\Phrasea\Form\Login\PhraseaRenewPasswordForm;
@@ -75,13 +76,6 @@ class Account implements ControllerProviderInterface
         return $controllers;
     }
 
-    /**
-     * Reset Password
-     *
-     * @param  Application $app
-     * @param  Request     $request
-     * @return Response
-     */
     public function resetPassword(Application $app, Request $request)
     {
         $form = $app->form(new PhraseaRenewPasswordForm());
@@ -93,8 +87,8 @@ class Account implements ControllerProviderInterface
                 $data = $form->getData();
                 $user = $app['authentication']->getUser();
 
-                if ($app['auth.password-encoder']->isPasswordValid($user->get_password(), $data['oldPassword'], $user->get_nonce())) {
-                    $user->set_password($data['password']);
+                if ($app['auth.password-encoder']->isPasswordValid($user->getPassword(), $data['oldPassword'], $user->getNonce())) {
+                    $app['manipulator.user']->setPassword($user, $data['password']);
                     $app->addFlash('success', $app->trans('login::notification: Mise a jour du mot de passe avec succes'));
 
                     return $app->redirectPath('account');
@@ -126,7 +120,7 @@ class Account implements ControllerProviderInterface
 
         $user = $app['authentication']->getUser();
 
-        if (!$app['auth.password-encoder']->isPasswordValid($user->get_password(), $password, $user->get_nonce())) {
+        if (!$app['auth.password-encoder']->isPasswordValid($user->getPassword(), $password, $user->getNonce())) {
             $app->addFlash('error', $app->trans('admin::compte-utilisateur:ftp: Le mot de passe est errone'));
 
             return $app->redirectPath('account_reset_email');
@@ -145,7 +139,7 @@ class Account implements ControllerProviderInterface
         }
 
         $date = new \DateTime('1 day');
-        $token = $app['tokens']->getUrlToken(\random::TYPE_EMAIL, $app['authentication']->getUser()->get_id(), $date, $app['authentication']->getUser()->get_email());
+        $token = $app['tokens']->getUrlToken(\random::TYPE_EMAIL, $app['authentication']->getUser()->getId(), $date, $app['authentication']->getUser()->getEmail());
         $url = $app->url('account_reset_email', ['token' => $token]);
 
         try {
@@ -179,8 +173,8 @@ class Account implements ControllerProviderInterface
         if (null !== $token = $request->query->get('token')) {
             try {
                 $datas = $app['tokens']->helloToken($token);
-                $user = \User_Adapter::getInstance((int) $datas['usr_id'], $app);
-                $user->set_email($datas['datas']);
+                $user = $app['manipulator.user']->getRepository()->find((int) $datas['usr_id']);
+                $user->setEmail($datas['datas']);
                 $app['tokens']->removeToken($token);
 
                 $app->addFlash('success', $app->trans('admin::compte-utilisateur: L\'email a correctement ete mis a jour'));
@@ -240,7 +234,7 @@ class Account implements ControllerProviderInterface
         require_once $app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
 
         return $app['twig']->render('account/access.html.twig', [
-            'inscriptions' => giveMeBases($app, $app['authentication']->getUser()->get_id())
+            'inscriptions' => giveMeBases($app, $app['authentication']->getUser()->getId())
         ]);
     }
 
@@ -268,7 +262,7 @@ class Account implements ControllerProviderInterface
     public function accountSessionsAccess(Application $app, Request $request)
     {
         $dql = 'SELECT s FROM Phraseanet:Session s
-            WHERE s.usr_id = :usr_id
+            WHERE s.user = :usr_id
             ORDER BY s.created DESC';
 
         $query = $app['EM']->createQuery($dql);
@@ -321,7 +315,7 @@ class Account implements ControllerProviderInterface
         return $app['twig']->render('account/account.html.twig', [
             'user'          => $app['authentication']->getUser(),
             'evt_mngr'      => $app['events-manager'],
-            'notifications' => $app['events-manager']->list_notifications_available($app['authentication']->getUser()->get_id()),
+            'notifications' => $app['events-manager']->list_notifications_available($app['authentication']->getUser()->getId()),
         ]);
     }
 
@@ -337,11 +331,9 @@ class Account implements ControllerProviderInterface
         $demands = (array) $request->request->get('demand', []);
 
         if (0 !== count($demands)) {
-            $register = new \appbox_register($app['phraseanet.appbox']);
-
             foreach ($demands as $baseId) {
                 try {
-                    $register->add_request($app['authentication']->getUser(), \collection::get_from_base_id($app, $baseId));
+                    $app['phraseanet.appbox-register']->add_request($app['authentication']->getUser(), \collection::get_from_base_id($app, $baseId));
                     $app->addFlash('success', $app->trans('login::notification: Vos demandes ont ete prises en compte'));
                 } catch (\Exception $e) {
 
@@ -370,53 +362,48 @@ class Account implements ControllerProviderInterface
         ];
 
         if (0 === count(array_diff($accountFields, array_keys($request->request->all())))) {
+            $app['authentication']->getUser()
+                ->setGender($request->request->get("form_gender"))
+                ->setFirstName($request->request->get("form_firstname"))
+                ->setLastName($request->request->get("form_lastname"))
+                ->setAddress($request->request->get("form_address"))
+                ->setZipCode($request->request->get("form_zip"))
+                ->setPhone($request->request->get("form_phone"))
+                ->setFax($request->request->get("form_fax"))
+                ->setJob($request->request->get("form_activity"))
+                ->setCompany($request->request->get("form_company"))
+                ->setActivity($request->request->get("form_function"))
+                ->setMailNotificationsActivated((Boolean) $request->request->get("mail_notifications"));
 
-            try {
-                $app['phraseanet.appbox']->get_connection()->beginTransaction();
+            $app['manipulator.user']->setGeonameId($app['authentication']->getUser(), $request->request->get("form_geonameid"));
 
-                $app['authentication']->getUser()
-                    ->set_gender($request->request->get("form_gender"))
-                    ->set_firstname($request->request->get("form_firstname"))
-                    ->set_lastname($request->request->get("form_lastname"))
-                    ->set_address($request->request->get("form_address"))
-                    ->set_zip($request->request->get("form_zip"))
-                    ->set_tel($request->request->get("form_phone"))
-                    ->set_fax($request->request->get("form_fax"))
-                    ->set_job($request->request->get("form_activity"))
-                    ->set_company($request->request->get("form_company"))
-                    ->set_position($request->request->get("form_function"))
-                    ->set_geonameid($request->request->get("form_geonameid"))
-                    ->set_mail_notifications((bool) $request->request->get("mail_notifications"));
+            $ftpCredential = $app['authentication']->getUser()->getFtpCredential();
 
-                $ftpCredential = $app['authentication']->getUser()->getFtpCredential();
-
-                $ftpCredential->setActive($request->request->get("form_activeFTP"));
-                $ftpCredential->setAddress($request->request->get("form_addressFTP"));
-                $ftpCredential->setLogin($request->request->get("form_loginFTP"));
-                $ftpCredential->setPassword($request->request->get("form_pwdFTP"));
-                $ftpCredential->setPassive($request->request->get("form_passifFTP"));
-                $ftpCredential->setReceptionFolder($request->request->get("form_destFTP"));
-                $ftpCredential->setRepositoryPrefixName($request->request->get("form_prefixFTPfolder"));
-
-                $app['phraseanet.appbox']->get_connection()->commit();
-                $app['EM']->persist($ftpCredential);
-                $app['EM']->flush();
-                $app->addFlash('success', $app->trans('login::notification: Changements enregistres'));
-            } catch (\Exception $e) {
-                $app->addFlash('error', $app->trans('forms::erreurs lors de l\'enregistrement des modifications'));
-                $app['phraseanet.appbox']->get_connection()->rollBack();
+            if (null === $ftpCredential) {
+                $ftpCredential = new FtpCredential();
+                $ftpCredential->setUser($app['authentication']->getUser());
             }
+
+            $ftpCredential->setActive($request->request->get("form_activeFTP"));
+            $ftpCredential->setAddress($request->request->get("form_addressFTP"));
+            $ftpCredential->setLogin($request->request->get("form_loginFTP"));
+            $ftpCredential->setPassword($request->request->get("form_pwdFTP"));
+            $ftpCredential->setPassive($request->request->get("form_passifFTP"));
+            $ftpCredential->setReceptionFolder($request->request->get("form_destFTP"));
+            $ftpCredential->setRepositoryPrefixName($request->request->get("form_prefixFTPfolder"));
+
+            $app['EM']->persist($ftpCredential);
+            $app['EM']->persist($app['authentication']->getUser());
+
+            $app['EM']->flush();
+            $app->addFlash('success', $app->trans('login::notification: Changements enregistres'));
         }
 
         $requestedNotifications = (array) $request->request->get('notifications', []);
 
-        foreach ($app['events-manager']->list_notifications_available($app['authentication']->getUser()->get_id()) as $notifications) {
+        foreach ($app['events-manager']->list_notifications_available($app['authentication']->getUser()->getId()) as $notifications) {
             foreach ($notifications as $notification) {
-                if (isset($requestedNotifications[$notification['id']])) {
-                    $app['authentication']->getUser()->set_notification_preference($app, $notification['id'], '1');
-                } else {
-                    $app['authentication']->getUser()->set_notification_preference($app, $notification['id'], '0');
-                }
+                $app['manipulator.user']->setNotificationSetting($app['authentication']->getUser(), $notification['id'], isset($requestedNotifications[$notification['id']]));
             }
         }
 

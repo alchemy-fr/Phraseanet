@@ -52,7 +52,7 @@ class Publications implements ControllerProviderInterface
             $feed = new Feed();
 
             $publisher->setFeed($feed);
-            $publisher->setUsrId($app['authentication']->getUser()->get_id());
+            $publisher->setUser($app['authentication']->getUser());
             $publisher->setIsOwner(true);
 
             $feed->addPublisher($publisher);
@@ -193,11 +193,11 @@ class Publications implements ControllerProviderInterface
             $error = '';
             try {
                 $request = $app['request'];
-                $user = \User_Adapter::getInstance($request->request->get('usr_id'), $app);
+                $user = $app['manipulator.user']->getRepository()->find($request->request->get('usr_id'));
                 $feed = $app["EM"]->find('Phraseanet:Feed', $id);
 
                 $publisher = new FeedPublisher();
-                $publisher->setUsrId($user->get_id());
+                $publisher->setUser($user);
                 $publisher->setFeed($feed);
 
                 $feed->addPublisher($publisher);
@@ -226,7 +226,7 @@ class Publications implements ControllerProviderInterface
                     $app->abort(404, "Feed Publisher not found");
                 }
 
-                $user = $publisher->getUser($app);
+                $user = $publisher->getUser();
                 if ($feed->isPublisher($user) && !$feed->isOwner($user)) {
                     $feed->removePublisher($publisher);
 

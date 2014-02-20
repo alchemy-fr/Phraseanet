@@ -12,10 +12,11 @@
 namespace Alchemy\Phrasea\Notification\Mail;
 
 use Alchemy\Phrasea\Exception\LogicException;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class MailInfoOrderCancelled extends AbstractMail
 {
-    /** @var \User_Adapter */
+    /** @var User */
     private $deliverer;
     /** @var integer */
     private $quantity;
@@ -33,9 +34,9 @@ class MailInfoOrderCancelled extends AbstractMail
     /**
      * Sets the user that has denied the some of the order
      *
-     * @param \User_Adapter $deliverer
+     * @param User $deliverer
      */
-    public function setDeliverer(\User_Adapter $deliverer)
+    public function setDeliverer(User $deliverer)
     {
         $this->deliverer = $deliverer;
     }
@@ -53,7 +54,7 @@ class MailInfoOrderCancelled extends AbstractMail
      */
     public function getMessage()
     {
-        if (!$this->deliverer instanceof \User_Adapter) {
+        if (!$this->deliverer instanceof User) {
             throw new LogicException('You must set a deliverer before calling getMessage()');
         }
         if (null === $this->quantity) {
@@ -61,7 +62,7 @@ class MailInfoOrderCancelled extends AbstractMail
         }
 
         return $this->app->trans('%user% a refuse %quantity% elements de votre commande', [
-            '%user%' => $this->deliverer->get_display_name(),
+            '%user%' => $this->deliverer->getDisplayName(),
             '%quantity%' => $this->quantity,
         ]);
     }

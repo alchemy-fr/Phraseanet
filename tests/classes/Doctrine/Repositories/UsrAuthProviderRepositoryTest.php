@@ -16,7 +16,7 @@ class UsrAuthProviderRepositoryTest extends \PhraseanetTestCase
         $repo = self::$DI['app']['EM']->getRepository('Phraseanet:UsrAuthProvider');
 
         $auth = new UsrAuthProvider();
-        $auth->setUsrId(42);
+        $auth->setUser(self::$DI['user']);
         $auth->setProvider('provider-test');
         $auth->setDistantId(12345);
 

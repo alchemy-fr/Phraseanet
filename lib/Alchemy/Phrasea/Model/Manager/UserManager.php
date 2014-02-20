@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Model\Manager;
 use Doctrine\Common\Persistence\ObjectManager;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UserSetting;
+use Doctrine\ORM\UnitOfWork AS UOW;
 
 class UserManager
 {
@@ -46,10 +47,6 @@ class UserManager
      */
     public function delete(User $user, $flush = true)
     {
-        $user->setDeleted(true);
-        $user->setEmail(null);
-        $user->setLogin(sprintf('(#deleted_%s', $user->getLogin()));
-
         $this->cleanProperties($user);
         $this->cleanRights($user);
 
@@ -137,7 +134,7 @@ class UserManager
     private function cleanFtpExports(User $user)
     {
        $elements = $this->objectManager->getRepository('Phraseanet:FtpExport')
-               ->findBy(['usrId' => $user->getId()]);
+               ->findBy(['user' => $user]);
 
        foreach ($elements as $element) {
            $this->objectManager->remove($element);
@@ -152,11 +149,41 @@ class UserManager
     private function cleanOrders(User $user)
     {
        $orders = $this->objectManager->getRepository('Phraseanet:Order')
-               ->findBy(['usrId' => $user->getId()]);
+               ->findBy(['user' => $user]);
 
        foreach ($orders as $order) {
            $this->objectManager->remove($order);
        }
+    }
+
+    /**
+     * Removes user orders.
+     *
+     * @param User $user
+     */
+    private function cleanUserSessions(User $user)
+    {
+        $sessions = $this->objectManager->getRepository('Phraseanet:Session')
+            ->findByUser(['user' => $user]);
+
+        foreach ($sessions as $session) {
+            $this->objectManager->remove($session);
+        }
+    }
+
+    /**
+     * Removes user providers.
+     *
+     * @param User $user
+     */
+    private function cleanAuthProvider(User $user)
+    {
+        $providers = $this->objectManager->getRepository('Phraseanet:UsrAuthProvider')
+            ->findBy(['user' => $user]);
+
+        foreach ($providers as $provider) {
+            $this->objectManager->remove($provider);
+        }
     }
 
     /**
@@ -180,6 +207,8 @@ class UserManager
         $this->cleanFtpCredentials($user);
         $this->cleanOrders($user);
         $this->cleanFtpExports($user);
+        $this->cleanAuthProvider($user);
+        $this->cleanUserSessions($user);
     }
 
     /**

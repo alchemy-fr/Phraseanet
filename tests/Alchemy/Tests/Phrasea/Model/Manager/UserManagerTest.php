@@ -14,13 +14,10 @@ class UserManagerTest extends \PhraseanetTestCase
     {
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
         self::$DI['app']['manipulator.user']->logQuery($user, 'a query');
-        self::$DI['app']['manipulator.user']->addUserSetting($user, 'setting', false);
-        self::$DI['app']['manipulator.user']->addNotificationSetting($user, 'setting', false);
+        self::$DI['app']['manipulator.user']->setUserSetting($user, 'setting', false);
+        self::$DI['app']['manipulator.user']->setNotificationSetting($user, 'setting', false);
         self::$DI['app']['model.user-manager']->delete($user);
-        $this->assertTrue($user->isDeleted());
-        $this->assertNull($user->getEmail());
-        $this->assertEquals('(#deleted_', substr($user->getLogin(), 0, 10));
-        $user = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('(#deleted_login');
+        $user = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login');
         $this->assertEquals(0, $user->getSettings()->count());
         $this->assertEquals(0, $user->getNotificationSettings()->count());
         $this->assertEquals(0, $user->getQueries()->count());

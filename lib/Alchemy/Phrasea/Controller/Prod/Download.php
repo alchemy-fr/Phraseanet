@@ -66,7 +66,7 @@ class Download implements ControllerProviderInterface
 
         $token = $app['tokens']->getUrlToken(
             \random::TYPE_DOWNLOAD,
-            $app['authentication']->getUser()->get_id(),
+            $app['authentication']->getUser()->getId(),
             new \DateTime('+3 hours'), // Token lifetime
             serialize($list)
         );
@@ -77,7 +77,7 @@ class Download implements ControllerProviderInterface
 
         $app['events-manager']->trigger('__DOWNLOAD__', [
             'lst'         => $lst,
-            'downloader'  => $app['authentication']->getUser()->get_id(),
+            'downloader'  => $app['authentication']->getUser()->getId(),
             'subdefs'     => $subdefs,
             'from_basket' => $ssttid,
             'export_file' => $download->getExportName()

@@ -4,6 +4,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Root;
 
 use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 {
@@ -58,14 +59,14 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetResetMailWithToken()
     {
-        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, self::$DI['user']->get_id(), null, 'new_email@email.com');
+        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, self::$DI['user']->getId(), null, 'new_email@email.com');
         $crawler = self::$DI['client']->request('GET', '/account/reset-email/', ['token'   => $token]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/account/', $response->headers->get('location'));
 
-        $this->assertEquals('new_email@email.com', self::$DI['user']->get_email());
-        self::$DI['user']->set_email('noone@example.com');
+        $this->assertEquals('new_email@email.com', self::$DI['user']->getEmail());
+        self::$DI['user']->setEmail('noone@example.com');
         try {
             self::$DI['app']['tokens']->helloToken($token);
             $this->fail('Token has not been removed');
@@ -123,7 +124,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     public function testPostResetMailBadEmail()
     {
         $password = \random::generatePassword();
-        self::$DI['app']['authentication']->getUser()->set_password($password);
+        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
         self::$DI['client']->request('POST', '/account/reset-email/', [
             'form_password'      => $password,
             'form_email'         => "invalid#!&&@@email.x",
@@ -143,7 +144,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     public function testPostResetMailEmailNotIdentical()
     {
         $password = \random::generatePassword();
-        self::$DI['app']['authentication']->getUser()->set_password($password);
+        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
         self::$DI['client']->request('POST', '/account/reset-email/', [
             'form_password'      => $password,
             'form_email'         => 'email1@email.com',
@@ -165,13 +166,17 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate');
 
         $password = \random::generatePassword();
-        self::$DI['app']['authentication']->getUser()->set_password($password);
+        self::$DI['app']['manipulator.user']->setPassword(
+            self::$DI['app']['authentication']->getUser(),
+            $password
+        );
         self::$DI['client']->request('POST', '/account/reset-email/', [
             'form_password'      => $password,
             'form_email'         => 'email1@email.com',
             'form_email_confirm' => 'email1@email.com',
         ]);
 
+        self::$DI['client']->followRedirects();
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/account/', $response->headers->get('location'));
@@ -262,7 +267,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
             $this->markTestSkipped('No collections');
         }
 
-        foreach (self::$DI['app']['events-manager']->list_notifications_available(self::$DI['app']['authentication']->getUser()->get_id()) as $notifications) {
+        foreach (self::$DI['app']['events-manager']->list_notifications_available(self::$DI['app']['authentication']->getUser()->getId()) as $notifications) {
             foreach ($notifications as $notification) {
                 $notifs[] = $notification['id'];
             }
@@ -272,7 +277,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['client']->request('POST', '/account/', [
             'demand'               => $bases,
-            'form_gender'          => 'M',
+            'form_gender'          => User::GENDER_MR,
             'form_firstname'       => 'gros',
             'form_lastname'        => 'minet',
             'form_address'         => 'rue du lac',
@@ -282,7 +287,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
             'form_function'        => 'astronaute',
             'form_company'         => 'NASA',
             'form_activity'        => 'Space',
-            'form_geonameid'       => '',
+            'form_geonameid'       => '1839',
             'form_addressFTP'      => '',
             'form_loginFTP'        => '',
             'form_pwdFTP'          => '',
@@ -296,11 +301,11 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('minet', self::$DI['app']['authentication']->getUser()->get_lastname());
+        $this->assertEquals('minet', self::$DI['app']['authentication']->getUser()->getLastName());
 
         $sql = 'SELECT base_id FROM demand WHERE usr_id = :usr_id AND en_cours="1" ';
         $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => self::$DI['app']['authentication']->getUser()->get_id()]);
+        $stmt->execute([':usr_id' => self::$DI['app']['authentication']->getUser()->getId()]);
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -370,7 +375,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testPostRenewPasswordBadArguments($oldPassword, $password, $passwordConfirm)
     {
-        self::$DI['app']['authentication']->getUser()->set_password($oldPassword);
+        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $oldPassword);
 
         $crawler = self::$DI['client']->request('POST', '/account/reset-password/', [
             'password' => [
@@ -407,7 +412,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $password = \random::generatePassword();
 
-        self::$DI['app']['authentication']->getUser()->set_password($password);
+        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
 
         $crawler = self::$DI['client']->request('POST', '/account/reset-password/', [
             'password' => [
@@ -427,7 +432,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $password = \random::generatePassword();
 
-        self::$DI['app']['authentication']->getUser()->set_password($password);
+        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
 
         self::$DI['client']->request('POST', '/account/reset-password/', [
             'password' => [

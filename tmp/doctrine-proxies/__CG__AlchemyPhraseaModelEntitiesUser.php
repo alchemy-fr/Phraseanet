@@ -774,7 +774,7 @@ class User extends \Alchemy\Phrasea\Model\Entities\User implements \Doctrine\ORM
     /**
      * {@inheritDoc}
      */
-    public function setLastModel($lastModel)
+    public function setLastModel(\Alchemy\Phrasea\Model\Entities\User $lastModel)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLastModel', array($lastModel));
@@ -1016,17 +1016,6 @@ class User extends \Alchemy\Phrasea\Model\Entities\User implements \Doctrine\ORM
     /**
      * {@inheritDoc}
      */
-    public function getSettingValue($name, $default = NULL)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSettingValue', array($name, $default));
-
-        return parent::getSettingValue($name, $default);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function addSetting(\Alchemy\Phrasea\Model\Entities\UserSetting $setting)
     {
 
@@ -1082,12 +1071,12 @@ class User extends \Alchemy\Phrasea\Model\Entities\User implements \Doctrine\ORM
     /**
      * {@inheritDoc}
      */
-    public function getDisplayName(\Symfony\Component\Translation\TranslatorInterface $translator)
+    public function getDisplayName()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDisplayName', array($translator));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDisplayName', array());
 
-        return parent::getDisplayName($translator);
+        return parent::getDisplayName();
     }
 
 }

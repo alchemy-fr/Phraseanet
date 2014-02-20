@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Model\Repositories;
 use Alchemy\Phrasea\Model\Entities\UsrListOwner;
 use Alchemy\Phrasea\Model\Entities\UsrList;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NoResultException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -60,7 +61,7 @@ class UsrListOwnerRepository extends EntityRepository
     {
         $dql = 'SELECT o FROM Phraseanet:UsrListOwner o
               JOIN o.list l
-            WHERE l.id = :list_id AND o.usr_id = :usr_id';
+            WHERE l.id = :list_id AND o.user = :usr_id';
 
         $params = [
             'usr_id'  => $usr_id,
@@ -70,11 +71,10 @@ class UsrListOwnerRepository extends EntityRepository
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
 
-        $owner = $query->getSingleResult();
-
-        /* @var $owner UsrListOwner */
-        if (null === $owner) {
-            throw new NotFoundHttpException('Owner is not found');
+        try {
+            $owner = $query->getSingleResult();
+        } catch (NoResultException $e) {
+            throw new NotFoundHttpException('Owner is not found', null, $e);
         }
 
         return $owner;

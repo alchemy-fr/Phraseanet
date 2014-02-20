@@ -15,7 +15,7 @@ class randomTest extends \PhraseanetTestCase
     public function testCleanTokens()
     {
         $expires_on = new DateTime('-5 minutes');
-        $usr_id = self::$DI['user']->get_id();
+        $usr_id = self::$DI['user']->getId();
         $token = $this->random->getUrlToken(\random::TYPE_PASSWORD, $usr_id, $expires_on, 'some nice datas');
         $this->random->cleanTokens(self::$DI['app']);
 
@@ -66,7 +66,7 @@ class randomTest extends \PhraseanetTestCase
 
     public function testGetUrlToken()
     {
-        $usr_id = self::$DI['user']->get_id();
+        $usr_id = self::$DI['user']->getId();
         $token = $this->random->getUrlToken(\random::TYPE_PASSWORD, $usr_id, null, 'some nice datas');
         $datas = $this->random->helloToken($token);
         $this->assertEquals('some nice datas', $datas['datas']);
@@ -88,7 +88,7 @@ class randomTest extends \PhraseanetTestCase
 
     public function testHelloToken()
     {
-        $usr_id = self::$DI['user']->get_id();
+        $usr_id = self::$DI['user']->getId();
         $token = $this->random->getUrlToken(\random::TYPE_PASSWORD, $usr_id, null, 'some nice datas');
         $datas = $this->random->helloToken($token);
         $this->assertEquals('some nice datas', $datas['datas']);
@@ -109,7 +109,7 @@ class randomTest extends \PhraseanetTestCase
         }
 
         $expires_on = new DateTime('+5 minutes');
-        $usr_id = self::$DI['user']->get_id();
+        $usr_id = self::$DI['user']->getId();
         $token = $this->random->getUrlToken(\random::TYPE_PASSWORD, $usr_id, $expires_on, 'some nice datas');
         $datas = $this->random->helloToken($token);
         $this->assertEquals('some nice datas', $datas['datas']);
@@ -131,7 +131,7 @@ class randomTest extends \PhraseanetTestCase
         }
 
         $expires_on = new DateTime('-5 minutes');
-        $usr_id = self::$DI['user']->get_id();
+        $usr_id = self::$DI['user']->getId();
         $token = $this->random->getUrlToken(\random::TYPE_PASSWORD, $usr_id, $expires_on, 'some nice datas');
 
         try {

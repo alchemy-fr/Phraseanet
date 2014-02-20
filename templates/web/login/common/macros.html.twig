@@ -106,7 +106,7 @@
                 <td>
                     <ul class="unstyled">
                         <li class="pseudo one-line">
-                            <b>{{ token.getIdentity().getDisplayName(app['translator']) | default(token.getIdentity().getUserName()) }}</b>
+                            <b>{{ token.getIdentity().getDisplayName() | default(token.getIdentity().getUserName()) }}</b>
                         </li>
                         <li class="email one-line">
                             {{ token.getIdentity().getEmail() }}
@@ -122,16 +122,16 @@
     <div class="authentication-user-pres-phraseanet well">
         <ul class="unstyled">
             <li class="one-line">
-                <i class="icon-user"></i>{{ user.get_display_name() }}
+                <i class="icon-user"></i>{{ user.getDisplayName() }}
             </li>
-            {% if user.get_email() %}
+            {% if user.getEmail() %}
             <li class="one-line">
-                <i class="icon-envelope"></i>{{ user.get_email() }}
+                <i class="icon-envelope"></i>{{ user.getEmail() }}
             </li>
             {% endif %}
-            {% if user.get_company() %}
+            {% if user.getCompany() %}
             <li class="one-line">
-                <i class="icon-briefcase"></i>{{ user.get_company() }}
+                <i class="icon-briefcase"></i>{{ user.getCompany() }}
             </li>
             {% endif %}
         </ul>

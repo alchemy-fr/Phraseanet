@@ -12,12 +12,13 @@
 namespace Alchemy\Phrasea\Notification\Mail;
 
 use Alchemy\Phrasea\Exception\LogicException;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class MailInfoValidationDone extends AbstractMailWithLink
 {
     /** @var string */
     private $title;
-    /** @var \User_Adapter */
+    /** @var User */
     private $user;
 
     /**
@@ -33,9 +34,9 @@ class MailInfoValidationDone extends AbstractMailWithLink
     /**
      * Sets the user that finished validation
      *
-     * @param \User_Adapter $user
+     * @param User $user
      */
-    public function setUser(\User_Adapter $user)
+    public function setUser(User $user)
     {
         $this->user = $user;
     }
@@ -53,7 +54,7 @@ class MailInfoValidationDone extends AbstractMailWithLink
         }
 
         return $this->app->trans('push::mail:: Rapport de validation de %user% pour %title%', [
-            '%user%'  => $this->user->get_display_name(),
+            '%user%'  => $this->user->getDisplayName(),
             '%title%' => $this->title,
         ]);
     }
@@ -68,7 +69,7 @@ class MailInfoValidationDone extends AbstractMailWithLink
         }
 
         return $this->app->trans('%user% has just sent its validation report, you can now see it', [
-            '%user%' => $this->user->get_display_name(),
+            '%user%' => $this->user->getDisplayName(),
         ]);
     }
 

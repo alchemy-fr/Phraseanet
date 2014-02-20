@@ -11,12 +11,11 @@
 
 namespace Alchemy\Phrasea\Model\Entities;
 
-use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="Sessions", indexes={@ORM\index(name="usr_id", columns={"usr_id"})})
+ * @ORM\Table(name="Sessions", indexes={@ORM\index(name="user_id", columns={"user_id"})})
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\SessionRepository")
  */
 class Session
@@ -29,9 +28,12 @@ class Session
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $usr_id;
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
+     *
+     * @return User
+     **/
+    private $user;
 
     /**
      * @ORM\Column(type="string", length=512)
@@ -114,39 +116,24 @@ class Session
         return $this->id;
     }
 
-    public function setUser(\User_Adapter $user)
-    {
-        return $this->setUsrId($user->get_id());
-    }
-
     /**
-     * Set usr_id
+     * @param User $user
      *
-     * @param  integer $usrId
      * @return Session
      */
-    public function setUsrId($usrId)
+    public function setUser(User $user)
     {
-        $this->usr_id = $usrId;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getUser(Application $app)
-    {
-        if ($this->getUsrId()) {
-            return \User_Adapter::getInstance($this->getUsrId(), $app);
-        }
-    }
-
     /**
-     * Get usr_id
-     *
-     * @return integer
+     * @return User
      */
-    public function getUsrId()
+    public function getUser()
     {
-        return $this->usr_id;
+        return $this->user;
     }
 
     /**

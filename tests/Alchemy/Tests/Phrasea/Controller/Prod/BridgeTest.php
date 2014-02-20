@@ -367,25 +367,10 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
     public function testUpload()
     {
         self::$account->get_settings()->set("auth_token", "somethingNotNull");
-        $url = "/prod/bridge/upload/";
-        self::$DI['client']->request('GET', $url, ["account_id" => self::$account->get_id()]);
+        self::$DI['client']->request('GET', "/prod/bridge/upload/", ["account_id" => self::$account->get_id(), 'lst' => self::$DI['record_1']->get_serialize_key()]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
-
-        $records = [
-            self::$DI['record_1']->get_serialize_key()
-        ];
-
-        \Bridge_Api_Apitest::$hasError = true;
-        $lst = implode(';', $records);
-        self::$DI['client']->request('POST', $url, ["account_id" => self::$account->get_id(), 'lst'        => $lst]);
-        $response = self::$DI['client']->getResponse();
-        $this->assertTrue($response->isOk());
-
-        self::$DI['client']->request('POST', $url, ["account_id" => self::$account->get_id(), 'lst'        => $lst]);
-        $response = self::$DI['client']->getResponse();
-        $this->assertTrue($response->isRedirect());
     }
 
     public function testDeleteAccount()

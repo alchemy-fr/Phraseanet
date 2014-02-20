@@ -4,134 +4,88 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 class PushTest extends \PhraseanetAuthenticatedWebTestCase
 {
-    protected $client;
-
-    /**
-     * Default route test
-     */
     public function testRoutePOSTSendSlash()
     {
-        $route = '/prod/push/sendform/';
-
-        self::$DI['client']->request('POST', $route);
-
+        self::$DI['client']->request('POST', '/prod/push/sendform/');
         $response = self::$DI['client']->getResponse();
-
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
     }
 
     public function testRoutePOSTValidateSlash()
     {
-        $route = '/prod/push/validateform/';
-
-        self::$DI['client']->request('POST', $route);
-
+        self::$DI['client']->request('POST', '/prod/push/validateform/');
         $response = self::$DI['client']->getResponse();
-
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
     }
 
-    public function testRoutePOSTsend()
+    public function testRoutePOSTSend()
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoPushReceived', 2);
-
-        $route = '/prod/push/send/';
-
+        $this->mockUserNotificationSettings('eventsmanager_notify_push');
         $records = [
             self::$DI['record_1']->get_serialize_key(),
             self::$DI['record_2']->get_serialize_key(),
         ];
-
-        $receivers = [
-            ['usr_id' => self::$DI['user_alt1']->get_id(), 'HD'     => 1]
-            , ['usr_id' => self::$DI['user_alt2']->get_id(), 'HD'     => 0]
-        ];
-
-        $params = [
-            'lst'          => implode(';', $records)
-            , 'participants' => $receivers
-        ];
-
-        self::$DI['client']->request('POST', $route, $params);
-
+        self::$DI['client']->request('POST', '/prod/push/send/', [
+            'lst'          => implode(';', $records),
+            'participants' => [
+                ['usr_id' => self::$DI['user_alt1']->getId(), 'HD'     => 1],
+                ['usr_id' => self::$DI['user_alt2']->getId(), 'HD'     => 0]
+            ]
+        ]);
         $response = self::$DI['client']->getResponse();
-
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
-
-        $datas = (array) json_decode($response->getContent());
-
-        $this->assertArrayHasKey('message', $datas);
-        $this->assertArrayHasKey('success', $datas);
-
-        $this->assertTrue($datas['success'], 'Result is successful');
+        $data = (array) json_decode($response->getContent());
+        $this->assertArrayHasKey('message', $data);
+        $this->assertArrayHasKey('success', $data);
+        $this->assertTrue($data['success'], 'Result is successful');
     }
 
-    public function testRoutePOSTvalidate()
+    public function testRoutePOSTValidate()
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoValidationRequest', 3);
-
-        $route = '/prod/push/validate/';
+        $this->mockUserNotificationSettings('eventsmanager_notify_validate');
 
         $records = [
             self::$DI['record_1']->get_serialize_key(),
             self::$DI['record_2']->get_serialize_key(),
         ];
 
-        $participants = [
-            [
-                'usr_id'     => self::$DI['user_alt1']->get_id(),
+        self::$DI['client']->request('POST', '/prod/push/validate/', [
+            'lst'          => implode(';', $records),
+            'participants' => [[
+                'usr_id'     => self::$DI['user_alt1']->getId(),
                 'agree'      => 0,
                 'see_others' => 1,
                 'HD'         => 0,
-            ]
-            , [
-                'usr_id'     => self::$DI['user_alt2']->get_id(),
+            ], [
+                'usr_id'     => self::$DI['user_alt2']->getId(),
                 'agree'      => 1,
                 'see_others' => 0,
                 'HD'         => 1,
-            ]
-        ];
-
-        $params = [
-            'lst'          => implode(';', $records)
-            , 'participants' => $participants
-        ];
-
-        self::$DI['client']->request('POST', $route, $params);
-
+            ]]
+        ]);
         $response = self::$DI['client']->getResponse();
-
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
-
-        $datas = (array) json_decode($response->getContent());
-
-        $this->assertArrayHasKey('message', $datas);
-        $this->assertArrayHasKey('success', $datas);
-
-        $this->assertTrue($datas['success'], 'Result is successful');
+        $data = (array) json_decode($response->getContent());
+        $this->assertArrayHasKey('message', $data);
+        $this->assertArrayHasKey('success', $data);
+        $this->assertTrue($data['success'], 'Result is successful');
     }
 
-    public function testRouteGETsearchuser()
+    public function testRouteGETSearchUser()
     {
-        $route = '/prod/push/search-user/';
-
-        $params = [
+        self::$DI['client']->request('GET',  '/prod/push/search-user/', [
             'query' => ''
-        ];
-
-        self::$DI['client']->request('GET', $route, $params);
-
+        ]);
         $response = self::$DI['client']->getResponse();
-
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
-
-        $datas = (array) json_decode($response->getContent());
-
-        $this->assertTrue(is_array($datas), 'Json is valid');
+        $data = (array) json_decode($response->getContent());
+        $this->assertTrue(is_array($data), 'Json is valid');
     }
 }

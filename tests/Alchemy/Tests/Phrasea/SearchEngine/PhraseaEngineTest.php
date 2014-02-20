@@ -60,7 +60,7 @@ class PhraseaEngineTest extends SearchEngineAbstractTest
         self::$searchEngine->initialize();
 
         foreach (range(1, 10) as $i) {
-            phrasea_create_session(self::$DI['app']['authentication']->getUser()->get_id());
+            phrasea_create_session(self::$DI['app']['authentication']->getUser()->getId());
         }
 
         $sql = 'SELECT session_id FROM cache';
@@ -117,9 +117,9 @@ class PhraseaEngineTest extends SearchEngineAbstractTest
 
         self::$searchEngine->clearAllCache();
 
-        $first_id = phrasea_create_session(self::$DI['app']['authentication']->getUser()->get_id());
+        $first_id = phrasea_create_session(self::$DI['app']['authentication']->getUser()->getId());
 
-        $phrasea_ses_id = phrasea_create_session(self::$DI['app']['authentication']->getUser()->get_id());
+        $phrasea_ses_id = phrasea_create_session(self::$DI['app']['authentication']->getUser()->getId());
 
         $this->assertNotEquals($first_id, $phrasea_ses_id);
         $this->assertGreaterThan(0, $phrasea_ses_id);

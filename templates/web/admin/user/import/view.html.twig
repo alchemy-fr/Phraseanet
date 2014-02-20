@@ -34,7 +34,7 @@
             <textarea class="hidden" name="sr_columns">{{ columns_serialized }}</textarea>
             <select name="modelToApply">
             {% for model in models %}
-                <option value='{{ model['usr_id'] }}'>{{ model['usr_login'] }}</option>
+                <option value='{{ model.getId() }}'>{{ model.getLogin() }}</option>
             {% endfor %}
             </select>
             <div class="form-actions">

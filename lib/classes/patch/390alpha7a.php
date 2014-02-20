@@ -18,7 +18,7 @@ use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Alchemy\Phrasea\Model\Entities\FeedToken;
 use Doctrine\ORM\Query\ResultSetMapping;
 
-class patch_390alpha7a implements patchInterface
+class patch_390alpha7a extends patchAbstract
 {
     /** @var string */
     private $release = '3.9.0-alpha.7';
@@ -133,12 +133,16 @@ class patch_390alpha7a implements patchInterface
             $fpRes = $fpStmt->fetchAll(\PDO::FETCH_ASSOC);
 
             foreach ($fpRes as $fpRow) {
+                if (null === $user = $this->loadUser($app['EM'], $fpRow['usr_id'])) {
+                    continue;
+                }
+
                 $feedPublisher = new FeedPublisher();
                 $feedPublisher->setFeed($feed);
                 $feed->addPublisher($feedPublisher);
                 $feedPublisher->setCreatedOn(new \DateTime($fpRow['created_on']));
                 $feedPublisher->setIsOwner((Boolean) $fpRow['owner']);
-                $feedPublisher->setUsrId($fpRow['usr_id']);
+                $feedPublisher->setUser($user);
 
                 $feStmt->execute([':feed_id' => $row['id'], ':publisher_id' => $fpRow['id']]);
                 $feRes = $feStmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -177,10 +181,14 @@ class patch_390alpha7a implements patchInterface
             $ftRes = $ftStmt->fetchAll(\PDO::FETCH_ASSOC);
 
             foreach ($ftRes as $ftRow) {
+                if (null === $user = $this->loadUser($app['EM'], $ftRow['usr_id'])) {
+                    continue;
+                }
+
                 $token = new FeedToken();
                 $token->setFeed($feed);
                 $feed->addToken($token);
-                $token->setUsrId($ftRow['usr_id']);
+                $token->setUser($user);
                 $token->setValue($ftRow['token']);
 
                 $em->persist($token);
@@ -204,8 +212,12 @@ class patch_390alpha7a implements patchInterface
         $faRes = $faStmt->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($faRes as $faRow) {
+            if (null === $user = $this->loadUser($app['EM'], $faRow['usr_id'])) {
+                continue;
+            }
+
             $token = new AggregateToken();
-            $token->setUsrId($faRow['usr_id']);
+            $token->setUser($user);
             $token->setValue($faRow['token']);
 
             $em->persist($token);

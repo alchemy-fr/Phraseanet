@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Model\Entities;
 
-use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,11 +25,6 @@ class ValidationParticipant
      * @ORM\GeneratedValue
      */
     private $id;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $usr_id;
 
     /**
      * @ORM\Column(type="boolean")
@@ -87,43 +81,31 @@ class ValidationParticipant
     }
 
     /**
-     * Set usr_id
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      *
-     * @param  integer               $usrId
-     * @return ValidationParticipant
+     * @return User
+     **/
+    private $user;
+
+    /**
+     * @param User $user
+     *
+     * @return AggregateToken
      */
-    public function setUsrId($usrId)
+    public function setUser(User $user)
     {
-        $this->usr_id = $usrId;
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get usr_id
-     *
-     * @return integer
+     * @return User
      */
-    public function getUsrId()
+    public function getUser()
     {
-        return $this->usr_id;
-    }
-
-    /**
-     *
-     * @param  \User_Adapter         $user
-     * @return ValidationParticipant
-     */
-    public function setUser(\User_Adapter $user)
-    {
-        $this->usr_id = $user->get_id();
-
-        return $this;
-    }
-
-    public function getUser(Application $app)
-    {
-        return \User_Adapter::getInstance($this->getUsrId(), $app);
+        return $this->user;
     }
 
     /**

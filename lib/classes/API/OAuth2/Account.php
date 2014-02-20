@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class API_OAuth2_Account
 {
@@ -28,7 +29,7 @@ class API_OAuth2_Account
 
     /**
      *
-     * @var User_Adapter
+     * @var User
      */
     protected $user;
 
@@ -83,7 +84,7 @@ class API_OAuth2_Account
         $stmt->closeCursor();
 
         $this->application_id = (int) $row['application_id'];
-        $this->user = User_Adapter::getInstance($row['usr_id'], $app);
+        $this->user = $app['manipulator.user']->getRepository()->find($row['usr_id']);
 
         $this->api_version = $row['api_version'];
         $this->revoked = ! ! $row['revoked'];
@@ -103,7 +104,7 @@ class API_OAuth2_Account
 
     /**
      *
-     * @return User_Adapter
+     * @return User
      */
     public function get_user()
     {
@@ -214,7 +215,7 @@ class API_OAuth2_Account
         return;
     }
 
-    public static function create(Application $app, User_Adapter $user, API_OAuth2_Application $application)
+    public static function create(Application $app, User $user, API_OAuth2_Application $application)
     {
         $sql = 'INSERT INTO api_accounts
               (api_account_id, usr_id, revoked, api_version, application_id, created)
@@ -222,7 +223,7 @@ class API_OAuth2_Account
 
         $datetime = new Datetime();
         $params = [
-            ':usr_id'         => $user->get_id()
+            ':usr_id'         => $user->getId()
             , ':application_id' => $application->get_id()
             , ':api_version'    => API_OAuth2_Adapter::API_VERSION
             , ':revoked'        => 0
@@ -238,13 +239,13 @@ class API_OAuth2_Account
         return new self($app, $account_id);
     }
 
-    public static function load_with_user(Application $app, API_OAuth2_Application $application, User_Adapter $user)
+    public static function load_with_user(Application $app, API_OAuth2_Application $application, User $user)
     {
         $sql = 'SELECT api_account_id FROM api_accounts
             WHERE usr_id = :usr_id AND application_id = :application_id';
 
         $params = [
-            ":usr_id"         => $user->get_id(),
+            ":usr_id"         => $user->getId(),
             ":application_id" => $application->get_id()
         ];
 

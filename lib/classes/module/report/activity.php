@@ -295,7 +295,7 @@ class module_report_activity extends module_report
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $login = User_Adapter::getInstance($usr, $this->app)->get_display_name();
+        $login = $this->app['manipulator.user']->getRepository()->find($usr)->getDisplayName();
 
         $this->setChamp($rs);
 

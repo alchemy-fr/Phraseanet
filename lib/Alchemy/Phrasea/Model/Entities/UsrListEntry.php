@@ -11,12 +11,11 @@
 
 namespace Alchemy\Phrasea\Model\Entities;
 
-use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="UsrListsContent", uniqueConstraints={@ORM\UniqueConstraint(name="unique_usr_per_list", columns={"usr_id", "list_id"})})
+ * @ORM\Table(name="UsrListsContent", uniqueConstraints={@ORM\UniqueConstraint(name="unique_usr_per_list", columns={"user_id", "list_id"})})
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\UsrListEntryRepository")
  */
 class UsrListEntry
@@ -29,9 +28,12 @@ class UsrListEntry
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $usr_id;
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
+     *
+     * @return User
+     **/
+    private $user;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -62,36 +64,23 @@ class UsrListEntry
     }
 
     /**
-     * Set usr_id
+     * @param User $user
      *
-     * @param  integer      $usrId
      * @return UsrListEntry
      */
-    public function setUsrId($usrId)
+    public function setUser(User $user)
     {
-        $this->usr_id = $usrId;
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get usr_id
-     *
-     * @return integer
+     * @return User
      */
-    public function getUsrId()
+    public function getUser()
     {
-        return $this->usr_id;
-    }
-
-    public function getUser(Application $app)
-    {
-        return \User_Adapter::getInstance($this->getUsrId(), $app);
-    }
-
-    public function setUser(\User_Adapter $user)
-    {
-        return $this->setUsrId($user->get_id());
+        return $this->user;
     }
 
     /**

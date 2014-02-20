@@ -52,10 +52,7 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['app']['events-manager'] = $eventManagerStub;
 
-        self::$DI['app']['authentication']->setUser($this->getMockBuilder('\User_Adapter')
-            ->setMethods(['ACL'])
-            ->disableOriginalConstructor()
-            ->getMock());
+        self::$DI['app']['authentication']->setUser($this->createUserMock());
 
         $stubbedACL = $this->getMockBuilder('\ACL')
             ->disableOriginalConstructor()

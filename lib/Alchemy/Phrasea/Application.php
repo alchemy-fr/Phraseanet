@@ -111,6 +111,7 @@ use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TranslationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Form\Extension\HelpTypeExtension;
 use Alchemy\Phrasea\Twig\JSUniqueID;
 use Alchemy\Phrasea\Twig\Camelize;
@@ -773,13 +774,11 @@ class Application extends SilexApplication
      */
     public function isGuestAllowed()
     {
-        $usrId = \User_Adapter::get_usr_id_from_login($this, 'invite');
-
-        if (!$usrId) {
+        if (null === $user = $this['manipulator.user']->getRepository()->findByLogin(User::USER_GUEST)) {
             return false;
         }
 
-        return count($this['acl']->get(\User_Adapter::getInstance($usrId, $this))->get_granted_base()) > 0;
+        return count($this['acl']->get($user)->get_granted_base()) > 0;
     }
 
     /**

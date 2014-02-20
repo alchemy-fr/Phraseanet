@@ -356,7 +356,7 @@ class Feed extends \Alchemy\Phrasea\Model\Entities\Feed implements \Doctrine\ORM
     /**
      * {@inheritDoc}
      */
-    public function isOwner(\User_Adapter $user)
+    public function isOwner(\Alchemy\Phrasea\Model\Entities\User $user)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'isOwner', array($user));
@@ -433,7 +433,7 @@ class Feed extends \Alchemy\Phrasea\Model\Entities\Feed implements \Doctrine\ORM
     /**
      * {@inheritDoc}
      */
-    public function isPublisher(\User_Adapter $user)
+    public function isPublisher(\Alchemy\Phrasea\Model\Entities\User $user)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'isPublisher', array($user));
@@ -444,7 +444,7 @@ class Feed extends \Alchemy\Phrasea\Model\Entities\Feed implements \Doctrine\ORM
     /**
      * {@inheritDoc}
      */
-    public function getPublisher(\User_Adapter $user)
+    public function getPublisher(\Alchemy\Phrasea\Model\Entities\User $user)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPublisher', array($user));
@@ -499,7 +499,7 @@ class Feed extends \Alchemy\Phrasea\Model\Entities\Feed implements \Doctrine\ORM
     /**
      * {@inheritDoc}
      */
-    public function hasAccess(\User_Adapter $user, \Alchemy\Phrasea\Application $app)
+    public function hasAccess(\Alchemy\Phrasea\Model\Entities\User $user, \Alchemy\Phrasea\Application $app)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'hasAccess', array($user, $app));
@@ -576,7 +576,7 @@ class Feed extends \Alchemy\Phrasea\Model\Entities\Feed implements \Doctrine\ORM
     /**
      * {@inheritDoc}
      */
-    public function isAccessible(\User_Adapter $user, \Alchemy\Phrasea\Application $app)
+    public function isAccessible(\Alchemy\Phrasea\Model\Entities\User $user, \Alchemy\Phrasea\Application $app)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'isAccessible', array($user, $app));

@@ -13,7 +13,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Model\Entities\SessionModule;
 
-class patch_380alpha11a implements patchInterface
+class patch_380alpha11a extends patchAbstract
 {
     /** @var string */
     private $release = '3.8.0-alpha.11';
@@ -50,7 +50,7 @@ class patch_380alpha11a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return ['session'];
+        return ['user', 'session'];
     }
 
     /**
@@ -72,6 +72,10 @@ class patch_380alpha11a implements patchInterface
         }
 
         foreach ($rs as $row) {
+            if (null === $user = $this->loadUser($app['EM'], $row['usr_id'])) {
+                continue;
+            }
+
             $created = $updated = null;
             if ('0000-00-00 00:00:00' !== $row['created_on']) {
                 $created = \DateTime::createFromFormat('Y-m-d H:i:s', $row['created_on']);
@@ -82,7 +86,7 @@ class patch_380alpha11a implements patchInterface
 
             $session = new Session();
             $session
-                ->setUsrId($row['usr_id'])
+                ->setUser($user)
                 ->setUserAgent($row['user_agent'])
                 ->setUpdated($updated)
                 ->setToken($row['token'])

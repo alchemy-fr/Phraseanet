@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
-use Alchemy\Phrasea\Model\Entities\UserQuery;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -52,7 +51,7 @@ class Query implements ControllerProviderInterface
     {
         $query = (string) $request->request->get('qry');
 
-        $mod = $app['authentication']->getUser()->getPrefs('view');
+        $mod = $app['settings']->getUserSetting($app['authentication']->getUser(), 'view');
 
         $json = [];
 
@@ -60,7 +59,7 @@ class Query implements ControllerProviderInterface
 
         $form = $options->serialize();
 
-        $perPage = (int) $app['authentication']->getUser()->getPrefs('images_per_page');
+        $perPage = (int) $app['settings']->getUserSetting($app['authentication']->getUser(), 'images_per_page');
 
         $page = (int) $request->request->get('pag');
         $firstPage = $page < 1;
@@ -72,15 +71,10 @@ class Query implements ControllerProviderInterface
 
         $result = $app['phraseanet.SE']->query($query, (($page - 1) * $perPage), $perPage, $options);
 
-        $userQuery = new UserQuery();
-        $userQuery->setUsrId($app['authentication']->getUser()->get_id());
-        $userQuery->setQuery($result->getQuery());
+        $app['manipulator.user']->logQuery($app['authentication']->getUser(), $result->getQuery());
 
-        $app['EM']->persist($userQuery);
-        $app['EM']->flush();
-
-        if ($app['authentication']->getUser()->getPrefs('start_page') === 'LAST_QUERY') {
-            $app['authentication']->getUser()->setPrefs('start_page_query', $result->getQuery());
+        if ($app['settings']->getUserSetting($app['authentication']->getUser(), 'start_page') === 'LAST_QUERY') {
+            $app['manipulator.user']->setUserSetting($app['authentication']->getUser(), 'start_page_query', $result->getQuery());
         }
 
         foreach ($options->getDataboxes() as $databox) {

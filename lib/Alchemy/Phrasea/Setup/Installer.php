@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Setup;
 
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Tools\SchemaTool;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class Installer
 {
@@ -34,6 +35,7 @@ class Installer
             $this->createAB();
             $this->populateRegistryData($serverName, $dataPath, $binaryData);
             $user = $this->createUser($email, $password);
+            $this->createDefaultUsers();
             if (null !== $dbConn) {
                 $this->createDB($dbConn, $template);
             }
@@ -71,8 +73,8 @@ class Installer
             ->give_access_to_sbas([$databox->get_sbas_id()])
             ->update_rights_to_sbas(
                 $databox->get_sbas_id(), [
-                'bas_manage'        => 1, 'bas_modify_struct' => 1,
-                'bas_modif_th'      => 1, 'bas_chupub'        => 1
+                    'bas_manage'        => 1, 'bas_modify_struct' => 1,
+                    'bas_modif_th'      => 1, 'bas_chupub'        => 1
                 ]
         );
 
@@ -101,10 +103,16 @@ class Installer
 
     private function createUser($email, $password)
     {
-        $user = \User_Adapter::create($this->app, $email, $password, $email, true);
+        $user = $this->app['manipulator.user']->createUser($email, $password, $email, true);
         $this->app['authentication']->openAccount($user);
 
         return $user;
+    }
+
+    private function createDefaultUsers()
+    {
+        $this->app['manipulator.user']->createUser(User::USER_AUTOREGISTER, User::USER_AUTOREGISTER);
+        $this->app['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
     }
 
     private function rollbackInstall(\connection_interface $abConn, \connection_interface $dbConn = null)
@@ -148,8 +156,6 @@ class Installer
 
     private function createAB()
     {
-        $this->app['phraseanet.appbox']->insert_datas();
-
         $metadatas = $this->app['EM']->getMetadataFactory()->getAllMetadata();
 
         if (!empty($metadatas)) {
@@ -159,6 +165,8 @@ class Installer
             $tool->dropSchema($metadatas);
             $tool->createSchema($metadatas);
         }
+
+        $this->app['phraseanet.appbox']->insert_datas($this->app);
     }
 
     private function createConfigFile($abConn, $serverName, $binaryData)

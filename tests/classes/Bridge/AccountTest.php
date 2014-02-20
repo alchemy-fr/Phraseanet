@@ -1,7 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Application;
-
 require_once __DIR__ . '/Bridge_datas.inc';
 
 class Bridge_AccountTest extends \PhraseanetAuthenticatedTestCase
@@ -17,23 +15,29 @@ class Bridge_AccountTest extends \PhraseanetAuthenticatedTestCase
 
     public function bootTestCase()
     {
-        try {
-            $application = self::$DI['app'];
+        self::$DI['user'];
 
+        if (!self::$object) {
             $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
-            $stmt = $application['phraseanet.appbox']->get_connection()->prepare($sql);
+            $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
 
-            self::$api = Bridge_Api::create($application, 'Apitest');
+            self::$api = Bridge_Api::create(self::$DI['app'], 'Apitest');
             self::$dist_id = 'EZ1565loPP';
             self::$named = 'Fête à pinpins';
-            $account = Bridge_Account::create($application, self::$api, self::$DI['user'], self::$dist_id, self::$named);
+
+            $account = Bridge_Account::create(
+                self::$DI['app'],
+                self::$api,
+                self::$DI['user'],
+                self::$dist_id,
+                self::$named
+            );
+
             self::$id = $account->get_id();
 
-            self::$object = new Bridge_Account($application, self::$api, self::$id);
-        } catch (Exception $e) {
-            self::$fail($e->getMessage());
+            self::$object = new Bridge_Account(self::$DI['app'], self::$api, self::$id);
         }
     }
 
@@ -41,17 +45,12 @@ class Bridge_AccountTest extends \PhraseanetAuthenticatedTestCase
     {
         if (self::$object) {
             self::$object->delete();
+            self::$object = null;
         }
 
-        try {
-            $application = new Application('test');
-            new Bridge_Account($application, self::$api, self::$id);
-            self::$fail();
-        } catch (Bridge_Exception_AccountNotFound $e) {
-
-        }
         if (self::$api) {
             self::$api->delete();
+            self::$api = null;
         }
 
         self::$object = self::$api = self::$dist_id = self::$named = self::$id = null;
@@ -67,7 +66,6 @@ class Bridge_AccountTest extends \PhraseanetAuthenticatedTestCase
 
     public function testGet_api()
     {
-        $start = microtime(true);
         $this->assertInstanceOf('Bridge_Api', self::$object->get_api());
         $this->assertEquals(self::$api, self::$object->get_api());
         $this->assertEquals(self::$api->get_id(), self::$object->get_api()->get_id());
@@ -80,8 +78,8 @@ class Bridge_AccountTest extends \PhraseanetAuthenticatedTestCase
 
     public function testGet_user()
     {
-        $this->assertInstanceOf('User_Adapter', self::$object->get_user());
-        $this->assertEquals(self::$DI['user']->get_id(), self::$object->get_user()->get_id());
+        $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\User', self::$object->get_user());
+        $this->assertEquals(self::$DI['user']->getId(), self::$object->get_user()->getId());
     }
 
     public function testGet_name()

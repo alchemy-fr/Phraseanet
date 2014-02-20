@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Helper\User;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
 use Alchemy\Phrasea\Notification\Receiver;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,24 +61,24 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     public function delete_users()
     {
         foreach ($this->users as $usr_id) {
-            if ($this->app['authentication']->getUser()->get_id() === (int) $usr_id) {
+            if ($this->app['authentication']->getUser()->getId() === (int) $usr_id) {
                 continue;
             }
-            $user = \User_Adapter::getInstance($usr_id, $this->app);
+            $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
             $this->delete_user($user);
         }
 
         return $this;
     }
 
-    protected function delete_user(\User_Adapter $user)
+    protected function delete_user(User $user)
     {
         $list = array_keys($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['canadmin']));
 
         $this->app['acl']->get($user)->revoke_access_from_bases($list);
 
         if ($this->app['acl']->get($user)->is_phantom()) {
-            $user->delete();
+            $this->app['manipulator.user']->delete($user);
         }
 
         return $this;
@@ -124,12 +125,12 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
             sum(mask_and + mask_xor) as masks
 
-            FROM (usr u, bas b, sbas s)
+            FROM (Users u, bas b, sbas s)
               LEFT JOIN (basusr bu)
-                ON (bu.base_id = b.base_id AND u.usr_id = bu.usr_id)
+                ON (bu.base_id = b.base_id AND u.id = bu.usr_id)
               LEFT join  sbasusr sbu
-                ON (sbu.sbas_id = b.sbas_id AND u.usr_id = sbu.usr_id)
-            WHERE ( (u.usr_id = " . implode(' OR u.usr_id = ', $this->users) . " )
+                ON (sbu.sbas_id = b.sbas_id AND u.id = sbu.usr_id)
+            WHERE ( (u.id = " . implode(' OR u.id = ', $this->users) . " )
                     AND b.sbas_id = s.sbas_id
                     AND (b.base_id = '" . implode("' OR b.base_id = '", $list) . "'))
             GROUP BY b.base_id
@@ -180,7 +181,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         if (count($this->users) == 1) {
             $usr_id = array_pop($this->users);
-            $out['main_user'] = \User_Adapter::getInstance($usr_id, $this->app);
+            $out['main_user'] = $this->app['manipulator.user']->getRepository()->find($usr_id);
         }
 
         return $out;
@@ -190,9 +191,9 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     {
         $this->base_id = (int) $this->request->get('base_id');
 
-        $sql = "SELECT u.usr_id, restrict_dwnld, remain_dwnld, month_dwnld_max
-      FROM (usr u INNER JOIN basusr bu ON u.usr_id = bu.usr_id)
-      WHERE (u.usr_id = " . implode(' OR u.usr_id = ', $this->users) . ")
+        $sql = "SELECT u.id, restrict_dwnld, remain_dwnld, month_dwnld_max
+      FROM (Users u INNER JOIN basusr bu ON u.id = bu.usr_id)
+      WHERE (u.id = " . implode(' OR u.id = ', $this->users) . ")
       AND bu.base_id = :base_id";
 
         $conn = \connection::getPDOConnection($this->app);
@@ -313,9 +314,9 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     {
         $this->base_id = (int) $this->request->get('base_id');
 
-        $sql = "SELECT u.usr_id, time_limited, limited_from, limited_to
-      FROM (usr u INNER JOIN basusr bu ON u.usr_id = bu.usr_id)
-      WHERE (u.usr_id = " . implode(' OR u.usr_id = ', $this->users) . ")
+        $sql = "SELECT u.id, time_limited, limited_from, limited_to
+      FROM (Users u INNER JOIN basusr bu ON u.id = bu.usr_id)
+      WHERE (u.id = " . implode(' OR u.id = ', $this->users) . ")
       AND bu.base_id = :base_id";
 
         $conn = \connection::getPDOConnection($this->app);
@@ -367,11 +368,11 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     {
         $sbas_id = (int) $this->request->get('sbas_id');
 
-        $sql = "SELECT u.usr_id, time_limited, limited_from, limited_to
-            FROM (usr u
-              INNER JOIN basusr bu ON u.usr_id = bu.usr_id
+        $sql = "SELECT u.id, time_limited, limited_from, limited_to
+            FROM (Users u
+              INNER JOIN basusr bu ON u.id = bu.usr_id
               INNER JOIN bas b ON b.base_id = bu.base_id)
-            WHERE (u.usr_id = " . implode(' OR u.usr_id = ', $this->users) . ")
+            WHERE (u.id = " . implode(' OR u.id = ', $this->users) . ")
               AND b.sbas_id = :sbas_id";
 
         $conn = \connection::getPDOConnection($this->app);
@@ -531,7 +532,8 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             try {
                 $this->app['phraseanet.appbox']->get_connection()->beginTransaction();
 
-                $user = \User_Adapter::getInstance($usr_id, $this->app);
+                $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
+
                 $this->app['acl']->get($user)->revoke_access_from_bases($delete)
                     ->give_access_to_base($create)
                     ->give_access_to_sbas($create_sbas);
@@ -565,9 +567,9 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $users = $this->users;
 
-        $user = \User_adapter::getInstance(array_pop($users), $this->app);
+        $user = $this->app['manipulator.user']->getRepository()->find(array_pop($users));
 
-        if ($user->is_template() || $user->is_special()) {
+        if ($user->isTemplate() || $user->isSpecial()) {
             return $this;
         }
 
@@ -586,28 +588,29 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             , 'fax'
         ];
 
-        $parm = $this->unserializedRequestData($this->app['request'], $infos, 'user_infos');
+        $parm = $this->unserializedRequestData($this->request, $infos, 'user_infos');
 
         if ($parm['email'] && !\Swift_Validate::email($parm['email'])) {
             throw new \Exception_InvalidArgument('Email addess is not valid');
         }
 
-        $old_email = $user->get_email();
+        $old_email = $user->getEmail();
 
-        $user->set_firstname($parm['first_name'])
-            ->set_lastname($parm['last_name'])
-            ->set_gender($parm['gender'])
-            ->set_email($parm['email'])
-            ->set_address($parm['address'])
-            ->set_zip($parm['zip'])
-            ->set_geonameid($parm['geonameid'])
-            ->set_position($parm['function'])
-            ->set_job($parm['activite'])
-            ->set_company($parm['company'])
-            ->set_tel($parm['telephone'])
-            ->set_fax($parm['fax']);
+        $user->setFirstName($parm['first_name'])
+            ->setLastName($parm['last_name'])
+            ->setGender($parm['gender'])
+            ->setEmail($parm['email'])
+            ->setAddress($parm['address'])
+            ->setZipCode($parm['zip'])
+            ->setActivity($parm['function'])
+            ->setJob($parm['activite'])
+            ->setCompany($parm['company'])
+            ->setPhone($parm['telephone'])
+            ->setFax($parm['fax']);
 
-        $new_email = $user->get_email();
+        $this->app['manipulator.user']->setGeonameId($user, $parm['geonameid']);
+
+        $new_email = $user->getEmail();
 
         if ($old_email != $new_email) {
             $oldReceiver = $newReceiver = null;
@@ -639,18 +642,18 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     public function apply_template()
     {
-        $template = \User_adapter::getInstance($this->request->get('template'), $this->app);
+        $template = $this->app['manipulator.user']->getRepository()->find($this->request->get('template'));
 
-        if ($template->get_template_owner()->get_id() != $this->app['authentication']->getUser()->get_id()) {
+        if (null === $template->getModelOf() || $template->getModelOf()->getId() !== $this->app['authentication']->getUser()->getId()) {
             throw new AccessDeniedHttpException('You are not the owner of the template');
         }
 
         $base_ids = array_keys($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['canadmin']));
 
         foreach ($this->users as $usr_id) {
-            $user = \User_adapter::getInstance($usr_id, $this->app);
+            $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
 
-            if ($user->is_template()) {
+            if ($user->isTemplate()) {
                 continue;
             }
 
@@ -665,7 +668,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $this->base_id = (int) $this->request->get('base_id');
 
         foreach ($this->users as $usr_id) {
-            $user = \User_Adapter::getInstance($usr_id, $this->app);
+            $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
             if ($this->request->get('quota'))
                 $this->app['acl']->get($user)->set_quotas_on_base($this->base_id, $this->request->get('droits'), $this->request->get('restes'));
             else
@@ -686,7 +689,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         if ($vand_and && $vand_or && $vxor_and && $vxor_or) {
             foreach ($this->users as $usr_id) {
-                $user = \User_Adapter::getInstance($usr_id, $this->app);
+                $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
 
                 $this->app['acl']->get($user)->set_masks_on_base($this->base_id, $vand_and, $vand_or, $vxor_and, $vxor_or);
             }
@@ -708,7 +711,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $base_ids = array_keys($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['canadmin']));
 
         foreach ($this->users as $usr_id) {
-            $user = \User_Adapter::getInstance($usr_id, $this->app);
+            $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
 
             if ($this->base_id > 0) {
                 $this->app['acl']->get($user)->set_limits($this->base_id, $activate, $dmin, $dmax);
@@ -727,13 +730,13 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $base_ids = array_keys($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['canadmin']));
 
         foreach ($this->users as $usr_id) {
-            $user = \User_Adapter::getInstance($usr_id, $this->app);
+            $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
             $ACL = $this->app['acl']->get($user);
 
-            if ($user->is_template()) {
+            if ($user->isTemplate()) {
                 $template = $user;
 
-                if ($template->get_template_owner()->get_id() !== $this->app['authentication']->getUser()->get_id()) {
+                if ($template->getModelOf()->getId() !== $this->app['authentication']->getUser()->getId()) {
                     continue;
                 }
             }
@@ -755,7 +758,13 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     private function unserializedRequestData(Request $request, array $indexes, $requestIndex)
     {
         $parameters = $data = [];
-        parse_str($request->get($requestIndex), $data);
+        $requestValue = $request->get($requestIndex);
+
+        if (is_array($requestValue)) {
+            $data = $requestValue;
+        } else {
+            parse_str($requestValue, $data);
+        }
 
         if (count($data) > 0) {
             foreach ($indexes as $index) {

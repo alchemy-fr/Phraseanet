@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Notification;
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class Emitter implements EmitterInterface
 {
@@ -47,14 +48,14 @@ class Emitter implements EmitterInterface
     /**
      * Creates an Emitter given a User
      *
-     * @param \User_Adapter $user
+     * @param User $user
      *
      * @return Emitter
      *
      * @throws InvalidArgumentException In case no valid email is found for user
      */
-    public static function fromUser(\User_Adapter $user)
+    public static function fromUser(User $user)
     {
-        return new static($user->get_display_name(), $user->get_email());
+        return new static($user->getDisplayName(), $user->getEmail());
     }
 }

@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\MonologSQLLogger;
+use Alchemy\Phrasea\Model\NativeQueryProvider;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\FileCacheReader;
@@ -154,6 +155,10 @@ class ORMServiceProvider implements ServiceProviderInterface
             }
 
             return $em;
+        });
+
+        $app['EM.native-query'] = $app->share(function ($app) {
+            return new NativeQueryProvider($app['EM']);
         });
     }
 

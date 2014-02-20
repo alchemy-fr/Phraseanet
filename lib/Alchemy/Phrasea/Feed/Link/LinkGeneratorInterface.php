@@ -12,14 +12,15 @@
 namespace Alchemy\Phrasea\Feed\Link;
 
 use Alchemy\Phrasea\Feed\FeedInterface;
+use Alchemy\Phrasea\Model\Entities\User;
 
 interface LinkGeneratorInterface
 {
     /**
-     * Generates a FeedLink based on given FeedInterface and User_Adapter.
+     * Generates a FeedLink based on given FeedInterface and User.
      *
      * @param FeedInterface $feed
-     * @param \User_Adapter $user
+     * @param User          $user
      * @param type          $format
      * @param type          $page
      * @param type          $renew
@@ -28,7 +29,7 @@ interface LinkGeneratorInterface
      *
      * @throws InvalidArgumentException
      */
-    public function generate(FeedInterface $feed, \User_Adapter $user, $format, $page = null, $renew = false);
+    public function generate(FeedInterface $feed, User $user, $format, $page = null, $renew = false);
 
     /**
      * Generates a public FeedLink based on given FeedInterface.

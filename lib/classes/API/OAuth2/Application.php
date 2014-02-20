@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class API_OAuth2_Application
 {
@@ -41,7 +42,7 @@ class API_OAuth2_Application
 
     /**
      *
-     * @var User_Adapter
+     * @var User
      */
     protected $creator;
 
@@ -145,7 +146,7 @@ class API_OAuth2_Application
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-        $this->creator = ! $row['creator'] ? null : User_Adapter::getInstance($row['creator'], $this->app);
+        $this->creator = ! $row['creator'] ? null : $this->app['manipulator.user']->getRepository()->find($row['creator']);
         $this->type = $row['type'];
         $this->name = $row['name'];
         $this->description = $row['description'];
@@ -173,7 +174,7 @@ class API_OAuth2_Application
 
     /**
      *
-     * @return User_Adapter
+     * @return User
      */
     public function get_creator()
     {
@@ -518,16 +519,16 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param  User_Adapter       $user
+     * @param  User               $user
      * @return API_OAuth2_Account
      */
-    public function get_user_account(user_adapter $user)
+    public function get_user_account(User $user)
     {
         $sql = 'SELECT api_account_id FROM api_accounts
       WHERE usr_id = :usr_id  AND application_id = :id';
 
         $params = [
-            ':usr_id' => $user->get_id()
+            ':usr_id' => $user->getId()
             , ':id'     => $this->id
         ];
 
@@ -588,11 +589,11 @@ class API_OAuth2_Application
     /**
      *
      * @param  Application            $app
-     * @param  User_Adapter           $user
+     * @param  User                   $user
      * @param  type                   $name
      * @return API_OAuth2_Application
      */
-    public static function create(Application $app, User_Adapter $user = null, $name)
+    public static function create(Application $app, User $user = null, $name)
     {
         $sql = '
             INSERT INTO api_applications (
@@ -609,7 +610,7 @@ class API_OAuth2_Application
         $client_token = API_OAuth2_Token::generate_token();
 
         $params = [
-            ':usr_id'         => $user ? $user->get_id() : null,
+            ':usr_id'         => $user ? $user->getId() : null,
             ':name'           => $name,
             ':client_id'      => $client_token,
             ':client_secret'  => $client_secret,
@@ -655,14 +656,14 @@ class API_OAuth2_Application
         return new self($app, $row['application_id']);
     }
 
-    public static function load_dev_app_by_user(Application $app, User_Adapter $user)
+    public static function load_dev_app_by_user(Application $app, User $user)
     {
         $sql = 'SELECT a.application_id
         FROM api_applications a, api_accounts b
         WHERE a.creator = :usr_id AND a.application_id = b.application_id';
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $user->get_id()]);
+        $stmt->execute([':usr_id' => $user->getId()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -674,14 +675,14 @@ class API_OAuth2_Application
         return $apps;
     }
 
-    public static function load_app_by_user(Application $app, user_adapter $user)
+    public static function load_app_by_user(Application $app, User $user)
     {
         $sql = 'SELECT a.application_id
         FROM api_accounts a, api_applications c
         WHERE usr_id = :usr_id AND c.application_id = a.application_id';
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $user->get_id()]);
+        $stmt->execute([':usr_id' => $user->getId()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -693,7 +694,7 @@ class API_OAuth2_Application
         return $apps;
     }
 
-    public static function load_authorized_app_by_user(Application $app, user_adapter $user)
+    public static function load_authorized_app_by_user(Application $app, User $user)
     {
         $sql = '
         SELECT a.application_id
@@ -702,7 +703,7 @@ class API_OAuth2_Application
         AND revoked = 0';
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $user->get_id()]);
+        $stmt->execute([':usr_id' => $user->getId()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 

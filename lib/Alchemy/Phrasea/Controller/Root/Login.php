@@ -23,6 +23,7 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\FormProcessingException;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Alchemy\Phrasea\Model\Entities\UsrAuthProvider;
 use Alchemy\Phrasea\Notification\Receiver;
@@ -308,7 +309,7 @@ class Login implements ControllerProviderInterface
                     ->findWithProviderAndId($token->getProvider()->getId(), $token->getId());
 
                 if (null !== $userAuthProvider) {
-                    $this->postAuthProcess($app, $userAuthProvider->getUser($app));
+                    $this->postAuthProcess($app, $userAuthProvider->getUser());
 
                     if (null !== $redirect = $request->query->get('redirect')) {
                         $redirection = '../' . $redirect;
@@ -339,7 +340,6 @@ class Login implements ControllerProviderInterface
                     $inscOK = [];
 
                     foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
-
                         foreach ($databox->get_collections() as $collection) {
                             if (null !== $selected && !in_array($collection->get_base_id(), $selected)) {
                                 continue;
@@ -362,25 +362,31 @@ class Login implements ControllerProviderInterface
                         $data['login'] = $data['email'];
                     }
 
-                    $user = \User_Adapter::create($app, $data['login'], $data['password'], $data['email'], false);
+                    $user = $app['manipulator.user']->createUser($data['login'], $data['password'], $data['email'], false);
+
+                    if (isset($data['geonameid'])) {
+                        $app['manipulator.user']->setGeonameId($user, $data['geonameid']);
+                    }
 
                     foreach ([
-                        'gender'    => 'set_gender',
-                        'firstname' => 'set_firstname',
-                        'lastname'  => 'set_lastname',
-                        'address'   => 'set_address',
-                        'zipcode'   => 'set_zip',
-                        'tel'       => 'set_tel',
-                        'fax'       => 'set_fax',
-                        'job'       => 'set_job',
-                        'company'   => 'set_company',
-                        'position'  => 'set_position',
-                        'geonameid' => 'set_geonameid',
+                        'gender'    => 'setGender',
+                        'firstname' => 'setFirstName',
+                        'lastname'  => 'setLastName',
+                        'address'   => 'setAddress',
+                        'zipcode'   => 'setZipCode',
+                        'tel'       => 'setPhone',
+                        'fax'       => 'setFax',
+                        'job'       => 'setJob',
+                        'company'   => 'setCompany',
+                        'position'  => 'setActivity',
                     ] as $property => $method) {
                         if (isset($data[$property])) {
                             call_user_func([$user, $method], $data[$property]);
                         }
                     }
+
+                    $app['EM']->persist($user);
+                    $app['EM']->flush();
 
                     if (null !== $provider) {
                         $this->attachProviderToUser($app['EM'], $provider, $user);
@@ -390,22 +396,18 @@ class Login implements ControllerProviderInterface
                     $demandOK = [];
 
                     if ($app['conf']->get(['registry', 'registration', 'auto-register-enabled'])) {
-
-                        $template_user_id = \User_Adapter::get_usr_id_from_login($app, 'autoregister');
-
-                        $template_user = \User_Adapter::getInstance($template_user_id, $app);
+                        $template_user = $app['manipulator.user']->getRepository()->findByLogin(User::USER_AUTOREGISTER);
 
                         $base_ids = [];
 
                         foreach (array_keys($inscOK) as $base_id) {
                             $base_ids[] = $base_id;
                         }
+
                         $app['acl']->get($user)->apply_model($template_user, $base_ids);
                     }
 
                     $autoReg = $app['acl']->get($user)->get_granted_base();
-
-                    $appbox_register = new \appbox_register($app['phraseanet.appbox']);
 
                     foreach ($inscOK as $base_id => $autorisation) {
                         if (false === $autorisation || $app['acl']->get($user)->has_access_to_base($base_id)) {
@@ -413,20 +415,20 @@ class Login implements ControllerProviderInterface
                         }
 
                         $collection = \collection::get_from_base_id($app, $base_id);
-                        $appbox_register->add_request($user, $collection);
+                        $app['phraseanet.appbox-register']->add_request($user, $collection);
                         $demandOK[$base_id] = true;
                     }
 
                     $params = [
                         'demand'       => $demandOK,
                         'autoregister' => $autoReg,
-                        'usr_id'       => $user->get_id()
+                        'usr_id'       => $user->getId()
                     ];
 
                     $app['events-manager']->trigger('__REGISTER_AUTOREGISTER__', $params);
                     $app['events-manager']->trigger('__REGISTER_APPROVAL__', $params);
 
-                    $user->set_mail_locked(true);
+                    $user->setMailLocked(true);
 
                     try {
                         $this->sendAccountUnlockEmail($app, $user);
@@ -462,12 +464,12 @@ class Login implements ControllerProviderInterface
         ]));
     }
 
-    private function attachProviderToUser(EntityManager $em, ProviderInterface $provider, \User_Adapter $user)
+    private function attachProviderToUser(EntityManager $em, ProviderInterface $provider, User $user)
     {
         $usrAuthProvider = new UsrAuthProvider();
         $usrAuthProvider->setDistantId($provider->getToken()->getId());
         $usrAuthProvider->setProvider($provider->getId());
-        $usrAuthProvider->setUsrId($user->get_id());
+        $usrAuthProvider->setUser($user);
 
         try {
             $provider->logout();
@@ -491,9 +493,7 @@ class Login implements ControllerProviderInterface
             $app->abort(400, 'Missing usr_id parameter.');
         }
 
-        try {
-            $user = \User_Adapter::getInstance((int) $usrId, $app);
-        } catch (\Exception $e) {
+        if (null === $user = $app['manipulator.user']->getRepository()->find((int) $usrId)) {
             $app->addFlash('error', $app->trans('Invalid link.'));
 
             return $app->redirectPath('homepage');
@@ -514,17 +514,17 @@ class Login implements ControllerProviderInterface
      * Sends an account unlock email.
      *
      * @param PhraseaApplication $app
-     * @param \User_Adapter      $user
+     * @param User               $user
      *
      * @throws InvalidArgumentException
      * @throws RuntimeException
      */
-    private function sendAccountUnlockEmail(PhraseaApplication $app, \User_Adapter $user)
+    private function sendAccountUnlockEmail(PhraseaApplication $app, User $user)
     {
         $receiver = Receiver::fromUser($user);
 
         $expire = new \DateTime('+3 days');
-        $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), $expire, $user->get_email());
+        $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->getId(), $expire, $user->getEmail());
 
         $mail = MailRequestEmailConfirmation::create($app, $receiver);
         $mail->setButtonUrl($app->url('login_register_confirm', ['code' => $token]));
@@ -556,22 +556,20 @@ class Login implements ControllerProviderInterface
             return $app->redirectPath('homepage');
         }
 
-        try {
-            $user = \User_Adapter::getInstance((int) $datas['usr_id'], $app);
-        } catch (\Exception $e) {
-            $app->addFlash('error', $app->trans('Invalid unlock link.'));
+        if (null === $user = $app['manipulator.user']->getRepository()->find((int) $datas['usr_id'])) {
+            $app->addFlash('error', _('Invalid unlock link.'));
 
             return $app->redirectPath('homepage');
         }
 
-        if (!$user->get_mail_locked()) {
+        if (!$user->isMailLocked()) {
             $app->addFlash('info', $app->trans('Account is already unlocked, you can login.'));
 
             return $app->redirectPath('homepage');
         }
 
         $app['tokens']->removeToken($code);
-        $user->set_mail_locked(false);
+        $user->setMailLocked(false);
 
         try {
             $receiver = Receiver::fromUser($user);
@@ -621,8 +619,8 @@ class Login implements ControllerProviderInterface
 
                     $datas = $app['tokens']->helloToken($token);
 
-                    $user = \User_Adapter::getInstance($datas['usr_id'], $app);
-                    $user->set_password($data['password']);
+                    $user = $app['manipulator.user']->getRepository()->find($datas['usr_id']);
+                    $app['manipulator.user']->setPassword($user, $data['password']);
 
                     $app['tokens']->removeToken($token);
 
@@ -659,10 +657,8 @@ class Login implements ControllerProviderInterface
                 if ($form->isValid()) {
                     $data = $form->getData();
 
-                    try {
-                        $user = \User_Adapter::getInstance(\User_Adapter::get_usr_id_from_email($app, $data['email']), $app);
-                    } catch (\Exception $e) {
-                        throw new FormProcessingException($app->trans('phraseanet::erreur: Le compte n\'a pas ete trouve'));
+                    if (null === $user = $app['manipulator.user']->getRepository()->findByEmail($data['email'])) {
+                        throw new FormProcessingException(_('phraseanet::erreur: Le compte n\'a pas ete trouve'));
                     }
 
                     try {
@@ -671,7 +667,7 @@ class Login implements ControllerProviderInterface
                         throw new FormProcessingException($app->trans('Invalid email address'));
                     }
 
-                    $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), new \DateTime('+1 day'));
+                    $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->getId(), new \DateTime('+1 day'));
 
                     if (!$token) {
                         return $app->abort(500, 'Unable to generate a token');
@@ -680,7 +676,7 @@ class Login implements ControllerProviderInterface
                     $url = $app->url('login_renew_password', ['token' => $token], true);
 
                     $mail = MailRequestPasswordUpdate::create($app, $receiver);
-                    $mail->setLogin($user->get_login());
+                    $mail->setLogin($user->getLogin());
                     $mail->setButtonUrl($url);
 
                     $app['notification.deliverer']->deliver($mail);
@@ -807,11 +803,8 @@ class Login implements ControllerProviderInterface
         $context = new Context(Context::CONTEXT_GUEST);
         $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
 
-        $password = \random::generatePassword(24);
-        $user = \User_Adapter::create($app, 'invite', $password, null, false, true);
-
-        $inviteUsrid = \User_Adapter::get_usr_id_from_login($app, 'invite');
-        $invite_user = \User_Adapter::getInstance($inviteUsrid, $app);
+        $user = $app['manipulator.user']->createUser(uniqid('guest'), \random::generatePassword(24));
+        $invite_user = $app['manipulator.user']->getRepository()->findByLogin(User::USER_GUEST);
 
         $usr_base_ids = array_keys($app['acl']->get($user)->get_granted_base());
         $app['acl']->get($user)->revoke_access_from_bases($usr_base_ids);
@@ -822,7 +815,7 @@ class Login implements ControllerProviderInterface
         $this->postAuthProcess($app, $user);
 
         $response = $this->generateAuthResponse($app, $app['browser'], $request->request->get('redirect'));
-        $response->headers->setCookie(new Cookie('invite-usr-id', $user->get_id()));
+        $response->headers->setCookie(new Cookie('invite-usr-id', $user->getId()));
 
         $event = new PostAuthenticate($request, $response, $user, $context);
         $app['dispatcher']->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
@@ -849,7 +842,7 @@ class Login implements ControllerProviderInterface
     }
 
     // move this in an event
-    public function postAuthProcess(PhraseaApplication $app, \User_Adapter $user)
+    public function postAuthProcess(PhraseaApplication $app, User $user)
     {
         $date = new \DateTime('+' . (int) $app['conf']->get(['registry', 'actions', 'validation-reminder-days']) . ' days');
 
@@ -860,7 +853,7 @@ class Login implements ControllerProviderInterface
             /* @var $participant ValidationParticipant */
 
             $validationSession = $participant->getSession();
-            $participantId = $participant->getUsrId();
+            $participantId = $participant->getUser()->getId();
             $basketId = $validationSession->getBasket()->getId();
 
             try {
@@ -872,7 +865,7 @@ class Login implements ControllerProviderInterface
             $app['events-manager']->trigger('__VALIDATION_REMINDER__', [
                 'to'          => $participantId,
                 'ssel_id'     => $basketId,
-                'from'        => $validationSession->getInitiatorId(),
+                'from'        => $validationSession->getInitiator()->getId(),
                 'validate_id' => $validationSession->getId(),
                 'url'         => $app->url('lightbox_validation', ['basket' => $basketId, 'LOG' => $token]),
             ]);
@@ -885,8 +878,8 @@ class Login implements ControllerProviderInterface
 
         $session = $app['authentication']->openAccount($user);
 
-        if ($user->get_locale() != $app['locale']) {
-            $user->set_locale($app['locale']);
+        if ($user->getLocale() != $app['locale']) {
+            $user->setLocale($app['locale']);
         }
 
         $width = $height = null;
@@ -931,7 +924,7 @@ class Login implements ControllerProviderInterface
             ->findWithProviderAndId($token->getProvider()->getId(), $token->getId());
 
         if (null !== $userAuthProvider) {
-            $this->postAuthProcess($app, $userAuthProvider->getUser($app));
+            $this->postAuthProcess($app, $userAuthProvider->getUser());
 
             if (null !== $redirect = $request->query->get('redirect')) {
                 $redirection = '../' . $redirect;
@@ -1047,7 +1040,7 @@ class Login implements ControllerProviderInterface
             throw new AuthenticationException(call_user_func($redirector, $params));
         }
 
-        $user = \User_Adapter::getInstance($usr_id, $app);
+        $user = $app['manipulator.user']->getRepository()->find($usr_id);
 
         $session = $this->postAuthProcess($app, $user);
 
@@ -1055,14 +1048,14 @@ class Login implements ControllerProviderInterface
         $response->headers->clearCookie('invite-usr-id');
 
         if ($request->cookies->has('postlog') && $request->cookies->get('postlog') == '1') {
-            if (!$user->is_guest() && $request->cookies->has('invite-usr_id')) {
-                if ($user->get_id() != $inviteUsrId = $request->cookies->get('invite-usr_id')) {
+            if (!$user->isGuest() && $request->cookies->has('invite-usr_id')) {
+                if ($user->getId() != $inviteUsrId = $request->cookies->get('invite-usr_id')) {
 
                     $repo = $app['EM']->getRepository('Phraseanet:Basket');
                     $baskets = $repo->findBy(['usr_id' => $inviteUsrId]);
 
                     foreach ($baskets as $basket) {
-                        $basket->setUsrId($user->get_id());
+                        $basket->setUser($user);
                         $app['EM']->persist($basket);
                     }
                 }

@@ -40,7 +40,9 @@ class Bridge_Api_AbstractTest extends \PhraseanetWebTestCase
 
     public static function tearDownAfterClass()
     {
-        self::$api->delete();
+        if (self::$api instanceof \Bridge_Api) {
+            self::$api->delete();
+        }
         if (self::$account instanceof Bridge_Account) {
             self::$account->delete();
         }

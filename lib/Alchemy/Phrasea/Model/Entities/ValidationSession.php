@@ -30,9 +30,12 @@ class ValidationSession
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $initiator_id;
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="initiator_id", referencedColumnName="id", nullable=false)
+     *
+     * @return User
+     **/
+    private $initiator;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -81,45 +84,35 @@ class ValidationSession
     }
 
     /**
-     * Set initiator_id
+     * @param User $user
      *
-     * @param  integer           $initiatorId
-     * @return ValidationSession
+     * @return $this
      */
-    public function setInitiatorId($initiatorId)
+    public function setInitiator(User $user)
     {
-        $this->initiator_id = $initiatorId;
+        $this->initiator = $user;
 
         return $this;
     }
 
     /**
-     * Get initiator_id
+     * Get validation initiator
      *
-     * @return integer
+     * @return User
      */
-    public function getInitiatorId()
+    public function getInitiator()
     {
-        return $this->initiator_id;
+        return $this->initiator;
     }
 
-    public function isInitiator(\User_Adapter $user)
+    /**
+     * @param User $user
+     *
+     * @return boolean
+     */
+    public function isInitiator(User $user)
     {
-        return $this->getInitiatorId() == $user->get_id();
-    }
-
-    public function setInitiator(\User_Adapter $user)
-    {
-        $this->initiator_id = $user->get_id();
-
-        return;
-    }
-
-    public function getInitiator(Application $app)
-    {
-        if ($this->initiator_id) {
-            return \User_Adapter::getInstance($this->initiator_id, $app);
-        }
+        return $this->getInitiator()->getId() == $user->getId();
     }
 
     /**
@@ -258,21 +251,20 @@ class ValidationSession
         return $date_obj > $this->getExpires();
     }
 
-    public function getValidationString(Application $app, \User_Adapter $user)
+    public function getValidationString(Application $app, User $user)
     {
-
         if ($this->isInitiator($user)) {
             if ($this->isFinished()) {
                 return $app->trans('Vous aviez envoye cette demande a %n% utilisateurs', ['%n%' => count($this->getParticipants()) - 1]);
-            } else {
-                return $app->trans('Vous avez envoye cette demande a %n% utilisateurs', ['%n%' => count($this->getParticipants()) - 1]);
             }
+
+            return $app->trans('Vous avez envoye cette demande a %n% utilisateurs', ['%n%' => count($this->getParticipants()) - 1]);
         } else {
-            if ($this->getParticipant($user, $app)->getCanSeeOthers()) {
-                return $app->trans('Processus de validation recu de %user% et concernant %n% utilisateurs', ['%user%' => $this->getInitiator($app)->get_display_name(), '%n%' => count($this->getParticipants()) - 1]);
-            } else {
-                return $app->trans('Processus de validation recu de %user%', ['%user%' => $this->getInitiator($app)->get_display_name()]);
+            if ($this->getParticipant($user)->getCanSeeOthers()) {
+                return $app->trans('Processus de validation recu de %user% et concernant %n% utilisateurs', ['%user%' => $this->getInitiator($app)->getDisplayName(), '%n%' => count($this->getParticipants()) - 1]);
             }
+
+            return $app->trans('Processus de validation recu de %user%', ['%user%' => $this->getInitiator($app)->getDisplayName()]);
         }
     }
 
@@ -281,14 +273,14 @@ class ValidationSession
      *
      * @return ValidationParticipant
      */
-    public function getParticipant(\User_Adapter $user, Application $app)
+    public function getParticipant(User $user)
     {
         foreach ($this->getParticipants() as $participant) {
-            if ($participant->getUser($app)->get_id() == $user->get_id()) {
+            if ($participant->getUser()->getId() == $user->getId()) {
                 return $participant;
             }
         }
 
-        throw new NotFoundHttpException('Participant not found ' . $user->get_email());
+        throw new NotFoundHttpException('Participant not found' . $user->getEmail());
     }
 }

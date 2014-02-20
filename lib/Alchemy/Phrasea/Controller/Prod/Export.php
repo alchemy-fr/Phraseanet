@@ -206,7 +206,7 @@ class Export implements ControllerProviderInterface
                 $destMails[] = $mail;
             } else {
                 $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', [
-                    'usr_id' => $app['authentication']->getUser()->get_id(),
+                    'usr_id' => $app['authentication']->getUser()->getId(),
                     'lst'    => $lst,
                     'ssttid' => $ssttid,
                     'dest'   => $mail,
@@ -232,7 +232,7 @@ class Export implements ControllerProviderInterface
 
             $url = $app->url('prepare_download', ['token' => $token, 'anonymous']);
 
-            $emitter = new Emitter($app['authentication']->getUser()->get_display_name(), $app['authentication']->getUser()->get_email());
+            $emitter = new Emitter($app['authentication']->getUser()->getDisplayName(), $app['authentication']->getUser()->getEmail());
 
             foreach ($destMails as $key => $mail) {
                 try {
@@ -253,7 +253,7 @@ class Export implements ControllerProviderInterface
             if (count($remaingEmails) > 0) {
                 foreach ($remaingEmails as $mail) {
                     $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', [
-                        'usr_id' => $app['authentication']->getUser()->get_id(),
+                        'usr_id' => $app['authentication']->getUser()->getId(),
                         'lst'    => $lst,
                         'ssttid' => $ssttid,
                         'dest'   => $mail,
@@ -264,7 +264,7 @@ class Export implements ControllerProviderInterface
         } elseif (!$token && count($destMails) > 0) { //couldn't generate token
             foreach ($destMails as $mail) {
                 $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', [
-                    'usr_id' => $app['authentication']->getUser()->get_id(),
+                    'usr_id' => $app['authentication']->getUser()->getId(),
                     'lst'    => $lst,
                     'ssttid' => $ssttid,
                     'dest'   => $mail,

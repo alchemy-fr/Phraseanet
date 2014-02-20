@@ -140,13 +140,13 @@
                 {% for publisher in feed.getPublishers() %}
                     <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}">
                         <td valign="center" align="left">
-                            {{ publisher.getUsrId() }}
+                            {{ publisher.getUser().getId() }}
                         </td>
                         <td valign="center" align="left">
-                            {{ publisher.getUser(app).get_display_name() }}
+                            {{ publisher.getUser().getDisplayName() }}
                         </td>
                         <td valign="center" align="left">
-                            {{ publisher.getUser(app).get_email() }}
+                            {{ publisher.getUser().getEmail() }}
                         </td>
                         <td valign="center" align="center">
                             {% if publisher.isOwner() == true %}

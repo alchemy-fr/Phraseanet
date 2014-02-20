@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
-use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UsrList;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -29,17 +29,17 @@ class UsrListRepository extends EntityRepository
     /**
      * Get all lists readable for a given User
      *
-     * @param  \User_Adapter                                $user
+     * @param  User                                         $user
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
-    public function findUserLists(\User_Adapter $user)
+    public function findUserLists(User $user)
     {
         $dql = 'SELECT l FROM Phraseanet:UsrList l
               JOIN l.owners o
-            WHERE o.usr_id = :usr_id';
+            WHERE o.user = :usr_id';
 
         $params = [
-            'usr_id' => $user->get_id(),
+            'usr_id' => $user->getId(),
         ];
 
         $query = $this->_em->createQuery($dql);
@@ -50,11 +50,11 @@ class UsrListRepository extends EntityRepository
 
     /**
      *
-     * @param  \User_Adapter $user
-     * @param  type          $list_id
+     * @param  User    $user
+     * @param  type    $list_id
      * @return UsrList
      */
-    public function findUserListByUserAndId(Application $app, \User_Adapter $user, $list_id)
+    public function findUserListByUserAndId(User $user, $list_id)
     {
         $list = $this->find($list_id);
 
@@ -63,7 +63,7 @@ class UsrListRepository extends EntityRepository
             throw new NotFoundHttpException('List is not found.');
         }
 
-        if ( ! $list->hasAccess($user, $app)) {
+        if (!$list->hasAccess($user)) {
             throw new AccessDeniedHttpException('You have not access to this list.');
         }
 
@@ -73,18 +73,18 @@ class UsrListRepository extends EntityRepository
     /**
      * Search for a UsrList like '' with a given value, for a user
      *
-     * @param  \User_Adapter                                $user
+     * @param  User                                         $user
      * @param  type                                         $name
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
-    public function findUserListLike(\User_Adapter $user, $name)
+    public function findUserListLike(User $user, $name)
     {
         $dql = 'SELECT l FROM Phraseanet:UsrList l
               JOIN l.owners o
-            WHERE o.usr_id = :usr_id AND l.name LIKE :name';
+            WHERE o.user = :usr_id AND l.name LIKE :name';
 
         $params = [
-            'usr_id' => $user->get_id(),
+            'usr_id' => $user->getId(),
             'name'   => $name . '%'
         ];
 

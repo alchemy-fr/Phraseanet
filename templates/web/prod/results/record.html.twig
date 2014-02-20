@@ -2,7 +2,7 @@
     {% import 'common/thumbnail.html.twig' as thumbnail %}
     {% import 'common/doctype_icons.html.twig' as doctype_icons %}
     {% import 'common/drop_down_options.html.twig' as drop_down %}
-    {% set th_size = app['authentication'].getUser().getPrefs('images_size')%}
+    {% set th_size = app['settings'].getUserSetting(app['authentication'].getUser(), 'images_size')%}
     {% set sbas_id = record.get_sbas_id %}
     {% if entry_id %}
         <div style="width:{{th_size+30}}px;" sbas="{{sbas_id}}"
@@ -31,8 +31,8 @@
             </div>
             {% set rollover_gif = record.get_rollover_thumbnail() %}
 
-            {% set user_technical_display = app['authentication'].getUser().getPrefs('technical_display') %}
-            {% set user_rollover_thumbnail = app['authentication'].getUser().getPrefs('rollover_thumbnail') %}
+            {% set user_technical_display = app['settings'].getUserSetting(app['authentication'].getUser(), 'technical_display') %}
+            {% set user_rollover_thumbnail = app['settings'].getUserSetting(app['authentication'].getUser(), 'rollover_thumbnail') %}
 
             {% set extraclass = '' %}
             {% if user_rollover_thumbnail == 'caption' and searchEngine is not null %}
@@ -47,7 +47,7 @@
             {% endif %}
             <div class="thumb {{extraclass}} " tooltipsrc="{{tooltipsrc}}" style="height:{{th_size}}px; z-index:90;">
                 <div class="doc_infos">
-                {% if app['authentication'].getUser().getPrefs('doctype_display') == '1' %}
+                {% if app['settings'].getUserSetting(app['authentication'].getUser(), 'doctype_display') == '1' %}
                 {{doctype_icons.format(record)}}
                 {% endif %}
                 <span class="duration">

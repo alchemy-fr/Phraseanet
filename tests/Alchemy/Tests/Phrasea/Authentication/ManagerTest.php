@@ -14,9 +14,7 @@ class ManagerTest extends \PhraseanetTestCase
         $authenticator = $this->getAuthenticatorMock();
         $providers = $this->getProvidersMock();
 
-        $user = $this->getMockBuilder('User_Adapter')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $user = $this->createUserMock();
 
         $session = $this->getMock('Alchemy\Phrasea\Model\Entities\Session');
 

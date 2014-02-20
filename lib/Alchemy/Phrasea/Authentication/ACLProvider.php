@@ -37,7 +37,7 @@ class ACLProvider
      *
      * @return \ACL
      */
-    public function get(\User_Adapter $user)
+    public function get(User $user)
     {
         if (null !== $acl = $this->fetchFromCache($user)) {
             return $acl;
@@ -61,9 +61,9 @@ class ACLProvider
      *
      * @return null || \ACL
      */
-    private function fetchFromCache(\User_Adapter $user)
+    private function fetchFromCache(User $user)
     {
-        return $this->hasCache($user) ? self::$cache[$user->get_id()] : null;
+        return $this->hasCache($user) ? self::$cache[$user->getId()] : null;
     }
 
     /**
@@ -73,9 +73,9 @@ class ACLProvider
      *
      * @return boolean
      */
-    private function hasCache(\User_Adapter $user)
+    private function hasCache(User $user)
     {
-        return isset(self::$cache[$user->get_id()]);
+        return isset(self::$cache[$user->getId()]);
     }
 
     /**
@@ -85,8 +85,8 @@ class ACLProvider
      *
      * @return \ACL
      */
-    private function fetch(\User_Adapter $user)
+    private function fetch(User $user)
     {
-        return self::$cache[$user->get_id()] = new \ACL($user, $this->app);
+        return self::$cache[$user->getId()] = new \ACL($user, $this->app);
     }
 }

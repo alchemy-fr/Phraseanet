@@ -173,7 +173,7 @@ class TooltipTest extends \PhraseanetAuthenticatedWebTestCase
     public function testUser()
     {
 
-        $route = '/prod/tooltip/user/' . self::$DI['user']->get_id() . '/';
+        $route = '/prod/tooltip/user/' . self::$DI['user']->getId() . '/';
         self::$DI['client']->request('POST', $route);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }

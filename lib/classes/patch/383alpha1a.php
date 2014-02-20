@@ -62,7 +62,7 @@ class patch_383alpha1a implements patchInterface
         }
 
         // Remove deleted users sessions
-        $sql = 'SELECT s.id FROM `Sessions` s, usr u WHERE u.usr_login LIKE "(#deleted%" AND u.usr_id = s.usr_id';
+        $sql = 'SELECT s.id FROM `Sessions` s INNER JOIN Users u ON (u.id = s.user_id) WHERE u.deleted = 1';
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);

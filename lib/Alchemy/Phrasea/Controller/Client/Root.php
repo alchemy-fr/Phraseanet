@@ -91,14 +91,14 @@ class Root implements ControllerProviderInterface
         $result = $app['phraseanet.SE']->query($query, ($currentPage - 1) * $perPage, $perPage, $options);
 
         $userQuery = new UserQuery();
-        $userQuery->setUsrId($app['authentication']->getUser()->get_id());
+        $userQuery->setUser($app['authentication']->getUser());
         $userQuery->setQuery($query);
 
         $app['EM']->persist($userQuery);
         $app['EM']->flush();
 
-        if ($app['authentication']->getUser()->getPrefs('start_page') === 'LAST_QUERY') {
-            $app['authentication']->getUser()->setPrefs('start_page_query', $query);
+        if ($app['settings']->getUserSetting($app['authentication']->getUser(), 'start_page') === 'LAST_QUERY') {
+            $app['manipulator.user']->setUserSetting($app['authentication']->getUser(), 'start_page_query', $query);
         }
 
         foreach ($options->getDataboxes() as $databox) {
@@ -171,7 +171,7 @@ class Root implements ControllerProviderInterface
             'per_page'             => $perPage,
             'search_engine'        =>  $app['phraseanet.SE'],
             'search_engine_option' => $options->serialize(),
-            'history'              => \queries::history($app, $app['authentication']->getUser()->get_id()),
+            'history'              => \queries::history($app, $app['authentication']->getUser()->getId()),
             'result'               => $result,
             'proposals'            => $currentPage === 1 ? $result->getProposals() : null,
             'help'                 => count($resultData) === 0 ? $this->getHelpStartPage($app) : '',
@@ -253,7 +253,7 @@ class Root implements ControllerProviderInterface
         }
 
         return new Response($app['twig']->render('client/index.html.twig', [
-            'last_action'       => !$app['authentication']->getUser()->is_guest() && false !== $request->cookies->has('last_act') ? $request->cookies->has('last_act') : null,
+            'last_action'       => !$app['authentication']->getUser()->isGuest() && false !== $request->cookies->has('last_act') ? $request->cookies->has('last_act') : null,
             'phrasea_home'      => $this->getDefaultClientStartPage($app),
             'render_topics'     => $renderTopics,
             'grid_properties'   => $this->getGridProperty(),
@@ -261,12 +261,12 @@ class Root implements ControllerProviderInterface
             'storage_access'    => $this->getDocumentStorageAccess($app),
             'tabs_setup'        => $this->getTabSetup($app),
             'module'            => 'client',
-            'menubar'           => $app['twig']->render('common/menubar.html.twig', ['module'           => 'client']),
+            'menubar'           => $app['twig']->render('common/menubar.html.twig', ['module' => 'client']),
             'css_file'          => $this->getCssFile($app),
-            'basket_status'     => null !== $app['authentication']->getUser()->getPrefs('client_basket_status') ? $app['authentication']->getUser()->getPrefs('client_basket_status') : "1",
-            'mod_pres'          => null !== $app['authentication']->getUser()->getPrefs('client_view') ? $app['authentication']->getUser()->getPrefs('client_view') : '',
-            'start_page'        => $app['authentication']->getUser()->getPrefs('start_page'),
-            'start_page_query'  => null !== $app['authentication']->getUser()->getPrefs('start_page_query') ? $app['authentication']->getUser()->getPrefs('start_page_query') : ''
+            'basket_status'     => $app['settings']->getUserSetting($app['authentication']->getUser(), 'client_basket_status', '1'),
+            'mod_pres'          => $app['settings']->getUserSetting($app['authentication']->getUser(), 'client_view', '' ),
+            'start_page'        => $app['settings']->getUserSetting($app['authentication']->getUser(), 'start_page'),
+            'start_page_query'  => $app['settings']->getUserSetting($app['authentication']->getUser(), 'start_page_query', '')
         ]));
     }
 
@@ -350,7 +350,7 @@ class Root implements ControllerProviderInterface
         $cssPath = __DIR__ . '/../../../../../www/skins/client/';
 
         $css = [];
-        $cssFile = $app['authentication']->getUser()->getPrefs('client_css');
+        $cssFile = $app['settings']->getUserSetting($app['authentication']->getUser(), 'client_css');
 
         $finder = new Finder();
 
@@ -418,7 +418,7 @@ class Root implements ControllerProviderInterface
      */
     private function getDefaultClientStartPage(Application $app)
     {
-        $startPage = strtoupper($app['authentication']->getUser()->getPrefs('start_page'));
+        $startPage = strtoupper($app['settings']->getUserSetting($app['authentication']->getUser(), 'start_page'));
 
         if ($startPage === 'PUBLI') {
             return $this->getPublicationStartPage($app);
@@ -441,7 +441,7 @@ class Root implements ControllerProviderInterface
     {
         $collections = $queryParameters = [];
 
-        $searchSet = json_decode($app['authentication']->getUser()->getPrefs('search'));
+        $searchSet = json_decode($app['settings']->getUserSetting($app['authentication']->getUser(), 'search'));
 
         if ($searchSet && isset($searchSet->bases)) {
             foreach ($searchSet->bases as $bases) {
@@ -451,9 +451,9 @@ class Root implements ControllerProviderInterface
             $collections = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base());
         }
 
-        $queryParameters["mod"] = $app['authentication']->getUser()->getPrefs('client_view') ?: '3X6';
+        $queryParameters["mod"] = $app['settings']->getUserSetting($app['authentication']->getUser(), 'client_view', '3X6');
         $queryParameters["bas"] = $collections;
-        $queryParameters["qry"] = $app['authentication']->getUser()->getPrefs('start_page_query') ?: 'all';
+        $queryParameters["qry"] = $app['settings']->getUserSetting($app['authentication']->getUser(), 'start_page_query', 'all');
         $queryParameters["pag"] = 0;
         $queryParameters["search_type"] = SearchEngineOptions::RECORD_RECORD;
         $queryParameters["qryAdv"] = '';
@@ -479,7 +479,7 @@ class Root implements ControllerProviderInterface
     {
         return $app['twig']->render('client/home_inter_pub_basket.html.twig', [
             'feeds'         => Aggregate::createFromUser($app, $app['authentication']->getUser()),
-            'image_size'    => (int) $app['authentication']->getUser()->getPrefs('images_size')
+            'image_size'    => (int) $app['settings']->getUserSetting($app['authentication']->getUser(), 'images_size')
         ]);
     }
 

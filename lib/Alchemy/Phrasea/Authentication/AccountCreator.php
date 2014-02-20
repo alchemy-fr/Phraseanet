@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Authentication;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class AccountCreator
 {
@@ -56,7 +57,7 @@ class AccountCreator
      * @param string      $email     The email
      * @param array       $templates Some extra templates to apply with the ones of this creator
      *
-     * @return \User_Adapter
+     * @return User
      *
      * @throws RuntimeException         In case the AccountCreator is disabled
      * @throws InvalidArgumentException In case a user with the same email already exists
@@ -70,16 +71,16 @@ class AccountCreator
         $login = $id;
         $n = 1;
 
-        if (null !== $email && false !== \User_Adapter::get_usr_id_from_email($app, $email)) {
+        if (null !== $email && null !== $app['manipulator.user']->getRepository()->findByEmail($email)) {
             throw new InvalidArgumentException('Provided email already exist in account base.');
         }
 
-        while (false !== \User_Adapter::get_usr_id_from_login($app, $login)) {
+        while (null !== $app['manipulator.user']->getRepository()->findByLogin($login)) {
             $login = $id . '#' . $n;
             $n++;
         }
 
-        $user = \User_Adapter::create($app, $login, $this->random->generatePassword(), $email, false, false);
+        $user = $app['manipulator.user']->createUser($login, $this->random->generatePassword(), $email);
 
         $base_ids = [];
         foreach ($this->appbox->get_databoxes() as $databox) {

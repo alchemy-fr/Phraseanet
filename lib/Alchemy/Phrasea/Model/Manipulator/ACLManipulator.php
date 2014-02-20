@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Model\Manipulator;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\LogicException;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class ACLManipulator implements ManipulatorInterface
 {
@@ -39,7 +40,7 @@ class ACLManipulator implements ManipulatorInterface
     /**
      * Resets rights for users.
      *
-     * @param User_Adapter $user
+     * @param User[] $users
      *
      * @throws InvalidArgumentException
      */
@@ -53,9 +54,9 @@ class ACLManipulator implements ManipulatorInterface
     /**
      * Resets rights for a user.
      *
-     * @param \User_adapter $user
+     * @param User $user
      */
-    private function doResetAdminRights(\User_adapter $user)
+    private function doResetAdminRights(User $user)
     {
         $acl = $this->ACLProvider->get($user);
         $databoxes = $this->appbox->get_databoxes();

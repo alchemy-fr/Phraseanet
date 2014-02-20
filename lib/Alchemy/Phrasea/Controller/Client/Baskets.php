@@ -111,7 +111,7 @@ class Baskets implements ControllerProviderInterface
         try {
             $basket = new Basket();
             $basket->setName($request->request->get('p0'));
-            $basket->setOwner($app['authentication']->getUser());
+            $basket->setUser($app['authentication']->getUser());
 
             $app['EM']->persist($basket);
             $app['EM']->flush();
@@ -180,7 +180,7 @@ class Baskets implements ControllerProviderInterface
         }
 
         $basketCollections = $baskets->partition(function ($key, $basket) {
-            return (Boolean) $basket->getPusherId();
+            return null !== $basket->getPusher();
         });
 
         return $app['twig']->render('client/baskets.html.twig', [

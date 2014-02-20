@@ -1,4 +1,4 @@
-{% if basket.getValidation() and basket.getValidation().getParticipant(app['authentication'].getUser(), app).getCanAgree() %}
+{% if basket.getValidation() and basket.getValidation().getParticipant(app['authentication'].getUser()).getCanAgree() %}
     <button class="confirm_report" title="{{ 'validation::envoyer mon rapport' | trans }}">
         <img src="/skins/lightbox/envoyerie6.gif"/>
     {{ 'validation::envoyer mon rapport' | trans }}

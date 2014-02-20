@@ -57,7 +57,6 @@ class patch_390alpha9a implements patchInterface
     public function apply(base $appbox, Application $app)
     {
         $this->updateRegistry($app);
-        $this->updateUsers($appbox);
         $this->updateDoctrineUsers($app);
         $this->updateDataboxPrefs($appbox);
     }
@@ -75,27 +74,6 @@ class patch_390alpha9a implements patchInterface
         $sql = 'UPDATE registry SET `value` = :value WHERE `key` = :key';
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute([':key' => 'GV_default_lng', ':value' => $this->extractLocale($locale)]);
-        $stmt->closeCursor();
-    }
-
-    private function updateUsers(\appbox $appbox)
-    {
-        $sql = 'SELECT usr_id, locale FROM usr WHERE locale IS NOT NULL';
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $sql = 'UPDATE usr SET locale = :locale WHERE usr_id = :usr_id';
-        $stmt = $appbox->get_connection()->prepare($sql);
-
-        foreach ($rows as $row) {
-            $stmt->execute([
-                ':locale' => $this->extractLocale($row['locale']),
-                ':usr_id' => $row['usr_id'],
-            ]);
-        }
-
         $stmt->closeCursor();
     }
 

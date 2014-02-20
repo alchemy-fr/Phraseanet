@@ -13,12 +13,13 @@ namespace Alchemy\Phrasea\Notification\Mail;
 
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Exception\LogicException;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class MailInfoOrderDelivered extends AbstractMail
 {
     /** @var Basket */
     private $basket;
-    /** @var \User_Adapter */
+    /** @var User */
     private $deliverer;
 
     /**
@@ -34,9 +35,9 @@ class MailInfoOrderDelivered extends AbstractMail
     /**
      * Sets the user that delivers the order
      *
-     * @param \User_Adapter $deliverer
+     * @param User $deliverer
      */
-    public function setDeliverer(\User_Adapter $deliverer)
+    public function setDeliverer(User $deliverer)
     {
         $this->deliverer = $deliverer;
     }
@@ -62,7 +63,7 @@ class MailInfoOrderDelivered extends AbstractMail
             throw new LogicException('You must set a deliverer before calling getMessage');
         }
 
-        return $this->app->trans('%user% vous a delivre votre commande, consultez la en ligne a l\'adresse suivante', ['%user%' => $this->deliverer->get_display_name()]);
+        return $this->app->trans('%user% vous a delivre votre commande, consultez la en ligne a l\'adresse suivante', ['%user%' => $this->deliverer->getDisplayName()]);
     }
 
     /**
