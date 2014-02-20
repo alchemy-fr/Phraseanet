@@ -17,7 +17,7 @@ use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Gedmo\Timestampable\TimestampableListener;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class patch_320alpha4b implements patchInterface
+class patch_320alpha4b extends patchAbstract
 {
     /** @var string */
     private $release = '3.2.0-alpha.4';
@@ -86,8 +86,9 @@ class patch_320alpha4b implements patchInterface
 
         $app['EM']->getEventManager()->removeEventSubscriber(new TimestampableListener());
         foreach ($rs as $row) {
-            $user =  $app['EM']->getPartialReference('Phraseanet:User', $row['usr_id']);
-
+            if (null === $user = $this->loadUser($app['EM'], $row['usr_id'])) {
+                continue;
+            }
             $feed = $this->get_feed($appbox, $user, $row['pub_restrict'], $row['homelink'], $app);
 
             if (! $feed instanceof Feed) {

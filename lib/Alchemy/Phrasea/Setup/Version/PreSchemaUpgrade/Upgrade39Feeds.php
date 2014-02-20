@@ -41,7 +41,7 @@ class Upgrade39Feeds implements PreSchemaUpgradeInterface
     public function rollback(EntityManager $em, \appbox $appbox, Configuration $conf)
     {
         if ($this->tableExists($em, 'feeds_backup')) {
-            $em->getConnection()->executeQuery('RENAME TABLE `feeds_backup` TO `feeds`');
+            $em->getConnection()->executeUpdate('RENAME TABLE `feeds_backup` TO `feeds`');
         }
     }
 
@@ -67,6 +67,6 @@ class Upgrade39Feeds implements PreSchemaUpgradeInterface
      */
     private function doBackupFeedsTable(EntityManager $em)
     {
-        $em->getConnection()->executeQuery('RENAME TABLE `feeds` TO `feeds_backup`');
+        $em->getConnection()->executeUpdate('RENAME TABLE `feeds` TO `feeds_backup`');
     }
 }

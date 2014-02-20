@@ -10,8 +10,9 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Doctrine\ORM\NoResultException;
 
-class patch_383alpha2a implements patchInterface
+class patch_383alpha2a extends patchAbstract
 {
     /** @var string */
     private $release = '3.8.3-alpha.2';
@@ -64,8 +65,14 @@ class patch_383alpha2a implements patchInterface
         $stmt->closeCursor();
 
         foreach ($rows as $row) {
-            if (null !== $vsession = $app['EM']->getPartialReference('Phraseanet:ValidationSession', $row['validation_session_id'])) {
+            try {
+                $vsession = $app['EM']->createQuery('SELECT PARTIAL s.{id} FROM Phraseanet:ValidationSession s WHERE s.id = :id')
+                      ->setParameters(['id' => $row['validation_session_id']])
+                      ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true)
+                      ->getSingleResult();
                 $app['EM']->remove($vsession);
+            } catch (NoResultException $e) {
+
             }
         }
 

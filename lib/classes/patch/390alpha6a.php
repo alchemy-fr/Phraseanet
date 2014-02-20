@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Model\Entities\FtpExportElement;
 use Gedmo\Timestampable\TimestampableListener;
 use Doctrine\ORM\NoResultException;
 
-class patch_390alpha6a implements patchInterface
+class patch_390alpha6a extends patchAbstract
 {
     /** @var string */
     private $release = '3.9.0-alpha.6';
@@ -94,9 +94,7 @@ class patch_390alpha6a implements patchInterface
         $n = 0;
 
         foreach ($rs as $row) {
-            try {
-                $user = $em->getPartialReference('Phraseanet:User', $row['usr_id']);
-            } catch (NoResultException $e) {
+            if (null === $user = $this->loadUser($app['EM'], $row['usr_id'])) {
                 continue;
             }
 

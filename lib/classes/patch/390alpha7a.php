@@ -18,7 +18,7 @@ use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Alchemy\Phrasea\Model\Entities\FeedToken;
 use Doctrine\ORM\Query\ResultSetMapping;
 
-class patch_390alpha7a implements patchInterface
+class patch_390alpha7a extends patchAbstract
 {
     /** @var string */
     private $release = '3.9.0-alpha.7';
@@ -133,7 +133,9 @@ class patch_390alpha7a implements patchInterface
             $fpRes = $fpStmt->fetchAll(\PDO::FETCH_ASSOC);
 
             foreach ($fpRes as $fpRow) {
-                $user = $em->getPartialReference('Phraseanet:User', $fpRow['usr_id']);
+                if (null === $user = $this->loadUser($app['EM'], $fpRow['usr_id'])) {
+                    continue;
+                }
 
                 $feedPublisher = new FeedPublisher();
                 $feedPublisher->setFeed($feed);
@@ -179,7 +181,9 @@ class patch_390alpha7a implements patchInterface
             $ftRes = $ftStmt->fetchAll(\PDO::FETCH_ASSOC);
 
             foreach ($ftRes as $ftRow) {
-                $user = $em->getPartialReference('Phraseanet:User', $ftRow['usr_id']);
+                if (null === $user = $this->loadUser($app['EM'], $ftRow['usr_id'])) {
+                    continue;
+                }
 
                 $token = new FeedToken();
                 $token->setFeed($feed);
@@ -208,7 +212,9 @@ class patch_390alpha7a implements patchInterface
         $faRes = $faStmt->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($faRes as $faRow) {
-            $user = $em->getPartialReference('Phraseanet:User', $faRow['usr_id']);
+            if (null === $user = $this->loadUser($app['EM'], $faRow['usr_id'])) {
+                continue;
+            }
 
             $token = new AggregateToken();
             $token->setUser($user);
