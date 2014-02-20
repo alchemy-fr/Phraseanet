@@ -135,7 +135,7 @@ abstract class task_abstract
 
         try {
             $conn = connection::getPDOConnection($this->dependencyContainer);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->log(("Warning : abox connection lost : ".$e->getMessage().", restarting in 10 min."), self::LOG_ERROR);
 
             $this->sleep(60 * 10);
@@ -691,7 +691,7 @@ abstract class task_abstract
             try {
                 // process one record
                 $this->processOneContent($box, $row);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->log("Exception : " . $e->getMessage() . " " . basename($e->getFile()) . " " . $e->getLine(), self::LOG_ERROR);
             }
 
@@ -721,7 +721,7 @@ abstract class task_abstract
                     $this->running = FALSE;
                     $ret = self::STATE_TOSTOP;
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->running = FALSE;
             }
 
@@ -752,7 +752,7 @@ abstract class task_abstract
                     $this->running = FALSE;
                     $ret = self::STATE_TOSTOP;
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->running = FALSE;
             }
         }
@@ -917,7 +917,7 @@ abstract class task_abstract
             ));
             $stmt->closeCursor();
             $this->completed_percentage = $p;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 

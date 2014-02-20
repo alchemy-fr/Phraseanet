@@ -77,7 +77,7 @@ class registry implements registryInterface
                 $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $stmt->closeCursor();
                 $loaded = true;
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
             }
             foreach ($rs as $row) {

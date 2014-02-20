@@ -69,7 +69,7 @@ class collection implements cache_cacheableInterface
             $this->labels = $datas['labels'];
 
             return $this;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 

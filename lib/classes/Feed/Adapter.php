@@ -83,7 +83,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
             $this->public = $datas['public'];
 
             return $this;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -476,7 +476,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
     {
         try {
             return $this->get_data_from_cache(self::CACHE_ENTRY_NUMBER);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -619,7 +619,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
             if (!$renew) {
                 return $this->get_data_from_cache($cache_key);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 

@@ -130,7 +130,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
             $this->created_on = $datas['created_on'];
 
             return $this;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -467,7 +467,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
     {
         try {
             return $this->get_data_from_cache(self::CACHE_ELEMENTS);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 

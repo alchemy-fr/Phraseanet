@@ -469,7 +469,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
                 $this->get_element_from_id($ticket["dist_id"], $element->get_type());
                 $element->set_dist_id($ticket["dist_id"]);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return self::UPLOAD_STATE_FAILED;
         }
 

@@ -29,7 +29,7 @@ abstract class task_appboxAbstract extends task_abstract
         while ($this->running) {
             try {
                 $conn = connection::getPDOConnection($this->dependencyContainer);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->log($e->getMessage());
                 if ($this->getRunner() == self::RUNNER_SCHEDULER) {
                     $this->log(("Warning : abox connection lost, restarting in 10 min."));
@@ -59,7 +59,7 @@ abstract class task_appboxAbstract extends task_abstract
                 $stmt->closeCursor();
                 $this->records_done = 0;
                 $duration = time();
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 // failed sql, simply return
                 $this->running = FALSE;
 
@@ -73,7 +73,7 @@ abstract class task_appboxAbstract extends task_abstract
 
                 try {
                     $this->loadSettings(simplexml_load_string($row['settings']));
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $this->log($e->getMessage());
                     continue;
                 }
@@ -125,7 +125,7 @@ abstract class task_appboxAbstract extends task_abstract
 
             // process the records
             $ret = $this->processLoop($appbox, $rs);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->log('Error  : ' . $e->getMessage());
         }
 

@@ -148,7 +148,7 @@ class connection
 
             try {
                 self::$_PDO_instance[$name] = new connection_pdo($name, $hostname, $port, $user, $password, $dbname, array(), $app['debug']);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 throw new Exception('Connection not available');
             }
         }

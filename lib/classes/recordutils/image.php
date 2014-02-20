@@ -58,7 +58,7 @@ class recordutils_image extends recordutils
             if (MediaInterface::TYPE_IMAGE === $image->getType()) {
                 $rotation = $image->getOrientation();
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // getting orientation failed but we don't care the reason
         }
 

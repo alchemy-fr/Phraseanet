@@ -89,7 +89,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
         try {
             $user_from = User_Adapter::getInstance($params['from'], $this->app);
             $user_to = User_Adapter::getInstance($params['to'], $this->app);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
 
@@ -138,7 +138,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
 
         try {
             $registered_user = User_Adapter::getInstance($from, $this->app);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return array();
         }
 
@@ -150,7 +150,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
             $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['authentication']->getUser(), false);
 
             $basket_name = trim($basket->getName()) ? : _('Une selection');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $basket_name = _('Une selection');
         }
 

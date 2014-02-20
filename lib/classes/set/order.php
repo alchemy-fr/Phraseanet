@@ -116,7 +116,7 @@ class set_order extends set_abstract
 
             $stmt->closeCursor();
             $app['phraseanet.appbox']->get_connection()->commit();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $app['phraseanet.appbox']->get_connection()->rollBack();
 
             return false;
@@ -431,7 +431,7 @@ class set_order extends set_abstract
                 $this->user->ACL()->grant_hd_on($record, $app['authentication']->getUser(), 'order');
 
                 unset($record);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
             }
         }

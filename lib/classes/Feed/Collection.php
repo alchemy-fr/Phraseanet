@@ -122,7 +122,7 @@ class Feed_Collection implements Feed_CollectionInterface, cache_cacheableInterf
 
         try {
             return $appbox->get_data_from_cache($key);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 

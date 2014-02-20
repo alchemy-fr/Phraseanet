@@ -85,7 +85,7 @@ class Feed_Publisher_Adapter implements Feed_Publisher_Interface, cache_cacheabl
             $this->owner = $datas['owner'];
 
             return $this;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 

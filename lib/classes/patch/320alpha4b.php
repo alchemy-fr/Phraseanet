@@ -63,7 +63,7 @@ class patch_320alpha4b implements patchInterface
             $stmt = $appbox->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 

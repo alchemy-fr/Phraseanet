@@ -328,7 +328,7 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
                             $this->app, $sbasid, $coll, $this->dmin, $this->dmax
                     );
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
             }
             $i ++;

@@ -69,7 +69,7 @@ abstract class task_databoxAbstract extends task_abstract
                 $stmt->closeCursor();
                 $this->records_done = 0;
                 $duration = time();
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 // failed sql, simply return
                 $this->running = FALSE;
 
@@ -87,7 +87,7 @@ abstract class task_databoxAbstract extends task_abstract
                 try {
                     // get the records to process
                     $databox = $this->dependencyContainer['phraseanet.appbox']->get_databox((int) $row['sbas_id']);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $this->log(sprintf('can\'t connect to sbas(%s) because "%s"',
                         $row['sbas_id'],
                         $e->getMessage()),
@@ -98,7 +98,7 @@ abstract class task_databoxAbstract extends task_abstract
 
                 try {
                     $this->loadSettings(simplexml_load_string($row['settings']));
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $this->log(sprintf('can\'t get get settings of task because "%s"',
                         $e->getMessage()),
                         self::LOG_WARNING
@@ -167,7 +167,7 @@ abstract class task_databoxAbstract extends task_abstract
 
             // process the records
             $ret = $this->processLoop($databox, $rs);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->log($e->getMessage(), self::LOG_ERROR);
         }
 

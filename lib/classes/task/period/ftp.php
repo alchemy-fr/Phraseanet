@@ -241,7 +241,7 @@ class task_period_ftp extends task_appboxAbstract
                 $stmt->closeCursor();
 
                 return true;
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 return false;
             }
         } else {
@@ -362,7 +362,7 @@ class task_period_ftp extends task_appboxAbstract
             if ($ftp_export["passif"] == "1") {
                 try {
                     $ftp_client->passive(true);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $this->logger->addDebug($e->getMessage());
                 }
             }
@@ -371,7 +371,7 @@ class task_period_ftp extends task_appboxAbstract
                 try {
                     $ftp_client->chdir($ftp_export["destfolder"]);
                     $ftp_export["destfolder"] = '/' . $ftp_export["destfolder"];
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $this->logger->addDebug($e->getMessage());
                 }
             } else {
@@ -381,14 +381,14 @@ class task_period_ftp extends task_appboxAbstract
             if (trim($ftp_export["foldertocreate"]) != '') {
                 try {
                     $ftp_client->mkdir($ftp_export["foldertocreate"]);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $this->logger->addDebug($e->getMessage());
                 }
                 try {
                     $new_dir = $ftp_client->add_end_slash($ftp_export["destfolder"])
                         . $ftp_export["foldertocreate"];
                     $ftp_client->chdir($new_dir);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $this->logger->addDebug($e->getMessage());
                 }
             }
@@ -451,7 +451,7 @@ class task_period_ftp extends task_appboxAbstract
                     if ($ftp_client->pwd() != $current_folder) {
                         try {
                             $ftp_client->chdir($current_folder);
-                        } catch (Exception $e) {
+                        } catch (\Exception $e) {
                             $this->logger->addDebug($e->getMessage());
                         }
                     }
@@ -473,7 +473,7 @@ class task_period_ftp extends task_appboxAbstract
                     $stmt->execute(array(':file_id' => $file['id']));
                     $stmt->closeCursor();
                     $this->logexport($record, $obj, $ftpLog);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $state .= $line = sprintf(_('task::ftp:File "%1$s" (record %2$s) de la base "%3$s"' .
                                 ' (Export du Document) : Transfert cancelled (le document n\'existe plus)')
                             , basename($localfile), $record_id
@@ -533,7 +533,7 @@ class task_period_ftp extends task_appboxAbstract
 
             $ftp_client->close();
             unset($ftp_client);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $state .= $line = $e . "\n";
 
             $this->logger->addDebug($line);

@@ -85,7 +85,7 @@ class module_console_taskState extends Command
             $output->writeln($input->getOption('short') ? 'unknown_id' : $e->getMessage());
 
             return self::EXITCODE_TASK_UNKNOWN;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $output->writeln($input->getOption('short') ? 'fatal_error' : $e->getMessage());
 
             return self::EXITCODE_FATAL_ERROR;

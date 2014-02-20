@@ -179,7 +179,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $this->creation_date = $datas['creation_date'];
 
             return $this;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 

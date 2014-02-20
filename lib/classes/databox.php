@@ -207,7 +207,7 @@ class databox extends base
         foreach ($this->get_available_collections() as $coll_id) {
             try {
                 $ret[] = collection::get_from_coll_id($this->app, $this, $coll_id);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
             }
         }
@@ -219,7 +219,7 @@ class databox extends base
     {
         try {
             return $this->get_data_from_cache(self::CACHE_COLLECTIONS);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -532,7 +532,7 @@ class databox extends base
             $stmt = $connection->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -649,7 +649,7 @@ class databox extends base
 
         try {
             $metaStructData = $this->get_data_from_cache(self::CACHE_META_STRUCT);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $sql = 'SELECT id, name FROM metadatas_structure ORDER BY sorter ASC';
             $stmt = $this->get_connection()->prepare($sql);
             $stmt->execute();
@@ -960,7 +960,7 @@ class databox extends base
 
             try {
                 $meta_struct_field->set_tag(\databox_field::loadClassFromTagName($src))->save();
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
             }
         }
 
@@ -1005,7 +1005,7 @@ class databox extends base
                 if ( ! empty($row['logo'])) {
                     file_put_contents($this->app['root.path'] . '/config/minilogos/' . $base_id, $row['logo']);
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 unset($e);
             }
         }
@@ -1136,7 +1136,7 @@ class databox extends base
             $this->thesaurus = $this->get_data_from_cache(self::CACHE_THESAURUS);
 
             return $this->thesaurus;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             unset($e);
         }
 
@@ -1149,7 +1149,7 @@ class databox extends base
             $stmt->closeCursor();
             $this->thesaurus = $row['thesaurus'];
             $this->set_data_to_cache($this->thesaurus, self::CACHE_THESAURUS);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             unset($e);
         }
 
@@ -1174,7 +1174,7 @@ class databox extends base
     {
         try {
             return $this->get_data_from_cache(self::CACHE_STRUCTURE);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -1365,7 +1365,7 @@ class databox extends base
             $this->cgus = $this->get_data_from_cache(self::CACHE_CGUS);
 
             return $this;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 

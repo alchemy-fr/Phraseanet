@@ -152,7 +152,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
 
         try {
             $registered_user = User_Adapter::getInstance($from, $this->app);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return array();
         }
 
@@ -162,7 +162,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
             $repository = $this->app['EM']->getRepository('\Entities\Basket');
 
             $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['authentication']->getUser(), false);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return array();
         }
         $ret = array(
