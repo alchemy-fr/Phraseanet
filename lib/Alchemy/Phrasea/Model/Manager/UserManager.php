@@ -47,10 +47,6 @@ class UserManager
      */
     public function delete(User $user, $flush = true)
     {
-        $user->setDeleted(true);
-        $user->setEmail(null);
-        $user->setLogin(sprintf('(#deleted_%s', $user->getLogin()));
-
         $this->cleanProperties($user);
         $this->cleanRights($user);
 

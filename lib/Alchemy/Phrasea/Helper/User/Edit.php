@@ -78,7 +78,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $this->app['acl']->get($user)->revoke_access_from_bases($list);
 
         if ($this->app['acl']->get($user)->is_phantom()) {
-            $this->app['model.user-manager']->delete($user);
+            $this->app['manipulator.user']->delete($user);
         }
 
         return $this;

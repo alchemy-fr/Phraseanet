@@ -1014,7 +1014,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             $this->fail('User not created');
         }
 
-        self::$DI['app']['model.user-manager']->delete($user);
+        self::$DI['app']['manipulator.user']->delete($user);
 
         $this->assertGreaterThan(0, $emails['Alchemy\Phrasea\Notification\Mail\MailInfoUserRegistered']);
         $this->assertEquals(1, $emails['Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation']);
@@ -1082,7 +1082,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(1, $emails['Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation']);
         $this->assertFlashMessagePopulated(self::$DI['app'], 'info', 1);
         $this->assertEquals('/login/', self::$DI['client']->getResponse()->headers->get('location'));
-        self::$DI['app']['model.user-manager']->delete($user);
+        self::$DI['app']['manipulator.user']->delete($user);
     }
 
     /**
@@ -1591,7 +1591,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertSame('/prod/', self::$DI['client']->getResponse()->headers->get('location'));
 
         $this->assertTrue(self::$DI['app']['authentication']->isAuthenticated());
-        self::$DI['app']['model.user-manager']->delete($user);
+        self::$DI['app']['manipulator.user']->delete($user);
     }
 
     public function testAuthenticateProviderCallbackWithRegistrationEnabled()

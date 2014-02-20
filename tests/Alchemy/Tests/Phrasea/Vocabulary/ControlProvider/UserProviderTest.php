@@ -68,7 +68,7 @@ class UserProviderTest extends \PhraseanetTestCase
 
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
         $this->assertTrue($results->count() > 0);
-        self::$DI['app']['model.user-manager']->delete($user);
+        self::$DI['app']['manipulator.user']->delete($user);
     }
 
     public function testValidate()

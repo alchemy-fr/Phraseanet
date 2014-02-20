@@ -53,9 +53,7 @@ class JsFixtures extends Command
 
     private function deleteUser(User $user)
     {
-        $this->container['model.user-manager']->delete($user ,false);
-        $this->container['EM']->remove($user);
-        $this->container['EM']->flush();
+        $this->container['manipulator.user']->delete($user);
     }
 
     private function copy(OutputInterface $output, $data)

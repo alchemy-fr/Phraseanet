@@ -75,6 +75,22 @@ class UserManipulator implements ManipulatorInterface
     }
 
     /**
+     * Deletes a user.
+     *
+     * @param User|User[] $users
+     */
+    public function delete($users)
+    {
+        foreach ($this->makeTraversable($users) as $user) {
+            $user->setDeleted(true);
+            $user->setEmail(null);
+            $user->setLogin(sprintf('(#deleted_%s', $user->getLogin()));
+
+            $this->manager->delete($user);
+        }
+    }
+
+    /**
      * Creates a template user and returns it.
      *
      * @param string $login
