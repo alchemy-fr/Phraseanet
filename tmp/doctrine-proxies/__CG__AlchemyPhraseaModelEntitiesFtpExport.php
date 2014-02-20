@@ -64,10 +64,10 @@ class FtpExport extends \Alchemy\Phrasea\Model\Entities\FtpExport implements \Do
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'crash', 'nbretry', 'mail', 'addr', 'ssl', 'login', 'pwd', 'passif', 'destfolder', 'sendermail', 'textMailSender', 'textMailReceiver', 'usrId', 'foldertocreate', 'logfile', 'elements', 'created', 'updated');
+            return array('__isInitialized__', 'id', 'crash', 'nbretry', 'mail', 'addr', 'ssl', 'login', 'pwd', 'passif', 'destfolder', 'sendermail', 'textMailSender', 'textMailReceiver', 'user', 'foldertocreate', 'logfile', 'elements', 'created', 'updated');
         }
 
-        return array('__isInitialized__', 'id', 'crash', 'nbretry', 'mail', 'addr', 'ssl', 'login', 'pwd', 'passif', 'destfolder', 'sendermail', 'textMailSender', 'textMailReceiver', 'usrId', 'foldertocreate', 'logfile', 'elements', 'created', 'updated');
+        return array('__isInitialized__', 'id', 'crash', 'nbretry', 'mail', 'addr', 'ssl', 'login', 'pwd', 'passif', 'destfolder', 'sendermail', 'textMailSender', 'textMailReceiver', 'user', 'foldertocreate', 'logfile', 'elements', 'created', 'updated');
     }
 
     /**
@@ -186,6 +186,28 @@ class FtpExport extends \Alchemy\Phrasea\Model\Entities\FtpExport implements \Do
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
 
         return parent::getId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUser(\Alchemy\Phrasea\Model\Entities\User $user)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', array($user));
+
+        return parent::setUser($user);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getUser()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', array());
+
+        return parent::getUser();
     }
 
     /**
@@ -461,50 +483,6 @@ class FtpExport extends \Alchemy\Phrasea\Model\Entities\FtpExport implements \Do
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTextMailReceiver', array());
 
         return parent::getTextMailReceiver();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setUsrId($usrId)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUsrId', array($usrId));
-
-        return parent::setUsrId($usrId);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getUsrId()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUsrId', array());
-
-        return parent::getUsrId();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getUser(\Alchemy\Phrasea\Application $app)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', array($app));
-
-        return parent::getUser($app);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setUser(\User_Adapter $user)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', array($user));
-
-        return parent::setUser($user);
     }
 
     /**

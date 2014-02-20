@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -25,16 +26,16 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class StoryWZRepository extends EntityRepository
 {
 
-    public function findByUser(Application $app, \User_Adapter $user, $sort)
+    public function findByUser(Application $app, User $user, $sort)
     {
-        $dql = 'SELECT s FROM Phraseanet:StoryWZ s WHERE s.usr_id = :usr_id ';
+        $dql = 'SELECT s FROM Phraseanet:StoryWZ s WHERE s.user = :user ';
 
         if ($sort == 'date') {
             $dql .= ' ORDER BY s.created DESC';
         }
 
         $query = $this->_em->createQuery($dql);
-        $query->setParameters(['usr_id' => $user->get_id()]);
+        $query->setParameters(['user' => $user]);
 
         $stories = $query->getResult();
 
@@ -71,7 +72,7 @@ class StoryWZRepository extends EntityRepository
         return $stories;
     }
 
-    public function findByUserAndId(Application $app, \User_Adapter $user, $id)
+    public function findByUserAndId(Application $app, User $user, $id)
     {
         $story = $this->find($id);
 
@@ -83,7 +84,7 @@ class StoryWZRepository extends EntityRepository
                 throw new NotFoundHttpException('Story not found');
             }
 
-            if ($story->getUser($app)->get_id() !== $user->get_id()) {
+            if ($story->getUser()->getId() !== $user->getId()) {
                 throw new AccessDeniedHttpException('You have not access to ths story');
             }
         } else {
@@ -93,15 +94,13 @@ class StoryWZRepository extends EntityRepository
         return $story;
     }
 
-    public function findUserStory(Application $app, \User_Adapter $user, \record_adapter $Story)
+    public function findUserStory(Application $app, User $user, \record_adapter $Story)
     {
-        $story = $this->findOneBy(
-            [
-                'usr_id'    => $user->get_id(),
-                'sbas_id'   => $Story->get_sbas_id(),
-                'record_id' => $Story->get_record_id(),
-            ]
-        );
+        $story = $this->findOneBy([
+            'user'    => $user->getId(),
+            'sbas_id'   => $Story->get_sbas_id(),
+            'record_id' => $Story->get_record_id(),
+        ]);
 
         if ($story) {
             try {
@@ -118,7 +117,8 @@ class StoryWZRepository extends EntityRepository
 
     public function findByRecord(Application $app, \record_adapter $Story)
     {
-        $dql = 'SELECT s FROM Phraseanet:StoryWZ s WHERE s.sbas_id = :sbas_id
+        $dql = 'SELECT s FROM Phraseanet:StoryWZ s
+                WHERE s.sbas_id = :sbas_id
                 AND s.record_id = :record_id';
 
         $query = $this->_em->createQuery($dql);
@@ -147,9 +147,7 @@ class StoryWZRepository extends EntityRepository
         $dql = 'SELECT s FROM Phraseanet:StoryWZ s WHERE s.sbas_id = :sbas_id';
 
         $query = $this->_em->createQuery($dql);
-        $query->setParameters([
-            'sbas_id' => $databox->get_sbas_id(),
-        ]);
+        $query->setParameters(['sbas_id' => $databox->get_sbas_id(),]);
 
         $stories = $query->getResult();
 

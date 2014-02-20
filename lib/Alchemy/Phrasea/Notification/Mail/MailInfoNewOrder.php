@@ -12,18 +12,19 @@
 namespace Alchemy\Phrasea\Notification\Mail;
 
 use Alchemy\Phrasea\Exception\LogicException;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class MailInfoNewOrder extends AbstractMail
 {
-    /** @var \User_Adapter */
+    /** @var User */
     private $user;
 
     /**
      * Set the user that initiates the order
      *
-     * @param \User_Adapter $user
+     * @param User $user
      */
-    public function setUser(\User_Adapter $user)
+    public function setUser(User $user)
     {
         $this->user = $user;
     }
@@ -41,11 +42,11 @@ class MailInfoNewOrder extends AbstractMail
      */
     public function getMessage()
     {
-        if (!$this->user instanceof \User_Adapter) {
+        if (!$this->user instanceof User) {
             throw new LogicException('You must set a user before calling getMessage()');
         }
 
-        return $this->app->trans('%user% has ordered documents', ['%user%' => $this->user->get_display_name()]);
+        return $this->app->trans('%user% has ordered documents', ['%user%' => $this->user->getDisplayName()]);
     }
 
     /**

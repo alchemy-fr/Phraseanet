@@ -12,6 +12,7 @@
 use Alchemy\Phrasea\Application;
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class collection implements cache_cacheableInterface
 {
@@ -557,7 +558,7 @@ class collection implements cache_cacheableInterface
         return $ord['ord'] ?: 1;
     }
 
-    public static function create(Application $app, databox $databox, appbox $appbox, $name, User_Adapter $user = null)
+    public static function create(Application $app, databox $databox, appbox $appbox, $name, User $user = null)
     {
         $sbas_id = $databox->get_sbas_id();
         $connbas = $databox->get_connection();
@@ -613,7 +614,7 @@ class collection implements cache_cacheableInterface
         return $collection;
     }
 
-    public function set_admin($base_id, user_adapter $user)
+    public function set_admin($base_id, User $user)
     {
 
         $rights = [
@@ -641,7 +642,7 @@ class collection implements cache_cacheableInterface
         return true;
     }
 
-    public static function mount_collection(Application $app, databox $databox, $coll_id, User_Adapter $user)
+    public static function mount_collection(Application $app, databox $databox, $coll_id, User $user)
     {
 
         $sql = "INSERT INTO bas (base_id, active, server_coll_id, sbas_id, aliases, ord)

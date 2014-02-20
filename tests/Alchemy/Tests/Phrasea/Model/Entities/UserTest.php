@@ -7,6 +7,7 @@ use Alchemy\Phrasea\Model\Entities\User;
 
 class UserTest extends \PhraseanetTestCase
 {
+    /** @var User */
     private $user;
 
     public function setUp()
@@ -83,15 +84,18 @@ class UserTest extends \PhraseanetTestCase
         $this->user->setFirstName('firstname');
         $this->user->setLastName('lastname');
         $this->user->setEmail('email@email.com');
-        $this->assertEquals($this->user->getDisplayName(self::$DI['app']['translator']), 'firstname lastname');
+        $this->assertEquals($this->user->getDisplayName(), 'firstname lastname');
         $this->user->setLastName('');
-        $this->assertEquals($this->user->getDisplayName(self::$DI['app']['translator']), 'firstname');
+        $this->assertEquals($this->user->getDisplayName(), 'firstname');
         $this->user->setFirstName('');
-        $this->assertEquals($this->user->getDisplayName(self::$DI['app']['translator']), 'email@email.com');
+        $this->assertEquals($this->user->getDisplayName(), 'email@email.com');
         $this->user->setEmail(null);
-        $this->assertEquals($this->user->getDisplayName(self::$DI['app']['translator']), 'Unnamed user');
+        $this->assertEquals($this->user->getDisplayName(), 'login');
         $this->user->setLastName('lastname');
-        $this->assertEquals($this->user->getDisplayName(self::$DI['app']['translator']), 'lastname');
+        $this->assertEquals($this->user->getDisplayName(), 'lastname');
+        $this->user->setLastName(null);
+        $this->user->setLogin(null);
+        $this->assertEquals($this->user->getDisplayName(), 'Unnamed user');
     }
 
     public function testIsTemplate()
@@ -137,7 +141,7 @@ class UserTest extends \PhraseanetTestCase
         return [
             [false],
             [''],
-            [1],
+            [4],
             ['madame']
         ];
     }

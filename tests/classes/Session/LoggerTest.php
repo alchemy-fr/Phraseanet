@@ -39,7 +39,7 @@ class Session_LoggerTest extends \PhraseanetTestCase
             WHERE sit_session = :ses_id AND usrid = :usr_id AND site = :site';
         $params = [
             ':ses_id' => self::$DI['app']['session']->get('session_id')
-            , ':usr_id' => self::$DI['app']['authentication']->getUser()->get_id()
+            , ':usr_id' => self::$DI['app']['authentication']->getUser()->getId()
             , ':site'   => self::$DI['app']['conf']->get(['main', 'key'])
         ];
 
@@ -50,7 +50,7 @@ class Session_LoggerTest extends \PhraseanetTestCase
         $this->assertEquals($this->object->get_id(), $row['id']);
         $log_id = $this->object->get_id();
         $ses_id = self::$DI['app']['session']->get('session_id');
-        $usr_id = self::$DI['app']['authentication']->getUser()->get_id();
+        $usr_id = self::$DI['app']['authentication']->getUser()->getId();
 
         $this->logout(self::$DI['app']);
 

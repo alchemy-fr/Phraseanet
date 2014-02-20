@@ -42,16 +42,14 @@ class ReceiverTest extends \PhraseanetTestCase
      */
     public function testFromUser()
     {
-        $user = $this->getMockBuilder('\User_Adapter')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $user = $this->createUserMock();
 
         $user->expects($this->any())
-            ->method('get_display_name')
+            ->method('getDisplayName')
             ->will($this->returnValue($this->name));
 
         $user->expects($this->any())
-            ->method('get_email')
+            ->method('getEmail')
             ->will($this->returnValue($this->email));
 
         $object = Receiver::fromUser($user);
@@ -64,16 +62,14 @@ class ReceiverTest extends \PhraseanetTestCase
      */
     public function testFromUserFailed()
     {
-        $user = $this->getMockBuilder('\User_Adapter')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $user = $this->createUserMock();
 
         $user->expects($this->any())
-            ->method('get_display_name')
+            ->method('getDisplayName')
             ->will($this->returnValue($this->name));
 
         $user->expects($this->any())
-            ->method('get_email')
+            ->method('getEmail')
             ->will($this->returnValue('wrong user'));
 
         try {

@@ -15,7 +15,7 @@ class NewEmailTest extends \PhraseanetTestCase
     public function testARegisteredAddressIsAlreadyRegistered()
     {
         $constraint = new NewEmail(self::$DI['app']);
-        $this->assertTrue($constraint->isAlreadyRegistered(self::$DI['user']->get_email()));
+        $this->assertTrue($constraint->isAlreadyRegistered(self::$DI['user']->getEmail()));
     }
 
     public function testNullIsNotAlreadyRegistered()

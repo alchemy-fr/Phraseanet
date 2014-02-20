@@ -12,6 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Version as PhraseaVersion;
 use vierbergenlars\SemVer\version;
+use Alchemy\Phrasea\Model\Entities\User;
 
 abstract class base implements cache_cacheableInterface
 {
@@ -141,19 +142,6 @@ abstract class base implements cache_cacheableInterface
     public function get_connection()
     {
         return $this->connection;
-    }
-
-    /**
-     * Replaces the connection
-     *
-     * @param  \connection_pdo $connection
-     * @return \base
-     */
-    public function set_connection(\connection_pdo $connection)
-    {
-        $this->connection = $connection;
-
-        return $this;
     }
 
     public function get_cache()
@@ -830,12 +818,27 @@ abstract class base implements cache_cacheableInterface
         $success = true;
 
         foreach ($list_patches as $patch) {
+            // Gets doctrine migrations required for current patch
             foreach ($patch->getDoctrineMigrations() as $doctrineVersion) {
                 $version = $app['doctrine-migration.configuration']->getVersion($doctrineVersion);
-                $version->getMigration()->setEntityManager($app['EM']);
-                if (false === $version->isMigrated()) {
-                    $version->execute('up');
+                // Skip if already migrated
+                if ($version->isMigrated()) {
+                    continue;
                 }
+
+                $migration = $version->getMigration();
+
+                // Inject entity manager
+                $migration->setEntityManager($app['EM']);
+
+                // Execute migration if not marked as migrated and not already applied by an older patch
+                if (!$migration->isAlreadyApplied()) {
+                    $version->execute('up');
+                    continue;
+                }
+
+                // Or mark it as migrated
+                $version->markMigrated();
             }
 
             if (false === $patch->apply($this, $app)) {

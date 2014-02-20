@@ -338,7 +338,7 @@ class record_preview extends record_adapter
 
         if (! $report) {
             $sql .= ' AND ((l.usrid = :usr_id AND l.site= :site) OR action="add")';
-            $params[':usr_id'] = $this->app['authentication']->getUser()->get_id();
+            $params[':usr_id'] = $this->app['authentication']->getUser()->getId();
             $params[':site'] = $this->app['conf']->get(['main', 'key']);
         }
 
@@ -366,19 +366,11 @@ class record_preview extends record_adapter
                 $tab[$hour][$site][$action] = [];
 
             if ( ! isset($tab[$hour][$site][$action][$row['usr_id']])) {
-                $user = null;
-
-                try {
-                    $user = \User_Adapter::getInstance($row['usr_id'], $this->app);
-                } catch (\Exception $e) {
-
-                }
-
                 $tab[$hour][$site][$action][$row['usr_id']] =
                     [
                         'final' => []
                         , 'comment' => []
-                        , 'user' => $user
+                        , 'user' => $this->app['manipulator.user']->getRepository()->find($row['usr_id'])
                 ];
             }
 

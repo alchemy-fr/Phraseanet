@@ -18,29 +18,38 @@ class collectionTest extends \PhraseanetAuthenticatedTestCase
     {
         $application = self::$DI['app'];
 
-        $found = false;
-        foreach ($application['phraseanet.appbox']->get_databoxes() as $databox) {
-            $found = true;
-            break;
+        if (!self::$object) {
+            if (0 === count($databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes())) {
+                $this->fail('No databox found for collection test');
+            }
+
+            $databox = array_shift($databoxes);
+
+            self::$object = collection::create(
+                self::$DI['app'],
+                $databox,
+                self::$DI['app']['phraseanet.appbox'],
+                'test_collection',
+                self::$DI['user']
+            );
+
+            self::$objectDisable = collection::create(
+                self::$DI['app'],
+                $databox,
+                self::$DI['app']['phraseanet.appbox'],
+                'test_collection',
+                self::$DI['user']
+            );
+
+            self::$objectDisable->disable(self::$DI['app']['phraseanet.appbox']);
         }
-
-        if ( ! $found)
-            self::fail('No databox found for collection test');
-
-        self::$object = collection::create(self::$DI['app'], $databox, $application['phraseanet.appbox'], 'test_collection', self::$DI['user']);
-
-        if ( ! self::$object instanceof collection)
-            self::fail('Unable to create collection');
-
-        self::$objectDisable = collection::create(self::$DI['app'], $databox, $application['phraseanet.appbox'], 'test_collection', self::$DI['user']);
-        self::$objectDisable->disable(self::$DI['app']['phraseanet.appbox']);
-        if ( ! self::$objectDisable instanceof collection)
-            self::fail('Unable to create disable collection');
     }
 
     public static function tearDownAfterClass()
     {
-        self::$object->delete();
+        if (self::$object instanceof \collection) {
+            self::$object->delete();
+        }
         self::$object = self::$objectDisable = null;
         parent::tearDownAfterClass();
     }

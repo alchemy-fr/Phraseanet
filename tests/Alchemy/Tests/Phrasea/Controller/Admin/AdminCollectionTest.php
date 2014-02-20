@@ -269,7 +269,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->setAdmin(true);
 
         self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/order/admins/', [
-            'admins' => [self::$DI['user_alt1']->get_id()]
+            'admins' => [self::$DI['user_alt1']->getId()]
         ]);
 
         $this->checkRedirection(self::$DI['client']->getResponse(), '/admin/collection/' . self::$DI['collection']->get_base_id() . '/?success=1');

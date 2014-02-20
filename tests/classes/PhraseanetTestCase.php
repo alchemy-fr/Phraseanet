@@ -3,7 +3,6 @@
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
-use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Model\Entities\User;
 use Monolog\Logger;
@@ -13,8 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Routing\RequestContext;
-
 use Alchemy\Tests\Tools\TranslatorMockTrait;
+use Alchemy\Phrasea\Authentication\ACLProvider;
 use Guzzle\Http\Client as Guzzle;
 
 abstract class PhraseanetTestCase extends WebTestCase
@@ -95,22 +94,39 @@ abstract class PhraseanetTestCase extends WebTestCase
         });
 
         self::$DI['user'] = self::$DI->share(function ($DI) {
-            $user = User_Adapter::getInstance(self::$fixtureIds['user']['test_phpunit'], $DI['app']);
-            $user->purgePreferences();
+            return $DI['app']['manipulator.user']->getRepository()->find(self::$fixtureIds['user']['test_phpunit']);
+        });
 
-            return $user;
+        self::$DI['user_1'] = self::$DI->share(function ($DI) {
+            return $DI['app']['manipulator.user']->getRepository()->find(self::$fixtureIds['user']['user_1']);
+        });
+
+        self::$DI['user_2'] = self::$DI->share(function ($DI) {
+            return $DI['app']['manipulator.user']->getRepository()->find(self::$fixtureIds['user']['user_2']);
+        });
+
+        self::$DI['user_3'] = self::$DI->share(function ($DI) {
+            return $DI['app']['manipulator.user']->getRepository()->find(self::$fixtureIds['user']['user_3']);
+        });
+
+        self::$DI['user_guest'] = self::$DI->share(function ($DI) {
+            return $DI['app']['manipulator.user']->getRepository()->find(self::$fixtureIds['user']['user_guest']);
         });
 
         self::$DI['user_notAdmin'] = self::$DI->share(function ($DI) {
-            return User_Adapter::getInstance(self::$fixtureIds['user']['test_phpunit_not_admin'], $DI['app']);
+            return $DI['app']['manipulator.user']->getRepository()->find(self::$fixtureIds['user']['test_phpunit_not_admin']);
         });
 
         self::$DI['user_alt1'] = self::$DI->share(function ($DI) {
-            return User_Adapter::getInstance(self::$fixtureIds['user']['test_phpunit_alt1'], $DI['app']);
+            return $DI['app']['manipulator.user']->getRepository()->find(self::$fixtureIds['user']['test_phpunit_alt1']);
         });
 
         self::$DI['user_alt2'] = self::$DI->share(function ($DI) {
-            return User_Adapter::getInstance(self::$fixtureIds['user']['test_phpunit_alt2'], $DI['app']);
+            return $DI['app']['manipulator.user']->getRepository()->find(self::$fixtureIds['user']['test_phpunit_alt2']);
+        });
+
+        self::$DI['user_template'] = self::$DI->share(function ($DI) {
+            return $DI['app']['manipulator.user']->getRepository()->find(self::$fixtureIds['user']['user_template']);
         });
 
         self::$DI['oauth2-app-user'] = self::$DI->share(function ($DI) {
@@ -271,8 +287,6 @@ abstract class PhraseanetTestCase extends WebTestCase
             ->method('getSubscribedEvents')
             ->will($this->returnValue([]));
 
-        $app['translator'] = $this->createTranslatorMock();
-
         $app['EM'] = $app->share($app->extend('EM', function ($em) {
             $this->initializeSqliteDB();
 
@@ -298,7 +312,7 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     public function tearDown()
     {
-        \Alchemy\Phrasea\Authentication\ACLProvider::purge();
+        ACLProvider::purge();
         \collection::purge();
         \databox::purge();
         \caption_field::purge();
@@ -306,7 +320,6 @@ abstract class PhraseanetTestCase extends WebTestCase
         \databox_field::purge();
         \databox_status::purge();
         \thesaurus_xpath::purge();
-        \User_Adapter::purge();
 
         /**
          * Kris Wallsmith pro-tip
@@ -380,34 +393,38 @@ abstract class PhraseanetTestCase extends WebTestCase
         ]);
     }
 
-    protected static function resetUsersRights(Application $app, \User_Adapter $user)
+    protected static function resetUsersRights(Application $app, User $user)
     {
-        switch ($user->get_login()) {
-            case 'test_phpunit':
+        switch ($user->getId()) {
+            case self::$fixtureIds['user']['test_phpunit']:
                 self::giveRightsToUser($app, $user);
                 $app['acl']->get($user)->set_admin(true);
                 $app['acl']->get(self::$DI['user'])->revoke_access_from_bases([self::$DI['collection_no_access']->get_base_id()]);
                 $app['acl']->get(self::$DI['user'])->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000');
                 break;
-            case 'test_phpunit_not_admin':
-            case 'test_phpunit_alt2':
-            case 'test_phpunit_alt1':
-                self::giveRightsToUser(self::$DI['app'], $user);
+            case self::$fixtureIds['user']['user_1']:
+            case self::$fixtureIds['user']['user_2']:
+            case self::$fixtureIds['user']['user_3']:
+            case self::$fixtureIds['user']['test_phpunit_not_admin']:
+            case self::$fixtureIds['user']['test_phpunit_alt1']:
+            case self::$fixtureIds['user']['test_phpunit_alt2']:
+            case self::$fixtureIds['user']['user_template']:
+                self::giveRightsToUser($app, $user);
                 $app['acl']->get($user)->set_admin(false);
                 $app['acl']->get(self::$DI['user'])->revoke_access_from_bases([self::$DI['collection_no_access']->get_base_id()]);
                 $app['acl']->get(self::$DI['user'])->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000');
                 break;
             default:
-                throw new \InvalidArgumentException(sprintf('User %s not found', $user->get_login()));
+                throw new \InvalidArgumentException(sprintf('User %s not found', $user->getLogin()));
         }
     }
 
     /**
      * Gives Bases Rights to User.
      *
-     * @param \User_Adapter $user
+     * @param User $user
      */
-    public static function giveRightsToUser(Application $app, \User_Adapter $user, $base_ids = null)
+    public static function giveRightsToUser(Application $app, User $user, $base_ids = null)
     {
         $app['acl']->get($user)->give_access_to_sbas(array_keys($app['phraseanet.appbox']->get_databoxes()));
 
@@ -498,17 +515,17 @@ abstract class PhraseanetTestCase extends WebTestCase
     /**
      * Authenticates self::['user'] against application.
      *
-     * @param Application  $app
-     * @param User_Adapter $user
+     * @param Application $app
+     * @param User        $user
      */
     protected function authenticate(Application $app, $user = null)
     {
         $user = $user ?: self::$DI['user'];
 
         $app['session']->clear();
-        $app['session']->set('usr_id', $user->get_id());
+        $app['session']->set('usr_id', self::$DI['user']->getId());
         $session = new Session();
-        $session->setUsrId($user->get_id());
+        $session->setUser(self::$DI['user']);
         $session->setUserAgent('');
         self::$DI['app']['EM']->persist($session);
         self::$DI['app']['EM']->flush();
@@ -561,6 +578,26 @@ abstract class PhraseanetTestCase extends WebTestCase
             }));
     }
 
+    protected function mockUserNotificationSettings($notificationName, $returnValue = true)
+    {
+        if (false === self::$DI['app']['settings'] instanceof \PHPUnit_Framework_MockObject_MockObject) {
+            self::$DI['app']['settings'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\DisplaySettingService')
+                ->disableOriginalConstructor()
+                ->getMock();
+        }
+
+        self::$DI['app']['settings']
+            ->expects($this->any())
+            ->method('getUserNotificationSetting')
+            ->with(
+                $this->isInstanceOf('Alchemy\Phrasea\Model\Entities\User'),
+                $this->equalTo($notificationName)
+            )
+            ->will($this->returnValue($returnValue));
+
+        self::$DI['app']['setting'] = 'toto';
+    }
+
     public function createRandomMock()
     {
         return $this->getMockBuilder('\random')
@@ -574,5 +611,16 @@ abstract class PhraseanetTestCase extends WebTestCase
         return $this->getMockBuilder('appbox')
             ->disableOriginalConstructor()
             ->getMock();
+    }
+
+    public function createUserMock()
+    {
+        return $this->getMock('Alchemy\Phrasea\Model\Entities\User');
+    }
+
+    public function removeUser(Application $app, User $user)
+    {
+        $app['EM']->remove($user);
+        $app['EM']->flush();
     }
 }

@@ -342,7 +342,7 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
     {
         return self::$DI['app']['tokens']->getUrlToken(
             \random::TYPE_DOWNLOAD,
-            self::$DI['user']->get_id(),
+            self::$DI['user']->getId(),
             new \DateTime('+10 seconds'), // Token lifetime
             serialize($datas)
         );

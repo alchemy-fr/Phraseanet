@@ -38,6 +38,10 @@ class PhraseanetServiceProvider implements ServiceProviderInterface
         $app['acl'] = $app->share(function (SilexApplication $app) {
             return new ACLProvider($app);
         });
+
+        $app['phraseanet.appbox-register'] = $app->share(function ($app) {
+            return new \appbox_register($app['phraseanet.appbox']);
+        });
     }
 
     public function boot(SilexApplication $app)

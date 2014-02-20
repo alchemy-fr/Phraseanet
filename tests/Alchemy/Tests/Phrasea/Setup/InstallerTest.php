@@ -60,9 +60,7 @@ class InstallerTest extends \PhraseanetTestCase
         $dataPath = __DIR__ . '/../../../../../datas/';
 
         $installer = new Installer($app);
-        $installer->install('admin@example.com', 'sdfsdsd', $abConn, 'http://local.phrasea.test.installer/', $dataPath, $dbConn, $template);
-
-        \User_Adapter::unsetInstances();
+        $installer->install(uniqid('admin') . '@example.com', 'sdfsdsd', $abConn, 'http://local.phrasea.test.installer/', $dataPath, $dbConn, $template);
 
         $this->assertTrue($app['configuration.store']->isSetup());
         $this->assertTrue($app['phraseanet.configuration-tester']->isUpToDate());

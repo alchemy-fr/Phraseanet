@@ -27,9 +27,12 @@ class AggregateToken
     private $id;
 
     /**
-     * @ORM\Column(type="integer", name="usr_id")
-     */
-    private $usrId;
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
+     *
+     * @return User
+     **/
+    private $user;
 
     /**
      * @ORM\Column(type="string", length=12, nullable=true)
@@ -47,26 +50,23 @@ class AggregateToken
     }
 
     /**
-     * Set usr_id
+     * @param User $user
      *
-     * @param  integer        $usrId
      * @return AggregateToken
      */
-    public function setUsrId($usrId)
+    public function setUser(User $user)
     {
-        $this->usrId = $usrId;
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get usr_id
-     *
-     * @return integer
+     * @return User
      */
-    public function getUsrId()
+    public function getUser()
     {
-        return $this->usrId;
+        return $this->user;
     }
 
     /**

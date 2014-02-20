@@ -86,10 +86,10 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
 
         $mailed = false;
 
-        try {
-            $user_from = User_Adapter::getInstance($params['from'], $this->app);
-            $user_to = User_Adapter::getInstance($params['to'], $this->app);
-        } catch (\Exception $e) {
+        $user_from = $this->app['manipulator.user']->getRepository()->find($params['from']);
+        $user_to = $this->app['manipulator.user']->getRepository()->find($params['to']);
+
+        if (null === $user_from || null === $user_to) {
             return false;
         }
 
@@ -136,13 +136,11 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
         $from = (string) $sx->from;
         $ssel_id = (string) $sx->ssel_id;
 
-        try {
-            User_Adapter::getInstance($from, $this->app);
-        } catch (\Exception $e) {
+        if (null === $user = $this->app['manipulator.user']->getRepository()->find($from)) {
             return [];
         }
 
-        $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
+        $sender = $user->getDisplayName();
 
         try {
             $basket = $this->app['converter.basket']->convert($ssel_id);

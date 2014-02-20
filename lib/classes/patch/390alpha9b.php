@@ -12,10 +12,10 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Task;
 
-class patch_390alpha10a implements patchInterface
+class patch_390alpha9b implements patchInterface
 {
     /** @var string */
-    private $release = '3.9.0-alpha.10';
+    private $release = '3.9.0-alpha.9b';
 
     /** @var array */
     private $concern = [base::APPLICATION_BOX];
@@ -33,7 +33,7 @@ class patch_390alpha10a implements patchInterface
      */
     public function require_all_upgrades()
     {
-        return false;
+        return true;
     }
 
     /**

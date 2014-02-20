@@ -434,22 +434,23 @@ class module_report_nav extends module_report
 
             $sql = "
                 SELECT
-                    usr_login as identifiant,
-                    usr_nom as nom,
-                    usr_mail as mail,
-                    adresse, tel
-                FROM usr
+                    login as identifiant,
+                    last_name as nom,
+                    email as mail,
+                    address AS adresse,
+                    phone AS tel
+                FROM Users
                 WHERE $on = :value " . (('' !== $filter_id_apbox) ? "AND (" . $filter_id_apbox . ")" : '');
         } else {
             $sql = '
                 SELECT
-                    usr_login AS identifiant,
-                    usr_nom    AS nom,
-                    usr_mail  AS mail,
-                    adresse,
-                    tel
-                 FROM usr
-                 WHERE (usr_id = :value)';
+                    login AS identifiant,
+                    last_name AS nom,
+                    email AS mail,
+                    address AS adresse,
+                    phone AS tel
+                 FROM Users
+                 WHERE (id = :value)';
         }
 
         $params2 = [':value' => $val];

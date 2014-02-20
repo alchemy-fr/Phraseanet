@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
+use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
@@ -1131,9 +1132,10 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     {
         $connbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
 
-        $sql = 'UPDATE record SET status = :status WHERE record_id= :record_id';
+        $sql = 'UPDATE record SET status = 0b' . $status . '
+            WHERE record_id= :record_id';
         $stmt = $connbas->prepare($sql);
-        $stmt->execute([':record_id' => $this->record_id, ':status' => bindec($status)]);
+        $stmt->execute([':record_id' => $this->record_id]);
         $stmt->closeCursor();
 
         $sql = 'REPLACE INTO status (id, record_id, name, value) VALUES (null, :record_id, :name, :value)';
@@ -1610,7 +1612,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      * @todo de meme avec stories
      * @return Array
      */
-    public function get_container_baskets(EntityManager $em, User_Adapter $user)
+    public function get_container_baskets(EntityManager $em, User $user)
     {
         return $em
                 ->getRepository('Phraseanet:Basket')
@@ -1677,7 +1679,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             $params = [
                 ':site'   => $this->app['conf']->get(['main', 'key']),
-                ':usr_id'    => $this->app['authentication']->getUser()->get_id(),
+                ':usr_id'    => $this->app['authentication']->getUser()->getId(),
                 ':record_id' => $this->get_record_id(),
             ];
         } else {
@@ -1726,14 +1728,12 @@ class record_adapter implements record_Interface, cache_cacheableInterface
               ON (g.rid_parent = r.record_id)
             WHERE rid_child = :record_id';
 
-        $params = [
-            ':site'   => $this->app['conf']->get(['main', 'key'])
-            , ':usr_id'    => $this->app['authentication']->getUser()->get_id()
-            , ':record_id' => $this->get_record_id()
-        ];
-
         $stmt = $this->get_databox()->get_connection()->prepare($sql);
-        $stmt->execute($params);
+        $stmt->execute([
+            ':site'      => $this->app['conf']->get(['main', 'key']),
+            ':usr_id'    => $this->app['authentication']->getUser()->getId(),
+            ':record_id' => $this->get_record_id(),
+        ]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 

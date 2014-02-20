@@ -155,7 +155,7 @@ class BridgeJob extends AbstractJob
             case \Bridge_Element::STATUS_ERROR:
 
                 $params = [
-                    'usr_id'     => $account->get_user()->get_id(),
+                    'usr_id'     => $account->get_user()->getId(),
                     'reason'     => $error_message,
                     'account_id' => $account->get_id(),
                     'sbas_id'    => $element->get_record()->get_sbas_id(),

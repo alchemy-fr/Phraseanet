@@ -59,7 +59,7 @@ class patch_381alpha3a implements patchInterface
         $propSql = $propArgs = [];
         $n = 0;
 
-        foreach (\User_Adapter::$def_values as $prop => $value) {
+        foreach ($app['settings']->getUsersSettings() as $prop => $value) {
             if ('start_page_query' === $prop) {
                 continue;
             }

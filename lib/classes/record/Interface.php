@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Doctrine\ORM\EntityManager;
 
@@ -95,5 +96,5 @@ interface record_Interface
 
     public function log_view($log_id, $referrer, $gv_sit);
 
-    public function get_container_baskets(EntityManager $em, User_Adapter $user);
+    public function get_container_baskets(EntityManager $em, User $user);
 }

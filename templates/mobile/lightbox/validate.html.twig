@@ -4,7 +4,7 @@
 {% block javascript %}
   <script type="text/javascript">
     {% if basket.getValidation() %}
-    var releasable = {% if basket.getValidation().getParticipant(app['authentication'].getUser(), app).isReleasable() %}"{{ 'Do you want to send your report ?' | trans }}"{% else %}false{% endif %}
+    var releasable = {% if basket.getValidation().getParticipant(app['authentication'].getUser()).isReleasable() %}"{{ 'Do you want to send your report ?' | trans }}"{% else %}false{% endif %}
     {% endif %}
   </script>
   <script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/lightbox/jquery.validator.mobile.js' }) }}"></script>
@@ -30,8 +30,8 @@
     <ul class="image_set">
     {% for basket_element in basket.getElements() %}
       <li class="image_box" id="sselcontid_{{basket_element.getId()}}">
-        {% if basket_element.getBasket().getValidation() and basket_element.getBasket().getValidation().getParticipant(app['authentication'].getUser(), app).getCanAgree() %}
-          <div class="valid_choice valid_choice_{{basket_element.getId()}} {% if basket_element.getUserValidationDatas(app['authentication'].getUser(), app).getAgreement() == true %}agree{% elseif basket_element.getUserValidationDatas(app['authentication'].getUser(), app).getAgreement() == false and basket_element.getUserValidationDatas(app['authentication'].getUser(), app).getAgreement() is not null %}disagree{% endif %}">
+        {% if basket_element.getBasket().getValidation() and basket_element.getBasket().getValidation().getParticipant(app['authentication'].getUser()).getCanAgree() %}
+          <div class="valid_choice valid_choice_{{basket_element.getId()}} {% if basket_element.getUserValidationDatas(app['authentication'].getUser()).getAgreement() == true %}agree{% elseif basket_element.getUserValidationDatas(app['authentication'].getUser()).getAgreement() == false and basket_element.getUserValidationDatas(app['authentication'].getUser()).getAgreement() is not null %}disagree{% endif %}">
           </div>
         {% endif %}
         <a href="{{ path('lightbox_ajax_load_basketelement', { 'sselcont_id' : basket_element.getId() }) }}">
@@ -43,7 +43,7 @@
     </ul>
   </div>
     <div data-role="footer">
-        {% if basket.getValidation() and basket.getValidation().getParticipant(app['authentication'].getUser(), app).getCanAgree() %}
+        {% if basket.getValidation() and basket.getValidation().getParticipant(app['authentication'].getUser()).getCanAgree() %}
             <button class="confirm_report" style="width:100%;" title="{{ 'validation::envoyer mon rapport' | trans }}">
                 {{ 'validation::envoyer mon rapport' | trans }}
                 <img src="/skins/icons/loader1F1E1B.gif" style="visibility:hidden;" class="loader"/>

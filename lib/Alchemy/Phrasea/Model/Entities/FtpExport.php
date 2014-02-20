@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Model\Entities;
 
-use Alchemy\Phrasea\Application;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -90,9 +89,12 @@ class FtpExport
     private $textMailReceiver;
 
     /**
-     * @ORM\Column(type="integer", name="usr_id")
-     */
-    private $usrId;
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
+     *
+     * @return User
+     **/
+    private $user;
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -139,6 +141,26 @@ class FtpExport
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return FtpExport
+     */
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 
     /**
@@ -439,54 +461,6 @@ class FtpExport
     public function getTextMailReceiver()
     {
         return $this->textMailReceiver;
-    }
-
-    /**
-     * Set usrId
-     *
-     * @param integer $usrId
-     *
-     * @return FtpExport
-     */
-    public function setUsrId($usrId)
-    {
-        $this->usrId = $usrId;
-
-        return $this;
-    }
-
-    /**
-     * Get usrId
-     *
-     * @return integer
-     */
-    public function getUsrId()
-    {
-        return $this->usrId;
-    }
-
-    /**
-     * Get user
-     *
-     * @return \User_Adapter
-     */
-    public function getUser(Application $app)
-    {
-        return \User_Adapter::getInstance($this->getUsr_id(), $app);
-    }
-
-    /**
-     * Set user
-     *
-     * @param \User_Adapter $user
-     *
-     * @return FtpExport
-     */
-    public function setUser(\User_Adapter $user)
-    {
-        $this->setUsrId($user->get_id());
-
-        return $this;
     }
 
     /**

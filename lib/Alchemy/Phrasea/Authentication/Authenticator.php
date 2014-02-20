@@ -13,11 +13,11 @@ namespace Alchemy\Phrasea\Authentication;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Model\Entities\User;
 use Browser;
 use Doctrine\ORM\EntityManager;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Authenticator
 {
@@ -43,7 +43,7 @@ class Authenticator
         return $this->user;
     }
 
-    public function setUser(\User_Adapter $user = null)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 
@@ -53,13 +53,13 @@ class Authenticator
     /**
      * Open user session
      *
-     * @param \User_Adapter $user
+     * @param User $user
      *
      * @return Session
      *
      * @throws \Exception_InternalServerError
      */
-    public function openAccount(\User_Adapter $user)
+    public function openAccount(User $user)
     {
         $this->session->remove('usr_id');
         $this->session->remove('session_id');
@@ -69,7 +69,7 @@ class Authenticator
             ->setBrowserVersion($this->browser->getVersion())
             ->setPlatform($this->browser->getPlatform())
             ->setUserAgent($this->browser->getUserAgent())
-            ->setUsrId($user->get_id());
+            ->setUser($user);
 
         $this->em->persist($session);
         $this->em->flush();
@@ -93,7 +93,7 @@ class Authenticator
             $rights[] = 'task-manager';
         }
 
-        $this->session->set('usr_id', $user->get_id());
+        $this->session->set('usr_id', $user->getId());
         $this->session->set('websockets_rights', $rights);
         $this->session->set('session_id', $session->getId());
     }
@@ -104,10 +104,8 @@ class Authenticator
             throw new RuntimeException('Unable to refresh the session, it does not exist anymore');
         }
 
-        try {
-            $user = \User_Adapter::getInstance($session->getUsrId(), $this->app);
-        } catch (NotFoundHttpException $e) {
-            throw new RuntimeException('Unable to refresh the session', $e->getCode(), $e);
+        if (null === $user = $session->getUser()) {
+            throw new RuntimeException('Unable to refresh the session');
         }
 
         $this->session->clear();
@@ -145,7 +143,7 @@ class Authenticator
     public function reinitUser()
     {
         if ($this->isAuthenticated()) {
-            $this->user = \User_Adapter::getInstance($this->session->get('usr_id'), $this->app);
+            $this->user = $this->app['manipulator.user']->getRepository()->find($this->session->get('usr_id'));
         } else {
             $this->user = null;
         }

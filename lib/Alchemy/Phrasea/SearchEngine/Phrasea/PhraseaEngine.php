@@ -194,8 +194,8 @@ class PhraseaEngine implements SearchEngineInterface
             throw new \RuntimeException('Phrasea currently support only authenticated queries');
         }
 
-        if (!phrasea_open_session($this->app['session']->get('phrasea_session_id'), $this->app['authentication']->getUser()->get_id())) {
-            if (!$ses_id = phrasea_create_session((string) $this->app['authentication']->getUser()->get_id())) {
+        if (!phrasea_open_session($this->app['session']->get('phrasea_session_id'), $this->app['authentication']->getUser()->getId())) {
+            if (!$ses_id = phrasea_create_session((string) $this->app['authentication']->getUser()->getId())) {
                 throw new \Exception_InternalServerError('Unable to create phrasea session');
             }
             $this->app['session']->set('phrasea_session_id', $ses_id);

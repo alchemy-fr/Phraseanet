@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Doctrine\ORM\Query;
 
 class patch_320alpha2a implements patchInterface
 {
@@ -56,20 +57,22 @@ class patch_320alpha2a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $sql = 'SELECT * FROM usr WHERE nonce IS NULL';
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $dql = 'SELECT u FROM Phraseanet:User u WHERE u.nonce IS NULL';
+        $q = $app['EM']->createQuery($dql);
+        $q->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true);
+        $users = $q->getResult();
 
-        $sql = 'UPDATE usr SET nonce = :nonce WHERE usr_id = :usr_id';
-        $stmt = $appbox->get_connection()->prepare($sql);
-        foreach ($rs as $row) {
-            $nonce = random::generatePassword(16);
-            $params = [':usr_id' => $row['usr_id'], ':nonce'  => $nonce];
-            $stmt->execute($params);
+        $n = 0;
+        foreach ($users as $user) {
+            $user->setNonce(random::generatePassword(16));
+            $app['EM']->persist($user);
+            $n++;
+            if ($n %100 === 0) {
+                $app['EM']->flush();
+            }
         }
-        $stmt->closeCursor();
+
+        $app['EM']->flush();
 
         $sql = 'SELECT task_id, `class` FROM task2';
         $stmt = $appbox->get_connection()->prepare($sql);

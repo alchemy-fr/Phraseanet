@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
+use Alchemy\Phrasea\Model\Entities\User;
 use Symfony\Component\Filesystem\Filesystem;
 
 class set_export extends set_abstract
@@ -53,9 +54,10 @@ class set_export extends set_abstract
         }
 
         if ($sstid != "") {
-            $Basket = $app['converter.basket']->convert($sstid);
-            $app['acl.basket']->hasAccess($Basket, $app['authentication']->getUser());
+            $repository = $app['EM']->getRepository('Phraseanet:Basket');
 
+            /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
+            $Basket = $repository->findUserBasket($sstid, $app['authentication']->getUser(), false);
             $this->exportName = str_replace([' ', '\\', '/'], '_', $Basket->getName()) . "_" . date("Y-n-d");
 
             foreach ($Basket->getElements() as $basket_element) {
@@ -228,34 +230,34 @@ class set_export extends set_abstract
             $lst_base_id = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base());
 
             if ($hasadminright) {
-                $sql = "SELECT usr.usr_id,usr_login,usr.usr_mail, FtpCredential.*
+                $sql = "SELECT Users.id AS usr_id ,Users.login AS usr_login ,Users.email AS usr_mail, FtpCredential.*
                   FROM (
-                    FtpCredential INNER JOIN usr ON (
-                        FtpCredential.active = 1 AND FtpCredential.usrId = usr.usr_id
+                    FtpCredential INNER JOIN Users ON (
+                        FtpCredential.active = 1 AND FtpCredential.user_id = Users.id
                     ) INNER JOIN basusr ON (
-                        usr.usr_id=basusr.usr_id
+                        Users.id=basusr.usr_id
                         AND (basusr.base_id=
                         '" . implode("' OR basusr.base_id='", $lst_base_id) . "'
                             )
                          )
                       )
-                  GROUP BY usr_id  ";
+                  GROUP BY Users.id  ";
                 $params = [];
             } elseif ($this->app['conf']->get(['registry', 'ftp', 'ftp-user-access'])) {
-                $sql = "SELECT usr.usr_id,usr_login,usr.usr_mail, FtpCredential.*
+                $sql = "SELECT Users.id AS usr_id ,Users.login AS usr_login ,Users.email AS usr_mail, FtpCredential.*
                   FROM (
-                    FtpCredential INNER JOIN usr ON (
-                        FtpCredential.active = 1 AND FtpCredential.usrId = usr.usr_id
+                    FtpCredential INNER JOIN Users ON (
+                        FtpCredential.active = 1 AND FtpCredential.id = Users.id
                     ) INNER JOIN basusr ON (
-                        usr.usr_id=basusr.usr_id
-                        AND usr.usr_id = :usr_id
+                        Users.id=basusr.usr_id
+                        AND Users.id = :usr_id
                         AND (basusr.base_id=
                         '" . implode("' OR basusr.base_id='", $lst_base_id) . "'
                           )
                         )
                       )
-                  GROUP BY usr_id  ";
-                $params = [':usr_id' => $app['authentication']->getUser()->get_id()];
+                  GROUP BY Users.id  ";
+                $params = [':usr_id' => $app['authentication']->getUser()->getId()];
             }
 
             $datas[] = [
@@ -269,7 +271,7 @@ class set_export extends set_abstract
                 'prefix_folder'     => 'Export_' . date("Y-m-d_H.i.s"),
                 'passive'           => false,
                 'max_retry'         => 5,
-                'sendermail'        => $app['authentication']->getUser()->get_email()
+                'sendermail'        => $app['authentication']->getUser()->getEmail()
             ];
 
             $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
@@ -293,7 +295,7 @@ class set_export extends set_abstract
                     'passive'           => !! $row['passive'],
                     'max_retry'         => $row['max_retry'],
                     'usr_mail'          => $row['usr_mail'],
-                    'sender_mail'       => $app['authentication']->getUser()->get_email()
+                    'sender_mail'       => $app['authentication']->getUser()->getEmail()
                 ];
             }
 
@@ -387,15 +389,15 @@ class set_export extends set_abstract
 
     /**
      *
-     * @param User_Adapter $user
-     * @param Filesystem   $filesystem
-     * @param Array        $subdefs
-     * @param boolean      $rename_title
-     * @param boolean      $includeBusinessFields
+     * @param User       $user
+     * @param Filesystem $filesystem
+     * @param Array      $subdefs
+     * @param boolean    $rename_title
+     * @param boolean    $includeBusinessFields
      *
      * @return Array
      */
-    public function prepare_export(User_Adapter $user, Filesystem $filesystem, Array $subdefs, $rename_title, $includeBusinessFields)
+    public function prepare_export(User $user, Filesystem $filesystem, Array $subdefs, $rename_title, $includeBusinessFields)
     {
         if (!is_array($subdefs)) {
             throw new Exception('No subdefs given');
@@ -629,7 +631,7 @@ class set_export extends set_abstract
 
             if (in_array('caption', $subdefs)) {
                 $caption_dir = $this->app['root.path'] . '/tmp/desc_tmp/'
-                    . time() . $this->app['authentication']->getUser()->get_id() . '/';
+                    . time() . $this->app['authentication']->getUser()->getId() . '/';
 
                 $filesystem->mkdir($caption_dir, 0750);
 
@@ -651,7 +653,7 @@ class set_export extends set_abstract
 
             if (in_array('caption-yaml', $subdefs)) {
                 $caption_dir = $this->app['root.path'] . '/tmp/desc_tmp/'
-                    . time() . $this->app['authentication']->getUser()->get_id() . '/';
+                    . time() . $this->app['authentication']->getUser()->getId() . '/';
 
                 $filesystem->mkdir($caption_dir, 0750);
 
@@ -808,7 +810,7 @@ class set_export extends set_abstract
                     $params = [
                         ':remain_dl' => $app['acl']->get($app['authentication']->getUser())->remaining_download($base_id)
                         , ':base_id'   => $base_id
-                        , ':usr_id'    => $app['acl']->get($app['authentication']->getUser())->get_id()
+                        , ':usr_id'    => $app['acl']->get($app['authentication']->getUser())->getId()
                     ];
 
                     $stmt->execute($params);

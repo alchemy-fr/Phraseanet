@@ -104,7 +104,7 @@ class Firewall
 
     public function requireNotGuest()
     {
-        if ($this->app['authentication']->getUser()->is_guest()) {
+        if ($this->app['authentication']->getUser()->isGuest()) {
             $this->app->abort(403, 'Guests do not have admin role');
         }
 

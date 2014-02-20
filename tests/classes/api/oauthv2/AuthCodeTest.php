@@ -1,3 +1,4 @@
+
 <?php
 
 class api_oauthv2_AuthCodeTest extends \PhraseanetTestCase

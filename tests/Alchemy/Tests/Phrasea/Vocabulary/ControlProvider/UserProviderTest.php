@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Vocabulary\ControlProvider;
 
 use Alchemy\Phrasea\Vocabulary\ControlProvider\UserProvider;
+use Doctrine\ORM\EntityManager;
 
 class UserProviderTest extends \PhraseanetTestCase
 {
@@ -14,7 +15,7 @@ class UserProviderTest extends \PhraseanetTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->object = new \Alchemy\Phrasea\Vocabulary\ControlProvider\UserProvider(self::$DI['app']);
+        $this->object = new UserProvider(self::$DI['app']);
     }
 
     /**
@@ -39,31 +40,42 @@ class UserProviderTest extends \PhraseanetTestCase
 
     public function testFind()
     {
-        $results = $this->object->find('BABE', self::$DI['user'], self::$DI['collection']->get_databox());
+        // mandatory until user rights are managed by doctrine
+        self::$DI['app']['EM'] = EntityManager::create(self::$DI['app']['conf']->get(['main', 'database']), self::$DI['app']['EM.config'], self::$DI['app']['EM.events-manager']);
+
+        $user = self::$DI['app']['manipulator.user']->createUser(uniqid('test'), 'a_password', uniqid('test').'@domain.fr');
+        self::giveRightsToUser(self::$DI['app'], $user);
+        $user->setFirstName('John');
+        $user->setLastName('Doe');
+        self::$DI['app']['EM']->persist($user);
+        self::$DI['app']['EM']->flush();
+
+        $results = $this->object->find('BABE', $user,  self::$DI['collection']->get_databox());
 
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
 
-        $results = $this->object->find(self::$DI['user']->get_email(), self::$DI['user'], self::$DI['collection']->get_databox());
+        $results = $this->object->find($user->getEmail(), $user, self::$DI['collection']->get_databox());
 
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
         $this->assertTrue($results->count() > 0);
 
-        $results = $this->object->find(self::$DI['user']->get_firstname(), self::$DI['user'], self::$DI['collection']->get_databox());
+        $results = $this->object->find($user->getFirstName(), $user,  self::$DI['collection']->get_databox());
 
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
         $this->assertTrue($results->count() > 0);
 
-        $results = $this->object->find(self::$DI['user']->get_lastname(), self::$DI['user'], self::$DI['collection']->get_databox());
+        $results = $this->object->find($user->getLastName(), $user,  self::$DI['collection']->get_databox());
 
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
         $this->assertTrue($results->count() > 0);
+        self::$DI['app']['manipulator.user']->delete($user);
     }
 
     public function testValidate()
     {
         $this->assertFalse($this->object->validate(-200));
         $this->assertFalse($this->object->validate('A'));
-        $this->assertTrue($this->object->validate(self::$DI['user']->get_id()));
+        $this->assertTrue($this->object->validate(self::$DI['user']->getId()));
     }
 
     public function testGetValue()
@@ -82,6 +94,6 @@ class UserProviderTest extends \PhraseanetTestCase
 
         }
 
-        $this->assertEquals(self::$DI['user']->get_display_name(), $this->object->getValue(self::$DI['user']->get_id()));
+        $this->assertEquals(self::$DI['user']->getDisplayName(), $this->object->getValue(self::$DI['user']->getId()));
     }
 }

@@ -25,7 +25,7 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
     public function testUpdSessionChangeUser()
     {
         $this->XMLHTTPRequest('POST', '/session/update/', [
-            'usr' => self::$DI['user_alt1']->get_id()
+            'usr' => self::$DI['user_alt1']->getId()
         ]);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $datas = json_decode(self::$DI['client']->getResponse()->getContent());
@@ -41,7 +41,7 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->authenticate(self::$DI['app']);
 
         $this->XMLHTTPRequest('POST', '/session/update/', [
-            'usr' => self::$DI['user']->get_id(),
+            'usr' => self::$DI['user']->getId(),
             'module' => 1
         ]);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
@@ -58,7 +58,7 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->authenticate(self::$DI['app']);
 
         $this->XMLHTTPRequest('POST', '/session/update/', [
-            'usr' => self::$DI['user']->get_id()
+            'usr' => self::$DI['user']->getId()
         ]);
 
         $datas = json_decode(self::$DI['client']->getResponse()->getContent());
@@ -91,9 +91,9 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
 
         $session = $this->getMock('Alchemy\Phrasea\Model\Entities\Session');
 
-        $session->expects($this->once())
-            ->method('getUsrId')
-            ->will($this->returnValue(self::$DI['app']['authentication']->getUser()->get_id()));
+        $session->expects($this->any())
+            ->method('getUser')
+            ->will($this->returnValue(self::$DI['app']['authentication']->getUser()));
 
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
@@ -125,9 +125,9 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
 
         $session = $this->getMock('Alchemy\Phrasea\Model\Entities\Session');
 
-        $session->expects($this->once())
-            ->method('getUsrId')
-            ->will($this->returnValue(self::$DI['app']['authentication']->getUser()->get_id() + 1));
+        $session->expects($this->any())
+            ->method('getUser')
+            ->will($this->returnValue(self::$DI['user_alt1']));
 
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()

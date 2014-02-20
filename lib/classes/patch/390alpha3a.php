@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\UserQuery;
 
-class patch_390alpha3a implements patchInterface
+class patch_390alpha3a extends patchAbstract
 {
     /** @var string */
     private $release = '3.9.0-alpha.3';
@@ -49,7 +49,7 @@ class patch_390alpha3a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return ['user-query'];
+        return ['user', 'user-query'];
     }
 
     /**
@@ -73,9 +73,13 @@ class patch_390alpha3a implements patchInterface
         $em = $app['EM'];
 
         foreach ($rs as $row) {
+            if (null === $user = $this->loadUser($app['EM'], $row['usr_id'])) {
+                continue;
+            }
+
             $userQuery = new UserQuery();
             $userQuery->setQuery($row['query']);
-            $userQuery->setUsrId($row['usr_id']);
+            $userQuery->setUser($user);
 
             $em->persist($userQuery);
 

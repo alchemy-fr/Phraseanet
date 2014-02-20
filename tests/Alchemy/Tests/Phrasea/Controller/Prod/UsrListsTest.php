@@ -168,7 +168,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $entry = self::$DI['app']['EM']->find('Phraseanet:UsrListEntry', 2);
         $list_id = $entry->getList()->getId();
-        $usr_id = $entry->getUser(self::$DI['app'])->get_id();
+        $usr_id = $entry->getUser(self::$DI['app'])->getId();
         $entry_id = $entry->getId();
 
         $route = '/prod/lists/list/' . $list_id . '/remove/' . $usr_id . '/';
@@ -200,7 +200,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $route = '/prod/lists/list/' . $list->getId() . '/add/';
 
-        self::$DI['client']->request('POST', $route, ['usr_ids' => [self::$DI['user_alt2']->get_id()]], [], ["HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"       => "application/json"]);
+        self::$DI['client']->request('POST', $route, ['usr_ids' => [self::$DI['user_alt2']->getId()]], [], ["HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"       => "application/json"]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -222,7 +222,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertEquals(1, $list->getOwners()->count());
 
-        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
+        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->getId() . '/';
 
         self::$DI['client']->request('POST', $route);
 
@@ -231,7 +231,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertBadResponse($response);
         $this->assertEquals('UTF-8', $response->getCharset());
 
-        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
+        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->getId() . '/';
 
         self::$DI['client']->request('POST', $route, ['role' => 'general']);
 
@@ -240,7 +240,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertBadResponse($response);
         $this->assertEquals('UTF-8', $response->getCharset());
 
-        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
+        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->getId() . '/';
 
         self::$DI['client']->request('POST', $route, ['role' => \Alchemy\Phrasea\Model\Entities\UsrListOwner::ROLE_ADMIN]);
 
@@ -269,7 +269,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertEquals(1, $list->getOwners()->count());
 
-        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
+        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->getId() . '/';
 
         self::$DI['client']->request('POST', $route, ['role' => \Alchemy\Phrasea\Model\Entities\UsrListOwner::ROLE_ADMIN]);
 
@@ -291,7 +291,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertEquals(2, $list->getOwners()->count());
 
-        $route = '/prod/lists/list/' . $list->getId() . '/unshare/' . self::$DI['user_alt1']->get_id() . '/';
+        $route = '/prod/lists/list/' . $list->getId() . '/unshare/' . self::$DI['user_alt1']->getId() . '/';
 
         self::$DI['client']->request('POST', $route);
 
@@ -319,7 +319,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertEquals(1, $list->getOwners()->count());
 
-        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
+        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->getId() . '/';
 
         self::$DI['client']->request('POST', $route, ['role' => \Alchemy\Phrasea\Model\Entities\UsrListOwner::ROLE_ADMIN]);
 
@@ -335,7 +335,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertTrue($datas['success']);
 
-        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user']->get_id() . '/';
+        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user']->getId() . '/';
 
         self::$DI['client']->request('POST', $route, ['role' => \Alchemy\Phrasea\Model\Entities\UsrListOwner::ROLE_USER]);
 
@@ -351,7 +351,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertFalse($datas['success']);
 
-        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
+        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->getId() . '/';
 
         self::$DI['client']->request('POST', $route, ['role' => \Alchemy\Phrasea\Model\Entities\UsrListOwner::ROLE_USER]);
 
@@ -373,7 +373,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertEquals(2, $list->getOwners()->count());
 
-        $route = '/prod/lists/list/' . $list->getId() . '/unshare/' . self::$DI['user_alt1']->get_id() . '/';
+        $route = '/prod/lists/list/' . $list->getId() . '/unshare/' . self::$DI['user_alt1']->getId() . '/';
 
         self::$DI['client']->request('POST', $route);
 

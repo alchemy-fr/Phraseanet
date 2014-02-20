@@ -84,4 +84,34 @@ abstract class AbstractMigration extends BaseMigration
      * Execute downgrade SQL.
      */
     abstract public function doDownSql(Schema $schema);
+
+    /**
+     * Tells whether the patch can be executed or not.
+     *
+     * @returns Boolean
+     */
+    public function isAlreadyApplied()
+    {
+        return false;
+    }
+
+    /**
+     * Tells whether the table exists or not.
+     *
+     * @param $tableName
+     *
+     * @returns Boolean
+     */
+    protected function tableExists($tableName)
+    {
+        $rs = $this->getEntityManager()->getConnection()->fetchAll('SHOW TABLE STATUS');
+
+        foreach ($rs as $row) {
+            if ($tableName === $row['Name']) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

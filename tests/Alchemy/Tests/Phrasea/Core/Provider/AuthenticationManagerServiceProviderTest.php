@@ -2,11 +2,9 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
-use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
-use Silex\Application;
 
 /**
  * @covers Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider
@@ -92,22 +90,19 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
         $app['EM'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
-        $app['recaptcha'] = $this->getMockBuilder('Neutron\ReCaptcha\ReCaptcha')
+        self::$DI['app']['recaptcha'] = $this->getMockBuilder('Neutron\ReCaptcha\ReCaptcha')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $manager = $app['auth.native.failure-manager'];
+        $manager = self::$DI['app']['auth.native.failure-manager'];
         $this->assertEquals(42, $manager->getTrials());
     }
 
     public function testFailureAccountCreator()
     {
-        $app = new PhraseaApplication();
-        $app->register(new ConfigurationServiceProvider());
-
-        $app['conf']->set(['authentication', 'auto-create'], ['templates' => []]);
-
-        $app['authentication.providers.account-creator'];
+        self::$DI['app']->register(new ConfigurationServiceProvider());
+        self::$DI['app']['conf']->set(['authentication', 'auto-create'], ['templates' => []]);
+        self::$DI['app']['authentication.providers.account-creator'];
     }
 
     public function testAuthNativeWithCaptchaEnabled()
@@ -152,19 +147,16 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 
     public function testAccountCreator()
     {
-        $app = new PhraseaApplication();
+        $template1 = $user = self::$DI['app']['manipulator.user']->createTemplate('template1', self::$DI['user']);
+        $template2 = $user = self::$DI['app']['manipulator.user']->createTemplate('template2', self::$DI['user']);
 
-        $random = $app['tokens'];
-        $template1 = \User_Adapter::create(self::$DI['app'], 'template' . $random->generatePassword(), $random->generatePassword(), null, false);
-        $template1->set_template(self::$DI['user']);
-        $template2 = \User_Adapter::create(self::$DI['app'], 'template' . $random->generatePassword(), $random->generatePassword(), null, false);
-        $template2->set_template(self::$DI['user']);
+        self::$DI['app']['conf']->set(['authentication', 'auto-create'], ['templates' => [$template1->getId(), $template2->getId()]]);
 
-        $app['conf']->set(['authentication', 'auto-create'], ['templates' => [$template1->get_id(), $template2->get_login()]]);
+        $this->assertEquals([$template1->getLogin(), $template2->getLogin()], array_map(function ($u) {
+            return $u->getLogin();
+        }, self::$DI['app']['authentication.providers.account-creator']->getTemplates()));
 
-        $this->assertEquals([$template1, $template2], $app['authentication.providers.account-creator']->getTemplates());
-
-        $template1->delete();
-        $template2->delete();
+        $this->removeUser(self::$DI['app'], $template1);
+        $this->removeUser(self::$DI['app'], $template2);
     }
 }

@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Authentication\Provider\Token\Token;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class SuggestionFinder
 {
@@ -30,7 +31,7 @@ class SuggestionFinder
      *
      * @param Token $token
      *
-     * @return null|\User_Adapter
+     * @return null|User
      *
      * @throws NotAuthenticatedException In case the token is not authenticated.
      */
@@ -39,16 +40,7 @@ class SuggestionFinder
         $infos = $token->getIdentity();
 
         if ($infos->has(Identity::PROPERTY_EMAIL)) {
-
-            $sql = 'SELECT usr_id FROM usr WHERE usr_mail = :email';
-            $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute([':email' => $infos->get(Identity::PROPERTY_EMAIL)]);
-            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-
-            if ($row) {
-                return \User_Adapter::getInstance($row['usr_id'], $this->app);
-            }
+           return $this->app['manipulator.user']->getRepository()->findByEmail($infos->get(Identity::PROPERTY_EMAIL));
         }
 
         return null;

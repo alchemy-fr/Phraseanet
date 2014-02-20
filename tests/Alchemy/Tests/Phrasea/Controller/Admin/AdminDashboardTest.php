@@ -2,6 +2,8 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
+use Alchemy\Phrasea\Model\Entities\User;
+
 class AdminDashboardTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
@@ -108,18 +110,19 @@ class AdminDashboardTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->setAdmin(true);
 
-        $admins = array_keys(\User_Adapter::get_sys_admins(self::$DI['app']));
+        $admins = array_map(function (User $user) {
+            return $user->getId();
+        }, self::$DI['app']['manipulator.user']->getRepository()->findAdmins());
 
-        $user = \User_Adapter::create(self::$DI['app'], uniqid('unit_test_user'), uniqid('unit_test_user'),  uniqid('unit_test_user') ."@email.com", false);
+        $user = self::$DI['app']['manipulator.user']->createUser(uniqid('unit_test_user'), uniqid('unit_test_user'),  uniqid('unit_test_user') ."@email.com");
 
-        $admins[] = $user->get_id();
+        $admins[] = $user->getId();
 
         self::$DI['client']->request('POST', '/admin/dashboard/add-admins/', [
             'admins' => $admins
         ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-
-        $user->delete();
+        self::$DI['app']['manipulator.user']->delete($user);
     }
 }

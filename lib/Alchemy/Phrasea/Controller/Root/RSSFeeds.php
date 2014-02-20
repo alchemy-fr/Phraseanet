@@ -55,7 +55,7 @@ class RSSFeeds implements ControllerProviderInterface
             $page = $page < 1 ? 1 : $page;
 
             return $app['feed.formatter-strategy']($format)
-                ->createResponse($app, $token->getFeed(), $page, \User_Adapter::getInstance($token->getUsrId(), $app));
+                ->createResponse($app, $token->getFeed(), $page, $token->getUser());
         })
             ->bind('feed_user')
             ->assert('id', '\d+')
@@ -63,7 +63,8 @@ class RSSFeeds implements ControllerProviderInterface
 
         $controllers->get('/userfeed/aggregated/{token}/{format}/', function (Application $app, $token, $format) {
             $token = $app['EM']->getRepository('Phraseanet:AggregateToken')->findOneBy(["value" => $token]);
-            $user = \User_Adapter::getInstance($token->getUsrId(), $app);
+
+            $user = $token->getUser();
 
             $feeds = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser($app['acl']->get($user));
 

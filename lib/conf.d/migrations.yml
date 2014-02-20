@@ -42,3 +42,15 @@ migrations:
   migration13:
     version: ftp-export
     class: Alchemy\Phrasea\Setup\DoctrineMigrations\FtpExportMigration
+  migration14:
+    version: user-field
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\UserFieldMigration
+  migration15:
+    version: user-id-field-delete
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\DeleteUsrIdFieldMigration
+  migration16:
+    version: user-list
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\UserListMigration
+  migration17:
+    version: user-auth-provider
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\UserAuthProviderMigration

@@ -278,16 +278,16 @@ class Feed implements FeedInterface
     }
 
     /**
-     * Returns a boolean indicating whether the given User_Adapter is the owner of the feed.
+     * Returns a boolean indicating whether the given user is the owner of the feed.
      *
-     * @param \User_Adapter $user
+     * @param User $user
      *
      * @return boolean
      */
-    public function isOwner(\User_Adapter $user)
+    public function isOwner(User $user)
     {
         $owner = $this->getOwner();
-        if ($owner !== null && $user->get_id() === $owner->getUsrId()) {
+        if ($owner !== null && $user->getId() === $owner->getUser()->getId()) {
             return true;
         }
 
@@ -372,16 +372,16 @@ class Feed implements FeedInterface
     }
 
     /**
-     * Returns a boolean indicating whether the given User_Adapter is a publisher of the feed.
+     * Returns a boolean indicating whether the given user is a publisher of the feed.
      *
-     * @param \User_Adapter $user
+     * @param User $user
      *
      * @return boolean
      */
-    public function isPublisher(\User_Adapter $user)
+    public function isPublisher(User $user)
     {
         foreach ($this->getPublishers() as $publisher) {
-            if ($publisher->getUsrId() == $user->get_id()) {
+            if ($publisher->getUser()->getId() == $user->getId()) {
                 return true;
             }
         }
@@ -390,16 +390,16 @@ class Feed implements FeedInterface
     }
 
     /**
-     * Returns an instance of FeedPublisher matching to the given User_Adapter
+     * Returns an instance of FeedPublisher matching to the given user.
      *
-     * @param \User_Adapter $user
+     * @param User $user
      *
      * @return FeedPublisher
      */
-    public function getPublisher(\User_Adapter $user)
+    public function getPublisher(User $user)
     {
         foreach ($this->getPublishers() as $publisher) {
-            if ($publisher->getUsrId() == $user->get_id()) {
+            if ($publisher->getUser()->getId() == $user->getId()) {
                 return $publisher;
             }
         }
@@ -451,14 +451,14 @@ class Feed implements FeedInterface
     }
 
     /**
-     * Returns a boolean indicating whether the given User_Adapter has access to the feed
+     * Returns a boolean indicating whether the given user has access to the feed.
      *
-     * @param \User_Adapter $user
-     * @param Application   $app
+     * @param User        $user
+     * @param Application $app
      *
      * @return boolean
      */
-    public function hasAccess(\User_Adapter $user, Application $app)
+    public function hasAccess(User $user, Application $app)
     {
         if ($this->getCollection($app) instanceof collection) {
             return $app['acl']->get($user)->has_access_to_base($this->collection->get_base_id());
@@ -548,12 +548,12 @@ class Feed implements FeedInterface
      *
      * Returns a boolean indicating whether a given user has access to the feed
      *
-     * @param \User_Adapter                $user
+     * @param User                         $user
      * @param \Alchemy\Phrasea\Application $app
      *
      * @return boolean
      */
-    public function isAccessible(\User_Adapter $user, Application $app)
+    public function isAccessible(User $user, Application $app)
     {
         $coll = $this->getCollection($app);
         if ($this->isPublic()

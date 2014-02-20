@@ -64,10 +64,10 @@ class FtpCredential extends \Alchemy\Phrasea\Model\Entities\FtpCredential implem
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'usrId', 'user', 'active', 'address', 'login', 'password', 'receptionFolder', 'repositoryPrefixName', 'passive', 'ssl', 'maxRetry', 'updated');
+            return array('__isInitialized__', 'id', 'user', 'active', 'address', 'login', 'password', 'receptionFolder', 'repositoryPrefixName', 'passive', 'ssl', 'maxRetry', 'updated');
         }
 
-        return array('__isInitialized__', 'id', 'usrId', 'user', 'active', 'address', 'login', 'password', 'receptionFolder', 'repositoryPrefixName', 'passive', 'ssl', 'maxRetry', 'updated');
+        return array('__isInitialized__', 'id', 'user', 'active', 'address', 'login', 'password', 'receptionFolder', 'repositoryPrefixName', 'passive', 'ssl', 'maxRetry', 'updated');
     }
 
     /**
@@ -186,28 +186,6 @@ class FtpCredential extends \Alchemy\Phrasea\Model\Entities\FtpCredential implem
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
 
         return parent::getId();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getUsrId()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUsrId', array());
-
-        return parent::getUsrId();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setUsrId($usrId)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUsrId', array($usrId));
-
-        return parent::setUsrId($usrId);
     }
 
     /**

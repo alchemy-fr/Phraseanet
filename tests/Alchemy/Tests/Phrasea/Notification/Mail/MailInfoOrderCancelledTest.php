@@ -29,12 +29,10 @@ class MailInfoOrderCancelledTest extends MailTestCase
             $this->getMessage()
         );
 
-        $user = $this->getMockBuilder('User_Adapter')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $user = $this->createUserMock();
 
         $user->expects($this->any())
-            ->method('get_display_name')
+            ->method('getDisplayName')
             ->will($this->returnValue('JeanPhil'));
 
         $mail->setDeliverer($user);
@@ -74,12 +72,10 @@ class MailInfoOrderCancelledTest extends MailTestCase
             $this->getMessage()
         );
 
-        $user = $this->getMockBuilder('User_Adapter')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $user = $this->createUserMock();
 
         $user->expects($this->any())
-            ->method('get_display_name')
+            ->method('getDisplayName')
             ->will($this->returnValue('JeanPhil'));
 
         $mail->setDeliverer($user);

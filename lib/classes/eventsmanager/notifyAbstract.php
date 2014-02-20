@@ -32,16 +32,10 @@ abstract class eventsmanager_notifyAbstract extends eventsmanager_eventAbstract
 
     abstract public function icon_url();
 
-    protected function get_prefs($class, $usr_id)
+    protected function shouldSendNotificationFor($usrId)
     {
-        $user = User_Adapter::getInstance($usr_id, $this->app);
-        $pref = $user->get_notifications_preference($this->app, $class);
+        $user = $this->app['manipulator.user']->getRepository()->find($usrId);
 
-        return null !== $pref ? $pref : 1;
-    }
-
-    protected function shouldSendNotificationFor($usr_id)
-    {
-        return 0 !== (int) $this->get_prefs(get_class($this), $usr_id);
+        return $this->app['settings']->getUserNotificationSetting($user, get_class($this));
     }
 }

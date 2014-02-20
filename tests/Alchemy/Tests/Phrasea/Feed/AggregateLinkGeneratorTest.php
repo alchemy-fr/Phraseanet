@@ -18,7 +18,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
         $feed = new Feed();
         $feed->setTitle("title");
 
-        $another_feed = new Feed($user);
+        $another_feed = new Feed(self::$DI['user']);
         $another_feed->setTitle("another_title");
 
         $feeds = [$feed, $another_feed];
@@ -48,7 +48,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
 
         $linkGenerator = new AggregateLinkGenerator($generator, self::$DI['app']['EM'], $random);
 
-        $link = $linkGenerator->generate($aggregate, $user, $format, $page, $renew);
+        $link = $linkGenerator->generate($aggregate, self::$DI['user'], $format, $page, $renew);
 
         if ($format == "atom") {
             $this->assertSame("application/atom+xml", $link->getMimetype());

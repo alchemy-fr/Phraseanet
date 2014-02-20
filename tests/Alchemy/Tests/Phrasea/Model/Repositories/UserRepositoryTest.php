@@ -9,7 +9,7 @@ class UserRepositoryTest extends \PhraseanetTestCase
     public function testFindAdminsWithNoAdmins()
     {
         $users = self::$DI['app']['EM']->getRepository('Phraseanet:User')->findAdmins();
-        $this->assertEquals(1, count($users));
+        $this->assertEquals(2, count($users));
     }
 
     public function testFindByLogin()

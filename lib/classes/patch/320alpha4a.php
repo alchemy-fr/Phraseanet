@@ -97,7 +97,6 @@ class patch_320alpha4a implements patchInterface
         $xp_struct = $databox->get_xpath_structure();
 
         foreach ($sxe->description->children() as $fname => $field) {
-
             $src = trim(isset($field['src']) ? $field['src'] : '');
             if (array_key_exists($src, $phrasea_maps)) {
                 $src = $phrasea_maps[$src];

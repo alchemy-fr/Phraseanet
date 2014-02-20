@@ -16,7 +16,6 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @ORM\Table(name="Users",
@@ -37,9 +36,9 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class User
 {
-    const GENDER_MR = 'mr';
-    const GENDER_MRS = 'mrs';
-    const GENDER_MISS = 'miss';
+    const GENDER_MR = 2;
+    const GENDER_MRS = 1;
+    const GENDER_MISS = 0;
 
     const USER_GUEST = 'guest';
     const USER_AUTOREGISTER = 'autoregister';
@@ -67,14 +66,14 @@ class User
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=16, nullable=true)
+     * @ORM\Column(type="string", length=64, nullable=true)
      */
     private $nonce;
 
     /**
      * @ORM\Column(type="boolean", name="salted_password")
      */
-    private $saltedPassword = false;
+    private $saltedPassword = true;
 
     /**
      * @ORM\Column(type="string", length=64, name="first_name")
@@ -87,7 +86,7 @@ class User
     private $lastName = '';
 
     /**
-     * @ORM\Column(type="string", length=8, nullable=true)
+     * @ORM\Column(type="smallint", nullable=true)
      */
     private $gender;
 
@@ -102,7 +101,7 @@ class User
     private $city = '';
 
     /**
-     * @ORM\Column(type="string", length=64)
+     * @ORM\Column(type="string", length=64, nullable=true)
      */
     private $country = '';
 
@@ -177,8 +176,9 @@ class User
     private $ldapCreated = false;
 
     /**
-     * @ORM\Column(type="string", length=64, name="last_model", nullable=true)
-     */
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="last_model", referencedColumnName="id")
+     **/
     private $lastModel;
 
     /**
@@ -224,7 +224,7 @@ class User
     private $updated;
 
     /**
-     * @ORM\OneToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="model_of", referencedColumnName="id")
      *
      * @var User
@@ -291,6 +291,8 @@ class User
     public function setLogin($login)
     {
         $this->login = $login;
+
+        return $this;
     }
 
     /**
@@ -307,6 +309,8 @@ class User
     public function setEmail($email)
     {
         $this->email = $email;
+
+        return $this;
     }
 
     /**
@@ -324,6 +328,8 @@ class User
     public function setPassword($password)
     {
         $this->password = $password;
+
+        return $this;
     }
 
     /**
@@ -340,6 +346,8 @@ class User
     public function setNonce($nonce)
     {
         $this->nonce = $nonce;
+
+        return $this;
     }
 
     /**
@@ -356,6 +364,8 @@ class User
     public function setSaltedPassword($saltedPassword)
     {
         $this->saltedPassword = (Boolean) $saltedPassword;
+
+        return $this;
     }
 
     /**
@@ -372,6 +382,8 @@ class User
     public function setFirstName($firstName)
     {
         $this->firstName = $firstName;
+
+        return $this;
     }
 
     /**
@@ -389,6 +401,8 @@ class User
     public function setLastName($lastName)
     {
         $this->lastName = $lastName;
+
+        return $this;
     }
 
     /**
@@ -410,11 +424,13 @@ class User
             self::GENDER_MISS,
             self::GENDER_MR,
             self::GENDER_MRS
-        ])) {
+        ], true)) {
             throw new InvalidArgumentException(sprintf("Invalid gender %s.", $gender));
         }
 
         $this->gender = $gender;
+
+        return $this;
     }
 
     /**
@@ -431,6 +447,8 @@ class User
     public function setAddress($address)
     {
         $this->address = $address;
+
+        return $this;
     }
 
     /**
@@ -447,6 +465,8 @@ class User
     public function setCity($city)
     {
         $this->city = $city;
+
+        return $this;
     }
 
     /**
@@ -463,6 +483,8 @@ class User
     public function setCountry($country)
     {
         $this->country = $country;
+
+        return $this;
     }
 
     /**
@@ -479,6 +501,8 @@ class User
     public function setZipCode($zipCode)
     {
         $this->zipCode = $zipCode;
+
+        return $this;
     }
 
     /**
@@ -499,6 +523,8 @@ class User
         }
 
         $this->geonameId = $geonameId;
+
+        return $this;
     }
 
     /**
@@ -521,6 +547,8 @@ class User
         }
 
         $this->locale = $locale;
+
+        return $this;
     }
 
     /**
@@ -537,6 +565,8 @@ class User
     public function setTimezone($timezone)
     {
         $this->timezone = $timezone;
+
+        return $this;
     }
 
     /**
@@ -553,6 +583,8 @@ class User
     public function setJob($job)
     {
         $this->job = $job;
+
+        return $this;
     }
 
     /**
@@ -569,6 +601,8 @@ class User
     public function setActivity($activity)
     {
         $this->activity = $activity;
+
+        return $this;
     }
 
     /**
@@ -585,6 +619,8 @@ class User
     public function setCompany($company)
     {
         $this->company = $company;
+
+        return $this;
     }
 
     /**
@@ -601,6 +637,8 @@ class User
     public function setPhone($phone)
     {
         $this->phone = $phone;
+
+        return $this;
     }
 
     /**
@@ -617,6 +655,8 @@ class User
     public function setFax($fax)
     {
         $this->fax = $fax;
+
+        return $this;
     }
 
     /**
@@ -633,6 +673,8 @@ class User
     public function setAdmin($admin)
     {
         $this->admin = (Boolean) $admin;
+
+        return $this;
     }
 
     /**
@@ -649,6 +691,8 @@ class User
     public function setGuest($guest)
     {
         $this->guest = (Boolean) $guest;
+
+        return $this;
     }
 
     /**
@@ -665,6 +709,8 @@ class User
     public function setMailNotificationsActivated($mailNotifications)
     {
         $this->mailNotificationsActivated = (Boolean) $mailNotifications;
+
+        return $this;
     }
 
     /**
@@ -681,6 +727,8 @@ class User
     public function setRequestNotificationsActivated($requestNotifications)
     {
         $this->requestNotificationsActivated = (Boolean) $requestNotifications;
+
+        return $this;
     }
 
     /**
@@ -697,6 +745,8 @@ class User
     public function setLdapCreated($ldapCreated)
     {
         $this->ldapCreated = (Boolean) $ldapCreated;
+
+        return $this;
     }
 
     /**
@@ -713,10 +763,12 @@ class User
     public function setModelOf(User $owner)
     {
         $this->modelOf = $owner;
+
+        return $this;
     }
 
     /**
-     * @return string
+     * @return User
      */
     public function getLastModel()
     {
@@ -724,11 +776,13 @@ class User
     }
 
     /**
-     * @param string $lastModel
+     * @param User $lastModel
      */
-    public function setLastModel($lastModel)
+    public function setLastModel(User $lastModel)
     {
         $this->lastModel = $lastModel;
+
+        return $this;
     }
 
     /**
@@ -745,6 +799,8 @@ class User
     public function setPushList($pushList)
     {
         $this->pushList = $pushList;
+
+        return $this;
     }
 
     /**
@@ -761,6 +817,8 @@ class User
     public function setCanChangeProfil($canChangeProfil)
     {
         $this->canChangeProfil = (Boolean) $canChangeProfil;
+
+        return $this;
     }
 
     /**
@@ -777,6 +835,8 @@ class User
     public function setCanChangeFtpProfil($canChangeFtpProfil)
     {
         $this->canChangeFtpProfil = (Boolean) $canChangeFtpProfil;
+
+        return $this;
     }
 
     /**
@@ -793,6 +853,8 @@ class User
     public function setLastConnection(\DateTime $lastConnection)
     {
         $this->lastConnection = $lastConnection;
+
+        return $this;
     }
 
     /**
@@ -809,6 +871,8 @@ class User
     public function setMailLocked($mailLocked)
     {
         $this->mailLocked = (Boolean) $mailLocked;
+
+        return $this;
     }
 
     /**
@@ -853,6 +917,8 @@ class User
     public function setCreated(\Datetime $created)
     {
         $this->created = $created;
+
+        return $this;
     }
 
     /**
@@ -861,6 +927,8 @@ class User
     public function setUpdated(\Datetime $updated)
     {
         $this->updated = $updated;
+
+        return $this;
     }
 
     /**
@@ -962,10 +1030,10 @@ class User
     /**
      * @return string
      */
-    public function getDisplayName(TranslatorInterface $translator)
+    public function getDisplayName()
     {
         if ($this->isTemplate()) {
-            return $translator->trans('modele %name%', ['%name%' => $this->getLogin()]);
+            return $this->getLogin();
         }
 
         if (trim($this->lastName) !== '' || trim($this->firstName) !== '') {
@@ -976,6 +1044,10 @@ class User
             return $this->email;
         }
 
-        return $translator->trans('Unnamed user');
+        if ('' !== trim($this->getLogin())) {
+            return $this->getLogin();
+        }
+
+        return 'Unnamed user';
     }
 }

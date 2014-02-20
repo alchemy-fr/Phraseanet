@@ -400,7 +400,7 @@ class FeedEntry extends \Alchemy\Phrasea\Model\Entities\FeedEntry implements \Do
     /**
      * {@inheritDoc}
      */
-    public function isPublisher(\User_Adapter $user)
+    public function isPublisher(\Alchemy\Phrasea\Model\Entities\User $user)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'isPublisher', array($user));

@@ -11,15 +11,20 @@ class PreferencesTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testSaveUserPref()
     {
-        self::$DI['app']['authentication']->setUser($this->getMockBuilder('\User_Adapter')
-            ->setMethods(['setPrefs'])
+        self::$DI['app']['authentication']->setUser($this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
+            ->setMethods(['addSetting'])
             ->disableOriginalConstructor()
             ->getMock());
 
-        self::$DI['app']['authentication']->getUser()->expects($this->once())
-            ->method('setPrefs')
-            ->with($this->equalTo('prop_test'), $this->equalTo('val_test'))
-            ->will($this->returnValue(true));
+        self::$DI['app']['manipulator.user'] = $this->getMockBuilder('Alchemy\Phrasea\Model\Manipulator\User')
+            ->setMethods(['setUserSetting'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        self::$DI['app']['manipulator.user']->expects($this->once())
+            ->method('setUserSetting')
+            ->with($this->isInstanceOf('Alchemy\Phrasea\Model\Entities\User'), $this->equalTo('prop_test'), $this->equalTo('val_test'))
+            ->will($this->returnValue(null));
 
         $this->XMLHTTPRequest('POST', '/user/preferences/', ['prop'  => 'prop_test', 'value' => 'val_test']);
         $response = self::$DI['client']->getResponse();

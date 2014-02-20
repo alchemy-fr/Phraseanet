@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\User;
 use Symfony\Component\HttpFoundation\Request;
 use Silex\Application;
 
@@ -242,7 +243,7 @@ interface API_V1_Interface
      * Parameters :
      *
      */
-    public function search_publications(Request $request, User_Adapter $user);
+    public function search_publications(Request $request, User $user);
 
     /**
      * Route : /publications/PUBLICATION_ID/remove/FORMAT/
@@ -264,11 +265,11 @@ interface API_V1_Interface
      *    PUBLICATION_ID : required INT
      *
      */
-    public function get_publication(Request $request, $publication_id, User_Adapter $user);
+    public function get_publication(Request $request, $publication_id, User $user);
 
-    public function get_publications(Request $request, User_Adapter $user);
+    public function get_publications(Request $request, User $user);
 
-    public function get_feed_entry(Request $request, $entry, User_Adapter $user);
+    public function get_feed_entry(Request $request, $entry, User $user);
     /**
      * Route : /users/search/FORMAT/
      *

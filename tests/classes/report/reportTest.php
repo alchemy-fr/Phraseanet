@@ -43,7 +43,7 @@ class report_reportTest extends \PhraseanetAuthenticatedTestCase
     {
         foreach ($this->ret as $sbasid => $collections) {
             $this->report = new module_report(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $collections);
-            $this->report->setUser_id(self::$DI['user']->get_id());
+            $this->report->setUser_id(self::$DI['user']->getId());
             $this->assertEquals($collections, $this->report->getListCollId());
             $this->host($this->report);
         }

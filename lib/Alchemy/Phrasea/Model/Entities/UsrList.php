@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Model\Entities;
 
-use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -209,10 +208,10 @@ class UsrList
         return $this->entries;
     }
 
-    public function hasAccess(\User_Adapter $user, Application $app)
+    public function hasAccess(User $user)
     {
         foreach ($this->getOwners() as $owner) {
-            if ($owner->getUser($app)->get_id() == $user->get_id()) {
+            if ($owner->getUser()->getId() == $user->getId()) {
                 return true;
             }
         }
@@ -222,13 +221,13 @@ class UsrList
 
     /**
      *
-     * @param  \User_Adapter $user
+     * @param  User         $user
      * @return UsrListOwner
      */
-    public function getOwner(\User_Adapter $user, Application $app)
+    public function getOwner(User $user)
     {
         foreach ($this->getOwners() as $owner) {
-            if ($owner->getUser($app)->get_id() == $user->get_id()) {
+            if ($owner->getUser()->getId() == $user->getId()) {
                 return $owner;
             }
         }
@@ -239,14 +238,14 @@ class UsrList
     /**
      * Return true if one of the entry is related to the given user
      *
-     * @param  \User_Adapter $user
+     * @param  User    $user
      * @return boolean
      */
-    public function has(\User_Adapter $user, Application $app)
+    public function has(User $user)
     {
         return $this->entries->exists(
-            function ($key, $entry) use ($user, $app) {
-                return $entry->getUser($app)->get_id() === $user->get_id();
+            function ($key, $entry) use ($user) {
+                return $entry->getUser()->getId() === $user->getId();
             }
         );
     }

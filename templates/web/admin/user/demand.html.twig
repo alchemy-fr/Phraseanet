@@ -172,7 +172,7 @@
         </div>
 {% endif %}
 
-{% if table['user'] | length > 0 %}
+{% if table['users'] | length > 0 %}
     <form id="accept-demand" action="{{ path('users_submit_demands') }}" method="post">
         <div class="btn-group btn-all-action">
             <button data-event="deny" class="btn deny-checker" type="button">
@@ -202,37 +202,38 @@
         <div class="registration-wrapper PNB" style="top:160px;bottom: 50px;overflow: auto">
         <div  id="tab_demandes">
             {% set tableColls = table['coll'] %}
-            {% for row in table['user'] %}
+            {% for row in table['users'] %}
+                {%  set user = row['user'] %}
                 <div class="well well-small">
                     <table class="table" style="table-layout: fixed;">
                         <tr>
                             <span>
-                                {{ app['date-formatter'].getPrettyString(row["date_modif"]) }}
+                                {{ app['date-formatter'].getPrettyString(row["date_demand"]) }}
                             </span>
                         </tr>
                         <tr>
                             <td>
-                                {% set colls = tableColls[row['usr_id']] %}
+                                {% set colls = tableColls[user.getId()] %}
                                 <dl class="dl-horizontal">
                                     <dt>{{ 'admin::compte-utilisateur identifiant' | trans }}</dt>
-                                    <dd>{{ row['usr_login'] }}</dd>
+                                    <dd>{{ user.getLogin() }}</dd>
                                     <dt>{{ 'admin::compte-utilisateur nom' | trans }} / {{ 'admin::compte-utilisateur prenom' | trans }}</dt>
-                                    <dd>{{ row['usr_nom'] }}  {{ row['usr_prenom'] }}</dd>
+                                    <dd>{{ user.getLastName() }} {{ user.getFirstName() }}</dd>
                                     <dt>{{ 'admin::compte-utilisateur email' | trans }}</dt>
-                                    <dd>{{ row['usr_mail'] }}</dd>
+                                    <dd>{{ user.getEmail() }}</dd>
                                     <dt>{{ 'admin::compte-utilisateur societe' | trans }}</dt>
-                                    <dd>{{ row['societe'] }}</dd>
+                                    <dd>{{ user.getCompany() }}</dd>
                                     <dt>{{ 'admin::compte-utilisateur poste' | trans }}</dt>
-                                    <dd>{{ row['fonction'] }}</dd>
+                                    <dd>{{ user.getJob() }}</dd>
                                     <dt>{{ 'admin::compte-utilisateur activite' | trans }}</dt>
-                                    <dd>{{ row['activite'] }}</dd>
+                                    <dd>{{ user.getActivity() }}</dd>
                                     <dt>{{ 'admin::compte-utilisateur telephone' | trans }}</dt>
-                                    <dd>{{ row['tel'] }}</dd>
+                                    <dd>{{ user.getPhone() }}</dd>
                                     <dt>{{ 'admin::compte-utilisateur adresse' | trans }}</dt>
-                                    <dd>{{ row['adresse'] }}</dd>
-                                    <dd>{{ row['cpostal'] }}</dd>
-                                    <dd>{{ row['ville'] }}</dd>
-                                    <dd>{{ row['pays'] }}</dd>
+                                    <dd>{{ user.getAddress() }}</dd>
+                                    <dd>{{ user.getZipCode() }}</dd>
+                                    <dd>{{ user.getCity() }}</dd>
+                                    <dd>{{ user.getCountry() }}</dd>
                                 </dl>
                             </td>
                             <td>
@@ -240,7 +241,7 @@
                                     <span style="font-weight:bold;font-size:14px;word-wrap: break-word;">
                                         {{ basId| bas_labels(app) }}
                                     </span>
-                                    {% set btn_value = row['usr_id'] ~ "_" ~  basId %}
+                                    {% set btn_value = user.getId() ~ "_" ~  basId %}
                                     <div class="btn-group btn-single-action" style="margin:auto auto 5px 0;">
                                         <button data-event="deny" value="{{ btn_value }}" type="button" name="deny[]" class="btn deny-checker" title="{{ 'admin:: refuser l\'acces' | trans }}">
                                             <img title="{{ 'admin:: refuser l\'acces' | trans }}" src='/skins/icons/delete.gif' />
@@ -259,10 +260,10 @@
                             </td>
                             <td>
                                 <div>{{ 'admin:: appliquer le modele' | trans }}</div>
-                                <select name="template[]" id="model_{{ row['usr_id'] }}" onchange="modelChecker('{{ row['usr_id'] }}')">
+                                <select name="template[]" id="{{ 'model_' ~ user.getId() }}" onchange="modelChecker('{{ user.getId() }}')">
                                     <option value="">{{ 'None' | trans }}</option>
                                     {% for model in models %}
-                                        <option value="{{ row['usr_id'] }}_{{ model['usr_id'] }}">{{ model['usr_login'] }}</option>
+                                        <option value="{{ user.getId() ~ '_' ~ model.getId() }}">{{ model.getLogin() }}</option>
                                     {% endfor %}
                                 </select>
                             </td>

@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Feed\Link\LinkGeneratorCollection;
 use Alchemy\Phrasea\Feed\RSS\FeedRSSImage;
+use Alchemy\Phrasea\Model\Entities\User;
 use Symfony\Component\HttpFoundation\Response;
 
 class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterInterface
@@ -36,7 +37,7 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
     /**
      * {@inheritdoc}
      */
-    public function createResponse(Application $app, FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet')
+    public function createResponse(Application $app, FeedInterface $feed, $page, User $user = null, $generator = 'Phraseanet')
     {
         $content = $this->format($feed, $page, $user, $generator, $app);
         $response = new Response($content, 200, ['Content-Type' => 'application/rss+xml']);
@@ -47,7 +48,7 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
     /**
      * {@inheritdoc}
      */
-    public function format(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', Application $app = null)
+    public function format(FeedInterface $feed, $page, User $user = null, $generator = 'Phraseanet', Application $app = null)
     {
         $updated_on = $feed->getUpdatedOn();
 

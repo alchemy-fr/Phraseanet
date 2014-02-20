@@ -242,7 +242,6 @@ class RecordsRequest extends ArrayCollection
         $to_remove = [];
 
         foreach ($elements as $id => $record) {
-
             if (!$app['acl']->get($app['authentication']->getUser())->has_access_to_record($record)) {
                 $to_remove[] = $id;
                 continue;

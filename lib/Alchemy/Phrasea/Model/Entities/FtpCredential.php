@@ -28,13 +28,8 @@ class FtpCredential
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $usrId;
-
-    /**
      * @ORM\OneToOne(targetEntity="User", inversedBy="ftpCredential")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      **/
     private $user;
 
@@ -95,22 +90,6 @@ class FtpCredential
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getUsrId()
-    {
-        return $this->usrId;
-    }
-
-    /**
-     * @param integer $usrId
-     */
-    public function setUsrId($usrId)
-    {
-        $this->usrId = $usrId;
     }
 
     /**

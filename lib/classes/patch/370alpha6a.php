@@ -76,13 +76,10 @@ class patch_370alpha6a implements patchInterface
         $subdefgroups = $databox->get_subdef_structure();
 
         foreach ($subdefgroups as $groupname => $subdefs) {
-
             foreach ($subdefs as $name => $subdef) {
-
                 $this->addScreenDeviceOption($subdefgroups, $subdef, $groupname);
 
                 if (in_array($name, ['preview', 'thumbnail'])) {
-
                     if ($name == 'thumbnail' || $subdef->getSubdefType()->getType() != \Alchemy\Phrasea\Media\Subdef\Subdef::TYPE_VIDEO) {
                         $this->addMobileSubdefImage($subdefgroups, $subdef, $groupname);
                     } else {

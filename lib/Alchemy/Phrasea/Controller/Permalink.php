@@ -154,16 +154,14 @@ class Permalink extends AbstractDelivery
         $watermark = $stamp = false;
 
         if ($app['authentication']->isAuthenticated()) {
-            $user = \User_Adapter::getInstance($app['authentication']->getUser()->get_id(), $app);
-
-            $watermark = !$app['acl']->get($user)->has_right_on_base($record->get_base_id(), 'nowatermark');
+            $watermark = !$app['acl']->get($app['authentication']->getUser())->has_right_on_base($record->get_base_id(), 'nowatermark');
 
             if ($watermark) {
                 $repository = $app['EM']->getRepository('Phraseanet:BasketElement');
 
-                if (count($repository->findReceivedValidationElementsByRecord($record, $user)) > 0) {
+                if (count($repository->findReceivedValidationElementsByRecord($record, $app['authentication']->getUser())) > 0) {
                     $watermark = false;
-                } elseif (count($repository->findReceivedElementsByRecord($record, $user)) > 0) {
+                } elseif (count($repository->findReceivedElementsByRecord($record, $app['authentication']->getUser())) > 0) {
                     $watermark = false;
                 }
             }
