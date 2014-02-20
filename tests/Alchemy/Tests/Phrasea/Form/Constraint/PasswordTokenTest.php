@@ -23,7 +23,7 @@ class PasswordTokenTest extends \PhraseanetTestCase
             ->with($token)
             ->will($this->throwException(new NotFoundHttpException('Token not found')));
 
-        $constraint = new PasswordToken(self::$DI['app'], $random);
+        $constraint = new PasswordToken($random);
         $this->assertFalse($constraint->isValid($token));
     }
 
@@ -43,7 +43,7 @@ class PasswordTokenTest extends \PhraseanetTestCase
             ->with($token)
             ->will($this->returnValue(['usr_id' => mt_rand(), 'type' => \random::TYPE_PASSWORD]));
 
-        $constraint = new PasswordToken(self::$DI['app'], $random);
+        $constraint = new PasswordToken($random);
         $this->assertTrue($constraint->isValid($token));
     }
 }

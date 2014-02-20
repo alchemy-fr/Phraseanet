@@ -12,26 +12,27 @@
 namespace Alchemy\Phrasea\Form\Constraint;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\Common\Persistence\ObjectRepository;
 use Symfony\Component\Validator\Constraint;
 
 class NewLogin extends Constraint
 {
     public $message = 'This login is already registered';
-    private $app;
+    private $repository;
 
-    public function __construct(Application $app)
+    public function __construct(ObjectRepository $repository)
     {
-        $this->app = $app;
+        $this->repository = $repository;
         parent::__construct();
     }
 
     public function isAlreadyRegistered($login)
     {
-        return (Boolean) $this->app['manipulator.user']->getRepository()->findByLogin($login);
+        return (Boolean) $this->repository->findByLogin($login);
     }
 
     public static function create(Application $app)
     {
-        return new static($app);
+        return new static($app['manipulator.user']->getRepository());
     }
 }

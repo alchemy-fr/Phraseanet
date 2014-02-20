@@ -109,7 +109,7 @@ class Oauth2 implements ControllerProviderInterface
                 }
             }
 
-            $account = $oauth2_adapter->updateAccount($app['authentication']->getUser()->getId());
+            $account = $oauth2_adapter->updateAccount($app['authentication']->getUser());
 
             $params['account_id'] = $account->get_id();
 

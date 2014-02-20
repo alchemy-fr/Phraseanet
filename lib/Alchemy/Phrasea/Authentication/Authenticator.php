@@ -86,7 +86,7 @@ class Authenticator
 
     private function populateSession(Session $session)
     {
-        $user = $session->getUser($this->app);
+        $user = $session->getUser();
 
         $rights = [];
         if ($this->app['acl']->get($user)->has_right('taskmanager')) {

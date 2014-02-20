@@ -608,7 +608,7 @@ class Login implements ControllerProviderInterface
             $app->abort(401, 'A token is required');
         }
 
-        $form = $app->form(new PhraseaRecoverPasswordForm($app));
+        $form = $app->form(new PhraseaRecoverPasswordForm($app['tokens']));
         $form->setData(['token' => $token]);
 
         if ('POST' === $request->getMethod()) {

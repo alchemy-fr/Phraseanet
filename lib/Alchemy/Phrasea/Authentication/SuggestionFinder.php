@@ -16,14 +16,15 @@ use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Authentication\Provider\Token\Token;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Model\Entities\User;
+use Doctrine\Common\Persistence\ObjectRepository;
 
 class SuggestionFinder
 {
-    private $app;
+    private $repository;
 
-    public function __construct(Application $app)
+    public function __construct(ObjectRepository $repository)
     {
-        $this->app = $app;
+        $this->repository = $repository;
     }
 
     /**
@@ -40,7 +41,7 @@ class SuggestionFinder
         $infos = $token->getIdentity();
 
         if ($infos->has(Identity::PROPERTY_EMAIL)) {
-           return $this->app['manipulator.user']->getRepository()->findByEmail($infos->get(Identity::PROPERTY_EMAIL));
+           return $this->repository->findByEmail($infos->get(Identity::PROPERTY_EMAIL));
         }
 
         return null;
