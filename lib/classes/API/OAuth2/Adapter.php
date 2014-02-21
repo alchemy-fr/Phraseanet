@@ -497,19 +497,18 @@ class API_OAuth2_Adapter extends OAuth2
 
     /**
      *
-     * @param  usr_id             $usr_id
+     * @param  User             $user
      * @return API_OAuth2_Account
      */
-    public function updateAccount($usr_id)
+    public function updateAccount(User $user)
     {
         if ($this->client === null)
             throw new logicalException("Client property must be set before update an account");
 
         try {
-            $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
             $account = API_OAuth2_Account::load_with_user($this->app, $this->client, $user);
         } catch (\Exception $e) {
-            $account = $this->createAccount($usr_id);
+            $account = $this->createAccount($user->getId());
         }
 
         return $account;
@@ -795,7 +794,11 @@ class API_OAuth2_Adapter extends OAuth2
                 return false;
             }
 
-            $account = $this->updateAccount($usr_id);
+            if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
+                return false;
+            }
+
+            $account = $this->updateAccount($user);
 
             return [
                 'redirect_uri' => $this->client->get_redirect_uri()

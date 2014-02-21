@@ -48,7 +48,7 @@ class RegistrationServiceProvider implements ServiceProviderInterface
                     'type'        => 'text',
                     'constraints' => [
                         new Assert\NotBlank(),
-                        new NewLogin($app),
+                        NewLogin::create($app),
                     ]
                 ],
                 'gender' => [

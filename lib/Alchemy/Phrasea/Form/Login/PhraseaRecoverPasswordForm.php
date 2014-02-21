@@ -22,11 +22,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class PhraseaRecoverPasswordForm extends AbstractType
 {
-    private $app;
+    private $tokens;
 
-    public function __construct(Application $app)
+    public function __construct(\random $tokens)
     {
-        $this->app = $app;
+        $this->tokens = $tokens;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -34,7 +34,7 @@ class PhraseaRecoverPasswordForm extends AbstractType
         $builder->add('token', 'hidden', [
             'required'      => true,
             'constraints'   => [
-                new PasswordToken($this->app, $this->app['tokens'])
+                new PasswordToken($this->tokens)
             ]
         ]);
 

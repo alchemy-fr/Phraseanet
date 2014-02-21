@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Form\Login;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Form\Constraint\NewEmail;
 use Alchemy\Phrasea\Utilities\String\Camelizer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -40,7 +41,7 @@ class PhraseaRegisterForm extends AbstractType
             'constraints' => [
                 new Assert\NotBlank(),
                 new Assert\Email(),
-                new \Alchemy\Phrasea\Form\Constraint\NewEmail($this->app),
+                NewEmail::create($this->app),
             ],
         ]);
 

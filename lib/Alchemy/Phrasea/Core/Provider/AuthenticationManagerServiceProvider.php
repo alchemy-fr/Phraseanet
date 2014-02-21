@@ -45,7 +45,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['authentication.suggestion-finder'] = $app->share(function (Application $app) {
-            return new SuggestionFinder($app);
+            return new SuggestionFinder($app['manipulator.user']->getRepository());
         });
 
         $app['authentication.providers.factory'] = $app->share(function (Application $app) {

@@ -18,12 +18,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class PasswordToken extends Constraint
 {
     public $message = 'The token provided is not valid anymore';
-    private $app;
     private $random;
 
-    public function __construct(Application $app, \random $random)
+    public function __construct(\random $random)
     {
-        $this->app = $app;
         $this->random = $random;
         parent::__construct();
     }
@@ -41,6 +39,6 @@ class PasswordToken extends Constraint
 
     public static function create(Application $app)
     {
-        return new static($app, $app['tokens']);
+        return new static($app['tokens']);
     }
 }

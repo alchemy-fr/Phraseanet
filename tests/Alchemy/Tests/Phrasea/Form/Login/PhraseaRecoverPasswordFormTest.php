@@ -9,6 +9,6 @@ class PhraseaRecoverPasswordFormTest extends FormTestCase
 {
     protected function getForm()
     {
-        return new PhraseaRecoverPasswordForm(self::$DI['app']);
+        return new PhraseaRecoverPasswordForm(self::$DI['app']['tokens']);
     }
 }

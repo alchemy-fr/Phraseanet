@@ -12,26 +12,27 @@
 namespace Alchemy\Phrasea\Form\Constraint;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\Common\Persistence\ObjectRepository;
 use Symfony\Component\Validator\Constraint;
 
 class NewEmail extends Constraint
 {
     public $message = 'This email is already bound to an account';
-    private $app;
+    private $repository;
 
-    public function __construct(Application $app)
+    public function __construct(ObjectRepository $repository)
     {
-        $this->app = $app;
+        $this->repository = $repository;
         parent::__construct();
     }
 
     public function isAlreadyRegistered($email)
     {
-        return (Boolean) $this->app['manipulator.user']->getRepository()->findByEmail($email);
+        return (Boolean) $this->repository->findByEmail($email);
     }
 
     public static function create(Application $app)
     {
-        return new static($app);
+        return new static($app['manipulator.user']->getRepository());
     }
 }
