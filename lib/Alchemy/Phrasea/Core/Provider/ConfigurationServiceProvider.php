@@ -13,9 +13,11 @@ namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Core\Configuration\Configuration;
 use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
+use Alchemy\Phrasea\Core\Configuration\HostConfiguration;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Configuration\Compiler;
 use Alchemy\Phrasea\Core\Configuration\RegistryManipulator;
+use Alchemy\Phrasea\Core\Event\Subscriber\ConfigurationLoaderSubscriber;
 use Silex\Application as SilexApplication;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\Yaml\Yaml;
@@ -35,13 +37,13 @@ class ConfigurationServiceProvider implements ServiceProviderInterface
         $app['phraseanet.configuration.config-compiled-path'] = $app['root.path'] . '/tmp/configuration-compiled.php';
 
         $app['configuration.store'] = $app->share(function (SilexApplication $app) {
-            return new Configuration(
+            return new HostConfiguration(new Configuration(
                 $app['phraseanet.configuration.yaml-parser'],
                 $app['phraseanet.configuration.compiler'],
                 $app['phraseanet.configuration.config-path'],
                 $app['phraseanet.configuration.config-compiled-path'],
                 $app['debug']
-            );
+            ));
         });
 
         $app['registry.manipulator'] = $app->share(function (SilexApplication $app) {
@@ -69,6 +71,7 @@ class ConfigurationServiceProvider implements ServiceProviderInterface
     {
         $app['dispatcher'] = $app->share(
             $app->extend('dispatcher', function ($dispatcher, SilexApplication $app) {
+                $dispatcher->addSubscriber(new ConfigurationLoaderSubscriber($app['configuration.store']));
                 $dispatcher->addSubscriber(new TrustedProxySubscriber($app['configuration.store']));
 
                 return $dispatcher;

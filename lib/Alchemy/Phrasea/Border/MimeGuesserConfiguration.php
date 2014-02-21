@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Border;
 
-use Alchemy\Phrasea\Core\Configuration\Configuration;
+use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use MediaVorus\Utils\AudioMimeTypeGuesser;
 use MediaVorus\Utils\PostScriptMimeTypeGuesser;
@@ -26,7 +26,7 @@ class MimeGuesserConfiguration
     private $conf;
     private $store;
 
-    public function __construct(PropertyAccess $conf, Configuration $store)
+    public function __construct(PropertyAccess $conf, ConfigurationInterface $store)
     {
         $this->conf = $conf;
         $this->store = $store;

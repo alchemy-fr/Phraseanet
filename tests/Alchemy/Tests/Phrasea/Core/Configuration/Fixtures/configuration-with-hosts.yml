@@ -1,0 +1,275 @@
+servername: 'http://local.phrasea/'
+languages:
+    available: []
+    default: 'fr'
+hosts-configuration:
+    dedicated:
+        servername: 'http://local.dedicated-host'
+        main:
+            maintenance: true
+        registry:
+            general:
+                title: Hosted Man !
+        border-manager:
+            enabled: false
+main:
+    maintenance: false
+    database:
+        host: 'sql-host'
+        port: 3306
+        user: 'sql-user'
+        password: 'sql-password'
+        dbname: ab_phraseanet
+        driver: pdo_mysql
+        charset: UTF8
+    database-test:
+        driver: pdo_sqlite
+        path: '/tmp/db.sqlite'
+        charset: UTF8
+    api-timers: false
+    cache:
+        type: MemcacheCache
+        options:
+            host: localhost
+            port: 11211
+    opcodecache:
+        type: ArrayCache
+        options: []
+    search-engine:
+        type: Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine
+        options: []
+    task-manager:
+        status: started
+        logger:
+            max-files: 10
+            enabled: true
+            level: INFO
+        listener:
+            protocol: tcp
+            host: 127.0.0.1
+            port: 6660
+            linger: 500
+    websocket-server:
+        host: local.phrasea
+        port: 9090
+        ip: 0.0.0.0
+        subscriber:
+            protocol: tcp
+            host: 127.0.0.1
+            port: 13598
+    session:
+        type: 'file'
+        options: []
+        ttl: 86400
+    binaries:
+        ghostscript_binary: null
+        php_binary: null
+        swf_extract_binary: null
+        pdf2swf_binary: null
+        swf_render_binary: null
+        unoconv_binary: null
+        ffmpeg_binary: null
+        ffprobe_binary: null
+        mp4box_binary: null
+        pdftotext_binary: null
+        recess_binary: null
+        phraseanet_indexer: null
+        ffmpeg_timeout: 3600
+        ffprobe_timeout: 60
+        gs_timeout: 60
+        mp4box_timeout: 60
+        swftools_timeout: 60
+        unoconv_timeout: 60
+    task-manager:
+        status: started
+        listener:
+            protocol: tcp
+            host: 127.0.0.1
+            port: 6700
+    storage:
+        subdefs:
+            default-dir: null
+    bridge:
+        youtube:
+            enabled: false
+            client_id: null
+            client_secret: null
+            developer_key: null
+        flickr:
+            enabled: false
+            client_id: null
+            client_secret: null
+        dailymotion:
+            enabled: false
+            client_id: null
+            client_secret: null
+trusted-proxies: []
+debugger:
+    allowed-ips: []
+border-manager:
+    enabled: true
+    extension-mapping: { }
+    checkers:
+        -
+            type: Checker\Sha256
+            enabled: true
+        -
+            type: Checker\UUID
+            enabled: true
+        -
+            type: Checker\Colorspace
+            enabled: false
+            options:
+                colorspaces: [cmyk, grayscale, rgb]
+        -
+            type: Checker\Dimension
+            enabled: false
+            options:
+                width: 80
+                height: 160
+        -
+            type: Checker\Extension
+            enabled: false
+            options:
+                extensions: [jpg, jpeg, bmp, tif, gif, png, pdf, doc, odt, mpg, mpeg, mov, avi, xls, flv, mp3, mp2]
+        -
+            type: Checker\Filename
+            enabled: false
+            options:
+                sensitive: true
+        -
+            type: Checker\MediaType
+            enabled: false
+            options:
+                mediatypes: [Audio, Document, Flash, Image, Video]
+authentication:
+    auto-create:
+        templates: {  }
+    captcha:
+        enabled: true
+        trials-before-display: 9
+    providers:
+        facebook:
+            enabled: false
+            options:
+                app-id: ''
+                secret: ''
+        twitter:
+            enabled: false
+            options:
+                consumer-key: ''
+                consumer-secret: ''
+        google-plus:
+            enabled: false
+            options:
+                client-id: ''
+                client-secret: ''
+        github:
+            enabled: false
+            options:
+                client-id: ''
+                client-secret: ''
+        viadeo:
+            enabled: false
+            options:
+                client-id: ''
+                client-secret: ''
+        linkedin:
+            enabled: false
+            options:
+                client-id: ''
+                client-secret: ''
+registration-fields:
+    -
+        name: company
+        required: true
+    -
+        name: firstname
+        required: true
+    -
+        name: geonameid
+        required: true
+xsendfile:
+    enabled: false
+    type: nginx
+    mapping: []
+plugins: []
+registry:
+    general:
+        title: SuperPhraseanet
+        keywords: ''
+        description: ''
+        analytics: ''
+        allow-indexation: true
+        home-presentation-mode: COOLIRIS
+    modules:
+        thesaurus: true
+        stories: true
+        doc-substitution: false
+        thumb-substitution: false
+        anonymous-report: false
+    actions:
+        download-max-size: 120
+        validation-reminder-days: 2
+        validation-expiration-days: 10
+        auth-required-for-export: true
+        tou-validation-required-for-export: false
+        export-title-choice: false
+        default-export-title: support@alchemy.fr
+        social-tools: none
+    ftp:
+        ftp-enabled: true
+        ftp-user-access: false
+    registration:
+        auto-select-collections: true
+        auto-register-enabled: false
+    classic:
+        search-tab: 1
+        adv-search-tab: 2
+        topics-tab: 0
+        active-tab: 1
+        render-topics: tree
+        stories-preview: true
+        basket-rollover: true
+        collection-presentation: checkbox
+        basket-size-display: true
+        auto-show-proposals: true
+        collection-display: true
+    maintenance:
+        message: 'May the force be with you'
+        enabled: false
+    api-clients:
+        navigator-enabled: false
+        office-enabled: true
+    webservices:
+        google-charts-enabled: true
+        geonames-server: 'http://geonames.alchemyasp.com/'
+        captchas-enabled: false
+        recaptcha-public-key: ''
+        recaptcha-private-key: ''
+        captcha-enabled: false
+    executables:
+        h264-streaming-enabled: false
+        auth-token-directory: ''
+        auth-token-directory-path: ''
+        auth-token-passphrase: ''
+        php-conf-path: ''
+        imagine-driver: ''
+        ffmpeg-threads: 2
+        pdf-max-pages: 5
+    searchengine:
+        min-letters-truncation: 1
+        default-query: all
+        default-query-type: '0'
+    email:
+        emitter-email: phraseanet@example.com
+        prefix: ''
+        smtp-enabled: false
+        smtp-auth-enabled: false
+        smtp-host: ''
+        smtp-port: ''
+        smtp-secure-mode: '0'
+        smtp-user: ''
+        smtp-password: ''
+        admin-email: support@alchemy.fr
+user-settings: {  }
