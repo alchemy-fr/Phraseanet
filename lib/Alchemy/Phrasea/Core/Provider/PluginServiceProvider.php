@@ -11,6 +11,10 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Plugin\PluginManager;
+use Alchemy\Phrasea\Plugin\Schema\ManifestValidator;
+use Alchemy\Phrasea\Plugin\Schema\PluginValidator;
+use JsonSchema\Validator as JsonValidator;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -18,6 +22,23 @@ class PluginServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
+        $app['plugins.schema'] = realpath(__DIR__ . '/../../../../conf.d/plugin-schema.json');
+
+        $app['plugins.json-validator'] = $app->share(function (Application $app) {
+            return new JsonValidator();
+        });
+
+        $app['plugins.manifest-validator'] = $app->share(function (Application $app) {
+            return ManifestValidator::create($app);
+        });
+
+        $app['plugins.plugins-validator'] = $app->share(function (Application $app) {
+            return new PluginValidator($app['plugins.manifest-validator']);
+        });
+
+        $app['plugins.manager'] = $app->share(function (Application $app) {
+            return new PluginManager($app['plugins.directory'], $app['plugins.plugins-validator'], $app['conf']);
+        });
     }
 
     public function boot(Application $app)
