@@ -199,9 +199,7 @@ class API_V1_result
 
         $this->app['dispatcher']->dispatch(PhraseaEvents::API_RESULT, new ApiResultEvent());
 
-        $conf = $this->app['configuration.store'];
-
-        if (isset($conf['main']['api-timers']) && true === $conf['main']['api-timers']) {
+        if ($this->app['conf']->get(['main', 'api-timers'], false)) {
             $ret['timers'] = $this->app['api.timers']->toArray();
         }
 

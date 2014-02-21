@@ -2,6 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\TaskManager;
 
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\TaskManager\TaskManagerStatus;
 use Alchemy\Tests\Phrasea\MockArrayConf;
 
@@ -16,7 +17,7 @@ class TaskManagerStatusTest extends \PhraseanetTestCase
         $expected = $conf->getConfig();
         $expected['main']['task-manager']['status'] = TaskManagerStatus::STATUS_STARTED;
 
-        $status = new TaskManagerStatus($conf);
+        $status = new TaskManagerStatus(new PropertyAccess($conf));
         $status->start();
 
         $this->assertEquals($expected, $conf->getConfig());
@@ -45,7 +46,7 @@ class TaskManagerStatusTest extends \PhraseanetTestCase
         $expected = $conf->getConfig();
         $expected['main']['task-manager']['status'] = TaskManagerStatus::STATUS_STOPPED;
 
-        $status = new TaskManagerStatus($conf);
+        $status = new TaskManagerStatus(new PropertyAccess($conf));
         $status->stop();
 
         $this->assertEquals($expected, $conf->getConfig());
@@ -56,7 +57,7 @@ class TaskManagerStatusTest extends \PhraseanetTestCase
      */
     public function testIsRunning($data, $expectedStatus, $isRunning)
     {
-        $conf = new MockArrayConf($data);
+        $conf = new PropertyAccess(new MockArrayConf($data));
         $status = new TaskManagerStatus($conf);
         $this->assertEquals($isRunning, $status->isRunning());
     }
@@ -77,7 +78,7 @@ class TaskManagerStatusTest extends \PhraseanetTestCase
      */
     public function testGetStatus($data, $expectedStatus, $isRunning)
     {
-        $conf = new MockArrayConf($data);
+        $conf = new PropertyAccess(new MockArrayConf($data));
         $status = new TaskManagerStatus($conf);
         $this->assertEquals($expectedStatus, $status->getStatus());
     }

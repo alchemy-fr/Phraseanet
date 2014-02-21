@@ -12,15 +12,15 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\SearchEngine\AbstractConfigurationPanel;
 use Symfony\Component\HttpFoundation\Request;
-use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
 
 class ConfigurationPanel extends AbstractConfigurationPanel
 {
     private $searchEngine;
 
-    public function __construct(ElasticSearchEngine $engine, ConfigurationInterface $conf)
+    public function __construct(ElasticSearchEngine $engine, PropertyAccess $conf)
     {
         $this->searchEngine = $engine;
         $this->conf = $conf;
@@ -62,6 +62,6 @@ class ConfigurationPanel extends AbstractConfigurationPanel
      */
     public function getConfiguration()
     {
-        return isset($this->conf['main']['search-engine']['options']) ? $this->conf['main']['search-engine']['options'] : [];
+        return $this->conf->get(['main', 'search-engine', 'options'], []);
     }
 }

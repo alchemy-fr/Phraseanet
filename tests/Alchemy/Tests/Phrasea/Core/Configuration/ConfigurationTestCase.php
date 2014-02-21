@@ -55,7 +55,8 @@ abstract class ConfigurationTestCase extends \PhraseanetTestCase
         $compiled = $this->compiled;
 
         $conf = $this->provideConfiguration($configFile);
-        $config = $conf->initialize();
+        $this->assertSame($conf, $conf->initialize());
+        $config = $conf->getConfig();
 
         $this->assertArrayHasKey('main', $config);
         $this->assertFileExists($compiled);

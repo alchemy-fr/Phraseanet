@@ -23,16 +23,4 @@ class ConfigurationTest extends ConfigurationTestCase
 
         return new Configuration($yaml, $compiler, $confFile, $compiledFile, $autoreload);
     }
-
-    public function testGetTestConnectionConf()
-    {
-        $configFile = __DIR__ . '/Fixtures/configuration.yml';
-
-        $conf = $this->provideConfiguration($configFile, null, null, null, true);
-        $data = $conf->getTestConnectionParameters();
-
-        $this->assertArrayHasKey('driver', $data);
-        $this->assertArrayHasKey('path', $data);
-        $this->assertArrayHasKey('charset', $data);
-    }
 }

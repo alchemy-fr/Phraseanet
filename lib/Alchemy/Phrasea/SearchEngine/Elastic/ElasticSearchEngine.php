@@ -94,7 +94,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     public function getConfigurationPanel()
     {
         if (!$this->configurationPanel) {
-            $this->configurationPanel = new ConfigurationPanel($this, $this->app['configuration.store']);
+            $this->configurationPanel = new ConfigurationPanel($this, $this->app['conf']);
         }
 
         return $this->configurationPanel;

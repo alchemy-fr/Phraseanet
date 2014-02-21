@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\TaskManager\Editor;
 
-use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 
 class PhraseanetIndexerEditor extends AbstractEditor
 {
@@ -35,18 +35,16 @@ class PhraseanetIndexerEditor extends AbstractEditor
     /**
      * {@inheritdoc}
      */
-    public function getDefaultSettings(ConfigurationInterface $config = null)
+    public function getDefaultSettings(PropertyAccess $config = null)
     {
         if (null !== $config) {
-            $database = $config['main']['database'];
-
             return '<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
-    <host>'.$database['host'].'</host>
-    <port>'.$database['port'].'</port>
-    <base>'.$database['dbname'].'</base>
-    <user>'.$database['user'].'</user>
-    <password>'.$database['password'].'</password>
+    <host>'.$config->get(['main', 'database', 'host']).'</host>
+    <port>'.$config->get(['main', 'database', 'port']).'</port>
+    <base>'.$config->get(['main', 'database', 'dbname']).'</base>
+    <user>'.$config->get(['main', 'database', 'user']).'</user>
+    <password>'.$config->get(['main', 'database', 'password']).'</password>
     <socket>25200</socket>
     <nolog>0</nolog>
     <clng></clng>

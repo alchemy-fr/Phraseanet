@@ -11,11 +11,11 @@
 
 namespace Alchemy\Phrasea\SearchEngine\SphinxSearch;
 
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\SearchEngine\AbstractConfigurationPanel;
 use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Finder\Finder;
-use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
 
 class ConfigurationPanel extends AbstractConfigurationPanel
 {
@@ -24,7 +24,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
     protected $charsets;
     protected $searchEngine;
 
-    public function __construct(SphinxSearchEngine $engine, ConfigurationInterface $conf)
+    public function __construct(SphinxSearchEngine $engine, PropertyAccess $conf)
     {
         $this->searchEngine = $engine;
         $this->conf = $conf;
@@ -86,21 +86,9 @@ class ConfigurationPanel extends AbstractConfigurationPanel
      */
     public function getConfiguration()
     {
-        $configuration = isset($this->conf['main']['search-engine']['options']) ? $this->conf['main']['search-engine']['options'] : [];
+        $configuration = $this->conf->get(['main', 'search-engine', 'options'], []);
 
         return self::populateConfiguration($configuration);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function saveConfiguration(array $configuration)
-    {
-        $conf = $this->conf->getConfig();
-        $conf['main']['search-engine']['options'] = $configuration;
-        $this->conf->setConfig($conf);
-
-        return $this;
     }
 
     /**

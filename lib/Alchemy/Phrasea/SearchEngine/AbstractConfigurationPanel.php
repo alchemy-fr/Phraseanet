@@ -40,9 +40,7 @@ abstract class AbstractConfigurationPanel implements ConfigurationPanelInterface
      */
     public function saveConfiguration(array $configuration)
     {
-        $conf = $this->conf->getConfig();
-        $conf['main']['search-engine']['options'] = $configuration;
-        $this->conf->setConfig($conf);
+        $this->conf->set(['main', 'search-engine', 'options'], $configuration);
 
         return $this;
     }

@@ -65,8 +65,11 @@ class RegenerateSqliteDb extends Command
         }
 
         try {
-            $dbParams = $this->container['configuration.store']->getTestConnectionParameters();
-            $dbParams['path'] = $source;
+            $dbParams = [
+                'driver'  => 'pdo_sqlite',
+                'path'    => $source,
+                'charset' => 'UTF8',
+            ];
 
             $this->container->register(new ORMServiceProvider());
             $this->container['EM.dbal-conf'] = $dbParams;

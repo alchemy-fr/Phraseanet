@@ -13,7 +13,6 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\FtpExport;
 use Alchemy\Phrasea\Model\Entities\FtpExportElement;
 use Gedmo\Timestampable\TimestampableListener;
-use Doctrine\ORM\NoResultException;
 
 class patch_390alpha6a extends patchAbstract
 {

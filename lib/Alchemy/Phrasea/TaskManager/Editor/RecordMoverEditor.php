@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\TaskManager\Editor;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\TaskManager\Job\RecordMoverJob;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -74,7 +74,7 @@ class RecordMoverEditor extends AbstractEditor
     /**
      * {@inheritdoc}
      */
-    public function getDefaultSettings(ConfigurationInterface $config = null)
+    public function getDefaultSettings(PropertyAccess $config = null)
     {
         return <<<EOF
 <?xml version="1.0" encoding="UTF-8"?>

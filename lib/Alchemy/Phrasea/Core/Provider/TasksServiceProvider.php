@@ -49,7 +49,7 @@ class TasksServiceProvider implements ServiceProviderInterface
         });
 
         $app['task-manager.status'] = $app->share(function (Application $app) {
-            return new TaskManagerStatus($app['configuration.store']);
+            return new TaskManagerStatus($app['conf']);
         });
 
         $app['task-manager.live-information'] = $app->share(function (Application $app) {

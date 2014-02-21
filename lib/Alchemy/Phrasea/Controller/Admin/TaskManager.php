@@ -183,7 +183,7 @@ class TaskManager implements ControllerProviderInterface
         $task = $app['manipulator.task']->create(
             $job->getName(),
             $job->getJobId(),
-            $job->getEditor()->getDefaultSettings($app['configuration.store']),
+            $job->getEditor()->getDefaultSettings($app['conf']),
             $job->getEditor()->getDefaultPeriod()
         );
 
