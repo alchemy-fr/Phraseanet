@@ -216,20 +216,18 @@ class HostConfiguration implements ConfigurationInterface
             return;
         }
 
-        foreach (array_keys($config) as $property) {
-            if (in_array($property, ['main', 'xsendfile', 'hosts-configuration'])) {
+        foreach (array_keys($subConf) as $property) {
+            if (in_array($property, ['main', 'xsendfile', 'hosts-configuration', 'databoxes'])) {
                 continue;
             }
 
-            if (isset($subConf[$property])) {
-                $data = isset($config[$property]) ? $config[$property] : [];
-                if (is_array($data)) {
-                    $data = array_replace_recursive($data, $subConf[$property]);
-                } else {
-                    $data = $subConf[$property];
-                }
-                $config[$property] = $data;
+            $data = isset($config[$property]) ? $config[$property] : (is_array($subConf[$property]) ? [] : null);
+            if (is_array($data)) {
+                $data = array_replace_recursive($data, $subConf[$property]);
+            } else {
+                $data = $subConf[$property];
             }
+            $config[$property] = $data;
         }
 
         $this->cache = $config;
