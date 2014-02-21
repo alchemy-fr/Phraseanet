@@ -18,6 +18,8 @@ use Alchemy\Phrasea\Command\Setup\PluginsReset;
 use Alchemy\Phrasea\Command\Plugin\ListPlugin;
 use Alchemy\Phrasea\Command\Plugin\AddPlugin;
 use Alchemy\Phrasea\Command\Plugin\RemovePlugin;
+use Alchemy\Phrasea\Command\Plugin\EnablePlugin;
+use Alchemy\Phrasea\Command\Plugin\DisablePlugin;
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Command\Setup\CheckEnvironment;
 use Alchemy\Phrasea\Core\CLIProvider\DoctrineMigrationServiceProvider;
@@ -65,6 +67,8 @@ $app->command(new AddPlugin());
 $app->command(new ListPlugin());
 $app->command(new RemovePlugin());
 $app->command(new PluginsReset());
+$app->command(new EnablePlugin());
+$app->command(new DisablePlugin());
 $app->command(new CheckEnvironment('check:system'));
 $app->command(new Install('system:install'));
 

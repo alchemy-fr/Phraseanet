@@ -15,26 +15,6 @@ class PluginServiceProviderTest extends ServiceProviderTestCase
         return [
             [
                 'Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider',
-                'plugins.json-validator',
-                'JsonSchema\Validator'
-            ],
-            [
-                'Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider',
-                'plugins.manager',
-                'Alchemy\Phrasea\Plugin\PluginManager'
-            ],
-            [
-                'Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider',
-                'plugins.plugins-validator',
-                'Alchemy\Phrasea\Plugin\Schema\PluginValidator'
-            ],
-            [
-                'Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider',
-                'plugins.manifest-validator',
-                'Alchemy\Phrasea\Plugin\Schema\ManifestValidator'
-            ],
-            [
-                'Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider',
                 'plugins.import-strategy',
                 'Alchemy\Phrasea\Plugin\Importer\ImportStrategy'
             ],
@@ -110,12 +90,5 @@ class PluginServiceProviderTest extends ServiceProviderTestCase
         $app['conf']->set(['binaries', 'php_binary'], null);
         $app->register(new PluginServiceProvider());
         $this->assertInstanceOf('Alchemy\Phrasea\Plugin\Management\ComposerInstaller', $app['plugins.composer-installer']);
-    }
-
-    private function createRegistryMock()
-    {
-        return $this->getMockBuilder('registry')
-            ->disableOriginalConstructor()
-            ->getMock();
     }
 }

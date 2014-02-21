@@ -27,8 +27,9 @@ class AutoloaderGeneratorTest extends \PhraseanetTestCase
 
         $this->cleanup($files);
 
+        $manifest = new Manifest(json_decode(file_get_contents($pluginDir . '/manifest.json'), true));
         $generator = new AutoloaderGenerator($pluginsDir);
-        $generator->write([new Manifest(json_decode(file_get_contents($pluginDir . '/manifest.json'), true))]);
+        $generator->write([$manifest]);
 
         $finder = new ExecutableFinder();
         $php = $finder->find('php');
@@ -52,6 +53,7 @@ class AutoloaderGeneratorTest extends \PhraseanetTestCase
 
         // load services
         $app = new Application();
+        $app['conf']->set(['plugins', $manifest->getName(), 'enabled'], true);
         $retrievedApp = require $pluginsDir . '/services.php';
 
         $this->assertSame($app, $retrievedApp);
