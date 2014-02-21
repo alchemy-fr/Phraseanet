@@ -28,6 +28,29 @@ main:
     search-engine:
         type: Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine
         options: []
+    task-manager:
+        status: started
+        logger:
+            max-files: 10
+            enabled: true
+            level: INFO
+        listener:
+            protocol: tcp
+            host: 127.0.0.1
+            port: 6660
+            linger: 500
+    websocket-server:
+        host: local.phrasea
+        port: 9090
+        ip: 0.0.0.0
+        subscriber:
+            protocol: tcp
+            host: 127.0.0.1
+            port: 13598
+    session:
+        type: 'file'
+        options: []
+        ttl: 86400
     binaries:
         ghostscript_binary: null
         php_binary: null
@@ -75,6 +98,7 @@ debugger:
     allowed-ips: []
 border-manager:
     enabled: true
+    extension-mapping: { }
     checkers:
         -
             type: Checker\Sha256
