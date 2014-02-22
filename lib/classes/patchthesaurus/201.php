@@ -9,9 +9,11 @@
  * file that was distributed with this source code.
  */
 
+use Doctrine\DBAL\Connection;
+
 class patchthesaurus_201 implements patchthesaurus_interface
 {
-    public function patch($version, \DOMDocument $domct, \DOMDocument $domth, \connection_interface $connbas, \unicode $unicode)
+    public function patch($version, \DOMDocument $domct, \DOMDocument $domth, Connection $connbas, \unicode $unicode)
     {
         if ($version == "2.0.1") {
             $th = $domth->documentElement;

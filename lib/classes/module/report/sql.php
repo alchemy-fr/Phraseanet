@@ -15,13 +15,13 @@ class module_report_sql
 {
     /**
      *
-     * @var connection_PDO
+     * @var Connection
      */
     public $conn;
 
     /**
      *
-     * @var connection_PDO
+     * @var Connection
      */
     public $connbas;
 
@@ -39,8 +39,8 @@ class module_report_sql
 
     public function __construct(Application $app, module_report $report)
     {
-        $this->conn = connection::getPDOConnection($app);
-        $this->connbas = connection::getPDOConnection($app, $report->getSbasId());
+        $this->conn = $app['phraseanet.appbox']->get_connection();
+        $this->connbas = $app['phraseanet.appbox']->get_databox($report->getSbasId())->get_connection();
         $this->filter = new module_report_sqlfilter($app, $report);
         $this->sql = '';
         $this->params = [];
@@ -118,7 +118,7 @@ class module_report_sql
 
     /**
      *
-     * @return connection_PDO
+     * @return Connection
      */
     public function getConnBas()
     {

@@ -328,7 +328,8 @@ class record_preview extends record_adapter
 
         $report = $this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($this->get_base_id(), 'canreport');
 
-        $connsbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
+        $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
+        $connsbas = $databox->get_connection();
 
         $sql = 'SELECT d . * , l.user, l.usrid as usr_id, l.site
                 FROM log_docs d, log l
@@ -431,7 +432,8 @@ class record_preview extends record_adapter
           AND site_id = :site
           GROUP BY datee ORDER BY datee ASC';
 
-        $connsbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
+        $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
+        $connsbas = $databox->get_connection();
         $stmt = $connsbas->prepare($sql);
         $stmt->execute(
             [
@@ -499,7 +501,8 @@ class record_preview extends record_adapter
             return $this->refferer_popularity;
         }
 
-        $connsbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
+        $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
+        $connsbas = $databox->get_connection();
 
         $sql = 'SELECT count( id ) AS views, referrer
           FROM `log_view`
@@ -592,7 +595,8 @@ class record_preview extends record_adapter
         AND site= :site
         GROUP BY datee ORDER BY datee ASC';
 
-        $connsbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
+        $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
+        $connsbas = $databox->get_connection();
         $stmt = $connsbas->prepare($sql);
         $stmt->execute(
             [

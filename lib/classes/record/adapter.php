@@ -295,7 +295,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             throw new Exception('unrecognized document type');
         }
 
-        $connbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
+        $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
+        $connbas = $databox->get_connection();
 
         $sql = 'UPDATE record SET type = :type WHERE record_id = :record_id';
         $stmt = $connbas->prepare($sql);
@@ -1099,7 +1100,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      */
     public function rebuild_subdefs()
     {
-        $connbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
+        $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
+        $connbas = $databox->get_connection();
         $sql = 'UPDATE record SET jeton=(jeton | ' . JETON_MAKE_SUBDEF . ') WHERE record_id = :record_id';
         $stmt = $connbas->prepare($sql);
         $stmt->execute([':record_id' => $this->get_record_id()]);
@@ -1113,7 +1115,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      */
     public function write_metas()
     {
-        $connbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
+        $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
+        $connbas = $databox->get_connection();
         $sql = 'UPDATE record
             SET jeton = ' . (JETON_WRITE_META_DOC | JETON_WRITE_META_SUBDEF) . '
             WHERE record_id= :record_id';
@@ -1130,7 +1133,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      */
     public function set_binary_status($status)
     {
-        $connbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
+        $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
+        $connbas = $databox->get_connection();
 
         $sql = 'UPDATE record SET status = 0b' . $status . '
             WHERE record_id= :record_id';
@@ -1333,7 +1337,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      */
     public static function get_record_by_sha(Application $app, $sbas_id, $sha256, $record_id = null)
     {
-        $conn = connection::getPDOConnection($app, $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $conn = $databox->get_connection();
 
         $sql = "SELECT record_id
             FROM record r
@@ -1583,7 +1588,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     public function log_view($log_id, $referrer, $gv_sit)
     {
-        $connbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
+        $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
+        $connbas = $databox->get_connection();
 
         $sql = 'INSERT INTO log_view (id, log_id, date, record_id, referrer, site_id)
             VALUES

@@ -112,7 +112,7 @@ class collectionTest extends \PhraseanetAuthenticatedTestCase
 
     public function testGet_connection()
     {
-        $this->assertInstanceOf('connection_pdo', self::$object->get_connection());
+        $this->assertInstanceOf('Doctrine\DBAL\Connection', self::$object->get_connection());
     }
 
     /**

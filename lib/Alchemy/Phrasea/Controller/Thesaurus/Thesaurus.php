@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Thesaurus;
 
+use Doctrine\DBAL\Connection;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -133,7 +134,7 @@ class Thesaurus implements ControllerProviderInterface
         if ($request->get("typ") == "TH" || $request->get("typ") == "CT") {
             try {
                 $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
-                $connbas = \connection::getPDOConnection($app, $bid);
+                $databox->get_connection();
 
                 if ($request->get("typ") == "TH") {
                     $domth = $databox->get_dom_thesaurus();
@@ -576,7 +577,7 @@ class Thesaurus implements ControllerProviderInterface
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
-            $connbas = \connection::getPDOConnection($app, $bid);
+            $connbas = $databox->get_connection();
 
             $dom = $databox->get_dom_thesaurus();
 
@@ -783,7 +784,7 @@ class Thesaurus implements ControllerProviderInterface
 
         foreach ($rs as $row) {
             try {
-                \connection::getPDOConnection($app, $row['sbas_id']);
+                $app['phraseanet.appbox']->get_databox($row['sbas_id'])->get_connection()->connect();
             } catch (\Exception $e) {
                 continue;
             }
@@ -956,7 +957,7 @@ class Thesaurus implements ControllerProviderInterface
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
-            $connbas = \connection::getPDOConnection($app, $bid);
+            $connbas = $databox->get_connection();
             $meta_struct = $databox->get_meta_structure();
             $domct = $databox->get_dom_cterms();
             $domst = $databox->get_dom_structure();
@@ -1029,7 +1030,7 @@ class Thesaurus implements ControllerProviderInterface
         ]);
     }
 
-    private function fixThesaurus($app, \DOMDocument $domct, \DOMDocument $domth, \connection_interface $connbas)
+    private function fixThesaurus($app, \DOMDocument $domct, \DOMDocument $domth, Connection $connbas)
     {
         $version = $domth->documentElement->getAttribute("version");
 
@@ -1064,7 +1065,7 @@ class Thesaurus implements ControllerProviderInterface
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox((int) $request->get('bid'));
-            $connbas = \connection::getPDOConnection($app, $request->get('bid'));
+            $connbas = $databox->get_connection();
 
             $domct = $databox->get_dom_cterms();
             $domth = $databox->get_dom_thesaurus();
@@ -1261,7 +1262,7 @@ class Thesaurus implements ControllerProviderInterface
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
-            \connection::getPDOConnection($app, $bid);
+            $databox->get_connection()->connect();
 
             $dom = $databox->get_dom_cterms();
             $xpath = new \DOMXPath($dom);
@@ -1295,7 +1296,8 @@ class Thesaurus implements ControllerProviderInterface
             $sql = "UPDATE thit SET value = thit_new WHERE value = :thit_old";
 
             try {
-                $connbas = \connection::getPDOConnection($app, $sbas_id);
+                $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+                $connbas = $databox->get_connection();
                 $stmt = $connbas->prepare($sql);
                 $stmt->execute([
                     ':thit_new' => $thit_newid,
@@ -1336,7 +1338,7 @@ class Thesaurus implements ControllerProviderInterface
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
-            $connbas = \connection::getPDOConnection($app, $bid);
+            $connbas = $databox->get_connection();
 
             $domct = $databox->get_dom_cterms();
             $domth = $databox->get_dom_thesaurus();
@@ -1635,7 +1637,7 @@ class Thesaurus implements ControllerProviderInterface
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
-            $connbas = \connection::getPDOConnection($app, $bid);
+            $connbas = $databox->get_connection();
 
             $s_thits = '';
             $sql = "SELECT DISTINCT value FROM thit";
@@ -1729,8 +1731,8 @@ class Thesaurus implements ControllerProviderInterface
         }
 
         try {
-            $connbas = \connection::getPDOConnection($app, $bid);
             $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $connbas = $databox->get_connection();
             $domct = $databox->get_dom_cterms();
             $dom = $databox->get_dom_thesaurus();
 
@@ -1912,7 +1914,7 @@ class Thesaurus implements ControllerProviderInterface
                         $snewid = str_replace(".", "d", $newid) . "d";
                         $l = strlen($soldid) + 1;
 
-                        $connbas = \connection::getPDOConnection($app, $bid);
+                        $connbas = $databox->get_connection();
 
                         $sql = "UPDATE thit SET value=CONCAT('$snewid', SUBSTRING(value FROM $l))
                                 WHERE value LIKE :like";
@@ -2050,7 +2052,7 @@ class Thesaurus implements ControllerProviderInterface
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
-            $connbas = \connection::getPDOConnection($app, $bid);
+            $connbas = $databox->get_connection();
 
             if ($request->get('typ') == "CT") {
                 $xqroot = "cterms";
@@ -2448,7 +2450,7 @@ class Thesaurus implements ControllerProviderInterface
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
-            $connbas = \connection::getPDOConnection($app, $bid);
+            $connbas = $databox->get_connection();
 
             if ($request->get('typ') == "CT") {
                 $xqroot = "cterms";
@@ -2633,8 +2635,8 @@ class Thesaurus implements ControllerProviderInterface
         }
 
         try {
-            $connbas = \connection::getPDOConnection($app, $bid);
             $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $connbas = $databox->get_connection();
             $domth = $databox->get_dom_thesaurus();
 
             if ($domth) {
@@ -2862,7 +2864,7 @@ class Thesaurus implements ControllerProviderInterface
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
-            $connbas = \connection::getPDOConnection($app, $bid);
+            $connbas = $databox->get_connection();
 
             $dom = $databox->get_dom_cterms();
 
@@ -2888,7 +2890,7 @@ class Thesaurus implements ControllerProviderInterface
         return new Response($ret->saveXML(), 200, ['Content-Type' => 'text/xml']);
     }
 
-    private function doRejectBranch(\connection_pdo $connbas, \DOMElement $node)
+    private function doRejectBranch(Connection $connbas, \DOMElement $node)
     {
         if (strlen($oldid = $node->getAttribute("id")) > 1) {
             $node->setAttribute("id", $newid = ("R" . substr($oldid, 1)));
@@ -3053,7 +3055,7 @@ class Thesaurus implements ControllerProviderInterface
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
-            $connbas = \connection::getPDOConnection($app, $bid);
+            $connbas = $databox->get_connection();
 
             $s_thits = ';';
             $sql = "SELECT DISTINCT value FROM thit";

@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Doctrine\DBAL\DBALException;
 
 class patch_360alpha1b implements patchInterface
 {
@@ -62,7 +63,7 @@ class patch_360alpha1b implements patchInterface
             $stmt = $databox->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
-        } catch (\PDOException $e) {
+        } catch (DBALException $e) {
 
         }
 

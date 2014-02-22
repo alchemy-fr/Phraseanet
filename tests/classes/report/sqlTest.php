@@ -7,6 +7,9 @@ class report_sqlTest extends \PhraseanetAuthenticatedTestCase
     {
         parent::setUp();
         $report = $this->getMock('module_report', [], [], '', false);
+        $report->expects($this->any())
+            ->method('getSbasId')
+            ->will($this->returnValue(self::$DI['collection']->get_databox()->get_sbas_id()));
         $this->sql = new module_report_sql(self::$DI['app'], $report);
     }
 

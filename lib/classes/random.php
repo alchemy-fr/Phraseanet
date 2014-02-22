@@ -48,7 +48,7 @@ class random
     public function cleanTokens()
     {
         try {
-            $conn = connection::getPDOConnection($this->app);
+            $conn = $this->app['phraseanet.appbox']->get_connection();
 
             $date = new DateTime();
             $date = $this->app['date-formatter']->format_mysql($date);
@@ -120,7 +120,7 @@ class random
     public function getUrlToken($type, $usr, DateTime $end_date = null, $datas = '')
     {
         $this->cleanTokens();
-        $conn = connection::getPDOConnection($this->app);
+        $conn = $this->app['phraseanet.appbox']->get_connection();
         $token = $test = false;
 
         switch ($type) {
@@ -178,7 +178,7 @@ class random
         $this->cleanTokens();
 
         try {
-            $conn = connection::getPDOConnection($this->app);
+            $conn = $this->app['phraseanet.appbox']->get_connection();
             $sql = 'DELETE FROM tokens WHERE value = :token';
             $stmt = $conn->prepare($sql);
             $stmt->execute([':token' => $token]);
@@ -195,7 +195,7 @@ class random
     public function updateToken($token, $datas)
     {
         try {
-            $conn = connection::getPDOConnection($this->app);
+            $conn = $this->app['phraseanet.appbox']->get_connection();
 
             $sql = 'UPDATE tokens SET datas = :datas
               WHERE value = :token';
@@ -216,7 +216,7 @@ class random
     {
         $this->cleanTokens();
 
-        $conn = connection::getPDOConnection($this->app);
+        $conn = $this->app['phraseanet.appbox']->get_connection();
         $sql = 'SELECT * FROM tokens
             WHERE value = :token
               AND (expire_on > NOW() OR expire_on IS NULL)';
@@ -243,7 +243,7 @@ class random
      */
     public function getValidationToken($userId, $basketId)
     {
-        $conn = \connection::getPDOConnection($this->app);
+        $conn = $this->app['phraseanet.appbox']->get_connection();
         $sql = '
             SELECT value FROM tokens
             WHERE type = :type

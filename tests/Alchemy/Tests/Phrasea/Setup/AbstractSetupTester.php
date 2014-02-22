@@ -29,7 +29,7 @@ abstract class AbstractSetupTester extends \PhraseanetTestCase
     protected function goBackTo31()
     {
         $app = new Application('test');
-        $credentials = $app['phraseanet.appbox']->get_connection()->get_credentials();
+        $conn = $app['phraseanet.appbox']->get_connection();
 
         $this->uninstall();
 
@@ -38,10 +38,10 @@ abstract class AbstractSetupTester extends \PhraseanetTestCase
         file_put_contents( __DIR__ . '/../../../../../config/_GV.php', str_replace('http://local.phrasea/', 'http://local.phrasea.tester/', file_get_contents( __DIR__ . '/../../../../../config/_GV.php')));
 
         file_put_contents(__DIR__ . '/../../../../../config/connexion.inc', "<?php\n
-\$hostname = '".$credentials['hostname']."';
-\$port = '".$credentials['port']."';
-\$user = '".$credentials['user']."';
-\$password = '".$credentials['password']."';
+\$hostname = '".$conn->getHost()."';
+\$port = '".$conn->getPort()."';
+\$user = '".$conn->getUsername()."';
+\$password = '".$conn->getPassword()."';
 \$dbname = 'ab_unitTests';
             ");
 
@@ -54,17 +54,17 @@ abstract class AbstractSetupTester extends \PhraseanetTestCase
     protected function goBackTo35()
     {
         $app = new Application('test');
-        $credentials = $app['phraseanet.appbox']->get_connection()->get_credentials();
+        $conn = $app['phraseanet.appbox']->get_connection();
 
         $this->uninstall();
 
         file_put_contents(__DIR__ . '/../../../../../config/config.inc', "<?php\n\$servername = 'http://local.phrasea';\n");
         file_put_contents(__DIR__ . '/../../../../../config/connexion.inc', "<?php\n
-\$hostname = '".$credentials['hostname']."';
-\$port = '".$credentials['port']."';
-\$user = '".$credentials['user']."';
-\$password = '".$credentials['password']."';
-\$dbname = '".$credentials['dbname']."';
+\$hostname = '".$conn->getHost()."';
+\$port = '".$conn->getPort()."';
+\$user = '".$conn->getUsername()."';
+\$password = '".$conn->getPassword()."';
+\$dbname = '".$conn->getDatabase()."';
             ");
 
         $this->tearDownHandlers[] = function () {

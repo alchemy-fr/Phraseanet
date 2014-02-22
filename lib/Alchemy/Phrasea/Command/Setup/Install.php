@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Command;
+use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -129,24 +130,36 @@ class Install extends Command
                 $abName = $dialog->ask($output, "DB name (phraseanet) : ", 'phraseanet');
 
                 try {
-                    $abConn = new \connection_pdo('appbox', $hostname, $port, $dbUser, $dbPassword, $abName, [], $this->container['debug']);
+                    $abConn = $this->container['dbal.provider']->get([
+                        'host'     => $hostname,
+                        'port'     => $port,
+                        'user'     => $dbUser,
+                        'password' => $dbPassword,
+                        'dbname'   => $abName,
+                    ]);
+                    $abConn->connect();
                     $output->writeln("\n\t<info>Application-Box : Connection successful !</info>\n");
                 } catch (\Exception $e) {
                     $output->writeln("\n\t<error>Invalid connection parameters</error>\n");
                 }
             } while (!$abConn);
         } else {
-            $abConn = new \connection_pdo('appbox', $input->getOption('db-host'), $input->getOption('db-port'), $input->getOption('db-user'), $input->getOption('db-password'), $input->getOption('appbox'), [], $this->container['debug']);
+            $abConn = $this->container['dbal.provider']->get([
+                'host'     => $input->getOption('db-host'),
+                'port'     => $input->getOption('db-port'),
+                'user'     => $input->getOption('db-user'),
+                'password' => $input->getOption('db-password'),
+                'dbname'   => $input->getOption('appbox'),
+            ]);
+            $abConn->connect();
             $output->writeln("\n\t<info>Application-Box : Connection successful !</info>\n");
         }
 
         return $abConn;
     }
 
-    private function getDBConn(InputInterface $input, OutputInterface $output, \connection_pdo $abConn, DialogHelper $dialog)
+    private function getDBConn(InputInterface $input, OutputInterface $output, Connection $abConn, DialogHelper $dialog)
     {
-        $credentials = $abConn->get_credentials();
-
         $dbConn = $template = null;
         if (!$input->getOption('databox')) {
             do {
@@ -155,7 +168,14 @@ class Install extends Command
 
                 if ($dbName) {
                     try {
-                        $dbConn = new \connection_pdo('databox', $credentials['hostname'], $credentials['port'], $credentials['user'], $credentials['password'], $dbName, [], $this->container['debug']);
+                        $dbConn = $this->container['dbal.provider']->get([
+                            'host'     => $abConn->getHost(),
+                            'port'     => $abConn->getPort(),
+                            'user'     => $abConn->getUsername(),
+                            'password' => $abConn->getPassword(),
+                            'dbname'   => $dbName,
+                        ]);
+                        $dbConn->connect();
                         $output->writeln("\n\t<info>Data-Box : Connection successful !</info>\n");
 
                         do {
@@ -171,7 +191,14 @@ class Install extends Command
                 }
             } while ($retry);
         } else {
-            $dbConn = new \connection_pdo('databox', $input->getOption('db-host'), $input->getOption('db-port'), $input->getOption('db-user'), $input->getOption('db-password'), $input->getOption('databox'), [], $this->container['debug']);
+            $dbConn = $this->container['dbal.provider']->get([
+                'host'     => $input->getOption('db-host'),
+                'port'     => $input->getOption('db-port'),
+                'user'     => $input->getOption('db-user'),
+                'password' => $input->getOption('db-password'),
+                'dbname'   => $input->getOption('databox'),
+            ]);
+            $dbConn->connect();
             $output->writeln("\n\t<info>Data-Box : Connection successful !</info>\n");
             $template = $input->getOption('db-template') ? : 'en';
         }

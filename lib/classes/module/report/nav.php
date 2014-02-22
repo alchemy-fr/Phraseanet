@@ -534,7 +534,8 @@ class module_report_nav extends module_report
 
     public function buildTabInfoNav($tab = false, $navigator)
     {
-        $conn = connection::getPDOConnection($this->app, $this->sbas_id);
+        $databox = $this->app['phraseanet.appbox']->get_databox($this->sbas_id);
+        $conn = $databox->get_connection();
         $this->title = $this->app->trans('report:: Information sur le navigateur %name%', ['%name%' => $navigator]);
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters();

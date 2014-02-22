@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Doctrine\DBAL\DBALException;
 
 class module_report_dashboard_feed implements module_report_dashboard_componentInterface
 {
@@ -206,7 +207,7 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
                         $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
                 );
             }
-        } catch (PDOException $e) {
+        } catch (DBALException $e) {
 
         }
 

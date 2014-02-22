@@ -445,7 +445,7 @@ class Xmlhttp implements ControllerProviderInterface
 
     private function getPresetHTMLList(Application $app, $sbas_id, $usr_id)
     {
-        $conn = \connection::getPDOConnection($app);
+        $conn = $app['phraseanet.appbox']->get_connection();
 
         $html = '';
         $sql = 'SELECT edit_preset_id, creation_date, title, xml
@@ -827,7 +827,8 @@ class Xmlhttp implements ControllerProviderInterface
         $thid = implode('.', $tids);
 
         try {
-            $connbas = \connection::getPDOConnection($app, $sbid);
+            $databox = $app['phraseanet.appbox']->get_databox($sbid);
+            $connbas = $databox->get_connection();
             $dbname = \phrasea::sbas_labels($sbid, $app);
 
             $t_nrec = [];

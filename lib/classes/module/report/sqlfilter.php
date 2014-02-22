@@ -22,7 +22,7 @@ class module_report_sqlfilter
     public function __construct(Application $app, module_report $report)
     {
         $this->app = $app;
-        $this->conn = connection::getPDOConnection($app, $report->getSbasid());
+        $this->conn = $app['phraseanet.appbox']->get_databox($report->getSbasId())->get_connection();
 
         if (is_array($report->getTransQueryString()))
             $this->cor_query = $report->getTransQueryString();

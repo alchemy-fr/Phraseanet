@@ -454,7 +454,7 @@ class databox_status
 
     public static function operation_and(Application $app, $stat1, $stat2)
     {
-        $conn = connection::getPDOConnection($app);
+        $conn = $app['phraseanet.appbox']->get_connection();
 
         $status = '0';
 
@@ -481,7 +481,7 @@ class databox_status
 
     public static function operation_and_not(Application $app, $stat1, $stat2)
     {
-        $conn = connection::getPDOConnection($app);
+        $conn = $app['phraseanet.appbox']->get_connection();
 
         $status = '0';
 
@@ -508,7 +508,7 @@ class databox_status
 
     public static function operation_or(Application $app, $stat1, $stat2)
     {
-        $conn = connection::getPDOConnection($app);
+        $conn = $app['phraseanet.appbox']->get_connection();
 
         $status = '0';
 
@@ -541,7 +541,7 @@ class databox_status
             throw new \Exception(sprintf('`%s`is non-decimal value', $status));
         }
 
-        $conn = connection::getPDOConnection($app);
+        $conn = $app['phraseanet.appbox']->get_connection();
 
         $sql = 'select bin(' . $status . ') as result';
 
@@ -570,7 +570,7 @@ class databox_status
             throw new \Exception('Non-hexadecimal value');
         }
 
-        $conn = connection::getPDOConnection($app);
+        $conn = $app['phraseanet.appbox']->get_connection();
 
         $sql = 'select BIN( CAST( 0x' . trim($status) . ' AS UNSIGNED ) ) as result';
 

@@ -18,6 +18,7 @@ use Alchemy\Phrasea\Setup\Requirements\LocalesRequirements;
 use Alchemy\Phrasea\Setup\Requirements\PhpRequirements;
 use Alchemy\Phrasea\Setup\Requirements\PhraseaRequirements;
 use Alchemy\Phrasea\Setup\Requirements\SystemRequirements;
+use Doctrine\DBAL\Connection;
 use Silex\ControllerProviderInterface;
 use Silex\Application as SilexApplication;
 use Symfony\Component\HttpFoundation\Request;
@@ -128,7 +129,14 @@ class Setup implements ControllerProviderInterface
         $databox_name = $request->request->get('db_name');
 
         try {
-            $abConn = new \connection_pdo('appbox', $hostname, $port, $user_ab, $ab_password, $appbox_name, [], $app['debug']);
+            $abConn = $app['dbal.provider']->get([
+                'host'     => $hostname,
+                'port'     => $port,
+                'user'     => $user_ab,
+                'password' => $ab_password,
+                'dbname'   => $appbox_name,
+            ]);
+            $abConn->connect();
         } catch (\Exception $e) {
             return $app->redirectPath('install_step2', [
                 'error' => $app->trans('Appbox is unreachable'),
@@ -137,7 +145,14 @@ class Setup implements ControllerProviderInterface
 
         try {
             if ($databox_name) {
-                $dbConn = new \connection_pdo('databox', $hostname, $port, $user_ab, $ab_password, $databox_name, [], $app['debug']);
+                $dbConn = $app['dbal.provider']->get([
+                    'host'     => $hostname,
+                    'port'     => $port,
+                    'user'     => $user_ab,
+                    'password' => $ab_password,
+                    'dbname'   => $databox_name,
+                ]);
+                $dbConn->connect();
             }
         } catch (\Exception $e) {
             return $app->redirectPath('install_step2', [

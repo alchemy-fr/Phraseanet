@@ -119,7 +119,7 @@ class phrasea
     public static function baseFromColl($sbas_id, $coll_id, Application $app)
     {
         if (!self::$_coll2bas) {
-            $conn = connection::getPDOConnection($app);
+            $conn = $app['phraseanet.appbox']->get_connection();
             $sql = 'SELECT base_id, server_coll_id, sbas_id FROM bas';
             $stmt = $conn->prepare($sql);
             $stmt->execute();
@@ -169,7 +169,7 @@ class phrasea
     public static function collFromBas(Application $app, $base_id)
     {
         if (!self::$_bas2coll) {
-            $conn = connection::getPDOConnection($app);
+            $conn = $app['phraseanet.appbox']->get_connection();
             $sql = 'SELECT base_id, server_coll_id FROM bas';
             $stmt = $conn->prepare($sql);
             $stmt->execute();

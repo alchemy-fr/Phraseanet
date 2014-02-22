@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Doctrine\DBAL\DBALException;
 
 class module_report
 {
@@ -820,7 +821,8 @@ class module_report
             return $this->report;
         }
 
-        $conn = connection::getPDOConnection($this->app, $this->sbas_id);
+        $databox = $this->app['phraseanet.appbox']->get_databox($this->sbas_id);
+        $conn = $databox->get_connection();
 
         $this->buildReq($groupby, $on);
 
@@ -830,7 +832,7 @@ class module_report
                 $stmt->execute($this->params);
                 $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $stmt->closeCursor();
-            } catch (PDOException $e) {
+            } catch (DBALException $e) {
                 echo $e->getMessage();
 
                 return;

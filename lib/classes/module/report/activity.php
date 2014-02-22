@@ -617,7 +617,8 @@ class module_report_activity extends module_report
 
     public static function topTenUser(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $conn = connection::getPDOConnection($app, $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $conn = $databox->get_connection();
         $result = [];
         $result['top_ten_doc'] = [];
         $result['top_ten_prev'] = [];
@@ -697,7 +698,8 @@ class module_report_activity extends module_report
 
     public static function activity(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $conn = connection::getPDOConnection($app, $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $conn = $databox->get_connection();
         $res = [];
         $datefilter =
             module_report_sqlfilter::constructDateFilter($dmin, $dmax);
@@ -743,7 +745,8 @@ class module_report_activity extends module_report
 
     public static function activityDay(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $conn = connection::getPDOConnection($app, $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $conn = $databox->get_connection();
         $result = [];
         $res = [];
         $datefilter =
@@ -785,7 +788,8 @@ class module_report_activity extends module_report
 
     public static function activityQuestion(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $conn = connection::getPDOConnection($app, $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $conn = $databox->get_connection();
         $result = [];
         $datefilter =
             module_report_sqlfilter::constructDateFilter($dmin, $dmax);
@@ -825,7 +829,8 @@ class module_report_activity extends module_report
 
     public static function activiteTopQuestion(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $conn = connection::getPDOConnection($app, $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $conn = $databox->get_connection();
         $result = [];
         $datefilter =
             module_report_sqlfilter::constructDateFilter($dmin, $dmax);
@@ -868,7 +873,8 @@ class module_report_activity extends module_report
 
     public static function activiteTopTenSiteView(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $conn = connection::getPDOConnection($app, $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $conn = $databox->get_connection();
         $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
@@ -911,7 +917,8 @@ class module_report_activity extends module_report
 
     public static function activiteAddedDocument(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $conn = connection::getPDOConnection($app, $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $conn = $databox->get_connection();
         $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
@@ -946,7 +953,8 @@ class module_report_activity extends module_report
 
     public static function activiteEditedDocument(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $conn = connection::getPDOConnection($app, $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $conn = $databox->get_connection();
         $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
@@ -982,7 +990,8 @@ class module_report_activity extends module_report
 
     public static function activiteAddedTopTenUser(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $conn = connection::getPDOConnection($app, $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $conn = $databox->get_connection();
         $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);

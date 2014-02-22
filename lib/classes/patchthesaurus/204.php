@@ -9,9 +9,11 @@
  * file that was distributed with this source code.
  */
 
+use Doctrine\DBAL\Connection;
+
 class patchthesaurus_204 implements patchthesaurus_interface
 {
-    public function patch($version, \DOMDocument $domct, \DOMDocument $domth, \connection_interface $connbas, \unicode $unicode)
+    public function patch($version, \DOMDocument $domct, \DOMDocument $domth, Connection $connbas, \unicode $unicode)
     {
         $needreindex = false;
 
@@ -95,7 +97,7 @@ class patchthesaurus_204 implements patchthesaurus_interface
         return($version);
     }
 
-    public function fixRejected(connection_pdo &$connbas, &$node, $rejected)
+    public function fixRejected(Connection &$connbas, &$node, $rejected)
     {
         if ($node->nodeType != XML_ELEMENT_NODE) {
             return;
@@ -125,7 +127,7 @@ class patchthesaurus_204 implements patchthesaurus_interface
             $this->fixRejected($connbas, $n, $rejected);
     }
 
-    public function fixIds(connection_pdo &$connbas, &$node)
+    public function fixIds(Connection $connbas, &$node)
     {
         if ($node->nodeType != XML_ELEMENT_NODE) {
             return;

@@ -70,6 +70,10 @@ abstract class PhraseanetTestCase extends WebTestCase
     {
         parent::setUp();
 
+        if (null !== self::$DI) {
+            unset(self::$DI['app']['dbal.provider']);
+        }
+
         self::$DI = new \Pimple();
 
         ini_set('memory_limit', '4096M');

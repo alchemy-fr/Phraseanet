@@ -134,7 +134,8 @@ class module_report_connexion extends module_report
 
     public static function getNbConn(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $conn = connection::getPDOConnection($app, $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $conn = $databox->get_connection();
 
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);

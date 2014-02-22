@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\Setup;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\Tools\SchemaTool;
 use Alchemy\Phrasea\Model\Entities\User;
 
@@ -25,7 +27,7 @@ class Installer
         $this->app = $app;
     }
 
-    public function install($email, $password, \connection_interface $abConn, $serverName, $dataPath, \connection_interface $dbConn = null, $template = null, array $binaryData = [])
+    public function install($email, $password, Connection $abConn, $serverName, $dataPath, Connection $dbConn = null, $template = null, array $binaryData = [])
     {
         $this->rollbackInstall($abConn, $dbConn);
 
@@ -65,7 +67,7 @@ class Installer
         $this->app['conf']->set('registry', $this->app['registry.manipulator']->getRegistryData());
     }
 
-    private function createDB(\connection_interface $dbConn = null, $template)
+    private function createDB(Connection $dbConn = null, $template)
     {
         $template = new \SplFileInfo(__DIR__ . '/../../../conf.d/data_templates/' . $template . '-simple.xml');
         $databox = \databox::create($this->app, $dbConn, $template);
@@ -115,7 +117,7 @@ class Installer
         $this->app['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
     }
 
-    private function rollbackInstall(\connection_interface $abConn, \connection_interface $dbConn = null)
+    private function rollbackInstall(Connection $abConn, Connection $dbConn = null)
     {
         $structure = simplexml_load_file(__DIR__ . "/../../../conf.d/bases_structure.xml");
 
@@ -132,7 +134,7 @@ class Installer
                 $stmt = $abConn->prepare($sql);
                 $stmt->execute();
                 $stmt->closeCursor();
-            } catch (\PDOException $e) {
+            } catch (DBALException $e) {
 
             }
         }
@@ -143,7 +145,7 @@ class Installer
                     $stmt = $dbConn->prepare($sql);
                     $stmt->execute();
                     $stmt->closeCursor();
-                } catch (\PDOException $e) {
+                } catch (DBALException $e) {
 
                 }
             }
@@ -169,14 +171,15 @@ class Installer
         $this->app['phraseanet.appbox']->insert_datas($this->app);
     }
 
-    private function createConfigFile($abConn, $serverName, $binaryData)
+    private function createConfigFile(Connection $abConn, $serverName, $binaryData)
     {
         $config = $this->app['configuration.store']->initialize();
 
-        foreach ($abConn->get_credentials() as $key => $value) {
-            $key = $key == 'hostname' ? 'host' : $key;
-            $config['main']['database'][$key] = (string) $value;
-        }
+        $config['main']['database']['host'] = $abConn->getHost();
+        $config['main']['database']['port'] = $abConn->getPort();
+        $config['main']['database']['user'] = $abConn->getUsername();
+        $config['main']['database']['password'] = $abConn->getPassword();
+        $config['main']['database']['dbname'] = $abConn->getDatabase();
 
         $config['main']['database']['driver'] = 'pdo_mysql';
         $config['main']['database']['charset'] = 'UTF8';

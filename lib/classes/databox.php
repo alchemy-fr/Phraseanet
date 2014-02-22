@@ -10,9 +10,10 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Symfony\Component\Filesystem\Filesystem;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Doctrine\DBAL\Connection;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -120,7 +121,13 @@ class databox extends base
             throw new NotFoundHttpException(sprintf('databox %d not found', $sbas_id));
         }
 
-        $this->connection = connection::getPDOConnection($app, $sbas_id);
+        $this->connection = $app['dbal.provider']->get([
+            'host'     => $connection_params[$sbas_id]['host'],
+            'port'     => $connection_params[$sbas_id]['port'],
+            'user'     => $connection_params[$sbas_id]['user'],
+            'password' => $connection_params[$sbas_id]['pwd'],
+            'dbname'   => $connection_params[$sbas_id]['dbname'],
+        ]);
 
         $this->host = $connection_params[$sbas_id]['host'];
         $this->port = $connection_params[$sbas_id]['port'];
@@ -225,7 +232,7 @@ class databox extends base
 
         }
 
-        $conn = connection::getPDOConnection($this->app);
+        $conn = $this->app['phraseanet.appbox']->get_connection();
 
         $sql = "SELECT b.server_coll_id FROM sbas s, bas b
             WHERE s.sbas_id = b.sbas_id AND b.sbas_id = :sbas_id
@@ -492,24 +499,22 @@ class databox extends base
         return;
     }
 
-    public static function create(Application $app, connection_pdo $connection, \SplFileInfo $data_template)
+    public static function create(Application $app, Connection $connection, \SplFileInfo $data_template)
     {
         if ( ! file_exists($data_template->getRealPath())) {
             throw new \InvalidArgumentException($data_template->getRealPath() . " does not exist");
         }
-
-        $credentials = $connection->get_credentials();
 
         $sql = 'SELECT sbas_id
             FROM sbas
             WHERE host = :host AND port = :port AND dbname = :dbname
               AND user = :user AND pwd = :password';
 
-        $host = $credentials['hostname'];
-        $port = $credentials['port'];
-        $dbname = $credentials['dbname'];
-        $user = $credentials['user'];
-        $password = $credentials['password'];
+        $host = $connection->getHost();
+        $port = $connection->getPort();
+        $dbname = $connection->getDatabase();
+        $user = $connection->getUsername();
+        $password = $connection->getPassword();
 
         $params = [
             ':host'     => $host
@@ -589,7 +594,14 @@ class databox extends base
      */
     public static function mount(Application $app, $host, $port, $user, $password, $dbname)
     {
-        new connection_pdo('test', $host, $port, $user, $password, $dbname, [], $app['debug']);
+        $conn = $app['dbal.provider']->get([
+            'host'     => $host,
+            'port'     => $port,
+            'user'     => $user,
+            'password' => $password,
+            'dbname'   => $dbname,
+        ]);
+        $conn->connect();
 
         $conn = $app['phraseanet.appbox']->get_connection();
         $sql = 'SELECT MAX(ord) as ord FROM sbas';
@@ -733,7 +745,7 @@ class databox extends base
 
     public function get_serialized_server_info()
     {
-        return sprintf("%s@%s:%s (MySQL %s)", $this->dbname, $this->host, $this->port, $this->get_connection()->server_info());
+        return sprintf("%s@%s:%s (MySQL %s)", $this->dbname, $this->host, $this->port, $this->get_connection()->getWrappedConnection()->getAttribute(\PDO::ATTR_SERVER_VERSION));
     }
 
     public static function get_available_dcfields()
@@ -763,7 +775,7 @@ class databox extends base
      */
     public function get_mountable_colls()
     {
-        $conn = connection::getPDOConnection($this->app);
+        $conn = $this->app['phraseanet.appbox']->get_connection();
         $colls = [];
 
         $sql = 'SELECT server_coll_id FROM bas WHERE sbas_id = :sbas_id';
@@ -798,7 +810,7 @@ class databox extends base
 
     public function get_activable_colls()
     {
-        $conn = connection::getPDOConnection($this->app);
+        $conn = $this->app['phraseanet.appbox']->get_connection();
         $base_ids = [];
 
         $sql = 'SELECT base_id FROM bas WHERE sbas_id = :sbas_id AND active = "0"';
@@ -973,7 +985,7 @@ class databox extends base
      */
     public function registerAdmin(User $user)
     {
-        $conn = connection::getPDOConnection($this->app);
+        $conn = $this->app['phraseanet.appbox']->get_connection();
 
         $this->app['acl']->get($user)
             ->give_access_to_sbas([$this->id])

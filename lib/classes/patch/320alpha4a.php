@@ -116,7 +116,7 @@ class patch_320alpha4a implements patchInterface
         $databox->delete_data_from_cache(databox::CACHE_STRUCTURE);
         $databox->delete_data_from_cache(databox::CACHE_META_STRUCT);
 
-        $conn = connection::getPDOConnection($app);
+        $conn = $app['phraseanet.appbox']->get_connection();
 
         $sql = 'DELETE FROM `task2` WHERE class="readmeta"';
         $stmt = $conn->prepare($sql);

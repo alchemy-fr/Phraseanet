@@ -224,7 +224,8 @@ class Session_Logger
                 try {
                     $logger = $app['phraseanet.logger']($app['phraseanet.appbox']->get_databox($sbas_id));
 
-                    $connbas = connection::getPDOConnection($app, $sbas_id);
+                    $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+                    $connbas = $databox->get_connection();
                     $sql = 'SELECT appli FROM log WHERE id = :log_id';
                     $stmt = $connbas->prepare($sql);
                     $stmt->execute([':log_id' => $logger->get_id()]);
