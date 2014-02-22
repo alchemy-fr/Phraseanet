@@ -25,7 +25,8 @@
         "jquery-galleria": "1.2.9",
         "jquery.cookie": "~1.4",
         "autobahnjs": "~0.8.0",
-        "when": "~2.7.0"
+        "when": "~2.7.0",
+        "web-socket-js": "~1.0.1"
     },
     "devDependencies": {
         "mocha": "latest",
