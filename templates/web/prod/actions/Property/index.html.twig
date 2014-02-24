@@ -10,7 +10,7 @@
     <ul>
         <li><a href="#property-statut">{{ 'Records Statut' | trans }}</a></li>
         {# <span>&nbsp;</span> element is required for the jQuery loading spinner appears && disappears properly #}
-        <li><a href="{{ path('display_type_property') }}">{{ 'Records type' | trans }}&nbsp;<span>&nbsp;</span></a></li>
+        <li><a href="{{ path('display_type_property', { 'lst' : records.serializedList() } ) }}">{{ 'Records type' | trans }}&nbsp;<span>&nbsp;</span></a></li>
     </ul>
 
     <div id='property-statut'>
