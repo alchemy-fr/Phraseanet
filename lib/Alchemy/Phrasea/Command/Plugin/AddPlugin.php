@@ -58,6 +58,10 @@ class AddPlugin extends AbstractPluginCommand
         $this->container['filesystem']->remove($temporaryDir);
         $output->writeln(" <comment>OK</comment>");
 
+        $output->write("Activating plugin...");
+        $this->container['conf']->set(['plugins', $manifest->getName(), 'enabled'], true);
+        $output->writeln(" <comment>OK</comment>");
+
         $this->updateConfigFiles($input, $output);
 
         return 0;

@@ -24,8 +24,7 @@ class RemovePlugin extends AbstractPluginCommand
 
         $this
             ->setDescription('Removes a plugin given its name')
-            ->addArgument('name', InputArgument::REQUIRED, 'The name of the plugin')
-            ->addOption('keep-config', 'k', InputOption::VALUE_NONE, 'Use this flag to keep configuration');
+            ->addArgument('name', InputArgument::REQUIRED, 'The name of the plugin');
     }
 
     protected function doExecutePluginAction(InputInterface $input, OutputInterface $output)
@@ -50,11 +49,7 @@ class RemovePlugin extends AbstractPluginCommand
 
         $this->updateConfigFiles($input, $output);
 
-        if (!$input->getOption('keep-config')) {
-            $conf = $this->container['phraseanet.configuration']->getConfig();
-            unset($conf['plugins'][$name]);
-            $this->container['phraseanet.configuration']->setConfig($conf);
-        }
+        $this->container['conf']->remove(['plugins', $name]);
 
         return 0;
     }

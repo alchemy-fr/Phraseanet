@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Plugin;
 
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Plugin\Schema\PluginValidator;
 use Alchemy\Phrasea\Plugin\Exception\PluginValidationException;
 use Symfony\Component\Finder\Finder;
@@ -19,11 +20,13 @@ class PluginManager
 {
     private $pluginDir;
     private $validator;
+    private $conf;
 
-    public function __construct($pluginDir, PluginValidator $validator)
+    public function __construct($pluginDir, PluginValidator $validator, PropertyAccess $conf)
     {
         $this->pluginDir = $pluginDir;
         $this->validator = $validator;
+        $this->conf = $conf;
     }
 
     /**
@@ -31,20 +34,13 @@ class PluginManager
      */
     public function listPlugins()
     {
-        $finder = new Finder();
-        $finder
-            ->depth(0)
-            ->in($this->pluginDir)
-            ->directories();
-
         $plugins = [];
 
-        foreach ($finder as $pluginDir) {
+        foreach ($this->conf->get('plugins') as $name => $config) {
             $manifest = $error = null;
-            $name = $pluginDir->getBasename();
 
             try {
-                $manifest = $this->validator->validatePlugin((string) $pluginDir);
+                $manifest = $this->validator->validatePlugin($this->pluginDir.'/'.$name);
             } catch (PluginValidationException $e) {
                 $error = $e;
             }
@@ -57,8 +53,29 @@ class PluginManager
 
     public function hasPlugin($name)
     {
-        $plugins = $this->listPlugins();
+        return array_key_exists($name, $this->conf->get('plugins'));
+    }
 
-        return isset($plugins[$name]);
+    public function enable($name)
+    {
+        $this->conf->set(['plugins', $name, 'enabled'], true);
+
+        return $this;
+    }
+
+    public function disable($name)
+    {
+        $this->conf->set(['plugins', $name, 'enabled'], false);
+
+        return $this;
+    }
+
+    public function isEnabled($name)
+    {
+        if (!$this->hasPlugin($name)) {
+            return false;
+        }
+
+        return $this->conf->get(['plugins', $name, 'enabled'], false);
     }
 }
