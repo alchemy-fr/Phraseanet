@@ -70,7 +70,7 @@ class module_console_sphinxGenerateSuggestion extends Command
             }
 
             try {
-                $connbas = connection::getPDOConnection($this->container, $sbas_id);
+                $connbas = $databox->get_connection()->connect();
             } catch (\Exception $e) {
                 continue;
             }

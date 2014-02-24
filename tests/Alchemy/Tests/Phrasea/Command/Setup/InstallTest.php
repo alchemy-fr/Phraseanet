@@ -84,7 +84,7 @@ class InstallTest extends \PhraseanetTestCase
 
         self::$DI['cli']['phraseanet.installer']->expects($this->once())
             ->method('install')
-            ->with($email, $password, $this->isInstanceOf('\connection_interface'), $serverName, $dataPath, $this->isInstanceOf('\connection_interface'), $template, $this->anything());
+            ->with($email, $password, $this->isInstanceOf('Doctrine\DBAL\Connection'), $serverName, $dataPath, $this->isInstanceOf('Doctrine\DBAL\Connection'), $template, $this->anything());
 
         $command = new Install('system:check');
         $command->setHelperSet($helperSet);

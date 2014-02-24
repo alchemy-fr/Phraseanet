@@ -12,6 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
+use Doctrine\DBAL\DBALException;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use MediaAlchemyst\Specification\Image as ImageSpec;
 
@@ -68,7 +69,7 @@ class patch_370alpha7a extends patchAbstract
             $stmt = $conn->prepare($sql);
             $stmt->execute();
             $rs = $stmt->fetchAll();
-        } catch (\PDOException $e) {
+        } catch (DBALException $e) {
             // table not found
             if ($e->getCode() == '42S02') {
 

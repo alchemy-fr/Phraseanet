@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Doctrine\DBAL\DBALException;
 
 class media_Permalink_Adapter implements media_Permalink_Interface, cache_cacheableInterface
 {
@@ -333,7 +334,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
         $stmt = $databox->get_connection()->prepare($sql);
         try {
             $stmt->execute($params);
-        } catch (\PDOException $e) {
+        } catch (DBALException $e) {
             $error = $e;
         }
         $stmt->closeCursor();

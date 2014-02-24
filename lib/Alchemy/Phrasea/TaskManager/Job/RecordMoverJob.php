@@ -324,7 +324,8 @@ class RecordMoverJob extends AbstractJob
 
     private function playTest(Application $app, $sbas_id, $sql)
     {
-        $connbas = \connection::getPDOConnection($app, $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $connbas = $databox->get_connection();
         $result = ['rids' => [], 'err' => '', 'n'   => null];
 
         $result['n'] = $connbas->query('SELECT COUNT(*) AS n FROM (' . $sql . ') AS x')->fetchColumn();
@@ -344,7 +345,8 @@ class RecordMoverJob extends AbstractJob
 
     private function calcWhere(Application $app, $sbas_id, &$sxtask)
     {
-        $connbas = \connection::getPDOConnection($app, $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $connbas = $databox->get_connection();
 
         $tw = [];
         $join = '';

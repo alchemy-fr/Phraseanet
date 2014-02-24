@@ -12,6 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Model\Entities\SessionModule;
+use Doctrine\DBAL\DBALException;
 
 class patch_380alpha11a extends patchAbstract
 {
@@ -66,7 +67,7 @@ class patch_380alpha11a extends patchAbstract
             $stmt->execute();
             $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
-        } catch (\PDOException $e) {
+        } catch (DBALException $e) {
             // this may fail on oldest versions
             return false;
         }

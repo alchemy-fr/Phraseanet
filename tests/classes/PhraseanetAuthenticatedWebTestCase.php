@@ -1,5 +1,6 @@
 <?php
 
+use Doctrine\DBAL\DBALException;
 use Silex\Application;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -90,18 +91,15 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         $connexion = self::$DI['app']['phraseanet.configuration']['main']['database'];
 
         try {
-            $conn = new \connection_pdo(
-                'databox_creation',
-                $connexion['host'],
-                $connexion['port'],
-                $connexion['user'],
-                $connexion['password'],
-                'unit_test_db',
-                [],
-                false
-            );
-        } catch (\PDOException $e) {
-
+            $conn = self::$DI['app']['dbal.provider']->get([
+                'host'     => $connexion['host'],
+                'port'     => $connexion['port'],
+                'user'     => $connexion['user'],
+                'password' => $connexion['password'],
+                'dbname'   => 'unit_test_db',
+            ]);
+            $conn->connect();
+        } catch (DBALException $e) {
             $this->markTestSkipped('Could not reach DB');
         }
 

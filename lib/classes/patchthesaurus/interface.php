@@ -9,7 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use Doctrine\DBAL\Connection;
+
 interface patchthesaurus_interface
 {
-    public function patch($version, \DOMDocument $domct, \DOMDocument $domth, \connection_interface $connbas, \unicode $unicode);
+    public function patch($version, \DOMDocument $domct, \DOMDocument $domth, Connection $connbas, \unicode $unicode);
 }

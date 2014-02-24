@@ -11,6 +11,9 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Cache\ArrayCache;
+use Alchemy\Phrasea\Core\Connection\ConnectionProvider;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\MonologSQLLogger;
 use Alchemy\Phrasea\Model\NativeQueryProvider;
@@ -75,7 +78,7 @@ class ORMServiceProvider implements ServiceProviderInterface
         $app['EM.config'] = $app->share(function (Application $app) {
             $config = new ORMConfiguration();
 
-            if ($app['debug']) {
+            if ($app->getEnvironment() === PhraseaApplication::ENV_DEV) {
                 $config->setSQLLogger($app['EM.sql-logger']);
             }
 
@@ -103,17 +106,33 @@ class ORMServiceProvider implements ServiceProviderInterface
         });
 
         $app['EM.opcode-cache-type'] = $app->share(function (Application $app) {
-            return $app['conf']->get(['main', 'opcodecache', 'type']);
+            if ($app['configuration.store']->isSetup()) {
+                return $app['conf']->get(['main', 'opcodecache', 'type']);
+            }
+
+            return 'ArrayCache';
         });
         $app['EM.opcode-cache-options'] = $app->share(function (Application $app) {
-            return $app['conf']->get(['main', 'opcodecache', 'options']);
+            if ($app['configuration.store']->isSetup()) {
+                return $app['conf']->get(['main', 'opcodecache', 'options']);
+            }
+
+            return [];
         });
 
         $app['EM.cache-type'] = $app->share(function (Application $app) {
-            return $app['conf']->get(['main', 'cache', 'type']);
+            if ($app['configuration.store']->isSetup()) {
+                return $app['conf']->get(['main', 'cache', 'type']);
+            }
+
+            return 'ArrayCache';
         });
         $app['EM.cache-options'] = $app->share(function (Application $app) {
-            return $app['conf']->get(['main', 'cache', 'options']);
+            if ($app['configuration.store']->isSetup()) {
+                return $app['conf']->get(['main', 'cache', 'options']);
+            }
+
+            return [];
         });
         $app['EM.events-manager'] = $app->share(function (Application $app) {
             $evm = new EventManager();
@@ -128,6 +147,10 @@ class ORMServiceProvider implements ServiceProviderInterface
             }
 
             return $app['conf']->get(['main', 'database']);
+        });
+
+        $app['dbal.provider'] = $app->share(function (Application $app) {
+            return new ConnectionProvider($app['EM.config'], $app['EM.events-manager']);
         });
 
         $app['EM'] = $app->share(function (Application $app) {

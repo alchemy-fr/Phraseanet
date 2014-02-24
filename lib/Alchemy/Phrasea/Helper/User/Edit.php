@@ -196,7 +196,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
       WHERE (u.id = " . implode(' OR u.id = ', $this->users) . ")
       AND bu.base_id = :base_id";
 
-        $conn = \connection::getPDOConnection($this->app);
+        $conn = $this->app['phraseanet.appbox']->get_connection();
         $stmt = $conn->prepare($sql);
         $stmt->execute([':base_id' => $this->base_id]);
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -319,7 +319,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
       WHERE (u.id = " . implode(' OR u.id = ', $this->users) . ")
       AND bu.base_id = :base_id";
 
-        $conn = \connection::getPDOConnection($this->app);
+        $conn = $this->app['phraseanet.appbox']->get_connection();
         $stmt = $conn->prepare($sql);
         $stmt->execute([':base_id' => $this->base_id]);
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -375,7 +375,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             WHERE (u.id = " . implode(' OR u.id = ', $this->users) . ")
               AND b.sbas_id = :sbas_id";
 
-        $conn = \connection::getPDOConnection($this->app);
+        $conn = $this->app['phraseanet.appbox']->get_connection();
         $stmt = $conn->prepare($sql);
         $stmt->execute([':sbas_id' => $sbas_id]);
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);

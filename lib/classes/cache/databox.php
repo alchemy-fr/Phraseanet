@@ -52,7 +52,7 @@ class cache_databox
             return;
         }
 
-        $connsbas = \connection::getPDOConnection($app, $sbas_id);
+        $connsbas = $databox->get_connection();
 
         $sql = 'SELECT type, value FROM memcached WHERE site_id = :site_id';
         $stmt = $connsbas->prepare($sql);
@@ -124,7 +124,7 @@ class cache_databox
 
         $app['phraseanet.appbox']->set_data_to_cache($now, 'memcached_update_' . $sbas_id);
 
-        $conn = \connection::getPDOConnection($app);
+        $conn = $app['phraseanet.appbox']->get_connection();
 
         $sql = 'UPDATE sitepreff SET memcached_update = :date';
         $stmt = $conn->prepare($sql);
@@ -144,8 +144,8 @@ class cache_databox
      */
     public static function update(Application $app, $sbas_id, $type, $value = '')
     {
-
-        $connbas = \connection::getPDOConnection($app, $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $connbas = $databox->get_connection();
 
         $sql = 'SELECT distinct site_id as site_id
             FROM clients

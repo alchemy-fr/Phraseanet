@@ -70,8 +70,8 @@ class databox_fieldTest extends \PhraseanetTestCase
 
     public function testGet_connection()
     {
-        $this->assertInstanceOf('\connection_pdo', $this->object_mono->get_connection());
-        $this->assertInstanceOf('\connection_pdo', $this->object_multi->get_connection());
+        $this->assertInstanceOf('Doctrine\DBAL\Connection', $this->object_mono->get_connection());
+        $this->assertInstanceOf('Doctrine\DBAL\Connection', $this->object_multi->get_connection());
     }
 
     public function testGet_databox()

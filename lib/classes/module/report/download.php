@@ -171,7 +171,8 @@ class module_report_download extends module_report
 
     public static function getNbDl(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $conn = connection::getPDOConnection($app, $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $conn = $databox->get_connection();
 
         $params = [':site_id'  => $app['conf']->get(['main', 'key'])];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);

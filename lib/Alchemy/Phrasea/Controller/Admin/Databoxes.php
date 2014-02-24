@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use Doctrine\DBAL\DBALException;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -78,7 +79,7 @@ class Databoxes implements ControllerProviderInterface
                 $sbas[$sbasId] = [
                     'version'     => $databox->get_version(),
                     'image'       => '/skins/icons/foldph20close_0.gif',
-                    'server_info' => $databox->get_connection()->server_info(),
+                    'server_info' => $databox->get_connection()->getWrappedConnection()->getAttribute(\PDO::ATTR_SERVER_VERSION),
                     'name'        => \phrasea::sbas_labels($sbasId, $app)
                 ];
             } catch (\Exception $e) {
@@ -157,8 +158,15 @@ class Databoxes implements ControllerProviderInterface
             $dataTemplate = new \SplFileInfo($app['root.path'] . '/lib/conf.d/data_templates/' . $dataTemplate . '.xml');
 
             try {
-                $connbas = new \connection_pdo('databox_creation', $hostname, $port, $user, $password, $dbName, [], $app['debug']);
-            } catch (\PDOException $e) {
+                $connbas = $app['dbal.provider']->get([
+                    'host'     => $hostname,
+                    'port'     => $port,
+                    'user'     => $user,
+                    'password' => $password,
+                    'dbname'   => $dbName,
+                ]);
+                $connbas->connect();
+            } catch (DBALException $e) {
                 return $app->redirectPath('admin_databases', ['success' => 0, 'error' => 'database-failed']);
             }
 
@@ -183,7 +191,14 @@ class Databoxes implements ControllerProviderInterface
 
             try {
                 $data_template = new \SplFileInfo($app['root.path'] . '/lib/conf.d/data_templates/' . $dataTemplate . '.xml');
-                $connbas = new \connection_pdo('databox_creation', $hostname, $port, $userDb, $passwordDb, $dbName, [], $app['debug']);
+                $connbas = $app['dbal.provider']->get([
+                    'host'     => $hostname,
+                    'port'     => $port,
+                    'user'     => $userDb,
+                    'password' => $passwordDb,
+                    'dbname'   => $dbName,
+                ]);
+                $connbas->connect();
                 try {
                     $base = \databox::create($app, $connbas, $data_template);
                     $base->registerAdmin($app['authentication']->getUser());

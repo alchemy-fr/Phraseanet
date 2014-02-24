@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Version as PhraseaVersion;
 use vierbergenlars\SemVer\version;
 use Alchemy\Phrasea\Model\Entities\User;
+use Doctrine\DBAL\Connection;
 
 abstract class base implements cache_cacheableInterface
 {
@@ -137,7 +138,7 @@ abstract class base implements cache_cacheableInterface
 
     /**
      *
-     * @return connection_pdo
+     * @return Connection
      */
     public function get_connection()
     {

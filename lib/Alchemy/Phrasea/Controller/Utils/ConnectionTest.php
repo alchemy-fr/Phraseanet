@@ -37,7 +37,13 @@ class ConnectionTest implements ControllerProviderInterface
             $connection_ok = $db_ok = $is_databox = $is_appbox = $empty = false;
 
             try {
-                $conn = new \connection_pdo('test', $hostname, $port, $user, $password, null, [], false);
+                $conn = $app['dbal.provider']->get([
+                    'host'     => $hostname,
+                    'port'     => $port,
+                    'user'     => $user,
+                    'password' => $password,
+                ]);
+                $conn->connect();
                 $connection_ok = true;
             } catch (\Exception $e) {
 
@@ -45,7 +51,14 @@ class ConnectionTest implements ControllerProviderInterface
 
             if ($dbname && $connection_ok === true) {
                 try {
-                    $conn = new \connection_pdo('test', $hostname, $port, $user, $password, $dbname, [], false);
+                    $conn = $app['dbal.provider']->get([
+                        'host'     => $hostname,
+                        'port'     => $port,
+                        'user'     => $user,
+                        'password' => $password,
+                        'dbname'   => $dbname,
+                    ]);
+                    $conn->connect();
                     $db_ok = true;
 
                     $sql = "SHOW TABLE STATUS";

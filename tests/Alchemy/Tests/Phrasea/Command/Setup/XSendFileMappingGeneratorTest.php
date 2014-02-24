@@ -29,11 +29,23 @@ class XSendFileMappingGeneratorTest extends \PhraseanetTestCase
         self::$DI['cli']['monolog'] = self::$DI['cli']->share(function () {
             return $this->getMockBuilder('Monolog\Logger')->disableOriginalConstructor()->getMock();
         });
-        self::$DI['cli']['conf'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
+
+        $originalConf = self::$DI['cli']['conf'];
+        $conf = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
             ->disableOriginalConstructor()
             ->getMock();
-        if ($option) {
+        $conf->expects($this->any())
+            ->method('get')
+            ->will($this->returnCallback(function ($property) use ($originalConf) {
+                switch ($property) {
+                    case ['main', 'database']:
+                        return $originalConf->get($property);
+                        break;
+                }
+            }));
+        self::$DI['cli']['conf'] = $conf;
 
+        if ($option) {
             self::$DI['cli']['conf']->expects($this->once())
                 ->method('set')
                 ->with('xsendfile');

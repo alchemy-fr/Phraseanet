@@ -69,7 +69,7 @@ class patch_361alpha1a implements patchInterface
             $sbas_id = (int) $row['sbas_id'];
 
             try {
-                $connbas = connection::getPDOConnection($app, $sbas_id);
+                $connbas = $app['phraseanet.appbox']->get_databox($sbas_id)->get_connection()->connect();
             } catch (\Exception $e) {
                 $conn->exec('DELETE FROM ValidationDatas WHERE basket_element_id = ' . $row['id']);
                 $conn->exec('DELETE FROM BasketElements WHERE id = ' . $row['id']);

@@ -54,8 +54,8 @@ class appbox extends base
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->connection = connection::getPDOConnection($app);
         $connexion = $app['conf']->get(['main', 'database']);
+        $this->connection = $app['dbal.provider']->get($connexion);
 
         $this->host = $connexion['host'];
         $this->port = $connexion['port'];

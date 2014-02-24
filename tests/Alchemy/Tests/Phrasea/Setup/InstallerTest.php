@@ -15,19 +15,16 @@ class InstallerTest extends \PhraseanetTestCase
     public function setUp()
     {
         parent::setUp();
-        \connection::close_connections();
     }
 
     public function tearDown()
     {
-        \connection::close_connections();
         parent::tearDown();
     }
 
     public static function tearDownAfterClass()
     {
         $app = new Application('test');
-        \connection::close_connections();
         \phrasea::reset_sbasDatas($app['phraseanet.appbox']);
         \phrasea::reset_baseDatas($app['phraseanet.appbox']);
         parent::tearDownAfterClass();
@@ -53,8 +50,22 @@ class InstallerTest extends \PhraseanetTestCase
 
         $app['configuration.store'] = new Configuration(new Yaml(), new Compiler(), $config, $compiled, true);
 
-        $abConn = new \connection_pdo('abConn', 'localhost', 3306, $credentials['user'], $credentials['password'], 'ab_unitTests');
-        $dbConn = new \connection_pdo('dbConn', 'localhost', 3306, $credentials['user'], $credentials['password'], 'db_unitTests');
+        $abConn = self::$DI['app']['dbal.provider']->get([
+            'host'     => 'localhost',
+            'port'     => 3306,
+            'user'     => $credentials['user'],
+            'password' => $credentials['password'],
+            'dbname'   => 'ab_unitTests',
+        ]);
+        $abConn->connect();
+        $dbConn = self::$DI['app']['dbal.provider']->get([
+            'host'     => 'localhost',
+            'port'     => 3306,
+            'user'     => $credentials['user'],
+            'password' => $credentials['password'],
+            'dbname'   => 'db_unitTests',
+        ]);
+        $dbConn->connect();
 
         $template = 'en';
         $dataPath = __DIR__ . '/../../../../../datas/';

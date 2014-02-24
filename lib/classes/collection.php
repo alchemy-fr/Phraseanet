@@ -10,9 +10,9 @@
  */
 
 use Alchemy\Phrasea\Application;
-
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
+use Doctrine\DBAL\Connection;
 
 class collection implements cache_cacheableInterface
 {
@@ -92,7 +92,7 @@ class collection implements cache_cacheableInterface
             'nl' => $row['label_nl'],
         ];
 
-        $conn = connection::getPDOConnection($this->app);
+        $conn = $this->app['phraseanet.appbox']->get_connection();
 
         $sql = 'SELECT server_coll_id, sbas_id, base_id, active, ord FROM bas
             WHERE server_coll_id = :coll_id AND sbas_id = :sbas_id';
@@ -547,7 +547,7 @@ class collection implements cache_cacheableInterface
         return $this;
     }
 
-    private static function getNewOrder(\connection_pdo $conn, $sbas_id)
+    private static function getNewOrder(Connection $conn, $sbas_id)
     {
         $sql = "SELECT GREATEST(0, MAX(ord)) + 1 AS ord FROM bas WHERE sbas_id = :sbas_id";
         $stmt = $conn->prepare($sql);

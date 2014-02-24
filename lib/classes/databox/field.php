@@ -9,10 +9,12 @@
  * file that was distributed with this source code.
  */
 
+
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Vocabulary;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
 use Alchemy\Phrasea\Metadata\Tag\Nosource;
+use Doctrine\DBAL\Connection;
 use PHPExiftool\Driver\TagInterface;
 use PHPExiftool\Driver\TagFactory;
 use PHPExiftool\Exception\TagUnknown;
@@ -303,7 +305,7 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @return connection_pdo
+     * @return Connection
      */
     public function get_connection()
     {
