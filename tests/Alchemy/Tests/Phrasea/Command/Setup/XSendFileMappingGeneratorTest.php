@@ -36,11 +36,12 @@ class XSendFileMappingGeneratorTest extends \PhraseanetTestCase
             ->getMock();
         $conf->expects($this->any())
             ->method('get')
-            ->will($this->returnCallback(function ($property) use ($originalConf) {
+            ->will($this->returnCallback(function ($property, $defaultValue = null) use ($originalConf) {
                 switch ($property) {
                     case ['main', 'database']:
                         return $originalConf->get($property);
-                        break;
+                    default:
+                        return $defaultValue;
                 }
             }));
         self::$DI['cli']['conf'] = $conf;

@@ -451,8 +451,14 @@ class collection implements cache_cacheableInterface
         assert(is_int($coll_id));
 
         $key = sprintf('%d_%d', $databox->get_sbas_id(), $coll_id);
-        if ( ! isset(self::$_collections[$key])) {
-            self::$_collections[$key] = new self($app, $coll_id, $databox);
+        if (!isset(self::$_collections[$key])) {
+            $collection = new self($app, $coll_id, $databox);
+
+            if (!$app['conf.restrictions']->isCollectionAvailable($collection)) {
+                throw new Exception_Databox_CollectionNotFound('Collection `' . $collection->get_base_id() . '` is not available here.');
+            }
+
+            self::$_collections[$key] = $collection;
         }
 
         return self::$_collections[$key];
