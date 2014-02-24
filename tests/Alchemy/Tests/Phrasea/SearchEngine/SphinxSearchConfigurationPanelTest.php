@@ -9,7 +9,7 @@ class SphinxSearchConfigurationPanelTest extends ConfigurationPanelAbstractTest
 {
     public function getPanel()
     {
-        return new ConfigurationPanel(new SphinxSearchEngine(self::$DI['app'], 'localhost', 9306, 'localhost', 9308), self::$DI['app']['configuration.store']);
+        return new ConfigurationPanel(new SphinxSearchEngine(self::$DI['app'], 'localhost', 9306, 'localhost', 9308), self::$DI['app']['conf']);
     }
 
     public function testGetAVailableCharsets()

@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Setup\Version\Migration;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration\Configuration;
 
 class Migration35 implements MigrationInterface
 {
@@ -29,7 +30,7 @@ class Migration35 implements MigrationInterface
             throw new \LogicException('Required config files not found');
         }
 
-        $config = $this->app['configuration.store']->initialize();
+        $config = $this->app['configuration.store']->initialize()->getConfig();
 
         foreach ($config['registration-fields'] as $key => $field) {
             $config['registration-fields'][$key]['required'] = (boolean) $field['required'];

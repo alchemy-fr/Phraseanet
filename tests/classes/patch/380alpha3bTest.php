@@ -15,10 +15,15 @@ class patch_380alpha3bTest extends \PhraseanetTestCase
 
         $app = self::$DI['app'];
 
-        $app['configuration.store'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
-        $app['configuration.store']->expects($this->once())
-            ->method('setDefault')
-            ->with('main', 'search-engine');
+        $app['conf'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $app['conf']->expects($this->once())
+            ->method('set')
+            ->with(['main', 'search-engine'], [
+                'type'    => 'Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine',
+                'options' => [],
+            ]);
 
         $this->assertTrue($patch->apply($appbox, $app));
     }

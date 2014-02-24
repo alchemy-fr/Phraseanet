@@ -43,7 +43,7 @@ abstract class EditorTestCase extends \PhraseanetTestCase
         $editor = $this->getEditor();
         $dom = new \DOMDocument();
         $dom->strictErrorChecking = true;
-        $this->assertTrue(false !== $dom->loadXML($editor->getDefaultSettings(self::$DI['app']['configuration.store'])));
+        $this->assertTrue(false !== $dom->loadXML($editor->getDefaultSettings(self::$DI['app']['conf'])));
     }
 
     public function testGetDefaultSettingsWithoutConfiguration()

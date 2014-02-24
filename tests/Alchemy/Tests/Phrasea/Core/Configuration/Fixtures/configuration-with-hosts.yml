@@ -2,6 +2,16 @@ servername: 'http://local.phrasea/'
 languages:
     available: []
     default: 'fr'
+hosts-configuration:
+    dedicated:
+        servername: 'http://local.dedicated-host'
+        main:
+            maintenance: true
+        registry:
+            general:
+                title: Hosted Man !
+        border-manager:
+            enabled: false
 main:
     maintenance: false
     database:
@@ -184,3 +194,82 @@ xsendfile:
     type: nginx
     mapping: []
 plugins: []
+registry:
+    general:
+        title: SuperPhraseanet
+        keywords: ''
+        description: ''
+        analytics: ''
+        allow-indexation: true
+        home-presentation-mode: COOLIRIS
+    modules:
+        thesaurus: true
+        stories: true
+        doc-substitution: false
+        thumb-substitution: false
+        anonymous-report: false
+    actions:
+        download-max-size: 120
+        validation-reminder-days: 2
+        validation-expiration-days: 10
+        auth-required-for-export: true
+        tou-validation-required-for-export: false
+        export-title-choice: false
+        default-export-title: support@alchemy.fr
+        social-tools: none
+    ftp:
+        ftp-enabled: true
+        ftp-user-access: false
+    registration:
+        auto-select-collections: true
+        auto-register-enabled: false
+    classic:
+        search-tab: 1
+        adv-search-tab: 2
+        topics-tab: 0
+        active-tab: 1
+        render-topics: tree
+        stories-preview: true
+        basket-rollover: true
+        collection-presentation: checkbox
+        basket-size-display: true
+        auto-show-proposals: true
+        collection-display: true
+    maintenance:
+        message: 'May the force be with you'
+        enabled: false
+    api-clients:
+        navigator-enabled: false
+        office-enabled: true
+    webservices:
+        google-charts-enabled: true
+        geonames-server: 'http://geonames.alchemyasp.com/'
+        captchas-enabled: false
+        recaptcha-public-key: ''
+        recaptcha-private-key: ''
+        captcha-enabled: false
+    executables:
+        h264-streaming-enabled: false
+        auth-token-directory: ''
+        auth-token-directory-path: ''
+        auth-token-passphrase: ''
+        php-conf-path: ''
+        imagine-driver: ''
+        ffmpeg-threads: 2
+        pdf-max-pages: 5
+    searchengine:
+        min-letters-truncation: 1
+        default-query: all
+        default-query-type: '0'
+    email:
+        emitter-email: phraseanet@example.com
+        prefix: ''
+        smtp-enabled: false
+        smtp-auth-enabled: false
+        smtp-host: ''
+        smtp-port: ''
+        smtp-secure-mode: '0'
+        smtp-user: ''
+        smtp-password: ''
+        admin-email: support@alchemy.fr
+user-settings: {  }

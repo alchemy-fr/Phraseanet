@@ -185,7 +185,10 @@ class Configuration implements ConfigurationInterface
         $this->delete();
         $this->dumpFile($this->config, $this->loadFile(__DIR__ . static::CONFIG_REF), 0600);
 
-        return $this->getConfig();
+        // force rewrite
+        $this->getConfig();
+
+        return $this;
     }
 
     /**
@@ -199,15 +202,6 @@ class Configuration implements ConfigurationInterface
     private function isAutoReload()
     {
         return $this->autoReload;
-    }
-
-    public function getTestConnectionParameters()
-    {
-        return [
-            'driver'  => 'pdo_sqlite',
-            'path'    => '/tmp/db.sqlite',
-            'charset' => 'UTF8',
-        ];
     }
 
     private function loadDefaultConfiguration()

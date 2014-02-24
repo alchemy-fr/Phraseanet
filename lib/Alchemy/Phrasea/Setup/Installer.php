@@ -97,7 +97,7 @@ class Installer
             $this->app['manipulator.task']->create(
                 $job->getName(),
                 $job->getJobId(),
-                $job->getEditor()->getDefaultSettings($this->app['configuration.store']),
+                $job->getEditor()->getDefaultSettings($this->app['conf']),
                 $job->getEditor()->getDefaultPeriod()
             );
         }
@@ -173,7 +173,7 @@ class Installer
 
     private function createConfigFile(Connection $abConn, $serverName, $binaryData)
     {
-        $config = $this->app['configuration.store']->initialize();
+        $config = $this->app['configuration.store']->initialize()->getConfig();
 
         $config['main']['database']['host'] = $abConn->getHost();
         $config['main']['database']['port'] = $abConn->getPort();

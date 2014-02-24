@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\TaskManager\Editor;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -53,11 +53,11 @@ interface EditorInterface
      * Configuration is used to populate the default configuration with
      * configuration values.
      *
-     * @param Configuration $config
+     * @param PropertyAccess $config
      *
      * @return string An XML string
      */
-    public function getDefaultSettings(ConfigurationInterface $config = null);
+    public function getDefaultSettings(PropertyAccess $config = null);
 
     /**
      * Returns the default period of the job.

@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\TaskManager;
 
-use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 
 /**
  * Gets and Sets the Task Manager status
@@ -24,7 +24,7 @@ class TaskManagerStatus
     const STATUS_STARTED = 'started';
     const STATUS_STOPPED = 'stopped';
 
-    public function __construct(ConfigurationInterface $conf)
+    public function __construct(PropertyAccess $conf)
     {
         $this->conf = $conf;
     }
@@ -64,34 +64,26 @@ class TaskManagerStatus
     {
         $this->ensureConfigurationSchema();
 
-        return $this->conf['main']['task-manager']['status'];
+        return $this->conf->get(['main', 'task-manager', 'status']);
     }
 
     private function setStatus($status)
     {
         $this->ensureConfigurationSchema();
-        $mainConf = $this->conf['main'];
-        $mainConf['task-manager']['status'] = $status;
-        $this->conf['main'] = $mainConf;
+        $this->conf->set(['main', 'task-manager', 'status'], $status);
     }
 
     private function ensureConfigurationSchema()
     {
-        if (!isset($this->conf['main']['task-manager'])) {
-            $mainConf = $this->conf['main'];
-            $mainConf['task-manager'] = ['status' => static::STATUS_STARTED];
-            $this->conf['main'] = $mainConf;
+        if (!$this->conf->has(['main', 'task-manager'])) {
+            $this->conf->set(['main', 'task-manager'], ['status' => static::STATUS_STARTED]);
 
             return;
         }
-        if (!isset($this->conf['main']['task-manager']['status'])) {
-            $mainConf = $this->conf['main'];
-            $mainConf['task-manager']['status'] = static::STATUS_STARTED;
-            $this->conf['main'] = $mainConf;
-        } elseif (!$this->isValidStatus($this->conf['main']['task-manager']['status'])) {
-            $mainConf = $this->conf['main'];
-            $mainConf['task-manager']['status'] = static::STATUS_STARTED;
-            $this->conf['main'] = $mainConf;
+        if (!$this->conf->has(['main', 'task-manager', 'status'])) {
+            $this->conf->set(['main', 'task-manager', 'status'], static::STATUS_STARTED);
+        } elseif (!$this->isValidStatus($this->conf->get(['main', 'task-manager', 'status']))) {
+            $this->conf->set(['main', 'task-manager'], ['status' => static::STATUS_STARTED]);
         }
     }
 

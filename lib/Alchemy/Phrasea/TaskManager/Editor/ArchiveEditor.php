@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\TaskManager\Editor;
 
-use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 
 class ArchiveEditor extends AbstractEditor
 {
@@ -34,7 +34,7 @@ class ArchiveEditor extends AbstractEditor
     /**
      * {@inheritdoc}
      */
-    public function getDefaultSettings(ConfigurationInterface $config = null)
+    public function getDefaultSettings(PropertyAccess $config = null)
     {
         return <<<EOF
 <?xml version="1.0" encoding="UTF-8"?>

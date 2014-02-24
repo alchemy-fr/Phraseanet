@@ -56,7 +56,10 @@ class patch_380alpha3b implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $app['configuration.store']->setDefault('main', 'search-engine');
+        $app['conf']->set(['main', 'search-engine'], [
+            'type'    => 'Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine',
+            'options' => [],
+        ]);
 
         return true;
     }

@@ -17,7 +17,7 @@ class ConfigurationServiceProviderTest extends ServiceProviderTestCase
             [
                 'Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider',
                 'configuration.store',
-                'Alchemy\\Phrasea\\Core\\Configuration\\Configuration'
+                'Alchemy\\Phrasea\\Core\\Configuration\\HostConfiguration'
             ],
             [
                 'Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider',
@@ -27,7 +27,7 @@ class ConfigurationServiceProviderTest extends ServiceProviderTestCase
             [
                 'Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider',
                 'phraseanet.configuration',
-                'Alchemy\\Phrasea\\Core\\Configuration\\Configuration'
+                'Alchemy\\Phrasea\\Core\\Configuration\\HostConfiguration'
             ],
             [
                 'Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider',
