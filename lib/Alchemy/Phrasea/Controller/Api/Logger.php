@@ -9,80 +9,82 @@
  * file that was distributed with this source code.
  */
 
+namespace Alchemy\Phrasea\Controller\Api;
+
 use Alchemy\Phrasea\Application;
 
-class API_V1_Log
+class Logger
 {
-    const DATABOXES_RESSOURCE = 'databoxes';
-    const RECORDS_RESSOURCE = 'record';
-    const BASKETS_RESSOURCE = 'baskets';
-    const FEEDS_RESSOURCE = 'feeds';
+    const DATABOXES_RESOURCE = 'databoxes';
+    const RECORDS_RESOURCE = 'record';
+    const BASKETS_RESOURCE = 'baskets';
+    const FEEDS_RESOURCE = 'feeds';
 
     /**
      *
      * @var int
      */
-    protected $id;
+    private $id;
 
     /**
      *
      * @var int
      */
-    protected $account_id;
+    private $account_id;
 
     /**
      *
      * @var DateTime
      */
-    protected $date;
+    private $date;
 
     /**
      *
      * @var int
      */
-    protected $status_code;
+    private $status_code;
 
     /**
      *
      * @var string
      */
-    protected $format;
+    private $format;
 
     /**
      *
      * @var string
      */
-    protected $ressource;
+    private $resource;
 
     /**
      *
      * @var string
      */
-    protected $general;
+    private $general;
 
     /**
      *
      * @var string
      */
-    protected $aspect;
+    private $aspect;
 
     /**
      *
      * @var string
      */
-    protected $action;
+    private $action;
 
     /**
      *
      * @var API_OAuth2_Account
      */
-    protected $account;
+    private $account;
 
     /**
      *
      * @var Application
      */
-    protected $app;
+    private $app;
 
     /**
      *
@@ -102,7 +104,7 @@ class API_V1_Log
         api_log_date,
         api_log_status_code,
         api_log_format,
-        api_log_ressource,
+        api_log_resource,
         api_log_general,
         api_log_aspect,
         api_log_action
@@ -113,16 +115,16 @@ class API_V1_Log
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute([':log_id' => $this->id]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         $this->account_id = $row['api_account_id'];
-        $this->account = new API_OAuth2_Account($this->app, (int) $row['api_account_id']);
+        $this->account = new \API_OAuth2_Account($this->app, (int) $row['api_account_id']);
         $this->aspect = $row['api_log_aspect'];
-        $this->date = new DateTime($row['api_log_date']);
+        $this->date = new \DateTime($row['api_log_date']);
         $this->format = $row['api_log_format'];
         $this->general = $row['api_log_general'];
-        $this->ressource = $row['api_log_ressource'];
+        $this->resource = $row['api_log_resource'];
         $this->status_code = (int) $row['api_log_status_code'];
 
         return $this;
@@ -212,7 +214,7 @@ class API_V1_Log
     {
 
         if ( ! in_array($format, ['json', 'jsonp', 'yaml', 'unknow']))
-            throw new Exception_InvalidArgument();
+            throw new \Exception_InvalidArgument();
 
         $this->format = $format;
 
@@ -232,25 +234,25 @@ class API_V1_Log
         return $this;
     }
 
-    public function get_ressource()
+    public function get_resource()
     {
-        return $this->ressource;
+        return $this->resource;
     }
 
-    public function set_ressource($ressource)
+    public function set_resource($resource)
     {
-        if ( ! in_array($format, [self::DATABOXES_RESSOURCE, self::BASKETS_RESSOURCE, self::FEEDS_RESSOURCE, self::RECORDS_RESSOURCE]))
-            throw new Exception_InvalidArgument();
+        if ( ! in_array($resource, [self::DATABOXES_RESOURCE, self::BASKETS_RESOURCE, self::FEEDS_RESOURCE, self::RECORDS_RESOURCE]))
+            throw new \Exception_InvalidArgument();
 
-        $this->ressource = $ressource;
+        $this->resource = $resource;
 
         $sql = 'UPDATE api_log
-            SET api_log_ressource = :ressource
+            SET api_log_resource = :resource
             WHERE api_log_id = :log_id';
 
         $params = [
-            ':ressource' => $this->ressource
-            , ':log_id'    => $this->id
+            ':resource' => $this->resource,
+            ':log_id'    => $this->id,
         ];
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
@@ -340,7 +342,7 @@ class API_V1_Log
         return $this->account;
     }
 
-    public static function create(Application $app, API_OAuth2_Account $account, $route, $status_code, $format, $ressource, $general = null, $aspect = null, $action = null)
+    public static function create(Application $app, \API_OAuth2_Account $account, $route, $status_code, $format, $resource, $general = null, $aspect = null, $action = null)
     {
         $sql = '
       INSERT INTO
@@ -351,7 +353,7 @@ class API_V1_Log
           api_log_date,
           api_log_status_code,
           api_log_format,
-          api_log_ressource,
+          api_log_resource,
           api_log_general,
           api_log_aspect,
           api_log_action
@@ -363,7 +365,7 @@ class API_V1_Log
         NOW(),
         :status_code,
         :format,
-        :ressource,
+        :resource,
         :general,
         :aspect,
         :action
@@ -374,7 +376,7 @@ class API_V1_Log
             ':route'       => $route,
             ':status_code' => $status_code,
             ':format'      => $format,
-            ':ressource'   => $ressource,
+            ':resource'    => $resource,
             ':general'     => $general,
             ':aspect'      => $aspect,
             ':action'      => $action

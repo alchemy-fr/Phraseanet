@@ -1,8 +1,10 @@
 <?php
 
-namespace Alchemy\Tests\Phrasea\Application;
+namespace Alchemy\Tests\Phrasea\Controller\Api;
 
-class ApiJsonTest extends ApiTestCase
+use Symfony\Component\Yaml\Yaml;
+
+class ApiYamlTest extends ApiTestCase
 {
     protected function getParameters(array $parameters = [])
     {
@@ -11,11 +13,11 @@ class ApiJsonTest extends ApiTestCase
 
     protected function unserialize($data)
     {
-        return json_decode($data, true);
+        return Yaml::parse($data);
     }
 
     protected function getAcceptMimeType()
     {
-        return 'application/json';
+        return 'text/yaml';
     }
 }

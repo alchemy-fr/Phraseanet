@@ -18,10 +18,6 @@ class ApiOauth2ErrorsSubscriberTest extends \PhraseanetTestCase
     public function testError($exception, $code, $contentType)
     {
         $app = new Application('test');
-        $app['api'] = function () use ($app) {
-            return new \API_V1_adapter($app);
-        };
-        $app->register(new \API_V1_Timer());
         $app['dispatcher']->addSubscriber(new ApiOauth2ErrorsSubscriber(PhraseaExceptionHandler::register(), $this->createTranslatorMock()));
         $app->get('/api/oauthv2', function () use ($exception) {
             throw $exception;
@@ -41,10 +37,6 @@ class ApiOauth2ErrorsSubscriberTest extends \PhraseanetTestCase
     {
         $app = new Application('test');
         unset($app['exception_handler']);
-        $app['api'] = function () use ($app) {
-            return new \API_V1_adapter($app);
-        };
-        $app->register(new \API_V1_Timer());
         $app['dispatcher']->addSubscriber(new ApiOauth2ErrorsSubscriber(PhraseaExceptionHandler::register(), $this->createTranslatorMock()));
         $app->get('/', function () use ($exception) {
             throw $exception;

@@ -1,6 +1,6 @@
 <?php
 
-class Session_LoggerTest extends \PhraseanetTestCase
+class Session_LoggerTest extends \PhraseanetAuthenticatedTestCase
 {
     /**
      * @var Session_Logger

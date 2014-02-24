@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\EntityManager;
 
@@ -24,5 +25,26 @@ abstract class patchAbstract implements patchInterface
         } catch (NoResultException $e) {
 
         }
+    }
+
+    protected function tableExists(base $base, $tableName)
+    {
+        return $base
+            ->get_connection()
+            ->getSchemaManager()
+            ->tablesExist([$tableName]);
+    }
+
+    protected function tableHasField(base $base, $tableName, $fieldName)
+    {
+        if (!$this->tableExists($base, $tableName)) {
+            return false;
+        }
+
+        return $base
+            ->get_connection()
+            ->getSchemaManager()
+            ->listTableDetails($tableName)
+            ->hasColumn($fieldName);
     }
 }

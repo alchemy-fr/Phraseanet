@@ -16,7 +16,6 @@ main:
         driver: pdo_sqlite
         path: '/tmp/db.sqlite'
         charset: UTF8
-    api-timers: false
     cache:
         type: MemcacheCache
         options:

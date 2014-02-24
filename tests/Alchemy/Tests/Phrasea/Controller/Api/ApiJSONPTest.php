@@ -1,6 +1,6 @@
 <?php
 
-namespace Alchemy\Tests\Phrasea\Application;
+namespace Alchemy\Tests\Phrasea\Controller\Api;
 
 use Symfony\Component\HttpFoundation\Response;
 
