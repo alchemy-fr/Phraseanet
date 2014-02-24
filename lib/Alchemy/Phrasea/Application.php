@@ -110,6 +110,7 @@ use Alchemy\Phrasea\Core\Provider\TemporaryFilesystemServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TranslationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
+use Alchemy\Phrasea\Core\Provider\ZippyServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Form\Extension\HelpTypeExtension;
@@ -286,6 +287,7 @@ class Application extends SilexApplication
         $this->register(new PHPExiftoolServiceProvider());
         $this->register(new ReCaptchaServiceProvider());
         $this->register(new SubdefServiceProvider());
+        $this->register(new ZippyServiceProvider());
 
         $this['recaptcha.public-key'] = $this->share(function (Application $app) {
             if ($app['conf']->get(['registry', 'webservices', 'captcha-enabled'])) {
