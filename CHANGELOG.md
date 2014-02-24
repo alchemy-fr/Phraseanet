@@ -2,6 +2,7 @@
 
 ## 3.8.3 (2014-xx-xx)
 
+  - BugFix : Fix record type editing.
   - BugFix : Fix scheduler timeout.
   - BugFix : Fix thesaurus tab javascript errors.
   - BugFix : Fix IE slow script error messages.
