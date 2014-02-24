@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "6ff48c308a23b2876dbda7b44f6f1d1a",
+    "hash": "ee3972e781af8721a6af65018129861f",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -354,6 +354,68 @@
                 "process"
             ],
             "time": "2014-02-14 12:39:44"
+        },
+        {
+            "name": "alchemy/zippy",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alchemy-fr/Zippy.git",
+                "reference": "8ccc695f66c3b61ffdb3b9e88474602da52401ae"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alchemy-fr/Zippy/zipball/8ccc695f66c3b61ffdb3b9e88474602da52401ae",
+                "reference": "8ccc695f66c3b61ffdb3b9e88474602da52401ae",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/collections": "~1.0",
+                "guzzle/guzzle": "~3.0",
+                "php": ">=5.3.3",
+                "pimple/pimple": "~1.0",
+                "symfony/filesystem": "~2.0",
+                "symfony/process": "~2.0"
+            },
+            "require-dev": {
+                "ext-zip": "*",
+                "phpunit/phpunit": "~3.7",
+                "sami/sami": "dev-master@dev",
+                "symfony/finder": "~2.0"
+            },
+            "suggest": {
+                "ext-zip": "To use the ZipExtensionAdapter"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Alchemy": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alchemy",
+                    "email": "dev.team@alchemy.fr",
+                    "homepage": "http://www.alchemy.fr/"
+                }
+            ],
+            "description": "Zippy, the archive manager companion",
+            "keywords": [
+                "bzip",
+                "compression",
+                "tar",
+                "zip"
+            ],
+            "time": "2014-02-18 22:09:18"
         },
         {
             "name": "cboden/ratchet",
@@ -4584,6 +4646,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "alchemy/task-manager": 20,
+        "alchemy/zippy": 20,
         "imagine/imagine": 20,
         "neutron/process-manager": 20,
         "silex/silex": 20,

@@ -695,11 +695,6 @@ class set_export extends set_abstract
      */
     public static function build_zip(Application $app, $token, Array $list, $zipFile)
     {
-        $zip = new ZipArchiveImproved();
-
-        if ($zip->open($zipFile, ZIPARCHIVE::CREATE) !== true) {
-            return false;
-        }
         if (isset($list['complete']) && $list['complete'] === true) {
             return;
         }
@@ -711,6 +706,7 @@ class set_export extends set_abstract
         $app['tokens']->updateToken($token, serialize($list));
 
         $toRemove = [];
+        $archiveFiles = [];
 
         foreach ($files as $record) {
             if (isset($record["subdefs"])) {
@@ -722,10 +718,7 @@ class set_export extends set_abstract
                             . $obj["ajout"]
                             . '.' . $obj["exportExt"];
 
-                        $name = $app['unicode']->remove_diacritics($name);
-
-                        $zip->addFile($path, $name);
-
+                        $archiveFiles[$app['unicode']->remove_diacritics($name)] = $path;
                         if ($o == 'caption') {
                             if (!in_array(dirname($path), $toRemove)) {
                                 $toRemove[] = dirname($path);
@@ -737,7 +730,7 @@ class set_export extends set_abstract
             }
         }
 
-        $zip->close();
+        $app['zippy']->create($zipFile, $archiveFiles);
 
         $list['complete'] = true;
 
