@@ -16,7 +16,7 @@ require_once __DIR__ . '/../lib/autoload.php';
 
 ErrorHandler::register();
 
-$environment = Application::ENV_DEV;
+$environment = Application::ENV_PROD;
 $app = require __DIR__ . '/../lib/Alchemy/Phrasea/Application/Api.php';
 
 $app->run();
