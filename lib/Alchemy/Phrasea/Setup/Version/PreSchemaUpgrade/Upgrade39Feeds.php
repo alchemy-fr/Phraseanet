@@ -56,7 +56,7 @@ class Upgrade39Feeds implements PreSchemaUpgradeInterface
     private function tableExists(EntityManager $em, $table)
     {
         return (Boolean) $em->createNativeQuery(
-            'SHOW TABLE STATUS WHERE Name="'.$table.'"', (new ResultSetMapping())->addScalarResult('Name', 'Name')
+            'SHOW TABLE STATUS WHERE Name="'.$table.'" COLLATE utf8_bin ', (new ResultSetMapping())->addScalarResult('Name', 'Name')
         )->getOneOrNullResult();
     }
 
