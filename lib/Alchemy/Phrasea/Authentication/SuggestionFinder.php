@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Authentication;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Authentication\Provider\Token\Token;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;

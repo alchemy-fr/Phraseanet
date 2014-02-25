@@ -9,7 +9,6 @@
  * file that was distributed with this source code.
  */
 
-
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Vocabulary;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;

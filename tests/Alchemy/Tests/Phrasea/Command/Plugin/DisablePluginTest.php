@@ -3,7 +3,6 @@
 namespace Alchemy\Tests\Phrasea\Command\Plugin;
 
 use Alchemy\Phrasea\Command\Plugin\DisablePlugin;
-use Symfony\Component\Yaml\Yaml;
 
 class DisablePluginTest extends PluginCommandTestCase
 {

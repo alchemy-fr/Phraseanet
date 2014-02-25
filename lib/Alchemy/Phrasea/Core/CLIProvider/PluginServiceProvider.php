@@ -11,17 +11,13 @@
 
 namespace Alchemy\Phrasea\Core\CLIProvider;
 
-use Alchemy\Phrasea\Plugin\PluginManager;
-use Alchemy\Phrasea\Plugin\Schema\ManifestValidator;
 use Alchemy\Phrasea\Plugin\Management\PluginsExplorer;
 use Alchemy\Phrasea\Plugin\Management\ComposerInstaller;
-use Alchemy\Phrasea\Plugin\Schema\PluginValidator;
 use Alchemy\Phrasea\Plugin\Importer\Importer;
 use Alchemy\Phrasea\Plugin\Importer\ImportStrategy;
 use Alchemy\Phrasea\Plugin\Importer\FolderImporter;
 use Alchemy\Phrasea\Plugin\Management\AutoloaderGenerator;
 use Alchemy\Phrasea\Plugin\Management\AssetsManager;
-use JsonSchema\Validator as JsonValidator;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Silex\Application;
 use Silex\ServiceProviderInterface;

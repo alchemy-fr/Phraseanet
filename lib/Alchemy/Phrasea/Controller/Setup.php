@@ -18,7 +18,6 @@ use Alchemy\Phrasea\Setup\Requirements\LocalesRequirements;
 use Alchemy\Phrasea\Setup\Requirements\PhpRequirements;
 use Alchemy\Phrasea\Setup\Requirements\PhraseaRequirements;
 use Alchemy\Phrasea\Setup\Requirements\SystemRequirements;
-use Doctrine\DBAL\Connection;
 use Silex\ControllerProviderInterface;
 use Silex\Application as SilexApplication;
 use Symfony\Component\HttpFoundation\Request;

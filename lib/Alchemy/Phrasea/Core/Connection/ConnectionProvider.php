@@ -61,4 +61,3 @@ class ConnectionProvider
         return $this->connections[$key] = DriverManager::getConnection($params, $this->config, $this->eventManager);;
     }
 }
-

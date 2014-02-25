@@ -3,8 +3,6 @@
 namespace Alchemy\Tests\Phrasea\Command\Plugin;
 
 use Alchemy\Phrasea\Command\Plugin\EnablePlugin;
-use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
-use Symfony\Component\Yaml\Yaml;
 
 class EnablePluginTest extends PluginCommandTestCase
 {

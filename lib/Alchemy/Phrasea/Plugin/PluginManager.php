@@ -14,7 +14,6 @@ namespace Alchemy\Phrasea\Plugin;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Plugin\Schema\PluginValidator;
 use Alchemy\Phrasea\Plugin\Exception\PluginValidationException;
-use Symfony\Component\Finder\Finder;
 
 class PluginManager
 {

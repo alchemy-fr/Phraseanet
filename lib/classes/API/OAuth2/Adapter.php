@@ -497,7 +497,7 @@ class API_OAuth2_Adapter extends OAuth2
 
     /**
      *
-     * @param  User             $user
+     * @param  User               $user
      * @return API_OAuth2_Account
      */
     public function updateAccount(User $user)

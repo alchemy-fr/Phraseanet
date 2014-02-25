@@ -2,8 +2,6 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
-use Symfony\Component\Process\ExecutableFinder;
-
 /**
  * @covers Alchemy\Phrasea\Core\Provider\PluginServiceProvider
  */

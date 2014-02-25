@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Form\Login;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Form\Constraint\PasswordToken;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
