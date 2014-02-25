@@ -173,7 +173,7 @@ class BinariesRequirements extends RequirementCollection implements RequirementI
 
         if (null !== $mp4box) {
             $output = null;
-            exec($mp4box . ' -version', $output);
+            exec($mp4box . ' -version 2>&1', $output);
             $data = sscanf($output[0], 'MP4Box - GPAC version %d.%d.%d');
             $version = sprintf('%d.%d.%d', $data[0], $data[1], $data[2]);
 
