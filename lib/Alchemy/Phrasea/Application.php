@@ -124,6 +124,7 @@ use Silex\Provider\SwiftmailerServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
@@ -275,6 +276,9 @@ class Application extends SilexApplication
         $this->register(new SessionServiceProvider(), array(
             'session.test' => $this->getEnvironment() === static::ENV_TEST
         ));
+        $this['session.storage.test'] = $this->share(function($app) {
+            return new MockArraySessionStorage();
+        });
         $this->register(new ServiceControllerServiceProvider());
         $this->register(new SwiftmailerServiceProvider());
         $this->register(new TaskManagerServiceProvider());
