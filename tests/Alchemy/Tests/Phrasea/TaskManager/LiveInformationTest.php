@@ -69,7 +69,7 @@ class LiveInformationTest extends \PhraseanetTestCase
 
         $live = new LiveInformation($this->createStatusMock(TaskManagerStatus::STATUS_STARTED), $notifier);
         $expected = [
-            'configuration' => Task::STATUS_STARTED,
+            'configuration' => $task->getStatus(),
             'actual'        => Task::STATUS_STARTED,
             'process-id'    => 1235,
         ];
@@ -88,7 +88,7 @@ class LiveInformationTest extends \PhraseanetTestCase
 
         $live = new LiveInformation($this->createStatusMock(TaskManagerStatus::STATUS_STARTED), $notifier);
         $expected = [
-            'configuration' => Task::STATUS_STARTED,
+            'configuration' => $task->getStatus(),
             'actual'        => Task::STATUS_STOPPED,
             'process-id'    => null,
         ];
