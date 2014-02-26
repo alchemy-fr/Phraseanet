@@ -52,7 +52,7 @@ module.exports = function(grunt) {
             "autobahnjs": {
                 "expand": true,
                 "src": [
-                    "<%= path.bower %>/autobahnjs/build/autobahn.min.js",
+                    "<%= path.bower %>/autobahnjs/build/autobahn.js",
                     "<%= path.bower %>/autobahnjs/LICENSE"
                 ],
                 "dest": "<%= path.asset %>/autobahnjs/",

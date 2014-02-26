@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Controller\Admin;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Form\TaskForm;
 use Alchemy\Phrasea\Model\Entities\Task;
+use Alchemy\Phrasea\TaskManager\TaskManagerStatus;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,6 +46,10 @@ class TaskManager implements ControllerProviderInterface
         $controllers
             ->get('/scheduler', 'controller.admin.task:getScheduler')
             ->bind('admin_scheduler');
+
+        $controllers
+            ->get('/live', 'controller.admin.task:getLiveInformation')
+            ->bind('admin_tasks_live_info');
 
         $controllers
             ->post('/tasks/create', 'controller.admin.task:postCreateTask')
@@ -124,22 +129,38 @@ class TaskManager implements ControllerProviderInterface
         return $app->redirectPath('admin_tasks_list');
     }
 
+    public function getLiveInformation(Application $app, Request $request)
+    {
+        if ($request->getRequestFormat() !== "json") {
+            $app->abort(406, 'Only JSON format is accepted.');
+        }
+
+        foreach ($app['manipulator.task']->getRepository()->findAll() as $task) {
+            $tasks[$task->getId()] = $app['task-manager.live-information']->getTask($task);
+        }
+
+        return $app->json([
+            'manager' => $app['task-manager.live-information']->getManager(),
+            'tasks' => $tasks
+        ]);
+    }
+
+
     public function getScheduler(Application $app, Request $request)
     {
         if ($request->getRequestFormat() !== "json") {
             $app->abort(406, 'Only JSON format is accepted.');
         }
 
-        $scheduler = array_replace($app['task-manager.live-information']->getManager(), [
+        return $app->json([
             'name' => $app->trans('Task Scheduler'),
+            'configuration' => $app['task-manager.status']->getStatus(),
             'urls' => [
                 'start' => $app->path('admin_tasks_scheduler_start'),
                 'stop' => $app->path('admin_tasks_scheduler_stop'),
                 'log' => $app->path('admin_tasks_scheduler_log'),
             ]
         ]);
-
-        return $app->json($scheduler);
     }
 
     public function getTasks(Application $app, Request $request)
@@ -147,11 +168,11 @@ class TaskManager implements ControllerProviderInterface
         $tasks = [];
 
         foreach ($app['repo.tasks']->findAll() as $task) {
-            $tasks[] = array_replace(
-                $app['task-manager.live-information']->getTask($task), [
+            $tasks[] = [
                 'id' => $task->getId(),
-                'name' => $task->getName()
-            ]);
+                'name' => $task->getName(),
+                'configuration' => $task->getStatus()
+            ];
         }
 
         if ($request->getRequestFormat() === "json") {
@@ -165,10 +186,11 @@ class TaskManager implements ControllerProviderInterface
         return $app['twig']->render('admin/task-manager/index.html.twig', [
             'available_jobs' => $app['task-manager.available-jobs'],
             'tasks' => $tasks,
-            'scheduler' => array_replace(
-                $app['task-manager.live-information']->getManager(), [
-                'name' => $app->trans('Task Scheduler')
-            ])
+            'scheduler' => [
+                'id'   => '',
+                'name' => $app->trans('Task Scheduler'),
+                'configuration' => $app['task-manager.status']->getStatus(),
+            ]
         ]);
     }
 

@@ -51,6 +51,7 @@ $groups = [
         , '//assets/blueimp-load-image/load-image.js'
         , '//assets/jquery-file-upload/jquery.iframe-transport.js'
         , '//assets/jquery-file-upload/jquery.fileupload.js'
+        , '//assets/autobahnjs/autobahn.js'
     ],
     'report' => [
          '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
