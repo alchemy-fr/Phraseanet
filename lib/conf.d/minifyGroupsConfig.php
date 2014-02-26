@@ -98,7 +98,7 @@ $groups = array(
         , '//skins/prod/publicator.js'
         , '//include/jslibs/jquery.sprintf.1.0.3.js'
         , '//include/jquery.tooltip.js'
-        , '//include/jslibs/flowplayer/flowplayer-3.2.11.min.js'
+        , '//include/jslibs/flowplayer/flowplayer-3.2.13.min.js'
         , '//include/jquery.p4.preview.js'
         , '//skins/prod/jquery.edit.js'
         , '//include/jslibs/jquery.color.animation.js'
@@ -125,7 +125,7 @@ $groups = array(
         , '//include/jquery.common.js'
         , '//skins/prod/jquery.Dialog.js'
         , '//skins/lightbox/jquery.lightbox.js'
-        , '//include/jslibs/flowplayer/flowplayer-3.2.11.min.js'
+        , '//include/jslibs/flowplayer/flowplayer-3.2.13.min.js'
     ),
     'lightboxie6' => array(
          '//include/jslibs/jquery.mousewheel.js'
@@ -137,7 +137,7 @@ $groups = array(
         , '//include/jquery.common.js'
         , '//skins/prod/jquery.Dialog.js'
         , '//skins/lightbox/jquery.lightbox.ie6.js'
-        , '//include/jslibs/flowplayer/flowplayer-3.2.11.min.js'
+        , '//include/jslibs/flowplayer/flowplayer-3.2.13.min.js'
     ),
     'uploadflash' => array(
         '//include/jslibs/SWFUpload/swfupload.js'
