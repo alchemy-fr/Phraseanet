@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Alchemy\Phrasea\Http\XSendFile\XSendFileFactory;
@@ -25,7 +26,7 @@ class XSendFileMappingGenerator extends Command
 
         $this->addOption('write', 'w', null, 'Writes the configuration')
             ->addOption('enabled', 'e', null, 'Set the enable toggle to `true`')
-            ->addArgument('type', null, 'The configuration type, either `nginx` or `apache`')
+            ->addArgument('type', InputArgument::REQUIRED, 'The configuration type, either `nginx` or `apache`')
             ->setDescription('Generates Phraseanet xsendfile mapping configuration depending on databoxes configuration');
     }
 
