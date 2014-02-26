@@ -48,7 +48,7 @@ define([
                     });
                     _.each(response.tasks, function(data, id) {
                         var jobModel = $this.tasksCollection.get(id);
-                        if ("undefined" !== jobModel) {
+                        if ("undefined" !== typeof jobModel) {
                             jobModel.set({
                                 "actual": data["actual"],
                                 "process-id": data["process-id"],

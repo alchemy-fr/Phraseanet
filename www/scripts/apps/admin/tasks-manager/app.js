@@ -58,17 +58,22 @@ define([
                 TaskManagerApp.schedulerView.render();
 
                 // Sets connection to the web socket
-                var ws = new WSConnection({url:TaskManagerApp.wsuri, topic: TaskManagerApp.wstopic, eventAggregator: TaskManagerApp.eventAggregator});
-                ws.run();
+                var ws = WSConnection.getInstance(TaskManagerApp.wsuri);
+                ws.connect();
+
+                ws.subscribe(TaskManagerApp.wstopic, function(topic, msg) {
+                    // double encoded string
+                    var msg = JSON.parse(JSON.parse(msg));
+                    TaskManagerApp.eventAggregator.trigger("ws:"+msg.event, msg);
+                });
 
                 // On ticks re-render ping view, update tasks & scheduler model
                 TaskManagerApp.eventAggregator.on("ws:manager-tick", function(response) {
-                    var $this = this;
-                    $this.pingView.render();
-                    $this.Scheduler.set({"actual": "started", "process-id": response.message.manager["process-id"]});
+                    TaskManagerApp.pingView.render();
+                    TaskManagerApp.Scheduler.set({"actual": "started", "process-id": response.message.manager["process-id"]});
                     _.each(response.message.jobs, function(data, id) {
-                        var jobModel = $this.tasksCollection.get(id);
-                        if ("undefined" !== jobModel) {
+                        var jobModel = TaskManagerApp.tasksCollection.get(id);
+                        if ("undefined" !== typeof jobModel) {
                             jobModel.set({"actual": data["status"], "process-id": data["process-id"]});
                         }
                     });
@@ -96,6 +101,8 @@ define([
     };
 
     return {
+        create: create,
+        load: load,
         initialize: initialize
     };
 });
