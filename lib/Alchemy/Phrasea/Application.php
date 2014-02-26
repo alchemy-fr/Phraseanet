@@ -307,7 +307,7 @@ class Application extends SilexApplication
         $this->register(new SessionServiceProvider(), [
             'session.test' => $this->getEnvironment() === static::ENV_TEST
         ]);
-        $this['session.storage.test'] = $this->share(function($app) {
+        $this['session.storage.test'] = $this->share(function ($app) {
             return new MockArraySessionStorage();
         });
 

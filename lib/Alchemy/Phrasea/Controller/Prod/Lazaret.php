@@ -92,11 +92,11 @@ class Lazaret implements ControllerProviderInterface
             $lazaretFiles = $lazaretRepository->findPerPage($baseIds, $offset, $perPage);
         }
 
-        return $app['twig']->render('prod/upload/lazaret.html.twig', array(
+        return $app['twig']->render('prod/upload/lazaret.html.twig', [
             'lazaretFiles' => $lazaretFiles,
             'currentPage'  => $page,
             'perPage'      => $perPage,
-        ));
+        ]);
     }
 
     /**
