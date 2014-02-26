@@ -63,10 +63,10 @@
           </div>
           <script type="text/javascript">
             flowplayer("preview{{random}}",
-              {src:"/include/jslibs/flowplayer/flowplayer-3.2.12.swf", wmode: "transparent"},
+              {src:"/include/jslibs/flowplayer/flowplayer-3.2.18.swf", wmode: "transparent"},
               {clip:{url:"{{url|url_encode}}",autoPlay: true,autoBuffering:true,provider: "h264streaming",scaling:"fit"},
               onError:function(code,message){getNewVideoToken("{{thumbnail.get_sbas_id() ~'_'~thumbnail.get_record_id()}}", this);},
-              plugins: {h264streaming: {url: "/include/jslibs/flowplayer/flowplayer.pseudostreaming-3.2.9.swf"}}
+              plugins: {h264streaming: {url: "/include/jslibs/flowplayer/pseudostreaming/flowplayer.pseudostreaming-3.2.13.swf"}}
               });
           </script>
         {% elseif record_type == 'FLEXPAPER' %}
@@ -170,9 +170,9 @@
           </div>
           <script type="text/javascript">
             flowplayer("preview{{random}}",
-              {src:"/include/jslibs/flowplayer/flowplayer-3.2.12.swf", wmode: "transparent"},
+              {src:"/include/jslibs/flowplayer/flowplayer-3.2.18.swf", wmode: "transparent"},
               {clip:{url:"{{url}}",autoPlay: true,autoBuffering:true,provider: "h264streaming",scaling:"fit"},
-              onError:function(code,message){getNewVideoToken({{thumbnail.get_sbas_id() ~'_'~thumbnail.get_record_id()}}, this);},              plugins: {h264streaming: {url: "/include/jslibs/flowplayer/flowplayer.pseudostreaming-3.2.9.swf"}}});
+              onError:function(code,message){getNewVideoToken({{thumbnail.get_sbas_id() ~'_'~thumbnail.get_record_id()}}, this);},              plugins: {h264streaming: {url: "/include/jslibs/flowplayer/pseudostreaming/flowplayer.pseudostreaming-3.2.13.swf"}}});
           </script>
         {% elseif record_type == 'FLEXPAPER' %}
           {% set random = thumbnail.get_random() %}
