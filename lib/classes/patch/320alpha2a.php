@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Query;
 
-class patch_320alpha2a implements patchInterface
+class patch_320alpha2a extends patchAbstract
 {
     /** @var string */
     private $release = '3.2.0-alpha.2';

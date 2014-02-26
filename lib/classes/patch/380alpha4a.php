@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\AuthFailure;
 
-class patch_380alpha4a implements patchInterface
+class patch_380alpha4a extends patchAbstract
 {
     /** @var string */
     private $release = '3.8.0-alpha.4';
