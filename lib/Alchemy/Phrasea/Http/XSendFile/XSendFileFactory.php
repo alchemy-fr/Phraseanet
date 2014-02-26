@@ -66,9 +66,9 @@ class XSendFileFactory
      *
      * @throws InvalidArgumentException if mode type is unknown
      */
-    public function getMode($throwException = false)
+    public function getMode($throwException = false, $forceMode = false)
     {
-        if (false === $this->enabled) {
+        if (false === $this->enabled && true !== $forceMode) {
             return new NullMode();
         }
 
