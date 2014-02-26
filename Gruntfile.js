@@ -278,7 +278,7 @@ module.exports = function(grunt) {
                     "skins/**",
                     "themes/**",
                     "tinymce.js",
-                    "LICENSE.txt"
+                    "license.txt"
                 ],
                 "dest": "<%= path.asset %>/tinymce"
             },
