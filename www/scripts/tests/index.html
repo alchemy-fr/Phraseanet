@@ -8,6 +8,7 @@
 <body>
     <div id="mocha"></div>
     <script src="./../../../tmp-assets/mocha/mocha.js"></script>
+    <script src="../../assets/sinon/sinon.js"></script>
     <script src="../../assets/requirejs/require.js"></script>
     <script src="../../scripts/tests/main.js"></script>
     <script>
@@ -17,7 +18,8 @@
             'specs/admin/taskmanager',
             'specs/login/home',
             'specs/models',
-            'specs/validator'
+            'specs/validator',
+            'specs/websockets/connection'
         ], runMocha);
     </script>
 </body>

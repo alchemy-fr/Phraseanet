@@ -264,6 +264,21 @@ module.exports = function(grunt) {
                 "dest": "<%= path.asset %>/requirejs/",
                 "flatten": true
             },
+            "sinonjs": {
+                "expand": true,
+                "src": "<%= path.bower %>/sinonjs/sinon.js",
+                "dest": "<%= path.asset %>/sinon",
+                "flatten": true
+            },
+            "sinon-chai": {
+                "expand": true,
+                "src": [
+                    "<%= path.bower %>/sinon-chai/lib/sinon-chai.js",
+                    "<%= path.bower %>/sinon-chai/LICENSE.txt"
+                ],
+                "dest": "<%= path.asset %>/sinon-chai",
+                "flatten": true
+            },
             "swfobject": {
                 "expand": true,
                 "src": "<%= path.bower %>/swfobject/swfobject/swfobject.js",
@@ -393,6 +408,8 @@ module.exports = function(grunt) {
         "copy:modernizr",
         "copy:normalize",
         "copy:requirejs",
+        "copy:sinonjs",
+        "copy:sinon-chai",
         "copy:swfobject",
         "copy:tinymce",
         "copy:underscore",

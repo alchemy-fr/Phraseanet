@@ -30,7 +30,9 @@
     },
     "devDependencies": {
         "mocha": "latest",
+        "sinonjs": "~1.7.0",
         "chai": "~1.6",
+        "sinon-chai": "~2.5",
         "qunit": "https://github.com/jquery/qunit.git#1.11.0",
         "js-fixtures": "https://github.com/badunk/js-fixtures/archive/master.zip"
     }
