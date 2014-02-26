@@ -21,7 +21,7 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 class CookiesDisablerSubscriber implements EventSubscriberInterface
 {
-    private static $NOSESSION_ROUTES = '/^((\/api\/v1)|(\/permalink))/';
+    private static $NOSESSION_ROUTES = '/^((\/api\/v1)|(\/api\/?$)|(\/permalink))/';
     private $app;
     private $sessionCookieEnabled = true;
 

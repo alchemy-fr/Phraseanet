@@ -52,7 +52,8 @@ class CookiesDisablerSubscriberTest extends \PHPUnit_Framework_TestCase
         return array(
             array(false, '/prod'),
             array(false, '/admin'),
-            array(false, '/api'),
+            array(true, '/api'),
+            array(true, '/api/'),
             array(false, '/api/oauthv2'),
             array(false, '/'),
             array(false, '/datafiles/'),
