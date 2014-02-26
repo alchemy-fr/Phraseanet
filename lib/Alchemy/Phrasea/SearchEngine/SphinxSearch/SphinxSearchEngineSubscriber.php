@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\SearchEngine\Phrasea;
+namespace Alchemy\Phrasea\SearchEngine\SphinxSearch;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
