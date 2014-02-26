@@ -52,7 +52,8 @@ class CookiesDisablerSubscriberTest extends \PhraseanetTestCase
         return [
             [false, '/prod'],
             [false, '/admin'],
-            [false, '/api'],
+            [true, '/api'],
+            [true, '/api/'],
             [false, '/api/oauthv2'],
             [false, '/'],
             [false, '/datafiles/'],
