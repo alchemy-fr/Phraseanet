@@ -20,6 +20,7 @@ use Alchemy\Phrasea\Core\Event\Subscriber\DebuggerSubscriber;
 use Monolog\Logger;
 use Monolog\Processor\WebProcessor;
 use Silex\Provider\WebProfilerServiceProvider;
+use Sorien\Provider\DoctrineProfilerServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 
 return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
@@ -61,6 +62,10 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
             'profiler.cache_dir'    => $app['root.path'] . '/tmp/cache/profiler',
         ]);
         $app->mount('/_profiler', $p);
+        $app->register(new DoctrineProfilerServiceProvider());
+        $app['db'] = $app->share(function (PhraseaApplication $app) {
+            return $app['EM']->getConnection();
+        });
     }
 
     $app['dispatcher'] = $app->share(
