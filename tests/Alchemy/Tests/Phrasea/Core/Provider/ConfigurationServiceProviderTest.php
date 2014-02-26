@@ -34,6 +34,11 @@ class ConfigurationServiceProviderTest extends ServiceProviderTestCase
                 'registry.manipulator',
                 'Alchemy\\Phrasea\\Core\\Configuration\\RegistryManipulator'
             ],
+            [
+                'Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider',
+                'conf.restrictions',
+                'Alchemy\Phrasea\Core\Configuration\AccessRestriction'
+            ],
         ];
     }
 

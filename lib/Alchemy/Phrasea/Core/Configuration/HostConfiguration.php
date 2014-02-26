@@ -230,6 +230,10 @@ class HostConfiguration implements ConfigurationInterface
             $config[$property] = $data;
         }
 
+        if (isset($subConf['databoxes'])) {
+            $config['databoxes'] = $subConf['databoxes'];
+        }
+
         $this->cache = $config;
     }
 }

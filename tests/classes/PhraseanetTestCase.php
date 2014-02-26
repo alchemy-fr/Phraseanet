@@ -627,4 +627,9 @@ abstract class PhraseanetTestCase extends WebTestCase
         $app['EM']->remove($user);
         $app['EM']->flush();
     }
+
+    protected function createLoggerMock()
+    {
+        return $this->getMock('Psr\Log\LoggerInterface');
+    }
 }

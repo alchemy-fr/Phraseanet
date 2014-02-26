@@ -24,11 +24,4 @@ class PhraseanetWampServerTest extends \PhraseanetTestCase
             ->disableOriginalConstructor()
             ->getMock();
     }
-
-    private function createLoggerMock()
-    {
-        return $this->getMockBuilder('Psr\Log\LoggerInterface')
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
 }

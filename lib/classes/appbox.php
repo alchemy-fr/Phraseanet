@@ -424,9 +424,13 @@ class appbox extends base
         $ret = [];
         foreach ($this->retrieve_sbas_ids() as $sbas_id) {
             try {
-                $ret[$sbas_id] = new \databox($this->app, $sbas_id);
+                $databox = new \databox($this->app, $sbas_id);
+                if (!$this->app['conf.restrictions']->isDataboxAvailable($databox)) {
+                    continue;
+                }
+                $ret[$sbas_id] = $databox;
             } catch (NotFoundHttpException $e) {
-
+                $this->app['monolog']->error(sprintf('Databox %s is not reliable.', $databox->getId()));
             }
         }
 
