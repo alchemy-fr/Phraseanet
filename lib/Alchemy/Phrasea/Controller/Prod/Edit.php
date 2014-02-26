@@ -202,7 +202,7 @@ class Edit implements ControllerProviderInterface
                     $thumbnail = $record->get_thumbnail();
 
                     $elements[$indice]['subdefs']['thumbnail'] = array(
-                        'url' => $thumbnail->get_url()
+                        'url' => (string) $thumbnail->get_url()
                         , 'w'   => $thumbnail->get_width()
                         , 'h'   => $thumbnail->get_height()
                     );

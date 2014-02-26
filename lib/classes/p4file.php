@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Guzzle\Http\Url;
+
 class p4file
 {
 
@@ -52,7 +54,7 @@ class p4file
             }
         }
 
-        return $ret;
+        return Url::factory($ret);
     }
 
 }

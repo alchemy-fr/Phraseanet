@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Guzzle\Http\Url;
 
 /**
  *
@@ -142,19 +143,19 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
 
     /**
      *
-     * @return string
+     * @return Url
      */
     public function get_url()
     {
         $label = $this->get_label() . '.' . pathinfo($this->media_subdef->get_file(), PATHINFO_EXTENSION);
 
-        return $this->app->url('permalinks_permalink', array(
+        return Url::factory($this->app->url('permalinks_permalink', array(
             'sbas_id'   => $this->media_subdef->get_sbas_id(),
             'record_id' => $this->media_subdef->get_record_id(),
             'subdef'    => $this->media_subdef->get_name(),
             'label'     => $label,
             'token'     => $this->get_token(),
-        ));
+        )));
     }
 
     /**

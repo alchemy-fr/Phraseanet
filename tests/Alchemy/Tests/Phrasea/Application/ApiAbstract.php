@@ -2226,7 +2226,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
             $expected = $subdef->get_permalink()->get_last_modified();
             $found = \DateTime::createFromFormat(DATE_ATOM, $permalink['updated_on']);
-            
+
             $this->assertLessThanOrEqual(1, $expected->diff($found)->format('U'));
             $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['updated_on']);
             $this->assertDateAtom($permalink['updated_on']);
@@ -2244,7 +2244,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
             $this->assertArrayHasKey("download_url", $permalink);
             $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['download_url']);
-            $this->assertEquals($subdef->get_permalink()->get_url() . '&download', $permalink['download_url']);
+            $this->assertEquals((string) $subdef->get_permalink()->get_url() . '&download=1', $permalink['download_url']);
             $this->checkUrlCode200($permalink['download_url']);
             $this->assertPermalinkHeaders($permalink['download_url'], $subdef, "download_url");
         }

@@ -294,7 +294,7 @@ abstract class Feed_XML_Abstract
         if ($preview_permalink) {
             $preview = $this->addTag($document, $group, 'media:content');
 
-            $preview->setAttribute('url', $preview_permalink->get_url());
+            $preview->setAttribute('url', (string) $preview_permalink->get_url());
             $preview->setAttribute('fileSize', $preview_sd->get_size());
             $preview->setAttribute('type', $preview_sd->get_mime());
             $preview->setAttribute('medium', $medium);
@@ -312,7 +312,7 @@ abstract class Feed_XML_Abstract
         if ($thumbnail_permalink) {
             $thumbnail = $this->addTag($document, $group, 'media:thumbnail');
 
-            $thumbnail->setAttribute('url', $thumbnail_permalink->get_url());
+            $thumbnail->setAttribute('url', (string) $thumbnail_permalink->get_url());
 
             if ($thumbnail_sd->get_width())
                 $thumbnail->setAttribute('width', $thumbnail_sd->get_width());
@@ -321,7 +321,7 @@ abstract class Feed_XML_Abstract
 
             $thumbnail = $this->addTag($document, $group, 'media:content');
 
-            $thumbnail->setAttribute('url', $thumbnail_permalink->get_url());
+            $thumbnail->setAttribute('url', (string) $thumbnail_permalink->get_url());
             $thumbnail->setAttribute('fileSize', $thumbnail_sd->get_size());
             $thumbnail->setAttribute('type', $thumbnail_sd->get_mime());
             $thumbnail->setAttribute('medium', $medium);

@@ -1728,6 +1728,9 @@ class API_V1_adapter extends API_V1_Abstract
      */
     protected function list_permalink(media_Permalink_Adapter $permalink, registryInterface $registry)
     {
+        $downloadUrl = $permalink->get_url();
+        $downloadUrl->getQuery()->set('download', '1');
+
         return array(
             'created_on'   => $permalink->get_created_on()->format(DATE_ATOM),
             'id'           => $permalink->get_id(),
@@ -1735,8 +1738,8 @@ class API_V1_adapter extends API_V1_Abstract
             'label'        => $permalink->get_label(),
             'updated_on'   => $permalink->get_last_modified()->format(DATE_ATOM),
             'page_url'     => $permalink->get_page(),
-            'download_url' => $permalink->get_url() . '&download',
-            'url'          => $permalink->get_url()
+            'download_url' => (string) $downloadUrl,
+            'url'          => (string) $permalink->get_url()
         );
     }
 

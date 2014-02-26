@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
+use Guzzle\Http\Url;
 
 /**
  *
@@ -479,7 +480,7 @@ class record_preview extends record_adapter
 
         $width = 350;
         $height = 150;
-        $url = 'http://chart.apis.google.com/chart?' .
+        $url = Url::factory('http://chart.apis.google.com/chart?' .
             'chs=' . $width . 'x' . $height .
             '&chd=t:' . implode(',', $views) .
             '&cht=lc' .
@@ -492,7 +493,7 @@ class record_preview extends record_adapter
             . date_format(new DateTime(), 'd M') . '|1:|0|'
             . round($top / 2, 2) . '|' . $top
             . '|2:|min|average|max' .
-            '&chxp=2,' . $min . ',' . $average . ',' . $max;
+            '&chxp=2,' . $min . ',' . $average . ',' . $max);
 
         $this->view_popularity = new media_adapter($url, $width, $height);
 
@@ -559,12 +560,12 @@ class record_preview extends record_adapter
         $width = 550;
         $height = 100;
 
-        $url = 'http://chart.apis.google.com/chart?'
+        $url = Url::factory('http://chart.apis.google.com/chart?'
             . 'cht=p3&chf=bg,s,00000000&chd=t:'
             . implode(',', $referrers)
             . '&chs=' . $width . 'x' . $height
             . '&chl='
-            . urlencode(implode('|', array_keys($referrers))) . '';
+            . urlencode(implode('|', array_keys($referrers))));
 
         $this->refferer_popularity = new media_adapter($url, $width, $height);
 
@@ -635,7 +636,7 @@ class record_preview extends record_adapter
 
         $width = 250;
         $height = 150;
-        $url = 'http://chart.apis.google.com/chart?' .
+        $url = Url::factory('http://chart.apis.google.com/chart?' .
             'chs=' . $width . 'x' . $height .
             '&chd=t:' . implode(',', $dwnls) .
             '&cht=lc' .
@@ -645,7 +646,7 @@ class record_preview extends record_adapter
             '&chxl=0:|' . date_format(new DateTime('-30 days'), 'd M') . '|'
             . date_format(new DateTime('-15 days'), 'd M') . '|'
             . date_format(new DateTime(), 'd M') . '|1:|0|'
-            . round($top / 2) . '|' . $top . '';
+            . round($top / 2) . '|' . $top);
 
         $ret = new media_adapter($url, $width, $height);
         $this->download_popularity = $ret;
