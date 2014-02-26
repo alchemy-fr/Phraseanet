@@ -51,7 +51,7 @@ class LiveInformation
         $taskData = (isset($data['jobs']) && isset($data['jobs'][$task->getId()])) ? $data['jobs'][$task->getId()] : [];
 
         return [
-            'configuration' => $task->getStatus(),
+            'configuration' => $this->status->getStatus() !== TaskManagerStatus::STATUS_STOPPED ? $task->getStatus() : TaskManagerStatus::STATUS_STOPPED,
             'actual'        => isset($taskData['status']) ? $taskData['status'] : Task::STATUS_STOPPED,
             'process-id'    => isset($taskData['process-id']) ? $taskData['process-id'] : null,
         ];

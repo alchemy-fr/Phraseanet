@@ -76,6 +76,35 @@ class LiveInformationTest extends \PhraseanetTestCase
         $this->assertEquals($expected, $live->getTask($task));
     }
 
+    public function testTaskManagerStatusIsPreponderantOverTaskStatusIfStopped()
+    {
+        $task = self::$DI['app']['EM']->find('Phraseanet:Task', 1);
+
+        $notifier = $this->createNotifierMock();
+        $notifier->expects($this->once())
+            ->method('notify')
+            ->with(Notifier::MESSAGE_INFORMATIONS)
+            ->will($this->returnValue([
+                'manager' => [
+                    'process-id' => 1234,
+                ],
+                'jobs' => [
+                    $task->getId() => [
+                        'status'     => Task::STATUS_STARTED,
+                        'process-id' => 1235,
+                    ]
+                ],
+            ]));
+
+        $live = new LiveInformation($this->createStatusMock(TaskManagerStatus::STATUS_STOPPED), $notifier);
+        $expected = [
+            'configuration' => TaskManagerStatus::STATUS_STOPPED,
+            'actual'        => Task::STATUS_STARTED,
+            'process-id'    => 1235,
+        ];
+        $this->assertEquals($expected, $live->getTask($task));
+    }
+
     public function testItReturnsNonWorkingTaskStatus()
     {
         $task = self::$DI['app']['EM']->find('Phraseanet:Task', 1);
