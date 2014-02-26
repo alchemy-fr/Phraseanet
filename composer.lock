@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "ee3972e781af8721a6af65018129861f",
+    "hash": "fd556cc5aba9ee057003b88569fceff3",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -3256,6 +3256,48 @@
             "description": "A WebProfiler for Silex",
             "homepage": "http://silex.sensiolabs.org/",
             "time": "2014-01-30 06:11:24"
+        },
+        {
+            "name": "sorien/silex-dbal-profiler",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Sorien/silex-dbal-profiler.git",
+                "reference": "8cbbef7a8fae53381d9005163070485471089908"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Sorien/silex-dbal-profiler/zipball/8cbbef7a8fae53381d9005163070485471089908",
+                "reference": "8cbbef7a8fae53381d9005163070485471089908",
+                "shasum": ""
+            },
+            "require-dev": {
+                "silex/silex": "~1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Sorien": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stanislav Turza",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Doctrine DBAL Profiler for Silex",
+            "keywords": [
+                "dbal",
+                "doctrine",
+                "profiler",
+                "silex"
+            ],
+            "time": "2014-02-26 10:01:20"
         },
         {
             "name": "swftools/swftools",

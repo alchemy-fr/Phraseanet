@@ -42,6 +42,7 @@
         "react/zmq"                        : "~0.2",
         "silex/silex"                      : "1.1.x-dev@dev",
         "silex/web-profiler"               : "~1.0.0@dev",
+        "sorien/silex-dbal-profiler"       : "~1.0.0",
         "swiftmailer/swiftmailer"          : "~4.3.0",
         "symfony/symfony"                  : "~2.4",
         "alchemy-fr/tcpdf-clone"           : "~6.0",
