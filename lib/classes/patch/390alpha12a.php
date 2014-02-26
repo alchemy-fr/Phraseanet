@@ -14,7 +14,7 @@ use Alchemy\Phrasea\Plugin\Plugin;
 use Alchemy\Phrasea\Plugin\Exception\PluginValidationException;
 use Symfony\Component\Finder\Finder;
 
-class patch_390alpha12a implements patchInterface
+class patch_390alpha12a extends patchAbstract
 {
     /** @var string */
     private $release = '3.9.0-alpha.12';

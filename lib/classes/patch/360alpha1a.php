@@ -11,7 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 
-class patch_360alpha1a implements patchInterface
+class patch_360alpha1a extends patchAbstract
 {
     /** @var string */
     private $release = '3.6.0-alpha.1';

@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Task;
 
-class patch_370alpha8a implements patchInterface
+class patch_370alpha8a extends patchAbstract
 {
     /** @var string */
     private $release = '3.7.0-alpha.8';

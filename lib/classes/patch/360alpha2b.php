@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Doctrine\DBAL\DBALException;
 
-class patch_360alpha2b implements patchInterface
+class patch_360alpha2b extends patchAbstract
 {
     /** @var string */
     private $release = '3.6.0-alpha.2';

@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Symfony\Component\Process\ExecutableFinder;
 
-class patch_380alpha18a implements patchInterface
+class patch_380alpha18a extends patchAbstract
 {
     /** @var string */
     private $release = '3.8.0-alpha.18';

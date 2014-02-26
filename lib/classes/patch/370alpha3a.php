@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class patch_370alpha3a implements patchInterface
+class patch_370alpha3a extends patchAbstract
 {
     /** @var string */
     private $release = '3.7.0-alpha.3';

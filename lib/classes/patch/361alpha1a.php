@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
-class patch_361alpha1a implements patchInterface
+class patch_361alpha1a extends patchAbstract
 {
     /** @var string */
     private $release = '3.6.1-alpha.1';
