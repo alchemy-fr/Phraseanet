@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\TaskManager;
 
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\Task;
 
 class LiveInformation
@@ -29,9 +30,16 @@ class LiveInformation
      *
      * @return array
      */
-    public function getManager()
+    public function getManager($throwException = false)
     {
-        $data = $this->notifier->notify(Notifier::MESSAGE_INFORMATIONS);
+        try {
+            $data = $this->notifier->notify(Notifier::MESSAGE_INFORMATIONS, 2);
+        } catch (RuntimeException $e) {
+            if($throwException) {
+                throw $e;
+            }
+            $data = [];
+        }
 
         return [
             'configuration' => $this->status->getStatus(),
@@ -45,9 +53,16 @@ class LiveInformation
      *
      * @return array
      */
-    public function getTask(Task $task)
+    public function getTask(Task $task, $throwException = false)
     {
-        $data = $this->notifier->notify(Notifier::MESSAGE_INFORMATIONS);
+        try {
+            $data = $this->notifier->notify(Notifier::MESSAGE_INFORMATIONS, 2);
+        } catch (RuntimeException $e) {
+            if($throwException) {
+                throw $e;
+            }
+            $data = [];
+        }
         $taskData = (isset($data['jobs']) && isset($data['jobs'][$task->getId()])) ? $data['jobs'][$task->getId()] : [];
 
         return [

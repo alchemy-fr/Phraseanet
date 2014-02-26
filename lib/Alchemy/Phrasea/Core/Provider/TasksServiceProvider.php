@@ -32,7 +32,7 @@ class TasksServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['task-manager.notifier'] = $app->share(function (Application $app) {
-            return Notifier::create($app['task-manager.listener.options']);
+            return Notifier::create($app['monolog'], $app['task-manager.listener.options']);
         });
 
         $app['task-manager.listener.options'] = $app->share(function (Application $app) {

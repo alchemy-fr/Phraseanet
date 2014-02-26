@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Model\Manipulator;
 
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\TaskManager\Job\EmptyCollectionJob;
 use Alchemy\Phrasea\TaskManager\Notifier;
@@ -54,7 +55,7 @@ class TaskManipulator implements ManipulatorInterface
         $this->om->persist($task);
         $this->om->flush();
 
-        $this->notifier->notify(Notifier::MESSAGE_CREATE);
+        $this->notify(Notifier::MESSAGE_CREATE);
 
         return $task;
     }
@@ -81,7 +82,7 @@ class TaskManipulator implements ManipulatorInterface
         $this->om->persist($task);
         $this->om->flush();
 
-        $this->notifier->notify(Notifier::MESSAGE_CREATE);
+        $this->notify(Notifier::MESSAGE_CREATE);
 
         return $task;
     }
@@ -98,7 +99,7 @@ class TaskManipulator implements ManipulatorInterface
         $this->om->persist($task);
         $this->om->flush();
 
-        $this->notifier->notify(Notifier::MESSAGE_UPDATE);
+        $this->notify(Notifier::MESSAGE_UPDATE);
 
         return $task;
     }
@@ -113,7 +114,7 @@ class TaskManipulator implements ManipulatorInterface
         $this->om->remove($task);
         $this->om->flush();
 
-        $this->notifier->notify(Notifier::MESSAGE_DELETE);
+        $this->notify(Notifier::MESSAGE_DELETE);
     }
 
     /**
@@ -130,7 +131,7 @@ class TaskManipulator implements ManipulatorInterface
         $this->om->persist($task);
         $this->om->flush();
 
-        $this->notifier->notify(Notifier::MESSAGE_UPDATE);
+        $this->notify(Notifier::MESSAGE_UPDATE);
 
         return $task;
     }
@@ -149,7 +150,7 @@ class TaskManipulator implements ManipulatorInterface
         $this->om->persist($task);
         $this->om->flush();
 
-        $this->notifier->notify(Notifier::MESSAGE_UPDATE);
+        $this->notify(Notifier::MESSAGE_UPDATE);
 
         return $task;
     }
@@ -168,7 +169,7 @@ class TaskManipulator implements ManipulatorInterface
         $this->om->persist($task);
         $this->om->flush();
 
-        $this->notifier->notify(Notifier::MESSAGE_UPDATE);
+        $this->notify(Notifier::MESSAGE_UPDATE);
 
         return $task;
     }
@@ -179,5 +180,13 @@ class TaskManipulator implements ManipulatorInterface
     public function getRepository()
     {
         return $this->om->getRepository('Phraseanet:Task');
+    }
+
+    private function notify($message)
+    {
+        try {
+            $this->notifier->notify($message);
+        } catch (RuntimeException $e) {
+        }
     }
 }

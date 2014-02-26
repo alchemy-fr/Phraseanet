@@ -21,7 +21,7 @@ class NotifierTest extends \PhraseanetTestCase
                 ->method('recv')
                 ->will($this->returnValue($result));
 
-        $notifier = new Notifier($socket);
+        $notifier = new Notifier($socket, $this->getMock('Psr\Log\LoggerInterface'));
         $this->assertEquals($expectedReturnValue, $notifier->notify($message));
     }
 
@@ -37,7 +37,7 @@ class NotifierTest extends \PhraseanetTestCase
         ];
     }
 
-    public function testNoresultsReturnNull()
+    public function testNoresultsThrowsException()
     {
         $socket = $this->createSocketMock();
 
@@ -45,8 +45,9 @@ class NotifierTest extends \PhraseanetTestCase
                 ->method('recv')
                 ->will($this->returnValue(false));
 
-        $notifier = new Notifier($socket);
-        $this->assertNull($notifier->notify(Notifier::MESSAGE_CREATE));
+        $notifier = new Notifier($socket, $this->getMock('Psr\Log\LoggerInterface'));
+        $this->setExpectedException('Alchemy\Phrasea\Exception\RuntimeException', 'Unable to retrieve information.');
+        $notifier->notify(Notifier::MESSAGE_CREATE);
     }
 
     public function testWrongJsonReturnNull()
@@ -57,8 +58,9 @@ class NotifierTest extends \PhraseanetTestCase
                 ->method('recv')
                 ->will($this->returnValue('wrong json'));
 
-        $notifier = new Notifier($socket);
-        $this->assertNull($notifier->notify(Notifier::MESSAGE_CREATE));
+        $notifier = new Notifier($socket, $this->getMock('Psr\Log\LoggerInterface'));
+        $this->setExpectedException('Alchemy\Phrasea\Exception\RuntimeException', 'Invalid task manager response : invalid JSON.');
+        $notifier->notify(Notifier::MESSAGE_CREATE);
     }
 
     public function testWrongReplyReturnNull()
@@ -72,8 +74,9 @@ class NotifierTest extends \PhraseanetTestCase
                 ->method('recv')
                 ->will($this->returnValue(json_encode(['request' => 'popo', 'reply' => []])));
 
-        $notifier = new Notifier($socket);
-        $this->assertNull($notifier->notify(Notifier::MESSAGE_CREATE));
+        $notifier = new Notifier($socket, $this->getMock('Psr\Log\LoggerInterface'));
+        $this->setExpectedException('Alchemy\Phrasea\Exception\RuntimeException', 'Invalid task manager response : missing fields.');
+        $notifier->notify(Notifier::MESSAGE_CREATE);
     }
 
     public function testMissingRequestReturnNull()
@@ -87,8 +90,9 @@ class NotifierTest extends \PhraseanetTestCase
                 ->method('recv')
                 ->will($this->returnValue(json_encode(['request' => TaskManager::MESSAGE_PROCESS_UPDATE])));
 
-        $notifier = new Notifier($socket);
-        $this->assertNull($notifier->notify(Notifier::MESSAGE_CREATE));
+        $notifier = new Notifier($socket, $this->getMock('Psr\Log\LoggerInterface'));
+        $this->setExpectedException('Alchemy\Phrasea\Exception\RuntimeException', 'Invalid task manager response : missing fields.');
+        $notifier->notify(Notifier::MESSAGE_CREATE);
     }
 
     private function createSocketMock()
