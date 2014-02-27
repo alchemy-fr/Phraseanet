@@ -10,7 +10,7 @@ require.config({
         backbone: "../assets/backbone-amd/backbone",
         i18n: "../assets/i18next/i18next.amd-1.6.3",
         bootstrap: "../assets/bootstrap/js/bootstrap.min",
-        sinonchai: "../assets/sinon-chai/sinon-chai"
+        sinonchai: "../../tmp-assets/sinon-chai/lib/sinon-chai"
     },
     shim: {
         bootstrap: ["jquery"],
