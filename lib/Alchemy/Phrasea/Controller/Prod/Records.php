@@ -153,7 +153,7 @@ class Records implements ControllerProviderInterface
         ]);
 
         $basketElementsRepository = $app['repo.basket-elements'];
-        $StoryWZRepository = $app['EM']->getRepository('Phraseanet:StoryWZ');
+        $StoryWZRepository = $app['repo.story-wz'];
 
         $deleted = [];
 
