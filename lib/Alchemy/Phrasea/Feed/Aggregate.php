@@ -78,7 +78,7 @@ class Aggregate implements FeedInterface
      */
     public static function createFromUser(Application $app, User $user)
     {
-        $feeds = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser($app['acl']->get($user));
+        $feeds = $app['repo.feeds']->getAllForUser($app['acl']->get($user));
         $token = $app['EM']->getRepository('Phraseanet:AggregateToken')->findOneBy(['user' => $user]);
 
         return new static($app['EM'], $feeds, $token);
@@ -94,7 +94,7 @@ class Aggregate implements FeedInterface
      */
     public static function create(Application $app, array $feed_ids)
     {
-        $feeds = $app['EM']->getRepository('Phraseanet:Feed')->findByIds($feed_ids);
+        $feeds = $app['repo.feeds']->findByIds($feed_ids);
 
         return new static($app, $feeds);
     }
@@ -239,6 +239,6 @@ class Aggregate implements FeedInterface
      */
     public static function getPublic(Application $app)
     {
-        return new static($app['EM'], $app['EM']->getRepository('Phraseanet:Feed')->findBy(['public' => true], ['updatedOn' => 'DESC']));
+        return new static($app['EM'], $app['repo.feeds']->findBy(['public' => true], ['updatedOn' => 'DESC']));
     }
 }

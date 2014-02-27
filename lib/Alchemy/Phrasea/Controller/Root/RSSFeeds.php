@@ -25,7 +25,7 @@ class RSSFeeds implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/feed/{id}/{format}/', function (Application $app, $id, $format) {
-            $feed = $app['EM']->getRepository('Phraseanet:Feed')->find($id);
+            $feed = $app['repo.feeds']->find($id);
 
             if (null === $feed) {
                 $app->abort(404, 'Feed not found');
@@ -66,7 +66,7 @@ class RSSFeeds implements ControllerProviderInterface
 
             $user = $token->getUser();
 
-            $feeds = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser($app['acl']->get($user));
+            $feeds = $app['repo.feeds']->getAllForUser($app['acl']->get($user));
 
             $aggregate = new Aggregate($app['EM'], $feeds, $token);
 

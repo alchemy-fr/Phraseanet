@@ -71,7 +71,7 @@ class Root implements ControllerProviderInterface
                 $cssfile = '000000';
             }
 
-            $feeds = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser($app['acl']->get($app['authentication']->getUser()));
+            $feeds = $app['repo.feeds']->getAllForUser($app['acl']->get($app['authentication']->getUser()));
             $aggregate = Aggregate::createFromUser($app, $app['authentication']->getUser());
 
             $thjslist = "";

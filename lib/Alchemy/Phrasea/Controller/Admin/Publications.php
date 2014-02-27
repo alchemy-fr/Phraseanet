@@ -34,7 +34,7 @@ class Publications implements ControllerProviderInterface
         });
 
         $controllers->get('/list/', function (PhraseaApplication $app) {
-            $feeds = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser(
+            $feeds = $app['repo.feeds']->getAllForUser(
                 $app['acl']->get($app['authentication']->getUser())
             );
 

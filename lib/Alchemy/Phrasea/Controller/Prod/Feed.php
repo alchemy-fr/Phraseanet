@@ -34,7 +34,7 @@ class Feed implements ControllerProviderInterface
         $app['firewall']->addMandatoryAuthentication($controllers);
 
         $controllers->post('/requestavailable/', function (Application $app, Request $request) {
-            $feeds = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser(
+            $feeds = $app['repo.feeds']->getAllForUser(
                 $app['acl']->get($app['authentication']->getUser())
             );
             $publishing = RecordsRequest::fromRequest($app, $request, true, [], ['bas_chupub']);
@@ -43,7 +43,7 @@ class Feed implements ControllerProviderInterface
         });
 
         $controllers->post('/entry/create/', function (Application $app, Request $request) {
-            $feed = $app['EM']->getRepository('Phraseanet:Feed')->find($request->request->get('feed_id'));
+            $feed = $app['repo.feeds']->find($request->request->get('feed_id'));
 
             if (null === $feed) {
                 $app->abort(404, "Feed not found");
@@ -101,7 +101,7 @@ class Feed implements ControllerProviderInterface
                 throw new AccessDeniedHttpException();
             }
 
-            $feeds = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser($app['acl']->get($app['authentication']->getUser()));
+            $feeds = $app['repo.feeds']->getAllForUser($app['acl']->get($app['authentication']->getUser()));
 
             $datas = $app['twig']->render('prod/actions/publish/publish_edit.html.twig', ['entry' => $entry, 'feeds' => $feeds]);
 
@@ -136,7 +136,7 @@ class Feed implements ControllerProviderInterface
             $new_feed_id = $request->request->get('feed_id', $currentFeedId);
             if ($currentFeedId !== (int) $new_feed_id) {
 
-                $new_feed = $app['EM']->getRepository('Phraseanet:Feed')->find($new_feed_id);
+                $new_feed = $app['repo.feeds']->find($new_feed_id);
 
                 if ($new_feed === null) {
                     $app->abort(404, 'Feed not found');
@@ -203,7 +203,7 @@ class Feed implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page > 0 ? $page : 1;
 
-            $feeds = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser($app['acl']->get($app['authentication']->getUser()));
+            $feeds = $app['repo.feeds']->getAllForUser($app['acl']->get($app['authentication']->getUser()));
 
             $datas = $app['twig']->render('prod/feeds/feeds.html.twig', [
                 'feeds' => $feeds,
@@ -218,11 +218,11 @@ class Feed implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page > 0 ? $page : 1;
 
-            $feed = $app['EM']->getRepository('Phraseanet:Feed')->find($id);
+            $feed = $app['repo.feeds']->find($id);
             if (!$feed->isAccessible($app['authentication']->getUser(), $app)) {
                 $app->abort(404, 'Feed not found');
             }
-            $feeds = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser($app['acl']->get($app['authentication']->getUser()));
+            $feeds = $app['repo.feeds']->getAllForUser($app['acl']->get($app['authentication']->getUser()));
 
             $datas = $app['twig']->render('prod/feeds/feeds.html.twig', ['feed' => $feed, 'feeds' => $feeds, 'page' => $page]);
 
@@ -234,7 +234,7 @@ class Feed implements ControllerProviderInterface
         $controllers->get('/subscribe/aggregated/', function (Application $app, Request $request) {
             $renew = ($request->query->get('renew') === 'true');
 
-            $feeds = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser($app['acl']->get($app['authentication']->getUser()));
+            $feeds = $app['repo.feeds']->getAllForUser($app['acl']->get($app['authentication']->getUser()));
 
             $link = $app['feed.aggregate-link-generator']->generate(new Aggregate($app['EM'], $feeds),
                 $app['authentication']->getUser(),
@@ -255,7 +255,7 @@ class Feed implements ControllerProviderInterface
         $controllers->get('/subscribe/{id}/', function (Application $app, Request $request, $id) {
             $renew = ($request->query->get('renew') === 'true');
 
-            $feed = $app['EM']->getRepository('Phraseanet:Feed')->find($id);
+            $feed = $app['repo.feeds']->find($id);
             if (!$feed->isAccessible($app['authentication']->getUser(), $app)) {
                 $app->abort(404, 'Feed not found');
             }
