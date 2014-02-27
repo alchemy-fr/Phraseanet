@@ -118,7 +118,7 @@ class Push implements ControllerProviderInterface
         $controllers->post('/sendform/', function (Application $app) use ($userSelection) {
             $push = new RecordHelper\Push($app, $app['request']);
 
-            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
+            $repository = $app['repo.usr-lists'];
 
             $RecommendedUsers = $userSelection($push->get_elements());
 
@@ -136,7 +136,7 @@ class Push implements ControllerProviderInterface
         $controllers->post('/validateform/', function (Application $app) use ($userSelection) {
             $push = new RecordHelper\Push($app, $app['request']);
 
-            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
+            $repository = $app['repo.usr-lists'];
 
             $RecommendedUsers = $userSelection($push->get_elements());
 
@@ -491,7 +491,7 @@ class Push implements ControllerProviderInterface
         $controllers->get('/list/{list_id}/', function (Application $app, $list_id) use ($listFormatter) {
             $datas = null;
 
-            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
+            $repository = $app['repo.usr-lists'];
 
             $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
 
@@ -593,7 +593,7 @@ class Push implements ControllerProviderInterface
                     ->limit(0, 50)
                     ->execute()->get_results();
 
-            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
+            $repository = $app['repo.usr-lists'];
 
             $lists = $repository->findUserListLike($app['authentication']->getUser(), $request->query->get('query'));
 
@@ -616,7 +616,7 @@ class Push implements ControllerProviderInterface
 
         $controllers->match('/edit-list/{list_id}/', function (Application $app, Request $request, $list_id) {
 
-            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
+            $repository = $app['repo.usr-lists'];
 
             $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
 

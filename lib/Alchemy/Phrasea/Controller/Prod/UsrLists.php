@@ -80,7 +80,7 @@ class UsrLists implements ControllerProviderInterface
         $lists = new ArrayCollection();
 
         try {
-            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
+            $repository = $app['repo.usr-lists'];
 
             $lists = $repository->findUserLists($app['authentication']->getUser());
 
@@ -193,7 +193,7 @@ class UsrLists implements ControllerProviderInterface
 
     public function displayList(Application $app, Request $request, $list_id)
     {
-        $repository = $app['EM']->getRepository('Phraseanet:UsrList');
+        $repository = $app['repo.usr-lists'];
 
         $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
 
@@ -251,7 +251,7 @@ class UsrLists implements ControllerProviderInterface
                 throw new ControllerException($app->trans('List name is required'));
             }
 
-            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
+            $repository = $app['repo.usr-lists'];
 
             $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
 
@@ -282,7 +282,7 @@ class UsrLists implements ControllerProviderInterface
     public function removeList(Application $app, $list_id)
     {
         try {
-            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
+            $repository = $app['repo.usr-lists'];
 
             $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
 
@@ -316,7 +316,7 @@ class UsrLists implements ControllerProviderInterface
     public function removeUser(Application $app, $list_id, $usr_id)
     {
         try {
-            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
+            $repository = $app['repo.usr-lists'];
 
             $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
             /* @var $list UsrList */
@@ -358,7 +358,7 @@ class UsrLists implements ControllerProviderInterface
                 throw new ControllerException('Invalid or missing parameter usr_ids');
             }
 
-            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
+            $repository = $app['repo.usr-lists'];
 
             $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
             /* @var $list UsrList */
@@ -422,7 +422,7 @@ class UsrLists implements ControllerProviderInterface
         $list = null;
 
         try {
-            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
+            $repository = $app['repo.usr-lists'];
 
             $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
             /* @var $list UsrList */
@@ -452,7 +452,7 @@ class UsrLists implements ControllerProviderInterface
             throw new BadRequestHttpException('Role is invalid');
 
         try {
-            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
+            $repository = $app['repo.usr-lists'];
 
             $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
             /* @var $list UsrList */
@@ -508,7 +508,7 @@ class UsrLists implements ControllerProviderInterface
     public function unshareWithUser(Application $app, $list_id, $usr_id)
     {
         try {
-            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
+            $repository = $app['repo.usr-lists'];
 
             $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
             /* @var $list UsrList */
