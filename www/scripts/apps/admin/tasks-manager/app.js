@@ -13,21 +13,20 @@ define([
     "backbone",
     "models/scheduler",
     "common/websockets/connection",
+    "common/websockets/subscriberManager",
     "apps/admin/tasks-manager/views/scheduler",
     "apps/admin/tasks-manager/views/tasks",
     "apps/admin/tasks-manager/views/ping",
     "apps/admin/tasks-manager/views/refresh",
     "apps/admin/tasks-manager/collections/tasks"
-], function ($, _, Backbone, Scheduler, WSConnection, SchedulerView, TasksView, PingView, RefreshView, TasksCollection) {
+], function ($, _, Backbone, Scheduler, WSConnection, SubscriberManager, SchedulerView, TasksView, PingView, RefreshView, TasksCollection) {
     var create = function() {
         window.TaskManagerApp = {
             $scope: $("#task-manager-app"),
             $tasksListView : $(".tasks-list-view", this.$scope),
             $schedulerView : $(".scheduler-view", this.$scope),
             $pingView : $(".ping-view", this.$scope),
-            $refreshView : $(".refresh-view", this.$scope),
-            eventAggregator: _.extend({}, Backbone.Events),
-            wstopic: "http://phraseanet.com/topics/admin/task-manager"
+            $refreshView : $(".refresh-view", this.$scope)
         };
 
         TaskManagerApp.tasksCollection = new TasksCollection();
@@ -56,7 +55,7 @@ define([
                 TaskManagerApp.tasksView.render();
                 TaskManagerApp.schedulerView.render();
 
-                WSConnection.subscribe(TaskManagerApp.wstopic, function(topic, msg) {
+                SubscriberManager.pushCallback(function(topic, msg) {
                     // double encoded string
                     var msg = JSON.parse(JSON.parse(msg));
                     WSConnection.trigger("ws:"+msg.event, msg);

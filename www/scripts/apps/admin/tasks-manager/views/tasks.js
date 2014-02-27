@@ -9,12 +9,10 @@
 
 define([
     "jquery",
-    "jqueryui",
     "underscore",
     "backbone",
-    "i18n",
     "apps/admin/tasks-manager/views/task"
-], function ($, jqueryui, _, Backbone, i18n, TaskView) {
+], function ($, _, Backbone, TaskView) {
     var TasksView = Backbone.View.extend({
         initialize: function() {
             this._taskViews = [];
