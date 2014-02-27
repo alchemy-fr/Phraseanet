@@ -32,7 +32,7 @@ class UserRepository extends EntityRepository
         $qb = $this->createQueryBuilder('u');
 
         $qb->where($qb->expr()->eq('u.admin', $qb->expr()->literal(true)))
-            ->andWhere($qb->expr()->isNull('u.modelOf'))
+            ->andWhere($qb->expr()->isNull('u.templateOwner'))
             ->andWhere($qb->expr()->eq('u.deleted', $qb->expr()->literal(false)));
 
         return $qb->getQuery()->getResult();
@@ -80,7 +80,7 @@ class UserRepository extends EntityRepository
         $qb = $this->createQueryBuilder('u');
         $qb->where($qb->expr()->eq('u.login', $qb->expr()->literal($login)))
             ->andWhere($qb->expr()->isNotNull('u.email'))
-            ->andWhere($qb->expr()->isNull('u.modelOf'))
+            ->andWhere($qb->expr()->isNull('u.templateOwner'))
             ->andWhere($qb->expr()->eq('u.guest', $qb->expr()->literal(false)))
             ->andWhere($qb->expr()->eq('u.deleted', $qb->expr()->literal(false)));
 
@@ -88,14 +88,14 @@ class UserRepository extends EntityRepository
     }
 
     /**
-     * Finds model of given user.
+     * Finds templates owned by a given user.
      *
      * @param User $user
      *
      * @return array
      */
-    public function findModelOf(User $user)
+    public function findTemplateOwner(User $user)
     {
-        return $this->findBy(['modelOf' => $user->getId()]);
+        return $this->findBy(['templateOwner' => $user->getId()]);
     }
 }

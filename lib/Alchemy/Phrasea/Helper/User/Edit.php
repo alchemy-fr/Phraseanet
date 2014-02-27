@@ -644,7 +644,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     {
         $template = $this->app['manipulator.user']->getRepository()->find($this->request->get('template'));
 
-        if (null === $template->getModelOf() || $template->getModelOf()->getId() !== $this->app['authentication']->getUser()->getId()) {
+        if (null === $template->getTemplateOwner() || $template->getTemplateOwner()->getId() !== $this->app['authentication']->getUser()->getId()) {
             throw new AccessDeniedHttpException('You are not the owner of the template');
         }
 
@@ -736,7 +736,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             if ($user->isTemplate()) {
                 $template = $user;
 
-                if ($template->getModelOf()->getId() !== $this->app['authentication']->getUser()->getId()) {
+                if ($template->getTemplateOwner()->getId() !== $this->app['authentication']->getUser()->getId()) {
                     continue;
                 }
             }

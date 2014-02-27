@@ -28,9 +28,9 @@ class UserManagerTest extends \PhraseanetTestCase
         $template = self::$DI['app']['manipulator.user']->createUser('template'.uniqid(), 'password');
         self::$DI['app']['model.user-manager']->update($template);
         $user = self::$DI['app']['manipulator.user']->createUser('login'.uniqid(), 'password');
-        $user->setModelOf($template);
+        $user->setTemplateOwner($template);
         self::$DI['app']['model.user-manager']->update($user);
         $this->assertNotNull($user->getPassword());
-        $this->assertNotNull($user->getModelOf());
+        $this->assertNotNull($user->getTemplateOwner());
     }
 }

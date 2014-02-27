@@ -232,7 +232,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->authenticate(self::$DI['app']);
         $template = self::$DI['app']['manipulator.user']->createUser(uniqid('template_'), "test");
-        $template->setModelOf(self::$DI['user']);
+        $template->setTemplateOwner(self::$DI['user']);
         $user = self::$DI['app']['manipulator.user']->createUser(uniqid('user_'), "test");
         self::$DI['client']->request('POST', '/admin/users/apply_template/', [
             'template' => $template->getId(),

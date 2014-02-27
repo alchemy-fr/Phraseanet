@@ -104,7 +104,7 @@ class UserManipulator implements ManipulatorInterface
     {
         $user = $this->manager->create();
         $this->doSetLogin($user, $login);
-        $user->setModelOf($owner);
+        $user->setTemplateOwner($owner);
         $this->manager->update($user);
 
         return $user;
