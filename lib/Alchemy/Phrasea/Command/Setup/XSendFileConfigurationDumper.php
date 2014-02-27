@@ -33,27 +33,26 @@ class XSendFileConfigurationDumper extends Command
         $output->writeln('');
 
         if (!$this->container['phraseanet.xsendfile-factory']->isXSendFileModeEnabled()) {
-            $output->writeln('XSendFile support is <error>disabled</error>');
-
-            return 1;
+            $output->writeln('XSendFile support is <error>disabled</error>, enable it to use this feature.');
+            $ret = 1;
+        } else {
+            $output->writeln('XSendFile support is <info>enabled</info>');
+            $ret = 0;
         }
 
-        $output->writeln('XSendFile support is <info>enabled</info>');
-
         try {
-            $configuration = $this->container['phraseanet.xsendfile-factory']->getMode(true)->getVirtualHostConfiguration();
+            $configuration = $this->container['phraseanet.xsendfile-factory']->getMode(true, true)->getVirtualHostConfiguration();
             $output->writeln('XSendFile configuration seems <info>OK</info>');
             $output->writeln($configuration);
 
-            return 0;
         } catch (RuntimeException $e) {
             $output->writeln('XSendFile configuration seems <error>invalid</error>');
 
-            return 1;
+            $ret = 1;
         }
 
         $output->writeln('');
 
-        return 0;
+        return $ret;
     }
 }
