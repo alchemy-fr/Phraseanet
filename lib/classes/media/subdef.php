@@ -95,6 +95,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     protected $is_physically_present = false;
 
+    /** @var integer */
+    private $size = 0;
+
     /**
      * Players types constants
      */
@@ -162,6 +165,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $this->mime = $datas['mime'];
             $this->width = $datas['width'];
             $this->height = $datas['height'];
+            $this->size = $datas['size'];
             $this->etag = $datas['etag'];
             $this->path = $datas['path'];
             $this->url = $datas['url'];
@@ -197,6 +201,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         if ($row) {
 
             $this->width = (int) $row['width'];
+            $this->size = (int) $row['size'];
             $this->height = (int) $row['height'];
             $this->mime = $row['mime'];
             $this->file = $row['file'];
@@ -222,6 +227,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $datas = [
             'mime'               => $this->mime
             , 'width'              => $this->width
+            , 'size'               => $this->size
             , 'height'             => $this->height
             , 'etag'               => $this->etag
             , 'path'               => $this->path
@@ -441,7 +447,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     public function get_size()
     {
-        return (int) @filesize($this->get_pathfile());
+        return $this->size;
     }
 
     /**
