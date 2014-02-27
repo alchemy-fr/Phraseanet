@@ -76,7 +76,7 @@ class Lightbox implements ControllerProviderInterface
                 return $app->redirectPath('logout');
             }
 
-            $repository = $app['EM']->getRepository('Phraseanet:Basket');
+            $repository = $app['repo.baskets'];
 
             $basket_collection = array_merge(
                 $repository->findActiveByUser($app['authentication']->getUser())
@@ -209,7 +209,7 @@ class Lightbox implements ControllerProviderInterface
                 return $app->redirectPath('logout');
             }
 
-            $repository = $app['EM']->getRepository('Phraseanet:Basket');
+            $repository = $app['repo.baskets'];
 
             $basket_collection = $repository->findActiveValidationAndBasketByUser(
                 $app['authentication']->getUser()
@@ -256,7 +256,7 @@ class Lightbox implements ControllerProviderInterface
                 return $app->redirectPath('logout');
             }
 
-            $repository = $app['EM']->getRepository('Phraseanet:Basket');
+            $repository = $app['repo.baskets'];
 
             $basket_collection = $repository->findActiveValidationAndBasketByUser(
                 $app['authentication']->getUser()

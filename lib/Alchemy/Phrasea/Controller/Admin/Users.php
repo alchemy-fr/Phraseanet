@@ -359,7 +359,7 @@ class Users implements ControllerProviderInterface
             $models = $app['repo.users']->findTemplateOwner($app['authentication']->getUser());
 
             $userRegistrations = [];
-            foreach ($app['manipulator.registration']->getRepository()->getUserRegistrations(
+            foreach ($app['repo.registrations']->getUserRegistrations(
                  $app['authentication']->getUser(),
                  $app['acl']->get($app['authentication']->getUser())->get_granted_base(['canadmin'])
             ) as $registration) {
@@ -445,7 +445,7 @@ class Users implements ControllerProviderInterface
                         $app->abort(400, srpintf("User with id % in provided in 'deny' request variable could not be found", $usr));
                     }
                     $cacheToUpdate[$usr] = $user;
-                    foreach ($app['manipulator.registration']->getRepository()->getUserRegistrations(
+                    foreach ($app['repo.registrations']->getUserRegistrations(
                         $user,
                         array_map(function ($baseId) use ($app) {
                             return \collection::get_from_base_id($app, $baseId);
@@ -461,7 +461,7 @@ class Users implements ControllerProviderInterface
                         $app->abort(400, srpintf("User with id % in provided in 'accept' request variable could not be found", $usr));
                     }
                     $cacheToUpdate[$usr] = $user;
-                    foreach ($app['manipulator.registration']->getRepository()->getUserRegistrations(
+                    foreach ($app['repo.registrations']->getUserRegistrations(
                         $user,
                         array_map(function ($baseId) use ($app) {
                             return \collection::get_from_base_id($app, $baseId);

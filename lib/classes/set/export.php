@@ -54,7 +54,7 @@ class set_export extends set_abstract
         }
 
         if ($sstid != "") {
-            $repository = $app['EM']->getRepository('Phraseanet:Basket');
+            $repository = $app['repo.baskets'];
 
             /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
             $Basket = $repository->findUserBasket($sstid, $app['authentication']->getUser(), false);

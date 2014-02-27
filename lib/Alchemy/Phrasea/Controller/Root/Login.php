@@ -1032,7 +1032,7 @@ class Login implements ControllerProviderInterface
             if (!$user->isGuest() && $request->cookies->has('invite-usr_id')) {
                 if ($user->getId() != $inviteUsrId = $request->cookies->get('invite-usr_id')) {
 
-                    $repo = $app['EM']->getRepository('Phraseanet:Basket');
+                    $repo = $app['repo.baskets'];
                     $baskets = $repo->findBy(['usr_id' => $inviteUsrId]);
 
                     foreach ($baskets as $basket) {

@@ -138,7 +138,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
         $sender = $registered_user->getDisplayName();
 
         try {
-            $repository = $this->app['EM']->getRepository('Phraseanet:Basket');
+            $repository = $this->app['repo.baskets'];
 
             $basket = $repository->findUserBasket($ssel_id, $this->app['authentication']->getUser(), false);
         } catch (\Exception $e) {

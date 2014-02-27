@@ -98,7 +98,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
                 $receiver = Receiver::fromUser($user_to);
                 $emitter = Emitter::fromUser($user_from);
 
-                $repository = $this->app['EM']->getRepository('Phraseanet:Basket');
+                $repository = $this->app['repo.baskets'];
                 $basket = $repository->find($params['ssel_id']);
 
                 $readyToSend = true;
@@ -151,7 +151,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
         $sender = $user->getDisplayName();
 
         try {
-            $repository = $this->app['EM']->getRepository('Phraseanet:Basket');
+            $repository = $this->app['repo.baskets'];
 
             $basket = $repository->findUserBasket($ssel_id, $this->app['authentication']->getUser(), false);
         } catch (\Exception $e) {

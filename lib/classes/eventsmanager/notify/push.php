@@ -80,7 +80,7 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
 
             $readyToSend = false;
             try {
-                $repository = $this->app['EM']->getRepository('Phraseanet:Basket');
+                $repository = $this->app['repo.baskets'];
                 $basket = $repository->find($params['ssel_id']);
 
                 $user_from = $this->app['repo.users']->find($params['from']);

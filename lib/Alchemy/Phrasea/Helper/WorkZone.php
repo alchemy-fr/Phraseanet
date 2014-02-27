@@ -33,7 +33,7 @@ class WorkZone extends Helper
     public function getContent($sort)
     {
         /* @var $repo_baskets Alchemy\Phrasea\Model\Repositories\BasketRepository */
-        $repo_baskets = $this->app['EM']->getRepository('Phraseanet:Basket');
+        $repo_baskets = $this->app['repo.baskets'];
 
         $sort = in_array($sort, ['date', 'name']) ? $sort : 'name';
 

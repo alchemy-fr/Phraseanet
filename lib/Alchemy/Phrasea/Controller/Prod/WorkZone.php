@@ -80,7 +80,7 @@ class WorkZone implements ControllerProviderInterface
     {
         $request = $app['request'];
 
-        $BasketRepo = $app['EM']->getRepository('Phraseanet:Basket');
+        $BasketRepo = $app['repo.baskets'];
 
         $Page = (int) $request->query->get('Page', 0);
 
