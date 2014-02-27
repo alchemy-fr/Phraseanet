@@ -2,8 +2,8 @@ require.config({
     baseUrl: "../../scripts",
     paths: {
         specs: "tests/specs",
-        chai: "../assets/chai/chai",
-        fixtures: "../assets/js-fixtures/fixtures",
+        chai: "../../tmp-assets/chai/chai",
+        fixtures: "../../tmp-assets/js-fixtures/fixtures",
         jquery: "../assets/jquery/jquery",
         jqueryui: "../assets/jquery.ui/jquery-ui",
         underscore: "../assets/underscore-amd/underscore",
