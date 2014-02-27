@@ -13,7 +13,7 @@ define([
             // autobahn js is defined as a global object there is no way to load
             // it as a UMD module
             ab.connect(url, function (session) {
-                that.setSession(session);
+                activeSession = session;
                 that.trigger("ws:connect", activeSession);
             },
             function (code, reason) {
@@ -24,12 +24,12 @@ define([
             if (false === this.hasSession()) {
                 return;
             }
-            this.getSession().close();
-            this.setSession(null);
+            activeSession.close();
+            activeSession = null;
             this.trigger("ws:session-close");
         },
         hasSession: function() {
-            return this.getSession() !== null;
+            return activeSession !== null;
         },
         subscribe: function(topic, callback) {
             if (false === this.hasSession()) {
@@ -39,14 +39,14 @@ define([
                 });
                 return;
             }
-            this.getSession().subscribe(topic, callback);
+            activeSession.subscribe(topic, callback);
             this.trigger("ws:session-subscribe", topic);
         },
         unsubscribe: function(topic, callback) {
             if (false === this.hasSession()) {
                 return;
             }
-            this.getSession().unsubscribe(topic, callback);
+            activeSession.unsubscribe(topic, callback);
             this.trigger("ws:session-unsubscribe", topic);
         }
     }, Backbone.Events);
