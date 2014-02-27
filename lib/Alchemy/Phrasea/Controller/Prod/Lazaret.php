@@ -88,7 +88,7 @@ class Lazaret implements ControllerProviderInterface
         $offset = ($page - 1) * $perPage;
 
         if (count($baseIds) > 0) {
-            $lazaretRepository = $app['EM']->getRepository('Phraseanet:LazaretFile');
+            $lazaretRepository = $app['repo.lazaret-files'];
             $lazaretFiles = $lazaretRepository->findPerPage($baseIds, $offset, $perPage);
         }
 
@@ -321,7 +321,7 @@ class Lazaret implements ControllerProviderInterface
     {
         $ret = ['success' => false, 'message' => '', 'result'  => []];
 
-        $lazaretFiles = $app['EM']->getRepository('Phraseanet:LazaretFile')->findAll();
+        $lazaretFiles = $app['repo.lazaret-files']->findAll();
 
         $app['EM']->beginTransaction();
 
