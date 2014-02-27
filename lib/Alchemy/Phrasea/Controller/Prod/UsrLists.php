@@ -517,7 +517,7 @@ class UsrLists implements ControllerProviderInterface
                 throw new \Exception($app->trans('You are not authorized to do this'));
             }
 
-            $owners_repository = $app['EM']->getRepository('Phraseanet:UsrListOwner');
+            $owners_repository = $app['repo.usr-list-owners'];
 
             $owner = $owners_repository->findByListAndUsrId($list, $usr_id);
 
