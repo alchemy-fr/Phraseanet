@@ -17,7 +17,7 @@ define([
                 this.session.subscribe = sinon.spy();
                 this.session.unsubscribe = sinon.spy();
 
-                this.wsConnection = connection.getInstance();
+                this.wsConnection = connection;
                 var $this = this;
                 var cbSuccess = function (session) {
                     $this.wsConnection.setSession($this.session);
@@ -27,6 +27,10 @@ define([
                         cbSuccess($this.session);
                     }
                 }
+            });
+
+            afterEach(function () {
+                this.wsConnection.close();
             });
 
             it("should have a session", function () {
@@ -48,12 +52,15 @@ define([
             });
 
             it("should not connect anymore after first connect", function () {
+                var throws = false;
                 this.wsConnection.connect();
-                ab.connect = sinon.spy();
-                this.wsConnection.connect();
-                this.wsConnection.connect();
-                this.wsConnection.connect();
-                expect(ab.connect.should.have.callCount(0)).to.be.ok;
+                try {
+                    this.wsConnection.connect();
+                } catch (e) {
+                    throws = true;
+                }
+
+                assert.ok(throws);
             });
 
             it("should call session subscribe once", function () {

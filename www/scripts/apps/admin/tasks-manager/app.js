@@ -27,7 +27,6 @@ define([
             $pingView : $(".ping-view", this.$scope),
             $refreshView : $(".refresh-view", this.$scope),
             eventAggregator: _.extend({}, Backbone.Events),
-            wsuri: "ws://dev.phrasea.net:9090/websockets",
             wstopic: "http://phraseanet.com/topics/admin/task-manager"
         };
 
@@ -57,18 +56,14 @@ define([
                 TaskManagerApp.tasksView.render();
                 TaskManagerApp.schedulerView.render();
 
-                // Sets connection to the web socket
-                var ws = WSConnection.getInstance(TaskManagerApp.wsuri);
-                ws.connect();
-
-                ws.subscribe(TaskManagerApp.wstopic, function(topic, msg) {
+                WSConnection.subscribe(TaskManagerApp.wstopic, function(topic, msg) {
                     // double encoded string
                     var msg = JSON.parse(JSON.parse(msg));
-                    TaskManagerApp.eventAggregator.trigger("ws:"+msg.event, msg);
+                    WSConnection.trigger("ws:"+msg.event, msg);
                 });
 
                 // On ticks re-render ping view, update tasks & scheduler model
-                TaskManagerApp.eventAggregator.on("ws:manager-tick", function(response) {
+                WSConnection.on("ws:manager-tick", function(response) {
                     TaskManagerApp.pingView.render();
                     TaskManagerApp.Scheduler.set({"actual": "started", "process-id": response.message.manager["process-id"]});
                     _.each(response.message.jobs, function(data, id) {
