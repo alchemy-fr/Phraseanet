@@ -26,6 +26,7 @@ class TaskList extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        $output->writeln("<info>Querying the task manager...</info>");
         $errors = 0;
         $probe = $this->container['task-manager.live-information'];
 
@@ -39,15 +40,15 @@ class TaskList extends Command
             return [
                 $task->getId(),
                 $task->getName(),
-                $task->getStatus() !== 'started' ? $task->getStatus() . " (warning)" : $task->getStatus(),
-                $error ? $info['actual'] . " (error)" : $info['actual'],
+                $task->getStatus() !== 'started' ? "<comment>".$task->getStatus() . "</comment>" : $task->getStatus(),
+                $error ? "<error>".$info['actual']."</error>" : $info['actual'],
                 $info['process-id'],
             ];
         }, $this->container['manipulator.task']->getRepository()->findAll());
 
         $this
             ->getHelperSet()->get('table')
-            ->setHeaders(['Id', 'Name', 'Status', 'Actual', 'Process Id'])
+            ->setHeaders(['Id', 'Name', 'Status (set)', 'Actual (probed)', 'Process Id'])
             ->setRows($rows)
             ->render($output);
 

@@ -12,7 +12,9 @@
 namespace Alchemy\Phrasea\TaskManager;
 
 use Alchemy\TaskManager\TaskManager;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 
 class Notifier
 {
@@ -28,46 +30,59 @@ class Notifier
     /** @var \ZMQSocket */
     private $socket;
 
-    public function __construct(\ZMQSocket $socket)
+    /** @var LoggerInterface */
+    private $logger;
+
+    public function __construct(\ZMQSocket $socket, LoggerInterface $logger)
     {
         $this->socket = $socket;
+        $this->logger = $logger;
     }
 
     /**
      * Notifies the task manager given a message constant, see MESSAGE_* constants.
      *
      * @param string $message
+     * @param integer $timeout
      *
      * @return mixed|null The return value of the task manager.
+     *
+     * @throws RuntimeException in case notification did not occur within the timeout.
      */
-    public function notify($message)
+    public function notify($message, $timeout = 1)
     {
+        if ($timeout <= 0) {
+            throw new \InvalidArgumentException('Timeout must be a positive value');
+        }
+
         try {
             $command = $this->createCommand($message);
             $this->socket->send($command);
 
-            $limit = microtime(true) + 0.5;
+            $limit = microtime(true) + $timeout;
+
             while (microtime(true) < $limit && false === $result = $this->socket->recv(\ZMQ::MODE_NOBLOCK)) {
                 usleep(1000);
             }
+
             if (false === $result) {
-                return null;
+                $this->logger->error(sprintf('Unable to notify the task manager with message "%s" within timeout of %d seconds', $message, $timeout));
+                throw new RuntimeException('Unable to retrieve information.');
             }
 
             $data = @json_decode($result, true);
             if (JSON_ERROR_NONE !== json_last_error()) {
-                return null;
+                throw new RuntimeException('Invalid task manager response : invalid JSON.');
             }
             if (!isset($data['reply']) || !isset($data['request']) || $command !== $data['request']) {
-                return null;
+                throw new RuntimeException('Invalid task manager response : missing fields.');
             }
 
             return $data['reply'];
         } catch (\ZMQSocketException $e) {
-
+            $this->logger->error(sprintf('Unable to notify the task manager with message "%s" within timeout of %d seconds', $message, $timeout), array('exception' => $e));
+            throw new RuntimeException('Unable to retrieve information.', $e->getCode(), $e);
         }
-
-        return null;
     }
 
     private function createCommand($message)
@@ -91,7 +106,7 @@ class Notifier
      *
      * @return Notifier
      */
-    public static function create(array $options = [])
+    public static function create(LoggerInterface $logger, array $options = [])
     {
         $context = new \ZMQContext();
         $socket = $context->getSocket(\ZMQ::SOCKET_REQ);
@@ -100,6 +115,6 @@ class Notifier
             '%s://%s:%s', $options['protocol'], $options['host'], $options['port']
         ));
 
-        return new static($socket);
+        return new static($socket, $logger);
     }
 }
