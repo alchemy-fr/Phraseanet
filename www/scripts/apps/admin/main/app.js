@@ -55,7 +55,7 @@ define([
             throw "You must define a websocket url";
         }
 
-        if (false === WSConnection.hasSession()) {
+        if (false === WSConnection.isConnected()) {
             WSConnection.connect(options.wsurl);
         }
 

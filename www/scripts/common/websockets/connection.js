@@ -6,7 +6,7 @@ define([
 
     return _.extend({
         connect: function(url) {
-            if (this.hasSession()) {
+            if (this.isConnected()) {
                 throw "Connection is already active";
             }
             var that = this;
@@ -21,18 +21,18 @@ define([
             });
         },
         close: function() {
-            if (false === this.hasSession()) {
+            if (false === this.isConnected()) {
                 return;
             }
             activeSession.close();
             activeSession = null;
             this.trigger("ws:session-close");
         },
-        hasSession: function() {
+        isConnected: function() {
             return activeSession !== null;
         },
         subscribe: function(topic, callback) {
-            if (false === this.hasSession()) {
+            if (false === this.isConnected()) {
                 this.on("ws:connect", function(session) {
                     session.subscribe(topic, callback);
                     this.trigger("ws:session-subscribe", topic);
@@ -43,7 +43,7 @@ define([
             this.trigger("ws:session-subscribe", topic);
         },
         unsubscribe: function(topic, callback) {
-            if (false === this.hasSession()) {
+            if (false === this.isConnected()) {
                 return;
             }
             activeSession.unsubscribe(topic, callback);
