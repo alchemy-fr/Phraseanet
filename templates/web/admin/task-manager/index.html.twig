@@ -58,7 +58,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>{{ scheduler["configuration"] }}</td>
+                <td>{{ scheduler["status"] }}</td>
                 <td>{{ scheduler["name"] }}</td>
             </tr>
         </tbody>
@@ -103,7 +103,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td>{{ task["configuration"] }}</td>
+                    <td>{{ task["status"] }}</td>
                     <td>{{ task["name"] }}</td>
                 </tr>
             {% endfor %}
@@ -134,5 +134,4 @@
 {# include js templates #}
 {% include 'admin/task-manager/templates.html.twig' %}
 
-<script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/requirejs/require.js' }) }}"></script>
-<script type="text/javascript" src="{{ path('minifier', { 'f' : 'scripts/apps/admin/tasks-manager/main.js' }) }}"></script>
+<script type="text/javascript" src="{{ path('minifier', { 'f' : '/scripts/apps/admin/tasks-manager/main.js' }) }}"></script>
