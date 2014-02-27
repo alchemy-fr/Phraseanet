@@ -95,7 +95,7 @@ class Feed implements ControllerProviderInterface
             });
 
         $controllers->get('/entry/{id}/edit/', function (Application $app, Request $request, $id) {
-            $entry = $app['EM']->getRepository('Phraseanet:FeedEntry')->find($id);
+            $entry = $app['repo.feed-entries']->find($id);
 
             if (!$entry->isPublisher($app['authentication']->getUser())) {
                 throw new AccessDeniedHttpException();
@@ -115,7 +115,7 @@ class Feed implements ControllerProviderInterface
 
         $controllers->post('/entry/{id}/update/', function (Application $app, Request $request, $id) {
             $datas = ['error' => true, 'message' => '', 'datas' => ''];
-            $entry = $app['EM']->getRepository('Phraseanet:FeedEntry')->find($id);
+            $entry = $app['repo.feed-entries']->find($id);
 
             if (null === $entry) {
                 $app->abort(404, 'Entry not found');
@@ -179,7 +179,7 @@ class Feed implements ControllerProviderInterface
         $controllers->post('/entry/{id}/delete/', function (Application $app, Request $request, $id) {
             $datas = ['error' => true, 'message' => ''];
 
-            $entry = $app['EM']->getRepository('Phraseanet:FeedEntry')->find($id);
+            $entry = $app['repo.feed-entries']->find($id);
 
             if (null === $entry) {
                 $app->abort(404, 'Entry not found');

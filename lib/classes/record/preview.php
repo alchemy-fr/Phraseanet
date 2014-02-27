@@ -170,7 +170,7 @@ class record_preview extends record_adapter
                 }
                 break;
             case "FEED":
-                $entry = $app['EM']->getRepository('Phraseanet:FeedEntry')->find($contId);
+                $entry = $app['repo.feed-entries']->find($contId);
 
                 $this->container = $entry;
                 $this->total = count($entry->getItems());
