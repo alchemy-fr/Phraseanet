@@ -160,11 +160,30 @@ module.exports = function(grunt) {
             "jquery-file-upload": {
                 "expand": true,
                 "src": [
+                    "<%= path.bower %>/jquery-file-upload/js/vendor/*",
                     "<%= path.bower %>/jquery-file-upload/js/jquery.fileupload.js",
                     "<%= path.bower %>/jquery-file-upload/js/jquery.iframe-transport.js",
                     "<%= path.bower %>/jquery-file-upload/css/jquery.fileupload-ui.css"
                 ],
                 "dest": "<%= path.asset %>/jquery-file-upload/",
+                "flatten": true
+            },
+            "jquery.treeview": {
+                "expand": true,
+                "cwd": "<%= path.bower %>/jquery.treeview",
+                "src": [
+                    "images/*",
+                    "jquery.treeview*"
+                ],
+                "dest": "<%= path.asset %>/jquery.treeview/"
+            },
+            "jquery.tooltip": {
+                "expand": true,
+                "src": [
+                    "<%= path.bower %>/jquery.tooltip/jquery.tooltip.css",
+                    "<%= path.bower %>/jquery.tooltip/jquery.tooltip.js"
+                ],
+                "dest": "<%= path.asset %>/jquery.tooltip/",
                 "flatten": true
             },
             "jquery-mobile": {
@@ -404,6 +423,8 @@ module.exports = function(grunt) {
         "copy:jquery-mobile",
         "copy:jquery.cookie",
         "copy:jquery-ui",
+        "copy:jquery.treeview",
+        "copy:jquery.tooltip",
         "copy:json2",
         "copy:modernizr",
         "copy:normalize",
