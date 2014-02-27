@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="Registration",uniqueConstraints={
+ * @ORM\Table(name="Registrations",uniqueConstraints={
  *      @ORM\UniqueConstraint(name="unique_registration", columns={"user_id","base_id","pending"})
  * })
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\RegistrationRepository")
