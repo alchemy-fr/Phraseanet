@@ -21,33 +21,4 @@ use Doctrine\ORM\EntityRepository;
  */
 class UserSettingRepository extends EntityRepository
 {
-    /**
-     * Returns a collection of FeedEntry from given feeds, limited to $how_many results, starting with $offset_start
-     *
-     * @param array   $feeds
-     * @param integer $offsetStart
-     * @param integer $howMany
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function findByFeeds($feeds, $offsetStart = null, $perPage = null)
-    {
-        $qb = $this->createQueryBuilder('f');
-
-        if (!empty($feeds)) {
-            $qb->Where($qb->expr()->in('f.feed', $feeds));
-        }
-
-        $qb->orderBy('f.updatedOn', 'DESC');
-
-        if ($offsetStart) {
-            $qb->setFirstResult(max(0, (int) $offsetStart));
-        }
-
-        if ($perPage) {
-            $qb->setMaxResults(max(5, (int) $perPage));
-        }
-
-        return $qb->getQuery()->getResult();
-    }
 }
