@@ -41,7 +41,7 @@ class module_console_checkExtension extends Command
 
         $usrId = $input->getArgument('usr_id');
 
-        if (null === $TestUser = $this->container['manipulator.user']->getRepository()->find($usrId)) {
+        if (null === $TestUser = $this->container['repo.users']->find($usrId)) {
             $output->writeln("<error>Wrong user !</error>");
 
             return 1;

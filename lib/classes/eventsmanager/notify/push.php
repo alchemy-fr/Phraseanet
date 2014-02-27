@@ -83,8 +83,8 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
                 $repository = $this->app['EM']->getRepository('Phraseanet:Basket');
                 $basket = $repository->find($params['ssel_id']);
 
-                $user_from = $this->app['manipulator.user']->getRepository()->find($params['from']);
-                $user_to = $this->app['manipulator.user']->getRepository()->find($params['to']);
+                $user_from = $this->app['repo.users']->find($params['from']);
+                $user_to = $this->app['repo.users']->find($params['to']);
 
                 $receiver = Receiver::fromUser($user_to);
                 $emitter = Emitter::fromUser($user_from);
@@ -119,7 +119,7 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
 
         $from = (string) $sx->from;
 
-        if (null === $user = $this->app['manipulator.user']->getRepository()->find($from)) {
+        if (null === $user = $this->app['repo.users']->find($from)) {
             return [];
         }
 

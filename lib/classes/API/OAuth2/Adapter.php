@@ -521,7 +521,7 @@ class API_OAuth2_Adapter extends OAuth2
      */
     private function createAccount($usr_id)
     {
-        $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
+        $user = $this->app['repo.users']->find($usr_id);
 
         return API_OAuth2_Account::create($this->app, $user, $this->client);
     }
@@ -794,7 +794,7 @@ class API_OAuth2_Adapter extends OAuth2
                 return false;
             }
 
-            if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
+            if (null === $user = $this->app['repo.users']->find($usr_id)) {
                 return false;
             }
 

@@ -92,7 +92,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
 
         $datas = $dom_xml->saveXml();
 
-        if (null === $orderInitiator = $this->app['manipulator.user']->getRepository()->find($params['usr_id'])) {
+        if (null === $orderInitiator = $this->app['repo.users']->find($params['usr_id'])) {
             return;
         }
 
@@ -136,7 +136,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
         $usr_id = (string) $sx->usr_id;
         $order_id = (string) $sx->order_id;
 
-        if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
+        if (null === $user = $this->app['repo.users']->find($usr_id)) {
             return [];
         }
 
@@ -178,7 +178,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
      */
     public function is_available($usr_id)
     {
-        if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
+        if (null === $user = $this->app['repo.users']->find($usr_id)) {
             return false;
         }
 

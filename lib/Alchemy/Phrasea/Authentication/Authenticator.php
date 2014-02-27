@@ -143,7 +143,7 @@ class Authenticator
     public function reinitUser()
     {
         if ($this->isAuthenticated()) {
-            $this->user = $this->app['manipulator.user']->getRepository()->find($this->session->get('usr_id'));
+            $this->user = $this->app['repo.users']->find($this->session->get('usr_id'));
         } else {
             $this->user = null;
         }

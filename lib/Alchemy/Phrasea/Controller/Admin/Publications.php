@@ -193,7 +193,7 @@ class Publications implements ControllerProviderInterface
             $error = '';
             try {
                 $request = $app['request'];
-                $user = $app['manipulator.user']->getRepository()->find($request->request->get('usr_id'));
+                $user = $app['repo.users']->find($request->request->get('usr_id'));
                 $feed = $app["EM"]->find('Phraseanet:Feed', $id);
 
                 $publisher = new FeedPublisher();

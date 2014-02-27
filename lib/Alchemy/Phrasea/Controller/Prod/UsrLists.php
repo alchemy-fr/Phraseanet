@@ -370,7 +370,7 @@ class UsrLists implements ControllerProviderInterface
             $inserted_usr_ids = [];
 
             foreach ($request->request->get('usr_ids') as $usr_id) {
-                $user_entry = $app['manipulator.user']->getRepository()->find($usr_id);
+                $user_entry = $app['repo.users']->find($usr_id);
 
                 if ($list->has($user_entry))
                     continue;
@@ -461,7 +461,7 @@ class UsrLists implements ControllerProviderInterface
                 throw new ControllerException($app->trans('You are not authorized to do this'));
             }
 
-            $new_owner = $app['manipulator.user']->getRepository()->find($usr_id);
+            $new_owner = $app['repo.users']->find($usr_id);
 
             if ($list->hasAccess($new_owner)) {
                 if ($new_owner->getId() == $app['authentication']->getUser()->getId()) {

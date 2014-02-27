@@ -95,7 +95,7 @@ class Bridge_Account
             throw new Bridge_Exception_AccountNotFound('Account Not Found');
 
         $this->dist_id = $row['dist_id'];
-        $this->user = $this->app['manipulator.user']->getRepository()->find($row['usr_id']);
+        $this->user = $this->app['repo.users']->find($row['usr_id']);
         $this->name = $row['name'];
         $this->updated_on = new DateTime($row['updated_on']);
         $this->created_on = new DateTime($row['created_on']);

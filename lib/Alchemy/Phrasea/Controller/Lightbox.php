@@ -44,7 +44,7 @@ class Lightbox implements ControllerProviderInterface
                 return $app->redirectPath('homepage');
             }
 
-            $app['authentication']->openAccount($app['manipulator.user']->getRepository()->find($usr_id));
+            $app['authentication']->openAccount($app['repo.users']->find($usr_id));
 
             try {
                 $datas = $app['tokens']->helloToken($request->query->get('LOG'));

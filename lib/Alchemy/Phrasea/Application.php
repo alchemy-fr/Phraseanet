@@ -780,7 +780,7 @@ class Application extends SilexApplication
      */
     public function isGuestAllowed()
     {
-        if (null === $user = $this['manipulator.user']->getRepository()->findByLogin(User::USER_GUEST)) {
+        if (null === $user = $this['repo.users']->findByLogin(User::USER_GUEST)) {
             return false;
         }
 

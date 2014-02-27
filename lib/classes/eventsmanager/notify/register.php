@@ -89,7 +89,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 
         $datas = $dom_xml->saveXml();
 
-        if (null === $registeredUser = $this->app['manipulator.user']->getRepository()->find($params['usr_id'])) {
+        if (null === $registeredUser = $this->app['repo.users']->find($params['usr_id'])) {
           return;
         }
 
@@ -99,7 +99,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
             if ($this->shouldSendNotificationFor($usr_id)) {
                 $readyToSend = false;
                 try {
-                    $admin_user = $this->app['manipulator.user']->getRepository()->find($usr_id);
+                    $admin_user = $this->app['repo.users']->find($usr_id);
                     $receiver = Receiver::fromUser($admin_user);
                     $readyToSend = true;
                 } catch (\Exception $e) {
@@ -134,7 +134,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 
         $usr_id = (string) $sx->usr_id;
 
-        if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
+        if (null === $user = $this->app['repo.users']->find($usr_id)) {
             return [];
         }
 
@@ -177,7 +177,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
             return false;
         }
 
-        if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
+        if (null === $user = $this->app['repo.users']->find($usr_id)) {
             return false;
         }
 

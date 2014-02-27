@@ -45,7 +45,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['authentication.suggestion-finder'] = $app->share(function (Application $app) {
-            return new SuggestionFinder($app['manipulator.user']->getRepository());
+            return new SuggestionFinder($app['repo.users']);
         });
 
         $app['authentication.providers.factory'] = $app->share(function (Application $app) {
@@ -57,11 +57,11 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
             $templates = array_filter(array_map(function ($templateId) use ($app) {
                 try {
                     if (is_int($templateId) || ctype_digit($templateId)) {
-                        return $app['manipulator.user']->getRepository()->find($templateId);
+                        return $app['repo.users']->find($templateId);
                     }
 
                     if (false !== $templateId) {
-                        return $app['manipulator.user']->getRepository()->find($templateId);
+                        return $app['repo.users']->find($templateId);
                     }
                 } catch (\Exception $e) {
 

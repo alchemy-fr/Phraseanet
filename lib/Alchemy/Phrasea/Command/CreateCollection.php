@@ -60,7 +60,7 @@ class CreateCollection extends Command
         }
 
         $app = $this->container;
-        $this->container['manipulator.acl']->resetAdminRights($this->container['manipulator.user']->getRepository()->findAdmins());
+        $this->container['manipulator.acl']->resetAdminRights($this->container['repo.users']->findAdmins());
 
         $this->container['dispatcher']->dispatch(PhraseaEvents::COLLECTION_CREATE, new CollectionCreateEvent($new_collection));
     }

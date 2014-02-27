@@ -33,7 +33,7 @@ class set_exportftp extends set_export
     {
         $email_dest = '';
         if ($usr_to) {
-            $user_t = $this->app['manipulator.user']->getRepository()->find($usr_to);
+            $user_t = $this->app['repo.users']->find($usr_to);
             $email_dest = $user_t->getEmail();
         }
 

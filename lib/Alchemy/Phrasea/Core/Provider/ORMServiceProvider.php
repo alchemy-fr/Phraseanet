@@ -183,6 +183,10 @@ class ORMServiceProvider implements ServiceProviderInterface
         $app['EM.native-query'] = $app->share(function ($app) {
             return new NativeQueryProvider($app['EM']);
         });
+
+        $app['repo.users'] = $app->share(function (PhraseaApplication $app) {
+            return $app['EM']->getRepository('Phraseanet:User');
+        });
     }
 
     public function boot(Application $app)

@@ -387,7 +387,7 @@ class Login implements ControllerProviderInterface
 
                     $registrationsOK = [];
                     if ($app['conf']->get(['registry', 'registration', 'auto-register-enabled'])) {
-                        $template_user = $app['manipulator.user']->getRepository()->findByLogin(User::USER_AUTOREGISTER);
+                        $template_user = $app['repo.users']->findByLogin(User::USER_AUTOREGISTER);
                         $app['acl']->get($user)->apply_model($template_user, array_keys($inscOK));
                     }
 
@@ -476,7 +476,7 @@ class Login implements ControllerProviderInterface
             $app->abort(400, 'Missing usr_id parameter.');
         }
 
-        if (null === $user = $app['manipulator.user']->getRepository()->find((int) $usrId)) {
+        if (null === $user = $app['repo.users']->find((int) $usrId)) {
             $app->addFlash('error', $app->trans('Invalid link.'));
 
             return $app->redirectPath('homepage');
@@ -539,7 +539,7 @@ class Login implements ControllerProviderInterface
             return $app->redirectPath('homepage');
         }
 
-        if (null === $user = $app['manipulator.user']->getRepository()->find((int) $datas['usr_id'])) {
+        if (null === $user = $app['repo.users']->find((int) $datas['usr_id'])) {
             $app->addFlash('error', _('Invalid unlock link.'));
 
             return $app->redirectPath('homepage');
@@ -602,7 +602,7 @@ class Login implements ControllerProviderInterface
 
                     $datas = $app['tokens']->helloToken($token);
 
-                    $user = $app['manipulator.user']->getRepository()->find($datas['usr_id']);
+                    $user = $app['repo.users']->find($datas['usr_id']);
                     $app['manipulator.user']->setPassword($user, $data['password']);
 
                     $app['tokens']->removeToken($token);
@@ -640,7 +640,7 @@ class Login implements ControllerProviderInterface
                 if ($form->isValid()) {
                     $data = $form->getData();
 
-                    if (null === $user = $app['manipulator.user']->getRepository()->findByEmail($data['email'])) {
+                    if (null === $user = $app['repo.users']->findByEmail($data['email'])) {
                         throw new FormProcessingException(_('phraseanet::erreur: Le compte n\'a pas ete trouve'));
                     }
 
@@ -785,7 +785,7 @@ class Login implements ControllerProviderInterface
         $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
 
         $user = $app['manipulator.user']->createUser(uniqid('guest'), \random::generatePassword(24));
-        $invite_user = $app['manipulator.user']->getRepository()->findByLogin(User::USER_GUEST);
+        $invite_user = $app['repo.users']->findByLogin(User::USER_GUEST);
 
         $usr_base_ids = array_keys($app['acl']->get($user)->get_granted_base());
         $app['acl']->get($user)->revoke_access_from_bases($usr_base_ids);
@@ -1021,7 +1021,7 @@ class Login implements ControllerProviderInterface
             throw new AuthenticationException(call_user_func($redirector, $params));
         }
 
-        $user = $app['manipulator.user']->getRepository()->find($usr_id);
+        $user = $app['repo.users']->find($usr_id);
 
         $session = $this->postAuthProcess($app, $user);
 

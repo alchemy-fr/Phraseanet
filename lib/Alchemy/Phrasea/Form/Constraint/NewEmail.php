@@ -33,6 +33,6 @@ class NewEmail extends Constraint
 
     public static function create(Application $app)
     {
-        return new static($app['manipulator.user']->getRepository());
+        return new static($app['repo.users']);
     }
 }

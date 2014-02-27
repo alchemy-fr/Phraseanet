@@ -274,7 +274,7 @@ class V1 implements ControllerProviderInterface
     {
         $ret = array_map(function (Task $task) use ($app) {
             return $this->list_task($app, $task);
-        }, $app['manipulator.task']->getRepository()->findAll());
+        }, $app['repo.tasks']->findAll());
 
         return Result::create($request, ['tasks' => $ret])->createResponse();
     }
@@ -786,7 +786,7 @@ class V1 implements ControllerProviderInterface
         $lazaretFiles = [];
 
         if (count($baseIds) > 0) {
-            $lazaretRepository = $app['EM']->getRepository('Phraseanet:LazaretFile');
+            $lazaretRepository = $app['repo.lazaret-files'];
             $lazaretFiles = iterator_to_array($lazaretRepository->findPerPage($baseIds, $offset_start, $per_page));
         }
 
@@ -1201,7 +1201,7 @@ class V1 implements ControllerProviderInterface
      */
     private function list_baskets(Application $app)
     {
-        $repo = $app['EM']->getRepository('Phraseanet:Basket');
+        $repo = $app['repo.baskets'];
         /* @var $repo BasketRepository */
 
         return array_map(function (Basket $basket) use ($app) {
@@ -1375,7 +1375,7 @@ class V1 implements ControllerProviderInterface
     public function search_publications(Application $app, Request $request)
     {
         $user = $app['authentication']->getUser();
-        $coll = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser($app['acl']->get($user));
+        $coll = $app['repo.feeds']->getAllForUser($app['acl']->get($user));
 
         $datas = array_map(function ($feed) use ($user) {
             return $this->list_publication($feed, $user);
@@ -1395,7 +1395,7 @@ class V1 implements ControllerProviderInterface
     public function get_publication(Application $app, Request $request, $feed_id)
     {
         $user = $app['authentication']->getUser();
-        $feed = $app['EM']->getRepository('Phraseanet:Feed')->find($feed_id);
+        $feed = $app['repo.feeds']->find($feed_id);
 
         if (!$feed->isAccessible($user, $app)) {
             return Result::create($request, [])->createResponse();
@@ -1439,7 +1439,7 @@ class V1 implements ControllerProviderInterface
     public function get_feed_entry(Application $app, Request $request, $entry_id)
     {
         $user = $app['authentication']->getUser();
-        $entry = $app['EM']->getRepository('Phraseanet:FeedEntry')->find($entry_id);
+        $entry = $app['repo.feed-entries']->find($entry_id);
         $collection = $entry->getFeed()->getCollection($app);
 
         if (null !== $collection && !$app['acl']->get($user)->has_access_to_base($collection->get_base_id())) {
@@ -1970,7 +1970,7 @@ class V1 implements ControllerProviderInterface
             return Result::createError($request, 403, 'The use of Office Plugin is not allowed.')->createResponse();
         }
 
-        $user = $app['manipulator.user']->getRepository()->find($oauth2_adapter->get_usr_id());
+        $user = $app['repo.users']->find($oauth2_adapter->get_usr_id());
         $app['authentication']->openAccount($user);
         $oauth2_adapter->remember_this_ses_id($app['session']->get('session_id'));
         $app['dispatcher']->dispatch(PhraseaEvents::API_OAUTH2_END, new ApiOAuth2EndEvent());
