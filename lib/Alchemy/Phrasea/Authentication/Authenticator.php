@@ -100,7 +100,7 @@ class Authenticator
 
     public function refreshAccount(Session $session)
     {
-        if (!$this->em->getRepository('Phraseanet:Session')->findOneBy(['id' => $session->getId()])) {
+        if (!$this->app['repo.sessions']->find($session->getId())) {
             throw new RuntimeException('Unable to refresh the session, it does not exist anymore');
         }
 
@@ -129,7 +129,7 @@ class Authenticator
             throw new RuntimeException('No session to close.');
         }
 
-        if (null !== $session = $this->em->find('Phraseanet:Session', $this->session->get('session_id'))) {
+        if (null !== $session = $this->app['repo.sessions']->find($this->session->get('session_id'))) {
             $this->em->remove($session);
             $this->em->flush();
         }
@@ -163,7 +163,7 @@ class Authenticator
         }
 
         if ($this->session->has('session_id')) {
-            if (null !== $this->em->find('Phraseanet:Session', $this->session->get('session_id'))) {
+            if (null !== $this->app['repo.sessions']->find($this->session->get('session_id'))) {
                 return true;
             }
         }

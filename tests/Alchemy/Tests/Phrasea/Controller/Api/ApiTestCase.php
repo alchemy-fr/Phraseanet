@@ -245,7 +245,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateMeta200($content);
         $response = $content['response'];
 
-        $tasks = self::$DI['app']['manipulator.task']->getRepository()->findAll();
+        $tasks = self::$DI['app']['repo.tasks']->findAll();
         $this->assertEquals(count($tasks), count($response['tasks']));
 
         foreach ($response['tasks'] as $task) {
@@ -335,7 +335,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testGetMonitorTaskById()
     {
-        $tasks = self::$DI['app']['manipulator.task']->getRepository()->findAll();
+        $tasks = self::$DI['app']['repo.tasks']->findAll();
 
         if (null === self::$adminToken) {
             $this->markTestSkipped('there is no user with admin rights');
@@ -362,7 +362,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testPostMonitorTaskById()
     {
-        $tasks = self::$DI['app']['manipulator.task']->getRepository()->findAll();
+        $tasks = self::$DI['app']['repo.tasks']->findAll();
 
         if (null === self::$adminToken) {
             $this->markTestSkipped('there is no user with admin rights');
@@ -408,7 +408,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $this->markTestSkipped('there is no user with admin rights');
         }
 
-        $tasks = self::$DI['app']['manipulator.task']->getRepository()->findAll();
+        $tasks = self::$DI['app']['repo.tasks']->findAll();
 
         if (!count($tasks)) {
             $this->markTestSkipped('no tasks created for the current instance');
@@ -428,13 +428,13 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertArrayHasKey('task', $content['response']);
         $this->evaluateGoodTask($content['response']['task']);
 
-        $task = self::$DI['app']['manipulator.task']->getRepository()->find($idTask);
+        $task = self::$DI['app']['repo.tasks']->find($idTask);
         $this->assertEquals(Task::STATUS_STARTED, $task->getStatus());
     }
 
     public function testPostMonitorStopTask()
     {
-        $tasks = self::$DI['app']['manipulator.task']->getRepository()->findAll();
+        $tasks = self::$DI['app']['repo.tasks']->findAll();
 
         if (null === self::$adminToken) {
             $this->markTestSkipped('there is no user with admin rights');
@@ -458,7 +458,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertArrayHasKey('task', $content['response']);
         $this->evaluateGoodTask($content['response']['task']);
 
-        $task = self::$DI['app']['manipulator.task']->getRepository()->find($idTask);
+        $task = self::$DI['app']['repo.tasks']->find($idTask);
         $this->assertEquals(Task::STATUS_STOPPED, $task->getStatus());
     }
 
@@ -1173,8 +1173,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testSearchBaskets()
     {
-        self::$DI['client'] = new Client(self::$DI['app'], []);
-
         $this->setToken(self::$adminToken);
         $route = '/api/v1/baskets/list/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);

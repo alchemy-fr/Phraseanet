@@ -15,7 +15,7 @@ class FailureManagerTest extends \PhraseanetTestCase
     public function testSaveFailure()
     {
         $repo = $this->getRepo();
-        $em = $this->getEntityManagerMock($repo);
+        $em = $this->createEntityManagerMock();
         $recaptcha = $this->getReCaptchaMock(null);
 
         $ip = '192.168.16.178';
@@ -47,7 +47,7 @@ class FailureManagerTest extends \PhraseanetTestCase
                 $catchFailure = $failure;
             }));
 
-        $manager = new FailureManager($em, $recaptcha, 9);
+        $manager = new FailureManager($repo, $em, $recaptcha, 9);
         $manager->saveFailure($username, $request);
 
         $this->assertEquals($ip, $catchFailure->getIp());
@@ -61,7 +61,7 @@ class FailureManagerTest extends \PhraseanetTestCase
     public function testCheckFailures()
     {
         $repo = $this->getRepo();
-        $em = $this->getEntityManagerMock($repo);
+        $em = $this->createEntityManagerMock();
         $recaptcha = $this->getReCaptchaMock(null);
         $request = $this->getRequestMock();
 
@@ -73,7 +73,7 @@ class FailureManagerTest extends \PhraseanetTestCase
             ->method('findLockedFailuresMatching')
             ->will($this->returnValue($oldFailures));
 
-        $manager = new FailureManager($em, $recaptcha, 9);
+        $manager = new FailureManager($repo, $em, $recaptcha, 9);
         $manager->checkFailures($username, $request);
     }
 
@@ -83,7 +83,7 @@ class FailureManagerTest extends \PhraseanetTestCase
     public function testCheckFailuresLessThan9()
     {
         $repo = $this->getRepo();
-        $em = $this->getEntityManagerMock($repo);
+        $em = $this->createEntityManagerMock();
         $recaptcha = $this->getReCaptchaMock(null);
         $request = $this->getRequestMock();
 
@@ -97,7 +97,7 @@ class FailureManagerTest extends \PhraseanetTestCase
             ->method('findLockedFailuresMatching')
             ->will($this->returnValue($oldFailures));
 
-        $manager = new FailureManager($em, $recaptcha, 9);
+        $manager = new FailureManager($repo, $em, $recaptcha, 9);
         $manager->checkFailures($username, $request);
     }
 
@@ -107,7 +107,7 @@ class FailureManagerTest extends \PhraseanetTestCase
     public function testCheckFailuresMoreThan9WithoutCaptcha()
     {
         $repo = $this->getRepo();
-        $em = $this->getEntityManagerMock($repo);
+        $em = $this->createEntityManagerMock();
         $recaptcha = $this->getReCaptchaMock(false);
         $request = $this->getRequestMock();
 
@@ -121,7 +121,7 @@ class FailureManagerTest extends \PhraseanetTestCase
             ->method('findLockedFailuresMatching')
             ->will($this->returnValue($oldFailures));
 
-        $manager = new FailureManager($em, $recaptcha, 9);
+        $manager = new FailureManager($repo, $em, $recaptcha, 9);
         $manager->checkFailures($username, $request);
     }
 
@@ -131,7 +131,7 @@ class FailureManagerTest extends \PhraseanetTestCase
     public function testCheckFailuresMoreThan9WithCorrectCaptcha()
     {
         $repo = $this->getRepo();
-        $em = $this->getEntityManagerMock($repo);
+        $em = $this->createEntityManagerMock();
         $request = $this->getRequestMock();
         $recaptcha = $this->getReCaptchaMock(true, $request, true);
 
@@ -150,7 +150,7 @@ class FailureManagerTest extends \PhraseanetTestCase
             ->method('findLockedFailuresMatching')
             ->will($this->returnValue($oldFailures));
 
-        $manager = new FailureManager($em, $recaptcha, 9);
+        $manager = new FailureManager($repo, $em, $recaptcha, 9);
         $manager->checkFailures($username, $request);
     }
 
@@ -161,7 +161,7 @@ class FailureManagerTest extends \PhraseanetTestCase
     public function testCheckFailuresMoreThan9WithIncorrectCaptcha()
     {
         $repo = $this->getRepo();
-        $em = $this->getEntityManagerMock($repo);
+        $em = $this->createEntityManagerMock();
         $request = $this->getRequestMock();
         $recaptcha = $this->getReCaptchaMock(true, $request, false);
 
@@ -175,14 +175,14 @@ class FailureManagerTest extends \PhraseanetTestCase
             ->method('findLockedFailuresMatching')
             ->will($this->returnValue($oldFailures));
 
-        $manager = new FailureManager($em, $recaptcha, 9);
+        $manager = new FailureManager($repo, $em, $recaptcha, 9);
         $manager->checkFailures($username, $request);
     }
 
     public function testCheckFailuresTrialsIsConfigurableUnderThreshold()
     {
         $repo = $this->getRepo();
-        $em = $this->getEntityManagerMock($repo);
+        $em = $this->createEntityManagerMock();
         $recaptcha = $this->getReCaptchaMock(null);
         $request = $this->getRequestMock();
 
@@ -196,19 +196,17 @@ class FailureManagerTest extends \PhraseanetTestCase
             ->method('findLockedFailuresMatching')
             ->will($this->returnValue($oldFailures));
 
-        $manager = new FailureManager($em, $recaptcha, 2);
+        $manager = new FailureManager($repo, $em, $recaptcha, 2);
         $manager->checkFailures($username, $request);
     }
 
     public function testTrialsIsConfigurable()
     {
-        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $em = $this->createEntityManagerMock();
 
         $recaptcha = $this->getReCaptchaMock(null);
 
-        $manager = new FailureManager($em, $recaptcha, 2);
+        $manager = new FailureManager($this->createEntityRepositoryMock(), $em, $recaptcha, 2);
         $this->assertEquals(2, $manager->getTrials());
     }
 
@@ -219,7 +217,7 @@ class FailureManagerTest extends \PhraseanetTestCase
     public function testCheckFailuresTrialsIsConfigurableOverThreshold()
     {
         $repo = $this->getRepo();
-        $em = $this->getEntityManagerMock($repo);
+        $em = $this->createEntityManagerMock();
         $request = $this->getRequestMock();
         $recaptcha = $this->getReCaptchaMock(true, $request, false);
 
@@ -233,7 +231,7 @@ class FailureManagerTest extends \PhraseanetTestCase
             ->method('findLockedFailuresMatching')
             ->will($this->returnValue($oldFailures));
 
-        $manager = new FailureManager($em, $recaptcha, 2);
+        $manager = new FailureManager($repo, $em, $recaptcha, 2);
         $manager->checkFailures($username, $request);
     }
 
@@ -255,7 +253,7 @@ class FailureManagerTest extends \PhraseanetTestCase
         $this->assertCount(12, self::$DI['app']['EM']->getRepository('Phraseanet:AuthFailure')
                 ->findAll());
 
-        $manager = new FailureManager(self::$DI['app']['EM'], $recaptcha, 9);
+        $manager = new FailureManager(self::$DI['app']['repo.auth-failures'], self::$DI['app']['EM'], $recaptcha, 9);
         $manager->saveFailure($username, $request);
 
         $this->assertCount(0, self::$DI['app']['EM']->getRepository('Phraseanet:AuthFailure')
@@ -275,20 +273,6 @@ class FailureManagerTest extends \PhraseanetTestCase
         }
 
         return $failures;
-    }
-
-    private function getEntityManagerMock($repo)
-    {
-        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $em->expects($this->once())
-            ->method('getRepository')
-            ->with($this->equalTo('Phraseanet:AuthFailure'))
-            ->will($this->returnValue($repo));
-
-        return $em;
     }
 
     private function getReCaptchaMock($isSetup = true, Request $request = null, $isValid = false)

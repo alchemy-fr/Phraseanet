@@ -14,18 +14,19 @@ namespace Alchemy\Phrasea\Authentication\PersistentCookie;
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
 use Doctrine\ORM\EntityManager;
 use Alchemy\Phrasea\Model\Entities\Session;
+use Doctrine\ORM\EntityRepository;
 
 class Manager
 {
     private $browser;
     private $encoder;
-    private $em;
+    private $repository;
 
-    public function __construct(PasswordEncoder $encoder, EntityManager $em, \Browser $browser)
+    public function __construct(PasswordEncoder $encoder, EntityRepository $repo, \Browser $browser)
     {
         $this->browser = $browser;
         $this->encoder = $encoder;
-        $this->em = $em;
+        $this->repository = $repo;
     }
 
     /**
@@ -37,9 +38,7 @@ class Manager
      */
     public function getSession($cookieValue)
     {
-        $session = $this->em
-            ->getRepository('Phraseanet:Session')
-            ->findOneBy(['token' => $cookieValue]);
+        $session = $this->repository->findOneBy(['token' => $cookieValue]);
 
         if (!$session) {
             return false;

@@ -48,7 +48,6 @@ class SetupTest extends \PhraseanetAuthenticatedWebTestCase
             ->with('registry',$this->isType('array'));
 
         self::$DI['app']['conf'] = $registry;
-        self::$DI['client'] = new Client(self::$DI['app']);
         self::$DI['client']->request('POST', '/admin/setup/', ['_token'   => 'token']);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }

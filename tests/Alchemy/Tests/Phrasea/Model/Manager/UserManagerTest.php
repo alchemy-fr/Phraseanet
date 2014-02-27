@@ -17,7 +17,7 @@ class UserManagerTest extends \PhraseanetTestCase
         self::$DI['app']['manipulator.user']->setUserSetting($user, 'setting', false);
         self::$DI['app']['manipulator.user']->setNotificationSetting($user, 'setting', false);
         self::$DI['app']['model.user-manager']->delete($user);
-        $user = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login');
+        $user = self::$DI['app']['repo.users']->findOneByLogin('login');
         $this->assertEquals(0, $user->getSettings()->count());
         $this->assertEquals(0, $user->getNotificationSettings()->count());
         $this->assertEquals(0, $user->getQueries()->count());

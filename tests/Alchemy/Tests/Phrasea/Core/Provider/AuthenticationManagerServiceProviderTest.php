@@ -2,6 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
@@ -87,9 +88,7 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 
         $app['conf']->set(['authentication', 'captcha', 'trials-before-display'], 42);
 
-        $app['EM'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['EM'] = $this->createEntityManagerMock();
         self::$DI['app']['recaptcha'] = $this->getMockBuilder('Neutron\ReCaptcha\ReCaptcha')
             ->disableOriginalConstructor()
             ->getMock();
@@ -111,13 +110,14 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
         $app['root.path'] = __DIR__ . '/../../../../../../';
         $app->register(new AuthenticationManagerServiceProvider());
         $app->register(new ConfigurationServiceProvider());
+        $app->register(new RepositoriesServiceProvider());
         $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];
 
         $app['conf']->set(['authentication', 'captcha'], ['enabled' => true]);
 
-        $app['EM'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['EM'] = $this->createEntityManagerMock();
+        $app['repo.users'] = $this->createEntityRepositoryMock();
+        $app['repo.auth-failures'] = $this->createEntityRepositoryMock();
         $app['recaptcha'] = $this->getMockBuilder('Neutron\ReCaptcha\ReCaptcha')
             ->disableOriginalConstructor()
             ->getMock();
@@ -135,9 +135,8 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 
         $app['conf']->set(['authentication', 'captcha'], ['enabled' => false]);
 
-        $app['EM'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['EM'] = $this->createEntityManagerMock();
+        $app['repo.users'] = $this->createEntityRepositoryMock();
         $app['recaptcha'] = $this->getMockBuilder('Neutron\ReCaptcha\ReCaptcha')
             ->disableOriginalConstructor()
             ->getMock();

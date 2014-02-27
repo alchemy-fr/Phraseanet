@@ -90,12 +90,8 @@ class SetupTest extends \PhraseanetWebTestCase
 
     public function testRouteSetupInstallerInstall()
     {
-        $emMock  = $this->getMock('\Doctrine\ORM\EntityManager',
-            ['getRepository', 'find', 'persist', 'flush'], [], '', false);
-        $emMock->expects($this->any())
-            ->method('getRepository')
-            ->will($this->returnValue($this->getMock('Alchemy\Phrasea\Model\Repository\SessionRepository')));
-
+        $emMock  = $this->createEntityManagerMock();
+        $this->app['repo.sessions'] = $this->createEntityRepositoryMock();
         $this->app['EM'] = $emMock;
 
         $this->app['phraseanet.configuration-tester']->expects($this->once())

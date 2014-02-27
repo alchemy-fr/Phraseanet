@@ -15,7 +15,6 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Model\Entities\Registration;
 use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Model\Repositories\RegistrationRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 

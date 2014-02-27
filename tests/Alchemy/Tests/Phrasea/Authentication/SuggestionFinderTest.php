@@ -11,7 +11,7 @@ class SuggestionFinderTest extends \PhraseanetTestCase
     {
         $token = $this->getToken(self::$DI['user']->getEmail());
 
-        $finder = new SuggestionFinder(self::$DI['app']['manipulator.user']->getRepository());
+        $finder = new SuggestionFinder(self::$DI['app']['repo.users']);
         $user = $finder->find($token);
 
         $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\User', $user);
@@ -22,7 +22,7 @@ class SuggestionFinderTest extends \PhraseanetTestCase
     {
         $token = $this->getToken(sprintf('%srandom%s@%srandom.com', uniqid(mt_rand(), true), uniqid(mt_rand(), true), uniqid(mt_rand(), true)));
 
-        $finder = new SuggestionFinder(self::$DI['app']['manipulator.user']->getRepository());
+        $finder = new SuggestionFinder(self::$DI['app']['repo.users']);
         $user = $finder->find($token);
 
         $this->assertNull($user);

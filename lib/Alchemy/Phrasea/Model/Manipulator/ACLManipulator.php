@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Model\Manipulator;
 
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\Model\Entities\User;
 
 class ACLManipulator implements ManipulatorInterface

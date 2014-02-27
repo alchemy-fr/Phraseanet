@@ -33,7 +33,7 @@ class RegistrationManagerTest extends \PhraseanetTestCase
         $mockDatabox->expects($this->once())->method('get_collections')->will($this->returnValue([$mockColl]));
         $mockAppbox->expects($this->once())->method('get_databoxes')->will($this->returnValue([$mockDatabox]));
 
-        $service = new RegistrationManager($mockAppbox, self::$DI['app']['manipulator.registration']->getRepository(), self::$DI['app']['locale']);
+        $service = new RegistrationManager($mockAppbox, self::$DI['app']['repo.registrations'], self::$DI['app']['locale']);
         $this->assertEquals($expected, $service->isRegistrationEnabled());
     }
 

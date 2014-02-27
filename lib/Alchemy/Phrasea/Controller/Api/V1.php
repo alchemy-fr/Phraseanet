@@ -805,7 +805,7 @@ class V1 implements ControllerProviderInterface
 
     public function list_quarantine_item($lazaret_id, Application $app, Request $request)
     {
-        $lazaretFile = $app['EM']->find('Phraseanet:LazaretFile', $lazaret_id);
+        $lazaretFile = $app['repo.lazaret-files']->find($lazaret_id);
 
         /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {

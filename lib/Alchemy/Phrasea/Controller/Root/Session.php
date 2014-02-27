@@ -81,7 +81,7 @@ class Session implements ControllerProviderInterface
             return $app->json($ret);
         }
 
-        $session = $app['EM']->find('Phraseanet:Session', $app['session']->get('session_id'));
+        $session = $app['repo.sessions']->find($app['session']->get('session_id'));
         $session->setUpdated(new \DateTime());
 
         if (!$session->hasModuleId($moduleId)) {
@@ -132,7 +132,7 @@ class Session implements ControllerProviderInterface
      */
     public function deleteSession(Application $app, Request $request, $id)
     {
-        $session = $app['EM']->find('Phraseanet:Session', $id);
+        $session = $app['repo.sessions']->find($id);
 
         if (null === $session) {
             $app->abort(404, 'Unknown session');

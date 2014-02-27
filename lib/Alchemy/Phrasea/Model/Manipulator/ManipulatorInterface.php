@@ -11,8 +11,6 @@
 
 namespace Alchemy\Phrasea\Model\Manipulator;
 
-use Doctrine\ORM\EntityRepository;
-
 /**
  * This class is responsible of manipulating entities.
  */

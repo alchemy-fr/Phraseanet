@@ -112,7 +112,7 @@ class Lazaret implements ControllerProviderInterface
     {
         $ret = ['success' => false, 'message' => '', 'result'  => []];
 
-        $lazaretFile = $app['EM']->find('Phraseanet:LazaretFile', $file_id);
+        $lazaretFile = $app['repo.lazaret-files']->find($file_id);
 
         /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {
@@ -165,7 +165,7 @@ class Lazaret implements ControllerProviderInterface
             return $app->json($ret);
         }
 
-        $lazaretFile = $app['EM']->find('Phraseanet:LazaretFile', $file_id);
+        $lazaretFile = $app['repo.lazaret-files']->find($file_id);
 
         /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {
@@ -274,7 +274,7 @@ class Lazaret implements ControllerProviderInterface
     {
         $ret = ['success' => false, 'message' => '', 'result'  => []];
 
-        $lazaretFile = $app['EM']->find('Phraseanet:LazaretFile', $file_id);
+        $lazaretFile = $app['repo.lazaret-files']->find($file_id);
         /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {
             $ret['message'] = $app->trans('File is not present in quarantine anymore, please refresh');
@@ -359,7 +359,7 @@ class Lazaret implements ControllerProviderInterface
             return $app->json($ret);
         }
 
-        $lazaretFile = $app['EM']->find('Phraseanet:LazaretFile', $file_id);
+        $lazaretFile = $app['repo.lazaret-files']->find($file_id);
 
         /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {
@@ -430,7 +430,7 @@ class Lazaret implements ControllerProviderInterface
      */
     public function thumbnailElement(Application $app, Request $request, $file_id)
     {
-        $lazaretFile = $app['EM']->find('Phraseanet:LazaretFile', $file_id);
+        $lazaretFile = $app['repo.lazaret-files']->find($file_id);
 
         /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {

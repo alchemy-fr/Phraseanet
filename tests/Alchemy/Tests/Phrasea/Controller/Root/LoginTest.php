@@ -1026,7 +1026,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request('POST', '/login/register-classic/', $parameters);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
 
-        if (null === $user = self::$DI['app']['manipulator.user']->getRepository()->findByEmail($parameters['email'])) {
+        if (null === $user = self::$DI['app']['repo.users']->findByEmail($parameters['email'])) {
             $this->fail('User not created');
         }
 
@@ -1091,7 +1091,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['client']->request('POST', '/login/register-classic/', $parameters);
 
-        if (null === $user = self::$DI['app']['manipulator.user']->getRepository()->findByEmail($parameters['email'])) {
+        if (null === $user = self::$DI['app']['repo.users']->findByEmail($parameters['email'])) {
             $this->fail('User not created');
         }
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
@@ -1197,7 +1197,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             $this->assertEquals($context, $event->getContext()->getContext());
         });
 
-        self::$DI['client'] = new Client(self::$DI['app'], []);
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
         self::$DI['client']->request('POST', '/login/authenticate/', [
             'login' => $login,
@@ -1236,7 +1235,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->logout(self::$DI['app']);
 
-        self::$DI['client'] = new Client(self::$DI['app'], []);
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
         self::$DI['client']->request('POST', '/login/authenticate/', [
             'login'    => $login,
@@ -1285,7 +1283,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->logout(self::$DI['app']);
 
-        self::$DI['client'] = new Client(self::$DI['app'], []);
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
         self::$DI['client']->request('POST', '/login/authenticate/guest/');
 
@@ -1300,7 +1297,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['app']['acl']->get(self::$DI['user_guest'])->give_access_to_base([self::$DI['collection']->get_base_id()]);
         $this->logout(self::$DI['app']);
 
-        self::$DI['client'] = new Client(self::$DI['app'], []);
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
         self::$DI['client']->request('GET', '/login/authenticate/guest/');
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
@@ -1578,7 +1574,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             ->method('getEmail')
             ->will($this->returnValue('supermail@superprovider.com'));
 
-        if (null === $user = self::$DI['app']['manipulator.user']->getRepository()->findByEmail('supermail@superprovider.com')) {
+        if (null === $user = self::$DI['app']['repo.users']->findByEmail('supermail@superprovider.com')) {
             $random = self::$DI['app']['tokens']->generatePassword();
             $user = self::$DI['app']['manipulator.user']->createUser('temporary-'.$random, $random, 'supermail@superprovider.com');
         }
@@ -1750,29 +1746,19 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             ->with('provider-test', $id)
             ->will($this->returnValue($out));
 
-        self::$DI['app']['EM'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+        self::$DI['app']['EM'] = $this->createEntityManagerMock();
+
+        self::$DI['app']['repo.usr-auth-providers'] = $repo;
+
+        $repo = $this->getMockBuilder('Alchemy\Phrasea\Model\Repositories\ValidationParticipantRepository')
             ->disableOriginalConstructor()
             ->getMock();
 
-        self::$DI['app']['EM']->expects($this->at(0))
-            ->method('getRepository')
-            ->with('Phraseanet:UsrAuthProvider')
-            ->will($this->returnValue($repo));
+        $repo->expects($participants ? $this->once() : $this->never())
+            ->method('findNotConfirmedAndNotRemindedParticipantsByExpireDate')
+            ->will($this->returnValue([]));
 
-        if ($participants) {
-            $repo = $this->getMockBuilder('Alchemy\Phrasea\Model\Repositories\ValidationParticipantRepository')
-                ->disableOriginalConstructor()
-                ->getMock();
-
-            $repo->expects($this->once())
-                ->method('findNotConfirmedAndNotRemindedParticipantsByExpireDate')
-                ->will($this->returnValue([]));
-
-            self::$DI['app']['EM']->expects($this->at(1))
-                ->method('getRepository')
-                ->with('Phraseanet:ValidationParticipant')
-                ->will($this->returnValue($repo));
-        }
+        self::$DI['app']['repo.validation-participants'] = $repo;
     }
 
     private function mockSuggestionFinder()
@@ -1891,7 +1877,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     private function enableRegistration()
     {
         $managerMock = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\RegistrationManager')
-            ->setConstructorArgs([self::$DI['app']['phraseanet.appbox'], self::$DI['app']['manipulator.registration']->getRepository(), self::$DI['app']['locale']])
+            ->setConstructorArgs([self::$DI['app']['phraseanet.appbox'], self::$DI['app']['repo.registrations'], self::$DI['app']['locale']])
             ->setMethods(['isRegistrationEnabled'])
             ->getMock();
 
@@ -1902,7 +1888,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     private function disableRegistration()
     {
         $managerMock = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\RegistrationManager')
-            ->setConstructorArgs([self::$DI['app']['phraseanet.appbox'], self::$DI['app']['manipulator.registration']->getRepository(), self::$DI['app']['locale']])
+            ->setConstructorArgs([self::$DI['app']['phraseanet.appbox'], self::$DI['app']['repo.registrations'], self::$DI['app']['locale']])
             ->setMethods(['isRegistrationEnabled'])
             ->getMock();
 

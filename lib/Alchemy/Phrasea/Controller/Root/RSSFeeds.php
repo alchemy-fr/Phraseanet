@@ -47,7 +47,7 @@ class RSSFeeds implements ControllerProviderInterface
             ->assert('format', '(rss|atom)');
 
         $controllers->get('/userfeed/{token}/{id}/{format}/', function (Application $app, $token, $id, $format) {
-            $token = $app["EM"]->find('Phraseanet:FeedToken', $id);
+            $token = $app["repo.feed-tokens"]->find($id);
 
             $request = $app['request'];
 

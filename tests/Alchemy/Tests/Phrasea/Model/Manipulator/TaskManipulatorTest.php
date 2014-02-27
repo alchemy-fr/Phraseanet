@@ -104,12 +104,6 @@ class TaskManipulatorTest extends \PhraseanetTestCase
         $this->assertEquals(0, $task->getCrashed());
     }
 
-    public function testGetRepository()
-    {
-        $manipulator = new TaskManipulator(self::$DI['app']['EM'], $this->createNotifierMock(), self::$DI['app']['translator'], self::$DI['app']['repo.tasks']);
-        $this->assertSame(self::$DI['app']['EM']->getRepository('Phraseanet:Task'), $manipulator->getRepository());
-    }
-
     public function testCreateEmptyCollection()
     {
         $collection = $this->getMockBuilder('collection')

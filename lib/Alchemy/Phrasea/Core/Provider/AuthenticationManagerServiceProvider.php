@@ -41,7 +41,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['authentication.persistent-manager'] = $app->share(function (Application $app) {
-            return new CookieManager($app['auth.password-encoder'], $app['EM'], $app['browser']);
+            return new CookieManager($app['auth.password-encoder'], $app['repo.sessions'], $app['browser']);
         });
 
         $app['authentication.suggestion-finder'] = $app->share(function (Application $app) {
@@ -103,7 +103,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         $app['auth.native.failure-manager'] = $app->share(function (Application $app) {
             $authConf = $app['conf']->get(['authentication', 'captcha']);
 
-            return new FailureManager($app['EM'], $app['recaptcha'], isset($authConf['trials-before-display']) ? $authConf['trials-before-display'] : 9);
+            return new FailureManager($app['repo.auth-failures'], $app['EM'], $app['recaptcha'], isset($authConf['trials-before-display']) ? $authConf['trials-before-display'] : 9);
         });
 
         $app['auth.password-checker'] = $app->share(function (Application $app) {

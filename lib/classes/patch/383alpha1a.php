@@ -69,7 +69,7 @@ class patch_383alpha1a extends patchAbstract
         $stmt->closeCursor();
 
         foreach ($rows as $row) {
-            if (null !== $session = $app['EM']->find('Phraseanet:Session', $row['id'])) {
+            if (null !== $session = $app['repo.sessions']->find($row['id'])) {
                 $app['EM']->remove($session);
             }
         }
