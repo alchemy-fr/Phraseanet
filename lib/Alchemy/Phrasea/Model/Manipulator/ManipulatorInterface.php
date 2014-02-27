@@ -18,10 +18,4 @@ use Doctrine\ORM\EntityRepository;
  */
 interface ManipulatorInterface
 {
-    /**
-     * Returns the entity repository.
-     *
-     * @return EntityRepository
-     */
-    public function getRepository();
 }

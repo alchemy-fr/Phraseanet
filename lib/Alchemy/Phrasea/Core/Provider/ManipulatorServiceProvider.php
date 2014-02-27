@@ -24,11 +24,11 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
     public function register(SilexApplication $app)
     {
         $app['manipulator.task'] = $app->share(function (SilexApplication $app) {
-            return new TaskManipulator($app['EM'], $app['task-manager.notifier'], $app['translator']);
+            return new TaskManipulator($app['EM'], $app['task-manager.notifier'], $app['translator'], $app['repo.tasks']);
         });
 
         $app['manipulator.user'] = $app->share(function ($app) {
-            return new UserManipulator($app['model.user-manager'], $app['auth.password-encoder'], $app['geonames.connector']);
+            return new UserManipulator($app['model.user-manager'], $app['auth.password-encoder'], $app['geonames.connector'], $app['repo.users']);
         });
 
         $app['manipulator.acl'] = $app->share(function ($app) {
@@ -40,7 +40,7 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
         });
 
         $app['manipulator.registration'] = $app->share(function ($app) {
-            return new RegistrationManipulator($app, $app['EM'], $app['acl'], $app['phraseanet.appbox']);
+            return new RegistrationManipulator($app, $app['EM'], $app['acl'], $app['phraseanet.appbox'], $app['repo.registrations']);
         });
     }
 

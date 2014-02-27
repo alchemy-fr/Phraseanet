@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\TaskManager\Job\EmptyCollectionJob;
 use Alchemy\Phrasea\TaskManager\Notifier;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class TaskManipulator implements ManipulatorInterface
@@ -26,12 +27,15 @@ class TaskManipulator implements ManipulatorInterface
     private $om;
     /** @var TranslatorInterface */
     private $translator;
+    /** @var EntityRepository */
+    private $repository;
 
-    public function __construct(ObjectManager $om, Notifier $notifier, TranslatorInterface $translator)
+    public function __construct(ObjectManager $om, Notifier $notifier, TranslatorInterface $translator, EntityRepository $repo)
     {
         $this->om = $om;
         $this->notifier = $notifier;
         $this->translator = $translator;
+        $this->repository = $repo;
     }
 
     /**

@@ -656,4 +656,11 @@ abstract class PhraseanetTestCase extends WebTestCase
             ->disableOriginalConstructor()
             ->getMock();
     }
+
+    protected function createEntityRepositoryMock()
+    {
+        return $this->getMockBuilder('Doctrine\ORM\EntityRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
 }

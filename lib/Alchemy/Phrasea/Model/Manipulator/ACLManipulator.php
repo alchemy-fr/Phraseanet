@@ -30,14 +30,6 @@ class ACLManipulator implements ManipulatorInterface
     }
 
     /**
-     * @throws LogicException
-     */
-    public function getRepository()
-    {
-        throw new LogicException('ACL class is not a doctrine entity and therefore it does not have repository.');
-    }
-
-    /**
      * Resets rights for users.
      *
      * @param User[] $users

@@ -19,7 +19,7 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
 
         $manipulator = $this->getUserManipulatorMock($specialUser);
 
-        $auth = new NativeAuthentication($encoder, $oldEncoder, $manipulator);
+        $auth = new NativeAuthentication($encoder, $oldEncoder, $manipulator, $this->createEntityRepositoryMock());
         $this->assertNull($auth->getUsrId('a_login', 'a_password', $request));
     }
 
@@ -30,7 +30,7 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
         $request = $this->getRequestMock();
         $manipulator = $this->getUserManipulatorMock(null);
 
-        $auth = new NativeAuthentication($encoder, $oldEncoder, $manipulator);
+        $auth = new NativeAuthentication($encoder, $oldEncoder, $manipulator, $this->createEntityRepositoryMock());
         $this->assertNull($auth->getUsrId('a_login', 'a_password', $request));
     }
 
@@ -45,7 +45,7 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
 
         $manipulator = $this->getUserManipulatorMock($mailLockedUser);
 
-        $auth = new NativeAuthentication($encoder, $oldEncoder, $manipulator);
+        $auth = new NativeAuthentication($encoder, $oldEncoder, $manipulator, $this->createEntityRepositoryMock());
 
         try {
             $auth->getUsrId('a_login', 'a_password', $request);
@@ -85,7 +85,7 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
             ->with($this->equalTo($encoded), $this->equalTo($password), $this->equalTo($nonce))
             ->will($this->returnValue(true));
 
-        $auth = new NativeAuthentication($encoder, $oldEncoder, $manipulator);
+        $auth = new NativeAuthentication($encoder, $oldEncoder, $manipulator, $this->createEntityRepositoryMock());
 
         $this->assertEquals($userId, $auth->getUsrId('a_login', $password, $request));
     }
@@ -120,7 +120,7 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
             ->with($this->equalTo($encoded), $this->equalTo($password), $this->equalTo($nonce))
             ->will($this->returnValue(false));
 
-        $auth = new NativeAuthentication($encoder, $oldEncoder, $manipulator);
+        $auth = new NativeAuthentication($encoder, $oldEncoder, $manipulator, $this->createEntityRepositoryMock());
 
         $this->assertEquals(false, $auth->getUsrId('a_login', $password, $request));
     }
@@ -157,7 +157,7 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
             ->with($this->equalTo($encoded), $this->equalTo($password), $this->equalTo($nonce))
             ->will($this->returnValue(false));
 
-        $auth = new NativeAuthentication($encoder, $oldEncoder, $manipulator);
+        $auth = new NativeAuthentication($encoder, $oldEncoder, $manipulator, $this->createEntityRepositoryMock());
 
         $this->assertEquals(false, $auth->getUsrId('a_login', $password, $request));
     }
@@ -203,7 +203,7 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
                 return true;
             }));
 
-        $auth = new NativeAuthentication($encoder, $oldEncoder, $manipulator);
+        $auth = new NativeAuthentication($encoder, $oldEncoder, $manipulator, $this->createEntityRepositoryMock());
         $this->assertEquals($userId, $auth->getUsrId('a_login', $password, $request));
     }
 

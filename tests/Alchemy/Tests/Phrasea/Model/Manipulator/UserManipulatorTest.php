@@ -74,7 +74,7 @@ class UserManipulatorTest extends \PhraseanetTestCase
             ->getMock();
 
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
-        $manipulator = new UserManipulator($manager, $passwordInterface, $geonamesConnector);
+        $manipulator = new UserManipulator($manager, $passwordInterface, $geonamesConnector, self::$DI['app']['repo.tasks']);
 
         $manipulator->setGeonameId($user, 4);
         $this->assertEquals(4, $user->getGeonameId());
@@ -140,7 +140,7 @@ class UserManipulatorTest extends \PhraseanetTestCase
         $passwordInterface = $this->getMockBuilder('Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface')
             ->getMock();
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
-        $manipulator = new UserManipulator($manager, $passwordInterface, $geonamesConnector);
+        $manipulator = new UserManipulator($manager, $passwordInterface, $geonamesConnector, self::$DI['app']['repo.tasks']);
         $this->setExpectedException(
             'Alchemy\Phrasea\Exception\InvalidArgumentException',
             'Invalid geonameid -1.'
