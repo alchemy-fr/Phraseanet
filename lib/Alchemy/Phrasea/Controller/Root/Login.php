@@ -54,7 +54,7 @@ class Login implements ControllerProviderInterface
     {
         $items = [];
 
-        foreach ($app['EM']->getRepository('Phraseanet:FeedItem')->loadLatest($app, 20) as $item) {
+        foreach ($app['repo.feed-items']->loadLatest($app, 20) as $item) {
             $record = $item->getRecord($app);
             $preview = $record->get_subdef('preview');
             $permalink = $preview->get_permalink();

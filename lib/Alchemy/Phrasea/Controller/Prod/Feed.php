@@ -155,7 +155,7 @@ class Feed implements ControllerProviderInterface
                 if (count($item_sort_datas) != 2) {
                     continue;
                 }
-                $item = $app['EM']->getRepository('Phraseanet:FeedItem')->find($item_sort_datas[0]);
+                $item = $app['repo.feed-items']->find($item_sort_datas[0]);
                 $item->setOrd($item_sort_datas[1]);
                 $app['EM']->persist($item);
             }
