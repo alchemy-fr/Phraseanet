@@ -266,6 +266,7 @@ abstract class base implements cache_cacheableInterface
             'FtpExports',
             'OrderElements',
             'Orders',
+            'Registrations',
             'StoryWZ',
             'UsrListOwners',
             'UsrLists',

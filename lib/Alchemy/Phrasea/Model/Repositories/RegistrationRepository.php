@@ -75,7 +75,7 @@ class RegistrationRepository extends EntityRepository
                bas.base_id AS bas_id , " . $rsm->generateSelectClause(['d' => 'd',]) . "
         FROM (usr, bas, sbas)
           LEFT JOIN basusr ON ( usr.usr_id = basusr.usr_id AND bas.base_id = basusr.base_id )
-          LEFT JOIN Registration d ON ( d.user_id = usr.usr_id AND bas.base_id = d.base_id )
+          LEFT JOIN Registrations d ON ( d.user_id = usr.usr_id AND bas.base_id = d.base_id )
         WHERE bas.active = 1 AND bas.sbas_id = sbas.sbas_id
         AND usr.usr_id = ?
         AND model_of = 0";
