@@ -49,7 +49,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
         $users = [];
 
         try {
-            $repository = $this->app['EM']->getRepository('Phraseanet:OrderElement');
+            $repository = $this->app['repo.order-elements'];
 
             $results = $repository->findBy(['orderId' => $order_id]);
 
