@@ -38,6 +38,7 @@ use Alchemy\Phrasea\Form\Login\PhraseaForgotPasswordForm;
 use Alchemy\Phrasea\Form\Login\PhraseaRecoverPasswordForm;
 use Alchemy\Phrasea\Form\Login\PhraseaRegisterForm;
 use Doctrine\ORM\EntityManager;
+use igorw;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -80,7 +81,7 @@ class Login implements ControllerProviderInterface
             'recaptcha_display' => $app->isCaptchaRequired(),
             'unlock_usr_id' => $app->getUnlockAccountData(),
             'guest_allowed' => $app->isGuestAllowed(),
-            'register_enable' => $app['registration.enabled'],
+            'register_enable' => $app['registration.manager']->isRegistrationEnabled(),
             'display_layout' => $app['conf']->get(['registry', 'general', 'home-presentation-mode']),
             'authentication_providers' => $app['authentication.providers'],
             'registration_fields' => $app['registration.fields'],
@@ -266,7 +267,7 @@ class Login implements ControllerProviderInterface
 
     public function doRegistration(PhraseaApplication $app, Request $request)
     {
-        if (!$app['registration.enabled']) {
+        if (!$app['registration.manager']->isRegistrationEnabled()) {
             $app->abort(404, 'Registration is disabled');
         }
 
@@ -329,14 +330,12 @@ class Login implements ControllerProviderInterface
                         throw new FormProcessingException($app->trans('Invalid captcha answer.'));
                     }
 
-                    require_once $app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
-
                     if ($app['conf']->get(['registry', 'registration', 'auto-select-collections'])) {
                         $selected = null;
                     } else {
                         $selected = isset($data['collections']) ? $data['collections'] : null;
                     }
-                    $inscriptions = giveMeBases($app);
+                    $inscriptions = $app['registration.manager']->getRegistrationSummary();
                     $inscOK = [];
 
                     foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
@@ -345,15 +344,8 @@ class Login implements ControllerProviderInterface
                                 continue;
                             }
 
-                            $sbas_id = $databox->get_sbas_id();
-
-                            if (isset($inscriptions[$sbas_id])
-                                && $inscriptions[$sbas_id]['inscript'] === true
-                                && (isset($inscriptions[$sbas_id]['Colls'][$collection->get_coll_id()])
-                                || isset($inscriptions[$sbas_id]['CollsCGU'][$collection->get_coll_id()]))) {
-                                $inscOK[$collection->get_base_id()] = true;
-                            } else {
-                                $inscOK[$collection->get_base_id()] = false;
+                            if ($canRegister = igorw\get_in($inscriptions, [$databox->get_sbas_id(), 'config', 'collections', $collection->get_base_id(), 'can-register'])) {
+                                $inscOK[$collection->get_base_id()] = $canRegister;
                             }
                         }
                     }
@@ -393,34 +385,25 @@ class Login implements ControllerProviderInterface
                         $app['EM']->flush();
                     }
 
-                    $demandOK = [];
-
+                    $registrationsOK = [];
                     if ($app['conf']->get(['registry', 'registration', 'auto-register-enabled'])) {
                         $template_user = $app['manipulator.user']->getRepository()->findByLogin(User::USER_AUTOREGISTER);
-
-                        $base_ids = [];
-
-                        foreach (array_keys($inscOK) as $base_id) {
-                            $base_ids[] = $base_id;
-                        }
-
-                        $app['acl']->get($user)->apply_model($template_user, $base_ids);
+                        $app['acl']->get($user)->apply_model($template_user, array_keys($inscOK));
                     }
 
                     $autoReg = $app['acl']->get($user)->get_granted_base();
 
-                    foreach ($inscOK as $base_id => $autorisation) {
-                        if (false === $autorisation || $app['acl']->get($user)->has_access_to_base($base_id)) {
+                    foreach ($inscOK as $baseId => $authorization) {
+                        if (false === $authorization || $app['acl']->get($user)->has_access_to_base($baseId)) {
                             continue;
                         }
 
-                        $collection = \collection::get_from_base_id($app, $base_id);
-                        $app['phraseanet.appbox-register']->add_request($user, $collection);
-                        $demandOK[$base_id] = true;
+                        $app['manipulator.registration']->createRegistration($user, \collection::get_from_base_id($app, $baseId));
+                        $registrationsOK[$baseId] = true;
                     }
 
                     $params = [
-                        'demand'       => $demandOK,
+                        'registrations'=> $registrationsOK,
                         'autoregister' => $autoReg,
                         'usr_id'       => $user->getId()
                     ];
@@ -705,7 +688,7 @@ class Login implements ControllerProviderInterface
      */
     public function displayRegisterForm(PhraseaApplication $app, Request $request)
     {
-        if (!$app['registration.enabled']) {
+        if (!$app['registration.manager']->isRegistrationEnabled()) {
             $app->abort(404, 'Registration is disabled');
         }
 
@@ -750,8 +733,6 @@ class Login implements ControllerProviderInterface
      */
     public function login(PhraseaApplication $app, Request $request)
     {
-        require_once $app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
-
         try {
             $app['phraseanet.appbox']->get_connection();
         } catch (\Exception $e) {
@@ -973,7 +954,7 @@ class Login implements ControllerProviderInterface
             }
 
             return $app->redirect($redirection);
-        } elseif ($app['registration.enabled']) {
+        } elseif ($app['registration.manager']->isRegistrationEnabled()) {
             return $app->redirectPath('login_register_classic', ['providerId' => $providerId]);
         }
 

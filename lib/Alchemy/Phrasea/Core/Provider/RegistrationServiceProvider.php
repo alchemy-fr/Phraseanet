@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Form\Constraint\NewLogin;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Core\Configuration\RegistrationManager;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -25,20 +26,8 @@ class RegistrationServiceProvider implements ServiceProviderInterface
             return $app['conf']->get('registration-fields', []);
         });
 
-        $app['registration.enabled'] = $app->share(function (Application $app) {
-            require_once __DIR__ . '/../../../../classes/deprecated/inscript.api.php';
-
-            $bases = giveMeBases($app);
-
-            if ($bases) {
-                foreach ($bases as $base) {
-                    if ($base['inscript']) {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
+        $app['registration.manager'] = $app->share(function (Application $app) {
+            return new RegistrationManager($app['phraseanet.appbox'], $app['manipulator.registration']->getRepository(), $app['locale']);
         });
 
         $app['registration.optional-fields'] = $app->share(function (Application $app) {

@@ -7,7 +7,7 @@ use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
 /**
  * @covers Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider
  */
-class RegistrationServiceProviderTest extends \PhraseanetTestCase
+class RegistrationServiceProviderTest extends ServiceProviderTestCase
 {
     private $fields;
 
@@ -32,5 +32,12 @@ class RegistrationServiceProviderTest extends \PhraseanetTestCase
         $this->assertEquals(['plop'], self::$DI['app']['registration.fields']);
 
         $this->assertInternalType('array', self::$DI['app']['registration.optional-fields']);
+    }
+
+    public function provideServiceDescription()
+    {
+        return [
+            ['Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider', 'registration.manager', 'Alchemy\Phrasea\Core\Configuration\RegistrationManager'],
+        ];
     }
 }

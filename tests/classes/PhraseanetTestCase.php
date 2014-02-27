@@ -133,6 +133,16 @@ abstract class PhraseanetTestCase extends WebTestCase
             return $DI['app']['manipulator.user']->getRepository()->find(self::$fixtureIds['user']['user_template']);
         });
 
+        self::$DI['registration_1'] = self::$DI->share(function ($DI) {
+            return $DI['app']['manipulator.registration']->getRepository()->find(self::$fixtureIds['registrations']['registration_1']);
+        });
+        self::$DI['registration_2'] = self::$DI->share(function ($DI) {
+            return $DI['app']['manipulator.registration']->getRepository()->find(self::$fixtureIds['registrations']['registration_2']);
+        });
+        self::$DI['registration_3'] = self::$DI->share(function ($DI) {
+            return $DI['app']['manipulator.registration']->getRepository()->find(self::$fixtureIds['registrations']['registration_3']);
+        });
+
         self::$DI['oauth2-app-user'] = self::$DI->share(function ($DI) {
             return new \API_OAuth2_Application($DI['app'], self::$fixtureIds['oauth']['user']);
         });

@@ -406,10 +406,7 @@ class collection implements cache_cacheableInterface
         $stmt->execute([':base_id' => $this->get_base_id()]);
         $stmt->closeCursor();
 
-        $sql = "DELETE FROM demand WHERE base_id = :base_id";
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute([':base_id' => $this->get_base_id()]);
-        $stmt->closeCursor();
+        $this->app['manipulator.registration']->deleteRegistrationsOnCollection($this);
 
         $this->get_databox()->delete_data_from_cache(databox::CACHE_COLLECTIONS);
 
@@ -543,10 +540,7 @@ class collection implements cache_cacheableInterface
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        $sql = "DELETE FROM demand WHERE base_id = :base_id";
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $this->app['manipulator.registration']->deleteRegistrationsOnCollection($this);
 
         phrasea::reset_baseDatas($app['phraseanet.appbox']);
 
@@ -751,5 +745,49 @@ class collection implements cache_cacheableInterface
     public static function purge()
     {
         self::$_collections = [];
+    }
+
+    /**
+     * Tells whether registration is activated for provided collection or not.
+     *
+     * @return boolean
+     */
+    public function isRegistrationEnabled()
+    {
+        if (false === $xml = simplexml_load_string($this->get_prefs())) {
+            return false;
+        }
+
+        $element = $xml->xpath('/baseprefs/caninscript');
+
+        if (count($element) === 0) {
+            return $this->databox->isRegistrationEnabled();
+        }
+
+        foreach ($element as $caninscript) {
+            if (false !== (Boolean) (string) $caninscript) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Gets terms of use.
+     *
+     * @param \collection $collection
+     *
+     * @return null|string
+     */
+    public function getTermsOfUse()
+    {
+        if (false === $xml = simplexml_load_string($this->get_prefs())) {
+            return;
+        }
+
+        foreach ($xml->xpath('/baseprefs/cgu') as $sbpcgu) {
+            return $sbpcgu->saveXML();
+        }
     }
 }

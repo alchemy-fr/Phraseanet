@@ -29,7 +29,7 @@ class databox_cgu
             if (trim($term['terms']) == '') {
                 continue;
             }
-            $out .= '<div style="display:none;" class="cgu-dialog" title="' . str_replace('"', '&quot;', $app->trans('cgus:: CGUs de la base %s', $name)) . '">';
+            $out .= '<div style="display:none;" class="cgu-dialog" title="' . str_replace('"', '&quot;', $app->trans('cgus:: CGUs de la base %name%', ['%name%', $name])) . '">';
 
             $out .= '<blockquote>' . $term['terms'] . '</blockquote>';
             $out .= '<div>' . $app->trans('cgus:: Pour continuer a utiliser lapplication, vous devez accepter les conditions precedentes') . '

@@ -371,7 +371,7 @@ class record_preview extends record_adapter
                     [
                         'final' => []
                         , 'comment' => []
-                        , 'user' => $this->app['manipulator.user']->getRepository()->find($row['usr_id'])
+                        , 'user' => $row['usr_id'] ? $this->app['manipulator.user']->getRepository()->find($row['usr_id']) : null
                 ];
             }
 

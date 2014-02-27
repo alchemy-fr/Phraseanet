@@ -231,10 +231,8 @@ class Account implements ControllerProviderInterface
      */
     public function accountAccess(Application $app, Request $request)
     {
-        require_once $app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
-
         return $app['twig']->render('account/access.html.twig', [
-            'inscriptions' => giveMeBases($app, $app['authentication']->getUser()->getId())
+            'inscriptions' => $app['registration.manager']->getRegistrationSummary($app['authentication']->getUser())
         ]);
     }
 
@@ -328,17 +326,15 @@ class Account implements ControllerProviderInterface
      */
     public function updateAccount(PhraseaApplication $app, Request $request)
     {
-        $demands = (array) $request->request->get('demand', []);
-
-        if (0 !== count($demands)) {
-            foreach ($demands as $baseId) {
-                try {
-                    $app['phraseanet.appbox-register']->add_request($app['authentication']->getUser(), \collection::get_from_base_id($app, $baseId));
-                    $app->addFlash('success', $app->trans('login::notification: Vos demandes ont ete prises en compte'));
-                } catch (\Exception $e) {
-
-                }
+        $registrations = $request->request->get('registrations');
+        if (false === is_array($registrations)) {
+            $app->abort(400, '"registrations" parameter must be an array of base ids.');
+        }
+        if (0 !== count($registrations)) {
+            foreach ($registrations as $baseId) {
+                $app['manipulator.registration']->createRegistration($app['authentication']->getUser(), \collection::get_from_base_id($app, $baseId));
             }
+            $app->addFlash('success', $app->trans('Your registration requests have been taken into account.'));
         }
 
         $accountFields = [

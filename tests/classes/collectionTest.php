@@ -363,4 +363,43 @@ class collectionTest extends \PhraseanetAuthenticatedTestCase
             'This test has not been implemented yet.'
         );
     }
+
+    /**
+     * @dataProvider collectionXmlConfiguration
+     */
+    public function testIsRegistrationEnabled($data, $value)
+    {
+        $mock = $this->getMockBuilder('\collection')
+            ->disableOriginalConstructor()
+            ->setMethods(['get_prefs'])
+            ->getMock();
+
+        $mock->expects($this->once())->method('get_prefs')->will($this->returnValue($data));
+        $this->assertEquals($value, $mock->isRegistrationEnabled());
+    }
+
+    public function collectionXmlConfiguration()
+    {
+        $xmlInscript =
+<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<baseprefs><caninscript>1</caninscript>1</baseprefs>
+XML;
+        $xmlNoInscript =
+<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<baseprefs><caninscript>0</caninscript>1</baseprefs>
+XML;
+        $xmlNoInscriptEmpty =
+<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<baseprefs><caninscript></caninscript></baseprefs>
+XML;
+
+        return [
+            [$xmlInscript, true],
+            [$xmlNoInscript, false],
+            [$xmlNoInscriptEmpty, false],
+        ];
+    }
 }

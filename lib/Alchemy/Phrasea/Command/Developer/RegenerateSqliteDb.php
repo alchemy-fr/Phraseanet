@@ -23,6 +23,7 @@ use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Alchemy\Phrasea\Model\Entities\FeedToken;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
+use Alchemy\Phrasea\Model\Entities\Registration;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -36,6 +37,7 @@ use Alchemy\Phrasea\Model\Entities\StoryWZ;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
+use Gedmo\Timestampable\TimestampableListener;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -94,6 +96,9 @@ class RegenerateSqliteDb extends Command
             $this->insertOneAggregateToken($this->container['EM'], $DI);
             $this->insertLazaretFiles($this->container['EM'], $DI);
             $this->insertAuthFailures($this->container['EM'], $DI);
+            $this->insertOneRegistration($DI, $this->container['EM'], $DI['user_alt1'], $DI['coll'], 'now', 'registration_1');
+            $this->insertOneRegistration($DI, $this->container['EM'], $DI['user_alt2'], $DI['coll'], '-3 months', 'registration_2');
+            $this->insertOneRegistration($DI, $this->container['EM'], $DI['user_notAdmin'], $DI['coll'], 'now', 'registration_3');
 
             $fixtures['user']['test_phpunit'] = $DI['user']->getId();
             $fixtures['user']['test_phpunit_not_admin'] = $DI['user_notAdmin']->getId();
@@ -120,6 +125,10 @@ class RegenerateSqliteDb extends Command
             $fixtures['record']['record_5'] = $DI['record_5']->get_record_id();
             $fixtures['record']['record_6'] = $DI['record_6']->get_record_id();
             $fixtures['record']['record_7'] = $DI['record_7']->get_record_id();
+
+            $fixtures['registrations']['registration_1'] = $DI['registration_1']->getId();
+            $fixtures['registrations']['registration_2'] = $DI['registration_2']->getId();
+            $fixtures['registrations']['registration_3'] = $DI['registration_3']->getId();
 
             $fixtures['lazaret']['lazaret_1'] = $DI['lazaret_1']->getId();
 
@@ -636,5 +645,20 @@ class RegenerateSqliteDb extends Command
         }
 
         $em->persist($entry);
+    }
+
+    private function insertOneRegistration(\Pimple $DI, EntityManager $em, User $user, \collection $collection, $when, $name)
+    {
+        $em->getEventManager()->removeEventSubscriber(new TimestampableListener());
+        $registration = new Registration();
+        $registration->setCollection($collection);
+        $registration->setUser($user);
+        $registration->setUpdated(new \DateTime($when));
+        $registration->setCreated(new \DateTime($when));
+        $em->persist($registration);
+        $em->flush();
+        $em->getEventManager()->addEventSubscriber(new TimestampableListener());
+
+        $DI[$name] = $registration;
     }
 }

@@ -53,14 +53,14 @@ class FeedItemRepositoryTest extends \PhraseanetTestCase
         $item = new FeedItem();
         $item->setEntry($entry)
             ->setOrd(4)
-            ->setRecordId(self::$DI['record_1']->get_record_id())
-            ->setSbasId(self::$DI['record_1']->get_record_id());
+            ->setRecordId(123456789)
+            ->setSbasId(123456789);
         $entry->addItem($item);
         self::$DI['app']['EM']->persist($item);
 
         self::$DI['app']['EM']->persist($entry);
         self::$DI['app']['EM']->flush();
 
-        $this->assertCount(4, self::$DI['app']['EM']->getRepository('Phraseanet:FeedItem')->loadLatest(self::$DI['app'], 20));
+        $this->assertCount(3, self::$DI['app']['EM']->getRepository('Phraseanet:FeedItem')->loadLatest(self::$DI['app'], 20));
     }
 }

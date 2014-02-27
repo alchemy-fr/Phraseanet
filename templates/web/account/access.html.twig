@@ -14,42 +14,19 @@
                 <td  width="15px" style="width: 15px">&nbsp;</td>
                 <td  style="width: 180px;">&nbsp;</td>
             </tr>
-            {% for sbasId, baseInsc in inscriptions %}
-                {% if baseInsc["CollsRegistered"] or baseInsc["CollsRefuse"] or baseInsc["CollsWait"] or baseInsc["CollsIntime"] or baseInsc["CollsOuttime"] or baseInsc["CollsNonactif"] or baseInsc["CollsCGU"] or baseInsc["Colls"] %}
-                    <tr>
-                        <td colspan="3" style="text-align: center;"><h3>{{ sbasId | sbas_labels(app) }}</h3></td>
-                    </tr>
-                {% endif %}
-
-                {% if baseInsc["CollsRegistered"] is not none %}
-                    {% for base in  baseInsc["CollsRegistered"]%}
-                        {% for collId, isTrue in base %}
-                            {% set base_id = sbasId |base_from_coll(collId, app) %}
-                            <tr>
-                                <td colspan="3" style="text-align:center;">
-                                    {{ "login::register: acces authorise sur la collection" | trans }}{{ sbasId |sbas_labels(app) }}
-                                    {% if isTrue | trim != "" %}
-                                        <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{{ "login::register::CGU: lire les CGU" | trans }}</a>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    {% endfor %}
-                    <tr style="height: 5px;">
-                        <td>
-                        </td>
-                    </tr>
-                {% endif %}
-
-                {% if baseInsc["CollsRefuse"] %}
-                    {% for collId, isTrue in baseInsc["CollsRefuse"] %}
-                        {% set base_id = sbasId |base_from_coll(collId, app) %}
+            {% for sbasId, baseInfo in inscriptions %}
+                {% set sbasName = sbasId | sbas_labels(app) %}
+                <tr>
+                    <td colspan="3" style="text-align: center;"><h3>{{ sbasName }}</h3></td>
+                </tr>
+                {% if baseInfo["registrations"]["by-type"]["accepted"]|length > 0 %}
+                    {% for baseId in baseInfo["registrations"]["by-type"]["accepted"] %}
                         <tr>
-                            <td colspan="3" style="text-align: center;">
-                                <span style="color: red;">{{ "login::register: acces refuse sur la collection" | trans }}{{ sbasId |sbas_labels(app) }}</span>
-                                {% if isTrue | trim != "" %}
-                                    <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{{ "login::register::CGU: lire les CGU" | trans }}</a>
-                                {% endif %}
+                            <td colspan="3" style="text-align:center;">
+                                {{ "login::register: acces authorise sur la collection" | trans }}{{ sbasName }}
+                                <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
+                                    {{ "login::register::CGU: lire les CGU" | trans }}
+                                </a>
                             </td>
                         </tr>
                     {% endfor %}
@@ -58,114 +35,116 @@
                         </td>
                     </tr>
                 {% endif %}
-
-                {% if baseInsc["CollsWait"] %}
-                    {% for collId, isTrue in baseInsc["CollsWait"] %}
-                        {% set base_id = sbasId |base_from_coll(collId, app) %}
+                {% if baseInfo["registrations"]["by-type"]["rejected"]|length > 0 %}
+                    {% for baseId in baseInfo["registrations"]["by-type"]["rejected"] %}
                         <tr>
-                            <td colspan="3" style="text-align: center;">
+                            <td colspan="3" style="text-align:center;">
+                                <span style="color: red;">{{ "login::register: acces refuse sur la collection" | trans }}{{ sbasName }}
+                                <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
+                                    {{ "login::register::CGU: lire les CGU" | trans }}
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    <tr style="height: 5px;">
+                        <td>
+                        </td>
+                    </tr>
+                {% endif %}
+                {% if baseInfo["registrations"]["by-type"]["pending"]|length > 0 %}
+                    {% for baseId in baseInfo["registrations"]["by-type"]["pending"] %}
+                        <tr>
+                            <td colspan="3" style="text-align:center;">
                                 <span style="color: orange;">{{ "login::register: en attente d\'acces sur" | trans }} {{ sbasId |sbas_labels(app) }}</span>
-                                {% if isTrue | trim != "" %}
-                                    <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{{ "login::register::CGU: lire les CGU" | trans }}</a>
-                                {% endif %}
+                                <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
+                                    {{ "login::register::CGU: lire les CGU" | trans }}
+                                </a>
                             </td>
                         </tr>
                     {% endfor %}
-                    <tr style="height: 5px;"><td></td></tr>
+                    <tr style="height: 5px;">
+                        <td>
+                        </td>
+                    </tr>
                 {% endif %}
-
-                {% if baseInsc["CollsIntime"] %}
-                    {% for collId, isTrue in baseInsc["CollsIntime"] %}
-                        {% set base_id = sbasId |base_from_coll(collId, app) %}
+                {% if baseInfo["registrations"]["by-type"]["in-time"]|length > 0 %}
+                    {% for baseId in baseInfo["registrations"]["by-type"]["in-time"] %}
                         <tr>
-                            <td colspan="3" style="text-align: center;">
+                            <td colspan="3" style="text-align:center;">
                                 <span>{{ "login::register: acces temporaire sur" | trans }} {{ sbasId |sbas_labels(app) }}</span>
-                                {% if isTrue |trim != "" %}
-                                    <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{{ "login::register::CGU: lire les CGU" | trans }}</a>
-                                {% endif %}
+                                <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
+                                    {{ "login::register::CGU: lire les CGU" | trans }}
+                                </a>
                             </td>
                         </tr>
                     {% endfor %}
-                    <tr style="height: 5px;"><td></td></tr>
+                    <tr style="height: 5px;">
+                        <td>
+                        </td>
+                    </tr>
                 {% endif %}
-
-                {% if baseInsc["CollsOuttime"] %}
-                    {% for collId, isTrue in baseInsc["CollsOuttime"] %}
-                        {% set base_id = sbasId |base_from_coll(collId, app) %}
+                {% if baseInfo["registrations"]["by-type"]["out-dated"]|length > 0 %}
+                    {% for baseId in baseInfo["registrations"]["by-type"]["out-dated"] %}
                         <tr>
-                            <td colspan="3" style="text-align: center;">
+                            <td colspan="3" style="text-align:center;">
                                 <span style="color:red;">{{ "login::register: acces temporaire termine sur" | trans }}{{ sbasId |sbas_labels(app) }}</span>
-                                {% if isTrue |trim != "" %}
-                                    <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{{ "login::register::CGU: lire les CGU" | trans }}</a>
-                                {% endif %}
+                                <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
+                                    {{ "login::register::CGU: lire les CGU" | trans }}
+                                </a>
                             </td>
                         </tr>
                     {% endfor %}
-                    <tr style="height: 5px;"><td></td></tr>
+                    <tr style="height: 5px;">
+                        <td>
+                        </td>
+                    </tr>
                 {% endif %}
-
-                {% if baseInsc["CollsNonactif"] %}
-                    {% for collId, isTrue in baseInsc["CollsNonactif"] %}
-                        {% set base_id = sbasId |base_from_coll(collId, app) %}
+                {% if baseInfo["registrations"]["by-type"]["inactive"]|length > 0 %}
+                    {% for baseId in baseInfo["registrations"]["by-type"]["inactive"] %}
                         <tr>
-                            <td colspan="3" style="text-align: center;">
+                            <td colspan="3" style="text-align:center;">
                                 <span style="color:red;">{{ "login::register: acces supendu sur" | trans }} {{ sbasId |sbas_labels(app) }}</span>
-                                {% if isTrue |trim != "" %}
-                                    <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{{ "login::register::CGU: lire les CGU" | trans }}</a>
-                                {% endif %}
+                                <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
+                                    {{ "login::register::CGU: lire les CGU" | trans }}
+                                </a>
                             </td>
                         </tr>
                     {% endfor %}
-                    <tr style="height: 5px;"><td></td></tr>
+                    <tr style="height: 5px;">
+                        <td>
+                        </td>
+                    </tr>
                 {% endif %}
+            {%  endfor %}
 
-                {% if (baseInsc["CollsCGU"] or baseInsc["Colls"]) and baseInsc["inscript"] %}
-                    {% if baseInsc["Colls"] %}
-                        {% if baseInsc["CGU"] %}
-                            <tr>
-                                <td colspan="3" style="text-align: center;">{{ "login::register: L\'acces aux bases ci-dessous implique l\'acceptation des Conditions Generales d\'Utilisation (CGU) suivantes" | trans }}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="3" style="text-align: center;"><div style="width: 90%; height: 120px; text-align: left; overflow: auto;">{{ baseInsc["CGU"] }}</div></td>
-                            </tr>
-                        {% endif %}
-                        {% for collId, collName in baseInsc["Colls"] %}
-                            {% set base_id = sbasId |base_from_coll(collId, app) %}
-                            <tr>
-                                <td style="text-align: right;">{{ collName }}</td>
-                                <td></td>
-                                <td class="TD_R" style="width: 200px;">
-                                    <input style="width: 15px;" class="checkbox" type="checkbox" name="demand[]" value="{{ base_id }}" />
-                                    <span>{{ "login::register: Faire une demande d\'acces" | trans }}</span>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    {% endif %}
-                    {% if baseInsc["CollsCGU"] %}
-                        {% for collId, collDesc in baseInsc["CollsCGU"] %}
-                            {% set base_id = sbasId |base_from_coll(collId, app) %}
-                            <tr>
-                                <td colspan="3" style="text-align: center;"><hr style="width: 80%"/></td>
-                            </tr>
-                            <tr>
-                                <td colspan="3" style="text-align: center;">{{ "login::register: L\'acces aux bases ci-dessous implique l\'acceptation des Conditions Generales d\'Utilisation (CGU) suivantes" | trans }}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="3" style="text-align: center;">
-                                    <div style="width: 90%; height: 120px; text-align: left; overflow: auto;">{{ collDesc["CGU"] }}</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: right;">{{ collDesc["name"] }}</td>
-                                <td></td>
-                                <td class="TD_R" style="width: 200px;">
-                                    <input style="width: 15px;" class="checkbox" type="checkbox" name="demand[]" value="{{ base_id }}" />
-                                    <span>{{ "login::register: Faire une demande d\'acces" | trans }}</span>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    {% endif %}
+
+            {% for sbasId, baseInfo in inscriptions %}
+                {% if baseInfo["config"]["cgu"] is not none %}
+                    <tr>
+                        <td colspan="3" style="text-align: center;">{{ "login::register: L\'acces aux bases ci-dessous implique l\'acceptation des Conditions Generales d\'Utilisation (CGU) suivantes" | trans }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: center;"><div style="width: 90%; height: 120px; text-align: left; overflow: auto;">{{ baseInfo["config"]["cgu"] }}</div></td>
+                    </tr>
                 {% endif %}
+                {% for baseId, collInfo in baseInfo["config"]["collections"] if (collInfo['registration'] is none and collInfo['can-register']) %}
+                    {% if collInfo["cgu"] is not none %}
+                        <tr>
+                            <td colspan="3" style="text-align: center;">{{ "login::register: L\'acces aux bases ci-dessous implique l\'acceptation des Conditions Generales d\'Utilisation (CGU) suivantes" | trans }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="text-align: center;"><div style="width: 90%; height: 120px; text-align: left; overflow: auto;">{{ baseInsc["CGU"] }}</div></td>
+                        </tr>
+                    {% endif %}
+                    <tr>
+                        <td style="text-align: right;">{{ collInfo["coll-name"] }}</td>
+                        <td></td>
+                        <td class="TD_R" style="width: 200px;">
+                            <input style="width: 15px;" class="checkbox" type="checkbox" name="registrations[]" value="{{ baseId }}" />
+                            <span>{{ "login::register: Faire une demande d\'acces" | trans }}</span>
+                        </td>
+                    </tr>
+                {% endfor %}
             {% endfor %}
         </table>
         <div class="form-actions">
