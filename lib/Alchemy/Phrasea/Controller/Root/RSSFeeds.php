@@ -62,7 +62,7 @@ class RSSFeeds implements ControllerProviderInterface
             ->assert('format', '(rss|atom)');
 
         $controllers->get('/userfeed/aggregated/{token}/{format}/', function (Application $app, $token, $format) {
-            $token = $app['EM']->getRepository('Phraseanet:AggregateToken')->findOneBy(["value" => $token]);
+            $token = $app['repo.aggregate-tokens']->findOneBy(["value" => $token]);
 
             $user = $token->getUser();
 

@@ -217,6 +217,9 @@ class ORMServiceProvider implements ServiceProviderInterface
         $app['repo.feed-items'] = $app->share(function (PhraseaApplication $app) {
             return $app['EM']->getRepository('Phraseanet:FeedItem');
         });
+        $app['repo.aggregate-tokens'] = $app->share(function (PhraseaApplication $app) {
+            return $app['EM']->getRepository('Phraseanet:AggregateTokens');
+        });
         $app['repo.usr-lists'] = $app->share(function (PhraseaApplication $app) {
             return $app['EM']->getRepository('Phraseanet:UsrList');
         });
