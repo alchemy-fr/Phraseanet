@@ -10,20 +10,19 @@
 define([
     "jquery",
     "underscore",
-    "backbone",
-    ""
+    "backbone"
 ], function ($, _, Backbone) {
     var RefreshView = Backbone.View.extend({
         initialize: function(options) {
-            if (!"pingView" in options) {
+            if (false === ("pingView" in options)) {
                 throw "You must set the ping view"
             }
             this.pingView = options.pingView;
-            if (!"scheduler" in options) {
+            if (false === ("scheduler" in options)) {
                 throw "You must set the scheduler model"
             }
             this.scheduler = options.scheduler;
-            if (!"tasksCollection" in options) {
+            if (false === ("tasksCollection" in options)) {
                 throw "You must set the tasks collection model"
             }
             this.tasksCollection = options.tasksCollection;
@@ -38,7 +37,6 @@ define([
             $.ajax({
                 dataType: "json",
                 url: $this.refreshUrl,
-                data: {},
                 success: function(response) {
                     $this.pingView.render();
                     $this.scheduler.set({
