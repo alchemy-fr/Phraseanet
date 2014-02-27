@@ -135,6 +135,7 @@ class TaskManager implements ControllerProviderInterface
             $app->abort(406, 'Only JSON format is accepted.');
         }
 
+        $tasks = [];
         foreach ($app['manipulator.task']->getRepository()->findAll() as $task) {
             $tasks[$task->getId()] = $app['task-manager.live-information']->getTask($task);
         }
@@ -171,7 +172,7 @@ class TaskManager implements ControllerProviderInterface
             $tasks[] = [
                 'id' => $task->getId(),
                 'name' => $task->getName(),
-                'configuration' => $task->getStatus()
+                'status' => $task->getStatus()
             ];
         }
 
@@ -187,9 +188,9 @@ class TaskManager implements ControllerProviderInterface
             'available_jobs' => $app['task-manager.available-jobs'],
             'tasks' => $tasks,
             'scheduler' => [
-                'id'   => '',
+                'id'   => null,
                 'name' => $app->trans('Task Scheduler'),
-                'configuration' => $app['task-manager.status']->getStatus(),
+                'status' => $app['task-manager.status']->getStatus(),
             ]
         ]);
     }
