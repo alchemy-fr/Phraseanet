@@ -325,7 +325,7 @@ class UsrLists implements ControllerProviderInterface
                 throw new ControllerException($app->trans('You are not authorized to do this'));
             }
 
-            $entry_repository = $app['EM']->getRepository('Phraseanet:UsrListEntry');
+            $entry_repository = $app['repo.usr-list-entries'];
 
             $user_entry = $entry_repository->findEntryByListAndUsrId($list, $usr_id);
 
