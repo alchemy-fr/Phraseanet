@@ -194,11 +194,13 @@
   }
 
     </script>
+    <script type="text/javascript" src="{{ path('minifier', { 'f' : '/assets/requirejs/require.js' }) }}"></script>
+    <script type="text/javascript" src="{{ path('minifier', { 'f' : '/scripts/apps/admin/main/main.js' }) }}"></script>
 {% endblock %}
 
 
 {% block content %}
-    <div id="left" class="PNB" style="width:250px;right:auto;">
+    <div id="left" class="PNB" style="width:250px;right:auto;" data-websocket="{{ "ws://" ~ app["conf"].get(["main" ,"websocket-server", "host"]) ~ "/" ~ app["conf"].get(["main" ,"websocket-server", "port"]) }}">
         <div class="PNB10" style="right:0">
             <div id="FNDR">
         {% include 'admin/tree.html.twig' %}
