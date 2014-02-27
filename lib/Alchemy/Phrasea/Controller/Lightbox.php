@@ -103,8 +103,7 @@ class Lightbox implements ControllerProviderInterface
                 return new Response('');
             }
 
-            $basketElement = $app['EM']
-                ->getRepository('Phraseanet:BasketElement')
+            $basketElement = $app['repo.basket-elements']
                 ->findUserElement($sselcont_id, $app['authentication']->getUser());
 
             $parameters = [

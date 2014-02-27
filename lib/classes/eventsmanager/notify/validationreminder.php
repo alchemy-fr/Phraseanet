@@ -97,8 +97,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
 
             $readyToSend = false;
             try {
-                $basket = $this->app['EM']
-                    ->getRepository('Phraseanet:Basket')
+                $basket = $this->app['repo.baskets']
                     ->find($params['ssel_id']);
                 $title = $basket->getName();
 

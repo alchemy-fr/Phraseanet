@@ -305,8 +305,7 @@ class Login implements ControllerProviderInterface
                     return $app->redirectPath('login_register');
                 }
 
-                $userAuthProvider = $app['EM']
-                    ->getRepository('Phraseanet:UsrAuthProvider')
+                $userAuthProvider = $app['repo.usr-auth-providers']
                     ->findWithProviderAndId($token->getProvider()->getId(), $token->getId());
 
                 if (null !== $userAuthProvider) {
@@ -827,8 +826,7 @@ class Login implements ControllerProviderInterface
     {
         $date = new \DateTime('+' . (int) $app['conf']->get(['registry', 'actions', 'validation-reminder-days']) . ' days');
 
-        foreach ($app['EM']
-            ->getRepository('Phraseanet:ValidationParticipant')
+        foreach ($app['repo.validation-participants']
             ->findNotConfirmedAndNotRemindedParticipantsByExpireDate($date) as $participant) {
 
             /* @var $participant ValidationParticipant */
@@ -900,8 +898,7 @@ class Login implements ControllerProviderInterface
             return $app->redirectPath('homepage');
         }
 
-        $userAuthProvider = $app['EM']
-            ->getRepository('Phraseanet:UsrAuthProvider')
+        $userAuthProvider = $app['repo.usr-auth-providers']
             ->findWithProviderAndId($token->getProvider()->getId(), $token->getId());
 
         if (null !== $userAuthProvider) {

@@ -73,8 +73,7 @@ class FtpJob extends AbstractJob
 
     private function removeDeadExports(Application $app)
     {
-        foreach ($app['EM']
-                ->getRepository('Phraseanet:FtpExport')
+        foreach ($app['repo.ftp-exports']
                 ->findCrashedExports(new \DateTime('-1 month')) as $export) {
             $app['EM']->remove($export);
         }
@@ -83,8 +82,7 @@ class FtpJob extends AbstractJob
 
     private function retrieveExports(Application $app)
     {
-        return $app['EM']
-                ->getRepository('Phraseanet:FtpExport')
+        return $app['repo.ftp-exports']
                 ->findDoableExports();
     }
 

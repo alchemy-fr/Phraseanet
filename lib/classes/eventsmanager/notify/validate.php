@@ -96,8 +96,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
                 $user_from = $this->app['repo.users']->find($params['from']);
                 $user_to = $this->app['repo.users']->find($params['to']);
 
-                $basket = $this->app['EM']
-                    ->getRepository('Phraseanet:Basket')
+                $basket = $this->app['repo.baskets']
                     ->find($params['ssel_id']);
                 $title = $basket->getName();
 
