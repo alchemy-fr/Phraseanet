@@ -187,6 +187,9 @@ class ORMServiceProvider implements ServiceProviderInterface
         $app['repo.users'] = $app->share(function (PhraseaApplication $app) {
             return $app['EM']->getRepository('Phraseanet:User');
         });
+        $app['repo.tasks'] = $app->share(function (PhraseaApplication $app) {
+            return $app['EM']->getRepository('Phraseanet:Task');
+        });
     }
 
     public function boot(Application $app)

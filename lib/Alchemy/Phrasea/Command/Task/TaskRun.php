@@ -45,7 +45,7 @@ class TaskRun extends Command
     {
         declare(ticks=1);
 
-        if (null === $task = $this->container['manipulator.task']->getRepository()->find($input->getArgument('task_id'))) {
+        if (null === $task = $this->container['repo.tasks']->find($input->getArgument('task_id'))) {
             throw new RuntimeException('Invalid task_id');
         }
 
