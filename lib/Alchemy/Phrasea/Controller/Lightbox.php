@@ -118,7 +118,7 @@ class Lightbox implements ControllerProviderInterface
             ->assert('sselcont_id', '\d+');
 
         $controllers->get('/ajax/LOAD_BASKET_ELEMENT/{sselcont_id}/', function (SilexApplication $app, $sselcont_id) {
-            $repository = $app['EM']->getRepository('Phraseanet:BasketElement');
+            $repository = $app['repo.basket-elements'];
 
             $BasketElement = $repository->findUserElement($sselcont_id, $app['authentication']->getUser());
 
@@ -346,7 +346,7 @@ class Lightbox implements ControllerProviderInterface
                 Return new Response('You must provide a note value', 400);
             }
 
-            $repository = $app['EM']->getRepository('Phraseanet:BasketElement');
+            $repository = $app['repo.basket-elements'];
 
             $basket_element = $repository->findUserElement($sselcont_id, $app['authentication']->getUser());
 
@@ -393,7 +393,7 @@ class Lightbox implements ControllerProviderInterface
                     'datas'      => $app->trans('Erreur lors de la mise a jour des donnes')
                 ];
 
-                $repository = $app['EM']->getRepository('Phraseanet:BasketElement');
+                $repository = $app['repo.basket-elements'];
 
                 $basket_element = $repository->findUserElement(
                     $sselcont_id

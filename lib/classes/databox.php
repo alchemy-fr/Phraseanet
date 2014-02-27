@@ -466,7 +466,7 @@ class databox extends base
             $this->app['EM']->remove($story);
         }
 
-        foreach ($this->app['EM']->getRepository('Phraseanet:BasketElement')->findElementsByDatabox($this) as $element) {
+        foreach ($this->app['repo.basket-elements']->findElementsByDatabox($this) as $element) {
             $this->app['EM']->remove($element);
         }
 

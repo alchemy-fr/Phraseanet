@@ -80,7 +80,7 @@ class Datafiles extends AbstractDelivery
 
                 if ($watermark && !$all_access) {
 
-                    $repository = $app['EM']->getRepository('Phraseanet:BasketElement');
+                    $repository = $app['repo.basket-elements'];
 
                     /* @var $repository BasketElementRepository */
 

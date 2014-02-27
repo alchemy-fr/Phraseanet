@@ -61,7 +61,7 @@ class Baskets implements ControllerProviderInterface
     public function deleteBasketElement(Application $app, Request $request)
     {
         try {
-            $repository = $app['EM']->getRepository('Phraseanet:BasketElement');
+            $repository = $app['repo.basket-elements'];
             $basketElement = $repository->findUserElement($request->request->get('p0'), $app['authentication']->getUser());
             $app['EM']->remove($basketElement);
             $app['EM']->flush();

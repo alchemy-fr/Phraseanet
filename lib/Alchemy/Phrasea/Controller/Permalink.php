@@ -157,7 +157,7 @@ class Permalink extends AbstractDelivery
             $watermark = !$app['acl']->get($app['authentication']->getUser())->has_right_on_base($record->get_base_id(), 'nowatermark');
 
             if ($watermark) {
-                $repository = $app['EM']->getRepository('Phraseanet:BasketElement');
+                $repository = $app['repo.basket-elements'];
 
                 if (count($repository->findReceivedValidationElementsByRecord($record, $app['authentication']->getUser())) > 0) {
                     $watermark = false;

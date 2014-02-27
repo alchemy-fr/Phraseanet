@@ -152,7 +152,7 @@ class Records implements ControllerProviderInterface
             'candeleterecord'
         ]);
 
-        $basketElementsRepository = $app['EM']->getRepository('Phraseanet:BasketElement');
+        $basketElementsRepository = $app['repo.basket-elements'];
         $StoryWZRepository = $app['EM']->getRepository('Phraseanet:StoryWZ');
 
         $deleted = [];

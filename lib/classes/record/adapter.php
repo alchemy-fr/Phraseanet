@@ -1507,7 +1507,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             }
         }
 
-        $basketElementRepository = $this->app['EM']->getRepository('Phraseanet:BasketElement');
+        $basketElementRepository = $this->app['repo.basket-elements'];
 
         /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketElementRepository */
         foreach ($basketElementRepository->findElementsByRecord($this) as $basket_element) {
