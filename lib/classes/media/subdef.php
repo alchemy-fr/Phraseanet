@@ -742,9 +742,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         }
 
         if (in_array($this->mime, array('video/mp4'))) {
-            $token = p4file::apache_tokenize($this->app['phraseanet.registry'], $this->get_pathfile());
-            if ($token) {
-                $this->url = $token;
+            if (null !== $url = $this->app['phraseanet.h264']->getUrl($this->get_pathfile())) {
+                $this->url = $url;
 
                 return;
             }

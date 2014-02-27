@@ -23,6 +23,16 @@ class FileServeServiceProviderTest extends ServiceProviderTestCase
                 'phraseanet.xsendfile-factory',
                 'Alchemy\Phrasea\Http\XSendFile\XSendFileFactory'
             ),
+            array(
+                'Alchemy\Phrasea\Core\Provider\FileServeServiceProvider',
+                'phraseanet.h264-factory',
+                'Alchemy\Phrasea\Http\H264PseudoStreaming\H264Factory'
+            ),
+            array(
+                'Alchemy\Phrasea\Core\Provider\FileServeServiceProvider',
+                'phraseanet.h264',
+                'Alchemy\Phrasea\Http\H264PseudoStreaming\H264Interface'
+            ),
         );
     }
 

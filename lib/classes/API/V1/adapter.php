@@ -354,10 +354,8 @@ class API_V1_adapter extends API_V1_Abstract
                     'modes'           => array(
                         'XsendFile'                     => $app['phraseanet.configuration']['xsendfile']['enabled'],
                         'XsendFileMapping'              => $app['phraseanet.configuration']['xsendfile']['mapping'],
-                        'h264Streaming'                 => $app['phraseanet.registry']->get('GV_h264_streaming'),
-                        'authTokenDirectory'            => $app['phraseanet.registry']->get('GV_mod_auth_token_directory'),
-                        'authTokenDirectoryPath'        => $app['phraseanet.registry']->get('GV_mod_auth_token_directory_path'),
-                        'authTokenPassphrase'           => $app['phraseanet.registry']->get('GV_mod_auth_token_passphrase'),
+                        'H264PseudoStreaming'           => $app['phraseanet.configuration']['h264-pseudo-streaming']['enabled'],
+                        'H264PseudoStreamingMapping'    => $app['phraseanet.configuration']['h264-pseudo-streaming']['mapping'],
                     )
                 ),
                 'maintenance' => array(
