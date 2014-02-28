@@ -39,7 +39,7 @@ class userTest extends \PhraseanetTestCase
     public function testDeleteSetMailToNullAndRemovesSessions()
     {
         if (null === $user = self::$DI['app']['repo.users']->findByLogin('test_phpunit_sessions')) {
-            $user = self::$DI['app']['manipulator.user']->createUser('test_phpunit_sessions', \random::generatePassword());
+            $user = self::$DI['app']['manipulator.user']->createUser('test_phpunit_sessions', self::$DI['app']['random.low']->generateString(8));
         }
 
         $session = new \Alchemy\Phrasea\Model\Entities\Session();

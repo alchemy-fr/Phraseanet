@@ -52,15 +52,6 @@ abstract class media_abstract
      *
      * @return string
      */
-    public function get_random()
-    {
-        return md5(time() . mt_rand(100000, 999999));
-    }
-
-    /**
-     *
-     * @return string
-     */
     public function get_url()
     {
         return $this->url;

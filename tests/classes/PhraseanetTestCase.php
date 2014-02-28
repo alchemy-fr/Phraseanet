@@ -619,10 +619,9 @@ abstract class PhraseanetTestCase extends WebTestCase
         self::$DI['app']['setting'] = 'toto';
     }
 
-    public function createRandomMock()
+    public function createGeneratorMock()
     {
-        return $this->getMockBuilder('\random')
-            ->setMethods(['generatePassword'])
+        return $this->getMockBuilder('Randomlib\Generator')
             ->disableOriginalConstructor()
             ->getMock();
     }

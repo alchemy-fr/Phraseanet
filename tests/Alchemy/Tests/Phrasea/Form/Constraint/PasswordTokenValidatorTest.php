@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Form\Constraint;
 
 use Alchemy\Phrasea\Form\Constraint\PasswordTokenValidator;
+use RandomLib\Factory;
 
 class PasswordTokenValidatorTest extends \PhraseanetTestCase
 {
@@ -35,9 +36,12 @@ class PasswordTokenValidatorTest extends \PhraseanetTestCase
 
     public function provideValidationData()
     {
+        $factory = new Factory();
+        $generator = $factory->getLowStrengthGenerator();
+
         return [
-            [\random::generatePassword(), true],
-            [\random::generatePassword(), false],
+            [$generator->generateString(8), true],
+            [$generator->generateString(8), false],
         ];
     }
 

@@ -481,7 +481,7 @@ abstract class base implements cache_cacheableInterface
         if ($table->defaults) {
             foreach ($table->defaults->default as $default) {
                 $k = $v = $params = $dates_values = [];
-                $nonce = random::generatePassword(16);
+                $nonce = $this->app['random.medium']->generateString(16);
                 foreach ($default->data as $data) {
                     $k = trim($data['key']);
                     if ($k === 'usr_password')

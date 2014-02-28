@@ -187,7 +187,7 @@ class Installer
         $config['main']['binaries'] = $binaryData;
 
         $config['servername'] = $serverName;
-        $config['main']['key'] = md5(mt_rand(100000000, 999999999));
+        $config['main']['key'] = $this->app['random.medium']->generateString(16);
 
         $this->app['configuration.store']->setConfig($config);
     }

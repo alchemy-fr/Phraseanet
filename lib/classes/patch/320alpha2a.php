@@ -64,7 +64,7 @@ class patch_320alpha2a extends patchAbstract
 
         $n = 0;
         foreach ($users as $user) {
-            $user->setNonce(random::generatePassword(16));
+            $user->setNonce($app['random.medium']->generateString(64));
             $app['EM']->persist($user);
             $n++;
             if ($n %100 === 0) {

@@ -543,9 +543,9 @@ class Push implements ControllerProviderInterface
 
             if (!$user instanceof User) {
                 try {
-                    $password = \random::generatePassword();
+                    $password = $app['random.medium']->generateString(128);
 
-                    $user = $app['repo.users']->createUser($email, $password, $email);
+                    $user = $app['manipulator.user']->createUser($email, $password, $email);
 
                     $user->setFirstName($request->request->get('firstname'))
                         ->setLastName($request->request->get('lastname'));

@@ -31,14 +31,14 @@
         {% set record_type = thumbnail.get_type() %}
         <div style="width:{{b_width|round}}px;height:{{b_height|round}}px;" class="thumb_wrapper {{extraclass|default('')}}">
         {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
-          {% set random = thumbnail.get_random() %}
+          {% set random = random(100000) %}
           <div class="record record_video imgTips" style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
             <video type="video/mp4" controls="controls" style="width:{{d_width|round}}px;height:{{d_height|round}}px;" autoplay="autoplay">
               <source src="{{thumbnail.get_url()}}" type="video/mp4" />
             </video>
           </div>
         {% elseif record_type == 'FLEXPAPER' %}
-          {% set random = thumbnail.get_random() %}
+          {% set random = random(100000) %}
           <div class="record record_document imgTips" style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
               <div id="preview_{{thumbnail.get_base_id()}}_{{thumbnail.get_record_id()}}_{{random}}" class="PNB" style=""></div>
             <input type="hidden" name="width" value="{{thumbnail_width}}"/>
@@ -51,7 +51,7 @@
             {menu: "false",flashvars: "SwfFile={{thumbnail.get_url()}}&Scale=0.6&ZoomTransition=easeOut&ZoomTime=0.5&ZoomInterval=0.1&FitPageOnLoad=true&FitWidthOnLoad=true&PrintEnabled=true&FullScreenAsMaxWindow=false&localeChain={{ app['locale'] }}",  movie: "/include/FlexPaper_flash/FlexPaperViewer.swf",  allowFullScreen :"true",wmode: "transparent"}, false);</script>
 
         {% elseif record_type == 'AUDIO_MP3' %}
-          {% set random = thumbnail.get_random() %}
+          {% set random = random(100000) %}
           <div class="record record_audio audioTips" style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
             <div id="preview_{{thumbnail.get_base_id()}}_{{thumbnail.get_record_id()}}_{{random}}" class="PNB" style=""></div>
             <input type="hidden" name="width" value="{{thumbnail_width}}"/>
@@ -77,14 +77,14 @@
 {% macro format100percent(thumbnail, extraclass)%}
     {% set record_type = thumbnail.get_type() %}
         {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
-          {% set random = thumbnail.get_random() %}
+          {% set random = random(100000) %}
           <div class="record record_video imgTips">
             <video type="video/mp4" controls="controls" style="height:80%;width:80%;max-height: 80%;max-width:80%; margin: 0 auto" autoplay="autoplay">
               <source src="{{thumbnail.get_url()}}" type="video/mp4" />
             </video>
           </div>
         {% elseif record_type == 'FLEXPAPER' %}
-          {% set random = thumbnail.get_random() %}
+          {% set random = random(100000) %}
           <div class="record record_document imgTips" style="width:100%;">
               <div id="preview_{{thumbnail.get_base_id()}}_{{thumbnail.get_record_id()}}_{{random}}" class="PNB" style=""></div>
           </div>
@@ -95,7 +95,7 @@
             {menu: "false",flashvars: "SwfFile={{thumbnail.get_url()}}&Scale=0.6&ZoomTransition=easeOut&ZoomTime=0.5&ZoomInterval=0.1&FitPageOnLoad=true&FitWidthOnLoad=true&PrintEnabled=true&FullScreenAsMaxWindow=false&localeChain={{app['locale']}}",  movie: "/include/FlexPaper_flash/FlexPaperViewer.swf",  allowFullScreen :"true",wmode: "transparent"}, false);</script>
 
         {% elseif record_type == 'AUDIO_MP3' %}
-          {% set random = thumbnail.get_random() %}
+          {% set random = random(100000) %}
           <div class="record record_audio audioTips" style="width:100%;">
             <div id="preview_{{thumbnail.get_base_id()}}_{{thumbnail.get_record_id()}}_{{random}}" class="PNB" style=""></div>
           </div>

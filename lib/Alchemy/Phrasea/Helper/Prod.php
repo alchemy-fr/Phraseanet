@@ -98,6 +98,6 @@ class Prod extends Helper
 
     public function getRandom()
     {
-        return md5(time() . mt_rand(100000, 999999));
+        return $this->app['random.low']->generateString(16);
     }
 }

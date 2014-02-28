@@ -45,7 +45,7 @@ class media_Permalink_AdapterTest extends \PhraseanetTestCase
             . self::$DI['record_1']->get_record_id()
             . '/document/' . $this->object->get_label()
             . '.' . pathinfo(self::$DI['record_1']->get_subdef('document')->get_file(), PATHINFO_EXTENSION)
-            . '?token=' . $this->object->get_token();
+            . '?token=' . urlencode($this->object->get_token());
 
         $this->assertEquals($url, $this->object->get_url());
     }
@@ -61,7 +61,7 @@ class media_Permalink_AdapterTest extends \PhraseanetTestCase
             . self::$DI['record_1']->get_record_id()
             . '/preview/' . $previewPermalink->get_label()
             . '.' . pathinfo(self::$DI['record_1']->get_subdef('preview')->get_file(), PATHINFO_EXTENSION)
-            . '?token=' . $previewPermalink->get_token();
+            . '?token=' . urlencode($previewPermalink->get_token());
 
         $this->assertEquals($url, $previewPermalink->get_url());
     }
@@ -72,7 +72,7 @@ class media_Permalink_AdapterTest extends \PhraseanetTestCase
             . self::$DI['record_1']->get_sbas_id() . '/'
             . self::$DI['record_1']->get_record_id()
             . '/document/'
-            . '?token=' . $this->object->get_token();
+            . '?token=' . urlencode($this->object->get_token());
 
         $this->assertEquals($url, $this->object->get_page());
     }

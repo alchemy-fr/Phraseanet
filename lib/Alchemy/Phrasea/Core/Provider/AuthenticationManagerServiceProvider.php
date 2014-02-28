@@ -70,7 +70,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
 
             $enabled = $app['conf']->get(['registry', 'registration', 'auto-register-enabled']) && $app['registration.manager']->isRegistrationEnabled();
 
-            return new AccountCreator($app['tokens'], $app['phraseanet.appbox'], $enabled, $templates);
+            return new AccountCreator($app['random.medium'], $app['phraseanet.appbox'], $enabled, $templates);
         });
 
         $app['authentication.providers'] = $app->share(function (Application $app) {

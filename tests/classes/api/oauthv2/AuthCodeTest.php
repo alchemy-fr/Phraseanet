@@ -17,7 +17,7 @@ class api_oauthv2_AuthCodeTest extends \PhraseanetTestCase
         parent::setUp();
         $this->account = API_OAuth2_Account::load_with_user(self::$DI['app'], self::$DI['oauth2-app-user'], self::$DI['user']);
         $expires = time() + 100;
-        $this->code = random::generatePassword(8);
+        $this->code = self::$DI['app']['random.low']->generateString(8);
         $this->object = API_OAuth2_AuthCode::create(self::$DI['app'], $this->account, $this->code, $expires);
     }
 

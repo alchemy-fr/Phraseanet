@@ -34,7 +34,7 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
                 return $expected;
             }));
 
-        $random = self::$DI['app']['tokens'];
+        $random = self::$DI['app']['random.low'];
 
         $linkGenerator = new FeedLinkGenerator($generator, self::$DI['app']['EM'], $random);
 
@@ -87,7 +87,7 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
             }
             $this->assertEquals($feed->getId(), $capture['id']);
             $this->assertEquals($format, $capture['format']);
-            $this->assertEquals(12, strlen($capture['token']));
+            $this->assertEquals(64, strlen($capture['token']));
 
             $this->assertCount(1, self::$DI['app']['EM']
                 ->getRepository('Phraseanet:FeedToken')
@@ -116,7 +116,7 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
                 return $expected;
             }));
 
-        $random = self::$DI['app']['tokens'];
+        $random = self::$DI['app']['random.low'];
 
         $linkGenerator = new FeedLinkGenerator($generator, self::$DI['app']['EM'], $random);
 

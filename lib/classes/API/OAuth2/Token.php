@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use RandomLib\Generator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class API_OAuth2_Token
@@ -50,16 +51,19 @@ class API_OAuth2_Token
      */
     protected $scope;
 
+    private $generator;
+
     /**
      *
      * @param  appbox             $appbox
      * @param  API_OAuth2_Account $account
      * @return API_OAuth2_Token
      */
-    public function __construct(appbox $appbox, API_OAuth2_Account $account)
+    public function __construct(appbox $appbox, API_OAuth2_Account $account, Generator $generator)
     {
         $this->appbox = $appbox;
         $this->account = $account;
+        $this->generator = $generator;
 
         $sql = 'SELECT oauth_token, session_id, UNIX_TIMESTAMP(expires) as expires, scope
             FROM api_oauth_tokens
@@ -226,7 +230,7 @@ class API_OAuth2_Token
         $sql = 'UPDATE api_oauth_tokens SET oauth_token = :new_token
             WHERE oauth_token = :old_token';
 
-        $new_token = self::generate_token();
+        $new_token = $this->generator->generateString(32, \random::LETTERS_AND_NUMBERS);
 
         $params = [
             ':new_token' => $new_token
@@ -280,7 +284,7 @@ class API_OAuth2_Token
             throw new NotFoundHttpException('Account not found');
         }
 
-        return new self($app['phraseanet.appbox'], new API_OAuth2_Account($app, $row['api_account_id']));
+        return new self($app['phraseanet.appbox'], new API_OAuth2_Account($app, $row['api_account_id']), $app['random.medium']);
     }
 
     /**
@@ -290,7 +294,7 @@ class API_OAuth2_Token
      * @param  string             $scope
      * @return API_OAuth2_Token
      */
-    public static function create(appbox $appbox, API_OAuth2_Account $account, $scope = null)
+    public static function create(appbox $appbox, API_OAuth2_Account $account, Generator $generator, $scope = null)
     {
         $sql = 'INSERT INTO api_oauth_tokens
             (oauth_token, session_id, api_account_id, expires, scope)
@@ -299,7 +303,7 @@ class API_OAuth2_Token
         $expires = new \DateTime('+1 hour');
 
         $params = [
-            ':token'      => self::generate_token()
+            ':token'      => $generator->generateString(32, \random::LETTERS_AND_NUMBERS)
             , ':account_id' => $account->get_id()
             , ':expire'     => $expires->format(DATE_ISO8601)
             , ':scope'      => $scope
@@ -309,15 +313,6 @@ class API_OAuth2_Token
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        return new API_OAuth2_Token($appbox, $account);
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public static function generate_token()
-    {
-        return md5(base64_encode(pack('N6', mt_rand(), mt_rand(), mt_rand(), mt_rand(), mt_rand(), uniqid())));
+        return new API_OAuth2_Token($appbox, $account, $generator);
     }
 }

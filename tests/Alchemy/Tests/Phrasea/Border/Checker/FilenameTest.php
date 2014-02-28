@@ -60,7 +60,7 @@ class FilenameTest extends \PhraseanetTestCase
         $mock
             ->expects($this->once())
             ->method('getOriginalName')
-            ->will($this->returnValue(\random::generatePassword(32)))
+            ->will($this->returnValue(self::$DI['app']['random.low']->generateString(32)))
         ;
 
         $response = $this->object->check(self::$DI['app']['EM'], $mock);

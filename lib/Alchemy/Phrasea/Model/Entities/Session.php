@@ -76,7 +76,7 @@ class Session
     private $token;
 
     /**
-     * @ORM\Column(type="string", length=16, nullable=true)
+     * @ORM\Column(type="string", length=64, nullable=true)
      */
     private $nonce;
 

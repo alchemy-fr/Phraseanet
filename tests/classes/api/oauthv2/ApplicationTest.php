@@ -52,7 +52,7 @@ class api_oauthv2_ApplicationTest extends \PhraseanetTestCase
         $this->assertTrue(in_array(self::$DI['oauth2-app-user']->get_type(), [API_OAuth2_Application::DESKTOP_TYPE, API_OAuth2_Application::WEB_TYPE]));
 
         $this->assertTrue(is_string(self::$DI['oauth2-app-user']->get_nonce()));
-        $this->assertTrue(strlen(self::$DI['oauth2-app-user']->get_nonce()) === 6);
+        $this->assertEquals(64, strlen(self::$DI['oauth2-app-user']->get_nonce()));
 
         try {
             self::$DI['oauth2-app-user']->set_type('prout');

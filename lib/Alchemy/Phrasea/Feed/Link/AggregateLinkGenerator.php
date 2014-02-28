@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Feed\FeedInterface;
 use Alchemy\Phrasea\Model\Entities\AggregateToken;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\ORM\EntityManager;
+use RandomLib\Generator;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class AggregateLinkGenerator implements LinkGeneratorInterface
@@ -31,9 +32,9 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
     /**
      * @param UrlGenerator  $generator
      * @param EntityManager $em
-     * @param \random       $random
+     * @param Generator     $random
      */
-    public function __construct(UrlGenerator $generator, EntityManager $em, \random $random)
+    public function __construct(UrlGenerator $generator, EntityManager $em, Generator $random)
     {
         $this->generator = $generator;
         $this->em = $em;
@@ -140,7 +141,7 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
                 $token->setUser($user);
             }
 
-            $token->setValue($this->random->generatePassword(12, \random::LETTERS_AND_NUMBERS));
+            $token->setValue($this->random->generateString(64, \random::LETTERS_AND_NUMBERS));
             $this->em->persist($token);
             $this->em->flush();
         }

@@ -15,7 +15,7 @@ class PasswordTokenTest extends \PhraseanetTestCase
             ->setMethods(['helloToken'])
             ->getMock();
 
-        $token = \random::generatePassword();
+        $token = self::$DI['app']['random.low']->generateString(8);
 
         $random
             ->expects($this->once())
@@ -35,7 +35,7 @@ class PasswordTokenTest extends \PhraseanetTestCase
             ->setMethods(['helloToken'])
             ->getMock();
 
-        $token = \random::generatePassword();
+        $token = self::$DI['app']['random.low']->generateString(8);
 
         $random
             ->expects($this->once())

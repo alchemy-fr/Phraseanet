@@ -54,7 +54,7 @@ class UUIDTest extends \PhraseanetTestCase
         $mock
             ->expects($this->once())
             ->method('getUUID')
-            ->will($this->returnValue(\random::generatePassword(3)))
+            ->will($this->returnValue(self::$DI['app']['random.low']->generateString(3)))
         ;
 
         $response = $this->object->check(self::$DI['app']['EM'], $mock);

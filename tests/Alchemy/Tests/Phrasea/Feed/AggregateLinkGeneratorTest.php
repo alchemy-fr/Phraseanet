@@ -14,7 +14,6 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
      */
     public function testGenerate($expected, $format, $page, $renew, $alreadyCreated)
     {
-        $user = self::$DI['user'];
         $feed = new Feed();
         $feed->setTitle("title");
 
@@ -44,7 +43,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
                 return $expected;
             }));
 
-        $random = self::$DI['app']['tokens'];
+        $random = self::$DI['app']['random.low'];
 
         $linkGenerator = new AggregateLinkGenerator($generator, self::$DI['app']['EM'], $random);
 
@@ -93,7 +92,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
                     $this->assertEquals($page, $capture['page']);
             }
             $this->assertEquals($format, $capture['format']);
-            $this->assertEquals(12, strlen($capture['token']));
+            $this->assertEquals(64, strlen($capture['token']));
 
             $this->assertCount(1, self::$DI['app']['EM']
                 ->getRepository('Phraseanet:AggregateToken')

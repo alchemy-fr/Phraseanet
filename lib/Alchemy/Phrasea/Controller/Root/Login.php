@@ -787,7 +787,7 @@ class Login implements ControllerProviderInterface
             $login = uniqid('guest');
         } while (null !== $app['repo.users']->findOneBy(['login' => $login]));
 
-        $user = $app['manipulator.user']->createUser($login, \random::generatePassword(24));
+        $user = $app['manipulator.user']->createUser($login, $app['random.medium']->generateString(128));
         $invite_user = $app['repo.users']->findByLogin(User::USER_GUEST);
 
         $usr_base_ids = array_keys($app['acl']->get($user)->get_granted_base());
@@ -1045,7 +1045,7 @@ class Login implements ControllerProviderInterface
         }
 
         if ($request->request->get('remember-me') == '1') {
-            $nonce = \random::generatePassword(16);
+            $nonce = $app['random.medium']->generateString(64);
             $string = $app['browser']->getBrowser() . '_' . $app['browser']->getPlatform();
 
             $token = $app['auth.password-encoder']->encodePassword($string, $nonce);
