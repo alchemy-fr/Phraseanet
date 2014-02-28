@@ -32,14 +32,7 @@ class LiveInformation
      */
     public function getManager($throwException = false)
     {
-        try {
-            $data = $this->notifier->notify(Notifier::MESSAGE_INFORMATIONS, 2);
-        } catch (RuntimeException $e) {
-            if($throwException) {
-                throw $e;
-            }
-            $data = [];
-        }
+        $data = $this->query($throwException);
 
         return [
             'configuration' => $this->status->getStatus(),
@@ -55,14 +48,33 @@ class LiveInformation
      */
     public function getTask(Task $task, $throwException = false)
     {
-        try {
-            $data = $this->notifier->notify(Notifier::MESSAGE_INFORMATIONS, 2);
-        } catch (RuntimeException $e) {
-            if($throwException) {
-                throw $e;
-            }
-            $data = [];
+        $data = $this->query($throwException);
+
+        return $this->formatTask($task, $data);
+    }
+
+    /**
+     * Returns live informations about some tasks.
+     *
+     * @param Task[] $tasks
+     * @param boolean $throwException
+     *
+     * @return array
+     */
+    public function getTasks($tasks, $throwException = false)
+    {
+        $data = $this->query($throwException);
+
+        $ret = [];
+        foreach ($tasks as $task) {
+            $ret[$task->getId()] = $this->formatTask($task, $data);
         }
+
+        return $ret;
+    }
+
+    private function formatTask(Task $task, $data)
+    {
         $taskData = (isset($data['jobs']) && isset($data['jobs'][$task->getId()])) ? $data['jobs'][$task->getId()] : [];
 
         return [
@@ -70,5 +82,17 @@ class LiveInformation
             'actual'        => isset($taskData['status']) ? $taskData['status'] : Task::STATUS_STOPPED,
             'process-id'    => isset($taskData['process-id']) ? $taskData['process-id'] : null,
         ];
+    }
+
+    private function query($throwException)
+    {
+        try {
+            return $this->notifier->notify(Notifier::MESSAGE_INFORMATIONS);
+        } catch (RuntimeException $e) {
+            if($throwException) {
+                throw $e;
+            }
+            return [];
+        }
     }
 }

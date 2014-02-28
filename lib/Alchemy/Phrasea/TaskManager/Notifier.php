@@ -33,40 +33,46 @@ class Notifier
     /** @var LoggerInterface */
     private $logger;
 
+    /** @var integer  */
+    private $timeout = 2;
+
     public function __construct(\ZMQSocket $socket, LoggerInterface $logger)
     {
         $this->socket = $socket;
         $this->logger = $logger;
     }
 
+    public function setTimeout($timeout)
+    {
+        if ($timeout <= 0) {
+            throw new \InvalidArgumentException('Timeout must be a positive value');
+        }
+        $this->timeout = (float) $timeout;
+    }
+
     /**
      * Notifies the task manager given a message constant, see MESSAGE_* constants.
      *
      * @param string $message
-     * @param integer $timeout
      *
      * @return mixed|null The return value of the task manager.
      *
      * @throws RuntimeException in case notification did not occur within the timeout.
      */
-    public function notify($message, $timeout = 1)
+    public function notify($message)
     {
-        if ($timeout <= 0) {
-            throw new \InvalidArgumentException('Timeout must be a positive value');
-        }
-
         try {
             $command = $this->createCommand($message);
             $this->socket->send($command);
 
-            $limit = microtime(true) + $timeout;
+            $limit = microtime(true) + $this->timeout;
 
             while (microtime(true) < $limit && false === $result = $this->socket->recv(\ZMQ::MODE_NOBLOCK)) {
                 usleep(1000);
             }
 
             if (false === $result) {
-                $this->logger->error(sprintf('Unable to notify the task manager with message "%s" within timeout of %d seconds', $message, $timeout));
+                $this->logger->error(sprintf('Unable to notify the task manager with message "%s" within timeout of %d seconds', $message, $this->timeout));
                 throw new RuntimeException('Unable to retrieve information.');
             }
 
@@ -80,7 +86,7 @@ class Notifier
 
             return $data['reply'];
         } catch (\ZMQSocketException $e) {
-            $this->logger->error(sprintf('Unable to notify the task manager with message "%s" within timeout of %d seconds', $message, $timeout), array('exception' => $e));
+            $this->logger->error(sprintf('Unable to notify the task manager with message "%s" within timeout of %d seconds', $message, $this->timeout), array('exception' => $e));
             throw new RuntimeException('Unable to retrieve information.', $e->getCode(), $e);
         }
     }
