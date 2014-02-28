@@ -193,7 +193,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
                     throw new Bridge_Exception_ApiConnectorRequestFailed('Unable to retrieve photoset infos for ' . $object);
 
                 $xml = $response->getXml();
-                $primary_photo = $this->get_element_from_id((string) $xml['primary'], self::ELEMENT_TYPE_PHOTO);
+                $primary_photo = $this->get_element_from_id((string) $xml->photo['id'], self::ELEMENT_TYPE_PHOTO);
 
                 return new Bridge_Api_Flickr_Container($xml, $this->get_user_id(), $object, $primary_photo->get_thumbnail());
                 break;
