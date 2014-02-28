@@ -2051,6 +2051,53 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertDateAtom($item['created_on']);
     }
 
+    public function testRouteMe()
+    {
+        $this->setToken(self::$token);
+
+        $route = '/api/v1/me/';
+
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+
+        self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+
+        $this->assertArrayHasKey('user', $content['response']);
+
+        $this->evaluateGoodUserItem($content['response']['user'], self::$DI['user_notAdmin']);
+    }
+
+    protected function evaluateGoodUserItem($data, \User_Adapter $user)
+    {
+        foreach (array(
+            'id'              => $user->get_id(),
+            'email'           => $user->get_email() ?: null,
+            'login'           => $user->get_login() ?: null,
+            'first_name'      => $user->get_firstname() ?: null,
+            'last_name'       => $user->get_lastname() ?: null,
+            'display_name'    => $user->get_display_name() ?: null,
+            'address'         => $user->get_address() ?: null,
+            'zip_code'        => $user->get_zipcode() ?: null,
+            'city'            => $user->get_city() ?: null,
+            'country'         => $user->get_country() ?: null,
+            'phone'           => $user->get_tel() ?: null,
+            'fax'             => $user->get_fax() ?: null,
+            'job'             => $user->get_job() ?: null,
+            'position'        => $user->get_position() ?: null,
+            'company'         => $user->get_company() ?: null,
+            'geoname_id'      => $user->get_geonameid() ?: null,
+            'last_connection' => $user->get_last_connection() ? $user->get_last_connection()->format(DATE_ATOM) : null,
+            'created_on'      => $user->get_creation_date() ? $user->get_creation_date()->format(DATE_ATOM) : null,
+            'updated_on'      => $user->get_modification_date() ? $user->get_modification_date()->format(DATE_ATOM) : null,
+            'locale'          => $user->get_locale() ?: null,
+        ) as $key => $value) {
+            $this->assertArrayHasKey($key, $data);
+            if ($value) {
+                $this->assertEquals($value, $data[$key], 'Check key '.$key);
+            }
+        }
+    }
+
     protected function evaluateGoodFeed($feed)
     {
         $this->assertArrayHasKey('id', $feed);

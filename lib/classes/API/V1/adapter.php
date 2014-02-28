@@ -1949,6 +1949,53 @@ class API_V1_adapter extends API_V1_Abstract
         );
     }
 
+    public function get_current_user(Application $app, Request $request)
+    {
+        $result = new API_V1_result($app, $request, $this);
+        $result->set_datas(array('user' => $this->list_user($app['authentication']->getUser())));
+
+        return $result;
+    }
+
+    private function list_user(\User_Adapter $user)
+    {
+        switch ($user->get_gender()) {
+            case 2;
+                $gender = 'Mr';
+                break;
+            case 1;
+                $gender = 'Mrs';
+                break;
+            case 0;
+                $gender = 'Miss';
+                break;
+        }
+
+        return array(
+            'id'              => $user->get_id(),
+            'email'           => $user->get_email() ?: null,
+            'login'           => $user->get_login() ?: null,
+            'first_name'      => $user->get_firstname() ?: null,
+            'last_name'       => $user->get_lastname() ?: null,
+            'display_name'    => $user->get_display_name() ?: null,
+            'gender'          => $gender,
+            'address'         => $user->get_address() ?: null,
+            'zip_code'        => $user->get_zipcode() ?: null,
+            'city'            => $user->get_city() ?: null,
+            'country'         => $user->get_country() ?: null,
+            'phone'           => $user->get_tel() ?: null,
+            'fax'             => $user->get_fax() ?: null,
+            'job'             => $user->get_job() ?: null,
+            'position'        => $user->get_position() ?: null,
+            'company'         => $user->get_company() ?: null,
+            'geoname_id'      => $user->get_geonameid() ?: null,
+            'last_connection' => $user->get_last_connection() ? $user->get_last_connection()->format(DATE_ATOM) : null,
+            'created_on'      => $user->get_creation_date() ? $user->get_creation_date()->format(DATE_ATOM) : null,
+            'updated_on'      => $user->get_modification_date() ? $user->get_modification_date()->format(DATE_ATOM) : null,
+            'locale'          => $user->get_locale() ?: null,
+        );
+    }
+
     /**
      * List all databoxes of the current appbox
      *
