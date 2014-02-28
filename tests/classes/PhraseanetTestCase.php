@@ -14,6 +14,7 @@ use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Routing\RequestContext;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 use Alchemy\Phrasea\Authentication\ACLProvider;
+use Alchemy\Phrasea\TaskManager\Notifier;
 use Guzzle\Http\Client as Guzzle;
 
 abstract class PhraseanetTestCase extends WebTestCase
@@ -292,6 +293,12 @@ abstract class PhraseanetTestCase extends WebTestCase
             $generator->setContext(new RequestContext('', 'GET', $host));
 
             return $generator;
+        }));
+
+        $app['task-manager.notifier'] = $app->share($app->extend('task-manager.notifier', function (Notifier $notifier) {
+            $notifier->setTimeout(0.0001);
+
+            return $notifier;
         }));
 
         $app['translator'] = $this->createTranslatorMock();
@@ -641,5 +648,12 @@ abstract class PhraseanetTestCase extends WebTestCase
     protected function createLoggerMock()
     {
         return $this->getMock('Psr\Log\LoggerInterface');
+    }
+
+    protected function createMonologMock()
+    {
+        return $this->getMockBuilder('Monolog\Logger')
+            ->disableOriginalConstructor()
+            ->getMock();
     }
 }

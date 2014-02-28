@@ -14,6 +14,10 @@ class TaskListTest extends \PhraseanetTestCase
             ->method('getFormatter')
             ->will($this->returnValue($this->getMock('Symfony\Component\Console\Formatter\OutputFormatterInterface')));
 
+        self::$DI['cli']['monolog'] = self::$DI['cli']->share(function () {
+            return $this->createMonologMock();
+        });
+
         $command = new TaskList();
         $command->setContainer(self::$DI['cli']);
 

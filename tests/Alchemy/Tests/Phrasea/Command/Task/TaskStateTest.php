@@ -12,6 +12,10 @@ class TaskStateTest extends \PhraseanetTestCase
         $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
         $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
 
+        self::$DI['cli']['monolog'] = self::$DI['cli']->share(function () {
+            return $this->createMonologMock();
+        });
+
         $input->expects($this->any())
                 ->method('getArgument')
                 ->with('task_id')
