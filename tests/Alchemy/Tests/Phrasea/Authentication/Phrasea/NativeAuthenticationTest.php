@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Authentication\Phrasea;
 use Alchemy\Phrasea\Authentication\Phrasea\NativeAuthentication;
 use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
 
-class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
+class NativeAuthenticationTest extends \PhraseanetPHPUnitAbstract
 {
     /**
      * @dataProvider provideReservedUsernames
@@ -16,7 +16,7 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
 
         $encoder = $this->getEncoderMock();
         $oldEncoder = $this->getOldEncoderMock();
-        $conn = $this->getMock('connection_interface');
+        $conn = $this->createConnectionMock();
         $request = $this->getRequestMock();
 
         $auth = new NativeAuthentication($encoder, $oldEncoder, $conn);
@@ -180,7 +180,7 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
         $encoder = $this->getEncoderMock();
         $oldEncoder = $this->getOldEncoderMock();
 
-        $conn = $this->getMock('connection_interface');
+        $conn = $this->createConnectionMock();
 
         $statement = $this->getMock('PDOStatement');
         $statement
@@ -248,7 +248,7 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
 
     private function getConnectionMock($username, $row = null)
     {
-        $conn = $this->getMock('connection_interface');
+        $conn = $this->createConnectionMock();
 
         $statement = $this->getMock('PDOStatement');
 

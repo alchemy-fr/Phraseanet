@@ -761,10 +761,10 @@ class task_period_RecordMover extends task_appboxAbstract
             while (($row = $stmt->fetch(PDO::FETCH_ASSOC))) {
                 $result['rids'][] = $row['record_id'];
             }
-            $stmt->closeCursor();
         } else {
             $result['err'] = $connbas->last_error();
         }
+        $stmt->closeCursor();
 
         return $result;
     }

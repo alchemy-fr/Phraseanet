@@ -72,8 +72,8 @@ class patch_370alpha8a implements patchInterface
         if (($stmt = $conn->prepare($sql)) !== FALSE) {
             $stmt->execute();
             $ttasks = $row = $stmt->fetchAll();
-            $stmt->closeCursor();
         }
+        $stmt->closeCursor();
 
         $tdom = array();     // key = period
         $taskstodel = array();

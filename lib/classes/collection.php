@@ -81,6 +81,7 @@ class collection implements cache_cacheableInterface
         $stmt = $connbas->prepare($sql);
         $stmt->execute(array(':coll_id' => $this->coll_id));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
 
         if ( ! $row)
             throw new Exception('Unknown collection ' . $this->coll_id . ' on ' . $this->databox->get_dbname());

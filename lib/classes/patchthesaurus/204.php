@@ -74,7 +74,7 @@ class patchthesaurus_204
 
                 $sql2 = "UPDATE record SET status=((status | 15) & ~2)";
 
-                $stmt = $connbas->prepare($sql);
+                $stmt = $connbas->prepare($sql2);
                 $stmt->execute();
                 $stmt->closeCursor();
             }

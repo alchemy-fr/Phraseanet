@@ -15,11 +15,12 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-abstract class connection_abstract extends PDO
+abstract class connection_abstract
 {
     protected $name;
     protected $credentials = array();
     protected $multi_db = true;
+    protected $connection;
 
     public function get_credentials()
     {
@@ -42,8 +43,12 @@ abstract class connection_abstract extends PDO
 
     public function ping()
     {
+        if (null === $this->connection) {
+            $this->initConn();
+        }
+
         try {
-            $this->query('SELECT 1');
+            $this->connection->query('SELECT 1');
         } catch (PDOException $e) {
             return false;
         }
@@ -53,39 +58,14 @@ abstract class connection_abstract extends PDO
 
     /**
      *
-     * @param  string       $statement
-     * @param  array        $driver_options
-     * @return PDOStatement
-     */
-    public function prepare($statement, $driver_options = array())
-    {
-        return parent::prepare($statement, $driver_options);
-    }
-
-    /**
-     *
-     * @return boolean
-     */
-    public function beginTransaction()
-    {
-        return parent::beginTransaction();
-    }
-
-    /**
-     *
-     * @return boolean
-     */
-    public function commit()
-    {
-        return parent::commit();
-    }
-
-    /**
-     *
      * @return string
      */
     public function server_info()
     {
-        return parent::getAttribute(constant("PDO::ATTR_SERVER_VERSION"));
+        if (null === $this->connection) {
+            $this->initConn();
+        }
+
+        return $this->connection->getAttribute(constant("PDO::ATTR_SERVER_VERSION"));
     }
 }
