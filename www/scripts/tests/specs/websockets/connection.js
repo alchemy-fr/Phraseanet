@@ -20,7 +20,7 @@ define([
                 this.wsConnection = connection;
                 var $this = this;
                 var cbSuccess = function (session) {
-                    $this.wsConnection.setSession($this.session);
+                    activeSession = $this.session;
                 };
                 window.ab = {
                     connect: function(url, cbSuccess, cbError) {
@@ -30,25 +30,32 @@ define([
             });
 
             afterEach(function () {
-                this.wsConnection.close();
+                if (this.wsConnection.isConnected()) {
+                    this.wsConnection.close();
+                }
             });
 
             it("should have a session", function () {
                 this.wsConnection.connect();
-                assert.ok(this.wsConnection.hasSession());
-            });
-
-            it("should retrieve the session", function () {
-                this.wsConnection.connect();
-                assert.equal(this.wsConnection.getSession().hello, this.session.hello);
+                assert.ok(this.wsConnection.isConnected());
             });
 
             it("should close the session", function () {
                 this.wsConnection.connect();
-                assert.ok(this.wsConnection.hasSession());
+                assert.ok(this.wsConnection.isConnected());
                 this.wsConnection.close();
-                assert.ok(!this.wsConnection.hasSession());
-                assert.equal(this.wsConnection.getSession(), null);
+                assert.ok(!this.wsConnection.isConnected());
+            });
+
+            it("should warn if you close the session and you are not connected", function () {
+                var throws = false;
+                try {
+                    this.wsConnection.close();
+                } catch (e) {
+                    throws = true;
+                }
+
+                assert.ok(throws);
             });
 
             it("should not connect anymore after first connect", function () {
@@ -66,13 +73,13 @@ define([
             it("should call session subscribe once", function () {
                 this.wsConnection.connect();
                 this.wsConnection.subscribe();
-                expect(this.wsConnection.getSession().subscribe.should.have.callCount(1)).to.be.ok;
+                expect(this.session.subscribe.should.have.callCount(1)).to.be.ok;
             });
 
             it("should call session unsubscribe once", function () {
                 this.wsConnection.connect();
                 this.wsConnection.unsubscribe();
-                expect(this.wsConnection.getSession().unsubscribe.should.have.callCount(1)).to.be.ok;
+                expect(this.session.unsubscribe.should.have.callCount(1)).to.be.ok;
             });
         });
     });

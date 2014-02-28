@@ -22,7 +22,7 @@ define([
         },
         close: function() {
             if (false === this.isConnected()) {
-                return;
+                throw "Not connected to websocket";
             }
             activeSession.close();
             activeSession = null;
