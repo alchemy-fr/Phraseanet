@@ -1,6 +1,6 @@
 <?php
 
-namespace Alchemy\Tests\Phrasea\Application;
+namespace Alchemy\Tests\Phrasea\Controller\Api;
 
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Authentication\Context;

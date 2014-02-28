@@ -383,7 +383,7 @@
             <comment></comment>
           </field>
           <field>
-            <name>api_log_ressource</name>
+            <name>api_log_resource</name>
             <type>varchar(64)</type>
             <null>YES</null>
             <extra></extra>

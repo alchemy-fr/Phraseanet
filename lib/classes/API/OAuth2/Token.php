@@ -276,12 +276,11 @@ class API_OAuth2_Token
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        if ( ! $row)
+        if (!$row) {
             throw new NotFoundHttpException('Account not found');
+        }
 
-        $account = new API_OAuth2_Account($app, $row['api_account_id']);
-
-        return new self($app['phraseanet.appbox'], $account);
+        return new self($app['phraseanet.appbox'], new API_OAuth2_Account($app, $row['api_account_id']));
     }
 
     /**

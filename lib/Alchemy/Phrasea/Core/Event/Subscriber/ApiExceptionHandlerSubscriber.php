@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Controller\Api\Result;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -43,43 +44,32 @@ class ApiExceptionHandlerSubscriber implements EventSubscriberInterface
         $headers = [];
         $e = $event->getException();
 
-        if ($e instanceof \API_V1_exception_methodnotallowed) {
-            $code = \API_V1_result::ERROR_METHODNOTALLOWED;
-        } elseif ($e instanceof MethodNotAllowedHttpException) {
-            $code = \API_V1_result::ERROR_METHODNOTALLOWED;
+        if ($e instanceof MethodNotAllowedHttpException) {
+            $code = 405;
         } elseif ($e instanceof BadRequestHttpException) {
-            $code = \API_V1_result::ERROR_BAD_REQUEST;
-        } elseif ($e instanceof \API_V1_exception_badrequest) {
-            $code = \API_V1_result::ERROR_BAD_REQUEST;
-        } elseif ($e instanceof \API_V1_exception_forbidden) {
-            $code = \API_V1_result::ERROR_FORBIDDEN;
-        } elseif ($e instanceof \API_V1_exception_unauthorized) {
-            $code = \API_V1_result::ERROR_UNAUTHORIZED;
-        } elseif ($e instanceof \API_V1_exception_internalservererror) {
-            $code = \API_V1_result::ERROR_INTERNALSERVERERROR;
+            $code = 400;
         } elseif ($e instanceof AccessDeniedHttpException) {
-            $code = \API_V1_result::ERROR_FORBIDDEN;
+            $code = 403;
         } elseif ($e instanceof UnauthorizedHttpException) {
-            $code = \API_V1_result::ERROR_UNAUTHORIZED;
+            $code = 401;
         } elseif ($e instanceof NotFoundHttpException) {
-            $code = \API_V1_result::ERROR_NOTFOUND;
+            $code = 404;
         } elseif ($e instanceof HttpExceptionInterface) {
             if (503 === $e->getStatusCode()) {
-                $code = \API_V1_result::ERROR_MAINTENANCE;
+                $code = 503;
             } else {
-                $code = \API_V1_result::ERROR_INTERNALSERVERERROR;
+                $code = 500;
             }
         } else {
-            $code = \API_V1_result::ERROR_INTERNALSERVERERROR;
+            $code = 500;
         }
 
         if ($e instanceof HttpExceptionInterface) {
             $headers = $e->getHeaders();
         }
 
-        $result = $this->app['api']->get_error_message($event->getRequest(), $code, $e->getMessage());
-        $response = $result->get_response();
-        $response->headers->set('X-Status-Code', $result->get_http_code());
+        $response = Result::createError($event->getRequest(), $code, $e->getMessage())->createResponse();
+        $response->headers->set('X-Status-Code', $response->getStatusCode());
 
         foreach ($headers as $key => $value) {
             $response->headers->set($key, $value);

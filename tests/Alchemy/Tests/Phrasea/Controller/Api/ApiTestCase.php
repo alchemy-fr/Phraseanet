@@ -1,9 +1,10 @@
 <?php
 
-namespace Alchemy\Tests\Phrasea\Application;
+namespace Alchemy\Tests\Phrasea\Controller\Api;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\Controller\Api\V1;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Model\Entities\Task;
@@ -132,11 +133,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateMetaNotFound($content);
     }
 
-    /**
-     * @covers \API_V1_adapter::get_databoxes
-     * @covers \API_V1_adapter::list_databoxes
-     * @covers \API_V1_adapter::list_databox
-     */
     public function testDataboxListRoute()
     {
         $this->setToken(self::$token);
@@ -231,8 +227,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     /**
      * Route GET /API/V1/monitor/task
-     * @covers API_V1_adapter::get_task_list
-     * @covers API_V1_adapter::list_task
      */
     public function testGetMonitorTasks()
     {
@@ -261,7 +255,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     /**
      * Route GET /API/V1/monitor/scheduler
-     * @covers API_V1_adapter::get_scheduler
      */
     public function testGetScheduler()
     {
@@ -340,11 +333,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         }
     }
 
-    /**
-     * Route GET /API/V1/monitor/task{idTask}
-     * @covers API_V1_adapter::get_task
-     * @covers API_V1_adapter::list_task
-     */
     public function testGetMonitorTaskById()
     {
         $tasks = self::$DI['app']['manipulator.task']->getRepository()->findAll();
@@ -372,10 +360,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateGoodTask($content['response']['task']);
     }
 
-    /**
-     * Route POST /API/V1/monitor/task{idTask}
-     * @covers API_V1_adapter::set_task_property
-     */
     public function testPostMonitorTaskById()
     {
         $tasks = self::$DI['app']['manipulator.task']->getRepository()->findAll();
@@ -406,10 +390,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertEquals($title, $content['response']['task']['title']);
     }
 
-    /**
-     * Route GET /API/V1/monitor/task/{idTask}/
-     * @covers API_V1_adapter::get_task
-     */
     public function testUnknowGetMonitorTaskById()
     {
         if (null === self::$adminToken) {
@@ -422,10 +402,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateMetaNotFound($content);
     }
 
-    /**
-     * Route POST /API/V1/monitor/task/{idTask}/start
-     * @covers API_V1_adapter::start_task
-     */
     public function testPostMonitorStartTask()
     {
         if (null === self::$adminToken) {
@@ -456,10 +432,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertEquals(Task::STATUS_STARTED, $task->getStatus());
     }
 
-    /**
-     * Route POST /API/V1/monitor/task/{idTask}/stop
-     * @covers API_V1_adapter::stop_task
-     */
     public function testPostMonitorStopTask()
     {
         $tasks = self::$DI['app']['manipulator.task']->getRepository()->findAll();
@@ -490,13 +462,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertEquals(Task::STATUS_STOPPED, $task->getStatus());
     }
 
-    /**
-     * Route GET /API/V1/monitor/phraseanet
-     * @covers API_V1_adapter::get_phraseanet_monitor
-     * @covers API_V1_adapter::get_config_info
-     * @covers API_V1_adapter::get_cache_info
-     * @covers API_V1_adapter::get_gv_info
-     */
     public function testgetMonitorPhraseanet()
     {
         if (null === self::$adminToken) {
@@ -519,10 +484,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertInternalType('array', $content['response']['phraseanet']);
     }
 
-    /**
-     * @covers \API_V1_adapter::get_record
-     * @covers \API_V1_adapter::list_record
-     */
     public function testRecordRoute()
     {
         $this->setToken(self::$token);
@@ -545,10 +506,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
     }
 
-    /**
-     * @covers \API_V1_adapter::get_story
-     * @covers \API_V1_adapter::list_story
-     */
     public function testStoryRoute()
     {
         $this->setToken(self::$token);
@@ -580,11 +537,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         self::$DI['record_story_1']->removeChild(self::$DI['record_1']);
     }
 
-    /**
-     * @covers \API_V1_adapter::get_databox_collections
-     * @covers \API_V1_adapter::list_databox_collections
-     * @covers \API_V1_adapter::list_collection
-     */
     public function testDataboxCollectionRoute()
     {
         $this->setToken(self::$token);
@@ -625,10 +577,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
     }
 
-    /**
-     * @covers \API_V1_adapter::get_databox_status
-     * @covers \API_V1_adapter::list_databox_status
-     */
     public function testDataboxStatusRoute()
     {
         $this->setToken(self::$token);
@@ -678,11 +626,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
     }
 
-    /**
-     * @covers \API_V1_adapter::get_databox_metadatas
-     * @covers \API_V1_adapter::list_databox_metadatas_fields
-     * @covers \API_V1_adapter::list_databox_metadata_field_properties
-     */
     public function testDataboxMetadatasRoute()
     {
         $this->setToken(self::$token);
@@ -766,11 +709,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
     }
 
-    /**
-     * @covers \API_V1_adapter::get_databox_terms
-     * @covers \API_V1_adapter::list_databox_terms
-     *
-     */
     public function testDataboxTermsOfUseRoute()
     {
         $this->setToken(self::$token);
@@ -799,11 +737,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
     }
 
-    /**
-     * @covers \API_V1_adapter::search
-     * @covers \API_V1_adapter::list_record
-     * @covers \API_V1_adapter::list_story
-     */
     public function testSearchRoute()
     {
         $this->setToken(self::$token);
@@ -833,11 +766,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         }
     }
 
-    /**
-     * @covers \API_V1_adapter::search
-     * @covers \API_V1_adapter::list_record
-     * @covers \API_V1_adapter::list_story
-     */
     public function testSearchRouteWithStories()
     {
         $this->setToken(self::$token);
@@ -870,10 +798,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         }
     }
 
-    /**
-     * @covers \API_V1_adapter::search_records
-     * @covers \API_V1_adapter::list_record
-     */
     public function testRecordsSearchRoute()
     {
         $this->setToken(self::$token);
@@ -925,9 +849,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         return [['POST'], ['GET']];
     }
 
-    /**
-     * @covers \API_V1_adapter::caption_records
-     */
     public function testRecordsCaptionRoute()
     {
         $this->setToken(self::$token);
@@ -953,10 +874,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
     }
 
-    /**
-     * @covers \API_V1_adapter::get_record_metadatas
-     * @covers \API_V1_adapter::list_record_caption
-     */
     public function testRecordsMetadatasRoute()
     {
         $this->setToken(self::$token);
@@ -980,9 +897,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
     }
 
-    /**
-     * @covers \API_V1_adapter::get_record_status
-     */
     public function testRecordsStatusRoute()
     {
         $this->setToken(self::$token);
@@ -1006,11 +920,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
     }
 
-    /**
-     * @covers \API_V1_adapter::get_record_embed
-     * @covers \API_V1_adapter::list_embedable_media
-     * @covers \API_V1_adapter::list_permalink
-     */
     public function testRecordsEmbedRoute()
     {
         $this->setToken(self::$token);
@@ -1037,11 +946,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
     }
 
-    /**
-     * @covers \API_V1_adapter::get_record_embed
-     * @covers \API_V1_adapter::list_embedable_media
-     * @covers \API_V1_adapter::list_permalink
-     */
     public function testStoriesEmbedRoute()
     {
         $this->setToken(self::$token);
@@ -1069,9 +973,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
     }
 
-    /**
-     * @covers \API_V1_adapter::get_record_embed
-     */
     public function testRecordsEmbedRouteMimeType()
     {
         $this->setToken(self::$token);
@@ -1086,9 +987,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertEquals(0, count($content['response']['embed']));
     }
 
-    /**
-     * @covers \API_V1_adapter::get_record_related
-     */
     public function testRecordsEmbedRouteDevices()
     {
         $this->setToken(self::$token);
@@ -1101,9 +999,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertEquals(0, count($content['response']['embed']));
     }
 
-    /**
-     * @covers \API_V1_adapter::get_record_related
-     */
     public function testRecordsRelatedRoute()
     {
         $this->setToken(self::$token);
@@ -1130,11 +1025,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
     }
 
-    /**
-     * @covers \API_V1_adapter::set_record_metadatas
-     * @covers \API_V1_adapter::list_record_caption
-     * @covers \API_V1_adapter::list_record_caption_field
-     */
     public function testRecordsSetMetadatas()
     {
         $this->setToken(self::$token);
@@ -1192,10 +1082,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         }
     }
 
-    /**
-     * @covers \API_V1_adapter::set_record_status
-     * @covers \API_V1_adapter::list_record_status
-     */
     public function testRecordsSetStatus()
     {
         $this->setToken(self::$token);
@@ -1254,12 +1140,9 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         self::$DI['record_1']->set_binary_status(str_repeat('0', 32));
     }
 
-    /**
-     * @covers \API_V1_adapter::set_record_collection
-     */
     public function testMoveRecordToCollection()
     {
-        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../files/test001.jpg'), self::$DI['collection']);
+        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/test001.jpg'), self::$DI['collection']);
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
 
         $this->setToken(self::$token);
@@ -1288,11 +1171,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $record->delete();
     }
 
-    /**
-     * @covers \API_V1_adapter::search_baskets
-     * @covers \API_V1_adapter::list_baskets
-     * @covers \API_V1_adapter::list_basket
-     */
     public function testSearchBaskets()
     {
         self::$DI['client'] = new Client(self::$DI['app'], []);
@@ -1313,10 +1191,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         }
     }
 
-    /**
-     * @covers \API_V1_adapter::create_basket
-     * @covers \API_V1_adapter::list_basket
-     */
     public function testAddBasket()
     {
         $this->setToken(self::$token);
@@ -1337,11 +1211,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertEquals('un Joli Nom', $content['response']['basket']['name']);
     }
 
-    /**
-     * @covers \API_V1_adapter::get_basket
-     * @covers \API_V1_adapter::list_basket_content
-     * @covers \API_V1_adapter::list_basket_element
-     */
     public function testBasketContent()
     {
         $this->setToken(self::$adminToken);
@@ -1377,11 +1246,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         }
     }
 
-    /**
-     * @covers \API_V1_adapter::set_basket_title
-     * @covers \API_V1_adapter::list_basket_content
-     * @covers \API_V1_adapter::list_basket_element
-     */
     public function testSetBasketTitle()
     {
         $this->setToken(self::$adminToken);
@@ -1430,11 +1294,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertEquals($content['response']['basket']['name'], '<strong>aéaa');
     }
 
-    /**
-     * @covers \API_V1_adapter::set_basket_description
-     * @covers \API_V1_adapter::list_basket_content
-     * @covers \API_V1_adapter::list_basket_element
-     */
     public function testSetBasketDescription()
     {
         $this->setToken(self::$adminToken);
@@ -1458,9 +1317,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertEquals($content['response']['basket']['description'], 'une belle desc');
     }
 
-    /**
-     * @covers \API_V1_adapter::delete_basket
-     */
     public function testDeleteBasket()
     {
         $this->setToken(self::$adminToken);
@@ -1486,10 +1342,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         }
     }
 
-    /**
-     * @covers \API_V1_adapter::add_record
-     * @covers \API_V1_adapter::list_record
-     */
     public function testAddRecord()
     {
         $this->setToken(self::$token);
@@ -1509,10 +1361,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertArrayHasKey('url', $datas);
     }
 
-    /**
-     * @covers \API_V1_adapter::add_record
-     * @covers \API_V1_adapter::list_record
-     */
     public function testAddRecordForceRecord()
     {
         $this->setToken(self::$token);
@@ -1538,10 +1386,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertEquals('0', $datas['entity']);
     }
 
-    /**
-     * @covers \API_V1_adapter::add_record
-     * @covers \API_V1_adapter::list_quarantine_item
-     */
     public function testAddRecordForceLazaret()
     {
         $this->setToken(self::$token);
@@ -1566,9 +1410,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertEquals('1', $datas['entity']);
     }
 
-    /**
-     * @covers \API_V1_adapter::add_record
-     */
     public function testAddRecordWrongBehavior()
     {
         $this->setToken(self::$token);
@@ -1584,9 +1425,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateMetaBadRequest($content);
     }
 
-    /**
-     * @covers \API_V1_adapter::add_record
-     */
     public function testAddRecordWrongBaseId()
     {
         $this->setToken(self::$adminToken);
@@ -1602,9 +1440,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateMetaForbidden($content);
     }
 
-    /**
-     * @covers \API_V1_adapter::add_record
-     */
     public function testAddRecordNoBaseId()
     {
         $this->setToken(self::$token);
@@ -1620,9 +1455,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateMetaBadRequest($content);
     }
 
-    /**
-     * @covers \API_V1_adapter::add_record
-     */
     public function testAddRecordMultipleFiles()
     {
         $this->setToken(self::$token);
@@ -1652,10 +1484,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateMetaBadRequest($content);
     }
 
-    /**
-     * @covers \API_V1_adapter::search_publications
-     * @covers \API_V1_adapter::list_publication
-     */
     public function testFeedList()
     {
         $created_feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
@@ -1690,13 +1518,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         }
     }
 
-    /**
-     * @covers \API_V1_adapter::get_publications
-     * @covers \API_V1_adapter::list_publications_entries
-     * @covers \API_V1_adapter::list_publication_entry
-     * @covers \API_V1_adapter::list_publication_entry_item
-     * @covers \API_V1_adapter::list_record
-     */
     public function testFeedsContent()
     {
         self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
@@ -1754,10 +1575,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         }
     }
 
-    /**
-     * @covers \API_V1_adapter::get_feed_entry
-     * @covers \API_V1_adapter::list_publication_entry
-     */
     public function testFeedEntry()
     {
         self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
@@ -1785,10 +1602,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     }
 
-    /**
-     * @covers \API_V1_adapter::get_feed_entry
-     * @covers \API_V1_adapter::list_publication_entry
-     */
     public function testFeedEntryNoAccess()
     {
         self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
@@ -1812,13 +1625,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateMetaForbidden($content);
     }
 
-    /**
-     * @covers \API_V1_adapter::get_publication
-     * @covers \API_V1_adapter::list_publications_entries
-     * @covers \API_V1_adapter::list_publication_entry
-     * @covers \API_V1_adapter::list_publication_entry_item
-     * @covers \API_V1_adapter::list_record
-     */
     public function testFeedContent()
     {
         self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
@@ -1869,10 +1675,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         }
     }
 
-    /**
-     * @covers list_quarantine
-     * @covers list_quarantine_item
-     */
     public function testQuarantineList()
     {
         $this->setToken(self::$token);
@@ -1904,9 +1706,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         }
     }
 
-    /**
-     * @covers list_quarantine_item
-     */
     public function testQuarantineContent()
     {
         $this->setToken(self::$token);
@@ -1936,7 +1735,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             };
 
         $tmpname = tempnam(sys_get_temp_dir(), 'test_quarantine');
-        copy(__DIR__ . '/../../../../files/iphone_pic.jpg', $tmpname);
+        copy(__DIR__ . '/../../../../../files/iphone_pic.jpg', $tmpname);
 
         $file = File::buildFromPathfile($tmpname, self::$DI['collection'], self::$DI['app']);
         self::$DI['app']['border-manager']->process($lazaretSession, $file, $callback, Manager::FORCE_LAZARET);
@@ -2030,7 +1829,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     protected function getAddRecordFile()
     {
         $file = tempnam(sys_get_temp_dir(), 'upload');
-        copy(__DIR__ . '/../../../../files/iphone_pic.jpg', $file);
+        copy(__DIR__ . '/../../../../../files/iphone_pic.jpg', $file);
 
         return [
             'file' => new \Symfony\Component\HttpFoundation\File\UploadedFile($file, 'upload.jpg')
@@ -2430,7 +2229,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertArrayHasKey('thumbnail', $story);
         $this->assertArrayHasKey('uuid', $story);
         $this->assertArrayHasKey('@entity@', $story);
-        $this->assertEquals(\API_V1_adapter::OBJECT_TYPE_STORY, $story['@entity@']);
+        $this->assertEquals(V1::OBJECT_TYPE_STORY, $story['@entity@']);
         $this->assertTrue(\uuid::is_valid($story['uuid']));
 
         if ( ! is_null($story['thumbnail'])) {
@@ -2463,7 +2262,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         }
 
         $this->assertArrayHasKey('@entity@', $story['metadatas']);
-        $this->assertEquals(\API_V1_adapter::OBJECT_TYPE_STORY_METADATA_BAG, $story['metadatas']['@entity@']);
+        $this->assertEquals(V1::OBJECT_TYPE_STORY_METADATA_BAG, $story['metadatas']['@entity@']);
 
         foreach ($story['records'] as $record) {
             $this->evaluateGoodRecord($record);
