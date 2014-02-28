@@ -32,7 +32,8 @@ class Bridge implements ControllerProviderInterface
         $app['bridge.controller'] = $this;
 
         $controllers
-            ->post('/manager/', 'bridge.controller:doPostManager');
+            ->post('/manager/', 'bridge.controller:doPostManager')
+            ->bind('prod_bridge_manager');
 
         $controllers
             ->get('/login/{api_name}/', 'bridge.controller:doGetLogin')
