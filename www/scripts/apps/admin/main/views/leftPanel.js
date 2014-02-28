@@ -97,7 +97,6 @@ define([
             }
 
             $this.selectLink(link);
-            link.removeAttr('target');
         },
         selectLink: function(link) {
             $('.selected', this.$el).removeClass('selected');
