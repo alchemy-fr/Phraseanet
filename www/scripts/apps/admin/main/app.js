@@ -50,6 +50,19 @@ define([
         })
     };
 
+    var create = function() {
+        AdminApp.LeftView = new LeftPanel({
+            el: AdminApp.$leftView,
+            eventManager: AdminApp.eventManager,
+            treeUrl: AdminApp.$leftView.data("tree-url")
+        });
+
+        AdminApp.RightView = new RightPanel({
+            el: AdminApp.$rightView,
+            eventManager: AdminApp.eventManager
+        });
+    }
+
     var initialize = function (options) {
         if (false === "wsurl" in options) {
             throw "You must define a websocket url";
@@ -59,15 +72,7 @@ define([
             WSConnection.connect(options.wsurl);
         }
 
-        AdminApp.LeftView = new LeftPanel({
-            el: AdminApp.$leftView,
-            eventManager: AdminApp.eventManager
-        });
-
-        AdminApp.RightView = new RightPanel({
-            el: AdminApp.$rightView,
-            eventManager: AdminApp.eventManager
-        });
+        create();
 
         AdminApp.LeftView.activeTree();
         AdminApp.LeftView.clickSelected();
@@ -76,6 +81,7 @@ define([
     };
 
     return {
+        create: create,
         initialize: initialize
     };
 });
