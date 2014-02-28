@@ -61,7 +61,7 @@
 
 {% block content %}
     <div id="admin-app" data-usr="{{ app['authentication'].getUser().getId() }}">
-    <div id="left" class="PNB left-view" style="width:250px;right:auto;" data-tree-url="{{ path("admin_tree_display") }}" data-websocket="{{ "ws://" ~ app["conf"].get(["main" ,"websocket-server", "host"]) ~ ":" ~ app["conf"].get(["main" ,"websocket-server", "port"]) ~ "/websockets" }}">
+    <div id="left" class="PNB left-view" style="width:250px;right:auto;" data-tree-url="{{ path("admin_display_tree") }}" data-websocket="{{ "ws://" ~ app["conf"].get(["main" ,"websocket-server", "host"]) ~ ":" ~ app["conf"].get(["main" ,"websocket-server", "port"]) ~ "/websockets" }}">
         <div class="PNB10" style="right:0">
             <div id="FNDR">
                 {% include 'admin/tree.html.twig' %}
