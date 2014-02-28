@@ -101,6 +101,16 @@ class UserManager
         $user->getSettings()->clear();
     }
 
+    private function cleanTokens(User $user)
+    {
+        $elements = $this->objectManager->getRepository('Phraseanet:Token')
+            ->findBy(['user' => $user]);
+
+        foreach ($elements as $element) {
+            $this->objectManager->remove($element);
+        }
+    }
+
     /**
      * Removes user queries.
      *
@@ -194,16 +204,13 @@ class UserManager
      */
     private function cleanProperties(User $user)
     {
-        foreach ([
-            'DELETE FROM `edit_presets` WHERE usr_id = :usr_id',
-            'DELETE FROM `tokens` WHERE usr_id = :usr_id',
-        ] as $sql) {
-            $stmt = $this->appboxConnection->prepare($sql);
-            $stmt->execute([':usr_id' => $user->getId()]);
-            $stmt->closeCursor();
-        }
+        $sql = 'DELETE FROM `edit_presets` WHERE usr_id = :usr_id';
+        $stmt = $this->appboxConnection->prepare($sql);
+        $stmt->execute([':usr_id' => $user->getId()]);
+        $stmt->closeCursor();
 
         $this->cleanSettings($user);
+        $this->cleanTokens($user);
         $this->cleanQueries($user);
         $this->cleanFtpCredentials($user);
         $this->cleanOrders($user);

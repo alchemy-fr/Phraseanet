@@ -215,22 +215,20 @@ class Export implements ControllerProviderInterface
             }
         }
 
-        //generate validation token
-        $endDateObject = new \DateTime('+1 day');
-        $token = $app['tokens']->getUrlToken(\random::TYPE_EMAIL, false, $endDateObject, serialize($list));
+        $token = $app['manipulator.token']->createEmailExportToken(serialize($list));
 
-        if (count($destMails) > 0 && $token) {
+        if (count($destMails) > 0) {
             //zip documents
             \set_export::build_zip(
                 $app,
                 $token,
                 $list,
-                $app['root.path'] . '/tmp/download/' . $token . '.zip'
+                $app['root.path'] . '/tmp/download/' . $token->getValue() . '.zip'
             );
 
             $remaingEmails = $destMails;
 
-            $url = $app->url('prepare_download', ['token' => $token, 'anonymous']);
+            $url = $app->url('prepare_download', ['token' => $token->getValue(), 'anonymous']);
 
             $emitter = new Emitter($app['authentication']->getUser()->getDisplayName(), $app['authentication']->getUser()->getEmail());
 
@@ -243,7 +241,7 @@ class Export implements ControllerProviderInterface
 
                 $mail = MailRecordsExport::create($app, $receiver, $emitter, $request->request->get('textmail'));
                 $mail->setButtonUrl($url);
-                $mail->setExpiration($endDateObject);
+                $mail->setExpiration($token->getExpiration());
 
                 $app['notification.deliverer']->deliver($mail);
                 unset($remaingEmails[$key]);
@@ -260,16 +258,6 @@ class Export implements ControllerProviderInterface
                         'reason' => \eventsmanager_notify_downloadmailfail::MAIL_FAIL
                     ]);
                 }
-            }
-        } elseif (!$token && count($destMails) > 0) { //couldn't generate token
-            foreach ($destMails as $mail) {
-                $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', [
-                    'usr_id' => $app['authentication']->getUser()->getId(),
-                    'lst'    => $lst,
-                    'ssttid' => $ssttid,
-                    'dest'   => $mail,
-                    'reason' => 0
-                ]);
             }
         }
 

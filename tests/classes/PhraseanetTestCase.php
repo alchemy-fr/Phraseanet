@@ -100,6 +100,58 @@ abstract class PhraseanetTestCase extends WebTestCase
             return new Client($DI['app'], []);
         });
 
+        self::$DI['feed_public'] = self::$DI->share(function ($DI) {
+            return $DI['app']['repo.feeds']->find(self::$fixtureIds['feed']['public']['feed']);
+        });
+        self::$DI['feed_public_entry'] = self::$DI->share(function ($DI) {
+            return $DI['app']['repo.feed-entries']->find(self::$fixtureIds['feed']['public']['entry']);
+        });
+        self::$DI['feed_public_token'] = self::$DI->share(function ($DI) {
+            return $DI['app']['repo.feed-tokens']->find(self::$fixtureIds['feed']['public']['token']);
+        });
+
+        self::$DI['feed_private'] = self::$DI->share(function ($DI) {
+            return $DI['app']['repo.feeds']->find(self::$fixtureIds['feed']['private']['feed']);
+        });
+        self::$DI['feed_private_entry'] = self::$DI->share(function ($DI) {
+            return $DI['app']['repo.feed-entries']->find(self::$fixtureIds['feed']['private']['entry']);
+        });
+        self::$DI['feed_private_token'] = self::$DI->share(function ($DI) {
+            return $DI['app']['repo.feed-tokens']->find(self::$fixtureIds['feed']['private']['token']);
+        });
+
+        self::$DI['basket_1'] = self::$DI->share(function ($DI) {
+            return $DI['app']['repo.baskets']->find(self::$fixtureIds['basket']['basket_1']);
+        });
+
+        self::$DI['basket_2'] = self::$DI->share(function ($DI) {
+            return $DI['app']['repo.baskets']->find(self::$fixtureIds['basket']['basket_2']);
+        });
+
+        self::$DI['basket_3'] = self::$DI->share(function ($DI) {
+            return $DI['app']['repo.baskets']->find(self::$fixtureIds['basket']['basket_3']);
+        });
+
+        self::$DI['basket_4'] = self::$DI->share(function ($DI) {
+            return $DI['app']['repo.baskets']->find(self::$fixtureIds['basket']['basket_4']);
+        });
+
+        self::$DI['token_1'] = self::$DI->share(function ($DI) {
+            return $DI['app']['repo.tokens']->find(self::$fixtureIds['token']['token_1']);
+        });
+
+        self::$DI['token_2'] = self::$DI->share(function ($DI) {
+            return $DI['app']['repo.tokens']->find(self::$fixtureIds['token']['token_2']);
+        });
+
+        self::$DI['token_invalid'] = self::$DI->share(function ($DI) {
+            return $DI['app']['repo.tokens']->find(self::$fixtureIds['token']['token_invalid']);
+        });
+
+        self::$DI['token_validation'] = self::$DI->share(function ($DI) {
+            return $DI['app']['repo.tokens']->find(self::$fixtureIds['token']['token_validation']);
+        });
+
         self::$DI['user'] = self::$DI->share(function ($DI) {
             return $DI['app']['repo.users']->find(self::$fixtureIds['user']['test_phpunit']);
         });
@@ -670,6 +722,14 @@ abstract class PhraseanetTestCase extends WebTestCase
         return $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+    }
+
+    protected function assertDateNear($expected, $tested, $precision = 1)
+    {
+        $tested = $tested instanceof \DateTime ? $tested : new \DateTime($tested);
+        $expected = $expected instanceof \DateTime ? $expected : new \DateTime($expected);
+
+        $this->assertLessThanOrEqual($precision, abs($expected->format('U') - $tested->format('U')));
     }
 
     protected function createSearchEngineMock()

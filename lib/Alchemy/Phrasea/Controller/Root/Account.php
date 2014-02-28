@@ -138,9 +138,8 @@ class Account implements ControllerProviderInterface
             return $app->redirectPath('account_reset_email');
         }
 
-        $date = new \DateTime('1 day');
-        $token = $app['tokens']->getUrlToken(\random::TYPE_EMAIL, $app['authentication']->getUser()->getId(), $date, $app['authentication']->getUser()->getEmail());
-        $url = $app->url('account_reset_email', ['token' => $token]);
+        $token = $app['manipulator.token']->createResetEmailToken($app['authentication']->getUser(), $email);
+        $url = $app->url('account_reset_email', ['token' => $token->getValue()]);
 
         try {
             $receiver = Receiver::fromUser($app['authentication']->getUser());
@@ -152,7 +151,7 @@ class Account implements ControllerProviderInterface
 
         $mail = MailRequestEmailUpdate::create($app, $receiver, null);
         $mail->setButtonUrl($url);
-        $mail->setExpiration($date);
+        $mail->setExpiration($token->getExpiration());
 
         $app['notification.deliverer']->deliver($mail);
 
@@ -170,21 +169,20 @@ class Account implements ControllerProviderInterface
      */
     public function displayResetEmailForm(Application $app, Request $request)
     {
-        if (null !== $token = $request->query->get('token')) {
-            try {
-                $datas = $app['tokens']->helloToken($token);
-                $user = $app['repo.users']->find((int) $datas['usr_id']);
-                $user->setEmail($datas['datas']);
-                $app['tokens']->removeToken($token);
-
-                $app->addFlash('success', $app->trans('admin::compte-utilisateur: L\'email a correctement ete mis a jour'));
-
-                return $app->redirectPath('account');
-            } catch (\Exception $e) {
+        if (null !== $tokenValue = $request->query->get('token')) {
+            if (null === $token = $app['repo.tokens']->findValidToken($tokenValue)) {
                 $app->addFlash('error', $app->trans('admin::compte-utilisateur: erreur lors de la mise a jour'));
 
                 return $app->redirectPath('account');
             }
+
+            $user = $token->getUser();
+            $user->setEmail($token->getData());
+            $app['manipulator.token']->delete($token);
+
+            $app->addFlash('success', $app->trans('admin::compte-utilisateur: L\'email a correctement ete mis a jour'));
+
+            return $app->redirectPath('account');
         }
 
         return $app['twig']->render('account/reset-email.html.twig', Login::getDefaultTemplateVariables($app));

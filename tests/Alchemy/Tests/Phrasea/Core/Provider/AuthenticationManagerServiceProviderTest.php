@@ -22,11 +22,6 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
             ],
             [
                 'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
-                'authentication.token-validator',
-                'Alchemy\Phrasea\Authentication\Token\TokenValidator'
-            ],
-            [
-                'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
                 'authentication.persistent-manager',
                 'Alchemy\Phrasea\Authentication\PersistentCookie\Manager'
             ],

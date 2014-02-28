@@ -49,9 +49,9 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->logout(self::$DI['app']);
 
         $Basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
-        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_VIEW, self::$DI['user_alt2']->getId(), null, $Basket->getId());
+        $token = self::$DI['app']['manipulator.token']->createBasketAccessToken($Basket, self::$DI['user_alt2']);
 
-        self::$DI['client']->request('GET', '/lightbox/?LOG='.$token);
+        self::$DI['client']->request('GET', '/lightbox/?LOG='.$token->getValue());
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertRegExp('/\/lightbox\/validate\/\d+\//', self::$DI['client']->getResponse()->headers->get('location'));

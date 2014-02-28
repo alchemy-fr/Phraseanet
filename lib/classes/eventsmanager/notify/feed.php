@@ -88,14 +88,8 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
                 if ($params['notify_email'] && $this->shouldSendNotificationFor($user_to_notif->getId())) {
                     $readyToSend = false;
                     try {
-                        $token = $this->app['tokens']->getUrlToken(
-                                \random::TYPE_FEED_ENTRY
-                                , $user_to_notif->getId()
-                                , null
-                                , $entry->getId()
-                        );
-
-                        $url = $this->app->url('lightbox', ['LOG' => $token]);
+                        $token = $this->app['manipulator.token']->createFeedEntryToken($user_to_notif, $entry);
+                        $url = $this->app->url('lightbox', ['LOG' => $token->getValue()]);
 
                         $receiver = Receiver::fromUser($user_to_notif);
                         $readyToSend = true;

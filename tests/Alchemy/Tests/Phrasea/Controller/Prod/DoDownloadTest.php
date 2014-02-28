@@ -37,7 +37,7 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
                 ]
             ]
         ]);
-        $url = sprintf('/download/%s/prepare/', $token);
+        $url = sprintf('/download/%s/prepare/', $token->getValue());
         self::$DI['client']->request('GET', $url);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
@@ -61,7 +61,7 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
     public function testPrepareDownloadInvalidData()
     {
         $token = $this->getToken(['bad_string' => base64_decode(serialize(['fail']))]);
-        self::$DI['client']->request('GET', sprintf('/download/%s/prepare/', $token));
+        self::$DI['client']->request('GET', sprintf('/download/%s/prepare/', $token->getValue()));
 
         $response = self::$DI['client']->getResponse();
         $this->assertEquals(500, $response->getStatusCode());
@@ -101,7 +101,7 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
             ]
         ]);
 
-        $url = sprintf('/download/%s/get/', $token);
+        $url = sprintf('/download/%s/get/', $token->getValue());
         self::$DI['client']->request('POST', $url);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
@@ -165,18 +165,16 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
         ];
 
         $token = $this->getToken($list);
-        // Get token
-        $datas = self::$DI['app']['tokens']->helloToken($token);
         // Build zip
         \set_export::build_zip(
             self::$DI['app'],
             $token,
             $list,
-            sprintf('%s/../../../../../../tmp/download/%s.zip', __DIR__, $datas['value']) // Dest file
+            sprintf('%s/../../../../../../tmp/download/%s.zip', __DIR__, $token->getValue()) // Dest file
         );
 
         // Check response
-        $url = sprintf('/download/%s/get/', $token);
+        $url = sprintf('/download/%s/get/', $token->getValue());
         self::$DI['client']->request('POST', $url);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
@@ -216,7 +214,7 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
                 ]
             ]
         ]);
-        $url = sprintf('/download/%s/get/', $token);
+        $url = sprintf('/download/%s/get/', $token->getValue());
         self::$DI['client']->request('POST', $url);
 
         $this->assertNotFoundResponse(self::$DI['client']->getResponse());
@@ -239,7 +237,7 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
     public function testDocumentsDownloadInvalidData()
     {
         $token = $this->getToken(['bad_string' => base64_decode(serialize(['fail']))]);
-        self::$DI['client']->request('POST', sprintf('/download/%s/get/', $token));
+        self::$DI['client']->request('POST', sprintf('/download/%s/get/', $token->getValue()));
 
         $response = self::$DI['client']->getResponse();
         $this->assertEquals(500, $response->getStatusCode());
@@ -251,8 +249,11 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testExecuteDownloadInvalidData()
     {
-        $token = $this->getToken(['bad_string' => base64_decode(serialize(['fail']))]);
-        $url = sprintf('/download/%s/execute/', $token);
+        $token = self::$DI['app']['manipulator.token']->createDownloadToken(
+            self::$DI['user'],
+            base64_decode(serialize(['fail']))
+        );
+        $url = sprintf('/download/%s/execute/', $token->getValue());
         self::$DI['client']->request('POST', $url);
         $response = self::$DI['client']->getResponse();
         $datas = (array) json_decode($response->getContent());
@@ -268,7 +269,7 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $token = 'ABCDEFGHJaajKISU';
         $url = sprintf('/download/%s/execute/', $token);
-        self::$DI['client']->request('POST', $url);
+        self::$DI['client']->request('POST', $url, [], [], ["HTTP_ACCEPT" => "application/json"]);
         $response = self::$DI['client']->getResponse();
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
@@ -329,7 +330,7 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
 
         $token = $this->getToken($list);
 
-        $url = sprintf('/download/%s/execute/', $token);
+        $url = sprintf('/download/%s/execute/', $token->getValue());
         self::$DI['client']->request('POST', $url);
         $response = self::$DI['client']->getResponse();
         $datas = (array) json_decode($response->getContent());
@@ -340,10 +341,8 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
 
     private function getToken($datas = [])
     {
-        return self::$DI['app']['tokens']->getUrlToken(
-            \random::TYPE_DOWNLOAD,
-            self::$DI['user']->getId(),
-            new \DateTime('+10 seconds'), // Token lifetime
+        return self::$DI['app']['manipulator.token']->createDownloadToken(
+            self::$DI['user'],
             serialize($datas)
         );
     }

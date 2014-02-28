@@ -104,19 +104,16 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetResetMailWithToken()
     {
-        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, self::$DI['user']->getId(), null, 'new_email@email.com');
-        $crawler = self::$DI['client']->request('GET', '/account/reset-email/', ['token'   => $token]);
+        $tokenValue = self::$DI['app']['manipulator.token']->createResetEmailToken(self::$DI['user'], 'new_email@email.com')->getValue();
+        $crawler = self::$DI['client']->request('GET', '/account/reset-email/', ['token'   => $tokenValue]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/account/', $response->headers->get('location'));
 
         $this->assertEquals('new_email@email.com', self::$DI['user']->getEmail());
         self::$DI['user']->setEmail('noone@example.com');
-        try {
-            self::$DI['app']['tokens']->helloToken($token);
+        if (null !== self::$DI['app']['repo.tokens']->find($tokenValue)) {
             $this->fail('Token has not been removed');
-        } catch (NotFoundHttpException $e) {
-
         }
 
         $this->assertFlashMessagePopulated(self::$DI['app'], 'success', 1);

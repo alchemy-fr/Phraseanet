@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
+use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Entities\User;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -693,7 +694,7 @@ class set_export extends set_abstract
      *
      * @return string
      */
-    public static function build_zip(Application $app, $token, Array $list, $zipFile)
+    public static function build_zip(Application $app, Token $token, Array $list, $zipFile)
     {
         if (isset($list['complete']) && $list['complete'] === true) {
             return;
@@ -703,7 +704,8 @@ class set_export extends set_abstract
 
         $list['complete'] = false;
 
-        $app['tokens']->updateToken($token, serialize($list));
+        $token->setData(serialize($list));
+        $app['manipulator.token']->update($token);
 
         $toRemove = [];
         $archiveFiles = [];
@@ -734,7 +736,8 @@ class set_export extends set_abstract
 
         $list['complete'] = true;
 
-        $app['tokens']->updateToken($token, serialize($list));
+        $token->setData(serialize($list));
+        $app['manipulator.token']->update($token);
 
         $app['filesystem']->remove($toRemove);
         $app['filesystem']->chmod($zipFile, 0760);

@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Silex\ControllerProviderInterface;
 use Silex\Application as SilexApplication;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,26 +39,21 @@ class Lightbox implements ControllerProviderInterface
                 $app['authentication']->closeAccount();
             }
 
-            if (false === $usr_id = $app['authentication.token-validator']->isValid($request->query->get('LOG'))) {
+            if (null === $token = $app['repo.tokens']->findValidToken($request->query->get('LOG'))) {
                 $app->addFlash('error', $app->trans('The URL you used is out of date, please login'));
 
                 return $app->redirectPath('homepage');
             }
 
-            $app['authentication']->openAccount($app['repo.users']->find($usr_id));
+            $app['authentication']->openAccount($token->getUser());
 
-            try {
-                $datas = $app['tokens']->helloToken($request->query->get('LOG'));
-            } catch (NotFoundHttpException $e) {
-                return;
-            }
-            switch ($datas['type']) {
-                case \random::TYPE_FEED_ENTRY:
-                    return $app->redirectPath('lightbox_feed_entry', ['entry_id' => $datas['datas']]);
+            switch ($token->getType()) {
+                case TokenManipulator::TYPE_FEED_ENTRY:
+                    return $app->redirectPath('lightbox_feed_entry', ['entry_id' => $token->getData()]);
                     break;
-                case \random::TYPE_VALIDATE:
-                case \random::TYPE_VIEW:
-                    return $app->redirectPath('lightbox_validation', ['basket' => $datas['datas']]);
+                case TokenManipulator::TYPE_VALIDATE:
+                case TokenManipulator::TYPE_VIEW:
+                    return $app->redirectPath('lightbox_validation', ['basket' => $token->getData()]);
                     break;
             }
         });
@@ -464,13 +460,8 @@ class Lightbox implements ControllerProviderInterface
                 /* @var $basket Basket */
                 $participant = $basket->getValidation()->getParticipant($app['authentication']->getUser());
 
-                $expires = new \DateTime('+10 days');
-                $url = $app->url('lightbox', ['LOG' => $app['tokens']->getUrlToken(
-                        \random::TYPE_VALIDATE
-                        , $basket->getValidation()->getInitiator($app)->getId()
-                        , $expires
-                        , $basket->getId()
-                )]);
+                $token = $app['manipulator.token']->createBasketValidationToken($basket);
+                $url = $app->url('lightbox', ['LOG' => $token->getValue()]);
 
                 $to = $basket->getValidation()->getInitiator($app)->getId();
                 $params = [

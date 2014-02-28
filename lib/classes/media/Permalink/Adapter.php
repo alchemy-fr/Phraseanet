@@ -11,8 +11,9 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\RuntimeException;
-use Guzzle\Http\Url;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Doctrine\DBAL\DBALException;
+use Guzzle\Http\Url;
 
 class media_Permalink_Adapter implements media_Permalink_Interface, cache_cacheableInterface
 {
@@ -327,7 +328,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
 
         $params = [
             ':subdef_id' => $media_subdef->get_subdef_id()
-            , ':token'     => $app['random.medium']->generateString(64, \random::LETTERS_AND_NUMBERS)
+            , ':token'     => $app['random.medium']->generateString(64, TokenManipulator::LETTERS_AND_NUMBERS)
             , ':activated' => '1'
         ];
 

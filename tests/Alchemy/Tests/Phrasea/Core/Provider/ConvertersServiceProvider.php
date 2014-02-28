@@ -17,6 +17,11 @@ class ConvertersServiceProvider extends ServiceProviderTestCase
                 'converter.basket',
                 'Alchemy\Phrasea\Controller\Converter\BasketConverter'
             ],
+            [
+                'Alchemy\Phrasea\Core\Provider\ConvertersServiceProvider',
+                'converter.token',
+                'Alchemy\Phrasea\Controller\Converter\TokenConverter'
+            ],
         ];
     }
 }

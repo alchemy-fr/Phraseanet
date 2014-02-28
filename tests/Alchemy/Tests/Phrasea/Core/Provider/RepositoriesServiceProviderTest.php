@@ -31,6 +31,7 @@ class RepositoriesServiceProviderTest extends ServiceProviderTestCase
             ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.usr-auth-providers', 'Alchemy\Phrasea\Model\Repositories\UsrAuthProviderRepository'],
             ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.ftp-exports', 'Alchemy\Phrasea\Model\Repositories\FtpExportRepository'],
             ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.user-queries', 'Alchemy\Phrasea\Model\Repositories\UserQueryRepository'],
+            ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.tokens', 'Alchemy\Phrasea\Model\Repositories\TokenRepository'],
         ];
     }
 }

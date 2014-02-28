@@ -12,33 +12,33 @@
 namespace Alchemy\Phrasea\Form\Constraint;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PasswordToken extends Constraint
 {
     public $message = 'The token provided is not valid anymore';
-    private $random;
+    private $repository;
 
-    public function __construct(\random $random)
+    public function __construct(EntityRepository $repository)
     {
-        $this->random = $random;
+        $this->repository = $repository;
         parent::__construct();
     }
 
-    public function isValid($token)
+    public function isValid($tokenValue)
     {
-        try {
-            $data = $this->random->helloToken($token);
-        } catch (NotFoundHttpException $e) {
+        if (null === $token = $this->repository->findValidToken($tokenValue)) {
             return false;
         }
 
-        return \random::TYPE_PASSWORD === $data['type'];
+        return TokenManipulator::TYPE_PASSWORD === $token->getType();
     }
 
     public static function create(Application $app)
     {
-        return new static($app['tokens']);
+        return new static($app['repo.tokens']);
     }
 }

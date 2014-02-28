@@ -25,6 +25,7 @@ class JsonRequestSubscriber implements EventSubscriberInterface
 
         if ((0 !== strpos($request->getPathInfo(), '/admin/')
             || 0 === strpos($request->getPathInfo(), '/admin/collection/')
+            || preg_match('/^\/download\/[a-zA-Z0-9]+\/execute\/$/', $request->getPathInfo())
             || 0 === strpos($request->getPathInfo(), '/admin/databox/'))
             && $request->getRequestFormat() == 'json') {
             $datas = [

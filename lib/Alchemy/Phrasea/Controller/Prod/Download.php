@@ -64,16 +64,7 @@ class Download implements ControllerProviderInterface
 
         $list['export_name'] = sprintf('%s.zip', $download->getExportName());
 
-        $token = $app['tokens']->getUrlToken(
-            \random::TYPE_DOWNLOAD,
-            $app['authentication']->getUser()->getId(),
-            new \DateTime('+3 hours'), // Token lifetime
-            serialize($list)
-        );
-
-        if (!$token) {
-            throw new \RuntimeException('Download token could not be generated');
-        }
+        $token = $app['manipulator.token']->createDownloadToken($app['authentication']->getUser(), serialize($list));
 
         $app['events-manager']->trigger('__DOWNLOAD__', [
             'lst'         => $lst,
@@ -83,6 +74,6 @@ class Download implements ControllerProviderInterface
             'export_file' => $download->getExportName()
         ]);
 
-        return $app->redirectPath('prepare_download', ['token' => $token]);
+        return $app->redirectPath('prepare_download', ['token' => $token->getValue()]);
     }
 }

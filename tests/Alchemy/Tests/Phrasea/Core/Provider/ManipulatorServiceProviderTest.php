@@ -22,6 +22,11 @@ class ManipulatorServiceProviderTest extends ServiceProviderTestCase
                 'manipulator.registration',
                 'Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator'
             ],
+            [
+                'Alchemy\Phrasea\Core\Provider\ManipulatorServiceProvider',
+                'manipulator.token',
+                'Alchemy\Phrasea\Model\Manipulator\TokenManipulator'
+            ],
         ];
     }
 }

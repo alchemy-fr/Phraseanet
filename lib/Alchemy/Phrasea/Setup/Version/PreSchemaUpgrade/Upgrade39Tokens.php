@@ -12,12 +12,15 @@
 namespace Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Entities\FtpCredential;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\ResultSetMapping;
 
-class Upgrade39Feeds implements PreSchemaUpgradeInterface
+class Upgrade39Tokens implements PreSchemaUpgradeInterface
 {
     /**
      * {@inheritdoc}
@@ -32,7 +35,7 @@ class Upgrade39Feeds implements PreSchemaUpgradeInterface
      */
     public function isApplyable(Application $app)
     {
-        return $this->tableExists($app['EM'], 'feeds');
+        return $this->tableExists($app['EM'], 'tokens');
     }
 
     /**
@@ -40,8 +43,8 @@ class Upgrade39Feeds implements PreSchemaUpgradeInterface
      */
     public function rollback(EntityManager $em, \appbox $appbox, Configuration $conf)
     {
-        if ($this->tableExists($em, 'feeds_backup')) {
-            $em->getConnection()->getSchemaManager()->renameTable('feeds_backup', 'feeds');
+        if ($this->tableExists($em, 'tokens_backup')) {
+            $em->getConnection()->executeUpdate('RENAME TABLE `tokens_backup` TO `tokens`');
         }
     }
 
@@ -67,6 +70,6 @@ class Upgrade39Feeds implements PreSchemaUpgradeInterface
      */
     private function doBackupFeedsTable(EntityManager $em)
     {
-        $em->getConnection()->getSchemaManager()->renameTable('feeds', 'feeds_backup');
+        $em->getConnection()->executeUpdate('RENAME TABLE `tokens` TO `tokens_backup`');
     }
 }

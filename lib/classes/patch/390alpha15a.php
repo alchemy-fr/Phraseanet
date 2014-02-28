@@ -11,10 +11,10 @@
 
 use Alchemy\Phrasea\Application;
 
-class patch_390alpha14a extends patchAbstract
+class patch_390alpha15a extends patchAbstract
 {
     /** @var string */
-    private $release = '3.9.0-alpha.14';
+    private $release = '3.9.0-alpha.15';
 
     /** @var array */
     private $concern = [base::APPLICATION_BOX];
@@ -48,7 +48,7 @@ class patch_390alpha14a extends patchAbstract
      */
     public function getDoctrineMigrations()
     {
-        return [];
+        return ['token'];
     }
 
     /**
@@ -56,12 +56,14 @@ class patch_390alpha14a extends patchAbstract
      */
     public function apply(base $appbox, Application $app)
     {
-        $app['conf']->remove(['main', 'api-timers']);
-
-        if ($this->tableHasField($app['EM'], 'api_logs', 'api_log_ressource')) {
-            $sql = 'UPDATE api_logs SET api_log_resource = api_log_ressource';
-            $app['phraseanet.appbox']->get_connection()->executeUpdate($sql);
+        if (!$this->tableExists($app['EM'], 'tokens_backup')) {
+            return true;
         }
+
+        $sql = 'INSERT INTO Tokens
+                    (value, user_id, type, data, created, updated, expiration)
+                    (SELECT value, usr_id, type, datas, created_on, created_on, expire_on FROM tokens_backup)';
+        $appbox->get_connection()->exec($sql);
 
         return true;
     }

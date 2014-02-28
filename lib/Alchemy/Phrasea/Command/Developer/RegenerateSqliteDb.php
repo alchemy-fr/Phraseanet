@@ -26,6 +26,7 @@ use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Alchemy\Phrasea\Model\Entities\Registration;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Model\Entities\Task;
+use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\ValidationData;
 use Alchemy\Phrasea\Model\Entities\ValidationSession;
@@ -35,6 +36,7 @@ use Alchemy\Phrasea\Model\Entities\UsrList;
 use Alchemy\Phrasea\Model\Entities\UsrListEntry;
 use Alchemy\Phrasea\Model\Entities\StoryWZ;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
 use Gedmo\Timestampable\TimestampableListener;
@@ -88,6 +90,8 @@ class RegenerateSqliteDb extends Command
             $this->insertOauthApps($DI);
             $this->generateCollection($DI);
             $this->generateRecord($DI);
+            $this->insertTwoTasks($this->container['EM']);
+            $this->insertTwoBasket($this->container['EM'], $DI);
             $this->insertOneStoryInWz($this->container['EM'], $DI);
             $this->insertUsrLists($this->container['EM'], $DI);
             $this->insertOnePrivateFeed($this->container['EM'], $DI);
@@ -99,7 +103,21 @@ class RegenerateSqliteDb extends Command
             $this->insertOneRegistration($DI, $this->container['EM'], $DI['user_alt1'], $DI['coll'], 'now', 'registration_1');
             $this->insertOneRegistration($DI, $this->container['EM'], $DI['user_alt2'], $DI['coll'], '-3 months', 'registration_2');
             $this->insertOneRegistration($DI, $this->container['EM'], $DI['user_notAdmin'], $DI['coll'], 'now', 'registration_3');
+            $this->insertTwoTokens($this->container['EM'], $DI);
+            $this->insertOneInvalidToken($this->container['EM'], $DI);
+            $this->insertOneValidationToken($this->container['EM'], $DI);
 
+            $this->container['EM']->flush();
+
+            $fixtures['basket']['basket_1'] = $DI['basket_1']->getId();
+            $fixtures['basket']['basket_2'] = $DI['basket_2']->getId();
+            $fixtures['basket']['basket_3'] = $DI['basket_3']->getId();
+            $fixtures['basket']['basket_4'] = $DI['basket_4']->getId();
+
+            $fixtures['token']['token_1'] = $DI['token_1']->getValue();
+            $fixtures['token']['token_2'] = $DI['token_2']->getValue();
+            $fixtures['token']['token_invalid'] = $DI['token_invalid']->getValue();
+            $fixtures['token']['token_validation'] = $DI['token_validation']->getValue();
             $fixtures['user']['test_phpunit'] = $DI['user']->getId();
             $fixtures['user']['test_phpunit_not_admin'] = $DI['user_notAdmin']->getId();
             $fixtures['user']['test_phpunit_alt1'] = $DI['user_alt1']->getId();
@@ -140,10 +158,13 @@ class RegenerateSqliteDb extends Command
             $fixtures['user']['user_3_deleted'] = $DI['user_3_deleted']->getId();
             $fixtures['user']['user_template'] = $DI['user_template']->getId();
 
-            $this->insertTwoTasks($this->container['EM']);
-            $this->insertTwoBasket($this->container['EM'], $DI);
+            $fixtures['feed']['public']['feed'] = $DI['feed_public']->getId();
+            $fixtures['feed']['public']['entry'] = $DI['feed_public_entry']->getId();
+            $fixtures['feed']['public']['token'] = $DI['feed_public_token']->getId();
 
-            $this->container['EM']->flush();
+            $fixtures['feed']['private']['feed'] = $DI['feed_private']->getId();
+            $fixtures['feed']['private']['entry'] = $DI['feed_private_entry']->getId();
+            $fixtures['feed']['private']['token'] = $DI['feed_private_token']->getId();
         } catch (\Exception $e) {
             $output->writeln("<error>".$e->getMessage()."</error>");
             if ($renamed) {
@@ -200,7 +221,6 @@ class RegenerateSqliteDb extends Command
         $session = new LazaretSession();
         $session->setUser($DI['user']);
         $em->persist($session);
-        $em->flush();
 
         $file = File::buildFromPathfile($this->container['root.path'] . '/tests/files/cestlafete.jpg', $DI['coll'], $this->container);
 
@@ -248,8 +268,6 @@ class RegenerateSqliteDb extends Command
         $em->persist($user2Deleted);
         $em->persist($user3Deleted);
         $em->persist($template);
-
-        $em->flush();
     }
 
     protected function insertOneUser($login, $email = null, $admin = false)
@@ -385,6 +403,8 @@ class RegenerateSqliteDb extends Command
         $basket1->setName('test');
         $basket1->setDescription('description test');
 
+        $DI['basket_1'] = $basket1;
+
         $element = new BasketElement();
         $element->setRecord($DI['record_1']);
         $basket1->addElement($element);
@@ -395,10 +415,14 @@ class RegenerateSqliteDb extends Command
         $basket2->setName('test');
         $basket2->setDescription('description test');
 
+        $DI['basket_2'] = $basket2;
+
         $basket3 = new Basket();
         $basket3->setUser($this->getUserAlt1());
         $basket3->setName('test');
         $basket3->setDescription('description test');
+
+        $DI['basket_3'] = $basket3;
 
         $em->persist($basket1);
         $em->persist($element);
@@ -441,6 +465,8 @@ class RegenerateSqliteDb extends Command
             }
             $em->persist($validationParticipant);
         }
+
+        $DI['basket_4'] = $basket4;
 
         $em->persist($basket4);
     }
@@ -524,8 +550,12 @@ class RegenerateSqliteDb extends Command
         $em->persist($feed);
         $em->persist($publisher);
 
-        $this->insertOneFeedEntry($em, $DI, $feed, true);
-        $this->insertOneFeedToken($em, $DI, $feed);
+        $entry = $this->insertOneFeedEntry($em, $DI, $feed, true);
+        $token = $this->insertOneFeedToken($em, $DI, $feed);
+
+        $DI['feed_public'] = $feed;
+        $DI['feed_public_entry'] = $entry;
+        $DI['feed_public_token'] = $token;
     }
 
     private function insertOnePrivateFeed(EntityManager $em, \Pimple $DI)
@@ -547,8 +577,12 @@ class RegenerateSqliteDb extends Command
         $em->persist($feed);
         $em->persist($publisher);
 
-        $this->insertOneFeedEntry($em, $DI, $feed, false);
-        $this->insertOneFeedToken($em, $DI, $feed);
+        $entry = $this->insertOneFeedEntry($em, $DI, $feed, false);
+        $token = $this->insertOneFeedToken($em, $DI, $feed);
+
+        $DI['feed_private'] = $feed;
+        $DI['feed_private_entry'] = $entry;
+        $DI['feed_private_token'] = $token;
     }
 
     private function insertOneExtraFeed(EntityManager $em, \Pimple $DI)
@@ -595,12 +629,14 @@ class RegenerateSqliteDb extends Command
         $em->persist($feed);
 
         $this->insertOneFeedItem($em, $DI, $entry, $public);
+
+        return $entry;
     }
 
     private function insertOneFeedToken(EntityManager $em, \Pimple $DI, Feed $feed)
     {
         $token = new FeedToken();
-        $token->setValue($this->container['random.low']->generateString(64, \random::LETTERS_AND_NUMBERS));
+        $token->setValue($this->container['random.low']->generateString(64, TokenManipulator::LETTERS_AND_NUMBERS));
         $token->setFeed($feed);
         $token->setUser($DI['user']);
 
@@ -608,6 +644,8 @@ class RegenerateSqliteDb extends Command
 
         $em->persist($token);
         $em->persist($feed);
+
+        return $token;
     }
 
     private function insertOneAggregateToken(EntityManager $em, \Pimple $DI)
@@ -615,9 +653,58 @@ class RegenerateSqliteDb extends Command
         $user = $DI['user'];
 
         $token = new AggregateToken();
-        $token->setValue($this->container['random.low']->generateString(64, \random::LETTERS_AND_NUMBERS));
+        $token->setValue($this->container['random.low']->generateString(64, TokenManipulator::LETTERS_AND_NUMBERS));
         $token->setUser($user);
 
+        $em->persist($token);
+    }
+
+    private function insertTwoTokens(EntityManager $em, \Pimple $DI)
+    {
+        $user = $DI['user'];
+
+        $token = new Token();
+        $token->setValue($this->container['random.low']->generateString(12, TokenManipulator::LETTERS_AND_NUMBERS));
+        $token->setUser($user);
+        $token->setType(TokenManipulator::TYPE_RSS);
+        $token->setData('some data');
+        $DI['token_1'] = $token;
+        $em->persist($token);
+
+        $token = new Token();
+        $token->setValue($this->container['random.low']->generateString(12, TokenManipulator::LETTERS_AND_NUMBERS));
+        $token->setUser($user);
+        $token->setType(TokenManipulator::TYPE_RSS);
+        $token->setData('some data');
+        $token->setExpiration(new \DateTime('+1 year'));
+        $DI['token_2'] = $token;
+        $em->persist($token);
+    }
+
+    private function insertOneInvalidToken(EntityManager $em, \Pimple $DI)
+    {
+        $user = $DI['user'];
+
+        $token = new Token();
+        $token->setValue($this->container['random.low']->generateString(12, TokenManipulator::LETTERS_AND_NUMBERS));
+        $token->setUser($user);
+        $token->setType(TokenManipulator::TYPE_RSS);
+        $token->setData('some data');
+        $token->setExpiration(new \DateTime('-1 day'));
+        $DI['token_invalid'] = $token;
+        $em->persist($token);
+    }
+
+    private function insertOneValidationToken(EntityManager $em, \Pimple $DI)
+    {
+        $user = $DI['user'];
+
+        $token = new Token();
+        $token->setValue($this->container['random.low']->generateString(12, TokenManipulator::LETTERS_AND_NUMBERS));
+        $token->setUser($user);
+        $token->setType(TokenManipulator::TYPE_VALIDATE);
+        $token->setData($DI['basket_1']->getId());
+        $DI['token_validation'] = $token;
         $em->persist($token);
     }
 
@@ -656,7 +743,6 @@ class RegenerateSqliteDb extends Command
         $registration->setUpdated(new \DateTime($when));
         $registration->setCreated(new \DateTime($when));
         $em->persist($registration);
-        $em->flush();
         $em->getEventManager()->addEventSubscriber(new TimestampableListener());
 
         $DI[$name] = $registration;

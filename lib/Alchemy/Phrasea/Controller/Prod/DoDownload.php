@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Http\DeliverDataInterface;
+use Alchemy\Phrasea\Model\Entities\Token;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,16 +33,19 @@ class DoDownload implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/{token}/prepare/', 'controller.prod.do-download:prepareDownload')
+            ->before($app['middleware.token.converter'])
             ->bind('prepare_download')
-            ->assert('token', '[a-zA-Z0-9\.\/]{8,16}');
+            ->assert('token', '[a-zA-Z0-9]{8,32}');
 
         $controllers->match('/{token}/get/', 'controller.prod.do-download:downloadDocuments')
+            ->before($app['middleware.token.converter'])
             ->bind('document_download')
-            ->assert('token', '[a-zA-Z0-9\.\/]{8,16}');
+            ->assert('token', '[a-zA-Z0-9]{8,32}');
 
         $controllers->post('/{token}/execute/', 'controller.prod.do-download:downloadExecute')
+            ->before($app['middleware.token.converter'])
             ->bind('execute_download')
-            ->assert('token', '[a-zA-Z0-9\.\/]{8,16}');
+            ->assert('token', '[a-zA-Z0-9]{8,32}');
 
         return $controllers;
     }
@@ -51,15 +55,13 @@ class DoDownload implements ControllerProviderInterface
      *
      * @param Application $app
      * @param Request     $request
-     * @param String      $token
+     * @param Token       $token
      *
      * @return Response
      */
-    public function prepareDownload(Application $app, Request $request, $token)
+    public function prepareDownload(Application $app, Request $request, Token $token)
     {
-        $datas = $app['tokens']->helloToken($token);
-
-        if (false === $list = @unserialize((string) $datas['datas'])) {
+        if (false === $list = @unserialize($token->getData())) {
             $app->abort(500, 'Invalid datas');
         }
 
@@ -96,15 +98,13 @@ class DoDownload implements ControllerProviderInterface
      *
      * @param Application $app
      * @param Request     $request
-     * @param String      $token
+     * @param Token       $token
      *
      * @return Response
      */
-    public function downloadDocuments(Application $app, Request $request, $token)
+    public function downloadDocuments(Application $app, Request $request, Token $token)
     {
-        $datas = $app['tokens']->helloToken($token);
-
-        if (false === $list = @unserialize((string) $datas['datas'])) {
+        if (false === $list = @unserialize($token->getData())) {
             $app->abort(500, 'Invalid datas');
         }
 
@@ -118,7 +118,7 @@ class DoDownload implements ControllerProviderInterface
             $mime = $subdef['mime'];
             $list['complete'] = true;
         } else {
-            $exportFile = $app['root.path'] . '/tmp/download/' . $datas['value'] . '.zip';
+            $exportFile = $app['root.path'] . '/tmp/download/' . $token->getValue() . '.zip';
             $mime = 'application/zip';
         }
 
@@ -144,22 +144,13 @@ class DoDownload implements ControllerProviderInterface
      *
      * @param Application $app
      * @param Request     $request
-     * @param String      $token
+     * @param Token       $token
      *
      * @return Response
      */
-    public function downloadExecute(Application $app, Request $request, $token)
+    public function downloadExecute(Application $app, Request $request, Token $token)
     {
-        try {
-            $datas = $app['tokens']->helloToken($token);
-        } catch (NotFoundHttpException $e) {
-            return $app->json([
-                'success' => false,
-                'message' => 'Invalid token'
-            ]);
-        }
-
-        if (false === $list = @unserialize((string) $datas['datas'])) {
+        if (false === $list = @unserialize($token->getData())) {
             return $app->json([
                 'success' => false,
                 'message' => 'Invalid datas'
@@ -175,7 +166,7 @@ class DoDownload implements ControllerProviderInterface
             $app,
             $token,
             $list,
-            sprintf($app['root.path'] . '/tmp/download/%s.zip', $datas['value']) // Dest file
+            sprintf($app['root.path'] . '/tmp/download/%s.zip', $token->getValue()) // Dest file
         );
 
         return $app->json([
