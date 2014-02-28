@@ -31,6 +31,9 @@ define([
         },
         'pushCallback': function (callback) {
             callbackStack.push(callback);
+        },
+        'hasCallbacks' : function() {
+            return callbackStack.length > 0;
         }
     }
 });
