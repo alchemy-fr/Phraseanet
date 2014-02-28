@@ -139,6 +139,7 @@ class Tools implements ControllerProviderInterface
                             $request->get('sbas_id'),
                             $request->get('record_id')
                         );
+                        $record->insertTechnicalDatas($app['mediavorus']);
 
                         $media = $app['mediavorus']->guess($tempoFile);
 
