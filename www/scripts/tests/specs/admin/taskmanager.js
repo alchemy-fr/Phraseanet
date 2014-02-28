@@ -56,7 +56,7 @@ define([
                     this.collection = new TaskCollection([]);
                     this.view = new TasksView({
                         collection: this.collection,
-                        el: AdminFieldApp.$tasksListView
+                        el: TaskManagerApp.$tasksListView
                     });
                 });
 
@@ -75,7 +75,7 @@ define([
 
                     this.view = new TasksView({
                         collection: this.collection,
-                        el: AdminFieldApp.$tasksListView
+                        el: TaskManagerApp.$tasksListView
                     });
                 });
 

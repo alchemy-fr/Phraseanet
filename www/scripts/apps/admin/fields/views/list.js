@@ -9,14 +9,14 @@
 
 define([
     "jquery",
-    "jqueryui",
     "underscore",
     "backbone",
     "i18n",
     "common/multiviews",
     "apps/admin/fields/views/listRow",
-    "apps/admin/fields/views/create"
-], function ($, jqueryui, _, Backbone, i18n, MultiViews, FieldListRowView, CreateView) {
+    "apps/admin/fields/views/create",
+    "jquery.ui"
+], function ($, _, Backbone, i18n, MultiViews, FieldListRowView, CreateView) {
     var FieldListView = Backbone.View.extend(_.extend({}, MultiViews, {
         events: {
             "keyup #live_search": "searchAction",

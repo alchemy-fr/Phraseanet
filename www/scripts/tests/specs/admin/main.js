@@ -2,18 +2,16 @@ define([
     'chai',
     'fixtures',
     'jquery',
-    'squire',
     'apps/admin/main/app',
     'apps/admin/main/views/leftPanel',
     'apps/admin/main/views/rightPanel'
-], function (chai, fixtures, $, Squire, App, LeftPanel, RightPanel) {
+], function (chai, fixtures, $, App, LeftPanel, RightPanel) {
     var expect = chai.expect;
     var assert = chai.assert;
     var should = chai.should();
 
     fixtures.path = 'fixtures';
     $("body").append(fixtures.read('admin/main/left-panel.html'));
-    $("right-view").append(fixtures.read('admin/main/right-panel.html'));
 
     App.create();
 
@@ -25,6 +23,14 @@ define([
         });
 
         describe("Views", function () {
+            beforeEach(function() {
+                this.xhr = sinon.useFakeXMLHttpRequest();
+                this.server = sinon.fakeServer.create();
+            });
+            afterEach(function() {
+                this.xhr.restore();
+                this.server.restore();
+            });
             describe("leftView", function () {
                 it("should throw an exception if 'event manager' is missing", function () {
                     expect(function () {
@@ -37,28 +43,23 @@ define([
                 });
 
                 it("should make ajax request if we reload", function () {
-                    var xhr = sinon.useFakeXMLHttpRequest();
                     var requests = [];
-                    xhr.onCreate = function (req) { requests.push(req); };
+                    this.xhr.onCreate = function (req) { requests.push(req); };
 
                     var leftP = new LeftPanel({eventManager : AdminApp.eventManager, treeUrl: "/admin/tree/"});
                     leftP.reloadTree();
 
                     assert.equal(requests.length, 1);
                     assert.equal(requests[0].url, "/admin/tree/");
-
-                    xhr.restore();
                 });
 
                 it("should make ajax request if we click link", function () {
-                    var xhr = sinon.useFakeXMLHttpRequest();
                     var requests = [];
-                    xhr.onCreate = function (req) { requests.push(req); };
+                    this.xhr.onCreate = function (req) { requests.push(req); };
 
                     var leftP = new LeftPanel({eventManager : AdminApp.eventManager, el:$(".left-view"), treeUrl: "toto"});
                     leftP.$('a[target=right]:first').trigger("click");
-                    assert.equal(requests.length, 1);
-                    xhr.restore();
+                    assert.ok(requests.length > 0);
                 });
 
                 it("triggers right view", function () {
@@ -67,18 +68,15 @@ define([
                         trigger = true;
                     });
                     var leftP = new LeftPanel({eventManager : AdminApp.eventManager, el:$(".left-view"), treeUrl: "toto"});
-                    var rightP = new RightPanel({eventManager : AdminApp.eventManager, el:$(".right-view")});
-                    var server = sinon.fakeServer.create();
                     leftP.activeTree();
                     leftP.$('a[target=right]:first').trigger("click");
-                    server.requests[0].respond(
+                    this.server.requests[0].respond(
                         200,
                         { "Content-Type": "application/json" },
                         ''
                     );
 
                     assert.ok(trigger);
-                    server.restore();
                 });
             });
 
@@ -90,14 +88,21 @@ define([
                 });
 
                 it("should make ajax request if we click link", function () {
-                    var xhr = sinon.useFakeXMLHttpRequest();
                     var requests = [];
-                    xhr.onCreate = function (req) { requests.push(req); };
-
+                    this.xhr.onCreate = function (req) { requests.push(req); };
+                    $(".right-view").html('<a href="toto">test</a>');
                     var rightP = new RightPanel({eventManager : AdminApp.eventManager, el:$(".right-view")});
-                    rightP.$('a:not(.no-ajax)').trigger("click");
-                    assert.equal(requests.length, 1);
-                    xhr.restore();
+                    rightP.$('a').trigger('click');
+                    assert.ok(requests.length > 0);
+                });
+
+                it("should make ajax request if we click form", function () {
+                    var requests = [];
+                    this.xhr.onCreate = function (req) { requests.push(req); };
+                    $(".right-view").html('<form method="POST" action="toto"></form>');
+                    var rightP = new RightPanel({eventManager : AdminApp.eventManager, el:$(".right-view")});
+                    rightP.$('form:first').trigger('submit');
+                    assert.ok(requests.length > 0);
                 });
             });
         });

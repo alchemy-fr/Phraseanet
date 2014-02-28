@@ -146,7 +146,6 @@ class TaskManager implements ControllerProviderInterface
         ]);
     }
 
-
     public function getScheduler(Application $app, Request $request)
     {
         if ($request->getRequestFormat() !== "json") {

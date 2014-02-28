@@ -12,7 +12,9 @@ module.exports = function(grunt) {
                     'loadImages=false'
                 ]
             },
-            all: ['www/scripts/tests/index.html']
+            all: [
+                'www/scripts/tests/*.html'
+            ]
         },
         qunit: {
             all: ['www/include/js/tests/*.html']
