@@ -10,7 +10,7 @@
  */
 
 use Symfony\Component\Routing\Generator\UrlGenerator;
-
+use Symfony\Component\HttpFoundation\Request;
 /**
  *
  * @package     Bridge

@@ -327,7 +327,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
                 break;
 
             default:
-                throw new Bridge_Exception_ElementUnknown('Unknown element ' . $type);
+                throw new Bridge_Exception_ElementUnknown('Unknown element ' . $object);
                 break;
         }
 
@@ -348,7 +348,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
                 $container_title = $request->get('f_container_title');
 
                 $new_playlist = $this->_api->newPlaylistListEntry();
-                if (trim($description) !== '')
+                if (trim($container_desc) !== '')
                     $new_playlist->description = $this->_api->newDescription()->setText($container_desc);
                 $new_playlist->title = $this->_api->newTitle()->setText($container_title);
 
@@ -359,7 +359,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
                 break;
             default:
-                throw new Bridge_Exception_ElementUnknown('Unknown element ' . $type);
+                throw new Bridge_Exception_ElementUnknown('Unknown element ' . $container_type);
                 break;
         }
     }
@@ -389,7 +389,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
                         return new Bridge_Api_Youtube_Container($playlistEntry, $destination, null);
                         break;
                     default:
-                        throw new Bridge_Exception_ContainerUnknown('Unknown element ' . $container);
+                        throw new Bridge_Exception_ContainerUnknown('Unknown element ' . $destination);
                         break;
                 }
                 break;
