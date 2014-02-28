@@ -41,25 +41,25 @@ class Upgrade39UsersTest extends \PhraseanetTestCase
     private function assertLastAppliedModelAreOk(EntityManager $em)
     {
         // check update
-        $this->assertEquals(176, $this->loadUser($em, 188)->getLastModel()->getId());
+        $this->assertEquals(176, $this->loadUser($em, 188)->getLastAppliedTemplate()->getId());
         // last_model does not exist
-        $this->assertNull($this->loadUser($em, 105)->getLastModel());
+        $this->assertNull($this->loadUser($em, 105)->getLastAppliedTemplate());
         // last_model is a deleted user
-        $this->assertNull($this->loadUser($em, 36)->getLastModel());
+        $this->assertNull($this->loadUser($em, 36)->getLastAppliedTemplate());
         // no last_model
-        $this->assertNull($this->loadUser($em, 4)->getLastModel());
+        $this->assertNull($this->loadUser($em, 4)->getLastAppliedTemplate());
     }
 
     private function assertTemplateAreOwnedByValidUser(EntityManager $em)
     {
         // check update
-        $this->assertEquals(109, $this->loadUser($em, 160)->getModelOf()->getId());
+        $this->assertEquals(109, $this->loadUser($em, 160)->getTemplateOwner()->getId());
         // owner does not exist
         $this->assertNull($this->loadUser($em, 12));
         // owner has been deleted
         $this->assertNull($this->loadUser($em, 31));
         // no owner
-        $this->assertNull($this->loadUser($em, 11)->getModelOf());
+        $this->assertNull($this->loadUser($em, 11)->getTemplateOwner());
     }
 
     /**

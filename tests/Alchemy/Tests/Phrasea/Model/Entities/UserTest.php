@@ -102,7 +102,7 @@ class UserTest extends \PhraseanetTestCase
     {
         $this->assertFalse($this->user->isTemplate());
         $template = new User();
-        $this->user->setModelOf($template);
+        $this->user->setTemplateOwner($template);
         $this->assertTrue($this->user->isTemplate());
     }
 
@@ -118,12 +118,12 @@ class UserTest extends \PhraseanetTestCase
         $this->assertTrue($this->user->isSpecial());
     }
 
-    public function testSetModelOf()
+    public function testSetTemplateOwner()
     {
         $template = new User();
         $user = new User();
-        $template->setModelOf($user);
-        $this->assertSame($user, $template->getModelOf());
+        $template->setTemplateOwner($user);
+        $this->assertSame($user, $template->getTemplateOwner());
     }
 
     public function genderProvider()

@@ -231,7 +231,7 @@ class RegenerateSqliteDb extends Command
         $user3Deleted->setDeleted(true);
 
         $template = $this->insertOneUser('template', null, true);
-        $template->setModelOf($user1);
+        $template->setTemplateOwner($user1);
 
         $DI['user_1'] = $user1;
         $DI['user_2'] = $user2;

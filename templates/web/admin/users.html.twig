@@ -147,9 +147,9 @@
                         <td>
                             {{usr.getCountry()}}
                         </td>
-                        {% if usr.getLastModel() is not none %}
+                        {% if usr.getLastAppliedTemplate() is not none %}
                             <td>
-                                {{ usr.getLastModel().getLogin() }}
+                                {{ usr.getLastAppliedTemplate().getLogin() }}
                             </td>
                         {% endif %}
                         <td>

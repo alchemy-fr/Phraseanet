@@ -356,7 +356,7 @@ class Users implements ControllerProviderInterface
         $controllers->get('/registrations/', function (Application $app) {
             $app['manipulator.registration']->deleteOldRegistrations();
 
-            $models = $app['manipulator.user']->getRepository()->findModelOf($app['authentication']->getUser());
+            $models = $app['manipulator.user']->getRepository()->findTemplateOwner($app['authentication']->getUser());
 
             $userRegistrations = [];
             foreach ($app['manipulator.registration']->getRepository()->getUserRegistrations(

@@ -159,7 +159,7 @@ class UserManipulatorTest extends \PhraseanetTestCase
         self::$DI['app']['manipulator.user']->setEmail($user, 'testtest.fr');
     }
 
-    public function testInvalidSetModelOf()
+    public function testInvalidSetTemplateOwner()
     {
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
         $this->setExpectedException(

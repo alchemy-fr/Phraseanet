@@ -258,7 +258,7 @@ class User_Query implements User_QueryInterface
         }
 
         if ($this->templates) {
-            $sql .= $this->generate_field_constraints('lastModel', $this->templates);
+            $sql .= $this->generate_field_constraints('last_model', $this->templates);
         }
 
         if (count($this->base_ids) == 0) {
@@ -316,7 +316,7 @@ class User_Query implements User_QueryInterface
         }
 
         if ($this->last_model) {
-            $sql .= ' AND Users.lastModel = ' . $this->app['phraseanet.appbox']->get_connection()->quote($this->last_model) . ' ';
+            $sql .= ' AND Users.last_model = ' . $this->app['phraseanet.appbox']->get_connection()->quote($this->last_model) . ' ';
         }
 
         $sql_like = [];

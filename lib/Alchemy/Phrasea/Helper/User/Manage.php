@@ -198,7 +198,7 @@ class Manage extends Helper
         }
 
         $created_user = $this->app['manipulator.user']->getRepository()->find($name, \random::generatePassword(16));
-        $created_user->setModelOf($this->app['authentication']->getUser());
+        $created_user->setTemplateOwner($this->app['authentication']->getUser());
         $this->usr_id = $this->app['authentication']->getUser()->getId();
 
         return $created_user;

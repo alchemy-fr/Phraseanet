@@ -179,7 +179,7 @@ class User
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="last_model", referencedColumnName="id")
      **/
-    private $lastModel;
+    private $lastAppliedTemplate;
 
     /**
      * @ORM\Column(type="text", name="push_list")
@@ -229,7 +229,7 @@ class User
      *
      * @var User
      **/
-    private $modelOf;
+    private $templateOwner;
 
      /**
      * @ORM\OneToOne(targetEntity="FtpCredential", mappedBy="user", cascade={"all"})
@@ -752,17 +752,17 @@ class User
     /**
      * @return User
      */
-    public function getModelOf()
+    public function getTemplateOwner()
     {
-        return $this->modelOf;
+        return $this->templateOwner;
     }
 
     /**
      * @param User $owner
      */
-    public function setModelOf(User $owner)
+    public function setTemplateOwner(User $owner)
     {
-        $this->modelOf = $owner;
+        $this->templateOwner = $owner;
 
         return $this;
     }
@@ -770,17 +770,17 @@ class User
     /**
      * @return User
      */
-    public function getLastModel()
+    public function getLastAppliedTemplate()
     {
-        return $this->lastModel;
+        return $this->lastAppliedTemplate;
     }
 
     /**
-     * @param User $lastModel
+     * @param User $lastAppliedTemplate
      */
-    public function setLastModel(User $lastModel)
+    public function setLastAppliedTemplate(User $lastAppliedTemplate)
     {
-        $this->lastModel = $lastModel;
+        $this->lastAppliedTemplate = $lastAppliedTemplate;
 
         return $this;
     }
@@ -1016,7 +1016,7 @@ class User
      */
     public function isTemplate()
     {
-        return null !== $this->modelOf;
+        return null !== $this->templateOwner;
     }
 
     /**

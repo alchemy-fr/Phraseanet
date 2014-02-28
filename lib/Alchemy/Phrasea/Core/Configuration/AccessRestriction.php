@@ -11,11 +11,9 @@
 
 namespace Alchemy\Phrasea\Core\Configuration;
 
-use Alchemy\Phrasea\Cache\ArrayCache;
 use Alchemy\Phrasea\Cache\Cache;
 use Alchemy\Phrasea\Model\Entities\Collection;
 use Alchemy\Phrasea\Model\Entities\Databox;
-use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 
 class AccessRestriction
