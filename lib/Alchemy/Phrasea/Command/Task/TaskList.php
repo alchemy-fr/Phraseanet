@@ -28,23 +28,24 @@ class TaskList extends Command
     {
         $output->writeln("<info>Querying the task manager...</info>");
         $errors = 0;
-        $probe = $this->container['task-manager.live-information'];
+        $tasks = $this->container['manipulator.task']->getRepository()->findAll();
+        $infos = $this->container['task-manager.live-information']->getTasks($tasks);
+        $rows = [];
 
-        $rows = array_map(function (Task $task) use ($probe, &$errors) {
-            $info = $probe->getTask($task);
-            $error = $info['actual'] !== $task->getStatus();
-            if ($error) {
+        foreach ($tasks as $task) {
+            $info = isset($infos[$task->getId()]) ? $infos[$task->getId()] : ['actual' => null];
+            if (true === $error = $info['actual'] !== $task->getStatus()) {
                 $errors ++;
             }
 
-            return [
+            $rows[] = [
                 $task->getId(),
                 $task->getName(),
                 $task->getStatus() !== 'started' ? "<comment>".$task->getStatus() . "</comment>" : $task->getStatus(),
                 $error ? "<error>".$info['actual']."</error>" : $info['actual'],
                 $info['process-id'],
             ];
-        }, $this->container['manipulator.task']->getRepository()->findAll());
+        }
 
         $this
             ->getHelperSet()->get('table')
