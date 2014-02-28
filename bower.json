@@ -27,7 +27,7 @@
         "autobahnjs": "~0.8.0",
         "when": "~2.7.0",
         "web-socket-js": "~1.0.1",
-        "jquery.treeview" : "1.4.1",
+        "jquery.treeview": "1.4.1",
         "jquery.tooltip": "https://github.com/meghna/jquery-tooltip.git#master"
     },
     "devDependencies": {
@@ -38,5 +38,8 @@
         "sinon-chai": "~2.5",
         "qunit": "https://github.com/jquery/qunit.git#1.11.0",
         "js-fixtures": "https://github.com/badunk/js-fixtures/archive/master.zip"
+    },
+    "resolutions": {
+        "jquery": "1.8.3"
     }
 }
