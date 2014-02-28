@@ -64,10 +64,10 @@ class User extends \Alchemy\Phrasea\Model\Entities\User implements \Doctrine\ORM
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'login', 'email', 'password', 'nonce', 'saltedPassword', 'firstName', 'lastName', 'gender', 'address', 'city', 'country', 'zipCode', 'geonameId', 'locale', 'timezone', 'job', 'activity', 'company', 'phone', 'fax', 'admin', 'guest', 'mailNotificationsActivated', 'requestNotificationsActivated', 'ldapCreated', 'lastModel', 'pushList', 'canChangeProfil', 'canChangeFtpProfil', 'lastConnection', 'mailLocked', 'deleted', 'created', 'updated', 'modelOf', 'ftpCredential', 'queries', 'settings', 'notificationSettings');
+            return array('__isInitialized__', 'id', 'login', 'email', 'password', 'nonce', 'saltedPassword', 'firstName', 'lastName', 'gender', 'address', 'city', 'country', 'zipCode', 'geonameId', 'locale', 'timezone', 'job', 'activity', 'company', 'phone', 'fax', 'admin', 'guest', 'mailNotificationsActivated', 'requestNotificationsActivated', 'ldapCreated', 'lastAppliedTemplate', 'pushList', 'canChangeProfil', 'canChangeFtpProfil', 'lastConnection', 'mailLocked', 'deleted', 'created', 'updated', 'templateOwner', 'ftpCredential', 'queries', 'settings', 'notificationSettings');
         }
 
-        return array('__isInitialized__', 'id', 'login', 'email', 'password', 'nonce', 'saltedPassword', 'firstName', 'lastName', 'gender', 'address', 'city', 'country', 'zipCode', 'geonameId', 'locale', 'timezone', 'job', 'activity', 'company', 'phone', 'fax', 'admin', 'guest', 'mailNotificationsActivated', 'requestNotificationsActivated', 'ldapCreated', 'lastModel', 'pushList', 'canChangeProfil', 'canChangeFtpProfil', 'lastConnection', 'mailLocked', 'deleted', 'created', 'updated', 'modelOf', 'ftpCredential', 'queries', 'settings', 'notificationSettings');
+        return array('__isInitialized__', 'id', 'login', 'email', 'password', 'nonce', 'saltedPassword', 'firstName', 'lastName', 'gender', 'address', 'city', 'country', 'zipCode', 'geonameId', 'locale', 'timezone', 'job', 'activity', 'company', 'phone', 'fax', 'admin', 'guest', 'mailNotificationsActivated', 'requestNotificationsActivated', 'ldapCreated', 'lastAppliedTemplate', 'pushList', 'canChangeProfil', 'canChangeFtpProfil', 'lastConnection', 'mailLocked', 'deleted', 'created', 'updated', 'templateOwner', 'ftpCredential', 'queries', 'settings', 'notificationSettings');
     }
 
     /**
@@ -741,45 +741,45 @@ class User extends \Alchemy\Phrasea\Model\Entities\User implements \Doctrine\ORM
     /**
      * {@inheritDoc}
      */
-    public function getModelOf()
+    public function getTemplateOwner()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getModelOf', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTemplateOwner', array());
 
-        return parent::getModelOf();
+        return parent::getTemplateOwner();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function setModelOf(\Alchemy\Phrasea\Model\Entities\User $owner)
+    public function setTemplateOwner(\Alchemy\Phrasea\Model\Entities\User $owner)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setModelOf', array($owner));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setTemplateOwner', array($owner));
 
-        return parent::setModelOf($owner);
+        return parent::setTemplateOwner($owner);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getLastModel()
+    public function getLastAppliedTemplate()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLastModel', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLastAppliedTemplate', array());
 
-        return parent::getLastModel();
+        return parent::getLastAppliedTemplate();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function setLastModel(\Alchemy\Phrasea\Model\Entities\User $lastModel)
+    public function setLastAppliedTemplate(\Alchemy\Phrasea\Model\Entities\User $lastAppliedTemplate)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLastModel', array($lastModel));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLastAppliedTemplate', array($lastAppliedTemplate));
 
-        return parent::setLastModel($lastModel);
+        return parent::setLastAppliedTemplate($lastAppliedTemplate);
     }
 
     /**
