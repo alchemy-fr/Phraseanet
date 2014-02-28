@@ -39,6 +39,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     protected $app;
 
+    const OBJECT_TYPE_USER = 'http://api.phraseanet.com/api/objects/user';
     const OBJECT_TYPE_STORY = 'http://api.phraseanet.com/api/objects/story';
     const OBJECT_TYPE_STORY_METADATA_BAG = 'http://api.phraseanet.com/api/objects/story-metadata-bag';
 
@@ -803,14 +804,16 @@ class API_V1_adapter extends API_V1_Abstract
             }
         }
 
-        $usr_id = null;
+        $usr_id = $user = null;
         if ($file->getSession()->getUser($this->app)) {
-            $usr_id = $file->getSession()->getUser($this->app)->get_id();
+            $user = $file->getSession()->getUser($this->app);
+            $usr_id = $user->get_id();
         }
 
         $session = array(
             'id'     => $file->getSession()->getId(),
             'usr_id' => $usr_id,
+            'user'   => $user ? $this->list_user($user) : null,
         );
 
         return array(
@@ -1390,6 +1393,7 @@ class API_V1_adapter extends API_V1_Abstract
                         'can_agree'      => $participant->getCanAgree(),
                         'can_see_others' => $participant->getCanSeeOthers(),
                         'readonly'       => $user->get_id() != $this->app['authentication']->getUser()->get_id(),
+                        'user'           => $this->list_user($user),
                     ),
                     'agreement'      => $validation_datas->getAgreement(),
                     'updated_on'     => $validation_datas->getUpdated()->format(DATE_ATOM),
@@ -1808,10 +1812,12 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $ret = array(
             'basket_id'         => $basket->getId(),
+            'owner'             => $this->list_user($basket->getOwner($this->app)),
             'created_on'        => $basket->getCreated()->format(DATE_ATOM),
             'description'       => (string) $basket->getDescription(),
             'name'              => $basket->getName(),
             'pusher_usr_id'     => $basket->getPusherId(),
+            'pusher'            => $basket->getPusher($this->app) ? $this->list_user($basket->getPusher($this->app)) : null,
             'updated_on'        => $basket->getUpdated()->format(DATE_ATOM),
             'unread'            => !$basket->getIsRead(),
             'validation_basket' => !!$basket->getValidation()
@@ -1831,6 +1837,7 @@ class API_V1_adapter extends API_V1_Abstract
                     'can_agree'      => $participant->getCanAgree(),
                     'can_see_others' => $participant->getCanSeeOthers(),
                     'readonly'       => $user->get_id() != $this->app['authentication']->getUser()->get_id(),
+                    'user'           => $this->list_user($user),
                 );
             }
 
@@ -1842,11 +1849,12 @@ class API_V1_adapter extends API_V1_Abstract
 
             $ret = array_merge(
                     array(
-                'validation_users'     => $users,
-                'expires_on'           => $expires_on_atom,
-                'validation_infos'     => $basket->getValidation()->getValidationString($this->app, $this->app['authentication']->getUser()),
-                'validation_confirmed' => $basket->getValidation()->getParticipant($this->app['authentication']->getUser(), $this->app)->getIsConfirmed(),
-                'validation_initiator' => $basket->getValidation()->isInitiator($this->app['authentication']->getUser()),
+                'validation_users'          => $users,
+                'expires_on'                => $expires_on_atom,
+                'validation_infos'          => $basket->getValidation()->getValidationString($this->app, $this->app['authentication']->getUser()),
+                'validation_confirmed'      => $basket->getValidation()->getParticipant($this->app['authentication']->getUser(), $this->app)->getIsConfirmed(),
+                'validation_initiator'      => $basket->getValidation()->isInitiator($this->app['authentication']->getUser()),
+                'validation_initiator_user' => $this->list_user($basket->getValidation()->getInitiator($this->app)),
                     ), $ret
             );
         }
@@ -1972,6 +1980,7 @@ class API_V1_adapter extends API_V1_Abstract
         }
 
         return array(
+            '@entity@'        => self::OBJECT_TYPE_USER,
             'id'              => $user->get_id(),
             'email'           => $user->get_email() ?: null,
             'login'           => $user->get_login() ?: null,

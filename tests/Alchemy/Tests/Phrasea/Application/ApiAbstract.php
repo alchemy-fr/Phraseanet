@@ -13,7 +13,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 {
     /**
      *
-     * @var Symfony\Component\HttpKernel\Client
+     * @var \Symfony\Component\HttpKernel\Client
      */
     protected $client;
 
@@ -1160,7 +1160,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey("baskets", $content['response']);
 
         foreach ($content['response']['baskets'] as $basket) {
-            $this->evaluateGoodBasket($basket);
+            $this->evaluateGoodBasket($basket, self::$DI['user_notAdmin']);
         }
 
         $route = '/api/v1/records/24892534/51654651553/related/';
@@ -1351,7 +1351,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey("baskets", $content['response']);
 
         foreach ($content['response']['baskets'] as $basket) {
-            $this->evaluateGoodBasket($basket);
+            $this->evaluateGoodBasket($basket, self::$DI['user']);
         }
     }
 
@@ -1375,7 +1375,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->assertEquals(1, count($content['response']));
         $this->assertArrayHasKey("basket", $content['response']);
-        $this->evaluateGoodBasket($content['response']['basket']);
+        $this->evaluateGoodBasket($content['response']['basket'], self::$DI['user_notAdmin']);
         $this->assertEquals('un Joli Nom', $content['response']['basket']['name']);
     }
 
@@ -1405,7 +1405,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->assertArrayHasKey("basket_elements", $content['response']);
         $this->assertArrayHasKey("basket", $content['response']);
-        $this->evaluateGoodBasket($content['response']['basket']);
+        $this->evaluateGoodBasket($content['response']['basket'], self::$DI['user']);
 
         foreach ($content['response']['basket_elements'] as $basket_element) {
             $this->assertArrayHasKey('basket_element_id', $basket_element);
@@ -1442,7 +1442,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->assertEquals(1, count((array) $content['response']));
         $this->assertArrayHasKey("basket", $content['response']);
-        $this->evaluateGoodBasket($content['response']['basket']);
+        $this->evaluateGoodBasket($content['response']['basket'], self::$DI['user']);
 
         $this->assertEquals($content['response']['basket']['name'], 'un Joli Nom');
 
@@ -1456,7 +1456,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->assertArrayHasKey("basket", $content['response']);
 
-        $this->evaluateGoodBasket($content['response']['basket']);
+        $this->evaluateGoodBasket($content['response']['basket'], self::$DI['user']);
 
         $this->assertEquals($content['response']['basket']['name'], 'un Joli Nom');
 
@@ -1468,7 +1468,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->assertEquals(1, count((array) $content['response']));
         $this->assertArrayHasKey("basket", $content['response']);
-        $this->evaluateGoodBasket($content['response']['basket']);
+        $this->evaluateGoodBasket($content['response']['basket'], self::$DI['user']);
         $this->assertEquals($content['response']['basket']['name'], '<strong>aéaa');
     }
 
@@ -1496,7 +1496,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertEquals(1, count((array) $content['response']));
 
         $this->assertArrayHasKey("basket", $content['response']);
-        $this->evaluateGoodBasket($content['response']['basket']);
+        $this->evaluateGoodBasket($content['response']['basket'], self::$DI['user']);
         $this->assertEquals($content['response']['basket']['description'], 'une belle desc');
     }
 
@@ -1523,7 +1523,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $found = false;
         foreach ($content['response']['baskets'] as $basket) {
-            $this->evaluateGoodBasket($basket);
+            $this->evaluateGoodBasket($basket, self::$DI['user']);
             $found = true;
         }
         if (!$found) {
@@ -2037,6 +2037,15 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->assertArrayHasKey('id', $item);
         $this->assertArrayHasKey('quarantine_session', $item);
+
+        $session = $item['quarantine_session'];
+        $this->assertArrayHasKey('id', $session);
+        $this->assertArrayHasKey('usr_id', $session);
+        $this->assertArrayHasKey('user', $session);
+        if ($session['user'] !== null) {
+            $this->evaluateGoodUserItem($session['user'], self::$DI['user_notAdmin']);
+        }
+
         $this->assertArrayHasKey('base_id', $item);
         $this->assertArrayHasKey('original_name', $item);
         $this->assertArrayHasKey('sha256', $item);
@@ -2070,6 +2079,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     protected function evaluateGoodUserItem($data, \User_Adapter $user)
     {
         foreach (array(
+            '@entity@'        => \API_V1_adapter::OBJECT_TYPE_USER,
             'id'              => $user->get_id(),
             'email'           => $user->get_email() ?: null,
             'login'           => $user->get_login() ?: null,
@@ -2091,7 +2101,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             'updated_on'      => $user->get_modification_date() ? $user->get_modification_date()->format(DATE_ATOM) : null,
             'locale'          => $user->get_locale() ?: null,
         ) as $key => $value) {
-            $this->assertArrayHasKey($key, $data);
+            $this->assertArrayHasKey($key, $data, 'Assert key is present '.$key);
             if ($value) {
                 $this->assertEquals($value, $data[$key], 'Check key '.$key);
             }
@@ -2434,9 +2444,13 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertEquals(405, $response->getStatusCode(), 'Test status code 405 ' . $response->getContent());
     }
 
-    protected function evaluateGoodBasket($basket)
+    protected function evaluateGoodBasket($basket, \User_Adapter $user)
     {
         $this->assertTrue(is_array($basket));
+        $this->assertArrayHasKey('basket_id', $basket);
+        $this->assertArrayHasKey('owner', $basket);
+        $this->evaluateGoodUserItem($basket['owner'], $user);
+        $this->assertArrayHasKey('pusher', $basket);
         $this->assertArrayHasKey('created_on', $basket);
         $this->assertArrayHasKey('description', $basket);
         $this->assertArrayHasKey('name', $basket);
@@ -2446,6 +2460,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         if (!is_null($basket['pusher_usr_id'])) {
             $this->assertTrue(is_int($basket['pusher_usr_id']));
+            $this->evaluateGoodUserItem($basket['pusher'], self::$DI['user_notAdmin']);
         }
 
         $this->assertTrue(is_string($basket['name']));
