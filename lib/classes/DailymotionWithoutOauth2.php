@@ -75,7 +75,7 @@ class DailymotionWithoutOauth2 extends Dailymotion
      *
      * @return String the resulting URL
      */
-    public function uploadFile($filePath, $oauth_token)
+    public function sendFile($filePath, $oauth_token)
     {
         $result = $this->call('file.upload', array(), $oauth_token);
         $timeout = $this->timeout;
