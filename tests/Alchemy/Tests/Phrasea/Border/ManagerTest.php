@@ -408,7 +408,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->getMock();
 
         $manager = new ManagerTester(self::$DI['app']);
-        $manager->setPdfToText($pdfToText);
+        self::$DI['app']['phraseanet.metadata-reader']->setPdfToText($pdfToText);
 
         $pdfToText->expects($this->once())
             ->method('getText')
