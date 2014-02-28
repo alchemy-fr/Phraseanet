@@ -19,7 +19,8 @@ define([
 ], function ($, _, Backbone) {
     var RightPanelView = Backbone.View.extend({
         initialize: function (options) {
-            if (false === "eventManager" in options) {
+            options = options || {};
+            if (false === ("eventManager" in options)) {
                 throw "You must set en event manager";
             }
             this.delegateEvents(this.events);

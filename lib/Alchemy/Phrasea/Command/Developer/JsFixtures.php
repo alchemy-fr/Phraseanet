@@ -41,6 +41,8 @@ class JsFixtures extends Command
         $this->writeResponse($output, 'GET', '/login/', '/home/login/index.html');
         $this->writeResponse($output, 'GET', '/admin/fields/'.$sbasId , '/admin/fields/index.html', true);
         $this->writeResponse($output, 'GET', '/admin/task-manager/tasks', '/admin/task-manager/index.html', true);
+        $this->writeResponse($output, 'GET', '/admin/', '/admin/main/left-panel.html', true);
+        $this->writeResponse($output, 'GET', '/admin/databoxes/', '/admin/main/right-panel.html', true);
 
         $this->copy($output, [
             ['source' => 'login/common/templates.html.twig', 'target' => 'home/login/templates.html'],

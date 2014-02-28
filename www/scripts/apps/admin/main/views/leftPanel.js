@@ -16,11 +16,16 @@ define([
 ], function ($, _, Backbone, SubscriberManager) {
     var LeftPanelView = Backbone.View.extend({
         initialize: function (options) {
-            if (false === "eventManager" in options) {
-                throw "You must set en event manager";
+            options = options || {};
+            if (false === ("eventManager" in options)) {
+                throw "You must set an event manager";
+            }
+            if (false === ("treeUrl" in options)) {
+                throw "You must set the tree url";
             }
             this.delegateEvents(this.events);
             this.eventManager = options.eventManager;
+            this.treeUrl = options.treeUrl;
             this.$treeview = $("#FNDR", this.$el);
 
             var $this = this;
@@ -39,7 +44,6 @@ define([
             "click a[target=right]": "clickAction"
         },
         activeTree: function() {
-            // tree view jquery module is not loaded as a module
             this.$treeview.treeview({
                 collapsed: true,
                 animated: "medium"
@@ -89,7 +93,6 @@ define([
             });
 
             if ("undefined" !== typeof link.data("ws-topic")) {
-                console.log(link.data("ws-topic"));
                 SubscriberManager.register(link.data("ws-topic"));
             }
 
