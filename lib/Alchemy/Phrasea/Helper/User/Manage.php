@@ -111,11 +111,11 @@ class Manage extends Helper
             ->limit($offset_start, $results_quantity)
             ->execute();
 
-        if (null === $invite = $this->app['manipulator.user']->getRepository()->findByLogin(User::USER_GUEST)) {
+        if (null === $invite = $this->app['repo.users']->findByLogin(User::USER_GUEST)) {
             $invite = $this->app['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
         }
 
-        if (null == $autoregister = $this->app['manipulator.user']->getRepository()->findByLogin(User::USER_AUTOREGISTER)) {
+        if (null == $autoregister = $this->app['repo.users']->findByLogin(User::USER_AUTOREGISTER)) {
             $autoregister = $this->app['manipulator.user']->createUser(User::USER_AUTOREGISTER, User::USER_AUTOREGISTER);
         }
 
@@ -146,7 +146,7 @@ class Manage extends Helper
             throw new \Exception_InvalidArgument('Invalid mail address');
         }
 
-        if (null === $createdUser = $this->app['manipulator.user']->getRepository()->findByEmail($email)) {
+        if (null === $createdUser = $this->app['repo.users']->findByEmail($email)) {
             $sendCredentials = !!$this->request->get('send_credentials', false);
             $validateMail = !!$this->request->get('validate_mail', false);
 
@@ -197,7 +197,7 @@ class Manage extends Helper
             throw new \Exception_InvalidArgument('Invalid template name');
         }
 
-        $created_user = $this->app['manipulator.user']->getRepository()->find($name, \random::generatePassword(16));
+        $created_user = $this->app['repo.users']->find($name, \random::generatePassword(16));
         $created_user->setTemplateOwner($this->app['authentication']->getUser());
         $this->usr_id = $this->app['authentication']->getUser()->getId();
 

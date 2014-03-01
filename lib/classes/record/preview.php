@@ -170,7 +170,7 @@ class record_preview extends record_adapter
                 }
                 break;
             case "FEED":
-                $entry = $app['EM']->getRepository('Phraseanet:FeedEntry')->find($contId);
+                $entry = $app['repo.feed-entries']->find($contId);
 
                 $this->container = $entry;
                 $this->total = count($entry->getItems());
@@ -371,7 +371,7 @@ class record_preview extends record_adapter
                     [
                         'final' => []
                         , 'comment' => []
-                        , 'user' => $row['usr_id'] ? $this->app['manipulator.user']->getRepository()->find($row['usr_id']) : null
+                        , 'user' => $row['usr_id'] ? $this->app['repo.users']->find($row['usr_id']) : null
                 ];
             }
 

@@ -173,7 +173,7 @@ class Account implements ControllerProviderInterface
         if (null !== $token = $request->query->get('token')) {
             try {
                 $datas = $app['tokens']->helloToken($token);
-                $user = $app['manipulator.user']->getRepository()->find((int) $datas['usr_id']);
+                $user = $app['repo.users']->find((int) $datas['usr_id']);
                 $user->setEmail($datas['datas']);
                 $app['tokens']->removeToken($token);
 

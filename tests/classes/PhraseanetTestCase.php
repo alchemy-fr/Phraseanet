@@ -99,49 +99,49 @@ abstract class PhraseanetTestCase extends WebTestCase
         });
 
         self::$DI['user'] = self::$DI->share(function ($DI) {
-            return $DI['app']['manipulator.user']->getRepository()->find(self::$fixtureIds['user']['test_phpunit']);
+            return $DI['app']['repo.users']->find(self::$fixtureIds['user']['test_phpunit']);
         });
 
         self::$DI['user_1'] = self::$DI->share(function ($DI) {
-            return $DI['app']['manipulator.user']->getRepository()->find(self::$fixtureIds['user']['user_1']);
+            return $DI['app']['repo.users']->find(self::$fixtureIds['user']['user_1']);
         });
 
         self::$DI['user_2'] = self::$DI->share(function ($DI) {
-            return $DI['app']['manipulator.user']->getRepository()->find(self::$fixtureIds['user']['user_2']);
+            return $DI['app']['repo.users']->find(self::$fixtureIds['user']['user_2']);
         });
 
         self::$DI['user_3'] = self::$DI->share(function ($DI) {
-            return $DI['app']['manipulator.user']->getRepository()->find(self::$fixtureIds['user']['user_3']);
+            return $DI['app']['repo.users']->find(self::$fixtureIds['user']['user_3']);
         });
 
         self::$DI['user_guest'] = self::$DI->share(function ($DI) {
-            return $DI['app']['manipulator.user']->getRepository()->find(self::$fixtureIds['user']['user_guest']);
+            return $DI['app']['repo.users']->find(self::$fixtureIds['user']['user_guest']);
         });
 
         self::$DI['user_notAdmin'] = self::$DI->share(function ($DI) {
-            return $DI['app']['manipulator.user']->getRepository()->find(self::$fixtureIds['user']['test_phpunit_not_admin']);
+            return $DI['app']['repo.users']->find(self::$fixtureIds['user']['test_phpunit_not_admin']);
         });
 
         self::$DI['user_alt1'] = self::$DI->share(function ($DI) {
-            return $DI['app']['manipulator.user']->getRepository()->find(self::$fixtureIds['user']['test_phpunit_alt1']);
+            return $DI['app']['repo.users']->find(self::$fixtureIds['user']['test_phpunit_alt1']);
         });
 
         self::$DI['user_alt2'] = self::$DI->share(function ($DI) {
-            return $DI['app']['manipulator.user']->getRepository()->find(self::$fixtureIds['user']['test_phpunit_alt2']);
+            return $DI['app']['repo.users']->find(self::$fixtureIds['user']['test_phpunit_alt2']);
         });
 
         self::$DI['user_template'] = self::$DI->share(function ($DI) {
-            return $DI['app']['manipulator.user']->getRepository()->find(self::$fixtureIds['user']['user_template']);
+            return $DI['app']['repo.users']->find(self::$fixtureIds['user']['user_template']);
         });
 
         self::$DI['registration_1'] = self::$DI->share(function ($DI) {
-            return $DI['app']['manipulator.registration']->getRepository()->find(self::$fixtureIds['registrations']['registration_1']);
+            return $DI['app']['repo.registrations']->find(self::$fixtureIds['registrations']['registration_1']);
         });
         self::$DI['registration_2'] = self::$DI->share(function ($DI) {
-            return $DI['app']['manipulator.registration']->getRepository()->find(self::$fixtureIds['registrations']['registration_2']);
+            return $DI['app']['repo.registrations']->find(self::$fixtureIds['registrations']['registration_2']);
         });
         self::$DI['registration_3'] = self::$DI->share(function ($DI) {
-            return $DI['app']['manipulator.registration']->getRepository()->find(self::$fixtureIds['registrations']['registration_3']);
+            return $DI['app']['repo.registrations']->find(self::$fixtureIds['registrations']['registration_3']);
         });
 
         self::$DI['oauth2-app-user'] = self::$DI->share(function ($DI) {
@@ -653,6 +653,20 @@ abstract class PhraseanetTestCase extends WebTestCase
     protected function createMonologMock()
     {
         return $this->getMockBuilder('Monolog\Logger')
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    protected function createEntityRepositoryMock()
+    {
+        return $this->getMockBuilder('Doctrine\ORM\EntityRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    protected function createEntityManagerMock()
+    {
+        return $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
     }

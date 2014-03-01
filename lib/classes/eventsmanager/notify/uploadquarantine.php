@@ -183,7 +183,7 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
      */
     public function is_available($usr_id)
     {
-        if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
+        if (null === $user = $this->app['repo.users']->find($usr_id)) {
             return false;
         }
 

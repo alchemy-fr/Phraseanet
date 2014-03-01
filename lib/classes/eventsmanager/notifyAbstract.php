@@ -34,7 +34,7 @@ abstract class eventsmanager_notifyAbstract extends eventsmanager_eventAbstract
 
     protected function shouldSendNotificationFor($usrId)
     {
-        $user = $this->app['manipulator.user']->getRepository()->find($usrId);
+        $user = $this->app['repo.users']->find($usrId);
 
         return $this->app['settings']->getUserNotificationSetting($user, get_class($this));
     }

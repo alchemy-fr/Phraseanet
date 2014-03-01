@@ -356,10 +356,10 @@ class Users implements ControllerProviderInterface
         $controllers->get('/registrations/', function (Application $app) {
             $app['manipulator.registration']->deleteOldRegistrations();
 
-            $models = $app['manipulator.user']->getRepository()->findTemplateOwner($app['authentication']->getUser());
+            $models = $app['repo.users']->findTemplateOwner($app['authentication']->getUser());
 
             $userRegistrations = [];
-            foreach ($app['manipulator.registration']->getRepository()->getUserRegistrations(
+            foreach ($app['repo.registrations']->getUserRegistrations(
                  $app['authentication']->getUser(),
                  $app['acl']->get($app['authentication']->getUser())->get_granted_base(['canadmin'])
             ) as $registration) {
@@ -422,12 +422,12 @@ class Users implements ControllerProviderInterface
                 $cacheToUpdate = $done = [];
 
                 foreach ($templates as $usr => $template_id) {
-                    if (null === $user = $app['manipulator.user']->getRepository()->find($usr)) {
+                    if (null === $user = $app['repo.users']->find($usr)) {
                         $app->abort(400, srpintf("User with id % in provided in 'template' request variable could not be found", $usr));
                     }
                     $cacheToUpdate[$usr] = $user;
 
-                    $user_template = $app['manipulator.user']->getRepository()->find($template_id);
+                    $user_template = $app['repo.users']->find($template_id);
                     $collections = $app['acl']->get($user_template)->get_granted_base();
                     $baseIds = array_keys($collections);
 
@@ -441,11 +441,11 @@ class Users implements ControllerProviderInterface
                 }
 
                 foreach ($deny as $usr => $bases) {
-                    if (null === $user = $app['manipulator.user']->getRepository()->find($usr)) {
+                    if (null === $user = $app['repo.users']->find($usr)) {
                         $app->abort(400, srpintf("User with id % in provided in 'deny' request variable could not be found", $usr));
                     }
                     $cacheToUpdate[$usr] = $user;
-                    foreach ($app['manipulator.registration']->getRepository()->getUserRegistrations(
+                    foreach ($app['repo.registrations']->getUserRegistrations(
                         $user,
                         array_map(function ($baseId) use ($app) {
                             return \collection::get_from_base_id($app, $baseId);
@@ -457,11 +457,11 @@ class Users implements ControllerProviderInterface
                 }
 
                 foreach ($accept as $usr => $bases) {
-                    if (null === $user = $app['manipulator.user']->getRepository()->find($usr)) {
+                    if (null === $user = $app['repo.users']->find($usr)) {
                         $app->abort(400, srpintf("User with id % in provided in 'accept' request variable could not be found", $usr));
                     }
                     $cacheToUpdate[$usr] = $user;
-                    foreach ($app['manipulator.registration']->getRepository()->getUserRegistrations(
+                    foreach ($app['repo.registrations']->getUserRegistrations(
                         $user,
                         array_map(function ($baseId) use ($app) {
                             return \collection::get_from_base_id($app, $baseId);
@@ -482,7 +482,7 @@ class Users implements ControllerProviderInterface
                 unset ($cacheToUpdate);
 
                 foreach ($done as $usr => $bases) {
-                    $user = $app['manipulator.user']->getRepository()->find($usr);
+                    $user = $app['repo.users']->find($usr);
                     $acceptColl = $denyColl = [];
 
                     foreach ($bases as $bas => $isok) {
@@ -599,7 +599,7 @@ class Users implements ControllerProviderInterface
                         } elseif (in_array($loginToAdd, $loginNew)) {
                             $out['errors'][] = $app->trans("Login %login% is already defined in the file at line %line%", ['%login%' => $loginToAdd, '%line%' => $nbLine]);
                         } else {
-                            if (null !== $app['manipulator.user']->getRepository()->findByLogin($loginToAdd)) {
+                            if (null !== $app['repo.users']->findByLogin($loginToAdd)) {
                                 $out['errors'][] = $app->trans("Login %login% already exists in database", ['%login%' => $loginToAdd]);
                             } else {
                                 $loginValid = true;
@@ -612,7 +612,7 @@ class Users implements ControllerProviderInterface
 
                         if ($mailToAdd === "") {
                             $out['errors'][] = $app->trans("Mail line %line% is empty", ['%line%' => $nbLine + 1]);
-                        } elseif (null !== $app['manipulator.user']->getRepository()->findByEmail($mailToAdd)) {
+                        } elseif (null !== $app['repo.users']->findByEmail($mailToAdd)) {
                             $out['errors'][] = $app->trans("Email '%email%' for login '%login%' already exists in database", ['%email%' => $mailToAdd, '%login%' => $loginToAdd]);
                         } else {
                             $mailValid = true;
@@ -727,8 +727,8 @@ class Users implements ControllerProviderInterface
                 if (isset($curUser['usr_login']) && trim($curUser['usr_login']) !== ''
                         && isset($curUser['usr_password']) && trim($curUser['usr_password']) !== ''
                         && isset($curUser['usr_mail']) && trim($curUser['usr_mail']) !== '') {
-                    if (null === $app['manipulator.user']->getRepository()->findByLogin($curUser['usr_login'])
-                            && false === $app['manipulator.user']->getRepository()->findByEmail($curUser['usr_mail'])) {
+                    if (null === $app['repo.users']->findByLogin($curUser['usr_login'])
+                            && false === $app['repo.users']->findByEmail($curUser['usr_mail'])) {
 
                         $newUser = $app['manipulator.user']->createUser($curUser['usr_login'], $curUser['usr_password'], $curUser['usr_mail']);
 
@@ -782,7 +782,7 @@ class Users implements ControllerProviderInterface
                         }
 
                         $app['acl']->get($newUser)->apply_model(
-                            $app['manipulator.user']->getRepository()->find($model), array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['manage']))
+                            $app['repo.users']->find($model), array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['manage']))
                         );
 
                         $nbCreation++;

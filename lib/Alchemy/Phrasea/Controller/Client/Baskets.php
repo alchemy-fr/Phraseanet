@@ -61,7 +61,7 @@ class Baskets implements ControllerProviderInterface
     public function deleteBasketElement(Application $app, Request $request)
     {
         try {
-            $repository = $app['EM']->getRepository('Phraseanet:BasketElement');
+            $repository = $app['repo.basket-elements'];
             $basketElement = $repository->findUserElement($request->request->get('p0'), $app['authentication']->getUser());
             $app['EM']->remove($basketElement);
             $app['EM']->flush();
@@ -167,7 +167,7 @@ class Baskets implements ControllerProviderInterface
     public function getBaskets(Application $app, Request $request)
     {
         $selectedBasketId = trim($request->get('courChuId', ''));
-        $baskets = new ArrayCollection($app['EM']->getRepository('Phraseanet:Basket')->findActiveByUser($app['authentication']->getUser()));
+        $baskets = new ArrayCollection($app['repo.baskets']->findActiveByUser($app['authentication']->getUser()));
         $selectedBasket = null;
 
         if ('' === $selectedBasketId && $baskets->count() > 0) {
@@ -202,7 +202,7 @@ class Baskets implements ControllerProviderInterface
     public function checkBaskets(Application $app, Request $request)
     {
         $noview = 0;
-        $repository = $app['EM']->getRepository('Phraseanet:Basket');
+        $repository = $app['repo.baskets'];
 
         /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
         $baskets = $repository->findActiveByUser($app['authentication']->getUser());

@@ -132,7 +132,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
     {
         $sx = simplexml_load_string($datas);
 
-        $entry = $this->app['EM']->getRepository('Phraseanet:FeedEntry')->find((int) $sx->entry_id);
+        $entry = $this->app['repo.feed-entries']->find((int) $sx->entry_id);
 
         if (null === $entry) {
             return [];

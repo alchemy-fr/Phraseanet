@@ -187,7 +187,7 @@ class Collection implements ControllerProviderInterface
         }
 
         $admins = array_map(function ($usrId) use ($app) {
-            if (null === $user = $app['manipulator.user']->getRepository()->find($usrId)) {
+            if (null === $user = $app['repo.users']->find($usrId)) {
                 throw new RuntimeException(sprintf('Invalid usrId %s provided.', $usrId));
             }
 

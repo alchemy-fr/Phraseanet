@@ -335,7 +335,7 @@ class RegenerateSqliteDb extends Command
 
     private function getUser()
     {
-        if (null === $user = $this->container['manipulator.user']->getRepository()->findByLogin('test_phpunit')) {
+        if (null === $user = $this->container['repo.users']->findByLogin('test_phpunit')) {
             $user = $this->container['manipulator.user']->createUser('test_phpunit', \random::generatePassword(), 'noone@example.com', true);
         }
 
@@ -344,7 +344,7 @@ class RegenerateSqliteDb extends Command
 
     private function getUserAlt1()
     {
-        if (null === $user = $this->container['manipulator.user']->getRepository()->findByLogin('test_phpunit_alt1')) {
+        if (null === $user = $this->container['repo.users']->findByLogin('test_phpunit_alt1')) {
             $user = $this->container['manipulator.user']->createUser('test_phpunit_alt1', \random::generatePassword(), 'noonealt1@example.com', false);
         }
 
@@ -353,7 +353,7 @@ class RegenerateSqliteDb extends Command
 
     private function getUserAlt2()
     {
-        if (null === $user = $this->container['manipulator.user']->getRepository()->findByLogin('test_phpunit_alt2')) {
+        if (null === $user = $this->container['repo.users']->findByLogin('test_phpunit_alt2')) {
             $user = $this->container['manipulator.user']->createUser('test_phpunit_alt2', \random::generatePassword(), 'noonealt2@example.com', false);
         }
 
@@ -362,7 +362,7 @@ class RegenerateSqliteDb extends Command
 
     public function getUserNotAdmin()
     {
-        if (null === $user = $this->container['manipulator.user']->getRepository()->findByLogin('test_phpunit_not_admin')) {
+        if (null === $user = $this->container['repo.users']->findByLogin('test_phpunit_not_admin')) {
             $user = $this->container['manipulator.user']->createUser('test_phpunit_not_admin', \random::generatePassword(), 'noone_not_admin@example.com', false);
         }
 
@@ -371,7 +371,7 @@ class RegenerateSqliteDb extends Command
 
     public function getUserGuest()
     {
-        if (null === $user = $this->container['manipulator.user']->getRepository()->findByLogin(User::USER_GUEST)) {
+        if (null === $user = $this->container['repo.users']->findByLogin(User::USER_GUEST)) {
             $user = $this->container['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
         }
 

@@ -88,11 +88,10 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
         if ($this->shouldSendNotificationFor($params['to'])) {
             $readyToSend = false;
             try {
-                $user_from = $this->app['manipulator.user']->getRepository()->find($params['from']);
-                $user_to = $this->app['manipulator.user']->getRepository()->find($params['to']);
+                $user_from = $this->app['repo.users']->find($params['from']);
+                $user_to = $this->app['repo.users']->find($params['to']);
 
-                $basket = $this->app['EM']
-                    ->getRepository('Phraseanet:Basket')
+                $basket = $this->app['repo.baskets']
                     ->find($params['ssel_id']);
                 $title = $basket->getName();
 
@@ -131,14 +130,14 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
         $from = (string) $sx->from;
         $ssel_id = (string) $sx->ssel_id;
 
-        if (null === $registered_user = $this->app['manipulator.user']->getRepository()->find($from)) {
+        if (null === $registered_user = $this->app['repo.users']->find($from)) {
             return [];
         }
 
         $sender = $registered_user->getDisplayName();
 
         try {
-            $repository = $this->app['EM']->getRepository('Phraseanet:Basket');
+            $repository = $this->app['repo.baskets'];
 
             $basket = $repository->findUserBasket($ssel_id, $this->app['authentication']->getUser(), false);
         } catch (\Exception $e) {
@@ -181,7 +180,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
      */
     public function is_available($usr_id)
     {
-        if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
+        if (null === $user = $this->app['repo.users']->find($usr_id)) {
             return false;
         }
 

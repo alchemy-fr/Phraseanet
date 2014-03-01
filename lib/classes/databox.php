@@ -462,11 +462,11 @@ class databox extends base
             $n+=50;
         }
 
-        foreach ($this->app['EM']->getRepository('Phraseanet:StoryWZ')->findByDatabox($this->app, $this) as $story) {
+        foreach ($this->app['repo.story-wz']->findByDatabox($this->app, $this) as $story) {
             $this->app['EM']->remove($story);
         }
 
-        foreach ($this->app['EM']->getRepository('Phraseanet:BasketElement')->findElementsByDatabox($this) as $element) {
+        foreach ($this->app['repo.basket-elements']->findElementsByDatabox($this) as $element) {
             $this->app['EM']->remove($element);
         }
 

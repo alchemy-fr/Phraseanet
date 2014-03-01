@@ -162,8 +162,6 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
                 , $record->get_record_id()
             );
 
-            self::$DI['client'] = new Client(self::$DI['app'], []);
-
             if (($n % 2) === 0) {
                 $crawler = self::$DI['client']->request('POST', $route);
 

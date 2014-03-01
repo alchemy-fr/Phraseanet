@@ -71,11 +71,11 @@ class AccountCreator
         $login = $id;
         $n = 1;
 
-        if (null !== $email && null !== $app['manipulator.user']->getRepository()->findByEmail($email)) {
+        if (null !== $email && null !== $app['repo.users']->findByEmail($email)) {
             throw new InvalidArgumentException('Provided email already exist in account base.');
         }
 
-        while (null !== $app['manipulator.user']->getRepository()->findByLogin($login)) {
+        while (null !== $app['repo.users']->findByLogin($login)) {
             $login = $id . '#' . $n;
             $n++;
         }

@@ -84,7 +84,7 @@ class API_OAuth2_Account
         $stmt->closeCursor();
 
         $this->application_id = (int) $row['application_id'];
-        $this->user = $app['manipulator.user']->getRepository()->find($row['usr_id']);
+        $this->user = $app['repo.users']->find($row['usr_id']);
 
         $this->api_version = $row['api_version'];
         $this->revoked = ! ! $row['revoked'];

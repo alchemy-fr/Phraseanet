@@ -15,8 +15,8 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Model\Entities\Registration;
 use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Model\Repositories\RegistrationRepository;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 
 class RegistrationManipulator implements ManipulatorInterface
 {
@@ -26,13 +26,13 @@ class RegistrationManipulator implements ManipulatorInterface
     private $repository;
     private $aclProvider;
 
-    public function __construct(Application $app, EntityManager $em, ACLProvider $aclProvider, \appbox $appbox)
+    public function __construct(Application $app, EntityManager $em, ACLProvider $aclProvider, \appbox $appbox, EntityRepository $repo)
     {
         $this->app = $app;
         $this->em = $em;
         $this->appbox = $appbox;
         $this->aclProvider = $aclProvider;
-        $this->repository = $this->em->getRepository('Phraseanet:Registration');
+        $this->repository = $repo;
     }
 
     /**
@@ -93,16 +93,6 @@ class RegistrationManipulator implements ManipulatorInterface
     }
 
     /**
-     * Gets Registration Repository.
-     *
-     * @return RegistrationRepository
-     */
-    public function getRepository()
-    {
-        return $this->repository;
-    }
-
-    /**
      * Deletes registration for given user.
      *
      * @param User          $user
@@ -112,7 +102,7 @@ class RegistrationManipulator implements ManipulatorInterface
      */
     public function deleteUserRegistrations(User $user, array $collections)
     {
-        $qb = $this->getRepository()->createQueryBuilder('d');
+        $qb = $this->repository->createQueryBuilder('d');
         $qb->delete('Phraseanet:Registration', 'd');
         $qb->where($qb->expr()->eq('d.user', ':user'));
         $qb->setParameter(':user', $user->getId());
@@ -132,7 +122,7 @@ class RegistrationManipulator implements ManipulatorInterface
      */
     public function deleteOldRegistrations()
     {
-        $qb = $this->getRepository()->createQueryBuilder('d');
+        $qb = $this->repository->createQueryBuilder('d');
         $qb->delete('Phraseanet:Registration', 'd');
         $qb->where($qb->expr()->lt('d.created', ':date'));
         $qb->setParameter(':date', new \DateTime('-1 month'));
@@ -146,7 +136,7 @@ class RegistrationManipulator implements ManipulatorInterface
      */
     public function deleteRegistrationsOnCollection(\collection $collection)
     {
-        $qb = $this->getRepository()->createQueryBuilder('d');
+        $qb = $this->repository->createQueryBuilder('d');
         $qb->delete('Phraseanet:Registration', 'd');
         $qb->where($qb->expr()->eq('d.baseId', ':base'));
         $qb->setParameter(':base', $collection->get_base_id());

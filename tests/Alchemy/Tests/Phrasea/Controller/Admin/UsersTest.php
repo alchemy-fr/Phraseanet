@@ -39,7 +39,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request('POST', '/admin/users/delete/', ['users'   => self::$DI['user']->getId()]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
-        $this->assertNotNull(self::$DI['app']['manipulator.user']->getRepository()->findByLogin(self::$DI['user']->getLogin()));
+        $this->assertNotNull(self::$DI['app']['repo.users']->findByLogin(self::$DI['user']->getLogin()));
     }
 
     public function testRouteRightsApply()
@@ -285,7 +285,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(is_object($datas));
         $this->assertFalse($datas->error);
 
-        $this->assertNotNull($user = (self::$DI['app']['manipulator.user']->getRepository()->find((int) $datas->data)));
+        $this->assertNotNull($user = (self::$DI['app']['repo.users']->find((int) $datas->data)));
         self::$DI['app']['manipulator.user']->delete($user);
     }
 
@@ -308,7 +308,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(is_object($datas));
         $this->assertFalse($datas->error);
 
-        $this->assertNotNull($user = (self::$DI['app']['manipulator.user']->getRepository()->find((int) $datas->data)));
+        $this->assertNotNull($user = (self::$DI['app']['repo.users']->find((int) $datas->data)));
         self::$DI['app']['manipulator.user']->delete($user);
     }
 

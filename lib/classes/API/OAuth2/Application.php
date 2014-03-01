@@ -146,7 +146,7 @@ class API_OAuth2_Application
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-        $this->creator = ! $row['creator'] ? null : $this->app['manipulator.user']->getRepository()->find($row['creator']);
+        $this->creator = ! $row['creator'] ? null : $this->app['repo.users']->find($row['creator']);
         $this->type = $row['type'];
         $this->name = $row['name'];
         $this->description = $row['description'];

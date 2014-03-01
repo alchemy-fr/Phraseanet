@@ -8,9 +8,9 @@ class userTest extends \PhraseanetTestCase
     public function testMail()
     {
             self::$DI['user']->setEmail('');
-            $this->assertNull(self::$DI['app']['manipulator.user']->getRepository()->findByEmail(self::$DI['user']->getEmail()));
+            $this->assertNull(self::$DI['app']['repo.users']->findByEmail(self::$DI['user']->getEmail()));
             self::$DI['user']->setEmail('noone@example.com');
-            $this->assertEquals(self::$DI['user'], self::$DI['app']['manipulator.user']->getRepository()->findByEmail('noone@example.com'));
+            $this->assertEquals(self::$DI['user'], self::$DI['app']['repo.users']->findByEmail('noone@example.com'));
         try {
             self::$DI['user']->setEmail('noonealt1@example.com');
             $this->fail('A user already got this address');
@@ -38,7 +38,7 @@ class userTest extends \PhraseanetTestCase
 
     public function testDeleteSetMailToNullAndRemovesSessions()
     {
-        if (null === $user = self::$DI['app']['manipulator.user']->getRepository()->findByLogin('test_phpunit_sessions')) {
+        if (null === $user = self::$DI['app']['repo.users']->findByLogin('test_phpunit_sessions')) {
             $user = self::$DI['app']['manipulator.user']->createUser('test_phpunit_sessions', \random::generatePassword());
         }
 

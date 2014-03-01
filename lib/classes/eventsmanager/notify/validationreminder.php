@@ -86,8 +86,8 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
 
         $mailed = false;
 
-        $user_from = $this->app['manipulator.user']->getRepository()->find($params['from']);
-        $user_to = $this->app['manipulator.user']->getRepository()->find($params['to']);
+        $user_from = $this->app['repo.users']->find($params['from']);
+        $user_to = $this->app['repo.users']->find($params['to']);
 
         if (null === $user_from || null === $user_to) {
             return false;
@@ -97,8 +97,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
 
             $readyToSend = false;
             try {
-                $basket = $this->app['EM']
-                    ->getRepository('Phraseanet:Basket')
+                $basket = $this->app['repo.baskets']
                     ->find($params['ssel_id']);
                 $title = $basket->getName();
 
@@ -136,7 +135,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
         $from = (string) $sx->from;
         $ssel_id = (string) $sx->ssel_id;
 
-        if (null === $user = $this->app['manipulator.user']->getRepository()->find($from)) {
+        if (null === $user = $this->app['repo.users']->find($from)) {
             return [];
         }
 

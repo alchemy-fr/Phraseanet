@@ -33,7 +33,7 @@ class WorkZone extends Helper
     public function getContent($sort)
     {
         /* @var $repo_baskets Alchemy\Phrasea\Model\Repositories\BasketRepository */
-        $repo_baskets = $this->app['EM']->getRepository('Phraseanet:Basket');
+        $repo_baskets = $this->app['repo.baskets'];
 
         $sort = in_array($sort, ['date', 'name']) ? $sort : 'name';
 
@@ -56,7 +56,7 @@ class WorkZone extends Helper
         $validations = $repo_baskets->findActiveValidationByUser($this->app['authentication']->getUser(), $sort);
 
         /* @var $repo_stories Alchemy\Phrasea\Model\Repositories\StoryWZRepository */
-        $repo_stories = $this->app['EM']->getRepository('Phraseanet:StoryWZ');
+        $repo_stories = $this->app['repo.story-wz'];
 
         $stories = $repo_stories->findByUser($this->app, $this->app['authentication']->getUser(), $sort);
 

@@ -32,7 +32,7 @@ class TaskState extends Command
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $task_id = $input->getArgument('task_id');
-        if (null === $task = $this->container['manipulator.task']->getRepository()->find($task_id)) {
+        if (null === $task = $this->container['repo.tasks']->find($task_id)) {
             throw new RuntimeException('Invalid task_id');
         }
 

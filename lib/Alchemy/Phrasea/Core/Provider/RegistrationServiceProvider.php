@@ -27,7 +27,7 @@ class RegistrationServiceProvider implements ServiceProviderInterface
         });
 
         $app['registration.manager'] = $app->share(function (Application $app) {
-            return new RegistrationManager($app['phraseanet.appbox'], $app['manipulator.registration']->getRepository(), $app['locale']);
+            return new RegistrationManager($app['phraseanet.appbox'], $app['repo.registrations'], $app['locale']);
         });
 
         $app['registration.optional-fields'] = $app->share(function (Application $app) {

@@ -13,7 +13,6 @@ class ManagerTest extends \PhraseanetTestCase
     public function testGetSession()
     {
         $encoder = $this->getPasswordEncoderMock();
-        $em = $this->getEntityManagerMock();
         $browser = $this->getBrowserMock();
         $tokenValue = 'encrypted-persistent-value';
 
@@ -24,8 +23,6 @@ class ManagerTest extends \PhraseanetTestCase
         $browser->expects($this->once())
             ->method('getPlatform')
             ->will($this->returnValue('Linux'));
-
-        $manager = new Manager($encoder, $em, $browser);
 
         $session = new Session();
         $session->setNonce('prettyN0nce');
@@ -39,10 +36,7 @@ class ManagerTest extends \PhraseanetTestCase
             ->with($this->equalTo(['token' => $tokenValue]))
             ->will($this->returnValue($session));
 
-        $em->expects($this->once())
-            ->method('getRepository')
-            ->with($this->equalTo('Phraseanet:Session'))
-            ->will($this->returnValue($repo));
+        $manager = new Manager($encoder, $repo, $browser);
 
         $encoder->expects($this->once())
             ->method('isPasswordValid')
@@ -58,7 +52,6 @@ class ManagerTest extends \PhraseanetTestCase
     public function testGetSessionReturnFalse()
     {
         $encoder = $this->getPasswordEncoderMock();
-        $em = $this->getEntityManagerMock();
         $browser = $this->getBrowserMock();
         $tokenValue = 'encrypted-persistent-value';
 
@@ -69,8 +62,6 @@ class ManagerTest extends \PhraseanetTestCase
         $browser->expects($this->once())
             ->method('getPlatform')
             ->will($this->returnValue('Linux'));
-
-        $manager = new Manager($encoder, $em, $browser);
 
         $session = new Session();
         $session->setNonce('prettyN0nce');
@@ -84,10 +75,7 @@ class ManagerTest extends \PhraseanetTestCase
             ->with($this->equalTo(['token' => $tokenValue]))
             ->will($this->returnValue($session));
 
-        $em->expects($this->once())
-            ->method('getRepository')
-            ->with($this->equalTo('Phraseanet:Session'))
-            ->will($this->returnValue($repo));
+        $manager = new Manager($encoder, $repo, $browser);
 
         $encoder->expects($this->once())
             ->method('isPasswordValid')
@@ -102,11 +90,8 @@ class ManagerTest extends \PhraseanetTestCase
     public function testSessionNotFound()
     {
         $encoder = $this->getPasswordEncoderMock();
-        $em = $this->getEntityManagerMock();
         $browser = $this->getBrowserMock();
         $tokenValue = 'encrypted-persistent-value';
-
-        $manager = new Manager($encoder, $em, $browser);
 
         $repo = $this->getMockBuilder('Doctrine\ORM\EntityRepository')
             ->disableOriginalConstructor()
@@ -117,10 +102,7 @@ class ManagerTest extends \PhraseanetTestCase
             ->with($this->equalTo(['token' => $tokenValue]))
             ->will($this->returnValue(null));
 
-        $em->expects($this->once())
-            ->method('getRepository')
-            ->with($this->equalTo('Phraseanet:Session'))
-            ->will($this->returnValue($repo));
+        $manager = new Manager($encoder, $repo, $browser);
 
         $this->assertFalse($manager->getSession($tokenValue));
     }
@@ -128,13 +110,6 @@ class ManagerTest extends \PhraseanetTestCase
     private function getPasswordEncoderMock()
     {
         return $this->getMockBuilder('Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder')
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    private function getEntityManagerMock()
-    {
-        return $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
     }

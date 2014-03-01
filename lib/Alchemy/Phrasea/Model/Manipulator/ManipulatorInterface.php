@@ -11,17 +11,9 @@
 
 namespace Alchemy\Phrasea\Model\Manipulator;
 
-use Doctrine\ORM\EntityRepository;
-
 /**
  * This class is responsible of manipulating entities.
  */
 interface ManipulatorInterface
 {
-    /**
-     * Returns the entity repository.
-     *
-     * @return EntityRepository
-     */
-    public function getRepository();
 }

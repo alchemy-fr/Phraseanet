@@ -1498,7 +1498,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $stmt->execute([':record_id' => $this->get_record_id()]);
         $stmt->closeCursor();
 
-        $orderElementRepository = $this->app['EM']->getRepository('Phraseanet:OrderElement');
+        $orderElementRepository = $this->app['repo.order-elements'];
 
         /* @var $repository Alchemy\Phrasea\Model\Repositories\OrderElementRepository */
         foreach ($orderElementRepository->findBy(['recordId' => $this->get_record_id()]) as $order_element) {
@@ -1507,7 +1507,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             }
         }
 
-        $basketElementRepository = $this->app['EM']->getRepository('Phraseanet:BasketElement');
+        $basketElementRepository = $this->app['repo.basket-elements'];
 
         /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketElementRepository */
         foreach ($basketElementRepository->findElementsByRecord($this) as $basket_element) {

@@ -213,7 +213,7 @@ class RecordsRequest extends ArrayCollection
                 $received[$basket_element->getRecord($app)->get_serialize_key()] = $basket_element->getRecord($app);
             }
         } elseif ($request->get('story')) {
-            $repository = $app['EM']->getRepository('Phraseanet:StoryWZ');
+            $repository = $app['repo.story-wz'];
 
             $storyWZ = $repository->findByUserAndId(
                 $app, $app['authentication']->getUser()

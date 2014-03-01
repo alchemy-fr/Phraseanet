@@ -28,7 +28,7 @@ class TaskList extends Command
     {
         $output->writeln("<info>Querying the task manager...</info>");
         $errors = 0;
-        $tasks = $this->container['manipulator.task']->getRepository()->findAll();
+        $tasks = $this->container['repo.tasks']->findAll();
         $infos = $this->container['task-manager.live-information']->getTasks($tasks);
         $rows = [];
 

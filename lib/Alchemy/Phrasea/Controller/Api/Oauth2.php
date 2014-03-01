@@ -91,7 +91,7 @@ class Oauth2 implements ControllerProviderInterface
                         return $app->redirectPath('oauth2_authorize', ['error' => 'account-locked']);
                     }
 
-                    $app['authentication']->openAccount($app['manipulator.user']->getRepository()->find($usr_id));
+                    $app['authentication']->openAccount($app['repo.users']->find($usr_id));
                 }
 
                 return new Response($app['twig']->render($template, ["auth" => $oauth2_adapter]));

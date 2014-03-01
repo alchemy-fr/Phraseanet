@@ -25,7 +25,7 @@ class RSSFeeds implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/feed/{id}/{format}/', function (Application $app, $id, $format) {
-            $feed = $app['EM']->getRepository('Phraseanet:Feed')->find($id);
+            $feed = $app['repo.feeds']->find($id);
 
             if (null === $feed) {
                 $app->abort(404, 'Feed not found');
@@ -47,7 +47,7 @@ class RSSFeeds implements ControllerProviderInterface
             ->assert('format', '(rss|atom)');
 
         $controllers->get('/userfeed/{token}/{id}/{format}/', function (Application $app, $token, $id, $format) {
-            $token = $app["EM"]->find('Phraseanet:FeedToken', $id);
+            $token = $app["repo.feed-tokens"]->find($id);
 
             $request = $app['request'];
 
@@ -62,11 +62,11 @@ class RSSFeeds implements ControllerProviderInterface
             ->assert('format', '(rss|atom)');
 
         $controllers->get('/userfeed/aggregated/{token}/{format}/', function (Application $app, $token, $format) {
-            $token = $app['EM']->getRepository('Phraseanet:AggregateToken')->findOneBy(["value" => $token]);
+            $token = $app['repo.aggregate-tokens']->findOneBy(["value" => $token]);
 
             $user = $token->getUser();
 
-            $feeds = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser($app['acl']->get($user));
+            $feeds = $app['repo.feeds']->getAllForUser($app['acl']->get($user));
 
             $aggregate = new Aggregate($app['EM'], $feeds, $token);
 

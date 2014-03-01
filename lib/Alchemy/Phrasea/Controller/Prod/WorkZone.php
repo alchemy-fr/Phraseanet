@@ -80,7 +80,7 @@ class WorkZone implements ControllerProviderInterface
     {
         $request = $app['request'];
 
-        $BasketRepo = $app['EM']->getRepository('Phraseanet:Basket');
+        $BasketRepo = $app['repo.baskets'];
 
         $Page = (int) $request->query->get('Page', 0);
 
@@ -123,7 +123,7 @@ class WorkZone implements ControllerProviderInterface
             throw new BadRequestHttpException('Missing parameters stories');
         }
 
-        $StoryWZRepo = $app['EM']->getRepository('Phraseanet:StoryWZ');
+        $StoryWZRepo = $app['repo.story-wz'];
 
         $alreadyFixed = $done = 0;
 
@@ -184,7 +184,7 @@ class WorkZone implements ControllerProviderInterface
     {
         $Story = new \record_adapter($app, $sbas_id, $record_id);
 
-        $repository = $app['EM']->getRepository('Phraseanet:StoryWZ');
+        $repository = $app['repo.story-wz'];
 
         $StoryWZ = $repository->findUserStory($app, $app['authentication']->getUser(), $Story);
 

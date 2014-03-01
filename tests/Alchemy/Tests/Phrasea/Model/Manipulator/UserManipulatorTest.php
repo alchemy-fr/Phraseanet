@@ -11,7 +11,7 @@ class UserManipulatorTest extends \PhraseanetTestCase
     public function testCreateUser()
     {
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'pass');
-        $this->assertInstanceOf('\Alchemy\Phrasea\Model\Entities\User', self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login'));
+        $this->assertInstanceOf('\Alchemy\Phrasea\Model\Entities\User', self::$DI['app']['repo.users']->findOneByLogin('login'));
     }
 
     public function testDeleteUser()
@@ -25,7 +25,7 @@ class UserManipulatorTest extends \PhraseanetTestCase
     public function testCreateAdminUser()
     {
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'pass', 'admin@admin.com', true);
-        $user = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login');
+        $user = self::$DI['app']['repo.users']->findOneByLogin('login');
         $this->assertTrue($user->isAdmin());
         $this->assertNotNull($user->getEmail());
     }
@@ -34,7 +34,7 @@ class UserManipulatorTest extends \PhraseanetTestCase
     {
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'pass');
         $template = self::$DI['app']['manipulator.user']->createTemplate('test', $user);
-        $user = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('test');
+        $user = self::$DI['app']['repo.users']->findOneByLogin('test');
         $this->assertTrue($user->isTemplate());
     }
 
@@ -74,7 +74,7 @@ class UserManipulatorTest extends \PhraseanetTestCase
             ->getMock();
 
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
-        $manipulator = new UserManipulator($manager, $passwordInterface, $geonamesConnector);
+        $manipulator = new UserManipulator($manager, $passwordInterface, $geonamesConnector, self::$DI['app']['repo.tasks']);
 
         $manipulator->setGeonameId($user, 4);
         $this->assertEquals(4, $user->getGeonameId());
@@ -87,9 +87,9 @@ class UserManipulatorTest extends \PhraseanetTestCase
         $user2 = self::$DI['app']['manipulator.user']->createUser('login2', 'toto');
         $this->assertFalse($user2->isAdmin());
         self::$DI['app']['manipulator.user']->promote([$user, $user2]);
-        $user = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login');
+        $user = self::$DI['app']['repo.users']->findOneByLogin('login');
         $this->assertTrue($user->isAdmin());
-        $user2 = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login');
+        $user2 = self::$DI['app']['repo.users']->findOneByLogin('login');
         $this->assertTrue($user2->isAdmin());
     }
 
@@ -98,7 +98,7 @@ class UserManipulatorTest extends \PhraseanetTestCase
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'toto', null, true);
         $this->assertTrue($user->isAdmin());
         self::$DI['app']['manipulator.user']->demote($user);
-        $user = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login');
+        $user = self::$DI['app']['repo.users']->findOneByLogin('login');
         $this->assertFalse($user->isAdmin());
     }
 
@@ -140,7 +140,7 @@ class UserManipulatorTest extends \PhraseanetTestCase
         $passwordInterface = $this->getMockBuilder('Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface')
             ->getMock();
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
-        $manipulator = new UserManipulator($manager, $passwordInterface, $geonamesConnector);
+        $manipulator = new UserManipulator($manager, $passwordInterface, $geonamesConnector, self::$DI['app']['repo.tasks']);
         $this->setExpectedException(
             'Alchemy\Phrasea\Exception\InvalidArgumentException',
             'Invalid geonameid -1.'
@@ -173,7 +173,7 @@ class UserManipulatorTest extends \PhraseanetTestCase
     {
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
         self::$DI['app']['manipulator.user']->setUserSetting($user, 'name' ,'value');
-        $user = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login');
+        $user = self::$DI['app']['repo.users']->findOneByLogin('login');
         $this->assertCount(1, $user->getSettings());
     }
 
@@ -181,7 +181,7 @@ class UserManipulatorTest extends \PhraseanetTestCase
     {
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
         self::$DI['app']['manipulator.user']->setNotificationSetting($user, 'name', 'value');
-        $user = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login');
+        $user = self::$DI['app']['repo.users']->findOneByLogin('login');
         $this->assertCount(1, $user->getNotificationSettings());
     }
 
@@ -189,7 +189,7 @@ class UserManipulatorTest extends \PhraseanetTestCase
     {
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
         self::$DI['app']['manipulator.user']->logQuery($user, 'query');
-        $user = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login');
+        $user = self::$DI['app']['repo.users']->findOneByLogin('login');
         $this->assertCount(1, $user->getQueries());
     }
 }

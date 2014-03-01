@@ -9,7 +9,7 @@ class RegistrationManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreateRegistration()
     {
-        $service = new RegistrationManipulator(self::$DI['app'], self::$DI['app']['EM'], self::$DI['app']['acl'], self::$DI['app']['phraseanet.appbox']);
+        $service = new RegistrationManipulator(self::$DI['app'], self::$DI['app']['EM'], self::$DI['app']['acl'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['repo.registrations']);
         $registration = $service->createRegistration(self::$DI['user'], self::$DI['collection']);
 
         $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\Registration', $registration);
@@ -21,7 +21,7 @@ class RegistrationManipulatorTest extends \PhraseanetTestCase
     {
         $registration = self::$DI['registration_1'];
 
-        $service = new RegistrationManipulator(self::$DI['app'], self::$DI['app']['EM'], self::$DI['app']['acl'], self::$DI['app']['phraseanet.appbox']);
+        $service = new RegistrationManipulator(self::$DI['app'], self::$DI['app']['EM'], self::$DI['app']['acl'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['repo.registrations']);
         $service->rejectRegistration($registration);
 
         $this->assertFalse($registration->isPending());
@@ -48,14 +48,14 @@ class RegistrationManipulatorTest extends \PhraseanetTestCase
 
         self::$DI['app']['acl'] = $aclProviderMock;
 
-        $service = new RegistrationManipulator(self::$DI['app'], self::$DI['app']['EM'], self::$DI['app']['acl'], self::$DI['app']['phraseanet.appbox']);
+        $service = new RegistrationManipulator(self::$DI['app'], self::$DI['app']['EM'], self::$DI['app']['acl'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['repo.registrations']);
         $service->acceptRegistration($registration, true, false);
     }
 
     public function testDeleteRegistrationForUser()
     {
-        $service = new RegistrationManipulator(self::$DI['app'], self::$DI['app']['EM'], self::$DI['app']['acl'], self::$DI['app']['phraseanet.appbox']);
-        $qb = $service->getRepository()->createQueryBuilder('r');
+        $service = new RegistrationManipulator(self::$DI['app'], self::$DI['app']['EM'], self::$DI['app']['acl'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['repo.registrations']);
+        $qb = self::$DI['app']['repo.registrations']->createQueryBuilder('r');
         $nbRegistrationBefore = $qb->select('COUNT(r)')
             ->where($qb->expr()->eq('r.user', ':user'))
             ->setParameter(':user', self::$DI['user_alt1']->getId())
@@ -68,8 +68,8 @@ class RegistrationManipulatorTest extends \PhraseanetTestCase
 
     public function testDeleteOldRegistrations()
     {
-        $service = new RegistrationManipulator(self::$DI['app'], self::$DI['app']['EM'], self::$DI['app']['acl'], self::$DI['app']['phraseanet.appbox']);
-        $qb = $service->getRepository()->createQueryBuilder('r');
+        $service = new RegistrationManipulator(self::$DI['app'], self::$DI['app']['EM'], self::$DI['app']['acl'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['repo.registrations']);
+        $qb = self::$DI['app']['repo.registrations']->createQueryBuilder('r');
         $nbRegistrationBefore = $qb->select('COUNT(r)')->getQuery()->getSingleScalarResult();
         $service->deleteOldRegistrations();
         $nbRegistrationAfter = $qb->getQuery()->getSingleScalarResult();
@@ -78,8 +78,8 @@ class RegistrationManipulatorTest extends \PhraseanetTestCase
 
     public function testDeleteRegistrationOnCollection()
     {
-        $service = new RegistrationManipulator(self::$DI['app'], self::$DI['app']['EM'], self::$DI['app']['acl'], self::$DI['app']['phraseanet.appbox']);
-        $qb = $service->getRepository()->createQueryBuilder('r');
+        $service = new RegistrationManipulator(self::$DI['app'], self::$DI['app']['EM'], self::$DI['app']['acl'], self::$DI['app']['phraseanet.appbox'], self::$DI['app']['repo.registrations']);
+        $qb = self::$DI['app']['repo.registrations']->createQueryBuilder('r');
         $nbRegistrationBefore = $qb->select('COUNT(r)')->getQuery()->getSingleScalarResult();
         $service->deleteRegistrationsOnCollection(self::$DI['collection']);
         $nbRegistrationAfter = $qb->getQuery()->getSingleScalarResult();

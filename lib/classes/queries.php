@@ -188,9 +188,7 @@ class queries
     {
         $history = '<ul>';
 
-        $queries = $app['EM']
-            ->getRepository('Phraseanet:UserQuery')
-            ->findBy(['user' => $usrId], ['created' => 'ASC'], 25, 0);
+        $queries = $app['repo.user-queries']->findBy(['user' => $usrId], ['created' => 'ASC'], 25, 0);
 
         foreach ($queries as $query) {
             $history .= '<li onclick="doSpecialSearch(\'' . str_replace(["'", '"'], ["\'", '&quot;'], $query->getQuery()) . '\')">' . $query->getQuery() . '</li>';

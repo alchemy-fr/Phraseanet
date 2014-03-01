@@ -112,7 +112,7 @@ class AdminDashboardTest extends \PhraseanetAuthenticatedWebTestCase
 
         $admins = array_map(function (User $user) {
             return $user->getId();
-        }, self::$DI['app']['manipulator.user']->getRepository()->findAdmins());
+        }, self::$DI['app']['repo.users']->findAdmins());
 
         $user = self::$DI['app']['manipulator.user']->createUser(uniqid('unit_test_user'), uniqid('unit_test_user'),  uniqid('unit_test_user') ."@email.com");
 

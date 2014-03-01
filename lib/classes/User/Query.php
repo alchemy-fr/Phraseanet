@@ -512,7 +512,7 @@ class User_Query implements User_QueryInterface
         $users = new ArrayCollection();
 
         foreach ($rs as $row) {
-            $users[] = $this->app['manipulator.user']->getRepository()->find($row['id']);
+            $users[] = $this->app['repo.users']->find($row['id']);
         }
 
         $this->results = $users;

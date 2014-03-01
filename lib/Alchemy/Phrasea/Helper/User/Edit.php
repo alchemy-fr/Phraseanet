@@ -64,7 +64,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             if ($this->app['authentication']->getUser()->getId() === (int) $usr_id) {
                 continue;
             }
-            $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
+            $user = $this->app['repo.users']->find($usr_id);
             $this->delete_user($user);
         }
 
@@ -181,7 +181,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         if (count($this->users) == 1) {
             $usr_id = array_pop($this->users);
-            $out['main_user'] = $this->app['manipulator.user']->getRepository()->find($usr_id);
+            $out['main_user'] = $this->app['repo.users']->find($usr_id);
         }
 
         return $out;
@@ -532,7 +532,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             try {
                 $this->app['phraseanet.appbox']->get_connection()->beginTransaction();
 
-                $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
+                $user = $this->app['repo.users']->find($usr_id);
 
                 $this->app['acl']->get($user)->revoke_access_from_bases($delete)
                     ->give_access_to_base($create)
@@ -567,7 +567,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $users = $this->users;
 
-        $user = $this->app['manipulator.user']->getRepository()->find(array_pop($users));
+        $user = $this->app['repo.users']->find(array_pop($users));
 
         if ($user->isTemplate() || $user->isSpecial()) {
             return $this;
@@ -642,7 +642,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     public function apply_template()
     {
-        $template = $this->app['manipulator.user']->getRepository()->find($this->request->get('template'));
+        $template = $this->app['repo.users']->find($this->request->get('template'));
 
         if (null === $template->getTemplateOwner() || $template->getTemplateOwner()->getId() !== $this->app['authentication']->getUser()->getId()) {
             throw new AccessDeniedHttpException('You are not the owner of the template');
@@ -651,7 +651,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $base_ids = array_keys($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['canadmin']));
 
         foreach ($this->users as $usr_id) {
-            $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
+            $user = $this->app['repo.users']->find($usr_id);
 
             if ($user->isTemplate()) {
                 continue;
@@ -668,7 +668,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $this->base_id = (int) $this->request->get('base_id');
 
         foreach ($this->users as $usr_id) {
-            $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
+            $user = $this->app['repo.users']->find($usr_id);
             if ($this->request->get('quota'))
                 $this->app['acl']->get($user)->set_quotas_on_base($this->base_id, $this->request->get('droits'), $this->request->get('restes'));
             else
@@ -689,7 +689,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         if ($vand_and && $vand_or && $vxor_and && $vxor_or) {
             foreach ($this->users as $usr_id) {
-                $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
+                $user = $this->app['repo.users']->find($usr_id);
 
                 $this->app['acl']->get($user)->set_masks_on_base($this->base_id, $vand_and, $vand_or, $vxor_and, $vxor_or);
             }
@@ -711,7 +711,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $base_ids = array_keys($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['canadmin']));
 
         foreach ($this->users as $usr_id) {
-            $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
+            $user = $this->app['repo.users']->find($usr_id);
 
             if ($this->base_id > 0) {
                 $this->app['acl']->get($user)->set_limits($this->base_id, $activate, $dmin, $dmax);
@@ -730,7 +730,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $base_ids = array_keys($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['canadmin']));
 
         foreach ($this->users as $usr_id) {
-            $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
+            $user = $this->app['repo.users']->find($usr_id);
             $ACL = $this->app['acl']->get($user);
 
             if ($user->isTemplate()) {

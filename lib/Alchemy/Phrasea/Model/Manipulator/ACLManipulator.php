@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Model\Manipulator;
 
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\Model\Entities\User;
 
 class ACLManipulator implements ManipulatorInterface
@@ -27,14 +26,6 @@ class ACLManipulator implements ManipulatorInterface
     {
         $this->ACLProvider = $ACLProvider;
         $this->appbox = $appbox;
-    }
-
-    /**
-     * @throws LogicException
-     */
-    public function getRepository()
-    {
-        throw new LogicException('ACL class is not a doctrine entity and therefore it does not have repository.');
     }
 
     /**

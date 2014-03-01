@@ -118,7 +118,7 @@ class Push implements ControllerProviderInterface
         $controllers->post('/sendform/', function (Application $app) use ($userSelection) {
             $push = new RecordHelper\Push($app, $app['request']);
 
-            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
+            $repository = $app['repo.usr-lists'];
 
             $RecommendedUsers = $userSelection($push->get_elements());
 
@@ -136,7 +136,7 @@ class Push implements ControllerProviderInterface
         $controllers->post('/validateform/', function (Application $app) use ($userSelection) {
             $push = new RecordHelper\Push($app, $app['request']);
 
-            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
+            $repository = $app['repo.usr-lists'];
 
             $RecommendedUsers = $userSelection($push->get_elements());
 
@@ -177,7 +177,7 @@ class Push implements ControllerProviderInterface
 
                 foreach ($receivers as $receiver) {
                     try {
-                        $user_receiver = $app['manipulator.user']->getRepository()->find($receiver['usr_id']);
+                        $user_receiver = $app['repo.users']->find($receiver['usr_id']);
                     } catch (\Exception $e) {
                         throw new ControllerException($app->trans('Unknown user %user_id%', ['%user_id%' => $receiver['usr_id']]));
                     }
@@ -358,7 +358,7 @@ class Push implements ControllerProviderInterface
                     }
 
                     try {
-                        $participant_user = $app['manipulator.user']->getRepository()->find($participant['usr_id']);
+                        $participant_user = $app['repo.users']->find($participant['usr_id']);
                     } catch (\Exception $e) {
                         throw new ControllerException($app->trans('Unknown user %usr_id%', ['%usr_id%' => $participant['usr_id']]));
                     }
@@ -491,7 +491,7 @@ class Push implements ControllerProviderInterface
         $controllers->get('/list/{list_id}/', function (Application $app, $list_id) use ($listFormatter) {
             $datas = null;
 
-            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
+            $repository = $app['repo.usr-lists'];
 
             $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
 
@@ -532,7 +532,7 @@ class Push implements ControllerProviderInterface
             $email = $request->request->get('email');
 
             try {
-                $user = $app['manipulator.user']->getRepository()->findByEmail($email);
+                $user = $app['repo.users']->findByEmail($email);
 
                 $result['message'] = $app->trans('User already exists');
                 $result['success'] = true;
@@ -545,7 +545,7 @@ class Push implements ControllerProviderInterface
                 try {
                     $password = \random::generatePassword();
 
-                    $user = $app['manipulator.user']->getRepository()->createUser($email, $password, $email);
+                    $user = $app['repo.users']->createUser($email, $password, $email);
 
                     $user->setFirstName($request->request->get('firstname'))
                         ->setLastName($request->request->get('lastname'));
@@ -593,7 +593,7 @@ class Push implements ControllerProviderInterface
                     ->limit(0, 50)
                     ->execute()->get_results();
 
-            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
+            $repository = $app['repo.usr-lists'];
 
             $lists = $repository->findUserListLike($app['authentication']->getUser(), $request->query->get('query'));
 
@@ -616,7 +616,7 @@ class Push implements ControllerProviderInterface
 
         $controllers->match('/edit-list/{list_id}/', function (Application $app, Request $request, $list_id) {
 
-            $repository = $app['EM']->getRepository('Phraseanet:UsrList');
+            $repository = $app['repo.usr-lists'];
 
             $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
 

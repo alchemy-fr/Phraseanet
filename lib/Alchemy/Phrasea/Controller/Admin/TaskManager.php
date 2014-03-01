@@ -146,7 +146,7 @@ class TaskManager implements ControllerProviderInterface
     {
         $tasks = [];
 
-        foreach ($app['manipulator.task']->getRepository()->findAll() as $task) {
+        foreach ($app['repo.tasks']->findAll() as $task) {
             $tasks[] = array_replace(
                 $app['task-manager.live-information']->getTask($task), [
                 'id' => $task->getId(),

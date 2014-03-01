@@ -66,7 +66,7 @@ class TaskManagerServiceProvider implements ServiceProviderInterface
             $finder = new PhpExecutableFinder();
             $php = $finder->find();
 
-            return new TaskList($app['EM']->getRepository('Phraseanet:Task'), $app['root.path'], $php, $conf);
+            return new TaskList($app['repo.tasks'], $app['root.path'], $php, $conf);
         });
     }
 

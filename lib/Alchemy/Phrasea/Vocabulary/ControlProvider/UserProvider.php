@@ -82,7 +82,7 @@ class UserProvider implements ControlProviderInterface
      */
     public function validate($id)
     {
-        return (Boolean) $this->app['manipulator.user']->getRepository()->find($id);
+        return (Boolean) $this->app['repo.users']->find($id);
     }
 
     /**
@@ -92,7 +92,7 @@ class UserProvider implements ControlProviderInterface
      */
     public function getValue($id)
     {
-        $user = $this->app['manipulator.user']->getRepository()->find($id);
+        $user = $this->app['repo.users']->find($id);
 
         if (null === $user) {
             throw new \Exception('User unknown');
@@ -108,6 +108,6 @@ class UserProvider implements ControlProviderInterface
      */
     public function getRessource($id)
     {
-        return $this->app['manipulator.user']->getRepository()->find($id);
+        return $this->app['repo.users']->find($id);
     }
 }

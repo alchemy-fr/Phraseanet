@@ -77,7 +77,7 @@ class module_report_edit extends module_report
             $value = $row['val'];
             $caption = $value;
             if ($field == "getter") {
-                if (null !== $user = $this->app['manipulator.user']->getRepository()->find($value)) {
+                if (null !== $user = $this->app['repo.users']->find($value)) {
                     $caption = $user->getDisplayName();
                 }
             } elseif ($field == 'date') {

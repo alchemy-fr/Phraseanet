@@ -101,6 +101,7 @@ use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
+use Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SerializerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SessionHandlerServiceProvider;
@@ -281,6 +282,7 @@ class Application extends SilexApplication
         $this->register(new MP4BoxServiceProvider());
         $this->register(new NotificationDelivererServiceProvider());
         $this->register(new ORMServiceProvider());
+        $this->register(new RepositoriesServiceProvider());
         $this->register(new ManipulatorServiceProvider());
         $this->register(new InstallerServiceProvider());
         $this->register(new PhraseanetServiceProvider());
@@ -780,7 +782,7 @@ class Application extends SilexApplication
      */
     public function isGuestAllowed()
     {
-        if (null === $user = $this['manipulator.user']->getRepository()->findByLogin(User::USER_GUEST)) {
+        if (null === $user = $this['repo.users']->findByLogin(User::USER_GUEST)) {
             return false;
         }
 

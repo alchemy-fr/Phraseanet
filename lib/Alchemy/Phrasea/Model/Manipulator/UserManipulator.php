@@ -20,6 +20,7 @@ use Alchemy\Phrasea\Model\Manager\UserManager;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
 /**
@@ -33,20 +34,15 @@ class UserManipulator implements ManipulatorInterface
     private $manager;
     /** @var GeonamesConnector */
     private $geonamesConnector;
+    /** @var EntityRepository */
+    private $repository;
 
-    public function __construct(UserManager $manager, PasswordEncoderInterface $passwordEncoder, GeonamesConnector $connector)
+    public function __construct(UserManager $manager, PasswordEncoderInterface $passwordEncoder, GeonamesConnector $connector, EntityRepository $repo)
     {
         $this->manager = $manager;
         $this->passwordEncoder = $passwordEncoder;
         $this->geonamesConnector = $connector;
-    }
-
-    /**
-     * @{inheritdoc}
-     */
-    public function getRepository()
-    {
-        return $this->manager->getObjectManager()->getRepository('Phraseanet:User');
+        $this->repository = $repo;
     }
 
     /**
@@ -278,7 +274,7 @@ class UserManipulator implements ManipulatorInterface
      */
     private function doSetLogin(User $user, $login)
     {
-        if (null !== $this->getRepository()->findByLogin($login)) {
+        if (null !== $this->repository->findByLogin($login)) {
             throw new RuntimeException(sprintf('User with login %s already exists.', $login));
         }
 
@@ -300,7 +296,7 @@ class UserManipulator implements ManipulatorInterface
             throw new InvalidArgumentException(sprintf('Email %s is not legal.', $email));
         }
 
-        if (null !== $this->getRepository()->findByEmail($email)) {
+        if (null !== $this->repository->findByEmail($email)) {
             throw new RuntimeException(sprintf('User with email %s already exists.', $email));
         }
 

@@ -350,7 +350,7 @@ class BasketController implements ControllerProviderInterface
 
         foreach ($request->request->get('elements') as $bask_element_id) {
             try {
-                $basket_element = $app['EM']->getRepository('Phraseanet:BasketElement')
+                $basket_element = $app['repo.basket-elements']
                     ->findUserElement($bask_element_id, $app['authentication']->getUser());
             } catch (\Exception $e) {
                 continue;
