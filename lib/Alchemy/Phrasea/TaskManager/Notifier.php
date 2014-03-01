@@ -86,7 +86,7 @@ class Notifier
 
             return $data['reply'];
         } catch (\ZMQSocketException $e) {
-            $this->logger->error(sprintf('Unable to notify the task manager with message "%s" within timeout of %d seconds', $message, $this->timeout), array('exception' => $e));
+            $this->logger->error(sprintf('Unable to notify the task manager with message "%s" within timeout of %d seconds', $message, $this->timeout), ['exception' => $e]);
             throw new RuntimeException('Unable to retrieve information.', $e->getCode(), $e);
         }
     }

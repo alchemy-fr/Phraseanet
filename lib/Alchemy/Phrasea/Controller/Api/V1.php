@@ -67,31 +67,31 @@ class V1 implements ControllerProviderInterface
         });
 
         $controllers->get('/monitor/scheduler/', 'controller.api.v1:get_scheduler')
-            ->before(array($this, 'ensureAdmin'));
+            ->before([$this, 'ensureAdmin']);
 
         $controllers->get('/monitor/tasks/', 'controller.api.v1:get_task_list')
-            ->before(array($this, 'ensureAdmin'));
+            ->before([$this, 'ensureAdmin']);
 
         $controllers->get('/monitor/task/{task}/', 'controller.api.v1:get_task')
             ->convert('task', [$app['converter.task'], 'convert'])
-            ->before(array($this, 'ensureAdmin'))
+            ->before([$this, 'ensureAdmin'])
             ->assert('task', '\d+');
 
         $controllers->post('/monitor/task/{task}/', 'controller.api.v1:set_task_property')
             ->convert('task', [$app['converter.task'], 'convert'])
-            ->before(array($this, 'ensureAdmin'))
+            ->before([$this, 'ensureAdmin'])
             ->assert('task', '\d+');
 
         $controllers->post('/monitor/task/{task}/start/', 'controller.api.v1:start_task')
             ->convert('task', [$app['converter.task'], 'convert'])
-            ->before(array($this, 'ensureAdmin'));
+            ->before([$this, 'ensureAdmin']);
 
         $controllers->post('/monitor/task/{task}/stop/', 'controller.api.v1:stop_task')
             ->convert('task', [$app['converter.task'], 'convert'])
-            ->before(array($this, 'ensureAdmin'));
+            ->before([$this, 'ensureAdmin']);
 
         $controllers->get('/monitor/phraseanet/', 'controller.api.v1:get_phraseanet_monitor')
-            ->before(array($this, 'ensureAdmin'));
+            ->before([$this, 'ensureAdmin']);
 
         $controllers->get('/databoxes/list/', 'controller.api.v1:get_databoxes');
 

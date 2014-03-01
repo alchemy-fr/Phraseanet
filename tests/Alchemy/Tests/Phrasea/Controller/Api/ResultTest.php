@@ -129,7 +129,7 @@ class ResultTest extends \PhraseanetAuthenticatedTestCase
         $apiResult = new Result(new Request(), []);
         $content = json_decode($apiResult->createResponse()->getContent(), true);
 
-        $this->assertSame(array(), $content['response']);
+        $this->assertSame([], $content['response']);
     }
 
     public function testContentType()
