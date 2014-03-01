@@ -1,6 +1,6 @@
 <?php
 
-namespace Repositories;
+namespace Alchemy\Phrasea\Model\Repositories;
 
 use Doctrine\ORM\EntityRepository;
 

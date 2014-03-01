@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 use Symfony\Component\HttpKernel\Client;
 use Alchemy\Phrasea\Application;
 
-class ControllerCategoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class ControllerCategoryTest extends \PhraseanetWebTestCase
 {
     protected $client;
 
@@ -31,7 +31,7 @@ class ControllerCategoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(200, $response->getStatusCode());
         $actual = json_decode($response->getContent())->category;
         $this->assertNotNull($actual);
-        $expected = self::$DI['app']['EM']->getRepository('Entities\Category')->find($actual->id);
+        $expected = self::$DI['app']['EM']->getRepository('Phraseanet:Category')->find($actual->id);
         $this->assertEquals($expected->getTitle(), $actual->title);
         $this->assertEquals($expected->getSubtitle(), $actual->subtitle);
         foreach ($expected->getTranslations() as $expectedTranslation) {
@@ -88,7 +88,7 @@ class ControllerCategoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'parent_id'=> $vegetables->getId()
         )));
 
-        $repo = self::$DI['app']['EM']->getRepository('Entities\Category');
+        $repo = self::$DI['app']['EM']->getRepository('Phraseanet:Category');
 
         $this->assertEquals(3, $repo->childCount($food)); // all the children
         $this->assertEquals(1, $repo->childCount($food, true)); // first level children
@@ -211,7 +211,7 @@ class ControllerCategoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
 
-        $repo = self::$DI['app']['EM']->getRepository('Entities\Category');
+        $repo = self::$DI['app']['EM']->getRepository('Phraseanet:Category');
 
         $this->assertEquals(3, $repo->childCount($food));
         $this->assertEquals(2, $repo->childCount($food, true));
@@ -241,7 +241,7 @@ class ControllerCategoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
 
-        $repo = self::$DI['app']['EM']->getRepository('Entities\Category');
+        $repo = self::$DI['app']['EM']->getRepository('Phraseanet:Category');
 
         $this->assertEquals(3, $repo->childCount($food));
         $this->assertEquals(1, $repo->childCount($cabbage, true));
@@ -267,7 +267,7 @@ class ControllerCategoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $response = self::$DI['client']->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
-        $category = self::$DI['app']['EM']->getRepository('Entities\Category')->find($id);
+        $category = self::$DI['app']['EM']->getRepository('Phraseanet:Category')->find($id);
         $this->assertNull($category);
     }
 

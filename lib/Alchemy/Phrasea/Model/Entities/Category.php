@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Entities;
+namespace Alchemy\Phrasea\Model\Entities;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -19,8 +19,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @Gedmo\Tree(type="nested")
  * @ORM\Table(name="categories")
- * @ORM\Entity(repositoryClass="Repositories\CategoryRepository")
- * @Gedmo\TranslationEntity(class="Entities\CategoryTranslation")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\CategoryRepository")
+ * @Gedmo\TranslationEntity(class="Alchemy\Phrasea\Model\Entities\CategoryTranslation")
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  */
 class Category

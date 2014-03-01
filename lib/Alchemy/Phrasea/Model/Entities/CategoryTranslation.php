@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Entities;
+namespace Alchemy\Phrasea\Model\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;

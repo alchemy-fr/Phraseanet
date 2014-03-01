@@ -9,15 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Entities;
+namespace Alchemy\Phrasea\Model\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
-use Entities\Category;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="category_elements", uniqueConstraints={@ORM\UniqueConstraint(name="unique_categorycle", columns={"category_id","sbas_id","record_id"})})
- * @ORM\Entity(repositoryClass="Repositories\CategoryElementRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\CategoryElementRepository")
  */
 class CategoryElement
 {

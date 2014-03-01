@@ -12,9 +12,9 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\RecordsRequest;
-use Entities\Category as CategoryEntity;
-use Entities\CategoryElement;
-use Entities\CategoryTranslation;
+use Alchemy\Phrasea\Model\Entities\Category as CategoryEntity;
+use Alchemy\Phrasea\Model\Entities\CategoryElement;
+use Alchemy\Phrasea\Model\Entities\CategoryTranslation;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -140,12 +140,12 @@ class Category implements ControllerProviderInterface
         $data = json_decode($request->getContent());
 
         if (!isset($data->title)
-            || null !== $app['EM']->getRepository('Entities\Category')->findOneBy(array('title' => $data->title))) {
+            || null !== $app['EM']->getRepository('Phraseanet:Category')->findOneBy(array('title' => $data->title))) {
             $app->abort(400, 'Bad Request');
         }
 
         if (isset($data->parent_id)) {
-            $parent = $app['EM']->getRepository('Entities\Category')->find($data->parent_id);
+            $parent = $app['EM']->getRepository('Phraseanet:Category')->find($data->parent_id);
             if (null === $parent) {
                 $app->abort(400, 'Bad Request');
             }
@@ -205,13 +205,13 @@ class Category implements ControllerProviderInterface
     {
         $data = json_decode($request->getContent());
 
-        $category = $app['EM']->getRepository('Entities\Category')->find($category_id);
+        $category = $app['EM']->getRepository('Phraseanet:Category')->find($category_id);
         if (null == $category) {
             $app->abort(404, 'Category not found');
         }
 
         if (isset($data->parent_id)) {
-            $parent = $app['EM']->getRepository('Entities\Category')->find($data->parent_id);
+            $parent = $app['EM']->getRepository('Phraseanet:Category')->find($data->parent_id);
             if (null === $parent) {
                 $app->abort(400, 'Bad Request');
             }
@@ -285,7 +285,7 @@ class Category implements ControllerProviderInterface
      */
     public function deleteCategory(Application $app, Request $request, $category_id)
     {
-        $category = $app['EM']->getRepository('Entities\Category')->find($category_id);
+        $category = $app['EM']->getRepository('Phraseanet:Category')->find($category_id);
         if (null === $category) {
             $app->abort(404, 'Category not found');
         }
@@ -316,12 +316,12 @@ class Category implements ControllerProviderInterface
         $categories = $data->category_ids;
         $records = $data->records;
         foreach ($categories as $category_id) {
-            $category = $app['EM']->getRepository('Entities\Category')->find($category_id);
+            $category = $app['EM']->getRepository('Phraseanet:Category')->find($category_id);
             if (null === $category) {
                     $app->abort(404, 'Category not found');
                 }
             foreach ($records as $record) {
-                if (null !== $app['EM']->getRepository('Entities\CategoryElement')->findOneBy(array(
+                if (null !== $app['EM']->getRepository('Phraseanet:CategoryElement')->findOneBy(array(
                     'category' => $category,
                     'sbasId' => $record->sbas_id,
                     'recordId' => $record->record_id
@@ -365,11 +365,11 @@ class Category implements ControllerProviderInterface
         $records = $data->records;
         foreach ($records as $record) {
             foreach ($categories as $category_id) {
-                $category = $app['EM']->getRepository('Entities\Category')->find($category_id);
+                $category = $app['EM']->getRepository('Phraseanet:Category')->find($category_id);
                 if (null === $category) {
                     $app->abort(404, 'Category not found');
                 }
-                $element = $app['EM']->getRepository('Entities\CategoryElement')
+                $element = $app['EM']->getRepository('Phraseanet:CategoryElement')
                             ->findBy(array('category' => $category,
                                            'recordId' => $record->record_id,
                                            'sbasId' => $record->sbas_id));

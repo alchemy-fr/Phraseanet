@@ -5,6 +5,9 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Entities\Category;
+use Alchemy\Phrasea\Model\Entities\CategoryTranslation;
+use Alchemy\Phrasea\Model\Entities\CategoryElement;
 use Monolog\Logger;
 use Monolog\Handler\NullHandler;
 use Silex\WebTestCase;
@@ -754,7 +757,7 @@ abstract class PhraseanetTestCase extends WebTestCase
     protected function insertOneCategory($title = 'title test', $parent = null)
     {
         try {
-            $category = new \Entities\Category();
+            $category = new Category();
             $category->setTitle($title);
             $category->setSubtitle('subtitle test');
 
@@ -778,7 +781,7 @@ abstract class PhraseanetTestCase extends WebTestCase
     protected function insertOneCategoryTranslation(Category $category, $field = 'title', $locale = 'en')
     {
         try {
-            $translation = new \Entities\CategoryTranslation();
+            $translation = new CategoryTranslation();
             $translation->setField($field);
             $translation->setLocale($locale);
             $translation->setContent('content test');
@@ -798,7 +801,7 @@ abstract class PhraseanetTestCase extends WebTestCase
     protected function insertOneCategoryElement(Category $category)
     {
         try {
-            $element = new \Entities\CategoryElement();
+            $element = new CategoryElement();
             $element->setRecordId(self::$DI['record_1']->get_record_id());
             $element->setSbasId(self::$DI['record_1']->get_sbas_id());
             $category->addElement($element);
