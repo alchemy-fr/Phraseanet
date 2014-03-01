@@ -56,7 +56,7 @@ class LiveInformation
     /**
      * Returns live informations about some tasks.
      *
-     * @param Task[] $tasks
+     * @param Task[]  $tasks
      * @param boolean $throwException
      *
      * @return array
@@ -89,9 +89,10 @@ class LiveInformation
         try {
             return $this->notifier->notify(Notifier::MESSAGE_INFORMATIONS);
         } catch (RuntimeException $e) {
-            if($throwException) {
+            if ($throwException) {
                 throw $e;
             }
+
             return [];
         }
     }
