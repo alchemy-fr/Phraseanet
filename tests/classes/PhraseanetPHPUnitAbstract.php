@@ -107,6 +107,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         parent::setUp();
 
+        connection::close_connections();
+
         \PHPUnit_Framework_Error_Warning::$enabled = true;
         \PHPUnit_Framework_Error_Notice::$enabled = true;
 
@@ -988,5 +990,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         return $this->getMockBuilder('appbox')
             ->disableOriginalConstructor()
             ->getMock();
+    }
+
+    public function createConnectionMock()
+    {
+        return $this->getMock('connection_interface', array('close', 'get_credentials', 'server_info', 'prepare', 'beginTransaction', 'commit', 'ping', 'get_name', 'is_multi_db'));
     }
 }

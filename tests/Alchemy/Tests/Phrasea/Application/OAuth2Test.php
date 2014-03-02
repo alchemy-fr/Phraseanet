@@ -70,6 +70,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
         $t = array(':id' => $app->get_id());
         $stmt = $conn->prepare($sql);
         $stmt->execute($t);
+        $stmt->closeCursor();
         $sql = '
       DELETE FROM api_accounts
       WHERE api_account_id  = :id
@@ -78,6 +79,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
         $t = array(':id' => $acc->get_id());
         $stmt = $conn->prepare($sql);
         $stmt->execute($t);
+        $stmt->closeCursor();
     }
 
     /**
@@ -119,6 +121,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
         $stmt = $conn->prepare($sql);
         $stmt->execute($t);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
 
         return $result;
     }
@@ -131,6 +134,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
         $stmt = $conn->prepare($sql);
         $stmt->execute($t);
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
 
         return new \API_OAuth2_Account(self::$DI['app'], $row["api_account_id"]);
     }

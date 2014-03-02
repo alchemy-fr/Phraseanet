@@ -163,6 +163,7 @@ class Manage extends Helper
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':email' => $email));
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
         $count = count($row);
 
         if (!is_array($row) || $count == 0) {

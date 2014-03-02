@@ -65,6 +65,7 @@ class patch_370alpha7a implements patchInterface
             $stmt = $conn->prepare($sql);
             $stmt->execute();
             $rs = $stmt->fetchAll();
+            $stmt->closeCursor();
         } catch (\PDOException $e) {
             // table not found
             if ($e->getCode() == '42S02') {

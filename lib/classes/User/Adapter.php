@@ -1420,6 +1420,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
                 ':prop'   => $prop,
                 ':value'  => $value
             ));
+            $stmt->closeCursor();
             $this->delete_data_from_cache();
         } catch (\Exception $e) {
 

@@ -17,7 +17,6 @@
  */
 interface connection_interface
 {
-
     public function ping();
 
     public function get_name();
@@ -27,12 +26,6 @@ interface connection_interface
     public function get_credentials();
 
     public function close();
-
-    public function prepare($statement, $driver_options = array());
-
-    public function beginTransaction();
-
-    public function commit();
 
     public function server_info();
 }

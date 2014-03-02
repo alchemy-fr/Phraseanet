@@ -47,6 +47,7 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
         $stmt->execute($params);
         $this->assertEquals(1, $stmt->rowCount());
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
         $this->assertEquals($this->object->get_id(), $row['id']);
         $log_id = $this->object->get_id();
         $ses_id = self::$DI['app']['session']->get('session_id');
@@ -67,5 +68,6 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
         $this->assertEquals(1, $stmt->rowCount());
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $this->assertEquals($log_id, $row['id']);
+        $stmt->closeCursor();
     }
 }

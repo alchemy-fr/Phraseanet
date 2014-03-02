@@ -36,42 +36,45 @@ class connection_pdo extends connection_abstract implements connection_interface
     {
         $this->debug = $debug;
         $this->name = $name;
-        if ($dbname)
-            $dsn = 'mysql:dbname=' . $dbname . ';host=' . $hostname . ';port=' . $port . ';';
-        else
-            $dsn = 'mysql:host=' . $hostname . ';port=' . $port . ';';
 
         $this->credentials['hostname'] = $hostname;
         $this->credentials['port'] = $port;
         $this->credentials['user'] = $user;
         $this->credentials['password'] = $passwd;
+
         if ($dbname)
             $this->credentials['dbname'] = $dbname;
 
-        parent::__construct($dsn, $user, $passwd, $options);
-
-        $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $this->query("
-      SET character_set_results = 'utf8', character_set_client = 'utf8',
-      character_set_connection = 'utf8', character_set_database = 'utf8',
-      character_set_server = 'utf8'");
+        $this->initConn();
 
         return $this;
     }
 
+    protected function initConn()
+    {
+        $this->connection = null;
+
+        if (isset($this->credentials['dbname']))
+            $dsn = 'mysql:dbname=' . $this->credentials['dbname'] . ';host=' . $this->credentials['hostname'] . ';port=' . $this->credentials['port'] . ';';
+        else
+            $dsn = 'mysql:host=' . $this->credentials['hostname'] . ';port=' . $this->credentials['port'] . ';';
+
+        $this->connection = new \PDO($dsn, $this->credentials['user'], $this->credentials['password'], array());
+
+        $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $this->connection->exec("
+            SET character_set_results = 'utf8', character_set_client = 'utf8',
+            character_set_connection = 'utf8', character_set_database = 'utf8',
+            character_set_server = 'utf8'");
+    }
+
     /**
      *
-     * @param  type         $statement
-     * @param  type         $driver_options
-     * @return PDOStatement
+     * @return void
      */
-    public function prepare($statement, $driver_options = array())
+    public function disconnect()
     {
-        if ($this->debug) {
-            return new connection_pdoStatementDebugger(parent::prepare($statement, $driver_options));
-        } else {
-            return parent::prepare($statement, $driver_options);
-        }
+        $this->connection = null;
     }
 
     /**
@@ -81,6 +84,48 @@ class connection_pdo extends connection_abstract implements connection_interface
     public function close()
     {
         connection::close_PDO_connection($this->name);
+    }
+
+    public function __call($method, $args)
+    {
+        if (null === $this->connection) {
+            $this->initConn();
+        }
+
+        if (!method_exists($this->connection, $method)) {
+            throw new \BadMethodCallException(sprintf('Method %s does not exist', $method));
+        }
+
+        $tries = 0;
+
+        do {
+            $tries++;
+            try {
+                set_error_handler(function ($errno, $errstr) {
+                    if (false !== strpos($errstr, 'Error while sending QUERY packet')) {
+                        throw new \Exception('MySQL server has gone away');
+                    }
+                    throw new \Exception($errstr);
+                });
+
+                if ('prepare' === $method && $this->debug) {
+                    $ret = new connection_pdoStatementDebugger(call_user_func_array(array($this->connection, $method), $args));
+                } else {
+                    $ret = call_user_func_array(array($this->connection, $method), $args);
+                }
+                restore_error_handler();
+
+                return $ret;
+            } catch (\Exception $e) {
+                restore_error_handler();
+
+                $found = (false !== strpos($e->getMessage(), 'MySQL server has gone away')) || (false !== strpos($e->getMessage(), 'errno=32 Broken pipe'));
+                if ($tries >= 2 || !$found) {
+                    throw $e;
+                }
+                $this->initConn();
+            }
+        } while (true);
     }
 
     /**
