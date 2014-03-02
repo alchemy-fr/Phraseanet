@@ -65,7 +65,7 @@ class Sha256Test extends \PhraseanetTestCase
         $mock
             ->expects($this->once())
             ->method('getSha256')
-            ->will($this->returnValue(\random::generatePassword(3)))
+            ->will($this->returnValue(self::$DI['app']['random.low']->generateString(3)))
         ;
 
         $response = $this->object->check(self::$DI['app']['EM'], $mock);

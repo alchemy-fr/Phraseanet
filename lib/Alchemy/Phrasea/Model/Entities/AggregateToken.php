@@ -35,7 +35,7 @@ class AggregateToken
     private $user;
 
     /**
-     * @ORM\Column(type="string", length=12, nullable=true)
+     * @ORM\Column(type="string", length=64, nullable=true)
      */
     private $value;
 

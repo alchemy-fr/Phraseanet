@@ -247,7 +247,7 @@ class API_OAuth2_Adapter extends OAuth2
     protected function setAccessToken($oauth_token, $account_id, $expires, $scope = NULL)
     {
         $account = new API_OAuth2_Account($this->app, $account_id);
-        $token = API_OAuth2_Token::create($this->app['phraseanet.appbox'], $account, $scope);
+        $token = API_OAuth2_Token::create($this->app['phraseanet.appbox'], $account, $this->app['random.medium'], $scope);
         $token->set_value($oauth_token)->set_expires($expires);
 
         return $this;

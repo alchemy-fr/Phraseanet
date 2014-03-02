@@ -28,7 +28,7 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
         });
 
         $app['manipulator.user'] = $app->share(function ($app) {
-            return new UserManipulator($app['model.user-manager'], $app['auth.password-encoder'], $app['geonames.connector'], $app['repo.users']);
+            return new UserManipulator($app['model.user-manager'], $app['auth.password-encoder'], $app['geonames.connector'], $app['repo.users'], $app['random.low']);
         });
 
         $app['manipulator.acl'] = $app->share(function ($app) {

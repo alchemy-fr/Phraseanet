@@ -13,13 +13,13 @@ class api_oauthv2_TokenTest extends \PhraseanetTestCase
         $account = API_OAuth2_Account::load_with_user(self::$DI['app'], self::$DI['oauth2-app-user'], self::$DI['user']);
 
         try {
-            new API_OAuth2_Token(self::$DI['app']['phraseanet.appbox'], $account);
+            new API_OAuth2_Token(self::$DI['app']['phraseanet.appbox'], $account, self::$DI['app']['random.medium']);
             $this->fail();
         } catch (Exception $e) {
 
         }
 
-        $this->object = API_OAuth2_Token::create(self::$DI['app']['phraseanet.appbox'], $account);
+        $this->object = API_OAuth2_Token::create(self::$DI['app']['phraseanet.appbox'], $account, self::$DI['app']['random.medium']);
     }
 
     public function tearDown()
@@ -84,12 +84,5 @@ class api_oauthv2_TokenTest extends \PhraseanetTestCase
         $loaded = API_OAuth2_Token::load_by_oauth_token(self::$DI['app'], $token);
         $this->assertInstanceOf('API_OAuth2_Token', $loaded);
         $this->assertEquals($this->object, $loaded);
-    }
-
-    public function testGenerate_token()
-    {
-        for ($i = 0; $i < 100; $i ++) {
-            $this->assertMd5(API_OAuth2_Token::generate_token());
-        }
     }
 }

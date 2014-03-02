@@ -55,7 +55,7 @@
         <div style="width:{{b_width|round}}px;height:{{b_height|round}}px;" class="thumb_wrapper {{extraclass|default('')}}">
         {% endif %}
         {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
-          {% set random = thumbnail.get_random() %}
+          {% set random = random(100000) %}
           <div class="record record_video imgTips" style="position:relative;width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
               <div id="preview{{random}}" class="PNB"></div>
               <input type="hidden" name="width" value="{{thumbnail_width}}"/>
@@ -70,7 +70,7 @@
               });
           </script>
         {% elseif record_type == 'FLEXPAPER' %}
-          {% set random = thumbnail.get_random() %}
+          {% set random = random(100000) %}
           <div class="record record_document imgTips" style="position:relative;width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
               <div id="preview_{{thumbnail.get_sbas_id()}}_{{thumbnail.get_record_id()}}_{{random}}" class="PNB" style=""></div>
             <input type="hidden" name="width" value="{{d_width}}"/>
@@ -83,7 +83,7 @@
             {menu: "false",flashvars: "SwfFile={{url}}&Scale=0.6&ZoomTransition=easeOut&ZoomTime=0.5&ZoomInterval=0.1&FitPageOnLoad=true&FitWidthOnLoad=true&PrintEnabled=true&FullScreenAsMaxWindow=false&localeChain={{app['locale']}}",	movie: "/include/FlexPaper_flash/FlexPaperViewer.swf",	allowFullScreen :"true",wmode: "transparent"}, false);</script>
 
         {% elseif record_type == 'AUDIO_MP3' %}
-          {% set random = thumbnail.get_random() %}
+          {% set random = random(100000) %}
           <div class="record record_audio audioTips" style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
             <div id="preview_{{thumbnail.get_sbas_id()}}_{{thumbnail.get_record_id()}}_{{random}}" class="PNB" style=""></div>
             <input type="hidden" name="width" value="{{thumbnail_width}}"/>
@@ -162,7 +162,7 @@
         <div style="width:{{b_width|round}}px;height:{{b_height|round}}px;" class="thumb_wrapper {{extraclass|default('')}}">
         {% endif %}
         {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
-          {% set random = thumbnail.get_random() %}
+          {% set random = random(100000) %}
           <div class="record record_video imgTips" style="position:relative;width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
               <div id="preview{{random}}" class="PNB"></div>
               <input type="hidden" name="width" value="{{thumbnail_width}}"/>
@@ -175,7 +175,7 @@
               onError:function(code,message){getNewVideoToken({{thumbnail.get_sbas_id() ~'_'~thumbnail.get_record_id()}}, this);},              plugins: {h264streaming: {url: "/include/jslibs/flowplayer/pseudostreaming/flowplayer.pseudostreaming-3.2.13.swf"}}});
           </script>
         {% elseif record_type == 'FLEXPAPER' %}
-          {% set random = thumbnail.get_random() %}
+          {% set random = random(100000) %}
           <div class="record record_document imgTips" style="position:relative;width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
               <div id="preview_{{thumbnail.get_sbas_id()}}_{{thumbnail.get_record_id()}}_{{random}}" class="PNB" style=""></div>
             <input type="hidden" name="width" value="{{d_width}}"/>
@@ -188,7 +188,7 @@
             {menu: "false",flashvars: "SwfFile={{url}}&Scale=0.6&ZoomTransition=easeOut&ZoomTime=0.5&ZoomInterval=0.1&FitPageOnLoad=true&FitWidthOnLoad=true&PrintEnabled=true&FullScreenAsMaxWindow=false&localeChain={{app['locale']}}",	movie: "/include/FlexPaper_flash/FlexPaperViewer.swf",	allowFullScreen :"true",wmode: "transparent"}, false);</script>
 
         {% elseif record_type == 'AUDIO_MP3' %}
-          {% set random = thumbnail.get_random() %}
+          {% set random = random(100000) %}
           <div class="record record_audio audioTips" style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
             <div id="preview_{{thumbnail.get_sbas_id()}}_{{thumbnail.get_record_id()}}_{{random}}" class="PNB" style=""></div>
             <input type="hidden" name="width" value="{{thumbnail_width}}"/>

@@ -326,7 +326,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
 
         $params = [
             ':subdef_id' => $media_subdef->get_subdef_id()
-            , ':token'     => random::generatePassword(8, random::LETTERS_AND_NUMBERS)
+            , ':token'     => $app['random.medium']->generateString(64, \random::LETTERS_AND_NUMBERS)
             , ':activated' => '1'
         ];
 

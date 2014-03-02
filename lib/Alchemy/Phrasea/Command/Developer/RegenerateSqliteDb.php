@@ -336,7 +336,7 @@ class RegenerateSqliteDb extends Command
     private function getUser()
     {
         if (null === $user = $this->container['repo.users']->findByLogin('test_phpunit')) {
-            $user = $this->container['manipulator.user']->createUser('test_phpunit', \random::generatePassword(), 'noone@example.com', true);
+            $user = $this->container['manipulator.user']->createUser('test_phpunit', $this->container['random.low']->generateString(12), 'noone@example.com', true);
         }
 
         return $user;
@@ -345,7 +345,7 @@ class RegenerateSqliteDb extends Command
     private function getUserAlt1()
     {
         if (null === $user = $this->container['repo.users']->findByLogin('test_phpunit_alt1')) {
-            $user = $this->container['manipulator.user']->createUser('test_phpunit_alt1', \random::generatePassword(), 'noonealt1@example.com', false);
+            $user = $this->container['manipulator.user']->createUser('test_phpunit_alt1', $this->container['random.low']->generateString(12), 'noonealt1@example.com', false);
         }
 
         return $user;
@@ -354,7 +354,7 @@ class RegenerateSqliteDb extends Command
     private function getUserAlt2()
     {
         if (null === $user = $this->container['repo.users']->findByLogin('test_phpunit_alt2')) {
-            $user = $this->container['manipulator.user']->createUser('test_phpunit_alt2', \random::generatePassword(), 'noonealt2@example.com', false);
+            $user = $this->container['manipulator.user']->createUser('test_phpunit_alt2', $this->container['random.low']->generateString(12), 'noonealt2@example.com', false);
         }
 
         return $user;
@@ -363,7 +363,7 @@ class RegenerateSqliteDb extends Command
     public function getUserNotAdmin()
     {
         if (null === $user = $this->container['repo.users']->findByLogin('test_phpunit_not_admin')) {
-            $user = $this->container['manipulator.user']->createUser('test_phpunit_not_admin', \random::generatePassword(), 'noone_not_admin@example.com', false);
+            $user = $this->container['manipulator.user']->createUser('test_phpunit_not_admin', $this->container['random.low']->generateString(12), 'noone_not_admin@example.com', false);
         }
 
         return $user;
@@ -600,7 +600,7 @@ class RegenerateSqliteDb extends Command
     private function insertOneFeedToken(EntityManager $em, \Pimple $DI, Feed $feed)
     {
         $token = new FeedToken();
-        $token->setValue($this->container['tokens']->generatePassword(12));
+        $token->setValue($this->container['random.low']->generateString(64, \random::LETTERS_AND_NUMBERS));
         $token->setFeed($feed);
         $token->setUser($DI['user']);
 
@@ -615,7 +615,7 @@ class RegenerateSqliteDb extends Command
         $user = $DI['user'];
 
         $token = new AggregateToken();
-        $token->setValue($this->container['tokens']->generatePassword(12));
+        $token->setValue($this->container['random.low']->generateString(64, \random::LETTERS_AND_NUMBERS));
         $token->setUser($user);
 
         $em->persist($token);

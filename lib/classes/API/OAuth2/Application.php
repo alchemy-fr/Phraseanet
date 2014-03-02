@@ -605,9 +605,9 @@ class API_OAuth2_Application
                 :client_secret, :activated, :grant_password
             )';
 
-        $nonce = random::generatePassword(6);
-        $client_secret = API_OAuth2_Token::generate_token();
-        $client_token = API_OAuth2_Token::generate_token();
+        $nonce = $app['random.medium']->generateString(64);
+        $client_secret = $app['random.medium']->generateString(32, \random::LETTERS_AND_NUMBERS);
+        $client_token = $app['random.medium']->generateString(32, \random::LETTERS_AND_NUMBERS);
 
         $params = [
             ':usr_id'         => $user ? $user->getId() : null,

@@ -100,6 +100,7 @@ use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
+use Alchemy\Phrasea\Core\Provider\RandomGeneratorServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
@@ -288,6 +289,7 @@ class Application extends SilexApplication
         $this->register(new PhraseanetServiceProvider());
         $this->register(new PhraseaVersionServiceProvider());
         $this->register(new PHPExiftoolServiceProvider());
+        $this->register(new RandomGeneratorServiceProvider());
         $this->register(new ReCaptchaServiceProvider());
         $this->register(new SubdefServiceProvider());
         $this->register(new ZippyServiceProvider());

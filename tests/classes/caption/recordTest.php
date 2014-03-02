@@ -26,7 +26,7 @@ class caption_recordTest extends \PhraseanetTestCase
             $n = $databox_field->is_multi() ? 3 : 1;
 
             for ($i = 0; $i < $n; $i ++) {
-                \caption_Field_Value::create(self::$DI['app'], $databox_field, self::$DI['record_1'], \random::generatePassword());
+                \caption_Field_Value::create(self::$DI['app'], $databox_field, self::$DI['record_1'], self::$DI['app']['random.low']->generateString(8));
             }
         }
 
@@ -63,7 +63,7 @@ class caption_recordTest extends \PhraseanetTestCase
             $n = $databox_field->is_multi() ? 3 : 1;
 
             for ($i = 0; $i < $n; $i ++) {
-                \caption_Field_Value::create(self::$DI['app'], $databox_field, self::$DI['record_1'], \random::generatePassword());
+                \caption_Field_Value::create(self::$DI['app'], $databox_field, self::$DI['record_1'], self::$DI['app']['random.low']->generateString(8));
             }
         }
 
@@ -100,7 +100,7 @@ class caption_recordTest extends \PhraseanetTestCase
             $n = $databox_field->is_multi() ? 3 : 1;
 
             for ($i = 0; $i < $n; $i ++) {
-                \caption_Field_Value::create(self::$DI['app'], $databox_field, self::$DI['record_1'], \random::generatePassword());
+                \caption_Field_Value::create(self::$DI['app'], $databox_field, self::$DI['record_1'], self::$DI['app']['random.low']->generateString(8));
             }
         }
 

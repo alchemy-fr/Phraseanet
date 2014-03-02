@@ -143,7 +143,7 @@ class Developers implements ControllerProviderInterface
             if ($token instanceof \API_OAuth2_Token) {
                 $token->renew();
             } else {
-                $token = \API_OAuth2_Token::create($app['phraseanet.appbox'], $account);
+                $token = \API_OAuth2_Token::create($app['phraseanet.appbox'], $account, $app['random.medium']);
             }
 
             $accessToken = $token->get_value();

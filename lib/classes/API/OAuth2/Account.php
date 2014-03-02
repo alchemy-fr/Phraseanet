@@ -170,9 +170,9 @@ class API_OAuth2_Account
     {
         if (! $this->token) {
             try {
-                $this->token = new API_OAuth2_Token($this->app['phraseanet.appbox'], $this);
+                $this->token = new API_OAuth2_Token($this->app['phraseanet.appbox'], $this, $this->app['random.medium']);
             } catch (NotFoundHttpException $e) {
-                $this->token = API_OAuth2_Token::create($this->app['phraseanet.appbox'], $this);
+                $this->token = API_OAuth2_Token::create($this->app['phraseanet.appbox'], $this, $this->app['random.medium']);
             }
         }
 

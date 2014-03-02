@@ -11,10 +11,10 @@ class AccountCreatorTest extends \PhraseanetTestCase
      */
     public function testIsEnabled($enabled)
     {
-        $random = $this->createRandomMock();
+        $generator = $this->createGeneratorMock();
         $appbox = $this->createAppboxMock();
 
-        $creator = new AccountCreator($random, $appbox, $enabled, []);
+        $creator = new AccountCreator($generator, $appbox, $enabled, []);
 
         $this->assertSame($enabled, $creator->isEnabled());
     }
@@ -32,11 +32,11 @@ class AccountCreatorTest extends \PhraseanetTestCase
      */
     public function testCreateWithAnExistingMail()
     {
-        $random = $this->createRandomMock();
+        $generator = $this->createGeneratorMock();
         $appbox = $this->createAppboxMock();
 
-        $creator = new AccountCreator($random, $appbox, true, []);
-        $creator->create(self::$DI['app'], self::$DI['app']['tokens']->generatePassword(), self::$DI['user']->getEmail());
+        $creator = new AccountCreator($generator, $appbox, true, []);
+        $creator->create(self::$DI['app'], self::$DI['app']['random.low']->generateString(8), self::$DI['user']->getEmail());
     }
 
     /**
@@ -44,17 +44,17 @@ class AccountCreatorTest extends \PhraseanetTestCase
      */
     public function testCreateWithDisabledCreator()
     {
-        $random = $this->createRandomMock();
+        $generator = $this->createGeneratorMock();
         $appbox = $this->createAppboxMock();
 
-        $creator = new AccountCreator($random, $appbox, false, []);
-        $creator->create(self::$DI['app'], self::$DI['app']['tokens']->generatePassword());
+        $creator = new AccountCreator($generator, $appbox, false, []);
+        $creator->create(self::$DI['app'], self::$DI['app']['random.low']->generateString(8));
     }
 
     public function testCreateWithoutTemplates()
     {
-        $creator = new AccountCreator(self::$DI['app']['tokens'], self::$DI['app']['phraseanet.appbox'], true, []);
-        $user = $creator->create(self::$DI['app'], self::$DI['app']['tokens']->generatePassword());
+        $creator = new AccountCreator(self::$DI['app']['random.low'], self::$DI['app']['phraseanet.appbox'], true, []);
+        $user = $creator->create(self::$DI['app'], self::$DI['app']['random.low']->generateString(8));
 
         $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\User', $user);
 
@@ -70,8 +70,8 @@ class AccountCreatorTest extends \PhraseanetTestCase
         $templates = [$template1, $template2];
         $extra = [$template3];
 
-        $creator = new AccountCreator(self::$DI['app']['tokens'], self::$DI['app']['phraseanet.appbox'], true, $templates);
-        $user = $creator->create(self::$DI['app'], self::$DI['app']['tokens']->generatePassword(), null, $extra);
+        $creator = new AccountCreator(self::$DI['app']['random.low'], self::$DI['app']['phraseanet.appbox'], true, $templates);
+        $user = $creator->create(self::$DI['app'], self::$DI['app']['random.low']->generateString(8), null, $extra);
 
         $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\User', $user);
         self::$DI['app']['manipulator.user']->delete($user);
@@ -82,7 +82,7 @@ class AccountCreatorTest extends \PhraseanetTestCase
 
     public function testCreateWithAlreadyExistingLogin()
     {
-        $creator = new AccountCreator(self::$DI['app']['tokens'], self::$DI['app']['phraseanet.appbox'], true, []);
+        $creator = new AccountCreator(self::$DI['app']['random.low'], self::$DI['app']['phraseanet.appbox'], true, []);
         $user = $creator->create(self::$DI['app'], self::$DI['user']->getLogin());
 
         $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\User', $user);

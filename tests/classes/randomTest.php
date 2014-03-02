@@ -27,43 +27,6 @@ class randomTest extends \PhraseanetTestCase
         }
     }
 
-    public function testGeneratePassword()
-    {
-        $this->assertRegExp('/[a-zA-Z]{4}/', random::generatePassword(4, random::LETTERS));
-        $this->assertRegExp('/[a-zA-Z]{8}/', random::generatePassword(8, random::LETTERS));
-        $this->assertRegExp('/[a-zA-Z]{16}/', random::generatePassword(16, random::LETTERS));
-        $this->assertRegExp('/[a-zA-Z]{32}/', random::generatePassword(32, random::LETTERS));
-        $this->assertRegExp('/[a-zA-Z]{64}/', random::generatePassword(64, random::LETTERS));
-        $this->assertRegExp('/[a-zA-Z0-9]{4}/', random::generatePassword(4, random::LETTERS_AND_NUMBERS));
-        $this->assertRegExp('/[a-zA-Z0-9]{8}/', random::generatePassword(8, random::LETTERS_AND_NUMBERS));
-        $this->assertRegExp('/[a-zA-Z0-9]{16}/', random::generatePassword(16, random::LETTERS_AND_NUMBERS));
-        $this->assertRegExp('/[a-zA-Z0-9]{32}/', random::generatePassword(32, random::LETTERS_AND_NUMBERS));
-        $this->assertRegExp('/[a-zA-Z0-9]{64}/', random::generatePassword(64, random::LETTERS_AND_NUMBERS));
-        $this->assertRegExp('/[0-9]{4}/', random::generatePassword(4, random::NUMBERS));
-        $this->assertRegExp('/[0-9]{8}/', random::generatePassword(8, random::NUMBERS));
-        $this->assertRegExp('/[0-9]{16}/', random::generatePassword(16, random::NUMBERS));
-        $this->assertRegExp('/[0-9]{32}/', random::generatePassword(32, random::NUMBERS));
-        $this->assertRegExp('/[0-9]{64}/', random::generatePassword(64, random::NUMBERS));
-        try {
-            random::generatePassword('gros caca', random::NUMBERS);
-            $this->fail('An invalid argument exception should have been triggered');
-        } catch (Exception_InvalidArgument $e) {
-
-        }
-        try {
-            random::generatePassword('012', random::NUMBERS);
-            $this->fail('An invalid argument exception should have been triggered');
-        } catch (Exception_InvalidArgument $e) {
-
-        }
-        try {
-            random::generatePassword('caca007', random::NUMBERS);
-            $this->fail('An invalid argument exception should have been triggered');
-        } catch (Exception_InvalidArgument $e) {
-
-        }
-    }
-
     public function testGetUrlToken()
     {
         $usr_id = self::$DI['user']->getId();

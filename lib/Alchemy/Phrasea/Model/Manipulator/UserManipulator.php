@@ -20,6 +20,7 @@ use Alchemy\Phrasea\Model\Manager\UserManager;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use RandomLib\Generator;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
@@ -34,12 +35,15 @@ class UserManipulator implements ManipulatorInterface
     private $manager;
     /** @var GeonamesConnector */
     private $geonamesConnector;
+    /** @var Generator */
+    private $generator;
     /** @var EntityRepository */
     private $repository;
 
-    public function __construct(UserManager $manager, PasswordEncoderInterface $passwordEncoder, GeonamesConnector $connector, EntityRepository $repo)
+    public function __construct(UserManager $manager, PasswordEncoderInterface $passwordEncoder, GeonamesConnector $connector, EntityRepository $repo, Generator $generator)
     {
         $this->manager = $manager;
+        $this->generator = $generator;
         $this->passwordEncoder = $passwordEncoder;
         $this->geonamesConnector = $connector;
         $this->repository = $repo;
@@ -258,7 +262,7 @@ class UserManipulator implements ManipulatorInterface
      */
     private function doSetPassword(User $user, $password)
     {
-        $user->setNonce(base_convert(sha1(uniqid(mt_rand(), true)), 16, 36));
+        $user->setNonce($this->generator->generateString(64));
         $user->setPassword($this->passwordEncoder->encodePassword($password, $user->getNonce()));
         $user->setSaltedPassword(true);
     }

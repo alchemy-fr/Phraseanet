@@ -4,8 +4,9 @@ namespace Alchemy\Tests\Phrasea\Controller\Root;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Registration;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Alchemy\Phrasea\Model\Entities\User;
+use RandomLib\Factory;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 {
@@ -167,7 +168,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testPostResetMailBadEmail()
     {
-        $password = \random::generatePassword();
+        $password = self::$DI['app']['random.low']->generateString(8);
         self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
         self::$DI['client']->request('POST', '/account/reset-email/', [
             'form_password'      => $password,
@@ -187,7 +188,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testPostResetMailEmailNotIdentical()
     {
-        $password = \random::generatePassword();
+        $password = self::$DI['app']['random.low']->generateString(8);
         self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
         self::$DI['client']->request('POST', '/account/reset-email/', [
             'form_password'      => $password,
@@ -209,7 +210,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate');
 
-        $password = \random::generatePassword();
+        $password = self::$DI['app']['random.low']->generateString(8);
         self::$DI['app']['manipulator.user']->setPassword(
             self::$DI['app']['authentication']->getUser(),
             $password
@@ -453,7 +454,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostRenewPasswordNoToken()
     {
-        $password = \random::generatePassword();
+        $password = self::$DI['app']['random.low']->generateString(8);
 
         self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
 
@@ -473,7 +474,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostRenewPassword()
     {
-        $password = \random::generatePassword();
+        $password = self::$DI['app']['random.low']->generateString(8);
 
         self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
 
@@ -496,8 +497,11 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function passwordProvider()
     {
+        $factory = new Factory();
+        $generator = $factory->getLowStrengthGenerator();
+
         return [
-            [\random::generatePassword(), 'password', 'not_identical_password'],
+            [$generator->generateString(8), 'password', 'not_identical_password'],
         ];
     }
 }

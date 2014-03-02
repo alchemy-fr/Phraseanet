@@ -116,7 +116,7 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
             ->method('getPlatform')
             ->will($this->returnValue('Une belle version'));
 
-        $nonce = \random::generatePassword(16);
+        $nonce = self::$DI['app']['random.low']->generateString(16);
         $string = $browser->getBrowser() . '_' . $browser->getPlatform();
 
         $token = self::$DI['app']['auth.password-encoder']->encodePassword($string, $nonce);

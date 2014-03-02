@@ -23,6 +23,7 @@
         "guzzle/guzzle"                    : "~3.6",
         "igorw/get-in"                     : "~1.0",
         "imagine/imagine"                  : "0.6.x-dev@dev",
+        "ircmaxell/random-lib"             : "~1.0",
         "jms/serializer"                   : "~0.10",
         "jms/translation-bundle"           : "~1.1",
         "justinrainbow/json-schema"        : "~1.3",

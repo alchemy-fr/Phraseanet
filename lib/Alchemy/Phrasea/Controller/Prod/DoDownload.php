@@ -33,15 +33,15 @@ class DoDownload implements ControllerProviderInterface
 
         $controllers->get('/{token}/prepare/', 'controller.prod.do-download:prepareDownload')
             ->bind('prepare_download')
-            ->assert('token', '[a-zA-Z0-9]{8,16}');
+            ->assert('token', '[a-zA-Z0-9\.\/]{8,16}');
 
         $controllers->match('/{token}/get/', 'controller.prod.do-download:downloadDocuments')
             ->bind('document_download')
-            ->assert('token', '[a-zA-Z0-9]{8,16}');
+            ->assert('token', '[a-zA-Z0-9\.\/]{8,16}');
 
         $controllers->post('/{token}/execute/', 'controller.prod.do-download:downloadExecute')
             ->bind('execute_download')
-            ->assert('token', '[a-zA-Z0-9]{8,16}');
+            ->assert('token', '[a-zA-Z0-9\.\/]{8,16}');
 
         return $controllers;
     }

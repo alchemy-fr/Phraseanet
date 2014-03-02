@@ -15,7 +15,7 @@ class SearchEngineLoggerTest extends \PhraseanetTestCase
         $databox = self::$DI['collection']->get_databox();
         $coll_ids = [self::$DI['collection']->get_coll_id()];
         $answers = 42;
-        $query = \random::generatePassword();
+        $query = self::$DI['app']['random.low']->generateString(8);
 
         $object = new SearchEngineLogger(self::$DI['app']);
         $object->log($databox, $query, $answers, $coll_ids);

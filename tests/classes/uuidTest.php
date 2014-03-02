@@ -22,7 +22,7 @@ class uuidTest extends \PhraseanetTestCase
             if ( ! uuid::is_valid($uuid))
                 $this->fail('Generation d\'un uuid v4 invalide');
 
-            $uuid = uuid::generate_v3($uuid, random::generatePassword(12));
+            $uuid = uuid::generate_v3($uuid, self::$DI['app']['random.low']->generateString(8));
             if ( ! uuid::is_valid($uuid))
                 $this->fail('Generation d\'un uuid v5 invalide');
 
@@ -66,7 +66,7 @@ class uuidTest extends \PhraseanetTestCase
             if ( ! uuid::is_valid($uuid))
                 $this->fail('Generation d\'un uuid v4 invalide');
 
-            $uuid = uuid::generate_v5($uuid, random::generatePassword(12));
+            $uuid = uuid::generate_v5($uuid, self::$DI['app']['random.low']->generateString(8));
             if ( ! uuid::is_valid($uuid))
                 $this->fail('Generation d\'un uuid v5 invalide');
 
@@ -88,11 +88,11 @@ class uuidTest extends \PhraseanetTestCase
             if ( ! uuid::is_valid($uuid))
                 $this->fail('Generation d\'un uuid v4 invalide');
 
-            $uuid = uuid::generate_v5($uuid, random::generatePassword(12));
+            $uuid = uuid::generate_v5($uuid, self::$DI['app']['random.low']->generateString(8));
             if ( ! uuid::is_valid($uuid))
                 $this->fail('Generation d\'un uuid v5 invalide');
 
-            $uuid = uuid::generate_v3($uuid, random::generatePassword(12));
+            $uuid = uuid::generate_v3($uuid, self::$DI['app']['random.low']->generateString(8));
             if ( ! uuid::is_valid($uuid))
                 $this->fail('Generation d\'un uuid v3 invalide');
 

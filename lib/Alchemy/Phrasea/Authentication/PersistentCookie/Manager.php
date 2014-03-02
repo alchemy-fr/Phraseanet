@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Authentication\PersistentCookie;
 
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
-use Doctrine\ORM\EntityManager;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Doctrine\ORM\EntityRepository;
 

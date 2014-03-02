@@ -150,7 +150,7 @@ class Manage extends Helper
             $sendCredentials = !!$this->request->get('send_credentials', false);
             $validateMail = !!$this->request->get('validate_mail', false);
 
-            $createdUser = $this->app['manipulator.user']->createUser($email, \random::generatePassword(16), $email);
+            $createdUser = $this->app['manipulator.user']->createUser($email, $this->app['random.medium']->generateString(128), $email);
 
             $receiver = null;
             try {
@@ -197,8 +197,7 @@ class Manage extends Helper
             throw new \Exception_InvalidArgument('Invalid template name');
         }
 
-        $created_user = $this->app['repo.users']->find($name, \random::generatePassword(16));
-        $created_user->setTemplateOwner($this->app['authentication']->getUser());
+        $created_user = $this->app['manipulator.user']->createTemplate($name, $this->app['authentication']->getUser());
         $this->usr_id = $this->app['authentication']->getUser()->getId();
 
         return $created_user;

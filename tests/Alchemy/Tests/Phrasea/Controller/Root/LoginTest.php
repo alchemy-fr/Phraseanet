@@ -11,6 +11,7 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Authentication\ProvidersCollection;
 use Alchemy\Phrasea\Model\Entities\Registration;
 use Alchemy\Phrasea\Model\Entities\User;
+use RandomLib\Factory;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Response;
@@ -674,6 +675,9 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function provideRegistrationData()
     {
+        $factory = new Factory();
+        $generator = $factory->getLowStrengthGenerator();
+
         return [
             [[
                 "password" => [
@@ -760,7 +764,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                 ],
                 "email"           => $this->generateEmail(),
                 "collections"     => null,
-                "login" => 'login-'.\random::generatePassword(),
+                "login" => 'login-'.$generator->generateString(8),
                 "gender" => User::GENDER_MR,
                 "firstname" => 'romain',
                 "lastname" => 'neutron',
@@ -1158,7 +1162,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testAuthenticate()
     {
-        $password = \random::generatePassword();
+        $password = self::$DI['app']['random.low']->generateString(8);
         $login = self::$DI['app']['authentication']->getUser()->getLogin();
         self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
         self::$DI['app']['authentication']->getUser()->setMailLocked(false);
@@ -1182,7 +1186,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testAuthenticateTriggersEvents($eventName, $className, $context)
     {
-        $password = \random::generatePassword();
+        $password = self::$DI['app']['random.low']->generateString(8);
 
         $login = self::$DI['app']['authentication']->getUser()->getLogin();
         self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
@@ -1228,7 +1232,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testAuthenticateCheckRedirect()
     {
-        $password = \random::generatePassword();
+        $password = self::$DI['app']['random.low']->generateString(8);
 
         $login = self::$DI['app']['authentication']->getUser()->getLogin();
         self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
@@ -1349,7 +1353,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     public function testMailLockedAuthenticate()
     {
         $this->logout(self::$DI['app']);
-        $password = \random::generatePassword();
+        $password = self::$DI['app']['random.low']->generateString(8);
         self::$DI['user']->setMailLocked(true);
         self::$DI['client']->request('POST', '/login/authenticate/', [
             'login' => self::$DI['user']->getLogin(),
@@ -1575,7 +1579,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             ->will($this->returnValue('supermail@superprovider.com'));
 
         if (null === $user = self::$DI['app']['repo.users']->findByEmail('supermail@superprovider.com')) {
-            $random = self::$DI['app']['tokens']->generatePassword();
+            $random = self::$DI['app']['random.low']->generateString(8);
             $user = self::$DI['app']['manipulator.user']->createUser('temporary-'.$random, $random, 'supermail@superprovider.com');
         }
 
@@ -1785,7 +1789,10 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
      */
     private function generateEmail()
     {
-        return \random::generatePassword() . '_email@email.com';
+        $factory = new Factory();
+        $generator = $factory->getLowStrengthGenerator();
+
+        return $generator->generateString(8, \random::LETTERS_AND_NUMBERS) . '_email@email.com';
     }
 
     private function disableTOU()

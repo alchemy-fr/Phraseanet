@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\User;
+use RandomLib\Generator;
 
 class AccountCreator
 {
@@ -23,7 +24,7 @@ class AccountCreator
     private $random;
     private $templates;
 
-    public function __construct(\random $random, \appbox $appbox, $enabled, $templates)
+    public function __construct(Generator $random, \appbox $appbox, $enabled, $templates)
     {
         $this->appbox = $appbox;
         $this->enabled = $enabled;
@@ -80,7 +81,7 @@ class AccountCreator
             $n++;
         }
 
-        $user = $app['manipulator.user']->createUser($login, $this->random->generatePassword(), $email);
+        $user = $app['manipulator.user']->createUser($login, $this->random->generateString(128), $email);
 
         $base_ids = [];
         foreach ($this->appbox->get_databoxes() as $databox) {

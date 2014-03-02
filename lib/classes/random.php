@@ -85,31 +85,6 @@ class random
 
     /**
      *
-     * @param  int      $length
-     * @param  constant $possible
-     * @return string
-     */
-    public static function generatePassword($length = 8, $possible = SELF::LETTERS_AND_NUMBERS)
-    {
-        if ( ! is_int($length))
-            throw new Exception_InvalidArgument ();
-
-        $password = "";
-        if ( ! in_array($possible, [self::LETTERS_AND_NUMBERS, self::LETTERS, self::NUMBERS]))
-            $possible = self::LETTERS_AND_NUMBERS;
-        $i = 0;
-        $possible_length = strlen($possible);
-        while ($i < $length) {
-            $char = substr($possible, mt_rand(0, $possible_length - 1), 1);
-            $password .= $char;
-            $i ++;
-        }
-
-        return $password;
-    }
-
-    /**
-     *
      * @param string        $type
      * @param int           $usr
      * @param DateTime      $end_date
@@ -125,14 +100,13 @@ class random
 
         switch ($type) {
             case self::TYPE_DOWNLOAD:
-            case self::TYPE_PASSWORD:
             case self::TYPE_MAIL_DOWNLOAD:
             case self::TYPE_EMAIL:
+            case self::TYPE_PASSWORD:
             case self::TYPE_VALIDATE:
             case self::TYPE_VIEW:
             case self::TYPE_RSS:
             case self::TYPE_FEED_ENTRY:
-
                 break;
             default:
                 throw new Exception_InvalidArgument();
@@ -144,7 +118,7 @@ class random
         $sql = 'SELECT id FROM tokens WHERE value = :test ';
         $stmt = $conn->prepare($sql);
         while ($n < 100) {
-            $test = self::generatePassword(16);
+            $test = $this->app['random.medium']->generateString(16, self::LETTERS_AND_NUMBERS);
             $stmt->execute([':test' => $test]);
             if ($stmt->rowCount() === 0) {
                 $token = $test;
