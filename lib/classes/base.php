@@ -13,7 +13,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Version as PhraseaVersion;
 use vierbergenlars\SemVer\version;
 use Alchemy\Phrasea\Model\Entities\User;
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Connection;
 
 abstract class base implements cache_cacheableInterface
 {

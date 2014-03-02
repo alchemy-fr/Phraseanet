@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Connection;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;

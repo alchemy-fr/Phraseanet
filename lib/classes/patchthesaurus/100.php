@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Connection;
 
 class patchthesaurus_100 implements patchthesaurus_interface
 {

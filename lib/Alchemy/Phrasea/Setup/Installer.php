@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Setup;
 
 use Alchemy\Phrasea\Application;
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Connection;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\Tools\SchemaTool;
 use Alchemy\Phrasea\Model\Entities\User;

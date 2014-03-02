@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Connection;
 
 class collection implements cache_cacheableInterface
 {
