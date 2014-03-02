@@ -129,10 +129,12 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
             ->get_connection()
             ->prepare('DROP DATABASE IF EXISTS `unit_test_db`');
         $stmt->execute();
+        $stmt->closeCursor();
         $stmt = self::$DI['app']['phraseanet.appbox']
             ->get_connection()
             ->prepare('DELETE FROM sbas WHERE dbname = "unit_test_db"');
         $stmt->execute();
+        $stmt->closeCursor();
     }
 
     protected function createDatabase()

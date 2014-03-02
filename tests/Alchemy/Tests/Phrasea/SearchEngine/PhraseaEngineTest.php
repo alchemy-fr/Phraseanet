@@ -84,6 +84,7 @@ class PhraseaEngineTest extends SearchEngineAbstractTest
 
             break;
         }
+        $stmt->closeCursor();
 
         $date = new \DateTime('-1 months');
 

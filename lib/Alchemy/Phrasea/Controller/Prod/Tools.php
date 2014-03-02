@@ -140,6 +140,9 @@ class Tools implements ControllerProviderInterface
                         $media = $app['mediavorus']->guess($tempoFile);
 
                         $app['subdef.substituer']->substitute($record, 'document', $media);
+                        $record->insertTechnicalDatas($app['mediavorus']);
+                        $app['phraseanet.metadata-setter']->replaceMetadata($app['phraseanet.metadata-reader']->read($media), $record);
+
                         $app['phraseanet.logger']($record->get_databox())->log(
                             $record,
                             \Session_Logger::EVENT_SUBSTITUTE,

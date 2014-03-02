@@ -408,6 +408,7 @@ class databox_field implements cache_cacheableInterface
 
         $stmt = $connbas->prepare($sql);
         $stmt->execute($params);
+        $stmt->closeCursor();
 
         if ($this->renamed) {
             caption_field::rename_all_metadatas($this);

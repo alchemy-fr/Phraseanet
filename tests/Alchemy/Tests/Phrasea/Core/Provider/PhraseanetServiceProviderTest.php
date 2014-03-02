@@ -29,7 +29,17 @@ class PhraseanetServiceProviderTest extends ServiceProviderTestCase
                 'Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider',
                 'acl',
                 'Alchemy\Phrasea\Authentication\ACLProvider'
-            ]
+            ],
+            [
+                'Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider',
+                'phraseanet.metadata-reader',
+                'Alchemy\Phrasea\Metadata\PhraseanetMetadataReader'
+            ],
+            [
+                'Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider',
+                'phraseanet.metadata-setter',
+                'Alchemy\Phrasea\Metadata\PhraseanetMetadataSetter'
+            ],
         ];
     }
 }

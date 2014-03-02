@@ -15,7 +15,6 @@ use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Border\MimeGuesserConfiguration;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
-use XPDF\Exception\BinaryNotFoundException;
 
 class BorderManagerServiceProvider implements ServiceProviderInterface
 {
@@ -24,12 +23,6 @@ class BorderManagerServiceProvider implements ServiceProviderInterface
     {
         $app['border-manager'] = $app->share(function (Application $app) {
             $borderManager = new Manager($app);
-
-            try {
-                $borderManager->setPdfToText($app['xpdf.pdftotext']);
-            } catch (BinaryNotFoundException $e) {
-
-            }
 
             $options = $app['conf']->get('border-manager');
 

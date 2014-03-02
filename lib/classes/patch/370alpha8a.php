@@ -68,8 +68,8 @@ class patch_370alpha8a extends patchAbstract
         if (($stmt = $conn->prepare($sql)) !== FALSE) {
             $stmt->execute();
             $ttasks = $stmt->fetchAll();
-            $stmt->closeCursor();
         }
+        $stmt->closeCursor();
 
         $tdom = [];     // key = period
         $taskstodel = [];

@@ -69,6 +69,7 @@ class patch_370alpha7a extends patchAbstract
             $stmt = $conn->prepare($sql);
             $stmt->execute();
             $rs = $stmt->fetchAll();
+            $stmt->closeCursor();
         } catch (DBALException $e) {
             // table not found
             if ($e->getCode() == '42S02') {

@@ -1020,6 +1020,7 @@ class databox extends base
                 unset($e);
             }
         }
+        $stmt->closeCursor();
 
         $this->app['acl']->get($user)->give_access_to_base($base_ids);
         foreach ($base_ids as $base_id) {
@@ -1032,8 +1033,6 @@ class databox extends base
                 ]
             );
         }
-
-        $stmt->closeCursor();
 
         return $this;
     }

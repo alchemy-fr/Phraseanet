@@ -978,6 +978,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 ':record_id' => $this->record_id
             ]
         );
+        $stmt->closeCursor();
 
         $this->reindex();
 
@@ -1105,6 +1106,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $sql = 'UPDATE record SET jeton=(jeton | ' . JETON_MAKE_SUBDEF . ') WHERE record_id = :record_id';
         $stmt = $connbas->prepare($sql);
         $stmt->execute([':record_id' => $this->get_record_id()]);
+        $stmt->closeCursor();
 
         return $this;
     }
@@ -1122,6 +1124,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             WHERE record_id= :record_id';
         $stmt = $connbas->prepare($sql);
         $stmt->execute([':record_id' => $this->record_id]);
+        $stmt->closeCursor();
 
         return $this;
     }
@@ -1191,6 +1194,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             ':originalname'     => null,
             ':mime'             => null,
         ]);
+        $stmt->closeCursor();
 
         $story_id = $databox->get_connection()->lastInsertId();
 
@@ -1246,6 +1250,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             ':originalname'     => $file->getOriginalName(),
             ':mime'             => $file->getFile()->getMimeType(),
         ]);
+        $stmt->closeCursor();
 
         $record_id = $databox->get_connection()->lastInsertId();
 
@@ -1298,7 +1303,12 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             return $this;
         }
 
-        $sql = 'REPLACE INTO technical_datas (id, record_id, name, value)
+        $sql = 'DELETE FROM technical_datas WHERE record_id = :record_id';
+        $stmt = $this->get_databox()->get_connection()->prepare($sql);
+        $stmt->execute([':record_id' => $this->get_record_id()]);
+        $stmt->closeCursor();
+
+        $sql = 'INSERT INTO technical_datas (id, record_id, name, value)
         VALUES (null, :record_id, :name, :value)';
         $stmt = $this->get_databox()->get_connection()->prepare($sql);
 

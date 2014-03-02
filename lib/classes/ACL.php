@@ -1081,6 +1081,7 @@ class ACL implements cache_cacheableInterface
                 throw new Exception('Error while deleteing some rights');
             }
         }
+        $stmt_del->closeCursor();
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
 
         return $this;
@@ -1139,6 +1140,7 @@ class ACL implements cache_cacheableInterface
             if (!$this->has_access_to_sbas($sbas_id))
                 $stmt_ins->execute([':sbas_id' => $sbas_id, ':usr_id'  => $usr_id]);
         }
+        $stmt_ins->closeCursor();
         $this->delete_data_from_cache(self::CACHE_RIGHTS_SBAS);
 
         return $this;
@@ -1256,6 +1258,7 @@ class ACL implements cache_cacheableInterface
         if (!$stmt_up->execute($params)) {
             throw new Exception('Error while updating some rights');
         }
+        $stmt_up->closeCursor();
         $this->delete_data_from_cache(self::CACHE_RIGHTS_SBAS);
 
         return $this;
