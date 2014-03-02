@@ -1,5 +1,7 @@
 <?php
 
+use Rhumsaa\Uuid\Uuid;
+
 class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 {
     private static $thumbtitled = false;
@@ -65,7 +67,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 
     public function testGet_uuid()
     {
-        $this->assertTrue(uuid::is_valid(self::$DI['record_1']->get_uuid()));
+        $this->assertTrue(Uuid::isValid(self::$DI['record_1']->get_uuid()));
     }
 
     public function testGet_modification_date()

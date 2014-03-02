@@ -4,6 +4,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
+use Rhumsaa\Uuid\Uuid;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
@@ -658,7 +659,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
                 ':parent_record_id' => 0,
                 ':type'             => 'unknown',
                 ':sha256'           => null,
-                ':uuid'             => \uuid::generate_v4(),
+                ':uuid'             => Uuid::uuid4(),
                 ':originalname'     => null,
                 ':mime'             => null,
             ]);

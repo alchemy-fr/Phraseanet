@@ -26,6 +26,7 @@ use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Metadata\MetadataBag as ExiftoolMetadataBag;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
 use PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
+use Rhumsaa\Uuid\Uuid;
 
 /**
  * Phraseanet candidate File package
@@ -112,7 +113,7 @@ class File
             foreach ($availableUUIDs as $meta) {
                 if ($metadatas->containsKey($meta)) {
                     $candidate = $metadatas->get($meta)->getValue()->asString();
-                    if (\uuid::is_valid($candidate)) {
+                    if (Uuid::isValid($candidate)) {
                         $uuid = $candidate;
                         break;
                     }
@@ -120,10 +121,7 @@ class File
             }
 
             if (! $uuid && $generate) {
-                /**
-                 * @todo Check if a file exists with the same checksum
-                 */
-                $uuid = \uuid::generate_v4();
+                $uuid = Uuid::uuid4();
             }
 
             $this->uuid = $uuid;

@@ -41,6 +41,7 @@
         "php-xpdf/php-xpdf"                : "~0.2.1",
         "phpexiftool/phpexiftool"          : "~0.3",
         "react/zmq"                        : "~0.2",
+        "rhumsaa/uuid"                     : "~2.7",
         "silex/silex"                      : "1.1.x-dev@dev",
         "silex/web-profiler"               : "~1.0.0@dev",
         "sorien/silex-dbal-profiler"       : "~1.0.0",

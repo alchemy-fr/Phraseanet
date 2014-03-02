@@ -15,6 +15,7 @@ use PHPExiftool\Driver\Tag\IPTC\Keywords;
 use PHPExiftool\Driver\Value\Multi;
 use PHPExiftool\Driver\Metadata\Metadata as PHPExiftoolMetadata;
 use Alchemy\Phrasea\Border\Attribute\Metadata;
+use Rhumsaa\Uuid\Uuid;
 
 class FileTest extends \PhraseanetTestCase
 {
@@ -75,20 +76,20 @@ class FileTest extends \PhraseanetTestCase
         $borderFile = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess($file), self::$DI['collection']);
         $uuid = $borderFile->getUUID(true, false);
 
-        $this->assertTrue(\uuid::is_valid($uuid));
+        $this->assertTrue(Uuid::isValid($uuid));
         $this->assertEquals($uuid, $borderFile->getUUID());
 
         $borderFile = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess($file), self::$DI['collection']);
         $newuuid = $borderFile->getUUID(true, true);
 
-        $this->assertTrue(\uuid::is_valid($newuuid));
+        $this->assertTrue(Uuid::isValid($newuuid));
         $this->assertNotEquals($uuid, $newuuid);
         $this->assertEquals($newuuid, $borderFile->getUUID());
 
         $borderFile = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess($file), self::$DI['collection']);
         $uuid = $borderFile->getUUID();
 
-        $this->assertTrue(\uuid::is_valid($uuid));
+        $this->assertTrue(Uuid::isValid($uuid));
         $this->assertEquals($uuid, $newuuid);
         $this->assertEquals($uuid, $borderFile->getUUID());
 

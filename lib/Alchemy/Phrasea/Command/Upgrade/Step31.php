@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Command\Upgrade;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
+use Rhumsaa\Uuid\Uuid;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -121,7 +122,7 @@ class Step31 implements DatasUpgraderInterface
     {
         $pathfile = \p4string::addEndSlash($record['path']) . $record['file'];
 
-        $uuid = \uuid::generate_v4();
+        $uuid = Uuid::uuid4();
         try {
             $media = $this->app['mediavorus']->guess($pathfile);
             $collection = \collection::get_from_coll_id($app, $databox, (int) $record['coll_id']);
