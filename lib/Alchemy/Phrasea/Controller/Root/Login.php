@@ -783,7 +783,11 @@ class Login implements ControllerProviderInterface
         $context = new Context(Context::CONTEXT_GUEST);
         $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
 
-        $user = $app['manipulator.user']->createUser(uniqid('guest'), \random::generatePassword(24));
+        do {
+            $login = uniqid('guest');
+        } while (null !== $app['repo.users']->findOneBy(['login' => $login]));
+
+        $user = $app['manipulator.user']->createUser($login, \random::generatePassword(24));
         $invite_user = $app['repo.users']->findByLogin(User::USER_GUEST);
 
         $usr_base_ids = array_keys($app['acl']->get($user)->get_granted_base());
