@@ -13,20 +13,9 @@ namespace Alchemy\Phrasea\Border;
 
 use Alchemy\Phrasea\Border\Checker\CheckerInterface;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
-use Alchemy\Phrasea\Metadata\Tag\PdfText;
 use Alchemy\Phrasea\Metadata\Tag\TfArchivedate;
-use Alchemy\Phrasea\Metadata\Tag\TfBasename;
-use Alchemy\Phrasea\Metadata\Tag\TfBits;
-use Alchemy\Phrasea\Metadata\Tag\TfChannels;
-use Alchemy\Phrasea\Metadata\Tag\TfDuration;
-use Alchemy\Phrasea\Metadata\Tag\TfExtension;
-use Alchemy\Phrasea\Metadata\Tag\TfFilename;
-use Alchemy\Phrasea\Metadata\Tag\TfHeight;
-use Alchemy\Phrasea\Metadata\Tag\TfMimetype;
 use Alchemy\Phrasea\Metadata\Tag\TfQuarantine;
 use Alchemy\Phrasea\Metadata\Tag\TfRecordid;
-use Alchemy\Phrasea\Metadata\Tag\TfSize;
-use Alchemy\Phrasea\Metadata\Tag\TfWidth;
 use Alchemy\Phrasea\Border\Attribute\Metadata as MetadataAttr;
 use Entities\LazaretAttribute;
 use Entities\LazaretFile;
@@ -35,9 +24,9 @@ use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use MediaAlchemyst\Specification\Image as ImageSpec;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
+use PHPExiftool\Driver\Value\Multi;
 use Silex\Application;
 use Symfony\Component\Filesystem\Exception\IOException;
-use XPDF\PdfToText;
 
 /**
  * Phraseanet Border Manager
@@ -51,7 +40,6 @@ class Manager
     protected $checkers = array();
     protected $app;
     protected $filesystem;
-    protected $pdfToText;
 
     const RECORD_CREATED = 1;
     const LAZARET_CREATED = 2;
@@ -78,40 +66,16 @@ class Manager
     }
 
     /**
-     * Sets a PdfToText driver for extracting PDF content.
-     *
-     * @param PdfTotext $pdfToText The PdfToText Object
-     *
-     * @return Manager
-     */
-    public function setPdfToText(PdfToText $pdfToText)
-    {
-        $this->pdfToText = $pdfToText;
-
-        return $this;
-    }
-
-    /**
-     * Gets the PdfToText driver.
-     *
-     * @return PdfTotext
-     */
-    public function getPdfToText()
-    {
-        return $this->pdfToText;
-    }
-
-    /**
      * Add a file to Phraseanet after having checked it
      *
-     * @param LazaretSession $session  The current Lazaret Session
-     * @param File           $file     A File package object
-     * @param type           $callable A callback to execute after process
-     *                                          (arguments are $element (LazaretFile or \record_adapter),
-     *                                          $visa (Visa)
-     *                                          and $code (self::RECORD_CREATED or self::LAZARET_CREATED))
-     * @param  type $forceBehavior Force a behavior, one of the self::FORCE_* constant
-     * @return int  One of the self::RECORD_CREATED or self::LAZARET_CREATED constants
+     * @param  LazaretSession $session       The current Lazaret Session
+     * @param  File           $file          A File package object
+     * @param  type           $callable      A callback to execute after process
+     *                                       (arguments are $element (LazaretFile or \record_adapter),
+     *                                       $visa (Visa)
+     *                                       and $code (self::RECORD_CREATED or self::LAZARET_CREATED))
+     * @param  type           $forceBehavior Force a behavior, one of the self::FORCE_* constant
+     * @return int            One of the self::RECORD_CREATED or self::LAZARET_CREATED constants
      */
     public function process(LazaretSession $session, File $file, $callable = null, $forceBehavior = null)
     {
@@ -278,42 +242,7 @@ class Manager
             )
         );
 
-        $metadatas = array();
-
-        /**
-         * @todo $key is not tagname but fieldname
-         */
-        $fieldToKeyMap = array();
-
-        if (! $fieldToKeyMap) {
-            foreach ($file->getCollection()->get_databox()->get_meta_structure() as $databox_field) {
-
-                $tagname = $databox_field->get_tag()->getTagname();
-
-                if ( ! isset($fieldToKeyMap[$tagname])) {
-                    $fieldToKeyMap[$tagname] = array();
-                }
-
-                $fieldToKeyMap[$tagname][] = $databox_field->get_name();
-            }
-        }
-
-        foreach ($file->getMedia()->getMetadatas() as $metadata) {
-
-            $key = $metadata->getTag()->getTagname();
-
-            if ( ! isset($fieldToKeyMap[$key])) {
-                continue;
-            }
-
-            foreach ($fieldToKeyMap[$key] as $k) {
-                if ( ! isset($metadatas[$k])) {
-                    $metadatas[$k] = array();
-                }
-
-                $metadatas[$k] = array_merge($metadatas[$k], $metadata->getValue()->asArray());
-            }
-        }
+        $newMetadata = $file->getMedia()->getMetadatas()->toArray();
 
         foreach ($file->getAttributes() as $attribute) {
             switch ($attribute->getName()) {
@@ -323,31 +252,13 @@ class Manager
                  * current metadata is metadata by source.
                  */
                 case AttributeInterface::NAME_METAFIELD:
-
-                    $key = $attribute->getField()->get_name();
-
-                    if ( ! isset($metadatas[$key])) {
-                        $metadatas[$key] = array();
-                    }
-
-                    $metadatas[$key] = array_merge($metadatas[$key], $attribute->getValue());
+                    $values = $attribute->getValue();
+                    $value = $attribute->getField()->is_multi() ? new Multi($values) : new MonoValue(array_pop($values));
+                    $newMetadata[] = new Metadata($attribute->getField()->get_tag(), $value);
                     break;
 
                 case AttributeInterface::NAME_METADATA:
-
-                    $key = $attribute->getValue()->getTag()->getTagname();
-
-                    if ( ! isset($fieldToKeyMap[$key])) {
-                        continue;
-                    }
-
-                    foreach ($fieldToKeyMap[$key] as $k) {
-                        if ( ! isset($metadatas[$k])) {
-                            $metadatas[$k] = array();
-                        }
-
-                        $metadatas[$k] = array_merge($metadatas[$k], $attribute->getValue()->getValue()->asArray());
-                    }
+                    $newMetadata[] = $attribute->getValue();
                     break;
                 case AttributeInterface::NAME_STATUS:
                     $element->set_binary_status(decbin(bindec($element->get_status()) | bindec($attribute->getValue())));
@@ -365,55 +276,7 @@ class Manager
             }
         }
 
-        $databox = $element->get_databox();
-
-        $metas = array();
-
-        foreach ($metadatas as $fieldname => $values) {
-            foreach ($databox->get_meta_structure()->get_elements() as $databox_field) {
-
-                if ($databox_field->get_name() == $fieldname) {
-
-                    if ($databox_field->is_multi()) {
-
-                        $tmpValues = array();
-                        foreach ($values as $value) {
-                            $tmpValues = array_merge($tmpValues, \caption_field::get_multi_values($value, $databox_field->get_separator()));
-                        }
-
-                        $values = array_unique($tmpValues);
-
-                        foreach ($values as $value) {
-                            if ( ! trim($value)) {
-                                continue;
-                            }
-                            $metas[] = array(
-                                'meta_struct_id' => $databox_field->get_id(),
-                                'meta_id'        => null,
-                                'value'          => $value,
-                            );
-                        }
-                    } else {
-
-                        $value = array_pop($values);
-
-                        if ( ! trim($value)) {
-                            continue;
-                        }
-
-                        $metas[] = array(
-                            'meta_struct_id' => $databox_field->get_id(),
-                            'meta_id'        => null,
-                            'value'          => $value,
-                        );
-                    }
-                }
-            }
-        }
-
-        if ($metas) {
-            $element->set_metadatas($metas, true);
-        }
+        $this->app['phraseanet.metadata-setter']->replaceMetadata($newMetadata, $element);
 
         $element->rebuild_subdefs();
         $element->reindex();
@@ -505,106 +368,15 @@ class Manager
      * Add technical Metadata attribute to a package file by reference to add it
      * to Phraseanet
      *
-     * @param  File                        $file The file
-     * @return \Doctrine\ORM\EntityManager
+     * @param File $file The file
      */
     protected function addMediaAttributes(File $file)
     {
+        $metadataCollection = $this->app['phraseanet.metadata-reader']->read($file->getMedia());
 
-        if (method_exists($file->getMedia(), 'getWidth')) {
-            $file->addAttribute(
-                new MetadataAttr(
-                    new Metadata(
-                        new TfWidth(), new MonoValue($file->getMedia()->getWidth())
-                    )
-                )
-            );
-        }
-        if (method_exists($file->getMedia(), 'getHeight')) {
-            $file->addAttribute(
-                new MetadataAttr(
-                    new Metadata(
-                        new TfHeight(), new MonoValue($file->getMedia()->getHeight())
-                    )
-                )
-            );
-        }
-        if (method_exists($file->getMedia(), 'getChannels')) {
-            $file->addAttribute(
-                new MetadataAttr(
-                    new Metadata(
-                        new TfChannels(), new MonoValue($file->getMedia()->getChannels())
-                    )
-                )
-            );
-        }
-        if (method_exists($file->getMedia(), 'getColorDepth')) {
-            $file->addAttribute(
-                new MetadataAttr(
-                    new Metadata(
-                        new TfBits(), new MonoValue($file->getMedia()->getColorDepth())
-                    )
-                )
-            );
-        }
-        if (method_exists($file->getMedia(), 'getDuration')) {
-            $file->addAttribute(
-                new MetadataAttr(
-                    new Metadata(
-                        new TfDuration(), new MonoValue($file->getMedia()->getDuration())
-                    )
-                )
-            );
-        }
-
-        if ($file->getFile()->getMimeType() == 'application/pdf' && null !== $this->pdfToText) {
-
-            try {
-                $text = $this->pdfToText->getText($file->getFile()->getRealPath());
-
-                if (trim($text)) {
-                    $file->addAttribute(
-                        new MetadataAttr(
-                            new Metadata(
-                                new PdfText(), new MonoValue($text)
-                            )
-                        )
-                    );
-                }
-            } catch (\XPDF\Exception\Exception $e) {
-
-            }
-        }
-
-        $file->addAttribute(
-            new MetadataAttr(
-                new Metadata(
-                    new TfMimetype(), new MonoValue($file->getFile()->getMimeType()))));
-        $file->addAttribute(
-            new MetadataAttr(
-                new Metadata(
-                    new TfSize(), new MonoValue($file->getFile()->getSize()))));
-        $file->addAttribute(
-            new MetadataAttr(
-                new Metadata(
-                    new TfBasename(), new MonoValue(pathinfo($file->getOriginalName(), PATHINFO_BASENAME))
-                )
-            )
-        );
-        $file->addAttribute(
-            new MetadataAttr(
-                new Metadata(
-                    new TfFilename(), new MonoValue(pathinfo($file->getOriginalName(), PATHINFO_FILENAME))
-                )
-            )
-        );
-        $file->addAttribute(
-            new MetadataAttr(
-                new Metadata(
-                    new TfExtension(), new MonoValue(pathinfo($file->getOriginalName(), PATHINFO_EXTENSION))
-                )
-            )
-        );
+        array_walk($metadataCollection, function (Metadata $metadata) use ($file) {
+            $file->addAttribute(new MetadataAttr($metadata));
+        });
 
         return $this;
     }

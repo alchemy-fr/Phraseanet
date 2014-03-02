@@ -180,7 +180,7 @@ class caption_field implements cache_cacheableInterface
 
     /**
      *
-     * @return array
+     * @return \caption_Field_Value[]
      */
     public function get_values()
     {

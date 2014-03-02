@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
+use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
 use Silex\Application;
 use Symfony\Component\Process\ExecutableFinder;
 use XPDF\XPDFServiceProvider;
@@ -32,10 +33,11 @@ class BorderManagerServiceProvidertest extends ServiceProviderTestCase
             )
         ));
         $app->register(new BorderManagerServiceProvider());
+        $app->register(new PhraseanetServiceProvider());
         $app['phraseanet.configuration'] = array('border-manager' => array('enabled' => false));
 
         $this->assertInstanceOf('Alchemy\Phrasea\Border\Manager', $app['border-manager']);
-        $this->assertNull($app['border-manager']->getPdfToText());
+        $this->assertNull($app['phraseanet.metadata-reader']->getPdfToText());
     }
 
     public function testItLoadsWithXPDF()
@@ -48,6 +50,7 @@ class BorderManagerServiceProvidertest extends ServiceProviderTestCase
         }
 
         $app = new Application();
+        $app->register(new PhraseanetServiceProvider());
         $app->register(new XPDFServiceProvider(), array(
             'xpdf.configuration' => array(
                 'pdftotext.binaries' => $php,
@@ -57,6 +60,6 @@ class BorderManagerServiceProvidertest extends ServiceProviderTestCase
         $app['phraseanet.configuration'] = array('border-manager' => array('enabled' => false));
 
         $this->assertInstanceOf('Alchemy\Phrasea\Border\Manager', $app['border-manager']);
-        $this->assertInstanceOf('XPDF\PdfToText', $app['border-manager']->getPdfToText());
+        $this->assertInstanceOf('XPDF\PdfToText', $app['phraseanet.metadata-reader']->getPdfToText());
     }
 }

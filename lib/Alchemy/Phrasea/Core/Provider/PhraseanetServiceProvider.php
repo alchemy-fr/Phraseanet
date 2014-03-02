@@ -11,9 +11,12 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Metadata\PhraseanetMetadataReader;
+use Alchemy\Phrasea\Metadata\PhraseanetMetadataSetter;
 use Alchemy\Phrasea\Security\Firewall;
 use Silex\Application as SilexApplication;
 use Silex\ServiceProviderInterface;
+use XPDF\Exception\BinaryNotFoundException;
 
 class PhraseanetServiceProvider implements ServiceProviderInterface
 {
@@ -36,6 +39,22 @@ class PhraseanetServiceProvider implements ServiceProviderInterface
             $events->start();
 
             return $events;
+        });
+
+        $app['phraseanet.metadata-reader'] = $app->share(function (SilexApplication $app) {
+            $reader = new PhraseanetMetadataReader();
+
+            try {
+                $reader->setPdfToText($app['xpdf.pdftotext']);
+            } catch (BinaryNotFoundException $e) {
+
+            }
+
+            return $reader;
+        });
+
+        $app['phraseanet.metadata-setter'] = $app->share(function (SilexApplication $app) {
+            return new PhraseanetMetadataSetter();
         });
     }
 

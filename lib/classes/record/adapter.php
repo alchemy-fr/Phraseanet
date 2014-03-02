@@ -1371,7 +1371,12 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             return $this;
         }
 
-        $sql = 'REPLACE INTO technical_datas (id, record_id, name, value)
+        $sql = 'DELETE FROM technical_datas WHERE record_id = :record_id';
+        $stmt = $this->get_databox()->get_connection()->prepare($sql);
+        $stmt->execute(array(':record_id' => $this->get_record_id()));
+        $stmt->closeCursor();
+
+        $sql = 'INSERT INTO technical_datas (id, record_id, name, value)
         VALUES (null, :record_id, :name, :value)';
         $stmt = $this->get_databox()->get_connection()->prepare($sql);
 
