@@ -138,6 +138,11 @@ class databox extends base
         return $this;
     }
 
+    public function set_connection(Connection $conn)
+    {
+        $this->connection = $conn;
+    }
+
     private function load()
     {
         if ($this->loaded) {
