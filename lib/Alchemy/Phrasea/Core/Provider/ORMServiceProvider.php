@@ -150,7 +150,7 @@ class ORMServiceProvider implements ServiceProviderInterface
         });
 
         $app['dbal.provider'] = $app->share(function (Application $app) {
-            return new ConnectionProvider($app['EM.config'], $app['EM.events-manager']);
+            return new ConnectionProvider($app['EM.config'], $app['EM.events-manager'], isset($app['task-manager.logger']) ? $app['task-manager.logger'] : $app['monolog']);
         });
 
         $app['EM'] = $app->share(function (Application $app) {

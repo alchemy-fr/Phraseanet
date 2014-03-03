@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Connection;
 
 use Doctrine\DBAL\Driver\Connection as ConnectionInterface;
+use Psr\Log\LoggerInterface;
 
 class ReconnectableConnection implements ConnectionInterface
 {
@@ -19,10 +20,12 @@ class ReconnectableConnection implements ConnectionInterface
 
     /** @var Connection */
     private $connection;
+    private $logger;
 
-    public function __construct(ConnectionInterface $connection)
+    public function __construct(ConnectionInterface $connection, LoggerInterface $logger)
     {
         $this->connection = $connection;
+        $this->logger = $logger;
     }
 
     /**
@@ -125,6 +128,7 @@ class ReconnectableConnection implements ConnectionInterface
             if ($e instanceof \PDOException && $e->errorInfo[1] == self::MYSQL_CONNECTION_TIMED_WAIT_CODE) {
                 $this->connection->close();
                 $this->connection->connect();
+                $this->logger->notice('Connection to MySQL lost, reconnect okay.');
 
                 return call_user_func_array([$this->connection, $method], $args);
             }
@@ -135,9 +139,11 @@ class ReconnectableConnection implements ConnectionInterface
             ) {
                 $this->connection->close();
                 $this->connection->connect();
+                $this->logger->notice('Connection to MySQL lost, reconnect okay.');
 
                 return call_user_func_array([$this->connection, $method], $args);
             }
+            $this->logger->critical('Connection to MySQL lost, unable to reconnect.', ['exception' => $exception]);
 
             throw $e;
         }
