@@ -79,6 +79,7 @@ abstract class PhraseanetTestCase extends WebTestCase
 
         ini_set('memory_limit', '4096M');
 
+        error_reporting(-1);
         \PHPUnit_Framework_Error_Warning::$enabled = true;
         \PHPUnit_Framework_Error_Notice::$enabled = true;
 
