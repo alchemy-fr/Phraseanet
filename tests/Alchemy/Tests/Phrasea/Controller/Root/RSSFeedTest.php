@@ -372,7 +372,7 @@ class RSSFeedTest extends \PhraseanetWebTestCase
         foreach ($current_attributes as $attribute => $value) {
             switch ($attribute) {
                 case "url":
-                    $this->assertEquals($permalink->get_url(), $value);
+                    $this->assertEquals((string) $permalink->get_url(), $value);
                     break;
                 case "fileSize":
                     $this->assertEquals($ressource->get_size(), $value);

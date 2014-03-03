@@ -216,7 +216,7 @@ class Records implements ControllerProviderInterface
 
         $renewed = [];
         foreach ($records as $record) {
-            $renewed[$record->get_serialize_key()] = $record->get_preview()->renew_url();
+            $renewed[$record->get_serialize_key()] = (string) $record->get_preview()->renew_url();
         };
 
         return $app->json($renewed);

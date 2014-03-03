@@ -1015,7 +1015,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertArrayHasKey("baskets", $content['response']);
 
         foreach ($content['response']['baskets'] as $basket) {
-            $this->evaluateGoodBasket($basket);
+            $this->evaluateGoodBasket($basket, self::$DI['user_notAdmin']);
         }
 
         $route = '/api/v1/records/24892534/51654651553/related/';
@@ -1186,7 +1186,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertArrayHasKey("baskets", $content['response']);
 
         foreach ($content['response']['baskets'] as $basket) {
-            $this->evaluateGoodBasket($basket);
+            $this->evaluateGoodBasket($basket, self::$DI['user']);
         }
     }
 
@@ -1206,7 +1206,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $this->assertEquals(1, count($content['response']));
         $this->assertArrayHasKey("basket", $content['response']);
-        $this->evaluateGoodBasket($content['response']['basket']);
+        $this->evaluateGoodBasket($content['response']['basket'], self::$DI['user_notAdmin']);
         $this->assertEquals('un Joli Nom', $content['response']['basket']['name']);
     }
 
@@ -1231,7 +1231,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $this->assertArrayHasKey("basket_elements", $content['response']);
         $this->assertArrayHasKey("basket", $content['response']);
-        $this->evaluateGoodBasket($content['response']['basket']);
+        $this->evaluateGoodBasket($content['response']['basket'], self::$DI['user']);
 
         foreach ($content['response']['basket_elements'] as $basket_element) {
             $this->assertArrayHasKey('basket_element_id', $basket_element);
@@ -1263,7 +1263,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $this->assertEquals(1, count((array) $content['response']));
         $this->assertArrayHasKey("basket", $content['response']);
-        $this->evaluateGoodBasket($content['response']['basket']);
+        $this->evaluateGoodBasket($content['response']['basket'], self::$DI['user']);
 
         $this->assertEquals($content['response']['basket']['name'], 'un Joli Nom');
 
@@ -1277,7 +1277,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $this->assertArrayHasKey("basket", $content['response']);
 
-        $this->evaluateGoodBasket($content['response']['basket']);
+        $this->evaluateGoodBasket($content['response']['basket'], self::$DI['user']);
 
         $this->assertEquals($content['response']['basket']['name'], 'un Joli Nom');
 
@@ -1289,7 +1289,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $this->assertEquals(1, count((array) $content['response']));
         $this->assertArrayHasKey("basket", $content['response']);
-        $this->evaluateGoodBasket($content['response']['basket']);
+        $this->evaluateGoodBasket($content['response']['basket'], self::$DI['user']);
         $this->assertEquals($content['response']['basket']['name'], '<strong>aéaa');
     }
 
@@ -1312,7 +1312,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertEquals(1, count((array) $content['response']));
 
         $this->assertArrayHasKey("basket", $content['response']);
-        $this->evaluateGoodBasket($content['response']['basket']);
+        $this->evaluateGoodBasket($content['response']['basket'], self::$DI['user']);
         $this->assertEquals($content['response']['basket']['description'], 'une belle desc');
     }
 
@@ -1332,7 +1332,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $found = false;
         foreach ($content['response']['baskets'] as $basket) {
-            $this->evaluateGoodBasket($basket);
+            $this->evaluateGoodBasket($basket, self::$DI['user']);
             $found = true;
             break;
         }
@@ -1746,6 +1746,15 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->assertArrayHasKey('id', $item);
         $this->assertArrayHasKey('quarantine_session', $item);
+
+        $session = $item['quarantine_session'];
+        $this->assertArrayHasKey('id', $session);
+        $this->assertArrayHasKey('usr_id', $session);
+        $this->assertArrayHasKey('user', $session);
+        if ($session['user'] !== null) {
+            $this->evaluateGoodUserItem($session['user'], self::$DI['user_notAdmin']);
+        }
+
         $this->assertArrayHasKey('base_id', $item);
         $this->assertArrayHasKey('original_name', $item);
         $this->assertArrayHasKey('sha256', $item);
@@ -1758,6 +1767,54 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertInternalType('boolean', $item['forced']);
         $this->assertDateAtom($item['updated_on']);
         $this->assertDateAtom($item['created_on']);
+    }
+
+    public function testRouteMe()
+    {
+        $this->setToken(self::$token);
+
+        $route = '/api/v1/me/';
+
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+
+        self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+
+        $this->assertArrayHasKey('user', $content['response']);
+
+        $this->evaluateGoodUserItem($content['response']['user'], self::$DI['user_notAdmin']);
+    }
+
+    protected function evaluateGoodUserItem($data, \User_Adapter $user)
+    {
+        foreach (array(
+            '@entity@'        => \API_V1_adapter::OBJECT_TYPE_USER,
+            'id'              => $user->get_id(),
+            'email'           => $user->get_email() ?: null,
+            'login'           => $user->get_login() ?: null,
+            'first_name'      => $user->get_firstname() ?: null,
+            'last_name'       => $user->get_lastname() ?: null,
+            'display_name'    => $user->get_display_name() ?: null,
+            'address'         => $user->get_address() ?: null,
+            'zip_code'        => $user->get_zipcode() ?: null,
+            'city'            => $user->get_city() ?: null,
+            'country'         => $user->get_country() ?: null,
+            'phone'           => $user->get_tel() ?: null,
+            'fax'             => $user->get_fax() ?: null,
+            'job'             => $user->get_job() ?: null,
+            'position'        => $user->get_position() ?: null,
+            'company'         => $user->get_company() ?: null,
+            'geoname_id'      => $user->get_geonameid() ?: null,
+            'last_connection' => $user->get_last_connection() ? $user->get_last_connection()->format(DATE_ATOM) : null,
+            'created_on'      => $user->get_creation_date() ? $user->get_creation_date()->format(DATE_ATOM) : null,
+            'updated_on'      => $user->get_modification_date() ? $user->get_modification_date()->format(DATE_ATOM) : null,
+            'locale'          => $user->get_locale() ?: null,
+        ) as $key => $value) {
+            $this->assertArrayHasKey($key, $data, 'Assert key is present '.$key);
+            if ($value) {
+                $this->assertEquals($value, $data[$key], 'Check key '.$key);
+            }
+        }
     }
 
     protected function evaluateGoodFeed($feed)
@@ -2129,9 +2186,13 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertEquals(405, $response->getStatusCode(), 'Test status code 405 ' . $response->getContent());
     }
 
-    protected function evaluateGoodBasket($basket)
+    protected function evaluateGoodBasket($basket, \User_Adapter $user)
     {
         $this->assertTrue(is_array($basket));
+        $this->assertArrayHasKey('basket_id', $basket);
+        $this->assertArrayHasKey('owner', $basket);
+        $this->evaluateGoodUserItem($basket['owner'], $user);
+        $this->assertArrayHasKey('pusher', $basket);
         $this->assertArrayHasKey('created_on', $basket);
         $this->assertArrayHasKey('description', $basket);
         $this->assertArrayHasKey('name', $basket);
@@ -2141,6 +2202,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         if (!is_null($basket['pusher_usr_id'])) {
             $this->assertTrue(is_int($basket['pusher_usr_id']));
+            $this->evaluateGoodUserItem($basket['pusher'], self::$DI['user_notAdmin']);
         }
 
         $this->assertTrue(is_string($basket['name']));

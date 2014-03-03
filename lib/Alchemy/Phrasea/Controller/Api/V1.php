@@ -231,6 +231,8 @@ class V1 implements ControllerProviderInterface
 
         $controllers->get('/stories/{any_id}/{anyother_id}/', 'controller.api.v1:getBadRequest');
 
+        $controllers->get('/me/', 'controller.api.v1:get_current_user');
+
         return $controllers;
     }
 
@@ -827,14 +829,16 @@ class V1 implements ControllerProviderInterface
             return $checker->getMessage($app['translator']);
         }, iterator_to_array($file->getChecks()));
 
-        $usr_id = null;
+        $usr_id = $user = null;
         if ($file->getSession()->getUser()) {
-            $usr_id = $file->getSession()->getUser()->getId();
+            $user = $file->getSession()->getUser();
+            $usr_id = $user->getId();
         }
 
         $session = [
             'id'     => $file->getSession()->getId(),
             'usr_id' => $usr_id,
+            'user'   => $user ? $this->list_user($user) : null,
         ];
 
         return [
@@ -1265,6 +1269,13 @@ class V1 implements ControllerProviderInterface
         return Result::create($request, $ret)->createResponse();
     }
 
+    public function get_current_user(Application $app, Request $request)
+    {
+        $ret = ["user" => $this->list_user($app['authentication']->getUser())];
+
+        return Result::create($request, $ret)->createResponse();
+    }
+
     /**
      * Retrieve elements of one basket
      *
@@ -1310,6 +1321,7 @@ class V1 implements ControllerProviderInterface
                         'can_agree'      => $participant->getCanAgree(),
                         'can_see_others' => $participant->getCanSeeOthers(),
                         'readonly'       => $user->getId() != $app['authentication']->getUser()->getId(),
+                        'user'           => $this->list_user($user),
                     ],
                     'agreement'      => $validation_datas->getAgreement(),
                     'updated_on'     => $validation_datas->getUpdated()->format(DATE_ATOM),
@@ -1567,6 +1579,9 @@ class V1 implements ControllerProviderInterface
      */
     private function list_permalink(\media_Permalink_Adapter $permalink)
     {
+        $downloadUrl = $permalink->get_url();
+        $downloadUrl->getQuery()->set('download', '1');
+
         return [
             'created_on'   => $permalink->get_created_on()->format(DATE_ATOM),
             'id'           => $permalink->get_id(),
@@ -1575,8 +1590,8 @@ class V1 implements ControllerProviderInterface
             'label'        => $permalink->get_label(),
             'updated_on'   => $permalink->get_last_modified()->format(DATE_ATOM),
             'page_url'     => $permalink->get_page(),
-            'download_url' => $permalink->get_url() . '&download',
-            'url'          => $permalink->get_url()
+            'download_url' => (string) $downloadUrl,
+            'url'          => (string) $permalink->get_url()
         ];
     }
 
@@ -1649,10 +1664,12 @@ class V1 implements ControllerProviderInterface
     {
         $ret = [
             'basket_id'         => $basket->getId(),
+            'owner'             => $this->list_user($basket->getOwner()),
             'created_on'        => $basket->getCreated()->format(DATE_ATOM),
             'description'       => (string) $basket->getDescription(),
             'name'              => $basket->getName(),
             'pusher_usr_id'     => $basket->getPusher() ? $basket->getPusher()->getId() : null,
+            'pusher'            => $basket->getPusher() ? $this->list_user($basket->getPusher()) : null,
             'updated_on'        => $basket->getUpdated()->format(DATE_ATOM),
             'unread'            => !$basket->getIsRead(),
             'validation_basket' => !!$basket->getValidation()
@@ -1669,6 +1686,7 @@ class V1 implements ControllerProviderInterface
                     'can_agree'      => $participant->getCanAgree(),
                     'can_see_others' => $participant->getCanSeeOthers(),
                     'readonly'       => $user->getId() != $app['authentication']->getUser()->getId(),
+                    'user'           => $this->list_user($user),
                 ];
             }, iterator_to_array($basket->getValidation()->getParticipants()));
 
@@ -1680,11 +1698,12 @@ class V1 implements ControllerProviderInterface
 
             $ret = array_merge(
                 [
-                    'validation_users'     => $users,
-                    'expires_on'           => $expires_on_atom,
-                    'validation_infos'     => $basket->getValidation()->getValidationString($app, $app['authentication']->getUser()),
-                    'validation_confirmed' => $basket->getValidation()->getParticipant($app['authentication']->getUser())->getIsConfirmed(),
-                    'validation_initiator' => $basket->getValidation()->isInitiator($app['authentication']->getUser()),
+                    'validation_users'          => $users,
+                    'expires_on'                => $expires_on_atom,
+                    'validation_infos'          => $basket->getValidation()->getValidationString($app, $app['authentication']->getUser()),
+                    'validation_confirmed'      => $basket->getValidation()->getParticipant($app['authentication']->getUser())->getIsConfirmed(),
+                    'validation_initiator'      => $basket->getValidation()->isInitiator($app['authentication']->getUser()),
+                    'validation_initiator_user' => $this->list_user($basket->getValidation()->getInitiator()),
                 ], $ret
             );
         }
@@ -2062,6 +2081,46 @@ class V1 implements ControllerProviderInterface
             'aspect'    => $aspect,
             'action'    => $action
         ];
+    }
+
+    private function list_user(User $user)
+    {
+        switch ($user->getGender()) {
+            case User::GENDER_MR;
+                $gender = 'Mr';
+                break;
+            case User::GENDER_MRS;
+                $gender = 'Mrs';
+                break;
+            case User::GENDER_MISS;
+                $gender = 'Miss';
+                break;
+        }
+
+        return array(
+            '@entity@'        => self::OBJECT_TYPE_USER,
+            'id'              => $user->getId(),
+            'email'           => $user->getEmail() ?: null,
+            'login'           => $user->getLogin() ?: null,
+            'first_name'      => $user->getFirstName() ?: null,
+            'last_name'       => $user->getLastName() ?: null,
+            'display_name'    => $user->getDisplayName() ?: null,
+            'gender'          => $gender,
+            'address'         => $user->getAddress() ?: null,
+            'zip_code'        => $user->getZipCode() ?: null,
+            'city'            => $user->getCity() ?: null,
+            'country'         => $user->getCountry() ?: null,
+            'phone'           => $user->getPhone() ?: null,
+            'fax'             => $user->getFax() ?: null,
+            'job'             => $user->getJob() ?: null,
+            'position'        => $user->getActivity() ?: null,
+            'company'         => $user->getCompany() ?: null,
+            'geoname_id'      => $user->getGeonameId() ?: null,
+            'last_connection' => $user->getLastConnection() ? $user->getLastConnection()->format(DATE_ATOM) : null,
+            'created_on'      => $user->getCreated() ? $user->getCreated()->format(DATE_ATOM) : null,
+            'updated_on'      => $user->getUpdated() ? $user->getUpdated()->format(DATE_ATOM) : null,
+            'locale'          => $user->getLocale() ?: null,
+        );
     }
 
     private function logout(Application $app)

@@ -12,9 +12,10 @@
 namespace Alchemy\Phrasea\Http\XSendFile;
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Http\AbstractServerMode;
 use Symfony\Component\HttpFoundation\Request;
 
-class ApacheMode extends AbstractXSendFileMode implements ModeInterface
+class ApacheMode extends AbstractServerMode implements ModeInterface
 {
     /**
      * {@inheritdoc}

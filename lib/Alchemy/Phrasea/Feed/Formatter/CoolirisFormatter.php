@@ -229,7 +229,7 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
         if (null !== $preview_permalink) {
             $preview = $this->addTag($document, $item, 'media:content');
 
-            $preview->setAttribute('url', $preview_permalink->get_url());
+            $preview->setAttribute('url', (string) $preview_permalink->get_url());
             $preview->setAttribute('fileSize', $preview_sd->get_size());
             $preview->setAttribute('type', $preview_sd->get_mime());
             $preview->setAttribute('medium', $medium);
@@ -250,7 +250,7 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
         if (null !== $thumbnail_permalink) {
             $thumbnail = $this->addTag($document, $item, 'media:thumbnail');
 
-            $thumbnail->setAttribute('url', $thumbnail_permalink->get_url());
+            $thumbnail->setAttribute('url', (string) $thumbnail_permalink->get_url());
 
             if (null !== $thumbnail_sd->get_width()) {
                 $thumbnail->setAttribute('width', $thumbnail_sd->get_width());
@@ -261,7 +261,7 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
 
             $thumbnail = $this->addTag($document, $item, 'media:content');
 
-            $thumbnail->setAttribute('url', $thumbnail_permalink->get_url());
+            $thumbnail->setAttribute('url', (string) $thumbnail_permalink->get_url());
             $thumbnail->setAttribute('fileSize', $thumbnail_sd->get_size());
             $thumbnail->setAttribute('type', $thumbnail_sd->get_mime());
             $thumbnail->setAttribute('medium', $medium);

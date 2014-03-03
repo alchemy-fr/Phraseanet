@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Http\XSendFile;
+namespace Alchemy\Phrasea\Http;
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
-abstract class AbstractXSendFileMode
+abstract class AbstractServerMode
 {
     protected $mapping = [];
 

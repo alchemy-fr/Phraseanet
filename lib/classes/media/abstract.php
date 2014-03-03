@@ -9,11 +9,13 @@
  * file that was distributed with this source code.
  */
 
+use Guzzle\Http\Url;
+
 abstract class media_abstract
 {
     /**
      *
-     * @var string
+     * @var Url
      */
     protected $url;
 
@@ -39,7 +41,7 @@ abstract class media_abstract
      * @param  int    $height
      * @return media
      */
-    public function __construct($url, $width, $height)
+    public function __construct(Url $url, $width, $height)
     {
         $this->url = $url;
         $this->height = (int) $height;
@@ -50,7 +52,7 @@ abstract class media_abstract
 
     /**
      *
-     * @return string
+     * @return Url
      */
     public function get_url()
     {

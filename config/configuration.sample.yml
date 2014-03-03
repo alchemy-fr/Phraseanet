@@ -179,4 +179,8 @@ xsendfile:
     enabled: false
     type: nginx
     mapping: []
+h264-pseudo-streaming:
+    enabled: false
+    type: nginx
+    mapping: []
 plugins: []

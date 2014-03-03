@@ -9,17 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Http\XSendFile;
+namespace Alchemy\Phrasea\Http\H264PseudoStreaming;
 
 use Alchemy\Phrasea\Http\ServerModeInterface;
-use Symfony\Component\HttpFoundation\Request;
+use Guzzle\Http\Url;
 
-interface ModeInterface extends ServerModeInterface
+interface H264Interface extends ServerModeInterface
 {
     /**
-     * Sets XSendFile headers.
+     * @param $pathfile
      *
-     * @params Request $request
+     * @return Url|null
      */
-    public function setHeaders(Request $request);
+    public function getUrl($pathfile);
 }

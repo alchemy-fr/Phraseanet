@@ -137,15 +137,18 @@ class UserManipulator implements ManipulatorInterface
         }
 
         try {
-            $country = $this->geonamesConnector->geoname($geonameid)->get('country');
+            $data = $this->geonamesConnector->geoname($geonameid);
+            $country = $data->get('country');
 
             $user->setGeonameId($geonameid);
+            $user->setCity($data->get('name'));
 
             if (isset($country['code'])) {
                 $user->setCountry($country['code']);
             }
         } catch (GeonamesExceptionInterface $e) {
             $user->setCountry(null);
+            $user->setCity(null);
         }
 
         $this->manager->update($user);
