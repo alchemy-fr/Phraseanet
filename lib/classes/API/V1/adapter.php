@@ -354,10 +354,8 @@ class API_V1_adapter extends API_V1_Abstract
                     'modes'           => array(
                         'XsendFile'                     => $app['phraseanet.configuration']['xsendfile']['enabled'],
                         'XsendFileMapping'              => $app['phraseanet.configuration']['xsendfile']['mapping'],
-                        'h264Streaming'                 => $app['phraseanet.registry']->get('GV_h264_streaming'),
-                        'authTokenDirectory'            => $app['phraseanet.registry']->get('GV_mod_auth_token_directory'),
-                        'authTokenDirectoryPath'        => $app['phraseanet.registry']->get('GV_mod_auth_token_directory_path'),
-                        'authTokenPassphrase'           => $app['phraseanet.registry']->get('GV_mod_auth_token_passphrase'),
+                        'H264PseudoStreaming'           => $app['phraseanet.configuration']['h264-pseudo-streaming']['enabled'],
+                        'H264PseudoStreamingMapping'    => $app['phraseanet.configuration']['h264-pseudo-streaming']['mapping'],
                     )
                 ),
                 'maintenance' => array(
@@ -1728,6 +1726,9 @@ class API_V1_adapter extends API_V1_Abstract
      */
     protected function list_permalink(media_Permalink_Adapter $permalink, registryInterface $registry)
     {
+        $downloadUrl = $permalink->get_url();
+        $downloadUrl->getQuery()->set('download', '1');
+
         return array(
             'created_on'   => $permalink->get_created_on()->format(DATE_ATOM),
             'id'           => $permalink->get_id(),
@@ -1735,8 +1736,8 @@ class API_V1_adapter extends API_V1_Abstract
             'label'        => $permalink->get_label(),
             'updated_on'   => $permalink->get_last_modified()->format(DATE_ATOM),
             'page_url'     => $permalink->get_page(),
-            'download_url' => $permalink->get_url() . '&download',
-            'url'          => $permalink->get_url()
+            'download_url' => (string) $downloadUrl,
+            'url'          => (string) $permalink->get_url()
         );
     }
 

@@ -230,34 +230,6 @@ return call_user_func_array(function(Application $app) {
             'section' => _('Executables settings'),
             'vars'    => array(
                 array(
-                    'type'    => \registry::TYPE_BOOLEAN,
-                    'name'    => 'GV_h264_streaming',
-                    'comment' => _('Enable H264 stream mode'),
-                    'help'    => _('Use with mod_token. Attention requires the apache modules and mod_h264_streaming mod_auth_token'),
-                    'default' => false
-                ),
-                array(
-                    'type'      => \registry::TYPE_STRING,
-                    'name'      => 'GV_mod_auth_token_directory',
-                    'end_slash' => true,
-                    'comment'   => _('Auth_token mount point'),
-                    'default'   => false
-                ),
-                array(
-                    'type'      => \registry::TYPE_STRING,
-                    'name'      => 'GV_mod_auth_token_directory_path',
-                    'end_slash' => false,
-                    'comment'   => _('Auth_token directory path'),
-                    'default'   => false
-                ),
-                array(
-                    'type'    => \registry::TYPE_STRING,
-                    'name'    => 'GV_mod_auth_token_passphrase',
-                    'comment' => _('Auth_token passphrase'),
-                    'help'    => _('Defined in Apache configuration'),
-                    'default' => false
-                ),
-                array(
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_PHP_INI',
                     'comment' => _('php.ini path'),

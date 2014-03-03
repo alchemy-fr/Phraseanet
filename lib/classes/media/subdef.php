@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Application;
 use MediaAlchemyst\Alchemyst;
 use MediaVorus\MediaVorus;
 use MediaVorus\Media\MediaInterface;
+use Guzzle\Http\Url;
 
 /**
  *
@@ -237,7 +238,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             , 'height'             => $this->height
             , 'etag'               => $this->etag
             , 'path'               => $this->path
-            , 'url'                => $this->url . ($this->is_physically_present ? '?etag=' . $this->etag : '')
+            , 'url'                => $this->url
             , 'file'               => $this->file
             , 'physically_present' => $this->is_physically_present
             , 'is_substituted'     => $this->is_substituted
@@ -286,7 +287,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $this->height = 256;
             $this->path = $this->app['root.path'] . '/www/skins/icons/substitution/';
             $this->file = 'regroup_thumb.png';
-            $this->url = '/skins/icons/substitution/regroup_thumb.png';
+            $this->url = Url::factory('/skins/icons/substitution/regroup_thumb.png');
         } else {
             $mime = $this->record->get_mime();
             $mime = trim($mime) != '' ? str_replace('/', '_', $mime) : 'application_octet-stream';
@@ -296,7 +297,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $this->height = 256;
             $this->path = $this->app['root.path'] . '/www/skins/icons/substitution/';
             $this->file = str_replace('+', '%20', $mime) . '.png';
-            $this->url = '/skins/icons/substitution/' . $this->file;
+            $this->url = Url::factory('/skins/icons/substitution/' . $this->file);
         }
 
         $this->is_physically_present = false;
@@ -304,7 +305,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         if ( ! file_exists($this->path . $this->file)) {
             $this->path = $this->app['root.path'] . '/www/skins/icons/';
             $this->file = 'substitution.png';
-            $this->url = '/skins/icons/' . $this->file;
+            $this->url = Url::factory('/skins/icons/' . $this->file);
         }
 
         return $this;
@@ -373,9 +374,11 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     public function get_url()
     {
         $url = parent::get_url();
-        $etag = $this->getEtag();
+        if (null !== $this->getEtag()) {
+            $url->getQuery()->set('etag', $this->getEtag());
+        }
 
-        return $url . ($etag ? '?etag=' . $etag : '');
+        return $url;
     }
 
     /**
@@ -745,17 +748,16 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         }
 
         if (in_array($this->mime, array('video/mp4'))) {
-            $token = p4file::apache_tokenize($this->app['phraseanet.registry'], $this->get_pathfile());
-            if ($token) {
-                $this->url = $token;
+            if (null !== $url = $this->app['phraseanet.h264']->getUrl($this->get_pathfile())) {
+                $this->url = $url;
 
                 return;
             }
         }
 
-        $this->url = "/datafiles/" . $this->record->get_sbas_id()
+        $this->url = Url::factory("/datafiles/" . $this->record->get_sbas_id()
             . "/" . $this->record->get_record_id() . "/"
-            . $this->get_name() . "/";
+            . $this->get_name() . "/");
 
         return;
     }

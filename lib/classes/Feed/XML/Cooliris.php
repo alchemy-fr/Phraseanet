@@ -394,7 +394,7 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
         if ($preview_permalink) {
             $preview = $this->addTag($document, $item, 'media:content');
 
-            $preview->setAttribute('url', $preview_permalink->get_url());
+            $preview->setAttribute('url', (string) $preview_permalink->get_url());
             $preview->setAttribute('fileSize', $preview_sd->get_size());
             $preview->setAttribute('type', $preview_sd->get_mime());
             $preview->setAttribute('medium', $medium);
@@ -412,7 +412,7 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
         if ($thumbnail_permalink) {
             $thumbnail = $this->addTag($document, $item, 'media:thumbnail');
 
-            $thumbnail->setAttribute('url', $thumbnail_permalink->get_url());
+            $thumbnail->setAttribute('url', (string) $thumbnail_permalink->get_url());
 
             if ($thumbnail_sd->get_width())
                 $thumbnail->setAttribute('width', $thumbnail_sd->get_width());
@@ -421,7 +421,7 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
 
             $thumbnail = $this->addTag($document, $item, 'media:content');
 
-            $thumbnail->setAttribute('url', $thumbnail_permalink->get_url());
+            $thumbnail->setAttribute('url', (string) $thumbnail_permalink->get_url());
             $thumbnail->setAttribute('fileSize', $thumbnail_sd->get_size());
             $thumbnail->setAttribute('type', $thumbnail_sd->get_mime());
             $thumbnail->setAttribute('medium', $medium);

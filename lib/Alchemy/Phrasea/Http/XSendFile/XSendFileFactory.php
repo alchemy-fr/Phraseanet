@@ -60,9 +60,9 @@ class XSendFileFactory
     }
 
     /**
-     * Returns a new instance of XSendFileModeInterface.
+     * Returns a new instance of ModeInterface.
      *
-     * @return null|ModeInterface
+     * @return ModeInterface
      *
      * @throws InvalidArgumentException if mode type is unknown
      */

@@ -56,7 +56,7 @@ class media_Permalink_AdapterTest extends PhraseanetPHPUnitAbstract
             . '.' . pathinfo(self::$DI['record_1']->get_subdef('document')->get_file(), PATHINFO_EXTENSION)
             . '?token=' . static::$object->get_token();
 
-        $this->assertEquals($url, static::$object->get_url());
+        $this->assertEquals($url, (string) static::$object->get_url());
     }
 
     public function testGet_Previewurl()
@@ -72,7 +72,7 @@ class media_Permalink_AdapterTest extends PhraseanetPHPUnitAbstract
             . '.' . pathinfo(self::$DI['record_1']->get_subdef('preview')->get_file(), PATHINFO_EXTENSION)
             . '?token=' . $previewPermalink->get_token();
 
-        $this->assertEquals($url, $previewPermalink->get_url());
+        $this->assertEquals($url, (string) $previewPermalink->get_url());
     }
 
     public function testGet_page()

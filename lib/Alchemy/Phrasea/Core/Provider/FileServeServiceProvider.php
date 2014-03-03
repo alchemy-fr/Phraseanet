@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Core\Event\Subscriber\XSendFileSubscriber;
+use Alchemy\Phrasea\Http\H264PseudoStreaming\H264Factory;
 use Alchemy\Phrasea\Http\ServeFileResponseFactory;
 use Alchemy\Phrasea\Http\XSendFile\XSendFileFactory;
 use Silex\Application;
@@ -26,6 +27,14 @@ class FileServeServiceProvider implements ServiceProviderInterface
     {
         $app['phraseanet.xsendfile-factory'] = $app->share(function ($app) {
             return XSendFileFactory::create($app);
+        });
+
+        $app['phraseanet.h264-factory'] = $app->share(function ($app) {
+            return H264Factory::create($app);
+        });
+
+        $app['phraseanet.h264'] = $app->share(function ($app) {
+            return $app['phraseanet.h264-factory']->createMode(false);
         });
 
         $app['phraseanet.file-serve'] = $app->share(function (Application $app) {
