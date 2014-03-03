@@ -52,6 +52,8 @@ $groups = [
         , '//assets/jquery-file-upload/jquery.iframe-transport.js'
         , '//assets/jquery-file-upload/jquery.fileupload.js'
         , '//assets/autobahnjs/autobahn.js'
+        , '//assets/swfobject/swfobject.js'
+        , '//assets/web-socket-js/web_socket.js'
     ],
     'report' => [
          '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
