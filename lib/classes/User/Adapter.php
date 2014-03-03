@@ -771,12 +771,13 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     public function set_geonameid($geonameid)
     {
-        $country_code = null;
+        $country_code = $city = null;
 
         try {
-            $country = $this->app['geonames.connector']
-                ->geoname($this->geonameid)
-                ->get('country');
+            $data = $this->app['geonames.connector']
+                ->geoname($geonameid);
+            $country = $data->get('country');
+            $city = $data->get('name');
 
             if (isset($country['code'])) {
                 $country_code = $country['code'];
@@ -785,12 +786,13 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
         }
 
-        $sql = 'UPDATE usr SET geonameid = :geonameid, pays=:country_code WHERE usr_id = :usr_id';
+        $sql = 'UPDATE usr SET geonameid = :geonameid, pays=:country_code, ville = :city WHERE usr_id = :usr_id';
 
         $datas = array(
             ':geonameid'    => $geonameid,
             ':usr_id'       => $this->get_id(),
-            ':country_code' => $country_code
+            ':country_code' => $country_code,
+            ':city'         => $city,
         );
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
@@ -798,6 +800,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $stmt->closeCursor();
         $this->geonameid = $geonameid;
         $this->country = $country_code;
+        $this->city = $city;
         $this->delete_data_from_cache();
 
         return $this;

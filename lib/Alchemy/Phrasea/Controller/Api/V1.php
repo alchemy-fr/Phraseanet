@@ -728,6 +728,12 @@ class V1 implements ControllerProviderInterface
         })->assert('databox_id', '\d+')->assert('story_id', '\d+');
         $controllers->get('/stories/{any_id}/{anyother_id}/', $bad_request_exception);
 
+        $controllers->get('/me/', function (SilexApplication $app, Request $request) {
+            $result = $app['api']->get_current_user($app, $request);
+
+            return $result->get_response();
+        });
+
         return $controllers;
     }
 }
