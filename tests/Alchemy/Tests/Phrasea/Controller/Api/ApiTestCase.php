@@ -11,6 +11,7 @@ use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Doctrine\Common\Collections\ArrayCollection;
 use Guzzle\Common\Exception\GuzzleException;
+use Rhumsaa\Uuid\Uuid;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -2175,7 +2176,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertTrue(is_string($record['phrasea_type']));
         $this->assertTrue(in_array($record['phrasea_type'], ['audio', 'document', 'image', 'video', 'flash', 'unknown']));
         $this->assertArrayHasKey('uuid', $record);
-        $this->assertTrue(\uuid::is_valid($record['uuid']));
+        $this->assertTrue(Uuid::isValid($record['uuid']));
 
         if (!is_null($record['thumbnail'])) {
             $this->assertTrue(is_array($record['thumbnail']));
@@ -2228,7 +2229,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertArrayHasKey('uuid', $story);
         $this->assertArrayHasKey('@entity@', $story);
         $this->assertEquals(V1::OBJECT_TYPE_STORY, $story['@entity@']);
-        $this->assertTrue(\uuid::is_valid($story['uuid']));
+        $this->assertTrue(Uuid::isValid($story['uuid']));
 
         if ( ! is_null($story['thumbnail'])) {
             $this->assertTrue(is_array($story['thumbnail']));

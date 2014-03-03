@@ -19,6 +19,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\ORM\EntityManager;
 use MediaVorus\MediaVorus;
+use Rhumsaa\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 
 class record_adapter implements record_Interface, cache_cacheableInterface
@@ -1190,7 +1191,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             ':parent_record_id' => 1,
             ':type'             => 'unknown',
             ':sha256'           => null,
-            ':uuid'             => \uuid::generate_v4(),
+            ':uuid'             => Uuid::uuid4(),
             ':originalname'     => null,
             ':mime'             => null,
         ]);

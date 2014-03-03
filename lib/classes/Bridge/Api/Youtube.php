@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Rhumsaa\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Request;
 
 class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Interface
@@ -829,7 +830,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
         $this->_api = new Zend_Gdata_YouTube(
                 $http_client,
-                uuid::generate_v4(),
+                Uuid::uuid4(),
                 $this->conf->get(['main', 'bridge', 'youtube', 'client_id']),
                 $this->conf->get(['main', 'bridge', 'youtube', 'developer_key']));
         $this->_api->setMajorProtocolVersion(2);
