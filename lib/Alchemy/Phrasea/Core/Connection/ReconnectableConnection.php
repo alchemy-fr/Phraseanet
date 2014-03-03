@@ -116,13 +116,8 @@ class ReconnectableConnection implements ConnectionInterface
     private function tryMethod($method, $args)
     {
         try {
-            set_error_handler(function ($errno, $errstr) { throw new \Exception($errstr, $errno); });
-            $ret = call_user_func_array([$this->connection, $method], $args);
-            restore_error_handler();
-
-            return $ret;
+            return call_user_func_array([$this->connection, $method], $args);
         } catch (\Exception $exception) {
-            restore_error_handler();
             $e = $exception;
             while ($e->getPrevious() && !$e instanceof \PDOException) {
                 $e = $e->getPrevious();
@@ -133,7 +128,11 @@ class ReconnectableConnection implements ConnectionInterface
 
                 return call_user_func_array([$this->connection, $method], $args);
             }
-            if ((false !== strpos($exception->getMessage(), 'MySQL server has gone away')) || (false !== strpos($exception->getMessage(), 'errno=32 Broken pipe'))) {
+            if (
+                (false !== strpos($exception->getMessage(), 'MySQL server has gone away'))
+                || (false !== strpos($exception->getMessage(), 'Error while sending QUERY packet'))
+                || (false !== strpos($exception->getMessage(), 'errno=32 Broken pipe'))
+            ) {
                 $this->connection->close();
                 $this->connection->connect();
 

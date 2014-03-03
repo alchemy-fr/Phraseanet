@@ -955,12 +955,15 @@ class Collection implements ControllerProviderInterface
         $success = false;
 
         $collection = \collection::get_from_base_id($app, $bas_id);
+        $prefs = $request->request->get('str');
 
         try {
-            $domdoc = new \DOMDocument();
-            if ($domdoc->loadXML($request->request->get('str'))) {
-                $collection->set_prefs($domdoc);
-                $success = true;
+            if ('' !== trim($prefs)) {
+                $domdoc = new \DOMDocument();
+                if (true === $domdoc->loadXML($prefs)) {
+                    $collection->set_prefs($domdoc);
+                    $success = true;
+                }
             }
         } catch (\Exception $e) {
 

@@ -14,6 +14,8 @@ use Symfony\Component\Debug\ErrorHandler;
 
 require_once __DIR__ . "/../lib/autoload.php";
 
+error_reporting(-1);
+
 ErrorHandler::register();
 
 $environment = Application::ENV_DEV;
