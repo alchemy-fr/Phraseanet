@@ -9,6 +9,7 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
+use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Guzzle\Common\Exception\GuzzleException;
 use Rhumsaa\Uuid\Uuid;
@@ -1723,25 +1724,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertEquals($quarantineItemId, $content['response']['quarantine_item']['id']);
     }
 
-    protected function getQuarantineItem()
-    {
-        $lazaretSession = new LazaretSession();
-        self::$DI['app']['EM']->persist($lazaretSession);
-
-        $quarantineItem = null;
-        $callback = function ($element, $visa, $code) use (&$quarantineItem) {
-                $quarantineItem = $element;
-            };
-
-        $tmpname = tempnam(sys_get_temp_dir(), 'test_quarantine');
-        copy(__DIR__ . '/../../../../../files/iphone_pic.jpg', $tmpname);
-
-        $file = File::buildFromPathfile($tmpname, self::$DI['collection'], self::$DI['app']);
-        self::$DI['app']['border-manager']->process($lazaretSession, $file, $callback, Manager::FORCE_LAZARET);
-
-        return $quarantineItem;
-    }
-
     protected function evaluateGoodQuarantineItem($item)
     {
         $this->assertArrayHasKey('id', $item);
@@ -1752,7 +1734,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertArrayHasKey('usr_id', $session);
         $this->assertArrayHasKey('user', $session);
         if ($session['user'] !== null) {
-            $this->evaluateGoodUserItem($session['user'], self::$DI['user_notAdmin']);
+            $this->evaluateGoodUserItem($session['user'], self::$DI['user']);
         }
 
         $this->assertArrayHasKey('base_id', $item);
@@ -1785,30 +1767,30 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateGoodUserItem($content['response']['user'], self::$DI['user_notAdmin']);
     }
 
-    protected function evaluateGoodUserItem($data, \User_Adapter $user)
+    protected function evaluateGoodUserItem($data, User $user)
     {
         foreach (array(
-            '@entity@'        => \API_V1_adapter::OBJECT_TYPE_USER,
-            'id'              => $user->get_id(),
-            'email'           => $user->get_email() ?: null,
-            'login'           => $user->get_login() ?: null,
-            'first_name'      => $user->get_firstname() ?: null,
-            'last_name'       => $user->get_lastname() ?: null,
-            'display_name'    => $user->get_display_name() ?: null,
-            'address'         => $user->get_address() ?: null,
-            'zip_code'        => $user->get_zipcode() ?: null,
-            'city'            => $user->get_city() ?: null,
-            'country'         => $user->get_country() ?: null,
-            'phone'           => $user->get_tel() ?: null,
-            'fax'             => $user->get_fax() ?: null,
-            'job'             => $user->get_job() ?: null,
-            'position'        => $user->get_position() ?: null,
-            'company'         => $user->get_company() ?: null,
-            'geoname_id'      => $user->get_geonameid() ?: null,
-            'last_connection' => $user->get_last_connection() ? $user->get_last_connection()->format(DATE_ATOM) : null,
-            'created_on'      => $user->get_creation_date() ? $user->get_creation_date()->format(DATE_ATOM) : null,
-            'updated_on'      => $user->get_modification_date() ? $user->get_modification_date()->format(DATE_ATOM) : null,
-            'locale'          => $user->get_locale() ?: null,
+            '@entity@'        => V1::OBJECT_TYPE_USER,
+            'id'              => $user->getId(),
+            'email'           => $user->getEmail() ?: null,
+            'login'           => $user->getLogin() ?: null,
+            'first_name'      => $user->getFirstName() ?: null,
+            'last_name'       => $user->getLastName() ?: null,
+            'display_name'    => $user->getDisplayName() ?: null,
+            'address'         => $user->getAddress() ?: null,
+            'zip_code'        => $user->getZipCode() ?: null,
+            'city'            => $user->getCity() ?: null,
+            'country'         => $user->getCountry() ?: null,
+            'phone'           => $user->getPhone() ?: null,
+            'fax'             => $user->getFax() ?: null,
+            'job'             => $user->getJob() ?: null,
+            'position'        => $user->getActivity() ?: null,
+            'company'         => $user->getCompany() ?: null,
+            'geoname_id'      => $user->getGeonameId() ?: null,
+            'last_connection' => $user->getLastConnection() ? $user->getLastConnection()->format(DATE_ATOM) : null,
+            'created_on'      => $user->getCreated() ? $user->getCreated()->format(DATE_ATOM) : null,
+            'updated_on'      => $user->getUpdated() ? $user->getUpdated()->format(DATE_ATOM) : null,
+            'locale'          => $user->getLocale() ?: null,
         ) as $key => $value) {
             $this->assertArrayHasKey($key, $data, 'Assert key is present '.$key);
             if ($value) {
@@ -2014,7 +1996,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $this->assertArrayHasKey("download_url", $permalink);
         $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['download_url']);
-        $this->assertEquals($subdef->get_permalink()->get_url() . '&download', $permalink['download_url']);
+        $this->assertEquals($subdef->get_permalink()->get_url() . '&download=1', $permalink['download_url']);
         $this->checkUrlCode200($permalink['download_url']);
         $this->assertPermalinkHeaders($permalink['download_url'], $subdef, "download_url");
     }
@@ -2186,7 +2168,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertEquals(405, $response->getStatusCode(), 'Test status code 405 ' . $response->getContent());
     }
 
-    protected function evaluateGoodBasket($basket, \User_Adapter $user)
+    protected function evaluateGoodBasket($basket, User $user)
     {
         $this->assertTrue(is_array($basket));
         $this->assertArrayHasKey('basket_id', $basket);

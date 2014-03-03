@@ -46,6 +46,14 @@ class patch_384alpha1a implements patchInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrineMigrations()
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function apply(base $appbox, Application $app)
     {
         $config = $app['phraseanet.configuration']->getConfig();

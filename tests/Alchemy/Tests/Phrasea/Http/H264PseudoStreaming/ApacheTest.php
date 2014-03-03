@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Http\H264PseudoStream;
 
 use Alchemy\Phrasea\Http\H264PseudoStreaming\Apache;
 
-class ApacheTest extends \PhraseanetPHPUnitAbstract
+class ApacheTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideMappingsAndFiles

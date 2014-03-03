@@ -48,6 +48,7 @@ class V1 implements ControllerProviderInterface
 {
     const VERSION = '1.3';
 
+    const OBJECT_TYPE_USER = 'http://api.phraseanet.com/api/objects/user';
     const OBJECT_TYPE_STORY = 'http://api.phraseanet.com/api/objects/story';
     const OBJECT_TYPE_STORY_METADATA_BAG = 'http://api.phraseanet.com/api/objects/story-metadata-bag';
 
@@ -1664,7 +1665,7 @@ class V1 implements ControllerProviderInterface
     {
         $ret = [
             'basket_id'         => $basket->getId(),
-            'owner'             => $this->list_user($basket->getOwner()),
+            'owner'             => $this->list_user($basket->getUser()),
             'created_on'        => $basket->getCreated()->format(DATE_ATOM),
             'description'       => (string) $basket->getDescription(),
             'name'              => $basket->getName(),

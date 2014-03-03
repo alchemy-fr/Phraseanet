@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Http\H264PseudoStream;
 
 use Alchemy\Phrasea\Http\H264PseudoStreaming\Nginx;
 
-class NginxTest extends \PhraseanetPHPUnitAbstract
+class NginxTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideMappingsAndFiles
