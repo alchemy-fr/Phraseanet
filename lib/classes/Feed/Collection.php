@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Cache\Exception as CacheException;
 
 /**
  *
@@ -107,40 +108,34 @@ class Feed_Collection implements Feed_CollectionInterface, cache_cacheableInterf
      */
     public static function load_public_feeds(Application $app)
     {
-        $rs = self::retrieve_public_feed_ids($app['phraseanet.appbox']);
-        $feeds = array();
-        foreach ($rs as $feed_id) {
-            $feeds[] = new Feed_Adapter($app, $feed_id);
-        }
-
-        return new self($app, $feeds);
-    }
-
-    protected static function retrieve_public_feed_ids(appbox $appbox)
-    {
-        $key = 'feedcollection_' . self::CACHE_PUBLIC;
+        $collection = new self($app, array());
 
         try {
-            return $appbox->get_data_from_cache($key);
-        } catch (\Exception $e) {
+            $feedIds = $collection->get_data_from_cache(self::CACHE_PUBLIC);
+
+            return new self($app, array_map(function($id) use ($app) {
+                return new \Feed_Adapter($app, $id);
+            }, $feedIds));
+        } catch (CacheException $e) {
 
         }
 
         $sql = 'SELECT id FROM feeds WHERE public = "1" AND base_id IS null ORDER BY created_on DESC';
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         $feeds = array();
-
         foreach ($rs as $row) {
-            $feeds[] = $row['id'];
+            $feeds[] = new \Feed_Adapter($app, $row['id']);
         }
 
-        $appbox->set_data_to_cache($feeds, $key);
+        $collection->set_data_to_cache(array_map(function($feed) {
+            return $feed->get_id();
+        }, $feeds), self::CACHE_PUBLIC);
 
-        return $feeds;
+        return new self($app, $feeds);
     }
 
     public function get_cache_key($option = null)
