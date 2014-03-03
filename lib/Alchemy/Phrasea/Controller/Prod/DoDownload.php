@@ -64,6 +64,15 @@ class DoDownload implements ControllerProviderInterface
         if (false === $list = @unserialize($token->getData())) {
             $app->abort(500, 'Invalid datas');
         }
+        if (!is_array($list)) {
+            $app->abort(500, 'Invalid datas');
+        }
+
+        foreach (['export_name', 'files'] as $key) {
+            if (!isset($list[$key])) {
+                $app->abort(500, 'Invalid datas');
+            }
+        }
 
         $records = [];
 
@@ -106,6 +115,15 @@ class DoDownload implements ControllerProviderInterface
     {
         if (false === $list = @unserialize($token->getData())) {
             $app->abort(500, 'Invalid datas');
+        }
+        if (!is_array($list)) {
+            $app->abort(500, 'Invalid datas');
+        }
+
+        foreach (['export_name', 'files'] as $key) {
+            if (!isset($list[$key])) {
+                $app->abort(500, 'Invalid datas');
+            }
         }
 
         $exportName = $list['export_name'];
