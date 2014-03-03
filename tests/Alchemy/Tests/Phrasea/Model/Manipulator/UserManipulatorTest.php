@@ -56,10 +56,16 @@ class UserManipulatorTest extends \PhraseanetTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $geoname->expects($this->once())
+        $geoname->expects($this->any())
             ->method('get')
-            ->with($this->equalTo('country'))
-            ->will($this->returnValue(['code' => 'fr']));
+            ->will($this->returnCallback(function ($prop) {
+                switch ($prop) {
+                    case 'country':
+                        return ['code' => 'fr'];
+                    case 'name':
+                        return 'Orléans';
+                }
+            }));
 
         $geonamesConnector = $this->getMockBuilder('Alchemy\Geonames\Connector')
             ->disableOriginalConstructor()
