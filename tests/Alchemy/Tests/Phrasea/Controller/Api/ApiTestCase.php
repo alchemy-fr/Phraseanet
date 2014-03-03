@@ -469,6 +469,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         if (null === self::$adminToken) {
             $this->markTestSkipped('there is no user with admin rights');
         }
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
 
         $this->setToken(self::$adminToken);
 
@@ -741,6 +742,10 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testSearchRoute()
     {
+        if (!extension_loaded('phrasea2')) {
+            $this->markTestSkipped('Phrasea2 extension is required for this test');
+        }
+
         $this->setToken(self::$token);
         self::$DI['client']->request('POST', '/api/v1/search/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
@@ -770,6 +775,10 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testSearchRouteWithStories()
     {
+        if (!extension_loaded('phrasea2')) {
+            $this->markTestSkipped('Phrasea2 extension is required for this test');
+        }
+
         $this->setToken(self::$token);
 
         self::$DI['record_story_1'];
@@ -802,6 +811,10 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testRecordsSearchRoute()
     {
+        if (!extension_loaded('phrasea2')) {
+            $this->markTestSkipped('Phrasea2 extension is required for this test');
+        }
+
         $this->setToken(self::$token);
         self::$DI['client']->request('POST', '/api/v1/records/search/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
@@ -855,6 +868,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken(self::$token);
 
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         $this->injectMetadatas(self::$DI['record_1']);
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/caption/';
@@ -1029,6 +1043,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testRecordsSetMetadatas()
     {
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         $this->setToken(self::$token);
 
         $record = self::$DI['record_1'];
@@ -1086,6 +1101,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testRecordsSetStatus()
     {
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         $this->setToken(self::$token);
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/setstatus/';
@@ -1144,6 +1160,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testMoveRecordToCollection()
     {
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/test001.jpg'), self::$DI['collection']);
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
 
@@ -1344,6 +1361,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testAddRecord()
     {
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         $this->setToken(self::$token);
         $route = '/api/v1/records/add/';
 
@@ -1363,6 +1381,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testAddRecordForceRecord()
     {
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         $this->setToken(self::$token);
         $route = '/api/v1/records/add/';
 

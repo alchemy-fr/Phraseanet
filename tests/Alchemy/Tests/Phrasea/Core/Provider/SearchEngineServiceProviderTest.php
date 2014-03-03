@@ -7,6 +7,14 @@ namespace Alchemy\Tests\Phrasea\Core\Provider;
  */
 class SearchEngineServiceProviderTest extends ServiceProviderTestCase
 {
+    public function setUp()
+    {
+        if (!extension_loaded('phrasea2')) {
+            $this->markTestSkipped('Phrasea2 is required for this test');
+        }
+        parent::setUp();
+    }
+
     public function provideServiceDescription()
     {
         return [

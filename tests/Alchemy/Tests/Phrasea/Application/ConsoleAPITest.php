@@ -11,6 +11,10 @@ class ConsoleAPITest extends \PhraseanetTestCase
      */
     public function testThatCommandsExitWithZero($console)
     {
+        if (!extension_loaded('phrasea2')) {
+            $this->markTestSkipped('Phrasea2 is required');
+        }
+
         $process = new Process(__DIR__ . '/../../../../../bin/'.$console);
         $process->run();
 

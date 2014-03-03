@@ -149,14 +149,17 @@ class ConfigurationTesterTest extends AbstractSetupTester
 
     public function testGetRequirements()
     {
-        foreach ($this->getTester()->getRequirements() as $requirements) {
+        $app = new Application('test');
+        $app['phraseanet.SE'] = $this->createSearchEngineMock();
+
+        foreach ($this->getTester($app)->getRequirements() as $requirements) {
             $this->assertInstanceOf('Alchemy\Phrasea\Setup\RequirementCollectionInterface', $requirements);
         }
     }
 
     private function getTester(Application $app = null)
     {
-        $app = $app? : new Application('test');
+        $app = $app ? : new Application('test');
 
         return new ConfigurationTester($app);
     }

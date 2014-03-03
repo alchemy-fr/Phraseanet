@@ -26,6 +26,7 @@ class ToolsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRouteChangeDoc()
     {
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         $record = self::$DI['record_1'];
 
         $crawler = self::$DI['client']->request('POST', '/prod/tools/hddoc/', [

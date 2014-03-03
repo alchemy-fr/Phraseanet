@@ -79,6 +79,7 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
                 $records[] = $record;
             };
 
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         $this->assertEquals(Manager::RECORD_CREATED, $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']), $postProcessRecord));
         $shaChecker = new Sha256(self::$DI['app']);
         $this->object->registerChecker($shaChecker);
@@ -118,6 +119,7 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
         $postProcessRecord = function ($record) use (&$records) {
                 $records[] = $record;
             };
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         $this->assertEquals(Manager::LAZARET_CREATED, $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']), NULL, Manager::FORCE_LAZARET));
         $this->assertEquals(Manager::RECORD_CREATED, $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']), $postProcessRecord));
 
@@ -202,6 +204,7 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
         $file->addAttribute(new Status(self::$DI['app'], strrev($status)));
 
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         $this->assertEquals(Manager::RECORD_CREATED, $this->object->process($this->session, $file, $postProcessRecord, Manager::FORCE_RECORD));
 
         $record = current($records);
@@ -552,6 +555,7 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
                 $records[] = $record;
             };
 
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         $visa = $this->object->getVisa(File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']));
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Visa', $visa);

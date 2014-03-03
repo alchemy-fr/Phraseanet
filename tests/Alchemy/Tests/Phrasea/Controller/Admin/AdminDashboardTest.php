@@ -27,6 +27,7 @@ class AdminDashboardTest extends \PhraseanetAuthenticatedWebTestCase
     public function testRouteDashboard()
     {
         $this->setAdmin(true);
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         self::$DI['app']['phraseanet.configuration-tester']->getRequirements();
         self::$DI['client']->request('GET', '/admin/dashboard/', [
             'flush_cache' => 'ok',

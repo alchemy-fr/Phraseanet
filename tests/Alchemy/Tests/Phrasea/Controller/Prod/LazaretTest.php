@@ -126,6 +126,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testAddElement()
     {
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         $originalEm = self::$DI['app']['EM'];
         $em = $this->createEntityManagerMock();
 

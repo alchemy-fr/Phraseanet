@@ -393,6 +393,7 @@ class databox_fieldTest extends \PhraseanetTestCase
     {
         $AddedValue = 'scalar value';
 
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         self::$DI['record_1']->set_metadatas([
             [
                 'meta_id'        => null,

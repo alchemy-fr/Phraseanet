@@ -2,6 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine;
 use Alchemy\Phrasea\SearchEngine\SphinxSearch\SphinxSearchEngine;
 
@@ -36,10 +37,16 @@ class SearchEngineTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = $this->loadApp();
 
-        return [
-            [new PhraseaEngine($app)],
-            [new SphinxSearchEngine($app, 'localhost', 9306, 'localhost', 9308)],
-        ];
+        $SE = [[new SphinxSearchEngine($app, 'localhost', 9306, 'localhost', 9308)]];
+
+        if (extension_loaded('phrasea2')) {
+            $SE[] = [new PhraseaEngine($app)];
+        }
+        if (false !== $ret = @file_get_contents('http://localhost:9200')) {
+            $SE[] = [ElasticSearchEngine::create($app)];
+        }
+
+        return $SE;
     }
 
 }
