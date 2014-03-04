@@ -396,17 +396,20 @@ $(document).ready(function () {
         var $this = $(this);
 
         //get form datas attached to the file
-        data.formData = $.extend(
-            data.context.find('input, select').serializeArray(),
-            $("input", $('.collection-status:visible', UploaderManager.getSettingsBox())).serializeArray(),
-            $("select", UploaderManager.getSettingsBox()).serializeArray()
-        );
+        var  dataCollection = [];
+        var pushData = function(k, d) {
+            dataCollection.push(d);
+        };
+        $.each(data.context.find('input, select').serializeArray(), pushData)
+        $.each($("input", $('.collection-status:visible', UploaderManager.getSettingsBox())).serializeArray(), pushData);
+        $.each($("select", UploaderManager.getSettingsBox()).serializeArray(), pushData);
 
-        data.formData.push({
+        dataCollection.push({
             "name": "b64_image",
             "value": data["b64_image"]
         });
 
+        data.formData = dataCollection;
         //remove current context
         data.context.remove();
 
