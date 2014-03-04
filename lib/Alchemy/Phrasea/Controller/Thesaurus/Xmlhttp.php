@@ -447,7 +447,6 @@ class Xmlhttp implements ControllerProviderInterface
     {
         $conn = $app['phraseanet.appbox']->get_connection();
 
-        $html = '';
         $sql = 'SELECT edit_preset_id, creation_date, title, xml
                 FROM edit_presets
                 WHERE usr_id = :usr_id AND sbas_id = :sbas_id
@@ -461,40 +460,28 @@ class Xmlhttp implements ControllerProviderInterface
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
+        $presets = [];
         foreach ($rs as $row) {
+            $preset = [];
             if (!($sx = @simplexml_load_string($row['xml']))) {
                 continue;
             }
-            $t_desc = [];
+            $fields = [];
             foreach ($sx->fields->children() as $fn => $fv) {
-                if (!array_key_exists($fn, $t_desc)) {
+                if (!array_key_exists($fn, $fields)) {
                     $t_desc[$fn] = trim($fv);
                 } else {
                     $t_desc[$fn] .= ' ; ' . trim($fv);
                 }
             }
-            $desc = '';
-            foreach ($t_desc as $fn => $fv) {
-                $desc .= '    <p><b>' . $fn . ':&nbsp;</b>' . str_replace(['&', '<', '>'], ['&amp;', '&lt;', '&gt;'], $fv) . '</p>' . "\n";
-            }
+            $preset['fields'] = $fields;
+            $preset['title'] = $row['title'];
+            $preset['id'] = $row['edit_preset_id'];
 
-            ob_start();
-            ?>
-            <li id="EDIT_PRESET_<?php echo $row['edit_preset_id'] ?>">
-                <h1 style="position:relative; top:0px; left:0px; width:100%; height:auto;">
-                    <a class="triangle" href="#"><span class='triRight'>&#x25BA;</span><span class='triDown'>&#x25BC;</span></a>
-                    <a class="title" href="#"><?php echo $row['title'] ?></a>
-                    <a class="delete" style="position:absolute;right:0px;" href="#"><?php echo $app->trans('boutton::supprimer') ?></a>
-                </h1>
-                <div>
-            <?php echo $desc ?>
-                </div>
-            </li>
-            <?php
-            $html .= ob_get_clean();
+            $presets[] = $preset;
         }
 
-        return $html;
+        return $app['twig']->render('thesaurus/presets.html.twig', ['presets' => $presets]);
     }
 
     public function GetSynonymsXml(Application $app, Request $request)
