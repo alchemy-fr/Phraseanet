@@ -26,6 +26,11 @@ main:
     search-engine:
         type: Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine
         options: []
+    task-manager:
+        logger:
+            max-files: 10
+            enabled: true
+            level: INFO
 trusted-proxies: []
 debugger:
     allowed-ips: []
@@ -50,6 +55,7 @@ binaries:
     unoconv_timeout: 60
 border-manager:
     enabled: true
+    extension-mapping: { }
     checkers:
         -
             type: Checker\Sha256
@@ -131,6 +137,10 @@ registration-fields:
         name: geonameid
         required: true
 xsendfile:
+    enabled: false
+    type: nginx
+    mapping: []
+h264-pseudo-streaming:
     enabled: false
     type: nginx
     mapping: []
