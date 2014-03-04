@@ -179,15 +179,6 @@ module.exports = function(grunt) {
                 ],
                 "dest": "<%= path.asset %>/jquery.treeview/"
             },
-            "jquery.tooltip": {
-                "expand": true,
-                "src": [
-                    "<%= path.bower %>/jquery.tooltip/jquery.tooltip.css",
-                    "<%= path.bower %>/jquery.tooltip/jquery.tooltip.js"
-                ],
-                "dest": "<%= path.asset %>/jquery.tooltip/",
-                "flatten": true
-            },
             "jquery-mobile": {
                 "expand": true,
                 "cwd": "<%= path.bower %>/jquery-mobile/dist",
@@ -411,7 +402,6 @@ module.exports = function(grunt) {
         "copy:jquery.cookie",
         "copy:jquery-ui",
         "copy:jquery.treeview",
-        "copy:jquery.tooltip",
         "copy:json2",
         "copy:modernizr",
         "copy:normalize",

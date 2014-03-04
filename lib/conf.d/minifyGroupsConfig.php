@@ -30,7 +30,7 @@ $groups = [
         , '//include/jslibs/jquery.form.2.49.js'
         , '//skins/prod/jquery.Dialog.js'
         , '//skins/client/jquery.p4client.1.0.js'
-        , '//assets/jquery.tooltip/jquery.tooltip.js'
+        , '//include/jquery.tooltip.js'
         , '//include/jquery.p4.preview.js'
         , '//include/jquery.image_enhancer.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'],
@@ -45,7 +45,7 @@ $groups = [
         , '//skins/admin/template-dialogs.js'
         , '//skins/admin/editusers.js'
         , '//include/jquery.common.js'
-        , '//assets/jquery.tooltip/jquery.tooltip.js'
+        , '//include/jquery.tooltip.js'
         , '//skins/prod/jquery.Dialog.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//assets/blueimp-load-image/load-image.js'
@@ -57,7 +57,7 @@ $groups = [
          '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
         , '//assets/jquery.cookie/jquery.cookie.js'
         , '//include/jquery.common.js'
-        , '//assets/jquery.tooltip/jquery.tooltip.js'
+        , '//include/jquery.tooltip.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//include/jslibs/jquery.print.js'
         , '//include/jslibs/jquery.cluetip.js'
@@ -98,7 +98,7 @@ $groups = [
         , '//skins/prod/ThumbExtractor.js'
         , '//skins/prod/publicator.js'
         , '//include/jslibs/jquery.sprintf.1.0.3.js'
-        , '//assets/jquery.tooltip/jquery.tooltip.js'
+        , '//include/jquery.tooltip.js'
         , '//include/jslibs/flowplayer/flowplayer-3.2.13.min.js'
         , '//include/jquery.p4.preview.js'
         , '//skins/prod/jquery.edit.js'
@@ -118,7 +118,7 @@ $groups = [
     ],
     'lightbox' => [
          '//include/jslibs/jquery.mousewheel.js'
-        , '//assets/jquery.tooltip/jquery.tooltip.js'
+        , '//include/jquery.tooltip.js'
         , '//assets/swfobject/swfobject.js'
         , '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
         , '//assets/jquery.cookie/jquery.cookie.js'
@@ -130,7 +130,7 @@ $groups = [
     ],
     'lightboxie6' => [
          '//include/jslibs/jquery.mousewheel.js'
-        , '//assets/jquery.tooltip/jquery.tooltip.js'
+        , '//include/jquery.tooltip.js'
         , '//assets/swfobject/swfobject.js'
         , '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
         , '//assets/jquery.cookie/jquery.cookie.js'

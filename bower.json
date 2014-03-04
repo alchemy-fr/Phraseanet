@@ -27,8 +27,7 @@
         "autobahnjs": "~0.8.0",
         "when": "~2.7.0",
         "web-socket-js": "~1.0.1",
-        "jquery.treeview": "1.4.1",
-        "jquery.tooltip": "https://github.com/meghna/jquery-tooltip.git#master"
+        "jquery.treeview": "1.4.1"
     },
     "devDependencies": {
         "mocha": "latest",
