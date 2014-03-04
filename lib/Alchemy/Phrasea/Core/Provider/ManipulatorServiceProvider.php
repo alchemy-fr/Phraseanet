@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Model\Manipulator\ACLManipulator;
+use Alchemy\Phrasea\Model\Manipulator\PresetManipulator;
 use Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator;
 use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
@@ -34,6 +35,10 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
 
         $app['manipulator.token'] = $app->share(function ($app) {
             return new TokenManipulator($app['EM'], $app['random.medium'], $app['repo.tokens']);
+        });
+
+        $app['manipulator.preset'] = $app->share(function ($app) {
+            return new PresetManipulator($app['EM'], $app['repo.presets']);
         });
 
         $app['manipulator.acl'] = $app->share(function ($app) {

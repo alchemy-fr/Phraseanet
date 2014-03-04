@@ -358,82 +358,45 @@ class Xmlhttp implements ControllerProviderInterface
 
     public function EditingPresetsJson(Application $app, Request $request)
     {
-        $usr_id = $app['authentication']->getUser()->getId();
-
         $ret = ['parm' => [
                 'act'      => $request->get('act'),
                 'sbas'     => $request->get('sbas'),
                 'presetid' => $request->get('presetid'),
                 'title'    => $request->get('title'),
-                'f'        => $request->get('f'),
+                'fields'   => $request->get('fields'),
                 'debug'    => $request->get('debug'),
         ]];
 
         switch ($request->get('act')) {
             case 'DELETE':
-                $sql = 'DELETE FROM edit_presets
-                        WHERE edit_preset_id = :editpresetid
-                            AND usr_id = :usr_id';
+                if (null === $preset = $app['repo.presets']->find($id = $request->get('presetid'))) {
+                    $app->abort(404, sprintf("Preset with id '%' could not be found", $id));
+                }
+                $app['manipulator.preset']->delete($preset);
 
-                $params = [
-                    ':editpresetid' => $request->get('presetid'),
-                    ':usr_id'       => $usr_id
-                ];
-
-                $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-                $stmt->execute($params);
-                $stmt->closeCursor();
-
-                $ret['html'] = $this->getPresetHTMLList($app, $request->get('sbas'), $usr_id);
+                $ret['html'] = $this->getPresetHTMLList($app, $request->get('sbas'), $app['authentication']->getUser()->getId());
                 break;
             case 'SAVE':
-                $dom = new \DOMDocument('1.0', 'UTF-8');
-                $dom->standalone = true;
-                $dom->preserveWhiteSpace = false;
-                $dom->formatOutput = true;
+                $app['manipulator.preset']->create(
+                    $app['authentication']->getUser(),
+                    $request->get('sbas'),
+                    $request->get('title'),
+                    $request->get('fields')
+                );
 
-                $xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><edit_preset>' . $request->get('f') . '</edit_preset>';
-                $dom->loadXML($xml);
-
-                $sql = 'INSERT INTO edit_presets
-                            (creation_date, sbas_id, usr_id, title, xml)
-                        VALUES
-                            (NOW(), :sbas_id, :usr_id, :title, :presets)';
-
-                $params = [
-                    ':sbas_id' => $request->get('sbas'),
-                    ':usr_id'  => $usr_id,
-                    ':title'   => $request->get('title'),
-                    ':presets' => $dom->saveXML(),
-                ];
-
-                $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-                $stmt->execute($params);
-                $stmt->closeCursor();
-
-                $ret['html'] = $this->getPresetHTMLList($app, $request->get('sbas'), $usr_id);
+                $ret['html'] = $this->getPresetHTMLList($app, $request->get('sbas'), $app['authentication']->getUser()->getId());
                 break;
             case 'LIST':
-                $ret['html'] = $this->getPresetHTMLList($app, $request->get('sbas'), $usr_id);
+                $ret['html'] = $this->getPresetHTMLList($app, $request->get('sbas'), $app['authentication']->getUser()->getId());
                 break;
             case "LOAD":
-                $sql = 'SELECT edit_preset_id, creation_date, title, xml
-                    FROM edit_presets
-                    WHERE edit_preset_id = :edit_preset_id';
-
-                $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-                $stmt->execute([':edit_preset_id' => $request->get('presetid')]);
-                $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
+                if (null === $preset = $app['repo.presets']->find($id = $request->get('presetid'))) {
+                    $app->abort(404, sprintf("Preset with id '%' could not be found", $id));
+                }
 
                 $fields = [];
-                if ($row && ($sx = @simplexml_load_string($row['xml']))) {
-                    foreach ($sx->fields->children() as $fn => $fv) {
-                        if (!array_key_exists($fn, $fields)) {
-                            $fields[$fn] = [];
-                        }
-                        $fields[$fn][] = trim($fv);
-                    }
+                foreach ($preset->getData() as $field) {
+                    $fields[$field['name']][] = $field['value'];
                 }
 
                 $ret['fields'] = $fields;
@@ -443,45 +406,21 @@ class Xmlhttp implements ControllerProviderInterface
         return $app->json($ret);
     }
 
-    private function getPresetHTMLList(Application $app, $sbas_id, $usr_id)
+    private function getPresetHTMLList(Application $app, $sbasId, User $user)
     {
-        $conn = $app['phraseanet.appbox']->get_connection();
+        $data = [];
+        foreach ($app['repo.presets']->findBy(['user' => $user, 'sbasId' => $sbasId], ['creadted' => 'asc']) as $preset) {
+            $presetData = $fields = [];
+            array_walk($preset->getData(), function($field) use ($fields) {
+                $fields[$field['name']][] = $field['value'];
+            });
+            $presetData['id'] = $preset->getId();
+            $presetData['title'] = $preset->getTilte();
+            $presetData['fields'] = $fields;
 
-        $sql = 'SELECT edit_preset_id, creation_date, title, xml
-                FROM edit_presets
-                WHERE usr_id = :usr_id AND sbas_id = :sbas_id
-                ORDER BY creation_date ASC';
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([
-            ':sbas_id' => $sbas_id,
-            ':usr_id'  => $usr_id,
-        ]);
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $presets = [];
-        foreach ($rs as $row) {
-            $preset = [];
-            if (!($sx = @simplexml_load_string($row['xml']))) {
-                continue;
-            }
-            $fields = [];
-            foreach ($sx->fields->children() as $fn => $fv) {
-                if (!array_key_exists($fn, $fields)) {
-                    $t_desc[$fn] = trim($fv);
-                } else {
-                    $t_desc[$fn] .= ' ; ' . trim($fv);
-                }
-            }
-            $preset['fields'] = $fields;
-            $preset['title'] = $row['title'];
-            $preset['id'] = $row['edit_preset_id'];
-
-            $presets[] = $preset;
+            $data[] = $presetData;
         }
-
-        return $app['twig']->render('thesaurus/presets.html.twig', ['presets' => $presets]);
+        return $app['twig']->render('thesaurus/presets.html.twig', ['presets' => $data]);
     }
 
     public function GetSynonymsXml(Application $app, Request $request)
