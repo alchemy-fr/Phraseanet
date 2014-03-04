@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "0d8e038306a0c58deac6187e6a607e71",
+    "hash": "88bbe728663cb23ecfba31d240af17c3",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -1150,16 +1150,16 @@
         },
         {
             "name": "elasticsearch/elasticsearch",
-            "version": "v0.4.4",
+            "version": "v1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elasticsearch/elasticsearch-php.git",
-                "reference": "53df7beea2d66b3ec41e023945e97fe0e240f72b"
+                "reference": "09a81a85ab015cd1350c622bebe9111941259782"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elasticsearch/elasticsearch-php/zipball/53df7beea2d66b3ec41e023945e97fe0e240f72b",
-                "reference": "53df7beea2d66b3ec41e023945e97fe0e240f72b",
+                "url": "https://api.github.com/repos/elasticsearch/elasticsearch-php/zipball/09a81a85ab015cd1350c622bebe9111941259782",
+                "reference": "09a81a85ab015cd1350c622bebe9111941259782",
                 "shasum": ""
             },
             "require": {
@@ -1172,12 +1172,13 @@
             },
             "require-dev": {
                 "athletic/athletic": "~0.1",
-                "elasticsearch/elasticsearch_src": "*",
+                "elasticsearch/elasticsearch_src": "dev-master",
                 "mikey179/vfsstream": "~1.2",
                 "mockery/mockery": "dev-master@dev",
                 "phpunit/phpunit": "3.7.*",
                 "satooshi/php-coveralls": "dev-master",
-                "symfony/yaml": "2.4.*@dev"
+                "symfony/yaml": "2.4.*@dev",
+                "twig/twig": "1.*"
             },
             "type": "library",
             "autoload": {
@@ -1202,7 +1203,7 @@
                 "elasticsearch",
                 "search"
             ],
-            "time": "2014-01-07 22:34:33"
+            "time": "2014-02-12 14:57:02"
         },
         {
             "name": "evenement/evenement",

@@ -286,8 +286,9 @@ class ElasticSearchEngine implements SearchEngineInterface
         $n = 0;
 
         foreach ($res['hits']['hits'] as $hit) {
-            $results[] = new \record_adapter($this->app, $hit['fields']['databox_id'], $hit['fields']['record_id'], $n);
-            $n++;
+            $databoxId = is_array($hit['fields']['databox_id']) ? array_pop($hit['fields']['databox_id']) : $hit['fields']['databox_id'];
+            $recordId = is_array($hit['fields']['record_id']) ? array_pop($hit['fields']['record_id']) : $hit['fields']['record_id'];
+            $results[] = new \record_adapter($this->app, $databoxId, $recordId, $n++);
         }
 
         return new SearchEngineResult($results, $query, $res['took'], $offset, $res['hits']['total'], $res['hits']['total'], null, null, $suggestions, [], $this->indexName);
@@ -310,6 +311,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $params = $this->createQueryParams($query, $options ?: new SearchEngineOptions(), $record);
 
         $res = $this->doExecute('search', $params);
+        $ret = [];
 
         foreach ($fields as $name => $field) {
             if (isset($res['hits']['hits'][0]['highlight']['caption.'.$name])) {

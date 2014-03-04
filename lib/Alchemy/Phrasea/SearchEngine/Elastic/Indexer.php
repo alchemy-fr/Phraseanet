@@ -246,9 +246,21 @@ class Indexer
 
         $ret = $this->engine->getClient()->indices()->create($indexParams);
 
-        if (isset($ret['error']) || !$ret['ok']) {
+        if (!$this->isResultOk($ret)) {
             throw new \RuntimeException('Unable to create index');
         }
+    }
+
+    private function isResultOk(array $ret)
+    {
+        if (isset($ret['acknowledged']) && $ret['acknowledged']) {
+            return true;
+        }
+        if (isset($ret['ok']) && $ret['ok']) {
+            return true;
+        }
+
+        return false;
     }
 
     public function reindexAll()
@@ -260,7 +272,7 @@ class Indexer
 
         $ret = $this->engine->getClient()->indices()->putSettings($params);
 
-        if (!isset($ret['ok']) || !$ret['ok']) {
+        if (!$this->isResultOk($ret)) {
             $this->logger->error('Unable to set the refresh interval to 300 s. .');
         }
 
@@ -290,7 +302,7 @@ class Indexer
 
         $ret = $this->engine->getClient()->indices()->putSettings($params);
 
-        if (!isset($ret['ok']) || !$ret['ok']) {
+        if (!$this->isResultOk($ret)) {
             throw new \RuntimeException('Unable to set the refresh interval to 1 s. .');
         }
     }
