@@ -56,4 +56,16 @@ class Feed_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
             $this->assertTrue($feed->is_public());
         }
     }
+
+    public function testLoadPublicFeedsAfterDelete()
+    {
+        $feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$title, self::$subtitle);
+        $feed->set_public(true);
+        $coll = Feed_Collection::load_public_feeds(self::$DI['app']);
+        $countBefore = count($coll->get_feeds());
+        $feed->delete();
+        $coll = Feed_Collection::load_public_feeds(self::$DI['app']);
+        $this->assertGreaterThan(count($coll->get_feeds()), $countBefore);
+        $feed->delete();
+    }
 }
