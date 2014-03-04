@@ -430,7 +430,7 @@ class appbox extends base
                 }
                 $ret[$sbas_id] = $databox;
             } catch (NotFoundHttpException $e) {
-                $this->app['monolog']->error(sprintf('Databox %s is not reliable.', $databox->getId()));
+                $this->app['monolog']->error(sprintf('Databox %s is not reliable.', $databox->get_sbas_id()));
             }
         }
 
