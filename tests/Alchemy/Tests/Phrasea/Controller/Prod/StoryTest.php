@@ -8,6 +8,7 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testRootPost()
     {
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         $route = "/prod/story/";
 
         $collections = self::$DI['app']['acl']->get(self::$DI['app']['authentication']->getUser())

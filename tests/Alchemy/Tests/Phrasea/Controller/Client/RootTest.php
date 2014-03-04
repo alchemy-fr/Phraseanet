@@ -23,6 +23,10 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetClient()
     {
+        if (!extension_loaded('phrasea2')) {
+            $this->markTestSkipped('Phrasea2 is required for this test');
+        }
+
         $this->authenticate(self::$DI['app']);
         self::$DI['client']->request("GET", "/client/");
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
@@ -61,6 +65,10 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testExecuteQuery()
     {
+        if (!extension_loaded('phrasea2')) {
+            $this->markTestSkipped('Phrasea2 is required for this test');
+        }
+
         $queryParameters = [];
         $queryParameters["mod"] = self::$DI['app']['settings']->getUserSetting(self::$DI['user'], 'client_view', '3X6');
         $queryParameters["bas"] = array_keys(self::$DI['app']['acl']->get(self::$DI['user'])->get_granted_base());

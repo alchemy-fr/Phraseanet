@@ -9,6 +9,7 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testRouteSlash()
     {
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         self::$DI['client']->request('GET', '/prod/');
 
         $response = self::$DI['client']->getResponse();

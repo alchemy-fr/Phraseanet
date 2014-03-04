@@ -43,6 +43,9 @@ abstract class SearchEngineAbstractTest extends \PhraseanetAuthenticatedTestCase
             $this->markTestSkipped('Unable to initialize search Engine');
         }
 
+        self::$DI['app']['phraseanet.SE'] = self::$searchEngine;
+        self::$DI['app']['phraseanet.SE.subscriber'] = self::$searchEngine->createSubscriber(self::$DI['app']);
+
         $options = new SearchEngineOptions();
         $options->onCollections($databox->get_collections());
 
@@ -268,11 +271,16 @@ abstract class SearchEngineAbstractTest extends \PhraseanetAuthenticatedTestCase
         $record = self::$DI['record_2'];
         $query_string = 'boomboklot' . $record->get_record_id() . 'defaultNotIndexed';
 
-        $this->editRecord($query_string, $record);
-
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1, $this->options);
         $this->assertEquals(0, $results->getTotal());
+
+        $this->editRecord($query_string, $record);
+
+        self::$searchEngine->resetCache();
+        $this->updateIndex();
+        $results = self::$searchEngine->query($query_string, 0, 1, $this->options);
+        $this->assertEquals(1, $results->getTotal());
     }
 
     public function testAddRecord()

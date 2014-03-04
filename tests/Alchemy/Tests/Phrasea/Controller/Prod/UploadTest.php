@@ -293,6 +293,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testUploadForceRecord()
     {
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         $params = [
             'base_id'     => self::$DI['collection']->get_base_id(),
             'forceAction' => Manager::FORCE_RECORD,
@@ -328,6 +329,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testUploadRecordStatus()
     {
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         $params = [
             'base_id'     => self::$DI['collection']->get_base_id(),
             'forceAction' => Manager::FORCE_RECORD,

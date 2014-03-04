@@ -670,4 +670,23 @@ abstract class PhraseanetTestCase extends WebTestCase
             ->disableOriginalConstructor()
             ->getMock();
     }
+
+    protected function createSearchEngineMock()
+    {
+        $mock = $this->getMock('Alchemy\Phrasea\SearchEngine\SearchEngineInterface');
+        $mock->expects($this->any())
+            ->method('createSubscriber')
+            ->will($this->returnValue($this->getMock('Symfony\Component\EventDispatcher\EventSubscriberInterface')));
+        $mock->expects($this->any())
+            ->method('getConfigurationPanel')
+            ->will($this->returnValue($this->getMock('Alchemy\Phrasea\SearchEngine\ConfigurationPanelInterface')));
+        $mock->expects($this->any())
+            ->method('getStatus')
+            ->will($this->returnValue([]));
+        $mock->staticExpects($this->any())
+            ->method('createSubscriber')
+            ->will($this->returnValue($this->getMock('Symfony\Component\EventDispatcher\EventSubscriberInterface')));
+
+        return $mock;
+    }
 }

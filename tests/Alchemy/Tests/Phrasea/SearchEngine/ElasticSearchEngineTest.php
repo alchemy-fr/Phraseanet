@@ -9,6 +9,10 @@ class ElasticSearchEngineTest extends SearchEngineAbstractTest
 {
     public function setUp()
     {
+        if (false === @file_get_contents('http://localhost:9200')) {
+            $this->markTestSkipped('Unable to connect to elasticsearch.');
+        }
+
         parent::setUp();
 
         $es = ElasticSearchEngine::create(self::$DI['app']);

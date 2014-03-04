@@ -1111,6 +1111,8 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetLogout()
     {
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
+
         $this->assertTrue(self::$DI['app']['authentication']->isAuthenticated());
         self::$DI['client']->request('GET', '/login/logout/', ['app' => 'prod']);
         $this->assertFalse(self::$DI['app']['authentication']->isAuthenticated());

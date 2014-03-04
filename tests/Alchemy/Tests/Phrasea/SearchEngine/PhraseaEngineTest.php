@@ -12,10 +12,11 @@ class PhraseaEngineTest extends SearchEngineAbstractTest
 {
     public function setUp()
     {
-        parent::setUp();
         if (!extension_loaded('phrasea2')) {
             $this->markTestSkipped('Phrasea extension is not loaded');
         }
+
+        parent::setUp();
     }
 
     public function initialize()

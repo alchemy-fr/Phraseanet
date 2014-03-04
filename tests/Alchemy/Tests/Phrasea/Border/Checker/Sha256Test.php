@@ -40,6 +40,7 @@ class Sha256Test extends \PhraseanetTestCase
     {
         $session = self::$DI['app']['EM']->find('Phraseanet:LazaretSession', 1);
 
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         self::$DI['app']['border-manager']->process($session, File::buildFromPathfile($this->media->getFile()->getPathname(), self::$DI['collection'], self::$DI['app']), null, Manager::FORCE_RECORD);
 
         $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', ['getSha256'], [self::$DI['app'], $this->media, self::$DI['collection']]);

@@ -41,6 +41,10 @@ class PhraseaEngine implements SearchEngineInterface
      */
     public function __construct(Application $app)
     {
+        if (!extension_loaded('phrasea2')) {
+            throw new RuntimeException('Phrasea2 is required to use Phrasea search engine.');
+        }
+
         $this->app = $app;
     }
 

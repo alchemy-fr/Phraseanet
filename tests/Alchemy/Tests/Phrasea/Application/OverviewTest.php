@@ -53,6 +53,7 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDatafilesRouteNotAuthenticatedIsOkInPublicFeed()
     {
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         self::$DI['record_5']->move_to_collection(self::$DI['collection_no_access'], self::$DI['app']['phraseanet.appbox']);
         self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_5']->get_sbas_id() . '/' . self::$DI['record_5']->get_record_id() . '/preview/');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());

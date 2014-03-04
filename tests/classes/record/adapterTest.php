@@ -339,6 +339,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
             }
         }
 
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         self::$DI['record_1']->set_metadatas($metadatas, true);
 
         $caption = self::$DI['record_1']->get_caption();
