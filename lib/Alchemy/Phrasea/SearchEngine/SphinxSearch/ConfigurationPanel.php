@@ -47,7 +47,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
 
         $params = [
             'configuration' => $configuration,
-            'configfile'    => $this->generateSphinxConf($app['phraseanet.appbox']->get_databoxes(), $configuration),
+            'configfile'    => $this->generateSphinxConf($app['phraseanet.appbox'], $app['phraseanet.appbox']->get_databoxes(), $configuration),
             'charsets'      => $this->getAvailableCharsets(),
             'date_fields'   => $this->getAvailableDateFields($app['phraseanet.appbox']->get_databoxes()),
         ];
@@ -123,11 +123,12 @@ class ConfigurationPanel extends AbstractConfigurationPanel
     /**
      * Generates Sphinx Search configuration depending on the service configuration
      *
+     * @param  \appbox  $appbox     The appbox
      * @param  array  $databoxes     The databoxes to index
      * @param  array  $configuration The configuration
      * @return string The sphinx search configuration
      */
-    public function generateSphinxConf(array $databoxes, array $configuration)
+    public function generateSphinxConf(\appbox $appbox, array $databoxes, array $configuration)
     {
         $options = self::populateConfiguration($configuration);
 
@@ -214,7 +215,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
 
 
 #------------------------------------------------------------------------------
-# *****************  ' . $databox->get_dbname() . '
+# *****************  ' . $databox->get_viewname() . '
 #------------------------------------------------------------------------------
 
 
@@ -224,11 +225,11 @@ class ConfigurationPanel extends AbstractConfigurationPanel
   source database_cfg' . $index_crc . '
   {
     type                  = mysql
-    sql_host              = ' . $databox->get_host() . '
-    sql_user              = ' . $databox->get_user() . '
+    sql_host              = ' . $appbox->get_host() . '
+    sql_user              = ' . $appbox->get_user() . '
     sql_pass              =
-    sql_db                = ' . $databox->get_dbname() . '
-    sql_port              = ' . $databox->get_port() . '
+    sql_db                = ' . $appbox->get_dbname() . '
+    sql_port              = ' . $appbox->get_port() . '
 
     # We retrieve datas in UTF-8
     sql_query_pre = SET character_set_results = "utf8", character_set_client = "utf8", \
@@ -277,7 +278,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
       FROM (metadatas m, metadatas_structure s, record r) \
           ' . implode(" \\\n", $date_left_joins) . ' \
       WHERE m.record_id = r.record_id AND m.meta_struct_id = s.id \
-        AND s.indexable = "1"
+        AND s.indexable = "1" AND s.sbas_id = ' . $databox->get_sbas_id() . '
 
     # documents can be filtered / sorted on each sql_attr
     sql_attr_uint         = record_id
@@ -464,7 +465,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
     sql_joined_field      = metas from query; \
       SELECT m.record_id as id, m.value \
       FROM metadatas m, metadatas_structure s \
-      WHERE s.id = m.meta_struct_id AND s.business = 0 \
+      WHERE s.id = m.meta_struct_id AND s.business = 0 AND s.sbas_id = ' . $databox->get_sbas_id() . ' \
       ORDER BY m.record_id ASC
 
     # datas returned in the resultset
@@ -575,7 +576,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
   }
 
 #------------------------------------------------------------------------------
-# *****************  End configuration for ' . $databox->get_dbname() . '
+# *****************  End configuration for ' . $databox->get_viewname() . '
 #------------------------------------------------------------------------------
 
 ';

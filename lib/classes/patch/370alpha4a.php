@@ -16,9 +16,6 @@ class patch_370alpha4a extends patchAbstract
     /** @var string */
     private $release = '3.7.0-alpha.4';
 
-    /** @var array */
-    private $concern = [base::DATA_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -38,14 +35,6 @@ class patch_370alpha4a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getDoctrineMigrations()
     {
         return [];
@@ -54,10 +43,10 @@ class patch_370alpha4a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function apply(base $databox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         $sql = 'SELECT id, src FROM metadatas_structure';
-        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -78,7 +67,7 @@ class patch_370alpha4a extends patchAbstract
 
         $sql = 'UPDATE metadatas_structure SET src = :src
                 WHERE id = :id';
-        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt = $appbox->get_connection()->prepare($sql);
 
         foreach ($update as $row) {
             $stmt->execute([':src' => $row['src'], ':id'  => $row['id']]);

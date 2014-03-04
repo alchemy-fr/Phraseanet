@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Cache\ArrayCache;
 use Alchemy\Phrasea\Core\Connection\ConnectionProvider;
+use Alchemy\Phrasea\Core\Connection\ReconnectableConnection;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\MonologSQLLogger;
 use Alchemy\Phrasea\Model\NativeQueryProvider;
@@ -151,6 +152,10 @@ class ORMServiceProvider implements ServiceProviderInterface
 
         $app['dbal.provider'] = $app->share(function (Application $app) {
             return new ConnectionProvider($app['EM.config'], $app['EM.events-manager'], isset($app['task-manager.logger']) ? $app['task-manager.logger'] : $app['monolog']);
+        });
+
+        $app['dbal.conn'] = $app->share(function (Application $app) {
+            return $app['dbal.provider']->get($app['conf']->get(['main', 'database']));
         });
 
         $app['EM'] = $app->share(function (Application $app) {

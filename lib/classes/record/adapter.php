@@ -1456,6 +1456,22 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $this->app['phraseanet.logger']($this->get_databox())
             ->log($this, Session_Logger::EVENT_DELETE, $origcoll, $xml);
 
+        $sql = 'DELETE FROM status WHERE record_id IN (SELECT record_id FROM record WHERE coll_id = :coll_id)';
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute([':coll_id' => $this->get_collection()->get_coll_id()]);
+        $stmt->closeCursor();
+
+        $sql = 'DELETE FROM bridge_elements WHERE record_id IN (SELECT record_id FROM record WHERE coll_id = :coll_id)';
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute([':coll_id' => $this->get_collection()->get_coll_id()]);
+        $stmt->closeCursor();
+
+
+        $sql = 'DELETE FROM records_rights WHERE record_id IN (SELECT record_id FROM record WHERE coll_id = :coll_id)';
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute([':coll_id' => $this->get_collection()->get_coll_id()]);
+        $stmt->closeCursor();
+
         $sql = "DELETE FROM record WHERE record_id = :record_id";
         $stmt = $connbas->prepare($sql);
         $stmt->execute([':record_id' => $this->get_record_id()]);
@@ -1591,7 +1607,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         }
         $databox = $this->get_databox();
 
-        \cache_databox::update($this->app, $this->get_sbas_id(), 'record', $this->get_record_id());
+//        \cache_databox::update($this->app, $this->get_sbas_id(), 'record', $this->get_record_id());
 
         return $databox->delete_data_from_cache($this->get_cache_key($option));
     }

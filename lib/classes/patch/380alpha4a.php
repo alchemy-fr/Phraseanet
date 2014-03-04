@@ -17,9 +17,6 @@ class patch_380alpha4a extends patchAbstract
     /** @var string */
     private $release = '3.8.0-alpha.4';
 
-    /** @var array */
-    private $concern = [base::APPLICATION_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -39,14 +36,6 @@ class patch_380alpha4a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getDoctrineMigrations()
     {
         return ['auth-failure'];
@@ -55,7 +44,7 @@ class patch_380alpha4a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function apply(base $appbox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         $conn = $app['phraseanet.appbox']->get_connection();
         $sql = 'SELECT date, login, ip, locked

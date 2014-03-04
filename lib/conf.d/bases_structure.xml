@@ -1276,15 +1276,6 @@
                             <field>sbas_id</field>
                         </fields>
                     </index>
-                    <index>
-                        <name>server</name>
-                        <type>UNIQUE</type>
-                        <fields>
-                            <field>host</field>
-                            <field>port</field>
-                            <field>dbname</field>
-                        </fields>
-                    </index>
                 </indexes>
                 <engine>InnoDB</engine>
             </table>
@@ -1658,6 +1649,7 @@
                         <type>UNIQUE</type>
                         <fields>
                             <field>name</field>
+                            <field>sbas_id</field>
                         </fields>
                     </index>
                     <index>
@@ -1665,6 +1657,7 @@
                         <type>UNIQUE</type>
                         <fields>
                             <field>dces_element</field>
+                            <field>sbas_id</field>
                         </fields>
                     </index>
                     <index>
@@ -2562,57 +2555,6 @@
                         </fields>
                     </index>
                 </indexes>
-                <defaults>
-                    <default>
-                        <data key="prop">thesaurus</data>
-                        <data key="value"></data>
-                        <data key="locale"></data>
-                        <data key="created_on">NOW()</data>
-                    </default>
-                    <default>
-                        <data key="prop">structure</data>
-                        <data key="value"></data>
-                        <data key="locale"></data>
-                        <data key="created_on">NOW()</data>
-                    </default>
-                    <default>
-                        <data key="prop">cterms</data>
-                        <data key="value"></data>
-                        <data key="locale"></data>
-                        <data key="created_on">NOW()</data>
-                    </default>
-                    <default>
-                        <data key="prop">indexes</data>
-                        <data key="value">1</data>
-                        <data key="locale"></data>
-                        <data key="updated_on">NOW()</data>
-                        <data key="created_on">NOW()</data>
-                    </default>
-                    <default>
-                        <data key="prop">ToU</data>
-                        <data key="value"></data>
-                        <data key="locale">fr</data>
-                        <data key="created_on">NOW()</data>
-                    </default>
-                    <default>
-                        <data key="prop">ToU</data>
-                        <data key="value"></data>
-                        <data key="locale">nl</data>
-                        <data key="created_on">NOW()</data>
-                    </default>
-                    <default>
-                        <data key="prop">ToU</data>
-                        <data key="value"></data>
-                        <data key="locale">de</data>
-                        <data key="created_on">NOW()</data>
-                    </default>
-                    <default>
-                        <data key="prop">ToU</data>
-                        <data key="value"></data>
-                        <data key="locale">en</data>
-                        <data key="created_on">NOW()</data>
-                    </default>
-                </defaults>
                 <engine>InnoDB</engine>
             </table>
             <table name="prop">
@@ -2695,6 +2637,11 @@
                         <name>record_id</name>
                         <type>int(11) unsigned</type>
                         <extra>auto_increment</extra>
+                    </field>
+                    <field>
+                        <name>record_id_BC</name>
+                        <type>int(11) unsigned</type>
+                        <null>YES</null>
                     </field>
                     <field>
                         <name>parent_record_id</name>
@@ -3222,8 +3169,4 @@
             </table>
         </tables>
     </appbox>
-    <databox>
-        <tables>
-        </tables>
-    </databox>
 </databases>

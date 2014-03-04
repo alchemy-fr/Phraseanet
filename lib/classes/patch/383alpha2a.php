@@ -17,9 +17,6 @@ class patch_383alpha2a extends patchAbstract
     /** @var string */
     private $release = '3.8.3-alpha.2';
 
-    /** @var array */
-    private $concern = [base::APPLICATION_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -47,15 +44,7 @@ class patch_383alpha2a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function apply(base $appbox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         // Clean validation sessions where initiator_id does not exist anymore
         $sql = 'SELECT DISTINCT(v.id) AS validation_session_id FROM `ValidationSessions` v LEFT JOIN Users u ON (v.initiator_id = u.id) WHERE u.id IS NULL';

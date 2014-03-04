@@ -26,9 +26,15 @@ class Manager
     private $logger;
     /** @var Factory */
     private $factory;
+    private $id;
 
-    public function __construct(Compiler $compiler, $file, Logger $logger, Factory $factory)
+    public function __construct(Compiler $compiler, $file, Logger $logger, Factory $factory, $id)
     {
+        if (trim($id) === '') {
+            throw new \InvalidArgumentException('Invalid id provided');
+        }
+
+        $this->id = $id;
         $this->file = $file;
         $this->compiler = $compiler;
         $this->logger = $logger;
@@ -79,7 +85,7 @@ class Manager
             $cache = $this->factory->create('array', []);
         }
 
-        $cache->setNamespace(md5(gethostname().'-'.__DIR__));
+        $cache->setNamespace(md5($this->id.'-'.gethostname().'-'.__DIR__));
 
         $this->drivers[$label] = $cache;
 

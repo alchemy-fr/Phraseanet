@@ -16,9 +16,6 @@ class patch_360alpha1a extends patchAbstract
     /** @var string */
     private $release = '3.6.0-alpha.1';
 
-    /** @var array */
-    private $concern = [base::APPLICATION_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -38,14 +35,6 @@ class patch_360alpha1a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getDoctrineMigrations()
     {
         return ['workzone', 'session'];
@@ -54,7 +43,7 @@ class patch_360alpha1a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function apply(base $appbox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         $tables = ['StoryWZ', 'ValidationDatas', 'ValidationParticipants', 'ValidationSessions', 'BasketElements', 'Baskets'];
 

@@ -18,9 +18,6 @@ class patch_390alpha16a extends patchAbstract
     /** @var string */
     private $release = '3.9.0-alpha.16';
 
-    /** @var array */
-    private $concern = [base::APPLICATION_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -40,14 +37,6 @@ class patch_390alpha16a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getDoctrineMigrations()
     {
         return [];
@@ -56,7 +45,7 @@ class patch_390alpha16a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function apply(base $appbox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         $sql = ' SELECT edit_preset_id, creation_date, title, xml
                  FROM edit_presets';
@@ -73,11 +62,6 @@ class patch_390alpha16a extends patchAbstract
             $preset->setSbasId($row['sbas_id']);
             $preset->setTitle($row['title']);
             $fields = [];
-            if (false !== ($sx = @simplexml_load_string($row['xml']))) {
-                foreach ($sx->fields->children() as $name => $value) {
-                    $fields[] = ['name' => $name, 'value' => $value];
-                }
-            }
             $preset->setData($fields);
 
             $em->persist($preset);

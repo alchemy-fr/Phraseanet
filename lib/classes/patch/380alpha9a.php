@@ -16,9 +16,6 @@ class patch_380alpha9a extends patchAbstract
     /** @var string */
     private $release = '3.8.0-alpha.9';
 
-    /** @var array */
-    private $concern = [base::DATA_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -38,14 +35,6 @@ class patch_380alpha9a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getDoctrineMigrations()
     {
         return [];
@@ -54,30 +43,32 @@ class patch_380alpha9a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function apply(base $databox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
-        $sxe = $databox->get_sxml_structure();
+        foreach ($appbox->get_databoxes() as $databox) {
+            $sxe = $databox->get_sxml_structure();
 
-        if ($sxe !== false) {
-            foreach ($sxe->statbits->bit as $sb) {
-                $bit = (int) ($sb["n"]);
-                if ($bit < 4 && $bit > 31) {
-                    continue;
+            if ($sxe !== false) {
+                foreach ($sxe->statbits->bit as $sb) {
+                    $bit = (int) ($sb["n"]);
+                    if ($bit < 4 && $bit > 31) {
+                        continue;
+                    }
+
+                    $name = (string) $sb;
+                    $labelOff = (string) $sb['labelOff'];
+                    $labelOn = (string) $sb['labelOn'];
+
+                    $this->status[$bit]["labeloff"] =  $labelOff ? : 'no-' . $name;
+                    $this->status[$bit]["labelon"] = $labelOn ? : 'ok-' . $name;
                 }
-
-                $name = (string) $sb;
-                $labelOff = (string) $sb['labelOff'];
-                $labelOn = (string) $sb['labelOn'];
-
-                $this->status[$bit]["labeloff"] =  $labelOff ? : 'no-' . $name;
-                $this->status[$bit]["labelon"] = $labelOn ? : 'ok-' . $name;
             }
+
+            $dom = new \DOMDocument();
+            $dom->loadXML($sxe->asXML());
+
+            $databox->saveStructure($dom);
         }
-
-        $dom = new \DOMDocument();
-        $dom->loadXML($sxe->asXML());
-
-        $databox->saveStructure($dom);
 
         return true;
     }

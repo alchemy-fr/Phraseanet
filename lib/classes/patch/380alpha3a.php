@@ -16,9 +16,6 @@ class patch_380alpha3a extends patchAbstract
     /** @var string */
     private $release = '3.8.0-alpha.3';
 
-    /** @var array */
-    private $concern = [base::DATA_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -46,17 +43,9 @@ class patch_380alpha3a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
+    public function apply(\appbox $appbox, Application $app)
     {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function apply(base $databox, Application $app)
-    {
-        $conn = $databox->get_connection();
+        $conn = $appbox->get_connection();
 
         $removeProc = "DROP PROCEDURE IF EXISTS explode_log_table";
 

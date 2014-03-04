@@ -77,7 +77,7 @@ class RegistrationManager
                 ],
                 // Registration configuration on databox and collections that belong to the databox
                 'config' => [
-                    'db-name'       => $databox->get_dbname(),
+                    'db-name'       => $databox->get_viewname(),
                     'cgu'           => $databox->get_cgus(),
                     'can-register'  => $databox->isRegistrationEnabled(),
                     // Configuration on collection

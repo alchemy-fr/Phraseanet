@@ -23,27 +23,6 @@ class NativeQueryProvider
         $this->em = $em;
     }
 
-    public function getUsersRegistrationDemand(array $basList)
-    {
-        $rsm = new ResultSetMappingBuilder($this->em);
-        $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\User', 'u');
-        $rsm->addScalarResult('date_demand', 'date_demand');
-        $rsm->addScalarResult('base_demand', 'base_demand');
-
-        $selectClause = $rsm->generateSelectClause();
-
-        return $this->em->createNativeQuery("
-            SELECT d.date_modif AS date_demand, d.base_id AS base_demand, " . $selectClause . "
-            FROM (demand d INNER JOIN Users u ON d.usr_id=u.id
-            AND d.en_cours=1
-            AND u.deleted=0
-            )
-            WHERE (base_id='" . implode("' OR base_id='", $basList) . "')
-            ORDER BY d.usr_id DESC, d.base_id ASC
-            ", $rsm)
-        ->getResult();
-    }
-
     public function getModelForUser(User $user, array $basList)
     {
         $rsm = new ResultSetMappingBuilder($this->em);
@@ -81,6 +60,60 @@ class NativeQueryProvider
                 AND b.canadmin="1"
                 AND u.deleted="0"', $rsm
         );
+
+        return $query->getResult();
+    }
+
+    public function getFeedItemByCollection(\collection $coll, $offsetStart = 0, $quantity = 100)
+    {
+        $rsm = new ResultSetMappingBuilder($this->em);
+        $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\FeedItem', 'i');
+        $selectClause = $rsm->generateSelectClause();
+
+        $query = $this->em->createNativeQuery('
+            SELECT '.$selectClause.' FROM FeedItems i, record r, coll c
+            WHERE c.coll_id = :coll_id
+                AND r.coll_id = c.coll_id
+                AND i.record_id = r.record_id
+                LIMIT '.(int) $offsetStart.', '.(int) $quantity, $rsm
+        );
+        $query->setParameter(':coll_id', $coll->get_coll_id());
+
+        return $query->getResult();
+    }
+
+    public function getBasketElementsByCollection(\collection $coll, $offsetStart = 0, $quantity = 100)
+    {
+        $rsm = new ResultSetMappingBuilder($this->em);
+        $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\BasketElement', 'e');
+        $selectClause = $rsm->generateSelectClause();
+
+        $query = $this->em->createNativeQuery('
+            SELECT '.$selectClause.' FROM BasketElements e, record r, coll c
+            WHERE c.coll_id = :coll_id
+                AND r.coll_id = c.coll_id
+                AND e.record_id = r.record_id
+                LIMIT '.(int) $offsetStart.', '.(int) $quantity, $rsm
+        );
+        $query->setParameter(':coll_id', $coll->get_coll_id());
+
+        return $query->getResult();
+    }
+
+    public function getStoryWZByCollection(\collection $coll, $offsetStart = 0, $quantity = 100)
+    {
+        $rsm = new ResultSetMappingBuilder($this->em);
+        $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\StoryWZ', 's');
+        $selectClause = $rsm->generateSelectClause();
+
+        $query = $this->em->createNativeQuery('
+            SELECT '.$selectClause.' FROM StoryWZ s, record r, coll c
+            WHERE c.coll_id = :coll_id
+                AND r.coll_id = c.coll_id
+                AND s.record_id = r.record_id
+                LIMIT '.(int) $offsetStart.', '.(int) $quantity, $rsm
+        );
+        $query->setParameter(':coll_id', $coll->get_coll_id());
 
         return $query->getResult();
     }

@@ -44,14 +44,10 @@ class module_console_systemBackupDB extends Command
         $res = 0;
         $res += $this->dump_base($this->getService('phraseanet.appbox'), $input, $output) && $ok;
 
-        foreach ($this->getService('phraseanet.appbox')->get_databoxes() as $databox) {
-            $res += $this->dump_base($databox, $input, $output) && $ok;
-        }
-
         return $res;
     }
 
-    protected function dump_base(base $base, InputInterface $input, OutputInterface $output)
+    protected function dump_base(\appbox $base, InputInterface $input, OutputInterface $output)
     {
         $date_obj = new DateTime();
 

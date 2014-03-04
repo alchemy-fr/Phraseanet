@@ -43,12 +43,6 @@ class Databox implements ControllerProviderInterface
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_delete');
 
-        $controllers->post('/{databox_id}/unmount/', 'controller.admin.databox:unmountDatabase')
-            ->assert('databox_id', '\d+')
-            ->before(function (Request $request) use ($app) {
-                $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
-            })->bind('admin_database_unmount');
-
         $controllers->post('/{databox_id}/empty/', 'controller.admin.databox:emptyDatabase')
             ->assert('databox_id', '\d+')
             ->before(function (Request $request) use ($app) {
@@ -103,13 +97,6 @@ class Databox implements ControllerProviderInterface
             ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_display_document_details');
-
-        $controllers->post('/{databox_id}/collection/{collection_id}/mount/', 'controller.admin.databox:mountCollection')
-            ->assert('databox_id', '\d+')
-            ->assert('collection_id', '\d+')
-            ->before(function (Request $request) use ($app) {
-                $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
-            })->bind('admin_database_mount_collection');
 
         $controllers->get('/{databox_id}/collection/', 'controller.admin.databox:getNewCollection')
             ->assert('databox_id', '\d+')
@@ -223,7 +210,6 @@ class Databox implements ControllerProviderInterface
             if ($databox->get_record_amount() > 0) {
                 $msg = $app->trans('admin::base: vider la base avant de la supprimer');
             } else {
-                $databox->unmount_databox();
                 $app['phraseanet.appbox']->write_databox_pic($app['media-alchemyst'], $app['filesystem'], $databox, null, \databox::PIC_PDF);
                 $databox->delete();
                 $success = true;
@@ -333,7 +319,7 @@ class Databox implements ControllerProviderInterface
         $success = false;
 
         try {
-            $app['phraseanet.appbox']->set_databox_indexable($app['phraseanet.appbox']->get_databox($databox_id), !!$request->request->get('indexable', false));
+            $app['phraseanet.appbox']->get_databox($databox_id)->set_indexable((Boolean) $request->request->get('indexable', false));
             $success = true;
         } catch (\Exception $e) {
 
@@ -380,54 +366,6 @@ class Databox implements ControllerProviderInterface
             'databox_id' => $databox_id,
             'success'    => 1,
         ]);
-    }
-
-    /**
-     * Mount a collection on a databox
-     *
-     * @param  Application      $app           The silex application
-     * @param  Request          $request       The current HTTP request
-     * @param  integer          $databox_id    The requested databox
-     * @param  integer          $collection_id The requested collection id
-     * @return RedirectResponse
-     */
-    public function mountCollection(Application $app, Request $request, $databox_id, $collection_id)
-    {
-        $app['phraseanet.appbox']->get_connection()->beginTransaction();
-        try {
-            $baseId = \collection::mount_collection($app, $app['phraseanet.appbox']->get_databox($databox_id), $collection_id, $app['authentication']->getUser());
-
-            $othCollSel = (int) $request->request->get("othcollsel") ?: null;
-
-            if (null !== $othCollSel) {
-                $query = new \User_Query($app);
-                $n = 0;
-
-                while ($n < $query->on_base_ids([$othCollSel])->get_total()) {
-                    $results = $query->limit($n, 50)->execute()->get_results();
-
-                    foreach ($results as $user) {
-                        $app['acl']->get($user)->duplicate_right_from_bas($othCollSel, $baseId);
-                    }
-
-                    $n += 50;
-                }
-            }
-
-            $app['phraseanet.appbox']->get_connection()->commit();
-
-            return $app->redirectPath('admin_database', [
-                'databox_id' => $databox_id,
-                'mount'      => 'ok',
-            ]);
-        } catch (\Exception $e) {
-            $app['phraseanet.appbox']->get_connection()->rollBack();
-
-            return $app->redirectPath('admin_database', [
-                'databox_id' => $databox_id,
-                'mount'      => 'ko',
-            ]);
-        }
     }
 
     /**
@@ -579,40 +517,6 @@ class Databox implements ControllerProviderInterface
     }
 
     /**
-     * Unmount a databox
-     *
-     * @param  Application                   $app        The silex application
-     * @param  Request                       $request    The current HTTP request
-     * @param  integer                       $databox_id The requested databox
-     * @return JsonResponse|RedirectResponse
-     */
-    public function unmountDatabase(Application $app, Request $request, $databox_id)
-    {
-        $success = false;
-
-        try {
-            $databox = $app['phraseanet.appbox']->get_databox($databox_id);
-            $databox->unmount_databox();
-
-            $success = true;
-        } catch (\Exception $e) {
-
-        }
-
-        if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json([
-                'success' => $success,
-                'msg'     => $success ? $app->trans('The publication has been stopped') : $app->trans('An error occured'),
-                'sbas_id' => $databox_id
-            ]);
-        }
-
-        return $app->redirectPath('admin_databases', [
-            'reload-tree' => 1,
-        ]);
-    }
-
-    /**
      * Empty a databox
      *
      * @param  Application                   $app        The silex application
@@ -693,8 +597,8 @@ class Databox implements ControllerProviderInterface
             $databox = $app['phraseanet.appbox']->get_databox($databox_id);
             $datas = $databox->get_indexed_record_amount();
 
-            $ret['indexable'] = $app['phraseanet.appbox']->is_databox_indexable($databox);
-            $ret['viewname'] = (($databox->get_dbname() == $databox->get_viewname()) ? $app->trans('admin::base: aucun alias') : $databox->get_viewname());
+            $ret['indexable'] = $databox->is_indexable();
+            $ret['viewname'] = $databox->get_viewname();
             $ret['records'] = $databox->get_record_amount();
             $ret['sbas_id'] = $databox_id;
             $ret['xml_indexed'] = $datas['xml_indexed'];

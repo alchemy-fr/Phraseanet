@@ -19,9 +19,6 @@ class patch_390alpha6a extends patchAbstract
     /** @var string */
     private $release = '3.9.0-alpha.6';
 
-    /** @var array */
-    private $concern = [base::APPLICATION_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -41,14 +38,6 @@ class patch_390alpha6a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getDoctrineMigrations()
     {
         return ['ftp-export'];
@@ -57,7 +46,7 @@ class patch_390alpha6a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function apply(base $appbox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         $sql = 'DELETE FROM FtpExports';
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);

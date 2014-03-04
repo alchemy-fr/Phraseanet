@@ -16,9 +16,6 @@ class patch_320alpha6a extends patchAbstract
     /** @var string */
     private $release = '3.2.0-alpha.6';
 
-    /** @var array */
-    private $concern = [base::DATA_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -46,49 +43,43 @@ class patch_320alpha6a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function apply(base $databox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         $sql = 'UPDATE record r, subdef s
                 SET r.mime = s.mime
                 WHERE r.record_id = s.record_id
                   AND s.name="document"';
-        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
         $sql = 'UPDATE subdef s, record r
                 SET s.updated_on = r.moddate, s.created_on = r.credate
                 WHERE s.record_id = r.record_id';
-        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
         $sql = 'UPDATE subdef SET `name` = LOWER( `name` )';
-        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
-        $dom = $databox->get_dom_structure();
-        $xpath = $databox->get_xpath_structure();
+        foreach ($appbox->get_databoxes() as $databox) {
+            $dom = $databox->get_dom_structure();
+            $xpath = $databox->get_xpath_structure();
 
-        $nodes = $xpath->query('//record/subdefs/subdefgroup/subdef');
+            $nodes = $xpath->query('//record/subdefs/subdefgroup/subdef');
 
-        foreach ($nodes as $node) {
-            $name = mb_strtolower(trim($node->getAttribute('name')));
-            if ($name === '')
-                continue;
-            $node->setAttribute('name', $name);
+            foreach ($nodes as $node) {
+                $name = mb_strtolower(trim($node->getAttribute('name')));
+                if ($name === '')
+                    continue;
+                $node->setAttribute('name', $name);
+            }
+
+            $databox->saveStructure($dom);
         }
-
-        $databox->saveStructure($dom);
 
         return true;
     }

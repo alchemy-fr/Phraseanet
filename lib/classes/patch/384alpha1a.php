@@ -16,9 +16,6 @@ class patch_384alpha1a implements patchInterface
     /** @var string */
     private $release = '3.8.4-alpha.1';
 
-    /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
-
     /**
      * {@inheritdoc}
      */
@@ -38,14 +35,6 @@ class patch_384alpha1a implements patchInterface
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getDoctrineMigrations()
     {
         return [];
@@ -54,7 +43,7 @@ class patch_384alpha1a implements patchInterface
     /**
      * {@inheritdoc}
      */
-    public function apply(base $appbox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         $config = $app['phraseanet.configuration']->getConfig();
 

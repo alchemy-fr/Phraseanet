@@ -16,9 +16,6 @@ class patch_320alpha4a extends patchAbstract
     /** @var string */
     private $release = '3.2.0-alpha.4';
 
-    /** @var array */
-    private $concern = [base::DATA_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -46,28 +43,20 @@ class patch_320alpha4a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function apply(base $databox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         $sql = 'TRUNCATE metadatas';
-        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
         $sql = 'TRUNCATE metadatas_structure';
-        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
         $sql = 'TRUNCATE technical_datas';
-        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
@@ -92,37 +81,39 @@ class patch_320alpha4a extends patchAbstract
             , 'tf-width'       => 'Phraseanet:tf-width'
         ];
 
-        $sxe = $databox->get_sxml_structure();
-        $dom_struct = $databox->get_dom_structure();
-        $xp_struct = $databox->get_xpath_structure();
+        foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+            $sxe = $databox->get_sxml_structure();
+            $dom_struct = $databox->get_dom_structure();
+            $xp_struct = $databox->get_xpath_structure();
 
-        foreach ($sxe->description->children() as $fname => $field) {
-            $src = trim(isset($field['src']) ? $field['src'] : '');
-            if (array_key_exists($src, $phrasea_maps)) {
-                $src = $phrasea_maps[$src];
+            foreach ($sxe->description->children() as $fname => $field) {
+                $src = trim(isset($field['src']) ? $field['src'] : '');
+                if (array_key_exists($src, $phrasea_maps)) {
+                    $src = $phrasea_maps[$src];
+                }
+
+                $nodes = $xp_struct->query('/record/description/' . $fname);
+                if ($nodes->length > 0) {
+                    $node = $nodes->item(0);
+                    $node->setAttribute('src', $src);
+                    $node->removeAttribute('meta_id');
+                }
             }
 
-            $nodes = $xp_struct->query('/record/description/' . $fname);
-            if ($nodes->length > 0) {
-                $node = $nodes->item(0);
-                $node->setAttribute('src', $src);
-                $node->removeAttribute('meta_id');
-            }
+            $databox->saveStructure($dom_struct);
+            $databox->feed_meta_fields();
+
+            $databox->delete_data_from_cache(databox::CACHE_STRUCTURE);
+            $databox->delete_data_from_cache(databox::CACHE_META_STRUCT);
+
+            $conn = $app['phraseanet.appbox']->get_connection();
+
+            $sql = 'DELETE FROM `task2` WHERE class="readmeta"';
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            $stmt->closeCursor();
+            unset($stmt);
         }
-
-        $databox->saveStructure($dom_struct);
-        $databox->feed_meta_fields();
-
-        $databox->delete_data_from_cache(databox::CACHE_STRUCTURE);
-        $databox->delete_data_from_cache(databox::CACHE_META_STRUCT);
-
-        $conn = $app['phraseanet.appbox']->get_connection();
-
-        $sql = 'DELETE FROM `task2` WHERE class="readmeta"';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
-        unset($stmt);
 
         return true;
     }

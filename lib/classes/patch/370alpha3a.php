@@ -17,9 +17,6 @@ class patch_370alpha3a extends patchAbstract
     /** @var string */
     private $release = '3.7.0-alpha.3';
 
-    /** @var array */
-    private $concern = [base::APPLICATION_BOX];
-
     /**
      *
      * @return string
@@ -48,15 +45,7 @@ class patch_370alpha3a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function apply(base $appbox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         try {
             \API_OAuth2_Application::load_from_client_id($app, \API_OAuth2_Application_Navigator::CLIENT_ID);

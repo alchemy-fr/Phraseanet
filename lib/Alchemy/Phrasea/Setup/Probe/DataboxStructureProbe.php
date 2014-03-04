@@ -22,16 +22,16 @@ class DataboxStructureProbe extends RequirementCollection implements ProbeInterf
 
         foreach ($appbox->get_databoxes() as $databox) {
             foreach ($databox->get_meta_structure() as $field) {
-                $this->verifyDataboxField($databox->get_dbname(), $field->get_name(), $field->get_original_source(), $field->get_tag()->getTagname());
+                $this->verifyDataboxField($databox->get_viewname(), $field->get_name(), $field->get_original_source(), $field->get_tag()->getTagname());
             }
         }
     }
 
-    private function verifyDataboxField($dbName, $field, $original, $tagname)
+    private function verifyDataboxField($name, $field, $original, $tagname)
     {
         $this->addRequirement(
             $original === $tagname,
-            "$dbName::$field must be be set to a valid metadata source",
+            "$name::$field must be be set to a valid metadata source",
             "Source \"<strong>$original</strong>\" is not a valid one, please fix it."
         );
     }

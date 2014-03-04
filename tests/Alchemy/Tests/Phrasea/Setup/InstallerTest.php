@@ -35,6 +35,7 @@ class InstallerTest extends \PhraseanetTestCase
      */
     public function testInstall()
     {
+        $this->dropDatabase();
         $app = new Application('test');
         $app->bindRoutes();
 
@@ -58,20 +59,12 @@ class InstallerTest extends \PhraseanetTestCase
             'dbname'   => 'ab_unitTests',
         ]);
         $abConn->connect();
-        $dbConn = self::$DI['app']['dbal.provider']->get([
-            'host'     => 'localhost',
-            'port'     => 3306,
-            'user'     => $credentials['user'],
-            'password' => $credentials['password'],
-            'dbname'   => 'db_unitTests',
-        ]);
-        $dbConn->connect();
 
         $template = 'en';
         $dataPath = __DIR__ . '/../../../../../datas/';
 
         $installer = new Installer($app);
-        $installer->install(uniqid('admin') . '@example.com', 'sdfsdsd', $abConn, 'http://local.phrasea.test.installer/', $dataPath, $dbConn, $template);
+        $installer->install(uniqid('admin') . '@example.com', 'sdfsdsd', $abConn, 'http://local.phrasea.test.installer/', $dataPath, 'db_unitTests', $template);
 
         $this->assertTrue($app['configuration.store']->isSetup());
         $this->assertTrue($app['phraseanet.configuration-tester']->isUpToDate());

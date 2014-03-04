@@ -17,9 +17,6 @@ class patch_360alpha1b extends patchAbstract
     /** @var string */
     private $release = '3.6.0-alpha.1';
 
-    /** @var array */
-    private $concern = [base::DATA_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -47,20 +44,12 @@ class patch_360alpha1b extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function apply(base $databox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         try {
             $sql = 'ALTER TABLE `metadatas` DROP INDEX `unique`';
 
-            $stmt = $databox->get_connection()->prepare($sql);
+            $stmt = $appbox->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
         } catch (DBALException $e) {

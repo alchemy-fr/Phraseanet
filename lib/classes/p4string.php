@@ -94,18 +94,6 @@ class p4string
         return($s);
     }
 
-    public static function hasAccent($string)
-    {
-        $ret = true;
-        preg_match('/^[a-zA-Z0-9-_]*$/', $string, $matches);
-
-        if (count($matches) == '1' && $matches[0] == $string) {
-            $ret = false;
-        }
-
-        return $ret;
-    }
-
     public static function jsonencode($datas)
     {
         if (version_compare(PHP_VERSION, '5.3.0') >= 0) {

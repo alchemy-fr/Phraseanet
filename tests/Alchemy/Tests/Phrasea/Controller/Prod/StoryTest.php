@@ -6,13 +6,20 @@ use Symfony\Component\HttpKernel\Client;
 
 class StoryTest extends \PhraseanetAuthenticatedWebTestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+        $acl = self::$DI['app']['acl']->get(self::$DI['app']['authentication']->getUser());
+        $acl->inject_rights();
+    }
+
     public function testRootPost()
     {
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         $route = "/prod/story/";
 
-        $collections = self::$DI['app']['acl']->get(self::$DI['app']['authentication']->getUser())
-            ->get_granted_base(['canaddrecord']);
+        $acl = self::$DI['app']['acl']->get(self::$DI['app']['authentication']->getUser());
+        $collections = $acl->get_granted_base(['canaddrecord']);
 
         $collection = array_shift($collections);
 
@@ -103,7 +110,7 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
 
         $lst = implode(';', $records);
 
-        $crawler = self::$DI['client']->request('POST', $route, ['lst' => $lst]);
+        self::$DI['client']->request('POST', $route, ['lst' => $lst]);
 
         $response = self::$DI['client']->getResponse();
 

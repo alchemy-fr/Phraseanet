@@ -27,22 +27,21 @@ class Installer
         $this->app = $app;
     }
 
-    public function install($email, $password, Connection $abConn, $serverName, $dataPath, Connection $dbConn = null, $template = null, array $binaryData = [])
+    public function install($email, $password, Connection $abConn, $serverName, $dataPath, $dbName = null, $template = null, array $binaryData = [])
     {
-        $this->rollbackInstall($abConn, $dbConn);
+        $this->rollbackInstall($abConn);
 
         try {
-
             $this->createConfigFile($abConn, $serverName, $binaryData);
             $this->createAB();
             $this->populateRegistryData($serverName, $dataPath, $binaryData);
             $user = $this->createUser($email, $password);
             $this->createDefaultUsers();
-            if (null !== $dbConn) {
-                $this->createDB($dbConn, $template);
+            if (null !== $dbName) {
+                $this->createDB($template, $dbName);
             }
         } catch (\Exception $e) {
-            $this->rollbackInstall($abConn, $dbConn);
+            $this->rollbackInstall($abConn);
             throw $e;
         }
 
@@ -67,10 +66,10 @@ class Installer
         $this->app['conf']->set('registry', $this->app['registry.manipulator']->getRegistryData());
     }
 
-    private function createDB(Connection $dbConn = null, $template)
+    private function createDB($template, $dbName)
     {
         $template = new \SplFileInfo(__DIR__ . '/../../../conf.d/data_templates/' . $template . '-simple.xml');
-        $databox = \databox::create($this->app, $dbConn, $template);
+        $databox = \databox::create($this->app, $template, $dbName);
         $this->app['acl']->get($this->app['authentication']->getUser())
             ->give_access_to_sbas([$databox->get_sbas_id()])
             ->update_rights_to_sbas(
@@ -117,7 +116,7 @@ class Installer
         $this->app['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
     }
 
-    private function rollbackInstall(Connection $abConn, Connection $dbConn = null)
+    private function rollbackInstall(Connection $abConn)
     {
         $structure = simplexml_load_file(__DIR__ . "/../../../conf.d/bases_structure.xml");
 
@@ -126,7 +125,6 @@ class Installer
         }
 
         $appbox = $structure->appbox;
-        $databox = $structure->databox;
 
         foreach ($appbox->tables->table as $table) {
             try {
@@ -136,18 +134,6 @@ class Installer
                 $stmt->closeCursor();
             } catch (DBALException $e) {
 
-            }
-        }
-        if (null !== $dbConn) {
-            foreach ($databox->tables->table as $table) {
-                try {
-                    $sql = 'DROP TABLE `' . $table['name'] . '`';
-                    $stmt = $dbConn->prepare($sql);
-                    $stmt->execute();
-                    $stmt->closeCursor();
-                } catch (DBALException $e) {
-
-                }
             }
         }
 

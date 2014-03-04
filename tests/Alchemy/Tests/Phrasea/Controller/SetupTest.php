@@ -111,9 +111,6 @@ class SetupTest extends \PhraseanetWebTestCase
         $acl = $this->getMockBuilder('ACL')
             ->disableOriginalConstructor()
             ->getMock();
-        $acl->expects($this->once())
-            ->method('get_granted_sbas')
-            ->will($this->returnValue([]));
 
         $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
             ->disableOriginalConstructor()

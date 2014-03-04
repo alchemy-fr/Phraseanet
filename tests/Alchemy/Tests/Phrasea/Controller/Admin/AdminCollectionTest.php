@@ -17,12 +17,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['app']['acl'] = new ACLProvider(self::$DI['app']);
         foreach (self::$createdCollections as $collection) {
             try {
-                $collection->unmount_collection(self::$DI['app']);
-            } catch (\Exception $e) {
-
-            }
-
-            try {
                 $collection->delete();
             } catch (\Exception $e) {
 
@@ -433,7 +427,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $json = $this->getJson(self::$DI['client']->getResponse());
         $this->assertTrue($json->success);
         $this->assertEquals($collection->get_name(), 'test_rename_coll');
-        $collection->unmount_collection(self::$DI['app']);
         $collection->delete();
     }
 
@@ -462,7 +455,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals($collection->get_label('nl'), 'netherlands label');
         $this->assertEquals($collection->get_label('fr'), 'label français');
         $this->assertEquals($collection->get_label('en'), 'label à l\'anglaise');
-        $collection->unmount_collection(self::$DI['app']);
         $collection->delete();
     }
 
@@ -904,54 +896,5 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $json = $this->getJson(self::$DI['client']->getResponse());
         $this->assertFalse($json->success);
         $collection->empty_collection();
-    }
-
-     /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::unmount
-     */
-    public function testPostUnmountCollectionNotJson()
-    {
-        $this->setAdmin(true);
-
-        $collection = $this->createOneCollection();
-
-        self::$DI['client']->request('POST', '/admin/collection/' . $collection->get_base_id() . '/unmount/');
-
-        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-    }
-
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::unmount
-     */
-    public function testPostUnmountCollectionUnauthorizedException()
-    {
-        $this->setAdmin(false);
-
-        $this->XMLHTTPRequest('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/unmount/');
-        $this->assertXMLHTTPBadJsonResponse(self::$DI['client']->getResponse());
-    }
-
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::unmount
-     */
-    public function testPostUnmountCollection()
-    {
-        $this->setAdmin(true);
-
-        $collection = $this->createOneCollection();
-
-        $this->XMLHTTPRequest('POST', '/admin/collection/' . $collection->get_base_id() . '/unmount/');
-
-        $json = $this->getJson(self::$DI['client']->getResponse());
-        $this->assertTrue($json->success);
-
-        try {
-            \collection::get_from_base_id(self::$DI['app'], $collection->get_base_id());
-            $this->fail('Collection not unmounted');
-        } catch (\Exception_Databox_CollectionNotFound $e) {
-
-        }
-
-        unset($collection);
     }
 }

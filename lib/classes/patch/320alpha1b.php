@@ -16,9 +16,6 @@ class patch_320alpha1b extends patchAbstract
     /**  @var string */
     private $release = '3.2.0-alpha.1';
 
-    /** @var Array */
-    private $concern = [base::APPLICATION_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -46,15 +43,7 @@ class patch_320alpha1b extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function apply(base $appbox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         $sql = 'REPLACE INTO records_rights
                 (

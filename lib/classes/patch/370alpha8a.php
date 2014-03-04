@@ -17,9 +17,6 @@ class patch_370alpha8a extends patchAbstract
     /** @var string */
     private $release = '3.7.0-alpha.8';
 
-    /** @var array */
-    private $concern = [base::APPLICATION_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -36,14 +33,6 @@ class patch_370alpha8a extends patchAbstract
         return false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
     public function getDoctrineMigrations()
     {
         return ['task'];
@@ -58,7 +47,7 @@ class patch_370alpha8a extends patchAbstract
      *
      * @return boolean
      */
-    public function apply(base $appbox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         $ttasks = [];
         $conn = $appbox->get_connection();

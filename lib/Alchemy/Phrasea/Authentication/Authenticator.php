@@ -75,10 +75,6 @@ class Authenticator
         $this->em->flush();
 
         $this->populateSession($session);
-
-        foreach ($this->app['acl']->get($user)->get_granted_sbas() as $databox) {
-            \cache_databox::insertClient($this->app, $databox);
-        }
         $this->reinitUser();
 
         return $session;
@@ -110,11 +106,6 @@ class Authenticator
 
         $this->session->clear();
         $this->populateSession($session);
-
-        foreach ($this->app['acl']->get($user)->get_granted_sbas() as $databox) {
-            \cache_databox::insertClient($this->app, $databox);
-        }
-
         $this->reinitUser();
 
         return $session;

@@ -30,12 +30,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
 
         foreach (self::$createdCollections as $collection) {
             try {
-                $collection->unmount_collection(self::$DI['app']);
-            } catch (\Exception $e) {
-
-            }
-
-            try {
                 $collection->delete();
             } catch (\Exception $e) {
 
@@ -116,7 +110,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
-        $databox->unmount_databox();
         $databox->delete();
         /**
          * @todo test if order is set
@@ -384,7 +377,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(is_object($content));
         $this->assertObjectHasAttribute('sbas_id', $content, $response->getContent());
 
-        $this->assertTrue(!!self::$DI['app']['phraseanet.appbox']->is_databox_indexable(new \databox(self::$DI['app'], self::$DI['collection']->get_sbas_id())));
+        $this->assertTrue(self::$DI['collection']->get_databox()->is_indexable());
     }
 
     /**
@@ -496,24 +489,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
     }
 
     /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::mountCollection
-     */
-    public function testMountCollection()
-    {
-        $this->markTestSkipped();
-        $this->setAdmin(true);
-
-        $collection = $this->createOneCollection();
-        $collection->unmount_collection(self::$DI['app']);
-
-        self::$DI['client']->request('POST', '/admin/databox/' . $collection->get_sbas_id() . '/collection/' . $collection->get_coll_id() . '/mount/', [
-            'othcollsel' => self::$DI['collection']->get_base_id()
-        ]);
-
-        $this->checkRedirection(self::$DI['client']->getResponse(), '/admin/databox/' . $collection->get_sbas_id() . '/?mount=ok');
-    }
-
-    /**
      * @covers \Alchemy\Phrasea\Controller\Admin\Database::sendLogoPdf
      */
     public function testSendLogoPdf()
@@ -549,32 +524,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
     }
 
     /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::unmountDatabase
-     */
-    public function testUnmountDatabox()
-    {
-        $this->setAdmin(true);
-
-        $base = $this->createDatabox();
-
-        $this->XMLHTTPRequest('POST', '/admin/databox/' . $base->get_sbas_id() . '/unmount/');
-
-        $json = $this->getJson(self::$DI['client']->getResponse());
-        $this->assertTrue($json->success);
-        $this->assertObjectHasAttribute('sbas_id', $json);
-
-        try {
-            self::$DI['app']['phraseanet.appbox']->get_databox((int) $json->sbas_id);
-            $this->fail('Databox not unmounted');
-        } catch (NotFoundHttpException $e) {
-
-        }
-
-        $base->delete();
-        unset($base);
-    }
-
-    /**
      * @covers \Alchemy\Phrasea\Controller\Admin\Database::emptyDatabase
      */
     public function testEmptyDatabase()
@@ -597,7 +546,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($json->success);
         $this->assertEquals(0, $collection->get_record_amount());
 
-        $base->unmount_databox();
         $base->delete();
     }
 
@@ -684,7 +632,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
             $this->fail('Task for empty collection has not been created');
         }
 
-        $base->unmount_databox();
         $base->delete();
     }
 }

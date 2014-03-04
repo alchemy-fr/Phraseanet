@@ -16,9 +16,6 @@ class patch_390alpha15a extends patchAbstract
     /** @var string */
     private $release = '3.9.0-alpha.15';
 
-    /** @var array */
-    private $concern = [base::APPLICATION_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -38,14 +35,6 @@ class patch_390alpha15a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getDoctrineMigrations()
     {
         return ['token'];
@@ -54,7 +43,7 @@ class patch_390alpha15a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function apply(base $appbox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         if (!$this->tableExists($app['EM'], 'tokens_backup')) {
             return true;

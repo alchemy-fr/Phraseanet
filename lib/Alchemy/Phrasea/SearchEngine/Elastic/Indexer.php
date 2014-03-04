@@ -276,26 +276,25 @@ class Indexer
             $this->logger->error('Unable to set the refresh interval to 300 s. .');
         }
 
-        foreach ($this->appbox->get_databoxes() as $databox) {
-            $offset = 0;
-            do {
-                $sql = 'SELECT record_id FROM record
-                        WHERE parent_record_id = 0
-                        ORDER BY record_id ASC LIMIT '.$offset.', '.$qty;
-                $stmt = $databox->get_connection()->prepare($sql);
-                $stmt->execute();
-                $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
+        $offset = 0;
+        do {
+            $sql = 'SELECT c.sbas_id, r.record_id FROM record r, coll c
+                    WHERE r.parent_record_id = 0 AND c.coll_id = r.coll_id
+                    ORDER BY r.record_id ASC LIMIT '.$offset.', '.$qty;
+            $stmt = $this->appbox->get_connection()->prepare($sql);
+            $stmt->execute();
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
 
-                foreach ($rows as $row) {
-                    $record = $databox->get_record($row['record_id']);
-                    $this->engine->addRecord($record);
-                }
+            foreach ($rows as $row) {
+                $databox = $this->appbox->get_databox($row['sbas_id']);
+                $record = $databox->get_record($row['record_id']);
+                $this->engine->addRecord($record);
+            }
 
-                gc_collect_cycles();
-                $offset += $qty;
-            } while (count($rows) > 0);
-        }
+            gc_collect_cycles();
+            $offset += $qty;
+        } while (count($rows) > 0);
 
         $params['index'] = $this->engine->getIndexName();
         $params['body']['index']['refresh_interval'] = 1;

@@ -64,7 +64,16 @@ class WriteMetadataJob extends AbstractJob
         // move this in service provider configuration
         $app['exiftool.writer']->setModule(Writer::MODULE_MWG, true);
 
-        foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+        $sql = 'SELECT r.record_id, r.coll_id, r.jeton, c.sbas_id
+             FROM record r, coll c WHERE (r.jeton & ' . JETON_WRITE_META . ' > 0) AND c.coll_id = r.coll_id';
+
+        $stmt = $app['dbal.conn']->prepare($sql);
+        $stmt->execute();
+        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        foreach ($rs as $row) {
+            $databox = $app['phraseanet.appbox']->get_databox($row['sbas_id']);
 
             $connbas = $databox->get_connection();
             $subdefgroups = $databox->get_subdef_structure();
@@ -79,97 +88,87 @@ class WriteMetadataJob extends AbstractJob
                 }
             }
 
-            $sql = 'SELECT record_id, coll_id, jeton
-                 FROM record WHERE (jeton & ' . JETON_WRITE_META . ' > 0)';
+            $record_id = $row['record_id'];
+            $jeton = $row['jeton'];
 
-            $stmt = $connbas->prepare($sql);
-            $stmt->execute();
-            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $record = $databox->get_record($record_id);
 
-            foreach ($rs as $row) {
-                $record_id = $row['record_id'];
-                $jeton = $row['jeton'];
+            $type = $record->get_type();
+            $subdefs = $record->get_subdefs();
 
-                $record = $databox->get_record($record_id);
+            $tsub = [];
 
-                $type = $record->get_type();
-                $subdefs = $record->get_subdefs();
+            foreach ($subdefs as $name => $subdef) {
+                $write_document = (($jeton & JETON_WRITE_META_DOC) && $name == 'document');
+                $write_subdef = (($jeton & JETON_WRITE_META_SUBDEF) && isset($metasubdefs[$name . '_' . $type]));
 
-                $tsub = [];
-
-                foreach ($subdefs as $name => $subdef) {
-                    $write_document = (($jeton & JETON_WRITE_META_DOC) && $name == 'document');
-                    $write_subdef = (($jeton & JETON_WRITE_META_SUBDEF) && isset($metasubdefs[$name . '_' . $type]));
-
-                    if (($write_document || $write_subdef) && $subdef->is_physically_present()) {
-                        $tsub[$name] = $subdef->get_pathfile();
-                    }
+                if (($write_document || $write_subdef) && $subdef->is_physically_present()) {
+                    $tsub[$name] = $subdef->get_pathfile();
                 }
-
-                $metadatas = new Metadata\MetadataBag();
-
-                if ($record->get_uuid()) {
-                    $metadatas->add(
-                        new Metadata\Metadata(
-                            new Tag\XMPExif\ImageUniqueID(),
-                            new Value\Mono($record->get_uuid())
-                        )
-                    );
-                    $metadatas->add(
-                        new Metadata\Metadata(
-                            new Tag\ExifIFD\ImageUniqueID(),
-                            new Value\Mono($record->get_uuid())
-                        )
-                    );
-                    $metadatas->add(
-                        new Metadata\Metadata(
-                            new Tag\IPTC\UniqueDocumentID(),
-                            new Value\Mono($record->get_uuid())
-                        )
-                    );
-                }
-
-                foreach ($record->get_caption()->get_fields() as $field) {
-                    $meta = $field->get_databox_field();
-                    /* @var $meta \databox_field */
-
-                    $datas = $field->get_values();
-
-                    if ($meta->is_multi()) {
-                        $values = [];
-                        foreach ($datas as $data) {
-                            $values[] = $data->getValue();
-                        }
-
-                        $value = new Value\Multi($values);
-                    } else {
-                        $data = array_pop($datas);
-                        $value = new Value\Mono($data->getValue());
-                    }
-
-                    $metadatas->add(
-                        new Metadata\Metadata($meta->get_tag(), $value)
-                    );
-                }
-
-                foreach ($tsub as $name => $file) {
-                    $app['exiftool.writer']->erase($name != 'document' || $clearDoc, true);
-
-                    try {
-                        $app['exiftool.writer']->write($file, $metadatas);
-                        $this->log('debug', sprintf('meta written for sbasid=%1$d - recordid=%2$d (%3$s)', $databox->get_sbas_id(), $record_id, $name));
-                    } catch (PHPExiftoolException $e) {
-                        $this->log('error', sprintf('meta was not written for sbasid=%d - recordid=%d (%s) because "%s"', $databox->get_sbas_id(), $record_id, $name, $e->getMessage()));
-                    }
-                }
-
-                $sql = 'UPDATE record SET jeton=jeton & ~' . JETON_WRITE_META . '
-                    WHERE record_id = :record_id';
-                $stmt = $connbas->prepare($sql);
-                $stmt->execute([':record_id' => $row['record_id']]);
-                $stmt->closeCursor();
             }
+
+            $metadatas = new Metadata\MetadataBag();
+
+            if ($record->get_uuid()) {
+                $metadatas->add(
+                    new Metadata\Metadata(
+                        new Tag\XMPExif\ImageUniqueID(),
+                        new Value\Mono($record->get_uuid())
+                    )
+                );
+                $metadatas->add(
+                    new Metadata\Metadata(
+                        new Tag\ExifIFD\ImageUniqueID(),
+                        new Value\Mono($record->get_uuid())
+                    )
+                );
+                $metadatas->add(
+                    new Metadata\Metadata(
+                        new Tag\IPTC\UniqueDocumentID(),
+                        new Value\Mono($record->get_uuid())
+                    )
+                );
+            }
+
+            foreach ($record->get_caption()->get_fields() as $field) {
+                $meta = $field->get_databox_field();
+                /* @var $meta \databox_field */
+
+                $datas = $field->get_values();
+
+                if ($meta->is_multi()) {
+                    $values = [];
+                    foreach ($datas as $data) {
+                        $values[] = $data->getValue();
+                    }
+
+                    $value = new Value\Multi($values);
+                } else {
+                    $data = array_pop($datas);
+                    $value = new Value\Mono($data->getValue());
+                }
+
+                $metadatas->add(
+                    new Metadata\Metadata($meta->get_tag(), $value)
+                );
+            }
+
+            foreach ($tsub as $name => $file) {
+                $app['exiftool.writer']->erase($name != 'document' || $clearDoc, true);
+
+                try {
+                    $app['exiftool.writer']->write($file, $metadatas);
+                    $this->log('debug', sprintf('meta written for sbasid=%1$d - recordid=%2$d (%3$s)', $databox->get_sbas_id(), $record_id, $name));
+                } catch (PHPExiftoolException $e) {
+                    $this->log('error', sprintf('meta was not written for sbasid=%d - recordid=%d (%s) because "%s"', $databox->get_sbas_id(), $record_id, $name, $e->getMessage()));
+                }
+            }
+
+            $sql = 'UPDATE record SET jeton=jeton & ~' . JETON_WRITE_META . '
+                WHERE record_id = :record_id';
+            $stmt = $connbas->prepare($sql);
+            $stmt->execute([':record_id' => $row['record_id']]);
+            $stmt->closeCursor();
         }
     }
 }

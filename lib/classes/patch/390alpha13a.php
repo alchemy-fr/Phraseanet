@@ -20,9 +20,6 @@ class patch_390alpha13a implements patchInterface
     /** @var string */
     private $release = '3.9.0-alpha.13';
 
-    /** @var array */
-    private $concern = [base::APPLICATION_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -42,14 +39,6 @@ class patch_390alpha13a implements patchInterface
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getDoctrineMigrations()
     {
         return ['registration'];
@@ -58,7 +47,7 @@ class patch_390alpha13a implements patchInterface
     /**
      * {@inheritdoc}
      */
-    public function apply(base $appbox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         $em = $app['EM'];
 

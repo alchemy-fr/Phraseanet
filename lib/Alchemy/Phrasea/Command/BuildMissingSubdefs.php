@@ -37,56 +37,53 @@ class BuildMissingSubdefs extends Command
         $start = microtime(true);
         $n = 0;
 
-        foreach ($this->container['phraseanet.appbox']->get_databoxes() as $databox) {
+        $sql = 'SELECT r.record_id, c.sbas_id FROM record r, coll c WHERE r.parent_record_id = 0 AND c.coll_id = r.coll_id';
+        $stmt = $this->container['dbal.conn']->prepare($sql);
+        $stmt->execute();
+        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
 
+        foreach ($rs as $row) {
+            $databox = $this->container['phraseanet.appbox']->get_databox($row['sbas_id']);
             $subdefStructure = $databox->get_subdef_structure();
+            $record = $databox->get_record($row['record_id']);
 
-            $sql = 'SELECT record_id FROM record WHERE parent_record_id = 0';
-            $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            try {
+                $record->get_hd_file();
+            } catch (FileNotFoundException $e) {
+                continue;
+            }
 
-            foreach ($rs as $row) {
-                $record = $databox->get_record($row['record_id']);
+            $group = $subdefStructure->getSubdefGroup($record->get_type());
 
-                try {
-                    $record->get_hd_file();
-                } catch (FileNotFoundException $e) {
-                    continue;
-                }
+            if ($group) {
+                foreach ($group as $subdef) {
 
-                $group = $subdefStructure->getSubdefGroup($record->get_type());
+                    $todo = false;
 
-                if ($group) {
-                    foreach ($group as $subdef) {
-
-                        $todo = false;
-
-                        if ( ! $record->has_subdef($subdef->get_name())) {
-                            $todo = true;
-                        }
-                        if (in_array($subdef->get_name(), ['preview', 'thumbnail', 'thumbnailgif'])) {
-                            try {
-                                $sub = $record->get_subdef($subdef->get_name());
-                                if ( ! $sub->is_physically_present()) {
-                                    $todo = true;
-                                }
-                            } catch (\Exception_Media_SubdefNotFound $e) {
+                    if ( ! $record->has_subdef($subdef->get_name())) {
+                        $todo = true;
+                    }
+                    if (in_array($subdef->get_name(), ['preview', 'thumbnail', 'thumbnailgif'])) {
+                        try {
+                            $sub = $record->get_subdef($subdef->get_name());
+                            if ( ! $sub->is_physically_present()) {
                                 $todo = true;
                             }
-                        }
-
-                        if ($todo) {
-                            $this->container['subdef.generator']->generateSubdefs($record, [$subdef->get_name()]);
-                            $this->container['monolog']->addInfo("generate " . $subdef->get_name() . " for record " . $record->get_record_id());
-                            $n ++;
+                        } catch (\Exception_Media_SubdefNotFound $e) {
+                            $todo = true;
                         }
                     }
-                }
 
-                unset($record);
+                    if ($todo) {
+                        $this->container['subdef.generator']->generateSubdefs($record, [$subdef->get_name()]);
+                        $this->container['monolog']->addInfo("generate " . $subdef->get_name() . " for record " . $record->get_record_id());
+                        $n ++;
+                    }
+                }
             }
+
+            unset($record);
         }
 
         $this->container['monolog']->addInfo($n . " subdefs done");

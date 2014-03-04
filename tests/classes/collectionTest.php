@@ -280,17 +280,6 @@ class collectionTest extends \PhraseanetAuthenticatedTestCase
     }
 
     /**
-     * @todo Implement testUnmount_collection().
-     */
-    public function testUnmount_collection()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
      * @todo Implement testCreate().
      */
     public function testCreate()
@@ -302,17 +291,6 @@ class collectionTest extends \PhraseanetAuthenticatedTestCase
      * @todo Implement testSet_admin().
      */
     public function testSet_admin()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testMount_collection().
-     */
-    public function testMount_collection()
     {
         // Remove the following lines when you implement this test.
         $this->markTestIncomplete(

@@ -4,10 +4,6 @@
     </script>
 {% endif %}
 
-<div class="page-header">
-    <h1>{{ databox.get_serialized_server_info() }}</h1>
-</div>
-
 {% if app['request'].query.get('success') == '1' %}
     <div class="alert alert-success">
         <a class="close" data-dismiss="alert" href="#">×</a>
@@ -91,7 +87,7 @@
     <div>
          <form method="post" action="{{ path('admin_database_set_indexable', {'databox_id': databox.get_sbas_id()}) }}" style="margin:0;">
              <label class="checkbox" for="is_indexable">
-                <input type="checkbox" id="is_indexable" name="indexable" value="1" {{ app['phraseanet.appbox'].is_databox_indexable(databox) ? 'checked' : ''}} />
+                <input type="checkbox" id="is_indexable" name="indexable" value="1" {{ databox.is_indexable() ? 'checked' : ''}} />
                 {{ "admin::base: Cette base est indexable" | trans }}
             </label>
         </form>
@@ -138,13 +134,6 @@
             </button>
         </form>
 
-        <form style="display:inline;" method="post" action="{{ path('admin_database_unmount', {'databox_id': databox.get_sbas_id()}) }}">
-            <button type="button" class="btn confirm" data-confirm-msg="{{ 'admin::base: Confirmer vous l\'arret de la publication de la base' | trans }}">
-                <img src="/skins/icons/db-remove.png" />
-                {{ "admin::base: arreter la publication de la base" | trans }}
-            </button>
-        </form>
-
         <form style="display:inline;" method="post" action="{{ path('admin_database_empty', {'databox_id': databox.get_sbas_id()}) }}">
             <button type="button" class="btn submiter confirm reload" data-confirm-msg="{{ 'admin::base: Confirmer le vidage complet de la base' | trans }}">
                 <img src="/skins/icons/trash.png" />
@@ -165,40 +154,6 @@
             {{ "base:: re-indexer" | trans }}
         </button>
     </form>
-
-    {% if databox.get_mountable_colls()| length > 0 %}
-        <div class="well well-small">
-            <a href="#" class="btn" id="show-mount-coll">
-                <img src="/skins/icons/create_coll.png" />
-                {{ "admin::base:collection: Monter une collection" | trans }}
-            </a>
-            <div class="well well-small" id="mount-coll" style="display:none;">
-                <ul>
-                {% for collId, name in databox.get_mountable_colls() %}
-                    <li>
-                        <form class="form-inline" method="post" action="{{ path('admin_database_mount_collection', {'databox_id': databox.get_sbas_id(), 'collection_id' : collId }) }}">
-                            {% trans with {'%name%' : name} %}Monter la collection %name%{% endtrans %}<br/>
-                            {% if app['acl'].get(app['authentication'].getUser()).get_granted_base(["canadmin"]) | length > 0 %}
-                                <label for="othcollsel">{{ "admin::base:collection: Vous pouvez choisir une collection de reference pour donenr des acces" | trans }}</label>
-                                <select id="othcollsel" name="othcollsel" >
-                                    <option value="">{{ "choisir" | trans }}</option>
-                                    {% for collection in databox.get_collections() %}
-                                        <option value="{{ collection.get_base_id() }}">{{ collection. get_name() }}</option>
-                                    {% endfor %}
-                                </select>
-                            {% endif %}
-                            <a href="#" class="btn btn-mini submiter">
-                                <img src="/skins/icons/create_coll.png" />
-                                {{ "admin::base:collection: Monter une collection" | trans }}
-                            </a>
-                        </form>
-                    </li>
-                {% endfor %}
-                </ul>
-            </div>
-        </div>
-    {% endif %}
-
 
     {% if databox.get_activable_colls()| length > 0 %}
         <div class="well well-small">
@@ -316,10 +271,6 @@
 
         $("#show-activate-coll").bind('click', function(){
             $("#activate-coll").toggle();
-        });
-
-        $("#show-mount-coll").bind('click', function(){
-            $("#mount-coll").toggle();
         });
 
         $("div.right .submiter").bind("click", function() {

@@ -88,6 +88,9 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
         $app['repo.ftp-exports'] = $app->share(function (PhraseaApplication $app) {
             return $app['EM']->getRepository('Phraseanet:FtpExport');
         });
+        $app['repo.ftp-export-elements'] = $app->share(function (PhraseaApplication $app) {
+            return $app['EM']->getRepository('Phraseanet:FtpExportElement');
+        });
         $app['repo.user-queries'] = $app->share(function (PhraseaApplication $app) {
             return $app['EM']->getRepository('Phraseanet:UserQuery');
         });

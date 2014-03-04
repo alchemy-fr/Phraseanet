@@ -17,9 +17,6 @@ class patch_390alpha3a extends patchAbstract
     /** @var string */
     private $release = '3.9.0-alpha.3';
 
-    /** @var array */
-    private $concern = [base::APPLICATION_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -39,14 +36,6 @@ class patch_390alpha3a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getDoctrineMigrations()
     {
         return ['user', 'user-query'];
@@ -55,7 +44,7 @@ class patch_390alpha3a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function apply(base $appbox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         $sql = 'DELETE FROM UserQueries';
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);

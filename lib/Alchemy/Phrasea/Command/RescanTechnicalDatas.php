@@ -58,21 +58,19 @@ class RescanTechnicalDatas extends Command
         $start = microtime(true);
         $n = 0;
 
-        foreach ($this->container['phraseanet.appbox']->get_databoxes() as $databox) {
+        $sql = 'SELECT r.record_id, c.sbas_id FROM record r, coll c WHERE r.parent_record_id = 0 AND c.coll_id = r.coll_id';
+        $stmt = $this->container['dbal.conn']->prepare($sql);
+        $stmt->execute();
+        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
 
-            $sql = 'SELECT record_id FROM record WHERE parent_record_id = 0';
-            $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-
-            foreach ($rs as $row) {
-                $record = $databox->get_record($row['record_id']);
-                $record->insertTechnicalDatas($this->getService('mediavorus'));
-                unset($record);
-                $output->write("\r" . $n . " records done");
-                $n ++;
-            }
+        foreach ($rs as $row) {
+            $databox = $this->container['phraseanet.appbox']->get_databox($row['sbas_id']);
+            $record = $databox->get_record($row['record_id']);
+            $record->insertTechnicalDatas($this->getService('mediavorus'));
+            unset($record);
+            $output->write("\r" . $n . " records done");
+            $n ++;
         }
 
         $output->writeln("\n");

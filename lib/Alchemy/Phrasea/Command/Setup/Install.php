@@ -92,7 +92,7 @@ class Install extends Command
         }
 
         $abConn = $this->getABConn($input, $output, $dialog);
-        list($dbConn, $template) = $this->getDBConn($input, $output, $abConn, $dialog);
+        list($dbName, $template) = $this->getDBConn($input, $output, $dialog);
         list($email, $password) = $this->getCredentials($input, $output, $dialog);
         $dataPath = $this->getDataPath($input, $output, $dialog);
         $serverName = $this->getServerName($input, $output, $dialog);
@@ -109,7 +109,7 @@ class Install extends Command
         }
 
         $this->container['phraseanet.installer']->setPhraseaIndexerPath($indexer);
-        $this->container['phraseanet.installer']->install($email, $password, $abConn, $serverName, $dataPath, $dbConn, $template, $this->detectBinaries());
+        $this->container['phraseanet.installer']->install($email, $password, $abConn, $serverName, $dataPath, $dbName, $template, $this->detectBinaries());
 
         $output->writeln("<info>Install successful !</info>");
 
@@ -158,52 +158,30 @@ class Install extends Command
         return $abConn;
     }
 
-    private function getDBConn(InputInterface $input, OutputInterface $output, Connection $abConn, DialogHelper $dialog)
+    private function getDBConn(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
     {
-        $dbConn = $template = null;
         if (!$input->getOption('databox')) {
+            $template = null;
             do {
                 $retry = false;
                 $dbName = $dialog->ask($output, 'DataBox name, will not be created if empty : ', null);
 
                 if ($dbName) {
-                    try {
-                        $dbConn = $this->container['dbal.provider']->get([
-                            'host'     => $abConn->getHost(),
-                            'port'     => $abConn->getPort(),
-                            'user'     => $abConn->getUsername(),
-                            'password' => $abConn->getPassword(),
-                            'dbname'   => $dbName,
-                        ]);
-                        $dbConn->connect();
-                        $output->writeln("\n\t<info>Data-Box : Connection successful !</info>\n");
+                    do {
+                        $template = $dialog->ask($output, 'Choose a language template for metadata structure, available are fr (french) and en (english) (en) : ', 'en');
+                    } while (!in_array($template, ['en', 'fr']));
 
-                        do {
-                            $template = $dialog->ask($output, 'Choose a language template for metadata structure, available are fr (french) and en (english) (en) : ', 'en');
-                        } while (!in_array($template, ['en', 'fr']));
-
-                        $output->writeln("\n\tLanguage selected is <info>'$template'</info>\n");
-                    } catch (\Exception $e) {
-                        $retry = true;
-                    }
+                    $output->writeln("\n\tLanguage selected is <info>'$template'</info>\n");
                 } else {
                     $output->writeln("\n\tNo databox will be created\n");
                 }
             } while ($retry);
         } else {
-            $dbConn = $this->container['dbal.provider']->get([
-                'host'     => $input->getOption('db-host'),
-                'port'     => $input->getOption('db-port'),
-                'user'     => $input->getOption('db-user'),
-                'password' => $input->getOption('db-password'),
-                'dbname'   => $input->getOption('databox'),
-            ]);
-            $dbConn->connect();
-            $output->writeln("\n\t<info>Data-Box : Connection successful !</info>\n");
+            $dbName = $input->getOption('databox');
             $template = $input->getOption('db-template') ? : 'en';
         }
 
-        return [$dbConn, $template];
+        return [$dbName, $template];
     }
 
     private function getCredentials(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
