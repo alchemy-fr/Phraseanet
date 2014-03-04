@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea;
 use Alchemy\Phrasea\Command\CommandInterface;
 use Alchemy\Phrasea\Core\CLIProvider\TranslationExtractorServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\WebsocketServerServiceProvider;
+use Alchemy\Phrasea\Core\PhraseaCLIExceptionHandler;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Symfony\Component\Console;
 use Alchemy\Phrasea\Core\CLIProvider\CLIDriversServiceProvider;
@@ -23,6 +24,7 @@ use Alchemy\Phrasea\Core\CLIProvider\LessBuilderServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\SignalHandlerServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\TaskManagerServiceProvider;
+use Symfony\Component\Debug\ErrorHandler;
 
 /**
  * Phraseanet Command Line Application
@@ -66,6 +68,10 @@ class CLI extends Application
         $this->register(new DoctrineMigrationServiceProvider());
 
         $this->bindRoutes();
+
+        error_reporting(-1);
+        ErrorHandler::register();
+        PhraseaCLIExceptionHandler::register();
     }
 
     /**

@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Thesaurus;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Connection;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;

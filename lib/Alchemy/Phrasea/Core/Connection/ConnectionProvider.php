@@ -13,8 +13,9 @@ namespace Alchemy\Phrasea\Core\Connection;
 
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Configuration;
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Connection;
 use Doctrine\DBAL\DriverManager;
+use Psr\Log\LoggerInterface;
 
 class ConnectionProvider
 {
@@ -24,9 +25,11 @@ class ConnectionProvider
      */
     private $connections = [];
     private $eventManager;
+    private $logger;
 
-    public function __construct(Configuration $config, EventManager $eventManager)
+    public function __construct(Configuration $config, EventManager $eventManager, LoggerInterface $logger)
     {
+        $this->logger = $logger;
         $this->config = $config;
         $this->eventManager = $eventManager;
     }
@@ -58,6 +61,6 @@ class ConnectionProvider
             return $this->connections[$key];
         }
 
-        return $this->connections[$key] = DriverManager::getConnection($params, $this->config, $this->eventManager);;
+        return $this->connections[$key] = new ReconnectableConnection(DriverManager::getConnection($params, $this->config, $this->eventManager), $this->logger);
     }
 }

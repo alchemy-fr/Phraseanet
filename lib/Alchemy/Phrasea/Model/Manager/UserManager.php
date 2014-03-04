@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\Model\Manager;
 use Doctrine\Common\Persistence\ObjectManager;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UserSetting;
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Connection;
 use Doctrine\ORM\UnitOfWork AS UOW;
 
 class UserManager

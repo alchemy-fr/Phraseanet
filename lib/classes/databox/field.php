@@ -13,7 +13,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Vocabulary;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
 use Alchemy\Phrasea\Metadata\Tag\Nosource;
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Connection;
 use PHPExiftool\Driver\TagInterface;
 use PHPExiftool\Driver\TagFactory;
 use PHPExiftool\Exception\TagUnknown;
