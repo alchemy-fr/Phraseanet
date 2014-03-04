@@ -90,12 +90,7 @@ class Root implements ControllerProviderInterface
 
         $result = $app['phraseanet.SE']->query($query, ($currentPage - 1) * $perPage, $perPage, $options);
 
-        $userQuery = new UserQuery();
-        $userQuery->setUser($app['authentication']->getUser());
-        $userQuery->setQuery($query);
-
-        $app['EM']->persist($userQuery);
-        $app['EM']->flush();
+        $app['manipulator.user']->logQuery($app['authentication']->getUser(), $result->getQuery());
 
         if ($app['settings']->getUserSetting($app['authentication']->getUser(), 'start_page') === 'LAST_QUERY') {
             $app['manipulator.user']->setUserSetting($app['authentication']->getUser(), 'start_page_query', $query);

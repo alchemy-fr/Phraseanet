@@ -911,12 +911,7 @@ class V1 implements ControllerProviderInterface
 
         $search_result = $app['phraseanet.SE']->query($query, $offsetStart, $perPage, $options);
 
-        $userQuery = new UserQuery();
-        $userQuery->setUser($app['authentication']->getUser());
-        $userQuery->setQuery($query);
-
-        $app['EM']->persist($userQuery);
-        $app['EM']->flush();
+        $app['manipulator.user']->logQuery($app['authentication']->getUser(), $search_result->getQuery());
 
         foreach ($options->getDataboxes() as $databox) {
             $colls = array_map(function (\collection $collection) {
