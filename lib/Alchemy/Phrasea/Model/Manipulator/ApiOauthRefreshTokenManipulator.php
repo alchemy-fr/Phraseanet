@@ -59,6 +59,12 @@ class ApiOauthRefreshTokenManipulator implements ManipulatorInterface
         $this->om->flush();
     }
 
+    public function setRefreshToken(ApiOauthRefreshtoken $refreshToken, $token)
+    {
+        $refreshToken->setRefreshToken($token);
+        $this->update($refreshToken);
+    }
+
     private function getNewToken()
     {
         do {
