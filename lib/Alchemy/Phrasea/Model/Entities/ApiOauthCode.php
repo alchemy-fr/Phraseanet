@@ -45,7 +45,7 @@ class ApiOauthCode
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=200, nullable=true)
+     * @ORM\Column(type="string", length=128, nullable=true)
      */
     private $scope;
 
