@@ -34,6 +34,13 @@ class ApiLog
     private $route;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=16, nullable=true)
+     */
+    private $method;
+
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
@@ -321,5 +328,25 @@ class ApiLog
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param string $method
+     *
+     * @return ApiLog
+     */
+    public function setMethod($method)
+    {
+        $this->method = $method;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod()
+    {
+        return $this->method;
     }
 }
