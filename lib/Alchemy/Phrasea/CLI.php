@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea;
 use Alchemy\Phrasea\Command\CommandInterface;
 use Alchemy\Phrasea\Core\CLIProvider\TranslationExtractorServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\WebsocketServerServiceProvider;
+use Alchemy\Phrasea\Core\Event\Subscriber\BridgeSubscriber;
 use Alchemy\Phrasea\Core\PhraseaCLIExceptionHandler;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Symfony\Component\Console;
@@ -25,6 +26,7 @@ use Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\SignalHandlerServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\TaskManagerServiceProvider;
 use Symfony\Component\Debug\ErrorHandler;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * Phraseanet Command Line Application
@@ -53,9 +55,16 @@ class CLI extends Application
             return new Console\Application($name, $version);
         });
 
-        $this['dispatcher']->addListener('phraseanet.notification.sent', function () use ($app) {
-            $app['swiftmailer.spooltransport']->getSpool()->flushQueue($app['swiftmailer.transport']);
-        });
+        $this['dispatcher'] = $this->share(
+            $this->extend('dispatcher', function (EventDispatcher $dispatcher, Application $app) {
+                $dispatcher->addListener('phraseanet.notification.sent', function () use ($app) {
+                    $app['swiftmailer.spooltransport']->getSpool()->flushQueue($app['swiftmailer.transport']);
+                });
+                $dispatcher->addSubscriber(new BridgeSubscriber($app));
+
+                return $dispatcher;
+            })
+        );
 
         $this->register(new PluginServiceProvider());
         $this->register(new WebsocketServerServiceProvider());

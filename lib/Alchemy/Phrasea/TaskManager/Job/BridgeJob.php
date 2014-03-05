@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Event\BridgeUploadFailureEvent;
 use Alchemy\Phrasea\TaskManager\Editor\DefaultEditor;
 
 class BridgeJob extends AbstractJob
@@ -153,16 +154,7 @@ class BridgeJob extends AbstractJob
 
         switch ($status) {
             case \Bridge_Element::STATUS_ERROR:
-
-                $params = [
-                    'usr_id'     => $account->get_user()->getId(),
-                    'reason'     => $error_message,
-                    'account_id' => $account->get_id(),
-                    'sbas_id'    => $element->get_record()->get_sbas_id(),
-                    'record_id'  => $element->get_record()->get_record_id(),
-                ];
-                $app['events-manager']->trigger('__BRIDGE_UPLOAD_FAIL__', $params);
-
+                $app['dispatcher']->dispatch(new BridgeUploadFailureEvent($element, $error_message));
                 break;
             default:
             case \Bridge_Element::STATUS_DONE:

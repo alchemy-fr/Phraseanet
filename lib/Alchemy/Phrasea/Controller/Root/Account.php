@@ -311,7 +311,7 @@ class Account implements ControllerProviderInterface
         return $app['twig']->render('account/account.html.twig', [
             'user'          => $app['authentication']->getUser(),
             'evt_mngr'      => $app['events-manager'],
-            'notifications' => $app['events-manager']->list_notifications_available($app['authentication']->getUser()->getId()),
+            'notifications' => $app['events-manager']->list_notifications_available($app['authentication']->getUser()),
         ]);
     }
 
@@ -395,7 +395,7 @@ class Account implements ControllerProviderInterface
 
         $requestedNotifications = (array) $request->request->get('notifications', []);
 
-        foreach ($app['events-manager']->list_notifications_available($app['authentication']->getUser()->getId()) as $notifications) {
+        foreach ($app['events-manager']->list_notifications_available($app['authentication']->getUser()) as $notifications) {
             foreach ($notifications as $notification) {
                 $app['manipulator.user']->setNotificationSetting($app['authentication']->getUser(), $notification['id'], isset($requestedNotifications[$notification['id']]));
             }
