@@ -120,7 +120,7 @@ class OAuth2Test extends \PhraseanetAuthenticatedWebTestCase
     public function testAuthorizeRedirect()
     {
         //session off
-        $apps = self::$DI['app']['repos.api-application']->findAuthorizedAppsByUser(self::$DI['user']);
+        $apps = self::$DI['app']['repo.api-application']->findAuthorizedAppsByUser(self::$DI['user']);
         foreach ($apps as $app) {
             if ($app->get_client_id() === self::$DI['oauth2-app-user']->getClientId()) {
                 self::$DI['client']->followRedirects();

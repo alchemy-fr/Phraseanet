@@ -56,7 +56,7 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testPostNewApp()
     {
-        $apps = self::$DI['app']['repos.api-applications']->findByCreator(self::$DI['user']);
+        $apps = self::$DI['app']['repo.api-applications']->findByCreator(self::$DI['user']);
         $nbApp = count($apps);
 
         self::$DI['client']->request('POST', '/developers/application/', [
@@ -69,7 +69,7 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
             'scheme-callback' => 'http://'
         ]);
 
-        $apps = self::$DI['app']['repos.api-applications']->findByCreator(self::$DI['user']);
+        $apps = self::$DI['app']['repo.api-applications']->findByCreator(self::$DI['user']);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertGreaterThan($nbApp, count($apps));
@@ -131,7 +131,7 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
         $this->XMLHTTPRequest('DELETE', '/developers/application/' . $oauthApp->getId() . '/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
-        $this->assertNull(self::$DI['app']['repos.api-application']->find($oauthApp->getId()));
+        $this->assertNull(self::$DI['app']['repo.api-application']->find($oauthApp->getId()));
     }
 
     /**
@@ -184,7 +184,7 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $content = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->assertTrue($content->success);
-        $oauthApp = self::$DI['app']['repos.api-application']->find($oauthApp->getId());
+        $oauthApp = self::$DI['app']['repo.api-application']->find($oauthApp->getId());
         $this->assertEquals('my.callback.com', $oauthApp->getRedirectUri());
     }
 
@@ -266,7 +266,7 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $content = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->assertTrue($content->success);
-        $oauthApp = self::$DI['app']['repos.api-application']->find($oauthApp->getId());
+        $oauthApp = self::$DI['app']['repo.api-application']->find($oauthApp->getId());
         $this->assertTrue($oauthApp->isPasswordGranted());
     }
 }
