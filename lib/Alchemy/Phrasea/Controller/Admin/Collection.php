@@ -960,7 +960,7 @@ class Collection implements ControllerProviderInterface
         try {
             if ('' !== trim($prefs)) {
                 $domdoc = new \DOMDocument();
-                if (true === $domdoc->loadXML($prefs)) {
+                if (true === @$domdoc->loadXML($prefs)) {
                     $collection->set_prefs($domdoc);
                     $success = true;
                 }
