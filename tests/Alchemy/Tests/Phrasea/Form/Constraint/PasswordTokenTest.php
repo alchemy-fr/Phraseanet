@@ -3,47 +3,51 @@
 namespace Alchemy\Tests\Phrasea\Form\Constraint;
 
 use Alchemy\Phrasea\Form\Constraint\PasswordToken;
+use Alchemy\Phrasea\Model\Entities\Token;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PasswordTokenTest extends \PhraseanetTestCase
 {
     public function testInvalidTokenIsNotValid()
     {
-        $random = $this
-            ->getMockBuilder('random')
+        $repo = $this
+            ->getMockBuilder('Doctrine\ORM\EntityRepository')
             ->disableOriginalConstructor()
-            ->setMethods(['helloToken'])
+            ->setMethods(['findValidToken'])
             ->getMock();
 
-        $token = self::$DI['app']['random.low']->generateString(8);
+        $tokenValue = self::$DI['app']['random.low']->generateString(8);
 
-        $random
+        $repo
             ->expects($this->once())
-            ->method('helloToken')
-            ->with($token)
-            ->will($this->throwException(new NotFoundHttpException('Token not found')));
+            ->method('findValidToken')
+            ->with($tokenValue)
+            ->will($this->returnValue(null));
 
-        $constraint = new PasswordToken($random);
-        $this->assertFalse($constraint->isValid($token));
+        $constraint = new PasswordToken($repo);
+        $this->assertFalse($constraint->isValid($tokenValue));
     }
 
     public function testValidTokenIsValid()
     {
-        $random = $this
-            ->getMockBuilder('random')
+        $repo = $this
+            ->getMockBuilder('Doctrine\ORM\EntityRepository')
             ->disableOriginalConstructor()
-            ->setMethods(['helloToken'])
+            ->setMethods(['findValidToken'])
             ->getMock();
 
-        $token = self::$DI['app']['random.low']->generateString(8);
+        $tokenValue = self::$DI['app']['random.low']->generateString(8);
+        $token = new Token();
+        $token->setType(TokenManipulator::TYPE_PASSWORD);
 
-        $random
+        $repo
             ->expects($this->once())
-            ->method('helloToken')
-            ->with($token)
-            ->will($this->returnValue(['usr_id' => mt_rand(), 'type' => \random::TYPE_PASSWORD]));
+            ->method('findValidToken')
+            ->with($tokenValue)
+            ->will($this->returnValue($token));
 
-        $constraint = new PasswordToken($random);
-        $this->assertTrue($constraint->isValid($token));
+        $constraint = new PasswordToken($repo);
+        $this->assertTrue($constraint->isValid($tokenValue));
     }
 }

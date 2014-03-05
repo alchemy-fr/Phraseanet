@@ -91,6 +91,9 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
         $app['repo.user-queries'] = $app->share(function (PhraseaApplication $app) {
             return $app['EM']->getRepository('Phraseanet:UserQuery');
         });
+        $app['repo.tokens'] = $app->share(function ($app) {
+            return $app['EM']->getRepository('Phraseanet:Token');
+        });
     }
 
     public function boot(Application $app)

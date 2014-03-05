@@ -159,28 +159,22 @@ class Manage extends Helper
 
             }
 
-            if ($sendCredentials) {
-                $urlToken = $this->app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $createdUser->getId());
-
-                if ($receiver && false !== $urlToken) {
-                    $url = $this->app->url('login_renew_password', ['token' => $urlToken]);
-                    $mail = MailRequestPasswordSetup::create($this->app, $receiver, null, '', $url);
-                    $mail->setLogin($createdUser->getLogin());
-                    $this->app['notification.deliverer']->deliver($mail);
-                }
+            if ($sendCredentials && $receiver) {
+                $urlToken = $this->app['manipulator.token']->createResetPasswordToken($createdUser);
+                $url = $this->app->url('login_renew_password', ['token' => $urlToken->getValue()]);
+                $mail = MailRequestPasswordSetup::create($this->app, $receiver, null, '', $url);
+                $mail->setLogin($createdUser->getLogin());
+                $this->app['notification.deliverer']->deliver($mail);
             }
 
-            if ($validateMail) {
+            if ($validateMail && $receiver) {
                 $createdUser->setMailLocked(true);
 
-                if ($receiver) {
-                    $expire = new \DateTime('+3 days');
-                    $token = $this->app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $createdUser->getId(), $expire, $createdUser->getEmail());
-                    $url = $this->app->url('login_register_confirm', ['code' => $token]);
+                $token = $this->app['manipulator.token']->createAccountUnlockToken($createdUser);
+                $url = $this->app->url('login_register_confirm', ['code' => $token]);
 
-                    $mail = MailRequestEmailConfirmation::create($this->app, $receiver, null, '', $url, $expire);
-                    $this->app['notification.deliverer']->deliver($mail);
-                }
+                $mail = MailRequestEmailConfirmation::create($this->app, $receiver, null, '', $url, $token->getExpiration());
+                $this->app['notification.deliverer']->deliver($mail);
             }
         }
 

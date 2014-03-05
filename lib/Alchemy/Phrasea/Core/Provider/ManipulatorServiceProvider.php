@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Model\Manipulator\ACLManipulator;
 use Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator;
 use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Manager\UserManager;
 use Silex\Application as SilexApplication;
@@ -29,6 +30,10 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
 
         $app['manipulator.user'] = $app->share(function ($app) {
             return new UserManipulator($app['model.user-manager'], $app['auth.password-encoder'], $app['geonames.connector'], $app['repo.users'], $app['random.low']);
+        });
+
+        $app['manipulator.token'] = $app->share(function ($app) {
+            return new TokenManipulator($app['EM'], $app['random.medium'], $app['repo.tokens']);
         });
 
         $app['manipulator.acl'] = $app->share(function ($app) {

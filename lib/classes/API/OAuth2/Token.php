@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use RandomLib\Generator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -230,7 +231,7 @@ class API_OAuth2_Token
         $sql = 'UPDATE api_oauth_tokens SET oauth_token = :new_token
             WHERE oauth_token = :old_token';
 
-        $new_token = $this->generator->generateString(32, \random::LETTERS_AND_NUMBERS);
+        $new_token = $this->generator->generateString(32, TokenManipulator::LETTERS_AND_NUMBERS);
 
         $params = [
             ':new_token' => $new_token
@@ -303,7 +304,7 @@ class API_OAuth2_Token
         $expires = new \DateTime('+1 hour');
 
         $params = [
-            ':token'      => $generator->generateString(32, \random::LETTERS_AND_NUMBERS)
+            ':token'      => $generator->generateString(32, TokenManipulator::LETTERS_AND_NUMBERS)
             , ':account_id' => $account->get_id()
             , ':expire'     => $expires->format(DATE_ISO8601)
             , ':scope'      => $scope

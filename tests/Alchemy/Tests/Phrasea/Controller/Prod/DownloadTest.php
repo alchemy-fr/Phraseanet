@@ -32,7 +32,7 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
-        $this->assertRegExp('#/download/[a-zA-Z0-9\.\/]{8,16}/#', $response->headers->get('location'));
+        $this->assertRegExp('#/download/[a-zA-Z0-9]{8,32}/#', $response->headers->get('location'));
         unset($response, $eventManagerStub);
     }
 
@@ -52,7 +52,7 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['app']['events-manager'] = $eventManagerStub;
 
-        self::$DI['app']['authentication']->setUser($this->createUserMock());
+        self::$DI['app']['authentication']->setUser(self::$DI['user']);
 
         $stubbedACL = $this->getMockBuilder('\ACL')
             ->disableOriginalConstructor()
@@ -92,7 +92,7 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
-        $this->assertRegExp('#/download/[a-zA-Z0-9\.\/]{8,16}/#', $response->headers->get('location'));
+        $this->assertRegExp('#/download/[a-zA-Z0-9]{8,32}/#', $response->headers->get('location'));
         unset($response, $eventManagerStub);
     }
 
@@ -124,7 +124,7 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
-        $this->assertRegExp('#/download/[a-zA-Z0-9\.\/]{8,16}/#', $response->headers->get('location'));
+        $this->assertRegExp('#/download/[a-zA-Z0-9]{8,32}/#', $response->headers->get('location'));
         unset($response, $eventManagerStub);
     }
 
@@ -156,7 +156,7 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
-        $this->assertRegExp('#/download/[a-zA-Z0-9\.\/]{8,16}/#', $response->headers->get('location'));
+        $this->assertRegExp('#/download/[a-zA-Z0-9]{8,32}/#', $response->headers->get('location'));
         unset($response, $eventManagerStub);
     }
 

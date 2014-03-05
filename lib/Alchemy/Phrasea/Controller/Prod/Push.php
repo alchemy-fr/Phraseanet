@@ -219,12 +219,7 @@ class Push implements ControllerProviderInterface
 
                     $url = $app->url('lightbox_compare', [
                         'basket' => $Basket->getId(),
-                        'LOG' => $app['tokens']->getUrlToken(
-                            \random::TYPE_VIEW,
-                            $user_receiver->getId(),
-                            null,
-                            $Basket->getId()
-                        )
+                        'LOG' => $app['manipulator.token']->createBasketAccessToken($Basket, $user_receiver),
                     ]);
 
                     $receipt = $request->get('recept') ? $app['authentication']->getUser()->getEmail() : '';
@@ -414,12 +409,7 @@ class Push implements ControllerProviderInterface
 
                     $url = $app->url('lightbox_validation', [
                         'basket' => $Basket->getId(),
-                        'LOG' => $app['tokens']->getUrlToken(
-                            \random::TYPE_VALIDATE,
-                            $participant_user->getId(),
-                            null,
-                            $Basket->getId()
-                        )
+                        'LOG' => $app['manipulator.token']->createBasketValidationToken($Basket, $participant_user),
                     ]);
 
                     $receipt = $request->get('recept') ? $app['authentication']->getUser()->getEmail() : '';

@@ -505,12 +505,11 @@ class Login implements ControllerProviderInterface
     {
         $receiver = Receiver::fromUser($user);
 
-        $expire = new \DateTime('+3 days');
-        $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->getId(), $expire, $user->getEmail());
+        $token = $app['manipulator.token']->createAccountUnlockToken($user);
 
         $mail = MailRequestEmailConfirmation::create($app, $receiver);
-        $mail->setButtonUrl($app->url('login_register_confirm', ['code' => $token]));
-        $mail->setExpiration($expire);
+        $mail->setButtonUrl($app->url('login_register_confirm', ['code' => $token->getValue()]));
+        $mail->setExpiration($token->getExpiration());
 
         $app['notification.deliverer']->deliver($mail);
     }
@@ -530,19 +529,13 @@ class Login implements ControllerProviderInterface
             return $app->redirectPath('homepage');
         }
 
-        try {
-            $datas = $app['tokens']->helloToken($code);
-        } catch (NotFoundHttpException $e) {
+        if (null === $token = $app['repo.tokens']->findValidToken($code)) {
             $app->addFlash('error', $app->trans('Invalid unlock link.'));
 
             return $app->redirectPath('homepage');
         }
 
-        if (null === $user = $app['repo.users']->find((int) $datas['usr_id'])) {
-            $app->addFlash('error', _('Invalid unlock link.'));
-
-            return $app->redirectPath('homepage');
-        }
+        $user = $token->getUser();
 
         if (!$user->isMailLocked()) {
             $app->addFlash('info', $app->trans('Account is already unlocked, you can login.'));
@@ -550,7 +543,7 @@ class Login implements ControllerProviderInterface
             return $app->redirectPath('homepage');
         }
 
-        $app['tokens']->removeToken($code);
+        $app['manipulator.token']->delete($token);
         $user->setMailLocked(false);
 
         try {
@@ -561,7 +554,7 @@ class Login implements ControllerProviderInterface
             return $app->redirectPath('homepage');
         }
 
-        $app['tokens']->removeToken($code);
+        $app['manipulator.token']->delete($token);
 
         if (count($app['acl']->get($user)->get_granted_base()) > 0) {
             $mail = MailSuccessEmailConfirmationRegistered::create($app, $receiver);
@@ -580,38 +573,26 @@ class Login implements ControllerProviderInterface
 
     public function renewPassword(PhraseaApplication $app, Request $request)
     {
-        if (null === $token = $request->get('token')) {
+        if (null === $tokenValue = $request->get('token')) {
             $app->abort(401, 'A token is required');
         }
 
-        try {
-            $app['tokens']->helloToken($token);
-        } catch (\Exception $e) {
+        if (null === $token = $app['repo.tokens']->findValidToken($tokenValue)) {
             $app->abort(401, 'A token is required');
         }
 
-        $form = $app->form(new PhraseaRecoverPasswordForm($app['tokens']));
-        $form->setData(['token' => $token]);
+        $form = $app->form(new PhraseaRecoverPasswordForm($app['repo.tokens']));
+        $form->setData(['token' => $token->getValue()]);
 
         if ('POST' === $request->getMethod()) {
             $form->bind($request);
-            try {
-                if ($form->isValid()) {
-                    $data = $form->getData();
+            if ($form->isValid()) {
+                $data = $form->getData();
+                $app['manipulator.user']->setPassword($token->getUser(), $data['password']);
+                $app['manipulator.token']->delete($token);
+                $app->addFlash('success', $app->trans('login::notification: Mise a jour du mot de passe avec succes'));
 
-                    $datas = $app['tokens']->helloToken($token);
-
-                    $user = $app['repo.users']->find($datas['usr_id']);
-                    $app['manipulator.user']->setPassword($user, $data['password']);
-
-                    $app['tokens']->removeToken($token);
-
-                    $app->addFlash('success', $app->trans('login::notification: Mise a jour du mot de passe avec succes'));
-
-                    return $app->redirectPath('homepage');
-                }
-            } catch (FormProcessingException $e) {
-                $app->addFlash('error', $e->getMessage());
+                return $app->redirectPath('homepage');
             }
         }
 
@@ -649,13 +630,9 @@ class Login implements ControllerProviderInterface
                         throw new FormProcessingException($app->trans('Invalid email address'));
                     }
 
-                    $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->getId(), new \DateTime('+1 day'));
+                    $token = $app['manipulator.token']->createResetPasswordToken($user);
 
-                    if (!$token) {
-                        return $app->abort(500, 'Unable to generate a token');
-                    }
-
-                    $url = $app->url('login_renew_password', ['token' => $token], true);
+                    $url = $app->url('login_renew_password', ['token' => $token->getValue()], true);
 
                     $mail = MailRequestPasswordUpdate::create($app, $receiver);
                     $mail->setLogin($user->getLogin());
@@ -837,20 +814,18 @@ class Login implements ControllerProviderInterface
 
             $validationSession = $participant->getSession();
             $participantId = $participant->getUser()->getId();
-            $basketId = $validationSession->getBasket()->getId();
+            $basket = $validationSession->getBasket();
 
-            try {
-                $token = $app['tokens']->getValidationToken($participantId, $basketId);
-            } catch (NotFoundHttpException $e) {
+            if (null === $token = $app['repo.tokens']->findValidationToken($basket, $participant->getUser())) {
                 continue;
             }
 
             $app['events-manager']->trigger('__VALIDATION_REMINDER__', [
                 'to'          => $participantId,
-                'ssel_id'     => $basketId,
+                'ssel_id'     => $basket->getId(),
                 'from'        => $validationSession->getInitiator()->getId(),
                 'validate_id' => $validationSession->getId(),
-                'url'         => $app->url('lightbox_validation', ['basket' => $basketId, 'LOG' => $token]),
+                'url'         => $app->url('lightbox_validation', ['basket' => $basket->getId(), 'LOG' => $token->getValue()]),
             ]);
 
             $participant->setReminded(new \DateTime('now'));

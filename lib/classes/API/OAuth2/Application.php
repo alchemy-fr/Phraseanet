@@ -10,8 +10,9 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class API_OAuth2_Application
 {
@@ -606,8 +607,8 @@ class API_OAuth2_Application
             )';
 
         $nonce = $app['random.medium']->generateString(64);
-        $client_secret = $app['random.medium']->generateString(32, \random::LETTERS_AND_NUMBERS);
-        $client_token = $app['random.medium']->generateString(32, \random::LETTERS_AND_NUMBERS);
+        $client_secret = $app['random.medium']->generateString(32, TokenManipulator::LETTERS_AND_NUMBERS);
+        $client_token = $app['random.medium']->generateString(32, TokenManipulator::LETTERS_AND_NUMBERS);
 
         $params = [
             ':usr_id'         => $user ? $user->getId() : null,

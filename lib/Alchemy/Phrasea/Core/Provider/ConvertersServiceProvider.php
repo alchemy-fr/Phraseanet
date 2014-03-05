@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Model\Converter\BasketConverter;
 use Alchemy\Phrasea\Model\Converter\TaskConverter;
+use Alchemy\Phrasea\Model\Converter\TokenConverter;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -26,6 +27,10 @@ class ConvertersServiceProvider implements ServiceProviderInterface
 
         $app['converter.basket'] = $app->share(function ($app) {
             return new BasketConverter($app['EM']);
+        });
+
+        $app['converter.token'] = $app->share(function ($app) {
+            return new TokenConverter($app['repo.tokens']);
         });
     }
 

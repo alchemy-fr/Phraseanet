@@ -57,3 +57,6 @@ migrations:
   migration18:
       version: registration
       class: Alchemy\Phrasea\Setup\DoctrineMigrations\RegistrationMigration
+  migration19:
+      version: token
+      class: Alchemy\Phrasea\Setup\DoctrineMigrations\TokenMigration

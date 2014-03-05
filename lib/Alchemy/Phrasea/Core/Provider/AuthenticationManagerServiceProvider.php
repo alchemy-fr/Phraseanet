@@ -36,10 +36,6 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
             return new Authenticator($app, $app['browser'], $app['session'], $app['EM']);
         });
 
-        $app['authentication.token-validator'] = $app->share(function (Application $app) {
-            return new TokenValidator($app['tokens']);
-        });
-
         $app['authentication.persistent-manager'] = $app->share(function (Application $app) {
             return new CookieManager($app['auth.password-encoder'], $app['repo.sessions'], $app['browser']);
         });

@@ -11,6 +11,7 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Authentication\ProvidersCollection;
 use Alchemy\Phrasea\Model\Entities\Registration;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use RandomLib\Factory;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -170,9 +171,12 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->logout(self::$DI['app']);
         $email = $this->generateEmail();
-        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, 0, null, $email);
+        $token = self::$DI['app']['manipulator.token']->createResetEmailToken(self::$DI['user'], $email);
+        $tokenValue = $token->getValue();
+        self::$DI['app']['EM']->remove($token);
+        self::$DI['app']['EM']->flush();
         self::$DI['client']->request('GET', '/login/register-confirm/', [
-            'code'    => $token
+            'code'    => $tokenValue
         ]);
         $response = self::$DI['client']->getResponse();
 
@@ -188,11 +192,11 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->logout(self::$DI['app']);
         $email = $this->generateEmail();
-        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, self::$DI['user']->getId(), null, $email);
+        $token = self::$DI['app']['manipulator.token']->createResetEmailToken(self::$DI['user'], $email);
 
         self::$DI['user']->setMailLocked(false);
 
-        self::$DI['client']->request('GET', '/login/register-confirm/', ['code'    => $token]);
+        self::$DI['client']->request('GET', '/login/register-confirm/', ['code' => $token->getValue()]);
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
@@ -207,7 +211,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->logout(self::$DI['app']);
         $email = $this->generateEmail();
-        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, self::$DI['user']->getId(), null, $email);
+        $token = self::$DI['app']['manipulator.token']->createResetEmailToken(self::$DI['user'], $email);
 
         self::$DI['user']->setMailLocked(true);
         $this->deleteRequest();
@@ -218,7 +222,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['app']['EM']->persist($registration);
         self::$DI['app']['EM']->flush();
 
-        self::$DI['client']->request('GET', '/login/register-confirm/', ['code'    => $token]);
+        self::$DI['client']->request('GET', '/login/register-confirm/', ['code' => $token->getValue()]);
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
@@ -235,13 +239,13 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->logout(self::$DI['app']);
         $email = $this->generateEmail();
         $user = self::$DI['app']['manipulator.user']->createUser('test', 'test', $email);
-        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, $user->getId(), null, $email);
+        $token = self::$DI['app']['manipulator.token']->createResetEmailToken($user, $email);
 
         $user->setMailLocked(true);
 
         $this->deleteRequest();
 
-        self::$DI['client']->request('GET', '/login/register-confirm/', ['code'    => $token]);
+        self::$DI['client']->request('GET', '/login/register-confirm/', ['code' => $token->getValue()]);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertFlashMessagePopulated(self::$DI['app'], 'info', 1);
@@ -304,9 +308,9 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     public function testRenewPasswordBadArguments()
     {
         $this->logout(self::$DI['app']);
-        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_PASSWORD, self::$DI['user']->getId());
+        $token = self::$DI['app']['manipulator.token']->createResetPasswordToken(self::$DI['user']);
         $crawler = self::$DI['client']->request('POST', '/login/renew-password/', [
-            'token'           => $token,
+            'token'           => $token->getValue(),
             '_token'          => 'token',
             'password'        => ['password' => 'password', 'confirm' => 'not_identical']
         ]);
@@ -376,10 +380,10 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     public function testRenewPassword()
     {
         $this->logout(self::$DI['app']);
-        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_PASSWORD, self::$DI['user']->getId());
+        $token = self::$DI['app']['manipulator.token']->createResetPasswordToken(self::$DI['user']);
 
         self::$DI['client']->request('POST', '/login/renew-password/', [
-            'token'                 => $token,
+            'token'                 => $token->getValue(),
             '_token'                 => 'token',
             'password'        => ['password' => 'password', 'confirm' => 'password']
         ]);
@@ -400,10 +404,10 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->logout(self::$DI['app']);
         self::$DI['app']->addFlash($type, $message);
 
-        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_PASSWORD, self::$DI['user']->getId());
+        $token = self::$DI['app']['manipulator.token']->createResetPasswordToken(self::$DI['user']);
 
         $crawler = self::$DI['client']->request('GET', '/login/renew-password/', [
-            'token' => $token
+            'token' => $token->getValue()
         ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
@@ -1794,7 +1798,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $factory = new Factory();
         $generator = $factory->getLowStrengthGenerator();
 
-        return $generator->generateString(8, \random::LETTERS_AND_NUMBERS) . '_email@email.com';
+        return $generator->generateString(8, TokenManipulator::LETTERS_AND_NUMBERS) . '_email@email.com';
     }
 
     private function disableTOU()

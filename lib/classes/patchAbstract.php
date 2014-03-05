@@ -11,6 +11,7 @@
 
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query\ResultSetMapping;
 
 abstract class patchAbstract implements patchInterface
 {
@@ -26,22 +27,21 @@ abstract class patchAbstract implements patchInterface
         }
     }
 
-    protected function tableExists(base $base, $tableName)
+    protected function tableExists(EntityManager $em, $tableName)
     {
-        return $base
-            ->get_connection()
-            ->getSchemaManager()
-            ->tablesExist([$tableName]);
+        return (Boolean) $em->createNativeQuery(
+            'SHOW TABLE STATUS WHERE Name="'.$tableName.'" COLLATE utf8_bin ', (new ResultSetMapping())->addScalarResult('Name', 'Name')
+        )->getOneOrNullResult();
     }
 
-    protected function tableHasField(base $base, $tableName, $fieldName)
+    protected function tableHasField(EntityManager $em, $tableName, $fieldName)
     {
-        if (!$this->tableExists($base, $tableName)) {
+        if (!$this->tableExists($em, $tableName)) {
             return false;
         }
 
-        return $base
-            ->get_connection()
+        return $em
+            ->getConnection()
             ->getSchemaManager()
             ->listTableDetails($tableName)
             ->hasColumn($fieldName);

@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Form\Login;
 
 use Alchemy\Phrasea\Form\Constraint\PasswordToken;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -21,11 +22,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class PhraseaRecoverPasswordForm extends AbstractType
 {
-    private $tokens;
+    private $repository;
 
-    public function __construct(\random $tokens)
+    public function __construct(EntityRepository $repository)
     {
-        $this->tokens = $tokens;
+        $this->repository = $repository;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -33,7 +34,7 @@ class PhraseaRecoverPasswordForm extends AbstractType
         $builder->add('token', 'hidden', [
             'required'      => true,
             'constraints'   => [
-                new PasswordToken($this->tokens)
+                new PasswordToken($this->repository)
             ]
         ]);
 

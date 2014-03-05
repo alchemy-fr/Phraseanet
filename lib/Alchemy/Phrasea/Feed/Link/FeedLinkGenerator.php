@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Feed\Link;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Feed\FeedInterface;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Doctrine\ORM\EntityManager;
 use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\FeedToken;
@@ -153,7 +154,7 @@ class FeedLinkGenerator implements LinkGeneratorInterface
                 $this->em->persist($feed);
             }
 
-            $token->setValue($this->random->generateString(64, \random::LETTERS_AND_NUMBERS));
+            $token->setValue($this->random->generateString(64, TokenManipulator::LETTERS_AND_NUMBERS));
             $this->em->persist($token);
             $this->em->flush();
         }
