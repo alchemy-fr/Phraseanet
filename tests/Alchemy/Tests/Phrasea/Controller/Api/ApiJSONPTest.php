@@ -43,11 +43,11 @@ class ApiJSONPTest extends ApiTestCase
             $this->fail('Invalid JSONP response');
         }
 
-        if (substr($data, -1) !== ')') {
+        if (substr($data, -2) !== ');') {
             $this->fail('Invalid JSONP response');
         }
 
-        return json_decode(substr($data, 11, -1), true);
+        return json_decode(substr($data, 11, -2), true);
     }
 
     protected function getAcceptMimeType()

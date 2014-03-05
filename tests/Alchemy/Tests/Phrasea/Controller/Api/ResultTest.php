@@ -110,8 +110,8 @@ class ResultTest extends \PhraseanetAuthenticatedTestCase
         $apiResult = new Result($request);
         $return = $apiResult->createResponse()->getContent();
         $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $return);
-        $this->assertRegexp("/my_callback_function\\(\\{.+\\}\\)/", $return);
-        $response = json_decode(substr($return, 21, strlen($return) - 22), true);
+        $this->assertRegexp("/my_callback_function\\(\\{.+\\}\\);/", $return);
+        $response = json_decode(substr($return, 21, strlen($return) - 23), true);
         $this->assertSame([], $response['response']);
     }
 

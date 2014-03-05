@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Controller\Api;
 
 use Silex\Application;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Yaml\Dumper;
@@ -80,7 +81,9 @@ class Result
      */
     public function createResponse()
     {
-        $response = new Response($this->format(), $this->getStatusCode(), ['Content-Type'  => $this->getContentType()]);
+        $response = $this->format();
+        $response->headers->set('content-type', $this->getContentType());
+        $response->setStatusCode($this->getStatusCode());
         $response->setCharset('UTF-8');
 
         return $response;
@@ -191,7 +194,7 @@ class Result
     /**
      * Formats the data and return serialized string
      *
-     * @return string
+     * @return Response
      */
     private function format()
     {
@@ -214,23 +217,22 @@ class Result
         switch ($this->responseType) {
             case self::FORMAT_JSON:
             default:
-                $return_value = \p4string::jsonencode($ret);
-                break;
+                return new JsonResponse($ret);
             case self::FORMAT_YAML:
                 if ($ret['response'] instanceof \stdClass) {
                     $ret['response'] = [];
                 }
 
                 $dumper = new Dumper();
-                $return_value = $dumper->dump($ret, 8);
-                break;
+
+                return new Response($dumper->dump($ret, 8));
             case self::FORMAT_JSONP:
-                $callback = trim($this->request->get('callback'));
-                $return_value = $callback . '(' . \p4string::jsonencode($ret) . ')';
+                $response = new JsonResponse($ret);
+                $response->setCallback(trim($this->request->get('callback')));
+
+                return $response;
                 break;
         }
-
-        return $return_value;
     }
 
     /**
