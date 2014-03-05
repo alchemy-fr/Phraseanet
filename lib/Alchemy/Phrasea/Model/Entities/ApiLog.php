@@ -11,6 +11,11 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class ApiLog
 {
+    const DATABOXES_RESOURCE = 'databoxes';
+    const RECORDS_RESOURCE = 'record';
+    const BASKETS_RESOURCE = 'baskets';
+    const FEEDS_RESOURCE = 'feeds';
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
