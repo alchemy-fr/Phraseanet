@@ -20,8 +20,8 @@ class ApiApplicationMiddlewareProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['middleware.api-application.converter'] = $app->protect(function (Request $request, Application $app) {
-            if ($request->attributes->has('application_id')) {
-                $request->attributes->set('application_id', $app['converter.api-application']->convert($request->attributes->get('application_id')));
+            if ($request->attributes->has('application')) {
+                $request->attributes->set('application', $app['converter.api-application']->convert($request->attributes->get('application')));
             }
         });
     }
