@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\Model\Entities;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -390,5 +391,13 @@ class ApiApplication
     public function getWebsite()
     {
         return $this->website;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getAccounts()
+    {
+        return $this->accounts;
     }
 }
