@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
+use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -12,4 +13,14 @@ use Doctrine\ORM\EntityRepository;
  */
 class ApiAccountRepository extends EntityRepository
 {
+    public function findByUserAndApplication(User $user, ApiApplication $application)
+    {
+        $qb = $this->createQueryBuilder('acc');
+        $qb->where($qb->expr()->eq('acc.user', ':user'));
+        $qb->andWhere($qb->expr()->eq('acc.application', ':app'));
+        $qb->setParameter(':user', $user);
+        $qb->setParameter(':app', $application);
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
 }
