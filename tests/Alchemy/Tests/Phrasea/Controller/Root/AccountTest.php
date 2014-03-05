@@ -376,7 +376,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testAUthorizedAppGrantAccessSuccessfull($revoke, $expected)
     {
-        self::$DI['client']->request('GET', '/account/security/application/' . self::$DI['oauth2-app-user']->get_id() . '/grant/', [
+        self::$DI['client']->request('GET', '/account/security/application/' . self::$DI['oauth2-app-user']->getId() . '/grant/', [
             'revoke' => $revoke
             ], [], [
             'HTTP_ACCEPT'           => 'application/json',

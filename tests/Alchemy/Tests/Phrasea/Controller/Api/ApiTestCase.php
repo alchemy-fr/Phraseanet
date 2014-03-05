@@ -64,7 +64,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         });
 
         if (!self::$apiInitialized) {
-            self::$account = \API_OAuth2_Account::load_with_user(self::$DI['app'], self::$DI['oauth2-app-user_notAdmin'], self::$DI['user_notAdmin']);
+            self::$account = \API_OAuth2_Account::load_with_user(self::$DI['app'], self::$DI['oauth2-app-user-not-admin'], self::$DI['user_notAdmin']);
             self::$account->set_revoked(false);
             self::$token = self::$account->get_token()->get_value();
 

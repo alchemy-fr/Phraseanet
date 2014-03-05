@@ -36,7 +36,7 @@ class api_oauthv2_ApplicationTest extends \PhraseanetTestCase
         $found = false;
 
         foreach ($apps as $app) {
-            if ($app->get_id() === self::$DI['oauth2-app-user']->get_id()) {
+            if ($app->get_id() === self::$DI['oauth2-app-user']->getId()) {
                 $found = true;
             }
             $this->assertInstanceOf('ApiApplication', $app);
@@ -55,9 +55,9 @@ class api_oauthv2_ApplicationTest extends \PhraseanetTestCase
         $this->assertTrue(in_array(self::$DI['oauth2-app-user']->getType(), [ApiApplication::DESKTOP_TYPE, ApiApplication::WEB_TYPE]));
         $this->assertTrue(is_string(self::$DI['oauth2-app-user']->getNonce()));
         $this->assertEquals(64, strlen(self::$DI['oauth2-app-user']->getNonce()));
-        self::$DI['oauth2-app-user']->set_type(ApiApplication::WEB_TYPE);
+        self::$DI['oauth2-app-user']->setType(ApiApplication::WEB_TYPE);
         $this->assertEquals(ApiApplication::WEB_TYPE, self::$DI['oauth2-app-user']->getType());
-        self::$DI['oauth2-app-user']->set_type(ApiApplication::DESKTOP_TYPE);
+        self::$DI['oauth2-app-user']->setType(ApiApplication::DESKTOP_TYPE);
         $this->assertEquals(ApiApplication::DESKTOP_TYPE, self::$DI['oauth2-app-user']->getType());
         $this->assertEquals(ApiApplication::NATIVE_APP_REDIRECT_URI, self::$DI['oauth2-app-user']->getRedirectUri());
         self::$DI['oauth2-app-user']->setType(ApiApplication::WEB_TYPE);
