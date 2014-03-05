@@ -120,7 +120,7 @@ class ApiApplication
 
 
     /**
-     * @OneToMany(targetEntity="ApiAccount", mappedBy="product")
+     * @OneToMany(targetEntity="ApiAccount", mappedBy="product", cascade={"remove"})
      **/
     private $accounts;
 
