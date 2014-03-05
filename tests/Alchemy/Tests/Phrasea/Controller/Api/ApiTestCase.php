@@ -746,6 +746,13 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $this->markTestSkipped('Phrasea2 extension is required for this test');
         }
 
+        self::$DI['app']['manipulator.user'] = $this->getMockBuilder('Alchemy\Phrasea\Model\Manipulator\UserManipulator')
+            ->setConstructorArgs([self::$DI['app']['model.user-manager'], self::$DI['app']['auth.password-encoder'], self::$DI['app']['geonames.connector'], self::$DI['app']['repo.users'], self::$DI['app']['random.low']])
+            ->setMethods(['logQuery'])
+            ->getMock();
+
+        self::$DI['app']['manipulator.user']->expects($this->once())->method('logQuery');
+
         $this->setToken(self::$token);
         self::$DI['client']->request('POST', '/api/v1/search/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
