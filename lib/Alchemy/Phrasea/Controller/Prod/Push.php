@@ -11,6 +11,9 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Core\Event\PushEvent;
+use Alchemy\Phrasea\Core\Event\ValidationEvent;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -227,21 +230,9 @@ class Push implements ControllerProviderInterface
 
                     $url = $app->url('lightbox_compare', $arguments);
 
-                    $receipt = $request->get('recept') ? $app['authentication']->getUser()->get_email() : '';
 
-                    $params = [
-                        'from'       => $app['authentication']->getUser()->getId(),
-                        'from_email' => $app['authentication']->getUser()->getEmail(),
-                        'to'         => $user_receiver->getId(),
-                        'to_email'   => $user_receiver->getEmail(),
-                        'to_name'    => $user_receiver->getDisplayName(),
-                        'url'        => $url,
-                        'accuse'     => $receipt,
-                        'message'    => $request->request->get('message'),
-                        'ssel_id'    => $Basket->getId(),
-                    ];
-
-                    $app['events-manager']->trigger('__PUSH_DATAS__', $params);
+                    $receipt = $request->get('recept') ? $app['authentication']->getUser()->getEmail() : '';
+                    $app['dispatcher']->dispatch(PhraseaEvents::BASKET_PUSH, new PushEvent($Basket, $request->request->get('message'), $url, $receipt));
                 }
 
                 $app['phraseanet.logger']($BasketElement->getRecord($app)->get_databox())
@@ -424,20 +415,7 @@ class Push implements ControllerProviderInterface
 
                     $receipt = $request->get('recept') ? $app['authentication']->getUser()->getEmail() : '';
 
-                    $params = [
-                        'from'       => $app['authentication']->getUser()->getId(),
-                        'from_email' => $app['authentication']->getUser()->getEmail(),
-                        'to'         => $participant_user->getId(),
-                        'to_email'   => $participant_user->getEmail(),
-                        'to_name'    => $participant_user->getDisplayName(),
-                        'url'        => $url,
-                        'accuse'     => $receipt,
-                        'message'    => $request->request->get('message'),
-                        'ssel_id'    => $Basket->getId(),
-                        'duration'   => (int) $request->request->get('duration'),
-                    ];
-
-                    $app['events-manager']->trigger('__PUSH_VALIDATION__', $params);
+                    $app['dispatcher']->dispatch(PhraseaEvents::VALIDATION_CREATE, new ValidationEvent($participant_user, $Basket, $url, $request->request->get('message'), $receipt, (int) $request->request->get('duration')));
                 }
 
                 $Basket = $app['EM']->merge($Basket);

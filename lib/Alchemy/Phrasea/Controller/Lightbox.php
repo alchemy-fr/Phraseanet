@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Controller;
 
+use Alchemy\Phrasea\Core\Event\ValidationEvent;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Exception\SessionNotFound;
@@ -461,14 +463,8 @@ class Lightbox implements ControllerProviderInterface
                 $url = $app->url('lightbox', ['LOG' => $token->getValue()]);
 
                 $to = $basket->getValidation()->getInitiator($app)->getId();
-                $params = [
-                    'ssel_id' => $basket->getId(),
-                    'from'    => $app['authentication']->getUser()->getId(),
-                    'url'     => $url,
-                    'to'      => $to
-                ];
 
-                $app['events-manager']->trigger('__VALIDATION_DONE__', $params);
+                $app['dispatcher']->dispatch(PhraseaEvents::VALIDATION_DONE, new ValidationEvent($app['authentication']->getUser(), $basket, $url));
 
                 $participant->setIsConfirmed(true);
 

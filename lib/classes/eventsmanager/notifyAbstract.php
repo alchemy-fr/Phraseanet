@@ -9,18 +9,27 @@
  * file that was distributed with this source code.
  */
 
-abstract class eventsmanager_notifyAbstract extends eventsmanager_eventAbstract
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\User;
+
+abstract class eventsmanager_notifyAbstract
 {
-    protected $events = ['__EVENT__'];
+    /** @var null|string */
+    protected $group = null;
+    /** @var Application */
+    protected $app;
 
-    public function fire($event, $params, &$object)
+    public function __construct(Application $app)
     {
-
+        $this->app = $app;
     }
 
-    abstract public function datas($datas, $unread);
+    public function get_group()
+    {
+        return $this->group;
+    }
 
-    public function is_available($usr_id)
+    public function is_available(User $user)
     {
         return true;
     }
@@ -30,12 +39,9 @@ abstract class eventsmanager_notifyAbstract extends eventsmanager_eventAbstract
         return true;
     }
 
+    abstract public function get_name();
+
+    abstract public function datas(array $data, $unread);
+
     abstract public function icon_url();
-
-    protected function shouldSendNotificationFor($usrId)
-    {
-        $user = $this->app['repo.users']->find($usrId);
-
-        return $this->app['settings']->getUserNotificationSetting($user, get_class($this));
-    }
 }
