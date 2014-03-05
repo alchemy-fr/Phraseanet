@@ -41,7 +41,7 @@ class ApiAccount
     private $apiVersion;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ApiApplication")
+     * @ORM\ManyToOne(targetEntity="ApiApplication", inversedBy="accounts")
      * @ORM\JoinColumn(name="application_id", referencedColumnName="id", nullable=false)
      *
      * @return ApiApplication

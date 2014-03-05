@@ -118,6 +118,12 @@ class ApiApplication
      */
     private $grantPassword = false;
 
+
+    /**
+     * @OneToMany(targetEntity="ApiAccount", mappedBy="product")
+     **/
+    private $accounts;
+
     /**
      * @param boolean $activated
      *
