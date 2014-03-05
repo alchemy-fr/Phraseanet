@@ -68,12 +68,6 @@ class API_OAuth2_Adapter extends OAuth2
     protected $session_id;
 
     /**
-     *
-     * @var string
-     */
-    protected $usr_id_requested;
-
-    /**
      * access token of current request
      * @var string
      */
@@ -149,15 +143,6 @@ class API_OAuth2_Adapter extends OAuth2
     public function get_ses_id()
     {
         return $this->session_id;
-    }
-
-    /**
-     *
-     * @return int
-     */
-    public function get_usr_id()
-    {
-        return $this->usr_id;
     }
 
     /**
@@ -572,7 +557,7 @@ class API_OAuth2_Adapter extends OAuth2
         }
     }
 
-    public function verifyAccessToken($scope = null, $exit_not_present = TRUE, $exit_invalid = TRUE, $exit_expired = TRUE, $exit_scope = TRUE, $realm = null)
+    public function verifyAccessToken($scope = null, $exit_not_present = true, $exit_invalid = true, $exit_expired = true, $exit_scope = true, $realm = null)
     {
         $token_param = $this->getAccessTokenParams();
 
@@ -605,10 +590,9 @@ class API_OAuth2_Adapter extends OAuth2
         }
         //save token's linked ses_id
         $this->session_id = $token['session_id'];
-        $this->usr_id = $token['usr_id'];
         $this->token = $token['oauth_token'];
 
-        return TRUE;
+        return true;
     }
 
     public function finishClientAuthorization($is_authorized, $params = [])
