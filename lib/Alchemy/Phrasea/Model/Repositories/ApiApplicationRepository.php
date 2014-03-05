@@ -21,7 +21,7 @@ class ApiApplicationRepository extends EntityRepository
         $qb->where($qb->expr()->eq('app.clientId', ':clientId'));
         $qb->setParameter(':clientId', $clientId);
 
-        return $qb->getQuery()->getSingleResult();
+        return $qb->getQuery()->getOneOrNullResult();
     }
 
     public function findByCreator(User $user)
