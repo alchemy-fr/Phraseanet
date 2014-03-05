@@ -72,13 +72,14 @@ use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
 use Alchemy\Phrasea\Controller\Utils\PathFileTest;
 use Alchemy\Phrasea\Controller\User\Notifications;
 use Alchemy\Phrasea\Controller\User\Preferences;
-use Alchemy\Phrasea\Core\Middleware\TokenMiddlewareProvider;
 use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
 use Alchemy\Phrasea\Core\Event\Subscriber\LogoutSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\MaintenanceSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\CookiesDisablerSubscriber;
+use Alchemy\Phrasea\Core\Middleware\ApiApplicationMiddlewareProvider;
 use Alchemy\Phrasea\Core\Middleware\BasketMiddlewareProvider;
+use Alchemy\Phrasea\Core\Middleware\TokenMiddlewareProvider;
 use Alchemy\Phrasea\Core\Provider\ACLServiceProvider;
 use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
@@ -213,6 +214,7 @@ class Application extends SilexApplication
 
         $this->register(new BasketMiddlewareProvider());
         $this->register(new TokenMiddlewareProvider());
+        $this->register(new ApiApplicationMiddlewareProvider());
 
         $this->register(new ACLServiceProvider());
         $this->register(new AuthenticationManagerServiceProvider());
