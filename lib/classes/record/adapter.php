@@ -165,7 +165,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $this->record_id = (int) $record_id;
 
         return $this->load();
-        ;
     }
 
     protected function load()
