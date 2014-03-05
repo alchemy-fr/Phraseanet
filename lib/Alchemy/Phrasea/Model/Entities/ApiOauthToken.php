@@ -14,7 +14,7 @@ class ApiOauthToken
     /**
      * @var string
      *
-     * @ORM\Column(name="oauth_token", type="string", length=128, nullable=false)
+     * @ORM\Column(name="oauth_token", type="string", length=32, nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
