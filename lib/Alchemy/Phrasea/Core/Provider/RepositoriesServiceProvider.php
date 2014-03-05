@@ -97,6 +97,21 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
         $app['repo.presets'] = $app->share(function (PhraseaApplication $app) {
             return $app['EM']->getRepository('Phraseanet:Preset');
         });
+        $app['repo.api-accounts'] = $app->share(function (PhraseaApplication $app) {
+            return $app['EM']->getRepository('Phraseanet:ApiAccount');
+        });
+        $app['repo.api-applications'] = $app->share(function (PhraseaApplication $app) {
+            return $app['EM']->getRepository('Phraseanet:ApiApplication');
+        });
+        $app['repo.api-oauth-codes'] = $app->share(function (PhraseaApplication $app) {
+            return $app['EM']->getRepository('Phraseanet:ApiOauthCode');
+        });
+        $app['repo.api-oauth-tokens'] = $app->share(function (PhraseaApplication $app) {
+            return $app['EM']->getRepository('Phraseanet:ApiOauthToken');
+        });
+        $app['repo.api-oauth-refresh-tokens'] = $app->share(function (PhraseaApplication $app) {
+            return $app['EM']->getRepository('Phraseanet:ApiOauthRefreshToken');
+        });
     }
 
     public function boot(Application $app)
