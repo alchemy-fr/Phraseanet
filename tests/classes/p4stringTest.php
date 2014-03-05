@@ -2,39 +2,6 @@
 
 class p4stringTest extends \PhraseanetTestCase
 {
-
-    public function testAddFirstSlash()
-    {
-        $string = '';
-        $this->assertEquals('./', p4string::addFirstSlash($string));
-        $string = '/';
-        $this->assertEquals('/', p4string::addFirstSlash($string));
-        $string = '//';
-        $this->assertEquals('//', p4string::addFirstSlash($string));
-        $string = '\\';
-        $this->assertEquals('\\', p4string::addFirstSlash($string));
-        $string = '\\\\';
-        $this->assertEquals('\\\\', p4string::addFirstSlash($string));
-        $string = 'alalal';
-        $this->assertEquals('/alalal', p4string::addFirstSlash($string));
-    }
-
-    public function testDelFirstSlash()
-    {
-        $string = '';
-        $this->assertEquals('./', p4string::delFirstSlash($string));
-        $string = '/';
-        $this->assertEquals('', p4string::delFirstSlash($string));
-        $string = '//';
-        $this->assertEquals('/', p4string::delFirstSlash($string));
-        $string = '\\';
-        $this->assertEquals('', p4string::delFirstSlash($string));
-        $string = '\\\\';
-        $this->assertEquals('\\', p4string::delFirstSlash($string));
-        $string = '/alalal/';
-        $this->assertEquals('alalal/', p4string::delFirstSlash($string));
-    }
-
     public function testAddEndSlash()
     {
         $string = '';
@@ -49,30 +16,6 @@ class p4stringTest extends \PhraseanetTestCase
         $this->assertEquals('\\\\', p4string::addEndSlash($string));
         $string = '/alalal/';
         $this->assertEquals('/alalal/', p4string::addEndSlash($string));
-    }
-
-    public function testDelEndSlash()
-    {
-        $string = '';
-        $this->assertEquals('.', p4string::delEndSlash($string));
-        $string = '/';
-        $this->assertEquals('', p4string::delEndSlash($string));
-        $string = '//';
-        $this->assertEquals('/', p4string::delEndSlash($string));
-        $string = '\\';
-        $this->assertEquals('', p4string::delEndSlash($string));
-        $string = '\\\\';
-        $this->assertEquals('\\', p4string::delEndSlash($string));
-        $string = '/alalal/';
-        $this->assertEquals('/alalal', p4string::delEndSlash($string));
-    }
-
-    public function testCleanTags()
-    {
-        $string = ' yuh i jkn lkk jk ';
-        $this->assertEquals($string, p4string::cleanTags($string));
-        $stringb = ' <a>yuh i jkn lkk jk</a> ';
-        $this->assertEquals($string, p4string::cleanTags($stringb));
     }
 
     public function testJSstring()

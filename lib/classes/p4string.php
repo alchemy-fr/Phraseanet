@@ -11,47 +11,6 @@
 
 class p4string
 {
-
-    public static function addFirstSlash($path)
-    {
-        if ($path == "") {
-            return("./");
-        }
-
-        $c = substr($path, 0, 1);
-
-        if ($c != "/" && $c != "\\") {
-            return "/" . $path;
-        }
-
-        return($path);
-    }
-
-    public static function delFirstSlash($path)
-    {
-        if ($path == "/" || $path == "\\") {
-            return("");
-        }
-
-        $c = substr($path, 0, 1);
-
-        if ($c == "/" || $c == "\\") {
-            return substr($path, 1, strlen($path));
-        }
-
-        $c = substr($path, 0, 2);
-
-        if ($c == "\\") {
-            return substr($path, 2, strlen($path) - 1);
-        }
-
-        if ($path == "") {
-            return "./";
-        }
-
-        return($path);
-    }
-
     public static function addEndSlash($path)
     {
         if ($path == "") {
@@ -65,30 +24,6 @@ class p4string
         }
 
         return $path;
-    }
-
-    public static function delEndSlash($path)
-    {
-        if ($path == "/" || $path == "\\") {
-            return("");
-        }
-
-        $c = substr($path, -1, 1);
-
-        if ($c == "/" || $c == "\\") {
-            $path = substr($path, 0, strlen($path) - 1);
-        }
-
-        if ($path == "") {
-            $path = ".";
-        }
-
-        return($path);
-    }
-
-    public static function cleanTags($string)
-    {
-        return strip_tags($string); //, '<p><a><b><i><div><ul><ol><li><br>');
     }
 
     /**

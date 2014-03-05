@@ -214,7 +214,7 @@ class FtpJob extends AbstractJob
                         }
                     }
 
-                    $current_folder = \p4string::delEndSlash(str_replace('//', '/', $basefolder . $exportElement->getFolder()));
+                    $current_folder = rtrim(str_replace('//', '/', $basefolder . $exportElement->getFolder()), '/');
 
                     if ($ftp_client->pwd() != $current_folder) {
                         try {
