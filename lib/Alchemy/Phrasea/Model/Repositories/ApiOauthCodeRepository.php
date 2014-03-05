@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
+use Alchemy\Phrasea\Model\Entities\ApiAccount;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -12,4 +13,12 @@ use Doctrine\ORM\EntityRepository;
  */
 class ApiOauthCodeRepository extends EntityRepository
 {
+    public function findByAccount(ApiAccount $account)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->where($qb->expr()->eq('c.account', ':account'));
+        $qb->setParameter(':account', $account);
+
+        return $qb->getQuery()->getResult();
+    }
 }
