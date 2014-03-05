@@ -117,13 +117,10 @@ class Databoxes implements ControllerProviderInterface
                 break;
         }
 
-        $upgrader = new \Setup_Upgrade($app);
-
         return $app['twig']->render('admin/databases.html.twig', [
             'files'             => new \DirectoryIterator($app['root.path'] . '/lib/conf.d/data_templates'),
             'sbas'              => $sbas,
             'error_msg'         => $errorMsg,
-            'recommendations'   => $upgrader->getRecommendations(),
             'advices'           => $request->query->get('advices', []),
             'reloadTree'        => (Boolean) $request->query->get('reload-tree'),
         ]);

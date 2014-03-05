@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Setup\Version\MailChecker;
+use Symfony\Component\Yaml\Dumper;
 
 class Setup_Upgrade
 {
@@ -18,31 +19,13 @@ class Setup_Upgrade
      *
      * @var appbox
      */
-    protected $appbox;
-
-    /**
-     *
-     * @var string
-     */
-    protected $message;
+    private $appbox;
 
     /**
      *
      * @var array
      */
-    protected $recommendations = [];
-
-    /**
-     *
-     * @var int
-     */
-    protected $total_steps = 0;
-
-    /**
-     *
-     * @var int
-     */
-    protected $completed_steps = 0;
+    private $recommendations = [];
 
     public function __construct(Application $app, $force = false)
     {
@@ -78,48 +61,6 @@ class Setup_Upgrade
     }
 
     /**
-     * Add steps to do to the counter
-     *
-     * @param  int           $how_many
-     * @return Setup_Upgrade
-     */
-    public function add_steps($how_many)
-    {
-        $this->total_steps += (int) $how_many;
-        $this->write_lock();
-
-        return $this;
-    }
-
-    /**
-     * Add completed steps to the counter
-     *
-     * @param  int           $how_many
-     * @return Setup_Upgrade
-     */
-    public function add_steps_complete($how_many)
-    {
-        $this->completed_steps += (int) $how_many;
-        $this->write_lock();
-
-        return $this;
-    }
-
-    /**
-     * Set the current message
-     *
-     * @param  string        $message
-     * @return Setup_Upgrade
-     */
-    public function set_current_message($message)
-    {
-        $this->message = $message;
-        $this->write_lock();
-
-        return $this;
-    }
-
-    /**
      *
      * @param type $recommendation
      * @param type $command
@@ -141,35 +82,16 @@ class Setup_Upgrade
 
     /**
      *
-     * @return float
-     */
-    protected function get_percentage()
-    {
-        if ($this->total_steps === 0) {
-            return 1;
-        }
-
-        return round(max(min(($this->completed_steps / $this->total_steps), 1), 0), 2);
-    }
-
-    /**
-     *
      *
      * @return Setup_Upgrade
      */
-    protected function write_lock()
+    private function write_lock()
     {
-        $date_obj = new DateTime();
-        $dumper = new Symfony\Component\Yaml\Dumper();
-        $datas = $dumper->dump(
-            [
-            'percentage'      => $this->get_percentage()
-            , 'total_steps'     => $this->total_steps
-            , 'completed_steps' => $this->completed_steps
-            , 'message'         => $this->message
-            , 'last_update'     => $date_obj->format(DATE_ATOM)
-            ], 1
-        );
+        $date_obj = new \DateTime();
+        $dumper = new Dumper();
+        $datas = $dumper->dump([
+            'last_update'     => $date_obj->format(DATE_ATOM),
+        ], 1);
 
         if (!file_put_contents(self::get_lock_file(), $datas))
             throw new Exception_Setup_CannotWriteLockFile(
@@ -184,7 +106,7 @@ class Setup_Upgrade
      *
      * @return boolean
      */
-    protected static function lock_exists()
+    private static function lock_exists()
     {
         clearstatcache();
 
@@ -196,7 +118,7 @@ class Setup_Upgrade
      *
      * @return string
      */
-    public static function get_lock_file()
+    private static function get_lock_file()
     {
         return __DIR__ . '/../../../tmp/upgrade.lock';
     }
@@ -205,50 +127,12 @@ class Setup_Upgrade
      *
      * @return Void
      */
-    protected static function remove_lock_file()
+    private static function remove_lock_file()
     {
         if (self::lock_exists()) {
             unlink(self::get_lock_file());
         }
 
         return;
-    }
-
-    /**
-     *
-     * Returns an array containing datas about the Upgrade Status.
-     * Contains the following keys :
-     *  - active          : (booolean) tells if there's a current upgrade
-     *  - percentage      : (float) a number between 0 and 1 of the current progress
-     *  - total_steps     : (int) total steps
-     *  - completed_steps : (int) current complete steps
-     *  - message         : (string) a message
-     *  - last_update     : (string) last update in ATOM format
-     *
-     *
-     * @return Array
-     */
-    public static function get_status()
-    {
-        $active = self::lock_exists();
-
-        $datas = [
-            'active'          => $active
-            , 'percentage'      => 1
-            , 'total_steps'     => 0
-            , 'completed_steps' => 0
-            , 'message'         => null
-            , 'last_update'     => null
-        ];
-
-        if ($active) {
-            $parser = new Symfony\Component\Yaml\Parser();
-            $datas = array_merge(
-                $datas
-                , $parser->parse(file_get_contents(self::get_lock_file()))
-            );
-        }
-
-        return $datas;
     }
 }

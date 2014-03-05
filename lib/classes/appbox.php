@@ -282,28 +282,10 @@ class appbox extends base
     {
         $from_version = $this->get_version();
 
-        $upgrader->add_steps(7 + count($this->get_databoxes()));
-
-        /**
-         * Step 1
-         */
-        $upgrader->set_current_message($this->app->trans('Flushing cache'));
-
         $app['phraseanet.cache-service']->flushAll();
-
-        $upgrader->add_steps_complete(1);
-
-        $upgrader->set_current_message($this->app->trans('Creating new tables'));
 
         // Executes stuff before applying patches
         $app['phraseanet.pre-schema-upgrader']->apply($app);
-
-        $upgrader->add_steps_complete(1);
-
-        /**
-         * Step 2
-         */
-        $upgrader->set_current_message($this->app->trans('Purging directories'));
 
         $finder = new Finder();
         $finder->in([
@@ -322,13 +304,6 @@ class appbox extends base
             $app['filesystem']->remove($file);
         }
 
-        $upgrader->add_steps_complete(1);
-
-        /**
-         * Step 5
-         */
-        $upgrader->set_current_message($this->app->trans('Copying files'));
-
         foreach ([
         'config/custom_files/' => 'www/custom/',
         'config/minilogos/'    => 'www/custom/minilogos/',
@@ -339,37 +314,13 @@ class appbox extends base
             $app['filesystem']->mirror($this->app['root.path'] . '/' . $source, $this->app['root.path'] . '/' . $target);
         }
 
-        $upgrader->add_steps_complete(1);
+        $advices = $this->upgradeDB(true, $app);
 
-        $advices = [];
-
-        /**
-         * Step 6
-         */
-        $upgrader->set_current_message($this->app->trans('Upgrading appbox'));
-        $advices = $this->upgradeDB(true, $upgrader, $app);
-        $upgrader->add_steps_complete(1);
-
-        /**
-         * Step 7
-         */
         foreach ($this->get_databoxes() as $s) {
-            $upgrader->set_current_message($this->app->trans('Upgrading %databox_name%', ['%databox_name%' => $s->get_label($this->app['locale'])]));
-            $advices = array_merge($advices, $s->upgradeDB(true, $upgrader, $app));
-            $upgrader->add_steps_complete(1);
+            $advices = array_merge($advices, $s->upgradeDB(true, $app));
         }
 
-        /**
-         * Step 8
-         */
-        $upgrader->set_current_message($this->app->trans('Post upgrade'));
-        $this->post_upgrade($upgrader, $app);
-        $upgrader->add_steps_complete(1);
-
-        /**
-         * Step 9
-         */
-        $upgrader->set_current_message($this->app->trans('Flushing cache'));
+        $this->post_upgrade($app);
 
         $app['phraseanet.cache-service']->flushAll();
 
@@ -378,8 +329,6 @@ class appbox extends base
             $metas = $app['EM']->getMetadataFactory()->getAllMetadata();
             $tool->updateSchema($metas, true);
         }
-
-        $upgrader->add_steps_complete(1);
 
         if (version::lt($from_version, '3.1')) {
             $upgrader->addRecommendation($app->trans('Your install requires data migration, please execute the following command'), 'bin/setup system:upgrade-datas --from=3.1');
@@ -395,17 +344,14 @@ class appbox extends base
         return $advices;
     }
 
-    protected function post_upgrade(Setup_Upgrade $upgrader, Application $app)
+    protected function post_upgrade(Application $app)
     {
-        $upgrader->add_steps(1 + count($this->get_databoxes()));
-        $this->apply_patches($this->get_version(), $app['phraseanet.version']->getNumber(), true, $upgrader, $app);
+        $this->apply_patches($this->get_version(), $app['phraseanet.version']->getNumber(), true, $app);
         $this->setVersion($app['phraseanet.version']);
-        $upgrader->add_steps_complete(1);
 
         foreach ($this->get_databoxes() as $databox) {
-            $databox->apply_patches($databox->get_version(), $app['phraseanet.version']->getNumber(), true, $upgrader, $app);
+            $databox->apply_patches($databox->get_version(), $app['phraseanet.version']->getNumber(), true, $app);
             $databox->setVersion($app['phraseanet.version']);
-            $upgrader->add_steps_complete(1);
         }
 
         return $this;

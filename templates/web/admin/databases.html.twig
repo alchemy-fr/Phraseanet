@@ -53,15 +53,6 @@
             <p>{{ 'update::Votre version est a jour :' | trans }} {{ app['phraseanet.version'].getNumber() }}</p>
         {% endif %}
 
-        {% if recommendations | length > 0%}
-            {% for recommendation in recommendations %}
-                <p>{{ recommendation['0'] }}</p>
-                <pre>
-                    <blockquote>{{ recommendation['1'] }}</blockquote>
-                </pre>
-            {% endfor %}
-        {% endif %}
-
         {% if advices | length > 0 %}
             <b>{{ 'Propositions de modifications des tables' | trans }}</b>
             {% for advice in advices %}
