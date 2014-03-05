@@ -68,6 +68,12 @@ class ApiOauthTokenManipulator implements ManipulatorInterface
         $this->update($token);
     }
 
+    public function setOauthToken(ApiOauthToken $token, $oauthToken)
+    {
+        $token->setOauthToken($oauthToken);
+        $this->update($token);
+    }
+
     private function getNewToken()
     {
         do {
