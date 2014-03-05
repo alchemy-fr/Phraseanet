@@ -69,7 +69,8 @@ class Account implements ControllerProviderInterface
             ->bind('account_auth_apps');
 
         // Displays a an authorized app grant
-        $controllers->get('/security/application/{application_id}/grant/', 'account.controller:grantAccess')
+        $controllers->get('/security/application/{application}/grant/', 'account.controller:grantAccess')
+            ->before($app['middleware.api-application.converter'])
             ->assert('application_id', '\d+')
             ->bind('grant_app_access');
 
@@ -191,33 +192,29 @@ class Account implements ControllerProviderInterface
     /**
      * Display authorized applications that can access user informations
      *
-     * @param Application $app            A Silex application where the controller is mounted on
-     * @param Request     $request        The current request
-     * @param Integer     $application_id The application id
+     * @param Application    $app
+     * @param Request        $request
+     * @param ApiApplication $application
      *
      * @return JsonResponse
      */
-    public function grantAccess(Application $app, Request $request, $application_id)
+    public function grantAccess(Application $app, Request $request, ApiApplication $application)
     {
         if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
             $app->abort(400, $app->trans('Bad request format, only JSON is allowed'));
         }
 
-        $error = false;
-
-        try {
-            $account = \API_OAuth2_Account::load_with_user(
-                $app
-                , new \API_OAuth2_Application($app, $application_id)
-                , $app['authentication']->getUser()
-            );
-
-            $account->set_revoked((bool) $request->query->get('revoke'), false);
-        } catch (NotFoundHttpException $e) {
-            $error = true;
+        if (null === $account = $app['repo.api-accounts']->findByUserAndApplication($app['authentication']->getUser(), $application)) {
+            return $app->json(['success' => false]);
         }
 
-        return $app->json(['success' => !$error]);
+        if ((Boolean) $request->query->get('revoke')) {
+            $app['manipulator.api-account']->authorizeAccess($account);
+        } else {
+            $app['manipulator.api-account']->revokeAccess($account);
+        }
+
+        return $app->json(['success' => true]);
     }
 
     /**
@@ -244,7 +241,7 @@ class Account implements ControllerProviderInterface
     public function accountAuthorizedApps(Application $app, Request $request)
     {
         return $app['twig']->render('account/authorized_apps.html.twig', [
-            "applications" => \API_OAuth2_Application::load_app_by_user($app, $app['authentication']->getUser()),
+            "applications" => $app['repo.api-applications']->findByUser($app['authentication']->getUser()),
         ]);
     }
 

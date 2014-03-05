@@ -32,7 +32,7 @@ class api_oauthv2_AccountTest extends \PhraseanetTestCase
 
         $this->assertInstanceOf('API_OAuth2_Token', $this->object->get_token());
 
-        $this->assertInstanceOf('API_OAuth2_Application', $this->object->get_application());
+        $this->assertInstanceOf('ApiApplication', $this->object->get_application());
         $this->assertEquals(self::$DI['oauth2-app-user'], $this->object->get_application());
     }
 

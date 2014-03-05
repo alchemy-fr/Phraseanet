@@ -4,6 +4,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Api;
 
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Authentication\Context;
+use Alchemy\Phrasea\Model\Entities\ApiApplication;
 
 /**
  * Test oauthv2 flow based on ietf authv2 spec
@@ -13,7 +14,7 @@ class OAuth2Test extends \PhraseanetAuthenticatedWebTestCase
 {
     /**
      *
-     * @var API_OAuth2_Application
+     * @var ApiApplication
      */
     public static $account_id;
     public static $account;
@@ -44,26 +45,9 @@ class OAuth2Test extends \PhraseanetAuthenticatedWebTestCase
         parent::tearDownAfterClass();
     }
 
-    public static function deleteInsertedRow(\appbox $appbox, \API_OAuth2_Application $app)
+    public static function deleteInsertedRow(\appbox $appbox, ApiApplication $application)
     {
-        $conn = $appbox->get_connection();
-        $sql = '
-      DELETE FROM api_applications
-      WHERE application_id = :id
-    ';
-        $t = [':id' => $app->get_id()];
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($t);
-        $stmt->closeCursor();
-        $sql = '
-      DELETE FROM api_accounts
-      WHERE api_account_id  = :id
-    ';
-        $acc = self::getAccount();
-        $t = [':id' => $acc->get_id()];
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($t);
-        $stmt->closeCursor();
+        self::$DI['app']['manipulator.api-application']->delete($application);
     }
 
     /**
@@ -136,11 +120,9 @@ class OAuth2Test extends \PhraseanetAuthenticatedWebTestCase
     public function testAuthorizeRedirect()
     {
         //session off
-        $apps = \API_OAuth2_Application::load_authorized_app_by_user(self::$DI['app'], self::$DI['user']);
+        $apps = self::$DI['app']['repos.api-application']->findAuthorizedAppsByUser(self::$DI['user']);
         foreach ($apps as $app) {
-            if ($app->get_client_id() == self::$DI['oauth2-app-user']->get_client_id()) {
-                $authorize = true;
-
+            if ($app->get_client_id() === self::$DI['oauth2-app-user']->getClientId()) {
                 self::$DI['client']->followRedirects();
             }
         }

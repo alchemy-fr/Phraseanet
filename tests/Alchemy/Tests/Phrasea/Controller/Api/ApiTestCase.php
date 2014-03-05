@@ -7,6 +7,7 @@ use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Controller\Api\V1;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Authentication\Context;
+use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -27,7 +28,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
      */
     private static $account;
     /**
-     * @var \API_OAuth2_Application
+     * @var ApiApplication
      */
     private static $oauthApplication;
     /**
@@ -39,7 +40,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
      */
     private static $adminAccount;
     /**
-     * @var \API_OAuth2_Application
+     * @var \ApiApplication
      */
     private static $adminApplication;
     private static $apiInitialized = false;
@@ -167,9 +168,10 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $fail = null;
 
         try {
-
-            $nativeApp = \API_OAuth2_Application::load_from_client_id(self::$DI['app'], \API_OAuth2_Application_Navigator::CLIENT_ID);
-
+            $nativeApp = self::$DI['app']['repo.api-applications']->findByClientId(\API_OAuth2_Application_Navigator::CLIENT_ID);
+            if (null === $nativeApp) {
+                throw new  \Exception(sprintf('%s not found', \API_OAuth2_Application_Navigator::CLIENT_ID));
+            }
             $account = \API_OAuth2_Account::create(self::$DI['app'], self::$DI['user'], $nativeApp);
             $token = $account->get_token()->get_value();
             $this->setToken($token);

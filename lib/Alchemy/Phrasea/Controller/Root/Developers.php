@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Controller\Root;
 
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -37,23 +39,28 @@ class Developers implements ControllerProviderInterface
         $controllers->post('/application/', 'controller.account.developers:newApp')
             ->bind('submit_developers_application');
 
-        $controllers->get('/application/{id}/', 'controller.account.developers:getApp')
+        $controllers->get('/application/{application}/', 'controller.account.developers:getApp')
+            ->before($app['middleware.api-application.converter'])
             ->assert('id', '\d+')
             ->bind('developers_application');
 
-        $controllers->delete('/application/{id}/', 'controller.account.developers:deleteApp')
+        $controllers->delete('/application/{application}/', 'controller.account.developers:deleteApp')
+            ->before($app['middleware.api-application.converter'])
             ->assert('id', '\d+')
             ->bind('delete_developers_application');
 
-        $controllers->post('/application/{id}/authorize_grant_password/', 'controller.account.developers:authorizeGrantpassword')
+        $controllers->post('/application/{application}/authorize_grant_password/', 'controller.account.developers:authorizeGrantPassword')
+            ->before($app['middleware.api-application.converter'])
             ->assert('id', '\d+')
             ->bind('submit_developers_application_authorize_grant_password');
 
-        $controllers->post('/application/{id}/access_token/', 'controller.account.developers:renewAccessToken')
+        $controllers->post('/application/{application}/access_token/', 'controller.account.developers:renewAccessToken')
+            ->before($app['middleware.api-application.converter'])
             ->assert('id', '\d+')
             ->bind('submit_developers_application_token');
 
-        $controllers->post('/application/{id}/callback/', 'controller.account.developers:renewAppCallback')
+        $controllers->post('/application/{application}/callback/', 'controller.account.developers:renewAppCallback')
+            ->before($app['middleware.api-application.converter'])
             ->assert('id', '\d+')
             ->bind('submit_application_callback');
 
@@ -61,123 +68,97 @@ class Developers implements ControllerProviderInterface
     }
 
     /**
-     * Delete application
+     * Delete application.
      *
-     * @param  Application  $app     A Silex application where the controller is mounted on
-     * @param  Request      $request The current request
-     * @param  integer      $id      The application id
+     * @param Application    $app
+     * @param Request        $request
+     * @param ApiApplication $application
+     *
      * @return JsonResponse
      */
-    public function deleteApp(Application $app, Request $request, $id)
+    public function deleteApp(Application $app, Request $request, ApiApplication $application)
     {
         if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
             $app->abort(400, 'Bad request format, only JSON is allowed');
         }
 
-        $error = false;
+        $app['manipulator.api-application']->delete($application);
 
-        try {
-            $clientApp = new \API_OAuth2_Application($app, $id);
-            $clientApp->delete();
-        } catch (NotFoundHttpException $e) {
-            $error = true;
-        }
-
-        return $app->json(['success' => !$error]);
+        return $app->json(['success' => true]);
     }
 
     /**
-     * Change application callback
+     * Change application callback.
      *
-     * @param  Application  $app     A Silex application where the controller is mounted on
-     * @param  Request      $request The current request
-     * @param  integer      $id      The application id
+     * @param Application    $app
+     * @param Request        $request
+     * @param ApiApplication $application
+     *
      * @return JsonResponse
      */
-    public function renewAppCallback(Application $app, Request $request, $id)
+    public function renewAppCallback(Application $app, Request $request, ApiApplication $application)
     {
         if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
             $app->abort(400, 'Bad request format, only JSON is allowed');
         }
 
-        $error = false;
-
         try {
-            $clientApp = new \API_OAuth2_Application($app, $id);
-
-            if (null !== $request->request->get("callback")) {
-                $clientApp->set_redirect_uri($request->request->get("callback"));
-            } else {
-                $error = true;
-            }
-        } catch (NotFoundHttpException $e) {
-            $error = true;
+            $app['manipulator.api-application']->setRedirectUri($request->request->get("callback"));
+        } catch (InvalidArgumentException $e) {
+            return $app->json(['success' => false]);
         }
 
-        return $app->json(['success' => !$error]);
+        return $app->json(['success' => true]);
     }
 
     /**
-     * Authorize application to use a grant password type
+     * Authorize application to use a grant password type.
      *
-     * @param  Application  $app     A Silex application where the controller is mounted on
-     * @param  Request      $request The current request
-     * @param  integer      $id      The application id
+     * @param Application    $app
+     * @param Request        $request
+     * @param ApiApplication $application
+     *
      * @return JsonResponse
      */
-    public function renewAccessToken(Application $app, Request $request, $id)
+    public function renewAccessToken(Application $app, Request $request, ApiApplication $application)
     {
         if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
             $app->abort(400, 'Bad request format, only JSON is allowed');
         }
 
-        $error = false;
-        $accessToken = null;
-
-        try {
-            $clientApp = new \API_OAuth2_Application($app, $id);
-            $account = $clientApp->get_user_account($app['authentication']->getUser());
-
-            $token = $account->get_token();
-
-            if ($token instanceof \API_OAuth2_Token) {
-                $token->renew();
-            } else {
-                $token = \API_OAuth2_Token::create($app['phraseanet.appbox'], $account, $app['random.medium']);
-            }
-
-            $accessToken = $token->get_value();
-        } catch (\Exception $e) {
-            $error = true;
+        if (null === $account = $app['repo.api-accounts']->findByUserAndApplication($app['authentication']->getUser(), $application)) {
+            $app->abort(404, sprintf('Account not found for application %s', $application->getName()));
         }
 
-        return $app->json(['success' => !$error, 'token'   => $accessToken]);
+        $token = $account->getOauthToken();
+        if ($account->hasOauthToken()) {
+            $app['manipulator.api-oauth-token']->renew($token);
+        } else {
+            $token = $app['manipulator.api-oauth-token']->create($account);
+        }
+
+        return $app->json(['success' => true, 'token' => $token->getOauthToken()]);
     }
 
     /**
-     * Authorize application to use a grant password type
+     * Authorize application to use a grant password type.
      *
-     * @param  Application  $app     A Silex application where the controller is mounted on
-     * @param  Request      $request The current request
-     * @param  integer      $id      The application id
+     * @param Application    $app
+     * @param Request        $request
+     * @param ApiApplication $application
+     *
      * @return JsonResponse
      */
-    public function authorizeGrantpassword(Application $app, Request $request, $id)
+    public function authorizeGrantPassword(Application $app, Request $request, ApiApplication $application)
     {
         if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
             $app->abort(400, 'Bad request format, only JSON is allowed');
         }
 
-        $error = false;
+        $application->setGrantPassword((Boolean) $request->request->get('grant'));
+        $app['manipulator.api-application']->update($application);
 
-        try {
-            $clientApp = new \API_OAuth2_Application($app, $id);
-            $clientApp->set_grant_password((bool) $request->request->get('grant', false));
-        } catch (NotFoundHttpException $e) {
-            $error = true;
-        }
-
-        return $app->json(['success' => !$error]);
+        return $app->json(['success' => true]);
     }
 
     /**
@@ -189,7 +170,7 @@ class Developers implements ControllerProviderInterface
      */
     public function newApp(Application $app, Request $request)
     {
-        if ($request->request->get('type') === \API_OAuth2_Application::DESKTOP_TYPE) {
+        if ($request->request->get('type') === ApiApplication::DESKTOP_TYPE) {
             $form = new \API_OAuth2_Form_DevAppDesktop($app['request']);
         } else {
             $form = new \API_OAuth2_Form_DevAppInternet($app['request']);
@@ -198,22 +179,22 @@ class Developers implements ControllerProviderInterface
         $violations = $app['validator']->validate($form);
 
         if ($violations->count() === 0) {
-            $application = \API_OAuth2_Application::create($app, $app['authentication']->getUser(), $form->getName());
-            $application
-                ->set_description($form->getDescription())
-                ->set_redirect_uri($form->getSchemeCallback() . $form->getCallback())
-                ->set_type($form->getType())
-                ->set_website($form->getSchemeWebsite() . $form->getWebsite());
+            $application = $app['manipulator.api-application']->create(
+                $form->getName(),
+                $form->getType(),
+                $form->getDescription(),
+                sprintf('%s%s', $form->getSchemeWebsite(), $form->getWebsite()),
+                $app['authentication']->getUser(),
+                sprintf('%s%s', $form->getSchemeCallback(), $form->getCallback())
+            );
 
             return $app->redirectPath('developers_application', ['id' => $application->get_id()]);
         }
 
-        $var = [
+        return $app['twig']->render('/developers/application_form.html.twig', [
             "violations" => $violations,
             "form"       => $form
-        ];
-
-        return $app['twig']->render('/developers/application_form.html.twig', $var);
+        ]);
     }
 
     /**
@@ -226,7 +207,7 @@ class Developers implements ControllerProviderInterface
     public function listApps(Application $app, Request $request)
     {
         return $app['twig']->render('developers/applications.html.twig', [
-            "applications" => \API_OAuth2_Application::load_dev_app_by_user($app, $app['authentication']->getUser())
+            "applications" => $app['repo.api-applications']->findByCreator($app['authentication']->getUser())
         ]);
     }
 
@@ -247,25 +228,26 @@ class Developers implements ControllerProviderInterface
     }
 
     /**
-     * Get application information
+     * Gets application information.
      *
-     * @param  Application $app     A Silex application where the controller is mounted on
-     * @param  Request     $request The current request
-     * @param  integer     $id      The application id
-     * @return Response
+     * @param Application    $app
+     * @param Request        $request
+     * @param ApiApplication $application
+     *
+     * @return mixed
      */
-    public function getApp(Application $app, Request $request, $id)
+    public function getApp(Application $app, Request $request, ApiApplication $application)
     {
-        try {
-            $client = new \API_OAuth2_Application($app, $id);
-        } catch (NotFoundHttpException $e) {
-            $app->abort(404);
+        $token = null;
+
+        if (null !== $account = $app['repo.api-accounts']->findByUserAndApplication($app['authentication']->getUser(), $application)) {
+            if ($account->hasOauthToken()) {
+                $token = $account->getOauthToken()->getOauthToken();
+            }
         }
 
-        $token = $client->get_user_account($app['authentication']->getUser())->get_token()->get_value();
-
         return $app['twig']->render('developers/application.html.twig', [
-            "application" => $client,
+            "application" => $application,
             "user"        => $app['authentication']->getUser(),
             "token"       => $token
         ]);

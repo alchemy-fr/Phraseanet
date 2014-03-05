@@ -32,7 +32,7 @@
                     </tr>
                     <tr>
                         <td>{{ "URL de callback" | trans }}</td>
-                        {% if application.get_type() == constant("API_OAuth2_Application::DESKTOP_TYPE") %}
+                        {% if application.get_type() == constant("Alchemy\Phrasea\Model\Entities\ApiApplication::DESKTOP_TYPE") %}
                             <td>
                                 <span>{{ application.get_redirect_uri() }}</span>
                             </td>

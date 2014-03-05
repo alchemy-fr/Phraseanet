@@ -199,11 +199,11 @@ abstract class PhraseanetTestCase extends WebTestCase
         });
 
         self::$DI['oauth2-app-user'] = self::$DI->share(function ($DI) {
-            return new \API_OAuth2_Application($DI['app'], self::$fixtureIds['oauth']['user']);
+            return new $DI['app']['repo.api-applications']->find(self::$fixtureIds['oauth']['user']);
         });
 
         self::$DI['oauth2-app-user_notAdmin'] = self::$DI->share(function ($DI) {
-            return new \API_OAuth2_Application($DI['app'], self::$fixtureIds['oauth']['user_notAdmin']);
+            return new $DI['app']['repo.api-applications']->find(self::$fixtureIds['oauth']['user-not-admin']);
         });
 
         self::$DI['logger'] = self::$DI->share(function () {

@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints;
@@ -48,9 +49,7 @@ class API_OAuth2_Form_DevAppDesktop
     public $urlwebsite;
 
     /**
-     *
-     * @param  Request                $request
-     * @return API_OAuth2_Form_DevApp
+     * @param Request $request
      */
     public function __construct(Request $request)
     {
@@ -58,8 +57,8 @@ class API_OAuth2_Form_DevAppDesktop
         $this->description = $request->get('description', '');
         $this->scheme_website = $request->get('scheme-website', 'http://');
         $this->website = $request->get('website', '');
-        $this->callback = API_OAuth2_Application::NATIVE_APP_REDIRECT_URI;
-        $this->type = API_OAuth2_Application::DESKTOP_TYPE;
+        $this->callback = ApiApplication::NATIVE_APP_REDIRECT_URI;
+        $this->type = ApiApplication::DESKTOP_TYPE;
 
         $this->urlwebsite = $this->scheme_website . $this->website;
 

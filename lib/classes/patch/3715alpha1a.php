@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class patch_3715alpha1a extends patchAbstract
@@ -59,18 +60,20 @@ class patch_3715alpha1a extends patchAbstract
      */
     public function apply(base $appbox, Application $app)
     {
-        try {
-            \API_OAuth2_Application::load_from_client_id($app, \API_OAuth2_Application_OfficePlugin::CLIENT_ID);
-        } catch (NotFoundHttpException $e) {
-            $client = \API_OAuth2_Application::create($app, null, \API_OAuth2_Application_OfficePlugin::CLIENT_NAME);
+        if (null === $app['repo.api-applications']->findByClientId(\API_OAuth2_Application_OfficePlugin::CLIENT_ID)) {
+            $application = $app['manipulator.api-applications']->create(
+                \API_OAuth2_Application_OfficePlugin::CLIENT_NAME,
+                ApiApplication::DESKTOP_TYPE,
+                'http://www.phraseanet.com',
+                null,
+                ApiApplication::NATIVE_APP_REDIRECT_URI
+            );
 
-            $client->set_activated(true);
-            $client->set_grant_password(true);
-            $client->set_website("http://www.phraseanet.com");
-            $client->set_client_id(\API_OAuth2_Application_OfficePlugin::CLIENT_ID);
-            $client->set_client_secret(\API_OAuth2_Application_OfficePlugin::CLIENT_SECRET);
-            $client->set_type(\API_OAuth2_Application::DESKTOP_TYPE);
-            $client->set_redirect_uri(\API_OAuth2_Application::NATIVE_APP_REDIRECT_URI);
+            $application->setGrantPassword(true);
+            $application->setClientId(\API_OAuth2_Application_OfficePlugin::CLIENT_ID);
+            $application->setClientSecret(\API_OAuth2_Application_OfficePlugin::CLIENT_SECRET);
+
+            $app['manipulator.api-applications']->update($application);
         }
 
         return true;

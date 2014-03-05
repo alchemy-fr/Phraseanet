@@ -1,113 +1,104 @@
 <?php
+use Alchemy\Phrasea\Model\Entities\ApiApplication;
 
 class api_oauthv2_ApplicationTest extends \PhraseanetTestCase
 {
     public function testLoad_from_client_id()
     {
-        $client_id = self::$DI['oauth2-app-user']->get_client_id();
-        $loaded = API_OAuth2_Application::load_from_client_id(self::$DI['app'], $client_id);
-        $this->assertInstanceOf('API_OAuth2_Application', $loaded);
+        $loaded = self::$DI['app']['repo.api-applications']->findByClientId(self::$DI['oauth2-app-user']->getClientId());
+        $this->assertInstanceOf('ApiApplication', $loaded);
         $this->assertEquals(self::$DI['oauth2-app-user'], $loaded);
     }
 
     public function testLoad_dev_app_by_user()
     {
-        $apps = API_OAuth2_Application::load_dev_app_by_user(self::$DI['app'], self::$DI['user']);
+        $apps = self::$DI['app']['repo.api-applications']->findByCreator(self::$DI['user']);
         $this->assertTrue(is_array($apps));
         $this->assertTrue(count($apps) > 0);
         $found = false;
         foreach ($apps as $app) {
-            if ($app->get_id() === self::$DI['oauth2-app-user']->get_id())
+            if ($app->get_id() === self::$DI['oauth2-app-user']->getId()) {
                 $found = true;
-            $this->assertInstanceOf('API_OAuth2_Application', $app);
+            }
+            $this->assertInstanceOf('ApiApplication', $app);
         }
 
-        if ( ! $found)
+        if (!$found) {
             $this->fail();
+        }
     }
 
     public function testLoad_app_by_user()
     {
-        $apps = API_OAuth2_Application::load_app_by_user(self::$DI['app'], self::$DI['user']);
+        $apps = self::$DI['app']['repo.api-applications']->findByUser(self::$DI['user']);
         $this->assertTrue(is_array($apps));
         $this->assertTrue(count($apps) > 0);
         $found = false;
 
         foreach ($apps as $app) {
-            if ($app->get_id() === self::$DI['oauth2-app-user']->get_id())
+            if ($app->get_id() === self::$DI['oauth2-app-user']->get_id()) {
                 $found = true;
-            $this->assertInstanceOf('API_OAuth2_Application', $app);
+            }
+            $this->assertInstanceOf('ApiApplication', $app);
         }
 
-        if ( ! $found)
+        if (!$found) {
             $this->fail();
+        }
     }
 
     public function testGettersAndSetters()
     {
-        $this->assertTrue(is_int(self::$DI['oauth2-app-user']->get_id()));
-        $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\User', self::$DI['oauth2-app-user']->get_creator());
-        $this->assertEquals(self::$DI['user']->getId(), self::$DI['oauth2-app-user']->get_creator()->getId());
+        $this->assertTrue(is_int(self::$DI['oauth2-app-user']->getId()));
+        $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\User', self::$DI['oauth2-app-user']->getCreator());
+        $this->assertEquals(self::$DI['user']->getId(), self::$DI['oauth2-app-user']->getCreator()->getId());
+        $this->assertTrue(in_array(self::$DI['oauth2-app-user']->getType(), [ApiApplication::DESKTOP_TYPE, ApiApplication::WEB_TYPE]));
+        $this->assertTrue(is_string(self::$DI['oauth2-app-user']->getNonce()));
+        $this->assertEquals(64, strlen(self::$DI['oauth2-app-user']->getNonce()));
+        self::$DI['oauth2-app-user']->set_type(ApiApplication::WEB_TYPE);
+        $this->assertEquals(ApiApplication::WEB_TYPE, self::$DI['oauth2-app-user']->getType());
+        self::$DI['oauth2-app-user']->set_type(ApiApplication::DESKTOP_TYPE);
+        $this->assertEquals(ApiApplication::DESKTOP_TYPE, self::$DI['oauth2-app-user']->getType());
+        $this->assertEquals(ApiApplication::NATIVE_APP_REDIRECT_URI, self::$DI['oauth2-app-user']->getRedirectUri());
+        self::$DI['oauth2-app-user']->setType(ApiApplication::WEB_TYPE);
 
-        $this->assertTrue(in_array(self::$DI['oauth2-app-user']->get_type(), [API_OAuth2_Application::DESKTOP_TYPE, API_OAuth2_Application::WEB_TYPE]));
-
-        $this->assertTrue(is_string(self::$DI['oauth2-app-user']->get_nonce()));
-        $this->assertEquals(64, strlen(self::$DI['oauth2-app-user']->get_nonce()));
-
-        try {
-            self::$DI['oauth2-app-user']->set_type('prout');
-            $this->fail();
-        } catch (Exception_InvalidArgument $e) {
-
-        }
-
-        self::$DI['oauth2-app-user']->set_type(API_OAuth2_Application::WEB_TYPE);
-        $this->assertEquals(API_OAuth2_Application::WEB_TYPE, self::$DI['oauth2-app-user']->get_type());
-        self::$DI['oauth2-app-user']->set_type(API_OAuth2_Application::DESKTOP_TYPE);
-        $this->assertEquals(API_OAuth2_Application::DESKTOP_TYPE, self::$DI['oauth2-app-user']->get_type());
-        $this->assertEquals(API_OAuth2_Application::NATIVE_APP_REDIRECT_URI, self::$DI['oauth2-app-user']->get_redirect_uri());
-        self::$DI['oauth2-app-user']->set_type(API_OAuth2_Application::WEB_TYPE);
-
-        self::$DI['oauth2-app-user']->set_name('prout');
-        $this->assertEquals('prout', self::$DI['oauth2-app-user']->get_name());
-        self::$DI['oauth2-app-user']->set_name('test application for user');
-        $this->assertEquals('test application for user', self::$DI['oauth2-app-user']->get_name());
+        self::$DI['oauth2-app-user']->setName('prout');
+        $this->assertEquals('prout', self::$DI['oauth2-app-user']->getName());
+        self::$DI['oauth2-app-user']->setName('test application for user');
+        $this->assertEquals('test application for user', self::$DI['oauth2-app-user']->getName());
 
         $desc = 'prouti prouto prout prout';
-        self::$DI['oauth2-app-user']->set_description($desc);
-        $this->assertEquals($desc, self::$DI['oauth2-app-user']->get_description());
-        self::$DI['oauth2-app-user']->set_description('');
-        $this->assertEquals('', self::$DI['oauth2-app-user']->get_description());
+        self::$DI['oauth2-app-user']->setDescription($desc);
+        $this->assertEquals($desc, self::$DI['oauth2-app-user']->getDescription());
+        self::$DI['oauth2-app-user']->setDescription('');
+        $this->assertEquals('', self::$DI['oauth2-app-user']->getDescription());
 
         $site = 'http://www.example.com/';
-        self::$DI['oauth2-app-user']->set_website($site);
-        $this->assertEquals($site, self::$DI['oauth2-app-user']->get_website());
-        self::$DI['oauth2-app-user']->set_website('');
-        $this->assertEquals('', self::$DI['oauth2-app-user']->get_website());
+        self::$DI['oauth2-app-user']->setWebsite($site);
+        $this->assertEquals($site, self::$DI['oauth2-app-user']->getWebsite());
+        self::$DI['oauth2-app-user']->setWebsite('');
+        $this->assertEquals('', self::$DI['oauth2-app-user']->getWebsite());
 
-        $this->assertInstanceOf('DateTime', self::$DI['oauth2-app-user']->get_created_on());
+        $this->assertInstanceOf('DateTime', self::$DI['oauth2-app-user']->getCreated());
+        $this->assertInstanceOf('DateTime', self::$DI['oauth2-app-user']->getUpdated());
 
-        $this->assertInstanceOf('DateTime', self::$DI['oauth2-app-user']->get_last_modified());
-
-        $this->assertMd5(self::$DI['oauth2-app-user']->get_client_id());
+        $this->assertMd5(self::$DI['oauth2-app-user']->getClientId());
 
         $client_id = md5('prouto');
-        self::$DI['oauth2-app-user']->set_client_id($client_id);
-        $this->assertEquals($client_id, self::$DI['oauth2-app-user']->get_client_id());
-        $this->assertMd5(self::$DI['oauth2-app-user']->get_client_id());
+        self::$DI['oauth2-app-user']->seClientId($client_id);
+        $this->assertEquals($client_id, self::$DI['oauth2-app-user']->getClientId());
+        $this->assertMd5(self::$DI['oauth2-app-user']->getClientId());
 
-        $this->assertMd5(self::$DI['oauth2-app-user']->get_client_secret());
+        $this->assertMd5(self::$DI['oauth2-app-user']->getClientSecret());
 
         $client_secret = md5('prouto');
-        self::$DI['oauth2-app-user']->set_client_secret($client_secret);
-        $this->assertEquals($client_secret, self::$DI['oauth2-app-user']->get_client_secret());
-        $this->assertMd5(self::$DI['oauth2-app-user']->get_client_secret());
+        self::$DI['oauth2-app-user']->setClientSecret($client_secret);
+        $this->assertEquals($client_secret, self::$DI['oauth2-app-user']->getClientSecret());
+        $this->assertMd5(self::$DI['oauth2-app-user']->getClientSecret());
 
         $uri = 'http://www.example.com/callback/';
-        self::$DI['oauth2-app-user']->set_redirect_uri($uri);
-        $this->assertEquals($uri, self::$DI['oauth2-app-user']->get_redirect_uri());
-
-        $this->assertInstanceOf('API_OAuth2_Account', self::$DI['oauth2-app-user']->get_user_account(self::$DI['user']));
+        self::$DI['oauth2-app-user']->setRedirectUri($uri);
+        $this->assertEquals($uri, self::$DI['oauth2-app-user']->getRedirectUri());
     }
 
     private function assertmd5($md5)

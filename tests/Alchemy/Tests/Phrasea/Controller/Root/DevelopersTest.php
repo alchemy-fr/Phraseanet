@@ -2,6 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Root;
 
+use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
@@ -34,7 +35,7 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
     public function testPostNewAppInvalidArguments()
     {
         $crawler = self::$DI['client']->request('POST', '/developers/application/', [
-            'type'            => \API_OAuth2_Application::WEB_TYPE,
+            'type'            => ApiApplication::WEB_TYPE,
             'name'            => '',
             'description'     => 'okok',
             'website'         => 'my.website.com',
@@ -55,11 +56,11 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testPostNewApp()
     {
-        $apps = \API_OAuth2_Application::load_dev_app_by_user(self::$DI['app'], self::$DI['user']);
+        $apps = self::$DI['app']['repos.api-applications']->findByCreator(self::$DI['user']);
         $nbApp = count($apps);
 
         self::$DI['client']->request('POST', '/developers/application/', [
-            'type'            => \API_OAuth2_Application::WEB_TYPE,
+            'type'            => ApiApplication::WEB_TYPE,
             'name'            => 'hello',
             'description'     => 'okok',
             'website'         => 'my.website.com',
@@ -68,7 +69,7 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
             'scheme-callback' => 'http://'
         ]);
 
-        $apps = \API_OAuth2_Application::load_dev_app_by_user(self::$DI['app'], self::$DI['user']);
+        $apps = self::$DI['app']['repos.api-applications']->findByCreator(self::$DI['user']);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertGreaterThan($nbApp, count($apps));
@@ -121,16 +122,16 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testDeleteApp()
     {
-        $oauthApp = \API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test app');
-        $this->XMLHTTPRequest('DELETE', '/developers/application/' . $oauthApp->get_id() . '/');
+        $oauthApp = self::$DI['app']['manipulator.api-application']->create(
+            'test app',
+            '',
+            '',
+            'http://phraseanet.com/'
+        );
+        $this->XMLHTTPRequest('DELETE', '/developers/application/' . $oauthApp->getId() . '/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
-        try {
-            new \API_OAuth2_Application(self::$DI['app'], $oauthApp->get_id());
-            $this->fail('Application not deleted');
-        } catch (NotFoundHttpException $e) {
-
-        }
+        $this->assertNull(self::$DI['app']['repos.api-application']->find($oauthApp->getId()));
     }
 
     /**
@@ -183,8 +184,8 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $content = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->assertTrue($content->success);
-        $oauthApp = new \API_OAuth2_Application(self::$DI['app'], $oauthApp->get_id());
-        $this->assertEquals('my.callback.com', $oauthApp->get_redirect_uri());
+        $oauthApp = self::$DI['app']['repos.api-application']->find($oauthApp->getId());
+        $this->assertEquals('my.callback.com', $oauthApp->getRedirectUri());
     }
 
     /**
@@ -265,7 +266,7 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $content = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->assertTrue($content->success);
-        $oauthApp = new \API_OAuth2_Application(self::$DI['app'], $oauthApp->get_id());
-        $this->assertTrue($oauthApp->is_password_granted());
+        $oauthApp = self::$DI['app']['repos.api-application']->find($oauthApp->getId());
+        $this->assertTrue($oauthApp->isPasswordGranted());
     }
 }
