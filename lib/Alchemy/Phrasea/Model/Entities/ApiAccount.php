@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="ApiAccounts", indexes={@ORM\Index(name="usr_id", columns={"usr_id"}), @ORM\Index(name="application_id", columns={"application_id"})})
+ * @ORM\Table(name="ApiAccounts", indexes={@ORM\Index(name="user_id", columns={"user_id"}), @ORM\Index(name="application_id", columns={"application_id"})})
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\ApiAccountRepository")
  */
 class ApiAccount
