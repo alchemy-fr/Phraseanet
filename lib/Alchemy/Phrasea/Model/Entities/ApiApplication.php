@@ -109,14 +109,14 @@ class ApiApplication
      *
      * @ORM\Column(type="boolean", nullable=false)
      */
-    private $activated;
+    private $activated = true;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="grant_password", type="boolean", nullable=false)
      */
-    private $grantPassword;
+    private $grantPassword = false;
 
     /**
      * @param boolean $activated
