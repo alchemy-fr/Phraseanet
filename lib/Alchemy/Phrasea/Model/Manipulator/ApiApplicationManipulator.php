@@ -14,13 +14,11 @@ namespace Alchemy\Phrasea\Model\Manipulator;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Alchemy\Phrasea\Model\Entities\ApiAccount;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
-use Alchemy\Phrasea\Model\Entities\Registration;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use RandomLib\Generator;
 
 class ApiApplicationManipulator implements ManipulatorInterface
 {
