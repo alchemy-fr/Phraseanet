@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Model\Entities\ApiAccount;
 use Alchemy\Phrasea\Model\Entities\ApiOauthRefreshtoken;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityRepository;
 use RandomLib\Generator;
@@ -68,7 +69,7 @@ class ApiOauthRefreshTokenManipulator implements ManipulatorInterface
     private function getNewToken()
     {
         do {
-            $refreshToken = $this->randomGenerator->generateString(32, \random::LETTERS_AND_NUMBERS);
+            $refreshToken = $this->randomGenerator->generateString(32, TokenManipulator::LETTERS_AND_NUMBERS);
         } while (null !== $this->repository->find($refreshToken));
 
         return $refreshToken;

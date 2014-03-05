@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityRepository;
 use RandomLib\Generator;
@@ -43,8 +44,8 @@ class ApiApplicationManipulator implements ManipulatorInterface
         $this->doSetWebsiteUrl($application, $applicationWebsite);
         $this->doSetRedirectUri($application, $redirectUri);
         $application->setNonce($this->randomGenerator->generateString(64));
-        $application->setClientId($this->randomGenerator->generateString(32, \random::LETTERS_AND_NUMBERS));
-        $application->setClientSecret($this->randomGenerator->generateString(32, \random::LETTERS_AND_NUMBERS));
+        $application->setClientId($this->randomGenerator->generateString(32, TokenManipulator::LETTERS_AND_NUMBERS));
+        $application->setClientSecret($this->randomGenerator->generateString(32, TokenManipulator::LETTERS_AND_NUMBERS));
 
         $this->om->persist($application);
         $this->om->flush();

@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Model\Entities\ApiAccount;
 use Alchemy\Phrasea\Model\Entities\ApiOauthCode;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityRepository;
 use RandomLib\Generator;
@@ -69,7 +70,7 @@ class ApiOauthCodeManipulator implements ManipulatorInterface
     private function getNewCode()
     {
         do {
-            $code = $this->randomGenerator->generateString(16, \random::LETTERS_AND_NUMBERS);
+            $code = $this->randomGenerator->generateString(16, TokenManipulator::LETTERS_AND_NUMBERS);
         } while (null !== $this->repository->find($code));
 
         return $code;
