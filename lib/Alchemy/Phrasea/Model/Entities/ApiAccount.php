@@ -31,7 +31,7 @@ class ApiAccount
      *
      * @ORM\Column(type="boolean")
      */
-    private $revoked;
+    private $revoked = false;
 
     /**
      * @var string
