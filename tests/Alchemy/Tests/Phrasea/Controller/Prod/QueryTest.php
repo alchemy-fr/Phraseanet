@@ -19,6 +19,13 @@ class QueryTest extends \PhraseanetAuthenticatedWebTestCase
         }
         $route = '/prod/query/';
 
+        self::$DI['app']['manipulator.user'] = $this->getMockBuilder('Alchemy\Phrasea\Model\Manipulator\UserManipulator')
+            ->setConstructorArgs([self::$DI['app']['model.user-manager'], self::$DI['app']['auth.password-encoder'], self::$DI['app']['geonames.connector'], self::$DI['app']['repo.users'], self::$DI['app']['random.low']])
+            ->setMethods(['logQuery'])
+            ->getMock();
+
+        self::$DI['app']['manipulator.user']->expects($this->once())->method('logQuery');
+
         self::$DI['client']->request('POST', $route);
 
         $response = self::$DI['client']->getResponse();

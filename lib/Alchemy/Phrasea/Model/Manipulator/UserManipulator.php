@@ -250,7 +250,6 @@ class UserManipulator implements ManipulatorInterface
         $userQuery = new UserQuery();
         $userQuery->setUser($user);
         $userQuery->setQuery($query);
-        $userQuery->setUser($user);
 
         $user->addQuery($userQuery);
 

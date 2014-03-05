@@ -69,6 +69,13 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
             $this->markTestSkipped('Phrasea2 is required for this test');
         }
 
+        self::$DI['app']['manipulator.user'] = $this->getMockBuilder('Alchemy\Phrasea\Model\Manipulator\UserManipulator')
+            ->setConstructorArgs([self::$DI['app']['model.user-manager'], self::$DI['app']['auth.password-encoder'], self::$DI['app']['geonames.connector'], self::$DI['app']['repo.users'], self::$DI['app']['random.low']])
+            ->setMethods(['logQuery'])
+            ->getMock();
+
+        self::$DI['app']['manipulator.user']->expects($this->once())->method('logQuery');
+
         $queryParameters = [];
         $queryParameters["mod"] = self::$DI['app']['settings']->getUserSetting(self::$DI['user'], 'client_view', '3X6');
         $queryParameters["bas"] = array_keys(self::$DI['app']['acl']->get(self::$DI['user'])->get_granted_base());
