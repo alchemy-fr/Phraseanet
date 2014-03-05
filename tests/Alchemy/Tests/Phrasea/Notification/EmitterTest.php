@@ -16,6 +16,7 @@ class EmitterTest extends \PhraseanetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->name = 'name-' . mt_rand();
         $this->email = sprintf('name-%s@domain-%s.com', mt_rand(), mt_rand());
         $this->object = new Emitter($this->name, $this->email);

@@ -17,6 +17,7 @@ class FlexPaperTest extends \PhraseanetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->object = new FlexPaper($this->createTranslatorMock());
     }
 

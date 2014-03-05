@@ -14,6 +14,7 @@ class EnumTest extends \PhraseanetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->object = new Enum('Numo', 'enumerateur', ['un', 'dos', 'tres'], 'dos');
     }
 

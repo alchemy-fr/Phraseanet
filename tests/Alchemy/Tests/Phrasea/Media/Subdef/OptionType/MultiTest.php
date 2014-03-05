@@ -14,6 +14,7 @@ class MultiTest extends \PhraseanetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->object = new Multi('MUMU', 'multiateur', ['un', 'dos', 'tres'], 'dos');
     }
 

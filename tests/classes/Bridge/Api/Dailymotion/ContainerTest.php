@@ -11,6 +11,7 @@ class Bridge_Api_Dailymotion_ContainerTest extends \PhraseanetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->test = [
             'id'          => '01234567'
             , 'description' => 'one description'

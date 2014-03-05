@@ -13,6 +13,7 @@ class MemcacheCacheTest extends \PhraseanetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->object = new MemcacheCache();
 
         if ( ! class_exists('Memcache')) {

@@ -14,6 +14,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function setUp()
     {
+        parent::setUp();
         self::$DI['app'] = $this->loadApp();
         self::dropDatabase();
         parent::setUp();
@@ -23,6 +24,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
     public function tearDown()
     {
         if (!self::$createdCollections) {
+            parent::tearDown();
             return;
         }
 
@@ -41,6 +43,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         }
 
         self::$createdCollections = null;
+        parent::tearDown();
     }
 
     public function getJson($response)

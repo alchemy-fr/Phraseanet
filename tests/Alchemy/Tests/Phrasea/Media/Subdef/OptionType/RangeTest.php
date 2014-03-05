@@ -18,6 +18,7 @@ class RangeTest extends \PhraseanetTestCase
      */
     public function setUp()
     {
+        parent::setUp();
         $this->object = new Range('Rangers', 'name', 3, 8, 6, 2);
     }
 

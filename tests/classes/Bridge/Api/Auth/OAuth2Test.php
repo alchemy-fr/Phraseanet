@@ -13,6 +13,7 @@ class Bridge_Api_Auth_OAuth2Test extends \PhraseanetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->object = new Bridge_Api_Auth_OAuth2();
 
         $this->parameters = [

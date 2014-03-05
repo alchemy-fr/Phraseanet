@@ -20,6 +20,7 @@ class MetaFieldTest extends \PhraseanetTestCase
      */
     public function setUp()
     {
+        parent::setUp();
         $this->value = ["Un éléphant ça trompe"];
         foreach (self::$DI['collection']->get_databox()->get_meta_structure() as $databox_field) {
             $this->databox_field = $databox_field;
@@ -42,6 +43,7 @@ class MetaFieldTest extends \PhraseanetTestCase
         \PHPUnit_Framework_Error_Warning::$enabled = $this->before;
         \PHPUnit_Framework_Error_Notice::$enabled = $this->beforeNotice;
         $this->object = null;
+        parent::tearDown();
     }
 
     /**

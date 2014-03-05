@@ -11,6 +11,7 @@ class Bridge_Api_Youtube_ContainerTest extends \PhraseanetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $published = new Zend_Gdata_App_Extension_Published("2011-10-21 12:00:00");
         $updated = new Zend_Gdata_App_Extension_Updated("2011-10-21 12:20:00");
         $id = new Zend_Gdata_App_Extension_Id("Az2cv12");

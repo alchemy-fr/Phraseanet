@@ -9,6 +9,7 @@ class TagProviderTest extends \PhraseanetTestCase
     private $object;
     public function setUp()
     {
+        parent::setUp();
         $this->object = new TagProvider;
     }
 

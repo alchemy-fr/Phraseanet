@@ -17,6 +17,7 @@ class GifTest extends \PhraseanetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->object = new Gif($this->createTranslatorMock());
     }
 

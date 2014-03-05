@@ -17,6 +17,7 @@ class VideoTest extends \PhraseanetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->object = new Video($this->createTranslatorMock());
     }
 

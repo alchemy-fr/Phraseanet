@@ -10,12 +10,14 @@ class Migration38Test extends AbstractSetupTester
 {
     public function setUp()
     {
+        parent::setUp();
         $this->revert();
     }
 
     public function tearDown()
     {
         $this->revert();
+        parent::tearDown();
     }
 
     private function revert()

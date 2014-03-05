@@ -17,6 +17,7 @@ class AudioTest extends \PhraseanetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->object = new Audio($this->createTranslatorMock());
     }
 

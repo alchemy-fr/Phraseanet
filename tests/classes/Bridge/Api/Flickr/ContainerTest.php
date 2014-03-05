@@ -11,6 +11,7 @@ class Bridge_Api_Flickr_ContainerTest extends \PhraseanetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $string = '
       <photoset id="72157626216528324" primary="5504567858" secret="017804c585" server="5174" farm="6" photos="22" videos="0" count_views="137" count_comments="0" can_comment="1" date_create="1299514498" date_update="1300335009">
         <title>Avis Blanche</title>

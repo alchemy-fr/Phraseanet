@@ -15,6 +15,7 @@ class CommandTest extends \PhraseanetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->object = new AbstractCommandTester('name');
     }
 

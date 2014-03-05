@@ -17,6 +17,7 @@ class ImageTest extends \PhraseanetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->object = new Image($this->createTranslatorMock());
     }
 

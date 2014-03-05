@@ -11,6 +11,7 @@ class Bridge_Api_Auth_FlickrTest extends \PhraseanetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->object = new Bridge_Api_Auth_Flickr();
     }
 

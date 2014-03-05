@@ -18,6 +18,7 @@ class Bridge_Api_Flickr_ElementTest extends \PhraseanetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $str = '
       <photo id="6263188755" width_t="100" height_t="67" url_t="http://farm7.static.flickr.com/6034/6263188755_2dca715798_t.jpg" width_sq="75" height_sq="75" url_sq="http://farm7.static.flickr.com/6034/6263188755_2dca715798_s.jpg" views="1" tags="" lastupdate="1319126343" ownername="Boontyp4" datetakengranularity="0" datetaken="2008-09-28 20:26:00" dateupload="1319117962" license="0" isfamily="0" isfriend="0" ispublic="1" title="un titre" farm="7" server="6034" secret="2dca715798" owner="60578095@N05">
         <description>une description</description>

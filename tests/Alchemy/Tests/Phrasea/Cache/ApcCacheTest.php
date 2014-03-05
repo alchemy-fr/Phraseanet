@@ -13,6 +13,7 @@ class ApcCacheTest extends \PhraseanetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         if (!extension_loaded('apc')) {
             $this->markTestSkipped('Apc is not installed');
         }

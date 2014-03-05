@@ -14,6 +14,7 @@ class BooleanTest extends \PhraseanetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->object = new Boolean('Booleen', 'boolean', true);
     }
 

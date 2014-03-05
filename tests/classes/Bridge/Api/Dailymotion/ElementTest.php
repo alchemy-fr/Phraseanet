@@ -12,6 +12,7 @@ class Bridge_Api_Dailymotion_ElementTest extends \PhraseanetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->test = [
             'created_time'         => time()
             , 'description'          => 'Description of a dailymotion element'

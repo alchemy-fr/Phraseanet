@@ -13,6 +13,7 @@ class XcacheCacheTest extends \PhraseanetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         if ( ! function_exists('xcache_info')) {
             $this->markTestSkipped('Xcache not loaded');
         }

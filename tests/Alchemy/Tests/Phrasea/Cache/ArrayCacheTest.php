@@ -13,6 +13,7 @@ class ArrayCacheTest extends \PhraseanetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->object = new ArrayCache;
     }
 

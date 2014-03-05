@@ -18,6 +18,7 @@ class UpgradeDBDatasTest extends \PhraseanetTestCase
      */
     public function setUp()
     {
+        parent::setUp();
         $this->object = new UpgradeDBDatas('commandname');
     }
 

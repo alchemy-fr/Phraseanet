@@ -14,6 +14,7 @@ class MaintenanceSubscriberTest extends \PhraseanetTestCase
         if (is_file(__DIR__ . '/Fixtures/configuration-maintenance.php')) {
             unlink(__DIR__ . '/Fixtures/configuration-maintenance.php');
         }
+        parent::tearDown();
     }
 
     public function testCheckNegative()

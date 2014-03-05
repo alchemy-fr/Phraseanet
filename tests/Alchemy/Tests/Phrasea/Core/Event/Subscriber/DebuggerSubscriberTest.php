@@ -13,6 +13,7 @@ class DebuggerSubscriberTest extends \PhraseanetTestCase
         if (is_file(__DIR__ . '/Fixtures/configuration-debugger.php')) {
             unlink(__DIR__ . '/Fixtures/configuration-debugger.php');
         }
+        parent::tearDown();
     }
 
     /**
