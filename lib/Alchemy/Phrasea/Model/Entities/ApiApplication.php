@@ -14,6 +14,13 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class ApiApplication
 {
+    /** desktop application */
+    const DESKTOP_TYPE = 'desktop';
+    /** web application */
+    const WEB_TYPE = 'web';
+    /** Uniform Resource Name */
+    const NATIVE_APP_REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob";
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
