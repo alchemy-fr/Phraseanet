@@ -12,4 +12,12 @@ use Doctrine\ORM\EntityRepository;
  */
 class ApiOauthRefreshTokenRepository extends EntityRepository
 {
+    public function findByAccount(ApiAccount $account)
+    {
+        $qb = $this->createQueryBuilder('rt');
+        $qb->where($qb->expr()->eq('rt.account', ':account'));
+        $qb->setParameter(':account', $account);
+
+        return $qb->getQuery()->getResult();
+    }
 }
