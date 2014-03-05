@@ -27,8 +27,7 @@ class ApiOauthToken
     private $session;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ApiAccount")
-     * @ORM\JoinColumn(name="account_id", referencedColumnName="id", nullable=false)
+     * @OneToOne(targetEntity="ApiAccount", mappedBy="oauthToken", nullable=false)
      *
      * @return ApiAccount
      **/
