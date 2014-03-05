@@ -60,6 +60,12 @@ class ApiOauthCodeManipulator implements ManipulatorInterface
         $this->om->flush();
     }
 
+    public function setCode(ApiOauthCode $code, $oauthCode)
+    {
+        $code->setCode($oauthCode);
+        $this->update($code);
+    }
+
     private function getNewCode()
     {
         do {
