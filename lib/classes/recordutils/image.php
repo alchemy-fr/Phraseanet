@@ -19,7 +19,7 @@ use Imagine\Exception\Exception as ImagineException;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\Media\Image;
 
-class recordutils_image extends recordutils
+class recordutils_image
 {
     /**
      * @param Application   $app
