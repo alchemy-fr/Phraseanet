@@ -41,27 +41,27 @@ class Developers implements ControllerProviderInterface
 
         $controllers->get('/application/{application}/', 'controller.account.developers:getApp')
             ->before($app['middleware.api-application.converter'])
-            ->assert('id', '\d+')
+            ->assert('application', '\d+')
             ->bind('developers_application');
 
         $controllers->delete('/application/{application}/', 'controller.account.developers:deleteApp')
             ->before($app['middleware.api-application.converter'])
-            ->assert('id', '\d+')
+            ->assert('application', '\d+')
             ->bind('delete_developers_application');
 
         $controllers->post('/application/{application}/authorize_grant_password/', 'controller.account.developers:authorizeGrantPassword')
             ->before($app['middleware.api-application.converter'])
-            ->assert('id', '\d+')
+            ->assert('application', '\d+')
             ->bind('submit_developers_application_authorize_grant_password');
 
         $controllers->post('/application/{application}/access_token/', 'controller.account.developers:renewAccessToken')
             ->before($app['middleware.api-application.converter'])
-            ->assert('id', '\d+')
+            ->assert('application', '\d+')
             ->bind('submit_developers_application_token');
 
         $controllers->post('/application/{application}/callback/', 'controller.account.developers:renewAppCallback')
             ->before($app['middleware.api-application.converter'])
-            ->assert('id', '\d+')
+            ->assert('application', '\d+')
             ->bind('submit_application_callback');
 
         return $controllers;
@@ -103,7 +103,7 @@ class Developers implements ControllerProviderInterface
         }
 
         try {
-            $app['manipulator.api-application']->setRedirectUri($request->request->get("callback"));
+            $app['manipulator.api-application']->setRedirectUri($application, $request->request->get("callback"));
         } catch (InvalidArgumentException $e) {
             return $app->json(['success' => false]);
         }
@@ -188,7 +188,7 @@ class Developers implements ControllerProviderInterface
                 sprintf('%s%s', $form->getSchemeCallback(), $form->getCallback())
             );
 
-            return $app->redirectPath('developers_application', ['id' => $application->get_id()]);
+            return $app->redirectPath('developers_application', ['application' => $application->getId()]);
         }
 
         return $app['twig']->render('/developers/application_form.html.twig', [
