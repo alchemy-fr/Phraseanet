@@ -15,6 +15,7 @@ use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\FtpCredential;
+use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate;
 use Alchemy\Phrasea\Form\Login\PhraseaRenewPasswordForm;
@@ -208,7 +209,7 @@ class Account implements ControllerProviderInterface
             return $app->json(['success' => false]);
         }
 
-        if ((Boolean) $request->query->get('revoke')) {
+        if (false === (Boolean) $request->query->get('revoke')) {
             $app['manipulator.api-account']->authorizeAccess($account);
         } else {
             $app['manipulator.api-account']->revokeAccess($account);
@@ -240,8 +241,15 @@ class Account implements ControllerProviderInterface
      */
     public function accountAuthorizedApps(Application $app, Request $request)
     {
+        $data = [];
+
+        foreach($app['repo.api-applications']->findByUser($app['authentication']->getUser()) as $application) {
+            $data[$application->getId()]['application'] = $application;
+            $data[$application->getId()]['user-account'] =  $app['repo.api-accounts']->findByUserAndApplication($app['authentication']->getUser(), $application);
+        }
+
         return $app['twig']->render('account/authorized_apps.html.twig', [
-            "applications" => $app['repo.api-applications']->findByUser($app['authentication']->getUser()),
+            "applications" => $data,
         ]);
     }
 
