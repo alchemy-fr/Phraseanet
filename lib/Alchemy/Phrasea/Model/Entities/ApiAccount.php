@@ -50,7 +50,7 @@ class ApiAccount
 
     /**
      * @ORM\OneToOne(targetEntity="ApiOauthToken", inversedBy="account")
-     * @ORM\JoinColumn(name="oauth_token", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="oauth_token", referencedColumnName="oauth_token", nullable=true)
      *
      * @return ApiApplication
      **/
