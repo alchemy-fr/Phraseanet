@@ -54,7 +54,7 @@ class Oauth2 implements ControllerProviderInterface
             $appAuthorized = false;
             $errorMessage = false;
 
-            if (null === $client = $this->app['repo.api-applications']->findByClientId($params['client_id'])) {
+            if (null === $client = $app['repo.api-applications']->findByClientId($params['client_id'])) {
                 throw new NotFoundHttpException(sprintf('Application with client id %s could not be found', $params['client_id']));
             }
 
@@ -68,13 +68,13 @@ class Oauth2 implements ControllerProviderInterface
             $custom_template = sprintf(
                 "%s/config/templates/web/api/auth/end_user_authorization/%s.html.twig"
                 , $app['root.path']
-                , $client->get_id()
+                , $client->getId()
             );
 
             if (file_exists($custom_template)) {
                 $template = sprintf(
                     'api/auth/end_user_authorization/%s.html.twig'
-                    , $client->get_id()
+                    , $client->getId()
                 );
             }
 
