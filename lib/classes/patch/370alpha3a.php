@@ -59,10 +59,11 @@ class patch_370alpha3a extends patchAbstract
      */
     public function apply(base $appbox, Application $app)
     {
-        if (null === $app['repo.api-applications']->findByClientId(\API_OAuth2_Application_Navigator::CLIENT_ID)) {
-            $application = $app['manipulator.api-applications']->create(
+        if (null === $app['repo.api-application']->findByClientId(\API_OAuth2_Application_Navigator::CLIENT_ID)) {
+            $application = $app['manipulator.api-application']->create(
                 \API_OAuth2_Application_Navigator::CLIENT_NAME,
                 ApiApplication::DESKTOP_TYPE,
+                '',
                 'http://www.phraseanet.com',
                 null,
                 ApiApplication::NATIVE_APP_REDIRECT_URI
@@ -72,7 +73,7 @@ class patch_370alpha3a extends patchAbstract
             $application->setClientId(\API_OAuth2_Application_Navigator::CLIENT_ID);
             $application->setClientSecret(\API_OAuth2_Application_Navigator::CLIENT_SECRET);
 
-            $app['manipulator.api-applications']->update($application);
+            $app['manipulator.api-application']->update($application);
         }
 
         return true;
