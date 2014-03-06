@@ -93,14 +93,14 @@ class ApiApplicationManipulator implements ManipulatorInterface
 
     private function doSetRedirectUri(ApiApplication $application, $uri)
     {
-        if ($this->type === ApiApplication::DESKTOP_TYPE) {
-            $application->setRedirectUri(self::NATIVE_APP_REDIRECT_URI);
+        if ($application->getType() === ApiApplication::DESKTOP_TYPE) {
+            $application->setRedirectUri(ApiApplication::NATIVE_APP_REDIRECT_URI);
 
             return;
         }
 
         if (false === filter_var($uri, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED)) {
-            throw new InvalidArgumentException(sprintf('Url %s is not legal.', $uri));
+            throw new InvalidArgumentException(sprintf('Redirect Uri Url %s is not legal.', $uri));
         }
 
         $application->setRedirectUri($uri);
@@ -109,7 +109,7 @@ class ApiApplicationManipulator implements ManipulatorInterface
     private function doSetWebsiteUrl(ApiApplication $application, $url)
     {
         if (false === filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED)) {
-            throw new InvalidArgumentException(sprintf('Url %s is not legal.', $url));
+            throw new InvalidArgumentException(sprintf('Website Url %s is not legal.', $url));
         }
 
         $application->setWebsite($url);
