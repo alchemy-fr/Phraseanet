@@ -31,7 +31,7 @@ class ApiApplicationConverter implements ConverterInterface
      */
     public function convert($id)
     {
-        if (null === $application = $this->$this->repository->find((int) $id)) {
+        if (null === $application = $this->repository->find((int) $id)) {
             throw new NotFoundHttpException(sprintf('Application %s not found.', $id));
         }
 
