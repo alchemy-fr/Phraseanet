@@ -105,7 +105,7 @@ class ApiOauthToken
      *
      * @return ApiOauthTokens
      */
-    public function setExpires(\DateTime $expires)
+    public function setExpires(\DateTime $expires = null)
     {
         $this->expires = $expires;
 
