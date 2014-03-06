@@ -10,7 +10,7 @@ class api_oauthv2_TokenTest extends \PhraseanetTestCase
     public function setUp()
     {
         parent::setUp();
-        $account = API_OAuth2_Account::load_with_user(self::$DI['app'], self::$DI['oauth2-app-user'], self::$DI['user']);
+        $account = self::$DI['app']['repo.api-accounts']->findByUserAndApplication(self::$DI['user'], self::$DI['oauth2-app-user']);
 
         try {
             new API_OAuth2_Token(self::$DI['app']['phraseanet.appbox'], $account, self::$DI['app']['random.medium']);
@@ -65,7 +65,7 @@ class api_oauthv2_TokenTest extends \PhraseanetTestCase
         $this->object->set_scope($scope);
         $this->assertEquals($scope, $this->object->get_scope());
 
-        $this->assertInstanceOf('API_OAuth2_Account', $this->object->get_account());
+        $this->assertInstanceOf('ApiApplication', $this->object->get_account());
     }
 
     public function testRenew()

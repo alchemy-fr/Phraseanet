@@ -391,13 +391,9 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertObjectHasAttribute('success', $json);
         $this->assertTrue($json->success);
 
-        $account = \API_OAuth2_Account::load_with_user(
-                self::$DI['app']
-                , self::$DI['oauth2-app-user']
-                , self::$DI['user']
-        );
+        $account = self::$DI['app']['repo.api-accounts']->findByUserAndApplication(self::$DI['user'], self::$DI['oauth2-app-user']);
 
-        $this->assertEquals($expected, $account->is_revoked());
+        $this->assertEquals($expected, $account->isRevoked());
     }
 
     public function revokeProvider()

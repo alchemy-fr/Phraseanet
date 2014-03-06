@@ -14,8 +14,7 @@ class api_oauthv2_RefreshTokenTest extends \PhraseanetTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->account = API_OAuth2_Account::load_with_user(self::$DI['app'], self::$DI['oauth2-app-user'], self::$DI['user']);
-
+        $this->account = self::$DI['app']['repo.api-accounts']->findByUserAndApplication(self::$DI['user'], self::$DI['oauth2-app-user']);
         $expires = time() + 100;
         $this->token = self::$DI['app']['random.low']->generateString(8);
         $this->scope = 'scopidou';

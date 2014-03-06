@@ -15,7 +15,7 @@ class api_oauthv2_AuthCodeTest extends \PhraseanetTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->account = API_OAuth2_Account::load_with_user(self::$DI['app'], self::$DI['oauth2-app-user'], self::$DI['user']);
+        $this->account = self::$DI['app']['repo.api-accounts']->findByUserAndApplication(self::$DI['user'], self::$DI['oauth2-app-user']);
         $expires = time() + 100;
         $this->code = self::$DI['app']['random.low']->generateString(8);
         $this->object = API_OAuth2_AuthCode::create(self::$DI['app'], $this->account, $this->code, $expires);
@@ -28,7 +28,7 @@ class api_oauthv2_AuthCodeTest extends \PhraseanetTestCase
 
     public function testGet_account()
     {
-        $this->assertInstanceOf('API_OAuth2_Account', $this->object->get_account());
+        $this->assertInstanceOf('ApiApplication', $this->object->get_account());
     }
 
     public function testGet_redirect_uri()

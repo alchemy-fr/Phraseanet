@@ -64,13 +64,13 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         });
 
         if (!self::$apiInitialized) {
-            self::$account = \API_OAuth2_Account::load_with_user(self::$DI['app'], self::$DI['oauth2-app-user-not-admin'], self::$DI['user_notAdmin']);
-            self::$account->set_revoked(false);
-            self::$token = self::$account->get_token()->get_value();
+            self::$account = self::$DI['app']['repo.api-accounts']->findByUserAndApplication(self::$DI['user_notAdmin'], self::$DI['oauth2-app-user-not-admin']);
+            self::$DI['app']['manipulator.api-account']->revokeAccess(self::$account);
+            self::$token = self::$account->getOAuthToken()->getOauthToken();
 
-            self::$adminAccount = \API_OAuth2_Account::load_with_user(self::$DI['app'], self::$DI['oauth2-app-user'], self::$DI['user']);
-            self::$adminAccount->set_revoked(false);
-            self::$adminToken = self::$adminAccount->get_token()->get_value();
+            self::$adminAccount = self::$DI['app']['repo.api-accounts']->findByUserAndApplication(self::$DI['user'], self::$DI['oauth2-app-user']);
+            self::$DI['app']['manipulator.api-account']->revokeAccess(self::$adminAccount);
+            self::$adminAccount = self::$adminAccount->getOAuthToken()->getOauthToken();
 
             self::$apiInitialized = true;
         }
@@ -172,9 +172,10 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             if (null === $nativeApp) {
                 throw new  \Exception(sprintf('%s not found', \API_OAuth2_Application_Navigator::CLIENT_ID));
             }
-            $account = \API_OAuth2_Account::create(self::$DI['app'], self::$DI['user'], $nativeApp);
-            $token = $account->get_token()->get_value();
-            $this->setToken($token);
+            $account = self::$DI['app']['manipulator.api-account']->create($nativeApp, self::$DI['user']);
+            $token = self::$DI['app']['manipulator.api-oauth-token']->create($account);
+
+            $this->setToken($token->getOauthToken());
             self::$DI['client']->request('GET', '/api/v1/databoxes/list/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
             $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 

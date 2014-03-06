@@ -31,8 +31,8 @@
                                         {% endif%}
                                     </p>
                                     <p class="app-row">
-                                        <span class="status text-error {% if account.is_revoked() == false %}hidden{% endif %}">{{ "Not Allowed" | trans }}</span>
-                                        <span class="status text-success {% if account.is_revoked() == true %}hidden{% endif %}">{{ "Allowed" | trans }}</span>
+                                        <span class="status text-error {% if account.isRevoked() == false %}hidden{% endif %}">{{ "Not Allowed" | trans }}</span>
+                                        <span class="status text-success {% if account.isRevoked() == true %}hidden{% endif %}">{{ "Allowed" | trans }}</span>
                                     </p>
                                     <p class="app-row">{{ application.get_description()|truncate(120, true, "...") }}</p>
                                 </div>
