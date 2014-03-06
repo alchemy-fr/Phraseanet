@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Model\Manipulator;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
+use Alchemy\Phrasea\Controller\Api\V1;
 use Alchemy\Phrasea\Model\Entities\ApiAccount;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -35,6 +36,7 @@ class ApiAccountManipulator implements ManipulatorInterface
         $account = new ApiAccount();
         $account->setUser($user);
         $account->setApplication($application);
+        $account->setApiVersion(V1::VERSION);
 
         $this->update($account);
 
