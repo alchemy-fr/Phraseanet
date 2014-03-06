@@ -199,11 +199,19 @@ abstract class PhraseanetTestCase extends WebTestCase
         });
 
         self::$DI['oauth2-app-user'] = self::$DI->share(function ($DI) {
-            return new $DI['app']['repo.api-applications']->find(self::$fixtureIds['oauth']['user']);
+            return $DI['app']['repo.api-applications']->find(self::$fixtureIds['oauth']['user']);
         });
 
         self::$DI['oauth2-app-user-not-admin'] = self::$DI->share(function ($DI) {
-            return new $DI['app']['repo.api-applications']->find(self::$fixtureIds['oauth']['user-not-admin']);
+            return $DI['app']['repo.api-applications']->find(self::$fixtureIds['oauth']['user-not-admin']);
+        });
+
+        self::$DI['oauth2-app-acc-user'] = self::$DI->share(function ($DI) {
+            return $DI['app']['repo.api-accounts']->find(self::$fixtureIds['oauth']['acc-user']);
+        });
+
+        self::$DI['oauth2-app-acc-user-not-admin'] = self::$DI->share(function ($DI) {
+            return $DI['app']['repo.api-accounts']->find(self::$fixtureIds['oauth']['acc-user-not-admin']);
         });
 
         self::$DI['logger'] = self::$DI->share(function () {

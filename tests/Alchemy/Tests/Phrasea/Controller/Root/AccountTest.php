@@ -355,7 +355,6 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     public function testAUthorizedAppGrantAccessBadRequest()
     {
         self::$DI['client']->request('GET', '/account/security/application/3/grant/');
-
         $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
@@ -384,7 +383,6 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         ]);
 
         $response = self::$DI['client']->getResponse();
-
         $this->assertTrue($response->isOk());
         $json = json_decode($response->getContent());
         $this->assertInstanceOf('StdClass', $json);
