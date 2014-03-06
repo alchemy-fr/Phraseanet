@@ -165,7 +165,7 @@ class ApiOauthToken
      *
      * @return ApiOauthTokens
      */
-    public function setSession(Session $session)
+    public function setSession(Session $session = null)
     {
         $this->session = $session;
 
