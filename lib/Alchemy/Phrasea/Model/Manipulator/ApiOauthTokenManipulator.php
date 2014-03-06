@@ -35,15 +35,17 @@ class ApiOauthTokenManipulator implements ManipulatorInterface
         $this->randomGenerator = $random;
     }
 
-    public function create(ApiAccount $account, Session $session = null , \DateTime $expire = null, $scope = null)
+    public function create(ApiAccount $account, \DateTime $expire = null, $scope = null)
     {
         $token = new ApiOauthToken();
         $token->setOauthToken($this->getNewToken());
         $token->setExpires($expire);
         $token->setScope($scope);
         $token->setAccount($account);
-        $token->setSession($session);
 
+        $account->setOauthToken($token);
+
+        $this->om->persist($account);
         $this->update($token);
 
         return $token;
@@ -59,6 +61,12 @@ class ApiOauthTokenManipulator implements ManipulatorInterface
     {
         $this->om->persist($token);
         $this->om->flush();
+    }
+
+    public function rememberSessionId(ApiOauthToken $token, $sessionId)
+    {
+        $token->setSessionId($sessionId);
+        $this->update($token);
     }
 
     public function renew(ApiOauthToken $token, \DateTime $expire = null)
