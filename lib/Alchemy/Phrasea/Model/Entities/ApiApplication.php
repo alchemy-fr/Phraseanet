@@ -121,7 +121,7 @@ class ApiApplication
 
 
     /**
-     * @ORM\OneToMany(targetEntity="ApiAccount", mappedBy="product", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="ApiAccount", mappedBy="application", cascade={"remove"})
      **/
     private $accounts;
 
