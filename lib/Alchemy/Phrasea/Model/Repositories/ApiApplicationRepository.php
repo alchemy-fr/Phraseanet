@@ -3,7 +3,6 @@
 namespace Alchemy\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Model\Entities\User;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr;
 
@@ -46,7 +45,7 @@ class ApiApplicationRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('app');
         $qb->innerJoin('app.accounts', 'acc', Expr\Join::WITH, $qb->expr()->eq('acc.user', ':user'));
-        $qb->andWhere($qb->expr()->eq('acc.revoked', $qb->expr()->literal(false)));
+        $qb->where($qb->expr()->eq('acc.revoked', $qb->expr()->literal(false)));
         $qb->setParameter(':user', $user);
 
         return $qb->getQuery()->getResult();
