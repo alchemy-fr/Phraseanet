@@ -8,17 +8,24 @@
 <body>
     <div id="mocha"></div>
     <script src="./../../../tmp-assets/mocha/mocha.js"></script>
+    <script src="./../../../tmp-assets/sinonjs/sinon.js"></script>
     <script src="../../assets/requirejs/require.js"></script>
-    <script src="../../scripts/tests/main.js"></script>
+    <script src="common.js"></script>
     <script>
+        mocha.setup({
+            ui: "bdd",
+            ignoreLeaks: false
+        });
+
         require([
-            'tests/baseTest',
-            'specs/admin/fields',
-            'specs/admin/taskmanager',
-            'specs/login/home',
-            'specs/models',
-            'specs/validator'
-        ], runMocha);
+            'tests/specs/models'
+        ], function () {
+            if (window.mochaPhantomJS) {
+                mochaPhantomJS.run();
+            } else {
+                mocha.run();
+            }
+        });
     </script>
 </body>
 </html>

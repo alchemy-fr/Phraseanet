@@ -1,19 +1,24 @@
-<div class="page-header">
-    <h1>{{ 'Task Scheduler' | trans }}
-        <small style="font-size:16px;">
-            {% set updateTime %}
-            <span id="pingTime">{{ "now"|date(constant("DateTime::ISO8601")) }}</span>
-            {% endset %}
-            {% trans with {'%updateTime%' : updateTime} %}Last update on %updateTime%{% endtrans %}
-        </small>
-    </h1>
-</div>
-
 <div id="task-manager-app">
+    <div class="page-header">
+        <h1>{{ 'Task Scheduler' | trans }}
+            <small style="font-size:16px;">
+                {% set updateTime %}
+                <span id="pingTime" class="ping-view">{{ "now"|date(constant("DateTime::ISO8601")) }}</span>
+                {% endset %}
+                {% trans with {'%updateTime%' : updateTime} %}Last update on %updateTime%{% endtrans %}
+            </small>
+        </h1>
+    </div>
+
     <table class="admintable">
         <thead>
             <tr>
-                <th></th>
+                <th class="refresh-view" style="width:80px;"  data-refresh-url="{{ path('admin_tasks_live_info') }}">
+                    <button class="btn btn-refresh">
+                        <i class="icon icon-refresh"/>
+                    </button>
+                    <i id="spinner" style="font-size:16px" class='icon-spinner icon-spin'>
+                </th>
                 <th>ID</th>
                 <th>PID</th>
                 <th>!</th>
@@ -22,7 +27,7 @@
                 <th>{{ "name" | trans | upper }}</th>
             </tr>
         </thead>
-        <tbody id="scheduler-view">
+        <tbody class="scheduler-view">
             <tr>
                 <td class="menu">
                     <div class="btn-group">
@@ -49,14 +54,14 @@
                     </div>
                 </td>
                 <td></td>
-                <td>{{ scheduler["process-id"] }}</td>
                 <td></td>
-                <td>{{ scheduler["actual"] }}</td>
-                <td>{{ scheduler["configuration"] }}</td>
+                <td></td>
+                <td></td>
+                <td>{{ scheduler["status"] }}</td>
                 <td>{{ scheduler["name"] }}</td>
             </tr>
         </tbody>
-        <tbody id="tasks-list-view">
+        <tbody class="tasks-list-view">
             {% for task in tasks %}
                 <tr>
                     <td class="menu">
@@ -93,11 +98,11 @@
                             </ul>
                         </div>
                     </td>
-                    <td>{% if task["id"] != "taskmanager" %}{{ task["id"] }}{% endif %}</td>
-                    <td>{{ task["process-id"] }}</td>
+                    <td>{{ task["id"] }}</td>
                     <td></td>
-                    <td>{{ task["actual"] }}</td>
-                    <td>{{ task["configuration"] }}</td>
+                    <td></td>
+                    <td></td>
+                    <td>{{ task["status"] }}</td>
                     <td>{{ task["name"] }}</td>
                 </tr>
             {% endfor %}
@@ -126,4 +131,4 @@
 {# include js templates #}
 {% include 'admin/task-manager/templates.html.twig' %}
 
-<script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/requirejs/require.js,/scripts/apps/admin/tasks-manager/main.js' }) }}"></script>
+<script type="text/javascript" src="{{ path('minifier', { 'f' : '/scripts/apps/admin/tasks-manager/main.js' }) }}"></script>

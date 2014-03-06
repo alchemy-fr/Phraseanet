@@ -62,7 +62,7 @@
 
   {% if app['acl'].get(app['authentication'].getUser()).has_right('taskmanager') %}
   <li class="{% if feature == 'taskmanager' %}selected{% endif %}">
-    <a target="right" href="{{ path('admin_tasks_list') }}" class="ajax">
+    <a target="right" href="{{ path('admin_tasks_list') }}" class="ajax" data-ws-topic="http://phraseanet.com/topics/admin/task-manager">
       <img src="/skins/admin/TaskManager.png" />
       <span>{{ 'admin::utilisateurs: gestionnaire de taches' | trans }}</span>
     </a>

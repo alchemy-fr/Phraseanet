@@ -12,52 +12,85 @@ define([
     "underscore",
     "backbone",
     "models/scheduler",
+    "common/websockets/connection",
+    "common/websockets/subscriberManager",
     "apps/admin/tasks-manager/views/scheduler",
     "apps/admin/tasks-manager/views/tasks",
     "apps/admin/tasks-manager/views/ping",
+    "apps/admin/tasks-manager/views/refresh",
     "apps/admin/tasks-manager/collections/tasks"
-], function ($, _, Backbone, Scheduler, SchedulerView, TasksView, PingView, TasksCollection) {
+], function ($, _, Backbone, Scheduler, WSConnection, SubscriberManager, SchedulerView, TasksView, PingView, RefreshView, TasksCollection) {
     var create = function() {
         window.TaskManagerApp = {
             $scope: $("#task-manager-app"),
-            $tasksListView : $("#tasks-list-view", this.$scope),
-            $schedulerView : $("#scheduler-view", this.$scope),
-            $pingView : $("#pingTime", this.$scope)
+            $tasksListView : $(".tasks-list-view", this.$scope),
+            $schedulerView : $(".scheduler-view", this.$scope),
+            $pingView : $(".ping-view", this.$scope),
+            $refreshView : $(".refresh-view", this.$scope)
         };
 
         TaskManagerApp.tasksCollection = new TasksCollection();
         TaskManagerApp.Scheduler = new Scheduler();
-
-        TaskManagerApp.pingView = new PingView({
-            el: TaskManagerApp.$pingView
+        TaskManagerApp.pingView = new PingView({el: TaskManagerApp.$pingView});
+        TaskManagerApp.refreshView = new RefreshView({
+            el: TaskManagerApp.$refreshView,
+            pingView: TaskManagerApp.pingView,
+            tasksCollection: TaskManagerApp.tasksCollection,
+            scheduler: TaskManagerApp.Scheduler
         });
     }
 
     var load = function() {
+        TaskManagerApp.refreshView.refreshAction();
         // fetch objects
         $.when.apply($, [
                 TaskManagerApp.tasksCollection.fetch(),
                 TaskManagerApp.Scheduler.fetch()
             ]).done(
             function () {
-                TaskManagerApp.schedulerView = new SchedulerView({
-                    model: TaskManagerApp.Scheduler,
-                    el: TaskManagerApp.$schedulerView
-                });
-                TaskManagerApp.tasksView = new TasksView({
-                    collection: TaskManagerApp.tasksCollection,
-                    el: TaskManagerApp.$tasksListView
-                });
+                // Init & render views
+                TaskManagerApp.schedulerView = new SchedulerView({model: TaskManagerApp.Scheduler, el: TaskManagerApp.$schedulerView});
+                TaskManagerApp.tasksView = new TasksView({collection: TaskManagerApp.tasksCollection, el: TaskManagerApp.$tasksListView});
 
-                // render views
                 TaskManagerApp.tasksView.render();
                 TaskManagerApp.schedulerView.render();
+
+                SubscriberManager.pushCallback(function(topic, msg) {
+                    // double encoded string
+                    var msg = JSON.parse(JSON.parse(msg));
+                    WSConnection.trigger("ws:"+msg.event, msg);
+                });
+
+                // On ticks re-render ping view, update tasks & scheduler model
+                WSConnection.on("ws:manager-tick", function(response) {
+                    TaskManagerApp.pingView.render();
+                    TaskManagerApp.Scheduler.set({"actual": "started", "process-id": response.message.manager["process-id"]});
+                    _.each(response.message.jobs, function(data, id) {
+                        var jobModel = TaskManagerApp.tasksCollection.get(id);
+                        if ("undefined" !== typeof jobModel) {
+                            jobModel.set({"actual": data["status"], "process-id": data["process-id"]});
+                        }
+                    });
+                });
             }
         );
     };
 
     var initialize = function () {
         create();
+        var regexp = /task-manager/;
+        $(document).ajaxComplete(function(event, request, settings) {
+            if ("undefined" !== typeof settings && regexp.test(settings.url)) {
+                TaskManagerApp.refreshView.loadState(false);
+            }
+        });
+
+        $(document).ajaxStart(function(event, request, settings) {
+            if ("undefined" !== typeof settings && regexp.test(settings.url)) {
+                TaskManagerApp.refreshView.loadState(true);
+            }
+        });
+
         load();
     };
 

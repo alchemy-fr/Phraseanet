@@ -12,7 +12,9 @@ module.exports = function(grunt) {
                     'loadImages=false'
                 ]
             },
-            all: ['www/scripts/tests/index.html']
+            all: [
+                'www/scripts/tests/*.html'
+            ]
         },
         qunit: {
             all: ['www/include/js/tests/*.html']
@@ -52,7 +54,7 @@ module.exports = function(grunt) {
             "autobahnjs": {
                 "expand": true,
                 "src": [
-                    "<%= path.bower %>/autobahnjs/build/autobahn.min.js",
+                    "<%= path.bower %>/autobahnjs/build/autobahn.js",
                     "<%= path.bower %>/autobahnjs/LICENSE"
                 ],
                 "dest": "<%= path.asset %>/autobahnjs/",
@@ -160,12 +162,22 @@ module.exports = function(grunt) {
             "jquery-file-upload": {
                 "expand": true,
                 "src": [
+                    "<%= path.bower %>/jquery-file-upload/js/vendor/*",
                     "<%= path.bower %>/jquery-file-upload/js/jquery.fileupload.js",
                     "<%= path.bower %>/jquery-file-upload/js/jquery.iframe-transport.js",
                     "<%= path.bower %>/jquery-file-upload/css/jquery.fileupload-ui.css"
                 ],
                 "dest": "<%= path.asset %>/jquery-file-upload/",
                 "flatten": true
+            },
+            "jquery.treeview": {
+                "expand": true,
+                "cwd": "<%= path.bower %>/jquery.treeview",
+                "src": [
+                    "images/*",
+                    "jquery.treeview*"
+                ],
+                "dest": "<%= path.asset %>/jquery.treeview/"
             },
             "jquery-mobile": {
                 "expand": true,
@@ -389,6 +401,7 @@ module.exports = function(grunt) {
         "copy:jquery-mobile",
         "copy:jquery.cookie",
         "copy:jquery-ui",
+        "copy:jquery.treeview",
         "copy:json2",
         "copy:modernizr",
         "copy:normalize",

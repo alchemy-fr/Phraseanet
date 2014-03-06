@@ -8,200 +8,63 @@
 {% endblock %}
 
 {% block stylesheet %}
-    <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'include/jslibs/jquery-treeview/jquery.treeview.css,include/jslibs/jquery.contextmenu.css,skins/common/main.css,skins/admin/css/Main.css,skins/admin/css/Bases.css,skins/admin/css/Tables.css,skins/admin/css/fields.css,skins/geonames/geonames.css,assets/jquery-file-upload/jquery.fileupload-ui.css' }) }}" />
+    <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'assets/jquery.treeview/jquery.treeview.css,include/jslibs/jquery.contextmenu.css,skins/common/main.css,skins/admin/css/Main.css,skins/admin/css/Bases.css,skins/admin/css/Tables.css,skins/admin/css/fields.css,skins/geonames/geonames.css,assets/jquery-file-upload/jquery.fileupload-ui.css' }) }}" />
 {% endblock %}
 
 
 {% block javascript %}
-  {% include "common/templates.html.twig" %}
-  {# note: Tinymce must be include here without minify else URL resolution for tinymce plugins will fail #}
-  <script type="text/javascript" src="/assets/tinymce/tinymce.js"></script>
-  <script type="text/javascript" src="{{ path('minifier', { 'g' : 'admin' }) }}"></script>
-  <script type="text/javascript">
-    var p4 = p4 || {};
-    p4.users = {sel:[]};
-    var bodySize = {x:0,y:0};
+    {% include "common/templates.html.twig" %}
+    {# note: Tinymce must be include here without minify else URL resolution for tinymce plugins will fail #}
+    <script type="text/javascript" src="/assets/tinymce/tinymce.js"></script>
+    <script type="text/javascript" src="{{ path('minifier', { 'g' : 'admin' }) }}"></script>
+    <script type="text/javascript">
+        var p4 = p4 || {};
+        p4.users = {sel:[]};
 
-    var language = {
-        serverName: '{{ app['conf'].get('servername') | e('js') }}',
-        serverError: '{{ 'phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, contactez le support technique' | trans | e('js') }}',
-        serverTimeout:  '{{ 'phraseanet::erreur: La connection au serveur Phraseanet semble etre indisponible' | trans | e('js') }}',
-        serverDisconnected: '{{ 'phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier' | trans | e('js') }}',
-        check_all : '{{ 'Cocher toute la colonne' | trans | e('js') }}',
-        uncheck_all :  '{{ 'Decocher toute la colonne' | trans | e('js') }}',
-        create_template :  '{{ 'Creer un model' | trans | e('js') }}',
-        create_user :  '{{ 'Creer un utilisateur' | trans | e('js') }}',
-        annuler :  '{{ 'boutton::annuler' | trans | e('js') }}',
-        errorFileApiTooBig :  '{{ 'This file is too big' | trans | e('js') }}',
-        requiredValue: '{{ 'This field is required' | trans | e('js') }}',
-        attention: '{{ 'Attention' | trans | e('js') }}',
-        reset_template_do_reset_apply_button: '{{ 'Reset and apply' | trans | e('js') }}',
-        reset_template_confirm_dialog_title: '{{ 'Confirm reset users rights before applying template' | trans | e('js') }}',
-        reset_template_do_confirm_choice: '{{ 'Rights will be erased before applying template, do you confirm?' | trans | e('js') }}',
-        reset_template_do_reset_button: '{{ 'Reset and apply template' | trans | e('js') }}',
-        reset_template_do_not_reset_button: '{{ 'Apply template' | trans | e('js') }}',
-        reset_template_dialog_title: '{{ 'Reset rights before applying template?' | trans | e('js') }}',
-        reset_template_ask_choice: '{{ 'Would you like to reset rights before applying the template?' | trans | e('js') }}',
-        reset_template_ask_choice: '{{ 'Would you like to reset rights before applying the template?' | trans | e('js') }}'
-    };
+        var bodySize = {x:0,y:0};
 
-    function sessionactive(){
-      $.ajax({
-        type: "POST",
-        url: "/session/update/",
-        dataType: 'json',
-        data: {
-          module : 3,
-          usr : {{ app['authentication'].getUser().getId() }}
-        },
-        error: function(){
-          window.setTimeout("sessionactive();", 10000);
-        },
-        timeout: function(){
-          window.setTimeout("sessionactive();", 10000);
-        },
-        success: function(data){
-          if(data)
-            manageSession(data);
-          var t = 120000;
-          if(data.apps && parseInt(data.apps)>1)
-            t = Math.round((Math.sqrt(parseInt(data.apps)-1) * 1.3 * 120000));
-          window.setTimeout("sessionactive();", t);
-
-          return;
+        var resize = function() {
+            bodySize.y = $(window).height() - $('#mainMenu').outerHeight();
+            bodySize.x = $(window).width();
         }
-      })
-    };
 
-    function enableForms(forms) {
-        forms.bind('submit', function(event){
-            var method = $(this).attr('method');
-            var url = $(this).attr('action');
-            var datas = $(this).serializeArray();
+        var language = {
+            serverName: '{{ app['conf'].get('servername') | e('js') }}',
+            serverError: '{{ 'phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, contactez le support technique' | trans | e('js') }}',
+            serverTimeout:  '{{ 'phraseanet::erreur: La connection au serveur Phraseanet semble etre indisponible' | trans | e('js') }}',
+            serverDisconnected: '{{ 'phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier' | trans | e('js') }}',
+            check_all : '{{ 'Cocher toute la colonne' | trans | e('js') }}',
+            uncheck_all :  '{{ 'Decocher toute la colonne' | trans | e('js') }}',
+            create_template :  '{{ 'Creer un model' | trans | e('js') }}',
+            create_user :  '{{ 'Creer un utilisateur' | trans | e('js') }}',
+            annuler :  '{{ 'boutton::annuler' | trans | e('js') }}',
+            errorFileApiTooBig :  '{{ 'This file is too big' | trans | e('js') }}',
+            requiredValue: '{{ 'This field is required' | trans | e('js') }}',
+            attention: '{{ 'Attention' | trans | e('js') }}',
+            reset_template_do_reset_apply_button: '{{ 'Reset and apply' | trans | e('js') }}',
+            reset_template_confirm_dialog_title: '{{ 'Confirm reset users rights before applying template' | trans | e('js') }}',
+            reset_template_do_confirm_choice: '{{ 'Rights will be erased before applying template, do you confirm?' | trans | e('js') }}',
+            reset_template_do_reset_button: '{{ 'Reset and apply template' | trans | e('js') }}',
+            reset_template_do_not_reset_button: '{{ 'Apply template' | trans | e('js') }}',
+            reset_template_dialog_title: '{{ 'Reset rights before applying template?' | trans | e('js') }}',
+            reset_template_ask_choice: '{{ 'Would you like to reset rights before applying the template?' | trans | e('js') }}',
+            reset_template_ask_choice: '{{ 'Would you like to reset rights before applying the template?' | trans | e('js') }}'
+        };
 
-            if(!method) {
-                method = 'GET';
-            }
-            $('#right-ajax').empty().addClass('loading');
-            if(url) {
-                $.ajax({
-                    type: method,
-                    url: url,
-                    data: datas,
-                    success: enableFormsCallback
-                });
-                return false;
-            }
+        $(document).ready(function(){
+            $(window).bind('resize',function(){resize();});
+            resize();
         });
-    }
-
-    function enableFormsCallback(datas)
-    {
-        $('#right-ajax').removeClass('loading').html(datas);
-        enableForms($('#right-ajax form:not(.no-ajax)'));
-
-        $.each($('#right-ajax a:not(.no-ajax)'),function(i, el){
-            enableLink($(el));
-        });
-        return;
-    }
-
-    function enableLink(link) {
-        $(link).bind('click',function(event){
-            var dest = link.attr('href');
-            var method = link.attr("method");
-
-            if(dest && dest.indexOf('#') !== 0) {
-                loadRightAjax(dest, method || "GET");
-                return false;
-            }
-        });
-    }
-
-    function loadRightAjax(url, method)
-    {
-        $('#right-ajax').empty().addClass('loading').parent().show();
-
-        $.ajax({
-            type: method,
-            url: url,
-            success: function(data) {
-                enableFormsCallback(data);
-            }
-        });
-    }
-
-    function activeTree(click)
-    {
-        $('#FNDR').treeview({
-          collapsed: true,
-          animated: "medium"
-        });
-
-      $.each($('#tree a[target=right]'),function(){
-        var dest = $(this).attr('href');
-
-        $(this).bind('click',function(){
-
-            loadRightAjax(dest);
-            $('#tree .selected').removeClass('selected');
-            $(this).parent().addClass('selected');
-
-            return false;
-        });
-
-        $(this).removeAttr('target');
-      });
-      if(click === true)
-      {
-        if($('#tree .selected').length > 0)
-            $('#tree .selected a').trigger('click');
-        else
-            $('.zone_online_users').trigger('click');
-      }
-    }
-
-    $(document).ready(
-    function(){
-      resize();
-      setTimeout('sessionactive();',15000);
-      activeTree(true);
-    }
-  );
-
-  function resize()
-  {
-    bodySize.y = $(window).height() - $('#mainMenu').outerHeight();
-    bodySize.x = $(window).width();
-  }
-
-  $(window).bind('resize',function(){resize();});
-
-  function reloadTree(position, click){
-    $.ajax({
-      type: "GET",
-      url: "/admin/tree/",
-      data: {
-        position : position
-      },
-      success: function(datas){
-        $('#FNDR').empty().append(datas);
-        activeTree(click);
-
-        return;
-      }
-    });
-  }
-
     </script>
+    <script type="text/javascript" src="{{ path('minifier', { 'f' : '/assets/requirejs/require.js,/scripts/apps/admin/require.config.js,/scripts/apps/admin/main/main.js' }) }}"></script>
 {% endblock %}
 
-
 {% block content %}
-    <div id="left" class="PNB" style="width:250px;right:auto;">
+    <div id="admin-app" data-usr="{{ app['authentication'].getUser().getId() }}">
+    <div id="left" class="PNB left-view" style="width:250px;right:auto;" data-tree-url="{{ path("admin_display_tree") }}" data-websocket="{{ "ws://" ~ app["conf"].get(["main" ,"websocket-server", "host"]) ~ ":" ~ app["conf"].get(["main" ,"websocket-server", "port"]) ~ "/websockets" }}">
         <div class="PNB10" style="right:0">
             <div id="FNDR">
-        {% include 'admin/tree.html.twig' %}
+                {% include 'admin/tree.html.twig' %}
             </div>
         </div>
     </div>
@@ -215,7 +78,7 @@
     {% endif %}
 
     <div class="right PNB" style="left:250px;overflow:auto;">
-        <div id="right-ajax" class="PNB10"></div>
+        <div id="right-ajax" class="PNB10 right-view"></div>
     </div>
     <div id="quotas_dialog"></div>
     <div id="masks_dialog"></div>
@@ -243,4 +106,5 @@
         </form>
     </div>
     <div id="DIALOG" style="color:white;"></div>
+    </div>
 {% endblock %}

@@ -8,6 +8,8 @@
  */
 
 // launch application
-require(["apps/admin/tasks-manager/app"], function (App) {
-    App.initialize();
+require(["jquery", "apps/admin/main/app"], function ($, App) {
+    App.initialize({
+        "wsurl": $("#left").data("websocket")
+    });
 });

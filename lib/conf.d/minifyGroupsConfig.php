@@ -38,7 +38,7 @@ $groups = [
         '//assets/modernizr/modernizr.js'
         , '//assets/underscore-amd/underscore.js'
         , '//assets/jquery.cookie/jquery.cookie.js'
-        , '//include/jslibs/jquery-treeview/jquery.treeview.js'
+        , '//assets/jquery.treeview/jquery.treeview.js'
         , '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
         , '//include/jquery.kb-event.js'
         , '//skins/admin/users.js'
@@ -51,6 +51,7 @@ $groups = [
         , '//assets/blueimp-load-image/load-image.js'
         , '//assets/jquery-file-upload/jquery.iframe-transport.js'
         , '//assets/jquery-file-upload/jquery.fileupload.js'
+        , '//assets/autobahnjs/autobahn.js'
     ],
     'report' => [
          '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
@@ -104,8 +105,8 @@ $groups = [
         , '//include/jslibs/jquery.color.animation.js'
         , '//include/jquery.image_enhancer.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
-        , '//include/jslibs/jquery-treeview/jquery.treeview.js'
-        , '//include/jslibs/jquery-treeview/jquery.treeview.async.js'],
+        , '//assets/jquery.treeview/jquery.treeview.js'
+        , '//assets/jquery.treeview/jquery.treeview.async.js'],
     'thesaurus' => [
          '//assets/jquery.cookie/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'

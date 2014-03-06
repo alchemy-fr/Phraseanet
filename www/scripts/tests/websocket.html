@@ -1,0 +1,33 @@
+<!doctype html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Mocha Spec Runner</title>
+    <link rel="stylesheet" href="./../../../tmp-assets/mocha/mocha.css">
+</head>
+<body>
+    <div id="mocha"></div>
+    <script src="./../../../tmp-assets/mocha/mocha.js"></script>
+    <script src="./../../../tmp-assets/sinonjs/sinon.js"></script>
+    <script src="../../assets/requirejs/require.js"></script>
+    <script src="common.js"></script>
+    <script>
+        mocha.setup({
+            ui: "bdd",
+            ignoreLeaks: false,
+            globals: ['ab']
+        });
+
+        require([
+            'tests/specs/websockets/connection',
+            'tests/specs/websockets/subscriberManager'
+        ],  function () {
+            if (window.mochaPhantomJS) {
+                mochaPhantomJS.run();
+            } else {
+                mocha.run();
+            }
+        });
+    </script>
+</body>
+</html>

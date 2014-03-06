@@ -12,7 +12,7 @@ require.config({
     baseUrl: "/scripts",
     paths: {
         jquery: "../assets/jquery/jquery",
-        jqueryui: "../assets/jquery.ui/jquery-ui",
+        "jquery.ui": "../assets/jquery.ui/jquery-ui",
         underscore: "../assets/underscore-amd/underscore",
         backbone: "../assets/backbone-amd/backbone",
         i18n: "../assets/i18next/i18next.amd-1.6.3",
@@ -22,12 +22,12 @@ require.config({
     },
     shim: {
         bootstrap: ["jquery"],
-        jqueryui: {
+        "jquery.ui": {
             deps: ["jquery"]
         },
         "jquery.geonames": {
-            deps: ['jquery', 'jqueryui'],
-            exports: '$.fn.geocompleter'
+            deps: ["jquery", "jquery.ui"],
+            exports: "$.fn.geocompleter"
         },
         "common/geonames": {
             deps: ["jquery.geonames"]

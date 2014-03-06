@@ -27,8 +27,7 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
         foreach ($tasks as $task) {
             $this->assertObjectHasAttribute('id', $task);
             $this->assertObjectHasAttribute('name', $task);
-            $this->assertObjectHasAttribute('configuration', $task);
-            $this->assertObjectHasAttribute('actual', $task);
+            $this->assertObjectHasAttribute('status', $task);
             $this->assertObjectHasAttribute('urls', $task);
         }
     }
@@ -181,15 +180,29 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertObjectHasAttribute('urls', $json);
     }
 
-    public function testGetSchedulerJson()
+    public function testGetLiveInformation()
     {
         self::$DI['client']->request('GET', '/admin/task-manager/scheduler', [], [], ["HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT" => "application/json"]);
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         $json = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->assertObjectHasAttribute('name', $json);
         $this->assertObjectHasAttribute('configuration', $json);
-        $this->assertObjectHasAttribute('actual', $json);
         $this->assertObjectHasAttribute('urls', $json);
+    }
+
+    public function testtestGetLiveInformationJsonBadRequest()
+    {
+        self::$DI['client']->request('GET', '/admin/task-manager/live');
+        $this->assertEquals(406, self::$DI['client']->getResponse()->getStatusCode());
+    }
+
+    public function testGetSchedulerJson()
+    {
+        self::$DI['client']->request('GET', '/admin/task-manager/live', [], [], ["HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT" => "application/json"]);
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $json = json_decode(self::$DI['client']->getResponse()->getContent());
+        $this->assertObjectHasAttribute('tasks', $json);
+        $this->assertObjectHasAttribute('manager', $json);
     }
 
     public function testGetSchedulerJsonBadRequest()

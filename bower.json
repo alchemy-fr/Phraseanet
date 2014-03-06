@@ -26,12 +26,19 @@
         "jquery.cookie": "~1.4",
         "autobahnjs": "~0.8.0",
         "when": "~2.7.0",
-        "web-socket-js": "~1.0.1"
+        "web-socket-js": "~1.0.1",
+        "jquery.treeview": "1.4.1"
     },
     "devDependencies": {
         "mocha": "latest",
+        "sinonjs": "~1.7.0",
         "chai": "~1.6",
+        "squire": "~0",
+        "sinon-chai": "~2.5",
         "qunit": "https://github.com/jquery/qunit.git#1.11.0",
         "js-fixtures": "https://github.com/badunk/js-fixtures/archive/master.zip"
+    },
+    "resolutions": {
+        "jquery": "1.8.3"
     }
 }
