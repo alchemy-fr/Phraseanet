@@ -20,10 +20,9 @@ class ApiOauthToken
     private $oauthToken;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Session")
-     * @ORM\JoinColumn(name="session_id", referencedColumnName="id")
+     * @ORM\Column(name="session_id", type="integer", nullable=true)
      */
-    private $session;
+    private $sessionId;
 
     /**
      * @ORM\OneToOne(targetEntity="ApiAccount", mappedBy="oauthToken")
@@ -160,13 +159,13 @@ class ApiOauthToken
     }
 
     /**
-     * @param Session $session
+     * @param integer $sessionId
      *
      * @return ApiOauthTokens
      */
-    public function setSession(Session $session = null)
+    public function setSessionId($sessionId)
     {
-        $this->session = $session;
+        $this->sessionId = $sessionId;
 
         return $this;
     }
@@ -174,9 +173,9 @@ class ApiOauthToken
     /**
      * @return Session
      */
-    public function getSession()
+    public function getSessionId()
     {
-        return $this->session;
+        return $this->sessionId;
     }
 
     /**
