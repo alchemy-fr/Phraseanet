@@ -100,6 +100,9 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
         $app['repo.api-accounts'] = $app->share(function (PhraseaApplication $app) {
             return $app['EM']->getRepository('Phraseanet:ApiAccount');
         });
+        $app['repo.api-logs'] = $app->share(function (PhraseaApplication $app) {
+            return $app['EM']->getRepository('Phraseanet:ApiLog');
+        });
         $app['repo.api-applications'] = $app->share(function (PhraseaApplication $app) {
             return $app['EM']->getRepository('Phraseanet:ApiApplication');
         });

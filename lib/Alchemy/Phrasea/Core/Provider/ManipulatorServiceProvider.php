@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Model\Manipulator\ACLManipulator;
 use Alchemy\Phrasea\Model\Manipulator\PresetManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiApplicationManipulator;
+use Alchemy\Phrasea\Model\Manipulator\ApiLogManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiOauthCodeManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiOauthRefreshTokenManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiOauthTokenManipulator;
@@ -76,6 +77,10 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
 
         $app['manipulator.api-oauth-refresh-token'] = $app->share(function ($app) {
             return new ApiOauthRefreshTokenManipulator($app['EM'], $app['repo.api-oauth-refresh-tokens'], $app['random.medium']);
+        });
+
+        $app['manipulator.api-log'] = $app->share(function ($app) {
+            return new ApiLogManipulator($app['EM'], $app['repo.api-logs']);
         });
     }
 
