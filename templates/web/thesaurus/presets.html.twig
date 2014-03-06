@@ -6,8 +6,8 @@
             <a class="delete" style="position:absolute;right:0px;" href="#">{{ 'boutton::supprimer'| trans }}</a>
         </h1>
         <div>
-            {% for name, field in preset['fields'] %}
-                <p><b>{{ name }} : </b> {{ field }}</p>
+            {% for name, fields in preset['fields'] %}
+                <p><b>{{ name }} : </b> {{ fields|join(';') }}</p>
             {% endfor %}
         </div>
     </li>

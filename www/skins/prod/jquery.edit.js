@@ -1823,30 +1823,23 @@ function startThisEditing(sbas_id, what, regbasprid, ssel) {
             "act": "SAVE",
             "sbas": p4.edit.sbas_id,
             "title": jtitle.val(),
-            "f": {}
+            "fields": []
         };
-        var f = {};
-        var x = "<fields>";
-        $(":checkbox", form).each(
-            function (idx, elem) {
-                if (elem.checked) {
-                    var i = 0 | elem.value;
-                    var f;
-                    if (p4.edit.T_fields[i].multi)
-                        f = p4.edit.T_fields[i]._value.split(";");
-                    else
-                        f = [ p4.edit.T_fields[i]._value ];
-                    for (j in f) {
-                        x += "<" + p4.edit.T_fields[i].name + ">"
-                            + cleanTags(f[j])
-                            + "</" + p4.edit.T_fields[i].name + ">";
-                    }
-                }
-            }
-        );
 
-        x += "</fields>";
-        p["f"] = x;
+        $(":checkbox", form).each(function (idx, elem) {
+            var $el = $(elem);
+            if ($el.is(":checked")) {
+                var val = $el.val();
+                var field = {name: p4.edit.T_fields[val].name};
+
+                if (p4.edit.T_fields[val].multi) {
+                    field.value = $.map(p4.edit.T_fields[i]._value.split(";"), cleanTags);
+                } else {
+                    field.value = $.map([p4.edit.T_fields[i]._value], cleanTags);
+                }
+                p.fields.push(field);
+            }
+        });
 
         $.ajax({
             type: 'POST',
