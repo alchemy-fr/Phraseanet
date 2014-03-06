@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
+use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\ORM\EntityRepository;
 
 /**
