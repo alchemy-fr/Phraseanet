@@ -19,12 +19,12 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class ApiTestCase extends \PhraseanetWebTestCase
 {
     /**
-     * @var \API_OAuth2_Token
+     * @var ApiOauthToken
      */
     private static $token;
 
     /**
-     * @var \API_OAuth2_Account
+     * @var ApiAccount
      */
     private static $account;
     /**
@@ -32,15 +32,15 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
      */
     private static $oauthApplication;
     /**
-     * @var \API_OAuth2_Token
+     * @var ApiOauthToken
      */
     private static $adminToken;
     /**
-     * @var \API_OAuth2_Account
+     * @var ApiAccount
      */
     private static $adminAccount;
     /**
-     * @var \ApiApplication
+     * @var ApiApplication
      */
     private static $adminApplication;
     private static $apiInitialized = false;
