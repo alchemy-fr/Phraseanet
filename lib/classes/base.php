@@ -231,7 +231,7 @@ abstract class base implements cache_cacheableInterface
         return $this->version;
     }
 
-    protected function upgradeDb($apply_patches, Setup_Upgrade $upgrader, Application $app)
+    protected function upgradeDb($apply_patches, Application $app)
     {
         $recommends = [];
 
@@ -242,8 +242,6 @@ abstract class base implements cache_cacheableInterface
         foreach ($schema->tables->table as $table) {
             $allTables[(string) $table['name']] = $table;
         }
-
-        $upgrader->add_steps(count($allTables) + 1);
 
         $sql = "SHOW TABLE STATUS";
         $stmt = $this->get_connection()->prepare($sql);
@@ -291,8 +289,6 @@ abstract class base implements cache_cacheableInterface
         foreach ($rs as $row) {
             $tname = $row["Name"];
             if (isset($allTables[$tname])) {
-                $upgrader->set_current_message($app->trans('Updating table %table_name%', ['%table_name%' => $tname]));
-
                 $engine = strtolower(trim($allTables[$tname]->engine));
                 $ref_engine = strtolower($row['Engine']);
 
@@ -313,7 +309,6 @@ abstract class base implements cache_cacheableInterface
                 $ret = self::upgradeTable($allTables[$tname]);
                 $recommends = array_merge($recommends, $ret);
                 unset($allTables[$tname]);
-                $upgrader->add_steps_complete(1);
             } elseif ( ! in_array($tname, $ORMTables)) {
                 $recommends[] = [
                     'message' => 'Une table pourrait etre supprime',
@@ -323,17 +318,13 @@ abstract class base implements cache_cacheableInterface
         }
 
         foreach ($allTables as $tname => $table) {
-            $upgrader->set_current_message($app->trans('Creating table %table_name%', ['%table_name%' => $table]));
             $this->createTable($table);
-            $upgrader->add_steps_complete(1);
         }
         $current_version = $this->get_version();
 
-        $upgrader->set_current_message($app->trans('Applying patches on %databox_name%', ['%databox_name%' => $this->get_dbname()]));
         if ($apply_patches) {
-            $this->apply_patches($current_version, $app['phraseanet.version']->getNumber(), false, $upgrader, $app);
+            $this->apply_patches($current_version, $app['phraseanet.version']->getNumber(), false, $app);
         }
-        $upgrader->add_steps_complete(1);
 
         return $recommends;
     }
@@ -762,15 +753,13 @@ abstract class base implements cache_cacheableInterface
         return $return;
     }
 
-    protected function apply_patches($from, $to, $post_process, Setup_Upgrade $upgrader, Application $app)
+    protected function apply_patches($from, $to, $post_process, Application $app)
     {
         if (version::eq($from, $to)) {
             return true;
         }
 
         $list_patches = [];
-
-        $upgrader->add_steps(1)->set_current_message($app->trans('Looking for patches'));
 
         $iterator = new DirectoryIterator($this->app['root.path'] . '/lib/classes/patch/');
 
@@ -809,10 +798,6 @@ abstract class base implements cache_cacheableInterface
             }
         }
 
-        $upgrader->add_steps_complete(1)
-            ->add_steps(count($list_patches))
-            ->set_current_message($app->trans('Applying patches on %databox_name%', ['%databox_name%' => $this->get_dbname()]));
-
         uasort($list_patches, function (\patchInterface $patch1, \patchInterface $patch2) {
             return version::lt($patch1->get_release(), $patch2->get_release()) ? -1 : 1;
         });
@@ -846,8 +831,6 @@ abstract class base implements cache_cacheableInterface
             if (false === $patch->apply($this, $app)) {
                 $success = false;
             }
-
-            $upgrader->add_steps_complete(1);
         }
 
         return $success;
