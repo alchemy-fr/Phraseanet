@@ -13,12 +13,14 @@
                 <h3>{{ "Vous avez autorise ces applications a acceder a votre compte" | trans }}</h3>
                 {% if applications|length > 0 %}
                     <ul class="unstyled app-list">
-                        {% for application in applications %}
+                        {% for data in applications if data["user-account"] is not none %}
+                            {% set application = data["application"] %}
+                            {% set account = data["user-account"] %}
                             <li id="app_{{ application.getId() }}">
                                 <div>
-                                    {% set account = application.getAccount() %}
-                                    <a href="{{ path("grant_app_access", {"application_id" : application.getId()}) }}" class="revoke app-btn btn btn-small pull-right {% if account.is_revoked() %}hidden{% endif %}" value="{{application.getId()}}">{{ "Revoquer l\'access" | trans }}</a>
-                                    <a href="{{ path("grant_app_access", {"application_id" : application.getId()}) }}"  class="authorize app-btn btn btn-small pull-right {% if not account.is_revoked() %}hidden{% endif %}" value="{{application.getId()}}">{{ "Authoriser l\'access" | trans }}</a>
+
+                                    <a href="{{ path("grant_app_access", {"application" : application.getId()}) }}" class="revoke app-btn btn btn-small pull-right {% if account.isRevoked() %}hidden{% endif %}" value="{{application.getId()}}">{{ "Revoquer l\'access" | trans }}</a>
+                                    <a href="{{ path("grant_app_access", {"application" : application.getId()}) }}"  class="authorize app-btn btn btn-small pull-right {% if not account.isRevoked() %}hidden{% endif %}" value="{{application.getId()}}">{{ "Authoriser l\'access" | trans }}</a>
                                     <p class="app-row">
                                         <a href="{{ application.getWebsite() }}" target="_blank">
                                             <strong>{{ application.getName() }}</strong>

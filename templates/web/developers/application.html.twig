@@ -13,7 +13,7 @@
             <input type="hidden" value="{{ application.getId() }}" name="app_id"/>
 
             <div>
-              <div><strong><a class="link" href="{{ path("developers_application", {"id" : application.getId()}) }}">{{ application.getName() }}</a></strong></div>
+              <div><strong><a class="link" href="{{ path("developers_application", {"application" : application.getId()}) }}">{{ application.getName() }}</a></strong></div>
               <div>{{ application.getDescription() }}</div>
             </div>
 
@@ -32,14 +32,14 @@
                     </tr>
                     <tr>
                         <td>{{ "URL de callback" | trans }}</td>
-                            {% if application.getType() == constant("Alchemy\Phrasea\Model\Entities\ApiApplication::DESKTOP_TYPE") %}
+                            {% if application.getType() == constant("DESKTOP_TYPE", application) %}
                             <td>
                                 <span>{{ application.getRedirectUri() }}</span>
                             </td>
                         {% else %}
                             <td class="url_callback">
                                 <span class="url_callback_input">{{ application.getRedirectUri() }}</span>
-                                <a href="{{ path("submit_application_callback", {"id" : application.getId()}) }}" class="save_callback btn btn-small btn-info" style="display:none;">
+                                <a href="{{ path("submit_application_callback", {"application" : application.getId()}) }}" class="save_callback btn btn-small btn-info" style="display:none;">
                                     {{ "Save" | trans }}
                                 </a>
                                 <button type="button" class="modifier_callback btn btn-small">
@@ -63,7 +63,7 @@
                                 type="checkbox"
                                 {{ application.isPasswordGranted() ? "checked='checked'" : "" }}
                                 name="grant"
-                                value="{{ path("submit_developers_application_authorize_grant_password", {"id" : application.getId()}) }}"
+                                value="{{ path("submit_developers_application_authorize_grant_password", {"application" : application.getId()}) }}"
                             >
                         </td>
                     </tr>
@@ -87,7 +87,7 @@
                                   {{ "Le token n\'a pas encore ete genere" | trans }}
                                 {% endif %}
                             </span>
-                            <a id="generate_access" href="{{ path("submit_developers_application_token",{ "id" : application.getId()}) }}" class="btn btn-small btn-info">{{ "boutton::generer" | trans }}</a>
+                            <a id="generate_access" href="{{ path("submit_developers_application_token",{ "application" : application.getId()}) }}" class="btn btn-small btn-info">{{ "boutton::generer" | trans }}</a>
                           </td>
                     </tr>
                 </tbody>
