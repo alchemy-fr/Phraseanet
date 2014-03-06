@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
 use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
-use Alchemy\Phrasea\Model\Entities\Session;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Request;
 
 class API_OAuth2_Adapter extends OAuth2
@@ -198,9 +198,9 @@ class API_OAuth2_Adapter extends OAuth2
 
         return [
             'scope'       => $token->getScope(),
-            'expires'     => $token->getExpire()->getTimestamp(),
+            'expires'     => null !== $token->getExpires() ? $token->getExpires()->getTimestamp() : null,
             'client_id'   => $token->getAccount()->getApplication()->getClientId(),
-            'session_id'  => null === $token->getSession() ? null : $token->getSession()->getId(),
+            'session_id'  => $token->getSessionId(),
             'revoked'     => (int) $token->getAccount()->isRevoked(),
             'usr_id'      => $token->getAccount()->getUser()->getId(),
             'oauth_token' => $token->getOauthToken(),
@@ -270,7 +270,7 @@ class API_OAuth2_Adapter extends OAuth2
         return [
             'redirect_uri' => $code->getRedirectUri(),
             'client_id'    => $code->getAccount()->getApplication()->getClientId(),
-            'expires'      => $code->getExpires()->getTimestamp(),
+            'expires'      => null !== $code->getExpires() ? $code->getExpires()->getTimestamp() : null,
             'account_id'   => $code->getAccount()->getId(),
         ];
     }
@@ -338,7 +338,7 @@ class API_OAuth2_Adapter extends OAuth2
 
         return [
             'token'     => $token->getRefreshToken(),
-            'expires'   => $token->getExpires()->getTimestamp(),
+            'expires'   => null !== $token->getExpires() ? $token->getExpires()->getTimestamp() : null,
             'client_id' => $token->getAccount()->getApplication()->getClientId()
         ];
     }
@@ -553,7 +553,7 @@ class API_OAuth2_Adapter extends OAuth2
     public function rememberSession(Session $session)
     {
         if (null !== $token = $this->app['repo.api-oauth-tokens']->find($this->token)) {
-            $token->setSession($session);
+            $this->app['manipulator.api-oauth-token']->rememberSessionId($token, $session->getId());
         }
     }
 
