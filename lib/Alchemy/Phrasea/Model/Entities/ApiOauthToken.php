@@ -16,7 +16,6 @@ class ApiOauthToken
      *
      * @ORM\Column(name="oauth_token", type="string", length=32, nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $oauthToken;
 

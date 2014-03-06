@@ -16,7 +16,6 @@ class ApiOauthRefreshToken
      *
      * @ORM\Column(name="refresh_token", type="string", length=128, nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $refreshToken;
 
