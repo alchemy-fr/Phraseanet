@@ -59,7 +59,7 @@ class patch_370alpha3a extends patchAbstract
      */
     public function apply(base $appbox, Application $app)
     {
-        if (null === $app['repo.api-application']->findByClientId(\API_OAuth2_Application_Navigator::CLIENT_ID)) {
+        if (null === $app['repo.api-applications']->findByClientId(\API_OAuth2_Application_Navigator::CLIENT_ID)) {
             $application = $app['manipulator.api-application']->create(
                 \API_OAuth2_Application_Navigator::CLIENT_NAME,
                 ApiApplication::DESKTOP_TYPE,
