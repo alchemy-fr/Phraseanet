@@ -77,6 +77,7 @@ use Alchemy\Phrasea\Core\Event\Subscriber\LogoutSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\MaintenanceSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\CookiesDisablerSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaInstallSubscriber;
 use Alchemy\Phrasea\Core\Middleware\ApiApplicationMiddlewareProvider;
 use Alchemy\Phrasea\Core\Middleware\BasketMiddlewareProvider;
 use Alchemy\Phrasea\Core\Middleware\TokenMiddlewareProvider;
@@ -473,6 +474,7 @@ class Application extends SilexApplication
                 $dispatcher->addSubscriber(new PhraseaLocaleSubscriber($app));
                 $dispatcher->addSubscriber(new MaintenanceSubscriber($app));
                 $dispatcher->addSubscriber(new CookiesDisablerSubscriber($app));
+                $dispatcher->addSubscriber(new PhraseaInstallSubscriber($app));
 
                 return $dispatcher;
             })
