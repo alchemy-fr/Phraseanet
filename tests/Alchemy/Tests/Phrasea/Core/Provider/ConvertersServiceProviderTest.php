@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
-class ConvertersServiceProvider extends ServiceProviderTestCase
+class ConvertersServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {
@@ -10,17 +10,22 @@ class ConvertersServiceProvider extends ServiceProviderTestCase
             [
                 'Alchemy\Phrasea\Core\Provider\ConvertersServiceProvider',
                 'converter.task',
-                'Alchemy\Phrasea\Controller\Converter\TaskConverter'
+                'Alchemy\Phrasea\Model\Converter\TaskConverter'
             ],
             [
                 'Alchemy\Phrasea\Core\Provider\ConvertersServiceProvider',
                 'converter.basket',
-                'Alchemy\Phrasea\Controller\Converter\BasketConverter'
+                'Alchemy\Phrasea\Model\Converter\BasketConverter'
             ],
             [
                 'Alchemy\Phrasea\Core\Provider\ConvertersServiceProvider',
                 'converter.token',
-                'Alchemy\Phrasea\Controller\Converter\TokenConverter'
+                'Alchemy\Phrasea\Model\Converter\TokenConverter'
+            ],
+            [
+                'Alchemy\Phrasea\Core\Provider\ConvertersServiceProvider',
+                'converter.api-application',
+                'Alchemy\Phrasea\Model\Converter\ApiApplicationConverter'
             ],
         ];
     }
