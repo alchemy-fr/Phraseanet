@@ -12,9 +12,12 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class ApiLog
 {
     const DATABOXES_RESOURCE = 'databoxes';
-    const RECORDS_RESOURCE = 'record';
+    const RECORDS_RESOURCE = 'records';
     const BASKETS_RESOURCE = 'baskets';
     const FEEDS_RESOURCE = 'feeds';
+    const QUARANTINE_RESOURCE = 'quarantine';
+    const STORIES_RESOURCE = 'stories';
+    const MONITOR_RESOURCE = 'monitor';
 
     /**
      * @ORM\Column(type="integer")
