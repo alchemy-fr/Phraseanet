@@ -14,7 +14,7 @@ class ApiOauthCode
     /**
      * @var string
      *
-     * @ORM\Column(name="code", type="string", length=16, nullable=false)
+     * @ORM\Column(name="code", type="string", length=128, nullable=false)
      * @ORM\Id
      */
     private $code;
