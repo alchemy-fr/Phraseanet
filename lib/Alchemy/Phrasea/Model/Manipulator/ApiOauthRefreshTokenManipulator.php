@@ -70,7 +70,7 @@ class ApiOauthRefreshTokenManipulator implements ManipulatorInterface
     {
         do {
             $refreshToken = $this->randomGenerator->generateString(32, TokenManipulator::LETTERS_AND_NUMBERS);
-        } while (null !== $this->repository->find($refreshToken));
+        } while (null === $this->repository->find($refreshToken));
 
         return $refreshToken;
     }
