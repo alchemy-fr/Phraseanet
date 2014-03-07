@@ -31,7 +31,7 @@ class ApiAccountManipulator implements ManipulatorInterface
         $this->repository = $repo;
     }
 
-    public function create(ApiApplication $application, User $user = null)
+    public function create(ApiApplication $application, User $user)
     {
         $account = new ApiAccount();
         $account->setUser($user);
