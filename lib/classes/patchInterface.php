@@ -21,16 +21,6 @@ interface patchInterface
     public function get_release();
 
     /**
-     * Returns whether the patch concerns the Application Box or
-     * the Data Box.
-     *
-     *  It accepts base::APPLICATION_BOX or base::DATA_BOX value.
-     *
-     * @return array
-     */
-    public function concern();
-
-    /**
      * Tells whether the patch must be run after the others or not.
      *
      * @return boolean
@@ -40,12 +30,12 @@ interface patchInterface
     /**
      * Apply patch.
      *
-     * @param base        $base The Application Box or the Data Boxes where the patch is applied.
+     * @param \appbox     $appbox The Application Box or the Data Boxes where the patch is applied.
      * @param Application $app
      *
      * @return boolean returns true if the patch succeed.
      */
-    public function apply(base $base, Application $app);
+    public function apply(\appbox $appbox, Application $app);
 
     /**
      * Returns doctrine migrations needed for the patch.

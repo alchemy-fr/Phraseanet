@@ -178,11 +178,11 @@ class databox_field implements cache_cacheableInterface
 
         $connbas = $this->get_connection();
 
-        $sql = "SELECT `thumbtitle`, `separator`, `dces_element`, `tbranch`,
-                `type`, `report`, `multi`, `required`, `readonly`, `indexable`,
-                `name`, `src`, `business`, `VocabularyControlType`,
-                `RestrictToVocabularyControl`, `sorter`,
-                `label_en`, `label_fr`, `label_de`, `label_nl`
+        $sql = "SELECT thumbtitle, `separator`, dces_element, tbranch,
+                `type`, report, multi, required, `readonly`, indexable,
+                name, `src`, business, VocabularyControlType,
+                RestrictToVocabularyControl, sorter,
+                label_en, label_fr, label_de, label_nl
               FROM metadatas_structure WHERE id=:id";
 
         $stmt = $connbas->prepare($sql);
@@ -362,25 +362,25 @@ class databox_field implements cache_cacheableInterface
         $connbas = $this->get_connection();
 
         $sql = 'UPDATE metadatas_structure SET
-          `name` = :name,
-          `src` = :source,
-          `indexable` = :indexable,
+          name = :name,
+          src = :source,
+          indexable = :indexable,
           `readonly` = :readonly,
-          `required` = :required,
+          required = :required,
           `separator` = :separator,
-          `multi` = :multi,
-          `business` = :business,
-          `report` = :report,
+          multi = :multi,
+          business = :business,
+          report = :report,
           `type` = :type,
-          `tbranch` = :tbranch,
-          `sorter` = :position,
-          `thumbtitle` = :thumbtitle,
-          `VocabularyControlType` = :VocabularyControlType,
-          `RestrictToVocabularyControl` = :RestrictVocab,
-          `label_en` = :label_en,
-          `label_fr` = :label_fr,
-          `label_de` = :label_de,
-          `label_nl` = :label_nl
+          tbranch = :tbranch,
+          sorter = :position,
+          thumbtitle = :thumbtitle,
+          VocabularyControlType = :VocabularyControlType,
+          RestrictToVocabularyControl = :RestrictVocab,
+          label_en = :label_en,
+          label_fr = :label_fr,
+          label_de = :label_de,
+          label_nl = :label_nl
           WHERE id = :id';
 
         $params = [
@@ -603,11 +603,12 @@ class databox_field implements cache_cacheableInterface
 
         if (null !== $DCES_element) {
             $sql = 'UPDATE metadatas_structure
-               SET dces_element = null WHERE dces_element = :dces_element';
+               SET dces_element = null WHERE dces_element = :dces_element AND sbas_id = :sbas_id';
 
             $stmt = $connbas->prepare($sql);
             $stmt->execute([
-                ':dces_element' => $DCES_element->get_label()
+                ':dces_element' => $DCES_element->get_label(),
+                ':sbas_id'      => $this->databox->get_sbas_id(),
             ]);
             $stmt->closeCursor();
         }
@@ -963,9 +964,9 @@ class databox_field implements cache_cacheableInterface
     {
         $sorter = 0;
 
-        $sql = 'SELECT (MAX(sorter) + 1) as sorter FROM metadatas_structure';
+        $sql = 'SELECT (MAX(sorter) + 1) as sorter FROM metadatas_structure WHERE sbas_id = :sbas_id';
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
+        $stmt->execute([':sbas_id' => $databox->get_sbas_id()]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -974,12 +975,12 @@ class databox_field implements cache_cacheableInterface
         }
 
         $sql = "INSERT INTO metadatas_structure
-        (`id`, `name`, `src`, `readonly`, `indexable`, `type`, `tbranch`,
-          `thumbtitle`, `multi`, `business`,
-          `report`, `sorter`)
+        (id, name, src, `readonly`, indexable, `type`, tbranch,
+          thumbtitle, multi, business,
+          report, sorter, sbas_id)
         VALUES (null, :name, '', 0, 1, 'string', '',
           null, :multi,
-          0, 1, :sorter)";
+          0, 1, :sorter, :sbas_id)";
 
         $name = self::generateName($name);
 
@@ -990,7 +991,7 @@ class databox_field implements cache_cacheableInterface
         $multi = $multi ? 1 : 0;
 
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute([':name'   => $name, ':sorter' => $sorter, ':multi' => $multi]);
+        $stmt->execute([':name'   => $name, ':sorter' => $sorter, ':multi' => $multi, ':sbas_id' => $databox->get_sbas_id()]);
         $id = $databox->get_connection()->lastInsertId();
         $stmt->closeCursor();
 

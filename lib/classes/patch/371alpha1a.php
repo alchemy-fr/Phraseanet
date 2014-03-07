@@ -16,9 +16,6 @@ class patch_371alpha1a extends patchAbstract
     /** @var string */
     private $release = '3.7.1-alpha1';
 
-    /** @var array */
-    private $concern = [base::DATA_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -38,14 +35,6 @@ class patch_371alpha1a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getDoctrineMigrations()
     {
         return [];
@@ -54,10 +43,12 @@ class patch_371alpha1a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function apply(base $databox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
-        foreach ($databox->get_meta_structure() as $databox_field) {
-            $databox_field->save();
+        foreach ($appbox->get_databoxes() as $databox) {
+            foreach ($databox->get_meta_structure() as $databox_field) {
+                $databox_field->save();
+            }
         }
 
         return true;

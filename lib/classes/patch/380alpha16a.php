@@ -16,9 +16,6 @@ class patch_380alpha16a extends patchAbstract
     /** @var string */
     private $release = '3.8.0-alpha.16';
 
-    /** @var array */
-    private $concern = [base::APPLICATION_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -46,15 +43,7 @@ class patch_380alpha16a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function apply(base $appbox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         $xsendfile = $app['conf']->get('xsendfile');
 

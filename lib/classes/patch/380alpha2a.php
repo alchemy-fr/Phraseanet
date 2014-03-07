@@ -16,9 +16,6 @@ class patch_380alpha2a extends patchAbstract
     /** @var string */
     private $release = '3.8.0-alpha.2';
 
-    /** @var array */
-    private $concern = [base::APPLICATION_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -46,15 +43,7 @@ class patch_380alpha2a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function apply(base $databox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         if ($app['conf']->has(['main', 'database-test'])) {
             $app['conf']->set(['main', 'database-test', 'path'], '/tmp/db.sqlite');

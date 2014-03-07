@@ -16,9 +16,6 @@ class patch_381alpha1b extends patchAbstract
     /** @var string */
     private $release = '3.8.1-alpha.1';
 
-    /** @var array */
-    private $concern = [base::DATA_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -46,18 +43,10 @@ class patch_381alpha1b extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function apply(base $databox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         $sql = "SHOW INDEX FROM metadatas_structure WHERE KEY_NAME = 'sorter'";
-        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -67,7 +56,7 @@ class patch_381alpha1b extends patchAbstract
         }
 
         $sql = "DROP INDEX sorter ON  metadatas_structure";
-        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 

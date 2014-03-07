@@ -11,6 +11,9 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Entities\FeedItem;
+use Alchemy\Phrasea\Model\Entities\BasketElement;
+use Alchemy\Phrasea\Model\Entities\StoryWZ;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\DBAL\Driver\Connection;
 
@@ -80,7 +83,7 @@ class collection implements cache_cacheableInterface
         $stmt->closeCursor();
 
         if ( ! $row)
-            throw new Exception('Unknown collection ' . $this->coll_id . ' on ' . $this->databox->get_dbname());
+            throw new Exception('Unknown collection ' . $this->coll_id . ' on ' . $this->databox->get_viewname());
 
         $this->available = true;
         $this->pub_wm = $row['pub_wm'];
@@ -140,7 +143,6 @@ class collection implements cache_cacheableInterface
         $this->delete_data_from_cache();
         $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
         $this->databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
-        cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
 
         return $this;
     }
@@ -152,7 +154,13 @@ class collection implements cache_cacheableInterface
 
     public function set_ord($ord)
     {
-        $this->app['phraseanet.appbox']->set_collection_order($this, $ord);
+        $sqlupd = "UPDATE bas SET ord = :ordre WHERE base_id = :base_id";
+        $stmt = $this->get_connection()->prepare($sqlupd);
+        $stmt->execute([':ordre'   => $ord, ':base_id' => $this->get_base_id()]);
+        $stmt->closeCursor();
+        $this->ord = $ord;
+
+        $this->get_databox()->delete_data_from_cache(\databox::CACHE_COLLECTIONS);
         $this->delete_data_from_cache();
         $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
@@ -169,7 +177,6 @@ class collection implements cache_cacheableInterface
         $this->delete_data_from_cache();
         $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
         $this->databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
-        cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
 
         return $this;
     }
@@ -386,28 +393,101 @@ class collection implements cache_cacheableInterface
 
     public function delete()
     {
+        $query = new User_Query($this->app);
+        $total = $query->on_base_ids([$this->get_base_id()])
+            ->include_phantoms(false)
+            ->include_special_users(true)
+            ->include_invite(true)
+            ->include_templates(true)->get_total();
+        $n = 0;
+        while ($n < $total) {
+            $results = $query->limit($n, 50)->execute()->get_results();
+            foreach ($results as $user) {
+                $this->app['acl']->get($user)->delete_data_from_cache(ACL::CACHE_RIGHTS_SBAS);
+                $this->app['acl']->get($user)->delete_data_from_cache(ACL::CACHE_RIGHTS_BAS);
+            }
+            $n+=50;
+        }
+
+        foreach ($this->app['repo.feeds']->findBy(['baseId' => $this->get_base_id()]) as $element) {
+            $this->app['EM']->remove($element);
+        }
+        foreach ($this->app['repo.ftp-export-elements']->findBy(['baseId' => $this->get_base_id()]) as $element) {
+            $this->app['EM']->remove($element);
+        }
+        foreach ($this->app['repo.lazaret-files']->findBy(['base_id' => $this->get_base_id()]) as $element) {
+            $this->app['EM']->remove($element);
+        }
+        foreach ($this->app['repo.order-elements']->findBy(['baseId' => $this->get_base_id()]) as $element) {
+            $this->app['EM']->remove($element);
+        }
+        foreach ($this->app['repo.registrations']->findBy(['baseId' => $this->get_base_id()]) as $element) {
+            $this->app['EM']->remove($element);
+        }
+
+        $start = 0;
+        do {
+            $items = $this->app['EM.native-query']->getFeedItemByCollection($this, $start++);
+            array_walk($items, function (FeedItem $item) {
+                $this['EM']->remove($item);
+            });
+        } while (count($items) > 0);
+
+        $start = 0;
+        do {
+            $items = $this->app['EM.native-query']->getBasketElementsByCollection($this, $start++);
+            array_walk($items, function (BasketElement $element) {
+                $this['EM']->remove($element);
+            });
+        } while (count($items) > 0);
+
+        $start = 0;
+        do {
+            $items = $this->app['EM.native-query']->getStoryWZByCollection($this, $start++);
+            array_walk($items, function (StoryWZ $story) {
+                $this['EM']->remove($story);
+            });
+        } while (count($items) > 0);
+
+        $this->app['EM']->flush();
+
+        $this->app['manipulator.registration']->deleteRegistrationsOnCollection($this);
+
         while ($this->get_record_amount() > 0) {
             $this->empty_collection();
         }
+
+        $sql = 'DELETE FROM collusr WHERE coll_id = :coll_id';
+        $stmt = $this->get_connection()->prepare($sql);
+        $stmt->execute([':coll_id' => $this->get_coll_id()]);
+        $stmt->closeCursor();
+
+        $sql = 'DELETE FROM log_colls WHERE coll_id = :coll_id';
+        $stmt = $this->get_connection()->prepare($sql);
+        $stmt->execute([':coll_id' => $this->get_coll_id()]);
+        $stmt->closeCursor();
+
+        $sql = 'DELETE FROM coll WHERE coll_id = :coll_id';
+        $stmt = $this->get_connection()->prepare($sql);
+        $stmt->execute([':coll_id' => $this->get_coll_id()]);
+        $stmt->closeCursor();
+
+        $sql = "DELETE FROM basusr WHERE base_id = :base_id";
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute([':base_id' => $this->get_base_id()]);
+        $stmt->closeCursor();
+
+        $sql = "DELETE FROM bas WHERE base_id = :base_id";
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute([':base_id' => $this->get_base_id()]);
+        $stmt->closeCursor();
+
+        phrasea::reset_baseDatas($this->app['phraseanet.appbox']);
 
         $sql = "DELETE FROM coll WHERE coll_id = :coll_id";
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute([':coll_id' => $this->get_coll_id()]);
         $stmt->closeCursor();
-
-        $appbox = $this->databox->get_appbox();
-
-        $sql = "DELETE FROM bas WHERE base_id = :base_id";
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute([':base_id' => $this->get_base_id()]);
-        $stmt->closeCursor();
-
-        $sql = "DELETE FROM basusr WHERE base_id = :base_id";
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute([':base_id' => $this->get_base_id()]);
-        $stmt->closeCursor();
-
-        $this->app['manipulator.registration']->deleteRegistrationsOnCollection($this);
 
         $this->get_databox()->delete_data_from_cache(databox::CACHE_COLLECTIONS);
 
@@ -511,43 +591,6 @@ class collection implements cache_cacheableInterface
         return $this->available;
     }
 
-    public function unmount_collection(Application $app)
-    {
-        $params = [':base_id' => $this->get_base_id()];
-
-        $query = new User_Query($app);
-        $total = $query->on_base_ids([$this->get_base_id()])
-                ->include_phantoms(false)
-                ->include_special_users(true)
-                ->include_invite(true)
-                ->include_templates(true)->get_total();
-        $n = 0;
-        while ($n < $total) {
-            $results = $query->limit($n, 50)->execute()->get_results();
-            foreach ($results as $user) {
-                $app['acl']->get($user)->delete_data_from_cache(ACL::CACHE_RIGHTS_SBAS);
-                $app['acl']->get($user)->delete_data_from_cache(ACL::CACHE_RIGHTS_BAS);
-            }
-            $n+=50;
-        }
-
-        $sql = "DELETE FROM basusr WHERE base_id = :base_id";
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
-
-        $sql = "DELETE FROM bas WHERE base_id = :base_id";
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
-
-        $this->app['manipulator.registration']->deleteRegistrationsOnCollection($this);
-
-        phrasea::reset_baseDatas($app['phraseanet.appbox']);
-
-        return $this;
-    }
-
     private static function getNewOrder(Connection $conn, $sbas_id)
     {
         $sql = "SELECT GREATEST(0, MAX(ord)) + 1 AS ord FROM bas WHERE sbas_id = :sbas_id";
@@ -573,12 +616,13 @@ class collection implements cache_cacheableInterface
                 </sugestedValues>
             </baseprefs>';
 
-        $sql = "INSERT INTO coll (coll_id, asciiname, prefs, logo)
-                VALUES (null, :name, :prefs, '')";
+        $sql = "INSERT INTO coll (coll_id, asciiname, prefs, logo, sbas_id)
+                VALUES (null, :name, :prefs, '', :sbas_id)";
 
         $params = [
-            ':name' => $name,
-            'prefs'  => $prefs,
+            ':name'  => $name,
+            ':prefs' => $prefs,
+            ':sbas_id' => $databox->get_sbas_id(),
         ];
 
         $stmt = $connbas->prepare($sql);
@@ -602,7 +646,6 @@ class collection implements cache_cacheableInterface
         $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
 
         $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
-        cache_databox::update($app, $sbas_id, 'structure');
 
         phrasea::reset_baseDatas($appbox);
 
@@ -641,35 +684,6 @@ class collection implements cache_cacheableInterface
         $this->app['acl']->get($user)->update_rights_to_base($base_id, $rights);
 
         return true;
-    }
-
-    public static function mount_collection(Application $app, databox $databox, $coll_id, User $user)
-    {
-
-        $sql = "INSERT INTO bas (base_id, active, server_coll_id, sbas_id, aliases, ord)
-            VALUES
-            (null, 1, :server_coll_id, :sbas_id, '', :ord)";
-        $stmt = $databox->get_appbox()->get_connection()->prepare($sql);
-        $stmt->execute([
-            ':server_coll_id' => $coll_id,
-            ':sbas_id'        => $databox->get_sbas_id(),
-            ':ord'            => self::getNewOrder($databox->get_appbox()->get_connection(), $databox->get_sbas_id()),
-        ]);
-        $stmt->closeCursor();
-
-        $new_bas = $databox->get_appbox()->get_connection()->lastInsertId();
-        $databox->get_appbox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
-
-        $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
-
-        cache_databox::update($app, $databox->get_sbas_id(), 'structure');
-
-        phrasea::reset_baseDatas($databox->get_appbox());
-
-        $coll = self::get_from_base_id($app, $new_bas);
-        $coll->set_admin($new_bas, $user);
-
-        return $new_bas;
     }
 
     public static function getLogo($base_id, Application $app, $printname = false)

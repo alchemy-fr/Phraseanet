@@ -93,30 +93,4 @@
             </form>
         </div>
     </div>
-
-    <div class="db_infos">
-        <h2>{{ 'admin::base: Monter une base' | trans }}</h2>
-        <div id="mount_base">
-            <form method="post" action="{{ path('admin_database_mount') }}">
-                <label class="checkbox">
-                    <input type="checkbox" name="new_settings" onchange="if(this.checked == true)$('#servermount_opts').slideDown();else $('#servermount_opts').slideUp();" />
-                    {{ "phraseanet:: Monter une base provenant d\'un serveur different de l\'application box" | trans }}
-                </label>
-                <div id="servermount_opts" style="display:none;">
-                    <label>{{ 'phraseanet:: hostname' | trans }}</label>
-                    <input name="new_hostname" value="" type="text" />
-                    <label>{{ 'phraseanet:: port' | trans }}</label>
-                    <input name="new_port" value="3306" type="text" />
-                    <label>{{ 'phraseanet:: user' | trans }}</label>
-                    <input name="new_user" value="" type="text" />
-                    <label>{{ 'phraseanet:: password' | trans }}</label>
-                    <input name="new_password" value="" type="password" />
-                </div>
-                <label>{{ 'phraseanet:: dbname' | trans }}</label>
-                <input type="text" name="new_dbname" value="" />
-                <input type="hidden" name="mount_base" value="yes" />
-                <input type="submit" class="btn" value="{{ 'boutton::monter' | trans }}" />
-            </form>
-        </div>
-    </div>
 {% endif %}

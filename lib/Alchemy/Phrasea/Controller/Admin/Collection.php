@@ -78,10 +78,6 @@ class Collection implements ControllerProviderInterface
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_empty');
 
-        $controllers->post('/{bas_id}/unmount/', 'controller.admin.collection:unmount')
-            ->assert('bas_id', '\d+')
-            ->bind('admin_collection_unmount');
-
         $controllers->post('/{bas_id}/picture/mini-logo/', 'controller.admin.collection:setMiniLogo')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_logo');
@@ -625,7 +621,6 @@ class Collection implements ControllerProviderInterface
             if ($collection->get_record_amount() > 0) {
                 $msg = $app->trans('Empty the collection before removing');
             } else {
-                $collection->unmount_collection($app);
                 $collection->delete();
                 $success = true;
                 $msg = $app->trans('Successful removal');
@@ -660,40 +655,6 @@ class Collection implements ControllerProviderInterface
         return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $collection->get_sbas_id(),
             'success' => 0,
-        ]);
-    }
-
-    /**
-     * Unmount a collection from application box
-     *
-     * @param  Application                   $app     The silex application
-     * @param  Request                       $request The current request
-     * @param  integer                       $bas_id  The collection base_id
-     * @return JsonResponse|RedirectResponse
-     */
-    public function unmount(Application $app, Request $request, $bas_id)
-    {
-        $success = false;
-
-        $collection = \collection::get_from_base_id($app, $bas_id);
-
-        try {
-            $collection->unmount_collection($app);
-            $success = true;
-        } catch (\Exception $e) {
-
-        }
-
-        if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json([
-                'success' => $success,
-                'msg'     => $success ? $app->trans('The publication has been stopped') : $app->trans('An error occured')
-            ]);
-        }
-
-        return $app->redirectPath('admin_display_collection', [
-            'bas_id'  => $collection->get_sbas_id(),
-            'success' => (int) $success,
         ]);
     }
 

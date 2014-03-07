@@ -16,9 +16,6 @@ class patch_380alpha3b extends patchAbstract
     /** @var string */
     private $release = '3.8.0-alpha.3';
 
-    /** @var array */
-    private $concern = [base::APPLICATION_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -38,14 +35,6 @@ class patch_380alpha3b extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getDoctrineMigrations()
     {
         return [];
@@ -54,7 +43,7 @@ class patch_380alpha3b extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function apply(base $appbox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         $app['conf']->set(['main', 'search-engine'], [
             'type'    => 'Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine',

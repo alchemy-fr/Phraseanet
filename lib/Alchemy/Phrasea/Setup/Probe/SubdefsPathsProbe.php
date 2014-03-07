@@ -21,10 +21,10 @@ class SubdefsPathsProbe extends RequirementCollection implements ProbeInterface
         $this->setName('Subdefs Paths');
 
         foreach ($appbox->get_databoxes() as $databox) {
-            $this->ensureWriteableSubdefsPath($databox->get_dbname(), 'document', (string) $databox->get_sxml_structure()->path);
+            $this->ensureWriteableSubdefsPath($databox->get_viewname(), 'document', (string) $databox->get_sxml_structure()->path);
             foreach ($databox->get_subdef_structure() as $group => $subdefs) {
                 foreach ($subdefs as $subdef) {
-                    $this->ensureWriteableSubdefsPath($databox->get_dbname(), $group . '/' . $subdef->get_name(), (string) $databox->get_sxml_structure()->path);
+                    $this->ensureWriteableSubdefsPath($databox->get_viewname(), $group . '/' . $subdef->get_name(), (string) $databox->get_sxml_structure()->path);
                 }
             }
         }

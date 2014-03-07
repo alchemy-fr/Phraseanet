@@ -7,7 +7,6 @@ use Symfony\Component\DomCrawler\Crawler;
 abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticatedTestCase
 {
     protected $StubbedACL;
-    private static $createdDataboxes = [];
 
     public function setUp()
     {
@@ -20,11 +19,6 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
 
     public function setAdmin($bool)
     {
-        $stubAuthenticatedUser = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
-            ->setMethods(['getId'])
-            ->disableOriginalConstructor()
-            ->getMock();
-
         $this->StubbedACL->expects($this->any())
             ->method('is_admin')
             ->will($this->returnValue($bool));
@@ -82,71 +76,6 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
             ->will($this->returnValue($this->StubbedACL));
 
         self::$DI['app']['acl'] = $aclProvider;
-    }
-
-    public function createDatabox()
-    {
-        $this->createDatabase();
-
-        $connexion = self::$DI['app']['phraseanet.configuration']['main']['database'];
-
-        try {
-            $conn = self::$DI['app']['dbal.provider']->get([
-                'host'     => $connexion['host'],
-                'port'     => $connexion['port'],
-                'user'     => $connexion['user'],
-                'password' => $connexion['password'],
-                'dbname'   => 'unit_test_db',
-            ]);
-            $conn->connect();
-        } catch (DBALException $e) {
-            $this->markTestSkipped('Could not reach DB');
-        }
-
-        $databox = \databox::create(
-                self::$DI['app'], $conn, new \SplFileInfo(self::$DI['app']['root.path'] . '/lib/conf.d/data_templates/fr-simple.xml')
-        );
-
-        self::$createdDataboxes[] = $databox;
-
-        $rights = [
-            'bas_manage'        => '1'
-            , 'bas_modify_struct' => '1'
-            , 'bas_modif_th'      => '1'
-            , 'bas_chupub'        => '1'
-        ];
-
-        self::$DI['app']['acl']->get(self::$DI['app']['authentication']->getUser())->update_rights_to_sbas($databox->get_sbas_id(), $rights);
-
-        $databox->registerAdmin(self::$DI['app']['authentication']->getUser());
-
-        return $databox;
-    }
-
-    public static function dropDatabase()
-    {
-        $stmt = self::$DI['app']['phraseanet.appbox']
-            ->get_connection()
-            ->prepare('DROP DATABASE IF EXISTS `unit_test_db`');
-        $stmt->execute();
-        $stmt->closeCursor();
-        $stmt = self::$DI['app']['phraseanet.appbox']
-            ->get_connection()
-            ->prepare('DELETE FROM sbas WHERE dbname = "unit_test_db"');
-        $stmt->execute();
-        $stmt->closeCursor();
-    }
-
-    protected function createDatabase()
-    {
-        self::dropDatabase();
-
-        $stmt = self::$DI['app']['phraseanet.appbox']
-            ->get_connection()
-            ->prepare('CREATE DATABASE `unit_test_db`
-              CHARACTER SET utf8 COLLATE utf8_unicode_ci');
-        $stmt->execute();
-        $stmt->closeCursor();
     }
 
     public function provideFlashMessages()

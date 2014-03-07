@@ -17,9 +17,6 @@ class patch_360alpha2b extends patchAbstract
     /** @var string */
     private $release = '3.6.0-alpha.2';
 
-    /** @var array */
-    private $concern = [base::DATA_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -47,15 +44,7 @@ class patch_360alpha2b extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function apply(base $databox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         /**
          * Fail if upgrade has previously failed, no problem
@@ -65,7 +54,7 @@ class patch_360alpha2b extends patchAbstract
                     ADD `updated` TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '1',
                     ADD INDEX ( `updated` )";
 
-            $stmt = $databox->get_connection()->prepare($sql);
+            $stmt = $appbox->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
 
@@ -76,7 +65,7 @@ class patch_360alpha2b extends patchAbstract
                         FROM metadatas_structure
                         WHERE multi = "1"
                     )';
-            $stmt = $databox->get_connection()->prepare($sql);
+            $stmt = $appbox->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
         } catch (DBALException $e) {
@@ -86,7 +75,7 @@ class patch_360alpha2b extends patchAbstract
         try {
             $sql = 'ALTER TABLE `metadatas` DROP INDEX `unique`';
 
-            $stmt = $databox->get_connection()->prepare($sql);
+            $stmt = $appbox->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
         } catch (DBALException $e) {
@@ -98,7 +87,7 @@ class patch_360alpha2b extends patchAbstract
                 WHERE m.meta_struct_id = s.id
                 AND s.multi = "1" AND updated="0"';
 
-        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $rowCount = $stmt->rowCount();
         $stmt->closeCursor();
@@ -112,16 +101,16 @@ class patch_360alpha2b extends patchAbstract
                     WHERE m.meta_struct_id = s.id
                     AND s.multi = "1" LIMIT ' . $n . ', ' . $perPage;
 
-            $stmt = $databox->get_connection()->prepare($sql);
+            $stmt = $appbox->get_connection()->prepare($sql);
             $stmt->execute();
             $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
-            $databox->get_connection()->beginTransaction();
+            $appbox->get_connection()->beginTransaction();
 
             $sql = 'INSERT INTO metadatas(id, record_id, meta_struct_id, value)
                     VALUES (null, :record_id, :meta_struct_id, :value)';
-            $stmt = $databox->get_connection()->prepare($sql);
+            $stmt = $appbox->get_connection()->prepare($sql);
 
             $databox_fields = [];
 
@@ -129,7 +118,7 @@ class patch_360alpha2b extends patchAbstract
                 $meta_struct_id = $row['meta_struct_id'];
 
                 if ( ! isset($databox_fields[$meta_struct_id])) {
-                    $databox_fields[$meta_struct_id] = \databox_field::get_instance($app, $databox, $meta_struct_id);
+                    $databox_fields[$meta_struct_id] = \databox_field::get_instance($app, $appbox->get_databox($row['sbas_id']), $meta_struct_id);
                 }
 
                 $values = \caption_field::get_multi_values($row['value'], $databox_fields[$meta_struct_id]->get_separator());
@@ -147,7 +136,7 @@ class patch_360alpha2b extends patchAbstract
             $stmt->closeCursor();
 
             $sql = 'DELETE FROM metadatas WHERE id = :id';
-            $stmt = $databox->get_connection()->prepare($sql);
+            $stmt = $appbox->get_connection()->prepare($sql);
 
             foreach ($rs as $row) {
                 $params = [':id' => $row['id']];
@@ -156,7 +145,7 @@ class patch_360alpha2b extends patchAbstract
 
             $stmt->closeCursor();
 
-            $databox->get_connection()->commit();
+            $appbox->get_connection()->commit();
 
             $n+= $perPage;
         }
@@ -166,7 +155,7 @@ class patch_360alpha2b extends patchAbstract
          */
         try {
             $sql = "ALTER TABLE `metadatas` DROP `updated`";
-            $stmt = $databox->get_connection()->prepare($sql);
+            $stmt = $appbox->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
         } catch (\Exception $e) {

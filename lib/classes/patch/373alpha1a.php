@@ -16,9 +16,6 @@ class patch_373alpha1a extends patchAbstract
     /** @var string */
     private $release = '3.7.3-alpha.1';
 
-    /** @var array */
-    private $concern = [base::APPLICATION_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -46,15 +43,7 @@ class patch_373alpha1a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function apply(base $appbox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         $sql = 'SELECT * FROM registry
                 WHERE `key` = :key';

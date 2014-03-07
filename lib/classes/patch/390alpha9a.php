@@ -16,9 +16,6 @@ class patch_390alpha9a extends patchAbstract
     /** @var string */
     private $release = '3.9.0-alpha.9';
 
-    /** @var array */
-    private $concern = [base::APPLICATION_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -38,14 +35,6 @@ class patch_390alpha9a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getDoctrineMigrations()
     {
         return [];
@@ -54,7 +43,7 @@ class patch_390alpha9a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function apply(base $appbox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         $this->updateRegistry($app);
         $this->updateDoctrineUsers($app);
@@ -93,9 +82,9 @@ class patch_390alpha9a extends patchAbstract
     private function updateDataboxPrefs(\appbox $appbox)
     {
         foreach ($appbox->get_databoxes() as $databox) {
-            $sql = 'SELECT id, locale FROM pref WHERE prop = "ToU"';
+            $sql = 'SELECT id, locale FROM pref WHERE prop = "ToU" AND sbas_id = :sbas_id';
             $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
+            $stmt->execute([':sbas_id' => $databox->get_sbas_id()]);
             $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 

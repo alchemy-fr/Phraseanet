@@ -19,9 +19,6 @@ class patch_3715alpha1a extends patchAbstract
      */
     private $release = '3.7.15-alpha1';
 
-    /** @var array */
-    private $concern = [base::APPLICATION_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -49,15 +46,7 @@ class patch_3715alpha1a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function apply(base $appbox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         try {
             \API_OAuth2_Application::load_from_client_id($app, \API_OAuth2_Application_OfficePlugin::CLIENT_ID);

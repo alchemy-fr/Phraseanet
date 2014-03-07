@@ -32,11 +32,18 @@ class CacheServiceProvider implements ServiceProviderInterface
         });
 
         $app['phraseanet.cache-service'] = $app->share(function (Application $app) {
+            if ($app['configuration.store']->isSetup()) {
+                $id = $app['conf']->get(['main', 'key'], $app['random.low']->generateString(16));
+            } else {
+                $id = $app['random.low']->generateString(16);
+            }
+
             return new CacheManager(
                 $app['phraseanet.cache-compiler'],
                 $app['phraseanet.cache-registry'],
                 $app['monolog'],
-                $app['phraseanet.cache-factory']
+                $app['phraseanet.cache-factory'],
+                $id
             );
         });
 

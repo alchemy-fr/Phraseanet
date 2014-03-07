@@ -57,7 +57,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
 
         self::$searchEngine->getConfigurationPanel()->saveConfiguration($configuration);
 
-        $configFile = self::$searchEngine->getConfigurationPanel()->generateSphinxConf($appbox->get_databoxes(), $configuration);
+        $configFile = self::$searchEngine->getConfigurationPanel()->generateSphinxConf($appbox, $appbox->get_databoxes(), $configuration);
 
         file_put_contents(self::$config, $configFile);
 

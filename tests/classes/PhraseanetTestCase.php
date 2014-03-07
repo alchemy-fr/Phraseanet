@@ -383,6 +383,10 @@ abstract class PhraseanetTestCase extends WebTestCase
             ->will($this->returnCallback(function () {
                 $this->fail('Notification deliverer must be mocked');
             }));
+
+        $app['EM.native-query'] = $app->share(function ($app) {
+            return new \UnitTestsNativeQuery($app['dbal.conn'], $app['EM']);
+        });
     }
 
     public function tearDown()
@@ -749,5 +753,36 @@ abstract class PhraseanetTestCase extends WebTestCase
             ->will($this->returnValue($this->getMock('Symfony\Component\EventDispatcher\EventSubscriberInterface')));
 
         return $mock;
+    }
+
+    public function createDatabox()
+    {
+        $this->dropDatabase();
+
+        $databox = \databox::create(
+            self::$DI['app'], new \SplFileInfo(self::$DI['app']['root.path'] . '/lib/conf.d/data_templates/fr-simple.xml'), 'unit_test_db'
+        );
+
+        $rights = [
+            'bas_manage'        => '1'
+            , 'bas_modify_struct' => '1'
+            , 'bas_modif_th'      => '1'
+            , 'bas_chupub'        => '1'
+        ];
+
+        self::$DI['app']['acl']->get(self::$DI['app']['authentication']->getUser())->update_rights_to_sbas($databox->get_sbas_id(), $rights);
+
+        $databox->registerAdmin(self::$DI['app']['authentication']->getUser());
+
+        return $databox;
+    }
+
+    public static function dropDatabase()
+    {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+            if (in_array($databox->get_viewname(), ['unit_test_db', 'ab_unitTests', 'db_unitTests'])) {
+                $databox->delete();
+            }
+        }
     }
 }

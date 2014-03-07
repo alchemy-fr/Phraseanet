@@ -19,9 +19,6 @@ class patch_380alpha11a extends patchAbstract
     /** @var string */
     private $release = '3.8.0-alpha.11';
 
-    /** @var array */
-    private $concern = [base::APPLICATION_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -41,14 +38,6 @@ class patch_380alpha11a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getDoctrineMigrations()
     {
         return ['user', 'session'];
@@ -57,7 +46,7 @@ class patch_380alpha11a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function apply(base $appbox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         try {
             $sql = 'SELECT usr_id, user_agent, ip, platform, browser, app,

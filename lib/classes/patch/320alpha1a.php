@@ -16,9 +16,6 @@ class patch_320alpha1a extends patchAbstract
     /** @var string */
     private $release = '3.2.0-alpha.1';
 
-    /** @var Array */
-    private $concern = [base::DATA_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -46,19 +43,11 @@ class patch_320alpha1a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function apply(base $databox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         $sql = 'UPDATE record SET parent_record_id = "1"
                 WHERE parent_record_id != "0"';
-        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 

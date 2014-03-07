@@ -593,13 +593,7 @@ class SphinxSearchEngine implements SearchEngineInterface
      */
     public function CRCdatabox(\databox $databox)
     {
-        return sprintf("%u", crc32(
-                str_replace(
-                        ['.', '%']
-                        , '_'
-                        , sprintf('%s_%s_%s_%s', $databox->get_host(), $databox->get_port(), $databox->get_user(), $databox->get_dbname())
-                )
-        ));
+        return $databox->get_sbas_id();
     }
 
     /**

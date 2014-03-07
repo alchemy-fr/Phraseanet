@@ -63,7 +63,7 @@ class ManagerTest extends \PhraseanetTestCase
 
         $this->createEmptyRegistry();
 
-        $manager = new Manager($compiler, $this->file, $logger, $factory);
+        $manager = new Manager($compiler, $this->file, $logger, $factory, mt_rand());
         $this->assertSame($cache, $manager->factory('custom-type', $name, $values));
         $this->assertSame($cache, $manager->factory('custom-type', $name, $values));
         $this->assertSame($cache, $manager->factory('custom-type', $name, $values));
@@ -97,7 +97,7 @@ class ManagerTest extends \PhraseanetTestCase
             ->with($name, $values)
             ->will($this->returnValue($cache));
 
-        $manager = new Manager($compiler, $this->file, $logger, $factory);
+        $manager = new Manager($compiler, $this->file, $logger, $factory, mt_rand());
         $this->assertSame($cache, $manager->factory('custom-type', $name, $values));
     }
 
@@ -132,7 +132,7 @@ class ManagerTest extends \PhraseanetTestCase
             ->with($name, $values)
             ->will($this->returnValue($cache));
 
-        $manager = new Manager($compiler, $this->file, $logger, $factory);
+        $manager = new Manager($compiler, $this->file, $logger, $factory, mt_rand());
         $this->assertSame($cache, $manager->factory('custom-type', $name, $values));
         $this->assertSame($cache, $manager->factory('another-type', $name, $values));
         $this->assertSame($cache, $manager->factory('yet-another-type', $name, $values));
@@ -181,7 +181,7 @@ class ManagerTest extends \PhraseanetTestCase
             ->with('array', [])
             ->will($this->returnValue($cache));
 
-        $manager = new Manager($compiler, $this->file, $logger, $factory);
+        $manager = new Manager($compiler, $this->file, $logger, $factory, mt_rand());
         $this->assertSame($cache, $manager->factory('custom-type', $name, $values));
     }
 }

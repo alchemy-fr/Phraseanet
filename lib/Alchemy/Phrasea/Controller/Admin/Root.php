@@ -64,26 +64,12 @@ class Root implements ControllerProviderInterface
                 }
             }
 
-            $databoxes = $off_databoxes = [];
-            foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
-                try {
-                    if (!$app['acl']->get($app['authentication']->getUser())->has_access_to_sbas($databox->get_sbas_id())) {
-                        continue;
-                    }
-                    $databox->get_connection();
-                } catch (\Exception $e) {
-                    $off_databoxes[] = $databox;
-                    continue;
-                }
-
-                $databoxes[] = $databox;
-            }
+            $databoxes = $app['phraseanet.appbox']->get_databoxes();
 
             $params = [
                 'feature'       => $feature,
                 'featured'      => $featured,
                 'databoxes'     => $databoxes,
-                'off_databoxes' => $off_databoxes
             ];
 
             return $app['twig']->render('admin/index.html.twig', [
@@ -94,7 +80,6 @@ class Root implements ControllerProviderInterface
                 'feature'       => $feature,
                 'featured'      => $featured,
                 'databoxes'     => $databoxes,
-                'off_databoxes' => $off_databoxes,
                 'tree'          => $app['twig']->render('admin/tree.html.twig', $params),
             ]);
         })->bind('admin');

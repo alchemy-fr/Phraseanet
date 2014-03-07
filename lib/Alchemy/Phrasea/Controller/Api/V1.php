@@ -935,8 +935,8 @@ class V1 implements ControllerProviderInterface
             'query_time'        => $search_result->getDuration(),
             'search_indexes'    => $search_result->getIndexes(),
             'suggestions'       => array_map(function (SearchEngineSuggestion $suggestion) {
-                    return $suggestion->toArray();
-                }, $search_result->getSuggestions()->toArray()),
+                return $suggestion->toArray();
+            }, $search_result->getSuggestions()->toArray()),
             'results'           => [],
             'query'             => $search_result->getQuery(),
         ];
@@ -1809,8 +1809,8 @@ class V1 implements ControllerProviderInterface
      */
     private function list_databoxes(Application $app)
     {
-        return array_map(function (\databox $databox) {
-            return $this->list_databox($databox);
+        return array_map(function (\databox $databox) use ($app) {
+            return $this->list_databox($app, $databox);
         }, $app['phraseanet.appbox']->get_databoxes());
     }
 
@@ -1835,11 +1835,11 @@ class V1 implements ControllerProviderInterface
      * @param  \databox $databox
      * @return array
      */
-    private function list_databox(\databox $databox)
+    private function list_databox(Application $app, \databox $databox)
     {
         return [
             'databox_id' => $databox->get_sbas_id(),
-            'name'       => $databox->get_dbname(),
+            'name'       => $databox->get_viewname(),
             'viewname'   => $databox->get_viewname(),
             'labels'     => [
                 'en' => $databox->get_label('en'),
@@ -1847,7 +1847,7 @@ class V1 implements ControllerProviderInterface
                 'fr' => $databox->get_label('fr'),
                 'nl' => $databox->get_label('nl'),
             ],
-            'version'    => $databox->get_version(),
+            'version'    => $app['phraseanet.appbox']->get_version(),
         ];
     }
 

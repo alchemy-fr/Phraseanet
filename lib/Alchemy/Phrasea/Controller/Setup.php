@@ -142,23 +142,7 @@ class Setup implements ControllerProviderInterface
             ]);
         }
 
-        try {
-            if ($databox_name) {
-                $dbConn = $app['dbal.provider']->get([
-                    'host'     => $hostname,
-                    'port'     => $port,
-                    'user'     => $user_ab,
-                    'password' => $ab_password,
-                    'dbname'   => $databox_name,
-                ]);
-                $dbConn->connect();
-            }
-        } catch (\Exception $e) {
-            return $app->redirectPath('install_step2', [
-                'error' => $app->trans('Databox is unreachable'),
-            ]);
-        }
-
+        $dbConn = $abConn;
         $email = $request->request->get('email');
         $password = $request->request->get('password');
         $template = $request->request->get('db_template');

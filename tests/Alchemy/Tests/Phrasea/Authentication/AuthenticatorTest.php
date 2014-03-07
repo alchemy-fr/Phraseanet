@@ -55,26 +55,7 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $app['session'] = $session = $this->getSessionMock();
         $app['EM'] = $em = $this->createEntityManagerMock();
 
-        $user = $this->createUserMock();
-        $user->expects($this->any())
-            ->method('getId')
-            ->will($this->returnvalue(self::$DI['user']->getId()));
-
-        $acl = $this->getMockBuilder('ACL')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $acl->expects($this->once())
-            ->method('get_granted_sbas')
-            ->will($this->returnValue([]));
-
-        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $aclProvider->expects($this->any())
-            ->method('get')
-            ->will($this->returnValue($acl));
-
-        $app['acl'] = $aclProvider;
+        $user = self::$DI['user'];
 
         $em->expects($this->at(0))
             ->method('persist')

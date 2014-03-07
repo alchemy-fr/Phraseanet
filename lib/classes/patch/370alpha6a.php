@@ -16,9 +16,6 @@ class patch_370alpha6a extends patchAbstract
     /** @var string */
     private $release = '3.7.0-alpha.6';
 
-    /** @var array */
-    private $concern = [base::DATA_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -38,14 +35,6 @@ class patch_370alpha6a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getDoctrineMigrations()
     {
         return [];
@@ -54,44 +43,46 @@ class patch_370alpha6a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function apply(base $databox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
-        $structure = $databox->get_structure();
+        foreach ($appbox->get_databoxes() as $databox) {
+            $structure = $databox->get_structure();
 
-        $DOM = new DOMDocument();
-        $DOM->loadXML($structure);
+            $DOM = new DOMDocument();
+            $DOM->loadXML($structure);
 
-        $xpath = new DOMXpath($DOM);
+            $xpath = new DOMXpath($DOM);
 
-        foreach ($xpath->query('/record/subdefs/subdefgroup[@name="video"]/subdef[@name="preview"]/acodec') as $node) {
-                $node->nodeValue = 'libvo_aacenc';
-        }
+            foreach ($xpath->query('/record/subdefs/subdefgroup[@name="video"]/subdef[@name="preview"]/acodec') as $node) {
+                    $node->nodeValue = 'libvo_aacenc';
+            }
 
-        foreach ($xpath->query('/record/subdefs/subdefgroup[@name="video"]/subdef[@name="preview"]/vcodec') as $node) {
-                $node->nodeValue = 'libx264';
-        }
+            foreach ($xpath->query('/record/subdefs/subdefgroup[@name="video"]/subdef[@name="preview"]/vcodec') as $node) {
+                    $node->nodeValue = 'libx264';
+            }
 
-        $databox->saveStructure($DOM);
+            $databox->saveStructure($DOM);
 
-        $subdefgroups = $databox->get_subdef_structure();
+            $subdefgroups = $databox->get_subdef_structure();
 
-        foreach ($subdefgroups as $groupname => $subdefs) {
-            foreach ($subdefs as $name => $subdef) {
-                $this->addScreenDeviceOption($subdefgroups, $subdef, $groupname);
+            foreach ($subdefgroups as $groupname => $subdefs) {
+                foreach ($subdefs as $name => $subdef) {
+                    $this->addScreenDeviceOption($subdefgroups, $subdef, $groupname);
 
-                if (in_array($name, ['preview', 'thumbnail'])) {
-                    if ($name == 'thumbnail' || $subdef->getSubdefType()->getType() != \Alchemy\Phrasea\Media\Subdef\Subdef::TYPE_VIDEO) {
-                        $this->addMobileSubdefImage($subdefgroups, $subdef, $groupname);
-                    } else {
-                        $this->addMobileSubdefVideo($subdefgroups, $subdef, $groupname);
+                    if (in_array($name, ['preview', 'thumbnail'])) {
+                        if ($name == 'thumbnail' || $subdef->getSubdefType()->getType() != \Alchemy\Phrasea\Media\Subdef\Subdef::TYPE_VIDEO) {
+                            $this->addMobileSubdefImage($subdefgroups, $subdef, $groupname);
+                        } else {
+                            $this->addMobileSubdefVideo($subdefgroups, $subdef, $groupname);
+                        }
                     }
-                }
 
-                if ($subdef->getSubdefType()->getType() != \Alchemy\Phrasea\Media\Subdef\Subdef::TYPE_VIDEO) {
-                    continue;
-                }
+                    if ($subdef->getSubdefType()->getType() != \Alchemy\Phrasea\Media\Subdef\Subdef::TYPE_VIDEO) {
+                        continue;
+                    }
 
-                $this->addHtml5Video($subdefgroups, $subdef, $groupname);
+                    $this->addHtml5Video($subdefgroups, $subdef, $groupname);
+                }
             }
         }
 

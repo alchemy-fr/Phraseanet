@@ -16,9 +16,6 @@ class patch_379alpha1a extends patchAbstract
     /** @var string */
     private $release = '3.7.9-alpha1';
 
-    /** @var array */
-    private $concern = [base::DATA_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -46,15 +43,7 @@ class patch_379alpha1a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function apply(base $appbox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         $sql = 'UPDATE permalinks SET label = "untitled"
                 WHERE label = ""';

@@ -30,14 +30,6 @@ class p4stringTest extends \PhraseanetTestCase
          */
     }
 
-    public function testHasAccent()
-    {
-        $this->assertTrue(p4string::hasAccent('azertyuéjn'));
-        $this->assertFalse(p4string::hasAccent('azertyujn'));
-        $this->assertFalse(p4string::hasAccent(''));
-        $this->assertTrue(p4string::hasAccent('é'));
-    }
-
     public function testJsonencode()
     {
         $a = new stdClass();

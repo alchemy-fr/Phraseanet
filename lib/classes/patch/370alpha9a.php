@@ -16,9 +16,6 @@ class patch_370alpha9a extends patchAbstract
     /** @var string */
     private $release = '3.7.0-alpha.9';
 
-    /** @var array */
-    private $concern = [base::APPLICATION_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -46,15 +43,7 @@ class patch_370alpha9a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function apply(base $appbox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         $app['configuration.store']->setDefault('border-manager');
 

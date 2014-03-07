@@ -211,11 +211,4 @@
 
     </ul>
   </li>
-
-  {% for databox in off_databoxes %}
-  <li>
-    <img src="/skins/icons/db-remove.png"/>
-    {{ databox.get_dbname() }} ({{ databox.get_host() }} {{ databox.get_port() }})
-  </li>
-  {% endfor %}
 </ul>

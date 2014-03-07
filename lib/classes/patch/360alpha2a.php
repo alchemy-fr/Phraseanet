@@ -16,9 +16,6 @@ class patch_360alpha2a extends patchAbstract
     /** @var string */
     private $release = '3.6.0-alpha.2';
 
-    /** @var array */
-    private $concern = [base::APPLICATION_BOX];
-
     /**
      * {@inheritdoc}
      */
@@ -46,15 +43,7 @@ class patch_360alpha2a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function apply(base $appbox, Application $app)
+    public function apply(\appbox $appbox, Application $app)
     {
         $app['EM']->getConnection()->executeUpdate('UPDATE Users u SET u.email = NULL WHERE u.email IS NOT NULL AND u.deleted = 1');
 
