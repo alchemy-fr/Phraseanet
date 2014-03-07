@@ -70,8 +70,8 @@ class patch_390alpha17a extends patchAbstract
         $em->getConnection()->executeUpdate(
             'INSERT INTO ApiApplications
             (
-                id,           `type`,     `name`,         description,    website
-                created,      updated,    client_id,      client_secret,  nonce
+                id,           `type`,     `name`,         description,    website,
+                created,      updated,    client_id,      client_secret,  nonce,
                 redirect_uri, activated,  grant_password, creator_id
 
             )
@@ -91,7 +91,7 @@ class patch_390alpha17a extends patchAbstract
         $em->getConnection()->executeUpdate(
             'INSERT INTO ApiAccounts
             (
-                id,           user_id,  revoked
+                id,           user_id,  revoked,
                 api_version,  created,  application_id
 
             )
@@ -111,14 +111,14 @@ class patch_390alpha17a extends patchAbstract
         $em->getConnection()->executeUpdate(
             'INSERT INTO ApiLogs
             (
-                id,         account_id,     route,    error_message
+                id,         account_id,     route,    error_message,
                 created,    status_code,    format,   resource,
-                general,    aspect,         `action`, error_code,
+                general,    aspect,         `action`, error_code
 
             )
             (
                 SELECT
-                api_log_id,       api_account_id,       api_log_route,  api_log_error_message
+                api_log_id,       api_account_id,       api_log_route,  api_log_error_message,
                 api_log_date,     api_log_status_code,  api_log_format, api_log_resource,
                 api_log_general,  api_log_aspect,       api_log_action, api_log_error_code
                 FROM api_log
@@ -132,13 +132,13 @@ class patch_390alpha17a extends patchAbstract
         $em->getConnection()->executeUpdate(
             'INSERT INTO ApiOauthCodes
             (
-                code,       account_id,     redirect_uri,    expires
+                code,       account_id,     redirect_uri,    expires,
                 scope,      created,        updated
 
             )
             (
                 SELECT
-                code,   api_account_id, redirect_uri, expires
+                code,   api_account_id, redirect_uri, expires,
                 scope,  NOW(),          NOW()
                 FROM api_oauth_codes
                 INNER JOIN api_accounts ON (api_accounts.api_account_id = api_oauth_codes.api_account_id)
@@ -151,13 +151,13 @@ class patch_390alpha17a extends patchAbstract
         $em->getConnection()->executeUpdate(
             'INSERT INTO ApiOauthRefreshTokens
             (
-                refresh_token,  account_id,     expires
+                refresh_token,  account_id,     expires,
                 scope,          created,        updated
 
             )
             (
                 SELECT
-                refresh_token,  api_account_id, expires
+                refresh_token,  api_account_id, expires,
                 scope,          NOW(),          NOW()
                 FROM api_oauth_refresh_tokens
                 INNER JOIN api_accounts ON (api_accounts.api_account_id = api_oauth_refresh_tokens.api_account_id)
@@ -171,13 +171,13 @@ class patch_390alpha17a extends patchAbstract
         $em->getConnection()->executeUpdate(
             'INSERT INTO ApiOauthTokens
             (
-                oauth_token,  account_id,     session_id, expires
+                oauth_token,  account_id,     session_id, expires,
                 scope,        created,        updated
 
             )
             (
                 SELECT
-                oauth_token,  api_account_id, session_id, expires
+                oauth_token,  api_account_id, session_id, expires,
                 scope,          NOW(),          NOW()
                 FROM api_oauth_tokens
                 INNER JOIN api_accounts ON (api_accounts.api_account_id = api_oauth_tokens.api_account_id)
