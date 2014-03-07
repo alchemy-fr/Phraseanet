@@ -60,6 +60,9 @@ migrations:
   migration19:
       version: token
       class: Alchemy\Phrasea\Setup\DoctrineMigrations\TokenMigration
+  migration20:
+      version: api
+      class: Alchemy\Phrasea\Setup\DoctrineMigrations\ApiMigration
   migration21:
       version: aggregate-token
       class: Alchemy\Phrasea\Setup\DoctrineMigrations\AggregateTokenMigration
