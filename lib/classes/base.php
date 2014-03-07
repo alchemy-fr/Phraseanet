@@ -251,6 +251,12 @@ abstract class base implements cache_cacheableInterface
 
         $ORMTables = [
             'AuthFailures',
+            'ApiApplications',
+            'ApiAccounts',
+            'ApiLogs',
+            'ApiOauthCodes',
+            'ApiOauthRefreshTokens',
+            'ApiOauthTokens',
             'AggregateTokens',
             'BasketElements',
             'Baskets',
