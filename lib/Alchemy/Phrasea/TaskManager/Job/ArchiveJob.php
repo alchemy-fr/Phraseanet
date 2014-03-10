@@ -205,9 +205,9 @@ class ArchiveJob extends AbstractJob
                 $this->log('debug', "=========== makePairs ========== : \n" . $dom->saveXML());
             }
 
-            $this->removeBadGroups($app, $dom, $root, $path_in, $path_archived, $path_error, 0, $moveError);
+            $r = $this->removeBadGroups($app, $dom, $root, $path_in, $path_archived, $path_error, 0, $moveError);
             if ($app['debug']) {
-                $this->log('debug', "=========== removeBadGroups ========== (returned " . ($r ? 'true' : 'false') . ") : \n" . $dom->saveXML());
+                $this->log('debug', "=========== removeBadGroups ========== (returned " . ((Boolean) $r ? 'true' : 'false') . ") : \n" . $dom->saveXML());
             }
 
             $this->archive($app, $databox, $dom, $root, $path_in, $path_archived, $path_error, 0, $moveError, $moveArchived, $stat0, $stat1);
@@ -274,7 +274,7 @@ class ArchiveJob extends AbstractJob
                 $n = $node->appendChild($dom->createElement('file'));
                 $n->setAttribute('isdir', '1');
                 $n->setAttribute('name', $file);
-                $nnew += $this->listFilesPhase1($dom, $n, $path . '/' . $file, $server_coll_id, $depth + 1, $TColls);
+                $nnew += $this->listFilesPhase1($app, $dom, $n, $path . '/' . $file, $server_coll_id, $depth + 1, $TColls);
                 if (!$this->isStarted()) {
                     break;
                 }
@@ -985,6 +985,8 @@ class ArchiveJob extends AbstractJob
 
     public function createStory(Application $app, \collection $collection, $pathfile, $captionFile, $stat0, $stat1)
     {
+        $status = \databox_status::operation_or($app, $stat0, $stat1);
+
         $media = $app['mediavorus']->guess($pathfile);
 
         $databox = $collection->get_databox();

@@ -491,7 +491,7 @@ class databox_status
      */
     public static function operation_mask(Application $app, $stat1, $stat2)
     {
-        $conn = connection::getPDOConnection($app);
+        $conn = $app['phraseanet.appbox']->get_connection();
 
         $status = '0';
         $stat1_or  = '0b' . trim(str_replace("x", "0", $stat1));
@@ -507,7 +507,7 @@ class databox_status
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         if ($row) {
