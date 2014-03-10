@@ -87,7 +87,7 @@ class ApiOauthTokenManipulator implements ManipulatorInterface
     {
         do {
             $token = $this->randomGenerator->generateString(32, TokenManipulator::LETTERS_AND_NUMBERS);
-        } while (null === $this->repository->find($token));
+        } while (null !== $this->repository->find($token));
 
         return $token;
     }
