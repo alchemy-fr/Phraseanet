@@ -67,6 +67,9 @@ class patch_390alpha17a extends patchAbstract
 
     private function fillApplicationTable(EntityManager $em)
     {
+        if (false === $this->tableExists($em, 'api_applications')) {
+            return true;
+        }
         $em->getConnection()->executeUpdate(
             'INSERT INTO ApiApplications
             (
@@ -88,6 +91,9 @@ class patch_390alpha17a extends patchAbstract
 
     private function fillAccountTable(EntityManager $em)
     {
+        if (false === $this->tableExists($em, 'api_accounts')) {
+            return true;
+        }
         $em->getConnection()->executeUpdate(
             'INSERT INTO ApiAccounts
             (
@@ -108,6 +114,9 @@ class patch_390alpha17a extends patchAbstract
 
     private function fillLogTable(EntityManager $em)
     {
+        if (false === $this->tableExists($em, 'api_accounts')) {
+            return true;
+        }
         $em->getConnection()->executeUpdate(
             'INSERT INTO ApiLogs
             (
@@ -129,6 +138,9 @@ class patch_390alpha17a extends patchAbstract
 
     private function fillCodeTable(EntityManager $em)
     {
+        if (false === $this->tableExists($em, 'api_oauth_codes')) {
+            return true;
+        }
         $em->getConnection()->executeUpdate(
             'INSERT INTO ApiOauthCodes
             (
@@ -148,6 +160,9 @@ class patch_390alpha17a extends patchAbstract
 
     private function fillRefreshTokenTable(EntityManager $em)
     {
+        if (false === $this->tableExists($em, 'api_oauth_refresh_tokens')) {
+            return true;
+        }
         $em->getConnection()->executeUpdate(
             'INSERT INTO ApiOauthRefreshTokens
             (
@@ -168,6 +183,9 @@ class patch_390alpha17a extends patchAbstract
 
     private function fillOauthTokenTable(EntityManager $em)
     {
+        if (false === $this->tableExists($em, 'api_oauth_tokens')) {
+            return true;
+        }
         $em->getConnection()->executeUpdate(
             'INSERT INTO ApiOauthTokens
             (
