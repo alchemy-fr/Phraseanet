@@ -80,11 +80,11 @@ class patch_390alpha17a extends patchAbstract
             )
             (
                 SELECT
-                application_id, `type`,         `name`,         description,    website,
-                created_on,     last_modified,  client_id,      client_secret,  nonce,
-                redirect_uri,   activated,      grant_password, creator
-                FROM api_applications
-                INNER JOIN Users ON (Users.id = api_accounts.usr_id)
+                a.application_id, a.`type`,         a.`name`,         a.description,    a.website,
+                a.created_on,     a.last_modified,  a.client_id,      a.client_secret,  a.nonce,
+                a.redirect_uri,   a.activated,      a.grant_password, creator
+                FROM api_applications a
+                INNER JOIN Users ON (Users.id = a.creator OR a.creator IS NULL)
             )'
         );
     }
@@ -103,11 +103,11 @@ class patch_390alpha17a extends patchAbstract
             )
             (
                 SELECT
-                api_account_id, usr_id,   revoked,
-                api_version,    created,  application_id
-                FROM api_accounts
-                INNER JOIN Users ON (Users.id = api_accounts.usr_id)
-                INNER JOIN api_applications ON (api_accounts.application_id = api_applications.application_id)
+                a.api_account_id, a.usr_id,   a.revoked,
+                a.api_version,    a.created,  a.application_id
+                FROM api_accounts a
+                INNER JOIN Users ON (Users.id = a.usr_id)
+                INNER JOIN api_applications b ON (a.application_id = b.application_id)
             )'
         );
     }
@@ -127,11 +127,11 @@ class patch_390alpha17a extends patchAbstract
             )
             (
                 SELECT
-                api_log_id,       api_account_id,       api_log_route,  api_log_error_message,
-                api_log_date,     api_log_status_code,  api_log_format, api_log_resource,
-                api_log_general,  api_log_aspect,       api_log_action, api_log_error_code
-                FROM api_log
-                INNER JOIN api_accounts ON (api_accounts.api_account_id = api_log.api_account_id)
+                a.api_log_id,       a.api_account_id,       a.api_log_route,  a.api_log_error_message,
+                a.api_log_date,     a.api_log_status_code,  a.api_log_format, a.api_log_ressource,
+                a.api_log_general,  a.api_log_aspect,       a.api_log_action, a.api_log_error_code
+                FROM api_logs a
+                INNER JOIN api_accounts b ON (b.api_account_id = a.api_account_id)
             )'
         );
     }
@@ -150,10 +150,10 @@ class patch_390alpha17a extends patchAbstract
             )
             (
                 SELECT
-                code,   api_account_id, redirect_uri, expires,
-                scope,  NOW(),          NOW()
-                FROM api_oauth_codes
-                INNER JOIN api_accounts ON (api_accounts.api_account_id = api_oauth_codes.api_account_id)
+                a.code,   a.api_account_id, a.redirect_uri, a.expires,
+                a.scope,  NOW(),          NOW()
+                FROM api_oauth_codes a
+                INNER JOIN api_accounts b ON (b.api_account_id = a.api_account_id)
             )'
         );
     }
@@ -172,10 +172,10 @@ class patch_390alpha17a extends patchAbstract
             )
             (
                 SELECT
-                refresh_token,  api_account_id, expires,
-                scope,          NOW(),          NOW()
-                FROM api_oauth_refresh_tokens
-                INNER JOIN api_accounts ON (api_accounts.api_account_id = api_oauth_refresh_tokens.api_account_id)
+                a.refresh_token,  a.api_account_id, a.expires,
+                a.scope,          NOW(),          NOW()
+                FROM api_oauth_refresh_tokens a
+                INNER JOIN api_accounts b ON (b.api_account_id = a.api_account_id)
             )'
         );
     }
@@ -195,10 +195,10 @@ class patch_390alpha17a extends patchAbstract
             )
             (
                 SELECT
-                oauth_token,  api_account_id, session_id, expires,
-                scope,          NOW(),          NOW()
-                FROM api_oauth_tokens
-                INNER JOIN api_accounts ON (api_accounts.api_account_id = api_oauth_tokens.api_account_id)
+                a.oauth_token,  a.api_account_id, a.session_id, expires,
+                a.scope,          NOW(),          NOW()
+                FROM api_oauth_tokens a
+                INNER JOIN api_accounts b ON (b.api_account_id = a.api_account_id)
             )'
         );
     }
