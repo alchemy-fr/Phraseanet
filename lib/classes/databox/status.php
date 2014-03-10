@@ -479,6 +479,44 @@ class databox_status
         return $status;
     }
 
+    /**
+     * compute ((0 M s1) M s2) where M is the "mask" operator
+     * nb : s1,s2 are binary mask strings as "01x0xx1xx0x", no other format (hex) supported
+     *
+     * @param Application $app
+     * @param $stat1 a binary mask "010x1xx0.." STRING
+     * @param $stat2 a binary mask "x100x1..." STRING
+     *
+     * @return binary string
+     */
+    public static function operation_mask(Application $app, $stat1, $stat2)
+    {
+        $conn = connection::getPDOConnection($app);
+
+        $status = '0';
+        $stat1_or  = '0b' . trim(str_replace("x", "0", $stat1));
+        $stat1_and = '0b' . trim(str_replace("x", "1", $stat1));
+        $stat2_or  = '0b' . trim(str_replace("x", "0", $stat2));
+        $stat2_and = '0b' . trim(str_replace("x", "1", $stat2));
+
+        // $sql = "SELECT BIN(((((0 | :o1) & :a1)) | :o2) & :a2) AS result";
+        // $stmt = $conn->prepare($sql);
+        // $stmt->execute(array(':o1'=>$stat1_or, ':a1'=>$stat1_and, ':o2'=>$stat2_or, ':a2'=>$stat2_and));
+
+        $sql = "SELECT BIN(((((0 | $stat1_or) & $stat1_and)) | $stat2_or) & $stat2_and) AS result";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        if ($row) {
+            $status = $row['result'];
+        }
+
+        return $status;
+    }
+
     public static function operation_and_not(Application $app, $stat1, $stat2)
     {
         $conn = $app['phraseanet.appbox']->get_connection();

@@ -125,6 +125,13 @@ class databox_statusTest extends \PhraseanetTestCase
         $this->assertEquals('10', databox_status::operation_and_not(self::$DI['app'], '10', '01'));
     }
 
+    public function testOperation_mask()
+    {
+        $this->assertEquals('001101', databox_status::operation_mask(self::$DI['app'], '010101', '0011xx'));
+        $this->assertEquals('001100', databox_status::operation_mask(self::$DI['app'], '0', '0011xx'));
+        $this->assertEquals('001101', databox_status::operation_mask(self::$DI['app'], '1', '0011xx'));
+    }
+
     public function testOperation_or()
     {
         $this->assertEquals('10001', databox_status::operation_or(self::$DI['app'], '0x001', '0x011'));
