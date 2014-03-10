@@ -1720,7 +1720,7 @@ class task_period_archive extends task_abstract
             $captionStatus = $this->parseStatusBit(@simplexml_load_file($captionFile));
 
             if ($captionStatus) {
-                $status = databox_status::operation_or($this->dependencyContainer, $status, $captionStatus);
+                $status = databox_status::operation_mask($this->dependencyContainer, $status, $captionStatus);
             }
         }
         $file = new File($this->dependencyContainer, $media, $collection);
@@ -1893,7 +1893,6 @@ class task_period_archive extends task_abstract
         try {
             $databox = $this->dependencyContainer['phraseanet.appbox']->get_databox($this->sbas_id);
             $collection = collection::get_from_coll_id($this->dependencyContainer, $databox, (int) $cid);
-
             if ($captionFileName === null) {
                 $record = $this->createRecord($collection, $path . '/' . $file, null, $grp_rid);
             } else {
