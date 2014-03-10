@@ -1652,7 +1652,7 @@ class task_period_archive extends task_abstract
             $captionStatus = $this->parseStatusBit(@simplexml_load_file($captionFile));
 
             if ($captionStatus) {
-                $status = databox_status::operation_or($this->dependencyContainer, $status, $captionStatus);
+                $status = databox_status::operation_mask($this->dependencyContainer, $status, $captionStatus);
             }
         }
 
