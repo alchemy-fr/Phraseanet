@@ -297,6 +297,11 @@ class API_OAuth2_Adapter extends OAuth2
         }
 
         $expires = null !== $expires ? \DateTime::createFromFormat('U', $expires) : null;
+        // @note stored date time are not UTC ... and expires parameter is a UNIX timestamp which is timezone independent
+        if ($expires instanceof \DateTime) {
+            $dtz = new \DateTimeZone(date_default_timezone_get());
+            $expires->add(new \DateInterval('PT' . $dtz->getOffset($expires) . 'S'));
+        }
         $code = $this->app['manipulator.api-oauth-code']->create($account, $redirectUri, $expires, $scope);
         $this->app['manipulator.api-oauth-code']->setCode($code, $oauthCode);
 
