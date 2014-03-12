@@ -22,6 +22,9 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     abstract protected function unserialize($data);
     abstract protected function getAcceptMimeType();
 
+    private $adminAccessToken;
+    private $userAccessToken;
+
     public function tearDown()
     {
         $this->unsetToken();
@@ -35,6 +38,31 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         self::$DI['app'] = self::$DI->share(function ($DI) {
             return $this->loadApp('lib/Alchemy/Phrasea/Application/Api.php');
         });
+
+        if (null === $this->adminAccessToken) {
+            $tokens = self::$DI['app']['repo.api-oauth-tokens']->findOauthTokens(self::$DI['oauth2-app-acc-user']);
+            if (count($tokens) === 0) {
+                $this->fail(sprintf('No access token generated between user %s & application %s',
+                    self::$DI['oauth2-app-acc-user']->getUser()->getLogin(),
+                    self::$DI['oauth2-app-acc-user']->getApplication()->getName()
+                ));
+            }
+
+            $this->adminAccessToken = current($tokens);
+        }
+
+
+        if (null === $this->userAccessToken) {
+            $tokens = self::$DI['app']['repo.api-oauth-tokens']->findOauthTokens(self::$DI['oauth2-app-acc-user-not-admin']);
+            if (count($tokens) === 0) {
+                $this->fail(sprintf('No access token generated between user %s & application %s',
+                    self::$DI['oauth2-app-acc-user-not-admin']->getUser()->getLogin(),
+                    self::$DI['oauth2-app-acc-user-not-admin']->getApplication()->getName()
+                ));
+            }
+
+            $this->userAccessToken = current($tokens);
+        }
     }
 
     /**
@@ -51,7 +79,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             }
         });
 
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
 
         $this->assertEquals(1, $preEvent);
@@ -60,7 +88,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testThatSessionIsClosedAfterRequest()
     {
         $this->assertCount(0, self::$DI['app']['EM']->getRepository('Phraseanet:Session')->findAll());
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         self::$DI['client']->request('GET', '/api/v1/databoxes/list/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $this->assertCount(0, self::$DI['app']['EM']->getRepository('Phraseanet:Session')->findAll());
     }
@@ -79,7 +107,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testRouteNotFound()
     {
         $route = '/api/v1/nothinghere';
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
@@ -89,7 +117,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testDataboxListRoute()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         self::$DI['client']->request('GET', '/api/v1/databoxes/list/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
@@ -150,7 +178,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
      */
     public function testAdminOnlyShedulerState()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
 
         self::$DI['client']->request('GET', '/api/v1/monitor/tasks/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
@@ -186,7 +214,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
      */
     public function testGetMonitorTasks()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user']->getOauthToken()->getOauthToken());
+        $this->setToken($this->adminAccessToken);
 
         $route = '/api/v1/monitor/tasks/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
@@ -211,7 +239,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
      */
     public function testGetScheduler()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user']->getOauthToken()->getOauthToken());
+        $this->setToken($this->adminAccessToken);
 
         $route = '/api/v1/monitor/scheduler/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
@@ -291,7 +319,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $this->markTestSkipped('no tasks created for the current instance');
         }
 
-        $this->setToken(self::$DI['oauth2-app-acc-user']->getOauthToken()->getOauthToken());
+        $this->setToken($this->adminAccessToken);
         $idTask = $tasks[0]->getId();
 
         $route = '/api/v1/monitor/task/' . $idTask . '/';
@@ -314,7 +342,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $this->markTestSkipped('no tasks created for the current instance');
         }
 
-        $this->setToken(self::$DI['oauth2-app-acc-user']->getOauthToken()->getOauthToken());
+        $this->setToken($this->adminAccessToken);
         $idTask = $tasks[0]->getId();
 
         $route = '/api/v1/monitor/task/' . $idTask . '/';
@@ -334,10 +362,10 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testUnknowGetMonitorTaskById()
     {
-        if (null === self::$DI['oauth2-app-acc-user']->getOauthToken()->getOauthToken()) {
+        if (null === $this->adminAccessToken) {
             $this->markTestSkipped('no tasks created for the current instance');
         }
-        $this->setToken(self::$DI['oauth2-app-acc-user']->getOauthToken()->getOauthToken());
+        $this->setToken($this->adminAccessToken);
         self::$DI['client']->followRedirects();
         self::$DI['client']->request('GET', '/api/v1/monitor/task/0/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
@@ -352,7 +380,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $this->markTestSkipped('no tasks created for the current instance');
         }
 
-        $this->setToken(self::$DI['oauth2-app-acc-user']->getOauthToken()->getOauthToken());
+        $this->setToken($this->adminAccessToken);
         $idTask = $tasks[0]->getId();
 
         $route = '/api/v1/monitor/task/' . $idTask . '/start/';
@@ -378,7 +406,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $this->markTestSkipped('no tasks created for the current instance');
         }
 
-        $this->setToken(self::$DI['oauth2-app-acc-user']->getOauthToken()->getOauthToken());
+        $this->setToken($this->adminAccessToken);
         $idTask = $tasks[0]->getId();
 
         $route = '/api/v1/monitor/task/' . $idTask . '/stop/';
@@ -400,7 +428,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
 
-        $this->setToken(self::$DI['oauth2-app-acc-user']->getOauthToken()->getOauthToken());
+        $this->setToken($this->adminAccessToken);
 
         self::$DI['client']->request('GET', '/api/v1/monitor/phraseanet/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
@@ -418,7 +446,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testRecordRoute()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
@@ -440,7 +468,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testStoryRoute()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         self::$DI['app']['session']->set('usr_id', self::$DI['user']->getId());
         if (false ===  self::$DI['record_story_1']->hasChild(self::$DI['record_1'])) {
             self::$DI['record_story_1']->appendChild(self::$DI['record_1']);
@@ -471,7 +499,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testDataboxCollectionRoute()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         $databox_id = self::$DI['record_1']->get_sbas_id();
         $route = '/api/v1/databoxes/' . $databox_id . '/collections/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
@@ -511,7 +539,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testDataboxStatusRoute()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         $databox_id = self::$DI['record_1']->get_sbas_id();
         $databox = self::$DI['app']['phraseanet.appbox']->get_databox($databox_id);
         $ref_status = $databox->get_statusbits();
@@ -560,7 +588,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testDataboxMetadatasRoute()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         $databox_id = self::$DI['record_1']->get_sbas_id();
         $databox = self::$DI['app']['phraseanet.appbox']->get_databox($databox_id);
         $ref_structure = $databox->get_meta_structure();
@@ -643,7 +671,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testDataboxTermsOfUseRoute()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         $databox_id = self::$DI['record_1']->get_sbas_id();
         $route = '/api/v1/databoxes/' . $databox_id . '/termsOfUse/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
@@ -682,7 +710,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         self::$DI['app']['manipulator.user']->expects($this->once())->method('logQuery');
 
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         self::$DI['client']->request('POST', '/api/v1/search/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
@@ -715,7 +743,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $this->markTestSkipped('Phrasea2 extension is required for this test');
         }
 
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
 
         self::$DI['record_story_1'];
 
@@ -751,7 +779,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $this->markTestSkipped('Phrasea2 extension is required for this test');
         }
 
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         self::$DI['client']->request('POST', '/api/v1/records/search/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
@@ -773,7 +801,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
      */
     public function testRecordsSearchRouteWithQuery($method)
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         $searchEngine = $this->getMockBuilder('Alchemy\Phrasea\SearchEngine\SearchEngineResult')
             ->disableOriginalConstructor()
             ->getMock();
@@ -802,7 +830,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testRecordsCaptionRoute()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
 
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         $this->injectMetadatas(self::$DI['record_1']);
@@ -828,7 +856,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testRecordsMetadatasRoute()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/metadatas/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
@@ -851,7 +879,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testRecordsStatusRoute()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/status/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
@@ -874,7 +902,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testRecordsEmbedRoute()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
@@ -900,7 +928,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testStoriesEmbedRoute()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         $story = self::$DI['record_story_1'];
 
         $route = '/api/v1/stories/' . $story->get_sbas_id() . '/' . $story->get_record_id() . '/embed/';
@@ -927,7 +955,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testRecordsEmbedRouteMimeType()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 
@@ -941,7 +969,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testRecordsEmbedRouteDevices()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 
@@ -953,7 +981,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testRecordsRelatedRoute()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/related/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
@@ -980,7 +1008,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testRecordsSetMetadatas()
     {
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
 
         $record = self::$DI['record_1'];
 
@@ -1038,7 +1066,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testRecordsSetStatus()
     {
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/setstatus/';
 
@@ -1100,7 +1128,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/test001.jpg'), self::$DI['collection']);
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
 
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
 
         $route = '/api/v1/records/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/setcollection/';
 
@@ -1128,7 +1156,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testSearchBaskets()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user']->getOauthToken()->getOauthToken());
+        $this->setToken($this->adminAccessToken);
         $route = '/api/v1/baskets/list/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
@@ -1146,7 +1174,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testAddBasket()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
 
         $route = '/api/v1/baskets/add/';
 
@@ -1166,7 +1194,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testBasketContent()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user']->getOauthToken()->getOauthToken());
+        $this->setToken($this->adminAccessToken);
 
         $basketElement = self::$DI['app']['EM']->find('Phraseanet:BasketElement', 1);
         $basket = $basketElement->getBasket();
@@ -1201,7 +1229,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testSetBasketTitle()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user']->getOauthToken()->getOauthToken());
+        $this->setToken($this->adminAccessToken);
 
         $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
 
@@ -1249,7 +1277,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testSetBasketDescription()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user']->getOauthToken()->getOauthToken());
+        $this->setToken($this->adminAccessToken);
 
         $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
 
@@ -1272,7 +1300,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testDeleteBasket()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user']->getOauthToken()->getOauthToken());
+        $this->setToken($this->adminAccessToken);
         $route = '/api/v1/baskets/1/delete/';
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
 
@@ -1298,7 +1326,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testAddRecord()
     {
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         $route = '/api/v1/records/add/';
 
         $params = $this->getAddRecordParameters();
@@ -1318,7 +1346,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testAddRecordForceRecord()
     {
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         $route = '/api/v1/records/add/';
 
         $params = $this->getAddRecordParameters();
@@ -1343,7 +1371,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testAddRecordForceLazaret()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         $route = '/api/v1/records/add/';
 
         $params = $this->getAddRecordParameters();
@@ -1367,7 +1395,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testAddRecordWrongBehavior()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         $route = '/api/v1/records/add/';
 
         $params = $this->getAddRecordParameters();
@@ -1382,7 +1410,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testAddRecordWrongBaseId()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user']->getOauthToken()->getOauthToken());
+        $this->setToken($this->adminAccessToken);
         $route = '/api/v1/records/add/';
 
         $params = $this->getAddRecordParameters();
@@ -1397,7 +1425,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testAddRecordNoBaseId()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         $route = '/api/v1/records/add/';
 
         $params = $this->getAddRecordParameters();
@@ -1412,7 +1440,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testAddRecordMultipleFiles()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         $route = '/api/v1/records/add/';
 
         $file = [
@@ -1429,7 +1457,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testAddRecordNofile()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         $route = '/api/v1/records/add/';
 
         self::$DI['client']->request('POST', $route, $this->getParameters($this->getAddRecordParameters()), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
@@ -1443,7 +1471,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $created_feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
 
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         $route = '/api/v1/feeds/list/';
 
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
@@ -1494,7 +1522,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         self::$DI['app']['EM']->persist($created_entry);
         self::$DI['app']['EM']->flush();
 
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         $route = '/api/v1/feeds/content/';
 
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
@@ -1539,7 +1567,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
         $created_entry = $feed->getEntries()->first();
 
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         $route = '/api/v1/feeds/entry/' . $created_entry->getId() . '/';
 
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
@@ -1568,7 +1596,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $created_feed->setCollection(self::$DI['collection_no_access']);
 
-        $this->setToken(self::$DI['oauth2-app-acc-user']->getOauthToken()->getOauthToken());
+        $this->setToken($this->adminAccessToken);
         $route = '/api/v1/feeds/entry/' . $created_entry->getId() . '/';
 
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
@@ -1596,7 +1624,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         self::$DI['app']['EM']->persist($created_entry);
         self::$DI['app']['EM']->flush();
 
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         $route = '/api/v1/feeds/' . $created_feed->getId() . '/content/';
 
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
@@ -1632,7 +1660,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testQuarantineList()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
         $route = '/api/v1/quarantine/list/';
 
         $quarantineItemId = self::$DI['lazaret_1']->getId();
@@ -1663,7 +1691,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testQuarantineContent()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
 
         $quarantineItemId = self::$DI['lazaret_1']->getId();
         $route = '/api/v1/quarantine/item/' . $quarantineItemId . '/';
@@ -1708,7 +1736,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testRouteMe()
     {
-        $this->setToken(self::$DI['oauth2-app-acc-user-not-admin']->getOauthToken()->getOauthToken());
+        $this->setToken($this->userAccessToken);
 
         $route = '/api/v1/me/';
 

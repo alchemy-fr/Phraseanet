@@ -22,8 +22,29 @@ class ApiOauthTokenRepository extends EntityRepository
             $qb->expr()->eq('app.creator', 'acc.user'),
             $qb->expr()->isNull('app.creator')
         ));
+        $qb->where($qb->expr()->isNull('tok.expires'));
+        $qb->orderBy('tok.created', 'DESC');
         $qb->setParameter(':acc_id', $account->getId());
 
-        return $qb->getQuery()->getOneOrNullResult();
+        /*
+         * @note until we add expiration token, there is no way to distinguish a developer issued token from
+         * a connection process issued token.
+         */
+        $tokens = $qb->getQuery()->getResult();
+
+        if (0 === count($tokens)) {
+            return null;
+        }
+
+        return current($tokens);
+    }
+
+    public function findOauthTokens(ApiAccount $account)
+    {
+        $qb = $this->createQueryBuilder('tok');
+        $qb->where($qb->expr()->eq('tok.account', ':acc'));
+        $qb->setParameter(':acc', $account);
+
+        return $qb->getQuery()->getResult();
     }
 }
