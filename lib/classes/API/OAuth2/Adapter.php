@@ -224,7 +224,12 @@ class API_OAuth2_Adapter extends OAuth2
         if (null === $account = $this->app['repo.api-accounts']->find($accountId)) {
             throw new RuntimeException(sprintf('Account with id %s is not valid', $accountId));
         }
-        $expires = null === $expires ? $expires : \DateTime::createFromFormat('U', $expires);
+        $expires = null !== $expires ? \DateTime::createFromFormat('U', $expires) : null;
+        // @note stored date time are not UTC ... and expires parameter is a UNIX timestamp which is timezone independent
+        if ($expires instanceof \DateTime) {
+            $dtz = new \DateTimeZone(date_default_timezone_get());
+            $expires->add(new \DateInterval('PT' . $dtz->getOffset($expires) . 'S'));
+        }
         $token = $this->app['manipulator.api-oauth-token']->create($account, $expires, $scope);
         $this->app['manipulator.api-oauth-token']->setOauthToken($token, $oauthToken);
 
@@ -775,10 +780,9 @@ class API_OAuth2_Adapter extends OAuth2
         $expires = null;
         if ($this->enable_expire) {
             $token['expires_in'] = $this->getVariable('access_token_lifetime', OAUTH2_DEFAULT_ACCESS_TOKEN_LIFETIME);
-            $expires = time() + $this->getVariable('access_token_lifetime', OAUTH2_DEFAULT_ACCESS_TOKEN_LIFETIME);
         }
 
-        $this->setAccessToken($token["access_token"], $accountId, $expires, $scope);
+        $this->setAccessToken($token["access_token"], $accountId, time() + $this->getVariable('access_token_lifetime', OAUTH2_DEFAULT_ACCESS_TOKEN_LIFETIME), $scope);
 
         // Issue a refresh token also, if we support them
         if (in_array(OAUTH2_GRANT_TYPE_REFRESH_TOKEN, $this->getSupportedGrantTypes())) {
