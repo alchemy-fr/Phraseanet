@@ -15,8 +15,10 @@ use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
 use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
+use Alchemy\Phrasea\Model\Entities\User;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class API_OAuth2_Adapter extends OAuth2
 {
@@ -177,7 +179,7 @@ class API_OAuth2_Adapter extends OAuth2
     protected function getRedirectUri($clientId)
     {
         if (null === $application = $this->app['repo.api-applications']->findByClientId($clientId)) {
-            throw new RuntimeException(sprintf('Application with client id %s could not be found', $clientId));
+            throw new BadRequestHttpException(sprintf('Application with client id %s could not be found', $clientId));
         }
 
         return $application->getRedirectUri();
@@ -288,13 +290,14 @@ class API_OAuth2_Adapter extends OAuth2
      * @return $this|void
      * @throws RuntimeException
      */
-    protected function setAuthCode($oauthCode, $accountId, $redirectUri, $expires, $scope = null)
+    protected function setAuthCode($oauthCode, $accountId, $redirectUri, $expires = null, $scope = null)
     {
         if (null === $account = $this->app['repo.api-accounts']->find($accountId)) {
             throw new RuntimeException(sprintf('Account with id %s is not valid', $accountId));
         }
 
-        $code = $this->app['manipulator.api-oauth-code']->create($account, \DateTime::createFromFormat('U', $expires), $scope);
+        $expires = null !== $expires ? \DateTime::createFromFormat('U', $expires) : null;
+        $code = $this->app['manipulator.api-oauth-code']->create($account, $redirectUri, $expires, $scope);
         $this->app['manipulator.api-oauth-code']->setCode($code, $oauthCode);
 
         return $this;
