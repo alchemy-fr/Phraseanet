@@ -243,9 +243,11 @@ class Account implements ControllerProviderInterface
     {
         $data = [];
 
-        foreach($app['repo.api-applications']->findByUser($app['authentication']->getUser()) as $application) {
+        foreach ($app['repo.api-applications']->findByUser($app['authentication']->getUser()) as $application) {
+            $account = $app['repo.api-accounts']->findByUserAndApplication($app['authentication']->getUser(), $application);
+
             $data[$application->getId()]['application'] = $application;
-            $data[$application->getId()]['user-account'] =  $app['repo.api-accounts']->findByUserAndApplication($app['authentication']->getUser(), $application);
+            $data[$application->getId()]['user-account'] =  $account;
         }
 
         return $app['twig']->render('account/authorized_apps.html.twig', [

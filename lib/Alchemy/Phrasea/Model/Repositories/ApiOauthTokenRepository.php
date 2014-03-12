@@ -2,7 +2,9 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
+use Alchemy\Phrasea\Model\Entities\ApiAccount;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr;
 
 /**
  * ApiOauthTokenRepository
@@ -12,4 +14,16 @@ use Doctrine\ORM\EntityRepository;
  */
 class ApiOauthTokenRepository extends EntityRepository
 {
+    public function findDeveloperToken(ApiAccount $account)
+    {
+        $qb = $this->createQueryBuilder('tok');
+        $qb->innerJoin('tok.account', 'acc', Expr\Join::WITH, $qb->expr()->eq('acc.id', ':acc_id'));
+        $qb->innerJoin('acc.application', 'app', Expr\Join::WITH, $qb->expr()->orx(
+            $qb->expr()->eq('app.creator', 'acc.user'),
+            $qb->expr()->isNull('app.creator')
+        ));
+        $qb->setParameter(':acc_id', $account->getId());
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
 }

@@ -49,14 +49,6 @@ class ApiAccount
     private $application;
 
     /**
-     * @ORM\OneToOne(targetEntity="ApiOauthToken", inversedBy="account")
-     * @ORM\JoinColumn(name="oauth_token", referencedColumnName="oauth_token", nullable=true)
-     *
-     * @return ApiApplication
-     **/
-    private $oauthToken;
-
-    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
@@ -168,33 +160,5 @@ class ApiAccount
     public function getUser()
     {
         return $this->user;
-    }
-
-    /**
-     * @param ApiOauthToken $oauthToken
-     *
-     * @return ApiAccount
-     */
-    public function setOauthToken(ApiOauthToken $oauthToken)
-    {
-        $this->oauthToken = $oauthToken;
-
-        return $this;
-    }
-
-    /**
-     * @return ApiOauthToken
-     */
-    public function getOauthToken()
-    {
-        return $this->oauthToken;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function hasOauthToken()
-    {
-        return null !== $this->oauthToken;
     }
 }

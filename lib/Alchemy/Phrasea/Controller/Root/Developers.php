@@ -130,14 +130,14 @@ class Developers implements ControllerProviderInterface
             $app->abort(404, sprintf('Account not found for application %s', $application->getName()));
         }
 
-        $token = $account->getOauthToken();
-        if ($account->hasOauthToken()) {
-            $app['manipulator.api-oauth-token']->renew($token);
+        if(null !== $devToken = $app['repo.api-oauth-tokens']->findDeveloperToken($account)) {
+            $app['manipulator.api-oauth-token']->renew($devToken);
         } else {
-            $token = $app['manipulator.api-oauth-token']->create($account);
+            // dev tokens do not expires
+            $devToken = $app['manipulator.api-oauth-token']->create($account);
         }
 
-        return $app->json(['success' => true, 'token' => $token->getOauthToken()]);
+        return $app->json(['success' => true, 'token' => $devToken->getOauthToken()]);
     }
 
     /**
@@ -187,6 +187,9 @@ class Developers implements ControllerProviderInterface
                 $app['authentication']->getUser(),
                 sprintf('%s%s', $form->getSchemeCallback(), $form->getCallback())
             );
+
+            // create an account as well
+            $app['manipulator.api-account']->create($application, $app['authentication']->getUser());
 
             return $app->redirectPath('developers_application', ['application' => $application->getId()]);
         }
@@ -241,9 +244,7 @@ class Developers implements ControllerProviderInterface
         $token = null;
 
         if (null !== $account = $app['repo.api-accounts']->findByUserAndApplication($app['authentication']->getUser(), $application)) {
-            if ($account->hasOauthToken()) {
-                $token = $account->getOauthToken()->getOauthToken();
-            }
+            $token = $app['repo.api-oauth-tokens']->findDeveloperToken($account);
         }
 
         return $app['twig']->render('developers/application.html.twig', [

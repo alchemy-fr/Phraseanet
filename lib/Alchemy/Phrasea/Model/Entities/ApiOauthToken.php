@@ -40,6 +40,12 @@ class ApiOauthToken
     private $expires;
 
     /**
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime", name="last_used")
+     */
+    private $lastUsed;
+
+    /**
      * @var string
      *
      * @ORM\Column(type="string", length=128, nullable=true)
@@ -196,5 +202,25 @@ class ApiOauthToken
     public function getUpdated()
     {
         return $this->updated;
+    }
+
+    /**
+     * @param \DateTime  $lastUsed
+     *
+     * @return ApiOauthToken
+     */
+    public function setLastUsed(\DateTime $lastUsed)
+    {
+        $this->lastUsed = $lastUsed;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getLastUsed()
+    {
+        return $this->lastUsed;
     }
 }

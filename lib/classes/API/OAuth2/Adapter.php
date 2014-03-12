@@ -217,13 +217,13 @@ class API_OAuth2_Adapter extends OAuth2
      * @return $this
      * @throws RuntimeException
      */
-    protected function setAccessToken($oauthToken, $accountId, $expires, $scope = null)
+    protected function setAccessToken($oauthToken, $accountId, $expires = null, $scope = null)
     {
         if (null === $account = $this->app['repo.api-accounts']->find($accountId)) {
             throw new RuntimeException(sprintf('Account with id %s is not valid', $accountId));
         }
-
-        $token = $this->app['manipulator.api-oauth-token']->create($account, null, \DateTime::createFromFormat('U', $expires), $scope);
+        $expires = null === $expires ? $expires : \DateTime::createFromFormat('U', $expires);
+        $token = $this->app['manipulator.api-oauth-token']->create($account, $expires, $scope);
         $this->app['manipulator.api-oauth-token']->setOauthToken($token, $oauthToken);
 
         return $this;
@@ -764,11 +764,13 @@ class API_OAuth2_Adapter extends OAuth2
             "scope"        => $scope
         ];
 
+        $expires = null;
         if ($this->enable_expire) {
             $token['expires_in'] = $this->getVariable('access_token_lifetime', OAUTH2_DEFAULT_ACCESS_TOKEN_LIFETIME);
+            $expires = time() + $this->getVariable('access_token_lifetime', OAUTH2_DEFAULT_ACCESS_TOKEN_LIFETIME);
         }
 
-        $this->setAccessToken($token["access_token"], $accountId, time() + $this->getVariable('access_token_lifetime', OAUTH2_DEFAULT_ACCESS_TOKEN_LIFETIME), $scope);
+        $this->setAccessToken($token["access_token"], $accountId, $expires, $scope);
 
         // Issue a refresh token also, if we support them
         if (in_array(OAUTH2_GRANT_TYPE_REFRESH_TOKEN, $this->getSupportedGrantTypes())) {

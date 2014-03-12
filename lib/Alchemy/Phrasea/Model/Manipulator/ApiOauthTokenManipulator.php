@@ -43,8 +43,6 @@ class ApiOauthTokenManipulator implements ManipulatorInterface
         $token->setScope($scope);
         $token->setAccount($account);
 
-        $account->setOauthToken($token);
-
         $this->om->persist($account);
         $this->update($token);
 

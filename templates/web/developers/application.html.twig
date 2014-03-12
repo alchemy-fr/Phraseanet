@@ -81,18 +81,18 @@
                         </td>
                         <td>
                             <span id="my_access_token">
-                                {% if not token  is none %}
-                                  {{ token|default("") }}
+                                {% if not token is none %}
+                                  {{ token.getOauthToken()|default("") }}
                                 {% else %}
                                   {{ "Le token n\'a pas encore ete genere" | trans }}
                                 {% endif %}
                             </span>
                             <a id="generate_access" href="{{ path("submit_developers_application_token",{ "application" : application.getId()}) }}" class="btn btn-small btn-info">{{ "boutton::generer" | trans }}</a>
-                          </td>
+                        </td>
                     </tr>
                 </tbody>
             </table>
-            <div>
+            <div class="form-actions">
               <a class="btn btn-primary" href="{{ path("developers_applications") }}">{{ "boutton::retour" | trans }}</a>
             </div>
         </div>
