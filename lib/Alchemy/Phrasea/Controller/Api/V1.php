@@ -1971,10 +1971,9 @@ class V1 implements ControllerProviderInterface
         $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
         $app['dispatcher']->dispatch(PhraseaEvents::API_OAUTH2_START, new ApiOAuth2StartEvent());
 
-        $oauth2_adapter = new \API_OAuth2_Adapter($app);
-        $oauth2_adapter->verifyAccessToken();
+        $app['oauth2-server']->verifyAccessToken();
 
-        if (null === $token = $app['repo.api-oauth-tokens']->find($oauth2_adapter->getToken())) {
+        if (null === $token = $app['repo.api-oauth-tokens']->find($app['oauth2-server']->getToken())) {
             throw new NotFoundHttpException('Provided token is not valid.');
         }
         $app['session']->set('token', $token);
@@ -1993,7 +1992,7 @@ class V1 implements ControllerProviderInterface
         }
 
         $app['authentication']->openAccount($oAuth2Account->getUser());
-        $oauth2_adapter->rememberSession($app['session']);
+        $app['oauth2-server']->rememberSession($app['session']);
         $app['dispatcher']->dispatch(PhraseaEvents::API_OAUTH2_END, new ApiOAuth2EndEvent());
     }
 

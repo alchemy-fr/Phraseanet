@@ -80,9 +80,9 @@ class API_OAuth2_Adapter extends OAuth2
      * @param  Application        $app
      * @return API_OAuth2_Adapter
      */
-    public function __construct(Application $app)
+    public function __construct(Application $app, array $conf = [])
     {
-        parent::__construct();
+        parent::__construct($conf);
         $this->app = $app;
         $this->params = [];
     }

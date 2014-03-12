@@ -31,10 +31,6 @@ class Oauth2 implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $app['oauth'] = $app->share(function ($app) {
-            return new \API_OAuth2_Adapter($app);
-        });
-
         /**
          * AUTHORIZE ENDPOINT
          *
@@ -43,7 +39,7 @@ class Oauth2 implements ControllerProviderInterface
          */
         $authorize_func = function () use ($app) {
             $request = $app['request'];
-            $oauth2Adapter = $app['oauth'];
+            $oauth2Adapter = $app['oauth2-server'];
 
             $context = new Context(Context::CONTEXT_OAUTH2_NATIVE);
             $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
@@ -156,7 +152,7 @@ class Oauth2 implements ControllerProviderInterface
                 throw new HttpException(400, 'This route requires the use of the https scheme', null, ['content-type' => 'application/json']);
             }
 
-            $app['oauth']->grantAccessToken($request);
+            $app['oauth2-server']->grantAccessToken($request);
             ob_flush();
             flush();
 
