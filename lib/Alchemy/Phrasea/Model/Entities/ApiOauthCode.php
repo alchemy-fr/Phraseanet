@@ -125,7 +125,7 @@ class ApiOauthCode
      *
      * @return ApiOauthCode
      */
-    public function setExpires(\DateTime $expires)
+    public function setExpires(\DateTime $expires = null)
     {
         $this->expires = $expires;
 
