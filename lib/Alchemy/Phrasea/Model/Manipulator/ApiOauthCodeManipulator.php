@@ -39,7 +39,7 @@ class ApiOauthCodeManipulator implements ManipulatorInterface
         $code = new ApiOauthCode();
 
         $code->setCode($this->getNewCode());
-        $code->setRedirectUri($redirectUri);
+        $this->doSetRedirectUri($code, $redirectUri);
         $code->setAccount($account);
         $code->setExpires($expire);
         $code->setScope($scope);
@@ -65,6 +65,21 @@ class ApiOauthCodeManipulator implements ManipulatorInterface
     {
         $code->setCode($oauthCode);
         $this->update($code);
+    }
+
+    public function setRedirectUri(ApiOauthCode $code, $uri)
+    {
+        $this->doSetRedirectUri($code, $uri);
+        $this->update($code);
+    }
+
+    private function doSetRedirectUri(ApiOauthCode $code, $uri)
+    {
+        if (false === filter_var($uri, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED)) {
+            throw new InvalidArgumentException(sprintf('Redirect Uri Url %s is not legal.', $uri));
+        }
+
+        $code->setRedirectUri($uri);
     }
 
     private function getNewCode()
