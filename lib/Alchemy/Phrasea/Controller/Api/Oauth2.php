@@ -99,7 +99,7 @@ class Oauth2 implements ControllerProviderInterface
             }
 
             //check if current client is already authorized by current user
-            $clients = $app['repo.api-applications']-findAuthorizedAppsByUser($app['authentication']->getUser());
+            $clients = $app['repo.api-applications']->findAuthorizedAppsByUser($app['authentication']->getUser());
 
             foreach ($clients as $authClient) {
                 if ($client->getClientId() == $authClient->getClientId()) {
