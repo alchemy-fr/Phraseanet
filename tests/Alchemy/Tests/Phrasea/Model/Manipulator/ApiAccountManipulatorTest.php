@@ -23,12 +23,13 @@ class ApiAccountManipulatorTest extends \PhraseanetTestCase
     {
         $manipulator = new ApiAccountManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-accounts']);
         $account = $manipulator->create(self::$DI['oauth2-app-user'], self::$DI['user']);
+        $accountMem = clone $account;
         $countBefore = count(self::$DI['app']['repo.api-accounts']->findAll());
-        /**
-         * @todo Link token and tests if token is deleted too
-         */
+        self::$DI['app']['manipulator.api-oauth-token']->create($account);
         $manipulator->delete($account);
         $this->assertGreaterThan(count(self::$DI['app']['repo.api-accounts']->findAll()), $countBefore);
+        $tokens = self::$DI['app']['repo.api-oauth-tokens']->findOauthTokens($accountMem);
+        $this->assertEquals(0, count($tokens));
     }
 
     public function testUpdate()

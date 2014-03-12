@@ -60,12 +60,16 @@ class ApiApplicationManipulatorTest extends \PhraseanetTestCase
             'Desktop application description',
             'http://desktop-app-url.net'
         );
+        $applicationSave = clone $application;
         $countBefore = count(self::$DI['app']['repo.api-applications']->findAll());
-        /**
-         * @todo Link accounts and tokens to application and tests if everything is deleted
-         */
+        $account = self::$DI['app']['manipulator.api-account']->create($application, self::$DI['user']);
+        self::$DI['app']['manipulator.api-oauth-token']->create($account);
         $manipulator->delete($application);
         $this->assertGreaterThan(count(self::$DI['app']['repo.api-applications']->findAll()), $countBefore);
+        $accounts = self::$DI['app']['repo.api-accounts']->findByUserAndApplication(self::$DI['user'], $applicationSave);
+        $this->assertEquals(0, count($accounts));
+        $tokens = self::$DI['app']['repo.api-oauth-tokens']->findOauthTokens($account);
+        $this->assertEquals(0, count($tokens));
     }
 
     public function testUpdate()
