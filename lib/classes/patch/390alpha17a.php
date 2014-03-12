@@ -63,6 +63,8 @@ class patch_390alpha17a extends patchAbstract
         $this->fillCodeTable($app['EM']);
         $this->fillRefreshTokenTable($app['EM']);
         $this->fillOauthTokenTable($app['EM']);
+        $this->setOauthTokenExpiresToNull($app['EM']);
+        $this->updateLogsTable($app['EM']);
     }
 
     private function fillApplicationTable(EntityManager $em)
@@ -201,5 +203,41 @@ class patch_390alpha17a extends patchAbstract
                 INNER JOIN api_accounts b ON (b.api_account_id = a.api_account_id)
             )'
         );
+    }
+
+    private function setOauthTokenExpiresToNull(EntityManager $em)
+    {
+        $qb = $em->createQueryBuilder();
+        $q = $qb->update('Phraseanet:ApiOauthToken', 'a')
+            ->set('a.expires', $qb->expr()->literal(null))
+            ->getQuery();
+        $q->execute();
+    }
+
+    /**
+     * Update ApiLogs Table
+     *
+     * before :
+     *   +--------------------+
+     *   | route              |
+     *   +--------------------+
+     *   | GET /databox/list/ |
+     *   +--------------------+
+     *
+     * after :
+     *   +----------------+--------+
+     *   | route          | method |
+     *   +----------------+--------+
+     *   | /databox/list/ | GET    |
+     *   +----------------+--------+
+     *
+     */
+    private function updateLogsTable(EntityManager $em)
+    {
+        $em->getConnection()->executeUpdate("
+            UPDATE `ApiLogs`
+            SET method = SUBSTRING_INDEX(SUBSTRING_INDEX(route, ' ', 1), ' ', -1),
+                route = SUBSTRING_INDEX(SUBSTRING_INDEX(route, ' ', 2), ' ', -1)
+        ");
     }
 }
