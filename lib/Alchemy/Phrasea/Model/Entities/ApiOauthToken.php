@@ -6,7 +6,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="ApiOauthTokens", indexes={@ORM\Index(name="account_id", columns={"account_id"}), @ORM\Index(name="session_id", columns={"session_id"})})
+ * @ORM\Table(name="ApiOauthTokens", indexes={
+ *      @ORM\Index(name="account_id", columns={"account_id"}),
+ *      @ORM\Index(name="session_id", columns={"session_id"})
+ * })
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\ApiOauthTokenRepository")
  */
 class ApiOauthToken
@@ -25,7 +28,7 @@ class ApiOauthToken
     private $sessionId;
 
     /**
-     * @ORM\OneToOne(targetEntity="ApiAccount", mappedBy="oauthToken")
+     * @ORM\ManyToOne(targetEntity="ApiAccount")
      * @ORM\JoinColumn(name="account_id", referencedColumnName="id", nullable=false)
      *
      * @return ApiAccount
