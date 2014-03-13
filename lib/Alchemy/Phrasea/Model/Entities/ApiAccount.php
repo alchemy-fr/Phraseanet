@@ -2,11 +2,15 @@
 
 namespace Alchemy\Phrasea\Model\Entities;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="ApiAccounts", indexes={@ORM\Index(name="user_id", columns={"user_id"}), @ORM\Index(name="application_id", columns={"application_id"})})
+ * @ORM\Table(name="ApiAccounts", indexes={
+ *      @ORM\Index(name="user_id", columns={"user_id"}),
+ *      @ORM\Index(name="application_id", columns={"application_id"})
+ * })
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\ApiAccountRepository")
  */
 class ApiAccount
@@ -49,10 +53,20 @@ class ApiAccount
     private $application;
 
     /**
+     * @ORM\OneToMany(targetEntity="ApiOauthToken", mappedBy="account", cascade={"remove"})
+     **/
+    private $tokens;
+
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
     private $created;
+
+    public function __construct()
+    {
+        $this->tokens = new ArrayCollection();
+    }
 
     /**
      * @param string $apiVersion
@@ -81,6 +95,8 @@ class ApiAccount
      */
     public function setApplication(ApiApplication $application)
     {
+        $application->addAccount($this);
+
         $this->application = $application;
 
         return $this;
@@ -160,5 +176,17 @@ class ApiAccount
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * @param ApiOauthToken $token
+     *
+     * @return $this
+     */
+    public function addTokens(ApiOauthToken $token)
+    {
+        $this->tokens->add($token);
+
+        return $this;
     }
 }

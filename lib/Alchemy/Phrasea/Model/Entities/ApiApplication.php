@@ -125,6 +125,11 @@ class ApiApplication
      **/
     private $accounts;
 
+    public function __construct()
+    {
+        $this->accounts = new ArrayCollection();
+    }
+
     /**
      * @param boolean $activated
      *
@@ -394,10 +399,14 @@ class ApiApplication
     }
 
     /**
-     * @return ArrayCollection
+     * @param ApiAccount $account
+     *
+     * @return $this
      */
-    public function getAccounts()
+    public function addAccount(ApiAccount $account)
     {
-        return $this->accounts;
+        $this->accounts->add($account);
+
+        return $this;
     }
 }

@@ -28,7 +28,7 @@ class ApiOauthToken
     private $sessionId;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ApiAccount")
+     * @ORM\ManyToOne(targetEntity="ApiAccount", inversedBy="tokens")
      * @ORM\JoinColumn(name="account_id", referencedColumnName="id", nullable=false)
      *
      * @return ApiAccount
@@ -74,6 +74,8 @@ class ApiOauthToken
      */
     public function setAccount(ApiAccount $account)
     {
+        $account->addTokens($this);
+
         $this->account = $account;
 
         return $this;
