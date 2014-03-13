@@ -192,13 +192,13 @@ class patch_390alpha17a extends patchAbstract
             'INSERT INTO ApiOauthTokens
             (
                 oauth_token,  account_id,     session_id, expires,
-                scope,        created,        updated
+                scope,        created,        updated,    last_used
 
             )
             (
                 SELECT
                 a.oauth_token,  a.api_account_id, a.session_id, expires,
-                a.scope,          NOW(),          NOW()
+                a.scope,          NOW(),          NOW(),        NOW()
                 FROM api_oauth_tokens a
                 INNER JOIN api_accounts b ON (b.api_account_id = a.api_account_id)
             )'
