@@ -36,8 +36,6 @@ class UserFieldMigration extends AbstractMigration
         $this->addSql("CREATE INDEX IDX_17850D7BA76ED395 ON ValidationParticipants (user_id)");
         $this->addSql("ALTER TABLE FeedPublishers ADD CONSTRAINT FK_31AFAB2A76ED395 FOREIGN KEY (user_id) REFERENCES Users (id)");
         $this->addSql("CREATE INDEX IDX_31AFAB2A76ED395 ON FeedPublishers (user_id)");
-        $this->addSql("ALTER TABLE AggregateTokens ADD CONSTRAINT FK_4232BC51A76ED395 FOREIGN KEY (user_id) REFERENCES Users (id)");
-        $this->addSql("CREATE INDEX IDX_4232BC51A76ED395 ON AggregateTokens (user_id)");
         $this->addSql("ALTER TABLE FtpExports ADD CONSTRAINT FK_CFCEEE7AA76ED395 FOREIGN KEY (user_id) REFERENCES Users (id)");
         $this->addSql("CREATE INDEX IDX_CFCEEE7AA76ED395 ON FtpExports (user_id)");
         $this->addSql("ALTER TABLE UsrAuthProviders ADD CONSTRAINT FK_947F003FA76ED395 FOREIGN KEY (user_id) REFERENCES Users (id)");
@@ -50,8 +48,6 @@ class UserFieldMigration extends AbstractMigration
 
     public function doDownSql(Schema $schema)
     {
-        $this->addSql("ALTER TABLE AggregateTokens DROP FOREIGN KEY FK_4232BC51A76ED395");
-        $this->addSql("DROP INDEX IDX_4232BC51A76ED395 ON AggregateTokens");
         $this->addSql("ALTER TABLE Baskets DROP FOREIGN KEY FK_13461873A76ED395");
         $this->addSql("DROP INDEX IDX_13461873A76ED395 ON Baskets");
         $this->addSql("ALTER TABLE FeedPublishers DROP FOREIGN KEY FK_31AFAB2A76ED395");

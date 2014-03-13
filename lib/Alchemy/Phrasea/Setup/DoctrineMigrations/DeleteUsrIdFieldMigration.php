@@ -37,7 +37,6 @@ class DeleteUsrIdFieldMigration extends AbstractMigration
         $this->addSql("ALTER TABLE LazaretSessions DROP usr_id");
         $this->addSql("ALTER TABLE ValidationParticipants DROP usr_id");
         $this->addSql("ALTER TABLE FeedPublishers DROP usr_id");
-        $this->addSql("ALTER TABLE AggregateTokens DROP usr_id");
         $this->addSql("ALTER TABLE FtpExports DROP usr_id");
         $this->addSql("DROP INDEX unique_provider_per_user ON UsrAuthProviders");
         $this->addSql("ALTER TABLE UsrAuthProviders DROP usr_id");
@@ -50,7 +49,6 @@ class DeleteUsrIdFieldMigration extends AbstractMigration
 
     public function doDownSql(Schema $schema)
     {
-        $this->addSql("ALTER TABLE AggregateTokens ADD usr_id INT NOT NULL");
         $this->addSql("ALTER TABLE Baskets ADD usr_id INT NOT NULL");
         $this->addSql("ALTER TABLE FeedPublishers ADD usr_id INT NOT NULL");
         $this->addSql("ALTER TABLE FeedTokens ADD usr_id INT NOT NULL");
