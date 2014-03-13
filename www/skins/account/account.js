@@ -7,7 +7,7 @@ $(document).ready(function () {
             type: "GET",
             url: $this.attr("href"),
             dataType: 'json',
-            data: {revoke: $this.hasClass("authorize") ? 1 : 0},
+            data: {revoke: $this.hasClass("authorize") ? 0 : 1},
             success: function (data) {
                 if (data.success) {
                     var li = $this.closest('li');
