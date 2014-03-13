@@ -50,7 +50,7 @@ class patch_390alpha16a extends patchAbstract
      */
     public function getDoctrineMigrations()
     {
-        return [];
+        return ['preset'];
     }
 
     /**
@@ -58,7 +58,7 @@ class patch_390alpha16a extends patchAbstract
      */
     public function apply(base $appbox, Application $app)
     {
-        $sql = ' SELECT edit_preset_id, creation_date, title, xml
+        $sql = ' SELECT edit_preset_id, creation_date, title, xml, usr_id, sbas_id
                  FROM edit_presets';
 
         $em = $app['EM'];
@@ -74,6 +74,9 @@ class patch_390alpha16a extends patchAbstract
             $preset->setTitle($row['title']);
             $fields = [];
             if (false !== ($sx = @simplexml_load_string($row['xml']))) {
+                if (false === isset($sx->fields)) {
+                    continue;
+                }
                 foreach ($sx->fields->children() as $name => $value) {
                     $fields[] = ['name' => $name, 'value' => $value];
                 }
