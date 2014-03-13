@@ -86,7 +86,10 @@ class patch_390alpha17a extends patchAbstract
                 a.created_on,     a.last_modified,  a.client_id,      a.client_secret,  a.nonce,
                 a.redirect_uri,   a.activated,      a.grant_password, creator
                 FROM api_applications a
-                INNER JOIN Users ON (Users.id = a.creator OR a.creator IS NULL)
+                LEFT JOIN Users u ON (u.id = a.creator)
+                WHERE u.id IS NOT NULL
+                OR a.`name` = "'. \API_OAuth2_Application_Navigator::CLIENT_NAME .'"
+                OR a.`name` = "'. \API_OAuth2_Application_OfficePlugin::CLIENT_NAME .'"
             )'
         );
     }
