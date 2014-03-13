@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\ApiAccount;
 use Alchemy\Phrasea\Model\Entities\ApiOauthCode;
+use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -76,7 +77,9 @@ class ApiOauthCodeManipulator implements ManipulatorInterface
 
     private function doSetRedirectUri(ApiOauthCode $code, $uri)
     {
-        if (false === filter_var($uri, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED)) {
+        if (false === filter_var($uri, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED)
+            && $uri !== ApiApplication::NATIVE_APP_REDIRECT_URI
+        ) {
             throw new InvalidArgumentException(sprintf('Redirect Uri Url %s is not legal.', $uri));
         }
 
