@@ -60,10 +60,19 @@ class patch_390alpha15a extends patchAbstract
             return true;
         }
 
-        $sql = 'INSERT INTO Tokens
-                    (value, user_id, type, data, created, updated, expiration)
-                    (SELECT value, usr_id, type, datas, created_on, created_on, expire_on FROM tokens_backup)';
-        $appbox->get_connection()->exec($sql);
+        $app['EM']->getConnection()->executeUpdate('
+            INSERT INTO Tokens
+            (
+                `value`, user_id, `type`,   `data`,
+                created, updated, expiration
+            )
+            (
+                SELECT
+                tb.`value`,     tb.usr_id,      tb.`type`,    tb.datas,
+                tb.created_on,  tb.created_on,  tb.expire_on
+                FROM tokens_backup tb
+                INNER JOIN Users u ON (u.id = tb.usr_id)
+            )');
 
         return true;
     }
