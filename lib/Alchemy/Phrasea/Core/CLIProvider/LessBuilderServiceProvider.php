@@ -34,7 +34,7 @@ class LessBuilderServiceProvider implements ServiceProviderInterface
         $app['phraseanet.less-mapping.customizable'] = $app->share(function ($app) {
             return [
                 $app['root.path'] . '/www/skins/login/less/login.less' => $app['root.path'] . '/www/assets/build/login.css',
-                $app['root.path'] . '/www/skins/account/account.less' => $app['root.path'] . '/www/assets/build/account.css',
+                $app['root.path'] . '/www/skins/account/less/account.less' => $app['root.path'] . '/www/assets/build/account.css',
             ];
         });
 
