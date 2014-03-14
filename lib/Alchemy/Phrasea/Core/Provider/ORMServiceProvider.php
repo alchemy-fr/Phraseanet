@@ -168,6 +168,7 @@ class ORMServiceProvider implements ServiceProviderInterface
                 'longblob' => 'Alchemy\Phrasea\Model\Types\LongBlob',
                 'varbinary' => 'Alchemy\Phrasea\Model\Types\VarBinary',
                 'binary' => 'Alchemy\Phrasea\Model\Types\Binary',
+                'binary_string' => 'Alchemy\Phrasea\Model\Types\BinaryString',
             ];
 
             foreach ($types as $type => $class) {

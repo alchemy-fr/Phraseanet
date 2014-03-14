@@ -51,7 +51,7 @@ class User
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=128, options={"collate"="utf8_bin"})
+     * @ORM\Column(type="binary_string", length=128)
      */
     private $login;
 
@@ -61,12 +61,12 @@ class User
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=128, nullable=true, options={"collate"="utf8_bin"})
+     * @ORM\Column(type="binary_string", length=128)
      */
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=64, nullable=true)
+     * @ORM\Column(type="binary_string", length=64, nullable=true)
      */
     private $nonce;
 
