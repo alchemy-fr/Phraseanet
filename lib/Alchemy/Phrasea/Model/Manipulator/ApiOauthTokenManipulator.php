@@ -61,6 +61,12 @@ class ApiOauthTokenManipulator implements ManipulatorInterface
         $this->om->flush();
     }
 
+    public function setLastUsed(ApiOauthToken $token, \DateTime $date)
+    {
+        $token->setLastUsed($date);
+        $this->update($token);
+    }
+
     public function rememberSessionId(ApiOauthToken $token, $sessionId)
     {
         $token->setSessionId($sessionId);

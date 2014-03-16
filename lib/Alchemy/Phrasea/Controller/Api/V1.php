@@ -64,8 +64,7 @@ class V1 implements ControllerProviderInterface
         $controllers->after(function (Request $request, Response $response) use ($app) {
             $token = $app['session']->get('token');
             $app['manipulator.api-log']->create($token->getAccount(), $request, $response);
-            $token->setLastUsed(new \DateTime());
-            $app['manipulator.api-oauth-token']->update($token);
+            $app['manipulator.api-oauth-token']->setLastUsed($token, new \DateTime());
             $app['session']->set('token', null);
             if (null !== $app['authentication']->getUser()) {
                 $app['authentication']->closeAccount();
