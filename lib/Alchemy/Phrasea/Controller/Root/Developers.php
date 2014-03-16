@@ -166,6 +166,10 @@ class Developers implements ControllerProviderInterface
             ->assert('id', '\d+')
             ->bind('submit_application_callback');
 
+        $controllers->post('/application/{id}/webhook/', $this->call('renewAppWebhook'))
+            ->assert('id', '\d+')
+            ->bind('submit_application_webhook');
+
         return $controllers;
     }
 
@@ -216,6 +220,38 @@ class Developers implements ControllerProviderInterface
 
             if (null !== $request->request->get("callback")) {
                 $clientApp->set_redirect_uri($request->request->get("callback"));
+            } else {
+                $error = true;
+            }
+        } catch (NotFoundHttpException $e) {
+            $error = true;
+        }
+
+        return $app->json(array('success' => !$error));
+    }
+
+
+    /**
+     * Change application webhook
+     *
+     * @param  Application  $app     A Silex application where the controller is mounted on
+     * @param  Request      $request The current request
+     * @param  integer      $id      The application id
+     * @return JsonResponse
+     */
+    public function renewAppWebhook(Application $app, Request $request, $id)
+    {
+        if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
+            $app->abort(400, _('Bad request format, only JSON is allowed'));
+        }
+
+        $error = false;
+
+        try {
+            $clientApp = new \API_OAuth2_Application($app, $id);
+
+            if (null !== $request->request->get("webhook")) {
+                $clientApp->setWebhook($request->request->get("webhook"));
             } else {
                 $error = true;
             }
