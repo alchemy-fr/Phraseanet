@@ -270,6 +270,14 @@
             <default></default>
             <comment></comment>
           </field>
+          <field>
+            <name>webhook_url</name>
+            <type>varchar(128)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
         </fields>
         <indexes>
           <index>
