@@ -61,7 +61,9 @@ class User
     private $email;
 
     /**
-     * @ORM\Column(type="binary_string", length=128)
+     * The password can be null when the user is a template.
+     *
+     * @ORM\Column(type="binary_string", length=128, nullable=true)
      */
     private $password;
 
