@@ -30,6 +30,14 @@ class BinaryString extends Type
             return $platform->getVarcharTypeDeclarationSQL($fieldDeclaration)." ". $platform->getCollationFieldDeclaration('utf8_bin');
         }
 
-        throw new RuntimeException(sprintf('Type %s is not supported.', self::BINARY_STRING));
+        return $platform->getVarcharTypeDeclarationSQL($fieldDeclaration);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultLength(AbstractPlatform $platform)
+    {
+        return $platform->getVarcharDefaultLength();
     }
 }
