@@ -14,6 +14,8 @@ use Alchemy\Phrasea\Exception\RuntimeException;
 
 class API_Webhook
 {
+    const NEW_FEED_ENTRY = "new_feed_entry";
+
     protected $appbox;
     protected $id;
     protected $type;
