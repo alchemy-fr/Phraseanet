@@ -15,7 +15,7 @@ class ApiOauthCodeManipulatorTest extends \PhraseanetTestCase
         $manipulator = new ApiOauthCodeManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-oauth-codes'], self::$DI['app']['random.medium']);
         $nbCodes = count(self::$DI['app']['repo.api-oauth-codes']->findAll());
         $account = self::$DI['app']['manipulator.api-account']->create(self::$DI['oauth2-app-user'], self::$DI['user']);
-        $manipulator->create($account, 'http://www.redirect.url');
+        $manipulator->create($account, 'http://www.redirect.url', time() + 30);
         $this->assertGreaterThan($nbCodes, count(self::$DI['app']['repo.api-oauth-codes']->findAll()));
     }
 
@@ -23,7 +23,7 @@ class ApiOauthCodeManipulatorTest extends \PhraseanetTestCase
     {
         $manipulator = new ApiOauthCodeManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-oauth-codes'], self::$DI['app']['random.medium']);
         $account = self::$DI['app']['manipulator.api-account']->create(self::$DI['oauth2-app-user'], self::$DI['user']);
-        $code = $manipulator->create($account, 'http://www.redirect.url');
+        $code = $manipulator->create($account, 'http://www.redirect.url', time() + 30);
         $countBefore = count(self::$DI['app']['repo.api-oauth-codes']->findAll());
         $manipulator->delete($code);
         $this->assertGreaterThan(count(self::$DI['app']['repo.api-oauth-codes']->findAll()), $countBefore);
@@ -34,11 +34,11 @@ class ApiOauthCodeManipulatorTest extends \PhraseanetTestCase
 
         $manipulator = new ApiOauthCodeManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-oauth-codes'], self::$DI['app']['random.medium']);
         $account = self::$DI['app']['manipulator.api-account']->create(self::$DI['oauth2-app-user'], self::$DI['user']);
-        $code = $manipulator->create($account, 'http://www.redirect.url');
-        $code->setExpires(new \DateTime());
+        $code = $manipulator->create($account, 'http://www.redirect.url', $t = time() + 30);
+        $code->setExpires(time() + 40);
         $manipulator->update($code);
         $code = self::$DI['app']['repo.api-oauth-codes']->find($code->getCode());
-        $this->assertNotNull($code->getExpires());
+        $this->assertGreaterThan($t, $code->getExpires());
     }
 
     /**
@@ -48,7 +48,7 @@ class ApiOauthCodeManipulatorTest extends \PhraseanetTestCase
     {
         $manipulator = new ApiOauthCodeManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-oauth-codes'], self::$DI['app']['random.medium']);
         $account = self::$DI['app']['manipulator.api-account']->create(self::$DI['oauth2-app-user'], self::$DI['user']);
-        $code = $manipulator->create($account, 'http://www.redirect.url');
+        $code = $manipulator->create($account, 'http://www.redirect.url', time() + 30);
         try {
             $manipulator->setRedirectUri($code, 'bad-url');
             $this->fail('Invalid argument exception should be raised');

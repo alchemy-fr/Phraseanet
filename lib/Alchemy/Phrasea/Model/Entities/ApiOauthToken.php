@@ -36,9 +36,7 @@ class ApiOauthToken
     private $account;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $expires;
 
@@ -110,11 +108,11 @@ class ApiOauthToken
     }
 
     /**
-     * @param \DateTime $expires
+     * @param integer $expires
      *
      * @return ApiOauthTokens
      */
-    public function setExpires(\DateTime $expires = null)
+    public function setExpires($expires = null)
     {
         $this->expires = $expires;
 
@@ -122,7 +120,7 @@ class ApiOauthToken
     }
 
     /**
-     * @return \DateTime
+     * @return integer
      */
     public function getExpires()
     {

@@ -200,7 +200,7 @@ class API_OAuth2_Adapter extends OAuth2
 
         return [
             'scope'       => $token->getScope(),
-            'expires'     => null !== $token->getExpires() ? $token->getExpires()->getTimestamp() : null,
+            'expires'     => $token->getExpires(),
             'client_id'   => $token->getAccount()->getApplication()->getClientId(),
             'session_id'  => $token->getSessionId(),
             'revoked'     => (int) $token->getAccount()->isRevoked(),
@@ -223,12 +223,6 @@ class API_OAuth2_Adapter extends OAuth2
     {
         if (null === $account = $this->app['repo.api-accounts']->find($accountId)) {
             throw new RuntimeException(sprintf('Account with id %s is not valid', $accountId));
-        }
-        $expires = null !== $expires ? \DateTime::createFromFormat('U', $expires) : null;
-        // @note stored date time are not UTC ... and expires parameter is a UNIX timestamp which is timezone independent
-        if ($expires instanceof \DateTime) {
-            $dtz = new \DateTimeZone(date_default_timezone_get());
-            $expires->add(new \DateInterval('PT' . $dtz->getOffset($expires) . 'S'));
         }
         $token = $this->app['manipulator.api-oauth-token']->create($account, $expires, $scope);
         $this->app['manipulator.api-oauth-token']->setOauthToken($token, $oauthToken);
@@ -277,7 +271,7 @@ class API_OAuth2_Adapter extends OAuth2
         return [
             'redirect_uri' => $code->getRedirectUri(),
             'client_id'    => $code->getAccount()->getApplication()->getClientId(),
-            'expires'      => null !== $code->getExpires() ? $code->getExpires()->getTimestamp() : null,
+            'expires'      => $code->getExpires(),
             'account_id'   => $code->getAccount()->getId(),
         ];
     }
@@ -299,13 +293,6 @@ class API_OAuth2_Adapter extends OAuth2
     {
         if (null === $account = $this->app['repo.api-accounts']->find($accountId)) {
             throw new RuntimeException(sprintf('Account with id %s is not valid', $accountId));
-        }
-
-        $expires = null !== $expires ? \DateTime::createFromFormat('U', $expires) : null;
-        // @note stored date time are not UTC ... and expires parameter is a UNIX timestamp which is timezone independent
-        if ($expires instanceof \DateTime) {
-            $dtz = new \DateTimeZone(date_default_timezone_get());
-            $expires->add(new \DateInterval('PT' . $dtz->getOffset($expires) . 'S'));
         }
         $code = $this->app['manipulator.api-oauth-code']->create($account, $redirectUri, $expires, $scope);
         $this->app['manipulator.api-oauth-code']->setCode($code, $oauthCode);
@@ -329,8 +316,7 @@ class API_OAuth2_Adapter extends OAuth2
         if (null === $account = $this->app['repo.api-accounts']->find($accountId)) {
             throw new RuntimeException(sprintf('Account with id %s is not valid', $accountId));
         }
-
-        $token = $this->app['manipulator.api-oauth-refresh-token']->create($account, \DateTime::createFromFormat('U', $expires), $scope);
+        $token = $this->app['manipulator.api-oauth-refresh-token']->create($account, $expires, $scope);
         $this->app['manipulator.api-oauth-refresh-token']->setRefreshToken($token, $refreshToken);
 
         return $this;
@@ -351,7 +337,7 @@ class API_OAuth2_Adapter extends OAuth2
 
         return [
             'token'     => $token->getRefreshToken(),
-            'expires'   => null !== $token->getExpires() ? $token->getExpires()->getTimestamp() : null,
+            'expires'   => $token->getExpires(),
             'client_id' => $token->getAccount()->getApplication()->getClientId()
         ];
     }

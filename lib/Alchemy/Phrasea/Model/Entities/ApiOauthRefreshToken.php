@@ -28,9 +28,7 @@ class ApiOauthRefreshToken
     private $account;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime", nullable=false)
+     * @ORM\Column(type="integer", nullable=false)
      */
     private $expires;
 
@@ -94,11 +92,11 @@ class ApiOauthRefreshToken
     }
 
     /**
-     * @param \DateTime $expires
+     * @param integer $expires
      *
      * @return ApiOauthRefreshToken
      */
-    public function setExpires(\DateTime $expires)
+    public function setExpires($expires)
     {
         $this->expires = $expires;
 
@@ -106,7 +104,7 @@ class ApiOauthRefreshToken
     }
 
     /**
-     * @return \DateTime
+     * @return integer
      */
     public function getExpires()
     {

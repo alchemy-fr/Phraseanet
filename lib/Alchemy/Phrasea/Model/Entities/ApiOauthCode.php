@@ -35,9 +35,7 @@ class ApiOauthCode
     private $redirectUri;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="integer")
      */
     private $expires;
 
@@ -121,19 +119,19 @@ class ApiOauthCode
     }
 
     /**
-     * @param \DateTime $expires
+     * @param integer $timestamp
      *
      * @return ApiOauthCode
      */
-    public function setExpires(\DateTime $expires = null)
+    public function setExpires($timestamp)
     {
-        $this->expires = $expires;
+        $this->expires = $timestamp;
 
         return $this;
     }
 
     /**
-     * @return \DateTime
+     * @return $timestamp
      */
     public function getExpires()
     {

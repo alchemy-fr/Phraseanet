@@ -35,7 +35,7 @@ class ApiOauthTokenManipulator implements ManipulatorInterface
         $this->randomGenerator = $random;
     }
 
-    public function create(ApiAccount $account, \DateTime $expire = null, $scope = null)
+    public function create(ApiAccount $account, $expire = null, $scope = null)
     {
         $token = new ApiOauthToken();
         $token->setOauthToken($this->getNewToken());
@@ -73,7 +73,7 @@ class ApiOauthTokenManipulator implements ManipulatorInterface
         $this->update($token);
     }
 
-    public function renew(ApiOauthToken $token, \DateTime $expire = null)
+    public function renew(ApiOauthToken $token, $expire = null)
     {
         $token->setOauthToken($this->getNewToken());
         $token->setExpires($expire);

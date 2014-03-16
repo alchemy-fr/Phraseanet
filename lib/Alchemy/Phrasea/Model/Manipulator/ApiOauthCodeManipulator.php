@@ -36,7 +36,7 @@ class ApiOauthCodeManipulator implements ManipulatorInterface
         $this->randomGenerator = $random;
     }
 
-    public function create(ApiAccount $account, $redirectUri, \DateTime $expire = null, $scope = null)
+    public function create(ApiAccount $account, $redirectUri, $expire, $scope = null)
     {
         $code = new ApiOauthCode();
 

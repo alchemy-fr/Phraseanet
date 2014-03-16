@@ -34,7 +34,7 @@ class ApiOauthRefreshTokenManipulator implements ManipulatorInterface
         $this->randomGenerator = $random;
     }
 
-    public function create(ApiAccount $account, \DateTime $expire, $scope = null)
+    public function create(ApiAccount $account, $expire, $scope = null)
     {
         $refreshToken = new ApiOauthRefreshtoken();
 
