@@ -56,7 +56,11 @@ class task_period_apiwebhooks extends task_appboxAbstract
 
     protected function getApplicationHookUrls(appbox $appbox)
     {
-        $stmt = $appbox->get_connection()->prepare('SELECT webhook_url FROM api_applications WHERE webhook_url IS NOT NULL');
+        $stmt = $appbox->get_connection()->prepare('
+            SELECT webhook_url
+            FROM api_applications
+            WHERE webhook_url IS NOT NULL
+        ');
         $stmt->execute();
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -73,11 +77,11 @@ class task_period_apiwebhooks extends task_appboxAbstract
         }
         $client = new GuzzleClient();
         $body = json_encode($data);
-        $requests = [];
+        $requests = array();
         foreach ($urls as $url) {
-            $requests[] = $client->createRequest('POST', $url, [
+            $requests[] = $client->createRequest('POST', $url, array(
                 'Content-Type' => 'application/json'
-            ], $body);
+            ), $body);
         }
         $client->send($requests);
     }
@@ -90,16 +94,15 @@ class task_period_apiwebhooks extends task_appboxAbstract
         }
         $feed = new Feed_Adapter($this->dependencyContainer, $data->{"feed_id"});
         $entry = new \Feed_Entry_Adapter($this->dependencyContainer, $feed, $data->{"entry_id"});
+        $query = new \User_Query($this->dependencyContainer);
 
-        $Query = new \User_Query($this->dependencyContainer);
-
-        $Query->include_phantoms(true)
+        $query->include_phantoms(true)
             ->include_invite(false)
             ->include_templates(false)
             ->email_not_null(true);
 
         if ($entry->get_feed()->get_collection()) {
-            $Query->on_base_ids(array($entry->get_feed()->get_collection()->get_base_id()));
+            $query->on_base_ids(array($entry->get_feed()->get_collection()->get_base_id()));
         }
 
         $start = 0;
@@ -107,7 +110,7 @@ class task_period_apiwebhooks extends task_appboxAbstract
         $users = array();
 
         do {
-            $results = $Query->limit($start, $perLoop)->execute()->get_results();
+            $results = $query->limit($start, $perLoop)->execute()->get_results();
             foreach ($results as $user) {
                 $users[] = array(
                     'mail' => $user->get_email(),

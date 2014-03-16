@@ -61,10 +61,10 @@ class API_Webhook
             VALUES (null, :type, :data, NOW())';
 
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute([
+        $stmt->execute(array(
             'type' => $type,
             'data' => json_encode($data),
-        ]);
+        ));
         $stmt->closeCursor();
 
         return new API_Webhook($appbox, $appbox->get_connection()->lastInsertId());
