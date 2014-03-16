@@ -9,17 +9,10 @@
  * file that was distributed with this source code.
  */
 
-use Alchemy\Phrasea\Notification\Receiver;
-use Alchemy\Phrasea\Notification\Mail\MailInfoNewOrder;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class eventsmanager_notify_order extends eventsmanager_notifyAbstract
 {
-    /**
-     *
-     * @var string
-     */
-    public $events = ['__NEW_ORDER__'];
-
     /**
      *
      * @return string
@@ -31,110 +24,14 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param  string        $event
-     * @param  Array         $params
-     * @param  mixed content $object
-     * @return Void
-     */
-    public function fire($event, $params, &$object)
-    {
-        $default = [
-            'usr_id'   => ''
-            , 'order_id' => []
-        ];
-
-        $params = array_merge($default, $params);
-        $order_id = $params['order_id'];
-
-        $users = [];
-
-        try {
-            $repository = $this->app['repo.order-elements'];
-
-            $results = $repository->findBy(['orderId' => $order_id]);
-
-            $base_ids = [];
-            foreach ($results as $result) {
-                $base_ids[] = $result->getBaseId();
-            }
-            $base_ids = array_unique($base_ids);
-
-            $query = new User_Query($this->app);
-            $users = $query->on_base_ids($base_ids)
-                    ->who_have_right(['order_master'])
-                    ->execute()->get_results();
-        } catch (\Exception $e) {
-
-        }
-
-        if (count($users) == 0) {
-            return;
-        }
-
-        $dom_xml = new DOMDocument('1.0', 'UTF-8');
-
-        $dom_xml->preserveWhiteSpace = false;
-        $dom_xml->formatOutput = true;
-
-        $root = $dom_xml->createElement('datas');
-
-        $usr_id_dom = $dom_xml->createElement('usr_id');
-        $order_id_dom = $dom_xml->createElement('order_id');
-
-        $usr_id_dom->appendChild($dom_xml->createTextNode($params['usr_id']));
-
-        $order_id_dom->appendChild($dom_xml->createTextNode($order_id));
-
-        $root->appendChild($usr_id_dom);
-        $root->appendChild($order_id_dom);
-
-        $dom_xml->appendChild($root);
-
-        $datas = $dom_xml->saveXml();
-
-        if (null === $orderInitiator = $this->app['repo.users']->find($params['usr_id'])) {
-            return;
-        }
-
-        foreach ($users as $user) {
-            $mailed = false;
-
-            if ($this->shouldSendNotificationFor($user->getId())) {
-                $readyToSend = false;
-                try {
-                    $receiver = Receiver::fromUser($user);
-                    $readyToSend = true;
-                } catch (\Exception $e) {
-                    continue;
-                }
-
-                if ($readyToSend) {
-                    $mail = MailInfoNewOrder::create($this->app, $receiver);
-                    $mail->setUser($orderInitiator);
-
-                    $this->app['notification.deliverer']->deliver($mail);
-                    $mailed = true;
-                }
-            }
-
-            $this->broker->notify($user->getId(), __CLASS__, $datas, $mailed);
-        }
-
-        return;
-    }
-
-    /**
-     *
      * @param  Array   $datas
      * @param  boolean $unread
      * @return string
      */
-    public function datas($datas, $unread)
+    public function datas(array $data, $unread)
     {
-        $sx = simplexml_load_string($datas);
-
-        $usr_id = (string) $sx->usr_id;
-        $order_id = (string) $sx->order_id;
+        $usr_id = $data['usr_id'];
+        $order_id = $data['order_id'];
 
         if (null === $user = $this->app['repo.users']->find($usr_id)) {
             return [];
@@ -176,12 +73,8 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
      *
      * @return boolean
      */
-    public function is_available($usr_id)
+    public function is_available(User $user)
     {
-        if (null === $user = $this->app['repo.users']->find($usr_id)) {
-            return false;
-        }
-
         return $this->app['acl']->get($user)->has_right('order_master');
     }
 }

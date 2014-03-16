@@ -72,6 +72,14 @@ use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
 use Alchemy\Phrasea\Controller\Utils\PathFileTest;
 use Alchemy\Phrasea\Controller\User\Notifications;
 use Alchemy\Phrasea\Controller\User\Preferences;
+use Alchemy\Phrasea\Core\Event\Subscriber\BasketSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\BridgeSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\ExportSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\FeedEntrySubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\LazaretSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\OrderSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\RegistrationSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\ValidationSubscriber;
 use Alchemy\Phrasea\Core\Middleware\TokenMiddlewareProvider;
 use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
 use Alchemy\Phrasea\Core\Event\Subscriber\LogoutSubscriber;
@@ -471,6 +479,14 @@ class Application extends SilexApplication
                 $dispatcher->addSubscriber(new PhraseaLocaleSubscriber($app));
                 $dispatcher->addSubscriber(new MaintenanceSubscriber($app));
                 $dispatcher->addSubscriber(new CookiesDisablerSubscriber($app));
+                $dispatcher->addSubscriber(new FeedEntrySubscriber($app));
+                $dispatcher->addSubscriber(new RegistrationSubscriber($app));
+                $dispatcher->addSubscriber(new BridgeSubscriber($app));
+                $dispatcher->addSubscriber(new ExportSubscriber($app));
+                $dispatcher->addSubscriber(new OrderSubscriber($app));
+                $dispatcher->addSubscriber(new BasketSubscriber($app));
+                $dispatcher->addSubscriber(new LazaretSubscriber($app));
+                $dispatcher->addSubscriber(new ValidationSubscriber($app));
 
                 return $dispatcher;
             })

@@ -10,21 +10,13 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Notification\Receiver;
-use Alchemy\Phrasea\Notification\Emitter;
-use Alchemy\Phrasea\Notification\Mail\MailInfoOrderCancelled;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstract
 {
-    /**
-     *
-     * @var string
-     */
-    public $events = ['__ORDER_NOT_DELIVERED__'];
-
-    public function __construct(Application $app, eventsmanager_broker $broker)
+    public function __construct(Application $app)
     {
-        parent::__construct($app, $broker);
+        parent::__construct($app);
         $this->group = $this->app->trans('Commande');
 
         return $this;
@@ -35,77 +27,10 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
         return '/skins/prod/000000/images/disktt_history.gif';
     }
 
-    public function fire($event, $params, &$object)
+    public function datas(array $data, $unread)
     {
-        $default = [
-            'from' => ''
-            , 'to'   => ''
-            , 'n'    => ''
-        ];
-
-        $params = array_merge($default, $params);
-
-        $dom_xml = new DOMDocument('1.0', 'UTF-8');
-
-        $dom_xml->preserveWhiteSpace = false;
-        $dom_xml->formatOutput = true;
-
-        $root = $dom_xml->createElement('datas');
-
-        $from = $dom_xml->createElement('from');
-        $to = $dom_xml->createElement('to');
-        $n = $dom_xml->createElement('n');
-
-        $from->appendChild($dom_xml->createTextNode($params['from']));
-        $to->appendChild($dom_xml->createTextNode($params['to']));
-        $n->appendChild($dom_xml->createTextNode($params['n']));
-
-        $root->appendChild($from);
-        $root->appendChild($to);
-        $root->appendChild($n);
-
-        $dom_xml->appendChild($root);
-
-        $datas = $dom_xml->saveXml();
-
-        $mailed = false;
-
-        if ($this->shouldSendNotificationFor($params['to'])) {
-
-            $readyToSend = false;
-
-            try {
-                $user_from = $this->app['repo.users']->find($params['from']);
-                $user_to = $this->app['repo.users']->find($params['to']);
-
-                $receiver = Receiver::fromUser($user_to);
-                $emitter = Emitter::fromUser($user_from);
-
-                $readyToSend = true;
-            } catch (\Exception $e) {
-
-            }
-
-            if ($readyToSend) {
-                $mail = MailInfoOrderCancelled::create($this->app, $receiver, $emitter);
-                $mail->setQuantity($params['n']);
-                $mail->setDeliverer($user_from);
-
-                $this->app['notification.deliverer']->deliver($mail);
-
-                $mailed = true;
-            }
-        }
-
-        return $this->broker->notify($params['to'], __CLASS__, $datas, $mailed);
-    }
-
-    public function datas($datas, $unread)
-    {
-        $sx = simplexml_load_string($datas);
-
-        $from = (string) $sx->from;
-        $n = (int) $sx->n;
+        $from = $data['from'];
+        $n = $data['n'];
 
         if (null === $user = $this->app['repo.users']->find($from)) {
             return [];
@@ -136,7 +61,7 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
      *
      * @return boolean
      */
-    public function is_available($usr_id)
+    public function is_available(User $user)
     {
         return true;
     }

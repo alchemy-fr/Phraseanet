@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Core\Event\ExportFailureEvent;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
@@ -205,13 +207,7 @@ class Export implements ControllerProviderInterface
             if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
                 $destMails[] = $mail;
             } else {
-                $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', [
-                    'usr_id' => $app['authentication']->getUser()->getId(),
-                    'lst'    => $lst,
-                    'ssttid' => $ssttid,
-                    'dest'   => $mail,
-                    'reason' => \eventsmanager_notify_downloadmailfail::MAIL_NO_VALID
-                ]);
+                $app['dispatcher']->dispatch(PhraseaEvents::EXPORT_MAIL_FAILURE, new ExportFailureEvent($app['authentication']->getUser()->getId(), $ssttid, $lst, \eventsmanager_notify_downloadmailfail::MAIL_NO_VALID, $mail));
             }
         }
 
@@ -250,13 +246,7 @@ class Export implements ControllerProviderInterface
             //some mails failed
             if (count($remaingEmails) > 0) {
                 foreach ($remaingEmails as $mail) {
-                    $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', [
-                        'usr_id' => $app['authentication']->getUser()->getId(),
-                        'lst'    => $lst,
-                        'ssttid' => $ssttid,
-                        'dest'   => $mail,
-                        'reason' => \eventsmanager_notify_downloadmailfail::MAIL_FAIL
-                    ]);
+                    $app['dispatcher']->dispatch(PhraseaEvents::EXPORT_MAIL_FAILURE, new ExportFailureEvent($app['authentication']->getUser()->getId(), $ssttid, $lst, \eventsmanager_notify_downloadmailfail::MAIL_FAIL, $mail));
                 }
             }
         }
