@@ -128,9 +128,9 @@ $(document).ready(function () {
     // hide or show callback url input whether user choose a web or dektop application
     $("#form_create input[name=type]").bind("click", function () {
         if ($(this).val() === "desktop") {
-            $("#form_create .callback td").hide().find("input").val('');
+            $("#form_create .callback-control-group").hide().find("input").val('');
         } else {
-            $("#form_create .callback td").show();
+            $("#form_create .callback-control-group").show();
         }
     });
 
