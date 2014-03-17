@@ -22,7 +22,7 @@ before_script:
   - travis_retry composer install --dev --prefer-source
   - wget http://sphinxsearch.com/files/sphinx-2.0.6-release.tar.gz
   - tar xzf sphinx-2.0.6-release.tar.gz
-  - sh -c "cd sphinx-2.0.6-release && wget http://snowball.tartarus.org/dist/libstemmer_c.tgz && tar xzf libstemmer_c.tgz && ./configure --with-libstemmer --with-iconv --with-mysql --enable-id64 --quiet && make -j --quiet && sudo make install"
+  - sh -c "cd sphinx-2.0.6-release && git clone https://github.com/zvelo/libstemmer.git libstemmer_c && ./configure --with-libstemmer --with-iconv --with-mysql --enable-id64 --quiet && make -j --quiet && sudo make install"
   - sudo mkdir -p /var/sphinx/datas
   - sudo chmod -R 0777 /var/sphinx
   - mysql -e 'create database ab_test;create database db_test; create database ab_unitTests; create database db_unitTests;'
