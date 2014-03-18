@@ -30,12 +30,10 @@ $(document).ready(function () {
             resize();
         }
     });
+    resize();
     //datepicker
     reportDatePicker();
     dashboardDatePicker();
-    //drawCharts from dashboard
-    drawCharts();
-    configure_dash();
     bindEvents();
 
     $("a.select-all").bind("click", function (e) {
@@ -63,6 +61,17 @@ $(document).ready(function () {
  * Tous les binds sur le report
  */
 function bindEvents() {
+    $('#dminDash, #dmaxDash').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        numberOfMonths: 1,
+        maxDate: "-0d"
+    });
+
+    $(".submit-dashboard").click(function() {
+        loadDash();
+    });
     //load all the report
     $('form .formsubmiter').bind('click', function () {
         submiterAction($(this));
@@ -103,11 +112,6 @@ function bindEvents() {
     }).unbind("click").bind("click", function () {
             showMenu();
         });
-
-    $("#liste_dash").find("em").unbind("click").bind("click", function () {
-        id = $(this).attr('id').substr(3);
-        changeDash(id);
-    });
 }
 
 function reportDatePicker() {
@@ -129,17 +133,12 @@ function reportDatePicker() {
 function dashboardDatePicker() {
     $(function () {
         $('.dminDash, .dmaxDash').datepicker({
-            defaultDate: -10,
+            defaultDate: -3,
             changeMonth: true,
             changeYear: true,
             dateFormat: 'dd-mm-yy',
             numberOfMonths: 3,
-            maxDate: "-0d",
-            onSelect: function (selectedDate, instance) {
-                var id = $(".selected_em").attr('id').substr(3);
-                changeDash(id);
-                $('.btn-slide').trigger('click');
-            }
+            maxDate: "-0d"
         });
     });
 }
@@ -185,7 +184,7 @@ function submiterAction(domSubmiter) {
 
         request = $.ajax({
             type: "POST",
-            url: "/report/init",
+            url: "/index_dev.php/report/init",
             data: data,
             beforeSend: function () {
                 container.find('.content').empty();
@@ -379,36 +378,6 @@ function getScrollerStartPosition(selected_tab) {
     return right;
 }
 
-
-function changeDash(sbasid) {
-    var dmin = $(".dminDash").val();
-    var dmax = $(".dmaxDash").val();
-    $.ajax({
-        type: "POST",
-        dataType: "json",
-        url: "/report/dashboard",
-        data: {
-            sbasid: sbasid,
-            dmin: dmin,
-            dmax: dmax
-        },
-        beforeSuccess: function () {
-            $("#dashdash").addClass("gifloader");
-        },
-        success: function (data) {
-            $("#dashdash").removeClass("gifloader").empty().append(data.html);
-            drawCharts();
-            $("#liste_dash").find("em").unbind("click").bind("click", function () {
-                id = $(this).attr('id').substr(3);
-                changeDash(id);
-            });
-            $('td a:visible').bind('click', function () {
-                tableLinkAction($(this));
-            });
-        }
-    });
-}
-
 function drawCharts() {
     if ($('#mytabledaytotal').length > 0) {
         $('#mytabledaytotal').gvChart({
@@ -438,9 +407,9 @@ function drawCharts() {
                 },
                 lineWidth: 1,
                 pointSize: 2,
-                backgroundColor: '#555555',
-                width: 900,
-                height: 400
+                backgroundColor: '#696969',
+                width: 800,
+                height: 350
             }
         });
     }
@@ -477,9 +446,9 @@ function drawCharts() {
                 },
                 lineWidth: 1,
                 pointSize: 3,
-                backgroundColor: '#555555',
-                width: 900,
-                height: 400
+                backgroundColor: '#696969',
+                width: 800,
+                height: 350
             }
         });
     }
@@ -515,9 +484,9 @@ function drawCharts() {
                 legend: 'none',
                 lineWidth: 1,
                 pointSize: 3,
-                backgroundColor: '#555555',
-                width: 900,
-                height: 400
+                backgroundColor: '#696969',
+                width: 800,
+                height: 350
             }
         });
     }
@@ -553,9 +522,9 @@ function drawCharts() {
                 legend: 'none',
                 lineWidth: 1,
                 pointSize: 3,
-                backgroundColor: '#555555',
-                width: 900,
-                height: 400
+                backgroundColor: '#696969',
+                width: 800,
+                height: 350
             }
         });
     }
@@ -987,6 +956,34 @@ function go(submit, form, f_val, data) {
     });
 }
 
+function loadDash() {
+    var $form = $("#dashboard-form");
+    $.ajax({
+        url     : $form.attr('action'),
+        type    : $form.attr('method'),
+        dataType: 'json',
+        data    : $form.serializeArray(),
+        beforeSend: function() {
+            resize();
+            $("#dashboard").empty().addClass("loading");
+        },
+        success : function( data ) {
+            $("#dashboard").empty().append(data.html);
+            drawCharts();
+            $('td a:visible').bind('click', function () {
+                tableLinkAction($(this));
+            });
+        },
+        error   : function( xhr, err ) {
+        },
+        timeout: function(){
+        },
+        done: function() {
+            $("#dashboard").removeClass("loading");
+        }
+    });
+    return false;
+}
 
 //submit is the div where we want to load the updated tab
 //form is the current form
@@ -1140,14 +1137,5 @@ function sessionactive() {
         }
     });
 };
-
-function configure_dash() {
-    $(".btn-slide").click(function () {
-        $("#panel").slideToggle("slow");
-        $(this).toggleClass("arrowUp");
-        return false;
-    });
-
-}
 
 sessionactive();

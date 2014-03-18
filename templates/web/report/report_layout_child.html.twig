@@ -2,45 +2,49 @@
 
 {% block report_dashboard_layout %}
     <div id="dash" class="inside-container">
-        <div class="answers">
+        <div class="answers container-fluid">
             <div class="content">
-                <div id='dashboard'>
-                    <div id="panel" style="height:40px;width:100%;display:none;">
-                        <div style="margin-top:15px;float:left;margin-bottom:20px;">
-                            <div style="float:left;" >
-                                <label for="dmin" class="form_titre">{% trans "report:: Du (date)" %}</label>
-                                <input class= "dminDash" name="dmin" type="text" value="{{ dashboard.dmin}}" size="10" />
+                <div class="row-fluid">
+                    <div class="well-large well" style="background: #313131;margin-top:20px;border:none;">
+                        <form id="dashboard-form" class="form-inline" method="GET" action="{{ path("report_dashboard") }}">
+                            <label for="dminDash" style="color:#eee">{{ "from"|trans|title }}</label>
+                            <div class="input-prepend">
+                                <span class="add-on"><i class="icon icon-calendar"></i></span>
+                                <input id="dminDash" name="dmin" style="font-size: 14px;width:220px;" size="10" type="text" placeholder="{{ "from"|trans }}" value="{{ "-1 month"|date("Y-m-d") }}">
                             </div>
-                            <div style="float:left;margin-left:15px;">
-                                <label for="dmax" class="form_titre">{% trans "report:: Au (date)" %}</label>
-                                <input class="dmaxDash" name="dmax" type="text" value="{{dashboard.dmax}}" size="10" />
+                            <label for="dmaxDash" style="color:#eee">{{ "to"|trans|title }}</label>
+                            <div class="input-prepend">
+                                to
+                                <span class="add-on"><i class="icon icon-calendar"></i></span>
+                                <input id="dmaxDash" name="dmax" style="font-size: 14px;width:220px;" size="10" type="text" placeholder="{{ "to"|trans }}" value="{{ "now"|date("Y-m-d") }}">
                             </div>
+                            <button class="btn submit-dashboard" type="button">{{ "Generate" | trans }}</button>
+                        </form>
+                        <div>
+                            <span class="text-info" style="font-style: italic">
+                                <i class="icon icon-warning-sign"></i>
+                                {{
+                                    "Report generation may take a long time to generate, depending on the number of collections and the period selected." | trans
+                                }}
+                            </span>
                         </div>
-                        {# <div id="chooose" style="margin-left:15px;float:left;margin-top:15px;"> #}
-                        {#  <div class="form_titre">{% trans "report:: 2 - Bases" %}</div> #}
-                        {#  <label for="nameDash"></label> #}
-                        {#  <select name="nameDash" style = "background-color:#555;color:orange;border:none;"> #}
-                        {#    <option value="all">Global</option> #}
-                        {#  {% for it in dashboard.authorizedCollection %} #}
-                                {#  <option value="{{it.sbas_id}}">{{ it.name }}</option> #}
-                        {#  {% endfor %} #}
-                            {#</select> #}
-                        {#</div> #}
                     </div>
-                    <div class="slide" style="margin-top:-5px;"><a class="btn-slide arrowDown"
-                                                                                                             style="width:100px;height:20px;padding:5px;float:right; text-align:center;display:block;color:#999;
-">options</a></div>
-
-                    <div id="dashdash" style="float:left;width:100%;">
-                        {% if ajax_dash %}
-                            {% include "report/ajax_dashboard_content_child.html.twig" %}
-                        {% endif %}
-                    </div>
+                </div>
+                <div id='dashboard' class="well well-large text-center" style="background-color:#696969;border:none;">
+                    <button class="btn btn-primary submit-dashboard" style="
+                        padding: 18px 28px;
+                        font-size: 22px; //change this to your desired size
+                        line-height: normal;
+                        -webkit-border-radius: 8px;
+                           -moz-border-radius: 8px;
+                                border-radius: 8px;"
+                    >
+                        {{ "Generate dashboard" | trans }}
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-
 {% endblock report_dashboard_layout %}
 
 {% block report_connexion_layout %}
