@@ -16,6 +16,7 @@
         "gedmo/doctrine-extensions"        : "~2.3.0",
         "alchemy/google-plus-api-client"   : "~0.6.2",
         "alchemy/geonames-api-consumer"    : "~0.1.0",
+        "goodby/csv"                       : "~1.0",
         "guzzle/guzzle"                    : "~3.0",
         "imagine/imagine"                  : "0.6.x-dev@dev",
         "jms/serializer"                   : "~0.10",
