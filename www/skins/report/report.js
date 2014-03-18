@@ -790,68 +790,27 @@ function print() {
 }
 
 function csv() {
-    var button = $(".form_csv input[name=submit]");
+    var button = $("#export_csv");
 
     button.unbind("click").bind("click", function (e) {
         e.preventDefault();
         var $this = $(this);
-        var $formm = $this.closest("form");
 
         if ($this.closest("#dialog").length > 0) {
             var $form = $("#dialog").data("dataForm");
-        }
-        else {
+        } else {
             var $form = $this.closest(".ui-tabs-panel").find(".report_form");
         }
 
-        $form.find("input[name=printcsv]").val("on");
+        //clone form and submit
+        var clone = $form.clone().appendTo($this);
 
-        if (button.data('ajaxRunning')) {
-            button.data('ajaxQuery').abort();
-            button.data('ajaxRunning', false);
-        }
+        clone.attr("action", $form.find("input[name=action]").val())
+            .attr("method",'POST')
+            .removeAttr("onsubmit")
+            .find("input[name=printcsv]").val("on");
 
-        var query = $.ajax({
-            type: "POST",
-            url: $form.find("input[name=action]").val(),
-            dataType: "json",
-            data: $form.serializeArray(),
-            beforeSend: function () {
-                $formm.after("<div></div>");
-                $formm.next("div").addClass("onload");
-                button.data('ajaxRunning', true);
-            },
-            timeOut: function () {
-                button.data('ajaxRunning', false);
-            },
-            error: function () {
-                button.data('ajaxRunning', false);
-            },
-            success: function (data) {
-                $formm.next("div").remove();
-                button.data('ajaxRunning', false);
-                $form.find("input[name=printcsv]").val("off");
-
-                if (typeof data.rs === "object") {
-                    var $key = $this.closest("table").attr("class");
-                    var $csv = data.rs[$key];
-                    $formm.find("textarea[name=csv]").val($csv);
-                }
-                else if (data.rs === false) {
-                    $("body").append("<div id='dialog'>Une erreur s'est produite</div>");
-                    $("#dialog").dialog({
-                        close: function () {
-                            $(this).remove();
-                        }
-                    });
-                }
-                else {
-                    $formm.find("textarea[name=csv]").val(data.rs);
-                }
-                $formm.find("input[name=doit]").trigger('click');
-            }
-        });
-        button.data('ajaxQuery', query);
+        $(clone).submit().remove();
     });
 }
 

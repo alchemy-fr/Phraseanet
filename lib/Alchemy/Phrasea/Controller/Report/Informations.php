@@ -181,13 +181,11 @@ class Informations implements ControllerProviderInterface
             if ($request->request->get('printcsv') == 'on') {
                 $report->setPrettyString(false);
 
-                try {
-                    $csv = \format::arr_to_csv($report->getResult(), $report->getDisplay());
-                } catch (\Exception $e) {
-                    $csv = '';
-                }
+                $response = $this->getCSVResponse($app, $report, 'info_user');
 
-                return $app->json(array('rs' => $csv));
+                $response->send();
+
+                return $response;
             }
 
             $html = $app['twig']->render('report/ajax_data_content.html.twig', array(
@@ -430,13 +428,11 @@ class Informations implements ControllerProviderInterface
             if ($request->request->get('printcsv') == 'on') {
                 $download->setPrettyString(false);
 
-                try {
-                    $csv = \format::arr_to_csv($download->getResult(), $download->getDisplay());
-                } catch (\Exception $e) {
-                    $csv = '';
-                }
+                $response = $this->getCSVResponse($app, $download, 'info_document');
 
-                return $app->json(array('rs' => $csv));
+                $response->send();
+
+                return $response;
             }
 
             $html .= $app['twig']->render('report/ajax_data_content.html.twig', array(
@@ -479,15 +475,12 @@ class Informations implements ControllerProviderInterface
             $reportArray = $info->buildTabGrpInfo(false, array(),  $request->request->get('user'), $conf, false);
 
             if ($request->request->get('printcsv') == 'on') {
-                $download->setPrettyString(false);
 
-                try {
-                    $csv = \format::arr_to_csv($download->getResult(), $download->getDisplay());
-                } catch (\Exception $e) {
-                    $csv = '';
-                }
+                $response = $this->getCSVResponse($app, $info, 'info_user');
 
-                return $app->json(array('rs' => $csv));
+                $response->send();
+
+                return $response;
             }
 
             $html .= $app['twig']->render('report/ajax_data_content.html.twig', array(
