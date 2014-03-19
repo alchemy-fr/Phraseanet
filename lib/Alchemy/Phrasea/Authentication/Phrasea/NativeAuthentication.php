@@ -68,13 +68,14 @@ class NativeAuthentication implements PasswordAuthenticationInterface
                 $row['nonce'] = \random::generatePassword(8, \random::LETTERS_AND_NUMBERS);
                 $row['usr_password'] = $this->encoder->encodePassword($password, $row['nonce']);
 
-                $sql = 'UPDATE usr SET usr_password = :password, nonce = :nonce
+                $sql = 'UPDATE usr SET usr_password = :password, nonce = :nonce, salted_password = :salted_password
                         WHERE usr_id = :usr_id';
                 $stmt = $this->conn->prepare($sql);
                 $stmt->execute(array(
                     ':password' => $row['usr_password'],
                     ':nonce' => $row['nonce'],
                     ':usr_id' => $row['usr_id'],
+                    ':salted_password' => 1
                 ));
                 $stmt->closeCursor();
             }
