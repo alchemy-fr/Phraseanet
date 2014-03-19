@@ -897,6 +897,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         foreach ($fields as $field) {
             if (in_array($field->get_thumbtitle(), array('1', $this->app['locale.I18n']))) {
+
                 $fields_to_retrieve [] = $field->get_name();
             }
         }
@@ -904,10 +905,10 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         if (count($fields_to_retrieve) > 0) {
             $retrieved_fields = $this->get_caption()->get_highlight_fields($highlight, $fields_to_retrieve, $searchEngine);
             $titles = array();
-            foreach ($retrieved_fields as $key => $value) {
-                if (trim($value['value'] === ''))
-                    continue;
-                $titles[] = $value['value'];
+            foreach ($retrieved_fields as $value) {
+                foreach($value['values'] as $v) {
+                    $titles[] = $v['value'];
+                }
             }
             $title = trim(implode(' - ', $titles));
         }

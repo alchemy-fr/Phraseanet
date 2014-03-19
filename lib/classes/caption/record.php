@@ -303,54 +303,46 @@ class caption_record implements caption_interface, cache_cacheableInterface
      */
     public function get_highlight_fields($highlight = '', Array $grep_fields = null, SearchEngineInterface $searchEngine = null, $includeBusiness = false)
     {
-        return $this->highlight_fields($highlight, $grep_fields, $searchEngine, $includeBusiness);
-    }
-
-    /**
-     * @todo move this fun in caption_field object
-     * @param  string                $highlight
-     * @param  array                 $grep_fields
-     * @param  SearchEngineInterface $searchEngine
-     * @return array
-     */
-    protected function highlight_fields($highlight, Array $grep_fields = null, SearchEngineInterface $searchEngine = null, $includeBusiness = false)
-    {
         $fields = array();
 
         foreach ($this->get_fields($grep_fields, $includeBusiness) as $meta_struct_id => $field) {
 
-            $value = preg_replace(
-                "(([^']{1})((https?|file):((/{2,4})|(\\{2,4}))[\w:#%/;$()~_?/\-=\\\.&]*)([^']{1}))"
-                , '$1 $2 <a title="' . _('Open the URL in a new window') . '" class="ui-icon ui-icon-extlink" href="$2" style="display:inline;padding:2px 5px;margin:0 4px 0 2px;" target="_blank"> &nbsp;</a>$7'
-                , $highlight ? $field->highlight_thesaurus() : $field->get_serialized_values(false, false)
-            );
+//            $value = preg_replace(
+//                "(([^']{1})((https?|file):((/{2,4})|(\\{2,4}))[\w:#%/;$()~_?/\-=\\\.&]*)([^']{1}))"
+//                , '$1 $2 <a title="' . _('Open the URL in a new window') . '" class="ui-icon ui-icon-extlink" href="$2" style="display:inline;padding:2px 5px;margin:0 4px 0 2px;" target="_blank"> &nbsp;</a>$7'
+//                , $highlight ? $field->highlight_thesaurus() : $field->get_serialized_values(false, false)
+//            );
 
+            $values = array();
+            foreach ($field->get_values() as $metaId => $v) {
+                $values[$metaId] = array(
+                    'value' => $v->getValue(),
+                    'from_thesaurus' => $highlight ? $v->isThesaurusValue() : false,
+                    'qjs' => $v->getQjs(),
+                 );
+            }
             $fields[$field->get_name()] = array(
-                'value'     => $value,
+                'values'    => $values,
+                'name'      => $field->get_name(),
                 'label'     => $field->get_databox_field()->get_label($this->app['locale.I18n']),
                 'separator' => $field->get_databox_field()->get_separator(),
+                'sbas_id'   => $field->get_databox_field()->get_databox()->get_sbas_id()
             );
         }
 
         if ($searchEngine instanceof SearchEngineInterface) {
             $ret = $searchEngine->excerpt($highlight, $fields, $this->record);
 
+            // sets highlighted value from search engine
             if ($ret) {
-                $n = -1;
-
                 foreach ($fields as $key => $value) {
-                    $n++;
-
-                    if (!isset($fields[$key])) {
+                    if (!isset($ret[$key])) {
                         continue;
                     }
 
-                    if (strpos($fields[$key]['value'], '<a class="bounce" ') !== false) {
-                        continue;
+                    foreach ($ret[$key] as $metaId => $newValue) {
+                        $fields[$key]['values'][$metaId]['value'] = $newValue;
                     }
-
-                    //if(strpos($fields[$key]['value'], '<a ') === false)
-                    $fields[$key]['value'] = $ret[$n];
                 }
             }
         }

@@ -124,6 +124,7 @@ class Tooltip implements ControllerProviderInterface
 
                 $search_engine = $app['phraseanet.SE'];
                 $search_engine->setOptions($search_engine_options);
+
             } catch (\Exception $e) {
                 $search_engine = null;
             }

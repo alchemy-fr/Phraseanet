@@ -203,27 +203,27 @@ class caption_field implements cache_cacheableInterface
      *
      * @return mixed
      */
-    public function get_serialized_values($custom_separator = false, $highlightTheso = false)
+    public function get_serialized_values($custom_separator = false, $highlight = false)
     {
-        if ($this->databox_field->is_multi() === true) {
-            if ($custom_separator !== false)
-                $separator = $custom_separator;
-            else
-                $separator = $this->databox_field->get_separator();
-
-            return self::serialize_value($this->values, $separator, $highlightTheso);
-        } else {
-            foreach ($this->values as $value) {
-                /* @var $value Caption_Field_Value */
-                if ($highlightTheso) {
-                    return $value->highlight_thesaurus();
-                } else {
-                    return $value->getValue();
-                }
-            }
+        if (0 === count($this->values)) {
+            return null;
         }
 
-        return null;
+        if ($this->is_multi()) {
+            $separator = $custom_separator !== false ? $custom_separator : $this->databox_field->get_separator();
+
+            return self::serialize_value($this->values, $separator, $highlight);
+        }
+
+        $value = current($this->values);
+
+            /* @var $value Caption_Field_Value */
+        if ($highlight) {
+            return $value->highlight_thesaurus();
+        }
+
+        return $value->getValue();
+
     }
 
     /**
@@ -260,17 +260,6 @@ class caption_field implements cache_cacheableInterface
     public function get_databox_field()
     {
         return $this->databox_field;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function highlight_thesaurus()
-    {
-        $value = $this->get_serialized_values(false, true);
-
-        return $value;
     }
 
     /**

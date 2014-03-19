@@ -615,18 +615,27 @@ class Application extends SilexApplication
 
                     return $ret;
                 }));
-                $twig->addFilter(new \Twig_SimpleFilter('thesaurus', function (\Twig_Environment $twig, $value) {
-                    if (!$value instanceof \ThesaurusValue) {
-                        return str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), twig_escape_filter($twig, $value));
+                $twig->addFilter(new \Twig_SimpleFilter('thesaurus', function (\Twig_Environment $twig, $captionField, $bouncable = true) {
+                    $display = array();
+                    if (is_string($captionField)) {
+
+                        return str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), twig_escape_filter($twig, $captionField));
+                    }
+                    foreach($captionField['values'] as $value) {
+                        if ($value['from_thesaurus'] && $bouncable) {
+                            $display[] = "<a class=\"bounce\" onclick=\"bounce('" . $captionField['sbas_id'] . "','"
+                                . str_replace("'", "\\'", $value['qjs'])
+                                . "', '"
+                                . str_replace("'", "\\'", $captionField['name'])
+                                . "');return(false);\">"
+                                . str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), twig_escape_filter($twig, $value['value']))
+                                . "</a>";
+                        } else {
+                            $display[] = str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), twig_escape_filter($twig, $value['value']));
+                        }
                     }
 
-                    return "<a class=\"bounce\" onclick=\"bounce('" . $value->getField()->get_databox()->get_sbas_id() . "','"
-                        . str_replace("'", "\\'", $value->getQuery())
-                        . "', '"
-                        . str_replace("'", "\\'", $value->getField()->get_name())
-                        . "');return(false);\">"
-                        . str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), twig_escape_filter($twig, $value->getValue()))
-                        . "</a>";
+                    return implode(' ' . $captionField['separator'] . ' ', $display);
                 }, array('needs_environment' => true, 'is_safe' => array('html'))));
 
                 $twig->addFilter(new \Twig_SimpleFilter('escapeDoubleQuote', function ($value) {
