@@ -557,8 +557,10 @@ class SphinxSearchEngine implements SearchEngineInterface
 
         $fields_to_send = array();
 
-        foreach ($fields as $k => $f) {
-            $fields_to_send[$k] = $f['value'];
+        foreach ($fields as $fieldData) {
+            foreach ($fieldData['values'] as $metaId => $valueData) {
+                $fields_to_send[$metaId] = $valueData['value'];
+            }
         }
 
         return $this->sphinx->BuildExcerpts($fields_to_send, $index, $query, $opts);
