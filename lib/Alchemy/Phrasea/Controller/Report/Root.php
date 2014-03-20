@@ -202,11 +202,7 @@ class Root implements ControllerProviderInterface
 
             $this->doReport($app, $request, $cnx, $conf);
 
-            $response = $this->getCSVResponse($app, $cnx, 'connections');
-
-            $response->send();
-
-            return $response;
+            return $this->getCSVResponse($app, $cnx, 'connections');
         }
 
         $report = $this->doReport($app, $request, $cnx, $conf);
@@ -267,11 +263,7 @@ class Root implements ControllerProviderInterface
 
             $this->doReport($app, $request, $questions, $conf);
 
-            $response = $this->getCSVResponse($app, $questions, 'questions');
-
-            $response->send();
-
-            return $response;
+            return $this->getCSVResponse($app, $questions, 'questions');
         }
 
         $report = $this->doReport($app, $request, $questions, $conf);
@@ -341,11 +333,7 @@ class Root implements ControllerProviderInterface
 
             $this->doReport($app, $request, $download, $conf);
 
-            $response = $this->getCSVResponse($app, $download, 'download');
-
-            $response->send();
-
-            return $response;
+            return $this->getCSVResponse($app, $download, 'download');
         }
 
         $report = $this->doReport($app, $request, $download, $conf);
@@ -411,11 +399,7 @@ class Root implements ControllerProviderInterface
 
             $this->doReport($app, $request, $document, $conf, 'record_id');
 
-            $response = $this->getCSVResponse($app, $document, 'documents');
-
-            $response->send();
-
-            return $response;
+            return $this->getCSVResponse($app, $document, 'documents');
         }
 
         $report = $this->doReport($app, $request, $document, $conf, 'record_id');
