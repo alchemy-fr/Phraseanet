@@ -63,6 +63,10 @@ class caption_Field_Value implements cache_cacheableInterface
      * @var string
      */
     protected $qjs;
+
+    /**
+     * Tells whether the value is matched against a thesaurus value.
+     */
     protected $isThesaurusValue;
 
     protected static $localCache = array();
@@ -400,13 +404,11 @@ class caption_Field_Value implements cache_cacheableInterface
             }
         }
 
-        if($bestnode)
-        {
+        if($bestnode) {
             list($term, $context) = $this->splitTermAndContext(str_replace(array("[[em]]", "[[/em]]"), array("", ""), $value));
-            $qjs = $term . ($context ? '['.$context.']' : '');
-
+            // a value has been found in thesaurus, update value & set the query to bounce to the value
             $this->value = $bestnode->getAttribute('v');
-            $this->qjs = $qjs;
+            $this->qjs = $term . ($context ? '['.$context.']' : '');
             $this->isThesaurusValue = true;
         } else {
             $this->isThesaurusValue = false;
@@ -417,8 +419,6 @@ class caption_Field_Value implements cache_cacheableInterface
     }
 
     /**
-     * qjs property
-     *
      * @return boolean
      */
     public function isThesaurusValue()

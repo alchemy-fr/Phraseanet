@@ -306,13 +306,6 @@ class caption_record implements caption_interface, cache_cacheableInterface
         $fields = array();
 
         foreach ($this->get_fields($grep_fields, $includeBusiness) as $meta_struct_id => $field) {
-
-//            $value = preg_replace(
-//                "(([^']{1})((https?|file):((/{2,4})|(\\{2,4}))[\w:#%/;$()~_?/\-=\\\.&]*)([^']{1}))"
-//                , '$1 $2 <a title="' . _('Open the URL in a new window') . '" class="ui-icon ui-icon-extlink" href="$2" style="display:inline;padding:2px 5px;margin:0 4px 0 2px;" target="_blank"> &nbsp;</a>$7'
-//                , $highlight ? $field->highlight_thesaurus() : $field->get_serialized_values(false, false)
-//            );
-
             $values = array();
             foreach ($field->get_values() as $metaId => $v) {
                 $values[$metaId] = array(
@@ -333,7 +326,8 @@ class caption_record implements caption_interface, cache_cacheableInterface
         if ($searchEngine instanceof SearchEngineInterface) {
             $ret = $searchEngine->excerpt($highlight, $fields, $this->record);
 
-            // sets highlighted value from search engine
+            // sets highlighted value from search engine, highlighted values will now
+            // be surrounded by [[em]][[/em]] tags
             if ($ret) {
                 foreach ($fields as $key => $value) {
                     if (!isset($ret[$key])) {
