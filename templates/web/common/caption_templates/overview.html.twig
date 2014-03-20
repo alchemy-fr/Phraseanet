@@ -1,5 +1,5 @@
 {% macro format_caption(record, highlight, searchEngine, includeBusiness) %}
   {% for value in record.get_caption().get_highlight_fields(highlight, null, searchEngine, includeBusiness) %}
-  <div><b>{{ value.label }}</b> : {{ value | thesaurus(false) }}</div>
+  <div><b>{{ value.label }}</b> : {{ value | highlight }}</div>
   {% endfor %}
 {% endmacro %}
