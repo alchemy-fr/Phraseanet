@@ -101,6 +101,7 @@ use Alchemy\Phrasea\Core\Provider\TemporaryFilesystemServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\Twig\JSUniqueID;
 use Alchemy\Phrasea\Twig\Camelize;
 use Alchemy\Phrasea\Twig\BytesConverter;
@@ -615,27 +616,53 @@ class Application extends SilexApplication
 
                     return $ret;
                 }));
-                $twig->addFilter(new \Twig_SimpleFilter('thesaurus', function (\Twig_Environment $twig, $captionField, $bouncable = true) {
-                    $display = array();
-                    if (is_string($captionField)) {
-
-                        return str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), twig_escape_filter($twig, $captionField));
+                $twig->addFilter(new \Twig_SimpleFilter('highlight', function (\Twig_Environment $twig, $argument) {
+                    if (is_string($argument)) {
+                        return str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), twig_escape_filter($twig, $argument));
                     }
-                    foreach($captionField['values'] as $value) {
-                        if ($value['from_thesaurus'] && $bouncable) {
-                            $display[] = "<a class=\"bounce\" onclick=\"bounce('" . $captionField['sbas_id'] . "','"
+
+                    $values = array();
+                    if (is_array($argument) && isset($argument['values'])) {
+                        foreach ($argument['values'] as $value) {
+                            $values[] = str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), twig_escape_filter($twig, $value));
+                        }
+
+                        return implode(' ' . $argument['separator'] . ' ', $values);
+                    }
+
+                    throw new LogicException('highlight filter must be applied on strings or highlighted fields.');
+                }));
+                $twig->addFilter(new \Twig_SimpleFilter('bounce', function (\Twig_Environment $twig, $argument) {
+                    if (false === is_array($argument) || !isset($argument['values'])) {
+                        throw new LogicException('bounce filter must be applied on values that come from highlighted fields.');
+                    }
+
+                    $display = array();
+                    foreach ($argument['values'] as $value) {
+                        // value of a caption string
+                        $toDisplay = $value['value'];
+                        // bounce value if it is present in thesaurus as well
+                        if ($value['from_thesaurus']) {
+                            $toDisplay = "<a class=\"bounce\" onclick=\"bounce('" . $argument['sbas_id'] . "','"
                                 . str_replace("'", "\\'", $value['qjs'])
                                 . "', '"
-                                . str_replace("'", "\\'", $captionField['name'])
+                                . str_replace("'", "\\'", $argument['name'])
                                 . "');return(false);\">"
-                                . str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), twig_escape_filter($twig, $value['value']))
+                                . twig_escape_filter($twig, $toDisplay)
                                 . "</a>";
-                        } else {
-                            $display[] = str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), twig_escape_filter($twig, $value['value']));
                         }
+
+                        // checks for urls in value and wrap them into <a> tags
+                        $toDisplay = preg_replace(
+                            "(([^']{1})((https?|file):((/{2,4})|(\\{2,4}))[\w:#%/;$()~_?/\-=\\\.&]*)([^']{1}))"
+                            , '$1 $2 <a title="' . _('Open the URL in a new window') . '" class="ui-icon ui-icon-extlink" href="$2" style="display:inline;padding:2px 5px;margin:0 4px 0 2px;" target="_blank"> &nbsp;</a>$7'
+                            , $toDisplay
+                        );
+
+                        $display[] = $toDisplay;
                     }
 
-                    return implode(' ' . $captionField['separator'] . ' ', $display);
+                    return implode(' ' . $argument['separator'] . ' ', $display);
                 }, array('needs_environment' => true, 'is_safe' => array('html'))));
 
                 $twig->addFilter(new \Twig_SimpleFilter('escapeDoubleQuote', function ($value) {
