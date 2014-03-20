@@ -13,7 +13,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
         $crawler = self::$DI['client']->request('GET', '/admin/publications/list/');
         $pageContent = self::$DI['client']->getResponse()->getContent();
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $feeds = \Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
+        $feeds = \Feed_Collection::load(self::$DI['app'], self::$DI['user']);
 
         foreach ($feeds->get_feeds() as $feed) {
             $this->assertRegExp('/\/admin\/publications\/feed\/' . $feed->get_id() . '/', $pageContent);
@@ -26,14 +26,14 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
 
     public function testCreate()
     {
-        $feeds = \Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
+        $feeds = \Feed_Collection::load(self::$DI['app'], self::$DI['user']);
         $count = sizeof($feeds->get_feeds());
 
         $crawler = self::$DI['client']->request('POST', '/admin/publications/create/', array("title"    => "hello", "subtitle" => "coucou", "base_id"  => self::$DI['collection']->get_base_id()));
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect('/admin/publications/list/'));
 
-        $feeds = \Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
+        $feeds = \Feed_Collection::load(self::$DI['app'], self::$DI['user']);
         $count_after = sizeof($feeds->get_feeds());
         $this->assertGreaterThan($count, $count_after);
 

@@ -1480,14 +1480,14 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($this->app, $request, $this);
 
-        $coll = Feed_Collection::load_all($this->app, $user);
+        $coll = Feed_Collection::load($this->app, $user);
 
-        $datas = array();
+        $data = array();
         foreach ($coll->get_feeds() as $feed) {
-            $datas[] = $this->list_publication($feed, $user);
+            $data[] = $this->list_publication($feed, $user);
         }
 
-        $result->set_datas(array("feeds" => $datas));
+        $result->set_datas(array("feeds" => $data));
 
         return $result;
     }
@@ -1536,21 +1536,21 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($this->app, $request, $this);
 
-        $feed = Feed_Aggregate::load_with_user($this->app, $user);
+        $restrictions = (array) ($request->get('feeds') ? : array());
+
+        $feed = Feed_Aggregate::load_with_user($this->app, $user, $restrictions);
 
         $offset_start = (int) ($request->get('offset_start') ? : 0);
         $per_page = (int) ($request->get('per_page') ? : 5);
 
         $per_page = (($per_page >= 1) && ($per_page <= 20)) ? $per_page : 5;
 
-        $datas = array(
+        $result->set_datas(array(
             'total_entries' => $feed->get_count_total_entries(),
             'offset_start'  => $offset_start,
             'per_page'      => $per_page,
             'entries'       => $this->list_publications_entries($feed, $offset_start, $per_page),
-        );
-
-        $result->set_datas($datas);
+        ));
 
         return $result;
     }

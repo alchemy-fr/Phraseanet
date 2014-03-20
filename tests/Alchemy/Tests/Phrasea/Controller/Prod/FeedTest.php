@@ -100,7 +100,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/requestavailable/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $feeds = \Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
+        $feeds = \Feed_Collection::load(self::$DI['app'], self::$DI['user']);
         foreach ($feeds->get_feeds() as $one_feed) {
             if ($one_feed->is_publisher(self::$DI['user'])) {
                 $this->assertEquals(1, $crawler->filterXPath("//input[@value='" . $one_feed->get_id() . "']")->count());
@@ -447,7 +447,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
-        $feeds = \Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
+        $feeds = \Feed_Collection::load(self::$DI['app'], self::$DI['user']);
 
         foreach ($feeds->get_feeds() as $one_feed) {
 
@@ -457,7 +457,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
             if ($one_feed->has_access(self::$DI['user'])) {
                 $this->assertEquals(1, $crawler->filterXPath($path)->count(), $msg);
             } else {
-                $this->fail('Feed_collection::load_all should return feed where I got access');
+                $this->fail('Feed_collection::load should return feed where I got access');
             }
         }
     }
@@ -465,7 +465,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testGetFeed()
     {
 
-        $feeds = \Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
+        $feeds = \Feed_Collection::load(self::$DI['app'], self::$DI['user']);
 
         $crawler = self::$DI['client']->request('GET', '/prod/feeds/feed/' . $this->feed->get_id() . "/");
         $pageContent = self::$DI['client']->getResponse()->getContent();
@@ -477,14 +477,14 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
             if ($one_feed->has_access(self::$DI['user'])) {
                 $this->assertEquals(1, $crawler->filterXPath($path)->count(), $msg);
             } else {
-                $this->fail('Feed_collection::load_all should return feed where I got access');
+                $this->fail('Feed_collection::load should return feed where I got access');
             }
         }
     }
 
     public function testSuscribeAggregate()
     {
-        $feeds = \Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
+        $feeds = \Feed_Collection::load(self::$DI['app'], self::$DI['user']);
         $crawler = self::$DI['client']->request('GET', '/prod/feeds/subscribe/aggregated/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
