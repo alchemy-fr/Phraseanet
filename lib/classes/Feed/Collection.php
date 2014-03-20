@@ -65,7 +65,7 @@ class Feed_Collection implements Feed_CollectionInterface, cache_cacheableInterf
         if (count($reduce) > 0) {
             $chunkSql[] = sprintf('(id IN (%s)) AND', implode(', ', $reduce));
         } else {
-            $chunkSql[] =  '1 OR';
+            $chunkSql[] =  '1 AND';
         }
 
         // restrict to granted collection
