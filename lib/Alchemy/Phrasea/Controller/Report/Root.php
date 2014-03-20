@@ -128,15 +128,15 @@ class Root implements ControllerProviderInterface
         $popbases = $request->request->get('popbases', array());
 
         if ('' === $dmin = $request->request->get('dmin', '')) {
-            $dmin = '01-' . date('m') . '-' . date('Y');
+            $dmin = date('Y') . '-' . date('m') . '-01';
         }
 
         if ('' === $dmax = $request->request->get('dmax', '')) {
-            $dmax = date('d') . '-' . date('m') . '-' . date('Y');
+            $dmax = date('Y') . '-' . date('m') . '-' . date('d');
         }
 
         $dmin = \DateTime::createFromFormat('Y-m-d H:i:s', sprintf('%s 00:00:00', $dmin));
-        $dmax = \DateTime::createFromFormat('Y-m-d  H:i:s', sprintf('%s 23:59:59', $dmax));
+        $dmax = \DateTime::createFromFormat('Y-m-d H:i:s', sprintf('%s 23:59:59', $dmax));
 
         //get user's sbas & collections selection from popbases
         $selection = array();
