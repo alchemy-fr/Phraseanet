@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Controller\Report;
 
 use Alchemy\Phrasea\Core\Response\CSVFileResponse;
+use Goodby\CSV\Export\Standard\Collection\CallbackCollection;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
