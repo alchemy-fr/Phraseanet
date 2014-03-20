@@ -624,14 +624,14 @@ class Application extends SilexApplication
                     $values = array();
                     if (is_array($argument) && isset($argument['values'])) {
                         foreach ($argument['values'] as $value) {
-                            $values[] = str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), twig_escape_filter($twig, $value));
+                            $values[] = str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), twig_escape_filter($twig, $value['value']));
                         }
 
                         return implode(' ' . $argument['separator'] . ' ', $values);
                     }
 
                     throw new LogicException('highlight filter must be applied on strings or highlighted fields.');
-                }));
+                }, array('needs_environment' => true, 'is_safe' => array('html'))));
                 $twig->addFilter(new \Twig_SimpleFilter('bounce', function (\Twig_Environment $twig, $argument) {
                     if (false === is_array($argument) || !isset($argument['values'])) {
                         throw new LogicException('bounce filter must be applied on values that come from highlighted fields.');
