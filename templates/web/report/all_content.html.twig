@@ -12,15 +12,15 @@
 {% block javascript %}
     <script type="text/javascript" >
 
-            var usrId = '{{ app['authentication'].user.get_id }}' ;
+            var usrId = '{{ app['authentication'].user.getId }}' ;
 
             var language = {
-                valider : '{% trans "boutton::valider" %}',
-                choix_collection : '{% trans "veuillez choisir au minimum une collection" %}',
-                annuler : '{% trans "boutton::annuler" %}',
-                fermer : '{% trans "boutton::fermer" %}',
-                connexion : '{% trans "report:: Connexion" %}',
-                heure : '{% trans "report::Heures" %}'
+                valider : '{{ "boutton::valider" | trans }}',
+                choix_collection : '{{ "veuillez choisir au minimum une collection" | trans }}',
+                annuler : '{{ "boutton::annuler" | trans }}',
+                fermer : '{{ "boutton::fermer" | trans }}',
+                connexion : '{{ "report:: Connexion" | trans }}',
+                heure : '{{ "report::Heures" | trans }}'
             };
 
             var dashboard ={

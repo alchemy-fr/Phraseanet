@@ -68,7 +68,7 @@ class Root implements ControllerProviderInterface
      */
     public function getDashboard(Application $app, Request $request)
     {
-       if ('json' !== $request->getRequestFormat()) {
+       if ('json' === $request->getRequestFormat()) {
            \Session_Logger::updateClientInfos($app, 4);
 
            $dashboard = new \module_report_dashboard($app, $app['authentication']->getUser());
@@ -108,11 +108,11 @@ class Root implements ControllerProviderInterface
             'ajax_dash'     => true,
             'dashboard'     => null,
             'granted_bases' => $granted,
-            'home_title'    => $app['phraseanet.registry']->get('GV_homeTitle'),
+            'home_title'    => $app['conf']->get(['registry', 'general', 'title']),
             'module'        => 'report',
             'module_name'   => 'Report',
-            'anonymous'     => $app['phraseanet.registry']->get('GV_anonymousReport'),
-            'g_anal'        => $app['phraseanet.registry']->get('GV_googleAnalytics'),
+            'anonymous'     => $app['conf']->get(['registry', 'modules', 'anonymous-report']),
+            'g_anal'        => $app['conf']->get(['registry', 'general', 'analytics']),
             'ajax'          => false,
             'ajax_chart'    => false
         ));
