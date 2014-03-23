@@ -20,7 +20,6 @@ use Silex\ControllerProviderInterface;
 use Silex\Application as SilexApplication;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Lightbox implements ControllerProviderInterface
 {

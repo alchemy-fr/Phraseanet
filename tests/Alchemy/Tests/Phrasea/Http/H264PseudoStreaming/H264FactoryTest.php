@@ -66,19 +66,19 @@ class H264FactoryTest extends \PhraseanetTestCase
 
     public function provideTypes()
     {
-        return array(
-            array('nginx', $this->getNginxMapping(), 'Alchemy\Phrasea\Http\H264PseudoStreaming\Nginx'),
-            array('apache', $this->getNginxMapping(), 'Alchemy\Phrasea\Http\H264PseudoStreaming\Apache'),
-            array('apache2', $this->getNginxMapping(), 'Alchemy\Phrasea\Http\H264PseudoStreaming\Apache'),
-        );
+        return [
+            ['nginx', $this->getNginxMapping(), 'Alchemy\Phrasea\Http\H264PseudoStreaming\Nginx'],
+            ['apache', $this->getNginxMapping(), 'Alchemy\Phrasea\Http\H264PseudoStreaming\Apache'],
+            ['apache2', $this->getNginxMapping(), 'Alchemy\Phrasea\Http\H264PseudoStreaming\Apache'],
+        ];
     }
 
     private function getNginxMapping()
     {
-        return array(array(
+        return [[
             'directory'   =>  __DIR__ . '/../../../../files/',
             'mount-point' => '/protected/',
             'passphrase'  => 'dfdskqhfsfilddsmfmqsdmlfomqs',
-        ));
+        ]];
     }
 }

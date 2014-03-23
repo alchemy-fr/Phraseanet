@@ -36,7 +36,6 @@ use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Model\Entities\UserQuery;
 use Alchemy\Phrasea\Model\Entities\ValidationData;
 use Silex\Application;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -2093,7 +2092,7 @@ class V1 implements ControllerProviderInterface
                 break;
         }
 
-        return array(
+        return [
             '@entity@'        => self::OBJECT_TYPE_USER,
             'id'              => $user->getId(),
             'email'           => $user->getEmail() ?: null,
@@ -2116,7 +2115,7 @@ class V1 implements ControllerProviderInterface
             'created_on'      => $user->getCreated() ? $user->getCreated()->format(DATE_ATOM) : null,
             'updated_on'      => $user->getUpdated() ? $user->getUpdated()->format(DATE_ATOM) : null,
             'locale'          => $user->getLocale() ?: null,
-        );
+        ];
     }
 
     private function logout(Application $app)

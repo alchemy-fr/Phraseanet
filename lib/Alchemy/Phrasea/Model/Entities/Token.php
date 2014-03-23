@@ -62,7 +62,7 @@ class Token
     /**
      * Set value
      *
-     * @param string $value
+     * @param  string $value
      * @return Token
      */
     public function setValue($value)
@@ -85,7 +85,7 @@ class Token
     /**
      * Set type
      *
-     * @param string $type
+     * @param  string $type
      * @return Token
      */
     public function setType($type)
@@ -108,7 +108,7 @@ class Token
     /**
      * Set data
      *
-     * @param string $data
+     * @param  string $data
      * @return Token
      */
     public function setData($data)
@@ -131,7 +131,7 @@ class Token
     /**
      * Set created
      *
-     * @param \DateTime $created
+     * @param  \DateTime $created
      * @return Token
      */
     public function setCreated($created)
@@ -154,7 +154,7 @@ class Token
     /**
      * Set updated
      *
-     * @param \DateTime $updated
+     * @param  \DateTime $updated
      * @return Token
      */
     public function setUpdated($updated)
@@ -177,7 +177,7 @@ class Token
     /**
      * Set expiration
      *
-     * @param \DateTime $updated
+     * @param  \DateTime $updated
      * @return Token
      */
     public function setExpiration(\DateTime $expiration = null)
@@ -200,7 +200,7 @@ class Token
     /**
      * Set user
      *
-     * @param User $user
+     * @param  User  $user
      * @return Token
      */
     public function setUser(User $user = null)

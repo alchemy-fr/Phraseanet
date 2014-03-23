@@ -411,7 +411,7 @@ class Xmlhttp implements ControllerProviderInterface
         $data = [];
         foreach ($app['repo.presets']->findBy(['user' => $user, 'sbasId' => $sbasId], ['creadted' => 'asc']) as $preset) {
             $presetData = $fields = [];
-            array_walk($preset->getData(), function($field) use ($fields) {
+            array_walk($preset->getData(), function ($field) use ($fields) {
                 $fields[$field['name']][] = $field['value'];
             });
             $presetData['id'] = $preset->getId();
@@ -420,6 +420,7 @@ class Xmlhttp implements ControllerProviderInterface
 
             $data[] = $presetData;
         }
+
         return $app['twig']->render('thesaurus/presets.html.twig', ['presets' => $data]);
     }
 

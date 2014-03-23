@@ -17,7 +17,6 @@ use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Repositories\TokenRepository;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\Query;
 use RandomLib\Generator;
 
 class TokenManipulator implements ManipulatorInterface
@@ -48,10 +47,10 @@ class TokenManipulator implements ManipulatorInterface
     }
 
     /**
-     * @param User|null $user
-     * @param string $type
+     * @param User|null      $user
+     * @param string         $type
      * @param \DateTime|null $expiration
-     * @param mixed|null $data
+     * @param mixed|null     $data
      *
      * @return Token
      */
@@ -84,7 +83,7 @@ class TokenManipulator implements ManipulatorInterface
 
     /**
      * @param Basket $basket
-     * @param User $user
+     * @param User   $user
      *
      * @return Token
      */
@@ -99,7 +98,7 @@ class TokenManipulator implements ManipulatorInterface
 
     /**
      * @param Basket $basket
-     * @param User $user
+     * @param User   $user
      *
      * @return Token
      */
@@ -109,7 +108,7 @@ class TokenManipulator implements ManipulatorInterface
     }
 
     /**
-     * @param User $user
+     * @param User      $user
      * @param FeedEntry $entry
      *
      * @return Token

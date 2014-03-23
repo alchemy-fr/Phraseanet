@@ -8,7 +8,6 @@ use Alchemy\Phrasea\Controller\Api\V1;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Model\Entities\Task;
-use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Guzzle\Common\Exception\GuzzleException;
@@ -1783,9 +1782,9 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $route = '/api/v1/me/';
 
-        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+        $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->assertArrayHasKey('user', $content['response']);
@@ -1795,7 +1794,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     protected function evaluateGoodUserItem($data, User $user)
     {
-        foreach (array(
+        foreach ([
             '@entity@'        => V1::OBJECT_TYPE_USER,
             'id'              => $user->getId(),
             'email'           => $user->getEmail() ?: null,
@@ -1817,7 +1816,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             'created_on'      => $user->getCreated() ? $user->getCreated()->format(DATE_ATOM) : null,
             'updated_on'      => $user->getUpdated() ? $user->getUpdated()->format(DATE_ATOM) : null,
             'locale'          => $user->getLocale() ?: null,
-        ) as $key => $value) {
+        ] as $key => $value) {
             $this->assertArrayHasKey($key, $data, 'Assert key is present '.$key);
             if ($value) {
                 $this->assertEquals($value, $data[$key], 'Check key '.$key);

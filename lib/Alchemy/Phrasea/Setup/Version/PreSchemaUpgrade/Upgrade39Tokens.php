@@ -12,11 +12,8 @@
 namespace Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Model\Entities\FtpCredential;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\ResultSetMapping;
 

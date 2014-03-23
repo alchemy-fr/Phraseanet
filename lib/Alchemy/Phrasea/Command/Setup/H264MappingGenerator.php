@@ -46,14 +46,14 @@ class H264MappingGenerator extends Command
         $factory = new H264Factory($this->container['monolog'], true, $type, $this->computeMapping($paths));
         $mode = $factory->createMode(true);
 
-        $currentConf = isset($this->container['phraseanet.configuration']['h264-pseudo-streaming']) ? $this->container['phraseanet.configuration']['h264-pseudo-streaming'] : array();
-        $currentMapping = (isset($currentConf['mapping']) && is_array($currentConf['mapping'])) ? $currentConf['mapping'] : array();
+        $currentConf = isset($this->container['phraseanet.configuration']['h264-pseudo-streaming']) ? $this->container['phraseanet.configuration']['h264-pseudo-streaming'] : [];
+        $currentMapping = (isset($currentConf['mapping']) && is_array($currentConf['mapping'])) ? $currentConf['mapping'] : [];
 
-        $conf = array(
+        $conf = [
             'enabled' => $enabled,
             'type' => $type,
             'mapping' => array_replace_recursive($mode->getMapping(), $currentMapping),
-        );
+        ];
 
         if ($input->getOption('write')) {
             $output->write("Writing configuration ...");
@@ -64,7 +64,7 @@ class H264MappingGenerator extends Command
         } else {
             $output->writeln("Configuration will <info>not</info> be written, use <info>--write</info> option to write it");
             $output->writeln("");
-            $output->writeln(Yaml::dump(array('h264-pseudo-streaming' => $conf), 4));
+            $output->writeln(Yaml::dump(['h264-pseudo-streaming' => $conf], 4));
         }
 
         return 0;
@@ -74,7 +74,7 @@ class H264MappingGenerator extends Command
     {
         $paths = array_unique($paths);
 
-        $ret = array();
+        $ret = [];
 
         foreach ($paths as $path) {
             $ret[$path] = $this->pathsToConf($path);
@@ -88,12 +88,12 @@ class H264MappingGenerator extends Command
         static $n = 0;
         $n++;
 
-        return array('mount-point' => 'mp4-videos-'.$n, 'directory' => $path, 'passphrase' => \random::generatePassword(32));
+        return ['mount-point' => 'mp4-videos-'.$n, 'directory' => $path, 'passphrase' => \random::generatePassword(32)];
     }
 
     private function extractPath(\appbox $appbox)
     {
-        $paths = array();
+        $paths = [];
 
         foreach ($appbox->get_databoxes() as $databox) {
             foreach ($databox->get_subdef_structure() as $group => $subdefs) {

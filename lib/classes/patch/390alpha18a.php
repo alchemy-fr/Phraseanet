@@ -10,8 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Model\Entities\Preset;
-use Gedmo\Timestampable\TimestampableListener;
 
 class patch_390alpha18a extends patchAbstract
 {

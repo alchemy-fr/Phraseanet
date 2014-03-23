@@ -19,7 +19,7 @@ class TokenMigration extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
-        
+
         $this->addSql("CREATE TABLE Tokens (value VARCHAR(16) NOT NULL, user_id INT DEFAULT NULL, type VARCHAR(32) NOT NULL, data LONGTEXT DEFAULT NULL, created DATETIME NOT NULL, updated DATETIME NOT NULL, expiration DATETIME DEFAULT NULL, INDEX IDX_ADF614B8A76ED395 (user_id), PRIMARY KEY(value)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB");
         $this->addSql("ALTER TABLE Tokens ADD CONSTRAINT FK_ADF614B8A76ED395 FOREIGN KEY (user_id) REFERENCES Users (id)");
     }
@@ -28,7 +28,7 @@ class TokenMigration extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
-        
+
         $this->addSql("DROP TABLE Tokens");
     }
 }

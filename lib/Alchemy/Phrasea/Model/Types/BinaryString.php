@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Model\Types;
 
-use Alchemy\Phrasea\Exception\RuntimeException;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 

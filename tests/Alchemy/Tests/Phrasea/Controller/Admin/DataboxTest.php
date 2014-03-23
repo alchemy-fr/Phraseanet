@@ -25,6 +25,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
     {
         if (!self::$createdCollections) {
             parent::tearDown();
+
             return;
         }
 

@@ -6,7 +6,6 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Registration;
 use Alchemy\Phrasea\Model\Entities\User;
 use RandomLib\Factory;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 {

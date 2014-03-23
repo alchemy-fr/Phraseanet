@@ -31,7 +31,7 @@ class ReconnectableConnection implements ConnectionInterface
     /**
      * {@inheritdoc}
      */
-    function prepare($prepareString)
+    public function prepare($prepareString)
     {
         return $this->tryMethod(__FUNCTION__, func_get_args());
     }
@@ -39,7 +39,7 @@ class ReconnectableConnection implements ConnectionInterface
     /**
      * {@inheritdoc}
      */
-    function query()
+    public function query()
     {
         return $this->tryMethod(__FUNCTION__, func_get_args());
     }
@@ -47,7 +47,7 @@ class ReconnectableConnection implements ConnectionInterface
     /**
      * {@inheritdoc}
      */
-    function quote($input, $type=\PDO::PARAM_STR)
+    public function quote($input, $type=\PDO::PARAM_STR)
     {
         return $this->tryMethod(__FUNCTION__, func_get_args());
     }
@@ -55,7 +55,7 @@ class ReconnectableConnection implements ConnectionInterface
     /**
      * {@inheritdoc}
      */
-    function exec($statement)
+    public function exec($statement)
     {
         return $this->tryMethod(__FUNCTION__, func_get_args());
     }
@@ -63,7 +63,7 @@ class ReconnectableConnection implements ConnectionInterface
     /**
      * {@inheritdoc}
      */
-    function lastInsertId($name = null)
+    public function lastInsertId($name = null)
     {
         return $this->tryMethod(__FUNCTION__, func_get_args());
     }
@@ -71,7 +71,7 @@ class ReconnectableConnection implements ConnectionInterface
     /**
      * {@inheritdoc}
      */
-    function beginTransaction()
+    public function beginTransaction()
     {
         return $this->tryMethod(__FUNCTION__, func_get_args());
     }
@@ -79,7 +79,7 @@ class ReconnectableConnection implements ConnectionInterface
     /**
      * {@inheritdoc}
      */
-    function commit()
+    public function commit()
     {
         return $this->tryMethod(__FUNCTION__, func_get_args());
     }
@@ -87,7 +87,7 @@ class ReconnectableConnection implements ConnectionInterface
     /**
      * {@inheritdoc}
      */
-    function rollBack()
+    public function rollBack()
     {
         return $this->tryMethod(__FUNCTION__, func_get_args());
     }
@@ -95,7 +95,7 @@ class ReconnectableConnection implements ConnectionInterface
     /**
      * {@inheritdoc}
      */
-    function errorCode()
+    public function errorCode()
     {
         return $this->tryMethod(__FUNCTION__, func_get_args());
     }
@@ -103,7 +103,7 @@ class ReconnectableConnection implements ConnectionInterface
     /**
      * {@inheritdoc}
      */
-    function errorInfo()
+    public function errorInfo()
     {
         return $this->tryMethod(__FUNCTION__, func_get_args());
     }

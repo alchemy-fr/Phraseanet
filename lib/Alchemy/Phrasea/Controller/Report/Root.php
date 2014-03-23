@@ -82,29 +82,29 @@ class Root implements ControllerProviderInterface
 
             $dashboard->execute();
 
-            return $app->json(array('html' => $app['twig']->render('report/ajax_dashboard_content_child.html.twig', array(
+            return $app->json(['html' => $app['twig']->render('report/ajax_dashboard_content_child.html.twig', [
                 'dashboard' => $dashboard
-            ))));
+            ])]);
         }
 
-        $granted = array();
+        $granted = [];
 
-        foreach($app['acl']->get($app['authentication']->getUser())->get_granted_base(array('canreport')) as $collection) {
+        foreach ($app['acl']->get($app['authentication']->getUser())->get_granted_base(['canreport']) as $collection) {
             if (!isset($granted[$collection->get_sbas_id()])) {
-                $granted[$collection->get_sbas_id()] = array(
+                $granted[$collection->get_sbas_id()] = [
                     'id' => $collection->get_sbas_id(),
                     'name' => $collection->get_databox()->get_viewname(),
-                    'collections' => array()
-                );
+                    'collections' => []
+                ];
             }
-            $granted[$collection->get_sbas_id()]['collections'][] = array(
+            $granted[$collection->get_sbas_id()]['collections'][] = [
                 'id' => $collection->get_coll_id(),
                 'base_id' => $collection->get_base_id(),
                 'name' => $collection->get_name()
-            );
+            ];
         }
 
-        return $app['twig']->render('report/report_layout_child.html.twig', array(
+        return $app['twig']->render('report/report_layout_child.html.twig', [
             'ajax_dash'     => true,
             'dashboard'     => null,
             'granted_bases' => $granted,
@@ -115,7 +115,7 @@ class Root implements ControllerProviderInterface
             'g_anal'        => $app['conf']->get(['registry', 'general', 'analytics']),
             'ajax'          => false,
             'ajax_chart'    => false
-        ));
+        ]);
     }
 
     /**

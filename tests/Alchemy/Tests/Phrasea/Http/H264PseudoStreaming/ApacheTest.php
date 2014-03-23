@@ -31,16 +31,16 @@ class ApacheTest extends \PhraseanetTestCase
             touch($file);
         }
 
-        $mapping = array(array(
+        $mapping = [[
                              'directory'   => $dir,
                              'mount-point' => 'mp4-videos',
                              'passphrase'  => '123456',
-                         ));
+                         ]];
 
-        return array(
-            array(array(), null, '/path/to/file'),
-            array($mapping, null, '/path/to/file'),
-            array($mapping, '/^\/mp4-videos\/[a-zA-Z0-9]+\/[0-9a-f]+\/to\/file$/', $file),
-        );
+        return [
+            [[], null, '/path/to/file'],
+            [$mapping, null, '/path/to/file'],
+            [$mapping, '/^\/mp4-videos\/[a-zA-Z0-9]+\/[0-9a-f]+\/to\/file$/', $file],
+        ];
     }
 }

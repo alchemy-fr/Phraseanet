@@ -4,7 +4,6 @@ namespace Alchemy\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Doctrine\ORM\EntityRepository;
 

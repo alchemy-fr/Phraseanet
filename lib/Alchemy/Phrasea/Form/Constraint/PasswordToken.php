@@ -15,7 +15,6 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Validator\Constraint;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PasswordToken extends Constraint
 {

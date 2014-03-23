@@ -23,7 +23,6 @@ use Alchemy\Phrasea\Authentication\Phrasea\NativeAuthentication;
 use Alchemy\Phrasea\Authentication\Phrasea\OldPasswordEncoder;
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
 use Alchemy\Phrasea\Authentication\SuggestionFinder;
-use Alchemy\Phrasea\Authentication\Token\TokenValidator;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Alchemy\Phrasea\Core\Event\Subscriber\PersistentCookieSubscriber;

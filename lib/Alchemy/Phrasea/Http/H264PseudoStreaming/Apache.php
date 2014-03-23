@@ -24,7 +24,7 @@ class Apache extends AbstractServerMode implements H264Interface
      */
     public function setMapping(array $mapping)
     {
-        $final = array();
+        $final = [];
 
         foreach ($mapping as $key => $entry) {
             if (!is_array($entry)) {
@@ -47,11 +47,11 @@ class Apache extends AbstractServerMode implements H264Interface
                 continue;
             }
 
-            $final[$key] = array(
+            $final[$key] = [
                 'directory' => $this->sanitizePath(realpath($entry['directory'])),
                 'mount-point' => $this->sanitizeMountPoint($entry['mount-point']),
                 'passphrase' => trim($entry['passphrase']),
-            );
+            ];
         }
 
         $this->mapping = $final;

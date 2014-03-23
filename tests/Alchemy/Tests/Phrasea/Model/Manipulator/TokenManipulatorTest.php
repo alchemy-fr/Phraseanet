@@ -88,7 +88,7 @@ class TokenManipulatorTest extends \PhraseanetTestCase
 
     public function testCreateDownloadToken()
     {
-        $data = serialize(array('some' => 'data'));
+        $data = serialize(['some' => 'data']);
         $manipulator = new TokenManipulator(self::$DI['app']['EM'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
         $token = $manipulator->createDownloadToken(self::$DI['user'], $data);
 
@@ -100,7 +100,7 @@ class TokenManipulatorTest extends \PhraseanetTestCase
 
     public function testCreateEmailExportToken()
     {
-        $data = serialize(array('some' => 'data'));
+        $data = serialize(['some' => 'data']);
         $manipulator = new TokenManipulator(self::$DI['app']['EM'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
         $token = $manipulator->createEmailExportToken($data);
 

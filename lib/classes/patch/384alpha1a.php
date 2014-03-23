@@ -17,7 +17,7 @@ class patch_384alpha1a implements patchInterface
     private $release = '3.8.4-alpha.1';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -58,11 +58,11 @@ class patch_384alpha1a implements patchInterface
     {
         $config = $app['phraseanet.configuration']->getConfig();
 
-        $config['h264-pseudo-streaming'] = array(
+        $config['h264-pseudo-streaming'] = [
             'enabled' => false,
             'type'    => null,
-            'mapping' => array(),
-        );
+            'mapping' => [],
+        ];
 
         $app['phraseanet.configuration']->setConfig($config);
 

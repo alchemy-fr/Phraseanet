@@ -24,7 +24,7 @@ class Nginx extends AbstractServerMode implements H264Interface
      */
     public function setMapping(array $mapping)
     {
-        $final = array();
+        $final = [];
 
         foreach ($mapping as $key => $entry) {
             if (!is_array($entry)) {
@@ -47,11 +47,11 @@ class Nginx extends AbstractServerMode implements H264Interface
                 continue;
             }
 
-            $final[$key] = array(
+            $final[$key] = [
                 'directory' => $this->sanitizePath(realpath($entry['directory'])),
                 'mount-point' => $this->sanitizeMountPoint($entry['mount-point']),
                 'passphrase' => trim($entry['passphrase']),
-            );
+            ];
         }
 
         $this->mapping = $final;
@@ -107,7 +107,7 @@ class Nginx extends AbstractServerMode implements H264Interface
         $path = $entry['mount-point'].substr($pathfile, strlen($entry['directory']));
         $expire = time() + 3600; // At which point in time the file should expire. time() + x; would be the usual usage.
 
-        $hash = str_replace(array('+', '/', '='), array('-', '_', ''), base64_encode(md5($expire.$path.' '.$entry['passphrase'], true)));
+        $hash = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode(md5($expire.$path.' '.$entry['passphrase'], true)));
 
         return Url::factory($path.'?hash='.$hash.'&expires='.$expire);
     }
