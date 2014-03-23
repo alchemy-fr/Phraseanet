@@ -37,7 +37,7 @@ class CSVFileResponse extends StreamedResponse
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
             $filename,
             // ascii filename fallback
-            preg_replace('/[^(x20-x7F)]*/','?', $filename)
+            false === preg_match('/^[\x20-\x7e]*$/', $filename) ? '' : preg_replace('/[^(x20-x7F)]*$/', '', $filename)
         ));
     }
 }
