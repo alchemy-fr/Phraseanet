@@ -73,7 +73,6 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
      */
     public function rollback(EntityManager $em, \appbox $appbox, Configuration $conf)
     {
-        $this->renameTable($em, 'down');
         // truncate created tables
         $this->emptyTables($em);
         // rollback schema
@@ -124,14 +123,14 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
     private function alterTablesDown(EntityManager $em)
     {
         foreach ([
-            'Baskets'                => "ALTER TABLE Baskets CHANGE user_id usr_id",
-            'LazaretSessions'        => "ALTER TABLE LazaretSessions CHANGE user_id usr_id",
-            'Sessions'               => "ALTER TABLE Sessions CHANGE user_id usr_id",
-            'StoryWZ'                => "ALTER TABLE StoryWZ CHANGE user_id usr_id",
-            'UsrAuthProviders'       => "ALTER TABLE UsrAuthProviders CHANGE user_id usr_id",
-            'UsrListOwners'          => "ALTER TABLE UsrListOwners CHANGE user_id usr_id",
-            'UsrListsContent'        => "ALTER TABLE UsrListsContent CHANGE user_id usr_id",
-            'ValidationParticipants' => "ALTER TABLE ValidationParticipants CHANGE user_id usr_id",
+            'Baskets'                => "ALTER TABLE Baskets CHANGE user_id usr_id INT DEFAULT NULL",
+            'LazaretSessions'        => "ALTER TABLE LazaretSessions CHANGE user_id usr_id INT DEFAULT NULL",
+            'Sessions'               => "ALTER TABLE Sessions CHANGE user_id usr_id INT DEFAULT NULL",
+            'StoryWZ'                => "ALTER TABLE StoryWZ CHANGE user_id usr_id INT DEFAULT NULL",
+            'UsrAuthProviders'       => "ALTER TABLE UsrAuthProviders CHANGE user_id usr_id INT DEFAULT NULL",
+            'UsrListOwners'          => "ALTER TABLE UsrListOwners CHANGE user_id usr_id INT DEFAULT NULL",
+            'UsrListsContent'        => "ALTER TABLE UsrListsContent CHANGE user_id usr_id INT DEFAULT NULL",
+            'ValidationParticipants' => "ALTER TABLE ValidationParticipants CHANGE user_id usr_id INT DEFAULT NULL",
         ] as $table => $sql) {
             if ($this->tableExists($em, $table)) {
                 $em->getConnection()->executeUpdate($sql);

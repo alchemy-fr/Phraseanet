@@ -59,7 +59,7 @@ class patch_390alpha14a extends patchAbstract
         $app['conf']->remove(['main', 'api-timers']);
 
         if ($this->tableHasField($app['EM'], 'api_logs', 'api_log_ressource')) {
-            $sql = 'UPDATE api_logs SET api_log_resource = api_log_ressource';
+            $sql = "ALTER TABLE api_logs CHANGE api_log_ressource api_log_resource varchar(64)";
             $app['phraseanet.appbox']->get_connection()->executeUpdate($sql);
         }
 

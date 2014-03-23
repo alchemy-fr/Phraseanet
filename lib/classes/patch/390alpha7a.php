@@ -55,7 +55,7 @@ class patch_390alpha7a extends patchAbstract
      */
     public function getDoctrineMigrations()
     {
-        return ['feed'];
+        return ['aggregate-token', 'feed'];
     }
 
     /**
@@ -127,7 +127,7 @@ class patch_390alpha7a extends patchAbstract
             $feed->setIsPublic($row['public']);
             $feed->setCreatedOn(new \DateTime($row['created_on']));
             $feed->setUpdatedOn(new \DateTime($row['updated_on']));
-            $feed->setCollection($row['base_id'] ? collection::get_from_base_id($app, $row['base_id']) : null);
+            $feed->setBaseId($row['base_id']);
 
             $fpStmt->execute([':feed_id' => $row['id']]);
             $fpRes = $fpStmt->fetchAll(\PDO::FETCH_ASSOC);

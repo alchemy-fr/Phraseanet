@@ -195,8 +195,10 @@ class patch_390alpha9b extends patchAbstract
             unset($config['main']['languages']);
         }
 
-        $config = array_merge(['servername' => $config['main']['servername']], $config);
-        unset($config['main']['servername']);
+        if (isset($config['main']['servername'])) {
+            $config = array_merge(['servername' => $config['main']['servername']], $config);
+            unset($config['main']['servername']);
+        }
 
         if (isset($config['task-manager'])) {
             $config['main']['task-manager'] = $config['task-manager'];

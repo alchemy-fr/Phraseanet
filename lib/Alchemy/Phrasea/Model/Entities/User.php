@@ -51,7 +51,7 @@ class User
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(type="binary_string", length=128)
      */
     private $login;
 
@@ -61,12 +61,14 @@ class User
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=128, nullable=true)
+     * The password can be null when the user is a template.
+     *
+     * @ORM\Column(type="binary_string", length=128, nullable=true)
      */
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=64, nullable=true)
+     * @ORM\Column(type="binary_string", length=64, nullable=true)
      */
     private $nonce;
 

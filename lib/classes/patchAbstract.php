@@ -11,6 +11,7 @@
 
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\ResultSetMapping;
 
 abstract class patchAbstract implements patchInterface

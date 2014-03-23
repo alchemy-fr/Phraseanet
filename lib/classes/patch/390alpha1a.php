@@ -12,8 +12,10 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\NoResultException;
 use Gedmo\Timestampable\TimestampableListener;
+
 
 class patch_390alpha1a extends patchAbstract
 {
@@ -92,7 +94,9 @@ class patch_390alpha1a extends patchAbstract
             $todo = $stmt->fetch(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
-            $user = $this->loadUser($app['EM'], $row['usr_id']);
+            if (null === $user = $this->loadUser($app['EM'], $row['usr_id'])) {
+                continue;
+            }
 
             try {
                 $basket = $app['EM']->createQuery('SELECT PARTIAL b.{id} FROM Phraseanet:Basket b WHERE b.id = :id')

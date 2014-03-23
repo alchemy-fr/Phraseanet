@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Core;
 
 class Version
 {
-    protected static $number = '3.9.0-alpha.16';
+    protected static $number = '3.9.0-alpha.18';
     protected static $name = 'Epanterias';
 
     public static function getNumber()
