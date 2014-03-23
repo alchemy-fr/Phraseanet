@@ -852,7 +852,7 @@ class Activity implements ControllerProviderInterface
     private function getCSVResponse(Application $app, \module_report $report, $type)
     {
         // set headers
-        $headers = [];
+        $headers = array();
         foreach (array_keys($report->getDisplay()) as $k) {
             $headers[$k] = $k;
         }
