@@ -5,17 +5,16 @@
         <div class="control-group">
             <label for="dmin">{{ "report:: Du (date)" | trans }}</label>
             <div class="controls" style="display:inline-block">
-                <input class= "dmin" name="dmin" type="text" value="{{ dashboard.dmin}}" size="10" style='width:100px'/>
+                <input class= "dmin" name="dmin" type="text" value="{{ "-1 month"|date("Y-m-d") }}" size="10" style='width:100px'/>
             </div>
         </div>
         <div class="control-group">
              <label for="dmax">{{ "report:: Au (date)" | trans }}</label>
             <div class="controls" style="display:inline-block">
-                <input class="dmax" name="dmax" type="text" value="{{dashboard.dmax}}" size="10" style='width:100px'/>
+                <input class="dmax" name="dmax" type="text" value="{{ "now"|date("Y-m-d") }}" size="10" style='width:100px'/>
             </div>
         </div>
     </div>
- {% set all_coll = dashboard.getAllColl() %}
     <div class="form2">
         <div class="form_titre">{{ "report:: 2 - Bases" | trans }}</div>
         <div id="select_one">
@@ -28,14 +27,14 @@
                         {% trans %}Deselect all{% endtrans %}
                     </a>
                 </li>
-                {% for the_base_coll in all_coll %}
-                    <li><label data-group-id="{{ loop.index }}" class="multiselect-group"><b>{{ the_base_coll.name_sbas }}</b></label></li>
-                    {% for a_coll in the_base_coll.sbas_collections %}
+                {% for databox in granted_bases %}
+                    <li><label data-group-id="{{ loop.index }}" class="multiselect-group"><b>{{ databox.name }}</b></label></li>
+                    {% for collection in databox.collections %}
                         <li>
                             <a href="javascript:void(0);">
                                 <label class="checkbox">
-                                    <input name="popbases[]" checked="checked" type="checkbox" class="coll-checkbox checkbox-{{ loop.parent.loop.index }}" value="{{ a_coll.sbas_id}}_{{ a_coll.coll_id }}">
-                                    {{ a_coll.name }}
+                                    <input name="popbases[]" checked="checked" type="checkbox" class="coll-checkbox checkbox-{{ loop.parent.loop.index }}" value="{{ collection.base_id}}_{{ collection.id }}">
+                                    {{ collection.name }}
                                 </label>
                             </a>
                         </li>

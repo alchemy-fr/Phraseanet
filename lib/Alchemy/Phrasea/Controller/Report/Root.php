@@ -68,38 +68,54 @@ class Root implements ControllerProviderInterface
      */
     public function getDashboard(Application $app, Request $request)
     {
-        $dashboard = new \module_report_dashboard($app, $app['authentication']->getUser());
+       if ('json' !== $request->getRequestFormat()) {
+           \Session_Logger::updateClientInfos($app, 4);
 
-        if ('json' !== $request->getRequestFormat()) {
-            \Session_Logger::updateClientInfos($app, 4);
+           $dashboard = new \module_report_dashboard($app, $app['authentication']->getUser());
+
+            $dmin = $request->query->get('dmin');
+            $dmax = $request->query->get('dmax');
+
+            if ($dmin && $dmax) {
+                $dashboard->setDate($dmin, $dmax);
+            }
 
             $dashboard->execute();
 
-            return $app['twig']->render('report/report_layout_child.html.twig', [
-                'ajax_dash'   => true,
-                'dashboard'   => $dashboard,
-                'home_title'  => $app['conf']->get(['registry', 'general', 'title']),
-                'module'      => 'report',
-                'module_name' => 'Report',
-                'anonymous'   => $app['conf']->get(['registry', 'modules', 'anonymous-report']),
-                'g_anal'      => $app['conf']->get(['registry', 'general', 'analytics']),
-                'ajax'        => false,
-                'ajax_chart'  => false
-            ]);
+            return $app->json(array('html' => $app['twig']->render('report/ajax_dashboard_content_child.html.twig', array(
+                'dashboard' => $dashboard
+            ))));
         }
 
-        $dmin = $request->request->get('dmin');
-        $dmax = $request->request->get('dmax');
+        $granted = array();
 
-        if ($dmin && $dmax) {
-            $dashboard->setDate($dmin, $dmax);
+        foreach($app['acl']->get($app['authentication']->getUser())->get_granted_base(array('canreport')) as $collection) {
+            if (!isset($granted[$collection->get_sbas_id()])) {
+                $granted[$collection->get_sbas_id()] = array(
+                    'id' => $collection->get_sbas_id(),
+                    'name' => $collection->get_databox()->get_viewname(),
+                    'collections' => array()
+                );
+            }
+            $granted[$collection->get_sbas_id()]['collections'][] = array(
+                'id' => $collection->get_coll_id(),
+                'base_id' => $collection->get_base_id(),
+                'name' => $collection->get_name()
+            );
         }
 
-        $dashboard->execute();
-
-        return $app->json(['html' => $app['twig']->render('report/ajax_dashboard_content_child.html.twig', [
-            'dashboard' => $dashboard
-        ])]);
+        return $app['twig']->render('report/report_layout_child.html.twig', array(
+            'ajax_dash'     => true,
+            'dashboard'     => null,
+            'granted_bases' => $granted,
+            'home_title'    => $app['phraseanet.registry']->get('GV_homeTitle'),
+            'module'        => 'report',
+            'module_name'   => 'Report',
+            'anonymous'     => $app['phraseanet.registry']->get('GV_anonymousReport'),
+            'g_anal'        => $app['phraseanet.registry']->get('GV_googleAnalytics'),
+            'ajax'          => false,
+            'ajax_chart'    => false
+        ));
     }
 
     /**
@@ -115,15 +131,15 @@ class Root implements ControllerProviderInterface
         $popbases = $request->request->get('popbases', []);
 
         if ('' === $dmin = $request->request->get('dmin', '')) {
-            $dmin = '01-' . date('m') . '-' . date('Y');
+            $dmin = date('Y') . '-' . date('m') . '-01';
         }
 
         if ('' === $dmax = $request->request->get('dmax', '')) {
-            $dmax = date('d') . '-' . date('m') . '-' . date('Y');
+            $dmax = date('Y') . '-' . date('m') . '-' . date('d');
         }
 
-        $dmin = \DateTime::createFromFormat('d-m-Y H:i:s', sprintf('%s 00:00:00', $dmin));
-        $dmax = \DateTime::createFromFormat('d-m-Y H:i:s', sprintf('%s 23:59:59', $dmax));
+        $dmin = \DateTime::createFromFormat('Y-m-d H:i:s', sprintf('%s 00:00:00', $dmin));
+        $dmax = \DateTime::createFromFormat('Y-m-d H:i:s', sprintf('%s 23:59:59', $dmax));
 
         //get user's sbas & collections selection from popbases
         $selection = [];

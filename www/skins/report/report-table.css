@@ -218,6 +218,7 @@ iframe{
 }
 #dash .answers{
 	background-color:#555555;
+    min-height: 400px;
 }
 .spacer{
 	clear:both;
@@ -272,6 +273,9 @@ table.center{
 	margin-left:5px;
 	margin-top:10px;
 	cursor: pointer;
+}
+#dashboard.loading {
+    background:url('dash-ajax-loader.gif') #696969 no-repeat center center;
 }
 #dashboard-table table {
 	font:normal 76%/150% "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
