@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use Alchemy\Phrasea\Core\Response\CSVFileResponse;
 use Alchemy\Phrasea\Helper\User as UserHelper;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -150,8 +151,6 @@ class Users implements ControllerProviderInterface
         })->bind('admin_users_search');
 
         $controllers->post('/search/export/', function () use ($app) {
-            $request = $app['request'];
-
             $users = new UserHelper\Manage($app, $app['request']);
 
             $userTable = array(
@@ -176,7 +175,6 @@ class Users implements ControllerProviderInterface
             );
 
             foreach ($users->export() as $user) {
-                /* @var $user \User_Adapter */
                 $userTable[] = array(
                     $user->get_id(),
                     $user->get_login(),
@@ -197,10 +195,10 @@ class Users implements ControllerProviderInterface
                 );
             }
 
-            $CSVDatas = \format::arr_to_csv($userTable);
-
-            $response = new Response($CSVDatas, 200, array('Content-Type' => 'text/csv'));
-            $response->headers->set('Content-Disposition', 'attachment; filename=export.csv');
+            $filename = sprintf('user_export_%s.csv', date('Ymd'));
+            $response = new CSVFileResponse($filename, function() use ($app, $userTable) {
+                $app['csv.exporter']->export('php://output', $userTable);
+            });
 
             return $response;
         })->bind('admin_users_search_export');
@@ -227,7 +225,7 @@ class Users implements ControllerProviderInterface
             $have_not_right = $request->query->get('have_not_right') ? : array();
             $on_base = $request->query->get('on_base') ? : array();
 
-            $elligible_users = $user_query
+            $eligible_users = $user_query
                 ->on_sbas_where_i_am($app['authentication']->getUser()->ACL(), $rights)
                 ->like(\User_Query::LIKE_EMAIL, $like_value)
                 ->like(\User_Query::LIKE_FIRSTNAME, $like_value)
@@ -242,7 +240,7 @@ class Users implements ControllerProviderInterface
 
             $datas = array();
 
-            foreach ($elligible_users as $user) {
+            foreach ($eligible_users as $user) {
                 $datas[] = array(
                     'email' => $user->get_email() ? : ''
                     , 'login' => $user->get_login() ? : ''
@@ -290,7 +288,7 @@ class Users implements ControllerProviderInterface
             $on_base = $request->request->get('base_id') ? : null;
             $on_sbas = $request->request->get('sbas_id') ? : null;
 
-            $elligible_users = $user_query->on_bases_where_i_am($app['authentication']->getUser()->ACL(), array('canadmin'))
+            $eligible_users = $user_query->on_bases_where_i_am($app['authentication']->getUser()->ACL(), array('canadmin'))
                 ->like($like_field, $like_value)
                 ->on_base_ids($on_base)
                 ->on_sbas_ids($on_sbas);
@@ -299,59 +297,55 @@ class Users implements ControllerProviderInterface
             $buffer = array();
 
             $buffer[] = array(
-                'ID'
-                , 'Login'
-                , _('admin::compte-utilisateur nom')
-                , _('admin::compte-utilisateur prenom')
-                , _('admin::compte-utilisateur email')
-                , 'CreationDate'
-                , 'ModificationDate'
-                , _('admin::compte-utilisateur adresse')
-                , _('admin::compte-utilisateur ville')
-                , _('admin::compte-utilisateur code postal')
-                , _('admin::compte-utilisateur pays')
-                , _('admin::compte-utilisateur telephone')
-                , _('admin::compte-utilisateur fax')
-                , _('admin::compte-utilisateur poste')
-                , _('admin::compte-utilisateur societe')
-                , _('admin::compte-utilisateur activite')
+                'ID',
+                'Login',
+                _('admin::compte-utilisateur nom'),
+                _('admin::compte-utilisateur prenom'),
+                _('admin::compte-utilisateur email'),
+                'CreationDate',
+                'ModificationDate',
+                _('admin::compte-utilisateur adresse'),
+                _('admin::compte-utilisateur ville'),
+                _('admin::compte-utilisateur code postal'),
+                _('admin::compte-utilisateur pays'),
+                _('admin::compte-utilisateur telephone'),
+                _('admin::compte-utilisateur fax'),
+                _('admin::compte-utilisateur poste'),
+                _('admin::compte-utilisateur societe'),
+                _('admin::compte-utilisateur activite'),
             );
             do {
-                $elligible_users->limit($offset, 20);
+                $eligible_users->limit($offset, 20);
                 $offset += 20;
 
-                $results = $elligible_users->execute()->get_results();
+                $results = $eligible_users->execute()->get_results();
 
                 foreach ($results as $user) {
                     $buffer[] = array(
-                        $user->get_id()
-                        , $user->get_login()
-                        , $user->get_lastname()
-                        , $user->get_firstname()
-                        , $user->get_email()
-                        , $app['date-formatter']->format_mysql($user->get_creation_date())
-                        , $app['date-formatter']->format_mysql($user->get_modification_date())
-                        , $user->get_address()
-                        , $user->get_city()
-                        , $user->get_zipcode()
-                        , $user->get_country()
-                        , $user->get_tel()
-                        , $user->get_fax()
-                        , $user->get_job()
-                        , $user->get_company()
-                        , $user->get_position()
+                        $user->get_id(),
+                        $user->get_login(),
+                        $user->get_lastname(),
+                        $user->get_firstname(),
+                        $user->get_email(),
+                        $app['date-formatter']->format_mysql($user->get_creation_date()),
+                        $app['date-formatter']->format_mysql($user->get_modification_date()),
+                        $user->get_address(),
+                        $user->get_city(),
+                        $user->get_zipcode(),
+                        $user->get_country(),
+                        $user->get_tel(),
+                        $user->get_fax(),
+                        $user->get_job(),
+                        $user->get_company(),
+                        $user->get_position(),
                     );
                 }
             } while (count($results) > 0);
 
-            $out = \format::arr_to_csv($buffer);
-
-            $response = new Response($out, 200, array(
-                'Content-type'        => 'text/csv',
-                'Content-Disposition' => 'attachment; filename=export.csv',
-            ));
-
-            $response->setCharset('UTF-8');
+            $filename = sprintf('user_export_%s.csv', date('Ymd'));
+            $response = new CSVFileResponse($filename, function() use ($app, $buffer) {
+                $app['csv.exporter']->export('php://output', $buffer);
+            });
 
             return $response;
         })->bind('admin_users_export_csv');
@@ -592,6 +586,7 @@ class Users implements ControllerProviderInterface
         })->bind('users_display_import_file');
 
         $controllers->post('/import/file/', function (Application $app, Request $request) {
+
             if ((null === $file = $request->files->get('files')) || !$file->isValid()) {
                 return $app->redirectPath('users_display_import_file', array('error' => 'file-invalid'));
             }
@@ -605,7 +600,11 @@ class Users implements ControllerProviderInterface
             );
             $nbUsrToAdd = 0;
 
-            $lines = \format::csv_to_arr($file->getPathname());
+            $lines = array();
+            $app['csv.interpreter']->addObserver(function(array $row) use (&$lines) {
+                $lines[] = $row;
+            });
+            $app['csv.lexer']->parse($file->getPathname(), $app['csv.interpreter']);
 
             $roughColumns = array_shift($lines);
 
