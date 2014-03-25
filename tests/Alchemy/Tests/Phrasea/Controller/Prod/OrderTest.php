@@ -2,6 +2,8 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Core\PhraseaEvents;
+use Symfony\Component\EventDispatcher\Event;
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
 
@@ -20,22 +22,24 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testCreateOrder()
     {
-        $eventManagerStub = $this->getMockBuilder('\eventsmanager_broker')
-                     ->disableOriginalConstructor()
-                     ->getMock();
-
-        $eventManagerStub->expects($this->once())
-             ->method('trigger')
-             ->with($this->equalTo('__NEW_ORDER__'), $this->isType('array'))
-             ->will($this->returnValue(null));
-
-        self::$DI['app']['events-manager'] = $eventManagerStub;
+        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $triggered = false;
+        self::$DI['app']['dispatcher']->addListener(PhraseaEvents::ORDER_CREATE, function (Event $event) use (&$triggered) {
+            $triggered = true;
+        });
         self::$DI['client']->request('POST', '/prod/order/', [
             'lst'      => self::$DI['record_1']->get_serialize_key(),
             'deadline' => '+10 minutes'
         ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+        $url = parse_url(self::$DI['client']->getResponse()->headers->get('location'));
+        $var = [];
+        parse_str($url['query'], $var);
+        $this->assertTrue(!!$var['success']);
+        $this->assertTrue($triggered);
     }
 
     /**
@@ -43,16 +47,13 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testCreateOrderJson()
     {
-        $eventManagerStub = $this->getMockBuilder('\eventsmanager_broker')
-                     ->disableOriginalConstructor()
-                     ->getMock();
-
-        $eventManagerStub->expects($this->once())
-             ->method('trigger')
-             ->with($this->equalTo('__NEW_ORDER__'), $this->isType('array'))
-             ->will($this->returnValue(null));
-
-        self::$DI['app']['events-manager'] = $eventManagerStub;
+        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $triggered = false;
+        self::$DI['app']['dispatcher']->addListener(PhraseaEvents::ORDER_CREATE, function (Event $event) use (&$triggered) {
+            $triggered = true;
+        });
 
         $this->XMLHTTPRequest('POST', '/prod/order/', [
             'lst'      => self::$DI['record_1']->get_serialize_key(),
@@ -61,6 +62,7 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
+        $this->assertTrue($triggered);
         $this->assertEquals('application/json', $response->headers->get('Content-Type'));
         $content = json_decode($response->getContent());
         $this->assertTrue(is_object($content));
@@ -158,8 +160,9 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request('POST', '/prod/order/' . $order->getId() . '/deny/', ['elements' => $parameters]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $url = parse_url(self::$DI['client']->getResponse()->headers->get('location'));
-        parse_str($url['query']);
-        $this->assertTrue( ! ! $success);
+        $var = [];
+        parse_str($url['query'], $var);
+        $this->assertTrue( ! ! $var['success']);
     }
 
     /**

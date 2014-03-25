@@ -2,6 +2,10 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\PhraseaEvents;
+use Symfony\Component\EventDispatcher\Event;
+
 class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
@@ -11,17 +15,10 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testDownloadRecords()
     {
-        $eventManagerStub = $this->getMockBuilder('\eventsmanager_broker')
-                     ->disableOriginalConstructor()
-                     ->getMock();
-
-        $eventManagerStub->expects($this->once())
-             ->method('trigger')
-             ->with($this->equalTo('__DOWNLOAD__'), $this->isType('array'))
-             ->will($this->returnValue(null));
-
-        self::$DI['app']['events-manager'] = $eventManagerStub;
-
+        $triggered = false;
+        self::$DI['app']['dispatcher']->addListener(PhraseaEvents::EXPORT_CREATE, function (Event $event) use (&$triggered) {
+            $triggered = true;
+        });
         self::$DI['client']->request('POST', '/prod/download/', [
             'lst'               => self::$DI['record_1']->get_serialize_key(),
             'ssttid'            => '',
@@ -33,6 +30,7 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertRegExp('#/download/[a-zA-Z0-9]{8,32}/#', $response->headers->get('location'));
+        $this->assertTrue($triggered);
         unset($response, $eventManagerStub);
     }
 
@@ -41,17 +39,10 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testDownloadRestricted()
     {
-        $eventManagerStub = $this->getMockBuilder('\eventsmanager_broker')
-                     ->disableOriginalConstructor()
-                     ->getMock();
-
-        $eventManagerStub->expects($this->once())
-             ->method('trigger')
-             ->with($this->equalTo('__DOWNLOAD__'), $this->isType('array'))
-             ->will($this->returnValue(null));
-
-        self::$DI['app']['events-manager'] = $eventManagerStub;
-
+        $triggered = false;
+        self::$DI['app']['dispatcher']->addListener(PhraseaEvents::EXPORT_CREATE, function (Event $event) use (&$triggered) {
+            $triggered = true;
+        });
         self::$DI['app']['authentication']->setUser(self::$DI['user']);
 
         $stubbedACL = $this->getMockBuilder('\ACL')
@@ -92,6 +83,7 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
+        $this->assertTrue($triggered);
         $this->assertRegExp('#/download/[a-zA-Z0-9]{8,32}/#', $response->headers->get('location'));
         unset($response, $eventManagerStub);
     }
@@ -103,16 +95,10 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 4);
 
-        $eventManagerStub = $this->getMockBuilder('\eventsmanager_broker')
-                     ->disableOriginalConstructor()
-                     ->getMock();
-
-        $eventManagerStub->expects($this->once())
-             ->method('trigger')
-             ->with($this->equalTo('__DOWNLOAD__'), $this->isType('array'))
-             ->will($this->returnValue(null));
-
-        self::$DI['app']['events-manager'] = $eventManagerStub;
+        $triggered = false;
+        self::$DI['app']['dispatcher']->addListener(PhraseaEvents::EXPORT_CREATE, function (Event $event) use (&$triggered) {
+            $triggered = true;
+        });
 
         self::$DI['client']->request('POST', '/prod/download/', [
             'lst'               => '',
@@ -124,6 +110,7 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
+        $this->assertTrue($triggered);
         $this->assertRegExp('#/download/[a-zA-Z0-9]{8,32}/#', $response->headers->get('location'));
         unset($response, $eventManagerStub);
     }
@@ -135,16 +122,10 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 4);
 
-        $eventManagerStub = $this->getMockBuilder('\eventsmanager_broker')
-                     ->disableOriginalConstructor()
-                     ->getMock();
-
-        $eventManagerStub->expects($this->once())
-             ->method('trigger')
-             ->with($this->equalTo('__DOWNLOAD__'), $this->isType('array'))
-             ->will($this->returnValue(null));
-
-        self::$DI['app']['events-manager'] = $eventManagerStub;
+        $triggered = false;
+        self::$DI['app']['dispatcher']->addListener(PhraseaEvents::EXPORT_CREATE, function (Event $event) use (&$triggered) {
+            $triggered = true;
+        });
 
         self::$DI['client']->request('POST', '/prod/download/', [
             'lst'               => '',
@@ -156,6 +137,7 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
+        $this->assertTrue($triggered);
         $this->assertRegExp('#/download/[a-zA-Z0-9]{8,32}/#', $response->headers->get('location'));
         unset($response, $eventManagerStub);
     }

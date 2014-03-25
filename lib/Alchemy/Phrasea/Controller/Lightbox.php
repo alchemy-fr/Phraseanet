@@ -464,7 +464,7 @@ class Lightbox implements ControllerProviderInterface
 
                 $to = $basket->getValidation()->getInitiator($app)->getId();
 
-                $app['dispatcher']->dispatch(PhraseaEvents::VALIDATION_DONE, new ValidationEvent($app['authentication']->getUser(), $basket, $url));
+                $app['dispatcher']->dispatch(PhraseaEvents::VALIDATION_DONE, new ValidationEvent($participant, $basket, $url));
 
                 $participant->setIsConfirmed(true);
 

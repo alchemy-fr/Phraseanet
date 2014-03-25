@@ -37,7 +37,7 @@ class ValidationSubscriber extends AbstractNotificationSubscriber
         if ($this->shouldSendNotificationFor($event->getParticipant()->getUser(), 'eventsmanager_notify_validate')) {
             try {
                 $user_from = $event->getBasket()->getValidation()->getInitiator();
-                $user_to = $event->getParticipant()->getUser()->getId();
+                $user_to = $event->getParticipant()->getUser();
 
                 $basket = $event->getBasket();
                 $title = $basket->getName();
