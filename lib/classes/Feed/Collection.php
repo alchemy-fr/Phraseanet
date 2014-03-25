@@ -52,24 +52,33 @@ class Feed_Collection implements Feed_CollectionInterface, cache_cacheableInterf
      *
      * @param  Application     $app
      * @param  User_Adapter    $user
+     * @param  array           $reduce
+     *
      * @return Feed_Collection
      */
-    public static function load_all(Application $app, User_Adapter $user)
+    public static function load(Application $app, User_Adapter $user, $reduce = array())
     {
         $base_ids = array_keys($user->ACL()->get_granted_base());
 
-        $sql = 'SELECT id FROM feeds
-            WHERE base_id IS NULL ';
-
-        if (count($base_ids) > 0) {
-            $sql .= ' OR base_id
-                IN (' . implode(', ', $base_ids) . ') ';
+        $chunkSql = array('SELECT id FROM feeds WHERE');
+        // restrict to given feed ids
+        if (count($reduce) > 0) {
+            $chunkSql[] = sprintf('(id IN (%s)) AND', implode(', ', $reduce));
+        } else {
+            $chunkSql[] =  '1 AND';
         }
 
-        $sql .= ' OR public = "1"
-            ORDER BY created_on DESC';
+        // restrict to granted collection
+        if (count($base_ids) > 0) {
+            $chunkSql[] = sprintf('((base_id IN (%s)) OR ', implode(', ', $base_ids));
+        } else {
+            $chunkSql[] = '(';
+        }
+        $chunkSql[] = '(public = "1") OR (base_id IS NULL)';
+        $chunkSql[] = ')';
+        $chunkSql[] = 'ORDER BY created_on DESC';
 
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare(implode(' ', $chunkSql));
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -77,7 +86,7 @@ class Feed_Collection implements Feed_CollectionInterface, cache_cacheableInterf
         $feeds = array();
 
         foreach ($rs as $row) {
-            $feeds[] = new Feed_Adapter($app, $row['id']);
+            $feeds[$row['id']] = new Feed_Adapter($app, $row['id']);
         }
 
         return new self($app, $feeds);

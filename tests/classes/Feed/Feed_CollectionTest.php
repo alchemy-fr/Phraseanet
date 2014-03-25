@@ -23,9 +23,9 @@ class Feed_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
         parent::tearDownAfterClass();
     }
 
-    public function testLoad_all()
+    public function testload()
     {
-        $coll = Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
+        $coll = Feed_Collection::load(self::$DI['app'], self::$DI['user']);
 
         foreach ($coll->get_feeds() as $feed) {
             $this->assertInstanceOf('Feed_Adapter', $feed);

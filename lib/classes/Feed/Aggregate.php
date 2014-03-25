@@ -212,11 +212,12 @@ class Feed_Aggregate extends Feed_Abstract implements Feed_Interface
      *
      * @param  Application    $app
      * @param  User_Adapter   $user
+     * @param  array          $reduce
      * @return Feed_Aggregate
      */
-    public static function load_with_user(Application $app, User_Adapter $user)
+    public static function load_with_user(Application $app, User_Adapter $user, $reduce = array())
     {
-        $feeds = Feed_Collection::load_all($app, $user);
+        $feeds = Feed_Collection::load($app, $user, $reduce);
 
         return new self($app, $feeds->get_feeds());
     }

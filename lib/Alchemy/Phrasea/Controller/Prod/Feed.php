@@ -37,7 +37,7 @@ class Feed implements ControllerProviderInterface
          * I got a selection of docs, which publications are available forthese docs ?
          */
         $controllers->post('/requestavailable/', function (Application $app, Request $request) {
-            $feeds = \Feed_Collection::load_all($app, $app['authentication']->getUser());
+            $feeds = \Feed_Collection::load($app, $app['authentication']->getUser());
             $publishing = RecordsRequest::fromRequest($app, $request, true, array(), array('bas_chupub'));
 
             return $app['twig']->render('prod/actions/publish/publish.html.twig', array('publishing' => $publishing, 'feeds'      => $feeds));
@@ -82,7 +82,7 @@ class Feed implements ControllerProviderInterface
                 throw new AccessDeniedHttpException();
             }
 
-            $feeds = \Feed_Collection::load_all($app, $app['authentication']->getUser());
+            $feeds = \Feed_Collection::load($app, $app['authentication']->getUser());
 
             $datas = $app['twig']->render('prod/actions/publish/publish_edit.html.twig', array('entry' => $entry, 'feeds' => $feeds));
 
@@ -205,7 +205,7 @@ class Feed implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page > 0 ? $page : 1;
 
-            $feeds = \Feed_Collection::load_all($app, $app['authentication']->getUser());
+            $feeds = \Feed_Collection::load($app, $app['authentication']->getUser());
 
             $datas = $app['twig']->render('prod/feeds/feeds.html.twig'
                 , array(
@@ -223,7 +223,7 @@ class Feed implements ControllerProviderInterface
             $page = $page > 0 ? $page : 1;
 
             $feed = \Feed_Adapter::load_with_user($app, $app['authentication']->getUser(), $id);
-            $feeds = \Feed_Collection::load_all($app, $app['authentication']->getUser());
+            $feeds = \Feed_Collection::load($app, $app['authentication']->getUser());
 
             $datas = $app['twig']->render('prod/feeds/feeds.html.twig', array('feed'  => $feed, 'feeds' => $feeds, 'page'  => $page));
 
@@ -235,7 +235,7 @@ class Feed implements ControllerProviderInterface
         $controllers->get('/subscribe/aggregated/', function (Application $app, Request $request) {
             $renew = ($request->query->get('renew') === 'true');
 
-            $feeds = \Feed_Collection::load_all($app, $app['authentication']->getUser());
+            $feeds = \Feed_Collection::load($app, $app['authentication']->getUser());
 
             $output = array(
                 'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')

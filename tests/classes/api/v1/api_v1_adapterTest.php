@@ -659,14 +659,6 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $feed->delete();
     }
 
-    public function testRemove_publications()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
     public function testGet_publication()
     {
         self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
@@ -683,7 +675,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $feed_publisher = Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], $feed, self::$DI['user']);
         $feed_entry = Feed_Entry_Adapter::create(self::$DI['app'], $feed, $feed_publisher, "coucou", "hello", "me", "my@email.com");
         $feed_entry_item = Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $feed_entry, self::$DI['record_1']);
-        $coll = Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
+        $coll = Feed_Collection::load(self::$DI['app'], self::$DI['user']);
         foreach ($coll->get_feeds() as $feed) {
             $result = $this->object->get_publication($request, $feed->get_id(), self::$DI['user']);
             $this->checkResponseField($result, "feed", 'array');

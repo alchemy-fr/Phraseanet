@@ -38,7 +38,7 @@ class Publications implements ControllerProviderInterface
 
         $controllers->get('/list/', function (PhraseaApplication $app) {
 
-            $feeds = \Feed_Collection::load_all(
+            $feeds = \Feed_Collection::load(
                     $app, $app['authentication']->getUser()
             );
 

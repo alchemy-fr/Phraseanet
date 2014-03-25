@@ -133,7 +133,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
             }
 
             self::$public_feeds = \Feed_Collection::load_public_feeds(self::$DI['app']);
-            self::$private_feeds = \Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
+            self::$private_feeds = \Feed_Collection::load(self::$DI['app'], self::$DI['user']);
             self::$DI['app']['session']->clear();
 
             self::$initialized = true;
