@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Controller\Report;
 
+use Alchemy\Phrasea\Core\Response\CSVFileResponse;
+use Goodby\CSV\Export\Standard\Collection\CallbackCollection;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -183,13 +185,7 @@ class Informations implements ControllerProviderInterface
             if ($request->request->get('printcsv') == 'on') {
                 $report->setPrettyString(false);
 
-                try {
-                    $csv = \format::arr_to_csv($report->getResult(), $report->getDisplay());
-                } catch (\Exception $e) {
-                    $csv = '';
-                }
-
-                return $app->json(['rs' => $csv]);
+                return $this->getCSVResponse($app, $report, 'info_user');
             }
 
             $html = $app['twig']->render('report/ajax_data_content.html.twig', [
@@ -432,13 +428,7 @@ class Informations implements ControllerProviderInterface
             if ($request->request->get('printcsv') == 'on') {
                 $download->setPrettyString(false);
 
-                try {
-                    $csv = \format::arr_to_csv($download->getResult(), $download->getDisplay());
-                } catch (\Exception $e) {
-                    $csv = '';
-                }
-
-                return $app->json(['rs' => $csv]);
+                return $this->getCSVResponse($app, $download, 'info_document');
             }
 
             $html .= $app['twig']->render('report/ajax_data_content.html.twig', [
@@ -481,15 +471,8 @@ class Informations implements ControllerProviderInterface
             $reportArray = $info->buildTabGrpInfo(false, [],  $request->request->get('user'), $conf, false);
 
             if ($request->request->get('printcsv') == 'on' && isset($download)) {
-                $download->setPrettyString(false);
 
-                try {
-                    $csv = \format::arr_to_csv($download->getResult(), $download->getDisplay());
-                } catch (\Exception $e) {
-                    $csv = '';
-                }
-
-                return $app->json(['rs' => $csv]);
+                return $this->getCSVResponse($app, $info, 'info_user');
             }
 
             $html .= $app['twig']->render('report/ajax_data_content.html.twig', [
@@ -512,6 +495,41 @@ class Informations implements ControllerProviderInterface
             'rs'          => $html,
             'display_nav' => false,
             'title'       => $title
-        ]);
+        ));
+    }
+
+    /**
+     * Prefix the method to call with the controller class name
+     *
+     * @param  string $method The method to call
+     * @return string
+     */
+    private function call($method)
+    {
+        return sprintf('%s::%s', __CLASS__, $method);
+    }
+
+    private function getCSVResponse(Application $app, \module_report $report, $type)
+    {
+        // set headers
+        $headers = array();
+        foreach (array_keys($report->getDisplay()) as $k) {
+            $headers[$k] = $k;
+        }
+        // set headers as first row
+        $result = $report->getResult();
+        array_unshift($result, $headers);
+
+        $collection = new CallbackCollection($result, function($row) use ($report) {
+            // restrict fields to the displayed ones
+            return array_map('strip_tags', array_intersect_key($row, $report->getDisplay()));
+        });
+
+        $filename = sprintf('report_export_%s_%s.csv', $type, date('Ymd'));
+        $response = new CSVFileResponse($filename, function() use ($app, $collection) {
+            $app['csv.exporter']->export('php://output', $collection);
+        });
+
+        return $response;
     }
 }

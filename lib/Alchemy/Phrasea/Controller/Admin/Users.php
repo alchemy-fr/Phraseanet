@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use Alchemy\Phrasea\Core\Response\CSVFileResponse;
 use Alchemy\Phrasea\Helper\User as UserHelper;
 use Alchemy\Phrasea\Model\Entities\FtpCredential;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -148,8 +149,6 @@ class Users implements ControllerProviderInterface
         })->bind('admin_users_search');
 
         $controllers->post('/search/export/', function () use ($app) {
-            $request = $app['request'];
-
             $users = new UserHelper\Manage($app, $app['request']);
 
             $userTable = [
@@ -194,10 +193,10 @@ class Users implements ControllerProviderInterface
                 ];
             }
 
-            $CSVDatas = \format::arr_to_csv($userTable);
-
-            $response = new Response($CSVDatas, 200, ['Content-Type' => 'text/csv']);
-            $response->headers->set('Content-Disposition', 'attachment; filename=export.csv');
+            $filename = sprintf('user_export_%s.csv', date('Ymd'));
+            $response = new CSVFileResponse($filename, function() use ($app, $userTable) {
+                $app['csv.exporter']->export('php://output', $userTable);
+            });
 
             return $response;
         })->bind('admin_users_search_export');
@@ -224,7 +223,7 @@ class Users implements ControllerProviderInterface
             $have_not_right = $request->query->get('have_not_right') ? : [];
             $on_base = $request->query->get('on_base') ? : [];
 
-            $elligible_users = $user_query
+            $eligible_users = $user_query
                 ->on_sbas_where_i_am($app['acl']->get($app['authentication']->getUser()), $rights)
                 ->like(\User_Query::LIKE_EMAIL, $like_value)
                 ->like(\User_Query::LIKE_FIRSTNAME, $like_value)
@@ -239,7 +238,7 @@ class Users implements ControllerProviderInterface
 
             $datas = [];
 
-            foreach ($elligible_users as $user) {
+            foreach ($eligible_users as $user) {
                 $datas[] = [
                     'email' => $user->getEmail() ? : '',
                     'login' => $user->getLogin() ? : '',
@@ -287,7 +286,7 @@ class Users implements ControllerProviderInterface
             $on_base = $request->request->get('base_id') ? : null;
             $on_sbas = $request->request->get('sbas_id') ? : null;
 
-            $elligible_users = $user_query->on_bases_where_i_am($app['acl']->get($app['authentication']->getUser()), ['canadmin'])
+            $eligible_users = $user_query->on_bases_where_i_am($app['acl']->get($app['authentication']->getUser()), ['canadmin'])
                 ->like($like_field, $like_value)
                 ->on_base_ids($on_base)
                 ->on_sbas_ids($on_sbas);
@@ -314,10 +313,10 @@ class Users implements ControllerProviderInterface
                 $app->trans('admin::compte-utilisateur activite'),
             ];
             do {
-                $elligible_users->limit($offset, 20);
+                $eligible_users->limit($offset, 20);
                 $offset += 20;
 
-                $results = $elligible_users->execute()->get_results();
+                $results = $eligible_users->execute()->get_results();
 
                 foreach ($results as $user) {
                     $buffer[] = [
@@ -341,14 +340,10 @@ class Users implements ControllerProviderInterface
                 }
             } while (count($results) > 0);
 
-            $out = \format::arr_to_csv($buffer);
-
-            $response = new Response($out, 200, [
-                'Content-type'        => 'text/csv',
-                'Content-Disposition' => 'attachment; filename=export.csv',
-            ]);
-
-            $response->setCharset('UTF-8');
+            $filename = sprintf('user_export_%s.csv', date('Ymd'));
+            $response = new CSVFileResponse($filename, function() use ($app, $buffer) {
+                $app['csv.exporter']->export('php://output', $buffer);
+            });
 
             return $response;
         })->bind('admin_users_export_csv');
@@ -521,6 +516,7 @@ class Users implements ControllerProviderInterface
         })->bind('users_display_import_file');
 
         $controllers->post('/import/file/', function (Application $app, Request $request) {
+
             if ((null === $file = $request->files->get('files')) || !$file->isValid()) {
                 return $app->redirectPath('users_display_import_file', ['error' => 'file-invalid']);
             }
@@ -534,7 +530,11 @@ class Users implements ControllerProviderInterface
             ];
             $nbUsrToAdd = 0;
 
-            $lines = \format::csv_to_arr($file->getPathname());
+            $lines = array();
+            $app['csv.interpreter']->addObserver(function(array $row) use (&$lines) {
+                $lines[] = $row;
+            });
+            $app['csv.lexer']->parse($file->getPathname(), $app['csv.interpreter']);
 
             $roughColumns = array_shift($lines);
 

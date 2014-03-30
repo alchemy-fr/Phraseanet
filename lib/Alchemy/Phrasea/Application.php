@@ -57,7 +57,6 @@ use Alchemy\Phrasea\Controller\Prod\UsrLists;
 use Alchemy\Phrasea\Controller\Prod\WorkZone;
 use Alchemy\Phrasea\Controller\Report\Activity as ReportActivity;
 use Alchemy\Phrasea\Controller\Report\Informations as ReportInformations;
-use Alchemy\Phrasea\Controller\Report\Export as ReportExport;
 use Alchemy\Phrasea\Controller\Report\Root as ReportRoot;
 use Alchemy\Phrasea\Controller\Root\Account;
 use Alchemy\Phrasea\Controller\Root\Developers;
@@ -87,6 +86,7 @@ use Alchemy\Phrasea\Core\Provider\CacheServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CacheConnectionServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
+use Alchemy\Phrasea\Core\Provider\CSVServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConvertersServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FileServeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FeedServiceProvider;
@@ -221,6 +221,7 @@ class Application extends SilexApplication
         $this->register(new ConfigurationServiceProvider());
         $this->register(new ConfigurationTesterServiceProvider);
         $this->register(new ConvertersServiceProvider());
+        $this->register(new CSVServiceProvider());
         $this->register(new RegistrationServiceProvider());
         $this->register(new CacheServiceProvider());
         $this->register(new CacheConnectionServiceProvider());
@@ -880,7 +881,6 @@ class Application extends SilexApplication
         $this->mount('/report/', new ReportRoot());
         $this->mount('/report/activity', new ReportActivity());
         $this->mount('/report/informations', new ReportInformations());
-        $this->mount('/report/export', new ReportExport());
 
         $this->mount('/thesaurus', new Thesaurus());
         $this->mount('/xmlhttp', new ThesaurusXMLHttp());

@@ -18,12 +18,9 @@
                         <a href="#" class="jqprint left"><img  title="{{ 'report :: imprimer le tableau' | trans }}" src="/skins/report/img/print.png"/></a>
                     {% endif %}
                     {% if result.csv %}
-                        <form class="form_csv left" method="POST" action="{{ path('report_export_csv') }}" target="iframe" >
-                            <input type="submit" name ="submit" value=""/>
-                            <input style="display:none;" type="submit"  name="doit"/>
-                            <input type="hidden" name="name" value="{{ result.title }}" size="68"/>
-                            <textarea style="display:none;" name="csv"></textarea>
-                        </form>
+                        <a id="export_csv" class="left" href="#" style="display:inline-block; width: 20px;height:20px;margin-left: 10px;">
+                            <img title="{{ 'CSV export' | trans }}" src="/skins/report/img/csv.gif">
+                        </a>
                     {% endif %}
                 </div>
                 <div class="right">{{ result.periode }}</div>

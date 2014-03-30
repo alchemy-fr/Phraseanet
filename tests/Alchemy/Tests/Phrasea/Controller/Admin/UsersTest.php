@@ -217,7 +217,8 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOK());
         $this->assertEquals("text/csv; charset=UTF-8", $response->headers->get("Content-type"));
-        $this->assertEquals("attachment; filename=export.csv", $response->headers->get("content-disposition"));
+        $date = new \DateTime();
+        $this->assertEquals('attachment; filename="user_export_'.$date->format('Ymd').'.csv"', $response->headers->get("content-disposition"));
     }
 
     public function testRouteThSearch()
@@ -319,7 +320,8 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isOK());
         $this->assertRegexp("#text/csv#", $response->headers->get("content-type"));
         $this->assertRegexp("#charset=UTF-8#", $response->headers->get("content-type"));
-        $this->assertEquals("attachment; filename=export.csv", $response->headers->get("content-disposition"));
+        $date = new \DateTime();
+        $this->assertEquals('attachment; filename="user_export_'.$date->format('Ymd').'.csv"', $response->headers->get("content-disposition"));
     }
 
     public function testResetRights()

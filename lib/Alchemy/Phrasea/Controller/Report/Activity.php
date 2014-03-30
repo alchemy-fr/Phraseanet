@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Controller\Report;
 
+use Alchemy\Phrasea\Core\Response\CSVFileResponse;
+use Goodby\CSV\Export\Standard\Collection\CallbackCollection;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -100,29 +102,23 @@ class Activity implements ControllerProviderInterface
             $activity->setHasLimit(false);
             $activity->getConnexionBase(false, $request->request->get('on', 'user'));
 
-            try {
-                $csv = \format::arr_to_csv($activity->getResult(), $activity->getDisplay());
-            } catch (\Exception $e) {
-                $csv = '';
-            }
-
-            return $app->json(['rs' => $csv]);
-        } else {
-            $report = $activity->getConnexionBase(false, $request->request->get('on', 'user'));
-
-            return $app->json([
-                'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
-                    'result'      => isset($report['report']) ? $report['report'] : $report,
-                    'is_infouser' => false,
-                    'is_nav'      => false,
-                    'is_groupby'  => false,
-                    'is_plot'     => false,
-                    'is_doc'      => false
-                ]),
-                'display_nav' => false,
-                'title'       => false
-            ]);
+            return $this->getCSVResponse($app, $activity, 'activity_connection_base');
         }
+
+        $report = $activity->getConnexionBase(false, $request->request->get('on', 'user'));
+
+        return $app->json([
+            'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
+                'result'      => isset($report['report']) ? $report['report'] : $report,
+                'is_infouser' => false,
+                'is_nav'      => false,
+                'is_groupby'  => false,
+                'is_plot'     => false,
+                'is_doc'      => false
+            ]),
+            'display_nav' => false,
+            'title'       => false
+        ]);
     }
 
     /**
@@ -166,27 +162,21 @@ class Activity implements ControllerProviderInterface
         if ($request->request->get('printcsv') == 'on') {
             $activity->setHasLimit(false);
 
-            try {
-                $csv = \format::arr_to_csv($activity->getResult(), $activity->getDisplay());
-            } catch (\Exception $e) {
-                $csv = '';
-            }
-
-            return $app->json(['rs' => $csv]);
-        } else {
-            return $app->json([
-                'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
-                    'result'      => isset($report['report']) ? $report['report'] : $report,
-                    'is_infouser' => false,
-                    'is_nav'      => false,
-                    'is_groupby'  => false,
-                    'is_plot'     => false,
-                    'is_doc'      => false
-                ]),
-                'display_nav' => false,
-                'title'       => false
-            ]);
+            return $this->getCSVResponse($app, $activity, 'activity_detail_download');
         }
+
+        return $app->json([
+            'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
+                'result'      => isset($report['report']) ? $report['report'] : $report,
+                'is_infouser' => false,
+                'is_nav'      => false,
+                'is_groupby'  => false,
+                'is_plot'     => false,
+                'is_doc'      => false
+            ]),
+            'display_nav' => false,
+            'title'       => false
+        ]);
     }
 
     /**
@@ -222,29 +212,23 @@ class Activity implements ControllerProviderInterface
 
             $activity->getTopQuestion($conf);
 
-            try {
-                $csv = \format::arr_to_csv($activity->getResult(), $activity->getDisplay());
-            } catch (\Exception $e) {
-                $csv = '';
-            }
-
-            return $app->json(['rs' => $csv]);
-        } else {
-            $report = $activity->getTopQuestion($conf);
-
-            return $app->json([
-                'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
-                    'result'      => isset($report['report']) ? $report['report'] : $report,
-                    'is_infouser' => false,
-                    'is_nav'      => false,
-                    'is_groupby'  => false,
-                    'is_plot'     => false,
-                    'is_doc'      => false
-                ]),
-                'display_nav' => false,
-                'title'       => false
-            ]);
+            return $this->getCSVResponse($app, $activity, 'activity_questions_best_of');
         }
+
+        $report = $activity->getTopQuestion($conf);
+
+        return $app->json(array(
+            'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+                'result'      => isset($report['report']) ? $report['report'] : $report,
+                'is_infouser' => false,
+                'is_nav'      => false,
+                'is_groupby'  => false,
+                'is_plot'     => false,
+                'is_doc'      => false
+            )),
+            'display_nav' => false,
+            'title'       => false
+        ));
     }
 
     /**
@@ -287,29 +271,23 @@ class Activity implements ControllerProviderInterface
 
             $activity->getTopQuestion($conf, true);
 
-            try {
-                $csv = \format::arr_to_csv($activity->getResult(), $activity->getDisplay());
-            } catch (\Exception $e) {
-                $csv = '';
-            }
-
-            return $app->json(['rs' => $csv]);
-        } else {
-            $report = $activity->getTopQuestion($conf, true);
-
-            return $app->json([
-                'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
-                    'result'      => isset($report['report']) ? $report['report'] : $report,
-                    'is_infouser' => false,
-                    'is_nav'      => false,
-                    'is_groupby'  => false,
-                    'is_plot'     => false,
-                    'is_doc'      => false
-                ]),
-                'display_nav' => false,
-                'title'       => false
-            ]);
+            return $this->getCSVResponse($app, $activity, 'activity_top_ten_questions');
         }
+
+        $report = $activity->getTopQuestion($conf, true);
+
+        return $app->json(array(
+            'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+                'result'      => isset($report['report']) ? $report['report'] : $report,
+                'is_infouser' => false,
+                'is_nav'      => false,
+                'is_groupby'  => false,
+                'is_plot'     => false,
+                'is_doc'      => false
+            )),
+            'display_nav' => false,
+            'title'       => false
+        ));
     }
 
     /**
@@ -331,33 +309,31 @@ class Activity implements ControllerProviderInterface
 
         $activity->setConfig(false);
 
-        $report = $activity->getActivityPerHours();
+
 
         if ($request->request->get('printcsv') == 'on') {
-             $activity->setHasLimit(false);
-             $activity->setPrettyString(false);
+            $activity->setHasLimit(false);
+            $activity->setPrettyString(false);
 
-             try {
-                 $csv = \format::arr_to_csv($activity->getResult(), $activity->getDisplay());
-             } catch (\Exception $e) {
-                 $csv = '';
-             }
+            $activity->getActivityPerHours();
 
-             return $app->json(['rs' => $csv]);
-         } else {
-             return $app->json([
-                 'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
-                     'result'      => isset($report['report']) ? $report['report'] : $report,
-                     'is_infouser' => false,
-                     'is_nav'      => false,
-                     'is_groupby'  => false,
-                     'is_plot'     => true,
-                     'is_doc'      => false
-                 ]),
-                 'display_nav' => false,
-                 'title'       => false
-             ]);
+            return $this->getCSVResponse($app, $activity, 'activity_per_hours');
          }
+
+         $report = $activity->getActivityPerHours();
+
+         return $app->json(array(
+             'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+                 'result'      => isset($report['report']) ? $report['report'] : $report,
+                 'is_infouser' => false,
+                 'is_nav'      => false,
+                 'is_groupby'  => false,
+                 'is_plot'     => true,
+                 'is_doc'      => false
+             )),
+             'display_nav' => false,
+             'title'       => false
+         ));
     }
 
     /**
@@ -395,33 +371,29 @@ class Activity implements ControllerProviderInterface
 
         $activity->setConfig(false);
 
-        $report = $activity->getDownloadByBaseByDay($conf);
-
         if ($request->request->get('printcsv') == 'on') {
-             $activity->setHasLimit(false);
-             $activity->setPrettyString(false);
+            $activity->setHasLimit(false);
+            $activity->setPrettyString(false);
 
-             try {
-                 $csv = \format::arr_to_csv($activity->getResult(), $activity->getDisplay());
-             } catch (\Exception $e) {
-                 $csv = '';
-             }
+            $activity->getDownloadByBaseByDay($conf);
 
-             return $app->json(['rs' => $csv]);
-         } else {
-             return $app->json([
-                 'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
-                     'result'      => isset($report['report']) ? $report['report'] : $report,
-                     'is_infouser' => false,
-                     'is_nav'      => false,
-                     'is_groupby'  => false,
-                     'is_plot'     => false,
-                     'is_doc'      => false
-                 ]),
-                 'display_nav' => false,
-                 'title'       => false
-             ]);
+            return $this->getCSVResponse($app, $activity, 'activity_db_by_base_by_day');
          }
+
+         $report = $activity->getDownloadByBaseByDay($conf);
+
+         return $app->json(array(
+             'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+                 'result'      => isset($report['report']) ? $report['report'] : $report,
+                 'is_infouser' => false,
+                 'is_nav'      => false,
+                 'is_groupby'  => false,
+                 'is_plot'     => false,
+                 'is_doc'      => false
+             )),
+             'display_nav' => false,
+             'title'       => false
+         ));
     }
 
     /**
@@ -456,13 +428,9 @@ class Activity implements ControllerProviderInterface
             $activity->setHasLimit(false);
             $activity->setPrettyString(false);
 
-            try {
-                $csv = \format::arr_to_csv($activity->getResult(), $activity->getDisplay());
-            } catch (\Exception $e) {
-                $csv = '';
-            }
+            $this->doReport($app, $request, $activity, $conf);
 
-            return $app->json(['rs' => $csv]);
+            return $this->getCSVResponse($app, $activity, 'activity_pushed_documents');
         }
 
         $report = $this->doReport($app, $request, $activity, $conf);
@@ -521,13 +489,9 @@ class Activity implements ControllerProviderInterface
             $activity->setHasLimit(false);
             $activity->setPrettyString(false);
 
-            try {
-                $csv = \format::arr_to_csv($activity->getResult(), $activity->getDisplay());
-            } catch (\Exception $e) {
-                $csv = '';
-            }
+            $this->doReport($app, $request, $activity, $conf);
 
-            return $app->json(['rs' => $csv]);
+            return $this->getCSVResponse($app, $activity, 'activity_added_documents');
         }
 
         $report = $this->doReport($app, $request, $activity, $conf);
@@ -586,13 +550,9 @@ class Activity implements ControllerProviderInterface
             $activity->setHasLimit(false);
             $activity->setPrettyString(false);
 
-            try {
-                $csv = \format::arr_to_csv($activity->getResult(), $activity->getDisplay());
-            } catch (\Exception $e) {
-                $csv = '';
-            }
+            $this->doReport($app, $request, $activity, $conf);
 
-            return $app->json(['rs' => $csv]);
+            return $this->getCSVResponse($app, $activity, 'activity_edited_documents');
         }
 
         $report = $this->doReport($app, $request, $activity, $conf);
@@ -652,13 +612,9 @@ class Activity implements ControllerProviderInterface
             $activity->setHasLimit(false);
             $activity->setPrettyString(false);
 
-            try {
-                $csv = \format::arr_to_csv($activity->getResult(), $activity->getDisplay());
-            } catch (\Exception $e) {
-                $csv = '';
-            }
+            $this->doReport($app, $request, $activity, $conf);
 
-            return $app->json(['rs' => $csv]);
+            return $this->getCSVResponse($app, $activity, 'activity_validated_documents');
         }
 
         $report = $this->doReport($app, $request, $activity, $conf);
@@ -718,13 +674,9 @@ class Activity implements ControllerProviderInterface
             $activity->setHasLimit(false);
             $activity->setPrettyString(false);
 
-            try {
-                $csv = \format::arr_to_csv($activity->getResult(), $activity->getDisplay());
-            } catch (\Exception $e) {
-                $csv = '';
-            }
+            $this->doReport($app, $request, $activity, $conf);
 
-            return $app->json(['rs' => $csv]);
+            return $this->getCSVResponse($app, $activity, 'activity_send_documents');
         }
 
         $report = $this->doReport($app, $request, $activity, $conf);
@@ -886,5 +838,40 @@ class Activity implements ControllerProviderInterface
         }
 
         return $reportArray;
+    }
+
+    /**
+     * Prefix the method to call with the controller class name
+     *
+     * @param  string $method The method to call
+     * @return string
+     */
+    private function call($method)
+    {
+        return sprintf('%s::%s', __CLASS__, $method);
+    }
+
+    private function getCSVResponse(Application $app, \module_report $report, $type)
+    {
+        // set headers
+        $headers = array();
+        foreach (array_keys($report->getDisplay()) as $k) {
+            $headers[$k] = $k;
+        }
+        // set headers as first row
+        $result = $report->getResult();
+        array_unshift($result, $headers);
+
+        $collection = new CallbackCollection($result, function($row) use ($report) {
+            // restrict to displayed fields
+            return array_map('strip_tags', array_intersect_key($row, $report->getDisplay()));
+        });
+
+        $filename = sprintf('report_export_%s_%s.csv', $type, date('Ymd'));
+        $response = new CSVFileResponse($filename, function() use ($app, $collection) {
+            $app['csv.exporter']->export('php://output', $collection);
+        });
+
+        return $response;
     }
 }

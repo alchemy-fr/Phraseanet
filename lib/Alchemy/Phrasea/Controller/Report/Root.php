@@ -11,11 +11,14 @@
 
 namespace Alchemy\Phrasea\Controller\Report;
 
+use Alchemy\Phrasea\Core\Response\CSVFileResponse;
+use Goodby\CSV\Export\Standard\Collection\CallbackCollection;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class Root implements ControllerProviderInterface
 {
@@ -202,13 +205,7 @@ class Root implements ControllerProviderInterface
 
             $this->doReport($app, $request, $cnx, $conf);
 
-            try {
-                $csv = \format::arr_to_csv($cnx->getResult(), $cnx->getDisplay());
-            } catch (\Exception $e) {
-                $csv = '';
-            }
-
-            return $app->json(['rs' => $csv]);
+            return $this->getCSVResponse($app, $cnx, 'connections');
         }
 
         $report = $this->doReport($app, $request, $cnx, $conf);
@@ -269,13 +266,7 @@ class Root implements ControllerProviderInterface
 
             $this->doReport($app, $request, $questions, $conf);
 
-            try {
-                $csv = \format::arr_to_csv($questions->getResult(), $questions->getDisplay());
-            } catch (\Exception $e) {
-                $csv = '';
-            }
-
-            return $app->json(['rs' => $csv]);
+            return $this->getCSVResponse($app, $questions, 'questions');
         }
 
         $report = $this->doReport($app, $request, $questions, $conf);
@@ -345,13 +336,7 @@ class Root implements ControllerProviderInterface
 
             $this->doReport($app, $request, $download, $conf);
 
-            try {
-                $csv = \format::arr_to_csv($download->getResult(), $download->getDisplay());
-            } catch (\Exception $e) {
-                $csv = '';
-            }
-
-            return $app->json(['rs' => $csv]);
+            return $this->getCSVResponse($app, $download, 'download');
         }
 
         $report = $this->doReport($app, $request, $download, $conf);
@@ -417,13 +402,7 @@ class Root implements ControllerProviderInterface
 
             $this->doReport($app, $request, $document, $conf, 'record_id');
 
-            try {
-                $csv = \format::arr_to_csv($document->getResult(), $document->getDisplay());
-            } catch (\Exception $e) {
-                $csv = '';
-            }
-
-            return $app->json(['rs' => $csv]);
+            return $this->getCSVResponse($app, $document, 'documents');
         }
 
         $report = $this->doReport($app, $request, $document, $conf, 'record_id');
@@ -503,17 +482,39 @@ class Root implements ControllerProviderInterface
             'combo' => $nav->buildTabCombo($conf_combo)
         ];
 
-         if ($request->request->get('printcsv') == 'on') {
-             return $app->json([
-                'nav'   => \format::arr_to_csv($report['nav']['result'], $conf_nav),
-                'os'    => \format::arr_to_csv($report['os']['result'], $conf_os),
-                'res'   => \format::arr_to_csv($report['res']['result'], $conf_res),
-                'mod'   => \format::arr_to_csv($report['mod']['result'], $conf_mod),
-                'combo' => \format::arr_to_csv($report['combo']['result'], $conf_combo)
-            ]);
-         }
+        if ($request->request->get('printcsv') == 'on') {
+            $result = array();
 
-         return $app->json([
+            $result[] = array_keys($conf_nav);
+            foreach($report['nav']['result'] as $row) {
+                $result[] =  array_values($row);
+            };
+            $result[] = array_keys($conf_os);
+            foreach($report['os']['result'] as $row) {
+                $result[] =  array_values($row);
+            };
+            $result[] = array_keys($conf_res);
+            foreach($report['res']['result'] as $row) {
+                $result[] =  array_values($row);
+            };
+            $result[] = array_keys($conf_mod);
+            foreach($report['mod']['result'] as $row) {
+                $result[] =  array_values($row);
+            };
+            $result[] = array_keys($conf_combo);
+            foreach($report['combo']['result'] as $row) {
+                $result[] =  array_values($row);
+            };
+
+            $filename = sprintf('report_export_info_%s.csv', date('Ymd'));
+            $response = new CSVFileResponse($filename, function() use ($app, $result) {
+                $app['csv.exporter']->export('php://output', $result);
+            });
+
+            return $response;
+        }
+
+        return $app->json([
             'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
@@ -661,5 +662,40 @@ class Root implements ControllerProviderInterface
         }
 
         return $reportArray;
+    }
+
+    /**
+     * Prefix the method to call with the controller class name
+     *
+     * @param  string $method The method to call
+     * @return string
+     */
+    private function call($method)
+    {
+        return sprintf('%s::%s', __CLASS__, $method);
+    }
+
+    private function getCSVResponse(Application $app, \module_report $report, $type)
+    {
+        // set headers
+        $headers = array();
+        foreach (array_keys($report->getDisplay()) as $k) {
+            $headers[$k] = $k;
+        }
+        // set headers as first row
+        $result = $report->getResult();
+        array_unshift($result, $headers);
+
+        $collection = new CallbackCollection($result, function($row) use ($report) {
+            // restrict fields to the displayed ones
+            return array_map('strip_tags', array_intersect_key($row, $report->getDisplay()));
+        });
+
+        $filename = sprintf('report_export_%s_%s.csv', $type, date('Ymd'));
+        $response = new CSVFileResponse($filename, function() use ($app, $collection) {
+            $app['csv.exporter']->export('php://output', $collection);
+        });
+
+        return $response;
     }
 }
