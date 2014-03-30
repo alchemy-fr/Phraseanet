@@ -1426,7 +1426,9 @@ class V1 implements ControllerProviderInterface
     public function get_publications(Application $app, Request $request)
     {
         $user = $app['authentication']->getUser();
-        $feed = Aggregate::createFromUser($app, $user);
+        $restrictions = (array) ($request->get('feeds') ? : array());
+
+        $feed = Aggregate::createFromUser($app, $user, $restrictions);
 
         $offset_start = (int) ($request->get('offset_start') ? : 0);
         $per_page = (int) ($request->get('per_page') ? : 5);

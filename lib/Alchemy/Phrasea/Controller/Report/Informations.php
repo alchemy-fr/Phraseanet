@@ -495,7 +495,7 @@ class Informations implements ControllerProviderInterface
             'rs'          => $html,
             'display_nav' => false,
             'title'       => $title
-        ));
+        ]);
     }
 
     /**

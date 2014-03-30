@@ -26,7 +26,7 @@ class FeedRepository extends EntityRepository
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getAllForUser(\ACL $userACL)
+    public function getAllForUser(\ACL $userACL, array $restrictions = [])
     {
         $base_ids = array_keys($userACL->get_granted_base());
 
@@ -38,6 +38,10 @@ class FeedRepository extends EntityRepository
 
         if (count($base_ids) > 0) {
             $qb->orWhere($qb->expr()->in('f.baseId', $base_ids));
+        }
+
+        if (count($restrictions) > 0) {
+            $qb->andWhere($qb->expr()->in('f.id', $restrictions));
         }
 
         $qb->orderBy('f.updatedOn', 'DESC');
