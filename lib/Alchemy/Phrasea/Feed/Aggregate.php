@@ -78,7 +78,7 @@ class Aggregate implements FeedInterface
      */
     public static function createFromUser(Application $app, User $user, array $restrictions = [])
     {
-        $feeds = $app['repo.feeds']->getAllForUser($app['acl']->get($user));
+        $feeds = $app['repo.feeds']->getAllForUser($app['acl']->get($user), $restrictions);
         $token = $app['repo.aggregate-tokens']->findOneBy(['user' => $user]);
 
         return new static($app['EM'], $feeds, $token);
