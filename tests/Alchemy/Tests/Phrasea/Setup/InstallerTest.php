@@ -15,19 +15,16 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         parent::setUp();
-        \connection::close_connections();
     }
 
     public function tearDown()
     {
-        \connection::close_connections();
         parent::tearDown();
     }
 
     public static function tearDownAfterClass()
     {
         $app = new Application('test');
-        \connection::close_connections();
         \phrasea::reset_sbasDatas($app['phraseanet.appbox']);
         \phrasea::reset_baseDatas($app['phraseanet.appbox']);
         parent::tearDownAfterClass();

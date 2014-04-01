@@ -106,8 +106,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         parent::setUp();
 
-        connection::close_connections();
-
         error_reporting(-1);
 
         \PHPUnit_Framework_Error_Warning::$enabled = true;

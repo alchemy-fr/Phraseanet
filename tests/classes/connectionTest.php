@@ -8,6 +8,6 @@ class connectionTest extends \PhraseanetPHPUnitAbstract
         $conn->exec('SET @@local.wait_timeout= 1');
         usleep(1200000);
         $conn->exec('SHOW DATABASES');
-        connection::close_connections();
+        $conn->close();
     }
 }
