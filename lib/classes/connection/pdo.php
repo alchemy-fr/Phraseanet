@@ -88,9 +88,7 @@ class connection_pdo extends connection_abstract implements connection_interface
 
     public function __call($method, $args)
     {
-        if (false === $this->is_connected()) {
-            throw new \LogicException('No connection available');
-        }
+        $this->init();
 
         if (!method_exists($this->connection, $method)) {
             throw new \BadMethodCallException(sprintf('Method %s does not exist', $method));
@@ -163,7 +161,7 @@ class connection_pdo extends connection_abstract implements connection_interface
     private function buildDataSourceName($host, $port, $databaseName = null)
     {
         if (isset($databaseName)) {
-            return sprintf('mysql:dbname=%s;host=%s;port=%s;', $databaseName, $host, $port);
+            return sprintf('mysql:host=%s;port=%s;dbname=%s;', $host, $port, $databaseName);
         }
 
         return sprintf('host=%s;port=%s;', $host, $port);

@@ -20,7 +20,7 @@ class connection_pdoStatementDebugger implements connection_statement
     public function __construct(\connection_statement $statement, Logger $logger = null)
     {
         $this->statement = $statement;
-        $this->logger = $logger ?: new Logger('sql-query', [new StreamHandler(__DIR__ . '/../../../logs/mysql_log.log')]);
+        $this->logger = $logger ?: new Logger('sql-query', array(new StreamHandler(__DIR__ . '/../../../logs/mysql_log.log')));
 
         return $this;
     }
