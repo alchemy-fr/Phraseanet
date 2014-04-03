@@ -39,7 +39,7 @@
                     {% set title = publishing.basket().getName() %}
                     {% set desc = publishing.basket().getDescription() %}
                 {% endif %}
-                <input class="required_text checkbox" checked="checked" type="checkbox" name="notify" id="feed_add_notify" value="1" />
+                <input class="required_text checkbox" checked="" type="checkbox" name="notify" id="feed_add_notify" value="0" />
                 <label for="feed_add_notify">{% trans 'Notify users about this publication' %}</label><br/>
                 <label for="feed_add_title">{% trans 'publication : titre' %}</label>
                 <input class="required_text" type="text" name="title" id="feed_add_title" value="{{title}}" />
