@@ -22,7 +22,6 @@ $(document).ready(function () {
     $.datepicker.setDefaults($.datepicker.regional[jq_date]);
 
     $('a.infoDialog,div.infoDialog').live('click', function (event) {
-        console.log("click");
         infoDialog($(this));
     });
 
@@ -317,7 +316,6 @@ function setPref(name, value) {
 
 
 function infoDialog(el) {
-
     $("#DIALOG").attr('title', '')
         .empty()
         .append(el.attr('infos'))

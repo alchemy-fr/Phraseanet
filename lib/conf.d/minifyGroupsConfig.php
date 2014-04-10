@@ -9,6 +9,12 @@
  * changes. http://yourdomain/min/builder/
  * */
 $groups = array(
+    'account' => array(
+        '//include/jslibs/jquery.contextmenu_scroll.js',
+        '//assets/jquery.cookie/jquery.cookie.js',
+        '//include/jquery.common.js',
+        '//skins/account/account.js'
+    ),
     'authentication_css' => array(
         '//assets/normalize-css/normalize.css',
         '//skins/build/login.css',
