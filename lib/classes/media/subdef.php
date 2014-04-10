@@ -206,13 +206,12 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $stmt->closeCursor();
 
         if ($row) {
-
             $this->width = (int) $row['width'];
             $this->size = (int) $row['size'];
             $this->height = (int) $row['height'];
             $this->mime = $row['mime'];
             $this->file = $row['file'];
-            $this->etag = $row['etag'];
+            $this->etag = $row['etag'] !== null ? $row['etag'] : md5(time() . $row['path'] .$row['file']);
             $this->path = p4string::addEndSlash($row['path']);
             $this->is_substituted = ! ! $row['substit'];
             $this->subdef_id = (int) $row['subdef_id'];
