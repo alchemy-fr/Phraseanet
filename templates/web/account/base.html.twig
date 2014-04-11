@@ -4,11 +4,39 @@
 {% extends "common/index_bootstrap.html.twig" %}
 
 {% block stylesheet %}
-    <link rel="stylesheet" type="text/css" href="{{ path('minifier', { 'f' : 'skins/build/account.css' }) }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ path('minifier', { 'f' : 'skins/build/account.css,include/jslibs/jquery.contextmenu.css' }) }}"/>
+    <style type="text/css">
+        .context-menu-theme-vista .context-menu-item .context-menu-item-inner {
+            padding: 4px 20px;
+            margin-left: 0;
+            color: #75ABFF;
+        }
+
+        .context-menu-theme-vista .context-menu-item-hover {
+            background-image: none;
+            background-color: #75ABFF;
+            border: none;
+        }
+
+        .context-menu-theme-vista .context-menu-item-hover .context-menu-item-inner {
+            color: #212121;
+        }
+
+        .context-menu-theme-vista {
+            background-image: none;
+            background-color: #212121;
+            -webkit-border-bottom-left-radius: 3px;
+            -webkit-border-bottom-right-radius: 3px;
+            -moz-border-radius-bottomleft: 3px;
+            -moz-border-radius-bottomright: 3px;
+            border-bottom-left-radius: 3px;
+            border-bottom-right-radius: 3px;
+        }
+    </style>
 {% endblock %}
 
 {% block javascript %}
-    <script type="text/javascript" language="javascript" src="{{ path('minifier', { 'f' : '/skins/account/account.js' }) }}"></script>
+    <script type="text/javascript" src="{{ path('minifier', { 'g' : 'account' }) }}"></script>
 {% endblock %}
 
 {% block content %}
@@ -46,6 +74,7 @@
                 </div>
             </div>
         </div>
+        <div id="DIALOG"></div>
         {% block scripts %}
             <script type="text/javascript">
                 // close alerts
