@@ -12,11 +12,11 @@
 namespace Alchemy\Phrasea\Border;
 
 use Alchemy\Phrasea\Core\Configuration\Configuration;
+use Alchemy\Phrasea\Media\MimeTypeGuesser as AlchemyMimeTypeGuesser;
 use MediaVorus\Utils\AudioMimeTypeGuesser;
 use MediaVorus\Utils\PostScriptMimeTypeGuesser;
 use MediaVorus\Utils\RawImageMimeTypeGuesser;
 use MediaVorus\Utils\VideoMimeTypeGuesser;
-use Symfony\Component\HttpFoundation\File\MimeType\FileBinaryMimeTypeGuesser;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 
 class MimeGuesserConfiguration
@@ -35,11 +35,12 @@ class MimeGuesserConfiguration
     {
         $guesser = MimeTypeGuesser::getInstance();
 
-        $guesser->register(new FileBinaryMimeTypeGuesser());
         $guesser->register(new RawImageMimeTypeGuesser());
         $guesser->register(new PostScriptMimeTypeGuesser());
         $guesser->register(new AudioMimeTypeGuesser());
         $guesser->register(new VideoMimeTypeGuesser());
+
+        $guesser->register(new AlchemyMimeTypeGuesser());
 
         if ($this->conf->isSetup()) {
             $conf = $this->conf->getConfig();
