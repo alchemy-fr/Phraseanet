@@ -761,7 +761,8 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         }
 
         $found = false;
-        foreach (self::$searchEngine->excerpt($query_string, $fields, $foundRecord) as $fieldValues) {
+        $highlightedValues = self::$searchEngine->excerpt($query_string, $fields, $foundRecord);
+        foreach ($highlightedValues as $fieldValues) {
             foreach ($fieldValues as $metaId => $field) {
                 if (strpos($field, '[[em]]') !== false && strpos($field, '[[/em]]') !== false) {
                     $found = true;
@@ -770,7 +771,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
             }
         }
 
-        if (!$found) {
+        if (!$found && count($highlightedValues) > 0) {
             $this->fail('Unable to build the excerpt');
         }
     }

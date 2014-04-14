@@ -534,36 +534,7 @@ class SphinxSearchEngine implements SearchEngineInterface
      */
     public function excerpt($query, $fields, \record_adapter $record)
     {
-        $index = '';
-        // in this case search is done on metas
-        if ($this->options->getFields() || $this->options->getBusinessFieldsOn()) {
-            if ($this->options->isStemmed() && $this->options->getLocale()) {
-                $index = 'metadatas' . $this->CRCdatabox($record->get_databox()) . '_stemmed_' . $this->options->getLocale();
-            } else {
-                $index = 'metadatas' . $this->CRCdatabox($record->get_databox());
-            }
-        } else {
-            if ($this->options->isStemmed() && $this->options->getLocale()) {
-                $index = 'documents' . $this->CRCdatabox($record->get_databox()) . '_stemmed_' . $this->options->getLocale();
-            } else {
-                $index = 'documents' . $this->CRCdatabox($record->get_databox());
-            }
-        }
-
-        $opts = array(
-            'before_match' => "[[em]]",
-            'after_match'  => "[[/em]]",
-        );
-
-        $fields_to_send = array();
-
-        foreach ($fields as $fieldData) {
-            foreach ($fieldData['values'] as $metaId => $valueData) {
-                $fields_to_send[$metaId] = $valueData['value'];
-            }
-        }
-
-        return $this->sphinx->BuildExcerpts($fields_to_send, $index, $query, $opts);
+        return array();
     }
 
     /**
