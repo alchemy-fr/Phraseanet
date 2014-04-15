@@ -667,7 +667,7 @@ class Users implements ControllerProviderInterface
                         if ($loginToAdd === "") {
                             $out['errors'][] = sprintf(_("Login line %d is empty"), $nbLine + 1);
                         } elseif (in_array($loginToAdd, $loginNew)) {
-                            $out['errors'][] = sprintf(_("Login %s is already defined in the file at line %d"), $loginToAdd, $i);
+                            $out['errors'][] = sprintf(_("Login %s is already defined in the file at line %d"), $loginToAdd, $nbLine + 1);
                         } else {
                             if (\User_Adapter::get_usr_id_from_login($app, $loginToAdd)) {
                                 $out['errors'][] = sprintf(_("Login %s already exists in database"), $loginToAdd);
@@ -693,7 +693,7 @@ class Users implements ControllerProviderInterface
                         $passwordToVerif = $value;
 
                         if ($passwordToVerif === "") {
-                            $out['errors'][] = sprintf(_("Password is empty at line %d"), $i);
+                            $out['errors'][] = sprintf(_("Password is empty at line %d"), $nbLine + 1);
                         } else {
                             $pwdValid = true;
                         }
