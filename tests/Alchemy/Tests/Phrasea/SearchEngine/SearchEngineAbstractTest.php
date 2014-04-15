@@ -746,21 +746,32 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $this->assertInstanceOf('\record_adapter', $foundRecord);
 
         foreach ($foundRecord->get_caption()->get_fields() as $field) {
+            foreach ($field->get_values() as $metaId => $v) {
+                $values[$metaId] = array(
+                    'value' => $v->getValue(),
+                    'from_thesaurus' => false,
+                    'qjs' => null,
+                );
+            }
+
             $fields[$field->get_name()] = array(
-                'value'     => $field->get_serialized_values()
-                , 'separator' => ';'
+                'values' => $values,
+                'separator' => ';',
             );
         }
 
         $found = false;
-        foreach (self::$searchEngine->excerpt($query_string, $fields, $foundRecord) as $field) {
-            if (strpos($field, '[[em]]') !== false && strpos($field, '[[/em]]') !== false) {
-                $found = true;
-                break;
+        $highlightedValues = self::$searchEngine->excerpt($query_string, $fields, $foundRecord);
+        foreach ($highlightedValues as $fieldValues) {
+            foreach ($fieldValues as $metaId => $field) {
+                if (strpos($field, '[[em]]') !== false && strpos($field, '[[/em]]') !== false) {
+                    $found = true;
+                    break 2;
+                }
             }
         }
 
-        if (!$found) {
+        if (!$found && count($highlightedValues) > 0) {
             $this->fail('Unable to build the excerpt');
         }
     }

@@ -639,18 +639,14 @@ class PhraseaEngine implements SearchEngineInterface
         $sxe = @simplexml_load_string($res['xml']);
 
         foreach ($fields as $name => $field) {
-            if ($sxe && $sxe->description && $sxe->description->$name) {
-                $val = array();
-                foreach ($sxe->description->$name as $value) {
-                    $val[] = (string) $value;
+            $newValues = array();
+            if ($sxe && $sxe->description && $sxe->description->{$name}) {
+                foreach ($sxe->description->{$name} as $value) {
+                    $newValues[(string) $value['meta_id']] = (string) $value;
                 }
-                $separator = $field['separator'] ? $field['separator'][0] : '';
-                $val = implode(' ' . $separator . ' ', $val);
-            } else {
-                $val = $field['value'];
-            }
 
-            $ret[] = $val;
+                $ret[$name] = $newValues;
+            }
         }
 
         return $ret;

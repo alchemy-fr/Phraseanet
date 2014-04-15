@@ -56,6 +56,19 @@ class caption_Field_Value implements cache_cacheableInterface
     protected $record;
     protected $app;
 
+    /**
+     * Query to ask to the search engine to bounce to the current value;
+     * This property is set if the value is matched against a thesaurus value;
+     *
+     * @var string
+     */
+    protected $qjs;
+
+    /**
+     * Tells whether the value is matched against a thesaurus value.
+     */
+    protected $isThesaurusValue;
+
     protected static $localCache = array();
 
     /**
@@ -74,6 +87,11 @@ class caption_Field_Value implements cache_cacheableInterface
         $this->app = $app;
 
         $this->retrieveValues();
+    }
+
+    public function getQjs()
+    {
+        return $this->qjs;
     }
 
     protected function retrieveValues()
@@ -343,7 +361,6 @@ class caption_Field_Value implements cache_cacheableInterface
     public function highlight_thesaurus()
     {
         $value = $this->getValue();
-
         $databox = $this->databox_field->get_databox();
         $XPATH_thesaurus = $databox->get_xpath_thesaurus();
 
@@ -386,15 +403,31 @@ class caption_Field_Value implements cache_cacheableInterface
                 $bestnode = $node;
             }
         }
-        if($bestnode)
-        {
-            list($term, $context) = $this->splitTermAndContext(str_replace(array("[[em]]", "[[/em]]"), array("", ""), $value));
-            $qjs = $term . ($context ? '['.$context.']' : '');
 
-            $value = new ThesaurusValue($bestnode->getAttribute('v'), $this->databox_field, $qjs);
+        if($bestnode) {
+            list($term, $context) = $this->splitTermAndContext(str_replace(array("[[em]]", "[[/em]]"), array("", ""), $value));
+            // a value has been found in thesaurus, update value & set the query to bounce to the value
+            $this->value = $bestnode->getAttribute('v');
+            $this->qjs = $term . ($context ? '['.$context.']' : '');
+            $this->isThesaurusValue = true;
+        } else {
+            $this->isThesaurusValue = false;
         }
 
-        return $value;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isThesaurusValue()
+    {
+        if (null === $this->isThesaurusValue) {
+            $this->highlight_thesaurus();
+        }
+
+        return $this->isThesaurusValue;
     }
 
     /**
@@ -474,5 +507,10 @@ class caption_Field_Value implements cache_cacheableInterface
         }
 
         unset(self::$localCache[$this->get_cache_key($option)]);
+    }
+
+    public function __toString()
+    {
+        return $this->value;
     }
 }

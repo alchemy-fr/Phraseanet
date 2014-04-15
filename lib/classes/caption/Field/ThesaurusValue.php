@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-class ThesaurusValue
+class caption_Field_ThesaurusValue
 {
     /** @var string */
     private $value;
