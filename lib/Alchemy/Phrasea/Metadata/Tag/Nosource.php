@@ -17,8 +17,13 @@ class Nosource extends AbstractTag
     protected $Writable = false;
     protected $Description = 'An empty source';
 
+    public function setTagname($name)
+    {
+        $this->Name = $name;
+    }
+
     public function getTagname()
     {
-        return '';
+        return $this->Name;
     }
 }
