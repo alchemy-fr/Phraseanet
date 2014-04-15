@@ -1515,10 +1515,10 @@ class API_V1_adapter extends API_V1_Abstract
 
         $feed = Feed_Adapter::load_with_user($this->app, $user, $publication_id);
 
-        $offset_start = (int) ($request->get('offset_start') ? : 0);
-        $per_page = (int) ($request->get('per_page') ? : 5);
+        $offset_start = (int) $request->get('offset_start', 0);
+        $per_page = (int) $request->get('per_page', 5);
 
-        $per_page = (($per_page >= 1) && ($per_page <= 20)) ? $per_page : 5;
+        $per_page = (($per_page >= 1) && ($per_page <= 100)) ? $per_page : 100;
 
         $datas = array(
             'feed'         => $this->list_publication($feed, $user),
