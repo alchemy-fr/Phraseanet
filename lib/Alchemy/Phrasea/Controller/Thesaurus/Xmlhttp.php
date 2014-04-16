@@ -811,7 +811,7 @@ class Xmlhttp implements ControllerProviderInterface
 
     public function OpenBranchJson(Application $app, Request $request)
     {
-        if (null === $lng = $request->get('lng')) {
+        if (null === ($lng = $request->get('lng'))) {
             $data = explode('_', $app['locale']);
             if (count($data) > 0) {
                 $lng = $data[0];
@@ -821,6 +821,16 @@ class Xmlhttp implements ControllerProviderInterface
         $html = '';
 
         $sbid = (int) $request->get('sbid');
+
+        $lcoll = '';
+        $collections = $app['authentication']->getUser()->ACL()
+            ->get_granted_base(array(), array($sbid)); // array(), $sbid);
+        foreach($collections as $collection)
+        {
+            $lcoll .= ($lcoll?",":"") . $collection->get_coll_id();
+        }
+        $site = $app['phraseanet.configuration']['main']['key'];
+        $usr_id = $app['authentication']->getUser()->get_id();
 
         $tids = explode('.', $request->get('id'));
         $thid = implode('.', $tids);
@@ -836,11 +846,14 @@ class Xmlhttp implements ControllerProviderInterface
             if ($lthid == 1) {
                 $dthid = str_replace('.', 'd', $thid);
 
-                $sql = 'SELECT COUNT(DISTINCT record_id) AS n
-                        FROM thit WHERE value LIKE :like ';
+                $sql = 'SELECT COUNT(DISTINCT r.record_id) AS n
+                        FROM (thit AS t INNER JOIN record AS r USING(record_id))
+                         INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id
+                        WHERE t.value LIKE :like AND r.coll_id IN('.$lcoll.') AND (r.status^c.mask_xor)&c.mask_and=0';
+                $sqlparm = array(':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id);
 
                 $stmt = $connbas->prepare($sql);
-                $stmt->execute(array(':like' => $dthid . '%'));
+                $stmt->execute($sqlparm);
                 $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
                 $stmt->closeCursor();
 
@@ -849,14 +862,16 @@ class Xmlhttp implements ControllerProviderInterface
                 }
 
                 $sql = 'SELECT
-                            SUBSTRING_INDEX(SUBSTR(value, ' . ($lthid + 1) . '), "d", 1) AS k ,
-                            COUNT(DISTINCT record_id) AS n
-                        FROM thit
-                        WHERE value LIKE :like
+                            SUBSTRING_INDEX(SUBSTR(t.value, ' . ($lthid + 1) . '), "d", 1) AS k ,
+                            COUNT(DISTINCT t.record_id) AS n
+                        FROM (thit AS t INNER JOIN record AS r USING(record_id))
+                         INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id
+                        WHERE t.value LIKE :like AND r.coll_id IN('.$lcoll.') AND (r.status^c.mask_xor)&c.mask_and=0
                         GROUP BY k';
+                $sqlparm = array(':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id);
 
                 $stmt = $connbas->prepare($sql);
-                $stmt->execute(array(':like' => $dthid . '%'));
+                $stmt->execute($sqlparm);
                 $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
                 $stmt->closeCursor();
 
@@ -866,14 +881,16 @@ class Xmlhttp implements ControllerProviderInterface
             } elseif (strlen($thid) > 1) {
                 $dthid = str_replace('.', 'd', $thid);
                 $sql = 'SELECT
-                            SUBSTRING_INDEX(SUBSTR(value, ' . ($lthid) . '), \'d\', 1) AS k ,
-                            COUNT(DISTINCT record_id) AS n
-                        FROM thit
-                        WHERE value LIKE :like
+                            SUBSTRING_INDEX(SUBSTR(t.value, ' . ($lthid) . '), \'d\', 1) AS k ,
+                            COUNT(DISTINCT t.record_id) AS n
+                        FROM (thit AS t INNER JOIN record AS r USING(record_id))
+                         INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id
+                        WHERE t.value LIKE :like AND r.coll_id IN('.$lcoll.') AND (r.status^c.mask_xor)&c.mask_and=0
                         GROUP BY k';
+                $sqlparm = array(':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id);
 
                 $stmt = $connbas->prepare($sql);
-                $stmt->execute(array(':like' => $dthid . '%'));
+                $stmt->execute($sqlparm);
                 $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
                 $stmt->closeCursor();
 
@@ -882,14 +899,16 @@ class Xmlhttp implements ControllerProviderInterface
                 }
 
                 $sql = 'SELECT
-                            SUBSTRING_INDEX(SUBSTR(value, ' . ($lthid + 2) . '), \'d\', 1) AS k ,
-                            COUNT(DISTINCT record_id) AS n
-                        FROM thit
-                        WHERE value LIKE :like
+                            SUBSTRING_INDEX(SUBSTR(t.value, ' . ($lthid + 2) . '), \'d\', 1) AS k ,
+                            COUNT(DISTINCT t.record_id) AS n
+                        FROM (thit AS t INNER JOIN record AS r USING(record_id))
+                         INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id
+                        WHERE t.value LIKE :like AND r.coll_id IN('.$lcoll.') AND (r.status^c.mask_xor)&c.mask_and=0
                         GROUP BY k';
+                $sqlparm = array(':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id);
 
                 $stmt = $connbas->prepare($sql);
-                $stmt->execute(array(':like' => $dthid . '%'));
+                $stmt->execute($sqlparm);
                 $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
                 $stmt->closeCursor();
 
@@ -979,7 +998,7 @@ class Xmlhttp implements ControllerProviderInterface
 
                         $html .= '<UL ' . $field0 . '>' . "\n";
 
-                        if ($request->get('sortsy') && $request->get('lng')) {
+                        if ($request->get('sortsy') && $lng != '') {
                             ksort($tts, SORT_STRING);
                         } elseif ($request->get('type') == 'C') {
                             $tts = array_reverse($tts);
