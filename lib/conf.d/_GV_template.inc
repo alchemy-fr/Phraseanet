@@ -453,7 +453,7 @@ return call_user_func_array(function(Application $app) {
                     'default' => ''
                 ),
                 array(
-                    'type'    => \registry::TYPE_STRING,
+                    'type'    => \registry::TYPE_PASSWORD,
                     'name'    => 'GV_smtp_password',
                     'comment' => _('SMTP password'),
                     'default' => ''

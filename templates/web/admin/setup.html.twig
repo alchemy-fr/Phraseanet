@@ -62,6 +62,8 @@
                             <label class="radio inline" for="id_{{ value['name'] }}_yes"><input {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} {{ currentValue == '1' ? 'checked="checked"' : '' }} type="radio"  name="{{ value['name'] }}" value="True" id="id_{{ value['name'] }}_tes" />True</label>
                         {% elseif value['type'] == 'string' %}
                             <div class="controls"><input {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" type="text" value="{{ currentValue }}" class="input-xxlarge"/>
+                        {% elseif value['type'] == 'password' %}
+                            <div class="controls"><input {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" type="password" value="{{ currentValue }}" class="input-xxlarge"/>
                         {% elseif value['type'] == 'text' %}
                             <div class="controls"><textarea {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" class="input-xxlarge">{{ currentValue }}</textarea>
                         {% elseif value['type'] == 'enum' %}
