@@ -30,7 +30,7 @@ class Push implements ControllerProviderInterface
     protected function getUserFormatter()
     {
         return function (\User_Adapter $user) {
-            $subtitle = array_filter(array($user->get_job(), $user->get_company()));
+            $subtitle = array_filter(array($user->get_position(), $user->get_company()));
 
             return array(
                 'type'         => 'USER'
