@@ -140,8 +140,8 @@ class Feed_Aggregate extends Feed_Abstract implements Feed_Interface
         switch ($format) {
             case self::FORMAT_ATOM:
                 return new Feed_Link(
-                        sprintf('%sfeeds/aggregated/atom/%s'
-                            , $registry->get('GV_ServerName')
+                        sprintf('%s/feeds/aggregated/atom/%s'
+                            , rtrim($registry->get('GV_ServerName'), '/')
                             , ($page ? '?page=' . $page : '')
                         )
                         , sprintf('%s - %s', $this->get_title(), 'Atom')
@@ -150,8 +150,8 @@ class Feed_Aggregate extends Feed_Abstract implements Feed_Interface
                 break;
             case self::FORMAT_COOLIRIS:
                 return new Feed_Link(
-                        sprintf('%sfeeds/cooliris/%s'
-                            , $registry->get('GV_ServerName')
+                        sprintf('%s/feeds/cooliris/%s'
+                            , rtrim($registry->get('GV_ServerName'), '/')
                             , ($page ? '?page=' . $page : '')
                         )
                         , sprintf('%s - %s', $this->get_title(), 'RSS')
@@ -161,8 +161,8 @@ class Feed_Aggregate extends Feed_Abstract implements Feed_Interface
             default:
             case self::FORMAT_RSS:
                 return new Feed_Link(
-                        sprintf('%sfeeds/aggregated/rss/%s'
-                            , $registry->get('GV_ServerName')
+                        sprintf('%s/feeds/aggregated/rss/%s'
+                            , rtrim($registry->get('GV_ServerName'), '/')
                             , ($page ? '?page=' . $page : '')
                         )
                         , sprintf('%s - %s', $this->get_title(), 'RSS')
@@ -236,8 +236,8 @@ class Feed_Aggregate extends Feed_Abstract implements Feed_Interface
         switch ($format) {
             case self::FORMAT_ATOM:
                 return new Feed_Link(
-                        sprintf('%sfeeds/userfeed/aggregated/%s/atom/%s'
-                            , $registry->get('GV_ServerName')
+                        sprintf('%s/feeds/userfeed/aggregated/%s/atom/%s'
+                            , rtrim($registry->get('GV_ServerName'), '/')
                             , $this->get_token($user, $renew_token)
                             , ($page ? '?page=' . $page : '')
                         )
@@ -247,8 +247,8 @@ class Feed_Aggregate extends Feed_Abstract implements Feed_Interface
                 break;
             case self::FORMAT_RSS:
                 return new Feed_Link(
-                        sprintf('%sfeeds/userfeed/aggregated/%s/rss/%s'
-                            , $registry->get('GV_ServerName')
+                        sprintf('%s/feeds/userfeed/aggregated/%s/rss/%s'
+                            , rtrim($registry->get('GV_ServerName'), '/')
                             , $this->get_token($user, $renew_token)
                             , ($page ? '?page=' . $page : '')
                         )

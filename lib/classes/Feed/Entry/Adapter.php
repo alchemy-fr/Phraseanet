@@ -173,8 +173,8 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
     public function get_link()
     {
         $href = sprintf(
-            '%slightbox/feeds/entry/%d/'
-            , $this->app['phraseanet.registry']->get('GV_ServerName')
+            '%s/lightbox/feeds/entry/%d/'
+            , rtrim($this->app['phraseanet.registry']->get('GV_ServerName'), '/')
             , $this->get_id()
         );
 

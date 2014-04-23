@@ -235,7 +235,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         $this->authenticate(self::$DI['app']);
 
         $link = self::$feed_3_public->get_user_link(self::$DI['app']['phraseanet.registry'], self::$DI['user'], \Feed_Adapter::FORMAT_ATOM)->get_href();
-        $link = str_replace(self::$DI['app']['phraseanet.registry']->get('GV_ServerName') . 'feeds/', '/', $link);
+        $link = str_replace(rtrim(self::$DI['app']['phraseanet.registry']->get('GV_ServerName'),'/') . '/feeds/', '/', $link);
 
         $this->logout(self::$DI['app']);
 
@@ -253,7 +253,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         $this->authenticate(self::$DI['app']);
 
         $link = self::$private_feeds->get_aggregate()->get_user_link(self::$DI['app']['phraseanet.registry'], self::$DI['user'], \Feed_Adapter::FORMAT_ATOM)->get_href();
-        $link = str_replace(self::$DI['app']['phraseanet.registry']->get('GV_ServerName') . 'feeds/', '/', $link);
+        $link = str_replace(rtrim(self::$DI['app']['phraseanet.registry']->get('GV_ServerName'),'/') . '/feeds/', '/', $link);
 
         $this->logout(self::$DI['app']);
 
@@ -271,7 +271,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         $this->authenticate(self::$DI['app']);
 
         $link = self::$feed_1_private->get_user_link(self::$DI['app']['phraseanet.registry'], self::$DI['user'], \Feed_Adapter::FORMAT_ATOM)->get_href();
-        $link = str_replace(self::$DI['app']['phraseanet.registry']->get('GV_ServerName') . 'feeds/', '/', $link);
+        $link = str_replace(rtrim(self::$DI['app']['phraseanet.registry']->get('GV_ServerName'),'/') . '/feeds/', '/', $link);
 
         $this->logout(self::$DI['app']);
 
@@ -577,9 +577,6 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
                     break;
                 case "expression":
                     $this->assertEquals("full", $value);
-                    break;
-                case "bitrate":
-                    $this->assertEquals($value);
                     break;
                 case "height":
                     $this->assertEquals($ressource->get_height(), $value);

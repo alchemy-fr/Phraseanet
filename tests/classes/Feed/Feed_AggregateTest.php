@@ -54,7 +54,7 @@ class Feed_AggregateTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         $link = self::$object->get_homepage_link(self::$DI['app']['phraseanet.registry'], Feed_Adapter::FORMAT_ATOM);
         $this->assertInstanceOf('Feed_Link', $link);
-        $this->assertEquals(self::$DI['app']['phraseanet.registry']->get('GV_ServerName') . 'feeds/aggregated/atom/', $link->get_href());
+        $this->assertEquals(rtrim(self::$DI['app']['phraseanet.registry']->get('GV_ServerName'),'/') . '/feeds/aggregated/atom/', $link->get_href());
     }
 
     public function testGet_user_link()
