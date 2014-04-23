@@ -29,7 +29,7 @@
                                 <td style="width:70px;"class="text-right hidden-phone">
                                     <div class="btn-group">
                                         <a href="javascript:Recaptcha.reload()" class="btn btn-mini btn-info"><i class="icon-refresh"></i></a>
-                                        <a href="javascript:Recaptcha.switch_type('image')" class="btn btn-mini  btn-info"><i class="icon-volume-up"></i></i></a>
+                                        <a href="javascript:Recaptcha.switch_type('image')" class="btn btn-mini  btn-info"><i class="icon-volume-up"></i></a>
                                         <a href="javascript:Recaptcha.showhelp()" class="btn btn-mini btn-info"><i class="icon-question-sign"></i></a>
                                     </div>
                                 </td>
@@ -39,7 +39,7 @@
                                     <div class="btn-toolbar">
                                         <div class="btn-group text-right">
                                             <a href="javascript:Recaptcha.reload()" class="btn btn-info"><i class="icon-refresh"></i></a>
-                                            <a href="javascript:Recaptcha.switch_type('image')" class="btn btn-info"><i class="icon-volume-up"></i></i></a>
+                                            <a href="javascript:Recaptcha.switch_type('image')" class="btn btn-info"><i class="icon-volume-up"></i></a>
                                             <a href="javascript:Recaptcha.showhelp()" class="btn  btn-info"><i class="icon-question-sign"></i></a>
                                         </div>
                                     </div>
@@ -78,4 +78,40 @@
             </div>
         {% endfor %}
     {% endfor %}
+{% endmacro %}
+
+{% macro caption_value(field, bounceable) %}
+    {% autoescape false %}
+    {% set terms = [] %}
+    {% for data in field.values %}
+        {% if data.from_thesaurus and bounceable %}
+            {% set value = data.value|e|bounce(field.name, data.qjs, field.sbas_id) %}
+        {% else %}
+            {% set value = data.value|e %}
+        {% endif %}
+        {% set terms = [value]|merge(terms) %}
+    {% endfor %}
+    {{ terms|join(' ' ~ field.separator ~ ' ') }}
+    {% endautoescape %}
+{% endmacro %}
+
+{% macro caption_field(field, bounceable, extra_classes) %}
+    <div class="desc {{ extra_classes|join(' ') }}">
+        <b>{{ field.label }}</b> :
+        {{ _self.caption_value(field, bounceable|default(true))|highlight|linkify }}
+    </div>
+{% endmacro %}
+
+{% macro format_caption(record, highlight, search_engine, include_business, bounceable, technical_data) %}
+    {% for field in record.get_caption().get_highlight_fields(highlight, null, search_engine, include_business) %}
+        {% set extra_classes = ['pair'] %}
+        {% if loop.index is odd %}
+            {% set extra_classes = ['impair'] %}
+        {% endif %}
+        {{ _self.caption_field(field, bounceable|default(true), extra_classes) }}
+    {% endfor %}
+    {% if technical_data|default(true) and app['authentication'].getUser() is not none and app['authentication'].getUser().getPrefs('technical_display') == 'group' %}
+        <hr/>
+        {% include 'common/technical_datas.html.twig' %}
+    {% endif %}
 {% endmacro %}

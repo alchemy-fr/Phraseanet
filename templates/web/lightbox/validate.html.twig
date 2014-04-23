@@ -1,7 +1,7 @@
 {% extends "lightbox/index_layout.html.twig" %}
 
 {% import 'common/thumbnail.html.twig' as thumbnail %}
-{% import 'common/caption_templates/preview.html.twig' as caption %}
+{% import 'common/macros.html.twig' as macro %}
 
 {% block javascript %}
     <script type="text/javascript" src="{{ path('minifier', { 'g' : 'lightbox' }) }}"></script>
@@ -98,7 +98,7 @@
                         <div class="lightbox_container PNB">
               {% if basket_element %}
                 {% set business = app['authentication'].getUser().ACL().has_right_on_base(basket_element.getRecord(app).get_base_id(), 'canmodifrecord') %}
-                {{caption.format_caption(basket_element.getRecord(app), '', null, business)}}
+                {{ macro.format_caption(basket_element.getRecord(app), '', null, business, false, false) }}
               {% endif %}
             </div>
                     </div>

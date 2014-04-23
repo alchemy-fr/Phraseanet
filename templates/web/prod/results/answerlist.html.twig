@@ -1,22 +1,20 @@
-
 {% extends "prod/results/answerabstract.html.twig" %}
 {% block content %}
 
-{% import 'common/caption_templates/answer.html.twig' as caption %}
+{% import 'common/macros.html.twig' as macro %}
 
 {% for record in results.getResults() %}
 <div class='list ui-corner-all'>
     <table style='width:100%;' cellspacing='0' cellpadding='0' border='0'>
         <tr>
             <td valign="top" style='width:{{th_size+50}}px'>
-                {{record_format.block(record, highlight, searchEngine, 'IMGT', false)}}
+                {{ record_format.block(record, highlight, searchEngine, 'IMGT', false) }}
             </td>
             <td valign="middle">
                 <div class='desc' style='max-height:{{th_size+70}}px;overflow-y:auto;'>
                     <div class="fixeddesc">
                         {% set business = app['authentication'].getUser().ACL().has_right_on_base(record.get_base_id(), 'canmodifrecord') %}
-                        {{caption.format_caption(record, highlight, searchEngine, business)}}
-                        {% if app['authentication'].getUser().getPrefs('technical_display') == 'group' %}<hr/>{{record.get_technical_infos|raw}}{% endif %}
+                        {{ macro.format_caption(record, highlight, searchEngine, business, true, true) }}
                     </div>
                 </div>
             </td>

@@ -612,57 +612,31 @@ class Application extends SilexApplication
                 $twig->addFilter('base_from_coll', new \Twig_Filter_Function('phrasea::baseFromColl'));
                 $twig->addFilter('AppName', new \Twig_Filter_Function('Alchemy\Phrasea\Controller\Admin\ConnectedUsers::appName'));
                 $twig->addFilter(new \Twig_SimpleFilter('escapeSimpleQuote', function ($value) {
-                    $ret = str_replace("'", "\\'", $value);
-
-                    return $ret;
+                    return str_replace("'", "\\'", $value);
                 }));
-                $twig->addFilter(new \Twig_SimpleFilter('highlight', function (\Twig_Environment $twig, $argument) {
-                    if (is_string($argument)) {
-                        return str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), twig_escape_filter($twig, $argument));
-                    }
 
-                    $values = array();
-                    if (is_array($argument) && isset($argument['values'])) {
-                        foreach ($argument['values'] as $value) {
-                            $values[] = str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), twig_escape_filter($twig, $value['value']));
-                        }
+                $twig->addFilter(new \Twig_SimpleFilter('highlight', function (\Twig_Environment $twig, $string) {
+                    return str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), $string);
+                }, array('needs_environment' => true,'is_safe' => array('html'))));
 
-                        return implode(' ' . $argument['separator'] . ' ', $values);
-                    }
-
-                    throw new LogicException('highlight filter must be applied on strings or highlighted fields.');
+                $twig->addFilter(new \Twig_SimpleFilter('linkify', function (\Twig_Environment $twig, $string) {
+                    return preg_replace(
+                        "(([^']{1})((https?|file):((/{2,4})|(\\{2,4}))[\w:#%/;$()~_?/\-=\\\.&]*)([^']{1}))"
+                        , '$1 $2 <a title="' . _('Open the URL in a new window') . '" class="ui-icon ui-icon-extlink" href="$2" style="display:inline;padding:2px 5px;margin:0 4px 0 2px;" target="_blank"> &nbsp;</a>$7'
+                        , $string
+                    );
                 }, array('needs_environment' => true, 'is_safe' => array('html'))));
-                $twig->addFilter(new \Twig_SimpleFilter('bounce', function (\Twig_Environment $twig, $argument) {
-                    if (false === is_array($argument) || !isset($argument['values'])) {
-                        throw new LogicException('bounce filter must be applied on values that come from highlighted fields.');
-                    }
 
-                    $display = array();
-                    foreach ($argument['values'] as $value) {
-                        // value of a caption string
-                        $toDisplay = $value['value'];
+                $twig->addFilter(new \Twig_SimpleFilter('bounce', function (\Twig_Environment $twig, $fieldValue, $fieldName, $searchRequest, $sbasId) {
                         // bounce value if it is present in thesaurus as well
-                        if ($value['from_thesaurus']) {
-                            $toDisplay = "<a class=\"bounce\" onclick=\"bounce('" . $argument['sbas_id'] . "','"
-                                . str_replace("'", "\\'", $value['qjs'])
-                                . "', '"
-                                . str_replace("'", "\\'", $argument['name'])
-                                . "');return(false);\">"
-                                . twig_escape_filter($twig, $toDisplay)
-                                . "</a>";
-                        }
+                    return "<a class=\"bounce\" onclick=\"bounce('"  .$sbasId . "','"
+                            . str_replace("'", "\\'",$searchRequest)
+                            . "', '"
+                            . str_replace("'", "\\'", $fieldName)
+                            . "');return(false);\">"
+                            . $fieldValue
+                            . "</a>";
 
-                        // checks for urls in value and wrap them into <a> tags
-                        $toDisplay = preg_replace(
-                            "(([^']{1})((https?|file):((/{2,4})|(\\{2,4}))[\w:#%/;$()~_?/\-=\\\.&]*)([^']{1}))"
-                            , '$1 $2 <a title="' . _('Open the URL in a new window') . '" class="ui-icon ui-icon-extlink" href="$2" style="display:inline;padding:2px 5px;margin:0 4px 0 2px;" target="_blank"> &nbsp;</a>$7'
-                            , $toDisplay
-                        );
-
-                        $display[] = $toDisplay;
-                    }
-
-                    return implode(' ' . $argument['separator'] . ' ', $display);
                 }, array('needs_environment' => true, 'is_safe' => array('html'))));
 
                 $twig->addFilter(new \Twig_SimpleFilter('escapeDoubleQuote', function ($value) {
