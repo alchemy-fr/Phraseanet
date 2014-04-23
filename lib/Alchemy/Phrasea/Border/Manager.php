@@ -15,6 +15,8 @@ use Alchemy\Phrasea\Border\Checker\CheckerInterface;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Alchemy\Phrasea\Metadata\Tag\TfArchivedate;
 use Alchemy\Phrasea\Metadata\Tag\TfQuarantine;
+use Alchemy\Phrasea\Metadata\Tag\TfBasename;
+use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 use Alchemy\Phrasea\Metadata\Tag\TfRecordid;
 use Alchemy\Phrasea\Border\Attribute\Metadata as MetadataAttr;
 use Entities\LazaretAttribute;
@@ -238,6 +240,20 @@ class Manager
             new MetadataAttr(
                 new Metadata(
                     new TfRecordid(), new MonoValue($element->get_record_id())
+                )
+            )
+        );
+        $file->addAttribute(
+            new MetadataAttr(
+                new Metadata(
+                    new TfBasename(), new MonoValue(pathinfo($file->getOriginalName(), PATHINFO_BASENAME))
+                )
+            )
+        );
+        $file->addAttribute(
+            new MetadataAttr(
+                new Metadata(
+                    new TfFilename(), new MonoValue(pathinfo($file->getOriginalName(), PATHINFO_FILENAME))
                 )
             )
         );

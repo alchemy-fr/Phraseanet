@@ -77,10 +77,10 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->disableOriginalConstructor()
             ->getMock();
 
-        $data = DataUri\Data::buildFromFile(__DIR__ . '/../../../../../files/cestlafete.jpg');
+        $data = DataURI\Data::buildFromFile(__DIR__ . '/../../../../../files/cestlafete.jpg');
         $params = array(
             'base_id' => self::$DI['collection']->get_base_id(),
-            'b64_image' => DataUri\Dumper::dump($data)
+            'b64_image' => DataURI\Dumper::dump($data)
         );
 
         $files = array(
@@ -105,6 +105,8 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
             $record = new \record_adapter(self::$DI['app'], $id[0], $id[1]);
             $this->assertTrue($record->get_thumbnail()->is_physically_present());
+            $field = array_pop($record->get_caption()->get_fields(array('FileName')));
+            $this->assertEquals($field->get_serialized_values(), 'KIKOO.JPG');
         }
     }
 
@@ -143,8 +145,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $id = explode('_', $datas['id']);
 
             $record = new \record_adapter(self::$DI['app'], $id[0], $id[1]);
-
-           $this->assertFalse($record->get_thumbnail()->is_physically_present());
+            $this->assertFalse($record->get_thumbnail()->is_physically_present());
         }
     }
 
