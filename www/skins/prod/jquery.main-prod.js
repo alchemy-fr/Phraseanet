@@ -912,6 +912,10 @@ $(document).ready(function () {
                         $answers.scrollTop(0);
                     }
                     $answers.append(data);
+
+                    $answers.find("img.lazyload").lazyload({
+                        container: $answers
+                    });
                 }
                 else {
                     $('.see_more.loading', $answers).remove();
