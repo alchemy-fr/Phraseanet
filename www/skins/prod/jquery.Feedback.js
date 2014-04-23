@@ -309,6 +309,7 @@
 
             if (item.type === 'USER') {
                 html = _.template($("#list_user_tpl").html(), {
+
                     item: item
                 });
             } else if (item.type === 'LIST') {
