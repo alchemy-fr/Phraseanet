@@ -11,6 +11,12 @@ class MimeTypeGuesser implements MimeTypeGuesserInterface
         'mpg'  => 'video/mpeg',
         'mov'  => 'video/quicktime',
         'dv'   => 'video/x-dv',
+        'xls'  => 'application/vnd.ms-excel',
+        'doc'  => 'application/msword',
+        'ppt'  => 'application/vnd.ms-powerpoint',
+        'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     );
 
     /**
