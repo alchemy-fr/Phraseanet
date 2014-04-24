@@ -52,6 +52,7 @@ class setup
                 $type = $variable['type'];
                 switch ($variable['type']) {
                     case \registry::TYPE_STRING:
+                    case \registry::TYPE_PASSWORD:
                     case \registry::TYPE_BINARY:
                     case \registry::TYPE_TEXT:
                     case \registry::TYPE_TIMEZONE:

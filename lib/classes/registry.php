@@ -32,6 +32,7 @@ class registry implements registryInterface
     const TYPE_INTEGER = 'integer';
     const TYPE_ENUM = 'enum';
     const TYPE_STRING = 'string';
+    const TYPE_PASSWORD = 'password';
     const TYPE_TEXT = 'text';
     const TYPE_TIMEZONE = 'timezone';
     const TYPE_BINARY = 'binary';
@@ -99,6 +100,7 @@ class registry implements registryInterface
                         continue;
                         break;
                     case self::TYPE_STRING:
+                    case self::TYPE_PASSWORD:
                     case self::TYPE_ENUM:
                     case self::TYPE_TIMEZONE:
                     case self::TYPE_TEXT:
@@ -153,6 +155,7 @@ class registry implements registryInterface
                 $value = (array) $value;
                 break;
             case self::TYPE_STRING;
+            case self::TYPE_PASSWORD;
             case self::TYPE_ENUM:
             case self::TYPE_TIMEZONE:
             case self::TYPE_TEXT:

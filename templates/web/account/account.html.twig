@@ -194,7 +194,7 @@
                             <div class="control-group">
                                 <label class="form_label control-label" for="form_pwdFTP"><strong>{% trans "admin::compte-utilisateur mot de passe" %}</strong></label>
                                 <div class="controls">
-                                    <input class="input_element input-xlarge" type="text" name="form_pwdFTP" id="form_pwdFTP" value="{{ app["authentication"].getUser().get_ftp_password() }}" />
+                                    <input class="input_element input-xlarge" type="password" name="form_pwdFTP" id="form_pwdFTP" value="{{ app["authentication"].getUser().get_ftp_password() }}" />
                                     <p class="form_alert help-block"></p>
                                 </div>
                             </div>
