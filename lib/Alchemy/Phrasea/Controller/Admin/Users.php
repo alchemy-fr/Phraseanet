@@ -591,7 +591,7 @@ class Users implements ControllerProviderInterface
                 return $app->redirectPath('users_display_import_file', array('error' => 'file-invalid'));
             }
 
-            $equivalenceToMysqlField = self::getEquivalenceToMysqlField();
+            $equivalenceToMysqlField = Users::getEquivalenceToMysqlField();
             $loginDefined = $pwdDefined = $mailDefined = false;
             $loginNew = array();
             $out = array(
