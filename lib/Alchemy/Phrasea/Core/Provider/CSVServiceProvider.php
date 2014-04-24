@@ -27,7 +27,7 @@ class CSVServiceProvider implements ServiceProviderInterface
         $app['csv.exporter.config'] = $app->share(function () {
             $config = new ExporterConfig();
             return $config
-                ->setDelimiter(",")
+                ->setDelimiter(";")
                 ->setEnclosure('"')
                 ->setEscape("\\")
                 ->setToCharset('UTF-8')
@@ -40,7 +40,14 @@ class CSVServiceProvider implements ServiceProviderInterface
         });
 
         $app['csv.lexer.config'] = $app->share(function ($app) {
-            return new LexerConfig();
+            $lexer = new LexerConfig();
+            $lexer->setDelimiter(';')
+                ->setEnclosure('"')
+                ->setEscape("\\")
+                ->setToCharset('UTF-8')
+                ->setFromCharset('UTF-8');
+
+            return $lexer;
         });
 
         $app['csv.lexer'] = $app->share(function ($app) {
