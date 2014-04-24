@@ -465,6 +465,34 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
+    public function testImportUserCSVFile()
+    {
+        // create a template
+        if (false === \User_Adapter::get_usr_id_from_login(self::$DI['app'], 'csv_template')) {
+            $created_user = \User_Adapter::create(self::$DI['app'], 'csv_template', \random::generatePassword(16), null, false, false);
+            $created_user->set_template(self::$DI['app']['authentication']->getUser());
+            $created_user->ACL()->update_rights_to_base(self::$DI['collection']->get_base_id(), array('access' => 1, 'actif'=> 1));
+        }
+        $data =
+<<<CSV
+gender;last name;first name;login;password;mail;adress;city;zipcode;phone;fax;function;company;activity;country;FTP_active;FTP_adress;loginFTP;pwdFTP;Destination_folder;Passive_mode;Retry;Prefix_creation_folder;by_default__send
+;Martin;Léo;leo;XXX;mart.leo@alchemy.fr;;;;;;;Alchemy;;;;;;;;;;;
+;Dupont;Iris;iris;XXX;dup.iris@alchemy.fr;;;;;;;Alchemy;;;;;;;;;;;
+;Durand;Nathalie;nath;XXX;dur.nath@alchemy.fr;;;;;;;Alchemy;;;;;;;;;;;
+;Legrand;Robert;rob;XXX;leg.rob@alchemy.fr;;;;;;;Alchemy;;;;;;;;;;;
+CSV;
+        $filepath = sys_get_temp_dir().'/user.csv';
+        file_put_contents($filepath,$data);
+
+        $files = array(
+            'files' => new \Symfony\Component\HttpFoundation\File\UploadedFile($filepath, 'user.csv')
+        );
+
+        $crawler = self::$DI['client']->request('POST', '/admin/users/import/file/', array(), $files);
+
+        $this->assertGreaterThan(0, $crawler->filter('html:contains("4 Users")')->count());
+    }
+
     public function testGetExampleCSVFile()
     {
         self::$DI['client']->request('GET', '/admin/users/import/example/csv/');
