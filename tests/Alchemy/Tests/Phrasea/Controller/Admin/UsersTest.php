@@ -471,7 +471,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         if (false === \User_Adapter::get_usr_id_from_login(self::$DI['app'], 'csv_template')) {
             $created_user = \User_Adapter::create(self::$DI['app'], 'csv_template', \random::generatePassword(16), null, false, false);
             $created_user->set_template(self::$DI['app']['authentication']->getUser());
-            $created_user->ACL()->update_rights_to_base(self::$DI['collection']->get_base_id(), array('access' => 1, 'actif'=> 1));
+            $created_user->ACL()->update_rights_to_base(self::$DI['collection']->get_base_id(), array('actif'=> 1));
         }
         $data =
 <<<CSV
