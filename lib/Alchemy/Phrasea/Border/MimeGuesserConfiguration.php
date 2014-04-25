@@ -40,8 +40,6 @@ class MimeGuesserConfiguration
         $guesser->register(new AudioMimeTypeGuesser());
         $guesser->register(new VideoMimeTypeGuesser());
 
-        $guesser->register(new AlchemyMimeTypeGuesser());
-
         if ($this->conf->isSetup()) {
             $conf = $this->conf->getConfig();
 
