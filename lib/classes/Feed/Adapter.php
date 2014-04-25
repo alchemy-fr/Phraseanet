@@ -582,8 +582,8 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
         switch ($format) {
             case self::FORMAT_ATOM:
                 return new Feed_Link(
-                        sprintf('%sfeeds/feed/%s/atom/%s'
-                            , $registry->get('GV_ServerName')
+                        sprintf('%s/feeds/feed/%s/atom/%s'
+                            , rtrim($registry->get('GV_ServerName'), '/')
                             , $this->get_id()
                             , ($page ? '?page=' . $page : '')
                         )
@@ -594,8 +594,8 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
             case self::FORMAT_RSS:
             default:
                 return new Feed_Link(
-                        sprintf('%sfeeds/feed/%s/rss/%s'
-                            , $registry->get('GV_ServerName')
+                        sprintf('%s/feeds/feed/%s/rss/%s'
+                            , rtrim($registry->get('GV_ServerName'), '/')
                             , $this->get_id()
                             , ($page ? '?page=' . $page : '')
                         )
@@ -675,8 +675,8 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
         switch ($format) {
             case self::FORMAT_ATOM:
                 return new Feed_Link(
-                        sprintf('%sfeeds/userfeed/%s/%s/atom/'
-                            , $registry->get('GV_ServerName')
+                        sprintf('%s/feeds/userfeed/%s/%s/atom/'
+                            , rtrim($registry->get('GV_ServerName'), '/')
                             , $this->get_token($user, $renew_token)
                             , $this->get_id()
                             , ($page ? '?page=' . $page : '')
@@ -687,8 +687,8 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
                 break;
             case self::FORMAT_RSS:
                 return new Feed_Link(
-                        sprintf('%sfeeds/userfeed/%s/%s/rss/%s'
-                            , $registry->get('GV_ServerName')
+                        sprintf('%s/feeds/userfeed/%s/%s/rss/%s'
+                            , rtrim($registry->get('GV_ServerName'), '/')
                             , $this->get_token($user, $renew_token)
                             , $this->get_id()
                             , ($page ? '?page=' . $page : '')
