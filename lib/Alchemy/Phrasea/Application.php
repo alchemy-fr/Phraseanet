@@ -103,6 +103,7 @@ use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\Twig\JSUniqueID;
+use Alchemy\Phrasea\Twig\Fit;
 use Alchemy\Phrasea\Twig\Camelize;
 use Alchemy\Phrasea\Twig\BytesConverter;
 use FFMpeg\FFMpegServiceProvider;
@@ -589,6 +590,7 @@ class Application extends SilexApplication
                 // add filters truncate, wordwrap, nl2br
                 $twig->addExtension(new \Twig_Extensions_Extension_Text());
                 $twig->addExtension(new JSUniqueID());
+                $twig->addExtension(new Fit());
                 $twig->addExtension(new Camelize());
                 $twig->addExtension(new BytesConverter());
 
