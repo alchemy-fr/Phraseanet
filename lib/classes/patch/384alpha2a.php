@@ -67,6 +67,12 @@ class patch_384alpha2a implements patchInterface
             $uniqid = md5(implode('-', $chunks));
 
             $fs->rename($file->getRealPath(), $app['root.path'].'/config/status/' . $uniqid . '-' . $suffix);
+
+            if ($fs->exists($app['root.path'] . '/www/custom/status/' . $file->getFileName())) {
+                $fs->remove($app['root.path'] . '/www/custom/status/' . $file->getFileName());
+            }
         }
+
+        $app['filesystem']->mirror($app['root.path'] . '/config/status/', $app['root.path'] . '/www/custom/status/');
     }
 }
