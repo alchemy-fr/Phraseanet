@@ -213,15 +213,20 @@ class Push implements ControllerProviderInterface
 
                     $app['EM']->flush();
 
-                    $url = $app->url('lightbox_compare', array(
+                    $arguments = array(
                         'ssel_id' => $Basket->getId(),
-                        'LOG' => $app['tokens']->getUrlToken(
+                    );
+
+                    if (!$app['phraseanet.registry']->get('GV_force_push_authentication') || !$request->get('force_authentication')) {
+                        $arguments['LOG'] = $app['tokens']->getUrlToken(
                             \random::TYPE_VIEW,
                             $user_receiver->get_id(),
                             null,
                             $Basket->getId()
-                        )
-                    ));
+                        );
+                    }
+
+                    $url = $app->url('lightbox_compare', $arguments);
 
                     $receipt = $request->get('recept') ? $app['authentication']->getUser()->get_email() : '';
 
@@ -359,7 +364,7 @@ class Push implements ControllerProviderInterface
                     try {
                         $participant_user = \User_Adapter::getInstance($participant['usr_id'], $app);
                     } catch (\Exception $e) {
-                        throw new ControllerException(sprintf(_('Unknown user %d'), $receiver['usr_id']));
+                        throw new ControllerException(sprintf(_('Unknown user %d'), $participant['usr_id']));
                     }
 
                     try {
