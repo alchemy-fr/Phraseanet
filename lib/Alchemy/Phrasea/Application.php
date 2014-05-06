@@ -794,7 +794,7 @@ class Application extends SilexApplication
         $app = $this;
         $this->before(function(Request $request) use ($app) {
 
-            static $modulesIds = array(
+            $modulesIds = array(
                 "prod"      => 1,
                 "client"    => 2,
                 "admin"     => 3,
@@ -830,7 +830,7 @@ class Application extends SilexApplication
                     $r = new Response("End-Session", 403);
                 }
                 else {
-                    $r = new RedirectResponse($app["url_generator"]->generate("homepage"));
+                    $r = new RedirectResponse($app["url_generator"]->generate("homepage", array("redirect"=>'..' . $request->getPathInfo())));
                 }
                 $r->headers->set('X-Phraseanet-End-Session', '1');
                 
@@ -852,7 +852,7 @@ class Application extends SilexApplication
                     $r = new Response("End-Session", 403);
                 }
                 else {
-                    $r = new RedirectResponse($app["url_generator"]->generate("homepage"));
+                    $r = new RedirectResponse($app["url_generator"]->generate("homepage", array("redirect"=>'..' . $request->getPathInfo())));
                 }
                 $r->headers->set('X-Phraseanet-End-Session', '1');
                 

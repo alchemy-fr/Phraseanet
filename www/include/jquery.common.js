@@ -417,7 +417,7 @@ function manageSession(data, showMessages) {
 
 
 function disconnected() {
-    showModal('disconnected', {title: 'Disconnection'});
+    showModal('disconnected', {title: language.serverDisconnected});
 }
 
 function showModal(cas, options) {
@@ -453,7 +453,7 @@ function showModal(cas, options) {
     }
 
     if(typeof(p4.Alerts) == "undefined") {
-        alert("disconnected");
+        alert(language.serverDisconnected);
         self.location.replace(self.location.href);
     }
     else {
