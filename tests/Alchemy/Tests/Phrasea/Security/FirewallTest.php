@@ -8,12 +8,12 @@ class FirewallTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRequiredAuth()
     {
-        $this->assertNull(self::$DI['app']['firewall']->requireAuthentication(self::$DI['app']));
+        $this->assertNull(self::$DI['app']['firewall']->requireAuthentication());
     }
 
     public function testRequiredAuthNotAuthenticated()
     {
         $this->logout(self::$DI['app']);
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', self::$DI['app']['firewall']->requireAuthentication(self::$DI['app']));
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', self::$DI['app']['firewall']->requireAuthentication());
     }
 }

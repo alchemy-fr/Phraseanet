@@ -166,12 +166,13 @@
                 $('input[name="duration"]', $FeedBackForm).val($('select[name="duration"]', $dialog.getDomElement()).val());
                 $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
                 $('input[name="recept"]', $FeedBackForm).attr('checked', $('input[name="recept"]', $dialog.getDomElement()).attr('checked'));
+                $('input[name="force_authentication"]', $FeedBackForm).attr('checked', $('input[name="force_authentication"]', $dialog.getDomElement()).attr('checked'));
 
                 $FeedBackForm.trigger('submit');
             };
 
             var options = {
-                size: 'Small',
+                size: 'Medium',
                 buttons: buttons,
                 loading: true,
                 title: language.send,
