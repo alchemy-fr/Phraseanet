@@ -245,6 +245,11 @@
 <script type="text/javascript">
     function refreshDatabaseInformations()
     {
+        // stop the refresh if the page changed
+        if($("#thesaurus_indexed_bar").length == 0) {
+            return;
+        }
+
         $.ajax({
             type: "GET",
             url: "/admin/databox/{{ databox.get_sbas_id() }}/informations/documents/",
@@ -284,13 +289,14 @@
                     $("#printLogoDIV_OK").hide();
                     $("#printLogoDIV_NONE").show();
                 }
+
+                // refresh every 10 sec.
+                setTimeout("refreshDatabaseInformations();", 10000);
             }
         });
-        setTimeout("refreshDatabaseInformations();", 10000);
     }
 
     $(document).ready(function(){
-        refreshDatabaseInformations();
 
         $('#is_indexable').bind('change', function(){
             var form = $(this).closest('form');
@@ -385,6 +391,9 @@
                 enableFormsCallback(data.result);
             }
         });
+
+        // start the refresh of the page content (progress bar etc...)
+        setTimeout("refreshDatabaseInformations();", 2000);
     });
 
 </script>

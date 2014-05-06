@@ -766,7 +766,7 @@ class Login implements ControllerProviderInterface
         $feeds = $public_feeds->get_feeds();
         array_unshift($feeds, $public_feeds->get_aggregate());
 
-        $form = $app->form(new PhraseaAuthenticationForm());
+        $form = $app->form(new PhraseaAuthenticationForm($app));
         $form->setData(array(
             'redirect' => $request->query->get('redirect')
         ));
@@ -788,7 +788,7 @@ class Login implements ControllerProviderInterface
      */
     public function authenticate(PhraseaApplication $app, Request $request)
     {
-        $form = $app->form(new PhraseaAuthenticationForm());
+        $form = $app->form(new PhraseaAuthenticationForm($app));
         $redirector = function (array $params = array()) use ($app) {
             return $app->redirectPath('homepage', $params);
         };
@@ -1079,7 +1079,7 @@ class Login implements ControllerProviderInterface
 
             $session->setToken($token)->setNonce($nonce);
 
-            $response->headers->setCookie(new Cookie('persistent', $token));
+            $response->headers->setCookie(new Cookie('persistent', $token, time() + $app['phraseanet.configuration']['session']['lifetime']));
 
             $app['EM']->persist($session);
             $app['EM']->flush();

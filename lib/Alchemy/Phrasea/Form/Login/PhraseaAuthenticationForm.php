@@ -14,9 +14,17 @@ namespace Alchemy\Phrasea\Form\Login;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Silex\Application;
 
 class PhraseaAuthenticationForm extends AbstractType
 {
+    private $app;
+
+    public function __construct(Application $app)
+    {
+        $this->app = $app;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('login', 'text', array(
@@ -37,12 +45,11 @@ class PhraseaAuthenticationForm extends AbstractType
             ),
         ));
 
-        $builder->add('remember-me', 'checkbox', array(
-            'label'    => _('Remember me'),
+        $builder->add('remember-me', $this->app['phraseanet.configuration']['session']['idle'] < 1 ? 'checkbox' : 'hidden', array(
+            'label'    => $this->app['phraseanet.configuration']['session']['idle'] < 1 ? _('Remember me') : "",
             'mapped'   => false,
             'required' => false,
             'attr'     => array(
-                'checked' => 'checked',
                 'value'   => '1',
             )
         ));
