@@ -125,10 +125,12 @@ class task_period_apiwebhooks extends task_appboxAbstract
             'name' => $row['type'],
             'data' => array(
                 'feed' => array(
+                    'id' => $feed->get_id(),
                     'title' => $feed->get_title(),
                     'description' => $feed->get_subtitle(),
                 ),
                 'entry' => array(
+                    'id' => $entry->get_id(),
                     'author' => array(
                         'name' => $entry->get_author_name(),
                         'email' => $entry->get_author_email()
