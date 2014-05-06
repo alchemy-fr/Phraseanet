@@ -810,7 +810,7 @@ class Application extends SilexApplication
             }
 
             $moduleName = strtolower($pathInfo[1]);
-            if(!array_key_exists($moduleName, $modulesIds) ) { // || !($app['authentication']->isAuthenticated()) ) {
+            if(!array_key_exists($moduleName, $modulesIds) ) {
                 return;
             }
 
