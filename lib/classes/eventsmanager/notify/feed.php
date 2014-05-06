@@ -50,7 +50,6 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
         );
 
         $dom_xml = new DOMDocument('1.0', 'UTF-8');
-
         $dom_xml->preserveWhiteSpace = false;
         $dom_xml->formatOutput = true;
 
@@ -64,7 +63,13 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
 
         $dom_xml->appendChild($root);
 
-        $datas = $dom_xml->saveXml();
+        $data = $dom_xml->saveXml();
+
+        if ($params['notify_email']) {
+            API_Webhook::create($this->app['phraseanet.appbox'], API_Webhook::NEW_FEED_ENTRY, array_merge(
+                array('feed_id' => $entry->get_feed()->get_id()), $params
+            ));
+        }
 
         $Query = new \User_Query($this->app);
 
@@ -79,11 +84,6 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
 
         $start = 0;
         $perLoop = 100;
-
-        $from = array(
-            'email' => $entry->get_author_email(),
-            'name'  => $entry->get_author_name()
-        );
 
         do {
             $results = $Query->limit($start, $perLoop)->execute()->get_results();
@@ -121,7 +121,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
                     }
                 }
 
-                $this->broker->notify($user_to_notif->get_id(), __CLASS__, $datas, $mailed);
+                $this->broker->notify($user_to_notif->get_id(), __CLASS__, $data, $mailed);
             }
             $start += $perLoop;
         } while (count($results) > 0);
@@ -131,13 +131,13 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param  Array   $datas
+     * @param  Array   $data
      * @param  boolean $unread
      * @return Array
      */
-    public function datas($datas, $unread)
+    public function datas($data, $unread)
     {
-        $sx = simplexml_load_string($datas);
+        $sx = simplexml_load_string($data);
 
         try {
             $entry = \Feed_Entry_Adapter::load_from_id($this->app, (int) $sx->entry_id);

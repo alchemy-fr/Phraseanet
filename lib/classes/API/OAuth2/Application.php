@@ -129,6 +129,12 @@ class API_OAuth2_Application
 
     /**
      *
+     * @var string
+     */
+    protected $webhook;
+
+    /**
+     *
      * @param  Application            $app
      * @param  int                    $application_id
      * @return API_OAuth2_Application
@@ -142,7 +148,7 @@ class API_OAuth2_Application
             SELECT
                 application_id, creator, type, name, description, website
               , created_on, last_modified, client_id, client_secret, nonce
-              , redirect_uri, activated, grant_password
+              , redirect_uri, activated, grant_password, webhook_url
             FROM api_applications
             WHERE application_id = :application_id';
 
@@ -168,6 +174,7 @@ class API_OAuth2_Application
         $this->nonce = $row['nonce'];
         $this->activated = ! ! $row['activated'];
         $this->grant_password = ! ! $row['grant_password'];
+        $this->webhook = $row['webhook_url'];
 
         return $this;
     }
@@ -188,6 +195,15 @@ class API_OAuth2_Application
     public function get_creator()
     {
         return $this->creator;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getWebhook()
+    {
+        return $this->webhook;
     }
 
     /**
@@ -296,6 +312,26 @@ class API_OAuth2_Application
         $params = array(
             ':description'    => $this->description
             , ':application_id' => $this->id
+        );
+
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute($params);
+        $stmt->closeCursor();
+
+        return $this;
+    }
+
+    public function setWebhook($url)
+    {
+        $this->webhook = $url;
+
+        $sql = 'UPDATE api_applications
+            SET webhook_url = :webhook, last_modified = NOW()
+            WHERE application_id = :application_id';
+
+        $params = array(
+            ':webhook'    => $url
+        , ':application_id' => $this->id
         );
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
