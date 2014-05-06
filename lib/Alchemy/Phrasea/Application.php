@@ -136,6 +136,8 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormTypeInterface;
@@ -787,6 +789,94 @@ class Application extends SilexApplication
         $this->mount('/developers/', new Developers());
 
         $this->mount('/datafiles/', new Datafiles());
+
+        // log real human activity on application, to keep session alive
+        $app = $this;
+        $this->before(function(Request $request) use ($app) {
+
+            static $modulesIds = array(
+                "prod"      => 1,
+                "client"    => 2,
+                "admin"     => 3,
+                "thesaurus" => 5,
+                "report"    => 10,
+                "lightbox"  => 6,
+            );
+
+            $pathInfo = explode('/', $request->getPathInfo());
+
+            if(count($pathInfo) < 2) {
+                return;
+            }
+
+            $moduleName = strtolower($pathInfo[1]);
+            if(!array_key_exists($moduleName, $modulesIds) ) { // || !($app['authentication']->isAuthenticated()) ) {
+                return;
+            }
+
+            // this route is polled by js in admin/databox to refresh infos (progress bar...)
+            if(preg_match("#^/admin/databox/[0-9]+/informations/documents/#", $request->getPathInfo()) == 1) {
+                return;
+            }
+
+            // this route is polled by js in admin/tasks to refresh tasks status
+            if($request->getPathInfo() == "/admin/task-manager/tasks/" && $request->getContentType() == 'json') {
+                return;
+            }
+
+            // if we are already disconnected (ex. from another window), quit immediatly
+            if(!($app['authentication']->isAuthenticated())) {
+                if($request->isXmlHttpRequest()) {
+                    $r = new Response("End-Session", 403);
+                }
+                else {
+                    $r = new RedirectResponse($app["url_generator"]->generate("homepage"));
+                }
+                $r->headers->set('X-Phraseanet-End-Session', '1');
+                
+                return $r;
+            }
+
+            $session = $app['EM']->find('Entities\Session', $app['session']->get('session_id'));
+
+            $idle = 0;
+            if(isset($app["phraseanet.configuration"]["session"]["idle"])) {
+                $idle = (int)($app["phraseanet.configuration"]["session"]["idle"]);
+            }
+            $now = new \DateTime();
+            $dt  = $now->getTimestamp() - $session->getUpdated()->getTimestamp();
+            if($idle > 0 && $dt > $idle) {
+                // we must disconnet due to idletime
+                $app['authentication']->closeAccount();
+                if($request->isXmlHttpRequest()) {
+                    $r = new Response("End-Session", 403);
+                }
+                else {
+                    $r = new RedirectResponse($app["url_generator"]->generate("homepage"));
+                }
+                $r->headers->set('X-Phraseanet-End-Session', '1');
+                
+                return $r;
+            }
+
+            $moduleId = $modulesIds[$moduleName];
+
+            $session->setUpdated(new \DateTime());
+
+            if (!$session->hasModuleId($moduleId)) {
+                $module = new \Entities\SessionModule();
+                $module->setModuleId($moduleId);
+                $module->setSession($session);
+                $session->addModule($module);
+
+                $app['EM']->persist($module);
+            } else {
+                $app['EM']->persist($session->getModuleById($moduleId)->setUpdated(new \DateTime()));
+            }
+
+            $app['EM']->persist($session);
+            $app['EM']->flush();
+        });
 
         $this->mount('/admin/', new AdminRoot());
         $this->mount('/admin/dashboard', new Dashboard());
