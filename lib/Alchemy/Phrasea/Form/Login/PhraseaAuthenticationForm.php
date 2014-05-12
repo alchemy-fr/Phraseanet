@@ -45,14 +45,22 @@ class PhraseaAuthenticationForm extends AbstractType
             ),
         ));
 
-        $builder->add('remember-me', $this->app['phraseanet.configuration']['session']['idle'] < 1 ? 'checkbox' : 'hidden', array(
-            'label'    => $this->app['phraseanet.configuration']['session']['idle'] < 1 ? _('Remember me') : "",
-            'mapped'   => false,
-            'required' => false,
-            'attr'     => array(
-                'value'   => '1',
-            )
-        ));
+        if ($this->app['phraseanet.configuration']['session']['idle'] < 1) {
+            $builder->add('remember-me', 'checkbox' , array(
+                'label'    =>  _('Remember me'),
+                'mapped'   => false,
+                'required' => false,
+                'attr'     => array(
+                    'value'   => '1',
+                )
+            ));
+        } else {
+            $builder->add('remember-me', 'hidden' , array(
+                'label'    =>  '',
+                'mapped'   => false,
+                'required' => false
+            ));
+        }
 
         $builder->add('redirect', 'hidden', array(
             'required' => false,
