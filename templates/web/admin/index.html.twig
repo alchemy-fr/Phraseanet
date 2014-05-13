@@ -48,7 +48,7 @@
     function pollNotifications(){
       $.ajax({
         type: "POST",
-        url: "{{ path('get_notifications') }}",
+        url: "{{ path('list_notifications') }}",
         dataType: 'json',
         data: {
           module : 3,

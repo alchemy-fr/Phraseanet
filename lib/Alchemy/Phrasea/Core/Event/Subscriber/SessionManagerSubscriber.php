@@ -32,11 +32,11 @@ class SessionManagerSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::REQUEST => array('onKernelRequest', -112),
+            KernelEvents::REQUEST => array('checkSessionActivity', -112),
         );
     }
 
-    public function onKernelRequest(GetResponseEvent $event)
+    public function checkSessionActivity(GetResponseEvent $event)
     {
         $modulesIds = array(
             "prod"      => 1,

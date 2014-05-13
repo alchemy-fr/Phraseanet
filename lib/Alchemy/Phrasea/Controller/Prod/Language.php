@@ -21,13 +21,13 @@ use Silex\ControllerProviderInterface;
  */
 class Language implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
         $controller = $app['controllers_factory'];
 
-        $controller->get("/", function (Application $app) {
+        $app['firewall']->addMandatoryAuthentication($controller);
 
+        $controller->get("/", function (Application $app) {
             $out = array();
             $out['thesaurusBasesChanged'] = _('prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee.');
             $out['confirmDel'] = _('paniers::Vous etes sur le point de supprimer ce panier. Cette action est irreversible. Souhaitez-vous continuer ?');

@@ -92,6 +92,7 @@ use Alchemy\Phrasea\Core\Provider\JMSSerializerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\LocaleServiceProvider;
 use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
+use Alchemy\Phrasea\Core\Provider\PhraseaEventServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
@@ -307,6 +308,7 @@ class Application extends SilexApplication
         $this->register(new XPDFServiceProvider());
         $this->register(new FileServeServiceProvider());
         $this->register(new PluginServiceProvider());
+        $this->register(new PhraseaEventServiceProvider());
 
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
             return PhraseaExceptionHandler::register($app['debug']);
@@ -399,11 +401,11 @@ class Application extends SilexApplication
             $this->extend('dispatcher', function ($dispatcher, Application $app) {
                 $dispatcher->addListener(KernelEvents::REQUEST, array($app, 'initSession'), 254);
                 $dispatcher->addListener(KernelEvents::RESPONSE, array($app, 'addUTF8Charset'), -128);
-                $dispatcher->addSubscriber(new LogoutSubscriber());
-                $dispatcher->addSubscriber(new PhraseaLocaleSubscriber($app));
-                $dispatcher->addSubscriber(new MaintenanceSubscriber($app));
-                $dispatcher->addSubscriber(new CookiesDisablerSubscriber($app));
-                $dispatcher->addSubscriber(new SessionManagerSubscriber($app));
+                $dispatcher->addSubscriber($app['phraseanet.logout-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.locale-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.maintenance-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.cookie-disabler-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.session-manager-subscriber']);
 
                 return $dispatcher;
             })
@@ -792,94 +794,6 @@ class Application extends SilexApplication
 
         $this->mount('/datafiles/', new Datafiles());
 
-        // log real human activity on application, to keep session alive
-        $app = $this;
-        $this->before(function(Request $request) use ($app) {
-
-            $modulesIds = array(
-                "prod"      => 1,
-                "client"    => 2,
-                "admin"     => 3,
-                "thesaurus" => 5,
-                "report"    => 10,
-                "lightbox"  => 6,
-            );
-
-            $pathInfo = explode('/', $request->getPathInfo());
-
-            if(count($pathInfo) < 2) {
-                return;
-            }
-
-            $moduleName = strtolower($pathInfo[1]);
-            if(!array_key_exists($moduleName, $modulesIds) ) {
-                return;
-            }
-
-            // this route is polled by js in admin/databox to refresh infos (progress bar...)
-            if(preg_match("#^/admin/databox/[0-9]+/informations/documents/#", $request->getPathInfo()) == 1) {
-                return;
-            }
-
-            // this route is polled by js in admin/tasks to refresh tasks status
-            if($request->getPathInfo() == "/admin/task-manager/tasks/" && $request->getContentType() == 'json') {
-                return;
-            }
-
-            // if we are already disconnected (ex. from another window), quit immediatly
-            if(!($app['authentication']->isAuthenticated())) {
-                if($request->isXmlHttpRequest()) {
-                    $r = new Response("End-Session", 403);
-                }
-                else {
-                    $r = new RedirectResponse($app["url_generator"]->generate("homepage", array("redirect"=>'..' . $request->getPathInfo())));
-                }
-                $r->headers->set('X-Phraseanet-End-Session', '1');
-                
-                return $r;
-            }
-
-            $session = $app['EM']->find('Entities\Session', $app['session']->get('session_id'));
-
-            $idle = 0;
-            if(isset($app["phraseanet.configuration"]["session"]["idle"])) {
-                $idle = (int)($app["phraseanet.configuration"]["session"]["idle"]);
-            }
-            $now = new \DateTime();
-            $dt  = $now->getTimestamp() - $session->getUpdated()->getTimestamp();
-            if($idle > 0 && $dt > $idle) {
-                // we must disconnet due to idletime
-                $app['authentication']->closeAccount();
-                if($request->isXmlHttpRequest()) {
-                    $r = new Response("End-Session", 403);
-                }
-                else {
-                    $r = new RedirectResponse($app["url_generator"]->generate("homepage", array("redirect"=>'..' . $request->getPathInfo())));
-                }
-                $r->headers->set('X-Phraseanet-End-Session', '1');
-                
-                return $r;
-            }
-
-            $moduleId = $modulesIds[$moduleName];
-
-            $session->setUpdated(new \DateTime());
-
-            if (!$session->hasModuleId($moduleId)) {
-                $module = new \Entities\SessionModule();
-                $module->setModuleId($moduleId);
-                $module->setSession($session);
-                $session->addModule($module);
-
-                $app['EM']->persist($module);
-            } else {
-                $app['EM']->persist($session->getModuleById($moduleId)->setUpdated(new \DateTime()));
-            }
-
-            $app['EM']->persist($session);
-            $app['EM']->flush();
-        });
-
         $this->mount('/admin/', new AdminRoot());
         $this->mount('/admin/dashboard', new Dashboard());
         $this->mount('/admin/collection', new Collection());
@@ -893,8 +807,6 @@ class Application extends SilexApplication
         $this->mount('/admin/fields', new Fields());
         $this->mount('/admin/task-manager', new TaskManager());
         $this->mount('/admin/subdefs', new Subdefs());
-        $this->mount('/admin/tests/connection', new ConnectionTest());
-        $this->mount('/admin/tests/pathurl', new PathFileTest());
 
         $this->mount('/client/', new ClientRoot());
         $this->mount('/client/baskets', new ClientBasket());
@@ -931,8 +843,6 @@ class Application extends SilexApplication
         $this->mount('/session/', new Session());
 
         $this->mount('/setup', new SetupController());
-        $this->mount('/setup/connection_test/', new ConnectionTest());
-        $this->mount('/setup/test/', new PathFileTest());
 
         $this->mount('/report/', new ReportRoot());
         $this->mount('/report/activity', new ReportActivity());

@@ -39,7 +39,7 @@ class Session implements ControllerProviderInterface
             ->bind('update_session');
 
         $controllers->post('/notifications/', $this->call('getNotifications'))
-            ->bind('get_notifications');
+            ->bind('list_notifications');
 
         $controller = $controllers->post('/delete/{id}', $this->call('deleteSession'))
             ->bind('delete_session');
