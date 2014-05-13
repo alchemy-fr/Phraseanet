@@ -71,6 +71,7 @@ use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
 use Alchemy\Phrasea\Controller\Utils\PathFileTest;
 use Alchemy\Phrasea\Controller\User\Notifications;
 use Alchemy\Phrasea\Controller\User\Preferences;
+use Alchemy\Phrasea\Core\Event\Subscriber\SessionManagerSubscriber;
 use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
 use Alchemy\Phrasea\Core\Event\Subscriber\LogoutSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
@@ -402,6 +403,7 @@ class Application extends SilexApplication
                 $dispatcher->addSubscriber(new PhraseaLocaleSubscriber($app));
                 $dispatcher->addSubscriber(new MaintenanceSubscriber($app));
                 $dispatcher->addSubscriber(new CookiesDisablerSubscriber($app));
+                $dispatcher->addSubscriber(new SessionManagerSubscriber($app));
 
                 return $dispatcher;
             })
