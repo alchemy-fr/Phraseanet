@@ -746,7 +746,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             return;
         }
 
-        if (in_array($this->mime, array('video/mp4'))) {
+        if ($this->app['phraseanet.h264-factory']->isH264Enabled() && in_array($this->mime, array('video/mp4'))) {
             if (null !== $url = $this->app['phraseanet.h264']->getUrl($this->get_pathfile())) {
                 $this->url = $url;
 
