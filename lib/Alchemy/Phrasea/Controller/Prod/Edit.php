@@ -347,7 +347,7 @@ class Edit implements ControllerProviderInterface
                     $editDirty = true;
                 }
 
-                if (is_array($rec['metadatas'])) {
+                if (isset($rec['metadatas']) && is_array($rec['metadatas'])) {
                     $record->set_metadatas($rec['metadatas']);
                 }
 
