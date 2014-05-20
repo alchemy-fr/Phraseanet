@@ -173,6 +173,9 @@ registration-fields:
         name: firstname
         required: true
     -
+        name: lastname
+        required: true
+    -
         name: geonameid
         required: true
 xsendfile:
