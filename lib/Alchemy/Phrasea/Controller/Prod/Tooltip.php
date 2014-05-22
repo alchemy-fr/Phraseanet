@@ -103,12 +103,10 @@ class Tooltip implements ControllerProviderInterface
 
     public function displayPreview(Application $app, $sbas_id, $record_id)
     {
-        $record = new \record_adapter($app, $sbas_id, $record_id);
-
-        return $app['twig']->render(
-                'prod/Tooltip/Preview.html.twig'
-                , array('record'      => $record, 'not_wrapped' => true)
-        );
+        return $app['twig']->render('prod/Tooltip/Preview.html.twig', array(
+            'record' => new \record_adapter($app, $sbas_id, $record_id),
+            'not_wrapped' => true
+        ));
     }
 
     public function displayCaption(Application $app, $sbas_id, $record_id, $context)
