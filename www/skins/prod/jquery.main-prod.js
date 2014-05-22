@@ -761,6 +761,7 @@ $(document).ready(function () {
         var parent = searchForm.parent();
 
         var options = {
+            size: 'Full',
             loading: false,
             closeCallback: function (dialog) {
 
