@@ -128,6 +128,9 @@ registration-fields:
         name: company
         required: true
     -
+        name: lastname
+        required: true
+    -
         name: firstname
         required: true
     -
