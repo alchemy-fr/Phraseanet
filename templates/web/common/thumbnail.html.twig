@@ -11,6 +11,7 @@
               "width":original_w,
               "height":original_h,
               "top":0,
+              "left": 0
             } %}
         {% elseif record_type == 'FLEXPAPER' %}
             {% set original_w = 800 %}
@@ -20,6 +21,7 @@
               "width":800,
               "height":600,
               "top":0,
+              "left": 0
             } %}
         {% else %}
             {% set original_h = thumbnail.get_height() > 0 ? thumbnail.get_height() : 120 %}
