@@ -187,16 +187,12 @@
             {% endif %}
 
             {% if (app['authentication'].getUser().ACL.has_right_on_base( collection.get_base_id(), 'canadmin')) %}
-              {% if (app['authentication'].getUser().ACL.has_right_on_base( collection.get_base_id(), 'canmodifrecord')
-                 and app['authentication'].getUser().ACL.has_right_on_base( collection.get_base_id(), 'manage')
-                 and app['authentication'].getUser().ACL.has_right_on_sbas( sbas_id, 'bas_manage') ) %}
               <li>
                 <a target="right" href="{{ path('admin_users_search', { 'base_id' : [ collection.get_base_id() ] }) }}" class="ajax">
                   <img src="/skins/admin/Users.png"/>
                   <span>{% trans 'admin::utilisateurs: utilisateurs' %}</span>
                 </a>
               </li>
-              {% endif %}
             {% endif %}
 
             </ul>
