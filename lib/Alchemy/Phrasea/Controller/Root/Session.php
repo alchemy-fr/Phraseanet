@@ -38,13 +38,85 @@ class Session implements ControllerProviderInterface
         $controllers->post('/update/', $this->call('updateSession'))
             ->bind('update_session');
 
+        $controllers->post('/notifications/', $this->call('getNotifications'))
+            ->bind('get_notifications');
 
         $controller = $controllers->post('/delete/{id}', $this->call('deleteSession'))
-                ->bind('delete_session');
+            ->bind('delete_session');
 
         $app['firewall']->addMandatoryAuthentication($controller);
 
         return $controllers;
+    }
+
+    /**
+     * Check things to notify
+     *
+     * @param  Application  $app
+     * @param  Request      $request
+     * @return JsonResponse
+     */
+    public function getNotifications(Application $app, Request $request)
+    {
+        if (!$request->isXmlHttpRequest()) {
+            $app->abort(400);
+        }
+
+        $ret = array(
+            'status'  => 'unknown',
+            'message' => '',
+            'notifications' => false,
+            'changed' => array()
+        );
+
+        if ($app['authentication']->isAuthenticated()) {
+            $usr_id = $app['authentication']->getUser()->get_id();
+            if ($usr_id != $request->request->get('usr')) { // I logged with another user
+                $ret['status'] = 'disconnected';
+
+                return $app->json($ret);
+            }
+        } else {
+            $ret['status'] = 'disconnected';
+
+            return $app->json($ret);
+        }
+
+        try {
+            $app['phraseanet.appbox']->get_connection();
+        } catch (\Exception $e) {
+            return $app->json($ret);
+        }
+
+        if (1 > $moduleId = (int) $request->request->get('module')) {
+            $ret['message'] = 'Missing or Invalid `module` parameter';
+
+            return $app->json($ret);
+        }
+
+        $ret['status'] = 'ok';
+
+        $ret['notifications'] = $app['twig']->render('prod/notifications.html.twig', array(
+            'notifications' => $app['events-manager']->get_notifications()
+        ));
+
+        $baskets = $app['EM']->getRepository('\Entities\Basket')->findUnreadActiveByUser($app['authentication']->getUser());
+
+        foreach ($baskets as $basket) {
+            $ret['changed'][] = $basket->getId();
+        }
+
+        if (in_array($app['session']->get('phraseanet.message'), array('1', null))) {
+            if ($app['phraseanet.configuration']['main']['maintenance']) {
+                $ret['message'] .= _('The application is going down for maintenance, please logout.');
+            }
+
+            if ($app['phraseanet.registry']->get('GV_message_on')) {
+                $ret['message'] .= strip_tags($app['phraseanet.registry']->get('GV_message'));
+            }
+        }
+
+        return $app->json($ret);
     }
 
     /**

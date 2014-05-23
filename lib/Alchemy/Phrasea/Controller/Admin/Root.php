@@ -17,6 +17,8 @@ use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
+use Alchemy\Phrasea\Controller\Root\Session;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -28,7 +30,6 @@ class Root implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
-
         $app['firewall']->addMandatoryAuthentication($controllers);
 
         $controllers->before(function (Request $request) use ($app) {

@@ -236,3 +236,7 @@ input.checkbox{
 .ui-dialog-titlebar {
     min-height: 20px;
 }
+
+.ui-dialog[aria-describedby="p4_alerts"]{
+    z-index:2000 !important;
+}

@@ -105,7 +105,7 @@ $(document).ready(function () {
             $(this).removeClass("hover");
         });
 
-        sessionactive();
+        window.setTimeout("pollNotifications();", 10000);
         resize();
         $(window).resize(function () {
             resize();
