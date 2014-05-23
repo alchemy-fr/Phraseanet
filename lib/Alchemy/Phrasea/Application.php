@@ -399,7 +399,6 @@ class Application extends SilexApplication
 
         $this['dispatcher'] = $this->share(
             $this->extend('dispatcher', function ($dispatcher, Application $app) {
-                $dispatcher->addListener(KernelEvents::REQUEST, array($app, 'initSession'), 254);
                 $dispatcher->addListener(KernelEvents::RESPONSE, array($app, 'addUTF8Charset'), -128);
                 $dispatcher->addSubscriber($app['phraseanet.logout-subscriber']);
                 $dispatcher->addSubscriber($app['phraseanet.locale-subscriber']);
@@ -509,25 +508,6 @@ class Application extends SilexApplication
     public function redirectUrl($route, $parameters = array())
     {
         return $this->redirect($this->url($route, $parameters));
-    }
-
-    public function initSession(GetResponseEvent $event)
-    {
-        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
-            return;
-        }
-
-        if (false !== stripos($event->getRequest()->server->get('HTTP_USER_AGENT'), 'flash')
-            && $event->getRequest()->getRequestUri() === '/prod/upload/') {
-
-            if (null !== $sessionId = $event->getRequest()->request->get('php_session_id')) {
-
-                $request = $event->getRequest();
-                $request->cookies->set($this['session']->getName(), $sessionId);
-
-                return $request;
-            }
-        }
     }
 
     public function addUTF8Charset(FilterResponseEvent $event)
