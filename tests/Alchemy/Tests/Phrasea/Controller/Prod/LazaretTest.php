@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
+use Alchemy\Phrasea\Core\Event\Subscriber\SessionManagerSubscriber;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -15,9 +16,11 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     protected $client;
     protected static $need_records = false;
 
-    public function tearDown()
+    public function setUp()
     {
-        parent::tearDown();
+        parent::setUp();
+
+        self::$DI['app']['dispatcher']->removeSubscriber(self::$DI['app']['phraseanet.session-manager-subscriber']);
     }
 
     /**

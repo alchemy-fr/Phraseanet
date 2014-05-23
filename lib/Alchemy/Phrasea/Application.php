@@ -71,6 +71,7 @@ use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
 use Alchemy\Phrasea\Controller\Utils\PathFileTest;
 use Alchemy\Phrasea\Controller\User\Notifications;
 use Alchemy\Phrasea\Controller\User\Preferences;
+use Alchemy\Phrasea\Core\Event\Subscriber\SessionManagerSubscriber;
 use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
 use Alchemy\Phrasea\Core\Event\Subscriber\LogoutSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
@@ -91,6 +92,7 @@ use Alchemy\Phrasea\Core\Provider\JMSSerializerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\LocaleServiceProvider;
 use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
+use Alchemy\Phrasea\Core\Provider\PhraseaEventServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
@@ -136,6 +138,8 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormTypeInterface;
@@ -304,6 +308,7 @@ class Application extends SilexApplication
         $this->register(new XPDFServiceProvider());
         $this->register(new FileServeServiceProvider());
         $this->register(new PluginServiceProvider());
+        $this->register(new PhraseaEventServiceProvider());
 
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
             return PhraseaExceptionHandler::register($app['debug']);
@@ -394,12 +399,12 @@ class Application extends SilexApplication
 
         $this['dispatcher'] = $this->share(
             $this->extend('dispatcher', function ($dispatcher, Application $app) {
-                $dispatcher->addListener(KernelEvents::REQUEST, array($app, 'initSession'), 254);
                 $dispatcher->addListener(KernelEvents::RESPONSE, array($app, 'addUTF8Charset'), -128);
-                $dispatcher->addSubscriber(new LogoutSubscriber());
-                $dispatcher->addSubscriber(new PhraseaLocaleSubscriber($app));
-                $dispatcher->addSubscriber(new MaintenanceSubscriber($app));
-                $dispatcher->addSubscriber(new CookiesDisablerSubscriber($app));
+                $dispatcher->addSubscriber($app['phraseanet.logout-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.locale-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.maintenance-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.cookie-disabler-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.session-manager-subscriber']);
 
                 return $dispatcher;
             })
@@ -503,25 +508,6 @@ class Application extends SilexApplication
     public function redirectUrl($route, $parameters = array())
     {
         return $this->redirect($this->url($route, $parameters));
-    }
-
-    public function initSession(GetResponseEvent $event)
-    {
-        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
-            return;
-        }
-
-        if (false !== stripos($event->getRequest()->server->get('HTTP_USER_AGENT'), 'flash')
-            && $event->getRequest()->getRequestUri() === '/prod/upload/') {
-
-            if (null !== $sessionId = $event->getRequest()->request->get('php_session_id')) {
-
-                $request = $event->getRequest();
-                $request->cookies->set($this['session']->getName(), $sessionId);
-
-                return $request;
-            }
-        }
     }
 
     public function addUTF8Charset(FilterResponseEvent $event)
@@ -801,8 +787,6 @@ class Application extends SilexApplication
         $this->mount('/admin/fields', new Fields());
         $this->mount('/admin/task-manager', new TaskManager());
         $this->mount('/admin/subdefs', new Subdefs());
-        $this->mount('/admin/tests/connection', new ConnectionTest());
-        $this->mount('/admin/tests/pathurl', new PathFileTest());
 
         $this->mount('/client/', new ClientRoot());
         $this->mount('/client/baskets', new ClientBasket());
@@ -839,8 +823,6 @@ class Application extends SilexApplication
         $this->mount('/session/', new Session());
 
         $this->mount('/setup', new SetupController());
-        $this->mount('/setup/connection_test/', new ConnectionTest());
-        $this->mount('/setup/test/', new PathFileTest());
 
         $this->mount('/report/', new ReportRoot());
         $this->mount('/report/activity', new ReportActivity());

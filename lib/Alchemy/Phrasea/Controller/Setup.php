@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Helper\DatabaseHelper;
+use Alchemy\Phrasea\Helper\PathHelper;
 use Alchemy\Phrasea\Setup\Requirements\BinariesRequirements;
 use Alchemy\Phrasea\Setup\Requirements\FilesystemRequirements;
 use Alchemy\Phrasea\Setup\Requirements\LocalesRequirements;
@@ -45,6 +47,24 @@ class Setup implements ControllerProviderInterface
 
         $controllers->post('/installer/install/', 'controller.setup:doInstall')
             ->bind('install_do_install');
+
+        $controllers->get('/connection_test/mysql/', function (Application $app, Request $request) {
+            $dbHelper = new DatabaseHelper($app, $request);
+
+            return $app->json($dbHelper->checkConnection());
+        });
+
+        $controllers->get('/test/path/', function (Application $app, Request $request) {
+            $pathHelper = new PathHelper($app, $request);
+
+            return $app->json($pathHelper->checkPath());
+        });
+
+        $controllers->get('/test/url/', function (Application $app, Request $request) {
+            $pathHelper = new PathHelper($app, $request);
+
+            return $app->json($pathHelper->checkUrl());
+        });
 
         return $controllers;
     }

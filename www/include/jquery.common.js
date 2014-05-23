@@ -82,8 +82,14 @@ $(document).ready(function () {
         }
     });
 
-    set_notif_position();
+    $(document).ajaxError(function( event, jqxhr, settings, exception ) {
+        if(jqxhr.status == 403 && jqxhr.getResponseHeader("X-Phraseanet-End-Session") == "1") {
+            disconnected();
+        }
+    });
 
+
+    set_notif_position();
 
 });
 
@@ -334,6 +340,7 @@ function infoDialog(el) {
             }
         }).dialog('open').css({'overflow-x': 'auto', 'overflow-y': 'auto'});
 }
+
 function manageSession(data, showMessages) {
     if (typeof(showMessages) == "undefined")
         showMessages = false;
@@ -410,7 +417,7 @@ function manageSession(data, showMessages) {
 
 
 function disconnected() {
-    showModal('disconnected', {title: 'Disconnection'});
+    showModal('disconnected', {title: language.serverDisconnected});
 }
 
 function showModal(cas, options) {
@@ -438,15 +445,20 @@ function showModal(cas, options) {
             content = language.serverDisconnected;
             escape = false;
             callback = function (e) {
-                self.location.replace(self.location.href)
+                self.location.replace(self.location.href);
             };
             break;
         default:
             break;
     }
 
-    p4.Alerts(options.title, content, callback);
-
+    if(typeof(p4.Alerts) == "undefined") {
+        alert(language.serverDisconnected);
+        self.location.replace(self.location.href);
+    }
+    else {
+        p4.Alerts(options.title, content, callback);
+    }
     return;
 }
 
