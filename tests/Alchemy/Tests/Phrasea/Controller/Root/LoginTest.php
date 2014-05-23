@@ -576,7 +576,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $crawler = self::$DI['client']->request('POST', '/login/register-classic/');
 
         $this->assertFalse(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertFormOrFlashError($crawler, self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB') ? 7 : 8);
+        $this->assertFormOrFlashError($crawler, self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB') ? 8 : 9);
     }
 
     public function provideInvalidRegistrationData()
