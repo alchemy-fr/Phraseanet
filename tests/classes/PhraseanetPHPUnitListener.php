@@ -40,7 +40,6 @@ class PhraseanetPHPUnitListener implements PHPUnit_Framework_TestListener
 
     public function startTest(PHPUnit_Framework_Test $test)
     {
-        echo $test->getName() . "\n";
         return;
     }
 

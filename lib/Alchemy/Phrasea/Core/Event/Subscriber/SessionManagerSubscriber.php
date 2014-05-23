@@ -75,6 +75,7 @@ class SessionManagerSubscriber implements EventSubscriberInterface
             return;
         }
         $moduleName = strtolower($pathInfo[1]);
+
         if (!array_key_exists($moduleName, $modulesIds) ) {
             return;
         }
@@ -90,6 +91,11 @@ class SessionManagerSubscriber implements EventSubscriberInterface
         if ($this->isFlashUploadRequest($event->getRequest())) {
             return;
         }
+
+        if ($event->getRequest()->query->has('LOG')) {
+            return;
+        }
+
         // if we are already disconnected (ex. from another window), quit immediatly
         if (!($this->app['authentication']->isAuthenticated())) {
             if ($event->getRequest()->isXmlHttpRequest()) {

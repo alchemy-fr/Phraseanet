@@ -74,9 +74,9 @@ class SessionManagerSubscriberTest extends \PhraseanetWebTestCaseAuthenticatedAb
         $session->setUpdated(new \DateTime());
 
         $app['EM'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
-        $app['EM']->expects($this->once())->method('find')->with($this->equalTo('Entities\Session'))->will($this->returnValue($session));
-        $app['EM']->expects($this->exactly(2))->method('persist')->will($this->returnValue(null));
-        $app['EM']->expects($this->once())->method('flush')->will($this->returnValue(null));
+        $app['EM']->expects($this->exactly(2))->method('find')->with($this->equalTo('Entities\Session'))->will($this->returnValue($session));
+        $app['EM']->expects($this->exactly(4))->method('persist')->will($this->returnValue(null));
+        $app['EM']->expects($this->exactly(2))->method('flush')->will($this->returnValue(null));
 
         $app['phraseanet.configuration']['session'] = array(
             'idle' => 0,

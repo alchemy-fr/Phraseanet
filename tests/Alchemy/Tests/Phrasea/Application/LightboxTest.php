@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Application;
 
-class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class LightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
     protected $client;
