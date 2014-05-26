@@ -49,6 +49,10 @@ class Fit extends \Twig_Extension
             } elseif ($contentRatio < 1) {
                 // mode portrait
                 $left = ($box['width'] - $width) / 2;
+            } else {
+                // square mode
+                $top = ($box['height'] - $height) / 2;
+                $left = ($box['width'] - $width) / 2;
             }
         } else {
             if ($box['height'] > $content['height']) {
@@ -67,6 +71,10 @@ class Fit extends \Twig_Extension
                 $top = ($box['height'] - $height) / 2;
             } elseif ($contentRatio < 1) {
                 // mode portrait
+                $left = ($box['width'] - $width) / 2;;
+            } else {
+                // square mode
+                $top = ($box['height'] - $height) / 2;
                 $left = ($box['width'] - $width) / 2;;
             }
         }
