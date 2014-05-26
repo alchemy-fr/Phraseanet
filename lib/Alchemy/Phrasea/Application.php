@@ -281,11 +281,13 @@ class Application extends SilexApplication
 
         $this->register(new SearchEngineServiceProvider());
         $this->register(new SessionServiceProvider(), array(
-            'session.test' => $this->getEnvironment() === static::ENV_TEST
+            'session.test' => $this->getEnvironment() === static::ENV_TEST,
+            'session.storage.options' => array('cookie_lifetime' => 0)
         ));
         $this['session.storage.test'] = $this->share(function($app) {
             return new MockArraySessionStorage();
         });
+
         $this->register(new ServiceControllerServiceProvider());
         $this->register(new SwiftmailerServiceProvider());
         $this->register(new TaskManagerServiceProvider());
