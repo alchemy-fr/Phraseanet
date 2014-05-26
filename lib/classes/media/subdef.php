@@ -730,6 +730,10 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $subdef->get_permalink()->delete_data_from_cache();
         }
 
+        if ($name === 'thumbnail' && $app['phraseanet.static-file-factory']->isStaticFileModeEnabled()) {
+            $app['phraseanet.thumb-symlinker']->symlink($subdef->get_pathfile());
+        }
+
         unset($media);
 
         return $subdef;
@@ -742,8 +746,16 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     protected function generate_url()
     {
-        if ( ! $this->is_physically_present()) {
+        if (!$this->is_physically_present()) {
             return;
+        }
+
+        if ($this->get_name() === 'thumbnail') {
+            if ($this->app['phraseanet.static-file-factory']->isStaticFileModeEnabled() && null !== $url = $this->app['phraseanet.static-file']->getUrl($this->get_pathfile())) {
+                $this->url = $url;
+
+                return;
+            }
         }
 
         if ($this->app['phraseanet.h264-factory']->isH264Enabled() && in_array($this->mime, array('video/mp4'))) {
@@ -757,6 +769,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $this->url = Url::factory("/datafiles/" . $this->record->get_sbas_id()
             . "/" . $this->record->get_record_id() . "/"
             . $this->get_name() . "/");
+
 
         return;
     }
