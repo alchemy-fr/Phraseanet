@@ -3,18 +3,20 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-14 14:10+0100\n"
-"PO-Revision-Date: 2014-02-24 16:02+0100\n"
-"Last-Translator: Romain Neutron <imprec@gmail.com>\n"
+"PO-Revision-Date: 2014-05-27 11:32+0100\n"
+"Last-Translator: Anthony <acabot@alchemy.fr>\n"
 "Language-Team: \n"
+"Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 1.5.4\n"
 "X-Launchpad-Export-Date: 2014-02-24 14:56+0000\n"
-"X-Generator: Poedit 1.5.7\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: /Users/romain/Documents/workspace/Phraseanet\n"
-"Language: fr_FR\n"
 "X-Poedit-KeywordsList: _e;__\n"
+"X-POOTLE-MTIME: 1401122382.000000\n"
 "X-Poedit-SearchPath-0: config\n"
 "X-Poedit-SearchPath-1: lib/classes\n"
 "X-Poedit-SearchPath-2: lib/conf.d\n"
@@ -355,7 +357,8 @@ msgstr "Le poids maximum d'un fichier est de %s"
 msgid ""
 "Ce produit utilise l'API Flickr mais n'est ni soutenu, ni certifie par Flickr"
 msgstr ""
-"Ce produit utilise l'API Flickr mais n'est ni soutenu, ni certifié par Flickr"
+"Ce produit utilise l'API Flickr mais n'est ni soutenu, ni certifié par "
+"Flickr."
 
 #: lib/classes/Bridge/Api/Flickr.php:498
 #: lib/classes/Bridge/Api/Youtube.php:507
@@ -453,7 +456,7 @@ msgstr ""
 #: lib/classes/Bridge/Api/Youtube.php:601
 msgid ""
 "The authentication token specified in the Authorization header is invalid"
-msgstr "Le token d'authentification n'est pas valide"
+msgstr "Le jeton d'authentification n'est pas valide."
 
 #: lib/classes/Bridge/Api/Youtube.php:604
 msgid ""
@@ -650,11 +653,11 @@ msgstr "Recevoir les notifications lorsqu'un transfert Bridge échoue"
 
 #: lib/classes/eventsmanager/notify/downloadmailfail.php:120
 msgid "email is not valid"
-msgstr "Adresse email non valide"
+msgstr "Adresse e-mail non valide"
 
 #: lib/classes/eventsmanager/notify/downloadmailfail.php:122
 msgid "failed to send mail"
-msgstr "Echec de l'envoi d'email"
+msgstr "Echec de l'envoi d'e-mail"
 
 #: lib/classes/eventsmanager/notify/downloadmailfail.php:124
 msgid "an error occured while exporting records"
@@ -667,11 +670,11 @@ msgstr "La livraison à %s a échoué pour la raison suivante : %s"
 
 #: lib/classes/eventsmanager/notify/downloadmailfail.php:147
 msgid "Email export fails"
-msgstr "L'export par email a échoué"
+msgstr "L'export par e-mail a échoué"
 
 #: lib/classes/eventsmanager/notify/downloadmailfail.php:156
 msgid "Get a notification when a mail export fails"
-msgstr "Obtenir une notification quand un export par email échoue"
+msgstr "Obtenir une notification quand un export par e-mail échoue"
 
 #: lib/classes/eventsmanager/notify/feed.php:150
 #, php-format
@@ -1187,7 +1190,7 @@ msgstr "Documents distribués"
 
 #: lib/classes/module/report/sent.php:46
 msgid "Sent documents (mail)"
-msgstr "Documents envoyés (par email)"
+msgstr "Documents envoyés (par e-mail)"
 
 #: lib/classes/module/report/validate.php:46
 msgid "report:: validated documents"
@@ -1517,7 +1520,7 @@ msgstr "records, ou si la mémoire dépasse"
 #: lib/classes/User/Adapter.php:440
 #, php-format
 msgid "A user already exists with email addres %s"
-msgstr "Un utilisateur existe déjà avec l'adresse email %s"
+msgstr "Un utilisateur existe déjà avec l'adresse e-mail %s"
 
 #: lib/classes/User/Adapter.php:1382
 #, php-format
@@ -1556,7 +1559,7 @@ msgstr "Message de maintenance"
 #: lib/conf.d/_GV_template.php:70
 #: lib/Alchemy/Phrasea/Form/Configuration/MaintenanceForm.php:36
 msgid "Enable maintenance message broadcast"
-msgstr "Diffuser le massage de maintenance"
+msgstr "Diffuser le message de maintenance"
 
 #: lib/conf.d/_GV_template.php:76
 #: lib/Alchemy/Phrasea/Form/Configuration/MaintenanceForm.php:40
@@ -1689,34 +1692,6 @@ msgstr "Chemin par défaut pour les données"
 #: lib/conf.d/_GV_template.php:230
 msgid "Executables settings"
 msgstr "Paramètres d'exécutables"
-
-#: lib/conf.d/_GV_template.php:235
-msgid "Enable H264 stream mode"
-msgstr "Activer H264 en mode flux continu (lecture en streaming)"
-
-#: lib/conf.d/_GV_template.php:236
-msgid ""
-"Use with mod_token. Attention requires the apache modules and "
-"mod_h264_streaming mod_auth_token"
-msgstr ""
-"Utiliser avec mod_token (requiert les modules Apache mod_token, "
-"mod_auth_token et mod_h264_streaming)."
-
-#: lib/conf.d/_GV_template.php:243
-msgid "Auth_token mount point"
-msgstr "Point de montage Auth_token"
-
-#: lib/conf.d/_GV_template.php:250
-msgid "Auth_token directory path"
-msgstr "Chemin du répertoire Auth_token"
-
-#: lib/conf.d/_GV_template.php:256
-msgid "Auth_token passphrase"
-msgstr "Passphrase Auth_token"
-
-#: lib/conf.d/_GV_template.php:257
-msgid "Defined in Apache configuration"
-msgstr "Définie dans la configuration de Apache."
 
 #: lib/conf.d/_GV_template.php:263
 msgid "php.ini path"
@@ -1881,7 +1856,7 @@ msgstr "Adresse par défaut de l'expéditeur"
 
 #: lib/conf.d/_GV_template.php:439
 msgid "Prefix for notification emails"
-msgstr "Préfixe pour les notifications adressées par email"
+msgstr "Préfixe pour les notifications adressées par e-mail"
 
 #: lib/conf.d/_GV_template.php:445
 msgid "Use a SMTP server"
@@ -2310,12 +2285,12 @@ msgstr "Informations"
 #: tmp/cache_twig/05/50/0213648b6ff9690fccfbed37e3f562abd86c22a6ce25838f8be801703aae.php:111
 #: tmp/cache_twig/0c/bf/406036cddce3148e618d102ba29a085181bab74af6da2bd3c9c73eb7163e.php:89
 msgid "Reglages:: reglages d acces guest"
-msgstr "Réglages d'accès invité"
+msgstr "Réglages de l'accès invité"
 
 #: tmp/cache_twig/05/50/0213648b6ff9690fccfbed37e3f562abd86c22a6ce25838f8be801703aae.php:117
 #: tmp/cache_twig/0c/bf/406036cddce3148e618d102ba29a085181bab74af6da2bd3c9c73eb7163e.php:97
 msgid "Reglages:: reglages d inscitpition automatisee"
-msgstr "Réglages d'auto-inscription"
+msgstr "Réglages de l'auto-inscription"
 
 #: tmp/cache_twig/05/50/0213648b6ff9690fccfbed37e3f562abd86c22a6ce25838f8be801703aae.php:129
 msgid "Edition des droits de %display_name%"
@@ -2350,7 +2325,7 @@ msgstr "Gérer le thesaurus"
 
 #: tmp/cache_twig/05/50/0213648b6ff9690fccfbed37e3f562abd86c22a6ce25838f8be801703aae.php:479
 msgid "Manage Database"
-msgstr "Gérer la Base de Données"
+msgstr "Gérer la base de données"
 
 #: tmp/cache_twig/05/50/0213648b6ff9690fccfbed37e3f562abd86c22a6ce25838f8be801703aae.php:488
 msgid "Manage DB fields"
@@ -2371,7 +2346,7 @@ msgstr "Autoriser à créer des paniers"
 
 #: tmp/cache_twig/05/50/0213648b6ff9690fccfbed37e3f562abd86c22a6ce25838f8be801703aae.php:536
 msgid "Access to preview"
-msgstr "Accès aux sous résolutions"
+msgstr "Accès aux sous-définitions"
 
 #: tmp/cache_twig/05/50/0213648b6ff9690fccfbed37e3f562abd86c22a6ce25838f8be801703aae.php:545
 msgid "Remove watermark"
@@ -2379,7 +2354,7 @@ msgstr "Sans filigrane"
 
 #: tmp/cache_twig/05/50/0213648b6ff9690fccfbed37e3f562abd86c22a6ce25838f8be801703aae.php:554
 msgid "Access to HD"
-msgstr "Autoriser à télécharger les Documents"
+msgstr "Autoriser à télécharger les documents"
 
 #: tmp/cache_twig/05/50/0213648b6ff9690fccfbed37e3f562abd86c22a6ce25838f8be801703aae.php:563
 msgid "Allowed to order"
@@ -2395,7 +2370,7 @@ msgstr "Régler les restrictions temporelles"
 
 #: tmp/cache_twig/05/50/0213648b6ff9690fccfbed37e3f562abd86c22a6ce25838f8be801703aae.php:626
 msgid "Set statuses restrictions"
-msgstr "Régler les droits d'accès selon les status"
+msgstr "Régler les droits d'accès selon des status"
 
 #: tmp/cache_twig/05/50/0213648b6ff9690fccfbed37e3f562abd86c22a6ce25838f8be801703aae.php:656
 msgid "Allowed to add"
@@ -2415,7 +2390,7 @@ msgstr "Autoriser à supprimer des documents"
 
 #: tmp/cache_twig/05/50/0213648b6ff9690fccfbed37e3f562abd86c22a6ce25838f8be801703aae.php:692
 msgid "Access to image tools"
-msgstr "Autoriser à accéder aux outils images"
+msgstr "Autoriser l'accès aux Outils"
 
 #: tmp/cache_twig/05/50/0213648b6ff9690fccfbed37e3f562abd86c22a6ce25838f8be801703aae.php:701
 msgid "Manage users"
@@ -2431,7 +2406,7 @@ msgstr "Autoriser à faire des diffusions"
 
 #: tmp/cache_twig/05/50/0213648b6ff9690fccfbed37e3f562abd86c22a6ce25838f8be801703aae.php:728
 msgid "Manage collection"
-msgstr "Autoriser a gérer les paramètres de collection"
+msgstr "Autoriser à gérer les paramètres de collection"
 
 #: tmp/cache_twig/05/50/0213648b6ff9690fccfbed37e3f562abd86c22a6ce25838f8be801703aae.php:737
 msgid "Manage values lists"
@@ -2658,7 +2633,7 @@ msgstr "Nom"
 
 #: tmp/cache_twig/0a/49/430fac2e8fdbc5a8da691de446549cbdc09fff4248272712b8442c6c8524.php:53
 msgid "Email Name"
-msgstr "Adresse email"
+msgstr "Adresse e-mail"
 
 #: tmp/cache_twig/0a/49/430fac2e8fdbc5a8da691de446549cbdc09fff4248272712b8442c6c8524.php:64
 msgid "Job"
@@ -3516,7 +3491,7 @@ msgstr "Auteur"
 #: tmp/cache_twig/1f/ba/c0d4f7dcba833652516603c13e3488bbf85948824b0c4e627d2ec3f4f0e7.php:123
 #: tmp/cache_twig/c5/35/5cb030423e0d3ed7b269f4de381c3b9ebebb9ddbf84623a0c9c4d033705d.php:93
 msgid "publication : email autheur"
-msgstr "Email de l'auteur"
+msgstr "E-mail de l'auteur"
 
 #: tmp/cache_twig/1f/ba/c0d4f7dcba833652516603c13e3488bbf85948824b0c4e627d2ec3f4f0e7.php:135
 #: tmp/cache_twig/c5/35/5cb030423e0d3ed7b269f4de381c3b9ebebb9ddbf84623a0c9c4d033705d.php:105
@@ -4473,7 +4448,7 @@ msgstr "Création de votre compte"
 
 #: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:685
 msgid "Votre adresse email"
-msgstr "Votre adresse email"
+msgstr "Votre adresse e-mail"
 
 #: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:692
 msgid "Votre mot de passe"
@@ -5223,7 +5198,7 @@ msgstr "Suppression de %n_element% vidéo(s)"
 #: tmp/cache_twig/5c/1f/346f87c1b4384861481930c133a5dc374b433bfb99ce458ae868487857a7.php:51
 #: tmp/cache_twig/ea/d2/a807a1e541ea3a12f28e460ca5356876c50a8e3ac8e806474e261228d68a.php:51
 msgid "Etes vous sur de supprimer %number% videos ?"
-msgstr "Etes vous certain de vouloir  supprimer %number% video(s )?"
+msgstr "Êtes-vous certain de vouloir supprimer %number% video(s ) ?"
 
 #: tmp/cache_twig/5c/86/14e7833a7a9ce5d422b2490d3a43cc460c93a5c63dd63a1e95172aa1e3f3.php:38
 #: tmp/cache_twig/5d/db/dbc3943aef366bf3677d6cf618df2220c8bf38aec7b90fffab474cf29c93.php:53
@@ -5679,11 +5654,11 @@ msgstr "Ajouter un nouvel utilisateur"
 
 #: tmp/cache_twig/73/03/9a27406d67e97dba3fafde7321d7008cb06ff2134c95c4d3d54b48fbab0a.php:351
 msgid "Adresse email du nouvel utilisateur"
-msgstr "Adresse email du nouvel utilisateur"
+msgstr "Adresse e-mail du nouvel utilisateur"
 
 #: tmp/cache_twig/73/03/9a27406d67e97dba3fafde7321d7008cb06ff2134c95c4d3d54b48fbab0a.php:358
 msgid "Send an email to the user to setup his password"
-msgstr "Envoyer un email à l'utilisateur pour créer son mot de passe"
+msgstr "Envoyer un e-mail à l'utilisateur pour créer son mot de passe"
 
 #: tmp/cache_twig/73/03/9a27406d67e97dba3fafde7321d7008cb06ff2134c95c4d3d54b48fbab0a.php:365
 msgid "Require email validation to activate the account"
@@ -5960,7 +5935,7 @@ msgstr "De"
 #: tmp/cache_twig/7b/d2/727d4c9199e9e52f920cff098e5de9b86906f279696610f3599ca2a04bdf.php:709
 #: tmp/cache_twig/d9/2f/355ae9eea3054ec32f40555d4efd829847edaa9dae340c739983fc278435.php:960
 msgid "phraseanet::time:: a"
-msgstr "A"
+msgstr "à"
 
 #: tmp/cache_twig/7b/d2/727d4c9199e9e52f920cff098e5de9b86906f279696610f3599ca2a04bdf.php:793
 msgid "client::recherche: filter sur"
@@ -5976,7 +5951,7 @@ msgstr "Par status"
 
 #: tmp/cache_twig/7b/d2/727d4c9199e9e52f920cff098e5de9b86906f279696610f3599ca2a04bdf.php:832
 msgid "client::recherche: filtrer par champs"
-msgstr "Par champ"
+msgstr "Par champs"
 
 #: tmp/cache_twig/7b/d2/727d4c9199e9e52f920cff098e5de9b86906f279696610f3599ca2a04bdf.php:841
 msgid "client::recherche: filtrer par champs : tous les champs"
@@ -6303,10 +6278,6 @@ msgstr ""
 #: tmp/cache_twig/8f/c0/f715caf5a5e0a9877b0a258e829b98624be5d0dffc4175f0d8ee6dc5e473.php:438
 msgid "admin::base:collection: Monter une collection"
 msgstr "Monter une collection"
-
-#: tmp/cache_twig/8f/c0/f715caf5a5e0a9877b0a258e829b98624be5d0dffc4175f0d8ee6dc5e473.php:397
-msgid "Monter"
-msgstr "Monter"
 
 #: tmp/cache_twig/8f/c0/f715caf5a5e0a9877b0a258e829b98624be5d0dffc4175f0d8ee6dc5e473.php:406
 #: tmp/cache_twig/f6/80/70077de73343915dc25be14f44fd49ef4d568c2d86dd7927b03f796c74c2.php:70
@@ -6757,8 +6728,9 @@ msgstr "Questions les plus posées"
 #: tmp/cache_twig/a0/72/1e49ccee500b6d7a08b9fd3e09e7c918ec3d7746c184703f6a72e4685f0e.php:468
 #: lib/Alchemy/Phrasea/Controller/Report/Informations.php:53
 #: lib/Alchemy/Phrasea/Controller/Report/Informations.php:298
+#, fuzzy
 msgid "report:: document"
-msgstr "Document"
+msgstr "Documents"
 
 #: tmp/cache_twig/a0/72/1e49ccee500b6d7a08b9fd3e09e7c918ec3d7746c184703f6a72e4685f0e.php:475
 msgid "report:: pushe"
@@ -6964,11 +6936,11 @@ msgstr "Application"
 
 #: tmp/cache_twig/ae/b5/6c72c5ccd51726624a5c0ec34fdf736755f84fb9f0e65b6f2a59c6097cf8.php:68
 msgid "settings OAuth"
-msgstr "Réglage Oauth"
+msgstr "Réglage OAuth2"
 
 #: tmp/cache_twig/ae/b5/6c72c5ccd51726624a5c0ec34fdf736755f84fb9f0e65b6f2a59c6097cf8.php:72
 msgid "Les parametres oauth de votre application."
-msgstr "Les paramètres oauth de votre application."
+msgstr "Paramètres OAuth2 de l'application"
 
 #: tmp/cache_twig/ae/b5/6c72c5ccd51726624a5c0ec34fdf736755f84fb9f0e65b6f2a59c6097cf8.php:94
 #: tmp/cache_twig/d6/86/98df4af3efb8ec2b82cec6c31e1c1f8349f803efd414098b2251e21ec73e.php:157
@@ -6980,16 +6952,17 @@ msgid "Modify"
 msgstr "Modifier"
 
 #: tmp/cache_twig/ae/b5/6c72c5ccd51726624a5c0ec34fdf736755f84fb9f0e65b6f2a59c6097cf8.php:151
+#, fuzzy
 msgid "Activer le grant_type de type password pour votre application"
-msgstr "Activer le grant_type de type password pour votre application"
+msgstr "Activer le grant_type de type password pour l'application"
 
 #: tmp/cache_twig/ae/b5/6c72c5ccd51726624a5c0ec34fdf736755f84fb9f0e65b6f2a59c6097cf8.php:173
 msgid "Votre token d'access"
-msgstr "Votre token d'accès"
+msgstr "Jeton d'accès"
 
 #: tmp/cache_twig/ae/b5/6c72c5ccd51726624a5c0ec34fdf736755f84fb9f0e65b6f2a59c6097cf8.php:177
 msgid "Les paramétres oauth de votre application."
-msgstr "Paramètres Oauth de l'application"
+msgstr "Paramètres OAuth2 de l'application."
 
 #: tmp/cache_twig/ae/b5/6c72c5ccd51726624a5c0ec34fdf736755f84fb9f0e65b6f2a59c6097cf8.php:186
 msgid "Token"
@@ -7062,11 +7035,11 @@ msgstr "Développeur"
 
 #: tmp/cache_twig/b1/1f/ba5dd03d69758d66a86fcdab0dfaafa230b266f64e55ec34a8e454ba3ded.php:60
 msgid "Your %provider_name% account matchs a Phraseanet account"
-msgstr "Votre compte %provider_name% correspond à un compte Phraseanet."
+msgstr "Le compte %provider_name% correspond à un compte Phraseanet."
 
 #: tmp/cache_twig/b1/1f/ba5dd03d69758d66a86fcdab0dfaafa230b266f64e55ec34a8e454ba3ded.php:192
 msgid "These informations do not match?"
-msgstr "Ces informations ne correspondent pas ?"
+msgstr "Ces informations ne concordent pas ?"
 
 #: tmp/cache_twig/b1/1f/ba5dd03d69758d66a86fcdab0dfaafa230b266f64e55ec34a8e454ba3ded.php:204
 msgid "Use my Phraseanet account"
@@ -7447,22 +7420,22 @@ msgstr "Suggestion d'utilisateurs"
 #: tmp/cache_twig/c2/80/28b1715b2ad1460bb2cc2b4a1f862c786658197b57da92b05278696e6b0a.php:371
 msgid "Push::unpush permet d'envoyer un lot d'image a des destinataires"
 msgstr ""
-"«Diffuser»: Envoie un lot de documents à des destinataires. Les "
-"destinataires recevront un e-mail, contenant un lien lançant Phraseanet "
-"Lightbox. Cette interface donne un accès immédiat en visualisation et/ou "
-"téléchargement. Pour les utilisateurs authentifiés, elle est également "
-"disponible sous forme d’un panier «Reçu»."
+"Le Push permet d'adresser des documents à des utilisateurs. Ils recevront un "
+"e-mail contenant un lien lançant Phraseanet Lightbox. Cette interface les "
+"autorise à visualiser et à télécharger le contenu diffusé. Pour les "
+"utilisateurs authentifiés, un Push est également disponible sous la forme "
+"d’un panier reçu dans la zone de travail."
 
 #: tmp/cache_twig/c2/80/28b1715b2ad1460bb2cc2b4a1f862c786658197b57da92b05278696e6b0a.php:377
 msgid ""
 "Push::une validation est une demande d'appreciation a d'autres personnes"
 msgstr ""
-"La Validation envoie une demande d'appréciation sur un lot de documents à "
-"des destinataires. Ils reçoivent un e-mail contenant un lien permettant de "
-"rejoindre Phraseanet Lightbox, une interface donnant un accès immédiat aux "
-"documents pour leur appréciation et/ou téléchargement. Pour les utilisateurs "
-"authentifiés, la Validation est également disponible sous forme d’un panier "
-"dans la zone de travail."
+"La validation permet d'adresser des demandes d'appréciation de documents "
+"auprès d'utilisateurs. Ils recevront un e-mail contenant un lien lançant "
+"Phraseanet Lightbox. Cette interface les autorise à visualiser, télécharger, "
+"et à émettre des avis et commentaires sur le contenu diffusé. Pour les "
+"utilisateurs authentifiés, la Validation est également disponible sous la "
+"forme d’un panier reçu dans la zone de travail."
 
 #: tmp/cache_twig/c2/80/28b1715b2ad1460bb2cc2b4a1f862c786658197b57da92b05278696e6b0a.php:405
 msgid "You are about to push %nb_push_items% records."
@@ -8449,7 +8422,7 @@ msgstr "A"
 
 #: tmp/cache_twig/e0/dd/b1907cdd101f86af2e081e1302dc44d6ef84d81307a71967e96f2b37df75.php:311
 msgid "Recevoir un accuse de reception a %my_email%"
-msgstr "Demander un accusé de reception à transmettre à l'adresse %my_email%"
+msgstr "Demander un accusé de réception à transmettre à l'adresse %my_email%"
 
 #: tmp/cache_twig/e0/dd/b1907cdd101f86af2e081e1302dc44d6ef84d81307a71967e96f2b37df75.php:320
 msgid ""
@@ -8562,11 +8535,12 @@ msgstr ""
 #: tmp/cache_twig/e0/dd/b1907cdd101f86af2e081e1302dc44d6ef84d81307a71967e96f2b37df75.php:1294
 msgid "You can alternatively receive an email when the download is ready."
 msgstr ""
-"Vous pouvez être informé par email quand votre téléchargement est prêt."
+"Vous pouvez télécharger les documents en différé, au moyen d'un lien adressé "
+"par e-mail lorsque l'archive sera prête."
 
 #: tmp/cache_twig/e0/dd/b1907cdd101f86af2e081e1302dc44d6ef84d81307a71967e96f2b37df75.php:1303
 msgid "Would you like to receive an e-mail when your download is ready ?"
-msgstr "Souhaitez vous recevoir un email quand votre téléchargement est prêt ?"
+msgstr "Souhaitez-vous poursuivre ce téléchargement différé ?"
 
 #: tmp/cache_twig/e0/dd/b1907cdd101f86af2e081e1302dc44d6ef84d81307a71967e96f2b37df75.php:1544
 msgid "phraseanet:: utiliser SSL"
@@ -8811,12 +8785,12 @@ msgid ""
 "Si cet email contient des liens non cliquables, copiez/collez ces liens dans "
 "votre navigateur."
 msgstr ""
-"Si cet email contient des liens non cliquables, copiez/collez ces liens dans "
-"votre navigateur."
+"Si cet e-mail contient des liens non cliquables, copiez/collez-les dans la "
+"barre d'adresse de votre navigateur."
 
 #: tmp/cache_twig/e9/1a/9e2396dbfd0df38fa3c35df138bcc0606bacbbd117d37b40fb246fa6aaf6.php:198
 msgid "Le contenu de cet email est confidentiel, ne le divulguez pas."
-msgstr "Le contenu de cet email est confidentiel. Ne le divulguez pas."
+msgstr "Le contenu de cet e-mail est confidentiel. Ne le divulguez pas."
 
 #: tmp/cache_twig/e9/1a/9e2396dbfd0df38fa3c35df138bcc0606bacbbd117d37b40fb246fa6aaf6.php:210
 msgid "Message automatique de Phraseanet"
@@ -8824,7 +8798,8 @@ msgstr "Message automatique de Phraseanet"
 
 #: tmp/cache_twig/e9/1a/9e2396dbfd0df38fa3c35df138bcc0606bacbbd117d37b40fb246fa6aaf6.php:228
 msgid "Pour gérer l'envoi d'email automatique, connectez-vous à %link%"
-msgstr "Pour gérer l'envoi d'email automatique, connectez-vous à %link%"
+msgstr ""
+"Pour gérer la réception d'e-mails automatiques, connectez-vous à %link%."
 
 #: tmp/cache_twig/e9/49/406e6d61efed296d58e5356a77a622909c068b709020709aa697c9fd4c69.php:59
 msgid "Le bridge Youtube ne prend en charge que les videos"
@@ -10283,11 +10258,11 @@ msgstr "Le nom est obligatoire"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Push.php:520
 msgid "Email is required"
-msgstr "L'adresse email est obligatoire"
+msgstr "L'adresse e-mail est obligatoire"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Push.php:523
 msgid "Email is invalid"
-msgstr "L'email est invalide"
+msgstr "L'e-mail est invalide"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Push.php:537
 msgid "User already exists"
@@ -10483,7 +10458,7 @@ msgstr "Total des téléchargements"
 
 #: lib/Alchemy/Phrasea/Controller/Report/Activity.php:372
 msgid "report:: preview"
-msgstr "Sous définitions"
+msgstr "Sous-définitions"
 
 #: lib/Alchemy/Phrasea/Controller/Report/Activity.php:373
 msgid "report:: document original"
@@ -10933,7 +10908,7 @@ msgstr "L'identifiant est déjà enregistré."
 
 #: lib/Alchemy/Phrasea/Form/Constraint/PasswordToken.php:26
 msgid "The token provided is not valid anymore"
-msgstr "Le Token fourni n'est plus valide."
+msgstr "Le jeton fourni n'est pas valide."
 
 #: lib/Alchemy/Phrasea/Form/Login/PhraseaAuthenticationForm.php:41
 msgid "Remember me"
@@ -10977,7 +10952,7 @@ msgstr "Panier par défaut"
 
 #: lib/Alchemy/Phrasea/Helper/User/Edit.php:599
 msgid "Email addess is not valid"
-msgstr "L'adresse email n'est pas valide"
+msgstr "L'adresse e-mail n'est pas valide"
 
 #: lib/Alchemy/Phrasea/Helper/User/Edit.php:627
 #, php-format
@@ -10991,7 +10966,7 @@ msgstr "Vous ne recevrez plus de notifications sur %s"
 
 #: lib/Alchemy/Phrasea/Helper/User/Manage.php:158
 msgid "Invalid mail address"
-msgstr "Adresse Email invalide"
+msgstr "Adresse e-mail invalide"
 
 #: lib/Alchemy/Phrasea/Helper/User/Manage.php:220
 msgid "Invalid template name"
@@ -11522,3 +11497,216 @@ msgstr "La liste est introuvable"
 #: lib/Doctrine/Repositories/UsrListRepository.php:57
 msgid "You have not access to this list"
 msgstr "Vous n'avez pas accès à cette liste"
+
+#: ../config/_GV_template.php:271
+msgid "Enable Forcing authentication to see push content"
+msgstr ""
+"Rendre disponible l'option d'authentification forcée pour le Push et la "
+"Validation"
+
+#: ../config/_GV_template.php:272
+msgid ""
+"Adds an option to the push form submission to restrict push recipient(s) to "
+"Phraseanet users only."
+msgstr ""
+"Ajoute une option permettant de limiter la diffusion des Push et Validations "
+"auprès d'utilisateurs Phraseanet dans les formulaires d'envoi."
+
+#: ../lib/classes/task/period/apiwebhooks.php:18
+msgid "Api Webhook"
+msgstr "API Webhook"
+
+#: ../lib/classes/task/period/apiwebhooks.php:23
+msgid "Notify Phraseanet Oauth2 client applications using webhooks."
+msgstr ""
+"Notifier les applications tierces OAuth2 de Phraseanet en utilisant des "
+"Webhooks."
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:70
+msgid "report:: activite document ajoute"
+msgstr "Ajout de documents"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:82
+msgid "report:: activite document edite"
+msgstr "Edition de documents"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:94
+msgid "report:: Cumul telechargements & connexions"
+msgstr "Téléchargements et connexions"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:100
+msgid "report::Connexion"
+msgstr "Connexions"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:112
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:130
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:148
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:166
+msgid "report:: Utilisateurs les plus actifs"
+msgstr "Utilisateurs les plus actifs"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:118
+msgid "report:: telechargements document"
+msgstr "Documents téléchargés"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:136
+msgid "report:: telechargements preview"
+msgstr "Sous-définitions téléchargées"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:154
+#, fuzzy
+msgid "report:: poids document"
+msgstr "Poids des documents téléchargés"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:172
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:241
+msgid "report:: poids preview"
+msgstr "Poids des sous-définitions téléchargées"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:184
+msgid "report:: documents les plus telecharges"
+msgstr "Documents les plus téléchargés"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:202
+msgid "report:: preview les plus telecharges"
+msgstr "Sous-définitions les plus téléchargées"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:253
+msgid "report:: site d'ou les photo sont les plus consultees"
+msgstr "Site d'où les documents sont les plus consultés"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:256
+msgid "report:: site"
+msgstr "Site"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:259
+msgid "report:: nombre de vue"
+msgstr "Nombre de vues"
+
+#: ../tmp/cache_twig/15/e6/48f7a939abc1d982521039d24da527c3ada5f5d03863f37a898f9ba0e842.php:1443
+msgid "Success !"
+msgstr "Effectué avec succès !"
+
+#: ../tmp/cache_twig/c5/9d/dc614413dcd70efe02ba0ce7f35cb7fb7a74f04449da12691d78b28adab1.php:20
+msgid "Masks"
+msgstr "Masques"
+
+#: ../tmp/cache_twig/7b/1f/b820e010a22209b63a3314f5462334edd4e1ff7ada6c80fff2be5b79f777.php:261
+#, fuzzy
+msgid "Force authentication"
+msgstr "Forcer l'authentification des utilisateurs"
+
+#: ../tmp/cache_twig/7b/1f/b820e010a22209b63a3314f5462334edd4e1ff7ada6c80fff2be5b79f777.php:270
+#, fuzzy
+msgid ""
+"The parameter \"force authentication\" forces the recipient(s) of the push "
+"to possess a Phraseanet account\n"
+"                    to see its contents.\n"
+"                    This avoids anonymous users to access to the content of "
+"the push if they were able to get the display\n"
+"                    url through a forwarded mail for example."
+msgstr ""
+"L'option Forcer l'authentification des utilisateurs contraint les "
+"destinataires à s'authentifier pour accéder au contenu diffusé. \n"
+"Cela permet d'éviter l'accès aux documents à des personnes auprès desquels "
+"l'url aurait été divulguée notamment par un e-mail transféré. "
+
+#: ../tmp/cache_twig/d4/13/ca0b8cae1e2b3f5abce3759e6a196753935539fffeddf72850e920e58493.php:176
+#, fuzzy
+msgid "Define a webhook URL"
+msgstr "Définir une URL de Webhook"
+
+#: ../tmp/cache_twig/d4/13/ca0b8cae1e2b3f5abce3759e6a196753935539fffeddf72850e920e58493.php:181
+#, fuzzy
+msgid ""
+"Gives the option to your application to communicate with Phraseanet. This "
+"webhook can be used to trigger some actions on your application side."
+msgstr ""
+"Permet à l'application de communiquer avec Phraseanet. Ce Webhook peut être "
+"utilisé pour déclencher des actions dans l'application tierce."
+
+#: ../tmp/cache_twig/c1/34/36f07763182c27f018a2dd7fcfe342ddf207d0facb87eb79e500855ae96e.php:48
+#: ../tmp/cache_twig/c1/34/36f07763182c27f018a2dd7fcfe342ddf207d0facb87eb79e500855ae96e.php:54
+msgid "from"
+msgstr "De"
+
+#: ../tmp/cache_twig/c1/34/36f07763182c27f018a2dd7fcfe342ddf207d0facb87eb79e500855ae96e.php:61
+#: ../tmp/cache_twig/c1/34/36f07763182c27f018a2dd7fcfe342ddf207d0facb87eb79e500855ae96e.php:68
+msgid "to"
+msgstr "à"
+
+#: ../tmp/cache_twig/c1/34/36f07763182c27f018a2dd7fcfe342ddf207d0facb87eb79e500855ae96e.php:75
+msgid "Generate"
+msgstr "Générer"
+
+#: ../tmp/cache_twig/c1/34/36f07763182c27f018a2dd7fcfe342ddf207d0facb87eb79e500855ae96e.php:83
+msgid ""
+"Report generation may take a long time to generate, depending on the number "
+"of collections and the period selected."
+msgstr ""
+"En fonction du nombre de collections et de l'intervalle de date sélectionné, "
+"la génération du Report peut prendre temps."
+
+#: ../tmp/cache_twig/c1/34/36f07763182c27f018a2dd7fcfe342ddf207d0facb87eb79e500855ae96e.php:101
+msgid "Generate dashboard"
+msgstr "Générer le tableau de bord"
+
+#: ../tmp/cache_twig/3f/dd/e8aa84e869c5c7619c3e3880c0b999fd23cb0c0ecacde77d1435f2d0220c.php:397
+#: ../tmp/cache_twig/0d/51/4d3b41d579f4dfdcf4a6d19883fb12c401aaeed7a5c96113b2fbb1d72aa4.php:397
+#, fuzzy
+msgid "Monter la collection %name%"
+msgstr "Monter la collection %name%"
+
+#: ../tmp/cache_twig/02/2b/429c7932ceba26cb597c957a5462885e6c83a417f6b4191864794890ab21.php:90
+msgid "CSV export"
+msgstr "Export CSV"
+
+#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:957
+#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:970
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:957
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:970
+#, fuzzy
+msgid "YYYY/MM/DD"
+msgstr "AAAA/MM/JJ"
+
+#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1696
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1696
+msgid "Use latest search settings on Production loading"
+msgstr "Utiliser la dernière question posée au lancement de Production"
+
+#: ../lib/Alchemy/Phrasea/Notification/Mail/MailSuccessFTPReceiver.php:41
+msgid "You just received some documents from %s on %s"
+msgstr "Vous avez reçu des documents de la part de %s sur %s"
+
+#: ../lib/Alchemy/Phrasea/Controller/Admin/Users.php:273
+msgid "Unable to create template, the name is already used."
+msgstr "Impossible le créer ce modèle, le nom donné est déjà pris."
+
+#: ../lib/Alchemy/Phrasea/Controller/Admin/Users.php:275
+msgid "Unable to create the user."
+msgstr "Impossible de créer cet utilisateur."
+
+#~ msgid "Enable H264 stream mode"
+#~ msgstr "Activer H264 en mode flux continu (lecture en streaming)"
+
+#~ msgid ""
+#~ "Use with mod_token. Attention requires the apache modules and "
+#~ "mod_h264_streaming mod_auth_token"
+#~ msgstr ""
+#~ "Utiliser avec mod_token (requiert les modules Apache mod_token, "
+#~ "mod_auth_token et mod_h264_streaming)."
+
+#~ msgid "Auth_token mount point"
+#~ msgstr "Point de montage Auth_token"
+
+#~ msgid "Auth_token directory path"
+#~ msgstr "Chemin du répertoire Auth_token"
+
+#~ msgid "Auth_token passphrase"
+#~ msgstr "Passphrase Auth_token"
+
+#~ msgid "Defined in Apache configuration"
+#~ msgstr "Définie dans la configuration de Apache."
+
+#~ msgid "Monter"
+#~ msgstr "Monter"
