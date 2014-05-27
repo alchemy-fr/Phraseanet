@@ -24,4 +24,11 @@ abstract class AbstractStaticMode extends AbstractServerMode
 
         parent::__construct($mapping);
     }
+
+    protected function ensureSymlink($pathFile)
+    {
+        if (false === $this->symlinker->hasSymlink($pathFile)) {
+            $this->symlinker->symlink($pathFile);
+        }
+    }
 }

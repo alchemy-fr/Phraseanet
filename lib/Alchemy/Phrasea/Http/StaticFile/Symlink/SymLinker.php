@@ -86,4 +86,9 @@ class SymLinker
             $this->getSymlinkBasePath($pathFile)
         );
     }
+
+    public function hasSymlink($pathFile)
+    {
+        return file_exists($this->getSymlinkPath($pathFile));
+    }
 }

@@ -40,6 +40,8 @@ class Apache extends AbstractStaticMode implements StaticFileModeInterface
      */
     public function getUrl($pathFile)
     {
+        $this->ensureSymlink($pathFile);
+
         return Url::factory(sprintf('%s/%s',  $this->mapping['mount-point'], $this->symlinker->getSymlinkBasePath($pathFile)));
     }
 
