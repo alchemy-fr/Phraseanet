@@ -2,6 +2,7 @@ main:
     servername: 'http://local.phrasea/'
     maintenance: false
     languages: []
+    key: ''
     database:
         host: 'sql-host'
         port: 3306

@@ -2,6 +2,7 @@ main:
     servername: 'http://local.phrasea/'
     maintenance: false
     languages: []
+    key: ''
     database:
         host: 127.0.0.1
         port: 3306
@@ -154,3 +155,6 @@ api_cors:
   expose_headers: []
   max_age: 0
   hosts: []
+session:
+    idle: 0
+    lifetime: 604800 # 1 week
