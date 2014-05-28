@@ -21,15 +21,16 @@ class StaticFileFactory
     private $enabled;
     private $logger;
     private $type;
+    /** @var Symlink\SymLinker */
     private $symlinker;
 
     /**
      * Constructor
      *
      * @param LoggerInterface $logger
-     * @param boolean         $enabled
+     * @param bool            $enabled
      * @param string          $type
-     * @param array           $symlinker
+     * @param SymLinker       $symlinker
      */
     public function __construct(LoggerInterface $logger, $enabled, $type, SymLinker $symlinker)
     {
@@ -40,16 +41,16 @@ class StaticFileFactory
 
         $this->mapping = array(
             'mount-point' => $symlinker->getDefaultAlias(),
-            'directory' => $symlinker->getPublicDir()
+            'directory' => $symlinker->getSymlinkDir()
         );
     }
 
     /**
-     * Creates a new instance of XSendFile Factory according to the application
+     * Creates a new instance of StaticFileFactory Factory according to the application
      * configuration.
      *
      * @param  Application $app
-     * @return XSendFileFactory
+     * @return StaticFileFactory
      */
     public static function create(Application $app)
     {
@@ -59,11 +60,13 @@ class StaticFileFactory
     }
 
     /**
-     * Returns a new instance of ModeInterface.
+     * Returns a new instance of ModeInterface
      *
-     * @return ModeInterface
+     * @param bool $throwException
+     * @param bool $forceMode
      *
-     * @throws InvalidArgumentException if mode type is unknown
+     * @return Apache|Nginx|NullMode
+     * @throws InvalidArgumentException
      */
     public function getMode($throwException = false, $forceMode = false)
     {
@@ -92,7 +95,7 @@ class StaticFileFactory
     }
 
     /**
-     * @return Boolean
+     * @return bool
      */
     public function isStaticFileModeEnabled()
     {

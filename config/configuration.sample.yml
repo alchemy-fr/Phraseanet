@@ -162,6 +162,7 @@ session:
 static-file:
   enabled: false
   type: nginx
+  symlink-directory: ''
 crossdomain:
     site-control: 'master-only'
     allow-access-from:

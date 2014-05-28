@@ -11,22 +11,23 @@
 
 namespace Alchemy\Phrasea\Http\StaticFile\Symlink;
 
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Silex\Application;
 use Symfony\Component\Filesystem\Filesystem;
 use Guzzle\Http\Url;
 
 /**
- * Create & retrieve symlinks from public directory
+ * Create & retrieve symlinks
  */
 class SymLinker
 {
+    /** Mount Point Alias Name */
     const ALIAS = 'thumb';
 
     protected $encoder;
     protected $fs;
-    protected $publicDir;
+    protected $symlinkDir;
     protected $registry;
-    protected $rootPath;
 
     public static function create(Application $app)
     {
@@ -34,22 +35,24 @@ class SymLinker
             $app['phraseanet.thumb-symlinker-encoder'],
             $app['filesystem'],
             $app['phraseanet.registry'],
-            $app['root.path']
+            isset($app['phraseanet.configuration']['static-file']['symlink-directory']) ? $app['phraseanet.configuration']['static-file']['symlink-directory'] : null
         );
     }
 
-    public function __construct(SymLinkerEncoder $encoder, Filesystem $fs, \registryInterface $registry, $rootPath)
+    public function __construct(SymLinkerEncoder $encoder, Filesystem $fs, \registryInterface $registry, $symlinkDir)
     {
         $this->encoder = $encoder;
         $this->fs = $fs;
-        $this->registry = $registry;
-        $this->rootPath = $rootPath;
-        $this->publicDir = sprintf('%s/public/thumbnails', rtrim($this->rootPath, '/'));
+        
+        if (!$symlinkDir) {
+            throw new InvalidArgumentException("Symlink directory is not defined");
+        }
+        $this->symlinkDir = rtrim($symlinkDir, '/');
     }
 
-    public function getPublicDir()
+    public function getSymlinkDir()
     {
-        return $this->publicDir;
+        return $this->symlinkDir;
     }
 
     public function getDefaultAlias()
@@ -82,7 +85,7 @@ class SymLinker
     {
         return sprintf(
             '%s/%s',
-            $this->publicDir,
+            $this->symlinkDir,
             $this->getSymlinkBasePath($pathFile)
         );
     }
