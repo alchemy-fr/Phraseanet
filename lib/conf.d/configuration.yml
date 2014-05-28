@@ -163,6 +163,10 @@ session:
   idle: 0
   # 1 week
   lifetime: 604800
+static-file:
+  enabled: false
+  # 1 week
+  type: nginx
 crossdomain:
   allow-access-from:
     -

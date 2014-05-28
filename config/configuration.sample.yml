@@ -157,8 +157,11 @@ api_cors:
   max_age: 0
   hosts: []
 session:
-    idle: 0
-    lifetime: 604800 # 1 week
+  idle: 0
+  lifetime: 604800 # 1 week
+static-file:
+  enabled: false
+  type: nginx
 crossdomain:
     site-control: 'master-only'
     allow-access-from:
