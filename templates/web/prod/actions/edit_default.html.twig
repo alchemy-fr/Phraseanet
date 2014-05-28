@@ -31,7 +31,7 @@
         {% set class_status = '' %}
     {% endif %}
 
-    <div pos="{{ i }}" id="idEditDiapo_{{ i }}" class="diapo {{ class_status }}" style="width:{{ cont_width }}px; height:{{ cont_height }}px;">
+    <div pos="{{ i }}" id="idEditDiapo_{{ i }}" class="diapo selected {{ class_status }}" style="width:{{ cont_width }}px; height:{{ cont_height }}px;">
         <div class='titre'>
             {{ record.get_original_name() }}
         </div>
