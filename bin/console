@@ -21,7 +21,6 @@ use Alchemy\Phrasea\Command\Setup\H264ConfigurationDumper;
 use Alchemy\Phrasea\Command\Setup\H264MappingGenerator;
 use Alchemy\Phrasea\Command\Setup\StaticConfigurationDumper;
 use Alchemy\Phrasea\Command\Setup\StaticMappingGenerator;
-use Alchemy\Phrasea\Command\Setup\StaticSymLinkGenerator;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\BuildMissingSubdefs;
 use Alchemy\Phrasea\Command\CreateCollection;
@@ -110,7 +109,6 @@ $cli->command(new XSendFileMappingGenerator());
 
 $cli->command(new StaticConfigurationDumper());
 $cli->command(new StaticMappingGenerator());
-$cli->command(new StaticSymLinkGenerator());
 
 $cli->loadPlugins();
 
