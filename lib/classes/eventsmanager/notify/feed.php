@@ -65,11 +65,9 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
 
         $data = $dom_xml->saveXml();
 
-        if ($params['notify_email']) {
-            API_Webhook::create($this->app['phraseanet.appbox'], API_Webhook::NEW_FEED_ENTRY, array_merge(
-                array('feed_id' => $entry->get_feed()->get_id()), $params
-            ));
-        }
+        API_Webhook::create($this->app['phraseanet.appbox'], API_Webhook::NEW_FEED_ENTRY, array_merge(
+            array('feed_id' => $entry->get_feed()->get_id()), $params
+        ));
 
         $Query = new \User_Query($this->app);
 
