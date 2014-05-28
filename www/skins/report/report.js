@@ -936,10 +936,9 @@ function loadDash() {
         error   : function( xhr, err ) {
         },
         timeout: function(){
-        },
-        done: function() {
-            $("#dashboard").removeClass("loading");
         }
+    }).done(function() {
+        $("#dashboard").removeClass("loading");
     });
     return false;
 }
