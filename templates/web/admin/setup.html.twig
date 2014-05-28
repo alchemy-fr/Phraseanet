@@ -35,7 +35,7 @@
     </div>
 </form>
 
-<form id="GV_form" class="form-horizontal" method="post" action = "{{ path('setup_submit_globals') }}">
+<form id="GV_form" class="form-horizontal" method="post" action = "{{ path('setup_submit_globals') }}" autocomplete="off">
     {% for section in GV %}
         <fieldset>
             <legend> {{ section['section'] }} </legend>
@@ -63,7 +63,10 @@
                         {% elseif value['type'] == 'string' %}
                             <div class="controls"><input {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" type="text" value="{{ currentValue }}" class="input-xxlarge"/>
                         {% elseif value['type'] == 'password' %}
-                            <div class="controls"><input {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" type="password" value="{{ currentValue }}" class="input-xxlarge"/>
+                            <div class="controls">
+                                {# input type=password is double because of chrome and autofill issue  see  http://stackoverflow.com/questions/10938891/disable-autofill-in-chrome-without-disabling-autocomplete #}
+                                <input autocomplete="off" {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" type="password" value="{{ currentValue }}" class="input-xxlarge" style="display:none"/>
+                                <input autocomplete="off" {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" type="password" value="{{ currentValue }}" class="input-xxlarge"/>
                         {% elseif value['type'] == 'text' %}
                             <div class="controls"><textarea {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" class="input-xxlarge">{{ currentValue }}</textarea>
                         {% elseif value['type'] == 'enum' %}
