@@ -155,9 +155,10 @@ class Order implements ControllerProviderInterface
 
         try {
             $records = RecordsRequest::fromRequest($app, $request, true, array('cancmd'));
-            $query = new \User_Query($app);
 
             foreach ($records as $key => $record) {
+                $query = new \User_Query($app);
+
                 if ($collectionHasOrderAdmins->containsKey($record->get_base_id())) {
                     if (!$collectionHasOrderAdmins->get($record->get_base_id())) {
                         $records->remove($key);
@@ -182,8 +183,8 @@ class Order implements ControllerProviderInterface
             }
 
             $noAdmins = $collectionHasOrderAdmins->forAll(function ($key, $hasAdmin) {
-                    return false === $hasAdmin;
-                });
+                return false === $hasAdmin;
+            });
 
             if ($noAdmins) {
                 $msg = _('There is no one to validate orders, please contact an administrator');
