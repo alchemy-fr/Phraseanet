@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Http\StaticFile;
 
-class NullMode extends AbstractServerMode implements StaticFileModeInterface
+class NullMode implements StaticFileModeInterface
 {
     /**
      * {@inheritdoc}
