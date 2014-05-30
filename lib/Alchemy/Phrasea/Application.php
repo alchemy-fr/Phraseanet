@@ -76,6 +76,7 @@ use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CacheServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
+use Alchemy\Phrasea\Core\Provider\ContentNegociationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CSVServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FileServeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FtpServiceProvider;
@@ -301,6 +302,7 @@ class Application extends SilexApplication
         $this->register(new FileServeServiceProvider());
         $this->register(new PluginServiceProvider());
         $this->register(new PhraseaEventServiceProvider());
+        $this->register(new ContentNegociationServiceProvider());
 
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
             return PhraseaExceptionHandler::register($app['debug']);
