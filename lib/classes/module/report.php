@@ -767,12 +767,12 @@ class module_report
 
     /**
      * @desc Set your own configuration for each column displayed in the html table
-     * @param array $tab contain your conf's variables
-     *  array( 'field' =>
-     * array('title of the colum', '1 = order ON / 0 = order OFF',
-     *  '1 = bound ON / 0 = bound OFF')
+     * @param  array $tab contain your conf's variables
+     *                    array( 'field' =>
+     *                    array('title of the colum', '1 = order ON / 0 = order OFF',
+     *                    '1 = bound ON / 0 = bound OFF')
      * @example $tab = array('user' => array('user list', 1, 0),
-     *              'id'   => array(user id, 0, 0)); etc ..
+     *                    'id'   => array(user id, 0, 0)); etc ..
      * @return void
      */
     protected function setConfigColumn($tab)

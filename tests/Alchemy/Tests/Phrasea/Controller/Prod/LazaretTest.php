@@ -3,7 +3,6 @@
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
-use Alchemy\Phrasea\Core\Event\Subscriber\SessionManagerSubscriber;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 

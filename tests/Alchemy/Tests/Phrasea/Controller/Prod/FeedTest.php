@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 use Alchemy\Phrasea\Application;
 use Symfony\Component\CssSelector\CssSelector;
 
-class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     /**
      *

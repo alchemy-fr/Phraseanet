@@ -8,7 +8,7 @@ use Symfony\Component\Process\ExecutableFinder;
 /**
  * @covers Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider
  */
-class PluginServiceProvidertest extends ServiceProviderTestCase
+class PluginServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {

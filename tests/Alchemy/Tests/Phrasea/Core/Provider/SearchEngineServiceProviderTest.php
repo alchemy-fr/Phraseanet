@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Core\Provider;
 /**
  * @covers Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider
  */
-class SearchEngineServiceProvidertest extends ServiceProviderTestCase
+class SearchEngineServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {

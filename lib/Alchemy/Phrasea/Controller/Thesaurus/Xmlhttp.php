@@ -825,8 +825,7 @@ class Xmlhttp implements ControllerProviderInterface
         $lcoll = '';
         $collections = $app['authentication']->getUser()->ACL()
             ->get_granted_base(array(), array($sbid)); // array(), $sbid);
-        foreach($collections as $collection)
-        {
+        foreach ($collections as $collection) {
             $lcoll .= ($lcoll?",":"") . $collection->get_coll_id();
         }
         $site = $app['phraseanet.configuration']['main']['key'];

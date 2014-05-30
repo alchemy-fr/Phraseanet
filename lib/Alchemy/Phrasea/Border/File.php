@@ -59,8 +59,8 @@ class File
      * @param MediaInterface $media        The media
      * @param \collection    $collection   The destination collection
      * @param string         $originalName The original name of the file
-     *                                      (if not provided, original name is
-     *                                      extracted from the pathfile)
+     *                                     (if not provided, original name is
+     *                                     extracted from the pathfile)
      */
     public function __construct(Application $app, MediaInterface $media, \collection $collection, $originalName = null)
     {
@@ -276,11 +276,11 @@ class File
     /**
      * Build the File package object
      *
-     * @param string      $pathfile     The path to the file
-     * @param \collection $collection   The destination collection
-     * @param Application $app          An application
-     * @param string      $originalName An optionnal original name (if
-     *                                  different from the $pathfile filename)
+     * @param  string                    $pathfile     The path to the file
+     * @param  \collection               $collection   The destination collection
+     * @param  Application               $app          An application
+     * @param  string                    $originalName An optionnal original name (if
+     *                                                 different from the $pathfile filename)
      * @throws \InvalidArgumentException
      *
      * @return File

@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Core\CLIProvider;
 /**
  * @covers Alchemy\Phrasea\Core\CLIProvider\ComposerSetupServiceProvider
  */
-class ComposerSetupServiceProvidertest extends ServiceProviderTestCase
+class ComposerSetupServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {

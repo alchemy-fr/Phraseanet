@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Application;
 
-class ApiJsonApplication extends ApiAbstract
+class ApiJsonTest extends ApiAbstract
 {
 
     public function getParameters(array $parameters = array())

@@ -200,7 +200,6 @@ class SessionManagerSubscriberTest extends \PhraseanetWebTestCaseAuthenticatedAb
         $app['EM'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
         $app['EM']->expects($this->never())->method('flush');
 
-
         $app->get('/login', function () {
             return '';
         })->bind("homepage");

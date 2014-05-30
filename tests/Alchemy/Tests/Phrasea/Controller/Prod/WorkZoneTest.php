@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
-class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class WorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
     protected $client;

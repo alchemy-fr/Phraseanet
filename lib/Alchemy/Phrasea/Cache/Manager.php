@@ -13,8 +13,6 @@ namespace Alchemy\Phrasea\Cache;
 
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Core\Configuration\Compiler;
-use Alchemy\Phrasea\Cache\Cache;
-use Alchemy\Phrasea\Cache\Factory;
 use Monolog\Logger;
 
 class Manager

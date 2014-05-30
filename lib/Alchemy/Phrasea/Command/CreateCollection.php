@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Command;
 
-use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Core\Event\CollectionCreateEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Symfony\Component\Console\Input\InputArgument;

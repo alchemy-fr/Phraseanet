@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Core\Provider;
 /**
  * @covers Alchemy\Phrasea\Core\Provider\JMSServiceProviderServiceProvider
  */
-class JMSServiceProviderServiceProvidertest extends ServiceProviderTestCase
+class JMSSerializerServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {

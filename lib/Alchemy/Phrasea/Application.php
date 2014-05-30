@@ -67,16 +67,9 @@ use Alchemy\Phrasea\Controller\Root\Session;
 use Alchemy\Phrasea\Controller\Setup as SetupController;
 use Alchemy\Phrasea\Controller\Thesaurus\Thesaurus;
 use Alchemy\Phrasea\Controller\Thesaurus\Xmlhttp as ThesaurusXMLHttp;
-use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
-use Alchemy\Phrasea\Controller\Utils\PathFileTest;
 use Alchemy\Phrasea\Controller\User\Notifications;
 use Alchemy\Phrasea\Controller\User\Preferences;
-use Alchemy\Phrasea\Core\Event\Subscriber\SessionManagerSubscriber;
 use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
-use Alchemy\Phrasea\Core\Event\Subscriber\LogoutSubscriber;
-use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
-use Alchemy\Phrasea\Core\Event\Subscriber\MaintenanceSubscriber;
-use Alchemy\Phrasea\Core\Event\Subscriber\CookiesDisablerSubscriber;
 use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
@@ -103,7 +96,6 @@ use Alchemy\Phrasea\Core\Provider\TemporaryFilesystemServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\Twig\JSUniqueID;
 use Alchemy\Phrasea\Twig\Fit;
 use Alchemy\Phrasea\Twig\Camelize;
@@ -136,10 +128,8 @@ use XPDF\XPDFServiceProvider;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormTypeInterface;
@@ -284,7 +274,7 @@ class Application extends SilexApplication
             'session.test' => $this->getEnvironment() === static::ENV_TEST,
             'session.storage.options' => array('cookie_lifetime' => 0)
         ));
-        $this['session.storage.test'] = $this->share(function($app) {
+        $this['session.storage.test'] = $this->share(function ($app) {
             return new MockArraySessionStorage();
         });
 

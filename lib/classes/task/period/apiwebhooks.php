@@ -65,7 +65,7 @@ class task_period_apiwebhooks extends task_appboxAbstract
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        return array_map(function($row) {
+        return array_map(function ($row) {
             return $row['webhook_url'];
         }, $rows);
     }

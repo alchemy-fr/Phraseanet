@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     public function testDatafilesRouteAuthenticated()
     {

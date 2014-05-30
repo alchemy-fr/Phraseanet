@@ -113,7 +113,7 @@ class SessionManagerSubscriber implements EventSubscriberInterface
 
         $idle = 0;
         if (isset($this->app["phraseanet.configuration"]["session"]["idle"])) {
-            $idle = (int)($this->app["phraseanet.configuration"]["session"]["idle"]);
+            $idle = (int) ($this->app["phraseanet.configuration"]["session"]["idle"]);
         }
         $now = new \DateTime();
         $dt = $now->getTimestamp() - $session->getUpdated()->getTimestamp();

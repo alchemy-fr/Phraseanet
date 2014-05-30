@@ -70,7 +70,7 @@ class H264Factory
     /**
      * Creates a new instance of H264 Factory given a configuration.
      *
-     * @param  Application      $app
+     * @param Application $app
      *
      * @return H264Factory
      */

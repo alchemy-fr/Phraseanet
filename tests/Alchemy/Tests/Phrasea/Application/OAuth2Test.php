@@ -9,7 +9,7 @@ use Alchemy\Phrasea\Authentication\Context;
  * Test oauthv2 flow based on ietf authv2 spec
  * @link http://tools.ietf.org/html/draft-ietf-oauth-v2-18
  */
-class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class OAuth2Test extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     /**
      *

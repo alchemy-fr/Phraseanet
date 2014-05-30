@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Core\Provider\FtpServiceProvider;
 
-class FTPServiceProvidertest extends \PhraseanetPHPUnitAbstract
+class FTPServiceProviderTest extends \PhraseanetPHPUnitAbstract
 {
     public function testGetInstantiate()
     {

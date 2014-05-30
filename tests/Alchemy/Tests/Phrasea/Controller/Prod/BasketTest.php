@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application;
 
-class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class BasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
 

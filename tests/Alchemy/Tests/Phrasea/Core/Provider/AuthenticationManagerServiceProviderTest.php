@@ -11,7 +11,7 @@ use Silex\Application;
 /**
  * @covers Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider
  */
-class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
+class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {

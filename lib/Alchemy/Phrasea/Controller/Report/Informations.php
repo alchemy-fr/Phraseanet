@@ -469,7 +469,6 @@ class Informations implements ControllerProviderInterface
             $reportArray = $info->buildTabGrpInfo(false, array(),  $request->request->get('user'), $conf, false);
 
             if ($request->request->get('printcsv') == 'on') {
-
                 return $this->getCSVResponse($app, $info, 'info_user');
             }
 
@@ -518,13 +517,13 @@ class Informations implements ControllerProviderInterface
         $result = $report->getResult();
         array_unshift($result, $headers);
 
-        $collection = new CallbackCollection($result, function($row) use ($report) {
+        $collection = new CallbackCollection($result, function ($row) use ($report) {
             // restrict fields to the displayed ones
             return array_map('strip_tags', array_intersect_key($row, $report->getDisplay()));
         });
 
         $filename = sprintf('report_export_%s_%s.csv', $type, date('Ymd'));
-        $response = new CSVFileResponse($filename, function() use ($app, $collection) {
+        $response = new CSVFileResponse($filename, function () use ($app, $collection) {
             $app['csv.exporter']->export('php://output', $collection);
         });
 

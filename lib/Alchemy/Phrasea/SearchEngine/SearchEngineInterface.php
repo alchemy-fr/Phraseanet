@@ -12,8 +12,6 @@
 namespace Alchemy\Phrasea\SearchEngine;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
-use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Doctrine\Common\Collections\ArrayCollection;

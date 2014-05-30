@@ -230,7 +230,6 @@ class Developers implements ControllerProviderInterface
         return $app->json(array('success' => !$error));
     }
 
-
     /**
      * Change application webhook
      *

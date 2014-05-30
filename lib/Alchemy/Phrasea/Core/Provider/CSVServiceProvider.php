@@ -26,6 +26,7 @@ class CSVServiceProvider implements ServiceProviderInterface
     {
         $app['csv.exporter.config'] = $app->share(function () {
             $config = new ExporterConfig();
+
             return $config
                 ->setDelimiter(";")
                 ->setEnclosure('"')

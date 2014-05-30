@@ -4,7 +4,6 @@ namespace Alchemy\Tests\Phrasea\SearchEngine;
 
 use Alchemy\Phrasea\SearchEngine\SphinxSearch\SphinxSearchEngine;
 use Alchemy\Phrasea\SearchEngine\SphinxSearch\ConfigurationPanel;
-use Alchemy\Tests\Phrasea\SearchEngine\ConfigurationPanelAbstractTest;
 
 class SphinxSearchConfigurationPanelTest extends ConfigurationPanelAbstractTest
 {

@@ -7,7 +7,7 @@ require_once __DIR__ . '/../../../../../classes/FeedValidator.inc';
 use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Response;
 
-class RssFeedTest extends \PhraseanetWebTestCaseAbstract
+class RSSFeedTest extends \PhraseanetWebTestCaseAbstract
 {
     /**
      *

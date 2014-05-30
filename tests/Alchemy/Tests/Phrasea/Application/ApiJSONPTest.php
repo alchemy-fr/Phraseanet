@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Application;
 
 use Symfony\Component\HttpFoundation\Response;
 
-class ApiJSONPApplication extends ApiAbstract
+class ApiJSONPTest extends ApiAbstract
 {
 
     protected function evaluateResponseBadRequest(Response $response)

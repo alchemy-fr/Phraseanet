@@ -7,7 +7,7 @@ use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
 /**
  * @covers Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider
  */
-class RegistrationServiceProvidertest extends \PhraseanetPHPUnitAbstract
+class RegistrationServiceProviderTest extends \PhraseanetPHPUnitAbstract
 {
     public function testSameInstanceShouldBereturnedEveryTime()
     {

@@ -3,7 +3,6 @@
 namespace Alchemy\Tests\Phrasea\SearchEngine;
 
 use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine;
-use Alchemy\Tests\Phrasea\SearchEngine\SearchEngineAbstractTest;
 use Symfony\Component\Process\Process;
 
 /**

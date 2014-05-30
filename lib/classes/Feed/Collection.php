@@ -50,9 +50,9 @@ class Feed_Collection implements Feed_CollectionInterface, cache_cacheableInterf
 
     /**
      *
-     * @param  Application     $app
-     * @param  User_Adapter    $user
-     * @param  array           $reduce
+     * @param Application  $app
+     * @param User_Adapter $user
+     * @param array        $reduce
      *
      * @return Feed_Collection
      */
@@ -122,7 +122,7 @@ class Feed_Collection implements Feed_CollectionInterface, cache_cacheableInterf
         try {
             $feedIds = $collection->get_data_from_cache(self::CACHE_PUBLIC);
 
-            return new self($app, array_map(function($id) use ($app) {
+            return new self($app, array_map(function ($id) use ($app) {
                 return new \Feed_Adapter($app, $id);
             }, $feedIds));
         } catch (CacheException $e) {
@@ -140,7 +140,7 @@ class Feed_Collection implements Feed_CollectionInterface, cache_cacheableInterf
             $feeds[] = new \Feed_Adapter($app, $row['id']);
         }
 
-        $collection->set_data_to_cache(array_map(function($feed) {
+        $collection->set_data_to_cache(array_map(function ($feed) {
             return $feed->get_id();
         }, $feeds), self::CACHE_PUBLIC);
 

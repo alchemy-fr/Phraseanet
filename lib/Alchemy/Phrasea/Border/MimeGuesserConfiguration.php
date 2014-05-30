@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Border;
 
 use Alchemy\Phrasea\Core\Configuration\Configuration;
-use Alchemy\Phrasea\Media\MimeTypeGuesser as AlchemyMimeTypeGuesser;
 use MediaVorus\Utils\AudioMimeTypeGuesser;
 use MediaVorus\Utils\PostScriptMimeTypeGuesser;
 use MediaVorus\Utils\RawImageMimeTypeGuesser;

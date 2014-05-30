@@ -59,7 +59,7 @@ class ZipArchiveImproved extends ZipArchive
      *
      * @param string $fileName
      * @param int    $flags
-     * return mixed
+     *                         return mixed
      */
     public function open($fileName, $flags = null)
     {

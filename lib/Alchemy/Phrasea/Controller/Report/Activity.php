@@ -307,8 +307,6 @@ class Activity implements ControllerProviderInterface
 
         $activity->setConfig(false);
 
-
-
         if ($request->request->get('printcsv') == 'on') {
             $activity->setHasLimit(false);
             $activity->setPrettyString(false);
@@ -860,13 +858,13 @@ class Activity implements ControllerProviderInterface
         $result = $report->getResult();
         array_unshift($result, $headers);
 
-        $collection = new CallbackCollection($result, function($row) use ($report) {
+        $collection = new CallbackCollection($result, function ($row) use ($report) {
             // restrict to displayed fields
             return array_map('strip_tags', array_intersect_key($row, $report->getDisplay()));
         });
 
         $filename = sprintf('report_export_%s_%s.csv', $type, date('Ymd'));
-        $response = new CSVFileResponse($filename, function() use ($app, $collection) {
+        $response = new CSVFileResponse($filename, function () use ($app, $collection) {
             $app['csv.exporter']->export('php://output', $collection);
         });
 

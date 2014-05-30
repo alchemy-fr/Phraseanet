@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
-class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class UsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
     protected $usersParameters;

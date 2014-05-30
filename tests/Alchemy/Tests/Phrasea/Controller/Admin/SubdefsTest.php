@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Media\Subdef\Image;
 
-class ControllerSubdefsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class SubdefsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
 

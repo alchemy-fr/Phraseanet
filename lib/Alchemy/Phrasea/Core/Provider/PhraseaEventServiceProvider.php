@@ -23,19 +23,19 @@ class PhraseaEventServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['phraseanet.logout-subscriber'] = $app->share(function(Application $app) {
+        $app['phraseanet.logout-subscriber'] = $app->share(function (Application $app) {
             return new LogoutSubscriber();
         });
-        $app['phraseanet.locale-subscriber'] = $app->share(function(Application $app) {
+        $app['phraseanet.locale-subscriber'] = $app->share(function (Application $app) {
             return new PhraseaLocaleSubscriber($app);
         });
-        $app['phraseanet.maintenance-subscriber'] = $app->share(function(Application $app) {
+        $app['phraseanet.maintenance-subscriber'] = $app->share(function (Application $app) {
             return new MaintenanceSubscriber($app);
         });
-        $app['phraseanet.cookie-disabler-subscriber'] = $app->share(function(Application $app) {
+        $app['phraseanet.cookie-disabler-subscriber'] = $app->share(function (Application $app) {
             return new CookiesDisablerSubscriber($app);
         });
-        $app['phraseanet.session-manager-subscriber'] = $app->share(function(Application $app) {
+        $app['phraseanet.session-manager-subscriber'] = $app->share(function (Application $app) {
             return new SessionManagerSubscriber($app);
         });
     }

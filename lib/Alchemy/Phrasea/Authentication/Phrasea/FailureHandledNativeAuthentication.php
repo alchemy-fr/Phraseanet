@@ -3,7 +3,6 @@
 namespace Alchemy\Phrasea\Authentication\Phrasea;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Authentication\Phrasea\FailureManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class FailureHandledNativeAuthentication implements PasswordAuthenticationInterface

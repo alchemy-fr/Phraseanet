@@ -2,8 +2,6 @@
 
 namespace Alchemy\Phrasea\Command\Compile;
 
-use Alchemy\Phrasea\Command\Compile\Configuration;
-
 class ConfigurationTest extends \PhraseanetPHPUnitAbstract
 {
     public function testExecute()

@@ -506,8 +506,8 @@ abstract class task_abstract
     /**
      *
      * @return null|integer
-     * pid (int) of the task
-     * NULL : the pid file is not locked (task no running)
+     *                      pid (int) of the task
+     *                      NULL : the pid file is not locked (task no running)
      */
     public function getPID()
     {

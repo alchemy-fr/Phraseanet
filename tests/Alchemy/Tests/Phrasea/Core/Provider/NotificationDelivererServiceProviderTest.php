@@ -7,7 +7,7 @@ use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 /**
  * @covers Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider
  */
-class NotificationDelivererServiceProvidertest extends ServiceProviderTestCase
+class NotificationDelivererServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {

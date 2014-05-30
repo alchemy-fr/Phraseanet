@@ -1838,7 +1838,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
                 self::$termsOfUse[$databox->get_sbas_id()] = $databox->get_cgus();
 
-                foreach( self::$termsOfUse[$databox->get_sbas_id()]as $lng => $tou) {
+                foreach ( self::$termsOfUse[$databox->get_sbas_id()]as $lng => $tou) {
                     $databox->update_cgus($lng, '', false);
                 }
             }
@@ -1852,7 +1852,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
                 self::$termsOfUse[$databox->get_sbas_id()] = $databox->get_cgus();
 
-                foreach( self::$termsOfUse[$databox->get_sbas_id()]as $lng => $tou) {
+                foreach ( self::$termsOfUse[$databox->get_sbas_id()]as $lng => $tou) {
                     $databox->update_cgus($lng, 'something', false);
                 }
             }

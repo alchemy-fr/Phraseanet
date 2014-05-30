@@ -2,7 +2,6 @@
 
 namespace Alchemy\Phrasea\Authentication\PersistentCookie;
 
-use Alchemy\Phrasea\Authentication\PersistentCookie\Manager;
 use Entities\Session;
 
 class ManagerTest extends \PHPUnit_Framework_TestCase
