@@ -98,6 +98,8 @@ class Order implements ControllerProviderInterface
             $order->setDeadline((null !== $deadLine = $request->request->get('deadline')) ? new \DateTime($deadLine) : $deadLine);
             $order->setOrderUsage($request->request->get('use', ''));
             foreach ($records as $key => $record) {
+                $query = new \User_Query($app);
+
                 if ($collectionHasOrderAdmins->containsKey($record->get_base_id())) {
                     if (!$collectionHasOrderAdmins->get($record->get_base_id())) {
                         $records->remove($key);
@@ -132,8 +134,8 @@ class Order implements ControllerProviderInterface
             }
 
             $noAdmins = $collectionHasOrderAdmins->forAll(function ($key, $hasAdmin) {
-                    return false === $hasAdmin;
-                });
+                return false === $hasAdmin;
+            });
 
             if ($noAdmins) {
                 $msg = $app->trans('There is no one to validate orders, please contact an administrator');
