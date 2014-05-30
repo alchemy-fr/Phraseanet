@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-14 14:10+0100\n"
-"PO-Revision-Date: 2014-05-27 11:33+0100\n"
+"PO-Revision-Date: 2014-05-30 15:13+0100\n"
 "Last-Translator: Anthony <acabot@alchemy.fr>\n"
 "Language-Team: \n"
 "Language: en_GB\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: /Users/romain/Documents/workspace/Phraseanet\n"
 "X-Poedit-KeywordsList: _e;__\n"
-"X-POOTLE-MTIME: 1401122787.000000\n"
+"X-POOTLE-MTIME: 1401287097.000000\n"
 "X-Poedit-SearchPath-0: config\n"
 "X-Poedit-SearchPath-1: lib/classes\n"
 "X-Poedit-SearchPath-2: lib/conf.d\n"
@@ -1711,11 +1711,11 @@ msgstr "Display the name of databases and collections"
 
 #: lib/conf.d/_GV_template.php:312
 msgid "Choose the title of the document to export"
-msgstr "Choose the title of the document to export"
+msgstr "Enable filename choice option when downloading"
 
 #: lib/conf.d/_GV_template.php:319
 msgid "Default export title"
-msgstr "Default export title"
+msgstr "Filename assigned by default when downloading"
 
 #: lib/conf.d/_GV_template.php:322
 msgid "Document title"
@@ -1783,7 +1783,7 @@ msgstr "Default query"
 
 #: lib/conf.d/_GV_template.php:378
 msgid "Default searched type"
-msgstr "Default searched type"
+msgstr "Records type searched by default"
 
 #: lib/conf.d/_GV_template.php:379
 msgid "Used when opening the application"
@@ -1800,15 +1800,15 @@ msgstr "Stories"
 #: lib/conf.d/_GV_template.php:388
 #: tmp/cache_twig/4f/59/93452defa07264dbb8aff4b673f98e72a5545a6d30bf2d6969335347d17b.php:312
 msgid "Report"
-msgstr "Report"
+msgstr "Display options for Phraseanet Report"
 
 #: lib/conf.d/_GV_template.php:394
 msgid "Anonymous report"
-msgstr "Anonymous report"
+msgstr "Anonymised Report"
 
 #: lib/conf.d/_GV_template.php:395
 msgid "Hide information about users"
-msgstr "Hide information about users."
+msgstr "Hide informations about users in Phraseanet Report."
 
 #: lib/conf.d/_GV_template.php:401
 msgid "Additionnal modules"
@@ -1994,7 +1994,7 @@ msgstr "Enable auto registration"
 
 #: lib/conf.d/_GV_template.php:618
 msgid "Push configuration"
-msgstr "Push configuration"
+msgstr "Feedback sessions configuration options"
 
 #: lib/conf.d/_GV_template.php:623
 msgid ""
@@ -2004,15 +2004,15 @@ msgstr ""
 
 #: lib/conf.d/_GV_template.php:629
 msgid "Default validation links duration"
-msgstr "Default feedback links duration"
+msgstr "Lifetime (in days) for links in Feedback sessions"
 
 #: lib/conf.d/_GV_template.php:630
 msgid "If set to 0, duration is permanent"
-msgstr "If set to 0, duration is permanent."
+msgstr "Set to 0 for no expiration lifetime."
 
 #: lib/conf.d/_GV_template.php:635
 msgid "Robot indexing"
-msgstr "Robot indexing"
+msgstr "Search engine optimization"
 
 #: lib/conf.d/_GV_template.php:640
 msgid "Application title"
@@ -2020,11 +2020,11 @@ msgstr "Application title"
 
 #: lib/conf.d/_GV_template.php:646
 msgid "Keywords used for indexing purposes by search engines robots"
-msgstr "Keywords used for indexing purposes by search engines robots"
+msgstr "META Keywords markup content"
 
 #: lib/conf.d/_GV_template.php:652
 msgid "Application description"
-msgstr "Application description"
+msgstr "META Description markup content"
 
 #: lib/conf.d/_GV_template.php:658
 msgid "Google Analytics identifier"
@@ -2032,7 +2032,7 @@ msgstr "Google Analytics identifier"
 
 #: lib/conf.d/_GV_template.php:664
 msgid "Allow the website to be indexed by search engines like Google"
-msgstr "Allow search engines (such as Google) indexation"
+msgstr "Allow indexing and ranking of the website by search engines"
 
 #: tmp/cache_twig/00/8b/0fb28f8bb8d0a14368015c09b484797bfd569c40fc293a81c2c9a759de95.php:77
 msgid "No matches found"
