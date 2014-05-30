@@ -55,6 +55,7 @@ class patch_385alpha1a implements patchInterface
         $config['static-file'] = array(
             'enabled' => false,
             'type' => '',
+            'symlink-directory' => '',
         );
 
         $app['phraseanet.configuration']->setConfig($config);

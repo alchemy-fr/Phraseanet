@@ -61,43 +61,4 @@ class StaticMappingGenerator extends Command
 
         return 0;
     }
-
-    private function computeMapping($paths)
-    {
-        $paths = array_unique($paths);
-
-        $ret = array();
-
-        foreach ($paths as $path) {
-            $ret[$path] = $this->pathsToConf($path);
-        }
-
-        return $ret;
-    }
-
-    private function pathsToConf($path)
-    {
-        static $n = 0;
-        $n++;
-
-        return array('mount-point' => 'mp4-videos-'.$n, 'directory' => $path, 'passphrase' => \random::generatePassword(32));
-    }
-
-    private function extractPath(\appbox $appbox)
-    {
-        $paths = array();
-
-        foreach ($appbox->get_databoxes() as $databox) {
-            foreach ($databox->get_subdef_structure() as $group => $subdefs) {
-                if ('video' !== $group) {
-                    continue;
-                }
-                foreach ($subdefs as $subdef) {
-                    $paths[] = $subdef->get_path();
-                }
-            }
-        }
-
-        return array_filter(array_unique($paths));
-    }
 }

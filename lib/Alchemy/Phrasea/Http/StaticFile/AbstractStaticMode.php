@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Http\StaticFile;
 
 use Alchemy\Phrasea\Http\AbstractServerMode;
 use Alchemy\Phrasea\Http\StaticFile\Symlink\SymLinker;
+use Guzzle\Http\Url;
 
 abstract class AbstractStaticMode extends AbstractServerMode
 {
@@ -25,7 +26,22 @@ abstract class AbstractStaticMode extends AbstractServerMode
         parent::__construct($mapping);
     }
 
-    protected function ensureSymlink($pathFile)
+    /**
+     * {@inheritdoc}
+     */
+    public function getUrl($pathFile)
+    {
+        $this->ensureSymlink($pathFile);
+
+        return Url::factory(sprintf('%s/%s',  $this->mapping['mount-point'], $this->symlinker->getSymlinkBasePath($pathFile)));
+    }
+
+    /**
+     * Creates a link if it does not exists
+     *
+     * @param $pathFile
+     */
+    private function ensureSymlink($pathFile)
     {
         if (false === $this->symlinker->hasSymlink($pathFile)) {
             $this->symlinker->symlink($pathFile);

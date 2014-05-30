@@ -12,8 +12,6 @@
 namespace Alchemy\Phrasea\Http\StaticFile;
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Alchemy\Phrasea\Http\AbstractServerMode;
-use Guzzle\Http\Url;
 
 class Apache extends AbstractStaticMode implements StaticFileModeInterface
 {
@@ -33,16 +31,6 @@ class Apache extends AbstractStaticMode implements StaticFileModeInterface
         }
 
         $this->mapping = $mapping;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getUrl($pathFile)
-    {
-        $this->ensureSymlink($pathFile);
-
-        return Url::factory(sprintf('%s/%s',  $this->mapping['mount-point'], $this->symlinker->getSymlinkBasePath($pathFile)));
     }
 
     /**

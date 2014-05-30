@@ -35,7 +35,7 @@ class SymLinker
             $app['phraseanet.thumb-symlinker-encoder'],
             $app['filesystem'],
             $app['phraseanet.registry'],
-            isset($app['phraseanet.configuration']['static-file']['symlink-directory']) ? $app['phraseanet.configuration']['static-file']['symlink-directory'] : null
+            isset($app['phraseanet.configuration']['static-file']['symlink-directory']) ? $app['phraseanet.configuration']['static-file']['symlink-directory'] : $app['root.path'] . '/symlinks'
         );
     }
 
@@ -43,10 +43,6 @@ class SymLinker
     {
         $this->encoder = $encoder;
         $this->fs = $fs;
-        
-        if (!$symlinkDir) {
-            throw new InvalidArgumentException("Symlink directory is not defined");
-        }
         $this->symlinkDir = rtrim($symlinkDir, '/');
     }
 
