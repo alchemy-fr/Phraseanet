@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-14 14:10+0100\n"
-"PO-Revision-Date: 2014-05-27 11:32+0100\n"
+"PO-Revision-Date: 2014-05-30 15:13+0100\n"
 "Last-Translator: Anthony <acabot@alchemy.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: /Users/romain/Documents/workspace/Phraseanet\n"
 "X-Poedit-KeywordsList: _e;__\n"
-"X-POOTLE-MTIME: 1401122382.000000\n"
+"X-POOTLE-MTIME: 1401286410.000000\n"
 "X-Poedit-SearchPath-0: config\n"
 "X-Poedit-SearchPath-1: lib/classes\n"
 "X-Poedit-SearchPath-2: lib/conf.d\n"
@@ -1699,7 +1699,7 @@ msgstr "Chemin du répertoire de fichier php.ini"
 
 #: lib/conf.d/_GV_template.php:264
 msgid "Empty if not used"
-msgstr "Vider si non utilisé."
+msgstr "Laisser vide si non utilisé"
 
 #: lib/conf.d/_GV_template.php:271
 msgid "Imagine driver"
@@ -1727,7 +1727,7 @@ msgstr "Afficher le nom des bases et collections"
 
 #: lib/conf.d/_GV_template.php:312
 msgid "Choose the title of the document to export"
-msgstr "Choix du nom de fichier à l'export du document"
+msgstr "Permettre le choix du nom de fichier au téléchargement"
 
 #: lib/conf.d/_GV_template.php:319
 msgid "Default export title"
@@ -1799,7 +1799,7 @@ msgstr "Requête par défaut"
 
 #: lib/conf.d/_GV_template.php:378
 msgid "Default searched type"
-msgstr "Type de média recherchés par défaut"
+msgstr "Type d'enregistrements recherchés par défaut"
 
 #: lib/conf.d/_GV_template.php:379
 msgid "Used when opening the application"
@@ -1815,16 +1815,20 @@ msgstr "Reportages"
 
 #: lib/conf.d/_GV_template.php:388
 #: tmp/cache_twig/4f/59/93452defa07264dbb8aff4b673f98e72a5545a6d30bf2d6969335347d17b.php:312
+#, fuzzy
 msgid "Report"
-msgstr "Afficher dans Phraseanet Report"
+msgstr "Affichage de Phraseanet Report"
 
 #: lib/conf.d/_GV_template.php:394
+#, fuzzy
 msgid "Anonymous report"
-msgstr "Report anonyme"
+msgstr "Anonymiser le Report"
 
 #: lib/conf.d/_GV_template.php:395
+#, fuzzy
 msgid "Hide information about users"
-msgstr "Masquer les informations à propos des utilisateurs."
+msgstr ""
+"Masquer les informations relatives aux utilisateurs dans Phraseanet Report."
 
 #: lib/conf.d/_GV_template.php:401
 msgid "Additionnal modules"
@@ -1922,7 +1926,7 @@ msgstr "Limite maximale autorisée par téléchargement en Megaoctet (Mo)"
 
 #: lib/conf.d/_GV_template.php:515
 msgid "If request is bigger, then mail is still available"
-msgstr "Au-delà le téléchargement par E-mail reste disponible."
+msgstr "Au-delà le téléchargement par e-mail reste disponible."
 
 #: lib/conf.d/_GV_template.php:521
 msgid "Search tab position"
@@ -2013,20 +2017,18 @@ msgstr "Activer l'inscription automatique"
 
 #: lib/conf.d/_GV_template.php:618
 msgid "Push configuration"
-msgstr "Configuration de la Validation (Push de validation)"
+msgstr "Options de configuration pour la validation"
 
 #: lib/conf.d/_GV_template.php:623
 msgid ""
 "Number of days before the end of the validation to send a reminder email"
 msgstr ""
-"Nombre de jours avant la fin de la validation pour l'envoi d'un rappel par e-"
-"mail"
+"Nombre de jours avant la fin de la validation pour l'envoi d'un e-mail de "
+"rappel"
 
 #: lib/conf.d/_GV_template.php:629
 msgid "Default validation links duration"
-msgstr ""
-"Durée de validité (en jours) des liens générés pour les process de Push et "
-"de Validation"
+msgstr "Durée de validité (en jours) des liens générés pour les validations"
 
 #: lib/conf.d/_GV_template.php:630
 msgid "If set to 0, duration is permanent"
@@ -2034,7 +2036,7 @@ msgstr "Indiquer 0 pour une durée de validité permanente."
 
 #: lib/conf.d/_GV_template.php:635
 msgid "Robot indexing"
-msgstr "Optimisations destinées aux robots d'indexation"
+msgstr "Optimisations destinées aux moteurs de recherche"
 
 #: lib/conf.d/_GV_template.php:640
 msgid "Application title"
@@ -2042,11 +2044,11 @@ msgstr "Titre donné à l'instance Phraseanet"
 
 #: lib/conf.d/_GV_template.php:646
 msgid "Keywords used for indexing purposes by search engines robots"
-msgstr "Contenu de la balise <Meta> Keywords"
+msgstr "Contenu de la balise META Keywords"
 
 #: lib/conf.d/_GV_template.php:652
 msgid "Application description"
-msgstr "Contenu de la balise <META> Description"
+msgstr "Contenu de la balise META Description"
 
 #: lib/conf.d/_GV_template.php:658
 msgid "Google Analytics identifier"
@@ -2055,7 +2057,8 @@ msgstr "Identifiant Google Analytics"
 #: lib/conf.d/_GV_template.php:664
 msgid "Allow the website to be indexed by search engines like Google"
 msgstr ""
-"Permettre l'indexation du site par des moteurs de recherche (comme Google)"
+"Permettre l'indexation et le référencement du site par les moteurs de "
+"recherche"
 
 #: tmp/cache_twig/00/8b/0fb28f8bb8d0a14368015c09b484797bfd569c40fc293a81c2c9a759de95.php:77
 msgid "No matches found"
@@ -10769,7 +10772,7 @@ msgstr "Vous êtes maintenant déconnecté. A bientôt."
 
 #: lib/Alchemy/Phrasea/Controller/Root/Login.php:739
 msgid "login::erreur: No available connection - Please contact sys-admin"
-msgstr "Connexion impossible, contactez un administrateur système"
+msgstr "Connexion impossible, contactez un administrateur système."
 
 #: lib/Alchemy/Phrasea/Controller/Root/Login.php:784
 msgid "Phraseanet guest-access is disabled"
@@ -11644,8 +11647,8 @@ msgid ""
 "Report generation may take a long time to generate, depending on the number "
 "of collections and the period selected."
 msgstr ""
-"En fonction du nombre de collections et de l'intervalle de date sélectionné, "
-"la génération du Report peut prendre temps."
+"En fonction du nombre de collections et de l'intervalle de dates "
+"sélectionné, la génération du Report peut prendre temps."
 
 #: ../tmp/cache_twig/c1/34/36f07763182c27f018a2dd7fcfe342ddf207d0facb87eb79e500855ae96e.php:101
 msgid "Generate dashboard"
