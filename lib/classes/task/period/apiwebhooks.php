@@ -80,7 +80,7 @@ class task_period_apiwebhooks extends task_appboxAbstract
         $requests = array();
         foreach ($urls as $url) {
             $requests[] = $client->createRequest('POST', $url, array(
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/vnd.phraseanet.event+json'
             ), $body);
         }
         $client->send($requests);
@@ -113,33 +113,32 @@ class task_period_apiwebhooks extends task_appboxAbstract
             $results = $query->limit($start, $perLoop)->execute()->get_results();
             foreach ($results as $user) {
                 $users[] = array(
-                    'mail' => $user->get_email(),
-                    'firstname' => $user->get_firstname(),
-                    'lastname' => $user->get_lastname(),
+                    'email' => $user->get_email(),
+                    'firstname' => $user->get_firstname() ?: null,
+                    'lastname' => $user->get_lastname() ?: null,
                 );
             }
             $start += $perLoop;
         } while (count($results) > 0);
 
         return array(
-            'name' => $row['type'],
-            'data' => array(
-                'feed' => array(
-                    'id' => $feed->get_id(),
-                    'title' => $feed->get_title(),
-                    'description' => $feed->get_subtitle(),
+            'event' => $row['type'],
+            'users_were_notified' => !!$data->{"notify_email"},
+            'feed' => array(
+                'id' => $feed->get_id(),
+                'title' => $feed->get_title(),
+                'description' => $feed->get_subtitle() ?: null,
+            ),
+            'entry' => array(
+                'id' => $entry->get_id(),
+                'author' => array(
+                    'name' => $entry->get_author_name(),
+                    'email' => $entry->get_author_email()
                 ),
-                'entry' => array(
-                    'id' => $entry->get_id(),
-                    'author' => array(
-                        'name' => $entry->get_author_name(),
-                        'email' => $entry->get_author_email()
-                    ),
-                    'title' => $entry->get_title(),
-                    'description' => $entry->get_subtitle(),
-                ),
-                'users' => $users
-            )
+                'title' => $entry->get_title(),
+                'description' => $entry->get_subtitle() ?: null,
+            ),
+            'users' => $users
         );
     }
 }
