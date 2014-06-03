@@ -44,9 +44,6 @@ class API_V1_result
     /** @var mixed */
     protected $response;
 
-    /** @var string */
-    protected $response_type;
-
     /** Constant for response type json */
     const FORMAT_JSON = 'json';
     /** Constant for response type yaml */
@@ -153,7 +150,7 @@ class API_V1_result
 
         $return_value = false;
 
-        switch ($this->request->getRequestFormat('json')) {
+        switch ($this->request->getRequestFormat(self::FORMAT_JSON)) {
             case self::FORMAT_JSON:
             case self::FORMAT_JSON_EXTENDED:
             default:
@@ -296,11 +293,7 @@ class API_V1_result
      */
     public function get_http_code()
     {
-        if ($this->response_type == self::FORMAT_JSONP && $this->http_code !== 500) {
-            return 200;
-        } else {
-            return $this->http_code;
-        }
+        return $this->http_code;
     }
 
     /**

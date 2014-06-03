@@ -27,7 +27,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
-
     $app = new PhraseaApplication($environment);
     $app->loadPlugins();
 
@@ -40,6 +39,7 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         return $monolog;
     }));
 
+    // handle API content negotiation
     $app->before(function(Request $request) use ($app) {
         // register custom API format
         $request->setFormat(\API_V1_result::FORMAT_JSON_EXTENDED, \API_V1_adapter::$extendedContentTypes['json']);
@@ -57,28 +57,30 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         if (null === $format) {
             $app->abort(406);
         }
-
-        // set request format according to negociated content or override format with jsonp is callback parameter is defined
-        if (trim($request->query->get('callback')) !== '') {
-            $request->setRequestFormat('jsonp');
+        // set request format according to negotiated content or override format with JSONP if callback parameter is defined
+        if (trim($request->get('callback')) !== '') {
+            $request->setRequestFormat(\API_V1_result::FORMAT_JSONP);
         } else {
             $request->setRequestFormat($request->getFormat($format->getValue()));
         }
 
         // tells whether asked format is extended or not
         $request->attributes->set('_extended', in_array(
-            $request->getRequestFormat('json'),
+            $request->getRequestFormat(\API_V1_result::FORMAT_JSON),
             array(
                 \API_V1_result::FORMAT_JSON_EXTENDED,
                 \API_V1_result::FORMAT_YAML_EXTENDED,
                 \API_V1_result::FORMAT_JSONP_EXTENDED
             )
         ));
-    });
+    }, PhraseaApplication::EARLY_EVENT);
 
     $app->after(function(Request $request, Response $response) use ($app) {
+        if ($request->getRequestFormat(\API_V1_result::FORMAT_JSON) === \API_V1_result::FORMAT_JSONP && !$response->isOk() && !$response->isServerError()) {
+            $response->setStatusCode(200);
+        }
         // set response content type
-        $response->headers->set('Content-Type', $request->getMimeType($request->getRequestFormat()));
+        $response->headers->set('Content-Type', $request->getMimeType($request->getRequestFormat(\API_V1_result::FORMAT_JSON)));
     });
 
     $app->register(new \API_V1_Timer());

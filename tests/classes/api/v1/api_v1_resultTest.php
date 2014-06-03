@@ -242,34 +242,6 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertEquals($expected_value, $response->response->$field);
     }
 
-    public function testGet_content_type()
-    {
-        $server = array("HTTP_ACCEPT" => "application/json");
-        $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
-        $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
-        $this->assertEquals("application/json", $api_result->get_content_type());
-
-        $server = array("HTTP_ACCEPT" => "application/yaml");
-        $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
-        $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
-        $this->assertEquals('application/yaml', $api_result->get_content_type());
-
-        $server = array("HTTP_ACCEPT" => "text/yaml");
-        $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
-        $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
-        $this->assertEquals('application/yaml', $api_result->get_content_type());
-
-        $server = array("HTTP_ACCEPT" => "");
-        $request = new Request(array("callback" => "hello"), array(), array(), array(), array(), $server);
-        $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
-        $this->assertEquals('text/javascript', $api_result->get_content_type());
-
-        $server = array("HTTP_ACCEPT" => "unknow");
-        $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
-        $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
-        $this->assertEquals("application/json", $api_result->get_content_type());
-    }
-
     /**
      * @depends testFormatJson
      */
