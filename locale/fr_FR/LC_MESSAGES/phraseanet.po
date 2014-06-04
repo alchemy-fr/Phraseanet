@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-14 14:10+0100\n"
-"PO-Revision-Date: 2014-05-30 15:13+0100\n"
+"PO-Revision-Date: 2014-06-04 17:02+0100\n"
 "Last-Translator: Anthony <acabot@alchemy.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: /Users/romain/Documents/workspace/Phraseanet\n"
 "X-Poedit-KeywordsList: _e;__\n"
-"X-POOTLE-MTIME: 1401286410.000000\n"
+"X-POOTLE-MTIME: 1401802000.000000\n"
 "X-Poedit-SearchPath-0: config\n"
 "X-Poedit-SearchPath-1: lib/classes\n"
 "X-Poedit-SearchPath-2: lib/conf.d\n"
@@ -1544,7 +1544,7 @@ msgstr "URL Statique"
 
 #: lib/conf.d/_GV_template.php:53
 msgid "optional"
-msgstr "Facultatif."
+msgstr "Facultatif"
 
 #: lib/conf.d/_GV_template.php:58
 #: lib/Alchemy/Phrasea/Form/Configuration/MainConfigurationForm.php:28
@@ -1598,7 +1598,7 @@ msgstr "Clé privée reCAPTCHA"
 
 #: lib/conf.d/_GV_template.php:120
 msgid "Youtube connectivity"
-msgstr "Connexion à YouTube"
+msgstr "Connexion YouTube"
 
 #: lib/conf.d/_GV_template.php:125
 msgid "Use youtube API"
@@ -1815,17 +1815,14 @@ msgstr "Reportages"
 
 #: lib/conf.d/_GV_template.php:388
 #: tmp/cache_twig/4f/59/93452defa07264dbb8aff4b673f98e72a5545a6d30bf2d6969335347d17b.php:312
-#, fuzzy
 msgid "Report"
 msgstr "Affichage de Phraseanet Report"
 
 #: lib/conf.d/_GV_template.php:394
-#, fuzzy
 msgid "Anonymous report"
 msgstr "Anonymiser le Report"
 
 #: lib/conf.d/_GV_template.php:395
-#, fuzzy
 msgid "Hide information about users"
 msgstr ""
 "Masquer les informations relatives aux utilisateurs dans Phraseanet Report."
@@ -5886,7 +5883,7 @@ msgstr "Documents"
 #: tmp/cache_twig/7b/d2/727d4c9199e9e52f920cff098e5de9b86906f279696610f3599ca2a04bdf.php:405
 #: tmp/cache_twig/d9/2f/355ae9eea3054ec32f40555d4efd829847edaa9dae340c739983fc278435.php:618
 msgid "phraseanet::type:: reportages"
-msgstr "Reportage"
+msgstr "Reportages"
 
 #: tmp/cache_twig/7b/d2/727d4c9199e9e52f920cff098e5de9b86906f279696610f3599ca2a04bdf.php:419
 #: tmp/cache_twig/d9/2f/355ae9eea3054ec32f40555d4efd829847edaa9dae340c739983fc278435.php:320
@@ -6731,7 +6728,6 @@ msgstr "Questions les plus posées"
 #: tmp/cache_twig/a0/72/1e49ccee500b6d7a08b9fd3e09e7c918ec3d7746c184703f6a72e4685f0e.php:468
 #: lib/Alchemy/Phrasea/Controller/Report/Informations.php:53
 #: lib/Alchemy/Phrasea/Controller/Report/Informations.php:298
-#, fuzzy
 msgid "report:: document"
 msgstr "Documents"
 
@@ -6955,7 +6951,6 @@ msgid "Modify"
 msgstr "Modifier"
 
 #: tmp/cache_twig/ae/b5/6c72c5ccd51726624a5c0ec34fdf736755f84fb9f0e65b6f2a59c6097cf8.php:151
-#, fuzzy
 msgid "Activer le grant_type de type password pour votre application"
 msgstr "Activer le grant_type de type password pour l'application"
 
@@ -8802,7 +8797,8 @@ msgstr "Message automatique de Phraseanet"
 #: tmp/cache_twig/e9/1a/9e2396dbfd0df38fa3c35df138bcc0606bacbbd117d37b40fb246fa6aaf6.php:228
 msgid "Pour gérer l'envoi d'email automatique, connectez-vous à %link%"
 msgstr ""
-"Pour gérer la réception d'e-mails automatiques, connectez-vous à %link%."
+"Pour régler les préférences de reception d'e-mails automatiques, connectez-"
+"vous à %link%."
 
 #: tmp/cache_twig/e9/49/406e6d61efed296d58e5356a77a622909c068b709020709aa697c9fd4c69.php:59
 msgid "Le bridge Youtube ne prend en charge que les videos"
@@ -9897,7 +9893,7 @@ msgstr "Ne plus afficher ce message"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:39
 msgid "Supprimer egalement les documents rattaches a ces regroupements"
-msgstr "Egalement supprimer les documents rattachés à ces reportages ?"
+msgstr "Supprimer aussi les documents rattachés à ces reportages ?"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:40
 msgid ""
@@ -10417,7 +10413,7 @@ msgstr "%d Reportage attaché à l'espace de travail"
 #: lib/Alchemy/Phrasea/Controller/Prod/WorkZone.php:171
 #, php-format
 msgid "%d Stories attached to the WorkZone"
-msgstr "%d Reportages attachés à l'espace de travail"
+msgstr "%d reportages attachés à l'espace de travail."
 
 #: lib/Alchemy/Phrasea/Controller/Prod/WorkZone.php:178
 #, php-format
@@ -10428,7 +10424,7 @@ msgstr ""
 #: lib/Alchemy/Phrasea/Controller/Prod/WorkZone.php:184
 #, php-format
 msgid "%1$d Stories attached to the WorkZone, %2$d already attached"
-msgstr "%1$d Reportages attachés à l'espace de travail, %2$d déjà attaché(s)"
+msgstr "%1$d reportages attachés à l'espace de travail, %2$d déjà attaché(s)."
 
 #: lib/Alchemy/Phrasea/Controller/Prod/WorkZone.php:220
 msgid "Story detached from the WorkZone"
@@ -11557,7 +11553,6 @@ msgid "report:: telechargements preview"
 msgstr "Sous-définitions téléchargées"
 
 #: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:154
-#, fuzzy
 msgid "report:: poids document"
 msgstr "Poids des documents téléchargés"
 
@@ -11595,12 +11590,10 @@ msgid "Masks"
 msgstr "Masques"
 
 #: ../tmp/cache_twig/7b/1f/b820e010a22209b63a3314f5462334edd4e1ff7ada6c80fff2be5b79f777.php:261
-#, fuzzy
 msgid "Force authentication"
 msgstr "Forcer l'authentification des utilisateurs"
 
 #: ../tmp/cache_twig/7b/1f/b820e010a22209b63a3314f5462334edd4e1ff7ada6c80fff2be5b79f777.php:270
-#, fuzzy
 msgid ""
 "The parameter \"force authentication\" forces the recipient(s) of the push "
 "to possess a Phraseanet account\n"
@@ -11615,12 +11608,10 @@ msgstr ""
 "l'url aurait été divulguée notamment par un e-mail transféré. "
 
 #: ../tmp/cache_twig/d4/13/ca0b8cae1e2b3f5abce3759e6a196753935539fffeddf72850e920e58493.php:176
-#, fuzzy
 msgid "Define a webhook URL"
 msgstr "Définir une URL de Webhook"
 
 #: ../tmp/cache_twig/d4/13/ca0b8cae1e2b3f5abce3759e6a196753935539fffeddf72850e920e58493.php:181
-#, fuzzy
 msgid ""
 "Gives the option to your application to communicate with Phraseanet. This "
 "webhook can be used to trigger some actions on your application side."
@@ -11656,7 +11647,6 @@ msgstr "Générer le tableau de bord"
 
 #: ../tmp/cache_twig/3f/dd/e8aa84e869c5c7619c3e3880c0b999fd23cb0c0ecacde77d1435f2d0220c.php:397
 #: ../tmp/cache_twig/0d/51/4d3b41d579f4dfdcf4a6d19883fb12c401aaeed7a5c96113b2fbb1d72aa4.php:397
-#, fuzzy
 msgid "Monter la collection %name%"
 msgstr "Monter la collection %name%"
 
@@ -11668,7 +11658,6 @@ msgstr "Export CSV"
 #: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:970
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:957
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:970
-#, fuzzy
 msgid "YYYY/MM/DD"
 msgstr "AAAA/MM/JJ"
 
@@ -11683,7 +11672,7 @@ msgstr "Vous avez reçu des documents de la part de %s sur %s"
 
 #: ../lib/Alchemy/Phrasea/Controller/Admin/Users.php:273
 msgid "Unable to create template, the name is already used."
-msgstr "Impossible le créer ce modèle, le nom donné est déjà pris."
+msgstr "Impossible le créer ce modèle, le nom donné est déjà utilisé."
 
 #: ../lib/Alchemy/Phrasea/Controller/Admin/Users.php:275
 msgid "Unable to create the user."
