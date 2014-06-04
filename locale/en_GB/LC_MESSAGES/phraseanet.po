@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-14 14:10+0100\n"
-"PO-Revision-Date: 2014-05-30 15:13+0100\n"
+"PO-Revision-Date: 2014-06-04 17:03+0100\n"
 "Last-Translator: Anthony <acabot@alchemy.fr>\n"
 "Language-Team: \n"
 "Language: en_GB\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: /Users/romain/Documents/workspace/Phraseanet\n"
 "X-Poedit-KeywordsList: _e;__\n"
-"X-POOTLE-MTIME: 1401287097.000000\n"
+"X-POOTLE-MTIME: 1401802195.000000\n"
 "X-Poedit-SearchPath-0: config\n"
 "X-Poedit-SearchPath-1: lib/classes\n"
 "X-Poedit-SearchPath-2: lib/conf.d\n"
@@ -7326,7 +7326,6 @@ msgid "Users suggestion"
 msgstr "Users suggestion"
 
 #: tmp/cache_twig/c2/80/28b1715b2ad1460bb2cc2b4a1f862c786658197b57da92b05278696e6b0a.php:371
-#, fuzzy
 msgid "Push::unpush permet d'envoyer un lot d'image a des destinataires"
 msgstr ""
 "Push allows to send documents to users. They will receive an email "
@@ -7335,7 +7334,6 @@ msgstr ""
 "available as a received basket in the work zone."
 
 #: tmp/cache_twig/c2/80/28b1715b2ad1460bb2cc2b4a1f862c786658197b57da92b05278696e6b0a.php:377
-#, fuzzy
 msgid ""
 "Push::une validation est une demande d'appreciation a d'autres personnes"
 msgstr ""
@@ -8424,14 +8422,12 @@ msgstr ""
 "all documents would be too long."
 
 #: tmp/cache_twig/e0/dd/b1907cdd101f86af2e081e1302dc44d6ef84d81307a71967e96f2b37df75.php:1294
-#, fuzzy
 msgid "You can alternatively receive an email when the download is ready."
 msgstr ""
 "You can get a delayed download link in an email when the archive will be "
 "ready."
 
 #: tmp/cache_twig/e0/dd/b1907cdd101f86af2e081e1302dc44d6ef84d81307a71967e96f2b37df75.php:1303
-#, fuzzy
 msgid "Would you like to receive an e-mail when your download is ready ?"
 msgstr ""
 "Would you like to keep going and get those documents by a delayed download "
@@ -8686,7 +8682,9 @@ msgstr "Automatic message from Phraseanet"
 
 #: tmp/cache_twig/e9/1a/9e2396dbfd0df38fa3c35df138bcc0606bacbbd117d37b40fb246fa6aaf6.php:228
 msgid "Pour gérer l'envoi d'email automatique, connectez-vous à %link%"
-msgstr "To manage automatic e-mail  notifications, please connect to% link%."
+msgstr ""
+"To set preferences for automatic e-mail notifications, please connect to% "
+"link%."
 
 #: tmp/cache_twig/e9/49/406e6d61efed296d58e5356a77a622909c068b709020709aa697c9fd4c69.php:59
 msgid "Le bridge Youtube ne prend en charge que les videos"
@@ -11330,7 +11328,6 @@ msgid "Enable Forcing authentication to see push content"
 msgstr "Enable the force authentication option for Push and Feedbacks sessions"
 
 #: ../config/_GV_template.php:272
-#, fuzzy
 msgid ""
 "Adds an option to the push form submission to restrict push recipient(s) to "
 "Phraseanet users only."
@@ -11395,7 +11392,6 @@ msgid "report:: preview les plus telecharges"
 msgstr "Most downloaded subviews"
 
 #: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:253
-#, fuzzy
 msgid "report:: site d'ou les photo sont les plus consultees"
 msgstr "Documents access website"
 
@@ -11408,7 +11404,6 @@ msgid "report:: nombre de vue"
 msgstr "Number of views"
 
 #: ../tmp/cache_twig/15/e6/48f7a939abc1d982521039d24da527c3ada5f5d03863f37a898f9ba0e842.php:1443
-#, fuzzy
 msgid "Success !"
 msgstr "Success!"
 
@@ -11421,7 +11416,6 @@ msgid "Force authentication"
 msgstr "Force users authentication"
 
 #: ../tmp/cache_twig/7b/1f/b820e010a22209b63a3314f5462334edd4e1ff7ada6c80fff2be5b79f777.php:270
-#, fuzzy
 msgid ""
 "The parameter \"force authentication\" forces the recipient(s) of the push "
 "to possess a Phraseanet account\n"
@@ -11441,7 +11435,6 @@ msgid "Define a webhook URL"
 msgstr "Define a Webhook URL"
 
 #: ../tmp/cache_twig/d4/13/ca0b8cae1e2b3f5abce3759e6a196753935539fffeddf72850e920e58493.php:181
-#, fuzzy
 msgid ""
 "Gives the option to your application to communicate with Phraseanet. This "
 "webhook can be used to trigger some actions on your application side."
@@ -11477,7 +11470,6 @@ msgstr "Generate dashboard"
 
 #: ../tmp/cache_twig/3f/dd/e8aa84e869c5c7619c3e3880c0b999fd23cb0c0ecacde77d1435f2d0220c.php:397
 #: ../tmp/cache_twig/0d/51/4d3b41d579f4dfdcf4a6d19883fb12c401aaeed7a5c96113b2fbb1d72aa4.php:397
-#, fuzzy
 msgid "Monter la collection %name%"
 msgstr "Mount collection %name%"
 
@@ -11502,7 +11494,6 @@ msgid "You just received some documents from %s on %s"
 msgstr "You've just received documents from %s on %s."
 
 #: ../lib/Alchemy/Phrasea/Controller/Admin/Users.php:273
-#, fuzzy
 msgid "Unable to create template, the name is already used."
 msgstr "Unable to create template, its given name is already used."
 

@@ -8,14 +8,17 @@ msgstr ""
 "Project-Id-Version: phraseanettranslation\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-11-14 14:10+0100\n"
-"PO-Revision-Date: 2014-02-24 16:02+0100\n"
-"Last-Translator: Romain Neutron <imprec@gmail.com>\n"
+"PO-Revision-Date: 2014-06-04 17:01+0100\n"
+"Last-Translator: Pieter <pieter@macadam-solutions.be>\n"
 "Language-Team: Dutch <nl@li.org>\n"
+"Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.5.4\n"
 "X-Launchpad-Export-Date: 2014-02-24 14:56+0000\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-POOTLE-MTIME: 1401694323.000000\n"
 
 #: lib/classes/appbox.php:300 lib/classes/appbox.php:385
 msgid "Flushing cache"
@@ -1681,34 +1684,6 @@ msgstr "Standaard pad voor data's"
 #: lib/conf.d/_GV_template.php:230
 msgid "Executables settings"
 msgstr "Executables instellingen"
-
-#: lib/conf.d/_GV_template.php:235
-msgid "Enable H264 stream mode"
-msgstr "Maak H264 stream mode actief"
-
-#: lib/conf.d/_GV_template.php:236
-msgid ""
-"Use with mod_token. Attention requires the apache modules and "
-"mod_h264_streaming mod_auth_token"
-msgstr ""
-"Gebruik met mod_token. Opgepast heeft de apache modelus en "
-"mod_h264_streaming mod_auth_token nodig."
-
-#: lib/conf.d/_GV_template.php:243
-msgid "Auth_token mount point"
-msgstr "Auth_token mount point"
-
-#: lib/conf.d/_GV_template.php:250
-msgid "Auth_token directory path"
-msgstr "Auth_token folderpad"
-
-#: lib/conf.d/_GV_template.php:256
-msgid "Auth_token passphrase"
-msgstr "Auth_token toegangszin"
-
-#: lib/conf.d/_GV_template.php:257
-msgid "Defined in Apache configuration"
-msgstr "Gedefinieerd in de Apache configuratie"
 
 #: lib/conf.d/_GV_template.php:263
 msgid "php.ini path"
@@ -6276,10 +6251,6 @@ msgstr "herindexeren"
 #: tmp/cache_twig/8f/c0/f715caf5a5e0a9877b0a258e829b98624be5d0dffc4175f0d8ee6dc5e473.php:438
 msgid "admin::base:collection: Monter une collection"
 msgstr "Toon een collectie"
-
-#: tmp/cache_twig/8f/c0/f715caf5a5e0a9877b0a258e829b98624be5d0dffc4175f0d8ee6dc5e473.php:397
-msgid "Monter"
-msgstr "Tonen"
 
 #: tmp/cache_twig/8f/c0/f715caf5a5e0a9877b0a258e829b98624be5d0dffc4175f0d8ee6dc5e473.php:406
 #: tmp/cache_twig/f6/80/70077de73343915dc25be14f44fd49ef4d568c2d86dd7927b03f796c74c2.php:70
@@ -11438,3 +11409,206 @@ msgstr "Lijst werd niet gevonden"
 #: lib/Doctrine/Repositories/UsrListRepository.php:57
 msgid "You have not access to this list"
 msgstr "U hebt geen toegang tot deze lijst"
+
+#: ../config/_GV_template.php:271
+msgid "Enable Forcing authentication to see push content"
+msgstr "Activeer geforceerde authenticatie om push inhoud te zien"
+
+#: ../config/_GV_template.php:272
+msgid ""
+"Adds an option to the push form submission to restrict push recipient(s) to "
+"Phraseanet users only."
+msgstr ""
+"Voegt een optie aan het push formulier toe om push ontvanger(s) te beperken "
+"tot alleen Phraseanet gebruikers."
+
+#: ../lib/classes/task/period/apiwebhooks.php:18
+msgid "Api Webhook"
+msgstr "Webhook Api"
+
+#: ../lib/classes/task/period/apiwebhooks.php:23
+msgid "Notify Phraseanet Oauth2 client applications using webhooks."
+msgstr ""
+"Verwittig gebruikers  van Phraseanet Oauth2 applicaties met behulp webhooks."
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:70
+msgid "report:: activite document ajoute"
+msgstr "report:: actief document toegevoegd"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:82
+msgid "report:: activite document edite"
+msgstr "report:: actief document bewerkt"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:94
+msgid "report:: Cumul telechargements & connexions"
+msgstr "report:: Cumul downloads & connecties"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:100
+msgid "report::Connexion"
+msgstr "report::Connectie"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:112
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:130
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:148
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:166
+msgid "report:: Utilisateurs les plus actifs"
+msgstr "report:: Meest actieve gebruikers"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:118
+msgid "report:: telechargements document"
+msgstr "report:: document downloads"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:136
+msgid "report:: telechargements preview"
+msgstr "report:: voorvertoning downloads"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:154
+msgid "report:: poids document"
+msgstr "report:: document grootte"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:172
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:241
+msgid "report:: poids preview"
+msgstr "report:: voorvertoning grootte"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:184
+msgid "report:: documents les plus telecharges"
+msgstr "report:: het meest gedownloade documenten"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:202
+msgid "report:: preview les plus telecharges"
+msgstr "report:: het meest gedwonloade voorvertoningen"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:253
+msgid "report:: site d'ou les photo sont les plus consultees"
+msgstr "report:: pagina waar de foto's het meest werden geraadpleegd"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:256
+msgid "report:: site"
+msgstr "report:: pagina"
+
+#: ../tmp/cache_twig/94/8a/600a8fd8ba7ee3e38728d78a824d0d0eb3e3b979f4478ababab2a8f774a7.php:259
+msgid "report:: nombre de vue"
+msgstr "report:: aantal weergaves"
+
+#: ../tmp/cache_twig/15/e6/48f7a939abc1d982521039d24da527c3ada5f5d03863f37a898f9ba0e842.php:1443
+msgid "Success !"
+msgstr "Gelukt !"
+
+#: ../tmp/cache_twig/c5/9d/dc614413dcd70efe02ba0ce7f35cb7fb7a74f04449da12691d78b28adab1.php:20
+msgid "Masks"
+msgstr "Maskers"
+
+#: ../tmp/cache_twig/7b/1f/b820e010a22209b63a3314f5462334edd4e1ff7ada6c80fff2be5b79f777.php:261
+msgid "Force authentication"
+msgstr "Forceer authenticatie"
+
+#: ../tmp/cache_twig/7b/1f/b820e010a22209b63a3314f5462334edd4e1ff7ada6c80fff2be5b79f777.php:270
+msgid ""
+"The parameter \"force authentication\" forces the recipient(s) of the push "
+"to possess a Phraseanet account\n"
+"                    to see its contents.\n"
+"                    This avoids anonymous users to access to the content of "
+"the push if they were able to get the display\n"
+"                    url through a forwarded mail for example."
+msgstr ""
+"De parameter \"forceer authenticatie\" forceert de ontvanger(s) van de push "
+"om een Phraseanet gebruiker te hebben om de inhoud te zien.Dit vermijd om "
+"anonieme gebruikers de inhoud van de push te zien, indien ze de "
+"voorvertonings url krijgen via bijvoorbeeld een doorgestuurde mail."
+
+#: ../tmp/cache_twig/d4/13/ca0b8cae1e2b3f5abce3759e6a196753935539fffeddf72850e920e58493.php:176
+msgid "Define a webhook URL"
+msgstr "Definieer een webhook URL"
+
+#: ../tmp/cache_twig/d4/13/ca0b8cae1e2b3f5abce3759e6a196753935539fffeddf72850e920e58493.php:181
+msgid ""
+"Gives the option to your application to communicate with Phraseanet. This "
+"webhook can be used to trigger some actions on your application side."
+msgstr ""
+"Geeft de optie om uw applicatie te laten communiceren met Phraseanet. Deze "
+"webhook kan gebruikt worden om acties op uw applicatie te volgen."
+
+#: ../tmp/cache_twig/c1/34/36f07763182c27f018a2dd7fcfe342ddf207d0facb87eb79e500855ae96e.php:48
+#: ../tmp/cache_twig/c1/34/36f07763182c27f018a2dd7fcfe342ddf207d0facb87eb79e500855ae96e.php:54
+msgid "from"
+msgstr "van"
+
+#: ../tmp/cache_twig/c1/34/36f07763182c27f018a2dd7fcfe342ddf207d0facb87eb79e500855ae96e.php:61
+#: ../tmp/cache_twig/c1/34/36f07763182c27f018a2dd7fcfe342ddf207d0facb87eb79e500855ae96e.php:68
+msgid "to"
+msgstr "aan"
+
+#: ../tmp/cache_twig/c1/34/36f07763182c27f018a2dd7fcfe342ddf207d0facb87eb79e500855ae96e.php:75
+msgid "Generate"
+msgstr "Maak"
+
+#: ../tmp/cache_twig/c1/34/36f07763182c27f018a2dd7fcfe342ddf207d0facb87eb79e500855ae96e.php:83
+msgid ""
+"Report generation may take a long time to generate, depending on the number "
+"of collections and the period selected."
+msgstr ""
+"Het aanmaken van een rapport kan een langere tijd in beslag nemen, "
+"afhankelijk van het aantal collecties en de gekozen periode."
+
+#: ../tmp/cache_twig/c1/34/36f07763182c27f018a2dd7fcfe342ddf207d0facb87eb79e500855ae96e.php:101
+msgid "Generate dashboard"
+msgstr "Maak dashboard"
+
+#: ../tmp/cache_twig/3f/dd/e8aa84e869c5c7619c3e3880c0b999fd23cb0c0ecacde77d1435f2d0220c.php:397
+#: ../tmp/cache_twig/0d/51/4d3b41d579f4dfdcf4a6d19883fb12c401aaeed7a5c96113b2fbb1d72aa4.php:397
+msgid "Monter la collection %name%"
+msgstr "Toon de collectie %name%"
+
+#: ../tmp/cache_twig/02/2b/429c7932ceba26cb597c957a5462885e6c83a417f6b4191864794890ab21.php:90
+msgid "CSV export"
+msgstr "CSV export"
+
+#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:957
+#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:970
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:957
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:970
+msgid "YYYY/MM/DD"
+msgstr "JJJJ/MM/DD"
+
+#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1696
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1696
+msgid "Use latest search settings on Production loading"
+msgstr "Gebruik de laatste zoek instellingen bij het laden van Phraseanet"
+
+#: ../lib/Alchemy/Phrasea/Notification/Mail/MailSuccessFTPReceiver.php:41
+msgid "You just received some documents from %s on %s"
+msgstr "U hebt net documenten ontvangen van %s op %s"
+
+#: ../lib/Alchemy/Phrasea/Controller/Admin/Users.php:273
+msgid "Unable to create template, the name is already used."
+msgstr "Onmogelijk om een template te maken, de naam is al in gebruik."
+
+#: ../lib/Alchemy/Phrasea/Controller/Admin/Users.php:275
+msgid "Unable to create the user."
+msgstr "Onmogelijk om een gebruiker aan te maken."
+
+#~ msgid "Enable H264 stream mode"
+#~ msgstr "Maak H264 stream mode actief"
+
+#~ msgid ""
+#~ "Use with mod_token. Attention requires the apache modules and "
+#~ "mod_h264_streaming mod_auth_token"
+#~ msgstr ""
+#~ "Gebruik met mod_token. Opgepast heeft de apache modelus en "
+#~ "mod_h264_streaming mod_auth_token nodig."
+
+#~ msgid "Auth_token mount point"
+#~ msgstr "Auth_token mount point"
+
+#~ msgid "Auth_token directory path"
+#~ msgstr "Auth_token folderpad"
+
+#~ msgid "Auth_token passphrase"
+#~ msgstr "Auth_token toegangszin"
+
+#~ msgid "Defined in Apache configuration"
+#~ msgstr "Gedefinieerd in de Apache configuratie"
+
+#~ msgid "Monter"
+#~ msgstr "Tonen"
