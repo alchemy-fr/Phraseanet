@@ -11,23 +11,26 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Negotiation\FormatNegotiator;
+use Negotiation\LanguageNegotiator;
+use Negotiation\Negotiator;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
-class ContentNegociationServiceProvider implements ServiceProviderInterface
+class ContentNegotiationServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
         $app['negociator'] = $app->share(function ($app) {
-            return new \Negotiation\Negotiator();
+            return new Negotiator();
         });
 
         $app['format.negociator'] = $app->share(function ($app) {
-            return new \Negotiation\FormatNegotiator();
+            return new FormatNegotiator();
         });
 
         $app['langage.negociator'] = $app->share(function ($app) {
-            return new \Negotiation\LanguageNegotiator();
+            return new LanguageNegotiator();
         });
     }
 
