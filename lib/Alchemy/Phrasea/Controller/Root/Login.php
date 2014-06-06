@@ -281,6 +281,12 @@ class Login implements ControllerProviderInterface
                 unset($requestData['geonameid-completer']);
             }
 
+            // Remove multiselect field for validation this field is added client side
+            // with bootstrap multiselect plugin
+            if (isset($requestData['multiselect'])) {
+                unset($requestData['multiselect']);
+            }
+
             $form->bind($requestData);
             $data = $form->getData();
 

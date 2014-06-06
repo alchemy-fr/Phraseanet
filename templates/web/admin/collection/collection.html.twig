@@ -335,6 +335,10 @@
                         } else if(submitLink.hasClass('reload-tree')) {
                             reloadTree('bases:bases', true);
                         }
+
+                        if ("undefined" !== typeof datas.msg) {
+                            alert(datas.msg);
+                        }
                     } else {
                         alert(datas.msg);
                     }
