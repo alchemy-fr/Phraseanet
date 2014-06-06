@@ -43,7 +43,7 @@ class task_period_emptyColl extends task_appboxAbstract
 
     protected function loadSettings(SimpleXMLElement $sx_task_settings)
     {
-        $this->base_id = (int) $sx_task_settings->base_id;
+        $this->base_id = (int) $sx_task_settings->bas_id;
         parent::loadSettings($sx_task_settings);
     }
 
