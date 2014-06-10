@@ -1,9 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
-    "hash": "2b68364c4ebb09b6f5c3902e0afdcc1a",
+    "hash": "6dbba3e72a44255a6292ee8fedbce88e",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -1491,26 +1492,26 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.4.4",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "067599fd669b86ff3a1cfb344730014b4a339b7e"
+                "url": "https://github.com/nlegoff/Media-Alchemyst.git",
+                "reference": "e812e631b74ebb0c7b3dd5f4e981d84a7b3c4029"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/067599fd669b86ff3a1cfb344730014b4a339b7e",
-                "reference": "067599fd669b86ff3a1cfb344730014b4a339b7e",
+                "url": "https://api.github.com/repos/nlegoff/Media-Alchemyst/zipball/e812e631b74ebb0c7b3dd5f4e981d84a7b3c4029",
+                "reference": "e812e631b74ebb0c7b3dd5f4e981d84a7b3c4029",
                 "shasum": ""
             },
             "require": {
                 "alchemy/ghostscript": "~0.4.0",
                 "imagine/imagine": "0.6.x@dev",
-                "mediavorus/mediavorus": "~0.4.2",
+                "mediavorus/mediavorus": "dev-fix-video-dim as 0.4.3",
                 "monolog/monolog": "~1.0",
                 "neutron/temporary-filesystem": "~2.1",
                 "php": ">=5.3.3",
-                "php-ffmpeg/php-ffmpeg": "~0.4.2",
+                "php-ffmpeg/php-ffmpeg": "dev-fix-aspect-ratio as 0.4.4",
                 "php-mp4box/php-mp4box": "~0.3.0",
                 "php-unoconv/php-unoconv": "~0.3.0",
                 "pimple/pimple": "~1.0",
@@ -1535,7 +1536,6 @@
                     "MediaAlchemyst": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1560,20 +1560,23 @@
                 "video",
                 "video processing"
             ],
-            "time": "2014-01-31 11:32:50"
+            "support": {
+                "source": "https://github.com/nlegoff/Media-Alchemyst/tree/master"
+            },
+            "time": "2014-06-10 13:51:13"
         },
         {
             "name": "mediavorus/mediavorus",
-            "version": "0.4.3",
+            "version": "dev-fix-video-dim",
             "source": {
                 "type": "git",
-                "url": "https://github.com/romainneutron/MediaVorus.git",
-                "reference": "7cc8c0b8d3440eaff9aa68fff2185216fd72bd75"
+                "url": "https://github.com/nlegoff/Mediavorus.git",
+                "reference": "111a83e983e27818f0594c608d3b5252ffd915ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/MediaVorus/zipball/7cc8c0b8d3440eaff9aa68fff2185216fd72bd75",
-                "reference": "7cc8c0b8d3440eaff9aa68fff2185216fd72bd75",
+                "url": "https://api.github.com/repos/nlegoff/Mediavorus/zipball/111a83e983e27818f0594c608d3b5252ffd915ec",
+                "reference": "111a83e983e27818f0594c608d3b5252ffd915ec",
                 "shasum": ""
             },
             "require": {
@@ -1606,7 +1609,6 @@
                     "MediaVorus": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1621,7 +1623,10 @@
             "keywords": [
                 "metadata"
             ],
-            "time": "2014-01-06 15:45:32"
+            "support": {
+                "source": "https://github.com/nlegoff/Mediavorus/tree/fix-video-dim"
+            },
+            "time": "2014-06-10 09:39:00"
         },
         {
             "name": "monolog/monolog",
@@ -1949,16 +1954,16 @@
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
-            "version": "0.4.4",
+            "version": "dev-fix-aspect-ratio",
             "source": {
                 "type": "git",
-                "url": "https://github.com/alchemy-fr/PHP-FFmpeg.git",
-                "reference": "8dfaf1815802614352bbd10eac7299a100bf9757"
+                "url": "https://github.com/nlegoff/PHP-FFmpeg.git",
+                "reference": "c2ea1ca7ab0a4da0e876e36c8cddbfa4d92dbba6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/8dfaf1815802614352bbd10eac7299a100bf9757",
-                "reference": "8dfaf1815802614352bbd10eac7299a100bf9757",
+                "url": "https://api.github.com/repos/nlegoff/PHP-FFmpeg/zipball/c2ea1ca7ab0a4da0e876e36c8cddbfa4d92dbba6",
+                "reference": "c2ea1ca7ab0a4da0e876e36c8cddbfa4d92dbba6",
                 "shasum": ""
             },
             "require": {
@@ -1979,7 +1984,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4-dev"
+                    "dev-master": "0.5-dev"
                 }
             },
             "autoload": {
@@ -1987,7 +1992,6 @@
                     "FFMpeg": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2014,7 +2018,10 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-12-17 16:54:46"
+            "support": {
+                "source": "https://github.com/nlegoff/PHP-FFmpeg/tree/fix-aspect-ratio"
+            },
+            "time": "2014-06-10 10:27:04"
         },
         {
             "name": "php-mp4box/php-mp4box",
@@ -4007,11 +4014,25 @@
         }
     ],
     "aliases": [
-
+        {
+            "alias": "0.4.3",
+            "alias_normalized": "0.4.3.0",
+            "version": "dev-fix-video-dim",
+            "package": "mediavorus/mediavorus"
+        },
+        {
+            "alias": "0.4.4",
+            "alias_normalized": "0.4.4.0",
+            "version": "dev-fix-aspect-ratio",
+            "package": "php-ffmpeg/php-ffmpeg"
+        }
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": {
         "imagine/imagine": 20,
+        "mediavorus/mediavorus": 20,
+        "media-alchemyst/media-alchemyst": 20,
+        "php-ffmpeg/php-ffmpeg": 20,
         "doctrine/data-fixtures": 20
     },
     "platform": {
