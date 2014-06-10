@@ -29,7 +29,6 @@ class ApiExceptionHandlerSubscriberTest extends \PHPUnit_Framework_TestCase
         $client->request('GET', '/');
 
         $this->assertEquals($code, $client->getResponse()->getStatusCode());
-        $this->assertEquals('application/json', $client->getResponse()->headers->get('content-type'));
     }
 
     public function provideExceptionsAndCode()
