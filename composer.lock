@@ -1571,12 +1571,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nlegoff/Mediavorus.git",
-                "reference": "111a83e983e27818f0594c608d3b5252ffd915ec"
+                "reference": "f11cd2453d5acbc6ac52421dc4edd760433b1515"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nlegoff/Mediavorus/zipball/111a83e983e27818f0594c608d3b5252ffd915ec",
-                "reference": "111a83e983e27818f0594c608d3b5252ffd915ec",
+                "url": "https://api.github.com/repos/nlegoff/Mediavorus/zipball/f11cd2453d5acbc6ac52421dc4edd760433b1515",
+                "reference": "f11cd2453d5acbc6ac52421dc4edd760433b1515",
                 "shasum": ""
             },
             "require": {
@@ -1626,7 +1626,7 @@
             "support": {
                 "source": "https://github.com/nlegoff/Mediavorus/tree/fix-video-dim"
             },
-            "time": "2014-06-10 09:39:00"
+            "time": "2014-06-10 14:03:47"
         },
         {
             "name": "monolog/monolog",
