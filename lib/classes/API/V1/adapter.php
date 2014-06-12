@@ -1907,12 +1907,12 @@ class API_V1_adapter extends API_V1_Abstract
 
         if ($extended) {
             $subdefs = $caption = array();
+
             foreach ($record->get_embedable_medias(array(), array()) as $name => $media) {
                 $subdefs[] = $this->list_embedable_media($media, $this->app['phraseanet.registry']);
             }
 
-            $fields = $record->get_caption()->get_fields();
-            foreach ($fields as $field) {
+            foreach ($record->get_caption()->get_fields() as $field) {
                 $caption[] = array(
                     'meta_structure_id' => $field->get_meta_struct_id(),
                     'name'              => $field->get_name(),
@@ -1920,22 +1920,10 @@ class API_V1_adapter extends API_V1_Abstract
                 );
             }
 
-            $that = $this;
-            $baskets = array_map(function ($basket) use ($that, $record) {
-                    return $that->list_basket($basket);
-                }, (array) $record->get_container_baskets($this->app['EM'], $this->app['authentication']->getUser())
-            );
-
-            $stories = array_map(function ($story) use ($that, $extended) {
-                return $that->list_story($story, $extended);
-            }, array_values($record->get_grouping_parents()->get_elements()));
-
             $extendedData = array(
                 'subdefs' => $subdefs,
                 'metadata' => $this->list_record_caption($record->get_caption()),
                 'status' => $this->list_record_status($record->get_databox(), $record->get_status()),
-//                'baskets' => $baskets,
-//                'stories' => $stories,
                 'caption' =>  $caption
             );
 
