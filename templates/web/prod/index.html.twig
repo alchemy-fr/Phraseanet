@@ -846,18 +846,18 @@
                 </div>
                 <div class="box">
                     {% set technical_display = app['settings'].getUserSetting(app['authentication'].getUser(), 'technical_display') %}
-                    <h1>{{'Informations techniques'  | trans }}</h1>
+                    <h1>{{'Display technical data'  | trans }}</h1>
                     <label class="radio" for="technical_show">
                         <input onchange="setPref('technical_display',$(this).val());" name="technical_display" type="radio" class="radio" value="1" id="technical_show" {% if technical_display == '1' %}checked="checked"{% endif %}/>
-                        {{ 'Afficher' | trans }}
+                        {{ 'In the answer grid' | trans }}
                     </label>
                     <label class="radio" for="technical_group">
                         <input onchange="setPref('technical_display',$(this).val());" name="technical_display" type="radio" class="radio" value="group" id="technical_group" {% if technical_display == 'group' %}checked="checked"{% endif %}/>
-                        {{ 'Afficher dans la notice' | trans }}
+                        {{ 'After metadata' | trans }}
                     </label>
                     <label class="radio" for="technical_hide">
                         <input onchange="setPref('technical_display',$(this).val());" name="technical_display" type="radio" class="radio" value="0" id="technical_hide" {% if technical_display == '0' %}checked="checked"{% endif %}/>
-                        {{ 'Ne pas afficher' | trans }}
+                        {{ 'Do not display' | trans }}
                     </label>
                 </div>
                 <div class="box">
