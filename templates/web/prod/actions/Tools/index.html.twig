@@ -19,14 +19,6 @@
   {% endif %}
 {% endfor %}
 
-{# image section #}
-{% set allowRotate = '0' %}
-{% for record in records %}
-  {% if record.get_type() == 'image' %}
-      {% set allowRotate = '1' %}
-  {% endif %}
-{% endfor %}
-
 <div id='prod-tool-box' class="PNB10">
 
     {# jquery Tabs #}
@@ -50,14 +42,12 @@
                         {% endif %}
                     {% endfor %}
                 {% endif %}
-                {% if allowRotate == 1%}
-                    <li>
-                        <a href="#image">
-                            {{ "image tool" | trans }}
-                        </a>
-                    </li>
-                {% endif %}
-                {% if selectionLength == 1 and (app['conf'].get(['registry', 'modules', 'doc-substitution']) or app['conf'].get(['registry', 'modules', 'thumb-substitution'])) %}
+                <li>
+                    <a href="#image">
+                        {{ "image tool" | trans }}
+                    </a>
+                </li>
+                {% if selectionLength == 1 and (app['phraseanet.registry'].get('GV_seeOngChgDoc') or app['phraseanet.registry'].get('GV_seeNewThumb')) %}
                     <li>
                         <a href="#substitution">
                             {{ "substitution" | trans }}
@@ -242,31 +232,32 @@
       {% endfor %}
     {% endif %}
 
-    {% if allowRotate == 1 %}
-        <div id="image" class="tabBox">
-          <form name="formpushdoc" action="{{ path('prod_tools_rotate') }}" method="post">
-            <fieldset style='border:1px solid #999;padding:20px;'>
-              <legend style='color:#EEE'>&nbsp;<b>{{ "image rotation" | trans }}</b>&nbsp;</legend>
-                <label for="ROTA_90" class="radio">
-                    <input type="radio" name="rotation" id="ROTA_90" value="90" checked="checked">
-                    {{ "rotation 90 degres horaire" | trans }}
-                </label>
-                <br />
-                <label for="ROTA_C90" class="radio">
-                    <input type="radio" name="rotation" id="ROTA_C90" value="-90">
-                    {{ "rotation 90 degres anti-horaires" | trans }}
-                </label>
-                <input type="hidden" name="lst" value="{{records.serializedList()}}" />
-                <input type="hidden" name="element" value="" />
-                <input type="hidden" name="cchd" value="" />
-            </fieldset>
-            <div style='text-align:right;padding-top:10px;'>
-              <button class="action_submiter btn btn-inverse">{{ "validate" | trans }}</button>
-              <button class="action_cancel btn btn-inverse">{{ "cancel" | trans }}</button>
-            </div>
-          </form>
+    <div id="image" class="tabBox">
+      <div class="text-info">
+        <i class=" icon-info-sign"></i> {% trans %}Changes for rotation will be applied only on the sub-definitions of "image" type.{% endtrans %}
+      </div>
+      <form name="formpushdoc" action="{{ path('prod_tools_rotate') }}" method="post">
+        <fieldset style='border:1px solid #999;padding:20px;'>
+          <legend style='color:#EEE'>&nbsp;<b>{% trans "image rotation" %}</b>&nbsp;</legend>
+            <label for="ROTA_90" class="radio">
+                <input type="radio" name="rotation" id="ROTA_90" value="90" checked="checked">
+                {{ "rotation 90 degres horaire" | trans }}
+            </label>
+            <br />
+            <label for="ROTA_C90" class="radio">
+                <input type="radio" name="rotation" id="ROTA_C90" value="-90">
+                {{ "rotation 90 degres anti-horaires" | trans }}
+            </label>
+            <input type="hidden" name="lst" value="{{records.serializedList()}}" />
+            <input type="hidden" name="element" value="" />
+            <input type="hidden" name="cchd" value="" />
+        </fieldset>
+        <div style='text-align:right;padding-top:10px;'>
+          <button class="action_submiter btn btn-inverse">{% trans "validate" %}</button>
+          <button class="action_cancel btn btn-inverse">{% trans "cancel" %}</button>
         </div>
-    {% endif %}
+      </form>
+    </div>
 
     {# hd sub section #}
     {% if selectionLength == 1 and (app['conf'].get(['registry', 'modules', 'doc-substitution']) or app['conf'].get(['registry', 'modules', 'thumb-substitution'])) %}

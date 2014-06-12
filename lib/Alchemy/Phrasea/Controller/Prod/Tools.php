@@ -65,26 +65,23 @@ class Tools implements ControllerProviderInterface
         });
 
         $controllers->post('/rotate/', function (Application $app, Request $request) {
-            $return = ['success'      => true, 'errorMessage' => ''];
-
             $records = RecordsRequest::fromRequest($app, $request, false);
-
-            $rotation = in_array($request->request->get('rotation'), ['-90', '90', '180']) ? $request->request->get('rotation', 90) : 90;
+            $rotation = in_array($request->request->get('rotation'), array('-90', '90', '180')) ? $request->request->get('rotation', 90) : 90;
 
             foreach ($records as $record) {
-                foreach ($record->get_subdefs() as $name => $subdef) {
-                    if ($name == 'document')
+                foreach ($record->get_subdefs() as $subdef) {
+                    if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
                         continue;
+                    }
 
                     try {
                         $subdef->rotate($rotation, $app['media-alchemyst'], $app['mediavorus']);
                     } catch (\Exception $e) {
-
                     }
                 }
             }
 
-            return $app->json($return);
+            return $app->json(array('success' => true, 'errorMessage' => ''));
         })->bind('prod_tools_rotate');
 
         $controllers->post('/image/', function (Application $app, Request $request) {
