@@ -773,12 +773,7 @@ class set_export extends set_abstract
         $tmplog = array();
         $files = $list['files'];
 
-        $event_names = array(
-            'mail-export' => Session_Logger::EVENT_EXPORTMAIL,
-            'download'    => Session_Logger::EVENT_EXPORTDOWNLOAD
-        );
-
-        $event_name = isset($event_names[$type]) ? $event_names[$type] : Session_Logger::EVENT_EXPORTDOWNLOAD;
+        $event_name = in_array($type, array(Session_Logger::EVENT_EXPORTMAIL,Session_Logger::EVENT_EXPORTDOWNLOAD)) ? $type : Session_Logger::EVENT_EXPORTDOWNLOAD;
 
         foreach ($files as $record) {
             foreach ($record["subdefs"] as $o => $obj) {
@@ -786,8 +781,7 @@ class set_export extends set_abstract
 
                 $record_object = new record_adapter($app, $sbas_id, $record['record_id']);
 
-                $app['phraseanet.logger']($record_object->get_databox())
-                    ->log($record_object, $event_name, $o, $comment);
+                $app['phraseanet.logger']($record_object->get_databox())->log($record_object, $event_name, $o, $comment);
 
                 if ($o != "caption") {
                     $log["rid"] = $record_object->get_record_id();
@@ -803,12 +797,6 @@ class set_export extends set_abstract
                 unset($record_object);
             }
         }
-
-        $export_types = array(
-            'download'    => 0,
-            'mail-export' => 2,
-            'ftp'         => 4
-        );
 
         $list_base = array_unique(array_keys($tmplog));
 
