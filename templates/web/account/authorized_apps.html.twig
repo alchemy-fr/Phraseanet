@@ -13,28 +13,30 @@
                 <h3>{{ "Vous avez autorise ces applications a acceder a votre compte" | trans }}</h3>
                 {% if applications|length > 0 %}
                     <ul class="unstyled app-list">
-                        {% for application in applications %}
-                            <li id="app_{{ application.get_id() }}">
+                        {% for data in applications if data["user-account"] is not none %}
+                            {% set application = data["application"] %}
+                            {% set account = data["user-account"] %}
+                            <li id="app_{{ application.getId() }}">
                                 <div>
-                                    {% set account = application.get_user_account(app["authentication"].getUser()) %}
-                                    <a href="{{ path("grant_app_access", {"application_id" : application.get_id()}) }}" class="revoke app-btn btn btn-small pull-right {% if account.is_revoked() %}hidden{% endif %}" value="{{application.get_id()}}">{{ "Revoquer l\'access" | trans }}</a>
-                                    <a href="{{ path("grant_app_access", {"application_id" : application.get_id()}) }}"  class="authorize app-btn btn btn-small pull-right {% if not account.is_revoked() %}hidden{% endif %}" value="{{application.get_id()}}">{{ "Authoriser l\'access" | trans }}</a>
+
+                                    <a href="{{ path("grant_app_access", {"application" : application.getId()}) }}" class="revoke app-btn btn btn-small pull-right {% if account.isRevoked() %}hidden{% endif %}" value="{{application.getId()}}">{{ "Revoquer l\'access" | trans }}</a>
+                                    <a href="{{ path("grant_app_access", {"application" : application.getId()}) }}"  class="authorize app-btn btn btn-small pull-right {% if not account.isRevoked() %}hidden{% endif %}" value="{{application.getId()}}">{{ "Authoriser l\'access" | trans }}</a>
                                     <p class="app-row">
-                                        <a href="{{ application.get_website() }}" target="_blank">
-                                            <strong>{{ application.get_name() }}</strong>
+                                        <a href="{{ application.getWebsite() }}" target="_blank">
+                                            <strong>{{ application.getName() }}</strong>
                                         </a>
-                                        {% if application.get_creator() is not none %}
+                                        {% if application.getCreator() is not none %}
                                             <small>
-                                                {% set user_name = application.get_creator().getDisplayName() %}
+                                                {% set user_name = application.getCreator().getDisplayName() %}
                                                 {% trans with {'%user_name%' : user_name} %}par %user_name%{% endtrans %}
                                             </small>
                                         {% endif%}
                                     </p>
                                     <p class="app-row">
-                                        <span class="status text-error {% if account.is_revoked() == false %}hidden{% endif %}">{{ "Not Allowed" | trans }}</span>
-                                        <span class="status text-success {% if account.is_revoked() == true %}hidden{% endif %}">{{ "Allowed" | trans }}</span>
+                                        <span class="status text-error {% if account.isRevoked() == false %}hidden{% endif %}">{{ "Not Allowed" | trans }}</span>
+                                        <span class="status text-success {% if account.isRevoked() == true %}hidden{% endif %}">{{ "Allowed" | trans }}</span>
                                     </p>
-                                    <p class="app-row">{{ application.get_description()|truncate(120, true, "...") }}</p>
+                                    <p class="app-row">{{ application.getDescription()|truncate(120, true, "...") }}</p>
                                 </div>
                             </li>
                         {%endfor%}

@@ -71,14 +71,17 @@ use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
 use Alchemy\Phrasea\Controller\Utils\PathFileTest;
 use Alchemy\Phrasea\Controller\User\Notifications;
 use Alchemy\Phrasea\Controller\User\Preferences;
-use Alchemy\Phrasea\Core\Middleware\TokenMiddlewareProvider;
 use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
 use Alchemy\Phrasea\Core\Event\Subscriber\LogoutSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\MaintenanceSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\CookiesDisablerSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaInstallSubscriber;
+use Alchemy\Phrasea\Core\Middleware\ApiApplicationMiddlewareProvider;
 use Alchemy\Phrasea\Core\Middleware\BasketMiddlewareProvider;
+use Alchemy\Phrasea\Core\Middleware\TokenMiddlewareProvider;
 use Alchemy\Phrasea\Core\Provider\ACLServiceProvider;
+use Alchemy\Phrasea\Core\Provider\APIServiceProvider;
 use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
@@ -213,8 +216,10 @@ class Application extends SilexApplication
 
         $this->register(new BasketMiddlewareProvider());
         $this->register(new TokenMiddlewareProvider());
+        $this->register(new ApiApplicationMiddlewareProvider());
 
         $this->register(new ACLServiceProvider());
+        $this->register(new APIServiceProvider());
         $this->register(new AuthenticationManagerServiceProvider());
         $this->register(new BorderManagerServiceProvider());
         $this->register(new BrowserServiceProvider());
@@ -472,6 +477,7 @@ class Application extends SilexApplication
                 $dispatcher->addSubscriber(new PhraseaLocaleSubscriber($app));
                 $dispatcher->addSubscriber(new MaintenanceSubscriber($app));
                 $dispatcher->addSubscriber(new CookiesDisablerSubscriber($app));
+                $dispatcher->addSubscriber(new PhraseaInstallSubscriber($app));
 
                 return $dispatcher;
             })

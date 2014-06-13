@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints;
@@ -44,9 +45,7 @@ class API_OAuth2_Form_DevAppInternet
     public $urlcallback;
 
     /**
-     *
-     * @param  Request                $request
-     * @return API_OAuth2_Form_DevApp
+     * @param Request $request
      */
     public function __construct(Request $request)
     {
@@ -56,10 +55,10 @@ class API_OAuth2_Form_DevAppInternet
         $this->callback = $request->get('callback', '');
         $this->scheme_website = $request->get('scheme-website', 'http://');
         $this->scheme_callback = $request->get('scheme-callback', 'http://');
-        $this->type = API_OAuth2_Application::WEB_TYPE;
+        $this->type = ApiApplication::WEB_TYPE;
 
-        $this->urlwebsite = $this->scheme_website . $this->website;
-        $this->urlcallback = $this->scheme_callback . $this->callback;
+        $this->urlwebsite = sprintf('%s%s', $this->scheme_website, $this->website);
+        $this->urlcallback =  sprintf('%s%s', $this->scheme_callback, $this->callback);
 
         return $this;
     }

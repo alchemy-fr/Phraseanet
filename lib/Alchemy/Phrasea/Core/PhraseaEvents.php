@@ -18,6 +18,8 @@ final class PhraseaEvents
     const PRE_AUTHENTICATE = 'phrasea.pre-authenticate';
     const POST_AUTHENTICATE = 'phrasea.post-authenticate';
 
+    const INSTALL_FINISH = "phrasea.install-finish";
+
     const API_OAUTH2_START = 'api.oauth2.start';
     const API_OAUTH2_END = 'api.oauth2.end';
     const API_LOAD_START = 'api.load.start';

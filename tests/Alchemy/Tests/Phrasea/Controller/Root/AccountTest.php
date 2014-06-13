@@ -355,7 +355,6 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     public function testAUthorizedAppGrantAccessBadRequest()
     {
         self::$DI['client']->request('GET', '/account/security/application/3/grant/');
-
         $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
@@ -376,7 +375,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testAUthorizedAppGrantAccessSuccessfull($revoke, $expected)
     {
-        self::$DI['client']->request('GET', '/account/security/application/' . self::$DI['oauth2-app-user']->get_id() . '/grant/', [
+        self::$DI['client']->request('GET', '/account/security/application/' . self::$DI['oauth2-app-user']->getId() . '/grant/', [
             'revoke' => $revoke
             ], [], [
             'HTTP_ACCEPT'           => 'application/json',
@@ -384,20 +383,15 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         ]);
 
         $response = self::$DI['client']->getResponse();
-
         $this->assertTrue($response->isOk());
         $json = json_decode($response->getContent());
         $this->assertInstanceOf('StdClass', $json);
         $this->assertObjectHasAttribute('success', $json);
         $this->assertTrue($json->success);
 
-        $account = \API_OAuth2_Account::load_with_user(
-                self::$DI['app']
-                , self::$DI['oauth2-app-user']
-                , self::$DI['user']
-        );
+        $account = self::$DI['app']['repo.api-accounts']->findByUserAndApplication(self::$DI['user'], self::$DI['oauth2-app-user']);
 
-        $this->assertEquals($expected, $account->is_revoked());
+        $this->assertEquals($expected, $account->isRevoked());
     }
 
     public function revokeProvider()

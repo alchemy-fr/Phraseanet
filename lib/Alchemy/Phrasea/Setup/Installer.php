@@ -12,10 +12,12 @@
 namespace Alchemy\Phrasea\Setup;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Core\Event\InstallFinishEvent;
+use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\DBAL\Driver\Connection;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\Tools\SchemaTool;
-use Alchemy\Phrasea\Model\Entities\User;
 
 class Installer
 {
@@ -45,6 +47,8 @@ class Installer
             $this->rollbackInstall($abConn, $dbConn);
             throw $e;
         }
+
+        $this->app['dispatcher']->dispatch(PhraseaEvents::INSTALL_FINISH, new InstallFinishEvent($user));
 
         return $user;
     }

@@ -21,6 +21,7 @@ use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Oauth2 implements ControllerProviderInterface
 {
@@ -30,10 +31,6 @@ class Oauth2 implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $app['oauth'] = $app->share(function ($app) {
-            return new \API_OAuth2_Adapter($app);
-        });
-
         /**
          * AUTHORIZE ENDPOINT
          *
@@ -42,45 +39,45 @@ class Oauth2 implements ControllerProviderInterface
          */
         $authorize_func = function () use ($app) {
             $request = $app['request'];
-            $oauth2_adapter = $app['oauth'];
+            $oauth2Adapter = $app['oauth2-server'];
 
             $context = new Context(Context::CONTEXT_OAUTH2_NATIVE);
             $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
 
             //Check for auth params, send error or redirect if not valid
-            $params = $oauth2_adapter->getAuthorizationRequestParameters($request);
+            $params = $oauth2Adapter->getAuthorizationRequestParameters($request);
 
-            $app_authorized = false;
+            $appAuthorized = false;
             $errorMessage = false;
 
-            $client = \API_OAuth2_Application::load_from_client_id($app, $params['client_id']);
+            if (null === $client = $app['repo.api-applications']->findByClientId($params['client_id'])) {
+                throw new NotFoundHttpException(sprintf('Application with client id %s could not be found', $params['client_id']));
+            }
 
-            $oauth2_adapter->setClient($client);
+            $oauth2Adapter->setClient($client);
 
-            $action_accept = $request->get("action_accept");
-            $action_login = $request->get("action_login");
+            $actionAccept = $request->get("action_accept");
+            $actionLogin = $request->get("action_login");
 
             $template = "api/auth/end_user_authorization.html.twig";
 
             $custom_template = sprintf(
                 "%s/config/templates/web/api/auth/end_user_authorization/%s.html.twig"
                 , $app['root.path']
-                , $client->get_id()
+                , $client->getId()
             );
 
             if (file_exists($custom_template)) {
                 $template = sprintf(
                     'api/auth/end_user_authorization/%s.html.twig'
-                    , $client->get_id()
+                    , $client->getId()
                 );
             }
 
             if (!$app['authentication']->isAuthenticated()) {
-                if ($action_login !== null) {
+                if ($actionLogin !== null) {
                     try {
-                        $usr_id = $app['auth.native']->getUsrId($request->get("login"), $request->get("password"), $request);
-
-                        if (null === $usr_id) {
+                        if (null === $usrId = $app['auth.native']->getUsrId($request->get("login"), $request->get("password"), $request)) {
                             $app['session']->getFlashBag()->set('error', $app->trans('login::erreur: Erreur d\'authentification'));
 
                             return $app->redirectPath('oauth2_authorize');
@@ -91,48 +88,51 @@ class Oauth2 implements ControllerProviderInterface
                         return $app->redirectPath('oauth2_authorize', ['error' => 'account-locked']);
                     }
 
-                    $app['authentication']->openAccount($app['repo.users']->find($usr_id));
+                    $app['authentication']->openAccount($app['repo.users']->find($usrId));
                 }
 
-                return new Response($app['twig']->render($template, ["auth" => $oauth2_adapter]));
+                return new Response($app['twig']->render($template, ["auth" => $oauth2Adapter]));
             }
 
             //check if current client is already authorized by current user
-            $user_auth_clients = \API_OAuth2_Application::load_authorized_app_by_user(
-                    $app
-                    , $app['authentication']->getUser()
-            );
+            $clients = $app['repo.api-applications']->findAuthorizedAppsByUser($app['authentication']->getUser());
 
-            foreach ($user_auth_clients as $auth_client) {
-                if ($client->get_client_id() == $auth_client->get_client_id()) {
-                    $app_authorized = true;
+            foreach ($clients as $authClient) {
+                if ($client->getClientId() == $authClient->getClientId()) {
+                    $appAuthorized = true;
+                    break;
                 }
             }
 
-            $account = $oauth2_adapter->updateAccount($app['authentication']->getUser());
+            $account = $oauth2Adapter->updateAccount($app['authentication']->getUser());
 
-            $params['account_id'] = $account->get_id();
+            $params['account_id'] = $account->getId();
 
-            if (!$app_authorized && $action_accept === null) {
+            if (!$appAuthorized && $actionAccept === null) {
                 $params = [
-                    "auth"         => $oauth2_adapter,
+                    "auth"         => $oauth2Adapter,
                     "errorMessage" => $errorMessage,
                 ];
 
                 return new Response($app['twig']->render($template, $params));
-            } elseif (!$app_authorized && $action_accept !== null) {
-                $app_authorized = (Boolean) $action_accept;
-                $account->set_revoked(!$app_authorized);
+            } elseif (!$appAuthorized && $actionAccept !== null) {
+                $appAuthorized = (Boolean) $actionAccept;
+
+                if ($appAuthorized) {
+                    $app['manipulator.api-account']->authorizeAccess($account);
+                } else {
+                    $app['manipulator.api-account']->revokeAccess($account);
+                }
             }
 
             //if native app show template
-            if ($oauth2_adapter->isNativeApp($params['redirect_uri'])) {
-                $params = $oauth2_adapter->finishNativeClientAuthorization($app_authorized, $params);
+            if ($oauth2Adapter->isNativeApp($params['redirect_uri'])) {
+                $params = $oauth2Adapter->finishNativeClientAuthorization($appAuthorized, $params);
 
                 return new Response($app['twig']->render("api/auth/native_app_access_token.html.twig", $params));
             }
 
-            $oauth2_adapter->finishClientAuthorization($app_authorized, $params);
+            $oauth2Adapter->finishClientAuthorization($appAuthorized, $params);
 
             // As OAuth2 library already outputs response content, we need to send an empty
             // response to avoid breaking silex controller
@@ -152,7 +152,7 @@ class Oauth2 implements ControllerProviderInterface
                 throw new HttpException(400, 'This route requires the use of the https scheme', null, ['content-type' => 'application/json']);
             }
 
-            $app['oauth']->grantAccessToken($request);
+            $app['oauth2-server']->grantAccessToken($request);
             ob_flush();
             flush();
 

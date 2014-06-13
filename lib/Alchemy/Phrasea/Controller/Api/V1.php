@@ -62,8 +62,13 @@ class V1 implements ControllerProviderInterface
         });
 
         $controllers->after(function (Request $request, Response $response) use ($app) {
-            $this->logQuery($app, $request, $response);
-            $this->logout($app);
+            $token = $app['session']->get('token');
+            $app['manipulator.api-log']->create($token->getAccount(), $request, $response);
+            $app['manipulator.api-oauth-token']->setLastUsed($token, new \DateTime());
+            $app['session']->set('token', null);
+            if (null !== $app['authentication']->getUser()) {
+                $app['authentication']->closeAccount();
+            }
         });
 
         $controllers->get('/monitor/scheduler/', 'controller.api.v1:get_scheduler')
@@ -1967,117 +1972,37 @@ class V1 implements ControllerProviderInterface
         $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
         $app['dispatcher']->dispatch(PhraseaEvents::API_OAUTH2_START, new ApiOAuth2StartEvent());
 
-        $oauth2_adapter = new \API_OAuth2_Adapter($app);
-        $oauth2_adapter->verifyAccessToken();
+        $app['oauth2-server']->verifyAccessToken();
 
-        $token = \API_OAuth2_Token::load_by_oauth_token($app, $oauth2_adapter->getToken());
+        if (null === $token = $app['repo.api-oauth-tokens']->find($app['oauth2-server']->getToken())) {
+            throw new NotFoundHttpException('Provided token is not valid.');
+        }
         $app['session']->set('token', $token);
 
-        $oAuth2App = $token->get_account()->get_application();
-        /* @var $oAuth2App \API_OAuth2_Application */
+        $oAuth2Account = $token->getAccount();
+        $oAuth2App = $oAuth2Account->getApplication();
 
-        if ($oAuth2App->get_client_id() == \API_OAuth2_Application_Navigator::CLIENT_ID
+        if ($oAuth2App->getClientId() == \API_OAuth2_Application_Navigator::CLIENT_ID
             && !$app['conf']->get(['registry', 'api-clients', 'navigator-enabled'])) {
-            return Result::createError($request, 403, 'The use of phraseanet Navigator is not allowed')->createResponse();
+            return Result::createError($request, 403, 'The use of Phraseanet Navigator is not allowed')->createResponse();
         }
 
-        if ($oAuth2App->get_client_id() == \API_OAuth2_Application_OfficePlugin::CLIENT_ID
+        if ($oAuth2App->getClientId() == \API_OAuth2_Application_OfficePlugin::CLIENT_ID
             && ! $app['conf']->get(['registry', 'api-clients', 'office-enabled'])) {
             return Result::createError($request, 403, 'The use of Office Plugin is not allowed.')->createResponse();
         }
 
-        $user = $app['repo.users']->find($oauth2_adapter->get_usr_id());
-        $app['authentication']->openAccount($user);
-        $oauth2_adapter->remember_this_ses_id($app['session']->get('session_id'));
+        $app['authentication']->openAccount($oAuth2Account->getUser());
+        $app['oauth2-server']->rememberSession($app['session']);
         $app['dispatcher']->dispatch(PhraseaEvents::API_OAUTH2_END, new ApiOAuth2EndEvent());
     }
 
     public function ensureAdmin(Request $request, Application $app)
     {
-        $user = $app['session']->get('token')->get_account()->get_user();
-        if (!$app['acl']->get($user)->is_admin()) {
+        $user = $app['session']->get('token')->getAccount()->getUser();
+        if (!$user->isAdmin()) {
             return Result::createError($request, 401, 'You are not authorized')->createResponse();
         }
-    }
-
-    private function logQuery(Application $app, Request $request, Response $response)
-    {
-        $infos = $this->parseRoute($request->getPathInfo(), $response);
-
-        Logger::create(
-              $app,
-              $app['session']->get('token')->get_account(),
-              $request->getMethod() . " " . $request->getPathInfo(),
-              $response->getStatusCode(),
-              $response->headers->get('content-type'),
-              $infos['ressource'],
-              $infos['general'],
-              $infos['aspect'],
-              $infos['action']
-        );
-    }
-
-    /**
-     * Parses the requested route to fetch
-     * - the ressource (databox, basket, record etc ..)
-     * - general action (list, add, search)
-     * - the action (setstatus, setname etc..)
-     * - the aspect (collections, related, content etc..)
-     *
-     * @return array
-     */
-    private function parseRoute($route, Response $response)
-    {
-        $ressource = $general = $aspect = $action = null;
-        $exploded_route = explode('/', trim($route, '/'));
-
-        if ($response->isOk() && sizeof($exploded_route) > 0) {
-            $ressource = $exploded_route[0];
-
-            if (count($exploded_route) == 2 && (int) $exploded_route[1] == 0) {
-                $general = $exploded_route[1];
-            } else {
-                switch ($ressource) {
-                    case Logger::DATABOXES_RESOURCE :
-                        if ((int) $exploded_route[1] > 0 && count($exploded_route) == 3) {
-                            $aspect = $exploded_route[2];
-                        }
-                        break;
-                    case Logger::RECORDS_RESOURCE :
-                        if ((int) $exploded_route[1] > 0 && count($exploded_route) == 4) {
-                            if (!isset($exploded_route[3])) {
-                                $aspect = "record";
-                            } elseif (preg_match("/^set/", $exploded_route[3])) {
-                                $action = $exploded_route[3];
-                            } else {
-                                $aspect = $exploded_route[3];
-                            }
-                        }
-                        break;
-                    case Logger::BASKETS_RESOURCE :
-                        if ((int) $exploded_route[1] > 0 && count($exploded_route) == 3) {
-                            if (preg_match("/^set/", $exploded_route[2]) || preg_match("/^delete/", $exploded_route[2])) {
-                                $action = $exploded_route[2];
-                            } else {
-                                $aspect = $exploded_route[2];
-                            }
-                        }
-                        break;
-                    case Logger::FEEDS_RESOURCE :
-                        if ((int) $exploded_route[1] > 0 && count($exploded_route) == 3) {
-                            $aspect = $exploded_route[2];
-                        }
-                        break;
-                }
-            }
-        }
-
-        return [
-            'ressource' => $ressource,
-            'general'   => $general,
-            'aspect'    => $aspect,
-            'action'    => $action
-        ];
     }
 
     private function list_user(User $user)
@@ -2118,12 +2043,5 @@ class V1 implements ControllerProviderInterface
             'updated_on'      => $user->getUpdated() ? $user->getUpdated()->format(DATE_ATOM) : null,
             'locale'          => $user->getLocale() ?: null,
         ];
-    }
-
-    private function logout(Application $app)
-    {
-        if (null !== $app['authentication']->getUser()) {
-            $app['authentication']->closeAccount();
-        }
     }
 }

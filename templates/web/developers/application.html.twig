@@ -10,11 +10,11 @@
     <div class="row-fluid">
         <div class="span12">
             <h1>{{ "Application" | trans }}</h1>
-            <input type="hidden" value="{{ application.get_id() }}" name="app_id"/>
+            <input type="hidden" value="{{ application.getId() }}" name="app_id"/>
 
             <div>
-              <div><strong><a class="link" href="{{ path("developers_application", {"id" : application.get_id()}) }}">{{ application.get_name() }}</a></strong></div>
-              <div>{{ application.get_description() }}</div>
+              <div><strong><a class="link" href="{{ path("developers_application", {"application" : application.getId()}) }}">{{ application.getName() }}</a></strong></div>
+              <div>{{ application.getDescription() }}</div>
             </div>
 
             <h1>{{ "settings OAuth" | trans }}</h1>
@@ -24,22 +24,22 @@
                 <tbody>
                     <tr>
                         <td>Client ID</td>
-                        <td>{{ application.get_client_id() }}</td>
+                        <td>{{ application.getClientId() }}</td>
                     </tr>
                     <tr>
                         <td>Client Secret</td>
-                        <td>{{ application.get_client_secret() }}</td>
+                        <td>{{ application.getClientSecret() }}</td>
                     </tr>
                     <tr>
                         <td>{{ "URL de callback" | trans }}</td>
-                        {% if application.get_type() == constant("API_OAuth2_Application::DESKTOP_TYPE") %}
+                            {% if application.getType() == constant("DESKTOP_TYPE", application) %}
                             <td>
-                                <span>{{ application.get_redirect_uri() }}</span>
+                                <span>{{ application.getRedirectUri() }}</span>
                             </td>
                         {% else %}
                             <td class="url_callback">
-                                <span class="url_callback_input">{{ application.get_redirect_uri() }}</span>
-                                <a href="{{ path("submit_application_callback", {"id" : application.get_id()}) }}" class="save_callback btn btn-small btn-info" style="display:none;">
+                                <span class="url_callback_input">{{ application.getRedirectUri() }}</span>
+                                <a href="{{ path("submit_application_callback", {"application" : application.getId()}) }}" class="save_callback btn btn-small btn-info" style="display:none;">
                                     {{ "Save" | trans }}
                                 </a>
                                 <button type="button" class="modifier_callback btn btn-small">
@@ -61,9 +61,9 @@
                         <td>
                             <input class="grant-type"
                                 type="checkbox"
-                                {{ application.is_password_granted() ? "checked='checked'" : "" }}
+                                {{ application.isPasswordGranted() ? "checked='checked'" : "" }}
                                 name="grant"
-                                value="{{ path("submit_developers_application_authorize_grant_password", {"id" : application.get_id()}) }}"
+                                value="{{ path("submit_developers_application_authorize_grant_password", {"application" : application.getId()}) }}"
                             >
                         </td>
                     </tr>
@@ -81,18 +81,18 @@
                         </td>
                         <td>
                             <span id="my_access_token">
-                                {% if not token  is none %}
-                                  {{ token|default("") }}
+                                {% if not token is none %}
+                                  {{ token.getOauthToken()|default("") }}
                                 {% else %}
                                   {{ "Le token n\'a pas encore ete genere" | trans }}
                                 {% endif %}
                             </span>
-                            <a id="generate_access" href="{{ path("submit_developers_application_token",{ "id" : application.get_id()}) }}" class="btn btn-small btn-info">{{ "boutton::generer" | trans }}</a>
-                          </td>
+                            <a id="generate_access" href="{{ path("submit_developers_application_token",{ "application" : application.getId()}) }}" class="btn btn-small btn-info">{{ "boutton::generer" | trans }}</a>
+                        </td>
                     </tr>
                 </tbody>
             </table>
-            <div>
+            <div class="form-actions">
               <a class="btn btn-primary" href="{{ path("developers_applications") }}">{{ "boutton::retour" | trans }}</a>
             </div>
         </div>

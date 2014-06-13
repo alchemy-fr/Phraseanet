@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Command\Developer;
 
 use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\AuthFailure;
 use Alchemy\Phrasea\Model\Entities\AggregateToken;
 use Alchemy\Phrasea\Model\Entities\Basket;
@@ -88,6 +89,8 @@ class RegenerateSqliteDb extends Command
 
             $this->generateUsers($this->container['EM'], $DI);
             $this->insertOauthApps($DI);
+            $this->insertOauthAccounts($DI);
+            $this->insertNativeApps();
             $this->generateCollection($DI);
             $this->generateRecord($DI);
             $this->insertTwoTasks($this->container['EM']);
@@ -124,8 +127,10 @@ class RegenerateSqliteDb extends Command
             $fixtures['user']['test_phpunit_alt2'] = $DI['user_alt2']->getId();
             $fixtures['user']['user_guest'] = $DI['user_guest']->getId();
 
-            $fixtures['oauth']['user'] = $DI['app-user']->get_id();
-            $fixtures['oauth']['user_notAdmin'] = $DI['app-user_notAdmin']->get_id();
+            $fixtures['oauth']['user'] = $DI['api-app-user']->getId();
+            $fixtures['oauth']['acc-user'] = $DI['api-app-acc-user']->getId();
+            $fixtures['oauth']['user-not-admin'] = $DI['api-app-user-not-admin']->getId();
+            $fixtures['oauth']['acc-user-not-admin'] = $DI['api-app-acc-user-not-admin']->getId();
 
             $fixtures['databox']['records'] = $DI['databox']->get_sbas_id();
             $fixtures['collection']['coll'] = $DI['coll']->get_base_id();
@@ -182,15 +187,64 @@ class RegenerateSqliteDb extends Command
 
     private function insertOauthApps(\Pimple $DI)
     {
-        $DI['app-user'] = \API_OAuth2_Application::create($this->container, $DI['user'], 'test application for user');
-        $DI['app-user']->set_redirect_uri('http://callback.com/callback/');
-        $DI['app-user']->set_website('http://website.com/');
-        $DI['app-user']->set_type(\API_OAuth2_Application::WEB_TYPE);
+        $DI['api-app-user'] = $this->container['manipulator.api-application']->create(
+            'test application for user',
+            ApiApplication::WEB_TYPE,
+            'an api application description',
+            'http://website.com/',
+            $DI['user'],
+            'http://callback.com/callback/'
+        );
 
-        $DI['app-user_notAdmin'] = \API_OAuth2_Application::create($this->container, $DI['user_notAdmin'], 'test application for user not admin');
-        $DI['app-user_notAdmin']->set_redirect_uri('http://callback.com/callback/');
-        $DI['app-user_notAdmin']->set_website('http://website.com/');
-        $DI['app-user_notAdmin']->set_type(\API_OAuth2_Application::WEB_TYPE);
+        $DI['api-app-user-not-admin'] = $this->container['manipulator.api-application']->create(
+            'test application for user',
+            ApiApplication::WEB_TYPE,
+            'an api application description',
+            'http://website.com/',
+            $DI['user_notAdmin'],
+            'http://callback.com/callback/'
+        );
+    }
+
+    public function insertOauthAccounts(\Pimple $DI)
+    {
+        $DI['api-app-acc-user'] = $this->container['manipulator.api-account']->create($DI['api-app-user'], $DI['user']);
+        $this->container['manipulator.api-oauth-token']->create($DI['api-app-acc-user']);
+        $DI['api-app-acc-user-not-admin'] = $this->container['manipulator.api-account']->create($DI['api-app-user-not-admin'], $DI['user_notAdmin']);
+        $this->container['manipulator.api-oauth-token']->create($DI['api-app-acc-user-not-admin']);
+    }
+
+    public function insertNativeApps()
+    {
+        $application = $this->container['manipulator.api-application']->create(
+            \API_OAuth2_Application_Navigator::CLIENT_NAME,
+            ApiApplication::DESKTOP_TYPE,
+            '',
+            'http://www.phraseanet.com',
+            null,
+            ApiApplication::NATIVE_APP_REDIRECT_URI
+        );
+
+        $application->setGrantPassword(true);
+        $application->setClientId(\API_OAuth2_Application_Navigator::CLIENT_ID);
+        $application->setClientSecret(\API_OAuth2_Application_Navigator::CLIENT_SECRET);
+
+        $this->container['manipulator.api-application']->update($application);
+
+        $application = $this->container['manipulator.api-application']->create(
+            \API_OAuth2_Application_OfficePlugin::CLIENT_NAME,
+            ApiApplication::DESKTOP_TYPE,
+            '',
+            'http://www.phraseanet.com',
+            null,
+            ApiApplication::NATIVE_APP_REDIRECT_URI
+        );
+
+        $application->setGrantPassword(true);
+        $application->setClientId(\API_OAuth2_Application_OfficePlugin::CLIENT_ID);
+        $application->setClientSecret(\API_OAuth2_Application_OfficePlugin::CLIENT_SECRET);
+
+        $this->container['manipulator.api-application']->update($application);
     }
 
     private function insertAuthFailures(EntityManager $em, \Pimple $DI)

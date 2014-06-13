@@ -2,6 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Root;
 
+use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
@@ -34,7 +35,7 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
     public function testPostNewAppInvalidArguments()
     {
         $crawler = self::$DI['client']->request('POST', '/developers/application/', [
-            'type'            => \API_OAuth2_Application::WEB_TYPE,
+            'type'            => ApiApplication::WEB_TYPE,
             'name'            => '',
             'description'     => 'okok',
             'website'         => 'my.website.com',
@@ -55,11 +56,11 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testPostNewApp()
     {
-        $apps = \API_OAuth2_Application::load_dev_app_by_user(self::$DI['app'], self::$DI['user']);
+        $apps = self::$DI['app']['repo.api-applications']->findByCreator(self::$DI['user']);
         $nbApp = count($apps);
 
         self::$DI['client']->request('POST', '/developers/application/', [
-            'type'            => \API_OAuth2_Application::WEB_TYPE,
+            'type'            => ApiApplication::WEB_TYPE,
             'name'            => 'hello',
             'description'     => 'okok',
             'website'         => 'my.website.com',
@@ -68,7 +69,7 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
             'scheme-callback' => 'http://'
         ]);
 
-        $apps = \API_OAuth2_Application::load_dev_app_by_user(self::$DI['app'], self::$DI['user']);
+        $apps = self::$DI['app']['repo.api-applications']->findByCreator(self::$DI['user']);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertGreaterThan($nbApp, count($apps));
@@ -77,7 +78,7 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
     /**
      * @cover \Alchemy\Phrasea\Controller\Root\Developers::getApp
      */
-    public function testGetUnknowApp()
+    public function testGetUnknownApp()
     {
         self::$DI['client']->request('GET', '/developers/application/0/');
 
@@ -90,7 +91,7 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
     public function testGetApp()
     {
         $oauthApp = self::$DI['oauth2-app-user'];
-        self::$DI['client']->request('GET', '/developers/application/' . $oauthApp->get_id() . '/');
+        self::$DI['client']->request('GET', '/developers/application/' . $oauthApp->getId() . '/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
@@ -121,16 +122,17 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testDeleteApp()
     {
-        $oauthApp = \API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test app');
-        $this->XMLHTTPRequest('DELETE', '/developers/application/' . $oauthApp->get_id() . '/');
+        $oauthApp = self::$DI['app']['manipulator.api-application']->create(
+            'test app',
+            ApiApplication::DESKTOP_TYPE,
+            '',
+            'http://phraseanet.com/'
+        );
+        $id = $oauthApp->getId();
+        $this->XMLHTTPRequest('DELETE', '/developers/application/' . $id . '/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
-        try {
-            new \API_OAuth2_Application(self::$DI['app'], $oauthApp->get_id());
-            $this->fail('Application not deleted');
-        } catch (NotFoundHttpException $e) {
-
-        }
+        $this->assertNull(self::$DI['app']['repo.api-applications']->find($id));
     }
 
     /**
@@ -163,7 +165,7 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
     public function testRenewAppCallbackError2()
     {
         $oauthApp = self::$DI['oauth2-app-user'];
-        $this->XMLHTTPRequest('POST', '/developers/application/'.$oauthApp->get_id().'/callback/');
+        $this->XMLHTTPRequest('POST', '/developers/application/'.$oauthApp->getId().'/callback/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $content = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->assertFalse($content->success);
@@ -176,15 +178,15 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $oauthApp = self::$DI['oauth2-app-user'];
 
-        $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->get_id() . '/callback/', [
-            'callback' => 'my.callback.com'
-            ]);
+        $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->getId() . '/callback/', [
+            'callback' => 'http://my.callback.com'
+        ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $content = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->assertTrue($content->success);
-        $oauthApp = new \API_OAuth2_Application(self::$DI['app'], $oauthApp->get_id());
-        $this->assertEquals('my.callback.com', $oauthApp->get_redirect_uri());
+        $oauthApp = self::$DI['app']['repo.api-applications']->find($oauthApp->getId());
+        $this->assertEquals('http://my.callback.com', $oauthApp->getRedirectUri());
     }
 
     /**
@@ -204,12 +206,11 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->XMLHTTPRequest('POST', '/developers/application/0/access_token/', [
             'callback' => 'my.callback.com'
-            ]);
+        ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $content = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->assertFalse($content->success);
-        $this->assertNull($content->token);
     }
 
     /**
@@ -219,7 +220,7 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $oauthApp = self::$DI['oauth2-app-user'];
 
-        $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->get_id() . '/access_token/');
+        $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->getId() . '/access_token/');
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $content = json_decode(self::$DI['client']->getResponse()->getContent());
@@ -258,14 +259,14 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $oauthApp = self::$DI['oauth2-app-user'];
 
-        $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->get_id() . '/authorize_grant_password/', [
+        $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->getId() . '/authorize_grant_password/', [
             'grant' => '1'
         ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $content = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->assertTrue($content->success);
-        $oauthApp = new \API_OAuth2_Application(self::$DI['app'], $oauthApp->get_id());
-        $this->assertTrue($oauthApp->is_password_granted());
+        $oauthApp = self::$DI['app']['repo.api-applications']->find($oauthApp->getId());
+        $this->assertTrue($oauthApp->isPasswordGranted());
     }
 }

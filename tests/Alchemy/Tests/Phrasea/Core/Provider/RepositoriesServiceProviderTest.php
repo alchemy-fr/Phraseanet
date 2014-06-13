@@ -33,6 +33,12 @@ class RepositoriesServiceProviderTest extends ServiceProviderTestCase
             ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.user-queries', 'Alchemy\Phrasea\Model\Repositories\UserQueryRepository'],
             ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.tokens', 'Alchemy\Phrasea\Model\Repositories\TokenRepository'],
             ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.presets', 'Alchemy\Phrasea\Model\Repositories\PresetRepository'],
+            ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.api-applications', 'Alchemy\Phrasea\Model\Repositories\ApiApplicationRepository'],
+            ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.api-accounts', 'Alchemy\Phrasea\Model\Repositories\ApiAccountRepository'],
+            ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.api-logs', 'Alchemy\Phrasea\Model\Repositories\ApiLogRepository'],
+            ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.api-oauth-tokens', 'Alchemy\Phrasea\Model\Repositories\ApiOauthTokenRepository'],
+            ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.api-oauth-codes', 'Alchemy\Phrasea\Model\Repositories\ApiOauthCodeRepository'],
+            ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.api-oauth-refresh-tokens', 'Alchemy\Phrasea\Model\Repositories\ApiOauthRefreshTokenRepository'],
         ];
     }
 }

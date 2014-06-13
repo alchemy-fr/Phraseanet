@@ -13,6 +13,12 @@ namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Model\Manipulator\ACLManipulator;
 use Alchemy\Phrasea\Model\Manipulator\PresetManipulator;
+use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
+use Alchemy\Phrasea\Model\Manipulator\ApiApplicationManipulator;
+use Alchemy\Phrasea\Model\Manipulator\ApiLogManipulator;
+use Alchemy\Phrasea\Model\Manipulator\ApiOauthCodeManipulator;
+use Alchemy\Phrasea\Model\Manipulator\ApiOauthRefreshTokenManipulator;
+use Alchemy\Phrasea\Model\Manipulator\ApiOauthTokenManipulator;
 use Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator;
 use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
@@ -51,6 +57,30 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
 
         $app['manipulator.registration'] = $app->share(function ($app) {
             return new RegistrationManipulator($app, $app['EM'], $app['acl'], $app['phraseanet.appbox'], $app['repo.registrations']);
+        });
+
+        $app['manipulator.api-application'] = $app->share(function ($app) {
+            return new ApiApplicationManipulator($app['EM'], $app['repo.api-applications'], $app['random.medium']);
+        });
+
+        $app['manipulator.api-account'] = $app->share(function ($app) {
+            return new ApiAccountManipulator($app['EM'], $app['repo.api-accounts']);
+        });
+
+        $app['manipulator.api-oauth-code'] = $app->share(function ($app) {
+            return new ApiOauthCodeManipulator($app['EM'], $app['repo.api-oauth-codes'], $app['random.medium']);
+        });
+
+        $app['manipulator.api-oauth-token'] = $app->share(function ($app) {
+            return new ApiOauthTokenManipulator($app['EM'], $app['repo.api-oauth-tokens'], $app['random.medium']);
+        });
+
+        $app['manipulator.api-oauth-refresh-token'] = $app->share(function ($app) {
+            return new ApiOauthRefreshTokenManipulator($app['EM'], $app['repo.api-oauth-refresh-tokens'], $app['random.medium']);
+        });
+
+        $app['manipulator.api-log'] = $app->share(function ($app) {
+            return new ApiLogManipulator($app['EM'], $app['repo.api-logs']);
         });
     }
 

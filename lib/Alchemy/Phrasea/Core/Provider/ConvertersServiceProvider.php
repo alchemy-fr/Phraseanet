@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Model\Converter\ApiApplicationConverter;
 use Alchemy\Phrasea\Model\Converter\BasketConverter;
 use Alchemy\Phrasea\Model\Converter\TaskConverter;
 use Alchemy\Phrasea\Model\Converter\TokenConverter;
@@ -31,6 +32,10 @@ class ConvertersServiceProvider implements ServiceProviderInterface
 
         $app['converter.token'] = $app->share(function ($app) {
             return new TokenConverter($app['repo.tokens']);
+        });
+
+        $app['converter.api-application'] = $app->share(function ($app) {
+            return new ApiApplicationConverter($app['repo.api-applications']);
         });
     }
 
