@@ -48,18 +48,18 @@ class PDF
                 case self::LAYOUT_PREVIEWCAPTIONTDM:
                     try {
                         $subdef = $record->get_subdef('preview');
+                        // fallback to thumbnail ( video, sound, doc ) ..
+                        if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
+                            $subdef = $record->get_thumbnail();
+                        }
+
                         if (!$subdef->is_physically_present()) {
                             continue 2;
                         }
-                        if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE)
-                            continue 2;
 
-                        $subdef = $record->get_subdef('thumbnail');
-                        if (!$subdef->is_physically_present())
+                        if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
                             continue 2;
-
-                        if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE)
-                            continue 2;
+                        }
                     } catch (\Exception $e) {
                         continue 2;
                     }
@@ -67,12 +67,14 @@ class PDF
                 case self::LAYOUT_THUMBNAILLIST:
                 case self::LAYOUT_THUMBNAILGRID:
                     try {
-                        $subdef = $record->get_subdef('thumbnail');
-                        if (!$subdef->is_physically_present())
+                        $subdef = $record->get_thumbnail();
+                        if (!$subdef->is_physically_present()) {
                             continue 2;
+                        }
 
-                        if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE)
-                            throw new \Exception('Not suitable');
+                        if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
+                            continue 2;
+                        }
                     } catch (\Exception $e) {
                         continue 2;
                     }
@@ -164,6 +166,10 @@ class PDF
 
             $subdef = $rec->get_subdef('preview');
 
+            if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
+                $subdef = $rec->get_thumbnail();
+            }
+
             $fimg = $subdef->get_pathfile();
 
             if (!$this->app['authentication']->getUser()->ACL()->has_right_on_base($rec->get_base_id(), "nowatermark")
@@ -233,16 +239,23 @@ class PDF
             $subdef = $rec->get_subdef('thumbnail');
 
             $fimg = $subdef->get_pathfile();
+
             $wimg = $himg = 50;
+            // 1px = 3.77952 mm
+            $finalWidth = round($subdef->get_width() / 3.779528, 2);
+            $finalheight = round($subdef->get_height() / 3.779528, 2);
+            if ($finalWidth > 0 && $finalheight > 0) {
+                if ($finalWidth > $finalheight && ($wimg < $finalWidth))
+                    $finalheight = $wimg * $finalheight / $finalWidth;
+                else if ($finalheight > $finalWidth && $himg < $finalheight)
+                    $finalWidth = $himg * $finalWidth / $finalheight;
+                else if ($finalheight == $finalWidth && $himg < $finalheight) {
+                    $finalheight = $wimg * $finalheight / $finalWidth;
+                    $finalWidth = $himg * $finalWidth / $finalheight;
+                }
+            }
 
-            if ($subdef->get_width() > $subdef->get_height())
-                $himg = round($wimg * $subdef->get_height() / $subdef->get_width());
-            else
-                $wimg = round($himg * $subdef->get_width() / $subdef->get_height());
-
-            $himg = 0;
-
-            if ($this->pdf->GetY() > $this->pdf->getPageHeight() - (6 + $himg + 20))
+            if ($this->pdf->GetY() > $this->pdf->getPageHeight() - (6 + $finalheight + 20))
                 $this->pdf->AddPage();
 
             $title = "record : " . $rec->get_title();
@@ -279,8 +292,8 @@ class PDF
 
             if ($fimg) {
                 $y = $this->pdf->GetY();
-                $this->pdf->Image($fimg, $lmargin, $y, $wimg, $himg);
-                $this->pdf->SetY($y);
+                $this->pdf->Image($fimg, $lmargin, $y, $finalWidth, $finalheight);
+                $this->pdf->SetY($y + 3);
             }
 
             $nf = 0;
@@ -299,8 +312,8 @@ class PDF
                 $this->pdf->Write(6, "\n");
                 $nf++;
             }
-            if ($this->pdf->PageNo() == $p0 && ($this->pdf->GetY() - $y0) < $himg)
-                $this->pdf->SetY($y0 + $himg);
+            if ($this->pdf->PageNo() == $p0 && ($this->pdf->GetY() - $y0) < $finalheight)
+                $this->pdf->SetY($y0 + $finalheight);
             $ndoc++;
         }
         $this->pdf->SetLeftMargin($lmargin);
@@ -318,10 +331,7 @@ class PDF
             $this->pdf->AddPage();
 
             if ($withtdm === "CALCPAGES") {
-                if ($presentationpage)
-                    $rec->set_number($this->pdf->PageNo() + 1);
-                else
-                    $rec->set_number($this->pdf->PageNo());
+                $rec->set_number($this->pdf->PageNo());
             }
             $lmargin = $this->pdf->GetX();
             $tmargin = $this->pdf->GetY();
@@ -423,9 +433,13 @@ class PDF
                 }
             }
 
-            $y = $this->pdf->GetY() + 3;
+            $y = $this->pdf->GetY() + 5;
 
             $subdef = $rec->get_subdef('preview');
+
+            if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
+                $subdef = $rec->get_thumbnail();
+            }
 
             $f = $subdef->get_pathfile();
 
@@ -434,19 +448,27 @@ class PDF
                 $f = \recordutils_image::watermark($this->app, $subdef);
 
             $wimg = $himg = 150; // preview dans un carre de 150 mm
-            if ($subdef->get_width() > 0 && $subdef->get_height() > 0) {
-                if ($subdef->get_width() > $subdef->get_height())
-                    $himg = $wimg * $subdef->get_height() / $subdef->get_width();
-                else
-                    $wimg = $himg * $subdef->get_width() / $subdef->get_height();
+            // 1px = 3.77952 mm
+            $finalWidth = round($subdef->get_width() / 3.779528, 2);
+            $finalheight = round($subdef->get_height() / 3.779528, 2);
+            if ($finalWidth > 0 && $finalheight > 0) {
+                if ($finalWidth > $finalheight && ($wimg < $finalWidth))
+                    $finalheight = $wimg * $finalheight / $finalWidth;
+                else if ($finalheight > $finalWidth && $himg < $finalheight)
+                    $finalWidth = $himg * $finalWidth / $finalheight;
+                else if ($finalheight == $finalWidth && $himg < $finalheight) {
+                    $finalheight = $wimg * $finalheight / $finalWidth;
+                    $finalWidth = $himg * $finalWidth / $finalheight;
+                }
             }
-            $this->pdf->Image($f, $lmargin, $y, $wimg, $himg);
+
+            $this->pdf->Image($f, (210 - $finalWidth) / 2, $y, $finalWidth, $finalheight);
 
             if ($miniConv != NULL) {
                 foreach ($miniConv as $oneF)
                     unlink($oneF);
             }
-            $this->pdf->SetXY($lmargin, $y += ( $himg + 5));
+            $this->pdf->SetXY($lmargin, $y += ( $finalheight + 5));
 
             $nf = 0;
             if ($write_caption) {
