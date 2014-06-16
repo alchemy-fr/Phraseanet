@@ -35,17 +35,14 @@ class Printer implements ControllerProviderInterface
         $controllers->post('/print.pdf', function (Application $app) {
             $printer = new RecordHelper\Printer($app, $app['request']);
 
-            $request = $app['request'];
-
-            $layout = $request->request->get('lay');
+            $layout = $app['request']->request->get('lay');
 
             foreach ($printer->get_elements() as $record) {
-                $app['phraseanet.logger']($record->get_databox())
-                    ->log($record, \Session_Logger::EVENT_PRINT, $layout, '');
+                $app['phraseanet.logger']($record->get_databox())->log($record, \Session_Logger::EVENT_PRINT, $layout, '');
             }
             $PDF = new PDFExport($app, $printer->get_elements(), $layout);
 
-            $response =  new Response($PDF->render(), 200, ['Content-Type' => 'application/pdf']);
+            $response = new Response($PDF->render(), 200, array('Content-Type' => 'application/pdf'));
             $response->headers->set('Pragma', 'public', true);
             $response->setMaxAge(0);
 
