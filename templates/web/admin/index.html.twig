@@ -28,6 +28,34 @@
             bodySize.x = $(window).width();
         }
 
+        function pollNotifications(){
+            $.ajax({
+                type: "POST",
+                url: "{{ path('list_notifications') }}",
+                dataType: 'json',
+                data: {
+                    module : 3,
+                    usr : {{ app['authentication'].getUser().get_id() }}
+                },
+                error: function(){
+                    window.setTimeout("pollNotifications();", 10000);
+                },
+                timeout: function(){
+                    window.setTimeout("pollNotifications();", 10000);
+                },
+                success: function(data){
+                    if(data)
+                        manageSession(data);
+                    var t = 120000;
+                    if(data.apps && parseInt(data.apps)>1)
+                        t = Math.round((Math.sqrt(parseInt(data.apps)-1) * 1.3 * 120000));
+                    window.setTimeout("pollNotifications();", t);
+
+                    return;
+                }
+            });
+        }
+
         var language = {
             serverName: '{{ app['conf'].get('servername') | e('js') }}',
             serverError: '{{ 'phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, contactez le support technique' | trans | e('js') }}',
@@ -55,6 +83,102 @@
             $(window).bind('resize',function(){resize();});
             resize();
         });
+    }
+
+    function enableFormsCallback(datas)
+    {
+        $('#right-ajax').removeClass('loading').html(datas);
+        enableForms($('#right-ajax form:not(.no-ajax)'));
+
+        $.each($('#right-ajax a:not(.no-ajax)'),function(i, el){
+            enableLink($(el));
+        });
+        return;
+    }
+
+    function enableLink(link) {
+
+        $(link).bind('click',function(event){
+
+            var dest = link.attr('href');
+
+            if(dest && dest.indexOf('#') !== 0) {
+                $('#right-ajax').empty().addClass('loading').parent().show();
+
+                $.get(dest, function(data) {
+                    enableFormsCallback(data);
+                });
+                return false;
+            }
+
+        });
+    }
+
+    function activeTree(click)
+    {
+        $('#FNDR').treeview({
+          collapsed: true,
+          animated: "medium"
+        });
+
+      $.each($('#tree a[target=right]'),function(){
+        var dest = $(this).attr('href');
+
+        $(this).bind('click',function(){
+            $('#right-ajax').empty().addClass('loading').parent().show();
+
+            $.get(dest, function(data) {
+                enableFormsCallback(data);
+            });
+            $('#tree .selected').removeClass('selected');
+            $(this).parent().addClass('selected');
+
+            return false;
+        });
+
+        $(this).removeAttr('target');
+      });
+      if(click === true)
+      {
+        if($('#tree .selected').length > 0)
+            $('#tree .selected a').trigger('click');
+        else
+            $('.zone_online_users').trigger('click');
+      }
+    }
+
+    $(document).ready(
+    function(){
+      resize();
+      setTimeout('pollNotifications();',15000);
+      activeTree(true);
+    }
+  );
+
+  function resize()
+  {
+    bodySize.y = $(window).height() - $('#mainMenu').outerHeight();
+    bodySize.x = $(window).width();
+  }
+
+  $(window).bind('resize',function(){resize();});
+
+  function reloadTree(position, click){
+    $.ajax({
+      type: "GET",
+      url: "/admin/tree/",
+      data: {
+        position : position
+      },
+      success: function(datas){
+        $('#FNDR').empty().append(datas);
+        activeTree(click);
+
+        return;
+      }
+    });
+  }
+
     </script>
     <script type="text/javascript" src="{{ path('minifier', { 'f' : '/assets/requirejs/require.js,/scripts/apps/admin/require.config.js,/scripts/apps/admin/main/main.js' }) }}"></script>
 {% endblock %}

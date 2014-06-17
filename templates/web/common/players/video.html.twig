@@ -1,0 +1,35 @@
+{% macro video_player(thumbnail, url, original_w, original_h, fit) %}
+    {% set random = thumbnail.get_random %}
+    <div class="record record_video imgTips" style="position:relative;width:{{fit.width}}px;height:{{fit.height}}px;top:{{fit.top}}px;">
+        <div id="preview{{random}}" class="PNB"></div>
+        <input type="hidden" name="width" value="{{original_w}}"/>
+        <input type="hidden" name="height" value="{{original_h}}"/>
+    </div>
+    <script type="text/javascript">
+        flowplayer("preview{{random}}", {
+            src:"/include/jslibs/flowplayer/flowplayer-3.2.18.swf",
+            wmode: "transparent"
+        },
+        {
+            clip: {
+                url:"{{url|url_encode}}",
+                autoPlay: true,
+                autoBuffering:true,
+                {% if app['phraseanet.h264-factory'].isH264Enabled() %}
+                    provider: "h264streaming",
+                {% endif %}
+                scaling:"fit"
+            },
+            onError:function(code,message) {
+                getNewVideoToken("{{thumbnail.get_sbas_id() ~'_'~thumbnail.get_record_id()}}", this);
+            },
+            plugins: {
+                {% if app['phraseanet.h264-factory'].isH264Enabled() %}
+                h264streaming: {
+                    url: "/include/jslibs/flowplayer/pseudostreaming/flowplayer.pseudostreaming-3.2.13.swf"
+                }
+                {% endif %}
+            }
+        });
+    </script>
+{% endmacro %}

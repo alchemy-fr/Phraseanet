@@ -111,10 +111,14 @@ class Firewall
         return $this;
     }
 
-    public function requireAuthentication()
+    public function requireAuthentication(Request $request = null)
     {
+        $params = array();
+        if (null !== $request) {
+            $params['redirect'] = '..' . $request->getPathInfo();
+        }
         if (!$this->app['authentication']->isAuthenticated()) {
-            return new RedirectResponse($this->app->path('homepage'));
+            return new RedirectResponse($this->app->path('homepage', $params));
         }
     }
 
@@ -127,7 +131,7 @@ class Firewall
         $app = $this->app;
 
         $controllers->before(function (Request $request) use ($app) {
-            if (null !== $response = $app['firewall']->requireAuthentication()) {
+            if (null !== $response = $app['firewall']->requireAuthentication($request)) {
                 return $response;
             }
         });

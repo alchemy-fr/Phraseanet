@@ -93,6 +93,8 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
 
             $record = new \record_adapter(self::$DI['app'], $id[0], $id[1]);
             $this->assertTrue($record->get_thumbnail()->is_physically_present());
+            $field = array_pop($record->get_caption()->get_fields(array('FileName')));
+            $this->assertEquals($field->get_serialized_values(), 'KIKOO.JPG');
         }
     }
 
@@ -131,8 +133,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
             $id = explode('_', $datas['id']);
 
             $record = new \record_adapter(self::$DI['app'], $id[0], $id[1]);
-
-           $this->assertFalse($record->get_thumbnail()->is_physically_present());
+            $this->assertFalse($record->get_thumbnail()->is_physically_present());
         }
     }
 

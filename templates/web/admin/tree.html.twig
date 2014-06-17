@@ -186,17 +186,13 @@
               </li>
             {% endif %}
 
-            {% if (app['acl'].get(app['authentication'].getUser()).has_right_on_base( collection.get_base_id(), 'canadmin')) %}
-              {% if (app['acl'].get(app['authentication'].getUser()).has_right_on_base( collection.get_base_id(), 'canmodifrecord')
-                 and app['acl'].get(app['authentication'].getUser()).has_right_on_base( collection.get_base_id(), 'manage')
-                 and app['acl'].get(app['authentication'].getUser()).has_right_on_sbas( sbas_id, 'bas_manage') ) %}
+            {% if app['acl'].get(app['authentication'].getUser()).has_right_on_base( collection.get_base_id(), 'canadmin')) %}
               <li>
                 <a target="right" href="{{ path('admin_users_search', { 'base_id' : [ collection.get_base_id() ] }) }}" class="ajax">
                   <img src="/skins/admin/Users.png"/>
                   <span>{{ 'admin::utilisateurs: utilisateurs' | trans }}</span>
                 </a>
               </li>
-              {% endif %}
             {% endif %}
 
             </ul>

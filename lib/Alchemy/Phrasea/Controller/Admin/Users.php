@@ -194,7 +194,7 @@ class Users implements ControllerProviderInterface
             }
 
             $filename = sprintf('user_export_%s.csv', date('Ymd'));
-            $response = new CSVFileResponse($filename, function() use ($app, $userTable) {
+            $response = new CSVFileResponse($filename, function () use ($app, $userTable) {
                 $app['csv.exporter']->export('php://output', $userTable);
             });
 
@@ -341,7 +341,7 @@ class Users implements ControllerProviderInterface
             } while (count($results) > 0);
 
             $filename = sprintf('user_export_%s.csv', date('Ymd'));
-            $response = new CSVFileResponse($filename, function() use ($app, $buffer) {
+            $response = new CSVFileResponse($filename, function () use ($app, $buffer) {
                 $app['csv.exporter']->export('php://output', $buffer);
             });
 
@@ -521,7 +521,7 @@ class Users implements ControllerProviderInterface
                 return $app->redirectPath('users_display_import_file', ['error' => 'file-invalid']);
             }
 
-            $equivalenceToMysqlField = self::getEquivalenceToMysqlField();
+            $equivalenceToMysqlField = Users::getEquivalenceToMysqlField();
             $loginDefined = $pwdDefined = $mailDefined = false;
             $loginNew = [];
             $out = [
@@ -531,7 +531,7 @@ class Users implements ControllerProviderInterface
             $nbUsrToAdd = 0;
 
             $lines = array();
-            $app['csv.interpreter']->addObserver(function(array $row) use (&$lines) {
+            $app['csv.interpreter']->addObserver(function (array $row) use (&$lines) {
                 $lines[] = $row;
             });
             $app['csv.lexer']->parse($file->getPathname(), $app['csv.interpreter']);

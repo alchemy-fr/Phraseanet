@@ -389,9 +389,6 @@ class RSSFeedTest extends \PhraseanetWebTestCase
                 case "expression":
                     $this->assertEquals("full", $value);
                     break;
-                case "bitrate":
-                    $this->assertEquals($value);
-                    break;
                 case "height":
                     $this->assertEquals($ressource->get_height(), $value);
                     break;

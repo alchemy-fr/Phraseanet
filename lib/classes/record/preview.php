@@ -463,7 +463,7 @@ class record_preview extends record_adapter
 
         $width = 350;
         $height = 150;
-        $url = Url::factory('http://chart.apis.google.com/chart?' .
+        $url = Url::factory('https://chart.googleapis.com/chart?' .
             'chs=' . $width . 'x' . $height .
             '&chd=t:' . implode(',', $views) .
             '&cht=lc' .
@@ -544,7 +544,7 @@ class record_preview extends record_adapter
         $width = 550;
         $height = 100;
 
-        $url = Url::factory('http://chart.apis.google.com/chart?'
+        $url = Url::factory('https://chart.googleapis.com/chart?'
             . 'cht=p3&chf=bg,s,00000000&chd=t:'
             . implode(',', $referrers)
             . '&chs=' . $width . 'x' . $height
@@ -619,7 +619,7 @@ class record_preview extends record_adapter
 
         $width = 250;
         $height = 150;
-        $url = Url::factory('http://chart.apis.google.com/chart?' .
+        $url = Url::factory('https://chart.googleapis.com/chart?' .
             'chs=' . $width . 'x' . $height .
             '&chd=t:' . implode(',', $dwnls) .
             '&cht=lc' .

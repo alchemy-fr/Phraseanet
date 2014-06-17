@@ -67,8 +67,6 @@ use Alchemy\Phrasea\Controller\Root\Session;
 use Alchemy\Phrasea\Controller\Setup as SetupController;
 use Alchemy\Phrasea\Controller\Thesaurus\Thesaurus;
 use Alchemy\Phrasea\Controller\Thesaurus\Xmlhttp as ThesaurusXMLHttp;
-use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
-use Alchemy\Phrasea\Controller\Utils\PathFileTest;
 use Alchemy\Phrasea\Controller\User\Notifications;
 use Alchemy\Phrasea\Controller\User\Preferences;
 use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
@@ -101,6 +99,7 @@ use Alchemy\Phrasea\Core\Provider\LocaleServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ManipulatorServiceProvider;
 use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
+use Alchemy\Phrasea\Core\Provider\PhraseaEventServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
@@ -121,6 +120,7 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Form\Extension\HelpTypeExtension;
 use Alchemy\Phrasea\Twig\JSUniqueID;
+use Alchemy\Phrasea\Twig\Fit;
 use Alchemy\Phrasea\Twig\Camelize;
 use Alchemy\Phrasea\Twig\BytesConverter;
 use Alchemy\Phrasea\Utilities\CachedTranslator;
@@ -155,8 +155,8 @@ use XPDF\XPDFServiceProvider;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormTypeInterface;
@@ -317,8 +317,10 @@ class Application extends SilexApplication
 
         $this->register(new SessionHandlerServiceProvider());
         $this->register(new SessionServiceProvider(), [
-            'session.test' => $this->getEnvironment() === static::ENV_TEST
+            'session.test' => $this->getEnvironment() === static::ENV_TEST,
+            'session.storage.options' => array('cookie_lifetime' => 0)
         ]);
+
         $this['session.storage.test'] = $this->share(function ($app) {
             return new MockArraySessionStorage();
         });
@@ -378,6 +380,7 @@ class Application extends SilexApplication
         $this->register(new FileServeServiceProvider());
         $this->register(new ManipulatorServiceProvider());
         $this->register(new PluginServiceProvider());
+        $this->register(new PhraseaEventServiceProvider());
 
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
             $handler =  PhraseaExceptionHandler::register($app['debug']);
@@ -471,12 +474,12 @@ class Application extends SilexApplication
 
         $this['dispatcher'] = $this->share(
             $this->extend('dispatcher', function ($dispatcher, Application $app) {
-                $dispatcher->addListener(KernelEvents::REQUEST, [$app, 'initSession'], 254);
-                $dispatcher->addListener(KernelEvents::RESPONSE, [$app, 'addUTF8Charset'], -128);
-                $dispatcher->addSubscriber(new LogoutSubscriber());
-                $dispatcher->addSubscriber(new PhraseaLocaleSubscriber($app));
-                $dispatcher->addSubscriber(new MaintenanceSubscriber($app));
-                $dispatcher->addSubscriber(new CookiesDisablerSubscriber($app));
+                $dispatcher->addListener(KernelEvents::RESPONSE, array($app, 'addUTF8Charset'), -128);
+                $dispatcher->addSubscriber($app['phraseanet.logout-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.locale-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.maintenance-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.cookie-disabler-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.session-manager-subscriber']);
                 $dispatcher->addSubscriber(new PhraseaInstallSubscriber($app));
 
                 return $dispatcher;
@@ -557,25 +560,6 @@ class Application extends SilexApplication
         return $this->redirect($this->url($route, $parameters));
     }
 
-    public function initSession(GetResponseEvent $event)
-    {
-        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
-            return;
-        }
-
-        if (false !== stripos($event->getRequest()->server->get('HTTP_USER_AGENT'), 'flash')
-            && $event->getRequest()->getRequestUri() === '/prod/upload/') {
-
-            if (null !== $sessionId = $event->getRequest()->request->get('php_session_id')) {
-
-                $request = $event->getRequest();
-                $request->cookies->set($this['session']->getName(), $sessionId);
-
-                return $request;
-            }
-        }
-    }
-
     public function addUTF8Charset(FilterResponseEvent $event)
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
@@ -642,6 +626,7 @@ class Application extends SilexApplication
                 // add filters truncate, wordwrap, nl2br
                 $twig->addExtension(new \Twig_Extensions_Extension_Text());
                 $twig->addExtension(new JSUniqueID());
+                $twig->addExtension(new Fit());
                 $twig->addExtension(new Camelize());
                 $twig->addExtension(new BytesConverter());
 
@@ -667,23 +652,32 @@ class Application extends SilexApplication
                     return ConnectedUsers::appName($app['translator'], $value);
                 }));
                 $twig->addFilter(new \Twig_SimpleFilter('escapeSimpleQuote', function ($value) {
-                    $ret = str_replace("'", "\\'", $value);
-
-                    return $ret;
+                    return str_replace("'", "\\'", $value);
                 }));
-                $twig->addFilter(new \Twig_SimpleFilter('thesaurus', function (\Twig_Environment $twig, $value) {
-                    if (!$value instanceof \ThesaurusValue) {
-                        return str_replace(['[[em]]', '[[/em]]'], ['<em>', '</em>'], twig_escape_filter($twig, $value));
-                    }
 
-                    return "<a class=\"bounce\" onclick=\"bounce('" . $value->getField()->get_databox()->get_sbas_id() . "','"
-                        . str_replace("'", "\\'", $value->getQuery())
-                        . "', '"
-                        . str_replace("'", "\\'", $value->getField()->get_name())
-                        . "');return(false);\">"
-                        . str_replace(['[[em]]', '[[/em]]'], ['<em>', '</em>'], twig_escape_filter($twig, $value->getValue()))
-                        . "</a>";
-                }, ['needs_environment' => true, 'is_safe' => ['html']]));
+                $twig->addFilter(new \Twig_SimpleFilter('highlight', function (\Twig_Environment $twig, $string) {
+                    return str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), $string);
+                }, array('needs_environment' => true,'is_safe' => array('html'))));
+
+                $twig->addFilter(new \Twig_SimpleFilter('linkify', function (\Twig_Environment $twig, $string) {
+                    return preg_replace(
+                        "(([^']{1})((https?|file):((/{2,4})|(\\{2,4}))[\w:#%/;$()~_?/\-=\\\.&]*)([^']{1}))"
+                        , '$1 $2 <a title="' . _('Open the URL in a new window') . '" class="ui-icon ui-icon-extlink" href="$2" style="display:inline;padding:2px 5px;margin:0 4px 0 2px;" target="_blank"> &nbsp;</a>$7'
+                        , $string
+                    );
+                }, array('needs_environment' => true, 'is_safe' => array('html'))));
+
+                $twig->addFilter(new \Twig_SimpleFilter('bounce', function (\Twig_Environment $twig, $fieldValue, $fieldName, $searchRequest, $sbasId) {
+                        // bounce value if it is present in thesaurus as well
+                    return "<a class=\"bounce\" onclick=\"bounce('"  .$sbasId . "','"
+                            . str_replace("'", "\\'",$searchRequest)
+                            . "', '"
+                            . str_replace("'", "\\'", $fieldName)
+                            . "');return(false);\">"
+                            . $fieldValue
+                            . "</a>";
+
+                }, array('needs_environment' => true, 'is_safe' => array('html'))));
 
                 $twig->addFilter(new \Twig_SimpleFilter('escapeDoubleQuote', function ($value) {
                     return str_replace('"', '\"', $value);
@@ -843,8 +837,6 @@ class Application extends SilexApplication
         $this->mount('/admin/fields', new Fields());
         $this->mount('/admin/task-manager', new TaskManager());
         $this->mount('/admin/subdefs', new Subdefs());
-        $this->mount('/admin/tests/connection', new ConnectionTest());
-        $this->mount('/admin/tests/pathurl', new PathFileTest());
 
         $this->mount('/client/', new ClientRoot());
         $this->mount('/client/baskets', new ClientBasket());
@@ -881,8 +873,6 @@ class Application extends SilexApplication
         $this->mount('/session/', new Session());
 
         $this->mount('/setup', new SetupController());
-        $this->mount('/setup/connection_test/', new ConnectionTest());
-        $this->mount('/setup/test/', new PathFileTest());
 
         $this->mount('/report/', new ReportRoot());
         $this->mount('/report/activity', new ReportActivity());

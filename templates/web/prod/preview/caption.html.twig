@@ -1,4 +1,4 @@
-{% import 'common/caption_templates/preview.html.twig' as caption %}
+{% import 'common/macros.html.twig' as macro %}
 
   {% if app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id, 'canmodifrecord') %}
     <div class="edit_button" style="text-align:right">
@@ -13,9 +13,7 @@
   </div>
   {% set business =  app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'canmodifrecord') %}
   {% if record.is_from_reg()  %}
-    {{caption.format_caption(record, '', null, null, business)}}
+    {{caption.format_caption(record, '', null, null, business, false, true)}}
   {% else %}
-    {{caption.format_caption(record, highlight, searchEngine, searchOptions, business)}}
+    {{caption.format_caption(record, highlight, searchEngine, searchOptions, business, false, true)}}
   {% endif %}
-  <hr style="margin:10px 0;"/>
-  {% include 'common/technical_datas.html.twig' %}

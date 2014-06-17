@@ -727,10 +727,13 @@ function TXdblClick(e)
           var tid = $(x).closest('li').attr('id');
           if(tid.substr(0,5)=="TX_P.")
           {
-            var sbid = tid.split(".")[1];
-            var term = $(x).hasClass('separator') ? $(x).prev().text() : $(x).text();
-
-            doThesSearch('T', sbid, term, null);
+            var tids = tid.split(".");
+            if(tids.length > 3)
+            {
+              var sbid = tids[1];
+              var term = $(x).hasClass('separator') ? $(x).prev().text() : $(x).text();
+              doThesSearch('T', sbid, term, null);
+            }
           }
           break;
         case "wiz_2":				// replace by

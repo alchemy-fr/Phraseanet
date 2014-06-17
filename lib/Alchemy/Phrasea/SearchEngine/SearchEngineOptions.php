@@ -23,6 +23,7 @@ class SearchEngineOptions
     const TYPE_AUDIO = 'audio';
     const TYPE_DOCUMENT = 'document';
     const TYPE_FLASH = 'flash';
+    const TYPE_UNKNOWN = 'unknown';
     const TYPE_ALL = '';
     const SORT_RELEVANCE = 'relevance';
     const SORT_CREATED_ON = 'created_on';
@@ -377,6 +378,9 @@ class SearchEngineOptions
                 break;
             case self::TYPE_IMAGE:
                 $this->record_type = self::TYPE_IMAGE;
+                break;
+            case self::TYPE_UNKNOWN:
+                $this->record_type = self::TYPE_UNKNOWN;
                 break;
         }
 

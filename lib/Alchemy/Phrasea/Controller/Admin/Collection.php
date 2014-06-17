@@ -254,11 +254,11 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json([
-                    'success' => $success,
-                    'msg'     => $msg,
-                    'bas_id'  => $collection->get_base_id()
-                ]);
+            return $app->json(array(
+                'success' => $success,
+                'msg'     => $msg,
+                'bas_id'  => $collection->get_base_id()
+            ));
         }
 
         return $app->redirectPath('admin_display_collection', [

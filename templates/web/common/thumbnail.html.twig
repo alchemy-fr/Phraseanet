@@ -1,229 +1,65 @@
-{% macro format(thumbnail, b_w, b_h, extraclass, wrap, lazyload)%}
-  {% set record_type = thumbnail.get_type() %}
+{% macro format(thumbnail, box_w, box_h, extra_class, wrap, lazyload) %}
+        {% set record_type = thumbnail.get_type() %}
+        {% set box_w = box_w|round %}
+        {% set box_h = box_h|default(box_w)|round %}
 
+        {% if record_type == 'AUDIO_MP3' %}
+            {% set original_w = 320 %}
+            {% set original_h = 60 %}
 
-  {% set b_width = b_w %}
-  {% set b_height = b_h|default(b_w) %}
-
-  {% if record_type == 'AUDIO_MP3' %}
-
-      {% set d_width = 320 %}
-      {% set d_height = 60 %}
-      {% set top = 0 %}
-  {% elseif record_type == 'FLEXPAPER' %}
-
-      {% set d_width = 800 %}
-      {% set d_height = 600 %}
-      {% set top = 0 %}
-  {% else %}
-
-    {% set b_ratio = b_width / b_height %}
-
-    {% set thumbnail_height = thumbnail.get_height() > 0 ? thumbnail.get_height() : 120 %}
-    {% set thumbnail_width = thumbnail.get_width() > 0 ? thumbnail.get_width() : 120 %}
-
-    {% set i_ratio = thumbnail_width / thumbnail_height %}
-
-    {% if i_ratio > b_ratio%}
-      {% if b_width > thumbnail_width %}
-        {% set d_width = thumbnail_width %}
-      {% else %}
-        {% set d_width = b_width %}
-      {% endif %}
-      {% set d_height = d_width / thumbnail_width * thumbnail_height %}
-      {% set top = (b_height - d_height) / 2 %}
-    {% else %}
-      {% if b_height > thumbnail_height %}
-        {% set d_height = thumbnail_height %}
-      {% else %}
-        {% set d_height = b_height %}
-      {% endif %}
-      {% set d_width = d_height * thumbnail_width / thumbnail_height %}
-      {% set top = ((b_height - d_height) / 2) %}
-    {% endif %}
-
-  {% endif %}
-
-
-
-  {% if app['authentication'].isAuthenticated() == true %}
-  {% set url = thumbnail.get_url() %}
-  {% else %}
-  {% set url = thumbnail.get_permalink().get_url() %}
-  {% endif %}
-        {% if wrap %}
-        <div style="width:{{b_width|round}}px;height:{{b_height|round}}px;" class="thumb_wrapper {{extraclass|default('')}}">
-        {% endif %}
-        {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
-          {% set random = random(100000) %}
-          <div class="record record_video imgTips" style="position:relative;width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
-              <div id="preview{{random}}" class="PNB"></div>
-              <input type="hidden" name="width" value="{{thumbnail_width}}"/>
-              <input type="hidden" name="height" value="{{thumbnail_height}}"/>
-          </div>
-          <script type="text/javascript">
-            flowplayer("preview{{random}}",
-              {src:"/include/jslibs/flowplayer/flowplayer-3.2.18.swf", wmode: "transparent"},
-              {clip:{url:"{{url|url_encode}}",autoPlay: true,autoBuffering:true,provider: "h264streaming",scaling:"fit"},
-              onError:function(code,message){getNewVideoToken("{{thumbnail.get_sbas_id() ~'_'~thumbnail.get_record_id()}}", this);},
-              plugins: {
-                  {% if app['phraseanet.h264-factory'].isH264Enabled() %}
-                  h264streaming: {
-                      url: "/include/jslibs/flowplayer/pseudostreaming/flowplayer.pseudostreaming-3.2.13.swf"
-                  }
-                  {% endif %}
-              }
-              });
-          </script>
+            {% set fit_size = {
+              "width":original_w,
+              "height":original_h,
+              "top":0,
+              "left": 0
+            } %}
         {% elseif record_type == 'FLEXPAPER' %}
-          {% set random = random(100000) %}
-          <div class="record record_document imgTips" style="position:relative;width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
-              <div id="preview_{{thumbnail.get_sbas_id()}}_{{thumbnail.get_record_id()}}_{{random}}" class="PNB" style=""></div>
-            <input type="hidden" name="width" value="{{d_width}}"/>
-            <input type="hidden" name="height" value="{{d_height}}"/>
-          </div>
-          <script type="text/javascript">
-            swfobject.embedSWF("/include/FlexPaper_flash/FlexPaperViewer.swf",
-            "preview_{{thumbnail.get_sbas_id()}}_{{thumbnail.get_record_id()}}_{{random}}",
-            "100%", "100%", "9.0.0", false, false,
-            {menu: "false",flashvars: "SwfFile={{url}}&Scale=0.6&ZoomTransition=easeOut&ZoomTime=0.5&ZoomInterval=0.1&FitPageOnLoad=true&FitWidthOnLoad=true&PrintEnabled=true&FullScreenAsMaxWindow=false&localeChain={{app['locale']}}",	movie: "/include/FlexPaper_flash/FlexPaperViewer.swf",	allowFullScreen :"true",wmode: "transparent"}, false);</script>
+            {% set original_w = 800 %}
+            {% set original_h = 600 %}
 
+            {% set fit_size = {
+              "width":800,
+              "height":600,
+              "top":0,
+              "left": 0
+            } %}
+        {% else %}
+            {% set original_h = thumbnail.get_height() > 0 ? thumbnail.get_height() : 120 %}
+            {% set original_w = thumbnail.get_width() > 0 ? thumbnail.get_width() : 120 %}
+
+            {% set fit_size = fitIn(
+                {"width":original_w, "height":original_h},
+                {"width":box_w, "height":box_h}
+            )%}
+        {% endif %}
+
+        {% set url = app['authentication'].isAuthenticated() ? thumbnail.get_url() : thumbnail.get_permalink().get_url() %}
+
+        {% if wrap %}
+        <div
+            style="width:{{box_w}}px;height:{{box_h}}px;"
+            class="thumb_wrapper {{extra_class|default('')}}"
+        >
+        {% endif %}
+
+        {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
+            {% import 'common/players/video.html.twig' as player %}
+            {{ player.video_player(thumbnail, url, original_w, original_h, fit_size) }}
+        {% elseif record_type == 'FLEXPAPER' %}
+            {% import 'common/players/pdf.html.twig' as player %}
+            {{ player.pdf_player(thumbnail, url, original_w, original_h, fit_size) }}
         {% elseif record_type == 'AUDIO_MP3' %}
-          {% set random = random(100000) %}
-          <div class="record record_audio audioTips" style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
-            <div id="preview_{{thumbnail.get_sbas_id()}}_{{thumbnail.get_record_id()}}_{{random}}" class="PNB" style=""></div>
-            <input type="hidden" name="width" value="{{thumbnail_width}}"/>
-            <input type="hidden" name="height" value="{{thumbnail_height}}"/>
-          </div>
-          <script type="text/javascript">
-            swfobject.embedSWF("/include/jslibs/audio-player/player.swf",
-            "preview_{{thumbnail.get_sbas_id()}}_{{thumbnail.get_record_id()}}_{{random}}",
-            "{{d_width}}", "{{d_height}}", "9.0.0", false, false,
-            {menu: "false",flashvars: "playerID=2&autostart=yes&noinfo=yes&animation=no&remaining=yes&soundFile={{url}}", movie: "/include/jslibs/audio-player/player.swf",	allowFullScreen :"true",wmode: "transparent"}, false);</script>
+            {% import 'common/players/audio.html.twig' as player %}
+            {{ player.audio_player(thumbnail, url, original_w, original_h, fit_size) }}
         {% else %}
           <img class="{% if lazyload %}lazyload{% endif %} record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
-               style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;"
+               style="width:{{fit_size.width}}px;height:{{fit_size.height}}px;top:{{fit_size.top}}px;"
                src="{% if lazyload %}/skins/grey.gif{% else %}{{ url }}{% endif %}" data-original="{{ url }}" ondragstart="return false;">
-          <input type="hidden" name="width" value="{{thumbnail_width}}"/>
-          <input type="hidden" name="height" value="{{thumbnail_height}}"/>
+          <input type="hidden" name="width" value="{{original_w}}"/>
+          <input type="hidden" name="height" value="{{original_h}}"/>
         {% endif %}
+
         {% if wrap %}
         </div>
         {% endif %}
-
-
 {% endmacro %}
-
-
-
-{% macro format_fit(thumbnail, b_w, b_h, extraclass, wrap)%}
-  {% set record_type = thumbnail.get_type() %}
-
-  {% if record_type == 'AUDIO_MP3' %}
-
-      {% set d_width = 320 %}
-      {% set d_height = 60 %}
-      {% set top = 0 %}
-  {% elseif record_type == 'FLEXPAPER' %}
-
-      {% set d_width = 800 %}
-      {% set d_height = 600 %}
-      {% set top = 0 %}
-  {% else %}
-
-    {% set b_width = b_w %}
-    {% set b_height = b_h|default(b_w) %}
-
-    {% set b_ratio = b_width / b_height %}
-
-    {% set thumbnail_height = thumbnail.get_height() > 0 ? thumbnail.get_height() : 120 %}
-    {% set thumbnail_width = thumbnail.get_width() > 0 ? thumbnail.get_width() : 120 %}
-
-    {% set i_ratio = thumbnail_width / thumbnail_height %}
-
-    {% if i_ratio > b_ratio%}
-      {% set d_height = b_height %}
-      {% set d_width = d_height * thumbnail_width / thumbnail_height %}
-      {% set left = (b_height - d_height) / 2 %}
-    {% else %}
-      {% if b_height > thumbnail_height %}
-        {% set d_height = thumbnail_height %}
-      {% else %}
-        {% set d_height = b_height %}
-      {% endif %}
-      {% set d_width = d_height * thumbnail_width / thumbnail_height %}
-      {% set top = ((b_height - d_height) / 2) %}
-    {% endif %}
-
-  {% endif %}
-
-
-
-  {% if app['authentication'].isAuthenticated() == true %}
-  {% set url = thumbnail.get_url() %}
-  {% else %}
-  {% set url = thumbnail.get_permalink().get_url() %}
-  {% endif %}
-        {% if wrap %}
-        <div style="width:{{b_width|round}}px;height:{{b_height|round}}px;" class="thumb_wrapper {{extraclass|default('')}}">
-        {% endif %}
-        {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
-          {% set random = random(100000) %}
-          <div class="record record_video imgTips" style="position:relative;width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
-              <div id="preview{{random}}" class="PNB"></div>
-              <input type="hidden" name="width" value="{{thumbnail_width}}"/>
-              <input type="hidden" name="height" value="{{thumbnail_height}}"/>
-          </div>
-          <script type="text/javascript">
-            flowplayer("preview{{random}}",
-              {src:"/include/jslibs/flowplayer/flowplayer-3.2.18.swf", wmode: "transparent"},
-              {clip:{url:"{{url}}",autoPlay: true,autoBuffering:true,provider: "h264streaming",scaling:"fit"},
-              onError:function(code,message){getNewVideoToken({{thumbnail.get_sbas_id() ~'_'~thumbnail.get_record_id()}}, this);},
-              plugins: {
-                  {% if app['phraseanet.h264-factory'].isH264Enabled() %}
-                  h264streaming: {
-                      url: "/include/jslibs/flowplayer/pseudostreaming/flowplayer.pseudostreaming-3.2.13.swf"
-                  }
-                  {% endif %}
-              }
-              });
-          </script>
-        {% elseif record_type == 'FLEXPAPER' %}
-          {% set random = random(100000) %}
-          <div class="record record_document imgTips" style="position:relative;width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
-              <div id="preview_{{thumbnail.get_sbas_id()}}_{{thumbnail.get_record_id()}}_{{random}}" class="PNB" style=""></div>
-            <input type="hidden" name="width" value="{{d_width}}"/>
-            <input type="hidden" name="height" value="{{d_height}}"/>
-          </div>
-          <script type="text/javascript">
-            swfobject.embedSWF("/include/FlexPaper_flash/FlexPaperViewer.swf",
-            "preview_{{thumbnail.get_sbas_id()}}_{{thumbnail.get_record_id()}}_{{random}}",
-            "100%", "100%", "9.0.0", false, false,
-            {menu: "false",flashvars: "SwfFile={{url}}&Scale=0.6&ZoomTransition=easeOut&ZoomTime=0.5&ZoomInterval=0.1&FitPageOnLoad=true&FitWidthOnLoad=true&PrintEnabled=true&FullScreenAsMaxWindow=false&localeChain={{app['locale']}}",	movie: "/include/FlexPaper_flash/FlexPaperViewer.swf",	allowFullScreen :"true",wmode: "transparent"}, false);</script>
-
-        {% elseif record_type == 'AUDIO_MP3' %}
-          {% set random = random(100000) %}
-          <div class="record record_audio audioTips" style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
-            <div id="preview_{{thumbnail.get_sbas_id()}}_{{thumbnail.get_record_id()}}_{{random}}" class="PNB" style=""></div>
-            <input type="hidden" name="width" value="{{thumbnail_width}}"/>
-            <input type="hidden" name="height" value="{{thumbnail_height}}"/>
-          </div>
-          <script type="text/javascript">
-            swfobject.embedSWF("/include/jslibs/audio-player/player.swf",
-            "preview_{{thumbnail.get_sbas_id()}}_{{thumbnail.get_record_id()}}_{{random}}",
-            "{{d_width}}", "{{d_height}}", "9.0.0", false, false,
-            {menu: "false",flashvars: "playerID=2&autostart=yes&noinfo=yes&animation=no&remaining=yes&soundFile={{url}}", movie: "/include/jslibs/audio-player/player.swf",	allowFullScreen :"true",wmode: "transparent"}, false);</script>
-        {% else %}
-          <img class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
-               style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;"
-               src="{{url}}" ondragstart="return false;">
-          <input type="hidden" name="width" value="{{thumbnail_width}}"/>
-          <input type="hidden" name="height" value="{{thumbnail_height}}"/>
-        {% endif %}
-        {% if wrap %}
-        </div>
-        {% endif %}
-
-
-{% endmacro %}
-

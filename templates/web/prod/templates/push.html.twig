@@ -16,6 +16,11 @@
                             </tr>
                             <tr>
                                 <td>
+                                    <span class="email"><i><%= item.email %></i></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
                                     <span class="subtite"><%= item.subtitle || '' %></span>
                                 </td>
                             </tr>
@@ -123,7 +128,7 @@
 
 <script type="text/template" id="feedback_sendform_tpl">
 <form>
-    <div class="Feedback" style="display:none;">
+    <div class="Feedback control-group" style="display:none;">
         <label for="PushSendFormDuration">{% trans %}Time for feedback (days){% endtrans %}</label>
         <select id="PushSendFormDuration" name="duration" class="input-block-level">
             <option {% if 20 == app['conf'].get(['registry', 'actions', 'validation-expiration-days']) %}selected="selected"{% endif %} value="20">20</option>
@@ -135,20 +140,39 @@
             <option {% if 1 == app['conf'].get(['registry', 'actions', 'validation-expiration-days']) %}selected="selected"{% endif %} value="1">1</option>
         </select>
     </div>
-    <div>
-        <label for="PushSendFormRecept">{% trans %}Name{% endtrans %}</label>
+    <div class="control-group">
+        <label for="PushSendFormName">{% trans %}Name{% endtrans %}</label>
         <input id="PushSendFormName" type="text" name="name" class="input-block-level"/>
     </div>
-    <div>
+    <div class="control-group">
         <label for="PushSendFormMessage">{% trans %}Message{% endtrans %}</label>
-        <textarea id="PushSendFormMessage" name="message" class="input-block-level"></textarea>
+        <textarea id="PushSendFormMessage" name="message" class="input-block-level" rows="6"></textarea>
     </div>
-    <div>
+    <div class="control-group">
         <label for="PushSendFormRecept" class="checkbox">
             <input id="PushSendFormRecept" type="checkbox" name="recept" value="1"/>
             {% trans %}Accuse de reception{% endtrans %}
         </label>
     </div>
+    {% if app['phraseanet.registry'].get('GV_force_push_authentication') %}
+        <div class="control-group">
+            <label for="PushForceAuthentication" class="checkbox">
+                <input id="PushForceAuthentication" type="checkbox" checked="checked" name="force_authentication" value="1"/>
+                {% trans %}Force authentication{% endtrans %}
+            </label>
+        </div>
+        <div class="control-group info">
+            <span class="help-inline" style="font-style: italic">
+                <i class="icon-info-sign"></i>
+                {% trans %}
+                    The parameter "force authentication" forces the recipient(s) of the push to possess a Phraseanet account
+                    to see its contents.
+                    This avoids anonymous users to access to the content of the push if they were able to get the display
+                    url through a forwarded mail for example.
+                {% endtrans %}
+            </span>
+        </div>
+    {% endif %}
 </form>
 </script>
 

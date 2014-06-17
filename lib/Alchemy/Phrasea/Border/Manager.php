@@ -15,6 +15,8 @@ use Alchemy\Phrasea\Border\Checker\CheckerInterface;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Alchemy\Phrasea\Metadata\Tag\TfArchivedate;
 use Alchemy\Phrasea\Metadata\Tag\TfQuarantine;
+use Alchemy\Phrasea\Metadata\Tag\TfBasename;
+use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 use Alchemy\Phrasea\Metadata\Tag\TfRecordid;
 use Alchemy\Phrasea\Border\Attribute\Metadata as MetadataAttr;
 use Alchemy\Phrasea\Model\Entities\LazaretAttribute;
@@ -242,20 +244,37 @@ class Manager
                 )
             )
         );
+        $file->addAttribute(
+            new MetadataAttr(
+                new Metadata(
+                    new TfBasename(), new MonoValue(pathinfo($file->getOriginalName(), PATHINFO_BASENAME))
+                )
+            )
+        );
+        $file->addAttribute(
+            new MetadataAttr(
+                new Metadata(
+                    new TfFilename(), new MonoValue(pathinfo($file->getOriginalName(), PATHINFO_FILENAME))
+                )
+            )
+        );
 
         $newMetadata = $file->getMedia()->getMetadatas()->toArray();
-
         foreach ($file->getAttributes() as $attribute) {
             switch ($attribute->getName()) {
-
-                /**
-                 * @todo implement METATAG aka metadata by fieldname (where as
-                 * current metadata is metadata by source.
-                 */
                 case AttributeInterface::NAME_METAFIELD:
                     $values = $attribute->getValue();
                     $value = $attribute->getField()->is_multi() ? new Multi($values) : new MonoValue(array_pop($values));
-                    $newMetadata[] = new Metadata($attribute->getField()->get_tag(), $value);
+
+                    $tag = $attribute->getField()->get_tag();
+
+                    if ($tag instanceof \Alchemy\Phrasea\Metadata\Tag\Nosource) {
+                        $tag->setTagname($attribute->getField()->get_name());
+                        $_meta = new Metadata($tag, $value);
+                    } else {
+                        $_meta = new Metadata($attribute->getField()->get_tag(), $value);
+                    }
+                    $newMetadata[] = $_meta;
                     break;
 
                 case AttributeInterface::NAME_METADATA:
@@ -342,7 +361,6 @@ class Manager
             $attribute->setName($fileAttribute->getName());
             $attribute->setValue($fileAttribute->asString());
             $attribute->setLazaretFile($lazaretFile);
-
             $lazaretFile->addAttribute($attribute);
 
             $this->app['EM']->persist($attribute);

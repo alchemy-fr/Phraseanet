@@ -924,6 +924,65 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
+
+      <table name="registry">
+        <fields>
+          <field>
+            <name>id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra>auto_increment</extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>key</name>
+            <type>char(32)</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+            <collation>ascii_bin</collation>
+          </field>
+          <field>
+            <name>value</name>
+            <type>varchar(1024)</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>type</name>
+            <type>enum('string','boolean','array','integer','text','binary','timezone','enum_multi','enum')</type>
+            <null></null>
+            <extra></extra>
+            <default>string</default>
+            <comment></comment>
+          </field>
+        </fields>
+        <indexes>
+          <index>
+            <name>PRIMARY</name>
+            <type>PRIMARY</type>
+            <fields>
+              <field>id</field>
+            </fields>
+          </index>
+          <index>
+            <name>UNIQUE</name>
+            <type>UNIQUE</type>
+            <fields>
+              <field>key</field>
+            </fields>
+          </index>
+        </indexes>
+        <engine>InnoDB</engine>
+      </table>
+
+
+
+
       <table name="records_rights">
         <fields>
           <field>
@@ -1072,6 +1131,145 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
+
+      <table name="demand">
+        <fields>
+          <field>
+            <name>date_modif</name>
+            <type>datetime</type>
+            <null></null>
+            <extra></extra>
+
+
+            <default>0000-00-00 00:00:00</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>usr_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+
+            <extra></extra>
+
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>base_id</name>
+            <type>int(11) unsigned</type>
+
+            <null></null>
+            <extra></extra>
+
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>en_cours</name>
+
+            <type>tinyint(3)</type>
+            <null></null>
+            <extra></extra>
+
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+
+            <name>refuser</name>
+            <type>tinyint(3) unsigned</type>
+            <null></null>
+            <extra></extra>
+
+            <default>0</default>
+            <comment></comment>
+
+          </field>
+        </fields>
+        <indexes>
+          <index>
+            <name>PRIMARY</name>
+            <type>PRIMARY</type>
+            <fields>
+              <field>usr_id</field>
+              <field>base_id</field>
+              <field>en_cours</field>
+            </fields>
+          </index>
+        </indexes>
+        <engine>InnoDB</engine>
+      </table>
+      <table name="dsel">
+        <fields>
+          <field>
+            <name>id</name>
+            <type>int(11) unsigned</type>
+
+            <null></null>
+            <extra>auto_increment</extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>name</name>
+
+            <type>char(50)</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+
+            <name>usr_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>0</default>
+            <comment></comment>
+
+          </field>
+          <field>
+            <name>query</name>
+            <type>char(255)</type>
+            <null></null>
+            <extra></extra>
+
+            <default></default>
+
+            <comment></comment>
+          </field>
+          <field>
+            <name>bases</name>
+            <type>char(255)</type>
+            <null></null>
+            <extra></extra>
+
+
+            <default></default>
+            <comment></comment>
+          </field>
+        </fields>
+        <indexes>
+          <index>
+            <name>PRIMARY</name>
+            <type>PRIMARY</type>
+            <fields>
+              <field>usr_id</field>
+              <field>name</field>
+            </fields>
+          </index>
+          <index>
+            <name>id</name>
+            <type>UNIQUE</type>
+            <fields>
+              <field>id</field>
+            </fields>
+          </index>
+        </indexes>
+        <engine>InnoDB</engine>
+      </table>
+
       <table name="edit_presets">
         <fields>
           <field>
@@ -1143,6 +1341,325 @@
             <type>INDEX</type>
             <fields>
               <field>usr_id</field>
+            </fields>
+          </index>
+        </indexes>
+        <engine>InnoDB</engine>
+      </table>
+
+      <table name="ftp_export">
+        <fields>
+          <field>
+            <name>id</name>
+
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra>auto_increment</extra>
+
+            <default></default>
+            <comment></comment>
+          </field>
+
+          <field>
+            <name>crash</name>
+            <type>tinyint(3) unsigned</type>
+            <null></null>
+            <extra></extra>
+
+            <default>0</default>
+
+            <comment></comment>
+          </field>
+          <field>
+            <name>nbretry</name>
+            <type>tinyint(3) unsigned</type>
+            <null></null>
+            <extra></extra>
+
+
+            <default>5</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>mail</name>
+            <type>char(255)</type>
+            <null></null>
+
+            <extra></extra>
+
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>addr</name>
+            <type>char(255)</type>
+
+            <null></null>
+            <extra></extra>
+
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>ssl</name>
+            <type>tinyint(1) unsigned</type>
+
+            <null></null>
+            <extra></extra>
+
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>login</name>
+
+            <type>char(255)</type>
+            <null></null>
+            <extra></extra>
+
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+
+            <name>pwd</name>
+            <type>char(255)</type>
+            <null></null>
+            <extra></extra>
+
+            <default></default>
+            <comment></comment>
+          </field>
+
+          <field>
+            <name>passif</name>
+            <type>tinyint(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+
+            <default>0</default>
+
+            <comment></comment>
+          </field>
+          <field>
+            <name>destfolder</name>
+            <type>char(255)</type>
+            <null>YES</null>
+            <extra></extra>
+
+
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>sendermail</name>
+            <type>char(255)</type>
+
+            <null>YES</null>
+            <extra></extra>
+
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>text_mail_sender</name>
+
+            <type>longtext</type>
+            <null></null>
+            <extra></extra>
+
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+
+            <name>text_mail_receiver</name>
+            <type>longtext</type>
+            <null></null>
+            <extra></extra>
+
+            <default></default>
+            <comment></comment>
+
+          </field>
+          <field>
+            <name>usr_id</name>
+            <type>int(11) unsigned</type>
+
+            <null></null>
+            <extra></extra>
+
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>date</name>
+            <type>datetime</type>
+            <null></null>
+            <extra></extra>
+            <default>0000-00-00 00:00:00</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>foldertocreate</name>
+            <type>char(255)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>logfile</name>
+            <type>tinyint(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>0</default>
+            <comment></comment>
+          </field>
+        </fields>
+        <indexes>
+          <index>
+            <name>PRIMARY</name>
+            <type>PRIMARY</type>
+            <fields>
+              <field>id</field>
+            </fields>
+          </index>
+          <index>
+            <name>usr_id</name>
+            <type>INDEX</type>
+            <fields>
+              <field>usr_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>crash</name>
+            <type>INDEX</type>
+            <fields>
+              <field>crash</field>
+            </fields>
+          </index>
+          <index>
+            <name>nbretry</name>
+            <type>INDEX</type>
+            <fields>
+              <field>nbretry</field>
+            </fields>
+          </index>
+        </indexes>
+        <engine>InnoDB</engine>
+      </table>
+      <table name="ftp_export_elements">
+        <fields>
+
+          <field>
+            <name>id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra>auto_increment</extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>ftp_export_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>base_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>record_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>subdef</name>
+            <type>char(255)</type>
+            <null></null>
+            <extra></extra>
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>filename</name>
+            <type>char(255)</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>folder</name>
+            <type>char(255)</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>businessfields</name>
+            <type>tinyint(1) unsigned</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>error</name>
+            <type>tinyint(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>done</name>
+            <type>tinyint(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>0</default>
+            <comment></comment>
+          </field>
+        </fields>
+        <indexes>
+          <index>
+            <name>PRIMARY</name>
+            <type>PRIMARY</type>
+            <fields>
+              <field>id</field>
+            </fields>
+          </index>
+          <index>
+            <name>ftp_export_id</name>
+            <type>INDEX</type>
+            <fields>
+              <field>ftp_export_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>done</name>
+            <type>INDEX</type>
+            <fields>
+              <field>done</field>
+            </fields>
+          </index>
+          <index>
+            <name>error</name>
+            <type>INDEX</type>
+            <fields>
+              <field>error</field>
             </fields>
           </index>
         </indexes>
@@ -1234,6 +1751,157 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
+
+
+      <table name="order">
+        <fields>
+          <field>
+            <name>id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra>auto_increment</extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>usr_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>created_on</name>
+            <type>datetime</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>usage</name>
+            <type>longtext</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>deadline</name>
+            <type>datetime</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>ssel_id</name>
+            <type>int(11) unsigned</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+        </fields>
+        <indexes>
+          <index>
+            <name>PRIMARY</name>
+            <type>PRIMARY</type>
+            <fields>
+              <field>id</field>
+            </fields>
+          </index>
+          <index>
+            <name>usr</name>
+            <type>INDEX</type>
+            <fields>
+              <field>usr_id</field>
+            </fields>
+          </index>
+        </indexes>
+        <engine>InnoDB</engine>
+      </table>
+
+      <table name="order_elements">
+        <fields>
+          <field>
+            <name>id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra>auto_increment</extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>order_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>base_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>record_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>order_master_id</name>
+            <type>int(11) unsigned</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>deny</name>
+            <type>tinyint(1)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+        </fields>
+        <indexes>
+          <index>
+            <name>PRIMARY</name>
+            <type>PRIMARY</type>
+            <fields>
+              <field>id</field>
+            </fields>
+          </index>
+          <index>
+            <name>triplet</name>
+            <type>UNIQUE</type>
+            <fields>
+              <field>order_id</field>
+              <field>base_id</field>
+              <field>record_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>order_id</name>
+            <type>INDEX</type>
+            <fields>
+              <field>order_id</field>
+            </fields>
+          </index>
+        </indexes>
+        <engine>InnoDB</engine>
+      </table>
+
       <table name="sbas">
         <fields>
           <field>
@@ -1534,6 +2202,43 @@
             <default>0000-00-00 00:00:00</default>
             <comment></comment>
           </field>
+          <field>
+            <name>schedstatus</name>
+
+            <type>enum('stopped','stopping','started','tostop')</type>
+            <null></null>
+            <extra></extra>
+
+            <default>stopped</default>
+            <comment></comment>
+            <collation>ascii_bin</collation>
+          </field>
+          <field>
+            <name>schedqtime</name>
+            <type>datetime</type>
+            <null></null>
+            <extra></extra>
+            <default>0000-00-00 00:00:00</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>schedpid</name>
+            <type>int(11)</type>
+            <null>YES</null>
+            <extra></extra>
+
+
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>schedulerkey</name>
+            <type>char(20)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
         </fields>
         <indexes>
           <index>
@@ -1559,8 +2264,1238 @@
             </data>
             <data key="version"></data>
             <data key="maj">0000-00-00</data>
+            <data key="schedstatus">stopped</data>
+            <data key="schedqtime"></data>
+            <data key="schedpid"></data>
           </default>
         </defaults>
+        <engine>InnoDB</engine>
+      </table>
+
+      <table name="feed_publishers">
+        <fields>
+          <field>
+            <name>id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra>auto_increment</extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>usr_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>feed_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>owner</name>
+            <type>tinyint(11) unsigned</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>created_on</name>
+            <type>datetime</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>added_by</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+        </fields>
+        <indexes>
+          <index>
+            <name>id</name>
+            <type>PRIMARY</type>
+            <fields>
+              <field>id</field>
+            </fields>
+          </index>
+          <index>
+            <name>couple</name>
+            <type>UNIQUE</type>
+            <fields>
+              <field>usr_id</field>
+              <field>feed_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>owners</name>
+            <type>UNIQUE</type>
+            <fields>
+              <field>owner</field>
+              <field>feed_id</field>
+            </fields>
+          </index>
+        </indexes>
+        <engine>InnoDB</engine>
+      </table>
+
+
+
+
+      <table name="feeds">
+        <fields>
+          <field>
+            <name>id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra>auto_increment</extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>title</name>
+            <type>varchar(128)</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>subtitle</name>
+            <type>varchar(8192)</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>created_on</name>
+            <type>datetime</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>updated_on</name>
+            <type>datetime</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>base_id</name>
+            <type>int(11) unsigned</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>public</name>
+            <type>tinyint(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>0</default>
+            <comment></comment>
+          </field>
+        </fields>
+        <indexes>
+          <index>
+            <name>id</name>
+            <type>PRIMARY</type>
+            <fields>
+              <field>id</field>
+            </fields>
+          </index>
+          <index>
+            <name>base_id</name>
+            <type>INDEX</type>
+            <fields>
+              <field>base_id</field>
+            </fields>
+          </index>
+        </indexes>
+        <engine>InnoDB</engine>
+      </table>
+
+
+
+
+
+
+      <table name="feed_tokens">
+        <fields>
+          <field>
+            <name>id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra>auto_increment</extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>token</name>
+            <type>varchar(12)</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>feed_id</name>
+            <type>int(11) unsigned</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>usr_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>aggregated</name>
+            <type>tinyint(1) unsigned</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+        </fields>
+        <indexes>
+          <index>
+            <name>id</name>
+            <type>PRIMARY</type>
+            <fields>
+              <field>id</field>
+            </fields>
+          </index>
+          <index>
+            <name>token</name>
+            <type>INDEX</type>
+            <fields>
+              <field>token</field>
+            </fields>
+          </index>
+          <index>
+            <name>usr_id</name>
+            <type>INDEX</type>
+            <fields>
+              <field>usr_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>feed_id</name>
+            <type>INDEX</type>
+            <fields>
+              <field>feed_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>aggregated</name>
+            <type>INDEX</type>
+            <fields>
+              <field>aggregated</field>
+            </fields>
+          </index>
+          <index>
+            <name>unikaggregated</name>
+            <type>UNIQUE</type>
+            <fields>
+              <field>aggregated</field>
+              <field>usr_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>unikfeed</name>
+            <type>UNIQUE</type>
+            <fields>
+              <field>feed_id</field>
+              <field>usr_id</field>
+            </fields>
+          </index>
+        </indexes>
+        <engine>InnoDB</engine>
+      </table>
+
+
+
+
+      <table name="feed_entries">
+        <fields>
+          <field>
+            <name>id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra>auto_increment</extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>feed_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>publisher</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>title</name>
+            <type>varchar(128)</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>author_name</name>
+            <type>varchar(128)</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>author_email</name>
+            <type>varchar(128)</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>description</name>
+            <type>varchar(8192)</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>created_on</name>
+            <type>datetime</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>updated_on</name>
+            <type>datetime</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+        </fields>
+        <indexes>
+          <index>
+            <name>id</name>
+            <type>PRIMARY</type>
+            <fields>
+              <field>id</field>
+            </fields>
+          </index>
+        </indexes>
+        <engine>InnoDB</engine>
+      </table>
+
+
+
+
+
+      <table name="feed_entry_elements">
+        <fields>
+          <field>
+            <name>id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra>auto_increment</extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>entry_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>sbas_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>record_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>ord</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+        </fields>
+        <indexes>
+          <index>
+            <name>id</name>
+            <type>PRIMARY</type>
+            <fields>
+              <field>id</field>
+            </fields>
+          </index>
+          <index>
+            <name>element</name>
+            <type>INDEX</type>
+            <fields>
+              <field>sbas_id</field>
+              <field>record_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>sbas_id</name>
+            <type>INDEX</type>
+            <fields>
+              <field>sbas_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>record_id</name>
+            <type>INDEX</type>
+            <fields>
+              <field>record_id</field>
+            </fields>
+          </index>
+        </indexes>
+        <engine>InnoDB</engine>
+      </table>
+      <table name="task2">
+        <fields>
+          <field>
+            <name>task_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra>auto_increment</extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>usr_id_owner</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>pid</name>
+            <type>int(11) unsigned</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>status</name>
+            <type>enum('stopped','started','starting','stopping','tostart','tostop','manual','torestart')</type>
+            <null></null>
+            <extra></extra>
+            <default>stopped</default>
+            <comment></comment>
+            <collation>ascii_bin</collation>
+          </field>
+          <field>
+            <name>crashed</name>
+            <type>int(2) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>active</name>
+            <type>int(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>name</name>
+            <type>varchar(100)</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>last_exec_time</name>
+            <type>datetime</type>
+            <null></null>
+            <extra></extra>
+            <default>0000-00-00 00:00:00</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>class</name>
+            <type>varchar(100)</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>settings</name>
+            <type>text</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>completed</name>
+            <type>tinyint(4)</type>
+            <null></null>
+            <extra></extra>
+            <default>-1</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>runner</name>
+            <type>char(20)</type>
+            <null></null>
+            <extra></extra>
+            <default>-1</default>
+            <comment></comment>
+          </field>
+        </fields>
+        <indexes>
+          <index>
+            <name>PRIMARY</name>
+            <type>PRIMARY</type>
+            <fields>
+              <field>task_id</field>
+            </fields>
+          </index>
+        </indexes>
+        <engine>InnoDB</engine>
+      </table>
+      <table name="tokens">
+        <fields>
+          <field>
+            <name>id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra>auto_increment</extra>
+          </field>
+          <field>
+            <name>value</name>
+            <type>char(16)</type>
+            <null></null>
+            <extra></extra>
+            <collation>ascii_bin</collation>
+          </field>
+          <field>
+            <name>type</name>
+            <type>enum('FEED_ENTRY', 'view','validate','password','rss','email','download')</type>
+            <null></null>
+            <extra></extra>
+            <collation>ascii_bin</collation>
+          </field>
+          <field>
+            <name>usr_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+          </field>
+          <field>
+            <name>datas</name>
+            <type>longtext</type>
+            <null>YES</null>
+            <extra></extra>
+          </field>
+          <field>
+            <name>created_on</name>
+            <type>datetime</type>
+            <null></null>
+            <extra></extra>
+          </field>
+          <field>
+            <name>expire_on</name>
+            <type>datetime</type>
+            <null>YES</null>
+            <extra></extra>
+          </field>
+        </fields>
+        <indexes>
+          <index>
+            <name>PRIMARY</name>
+            <type>PRIMARY</type>
+            <fields>
+              <field>id</field>
+            </fields>
+          </index>
+          <index>
+            <name>value</name>
+            <type>UNIQUE</type>
+            <fields>
+              <field>value</field>
+            </fields>
+          </index>
+          <index>
+            <name>expire</name>
+            <type>INDEX</type>
+            <fields>
+              <field>expire_on</field>
+            </fields>
+          </index>
+          <index>
+            <name>type</name>
+            <type>INDEX</type>
+            <fields>
+              <field>type</field>
+            </fields>
+          </index>
+        </indexes>
+        <engine>InnoDB</engine>
+      </table>
+      <table name="usr">
+        <fields>
+          <field>
+            <name>usr_id</name>
+
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra>auto_increment</extra>
+            <default></default>
+            <comment></comment>
+          </field>
+
+          <field>
+            <name>ldap_created</name>
+            <type>int(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+
+            <default>0</default>
+
+            <comment></comment>
+          </field>
+          <field>
+            <name>usr_sexe</name>
+            <type>int(1) unsigned</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>usr_nom</name>
+            <type>varchar(50)</type>
+
+            <null></null>
+            <extra></extra>
+
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>usr_prenom</name>
+
+            <type>varchar(50)</type>
+            <null></null>
+            <extra></extra>
+
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+
+            <name>usr_login</name>
+            <type>varchar(128)</type>
+            <null></null>
+            <extra></extra>
+
+            <default></default>
+            <comment></comment>
+            <collation>utf8_bin</collation>
+
+          </field>
+          <field>
+            <name>usr_password</name>
+            <type>varchar(128)</type>
+            <null></null>
+            <extra></extra>
+
+            <default></default>
+
+            <comment></comment>
+            <collation>utf8_bin</collation>
+          </field>
+          <field>
+            <name>usr_mail</name>
+
+            <type>varchar(64)</type>
+            <null>YES</null>
+            <extra></extra>
+
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+
+            <name>usr_creationdate</name>
+            <type>datetime</type>
+            <null></null>
+            <extra></extra>
+
+            <default>0000-00-00 00:00:00</default>
+            <comment></comment>
+
+          </field>
+          <field>
+            <name>usr_modificationdate</name>
+            <type>datetime</type>
+            <null></null>
+            <extra></extra>
+
+            <default>0000-00-00 00:00:00</default>
+
+            <comment></comment>
+          </field>
+          <field>
+            <name>adresse</name>
+            <type>text</type>
+            <null></null>
+            <extra></extra>
+
+
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>ville</name>
+            <type>varchar(64)</type>
+            <null></null>
+            <extra></extra>
+
+
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>cpostal</name>
+            <type>varchar(32)</type>
+            <null></null>
+
+            <extra></extra>
+
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>tel</name>
+            <type>varchar(32)</type>
+
+            <null></null>
+            <extra></extra>
+
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>fax</name>
+
+            <type>varchar(32)</type>
+            <null></null>
+            <extra></extra>
+
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+
+            <name>fonction</name>
+            <type>varchar(64)</type>
+            <null></null>
+            <extra></extra>
+
+            <default></default>
+            <comment></comment>
+          </field>
+
+          <field>
+            <name>societe</name>
+            <type>varchar(64)</type>
+            <null></null>
+            <extra></extra>
+
+            <default></default>
+            <comment></comment>
+
+          </field>
+          <field>
+            <name>activite</name>
+            <type>varchar(200)</type>
+            <null></null>
+            <extra></extra>
+
+            <default></default>
+
+            <comment></comment>
+          </field>
+          <field>
+            <name>code8</name>
+            <type>int(10) unsigned</type>
+            <null></null>
+
+            <extra></extra>
+
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>pays</name>
+            <type>varchar(64)</type>
+
+            <null>YES</null>
+            <extra></extra>
+
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+
+            <name>last_conn</name>
+            <type>datetime</type>
+            <null></null>
+            <extra></extra>
+
+            <default>0000-00-00 00:00:00</default>
+            <comment></comment>
+
+          </field>
+          <field>
+            <name>model_of</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+
+            <default>0</default>
+
+            <comment></comment>
+          </field>
+          <field>
+            <name>create_db</name>
+            <type>tinyint(3)</type>
+            <null></null>
+
+            <extra></extra>
+
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>activeFTP</name>
+            <type>tinyint(1)</type>
+
+            <null></null>
+            <extra></extra>
+
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>addrFTP</name>
+
+            <type>varchar(128)</type>
+            <null></null>
+            <extra></extra>
+
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>sslFTP</name>
+
+            <type>tinyint(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+
+            <name>loginFTP</name>
+            <type>varchar(128)</type>
+            <null></null>
+            <extra></extra>
+
+            <default></default>
+            <comment></comment>
+          </field>
+
+          <field>
+            <name>pwdFTP</name>
+            <type>varchar(128)</type>
+            <null></null>
+            <extra></extra>
+
+            <default></default>
+            <comment></comment>
+
+          </field>
+          <field>
+            <name>destFTP</name>
+            <type>varchar(128)</type>
+            <null></null>
+            <extra></extra>
+
+            <default></default>
+
+            <comment></comment>
+          </field>
+          <field>
+            <name>passifFTP</name>
+            <type>tinyint(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+
+
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>retryFTP</name>
+            <type>tinyint(1) unsigned</type>
+            <null></null>
+
+            <extra></extra>
+
+            <default>5</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>defaultftpdatasent</name>
+            <type>int(11) unsigned</type>
+
+            <null></null>
+            <extra></extra>
+
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>prefixFTPfolder</name>
+
+            <type>varchar(100)</type>
+            <null></null>
+            <extra></extra>
+
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>lastModel</name>
+            <type>varchar(50)</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>canchgprofil</name>
+            <type>tinyint(1)</type>
+            <null></null>
+            <extra></extra>
+
+
+            <default>1</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>canchgftpprofil</name>
+            <type>tinyint(1) unsigned</type>
+
+            <null></null>
+            <extra></extra>
+
+            <default>1</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>invite</name>
+
+            <type>tinyint(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>mail_locked</name>
+
+            <type>tinyint(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>geonameid</name>
+
+            <type>int(7) unsigned</type>
+            <null>YES</null>
+            <extra></extra>
+
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>updated</name>
+
+            <type>tinyint(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>locale</name>
+            <type>enum('fr_FR','en_GB','en_US','ar_SA','de_DE','es_LA','zh_CN','nb_NO')</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+            <collation>ascii_bin</collation>
+          </field>
+          <field>
+            <name>mail_notifications</name>
+            <type>tinyint(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>1</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>request_notifications</name>
+            <type>tinyint(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>1</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>push_list</name>
+            <type>text</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>timezone</name>
+            <type>varchar(128)</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>salted_password</name>
+            <type>tinyint(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>nonce</name>
+            <type>char(16)</type>
+            <null>YES</null>
+            <extra></extra>
+            <collation>utf8_bin</collation>
+            <comment></comment>
+          </field>
+        </fields>
+        <indexes>
+          <index>
+            <name>PRIMARY</name>
+            <type>PRIMARY</type>
+            <fields>
+              <field>usr_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>usr_login</name>
+            <type>UNIQUE</type>
+            <fields>
+              <field>usr_login</field>
+            </fields>
+          </index>
+          <index>
+            <name>usr_mail</name>
+            <type>INDEX</type>
+            <fields>
+              <field>usr_mail</field>
+            </fields>
+          </index>
+          <index>
+            <name>unique_usr_mail</name>
+            <type>UNIQUE</type>
+            <fields>
+              <field>usr_mail</field>
+            </fields>
+          </index>
+          <index>
+            <name>model_of</name>
+            <type>INDEX</type>
+            <fields>
+              <field>model_of</field>
+            </fields>
+          </index>
+          <index>
+            <name>salted_password</name>
+            <type>INDEX</type>
+            <fields>
+              <field>salted_password</field>
+            </fields>
+          </index>
+          <index>
+            <name>invite</name>
+            <type>INDEX</type>
+            <fields>
+              <field>invite</field>
+            </fields>
+          </index>
+        </indexes>
+        <defaults>
+          <default>
+            <data key="usr_id">null</data>
+            <data key="ldap_created">2</data>
+            <data key="usr_sexe">null</data>
+            <data key="usr_login">autoregister</data>
+            <data key="usr_password">autoregister</data>
+            <data key="usr_creationdate">NOW()</data>
+            <data key="usr_modificationdate">NOW()</data>
+            <data key="last_conn">0000-00-00 00:00:00</data>
+            <data key="model_of">0</data>
+            <data key="create_db">0</data>
+            <data key="activeFTP">0</data>
+            <data key="passifFTP">0</data>
+            <data key="retryFTP">5</data>
+            <data key="defaultftpdatasent">5</data>
+            <data key="canchgprofil">0</data>
+            <data key="canchgftpprofil">0</data>
+            <data key="nonce"></data>
+          </default>
+          <default>
+            <data key="usr_id">null</data>
+            <data key="ldap_created">2</data>
+            <data key="usr_sexe">null</data>
+            <data key="usr_login">invite</data>
+            <data key="usr_password">invite</data>
+            <data key="usr_creationdate">NOW()</data>
+            <data key="usr_modificationdate">NOW()</data>
+            <data key="last_conn">0000-00-00 00:00:00</data>
+            <data key="model_of">0</data>
+            <data key="create_db">0</data>
+            <data key="activeFTP">0</data>
+            <data key="passifFTP">0</data>
+            <data key="retryFTP">5</data>
+            <data key="defaultftpdatasent">5</data>
+            <data key="canchgprofil">0</data>
+            <data key="canchgftpprofil">0</data>
+            <data key="nonce"></data>
+          </default>
+        </defaults>
+        <engine>InnoDB</engine>
+      </table>
+      <table name="usr_settings">
+        <fields>
+          <field>
+            <name>usr_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>prop</name>
+            <type>char(128)</type>
+            <null></null>
+            <extra></extra>
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>value</name>
+            <type>varbinary(32768)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default>0</default>
+            <comment></comment>
+          </field>
+        </fields>
+        <indexes>
+          <index>
+            <name>couple</name>
+            <type>UNIQUE</type>
+            <fields>
+              <field>prop</field>
+              <field>usr_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>usr_id</name>
+            <type>INDEX</type>
+            <fields>
+              <field>usr_id</field>
+            </fields>
+          </index>
+        </indexes>
         <engine>InnoDB</engine>
       </table>
     </tables>
@@ -3258,25 +5193,25 @@
           <default>
             <data key="prop">ToU</data>
             <data key="value"></data>
-            <data key="locale">fr</data>
+            <data key="locale">fr_FR</data>
             <data key="created_on">NOW()</data>
           </default>
           <default>
             <data key="prop">ToU</data>
             <data key="value"></data>
-            <data key="locale">nl</data>
+            <data key="locale">ar_SA</data>
             <data key="created_on">NOW()</data>
           </default>
           <default>
             <data key="prop">ToU</data>
             <data key="value"></data>
-            <data key="locale">de</data>
+            <data key="locale">de_DE</data>
             <data key="created_on">NOW()</data>
           </default>
           <default>
             <data key="prop">ToU</data>
             <data key="value"></data>
-            <data key="locale">en</data>
+            <data key="locale">en_GB</data>
             <data key="created_on">NOW()</data>
           </default>
         </defaults>

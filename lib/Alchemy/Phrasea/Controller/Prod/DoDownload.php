@@ -97,7 +97,8 @@ class DoDownload implements ControllerProviderInterface
             'list'          => $list,
             'records'       => $records,
             'token'         => $token,
-            'anonymous'     => $request->query->get('anonymous', false)
+            'anonymous'     => $request->query->get('anonymous', false),
+            'type'          => $request->query->get('type', \Session_Logger::EVENT_EXPORTDOWNLOAD)
         ]));
     }
 
@@ -143,12 +144,12 @@ class DoDownload implements ControllerProviderInterface
             $app->abort(404, 'Download file not found');
         }
 
-        $app['dispatcher']->addListener(KernelEvents::TERMINATE, function (PostResponseEvent $event) use ($list, $app) {
+        $app['dispatcher']->addListener(KernelEvents::RESPONSE, function (PostResponseEvent $event) use ($list, $app) {
             \set_export::log_download(
                 $app,
                 $list,
-                $event->getRequest()->request->get('type'),
-                (null !== $event->getRequest()->request->get('anonymous') ? true : false),
+                $event->getRequest()->get('type'),
+                !!$event->getRequest->get('anonymous', false),
                 (isset($list['email']) ? $list['email'] : '')
             );
         });

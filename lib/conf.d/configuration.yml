@@ -4,6 +4,7 @@ languages:
     default: 'fr'
 main:
     maintenance: false
+    key: ''
     database:
         host: 'sql-host'
         port: 3306
@@ -173,6 +174,9 @@ registration-fields:
         name: company
         required: true
     -
+        name: lastname
+        required: true
+    -
         name: firstname
         required: true
     -
@@ -187,3 +191,16 @@ h264-pseudo-streaming:
     type: nginx
     mapping: []
 plugins: []
+api_cors:
+  enabled: false
+  allow_credentials: false
+  allow_origin: []
+  allow_headers: []
+  allow_methods: []
+  expose_headers: []
+  max_age: 0
+  hosts: []
+session:
+  idle: 0
+  # 1 week
+  lifetime: 604800

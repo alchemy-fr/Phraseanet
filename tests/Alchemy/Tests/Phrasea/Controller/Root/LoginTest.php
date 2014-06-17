@@ -1744,6 +1744,34 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertSame(200, self::$DI['client']->getResponse()->getStatusCode());
     }
 
+    public function testLoginPageWithIdleSessionTime()
+    {
+        $this->logout(self::$DI['app']);
+        self::$DI['app']['phraseanet.configuration']['session'] = array(
+            'idle' =>10,
+            'lifetime' => 60475,
+        );
+
+        $crawler = self::$DI['client']->request('GET', '/login/');
+
+        $this->assertSame(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('hidden', $crawler->filter('input[name="remember-me"]')->attr('type'));
+    }
+
+    public function testLoginPageWithNoIdleSessionTime()
+    {
+        $this->logout(self::$DI['app']);
+        self::$DI['app']['phraseanet.configuration']['session'] = array(
+            'idle' => 0,
+            'lifetime' => 60475,
+        );
+
+        $crawler = self::$DI['client']->request('GET', '/login/');
+
+        $this->assertSame(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('checkbox', $crawler->filter('input[name="remember-me"]')->attr('type'));
+    }
+
     private function addUsrAuthDoctrineEntitySupport($id, $out, $participants = false)
     {
         $repo = $this->getMockBuilder('Doctrine\ORM\EntityRepository\UsrAuthProviderRepository')

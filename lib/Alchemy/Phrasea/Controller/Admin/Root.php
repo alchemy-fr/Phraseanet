@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Exception\SessionNotFound;
+use Alchemy\Phrasea\Helper\DatabaseHelper;
+use Alchemy\Phrasea\Helper\PathHelper;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,7 +26,6 @@ class Root implements ControllerProviderInterface
         $app['controller.admin.root'] = $this;
 
         $controllers = $app['controllers_factory'];
-
         $app['firewall']->addMandatoryAuthentication($controllers);
 
         $controllers->before(function (Request $request) use ($app) {
@@ -446,6 +447,24 @@ class Root implements ControllerProviderInterface
         })->assert('databox_id', '\d+')
           ->assert('bit', '\d+')
           ->bind('database_submit_statusbit');
+
+        $controllers->get('/tests/connection/mysql/', function (Application $app, Request $request) {
+            $dbHelper = new DatabaseHelper($app, $request);
+
+            return $app->json($dbHelper->checkConnection());
+        });
+
+        $controllers->get('/tests/pathurl/path/', function (Application $app, Request $request) {
+            $pathHelper = new PathHelper($app, $request);
+
+            return $app->json($pathHelper->checkPath());
+        });
+
+        $controllers->get('/tests/pathurl/url/', function (Application $app, Request $request) {
+            $pathHelper = new PathHelper($app, $request);
+
+            return $app->json($pathHelper->checkUrl());
+        });
 
         return $controllers;
     }

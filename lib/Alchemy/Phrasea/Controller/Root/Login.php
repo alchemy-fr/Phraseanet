@@ -284,6 +284,12 @@ class Login implements ControllerProviderInterface
                 unset($requestData['geonameid-completer']);
             }
 
+            // Remove multiselect field for validation this field is added client side
+            // with bootstrap multiselect plugin
+            if (isset($requestData['multiselect'])) {
+                unset($requestData['multiselect']);
+            }
+
             $form->bind($requestData);
             $data = $form->getData();
 
@@ -717,7 +723,7 @@ class Login implements ControllerProviderInterface
 
         $feeds = $app['repo.feeds']->findBy(['public' => true], ['updatedOn' => 'DESC']);
 
-        $form = $app->form(new PhraseaAuthenticationForm());
+        $form = $app->form(new PhraseaAuthenticationForm($app));
         $form->setData([
             'redirect' => $request->query->get('redirect')
         ]);
@@ -739,7 +745,7 @@ class Login implements ControllerProviderInterface
      */
     public function authenticate(PhraseaApplication $app, Request $request)
     {
-        $form = $app->form(new PhraseaAuthenticationForm());
+        $form = $app->form(new PhraseaAuthenticationForm($app));
         $redirector = function (array $params = []) use ($app) {
             return $app->redirectPath('homepage', $params);
         };
@@ -1027,7 +1033,7 @@ class Login implements ControllerProviderInterface
 
             $session->setToken($token)->setNonce($nonce);
 
-            $response->headers->setCookie(new Cookie('persistent', $token));
+            $response->headers->setCookie(new Cookie('persistent', $token, time() + $app['phraseanet.configuration']['session']['lifetime']));
 
             $app['EM']->persist($session);
             $app['EM']->flush();

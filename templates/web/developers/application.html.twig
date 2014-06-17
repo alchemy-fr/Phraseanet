@@ -67,6 +67,25 @@
                             >
                         </td>
                     </tr>
+                    {% if application.get_type() == constant("API_OAuth2_Application::WEB_TYPE") %}
+                        <tr>
+                            <td>
+                                {% trans "Define a webhook URL" %}
+                                <p style="font-size: 10px;max-width: 450px">
+                                    {% trans "Gives the option to your application to communicate with Phraseanet. This webhook can be used to trigger some actions on your application side." %}
+                                </p>
+                            </td>
+                            <td class="url_callback">
+                                <span class="url_webhook_input">{{ application.getWebhook() }}</span>
+                                <a href="{{ path("submit_application_webhook", {"id" : application.get_id()}) }}" class="save_webhook btn btn-small btn-info" style="display:none;">
+                                    {% trans "Save" %}
+                                </a>
+                                <button type="button" class="webhook-modify-btn btn btn-small">
+                                    {% trans "Modify" %}
+                                </button>
+                            </td>
+                        </tr>
+                    {% endif %}
                 </tbody>
             </table>
 

@@ -12,13 +12,14 @@
 namespace Alchemy\Phrasea\Application;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Core\Event\Subscriber\ApiCorsSubscriber;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Controller\Api\Oauth2;
 use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\Controller\Api\V1;
 use Alchemy\Phrasea\Core\Event\ApiResultEvent;
 use Alchemy\Phrasea\Core\Event\Subscriber\ApiOauth2ErrorsSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ApiExceptionHandlerSubscriber;
-use Alchemy\Phrasea\Core\PhraseaEvents;
 use Monolog\Logger;
 use Monolog\Processor\WebProcessor;
 use Silex\Application as SilexApplication;
@@ -71,6 +72,8 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     $app->after(function (Request $request, Response $response) use ($app) {
         $app['dispatcher']->dispatch(PhraseaEvents::API_RESULT, new ApiResultEvent($request, $response));
     });
+    $app['dispatcher']->addSubscriber(new ApiCorsSubscriber($app));
+    $app['dispatcher']->dispatch(PhraseaEvents::API_LOAD_END, new ApiLoadEndEvent());
 
     return $app;
 }, isset($environment) ? $environment : PhraseaApplication::ENV_PROD);

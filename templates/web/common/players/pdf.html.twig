@@ -1,0 +1,21 @@
+{% macro pdf_player(thumbnail, url, original_w, original_h, fit) %}
+    {% set random = thumbnail.get_random() %}
+    <div class="record record_document imgTips" style="position:relative;width:{{fit.width}}px;height:{{fit.height}}px;top:{{fit.top}}px;">
+        <div id="preview_{{thumbnail.get_sbas_id()}}_{{thumbnail.get_record_id()}}_{{random}}" class="PNB" style=""></div>
+        <input type="hidden" name="width" value="{{original_w}}"/>
+        <input type="hidden" name="height" value="{{original_h}}"/>
+    </div>
+    <script type="text/javascript">
+        swfobject.embedSWF(
+                "/include/FlexPaper_flash/FlexPaperViewer.swf",
+                "preview_{{thumbnail.get_sbas_id()}}_{{thumbnail.get_record_id()}}_{{random}}",
+                "100%", "100%", "9.0.0", false, false, {
+                    menu: "false",
+                    flashvars: "SwfFile={{url}}&Scale=0.6&ZoomTransition=easeOut&ZoomTime=0.5&ZoomInterval=0.1&FitPageOnLoad=true&FitWidthOnLoad=true&PrintEnabled=true&FullScreenAsMaxWindow=false&localeChain={{app['locale']}}",
+                    movie: "/include/FlexPaper_flash/FlexPaperViewer.swf",
+                    allowFullScreen :"true",
+                    wmode: "transparent"
+                }, false
+        );
+    </script>
+{% endmacro %}

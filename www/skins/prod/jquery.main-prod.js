@@ -761,6 +761,7 @@ $(document).ready(function () {
         var parent = searchForm.parent();
 
         var options = {
+            size: 'Full',
             loading: false,
             closeCallback: function (dialog) {
 
@@ -912,6 +913,10 @@ $(document).ready(function () {
                         $answers.scrollTop(0);
                     }
                     $answers.append(data);
+
+                    $answers.find("img.lazyload").lazyload({
+                        container: $answers
+                    });
                 }
                 else {
                     $('.see_more.loading', $answers).remove();
@@ -1126,7 +1131,7 @@ $(document).ready(function () {
 
     initLook();
 
-    setTimeout("sessionactive();", 30000);
+    setTimeout("pollNotifications();", 10000);
 
     $(this).bind('keydown', function (event) {
         var cancelKey = false;

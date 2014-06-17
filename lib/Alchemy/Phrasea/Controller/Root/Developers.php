@@ -64,6 +64,10 @@ class Developers implements ControllerProviderInterface
             ->assert('application', '\d+')
             ->bind('submit_application_callback');
 
+        $controllers->post('/application/{id}/webhook/', $this->call('renewAppWebhook'))
+            ->assert('id', '\d+')
+            ->bind('submit_application_webhook');
+
         return $controllers;
     }
 
@@ -109,6 +113,30 @@ class Developers implements ControllerProviderInterface
         }
 
         return $app->json(['success' => true]);
+    }
+
+
+    /**
+     * Change application webhook
+     *
+     * @param  Application  $app     A Silex application where the controller is mounted on
+     * @param  Request      $request The current request
+     * @param  integer      $id      The application id
+     * @return JsonResponse
+     */
+    public function renewAppWebhook(Application $app, Request $request, $id)
+    {
+        if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
+            $app->abort(400, _('Bad request format, only JSON is allowed'));
+        }
+
+        if (null !== $request->request->get("webhook")) {
+            $app['manipulator.api-application']->setWebhook($request->request->get("webhook"));
+        } else {
+            return $app->json(['success' => false]);
+        }
+
+        return $app->json(array('success' => true));
     }
 
     /**

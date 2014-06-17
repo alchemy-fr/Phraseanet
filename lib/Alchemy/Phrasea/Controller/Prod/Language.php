@@ -22,8 +22,9 @@ class Language implements ControllerProviderInterface
 
         $controller = $app['controllers_factory'];
 
-        $controller->get("/", function (Application $app) {
+        $app['firewall']->addMandatoryAuthentication($controller);
 
+        $controller->get("/", function (Application $app) {
             $out = [];
             $out['thesaurusBasesChanged'] = $app->trans('prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee.');
             $out['confirmDel'] = $app->trans('paniers::Vous etes sur le point de supprimer ce panier. Cette action est irreversible. Souhaitez-vous continuer ?');

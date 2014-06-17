@@ -19,7 +19,7 @@
             </div>
        {% elseif list['complete'] is defined and list['complete'] %}
             <div class="alert alert-success">
-                {% set url = path('document_download', {'token': token.getValue()}) %}
+                {% set url = path('document_download', {'token': token.getValue(), 'type': type, 'anonymous': anonymous}) %}
                 {% set before_link = '<a href="' ~ url ~ '" target="_self">' %}
                 {% set after_link = '</a>' %}
                 {% trans with {'%before_link%' : before_link, '%after_link%' : after_link} %}Your documents are ready. If the download does not start, %before_link%click here%after_link%{% endtrans %}
@@ -105,7 +105,7 @@
             {% set time = time < 1 ? 2 : (time > 10 ? 10 : time) %}
 
             {% if list['complete'] is not defined %} {# Zip not done #}
-                $.post("{{ path('execute_download', {'token': token.getValue()}) }}", function(data){
+                $.post("{{ path('execute_download', {'token': token.getValue(), 'type': type, 'anonymous': anonymous}) }}", function(data){
                     var data = $.parseJSON(data);
                     if(data.success) {
                         $('form[name=download]').submit();

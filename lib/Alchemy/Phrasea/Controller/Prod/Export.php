@@ -228,7 +228,7 @@ class Export implements ControllerProviderInterface
 
             $remaingEmails = $destMails;
 
-            $url = $app->url('prepare_download', ['token' => $token->getValue(), 'anonymous']);
+            $url = $app->url('prepare_download', ['token' => $token->getValue(), 'anonymous' => false, 'type' => \Session_Logger::EVENT_EXPORTMAIL]);
 
             $emitter = new Emitter($app['authentication']->getUser()->getDisplayName(), $app['authentication']->getUser()->getEmail());
 

@@ -75,6 +75,51 @@ $(document).ready(function () {
                     } else {
                         input.empty().append(inputVal);
                     }
+
+                    modifierBtn.show();
+                    saveBtn.hide();
+                }
+            });
+        });
+    });
+
+    //modify application webhook url
+    $(".webhook-modify-btn").bind("click", function () {
+        var modifierBtn = $(this);
+        var saveBtn = $("a.save_webhook");
+        var input = $(".url_webhook_input");
+        var inputVal = input.html();
+
+        modifierBtn.hide();
+        saveBtn.show();
+        // wrapp current calback in an input
+        input
+            .empty()
+            .wrapInner(''
+                + '<input value = "' + inputVal + '"'
+                + ' name="oauth_webhook" size="50" type="text"/>'
+            );
+
+        $(".url_webhook").die();
+
+        // save new callback
+        saveBtn.bind("click", function (e) {
+            e.preventDefault();
+            var webhook = $("input[name=oauth_webhook]").val();
+            $.ajax({
+                type: "POST",
+                url: saveBtn.attr("href"),
+                dataType: 'json',
+                data: {webhook: webhook},
+                success: function (data) {
+                    if (data.success) {
+                        input.empty().append(webhook);
+                    } else {
+                        input.empty().append(inputVal);
+                    }
+
+                    modifierBtn.show();
+                    saveBtn.hide();
                 }
             });
         });
@@ -83,9 +128,9 @@ $(document).ready(function () {
     // hide or show callback url input whether user choose a web or dektop application
     $("#form_create input[name=type]").bind("click", function () {
         if ($(this).val() === "desktop") {
-            $("#form_create .callback td").hide().find("input").val('');
+            $("#form_create .callback-control-group").hide().find("input").val('');
         } else {
-            $("#form_create .callback td").show();
+            $("#form_create .callback-control-group").show();
         }
     });
 

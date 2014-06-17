@@ -6,7 +6,6 @@ var p4 = p4 || {};
         if ($('#p4_alerts').length === 0) {
             $('body').append('<div id="p4_alerts"></div>');
         }
-
         return $('#p4_alerts');
     }
 
@@ -21,7 +20,6 @@ var p4 = p4 || {};
             else
                 dialog.dialog('close');
         };
-
         if (dialog.data('ui-dialog')) {
             dialog.dialog('destroy');
         }

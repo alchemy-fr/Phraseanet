@@ -200,13 +200,12 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $stmt->closeCursor();
 
         if ($row) {
-
             $this->width = (int) $row['width'];
             $this->size = (int) $row['size'];
             $this->height = (int) $row['height'];
             $this->mime = $row['mime'];
             $this->file = $row['file'];
-            $this->etag = $row['etag'];
+            $this->etag = $row['etag'] !== null ? $row['etag'] : md5(time() . $row['path'] .$row['file']);
             $this->path = p4string::addEndSlash($row['path']);
             $this->is_substituted = ! ! $row['substit'];
             $this->subdef_id = (int) $row['subdef_id'];
@@ -742,7 +741,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             return;
         }
 
-        if (in_array($this->mime, ['video/mp4'])) {
+        if ($this->app['phraseanet.h264-factory']->isH264Enabled() && in_array($this->mime, array('video/mp4'))) {
             if (null !== $url = $this->app['phraseanet.h264']->getUrl($this->get_pathfile())) {
                 $this->url = $url;
 

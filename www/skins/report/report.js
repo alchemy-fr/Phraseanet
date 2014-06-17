@@ -936,10 +936,9 @@ function loadDash() {
         error   : function( xhr, err ) {
         },
         timeout: function(){
-        },
-        done: function() {
-            $("#dashboard").removeClass("loading");
         }
+    }).done(function() {
+        $("#dashboard").removeClass("loading");
     });
     return false;
 }
@@ -1067,21 +1066,21 @@ function resize() {
 
     $('.answers:visible').height(Math.round(bodySize.y - $('.answers:visible').offset().top));
 };
-//update session
-function sessionactive() {
+
+function pollNotifications() {
     $.ajax({
         type: "POST",
-        url: "/session/update/",
+        url: "/session/notifications/",
         dataType: 'json',
         data: {
             module: 10,
             usr: usrId
         },
         error: function () {
-            window.setTimeout("sessionactive();", 10000);
+            window.setTimeout("pollNotifications();", 10000);
         },
         timeout: function () {
-            window.setTimeout("sessionactive();", 10000);
+            window.setTimeout("pollNotifications();", 10000);
         },
         success: function (data) {
             if (data) {
@@ -1091,10 +1090,10 @@ function sessionactive() {
             if (data.apps && parseInt(data.apps) > 1) {
                 t = Math.round((Math.sqrt(parseInt(data.apps) - 1) * 1.3 * 120000));
             }
-            window.setTimeout("sessionactive();", t);
+            window.setTimeout("pollNotifications();", t);
             return;
         }
     });
 };
 
-sessionactive();
+window.setTimeout("pollNotifications();", 10000);

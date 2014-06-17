@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="{{ app['locale'] }}">
     <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <title>{{ app['conf'].get(['registry', 'general', 'title']) }} - {{ 'phraseanet:: thesaurus' | trans }}</title>
         <style id="STYLES">
             DIV.glossaire DIV.r1_
@@ -94,35 +95,40 @@
             {
                 document.getElementById("desktop").scrollTop = 0;
             }
+
             var xhr_object;
-            function sessionactive(){
+            function pollNotifications(){
                 $.ajax({
                     type: "POST",
-                    url: "/session/update/",
+                    url: "/session/notifications/",
                     dataType: 'json',
                     data: {
                         module : 5,
                         usr : {{ app['authentication'].getUser().getId() }}
                     },
                     error: function(){
-                        window.setTimeout("sessionactive();", 10000);
+                        window.setTimeout("pollNotifications();", 10000);
                     },
                     timeout: function(){
-                        window.setTimeout("sessionactive();", 10000);
+                        window.setTimeout("pollNotifications();", 10000);
                     },
                     success: function(data){
+                        if(data && typeof(data.status) && data.status == "disconnected") {
+                            alert("{% trans 'phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier' %}");
+                            self.location.replace(self.location.href);
+                        }
                         //if(manageSession(data))
-                        var t = 120000;
+                        var t = 5000; // 120000;
                         if(data.apps && parseInt(data.apps)>1)
                             t = Math.round((Math.sqrt(parseInt(data.apps)-1) * 1.3 * 120000));
-                        window.setTimeout("sessionactive();", t);
+                        window.setTimeout("pollNotifications();", t);
 
                         return;
                     }
                 })
             };
 
-            sessionactive();
+            window.setTimeout("pollNotifications();", 10000);
         </script>
 
     </head>

@@ -2,9 +2,6 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
-/**
- * @covers Alchemy\Phrasea\Core\Provider\FeedServiceProvider
- */
 class PhraseanetServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()

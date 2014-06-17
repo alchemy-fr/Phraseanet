@@ -63,8 +63,14 @@ class databox_status
             return;
         }
 
-        $path = $this->path = $app['root.path'] . "/config/status/" . urlencode($sbas_params[$sbas_id]["host"]) . "-" . urlencode($sbas_params[$sbas_id]["port"]) . "-" . urlencode($sbas_params[$sbas_id]["dbname"]);
-        $url = $this->url = "/custom/status/" . urlencode($sbas_params[$sbas_id]["host"]) . "-" . urlencode($sbas_params[$sbas_id]["port"]) . "-" . urlencode($sbas_params[$sbas_id]["dbname"]);
+        $uniqid = md5(implode('-', array(
+            $sbas_params[$sbas_id]["host"],
+            $sbas_params[$sbas_id]["port"],
+            $sbas_params[$sbas_id]["dbname"]
+        )));
+
+        $path = $this->path = $app['root.path'] . "/config/status/" . $uniqid;
+        $url = $this->url = "/custom/status/" . $uniqid;
 
         $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
         $xmlpref = $databox->get_structure();

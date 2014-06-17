@@ -8,13 +8,19 @@
  * You may wish to use the Minify URI Builder app to suggest
  * changes. http://yourdomain/min/builder/
  * */
-$groups = [
-    'authentication_css' => [
+$groups = array(
+    'account' => array(
+        '//include/jslibs/jquery.contextmenu_scroll.js',
+        '//assets/jquery.cookie/jquery.cookie.js',
+        '//include/jquery.common.js',
+        '//skins/account/account.js'
+    ),
+    'authentication_css' => array(
         '//assets/normalize-css/normalize.css',
         '//assets/build/login.css',
         '//assets/font-awesome/css/font-awesome.css',
         '//assets/jquery.ui/themes/base/jquery.ui.autocomplete.css'
-    ],
+    ),
     'authentication' => [
         '//assets/modernizr/modernizr.js',
         '//assets/requirejs/require.js',

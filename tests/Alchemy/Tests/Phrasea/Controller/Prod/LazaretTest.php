@@ -14,9 +14,11 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
      */
     protected $client;
 
-    public function tearDown()
+    public function setUp()
     {
-        parent::tearDown();
+        parent::setUp();
+
+        self::$DI['app']['dispatcher']->removeSubscriber(self::$DI['app']['phraseanet.session-manager-subscriber']);
     }
 
     /**

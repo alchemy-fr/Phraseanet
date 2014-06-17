@@ -18,7 +18,6 @@ use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class Root implements ControllerProviderInterface
 {
@@ -486,28 +485,28 @@ class Root implements ControllerProviderInterface
             $result = array();
 
             $result[] = array_keys($conf_nav);
-            foreach($report['nav']['result'] as $row) {
+            foreach ($report['nav']['result'] as $row) {
                 $result[] =  array_values($row);
             };
             $result[] = array_keys($conf_os);
-            foreach($report['os']['result'] as $row) {
+            foreach ($report['os']['result'] as $row) {
                 $result[] =  array_values($row);
             };
             $result[] = array_keys($conf_res);
-            foreach($report['res']['result'] as $row) {
+            foreach ($report['res']['result'] as $row) {
                 $result[] =  array_values($row);
             };
             $result[] = array_keys($conf_mod);
-            foreach($report['mod']['result'] as $row) {
+            foreach ($report['mod']['result'] as $row) {
                 $result[] =  array_values($row);
             };
             $result[] = array_keys($conf_combo);
-            foreach($report['combo']['result'] as $row) {
+            foreach ($report['combo']['result'] as $row) {
                 $result[] =  array_values($row);
             };
 
             $filename = sprintf('report_export_info_%s.csv', date('Ymd'));
-            $response = new CSVFileResponse($filename, function() use ($app, $result) {
+            $response = new CSVFileResponse($filename, function () use ($app, $result) {
                 $app['csv.exporter']->export('php://output', $result);
             });
 
@@ -686,13 +685,13 @@ class Root implements ControllerProviderInterface
         $result = $report->getResult();
         array_unshift($result, $headers);
 
-        $collection = new CallbackCollection($result, function($row) use ($report) {
+        $collection = new CallbackCollection($result, function ($row) use ($report) {
             // restrict fields to the displayed ones
             return array_map('strip_tags', array_intersect_key($row, $report->getDisplay()));
         });
 
         $filename = sprintf('report_export_%s_%s.csv', $type, date('Ymd'));
-        $response = new CSVFileResponse($filename, function() use ($app, $collection) {
+        $response = new CSVFileResponse($filename, function () use ($app, $collection) {
             $app['csv.exporter']->export('php://output', $collection);
         });
 

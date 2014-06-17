@@ -895,12 +895,12 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         }
 
         if (count($fields_to_retrieve) > 0) {
-            $retrieved_fields = $this->get_caption()->get_highlight_fields($highlight, $fields_to_retrieve, $searchEngine, false, $options);
-            $titles = [];
-            foreach ($retrieved_fields as $key => $value) {
-                if (trim($value['value'] === ''))
-                    continue;
-                $titles[] = $value['value'];
+            $retrieved_fields = $this->get_caption()->get_highlight_fields($highlight, $fields_to_retrieve, $searchEngine);
+            $titles = array();
+            foreach ($retrieved_fields as $value) {
+                foreach ($value['values'] as $v) {
+                    $titles[] = $v['value'];
+                }
             }
             $title = trim(implode(' - ', $titles));
         }
