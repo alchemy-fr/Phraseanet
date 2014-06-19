@@ -8,7 +8,7 @@
 
 {% block content_account %}
     <form name="updatingDemand" id="updatingDemand" action="{{ path("submit_update_account") }}" method="post">
-        <table style="table-layout: fixed; width:100%">
+        <table style="table-layout: fixed; width:100%;">
             <tr>
                 <td  style="width: 180px; text-align: right">&nbsp;</td>
                 <td  width="15px" style="width: 15px">&nbsp;</td>
@@ -17,16 +17,26 @@
             {% for sbasId, baseInfo in inscriptions %}
                 {% set sbasName = sbasId | sbas_labels(app) %}
                 <tr>
-                    <td colspan="3" style="text-align: center;"><h3>{{ sbasName }}</h3></td>
+                    <td colspan="3" style="text-align: center;">
+                        <h3 style="background: #191919;border: 1px solid #333333;color:#eee">{{ sbasName }}</h3>
+                    </td>
                 </tr>
+
                 {% if baseInfo["registrations"]["by-type"]["accepted"]|length > 0 %}
-                    {% for baseId in baseInfo["registrations"]["by-type"]["accepted"] %}
+                    <tr>
+                        <th colspan="3" style="text-align: center">
+                            {{ "Allowed access to the following collections" | trans }}
+                        </th>
+                    </tr>
+                    {% for baseId, base in baseInfo["registrations"]["by-type"]["accepted"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
-                                {{ "login::register: acces authorise sur la collection" | trans }}{{ sbasName }}
-                                <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
+                                <span style="color: lightgreen;">
+                                    <b>{{ base["coll-name"] }}</b>
+                                </span>
+                                (<a class="inscriptlink" style="font-size: 10px" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
                                     {{ "login::register::CGU: lire les CGU" | trans }}
-                                </a>
+                                </a>)
                             </td>
                         </tr>
                     {% endfor %}
@@ -36,13 +46,20 @@
                     </tr>
                 {% endif %}
                 {% if baseInfo["registrations"]["by-type"]["rejected"]|length > 0 %}
-                    {% for baseId in baseInfo["registrations"]["by-type"]["rejected"] %}
+                    <tr>
+                        <th colspan="3" style="text-align: center">
+                            {{ "Rejected access to the following collections" | trans }}
+                        </th>
+                    </tr>
+                    {% for baseId, base in baseInfo["registrations"]["by-type"]["rejected"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
-                                <span style="color: red;">{{ "login::register: acces refuse sur la collection" | trans }}{{ sbasName }}
-                                <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
-                                    {{ "login::register::CGU: lire les CGU" | trans }}
-                                </a>
+                                <span style="color: red;">
+                                    <b>{{ base["coll-name"] }}</b>
+                                    (<a class="inscriptlink" style="font-size: 10px" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
+                                        {{ "login::register::CGU: lire les CGU" | trans }}
+                                    </a>)
+                                </span>
                             </td>
                         </tr>
                     {% endfor %}
@@ -52,13 +69,18 @@
                     </tr>
                 {% endif %}
                 {% if baseInfo["registrations"]["by-type"]["pending"]|length > 0 %}
-                    {% for baseId in baseInfo["registrations"]["by-type"]["pending"] %}
+                    <tr>
+                        <th colspan="3" style="text-align: center">
+                            {{ "Pending access to the following collections" | trans }}
+                        </th>
+                    </tr>
+                    {% for baseId, base in baseInfo["registrations"]["by-type"]["pending"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
-                                <span style="color: orange;">{{ "login::register: en attente d\'acces sur" | trans }} {{ sbasId |sbas_labels(app) }}</span>
-                                <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
+                                <span style="color: #ffff00;"><b>{{ base["coll-name"] }}</b></span>
+                                (<a class="inscriptlink" style="font-size: 10px" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
                                     {{ "login::register::CGU: lire les CGU" | trans }}
-                                </a>
+                                </a>)
                             </td>
                         </tr>
                     {% endfor %}
@@ -68,13 +90,18 @@
                     </tr>
                 {% endif %}
                 {% if baseInfo["registrations"]["by-type"]["in-time"]|length > 0 %}
-                    {% for baseId in baseInfo["registrations"]["by-type"]["in-time"] %}
+                    <tr>
+                        <th colspan="3" style="text-align: center">
+                            {{ "Temporary access to the following collections" | trans }}
+                        </th>
+                    </tr>
+                    {% for baseId, base in baseInfo["registrations"]["by-type"]["in-time"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
-                                <span>{{ "login::register: acces temporaire sur" | trans }} {{ sbasId |sbas_labels(app) }}</span>
-                                <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
+                                <span style="color: lightskyblue;"><b>{{ base["coll-name"] }}</b></span>
+                                (<a class="inscriptlink" style="font-size: 10px" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
                                     {{ "login::register::CGU: lire les CGU" | trans }}
-                                </a>
+                                </a>)
                             </td>
                         </tr>
                     {% endfor %}
@@ -84,13 +111,18 @@
                     </tr>
                 {% endif %}
                 {% if baseInfo["registrations"]["by-type"]["out-dated"]|length > 0 %}
-                    {% for baseId in baseInfo["registrations"]["by-type"]["out-dated"] %}
+                    <tr>
+                        <th colspan="3" style="text-align: center">
+                            {{ "Outdated access to the following collections" | trans }}
+                        </th>
+                    </tr>
+                    {% for baseId, base in baseInfo["registrations"]["by-type"]["out-dated"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
-                                <span style="color:red;">{{ "login::register: acces temporaire termine sur" | trans }}{{ sbasId |sbas_labels(app) }}</span>
-                                <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
+                                <span style="color:darkred;"><b>{{ base["coll-name"] }}</b></span>
+                                (<a class="inscriptlink" style="font-size: 10px" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
                                     {{ "login::register::CGU: lire les CGU" | trans }}
-                                </a>
+                                </a>)
                             </td>
                         </tr>
                     {% endfor %}
@@ -100,13 +132,18 @@
                     </tr>
                 {% endif %}
                 {% if baseInfo["registrations"]["by-type"]["inactive"]|length > 0 %}
-                    {% for baseId in baseInfo["registrations"]["by-type"]["inactive"] %}
+                    <tr>
+                        <th colspan="3" style="text-align: center">
+                            {{ "Suspended access to the following collections" | trans }}
+                        </th>
+                    </tr>
+                    {% for baseId, base in baseInfo["registrations"]["by-type"]["inactive"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
-                                <span style="color:red;">{{ "login::register: acces supendu sur" | trans }} {{ sbasId |sbas_labels(app) }}</span>
-                                <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
+                                <span style="color:orangered;"><b>{{ base["coll-name"] }}</b></span>
+                                (<a class="inscriptlink" style="font-size: 10px" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
                                     {{ "login::register::CGU: lire les CGU" | trans }}
-                                </a>
+                                </a>)
                             </td>
                         </tr>
                     {% endfor %}
@@ -117,14 +154,17 @@
                 {% endif %}
             {%  endfor %}
 
-
             {% for sbasId, baseInfo in inscriptions %}
-                {% if baseInfo["config"]["cgu"] is not none %}
+                {% if attribute(baseInfo["config"]["cgu"], app['locale']) is defined %}
+                    {% set TOU = attribute(baseInfo["config"]["cgu"], app['locale']) %}
                     <tr>
-                        <td colspan="3" style="text-align: center;">{{ "login::register: L\'acces aux bases ci-dessous implique l\'acceptation des Conditions Generales d\'Utilisation (CGU) suivantes" | trans }}</td>
+                        <td colspan="3" style="text-align: center;">
+                            <i class="icon-warning"></i>
+                            <h4>{{ "Access to the above bases constitutes acceptance of the following Terms of Use (TOU)." | trans }}</h4>
+                        </td>
                     </tr>
                     <tr>
-                        <td colspan="3" style="text-align: center;"><div style="width: 90%; height: 120px; text-align: left; overflow: auto;">{{ baseInfo["config"]["cgu"] }}</div></td>
+                        <td colspan="3" style="text-align: center;"><blockquote class="cgu" style="width: 90%; height: 120px; text-align: left; overflow: auto;">{{ TOU['value']  }}</blockquote></td>
                     </tr>
                 {% endif %}
                 {% for baseId, collInfo in baseInfo["config"]["collections"] if (collInfo['registration'] is none and collInfo['can-register']) %}
@@ -147,8 +187,5 @@
                 {% endfor %}
             {% endfor %}
         </table>
-        <div class="form-actions">
-            <input type="submit" class="btn btn-info" value="{{ "boutton::valider" | trans }}">
-        </div>
     </form>
 {% endblock %}

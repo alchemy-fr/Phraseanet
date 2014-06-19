@@ -150,6 +150,6 @@ $groups = array(
         '//include/jslibs/SWFUpload/swfupload.js'
         , '//include/jslibs/SWFUpload/plugins/swfupload.queue.js'
     ]
-];
+);
 
 return $groups;

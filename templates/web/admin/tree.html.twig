@@ -130,7 +130,8 @@
           </li>
           <li>
             <a target="right" href="{{ path('admin_database_display_cgus', { 'databox_id' : sbas_id } ) }}" class="ajax">
-              <span>{{ 'admin:: CGUs' | trans }}</span>
+              <img src="/skins/icons/miniadjust02.gif"/>
+              <span>{{ 'Terms of use' | trans }}</span>
             </a>
           </li>
           <li>
@@ -186,7 +187,7 @@
               </li>
             {% endif %}
 
-            {% if app['acl'].get(app['authentication'].getUser()).has_right_on_base( collection.get_base_id(), 'canadmin')) %}
+            {% if app['acl'].get(app['authentication'].getUser()).has_right_on_base(collection.get_base_id(), 'canadmin') %}
               <li>
                 <a target="right" href="{{ path('admin_users_search', { 'base_id' : [ collection.get_base_id() ] }) }}" class="ajax">
                   <img src="/skins/admin/Users.png"/>

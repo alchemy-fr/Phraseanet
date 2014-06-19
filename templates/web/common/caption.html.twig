@@ -1,17 +1,20 @@
 {% import 'common/macros.html.twig' as macro %}
 
-{% set business =  app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'canmodifrecord')|default(false) %}
+{% set business = false %}
+{% if app['authentication'].getUser() is not none %}
+    {% set business =  app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'canmodifrecord') %}
+{% endif %}
 
 {% if view == 'answer' %}
-    {{ macro.format_caption(record, highlight|default(''), searchEngine|default(null), searchOptions|default(null), business, false, true) }}
+    {{ macro.format_caption(record, highlight|default(''), searchEngine|default(null), business, false, true) }}
 {% elseif view == 'lazaret' %}
-    {{ macro.format_caption(record, highlight|default(''), searchEngine|default(null), searchOptions|default(null), business, true, true) }}
+    {{ macro.format_caption(record, highlight|default(''), searchEngine|default(null), business, true, true) }}
 {% elseif view == 'preview' %}
-    {{ macro.format_caption(record, highlight|default(''), searchEngine|default(null), searchOptions|default(null), business, true, false) }}
+    {{ macro.format_caption(record, highlight|default(''), searchEngine|default(null), business, true, false) }}
 {% elseif view == 'basket' %}
-    {{ macro.format_caption(record, highlight|default(''), searchEngine|default(null), searchOptions|default(null), business, true, false) }}
+    {{ macro.format_caption(record, highlight|default(''), searchEngine|default(null), business, true, false) }}
 {% elseif view == 'overview' %}
-    {{ macro.format_caption(record, highlight|default(''), searchEngine|default(null), searchOptions|default(null), business, false, false) }}
+    {{ macro.format_caption(record, highlight|default(''), searchEngine|default(null), business, false, false) }}
 {% elseif view == 'publi' %}
     {{ macro.format_caption(record, '', null, business, true, true) }}
 {% endif %}

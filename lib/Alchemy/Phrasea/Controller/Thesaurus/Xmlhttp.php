@@ -757,7 +757,7 @@ class Xmlhttp implements ControllerProviderInterface
             $lcoll .= ($lcoll?",":"") . $collection->get_coll_id();
         }
         $site = $app['phraseanet.configuration']['main']['key'];
-        $usr_id = $app['authentication']->getUser()->get_id();
+        $usr_id = $app['authentication']->getUser()->getId();
 
         $tids = explode('.', $request->get('id'));
         $thid = implode('.', $tids);

@@ -42,20 +42,16 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testManager()
     {
-        $accounts = \Bridge_Account::get_accounts_by_user(self::$DI['app'], self::$DI['user']);
-        $usr_id = self::$DI['user']->get_id();
+        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
 
-        $basket = $this->insertOneBasket();
-
-        $crawler = self::$DI['client']->request('POST', '/prod/bridge/manager/', array('ssel'       => $basket->getId()));
-        $pageContent = self::$DI['client']->getResponse()->getContent();
+        self::$DI['client']->request('POST', '/prod/bridge/manager/', array('ssel' => $basket->getId()));
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
     public function testLogin()
     {
         self::$DI['client']->request('GET', '/prod/bridge/login/Apitest/');
-        $test = new \Bridge_Api_Apitest(self::$DI['app']['url_generator'], self::$DI['app']['phraseanet.registry'], new \Bridge_Api_Auth_None());
+        $test = new \Bridge_Api_Apitest(self::$DI['app']['url_generator'], self::$DI['app']['conf'], new \Bridge_Api_Auth_None(), self::$DI['app']['translator']);
         $this->assertTrue(self::$DI['client']->getResponse()->getStatusCode() == 302);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect($test->get_auth_url()));
     }

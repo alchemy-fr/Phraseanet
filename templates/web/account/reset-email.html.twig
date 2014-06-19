@@ -16,7 +16,7 @@
     <div class="row-fluid">
         <div class="span12">
             {{ auth_macro.flashes() }}
-            <form method="POST" action="{{ path("reset_email") }}" id="mainform" name="changeEmail" class="form-horizontal">
+            <form method="POST" action="{{ path("reset_email") }}" id="mainform" name="changeEmail" class="form-horizontal" style="background: #191919;border: 1px solid #333333;padding-top:20px">
                 <div class="control-group">
                     <label class="control-label" for="form_login">{{ "admin::compte-utilisateur identifiant" | trans }}</label>
                     <div class="controls">
@@ -44,13 +44,14 @@
                         <div class="error-view"></div>
                     </div>
                 </div>
-                <div class="form-actions" style="background-color: transparent;">
-                    <input type="submit" class="btn btn-success" value="{{ "boutton::valider" | trans }}" style="margin: 20px auto;" />
+                <div style="max-width: 400px;margin-left: 220px">
+                    <input type="submit" class="btn btn-success btn-medium" value="{{ "boutton::valider" | trans }}" style="margin: 20px auto;" />
                     <input type="button" class="btn" value="{{ "boutton::annuler" | trans }}" onclick="self.location.replace('/account/');" />
                 </div>
             </form>
             <div class="well well-small alert-info">
-                {{ "admin::compte-utilisateur: Pourquoi me demande-t-on mon mot de passe pour changer mon adresse email ?" | trans }}
+                <i class="icon icon-info-sign"></i> &nbsp;
+                <b>{{ "admin::compte-utilisateur: Pourquoi me demande-t-on mon mot de passe pour changer mon adresse email ?" | trans }}</b>
                 <br />
                 {{ "admin::compte-utilisateur: Votre adresse e-mail sera utilisee lors de la perte de votre mot de passe afin de pouvoir le reinitialiser, il est important que vous soyez la seule personne a pouvoir la changer." | trans }}
             </div>

@@ -1385,7 +1385,7 @@ class databox extends base
         $stmt->closeCursor();
 
         foreach ($rs as $row) {
-            $TOU[$row['locale']] = ['updated_on' => $row['updated_on'], 'value'      => $row['value']];
+            $TOU[$row['locale']] = ['updated_on' => $row['updated_on'], 'value' => $row['value']];
         }
 
         $missing_locale = [];
@@ -1397,14 +1397,16 @@ class databox extends base
             }
         }
 
+        $TOU = array_intersect_key($TOU, $avLanguages);
+
         $date_obj = new DateTime();
         $date = $this->app['date-formatter']->format_mysql($date_obj);
         $sql = "INSERT INTO pref (id, prop, value, locale, updated_on, created_on)
               VALUES (null, 'ToU', '', :locale, :date, NOW())";
         $stmt = $this->get_connection()->prepare($sql);
         foreach ($missing_locale as $v) {
-            $stmt->execute([':locale' => $v, ':date'   => $date]);
-            $TOU[$v] = ['updated_on' => $date, 'value'      => ''];
+            $stmt->execute([':locale' => $v, ':date' => $date]);
+            $TOU[$v] = ['updated_on' => $date, 'value' => ''];
         }
         $stmt->closeCursor();
         $this->cgus = $TOU;

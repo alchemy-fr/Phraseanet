@@ -386,7 +386,7 @@ class caption_Field_Value implements cache_cacheableInterface
         $bestnote = 0;
         foreach ($nodes as $node) {
             $note = 0;
-            $note += ($node->getAttribute("lng") == $this->app['locale.I18n']) ? 4 : 0;
+            $note += ($node->getAttribute("lng") == $this->app['locale']) ? 4 : 0;
             $note += ($node->getAttribute("w") == $term_noacc) ? 2 : 0;
             if($context_noacc != "")
                 $note += ($node->getAttribute("k") == $context_noacc) ? 1 : 0;

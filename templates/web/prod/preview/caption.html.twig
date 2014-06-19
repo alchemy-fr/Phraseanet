@@ -13,7 +13,7 @@
   </div>
   {% set business =  app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'canmodifrecord') %}
   {% if record.is_from_reg()  %}
-    {{caption.format_caption(record, '', null, null, business, false, true)}}
+    {{macro.format_caption(record, '', null, null, business, false, true)}}
   {% else %}
-    {{caption.format_caption(record, highlight, searchEngine, searchOptions, business, false, true)}}
+    {{macro.format_caption(record, highlight, searchEngine, business, false, true)}}
   {% endif %}

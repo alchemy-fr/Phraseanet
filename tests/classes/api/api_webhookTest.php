@@ -2,7 +2,7 @@
 
 use Alchemy\Phrasea\Exception\RuntimeException;
 
-class API_WebhookTest extends PhraseanetPHPUnitAbstract
+class API_WebhookTest extends \PhraseanetTestCase
 {
     public function testsNewApiHook()
     {

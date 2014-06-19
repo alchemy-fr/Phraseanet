@@ -110,7 +110,7 @@
         {% endif %}
         {{ _self.caption_field(field, bounceable|default(true), extra_classes) }}
     {% endfor %}
-    {% if technical_data|default(true) and app['authentication'].getUser() is not none and app['authentication'].getUser().getPrefs('technical_display') == 'group' %}
+    {% if technical_data|default(true) and app['authentication'].getUser() is not none and app['settings'].getUserSetting(app['authentication'].getUser(), 'technical_display') == 'group' %}
         <hr/>
         {% include 'common/technical_datas.html.twig' %}
     {% endif %}

@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Application;
-use Entities\SessionModule;
+use Alchemy\Phrasea\Model\Entities\SessionModule;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -109,7 +109,8 @@ class SessionManagerSubscriber implements EventSubscriberInterface
 
             return;
         }
-        $session = $this->app['EM']->find('Entities\Session', $this->app['session']->get('session_id'));
+
+        $session = $this->app['repo.sessions']->find($this->app['session']->get('session_id'));
 
         $idle = 0;
         if (isset($this->app["phraseanet.configuration"]["session"]["idle"])) {

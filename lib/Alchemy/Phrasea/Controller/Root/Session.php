@@ -60,7 +60,7 @@ class Session implements ControllerProviderInterface
         );
 
         if ($app['authentication']->isAuthenticated()) {
-            $usr_id = $app['authentication']->getUser()->get_id();
+            $usr_id = $app['authentication']->getUser()->getId();
             if ($usr_id != $request->request->get('usr')) { // I logged with another user
                 $ret['status'] = 'disconnected';
 

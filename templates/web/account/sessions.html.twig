@@ -9,23 +9,25 @@
 {% block content_account %}
     <div class="row-fluid">
         <div class="span12">
-            <div class="well well-small alert-info">
-                {% trans %}If you notice any unfamiliar devices or locations, click 'End Activity' to end the session.{% endtrans %}
+            <div class="well well-small" style="background: steelblue; border: 1px solid #333;">
+                {% set end_activity = "End Activity"|trans %}
+                {% set button = '&nbsp;<a href="#" class="btn btn-inverse btn-small" style="box-shadow:none">'~end_activity~'</a>&nbsp;'|raw %}
+                <i class="icon icon-warning-sign"></i>&nbsp;<b style="font-size: 12px;">{% trans with {'%button%': button}%}If you notice any unfamiliar devices or locations, click on button %button% to end the session.{% endtrans %}</b>
             </div>
-            <table class="table table-striped">
+            <table class="table table-striped table-bordered" style="border-color: #333333">
                 <thead>
                      <tr>
-                        <th></th>
-                        <th>
+                        <th style="border-color: #333333"></th>
+                        <th style="border-color: #333333">
                             {{ 'Date de connexion' | trans }}
                         </th>
-                        <th>
+                        <th style="border-color: #333333">
                             {{ 'Dernier access' | trans }}
                         </th>
-                        <th>
+                        <th style="border-color: #333333">
                             {{ 'IP' | trans }}
                         </th>
-                        <th>
+                        <th style="border-color: #333333">
                             {{ 'Browser' | trans }}
                         </th>
                     </tr>
@@ -33,25 +35,25 @@
                 <tbody>
                     {% for session in sessions %}
                         {% set row = session['session'] %}
-                        <tr id="row-{{ row.Id() }}">
-                            <td>
+                        <tr id="row-{{ row.Id() }}" >
+                            <td style="border-color: #333333;text-align: center">
                                 {% if app['session'].get('session_id') != row.Id() %}
-                                    <a href="{{ path('delete_session', {"id": row.Id()}) }}" title="{% trans %}End Activity{% endtrans %}" class="btn btn-inverse btn-small delete-session"><i class="icon-remove"> {% trans %}End Activity{% endtrans %}</i></a>
-                                {% else  %}
-                                    {{ 'Current session' | trans }}
+                                    <a href="{{ path('delete_session', {"id": row.Id()}) }}" title="{% trans %}End Activity{% endtrans %}" class="btn btn-inverse btn-small input-block-level delete-session">{% trans %}End Activity{% endtrans %}</a>
+                                {% else %}
+                                    <span style="color:darkseagreen;font-weight: bold">{{ 'Current session' | trans }}</span>
                                 {% endif %}
                             </td>
-                            <td>
+                            <td style="border-color: #333333">
                                 {{ app['date-formatter'].getDate(row.getCreated()) }}
                             </td>
-                            <td>
+                            <td style="border-color: #333333">
                                 {{ app['date-formatter'].getDate(row.getUpdated()) }}
                             </td>
-                            <td>
+                            <td style="border-color: #333333">
                                 {{ row.getIpAddress() }}
                                 {{ session['info'] }}
                             </td>
-                            <td>
+                            <td style="border-color: #333333">
                                 {{ row.getBrowserName() }} {{ row.getBrowserVersion() }}
                             </td>
                         </tr>

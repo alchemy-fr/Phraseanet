@@ -83,6 +83,12 @@ class ApiApplicationManipulator implements ManipulatorInterface
         $this->update($application);
     }
 
+    public function setWebhookUrl(ApiApplication $application, $url)
+    {
+        $this->doSetWebhookUrl($application, $url);
+        $this->update($application);
+    }
+
     private function doSetType(ApiApplication $application, $type)
     {
         if (!in_array($type, [ApiApplication::DESKTOP_TYPE, ApiApplication::WEB_TYPE])) {
@@ -113,5 +119,14 @@ class ApiApplicationManipulator implements ManipulatorInterface
         }
 
         $application->setWebsite($url);
+    }
+
+    private function doSetWebhookUrl(ApiApplication $application, $url)
+    {
+        if (false === filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED)) {
+            throw new InvalidArgumentException(sprintf('Webhook Url %s is not legal.', $url));
+        }
+
+        $application->setWebhookUrl($url);
     }
 }

@@ -269,6 +269,7 @@ class Account implements ControllerProviderInterface
             ORDER BY s.created DESC';
 
         $query = $app['EM']->createQuery($dql);
+        $query->setMaxResults(100);
         $query->setParameters(['usr_id' => $app['session']->get('usr_id')]);
         $sessions = $query->getResult();
 

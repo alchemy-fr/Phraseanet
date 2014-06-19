@@ -4930,7 +4930,7 @@
         "silex/web-profiler": 20,
         "doctrine/migrations": 20,
         "behat/behat": 20,
-        "behat/gherkin": 20
+        "behat/gherkin": 20,
         "mediavorus/mediavorus": 20,
         "media-alchemyst/media-alchemyst": 20,
         "php-ffmpeg/php-ffmpeg": 20,

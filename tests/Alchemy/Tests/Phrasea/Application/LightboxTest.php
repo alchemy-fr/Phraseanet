@@ -172,25 +172,27 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
     public function testValidate()
     {
         $this->authenticate(self::$DI['app']);
-
         $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 4);
+        $path = self::$DI['app']['url_generator']->generate('lightbox_validation', array(
+            'basket' => $basket->getId()
+        ));
 
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
+        self::$DI['client']->request('GET', $path);
 
-        $crawler = self::$DI['client']->request('GET', '/lightbox/validate/' . $basket->getId() . '/');
-        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
 
         $this->set_user_agent(self::USER_AGENT_IE6, self::$DI['app']);
+        self::$DI['client']->request('GET', $path);
 
-        $crawler = self::$DI['client']->request('GET', '/lightbox/validate/' . $basket->getId() . '/');
-        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
 
         $this->set_user_agent(self::USER_AGENT_IPHONE, self::$DI['app']);
+        self::$DI['client']->request('GET', $path);
 
-        $crawler = self::$DI['client']->request('GET', '/lightbox/validate/' . $basket->getId() . '/');
-        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
     }
 
@@ -222,26 +224,27 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
     public function testFeedEntry()
     {
         $this->authenticate(self::$DI['app']);
+        $entry = self::$DI['app']['EM']->find('Phraseanet:Feed', 1)->getEntries()->first();
+        $path = self::$DI['app']['url_generator']->generate('lightbox_feed_entry', array(
+            'entry_id' => $entry->getId()
+        ));
 
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
+        self::$DI['client']->request('GET', $path);
 
-        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
-        $entry = $feed->getEntries()->first();
-
-        $crawler = self::$DI['client']->request('GET', '/lightbox/feeds/entry/' . $entry->getId() . '/');
-        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
 
         $this->set_user_agent(self::USER_AGENT_IE6, self::$DI['app']);
+        self::$DI['client']->request('GET', $path);
 
-        $crawler = self::$DI['client']->request('GET', '/lightbox/feeds/entry/' . $entry->getId() . '/');
-        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
 
         $this->set_user_agent(self::USER_AGENT_IPHONE, self::$DI['app']);
+        self::$DI['client']->request('GET', $path);
 
-        $crawler = self::$DI['client']->request('GET', '/lightbox/feeds/entry/' . $entry->getId() . '/');
-        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
     }
 

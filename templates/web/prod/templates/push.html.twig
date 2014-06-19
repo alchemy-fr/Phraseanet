@@ -154,7 +154,7 @@
             {% trans %}Accuse de reception{% endtrans %}
         </label>
     </div>
-    {% if app['phraseanet.registry'].get('GV_force_push_authentication') %}
+    {% if app['conf'].get(['registry', 'actions', 'force-authentication']) %}
         <div class="control-group">
             <label for="PushForceAuthentication" class="checkbox">
                 <input id="PushForceAuthentication" type="checkbox" checked="checked" name="force_authentication" value="1"/>

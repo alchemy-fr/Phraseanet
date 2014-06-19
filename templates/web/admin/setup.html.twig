@@ -1,60 +1,62 @@
-<div class="page-header">
-    <h1>{{ 'Setup' | trans }}</h1>
-</div>
-
-<form class="form-horizontal" id="GV_form_head">
-    <div class="control-group">
-        <label class="control-label">Adresse : </label>
-        <div class="controls">
-            <input type="text" class="input-xxlarge" readonly="readonly" value="{{ app['conf'].get('servername') }}" />
-        </div>
+<div id="admin_setup_registry">
+    <div class="page-header">
+        <h1>{{ 'Setup' | trans }}</h1>
     </div>
-    <div class="control-group">
-        <label class="control-label">Installation : </label>
-        <div class="controls">
-            <input type="text" class="input-xxlarge" readonly="readonly" value="{{ app['root.path'] }}" />
-        </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label">Maintenance : </label>
-        <div class="controls">
-            <input type="checkbox" readonly="readonly" disabled="disabled"/>
-        </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label">Debug : </label>
-        <div class="controls">
-            <input type="checkbox" readonly="readonly" disabled="disabled" {{ app['debug'] ? "checked='checked'" : '' }} />
-        </div>
-    </div>
-</form>
 
-
-
-{{ form_start(form, {'method': 'POST', 'action' : path('setup_display_globals'), 'attr': {'class' : 'form-horizontal'}}) }}
-{% for daform in form %}
-    <fieldset>
-        <legend>{{ daform.vars['label'] }}</legend>
-        {%  for formdata in daform %}
+    <form class="form-horizontal" id="GV_form_head">
         <div class="control-group">
-            {{  form_label(formdata, null, { 'label_attr': {'class' : 'control-label'} } ) }}
+            <label class="control-label">Adresse : </label>
             <div class="controls">
-                {{  form_widget(formdata, {'attr': {'class': 'input-xxlarge'}}) }}
+                <input type="text" class="input-xxlarge" readonly="readonly" value="{{ app['conf'].get('servername') }}" />
             </div>
-
-            <div>{{ formdata.vars['help_message'] }}</div>
-            {{  form_rest(formdata) }}
         </div>
-        {% endfor %}
-        {{ form_rest(daform) }}
-    </fieldset>
-{%  endfor %}
-<div class="well well-large">
-    <div style="max-width: 400px;margin: 0 auto 10px;">
-        <input type="submit" class="btn btn-warning btn-block btn-large" value="{{ 'boutton::valider' | trans }}"/>
+        <div class="control-group">
+            <label class="control-label">Installation : </label>
+            <div class="controls">
+                <input type="text" class="input-xxlarge" readonly="readonly" value="{{ app['root.path'] }}" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">Maintenance : </label>
+            <div class="controls">
+                <input type="checkbox" readonly="readonly" disabled="disabled"/>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">Debug : </label>
+            <div class="controls">
+                <input type="checkbox" readonly="readonly" disabled="disabled" {{ app['debug'] ? "checked='checked'" : '' }} />
+            </div>
+        </div>
+    </form>
+
+
+
+    {{ form_start(form, {'method': 'POST', 'action' : path('setup_display_globals'), 'attr': {'class' : 'form-horizontal'}}) }}
+    {% for daform in form %}
+        <fieldset>
+            <legend>{{ daform.vars['label'] }}</legend>
+            {%  for formdata in daform %}
+            <div class="control-group">
+                {{  form_label(formdata, null, { 'label_attr': {'class' : 'control-label'} } ) }}
+                <div class="controls">
+                    {{  form_widget(formdata, {'attr': {'class': 'input-xxlarge'}}) }}
+                </div>
+
+                <div class="help-message text-info">{{ formdata.vars['help_message'] | raw }}</div>
+                {{  form_rest(formdata) }}
+            </div>
+            {% endfor %}
+            {{ form_rest(daform) }}
+        </fieldset>
+    {%  endfor %}
+    <div class="well well-large">
+        <div style="max-width: 400px;margin: 0 auto 10px;">
+            <input type="submit" class="btn btn-warning btn-block btn-large" value="{{ 'boutton::valider' | trans }}"/>
+        </div>
     </div>
+    {{ form_end(form) }}
 </div>
-{{ form_end(form) }}
 
 <script type='text/javascript'>
     {% autoescape false %}

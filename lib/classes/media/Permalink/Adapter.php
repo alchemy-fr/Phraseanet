@@ -261,8 +261,8 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
 
         }
 
-        $sql = 'SELECT p.id, p.token, p.activated, p.created_on, p.last_modified
-              , p.label
+        $sql = '
+            SELECT p.id, p.token, p.activated, p.created_on, p.last_modified, p.label
             FROM permalinks p
             WHERE p.subdef_id = :subdef_id';
         $stmt = $this->databox->get_connection()->prepare($sql);
@@ -270,8 +270,9 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        if ( ! $row)
+        if (!$row) {
             throw new Exception_Media_SubdefNotFound ();
+        }
 
         $this->id = (int) $row['id'];
         $this->token = $row['token'];
@@ -363,10 +364,11 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
     public static function challenge_token(Application $app, databox $databox, $token, $record_id, $name)
     {
         $sql = 'SELECT p.id
-            FROM permalinks p, subdef s
+            FROM permalinks p
+            INNER JOIN subdef s
+            ON (s.subdef_id = p.subdef_id)
             WHERE s.record_id = :record_id
               AND s.name = :name
-              AND s.subdef_id = p.subdef_id
               AND activated = "1"
               AND token = :token';
 

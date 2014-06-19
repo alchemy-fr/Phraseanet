@@ -73,7 +73,6 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         $app['dispatcher']->dispatch(PhraseaEvents::API_RESULT, new ApiResultEvent($request, $response));
     });
     $app['dispatcher']->addSubscriber(new ApiCorsSubscriber($app));
-    $app['dispatcher']->dispatch(PhraseaEvents::API_LOAD_END, new ApiLoadEndEvent());
 
     return $app;
 }, isset($environment) ? $environment : PhraseaApplication::ENV_PROD);

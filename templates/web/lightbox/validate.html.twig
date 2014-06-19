@@ -12,11 +12,8 @@
         href="{{ path('minifier', { 'f' : 'include/jslibs/jquery.contextmenu.css,skins/lightbox/lightbox.css' }) }}" media="screen"/>
 {% endblock %}
 
-
-
 {% block content %}
     {% set basket_element = basket.getElements().first() %}
-
     <div class="PNB10">
         <div class="PNB" id="top_container">
             <div id="record_wrapper" class="PNB single" style="right:250px;">
@@ -98,7 +95,7 @@
                         <div class="lightbox_container PNB">
               {% if basket_element %}
                 {% set business =  app['acl'].get(app['authentication'].getUser()).has_right_on_base(basket_element.getRecord(app).get_base_id(), 'canmodifrecord') %}
-                {{caption.format_caption(basket_element.getRecord(app), '', null, null, business, false, false)}}
+                {{macro.format_caption(basket_element.getRecord(app), '', null, business, false, false)}}
               {% endif %}
             </div>
                     </div>

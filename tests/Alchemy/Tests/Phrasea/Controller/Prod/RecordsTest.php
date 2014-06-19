@@ -100,7 +100,6 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
             'cont'           => $basket->getId(),
         ]);
         $response = self::$DI['client']->getResponse();
-
         $this->assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
 

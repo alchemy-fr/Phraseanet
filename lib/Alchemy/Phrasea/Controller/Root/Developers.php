@@ -64,8 +64,9 @@ class Developers implements ControllerProviderInterface
             ->assert('application', '\d+')
             ->bind('submit_application_callback');
 
-        $controllers->post('/application/{id}/webhook/', $this->call('renewAppWebhook'))
-            ->assert('id', '\d+')
+        $controllers->post('/application/{application}/webhook/', 'controller.account.developers:renewAppWebhook')
+            ->before($app['middleware.api-application.converter'])
+            ->assert('application', '\d+')
             ->bind('submit_application_webhook');
 
         return $controllers;
@@ -124,14 +125,14 @@ class Developers implements ControllerProviderInterface
      * @param  integer      $id      The application id
      * @return JsonResponse
      */
-    public function renewAppWebhook(Application $app, Request $request, $id)
+    public function renewAppWebhook(Application $app, Request $request, ApiApplication $application)
     {
         if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
         if (null !== $request->request->get("webhook")) {
-            $app['manipulator.api-application']->setWebhook($request->request->get("webhook"));
+            $app['manipulator.api-application']->setWebhookUrl($application, $request->request->get("webhook"));
         } else {
             return $app->json(['success' => false]);
         }

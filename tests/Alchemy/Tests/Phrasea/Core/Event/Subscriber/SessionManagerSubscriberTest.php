@@ -4,10 +4,10 @@ namespace Alchemy\Tests\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Core\Event\Subscriber\SessionManagerSubscriber;
 use Alchemy\Phrasea\Application;
-use Entities\Session;
+use Alchemy\Phrasea\Model\Entities\Session;
 use Symfony\Component\HttpKernel\Client;
 
-class SessionManagerSubscriberTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testEndSession()
     {
@@ -74,7 +74,8 @@ class SessionManagerSubscriberTest extends \PhraseanetWebTestCaseAuthenticatedAb
         $session->setUpdated(new \DateTime());
 
         $app['EM'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
-        $app['EM']->expects($this->exactly(2))->method('find')->with($this->equalTo('Entities\Session'))->will($this->returnValue($session));
+        $app['repo.sessions'] = $this->getMockBuilder('Doctrine\Common\Persistence\ObjectRepository')->getMock();
+        $app['repo.sessions']->expects($this->exactly(2))->method('find')->will($this->returnValue($session));
         $app['EM']->expects($this->exactly(4))->method('persist')->will($this->returnValue(null));
         $app['EM']->expects($this->exactly(2))->method('flush')->will($this->returnValue(null));
 
@@ -108,7 +109,10 @@ class SessionManagerSubscriberTest extends \PhraseanetWebTestCaseAuthenticatedAb
         $session->setUpdated(new \DateTime('-1 hour'));
 
         $app['EM'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
-        $app['EM']->expects($this->once())->method('find')->with($this->equalTo('Entities\Session'))->will($this->returnValue($session));
+        $app['repo.sessions'] = $this->getMockBuilder('Doctrine\Common\Persistence\ObjectRepository')->getMock();
+        $app['repo.sessions']->expects($this->once())->method('find')->will($this->returnValue($session));
+        $app['EM']->expects($this->any())->method('persist')->will($this->returnValue(null));
+        $app['EM']->expects($this->any())->method('flush')->will($this->returnValue(null));
 
         $app['phraseanet.configuration']['session'] = array(
             'idle' => 10,
@@ -143,7 +147,10 @@ class SessionManagerSubscriberTest extends \PhraseanetWebTestCaseAuthenticatedAb
         $session->setUpdated(new \DateTime('-1 hour'));
 
         $app['EM'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
-        $app['EM']->expects($this->once())->method('find')->with($this->equalTo('Entities\Session'))->will($this->returnValue($session));
+        $app['repo.sessions'] = $this->getMockBuilder('Doctrine\Common\Persistence\ObjectRepository')->getMock();
+        $app['repo.sessions']->expects($this->once())->method('find')->will($this->returnValue($session));
+        $app['EM']->expects($this->any())->method('persist')->will($this->returnValue(null));
+        $app['EM']->expects($this->any())->method('flush')->will($this->returnValue(null));
 
         $app['phraseanet.configuration']['session'] = array(
             'idle' => 10,

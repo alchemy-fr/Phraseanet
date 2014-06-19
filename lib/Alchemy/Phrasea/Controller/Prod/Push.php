@@ -32,7 +32,7 @@ class Push implements ControllerProviderInterface
     protected function getUserFormatter(Application $app)
     {
         return function (User $user) use ($app) {
-            $subtitle = array_filter([$user->getPosition(), $user->getCompany()]);
+            $subtitle = array_filter([$user->getJob(), $user->getCompany()]);
 
             return [
                 'type'         => 'USER',
@@ -218,10 +218,10 @@ class Push implements ControllerProviderInterface
                     $app['EM']->flush();
 
                     $arguments = array(
-                        'ssel_id' => $Basket->getId(),
+                        'basket' => $Basket->getId(),
                     );
 
-                    if (!$app['phraseanet.registry']->get('GV_force_push_authentication') || !$request->get('force_authentication')) {
+                    if (!$app['conf']->get(['registry', 'actions', 'force-authentication']) || !$request->get('force_authentication')) {
                         $arguments['LOG'] = $app['manipulator.token']->createBasketAccessToken($Basket, $user_receiver);
                     }
 
