@@ -43,7 +43,7 @@ module.exports = function(grunt) {
                     components: {
                         "jquery.ui": ["npm", {"../../node_modules/.bin/grunt": "build"}],
                         "jquery-mobile": ["npm", {"../../node_modules/.bin/grunt": "dist"}],
-                        "tinymce": ["npm", {"../../node_modules/.bin/jake":""}],
+//                        "tinymce": ["npm", {"../../node_modules/.bin/jake":""}],
                         "bootstrap": ["npm", {"make": "bootstrap"}],
                         "autobahnjs": [{"make":"build"}]
                     }
