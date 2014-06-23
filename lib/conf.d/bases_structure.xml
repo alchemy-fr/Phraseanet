@@ -76,53 +76,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-        <table name="api_webhooks">
-            <fields>
-                <field>
-                    <name>id</name>
-                    <type>int(11) unsigned</type>
-                    <null></null>
-                    <extra>auto_increment</extra>
-                    <default></default>
-                    <comment></comment>
-                </field>
-                <field>
-                    <name>type</name>
-                    <type>varchar(64)</type>
-                    <null></null>
-                    <extra></extra>
-                    <default></default>
-                    <comment></comment>
-                </field>
-                <field>
-                    <name>data</name>
-                    <type>longtext</type>
-                    <null></null>
-                    <extra></extra>
-                    <default></default>
-                    <comment></comment>
-                </field>
-                <field>
-                    <name>created</name>
-                    <type>datetime</type>
-                    <null></null>
-                    <extra></extra>
-                    <default></default>
-                    <comment></comment>
-                </field>
-            </fields>
-            <indexes>
-                <index>
-                    <name>PRIMARY</name>
-                    <type>PRIMARY</type>
-                    <fields>
-                        <field>id</field>
-                    </fields>
-                </index>
-            </indexes>
-            <engine>InnoDB</engine>
-        </table>
-
       <table name="bridge_accounts">
         <fields>
           <field>

@@ -202,6 +202,10 @@ abstract class PhraseanetTestCase extends WebTestCase
             return $DI['app']['repo.api-applications']->find(self::$fixtureIds['oauth']['user']);
         });
 
+        self::$DI['webhook-event'] = self::$DI->share(function ($DI) {
+            return $DI['app']['repo.webhook-event']->find(self::$fixtureIds['webhook']['event']);
+        });
+
         self::$DI['oauth2-app-user-not-admin'] = self::$DI->share(function ($DI) {
             return $DI['app']['repo.api-applications']->find(self::$fixtureIds['oauth']['user-not-admin']);
         });

@@ -57,6 +57,16 @@ class ManipulatorServiceProviderTest extends ServiceProviderTestCase
                 'manipulator.api-oauth-refresh-token',
                 'Alchemy\Phrasea\Model\Manipulator\ApiOauthRefreshTokenManipulator'
             ],
+            [
+                'Alchemy\Phrasea\Core\Provider\ManipulatorServiceProvider',
+                'manipulator.webhook-event',
+                'Alchemy\Phrasea\Model\Manipulator\WebhookEventManipulator'
+            ],
+            [
+                'Alchemy\Phrasea\Core\Provider\ManipulatorServiceProvider',
+                'manipulator.webhook-delivery',
+                'Alchemy\Phrasea\Model\Manipulator\WebhookEventDelivery'
+            ],
         ];
     }
 }

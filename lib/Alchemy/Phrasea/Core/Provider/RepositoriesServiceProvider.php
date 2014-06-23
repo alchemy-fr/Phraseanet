@@ -115,6 +115,12 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
         $app['repo.api-oauth-refresh-tokens'] = $app->share(function (PhraseaApplication $app) {
             return $app['EM']->getRepository('Phraseanet:ApiOauthRefreshToken');
         });
+        $app['repo.webhook-event'] = $app->share(function (PhraseaApplication $app) {
+            return $app['EM']->getRepository('Phraseanet:WebhookEvent');
+        });
+        $app['repo.webhook-delivery'] = $app->share(function (PhraseaApplication $app) {
+            return $app['EM']->getRepository('Phraseanet:WebhookEventDelivery');
+        });
     }
 
     public function boot(Application $app)

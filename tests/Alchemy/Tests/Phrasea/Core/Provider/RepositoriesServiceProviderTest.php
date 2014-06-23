@@ -39,6 +39,8 @@ class RepositoriesServiceProviderTest extends ServiceProviderTestCase
             ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.api-oauth-tokens', 'Alchemy\Phrasea\Model\Repositories\ApiOauthTokenRepository'],
             ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.api-oauth-codes', 'Alchemy\Phrasea\Model\Repositories\ApiOauthCodeRepository'],
             ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.api-oauth-refresh-tokens', 'Alchemy\Phrasea\Model\Repositories\ApiOauthRefreshTokenRepository'],
+            ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.webhook-event', 'Alchemy\Phrasea\Model\Repositories\WebhookEventRepository'],
+            ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.webhook-delivery', 'Alchemy\Phrasea\Model\Repositories\WebhookEventDeliveryRepository'],
         ];
     }
 }

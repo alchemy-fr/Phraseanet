@@ -18,12 +18,14 @@ use Alchemy\Phrasea\TaskManager\Job\FtpPullJob;
 use Alchemy\Phrasea\TaskManager\Job\PhraseanetIndexerJob;
 use Alchemy\Phrasea\TaskManager\Job\RecordMoverJob;
 use Alchemy\Phrasea\TaskManager\Job\SubdefsJob;
+use Alchemy\Phrasea\TaskManager\Job\WebhookJob;
 use Alchemy\Phrasea\TaskManager\Job\WriteMetadataJob;
 use Alchemy\Phrasea\TaskManager\Job\Factory as JobFactory;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
 use Alchemy\Phrasea\TaskManager\TaskManagerStatus;
 use Alchemy\Phrasea\TaskManager\Log\LogFileFactory;
 use Alchemy\Phrasea\TaskManager\Notifier;
+use Alchemy\Phrasea\Webhook\EventProcessorFactory;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -76,6 +78,7 @@ class TasksServiceProvider implements ServiceProviderInterface
                 new RecordMoverJob($app['dispatcher'], $logger, $app['translator']),
                 new SubdefsJob($app['dispatcher'], $logger, $app['translator']),
                 new WriteMetadataJob($app['dispatcher'], $logger, $app['translator']),
+                new WebhookJob($app['dispatcher'], $logger, $app['translator']),
             ];
         });
     }

@@ -37,6 +37,8 @@ use Alchemy\Phrasea\Model\Entities\UsrList;
 use Alchemy\Phrasea\Model\Entities\UsrListEntry;
 use Alchemy\Phrasea\Model\Entities\StoryWZ;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
+use Alchemy\Phrasea\Model\Entities\WebhookEvent;
+use Alchemy\Phrasea\Model\Entities\WebhookEventDelivery;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -109,6 +111,8 @@ class RegenerateSqliteDb extends Command
             $this->insertTwoTokens($this->container['EM'], $DI);
             $this->insertOneInvalidToken($this->container['EM'], $DI);
             $this->insertOneValidationToken($this->container['EM'], $DI);
+            $this->insertWebhookEvent($this->container['EM'], $DI);
+            $this->insertWebhookEventDelivery($this->container['EM'], $DI);
 
             $this->container['EM']->flush();
 
@@ -121,6 +125,7 @@ class RegenerateSqliteDb extends Command
             $fixtures['token']['token_2'] = $DI['token_2']->getValue();
             $fixtures['token']['token_invalid'] = $DI['token_invalid']->getValue();
             $fixtures['token']['token_validation'] = $DI['token_validation']->getValue();
+
             $fixtures['user']['test_phpunit'] = $DI['user']->getId();
             $fixtures['user']['test_phpunit_not_admin'] = $DI['user_notAdmin']->getId();
             $fixtures['user']['test_phpunit_alt1'] = $DI['user_alt1']->getId();
@@ -133,6 +138,7 @@ class RegenerateSqliteDb extends Command
             $fixtures['oauth']['acc-user-not-admin'] = $DI['api-app-acc-user-not-admin']->getId();
 
             $fixtures['databox']['records'] = $DI['databox']->get_sbas_id();
+
             $fixtures['collection']['coll'] = $DI['coll']->get_base_id();
             $fixtures['collection']['coll_no_access'] = $DI['coll_no_access']->get_base_id();
             $fixtures['collection']['coll_no_status'] = $DI['coll_no_status']->get_base_id();
@@ -170,6 +176,8 @@ class RegenerateSqliteDb extends Command
             $fixtures['feed']['private']['feed'] = $DI['feed_private']->getId();
             $fixtures['feed']['private']['entry'] = $DI['feed_private_entry']->getId();
             $fixtures['feed']['private']['token'] = $DI['feed_private_token']->getId();
+
+            $fixtures['webhook']['event'] = $DI['event_webhook_1']->getId();
         } catch (\Exception $e) {
             $output->writeln("<error>".$e->getMessage()."</error>");
             if ($renamed) {
@@ -327,6 +335,45 @@ class RegenerateSqliteDb extends Command
     protected function insertOneUser($login, $email = null, $admin = false)
     {
         return $this->container['manipulator.user']->createUser($login, uniqid('pass'), $email, $admin);
+    }
+
+    protected function insertWebhookEvent(EntityManager $em, \Pimple $DI)
+    {
+        $event = new WebhookEvent();
+        $event->setName(WebhookEvent::NEW_FEED_ENTRY);
+        $event->setType(WebhookEvent::FEED_ENTRY_TYPE);
+        $event->setData(array(
+            'feed_id' => $DI['feed_public_entry']->getFeed()->getId(),
+            'entry_id' => $DI['feed_public_entry']->getId()
+        ));
+        $em->persist($event);
+
+        $DI['event_webhook_1'] = $event;
+
+        $event2 = new WebhookEvent();
+        $event2->setName(WebhookEvent::NEW_FEED_ENTRY);
+        $event2->setType(WebhookEvent::FEED_ENTRY_TYPE);
+        $event2->setData(array(
+            'feed_id' => $DI['feed_public_entry']->getFeed()->getId(),
+            'entry_id' => $DI['feed_public_entry']->getId()
+        ));
+        $event2->setProcessed(true);
+        $em->persist($event2);
+    }
+
+    protected function insertWebhookEventDelivery(EntityManager $em, \Pimple $DI)
+    {
+        $delivery = new WebhookEventDelivery();
+        $delivery->setThirdPartyApplication($DI['api-app-user']);
+        $delivery->setWebhookEvent($DI['event_webhook_1']);
+        $delivery->setDelivered(true);
+        $em->persist($delivery);
+
+        $delivery2 = new WebhookEventDelivery();
+        $delivery2->setThirdPartyApplication($DI['api-app-user-not-admin']);
+        $delivery2->setWebhookEvent($DI['event_webhook_1']);
+        $delivery2->setDeliverTries(1);
+        $em->persist($delivery2);
     }
 
     private function generateCollection(\Pimple $DI)
