@@ -38,6 +38,14 @@ class patch_384alpha3a implements patchInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrineMigrations()
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function concern()
     {
         return $this->concern;
