@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6dbba3e72a44255a6292ee8fedbce88e",
+    "hash": "0100d89768804d2f4b902a41e75b64d1",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -1075,16 +1075,16 @@
         },
         {
             "name": "doctrine/orm",
-            "version": "v2.4.2",
+            "version": "2.4.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/doctrine2.git",
-                "reference": "0363a5548d9263f979f9ca149decb9cfc66419ab"
+                "reference": "84f8ef5ca46f02f3001af47ba25fc917c776a247"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/0363a5548d9263f979f9ca149decb9cfc66419ab",
-                "reference": "0363a5548d9263f979f9ca149decb9cfc66419ab",
+                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/84f8ef5ca46f02f3001af47ba25fc917c776a247",
+                "reference": "84f8ef5ca46f02f3001af47ba25fc917c776a247",
                 "shasum": ""
             },
             "require": {
@@ -1147,7 +1147,7 @@
                 "database",
                 "orm"
             ],
-            "time": "2014-02-08 16:35:09"
+            "time": "2014-06-10 11:49:09"
         },
         {
             "name": "elasticsearch/elasticsearch",
@@ -1427,7 +1427,7 @@
                 "export",
                 "import"
             ],
-            "time": "2014-01-12 16:34:06"
+            "time": "2013-11-22 19:10:34"
         },
         {
             "name": "guzzle/guzzle",
@@ -4925,16 +4925,15 @@
         "alchemy/task-manager": 20,
         "alchemy/zippy": 20,
         "imagine/imagine": 20,
+        "mediavorus/mediavorus": 20,
+        "media-alchemyst/media-alchemyst": 20,
         "neutron/process-manager": 20,
+        "php-ffmpeg/php-ffmpeg": 20,
         "silex/silex": 20,
         "silex/web-profiler": 20,
         "doctrine/migrations": 20,
         "behat/behat": 20,
-        "behat/gherkin": 20,
-        "mediavorus/mediavorus": 20,
-        "media-alchemyst/media-alchemyst": 20,
-        "php-ffmpeg/php-ffmpeg": 20,
-        "doctrine/data-fixtures": 20
+        "behat/gherkin": 20
     },
     "platform": {
         "php": ">=5.4"
