@@ -32,7 +32,7 @@ define([
                     el: $('form[name=loginForm]')
                 });
 
-                Object.keys(form.inputViews).length.should.equal(5);
+                Object.keys(form.inputViews).length.should.equal(4);
             });
 
             it("should initialize errors", function () {
