@@ -91,7 +91,7 @@
     </div>
 
     <div style="display:none">
-        <form name="download" action="{{ path('document_download', {'token': token.getValue()}) }}" method="post" target="file_frame">
+        <form name="download" action="{{ path('document_download', {'token': token.getValue(), 'type': type, 'anonymous': anonymous}) }}" method="post" target="file_frame">
         {% if anonymous %}
                 <input type="hidden" name="anonymous" value="1" />
         {% endif%}

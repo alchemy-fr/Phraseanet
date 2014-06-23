@@ -101,8 +101,8 @@ class Session implements ControllerProviderInterface
                 $ret['message'] .= _('The application is going down for maintenance, please logout.');
             }
 
-            if ($app['phraseanet.registry']->get('GV_message_on')) {
-                $ret['message'] .= strip_tags($app['phraseanet.registry']->get('GV_message'));
+            if ($app['conf']->get(['registry', 'maintenance', 'enabled'], false)) {
+                $ret['message'] .= strip_tags($app['conf']->get(['registry', 'maintenance', 'enabled']));
             }
         }
 

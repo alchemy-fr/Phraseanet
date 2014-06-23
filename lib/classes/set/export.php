@@ -786,12 +786,6 @@ class set_export extends set_abstract
             }
         }
 
-        $export_types = array(
-            'download'    => 0,
-            'mail-export' => 2,
-            'ftp'         => 4
-        );
-
         $list_base = array_unique(array_keys($tmplog));
 
         if (!$anonymous) {
