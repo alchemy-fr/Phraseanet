@@ -1389,11 +1389,11 @@ class V1 implements ControllerProviderInterface
         $user = $app['authentication']->getUser();
         $coll = $app['repo.feeds']->getAllForUser($app['acl']->get($user));
 
-        $datas = array_map(function ($feed) use ($user) {
+        $data = array_map(function ($feed) use ($user) {
             return $this->list_publication($feed, $user);
         }, $coll);
 
-        return Result::create($request, ["feeds" => $datas])->createResponse();
+        return Result::create($request, ["feeds" => $data])->createResponse();
     }
 
     /**
@@ -1438,7 +1438,7 @@ class V1 implements ControllerProviderInterface
         $offset_start = (int) ($request->get('offset_start') ? : 0);
         $per_page = (int) ($request->get('per_page') ? : 5);
 
-        $per_page = (($per_page >= 1) && ($per_page <= 20)) ? $per_page : 5;
+        $per_page = (($per_page >= 1) && ($per_page <= 20)) ? $per_page : 20;
 
         $data = [
             'total_entries' => $feed->getCountTotalEntries(),
@@ -1523,6 +1523,7 @@ class V1 implements ControllerProviderInterface
             'subtitle'     => $entry->getSubtitle(),
             'items'        => $items,
             'feed_id'      => $entry->getFeed()->getId(),
+            'feed_title'      => $entry->getFeed()->getTitle(),
             'feed_url'     => '/feeds/' . $entry->getFeed()->getId() . '/content/',
             'url'          => '/feeds/entry/' . $entry->getId() . '/',
         ];

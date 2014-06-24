@@ -34,14 +34,18 @@ class FeedRepository extends EntityRepository
             ->createQueryBuilder('f');
 
         $qb->where($qb->expr()->isNull('f.baseId'))
-            ->orWhere('f.public = true');
+            ->orWhere($qb->expr()->eq('f.public', $qb->expr()->literal(true)));
+
+        if (count($restrictions) > 0 && count($base_ids) > 0) {
+            $base_ids = array_intersect($base_ids, $restrictions);
+        }
+
+        if (empty($base_ids) && count($restrictions) > 0) {
+            $base_ids = $restrictions;
+        }
 
         if (count($base_ids) > 0) {
             $qb->orWhere($qb->expr()->in('f.baseId', $base_ids));
-        }
-
-        if (count($restrictions) > 0) {
-            $qb->andWhere($qb->expr()->in('f.id', $restrictions));
         }
 
         $qb->orderBy('f.updatedOn', 'DESC');

@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Thesaurus;
 
+use Alchemy\Phrasea\Model\Entities\User;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -374,7 +375,7 @@ class Xmlhttp implements ControllerProviderInterface
                 }
                 $app['manipulator.preset']->delete($preset);
 
-                $ret['html'] = $this->getPresetHTMLList($app, $request->get('sbas'), $app['authentication']->getUser()->getId());
+                $ret['html'] = $this->getPresetHTMLList($app, $request->get('sbas'), $app['authentication']->getUser());
                 break;
             case 'SAVE':
                 $app['manipulator.preset']->create(
@@ -384,10 +385,10 @@ class Xmlhttp implements ControllerProviderInterface
                     $request->get('fields')
                 );
 
-                $ret['html'] = $this->getPresetHTMLList($app, $request->get('sbas'), $app['authentication']->getUser()->getId());
+                $ret['html'] = $this->getPresetHTMLList($app, $request->get('sbas'), $app['authentication']->getUser());
                 break;
             case 'LIST':
-                $ret['html'] = $this->getPresetHTMLList($app, $request->get('sbas'), $app['authentication']->getUser()->getId());
+                $ret['html'] = $this->getPresetHTMLList($app, $request->get('sbas'), $app['authentication']->getUser());
                 break;
             case "LOAD":
                 if (null === $preset = $app['repo.presets']->find($id = $request->get('presetid'))) {
@@ -409,7 +410,7 @@ class Xmlhttp implements ControllerProviderInterface
     private function getPresetHTMLList(Application $app, $sbasId, User $user)
     {
         $data = [];
-        foreach ($app['repo.presets']->findBy(['user' => $user, 'sbasId' => $sbasId], ['creadted' => 'asc']) as $preset) {
+        foreach ($app['repo.presets']->findBy(['user' => $user, 'sbasId' => $sbasId], ['created' => 'asc']) as $preset) {
             $presetData = $fields = [];
             array_walk($preset->getData(), function ($field) use ($fields) {
                 $fields[$field['name']][] = $field['value'];
