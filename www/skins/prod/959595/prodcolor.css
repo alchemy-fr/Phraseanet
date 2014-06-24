@@ -3206,7 +3206,6 @@ dans l'onglet thesaurus :  arbres, menus contextuels
 }
 
 .PushBox .theme-bg .btn-inverse,
-#modal_feed form .btn-inverse,
 #QuickAddUser .btn-inverse {
     background-color: #D6D6D6;
     *background-color: #D6D6D6;
@@ -3226,16 +3225,11 @@ dans l'onglet thesaurus :  arbres, menus contextuels
 }
 
 .PushBox .theme-bg .btn-inverse:hover,
-#modal_feed form .btn-inverse:hover,
 #QuickAddUser .btn-inverse:hover {
     background-color: #D6D6D6;
     *background-color: #D6D6D6;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
     color: #FFFFFF;
-}
-
-#modal_feed form .fields {
-    overflow:auto;
 }
 
 #modal_feed form .feeds {
@@ -3279,26 +3273,6 @@ dans l'onglet thesaurus :  arbres, menus contextuels
 #modal_feed form input.error,
 #modal_feed form textarea.error {
     border: 1px solid red;
-}
-
-#modal_feed form input,
-#modal_feed form textarea {
-    width: 90%;
-    height: 20px;
-    margin: 3px 0 10px 0;
-}
-
-#modal_feed form label {
-    display:inline;
-}
-
-#modal_feed form input.checkbox {
-    width: 20px;
-}
-
-#modal_feed form textarea {
-    height: 60px;
-    resize: none;
 }
 
 /******* FEEDS ****************************************************************/

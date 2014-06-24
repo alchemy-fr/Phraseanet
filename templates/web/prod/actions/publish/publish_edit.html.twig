@@ -1,83 +1,83 @@
-
 {% macro format_diapo(record) %}
-  {% import 'common/thumbnail.html.twig' as thumbnail %}
-  <div class="diapo">
-    {{thumbnail.format(record.get_thumbnail(), 100, 100, '', true, false)}}
-  </div>
+    {% import 'common/thumbnail.html.twig' as thumbnail %}
+    <div class="diapo">
+        {{thumbnail.format(record.get_thumbnail(), 100, 100, '', true, false)}}
+    </div>
 {% endmacro %}
 
 <style type="text/css">
-.record_list .sortable.ui-sortable-placeholder{
-  width:112px;
-  height:118px;
-  position:relative;
-  float:left;
-}
+    .record_list .sortable.ui-sortable-placeholder{
+        width:112px;
+        height:118px;
+        position:relative;
+        float:left;
+    }
 </style>
-<div class="PNB" style="height:200px;bottom:auto;">
-  <div class="PNB10 record_list" style="overflow:auto;">
-  {% for content in entry.getItems() %}
-    <div class="sortable" style="position:relative;float:left;">
-      {{ _self.format_diapo(content.getRecord(app)) }}
-      <form>
-        <input type="hidden" name="item_id" value="{{content.getId()}}" />
-      </form>
-    </div>
-  {% endfor %}
-  </div>
-</div>
-<form method="post" action="{{ path('prod_feeds_entry_update', { 'id' : entry.getId() }) }}" class="entry_update main_form">
-  <input type="hidden" name="sorted_lst" value="" />
-  <div class="PNB" style="top:200px;bottom:50px;">
-    <div class="PNB" style="width:50%;right:auto;">
-      <div class="PNB10 fields">
-        <div><label for="feed_add_title">{{ 'publication : titre' | trans }}</label></div>
-        <div><input class="required_text" type="text" name="title" id="feed_add_title" value="{{ entry.getTitle() }}" /></div>
-        <div><label for="feed_add_subtitle">{{ 'publication : sous titre' | trans }}</label></div>
-        <div><textarea id="feed_add_subtitle" name="subtitle">{{ entry.getSubtitle() }}</textarea></div>
-        <div><label for="feed_add_author_name">{{ 'publication : autheur' | trans }}</label></div>
-        <div><input class="required_text" type="text" name="author_name" id="feed_add_author_name" value="{{ entry.getAuthorName() }}" /></div>
-        <div><label for="feed_add_author_mail">{{ 'publication : email autheur' | trans }}</label></div>
-        <div><input class="required_text" type="text" name="author_mail" id="feed_add_author_mail" value="{{ entry.getAuthorEmail() }}" /></div>
-      </div>
-    </div>
-    <div class="PNB" style="width:50%;left:auto;">
-      <div class="PNB10 feeds">
-        <h1>{{ 'Fils disponibles' | trans }}</h1>
-        <div class="list">
-          {% set feed_id = entry.getFeed().getId() %}
-          {% for feed in feeds %}
-             {% if feed.isPublisher(app['authentication'].getUser()) %}
-                <div class="feed {% if loop.index is odd%}odd{% endif %} {% if feed_id == feed.getId() %}selected{% endif %}">
-                    <span>{{ feed.getTitle() }}</span>
-                    <input type="hidden" value="{{ feed.getId() }}"/>
-                </div>
-            {% endif %}
-          {% endfor %}
-          <input type="hidden" value="{{ feed_id }}" name="feed_id" />
-          <input type="hidden" value="{{ entry.getId() }}" name="entry_id" />
-        </div>
 
-      </div>
+<div id="modal_feed">
+    <div class="row-fluid" style="height:120px">
+        <div class="span12" style="overflow:auto;">
+            {% for content in entry.getItems() %}
+                <div class="sortable" style="position:relative;float:left;">
+                    {{ _self.format_diapo(content.getRecord(app)) }}
+                    <form>
+                        <input type="hidden" name="item_id" value="{{content.getId()}}" />
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
     </div>
-  </div>
-  <div class="PNB" style="top:auto;height:50px;text-align:center;">
-    <div class="PNB10">
-      <button class="valid_form btn btn-inverse">{{ 'boutton::mettre a jour' | trans }}</button>
-      <button class="close_dialog btn btn-inverse">{{ 'boutton::annuler' | trans }}</button>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <form class="main_form" method="post" action="{{ path('prod_feeds_entry_update', {'id': entry.getId()}) }}">
+                <input type="hidden" name="sorted_lst" value="" />
+                <div class="row-fluid">
+                    <div class="span6">
+                        <h1>{{ 'Editer' | trans }}</h1>
+                        <br />
+                        <label for="feed_add_title"><b>{{ 'publication : titre' | trans }}</b></label>
+                        <input class="required_text input-block-level" style="max-width:500px" type="text" name="title" id="feed_add_title" value="{{ entry.getTitle() }}" />
+                        <label for="feed_add_subtitle"><b>{{ 'publication : sous titre' | trans }}</b></label>
+                        <textarea id="feed_add_subtitle" style="max-width:500px" class="input-block-level" name="subtitle" rows="5">{{ entry.getSubTitle() }}</textarea>
+                        <label for="feed_add_author_name"><b>{{ 'publication : autheur' | trans }}</b></label>
+                        <input class="required_text input-block-level" style="max-width:500px" type="text" name="author_name" id="feed_add_author_name" value="{{ entry.getAuthorName() }}" />
+                        <label for="feed_add_author_mail"><b>{{ 'publication : email autheur' | trans }}</b></label>
+                        <input class="required_text input-block-level" style="max-width:500px" type="text" name="author_mail" id="feed_add_author_mail" value="{{ entry.getAuthorEmail() }}" />
+                    </div>
+                    <div class="span6">
+                        <div class="feeds">
+                            <h1>{{ 'Fils disponibles' | trans }}</h1>
+                            <div class="list">
+                                {% set feed_id = entry.getFeed().getId() %}
+                                {% for feed in feeds %}
+                                    {% if feed.isPublisher(app['authentication'].getUser()) %}
+                                        <div class="feed {% if loop.index is odd%}odd{% endif %} {% if feed_id == feed.getId() %}selected{% endif %}">
+                                            <span>{{ feed.getTitle() }}</span>
+                                            <input type="hidden" value="{{ feed.getId() }}"/>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                                <input type="hidden" value="{{ feed_id }}" name="feed_id" />
+                                <input type="hidden" value="{{ entry.getId() }}" name="entry_id" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
-</form>
+</div>
 <script type="text/javascript">
-  $(document).ready(function(){
-    $('#modal_feed .record_list').sortable({
-      stop:function(event, ui){
-        var lst = [];
-        $('#modal_feed .record_list form').each(function(i, el){
-          lst.push($('input[name="item_id"]', el).val()+'_'+(i+1));
+    $(document).ready(function(){
+        $('#modal_feed .record_list').sortable({
+            stop:function(event, ui){
+                var lst = [];
+                $('#modal_feed .record_list form').each(function(i, el){
+                    lst.push($('input[name="item_id"]', el).val()+'_'+(i+1));
+                });
+                $('#modal_feed form.main_form input[name="sorted_lst"]').val(lst.join(';'));
+            }
         });
-        $('#modal_feed form.main_form input[name="sorted_lst"]').val(lst.join(';'));
-      }
     });
-  });
 </script>

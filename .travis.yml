@@ -65,4 +65,5 @@ script:
 #sqlite db generation should occur once Phraseanet is up to date :
   - bin/developer phraseanet:regenerate-sqlite
   - ./node_modules/.bin/grunt test
-  - bin/phpunit
+  - phpunit --version
+  - phpunit

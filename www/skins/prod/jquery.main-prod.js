@@ -1848,7 +1848,6 @@ function activeIcons() {
     });
 
     function feedThis(type, value) {
-        var $feed_box = $('#modal_feed');
         var options = {
             lst: '',
             ssel: '',
@@ -2747,35 +2746,12 @@ function autoorder() {
 }
 
 function set_up_feed_box(data) {
-    var $feed_box = $('#modal_feed');
 
-    $feed_box.empty().append(data).dialog({
-        modal: true,
-        width: 800,
-        height: 500,
-        resizable: false,
-        draggable: false
-    });
-
-    var $feeds_item = $('.feeds .feed', $feed_box);
-    var $form = $('form.main_form', $feed_box);
-
-    $feeds_item.bind('click',function () {
-        $feeds_item.removeClass('selected');
-        $(this).addClass('selected');
-        $('input[name="feed_id"]', $form).val($('input', this).val());
-    }).hover(function () {
-            $(this).addClass('hover');
-        }, function () {
-            $(this).removeClass('hover');
-        });
-
-    $form.bind('submit', function () {
-        return false;
-    });
-
-    $('button.valid_form').bind('click', function () {
+    var buttons = {};
+    buttons[language.valider] = function () {
+        var dialog = p4.Dialog.get(1);
         var error = false;
+        var $form = $('form.main_form', dialog.getDomElement());
 
         $('.required_text', $form).each(function (i, el) {
             if ($.trim($(el).val()) === '') {
@@ -2803,23 +2779,23 @@ function set_up_feed_box(data) {
             data: $form.serializeArray(),
             dataType: 'json',
             beforeSend: function () {
-                $('button', $feed_box).attr('disabled', 'disabled');
+                $('button', dialog.getDomElement()).attr('disabled', 'disabled');
             },
             error: function () {
-                $('button', $feed_box).removeAttr('disabled');
+                $('button', dialog.getDomElement()).removeAttr('disabled');
             },
             timeout: function () {
-                $('button', $feed_box).removeAttr('disabled');
+                $('button', dialog.getDomElement()).removeAttr('disabled');
             },
             success: function (data) {
-                $('button', $feed_box).removeAttr('disabled');
+                $('button', dialog.getDomElement()).removeAttr('disabled');
                 if (data.error === true) {
                     alert(data.message);
                     return;
                 }
 
-                if ($('form.main_form', $feed_box).hasClass('entry_update')) {
-                    var id = $('form input[name="entry_id"]', $feed_box).val();
+                if ($('form.main_form', dialog.getDomElement()).hasClass('entry_update')) {
+                    var id = $('form input[name="entry_id"]', dialog.getDomElement()).val();
                     var container = $('#entry_' + id);
 
                     container.replaceWith(data.datas);
@@ -2833,20 +2809,39 @@ function set_up_feed_box(data) {
                     });
                 }
 
-                if ($feed_box.data("ui-dialog")) {
-                    $feed_box.dialog('destroy');
-                }
+                p4.Dialog.Close(1);
             }
         });
-        return false;
-    });
-    $('button.close_dialog').bind('click', function () {
-        if ($feed_box.data("ui-dialog")) {
-            $feed_box.dialog('destroy');
-        }
+        p4.Dialog.Close(1);
+    };
 
+    var dialog = p4.Dialog.Create({
+        size: 'Full',
+        closeOnEscape: true,
+        closeButton: true,
+        buttons: buttons
+    });
+
+    dialog.setContent(data);
+
+    var $feeds_item = $('.feeds .feed', dialog.getDomElement());
+    var $form = $('form.main_form', dialog.getDomElement());
+
+    $feeds_item.bind('click',function () {
+        console.log("clcik");
+        $feeds_item.removeClass('selected');
+        $(this).addClass('selected');
+        $('input[name="feed_id"]', $form).val($('input', this).val());
+    }).hover(function () {
+        $(this).addClass('hover');
+    }, function () {
+        $(this).removeClass('hover');
+    });
+
+    $form.bind('submit', function () {
         return false;
     });
+
     return;
 }
 

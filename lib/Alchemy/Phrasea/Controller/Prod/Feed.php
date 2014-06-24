@@ -107,7 +107,7 @@ class Feed implements ControllerProviderInterface
 
             return new Response($datas);
         })
-            ->bind('feed_entry_edit')
+            ->bind('prod_feeds_entry_edit')
             ->assert('id', '\d+')
             ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRight('bas_chupub');

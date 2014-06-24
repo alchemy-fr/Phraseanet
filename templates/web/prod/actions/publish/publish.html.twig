@@ -14,71 +14,73 @@
     }
 </style>
 
-<div class="PNB" style="height:200px;bottom:auto;">
-    <div class="PNB10 record_list" style="overflow:auto;">
-        {% for record in publishing %}
-            <div class="sortable" style="position:relative;float:left;">
-                {{ _self.format_diapo(record) }}
-                <form>
-                    <input type="hidden" name="sbas_id" value="{{record.get_sbas_id()}}" />
-                    <input type="hidden" name="record_id" value="{{record.get_record_id()}}" />
-                </form>
-            </div>
-        {% endfor %}
+<div id="modal_feed">
+    <div class="row-fluid" style="height:120px">
+        <div class="span12" style="overflow:auto;">
+            {% for record in publishing %}
+                <div class="sortable" style="position:relative;float:left;">
+                    {{ _self.format_diapo(record) }}
+                    <form>
+                        <input type="hidden" name="sbas_id" value="{{record.get_sbas_id()}}" />
+                        <input type="hidden" name="record_id" value="{{record.get_record_id()}}" />
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <form class="main_form" method="post" action="{{ path('prod_feeds_entry_create') }}">
+                <input type="hidden" name="lst" value="{{ publishing.serializedList() }}" />
+                <div class="row-fluid">
+                    <div class="span6">
+                        <h1>{{ 'Publier' | trans }}</h1>
+                        {% set title = '' %}
+                        {% set desc = '' %}
+                        {% if publishing.basket() is not null %}
+                            {% set title = publishing.basket().getName() %}
+                            {% set desc = publishing.basket().getDescription() %}
+                        {% endif %}
+                        <br />
+                        <label class="checkbox">
+                            <input class="required_text checkbox" type="checkbox" name="notify" id="feed_add_notify" value="1" style="min-height: 0; height: auto" />
+                            <i class="icon icon-envelope"></i>&nbsp;{{ 'Notify users about this publication' | trans }}
+                        </label>
+                        <br />
+                        <label for="feed_add_title"><b>{{ 'publication : titre' | trans }}</b></label>
+                        <input class="required_text input-block-level" style="max-width:500px" type="text" name="title" id="feed_add_title" value="{{title}}" />
+                        <label for="feed_add_subtitle"><b>{{ 'publication : sous titre' | trans }}</b></label>
+                        <textarea id="feed_add_subtitle" style="max-width:500px" class="input-block-level" name="subtitle" rows="5">{{desc}}</textarea>
+                        <label for="feed_add_author_name"><b>{{ 'publication : autheur' | trans }}</b></label>
+                        <input class="required_text input-block-level" style="max-width:500px" type="text" name="author_name" id="feed_add_author_name" value="{{ app['authentication'].getUser().getDisplayName() }}" />
+                        <label for="feed_add_author_mail"><b>{{ 'publication : email autheur' | trans }}</b></label>
+                        <input class="required_text input-block-level" style="max-width:500px" type="text" name="author_mail" id="feed_add_author_mail" value="{{ app['authentication'].getUser().getEmail() }}" />
+                    </div>
+                    <div class="span6">
+                        <div class="feeds">
+                            <h1>{{ 'Fils disponibles' | trans }}</h1>
+                            <div class="list">
+                                {% for feed in feeds %}
+                                    {% if feed.isPublisher(app['authentication'].getUser()) %}
+                                        <div class="feed {% if loop.index is odd%}odd{% endif %}">
+                                            <span>{{ feed.getTitle() }}</span>
+                                            {% if feed.isPublic() %}
+                                                <img src="/skins/icons/ligth-on.png" title="{{ 'This feed is public' | trans }}"/>
+                                            {% endif %}
+                                            <input type="hidden" name="feed_proposal[]" value="{{ feed.getId() }}"/>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                                <input type="hidden" value="" name="feed_id" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-
-<form class="main_form" method="post" action="{{ path('prod_feeds_entry_create') }}">
-    <input type="hidden" name="lst" value="{{ publishing.serializedList() }}" />
-    <div class="PNB" style="top:200px; bottom:50px;">
-        <div class="PNB" style="width:50%; right:auto;">
-            <div class="PNB10 fields">
-                {% set title = '' %}
-                {% set desc = '' %}
-                {% if publishing.basket() is not null %}
-                    {% set title = publishing.basket().getName() %}
-                    {% set desc = publishing.basket().getDescription() %}
-                {% endif %}
-                <input class="required_text checkbox" type="checkbox" name="notify" id="feed_add_notify" value="1" />
-                <label for="feed_add_notify">{{ 'Notify users about this publication' | trans }}</label><br/>
-                <label for="feed_add_title">{{ 'publication : titre' | trans }}</label>
-                <input class="required_text" type="text" name="title" id="feed_add_title" value="{{title}}" />
-                <label for="feed_add_subtitle">{{ 'publication : sous titre' | trans }}</label>
-                <textarea id="feed_add_subtitle" name="subtitle">{{desc}}</textarea>
-                <label for="feed_add_author_name">{{ 'publication : autheur' | trans }}</label>
-                <input class="required_text" type="text" name="author_name" id="feed_add_author_name" value="{{ app['authentication'].getUser().getDisplayName() }}" />
-                <label for="feed_add_author_mail">{{ 'publication : email autheur' | trans }}</label>
-                <input class="required_text" type="text" name="author_mail" id="feed_add_author_mail" value="{{ app['authentication'].getUser().getEmail() }}" />
-            </div>
-        </div>
-        <div class="PNB" style="width:50%;left:auto;">
-            <div class="PNB10 feeds">
-                <h1>{{ 'Fils disponibles' | trans }}</h1>
-                <div class="list">
-                    {% for feed in feeds %}
-                        {% if feed.isPublisher(app['authentication'].getUser()) %}
-                            <div class="feed {% if loop.index is odd%}odd{% endif %}">
-                                <span>{{ feed.getTitle() }}</span>
-                                {% if feed.isPublic() %}
-                                    <img src="/skins/icons/ligth-on.png" title="{{ 'This feed is public' | trans }}"/>
-                                {% endif %}
-                                <input type="hidden" name="feed_proposal[]" value="{{ feed.getId() }}"/>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                    <input type="hidden" value="" name="feed_id" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="PNB" style="top:auto; height:50px; text-align:center;">
-        <div class="PNB10">
-            <button class="valid_form btn btn-inverse">{{ 'boutton::publier' | trans }}</button>
-            <button class="close_dialog btn btn-inverse">{{ 'boutton::annuler' | trans }}</button>
-        </div>
-    </div>
-</form>
-
 <script type="text/javascript">
     $(document).ready(function(){
         $('#modal_feed .record_list').sortable({
