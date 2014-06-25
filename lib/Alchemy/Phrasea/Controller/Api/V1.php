@@ -146,6 +146,9 @@ class V1 implements ControllerProviderInterface
          * Log occurs in after filter
          */
         $controllers->after(function (Request $request, Response $response) use ($app, $parseRoute) {
+            if (false !== stripos($request->headers->get('user-agent', ''), 'Phraseanet SDK Player')) {
+                return;
+            }
             $account = $app['token']->get_account();
             $pathInfo = $request->getPathInfo();
             $route = $parseRoute($pathInfo, $response);
