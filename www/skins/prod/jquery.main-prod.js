@@ -398,7 +398,11 @@ function afterSearch() {
         delay: 0
     });
     $('.previewTips').tooltip({
-        fixable: true
+        fixable: true,
+        delay: 200,
+        top: 15,
+        left: 15,
+        outside: false
     });
     $('.thumb .rollovable').hover(
         function () {
