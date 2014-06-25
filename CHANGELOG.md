@@ -1,6 +1,53 @@
 # CHANGELOG
 
-## 3.8.3 (2014-xx-xx)
+## 3.8.4 (2014-25-06)
+
+  - BC Break : Drop sphinx search engine highlight support
+  - BC Break : Notify user checkbox is now setted to false when publishing a new publication
+  - BugFix : Fix database mapping in report
+  - BugFix : Fix homepage feed url
+  - BugFix : Fix CSV user import
+  - BugFix : Fix status icon filename
+  - BugFix : Fix highlight in caption display
+  - BugFix : Fix bound in caption display
+  - BugFix : Fix thumbnail display in feed view
+  - BugFix : Fix thesaurus terms order
+  - BugFix : Fix metadata filename attibute
+  - BugFix : Fix https calls to googlechart API
+  - BugFix : Fix API feed pagination
+  - BugFix : Fix thumbnail etags generation
+  - BugFix : Fix therausus search in workzone
+  - BugFix : Fix context menu in main bar in account view
+  - BugFix : Fix CSV download for filename with accent
+  - BugFix : Fix CSV generation from report
+  - BugFix : Fix old password migration
+  - BugFix : Fix migration from 3.1 version
+  - BugFix : Fix status calculation from XML indexation card for stories
+  - BugFix : Fix homepage issue when a feed is deleted
+  - BugFix : Fix phraseanet bridge connexion to dailymotion
+  - BugFix : Fix unoconv and GPAC detection on debian system
+  - BugFix : Fix oauth developer application form submission
+  - BugFix : Fix anamorphosis problems for some videos
+  - Enhancement : Set password fields as password input
+  - Enhancement : Add extra information in user list popup in Push view
+  - Enhancement : Force the use of latest IE engine
+  - Enhancement : Add feed restriction when requesting aggregated feed in API
+  - Enhancement : Add feed title property in feed entry JSON schema
+  - Enhancement : Dashboard report is now lazy loaded
+  - Enhancement : Update flowplayer version
+  - Enhancement : Improve XsendFile command line tools
+  - Enhancement : Remove disk IO on media_subdef::get_size function
+  - Enhancement : User city is now setted through geonames server
+  - Enhancement : Enhancement of Oauth2 integration
+  - NewFeature : Add option to restrict Push visualization to Phraseanet users only
+  - NewFeature : Add API webhook
+  - NewFeature : Add CORS support for API
+  - NewFeature : Add /me route in API
+  - NewFeature : Add h264 pseudo stream configuration
+  - NewFeature : Add session idle & life time in configuration
+  - NewFeature : Add possibility to search “unknown” type document through API
+
+## 3.8.3 (2014-24-02)
 
   - BugFix : Fix record type editing.
   - BugFix : Fix scheduler timeout.
