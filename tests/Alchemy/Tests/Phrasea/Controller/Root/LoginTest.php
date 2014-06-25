@@ -1032,7 +1032,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         }
 
         self::$DI['client']->request('POST', '/login/register-classic/', $parameters);
-        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect(),self::$DI['client']->getResponse()->getContent());
 
         if (null === $user = self::$DI['app']['repo.users']->findByEmail($parameters['email'])) {
             $this->fail('User not created');
@@ -1102,7 +1102,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         if (null === $user = self::$DI['app']['repo.users']->findByEmail($parameters['email'])) {
             $this->fail('User not created');
         }
-        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect(),self::$DI['client']->getResponse()->getContent());
         $this->assertGreaterThan(0, $emails['Alchemy\Phrasea\Notification\Mail\MailInfoUserRegistered']);
         $this->assertEquals(1, $emails['Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation']);
         $this->assertFlashMessagePopulated(self::$DI['app'], 'info', 1);

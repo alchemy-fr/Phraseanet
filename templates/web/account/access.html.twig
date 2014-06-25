@@ -28,7 +28,7 @@
                             {{ "Allowed access to the following collections" | trans }}
                         </th>
                     </tr>
-                    {% for baseId, base in baseInfo["registrations"]["by-type"]["accepted"] %}
+                    {% for base in baseInfo["registrations"]["by-type"]["accepted"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
                                 <span style="color: lightgreen;">
@@ -51,7 +51,7 @@
                             {{ "Rejected access to the following collections" | trans }}
                         </th>
                     </tr>
-                    {% for baseId, base in baseInfo["registrations"]["by-type"]["rejected"] %}
+                    {% for base in baseInfo["registrations"]["by-type"]["rejected"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
                                 <span style="color: red;">
@@ -74,7 +74,7 @@
                             {{ "Pending access to the following collections" | trans }}
                         </th>
                     </tr>
-                    {% for baseId, base in baseInfo["registrations"]["by-type"]["pending"] %}
+                    {% for base in baseInfo["registrations"]["by-type"]["pending"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
                                 <span style="color: #ffff00;"><b>{{ base["coll-name"] }}</b></span>
@@ -95,7 +95,7 @@
                             {{ "Temporary access to the following collections" | trans }}
                         </th>
                     </tr>
-                    {% for baseId, base in baseInfo["registrations"]["by-type"]["in-time"] %}
+                    {% for base in baseInfo["registrations"]["by-type"]["in-time"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
                                 <span style="color: lightskyblue;"><b>{{ base["coll-name"] }}</b></span>
@@ -116,7 +116,7 @@
                             {{ "Outdated access to the following collections" | trans }}
                         </th>
                     </tr>
-                    {% for baseId, base in baseInfo["registrations"]["by-type"]["out-dated"] %}
+                    {% for base in baseInfo["registrations"]["by-type"]["out-dated"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
                                 <span style="color:darkred;"><b>{{ base["coll-name"] }}</b></span>
@@ -137,7 +137,7 @@
                             {{ "Suspended access to the following collections" | trans }}
                         </th>
                     </tr>
-                    {% for baseId, base in baseInfo["registrations"]["by-type"]["inactive"] %}
+                    {% for base in baseInfo["registrations"]["by-type"]["inactive"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
                                 <span style="color:orangered;"><b>{{ base["coll-name"] }}</b></span>
@@ -167,7 +167,7 @@
                         <td colspan="3" style="text-align: center;"><blockquote class="cgu" style="width: 90%; height: 120px; text-align: left; overflow: auto;">{{ TOU['value']  }}</blockquote></td>
                     </tr>
                 {% endif %}
-                {% for baseId, collInfo in baseInfo["config"]["collections"] if (collInfo['registration'] is none and collInfo['can-register']) %}
+                {% for collInfo in baseInfo["config"]["collections"] if (collInfo['registration'] is none and collInfo['can-register']) %}
                     {% if collInfo["cgu"] is not none %}
                         <tr>
                             <td colspan="3" style="text-align: center;">{{ "login::register: L\'acces aux bases ci-dessous implique l\'acceptation des Conditions Generales d\'Utilisation (CGU) suivantes" | trans }}</td>
