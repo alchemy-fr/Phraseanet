@@ -217,7 +217,7 @@ class Push implements ControllerProviderInterface
                         'ssel_id' => $Basket->getId(),
                     );
 
-                    if (!$app['phraseanet.registry']->get('GV_force_push_authentication') || !$request->get('force_authentication')) {
+                    if (!$app['phraseanet.registry']->get('GV_enable_push_authentication') || !$request->get('force_authentication')) {
                         $arguments['LOG'] = $app['tokens']->getUrlToken(
                             \random::TYPE_VIEW,
                             $user_receiver->get_id(),
