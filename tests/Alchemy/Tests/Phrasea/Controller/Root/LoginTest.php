@@ -247,7 +247,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['client']->request('GET', '/login/register-confirm/', ['code' => $token->getValue()]);
         $response = self::$DI['client']->getResponse();
-        $this->assertTrue($response->isRedirect());
+        $this->assertTrue($response->isRedirect(), $response->getContent());
         $this->assertFlashMessagePopulated(self::$DI['app'], 'info', 1);
         $this->assertEquals('/login/', $response->headers->get('location'));
         $this->assertFalse(self::$DI['user']->isMailLocked());
@@ -987,6 +987,22 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->mockNotificationsDeliverer($emails);
         $this->mockUserNotificationSettings('eventsmanager_notify_register');
 
+        $acl = $this->getMockBuilder('ACL')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $acl->expects($this->once())
+            ->method('get_granted_base')
+            ->will($this->returnValue([]));
+
+        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $aclProvider->expects($this->any())
+            ->method('get')
+            ->will($this->returnValue($acl));
+
+        self::$DI['app']['acl'] = $aclProvider;
+
         $parameters = array_merge(['_token' => 'token'], [
             "password" => [
                 'password' => 'password',
@@ -1065,6 +1081,22 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         ]]));
 
         self::$DI['app']['EM.native-query'] = $nativeQueryMock;
+
+        $acl = $this->getMockBuilder('ACL')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $acl->expects($this->once())
+            ->method('get_granted_base')
+            ->will($this->returnValue([]));
+
+        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $aclProvider->expects($this->any())
+            ->method('get')
+            ->will($this->returnValue($acl));
+
+        self::$DI['app']['acl'] = $aclProvider;
 
         self::$DI['app']['registration.fields'] = $extraParameters;
 
