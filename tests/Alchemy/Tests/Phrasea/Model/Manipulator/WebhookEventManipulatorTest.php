@@ -10,7 +10,7 @@ class WebhookEventManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreate()
     {
-        $manipulator = new WebhookEventManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.manipulator.webhook-delivery']);
+        $manipulator = new WebhookEventManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.webhook-delivery']);
         $nbEvents = count(self::$DI['app']['repo.webhook-event']->findAll());
         $event = $manipulator->create(WebhookEvent::NEW_FEED_ENTRY, WebhookEvent::FEED_ENTRY_TYPE, array(
             'feed_id' => self::$DI['feed_public_entry']->getFeed()->getId(), 'entry_id' => self::$DI['feed_public_entry']->getId()
@@ -24,13 +24,9 @@ class WebhookEventManipulatorTest extends \PhraseanetTestCase
         $event = $manipulator->create(WebhookEvent::NEW_FEED_ENTRY, WebhookEvent::FEED_ENTRY_TYPE, array(
             'feed_id' => self::$DI['feed_public_entry']->getFeed()->getId(), 'entry_id' => self::$DI['feed_public_entry']->getId()
         ));
-        $eventMem = clone $event;
         $countBefore = count(self::$DI['app']['repo.webhook-event']->findAll());
-        self::$DI['app']['manipulator.webhook-delivery']->create($event);
         $manipulator->delete($event);
         $this->assertGreaterThan(count(self::$DI['app']['repo.webhook-event']->findAll()), $countBefore);
-        $tokens = self::$DI['app']['repo.api-oauth-tokens']->findOauthTokens($eventMem);
-        $this->assertEquals(0, count($tokens));
     }
 
     public function testUpdate()

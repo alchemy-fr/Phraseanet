@@ -48,6 +48,8 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     private function initializeSqliteDB($path = '/tmp/db.sqlite')
     {
+        $path = $path . getmypid();
+
         if (is_file($path)) {
             unlink($path);
         }
@@ -375,6 +377,14 @@ abstract class PhraseanetTestCase extends WebTestCase
             ->method('getSubscribedEvents')
             ->will($this->returnValue([]));
 
+        $app['EM.dbal-conf'] = $app->share($app->extend('EM.dbal-conf', function ($conf, $app) {
+            if (isset($conf['path'])) {
+                $conf['path'] = $conf['path'].getmypid();
+            }
+
+            return $conf;
+        }));
+
         $app['EM'] = $app->share($app->extend('EM', function ($em) {
             $this->initializeSqliteDB();
 
@@ -514,9 +524,11 @@ abstract class PhraseanetTestCase extends WebTestCase
      */
     public static function giveRightsToUser(Application $app, User $user, $base_ids = null)
     {
+        $app['acl']->get($user)->delete_data_from_cache(\ACL::CACHE_GLOBAL_RIGHTS);
         $app['acl']->get($user)->give_access_to_sbas(array_keys($app['phraseanet.appbox']->get_databoxes()));
 
         foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+            $app['acl']->get($user)->delete_data_from_cache(\ACL::CACHE_RIGHTS_SBAS);
 
             $rights = [
                 'bas_manage'        => '1'
@@ -533,6 +545,12 @@ abstract class PhraseanetTestCase extends WebTestCase
                 }
 
                 $base_id = $collection->get_base_id();
+
+                $app['acl']->get($user)->delete_data_from_cache(\ACL::CACHE_RIGHTS_BAS);
+
+                if ($app['acl']->get($user)->has_access_to_base($base_id)) {
+                    continue;
+                }
 
                 $app['acl']->get($user)->give_access_to_base([$base_id]);
                 $app['acl']->get($user)->update_rights_to_base($base_id, ['order_master' => true]);

@@ -55,10 +55,10 @@ class ApiApplicationManipulatorTest extends \PhraseanetTestCase
     {
         $manipulator = new ApiApplicationManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-applications'], self::$DI['app']['random.medium']);
         $application = $manipulator->create(
-            'desktop-app',
+            'desktop-app2',
             ApiApplication::DESKTOP_TYPE,
             'Desktop application description',
-            'http://desktop-app-url.net'
+            'http://desktop-app2-url.net'
         );
         $applicationSave = clone $application;
         $countBefore = count(self::$DI['app']['repo.api-applications']->findAll());
@@ -77,10 +77,10 @@ class ApiApplicationManipulatorTest extends \PhraseanetTestCase
     {
         $manipulator = new ApiApplicationManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-applications'], self::$DI['app']['random.medium']);
         $application = $manipulator->create(
-            'desktop-app',
+            'desktop-app3',
             ApiApplication::DESKTOP_TYPE,
             'Desktop application description',
-            'http://desktop-app-url.net'
+            'http://desktop-app3-url.net'
         );
         $application->setName('new-desktop-app');
         $manipulator->update($application);
@@ -92,10 +92,10 @@ class ApiApplicationManipulatorTest extends \PhraseanetTestCase
     {
         $manipulator = new ApiApplicationManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-applications'], self::$DI['app']['random.medium']);
         $application = $manipulator->create(
-            'desktop-app',
+            'desktop-app4',
             ApiApplication::DESKTOP_TYPE,
             'Desktop application description',
-            'http://desktop-app-url.net'
+            'http://desktop-app4-url.net'
         );
         try {
             $manipulator->setType($application, 'invalid-type');
@@ -109,20 +109,20 @@ class ApiApplicationManipulatorTest extends \PhraseanetTestCase
     {
         $manipulator = new ApiApplicationManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-applications'], self::$DI['app']['random.medium']);
         $application = $manipulator->create(
-            'desktop-app',
+            'desktop-app5',
             ApiApplication::DESKTOP_TYPE,
             'Desktop application description',
-            'http://desktop-app-url.net'
+            'http://desktop-app5-url.net'
         );
 
         $manipulator->setRedirectUri($application, 'invalid-url.com');
         $this->assertEquals(ApiApplication::NATIVE_APP_REDIRECT_URI, $application->getRedirectUri());
 
         $application = $manipulator->create(
-            'web-app',
+            'web-app2',
             ApiApplication::WEB_TYPE,
             'Desktop application description',
-            'http://web-app-url.net',
+            'http://web-app2-url.net',
             self::$DI['user'],
             'http://web-app-url.net/callback'
         );
@@ -138,10 +138,10 @@ class ApiApplicationManipulatorTest extends \PhraseanetTestCase
     {
         $manipulator = new ApiApplicationManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-applications'], self::$DI['app']['random.medium']);
         $application = $manipulator->create(
-            'desktop-app',
+            'desktop-app6',
             ApiApplication::DESKTOP_TYPE,
             'Desktop application description',
-            'http://desktop-app-url.net'
+            'http://desktop-app6-url.net'
         );
         try {
             $manipulator->setWebsiteUrl($application, 'invalid-url.com');

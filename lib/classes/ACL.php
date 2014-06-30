@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
+use Doctrine\DBAL\DBALException;
 
 class ACL implements cache_cacheableInterface
 {
@@ -1103,7 +1104,16 @@ class ACL implements cache_cacheableInterface
 
         foreach ($base_ids as $base_id) {
             if (!isset($this->_rights_bas[$base_id])) {
-                $stmt_ins->execute([':base_id' => $base_id, ':usr_id'  => $usr_id]);
+                try {
+                    $stmt_ins->execute([':base_id' => $base_id, ':usr_id'  => $usr_id]);
+                } catch (DBALException $e) {
+//                    if (null !== $e) {
+//                        var_dump(get_class($e->getPrevious()));
+//                    }
+                    if (($e->getCode() == 23000)) {
+                        $to_update[] = $base_id;
+                    }
+                }
             } elseif ($this->_rights_bas[$base_id]['actif'] === false) {
                 $to_update[] = $base_id;
             }
@@ -1429,14 +1439,18 @@ class ACL implements cache_cacheableInterface
         $iord = 0;
 
         foreach ($this->get_granted_base([], [$databox->get_sbas_id()]) as $collection) {
-            $stmt->execute([
-                ':site_id'  => $this->app['conf']->get(['main', 'key']),
-                ':usr_id'   => $this->user->getId(),
-                ':coll_id'  => $collection->get_coll_id(),
-                ':mask_and' => $this->get_mask_and($collection->get_base_id()),
-                ':mask_xor' => $this->get_mask_xor($collection->get_base_id()),
-                ':ord'      => $iord++
-            ]);
+            try {
+                $stmt->execute([
+                    ':site_id'  => $this->app['conf']->get(['main', 'key']),
+                    ':usr_id'   => $this->user->getId(),
+                    ':coll_id'  => $collection->get_coll_id(),
+                    ':mask_and' => $this->get_mask_and($collection->get_base_id()),
+                    ':mask_xor' => $this->get_mask_xor($collection->get_base_id()),
+                    ':ord'      => $iord++
+                ]);
+            } catch (DBALException $e) {
+
+            }
         }
 
         $stmt->closeCursor();

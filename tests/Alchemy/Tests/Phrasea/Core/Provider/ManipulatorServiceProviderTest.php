@@ -65,7 +65,7 @@ class ManipulatorServiceProviderTest extends ServiceProviderTestCase
             [
                 'Alchemy\Phrasea\Core\Provider\ManipulatorServiceProvider',
                 'manipulator.webhook-delivery',
-                'Alchemy\Phrasea\Model\Manipulator\WebhookEventDelivery'
+                'Alchemy\Phrasea\Model\Manipulator\WebhookEventDeliveryManipulator'
             ],
         ];
     }
