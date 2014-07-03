@@ -78,21 +78,21 @@ class V1 implements ControllerProviderInterface
             ->before([$this, 'ensureAdmin']);
 
         $controllers->get('/monitor/task/{task}/', 'controller.api.v1:get_task')
-            ->convert('task', [$app['converter.task'], 'convert'])
+            ->convert('task', $app['converter.task-callback'])
             ->before([$this, 'ensureAdmin'])
             ->assert('task', '\d+');
 
         $controllers->post('/monitor/task/{task}/', 'controller.api.v1:set_task_property')
-            ->convert('task', [$app['converter.task'], 'convert'])
+            ->convert('task', $app['converter.task-callback'])
             ->before([$this, 'ensureAdmin'])
             ->assert('task', '\d+');
 
         $controllers->post('/monitor/task/{task}/start/', 'controller.api.v1:start_task')
-            ->convert('task', [$app['converter.task'], 'convert'])
+            ->convert('task', $app['converter.task-callback'])
             ->before([$this, 'ensureAdmin']);
 
         $controllers->post('/monitor/task/{task}/stop/', 'controller.api.v1:stop_task')
-            ->convert('task', [$app['converter.task'], 'convert'])
+            ->convert('task', $app['converter.task-callback'])
             ->before([$this, 'ensureAdmin']);
 
         $controllers->get('/monitor/phraseanet/', 'controller.api.v1:get_phraseanet_monitor')

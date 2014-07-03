@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Model\Converter\ApiApplicationConverter;
 use Alchemy\Phrasea\Model\Converter\BasketConverter;
 use Alchemy\Phrasea\Model\Converter\TaskConverter;
 use Alchemy\Phrasea\Model\Converter\TokenConverter;
+use Alchemy\Phrasea\Model\Entities\Task;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -23,11 +24,15 @@ class ConvertersServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['converter.task'] = $app->share(function ($app) {
-            return new TaskConverter($app['EM']);
+            return new TaskConverter($app['repo.tasks']);
+        });
+
+        $app['converter.task-callback'] = $app->protect(function($id) use ($app) {
+            return $app['converter.task']->convert($id);
         });
 
         $app['converter.basket'] = $app->share(function ($app) {
-            return new BasketConverter($app['EM']);
+            return new BasketConverter($app['repo.baskets']);
         });
 
         $app['converter.token'] = $app->share(function ($app) {

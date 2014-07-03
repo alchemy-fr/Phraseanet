@@ -10,7 +10,7 @@ class BasketConverterTest extends \PhraseanetTestCase
     {
         $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
 
-        $converter = new BasketConverter(self::$DI['app']['EM']);
+        $converter = new BasketConverter(self::$DI['app']['EM']->getRepository('Phraseanet:Basket'));
         $this->assertSame($basket, $converter->convert($basket->getId()));
     }
 
@@ -20,7 +20,7 @@ class BasketConverterTest extends \PhraseanetTestCase
      */
     public function testConvertFailure()
     {
-        $converter = new BasketConverter(self::$DI['app']['EM']);
+        $converter = new BasketConverter(self::$DI['app']['EM']->getRepository('Phraseanet:Basket'));
         $converter->convert('prout');
     }
 }

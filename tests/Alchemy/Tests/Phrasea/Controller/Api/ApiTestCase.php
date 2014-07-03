@@ -31,13 +31,14 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         parent::tearDown();
     }
 
+    public function getApplicationPath()
+    {
+        return '/lib/Alchemy/Phrasea/Application/Api.php';
+    }
+
     public function setUp()
     {
         parent::setUp();
-
-        self::$DI['app'] = self::$DI->share(function ($DI) {
-            return $this->loadApp('lib/Alchemy/Phrasea/Application/Api.php');
-        });
 
         if (null === $this->adminAccessToken) {
             $tokens = self::$DI['app']['repo.api-oauth-tokens']->findOauthTokens(self::$DI['oauth2-app-acc-user']);

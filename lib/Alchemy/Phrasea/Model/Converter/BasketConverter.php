@@ -12,16 +12,17 @@
 namespace Alchemy\Phrasea\Model\Converter;
 
 use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BasketConverter implements ConverterInterface
 {
-    private $om;
+    private $repository;
 
-    public function __construct(ObjectManager $om)
+    public function __construct(BasketRepository $repository)
     {
-        $this->om = $om;
+        $this->repository = $repository;
     }
 
     /**
@@ -31,7 +32,7 @@ class BasketConverter implements ConverterInterface
      */
     public function convert($id)
     {
-        if (null === $basket = $this->om->find('Phraseanet:Basket', (int) $id)) {
+        if (null === $basket = $this->repository->find((int) $id)) {
             throw new NotFoundHttpException(sprintf('Basket %s not found.', $id));
         }
 

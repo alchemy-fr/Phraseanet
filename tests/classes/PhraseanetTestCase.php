@@ -46,7 +46,7 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     private static $fixtureIds = [];
 
-    private function initializeSqliteDB($path = '/tmp/db.sqlite')
+    protected function initializeSqliteDB($path = '/tmp/db.sqlite')
     {
         $path = $path . getmypid();
 
@@ -54,6 +54,11 @@ abstract class PhraseanetTestCase extends WebTestCase
             unlink($path);
         }
         copy(__DIR__ . '/../db-ref.sqlite', $path);
+    }
+
+    public function getApplicationPath()
+    {
+        return '/lib/Alchemy/Phrasea/Application/Root.php';
     }
 
     public function createApplication()
@@ -87,7 +92,7 @@ abstract class PhraseanetTestCase extends WebTestCase
         \PHPUnit_Framework_Error_Notice::$enabled = true;
 
         self::$DI['app'] = self::$DI->share(function ($DI) {
-            return $this->loadApp('/lib/Alchemy/Phrasea/Application/Root.php');
+            return $this->loadApp($this->getApplicationPath());
         });
 
         self::$DI['cli'] = self::$DI->share(function ($DI) {

@@ -1147,8 +1147,13 @@ class ACL implements cache_cacheableInterface
         $usr_id = $this->user->getId();
 
         foreach ($sbas_ids as $sbas_id) {
-            if (!$this->has_access_to_sbas($sbas_id))
-                $stmt_ins->execute([':sbas_id' => $sbas_id, ':usr_id'  => $usr_id]);
+            if (!$this->has_access_to_sbas($sbas_id)) {
+                try {
+                    $stmt_ins->execute([':sbas_id' => $sbas_id, ':usr_id'  => $usr_id]);
+                } catch (DBALException $e) {
+
+                }
+            }
         }
         $stmt_ins->closeCursor();
         $this->delete_data_from_cache(self::CACHE_RIGHTS_SBAS);
@@ -1589,7 +1594,7 @@ class ACL implements cache_cacheableInterface
      */
     public function get_order_master_collections()
     {
-        $sql = 'SELECT base_id FROM basusr WHERE order_master="1" AND usr_id= :usr_id ';
+        $sql = 'SELECT base_id FROM basusr WHERE order_master="1" AND usr_id= :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->user->getId()]);
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
