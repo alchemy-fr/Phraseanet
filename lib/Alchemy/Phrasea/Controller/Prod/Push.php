@@ -416,15 +416,18 @@ class Push implements ControllerProviderInterface
 
                     $app['EM']->flush();
 
-                    $url = $app->url('lightbox_validation', array(
-                        'ssel_id' => $Basket->getId(),
-                        'LOG' => $app['tokens']->getUrlToken(
+                    $arguments = array('ssel_id' => $Basket->getId());
+
+                    if (!$app['phraseanet.registry']->get('GV_enable_push_authentication') || !$request->get('force_authentication')) {
+                        $arguments['LOG'] = $app['tokens']->getUrlToken(
                             \random::TYPE_VALIDATE,
                             $participant_user->get_id(),
                             null,
                             $Basket->getId()
-                        )
-                    ));
+                        );
+                    }
+
+                    $url = $app->url('lightbox_validation', $arguments);
 
                     $receipt = $request->get('recept') ? $app['authentication']->getUser()->get_email() : '';
 

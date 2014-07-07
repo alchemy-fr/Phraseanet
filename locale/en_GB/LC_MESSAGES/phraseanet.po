@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-14 14:10+0100\n"
-"PO-Revision-Date: 2014-06-25 12:08+0100\n"
+"PO-Revision-Date: 2014-07-07 15:36+0100\n"
 "Last-Translator: Anthony <acabot@alchemy.fr>\n"
 "Language-Team: \n"
 "Language: en_GB\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: /Users/romain/Documents/workspace/Phraseanet\n"
 "X-Poedit-KeywordsList: _e;__\n"
-"X-POOTLE-MTIME: 1401802195.000000\n"
+"X-POOTLE-MTIME: 1404404647.000000\n"
 "X-Poedit-SearchPath-0: config\n"
 "X-Poedit-SearchPath-1: lib/classes\n"
 "X-Poedit-SearchPath-2: lib/conf.d\n"
@@ -5624,7 +5624,7 @@ msgstr "Records statut"
 
 #: tmp/cache_twig/74/3d/4b2851d1f18c8ae4b91891284ae6d293c84c4718d08f94fe9a506e8ba6d7.php:45
 msgid "Records type"
-msgstr "Records type"
+msgstr "Type of documents"
 
 #: tmp/cache_twig/74/3d/4b2851d1f18c8ae4b91891284ae6d293c84c4718d08f94fe9a506e8ba6d7.php:57
 msgid "You have selected one record."
@@ -11331,9 +11331,7 @@ msgstr "Enable the force authentication option for Push and Feedbacks sessions"
 msgid ""
 "Adds an option to the push form submission to restrict push recipient(s) to "
 "Phraseanet users only."
-msgstr ""
-"Adds an option for Push and Feedbacks submission forms to limit recipients "
-"to trusted Phraseanet users only."
+msgstr "Force authentication for Push and Feedbacks recipients."
 
 #: ../lib/classes/task/period/apiwebhooks.php:18
 msgid "Api Webhook"
@@ -11500,9 +11498,6 @@ msgstr "Unable to create template, its given name is already used."
 #: ../lib/Alchemy/Phrasea/Controller/Admin/Users.php:275
 msgid "Unable to create the user."
 msgstr "Unable to create the user."
-
-msgid "Set force authentication option to see push content as mandatory"
-msgstr "Set 'force authentication option' for push as mandatory"
 
 #~ msgid "Enable H264 stream mode"
 #~ msgstr "Enable H264 stream mode"

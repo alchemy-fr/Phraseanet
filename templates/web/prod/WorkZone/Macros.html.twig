@@ -7,10 +7,7 @@
   <div class="bloc">
   <div class="insidebloc">
     {% set content = WorkZone.getContent(srt) %}
-
     {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::VALIDATIONS')) %}
-
-
         <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket_id' : basket.getId() }) }}"
              id="SSTT_{{basket.getId()}}"
              class="basketTips ui-accordion-header ui-state-default
@@ -48,11 +45,13 @@
                              onclick="downloadThis('ssel={{basket.getId()}}');">{% trans 'action::exporter' %}
                         </div>
                       </div>
-                      <div title="" class="context-menu-item menu3-custom-item">
-                        <div onclick="editThis('SSTT','{{basket.getId()}}');" style=""
-                             class="context-menu-item-inner">{% trans 'action::editer' %}
-                        </div>
-                      </div>
+                        {% if app['authentication'].getUser().ACL().has_right('modifyrecord') %}
+                          <div title="" class="context-menu-item menu3-custom-item">
+                            <div onclick="editThis('SSTT','{{basket.getId()}}');" style=""
+                                 class="context-menu-item-inner">{% trans 'action::editer' %}
+                            </div>
+                          </div>
+                        {% endif %}
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
                           <a href="{{ path('lightbox_compare', { 'ssel_id' : basket.getId() }) }}" target="_blank">Lightbox</a>
@@ -75,17 +74,10 @@
             </table>
           </div>
         </div>
-        <div id="SSTT_content_{{basket.getId()}}" class="content basket" style="overflow:hidden;">
-
-        </div>
-
+        <div id="SSTT_content_{{basket.getId()}}" class="content basket" style="overflow:hidden;"></div>
     {% endfor %}
 
-
-
     {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) %}
-
-
         <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket_id' : basket.getId() }) }}"
              id="SSTT_{{basket.getId()}}"
              class="basketTips ui-accordion-header ui-state-default
@@ -189,17 +181,12 @@
             </table>
           </div>
         </div>
-        <div id="SSTT_content_{{basket.getId()}}" class="content basket" style="overflow:hidden;">
-
-        </div>
-
+        <div id="SSTT_content_{{basket.getId()}}" class="content basket" style="overflow:hidden;"> </div>
     {% endfor %}
 
 
 
     {% for story in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')) %}
-
-
         <div tooltipsrc="{{ path('prod_tooltip_story', { 'sbas_id' : story.getRecord(app).get_sbas_id(), 'record_id' : story.getRecord(app).get_record_id() }) }}"
              id="SSWZ_{{story.getId()}}" sbas="{{story.getSbasId()}}"
              class="STORY_{{ story.getRecord(app).get_serialize_key() }} basketTips ui-accordion-header ui-state-default
@@ -232,12 +219,13 @@
                              onclick="downloadThis('lst={{story.getRecord(app).get_serialize_key()}}');">{% trans 'action::exporter' %}
                         </div>
                       </div>
+                        {% if app['authentication'].getUser().ACL().has_right('modifyrecord') %}
                       <div title="" class="context-menu-item menu3-custom-item">
                         <div onclick="editThis('IMGT','{{story.getRecord(app).get_serialize_key()}}');" style=""
                              class="context-menu-item-inner">{% trans 'action::editer' %}
                         </div>
                       </div>
-
+                        {% endif %}
                       <div title="" class="context-menu-item menu3-custom-item">
                         <div class="context-menu-item-inner">
                           <a class="story_unfix" href="{{ path('prod_workzone_detach_story', { 'sbas_id' : story.getRecord(app).get_sbas_id(), 'record_id' : story.getRecord(app).get_record_id()}) }}">
@@ -260,15 +248,8 @@
             </table>
           </div>
         </div>
-        <div sbas="{{story.getSbasId()}}" id="SSTT_content_{{story.getId()}}" class="content grouping" style="overflow:hidden;">
-
-        </div>
-
-
-
-
+        <div sbas="{{story.getSbasId()}}" id="SSTT_content_{{story.getId()}}" class="content grouping" style="overflow:hidden;"></div>
     {% endfor %}
-
   </div>
 </div>
 {% endmacro %}
