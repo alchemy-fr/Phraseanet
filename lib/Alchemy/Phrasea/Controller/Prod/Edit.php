@@ -285,14 +285,14 @@ class Edit implements ControllerProviderInterface
 
                     $newsubdef_reg = new \record_adapter($app, $reg_record->get_sbas_id(), $request->request->get('newrepresent'));
 
-                    if ($newsubdef_reg->get_type() !== 'image') {
-                        throw new \Exception('A reg image must come from image data');
-                    }
-
                     foreach ($newsubdef_reg->get_subdefs() as $name => $value) {
                         if (!in_array($name, array('thumbnail', 'preview'))) {
                             continue;
                         }
+                        if ($value->get_type() !== \media_subdef::TYPE_IMAGE) {
+                            continue;
+                        }
+
                         $media = $app['mediavorus']->guess($value->get_pathfile());
                         $reg_record->substitute_subdef($name, $media, $app);
                         $app['phraseanet.logger']($reg_record->get_databox())->log(
