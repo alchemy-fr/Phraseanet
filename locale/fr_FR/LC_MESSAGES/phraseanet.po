@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-14 14:10+0100\n"
-"PO-Revision-Date: 2014-06-25 12:07+0100\n"
+"PO-Revision-Date: 2014-07-07 15:36+0100\n"
 "Last-Translator: Anthony <acabot@alchemy.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: /Users/romain/Documents/workspace/Phraseanet\n"
 "X-Poedit-KeywordsList: _e;__\n"
-"X-POOTLE-MTIME: 1401802000.000000\n"
+"X-POOTLE-MTIME: 1404404560.000000\n"
 "X-Poedit-SearchPath-0: config\n"
 "X-Poedit-SearchPath-1: lib/classes\n"
 "X-Poedit-SearchPath-2: lib/conf.d\n"
@@ -5678,7 +5678,7 @@ msgstr "Statut des enregistrements"
 
 #: tmp/cache_twig/74/3d/4b2851d1f18c8ae4b91891284ae6d293c84c4718d08f94fe9a506e8ba6d7.php:45
 msgid "Records type"
-msgstr "Type des enregistrements"
+msgstr "Type des documents"
 
 #: tmp/cache_twig/74/3d/4b2851d1f18c8ae4b91891284ae6d293c84c4718d08f94fe9a506e8ba6d7.php:57
 msgid "You have selected one record."
@@ -8797,7 +8797,7 @@ msgstr "Message automatique de Phraseanet"
 #: tmp/cache_twig/e9/1a/9e2396dbfd0df38fa3c35df138bcc0606bacbbd117d37b40fb246fa6aaf6.php:228
 msgid "Pour gérer l'envoi d'email automatique, connectez-vous à %link%"
 msgstr ""
-"Pour régler les préférences de reception d'e-mails automatiques, connectez-"
+"Pour régler les préférences de réception d'e-mails automatiques, connectez-"
 "vous à %link%."
 
 #: tmp/cache_twig/e9/49/406e6d61efed296d58e5356a77a622909c068b709020709aa697c9fd4c69.php:59
@@ -11508,8 +11508,8 @@ msgid ""
 "Adds an option to the push form submission to restrict push recipient(s) to "
 "Phraseanet users only."
 msgstr ""
-"Ajoute une option permettant de limiter la diffusion des Push et Validations "
-"auprès d'utilisateurs Phraseanet dans les formulaires d'envoi."
+"Force les utilisateurs destinataires d'un Push et d'une validation à "
+"s'authentifier."
 
 #: ../lib/classes/task/period/apiwebhooks.php:18
 msgid "Api Webhook"
@@ -11677,9 +11677,6 @@ msgstr "Impossible le créer ce modèle, le nom donné est déjà utilisé."
 #: ../lib/Alchemy/Phrasea/Controller/Admin/Users.php:275
 msgid "Unable to create the user."
 msgstr "Impossible de créer cet utilisateur."
-
-msgid "Set force authentication option to see push content as mandatory"
-msgstr "Rendre obligatoire l'option d'authentification forcée"
 
 #~ msgid "Enable H264 stream mode"
 #~ msgstr "Activer H264 en mode flux continu (lecture en streaming)"
