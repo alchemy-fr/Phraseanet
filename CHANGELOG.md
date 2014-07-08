@@ -1,6 +1,16 @@
 # CHANGELOG
 
-## 3.8.4 (2014-25-06)
+## 3.8.5 (2014-07-08)
+
+  - BugFix : Fix Flickr connexion throught Bridge Application
+  - BugFix : Fix broken Report Application
+  - BugFix : Fix "force authentication" option for push validation
+  - BugFix : Fixe display of "edit" button for a validation accordint to user rights
+  - BugFix : Fixe highlight of record title in detailed view
+  - BugFix : Fixe thumbnail generation for PDF with transparency
+  - Enhancement : Add the possibility to choose a document or a video as a representative image of a story
+
+## 3.8.4 (2014-06-25)
 
   - BC Break : Drop sphinx search engine highlight support
   - BC Break : Notify user checkbox is now setted to false when publishing a new publication
@@ -47,7 +57,7 @@
   - NewFeature : Add session idle & life time in configuration
   - NewFeature : Add possibility to search “unknown” type document through API
 
-## 3.8.3 (2014-24-02)
+## 3.8.3 (2014-02-24)
 
   - BugFix : Fix record type editing.
   - BugFix : Fix scheduler timeout.
