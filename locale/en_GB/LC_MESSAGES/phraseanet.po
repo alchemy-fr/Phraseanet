@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-14 14:10+0100\n"
-"PO-Revision-Date: 2014-07-07 15:36+0100\n"
+"PO-Revision-Date: 2014-07-08 11:58+0100\n"
 "Last-Translator: Anthony <acabot@alchemy.fr>\n"
 "Language-Team: \n"
 "Language: en_GB\n"
@@ -11498,6 +11498,9 @@ msgstr "Unable to create template, its given name is already used."
 #: ../lib/Alchemy/Phrasea/Controller/Admin/Users.php:275
 msgid "Unable to create the user."
 msgstr "Unable to create the user."
+
+msgid "Flatten layers"
+msgstr "Flatten layers"
 
 #~ msgid "Enable H264 stream mode"
 #~ msgstr "Enable H264 stream mode"

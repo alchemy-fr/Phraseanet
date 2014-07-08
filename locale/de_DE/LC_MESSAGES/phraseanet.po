@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-14 14:10+0100\n"
-"PO-Revision-Date: 2014-06-04 17:01+0100\n"
+"PO-Revision-Date: 2014-07-08 11:57+0100\n"
 "Last-Translator: Jennifer <guerin@alchemy.fr>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -11656,6 +11656,9 @@ msgstr "Unmöglich, Vorlage zu erstellen: Name bereits vergeben"
 #: ../lib/Alchemy/Phrasea/Controller/Admin/Users.php:275
 msgid "Unable to create the user."
 msgstr "Unmöglich, Benutzer zu erstellen"
+
+msgid "Flatten layers"
+msgstr "Flatten Schichten"
 
 #~ msgid "Enable H264 stream mode"
 #~ msgstr "H264 Stream Modus aktivieren"

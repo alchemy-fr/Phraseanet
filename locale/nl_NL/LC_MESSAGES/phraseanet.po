@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: phraseanettranslation\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-11-14 14:10+0100\n"
-"PO-Revision-Date: 2014-06-04 17:01+0100\n"
+"PO-Revision-Date: 2014-07-08 11:58+0100\n"
 "Last-Translator: Pieter <pieter@macadam-solutions.be>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "Language: nl_NL\n"
@@ -11587,6 +11587,9 @@ msgstr "Onmogelijk om een template te maken, de naam is al in gebruik."
 #: ../lib/Alchemy/Phrasea/Controller/Admin/Users.php:275
 msgid "Unable to create the user."
 msgstr "Onmogelijk om een gebruiker aan te maken."
+
+msgid "Flatten layers"
+msgstr "Plat lagen"
 
 #~ msgid "Enable H264 stream mode"
 #~ msgstr "Maak H264 stream mode actief"
