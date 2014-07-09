@@ -115,7 +115,8 @@ abstract class task_abstract
     protected $status;
     protected $active;
     protected $debug = false;
-    protected $completed_percentage;
+    protected $todo;
+    protected $done;
     protected $period = 60;
     protected $taskid = NULL;
     protected $system = '';
@@ -144,7 +145,7 @@ abstract class task_abstract
 
             return '';
         }
-        $sql = 'SELECT crashed, pid, status, active, settings, name, completed, runner
+        $sql = 'SELECT crashed, pid, status, active, settings, name, todo, done, runner
               FROM task2 WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':taskid' => $this->getID()));
@@ -158,7 +159,8 @@ abstract class task_abstract
         $this->active = ! ! $row['active'];
         $this->settings = $row['settings'];
         $this->runner = $row['runner'];
-        $this->completed_percentage = (int) $row['completed'];
+        $this->todo = (int) $row['todo'];
+        $this->done = (int) $row['done'];
         $this->settings = $row['settings'];
 
         if (false !== $sx = @simplexml_load_string($this->settings)) {
@@ -389,9 +391,14 @@ abstract class task_abstract
      *
      * @return int
      */
-    public function getCompletedPercentage()
+    public function getTodo()
     {
-        return $this->completed_percentage;
+        return $this->todo;
+    }
+
+    public function getDone()
+    {
+        return $this->done;
     }
 
     public static function getName()
@@ -682,10 +689,6 @@ abstract class task_abstract
         $rowstodo = count($rs);
         $rowsdone = 0;
 
-        if ($rowstodo > 0) {
-            $this->setProgress(0, $rowstodo);
-        }
-
         foreach ($rs as $row) {
 
             try {
@@ -696,7 +699,6 @@ abstract class task_abstract
             }
 
             $this->records_done ++;
-            $this->setProgress($rowsdone, $rowstodo);
 
             // post-process
             $this->postProcessOneContent($box, $row);
@@ -755,10 +757,6 @@ abstract class task_abstract
             } catch (\Exception $e) {
                 $this->running = FALSE;
             }
-        }
-
-        if ($rowstodo > 0) {
-            $this->setProgress(0, 0);
         }
 
         return $ret;
@@ -905,18 +903,18 @@ abstract class task_abstract
      */
     public function setProgress($done, $todo)
     {
-        $p = ($todo > 0) ? ((100 * $done) / $todo) : -1;
-
         try {
             $conn = connection::getPDOConnection($this->dependencyContainer);
-            $sql = 'UPDATE task2 SET completed = :p WHERE task_id = :taskid';
+            $sql = 'UPDATE task2 SET todo = :todo, done = :done WHERE task_id = :taskid';
             $stmt = $conn->prepare($sql);
             $stmt->execute(array(
-                ':p'      => $p,
+                ':todo'      => $todo,
+                ':done'      => $done,
                 ':taskid' => $this->getID()
             ));
             $stmt->closeCursor();
-            $this->completed_percentage = $p;
+            $this->todo = $todo;
+            $this->done = $done;
         } catch (\Exception $e) {
 
         }
