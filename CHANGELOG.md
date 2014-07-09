@@ -5,10 +5,13 @@
   - BugFix : Fix Flickr connexion throught Bridge Application
   - BugFix : Fix broken Report Application
   - BugFix : Fix "force authentication" option for push validation
-  - BugFix : Fixe display of "edit" button for a validation accordint to user rights
-  - BugFix : Fixe highlight of record title in detailed view
-  - BugFix : Fixe thumbnail generation for PDF with transparency
+  - BugFix : Fix display of "edit" button for a validation accordint to user rights
+  - BugFix : Fix highlight of record title in detailed view
+  - BugFix : Fix thumbnail generation for PDF with transparency
+  - BugFix : Fix reorder of stories & basket when record titles are too long
+  - BugFix : Fix display of separators for multivalued fields in caption
   - Enhancement : Add the possibility to choose a document or a video as a representative image of a story
+  - Enhancement : Titles are truncated but still visible by hovering them
 
 ## 3.8.4 (2014-06-25)
 
