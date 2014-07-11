@@ -25,12 +25,16 @@
         {
             "type": "vcs",
             "url": "https://github.com/nlegoff/Media-Alchemyst"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/nlegoff/Imagine"
         }
     ],
     "require": {
         "php"                              : ">=5.4",
         "alchemy/oauth2php"                : "1.0.0",
-        "alchemy/phlickr"                  : "0.2.7",
+        "alchemy/phlickr"                  : "0.2.8",
         "alchemy/task-manager"             : "2.0.x-dev@dev",
         "alchemy/zippy"                    : "0.2.x-dev@dev",
         "cboden/ratchet"                   : "~0.3",
@@ -44,8 +48,8 @@
         "alchemy/geonames-api-consumer"    : "~0.1.0",
         "goodby/csv"                       : "~1.0",
         "guzzle/guzzle"                    : "~3.0",
+        "imagine/imagine"                  : "dev-flatten-layer as 0.6.1",
         "igorw/get-in"                     : "~1.0",
-        "imagine/imagine"                  : "0.6.x-dev@dev",
         "ircmaxell/random-lib"             : "~1.0",
         "jms/serializer"                   : "~0.10",
         "jms/translation-bundle"           : "~1.1",

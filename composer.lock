@@ -272,16 +272,16 @@
         },
         {
             "name": "alchemy/phlickr",
-            "version": "0.2.7",
+            "version": "0.2.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Phlickr.git",
-                "reference": "9f228cabf924bdd5913fdb59514904d0d4c8e40a"
+                "reference": "26b7764fd45c15062cb1b21c9389aff919e8c2bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Phlickr/zipball/9f228cabf924bdd5913fdb59514904d0d4c8e40a",
-                "reference": "9f228cabf924bdd5913fdb59514904d0d4c8e40a",
+                "url": "https://api.github.com/repos/alchemy-fr/Phlickr/zipball/26b7764fd45c15062cb1b21c9389aff919e8c2bd",
+                "reference": "26b7764fd45c15062cb1b21c9389aff919e8c2bd",
                 "shasum": ""
             },
             "type": "library",
@@ -291,7 +291,7 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
-            "time": "2013-07-01 09:47:54"
+            "time": "2014-07-07 14:01:51"
         },
         {
             "name": "alchemy/task-manager",
@@ -1569,16 +1569,16 @@
         },
         {
             "name": "imagine/imagine",
-            "version": "dev-develop",
+            "version": "dev-flatten-layer",
             "source": {
                 "type": "git",
-                "url": "https://github.com/avalanche123/Imagine.git",
-                "reference": "5e013323dacbb7d6ab0c0d55692e6b75d1fb30d2"
+                "url": "https://github.com/nlegoff/Imagine.git",
+                "reference": "df2d9d8834d32943082fc52b89c5b11fde279b5a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/avalanche123/Imagine/zipball/5e013323dacbb7d6ab0c0d55692e6b75d1fb30d2",
-                "reference": "5e013323dacbb7d6ab0c0d55692e6b75d1fb30d2",
+                "url": "https://api.github.com/repos/nlegoff/Imagine/zipball/df2d9d8834d32943082fc52b89c5b11fde279b5a",
+                "reference": "df2d9d8834d32943082fc52b89c5b11fde279b5a",
                 "shasum": ""
             },
             "require": {
@@ -1595,7 +1595,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-develop": "0.6-dev"
+                    "dev-develop": "0.7-dev"
                 }
             },
             "autoload": {
@@ -1603,7 +1603,6 @@
                     "Imagine": "lib/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1622,7 +1621,10 @@
                 "image manipulation",
                 "image processing"
             ],
-            "time": "2013-12-23 10:54:18"
+            "support": {
+                "source": "https://github.com/nlegoff/Imagine/tree/flatten-layer"
+            },
+            "time": "2014-07-07 17:04:15"
         },
         {
             "name": "ircmaxell/random-lib",
@@ -2023,12 +2025,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nlegoff/Media-Alchemyst.git",
-                "reference": "e812e631b74ebb0c7b3dd5f4e981d84a7b3c4029"
+                "reference": "be5c7cd4e207c469fb88d88397bd220c4db323d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nlegoff/Media-Alchemyst/zipball/e812e631b74ebb0c7b3dd5f4e981d84a7b3c4029",
-                "reference": "e812e631b74ebb0c7b3dd5f4e981d84a7b3c4029",
+                "url": "https://api.github.com/repos/nlegoff/Media-Alchemyst/zipball/be5c7cd4e207c469fb88d88397bd220c4db323d8",
+                "reference": "be5c7cd4e207c469fb88d88397bd220c4db323d8",
                 "shasum": ""
             },
             "require": {
@@ -2090,7 +2092,7 @@
             "support": {
                 "source": "https://github.com/nlegoff/Media-Alchemyst/tree/master"
             },
-            "time": "2014-06-10 13:51:13"
+            "time": "2014-07-07 16:54:32"
         },
         {
             "name": "mediavorus/mediavorus",
@@ -4906,6 +4908,12 @@
         }
     ],
     "aliases": [
+        {
+            "alias": "0.6.1",
+            "alias_normalized": "0.6.1.0",
+            "version": "dev-flatten-layer",
+            "package": "imagine/imagine"
+        },
         {
             "alias": "0.4.3",
             "alias_normalized": "0.4.3.0",

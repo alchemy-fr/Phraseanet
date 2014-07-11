@@ -412,10 +412,15 @@ class Push implements ControllerProviderInterface
 
                     $app['EM']->flush();
 
-                    $url = $app->url('lightbox_validation', [
+                    $arguments = array(
                         'basket' => $Basket->getId(),
-                        'LOG' => $app['manipulator.token']->createBasketValidationToken($Basket, $participant_user),
-                    ]);
+                    );
+
+                    if (!$app['conf']->get(['registry', 'actions', 'force-authentication']) || !$request->get('force_authentication')) {
+                        $arguments['LOG'] = $app['manipulator.token']->createBasketAccessToken($Basket, $participant_user);
+                    }
+                    
+                    $url = $app->url('lightbox_validation', $arguments);
 
                     $receipt = $request->get('recept') ? $app['authentication']->getUser()->getEmail() : '';
 

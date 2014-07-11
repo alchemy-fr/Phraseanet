@@ -91,7 +91,7 @@
         {% endif %}
         {% set terms = [value]|merge(terms) %}
     {% endfor %}
-    {{ terms|join(' ' ~ field.separator ~ ' ') }}
+    {{ terms|join(' ; ') }}
     {% endautoescape %}
 {% endmacro %}
 

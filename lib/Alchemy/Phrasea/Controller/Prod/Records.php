@@ -135,7 +135,7 @@ class Records implements ControllerProviderInterface
                 'record'        => $record
             ]),
             "pos"           => $record->get_number(),
-            "title"         => $record->get_title($query, $searchEngine)
+            "title"         => str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), $record->get_title($query, $searchEngine))
         ]);
     }
 

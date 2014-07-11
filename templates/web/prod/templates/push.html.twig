@@ -154,10 +154,11 @@
             {% trans %}Accuse de reception{% endtrans %}
         </label>
     </div>
-    {% if app['conf'].get(['registry', 'actions', 'force-authentication']) %}
+    {% if app['conf'].get(['registry', 'actions', 'enable-push-authentication']) %}
+        {% set force = app['conf'].get(['registry', 'actions', 'force-push-authentication']) %}
         <div class="control-group">
-            <label for="PushForceAuthentication" class="checkbox">
-                <input id="PushForceAuthentication" type="checkbox" checked="checked" name="force_authentication" value="1"/>
+            <label for="PushForceAuthentication" class="checkbox" {% if force %}style="color:#8a8a8a"{% endif %}>
+                <input {% if force %}disabled="disabled"{% endif %} id="PushForceAuthentication" type="checkbox" checked="checked" name="force_authentication" value="1"/>
                 {% trans %}Force authentication{% endtrans %}
             </label>
         </div>

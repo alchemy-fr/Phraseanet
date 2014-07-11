@@ -1,55 +1,55 @@
 {% import 'common/thumbnail.html.twig' as thumbnail %}
 <div id="reorder_options" class="PNB" style="height:30px;bottom:auto;">
-    <span>{{ 'Reordonner automatiquement' | trans }}</span>
-    <select id="auto_order">
-      <option value="">{{ 'Choisir' | trans }}</option>
-      <option value="default">{{ 'Re-initialiser' | trans }}</option>
-      <option value="title">{{ 'Titre' | trans }}</option>
-    </select>
-    <button type="button" class="autoorder">{{ 'Re-ordonner' | trans }}</button>
-    <button type="button" class="reverseorder">{{ 'Inverser' | trans }}</button>
-</div>
-<div style="top:30px;overflow:auto;" id="reorder_box" class="PNB">
-    <div class="elements">
-    {% for element in story.get_children() %}
-      <div id="ORDER_{{ element.get_record_id() }}" class="CHIM diapo" style="height:130px;overflow:hidden;">
-        <div class="title" title="{{ element.get_title() }}" style="position:relative;z-index:1200;height:30px;overflow:visible;text-align:center;">
-          <span>{{ element.get_title() }}</span>
-          {{ thumbnail.format(element.get_thumbnail(), 80, 80, '', false, false) }}
-          <form style="display:none;">
-            <input type="hidden" name="id" value="{{ element.get_record_id() }}"/>
-            <input type="hidden" name="title" value="{{ element.get_title() }}"/>
-            <input type="hidden" name="default" value="{{ element.get_number() }}"/>
-          </form>
-        </div>
-      </div>
-    {% endfor %}
-    </div>
-    <form name="reorder" method="POST" action="{{ path('prod_stories_story_reorder', { 'sbas_id' : story.get_sbas_id(), 'record_id' : story.get_record_id() }) }}">
-      {% for element in story.get_children() %}
-        <input type="hidden" name="element[{{ element.get_record_id() }}]" value="{{ element.get_number() }}"/>
-      {% endfor %}
-      <button>{{ 'boutton::valider' | trans }}</button>
+    <form id="reorder_options" class="form-inline" style="display:inline-block;">
+        <span>{{ 'Reordonner automatiquement' | trans }}</span>
+        <select id="auto_order">
+          <option value="">{{ 'Choisir' | trans }}</option>
+          <option value="default">{{ 'Re-initialiser' | trans }}</option>
+          <option value="title">{{ 'Titre' | trans }}</option>
+        </select>
+        <button type="button" class="autoorder">{{ 'Re-ordonner' | trans }}</button>
+        <button type="button" class="reverseorder">{{ 'Inverser' | trans }}</button>
+    </form>
+    <form  style="display:inline-block;" class="form-inline" name="reorder" method="POST" action="{{ path('prod_stories_story_reorder', { 'sbas_id' : story.get_sbas_id(), 'record_id' : story.get_record_id() }) }}">
+        {% for element in story.get_children() %}
+            <input type="hidden" name="element[{{ element.get_record_id() }}]" value="{{ element.get_number() }}"/>
+        {% endfor %}
+        <button>{{ 'boutton::valider' | trans }}</button>
     </form>
 </div>
+<div style="top:45px;overflow:auto;" id="reorder_box" class="PNB">
+    <div class="elements">
+        {% for element in story.get_children() %}
+            <div id="ORDER_{{ element.get_record_id() }}" class="CHIM diapo" style="height:130px;overflow:hidden;">
+                <div class="title" title="{{ element.get_title() }}" style="position:relative;z-index:1200;height:30px;overflow:hidden;text-align:center;text-overflow: ellipsis; line-height: 15px;">
+                    {{ element.get_title() }} {{ element.get_title() }} {{ element.get_title() }}
+                </div>
+                {{ thumbnail.format(element.get_thumbnail(), 80, 80, '', false, false) }}
+                <form style="display:none;">
+                    <input type="hidden" name="id" value="{{ element.get_record_id() }}"/>
+                    <input type="hidden" name="title" value="{{ element.get_title() }}"/>
+                    <input type="hidden" name="default" value="{{ element.get_number() }}"/>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 
-  <script type="text/javascript">
+<script type="text/javascript">
     $(document).ready(function(){
+        var container = $('#reorder_box');//p4.Dialog.get(1).getDomElement();
 
-      var container = $('#reorder_box');//p4.Dialog.get(1).getDomElement();
+        $('button.autoorder', container).bind('click', function(){
+            autoorder();
 
+            return false;
+        });
 
-      $('button.autoorder', container).bind('click', function(){
-        autoorder();
+        $('button.reverseorder', container).bind('click', function(){
+            reverse_order();
 
-        return false;
-      });
-
-      $('button.reverseorder', container).bind('click', function(){
-        reverse_order();
-
-        return false;
-      });
+            return false;
+        });
 
         function autoorder()
         {
@@ -94,140 +94,134 @@
             });
         }
 
-      $('.elements', container).sortable({
-        appendTo : container,
-        placeholder: 'diapo ui-sortable-placeholder',
-        distance:20,
-        cursorAt: {
-          top:10,
-          left:-20
-        },
-        items:'div.diapo',
-        scroll:true,
-        scrollSensitivity:40,
-        scrollSpeed:30,
-        start:function(event, ui){
-          var selected = $('.selected',container);
+        $('.elements', container).sortable({
+            appendTo : container,
+            placeholder: 'diapo ui-sortable-placeholder',
+            distance:20,
+            cursorAt: {
+                top:10,
+                left:-20
+            },
+            items:'div.diapo',
+            scroll:true,
+            scrollSensitivity:40,
+            scrollSpeed:30,
+            start:function(event, ui){
+                var selected = $('.selected',container);
 
-          selected.each(function(i,n){
-            $(n).attr('position',i);
-          });
+                selected.each(function(i,n){
+                    $(n).attr('position',i);
+                });
 
-          var n = selected.length - 1;
+                var n = selected.length - 1;
 
-          $('.selected:visible', container).hide();
+                $('.selected:visible', container).hide();
 
-          while(n > 0)
-          {
-            $('<div style="height:130px;" class="diapo ui-sortable-placeholderfollow"></div>').after($('.diapo.ui-sortable-placeholder', container));
-            n--;
-          }
-        },
-        stop:function(event, ui){
+                while(n > 0)
+                {
+                    $('<div style="height:130px;" class="diapo ui-sortable-placeholderfollow"></div>').after($('.diapo.ui-sortable-placeholder', container));
+                    n--;
+                }
+            },
+            stop:function(event, ui){
 
-          $('.diapo.ui-sortable-placeholderfollow', container).remove();
+                $('.diapo.ui-sortable-placeholderfollow', container).remove();
 
-          var main_id = $(ui.item[0]).attr('id');
+                var main_id = $(ui.item[0]).attr('id');
 
-          var selected = $('.selected',container);
-          var sorter = new Array();
+                var selected = $('.selected',container);
+                var sorter = new Array();
 
 
-          selected.each(function(i,n){
+                selected.each(function(i,n){
 
-            var position = parseInt($(n).attr('position'));
+                    var position = parseInt($(n).attr('position'));
 
-            if(position !== '')
-            {
-              sorter[position] = $(n);
+                    if(position !== '')
+                    {
+                        sorter[position] = $(n);
+                    }
+
+                    var id = $(n).attr('id');
+                    if(id == main_id)
+                    {
+                        return;
+                    }
+
+                });
+
+                var before = true;
+                var last_moved = $(ui.item[0]);
+                $(sorter).each(function(i,n){
+                    $(n).show().removeAttr('position');
+                    if($(n).attr('id') == main_id)
+                    {
+                        before = false;
+                    }
+                    else
+                    {
+                        if(before)
+                            $(n).before($(ui.item[0]));
+                        else
+                            $(n).after($(last_moved));
+
+                    }
+                    last_moved = sorter[i];
+                });
+
+            },
+            change:function(){
+                $('.diapo.ui-sortable-placeholderfollow', container).remove();
+
+                var n = OrderSelection.length() - 1 ;
+                while(n > 0)
+                {
+                    $('<div style="height:130px;" class="diapo ui-sortable-placeholderfollow"></div>').after($('.diapo.ui-sortable-placeholder', container));
+                    n--;
+                }
             }
 
-            var id = $(n).attr('id');
-            if(id == main_id)
-            {
-              return;
-            }
+        }).disableSelection();
 
-          });
-
-          var before = true;
-          var last_moved = $(ui.item[0]);
-          $(sorter).each(function(i,n){
-            $(n).show().removeAttr('position');
-            if($(n).attr('id') == main_id)
-            {
-              before = false;
-            }
-            else
-            {
-              if(before)
-                $(n).before($(ui.item[0]));
-              else
-                $(n).after($(last_moved));
-
-            }
-            last_moved = sorter[i];
-          });
-
-        },
-        change:function(){
-          $('.diapo.ui-sortable-placeholderfollow', container).remove();
-
-          var n = OrderSelection.length() - 1 ;
-          while(n > 0)
-          {
-            $('<div style="height:130px;" class="diapo ui-sortable-placeholderfollow"></div>').after($('.diapo.ui-sortable-placeholder', container));
-            n--;
-          }
-        }
-
-      }).disableSelection();
-
-      var OrderSelection = new Selectable($('.elements', container), {
-          selector : '.CHIM'
+        var OrderSelection = new Selectable($('.elements', container), {
+            selector : '.CHIM'
         });
 
 
-      $('form[name="reorder"]', container).bind('submit', function(event){
+        $('form[name="reorder"] button').bind('click', function(event){
+            var $form = $(this).closest("form");
 
-        //$this.SetLoader(true);
+            $('.elements form', container).each(function(i, el){
+                var id = $('input[name="id"]', $(el)).val();
+                $('input[name="element[' + id + ']"]', $form).val(i+1);
+            });
 
+            $.ajax({
+                type: $form.attr('method'),
+                url: $form.attr('action'),
+                data: $form.serializeArray(),
+                dataType: 'json',
+                beforeSend:function(){
 
-        var $form = $(this);
+                },
+                success: function(data){
+                    if(!data.success) {
+                        alert(data.message);
+                    }
+                    p4.WorkZone.refresh('current', null, false, 'story');
+                    p4.Dialog.get(1).Close();
 
-        $('.elements form', container).each(function(i, el){
-          var id = $('input[name="id"]', $(el)).val();
+                    return;
+                },
+                error: function(){
 
-          $('input[name="element[' + id + ']"]', $form).val(i+1);
+                },
+                timeout: function(){
+
+                }
+            });
+
+            return false;
         });
-
-        $.ajax({
-          type: $form.attr('method'),
-          url: $form.attr('action'),
-          data: $form.serializeArray(),
-          dataType: 'json',
-          beforeSend:function(){
-
-          },
-          success: function(data){
-            if(!data.success)
-            {
-              alert(data.message);
-            }
-            p4.WorkZone.refresh('current', null, false, 'story');
-            p4.Dialog.get(1).Close();
-
-            return;
-          },
-          error: function(){
-
-          },
-          timeout: function(){
-
-          }
-        });
-
-        return false;
-      });
     });
-  </script>
+</script>
