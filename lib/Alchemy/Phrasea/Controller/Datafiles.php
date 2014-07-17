@@ -72,10 +72,9 @@ class Datafiles extends AbstractDelivery
                             ->get_subdef_structure()
                             ->get_subdef($record->get_type(), $subdef)
                             ->get_class();
-                    } catch(\Exception_Databox_SubdefNotFound $e) {
+                    } catch (\Exception_Databox_SubdefNotFound $e) {
 
                     }
-
 
                     if ($subdef_class == \databox_subdef::CLASS_PREVIEW && $app['acl']->get($app['authentication']->getUser())->has_preview_grant($record)) {
                         $watermark = false;

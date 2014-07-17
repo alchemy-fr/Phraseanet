@@ -3,7 +3,6 @@
 namespace Alchemy\Tests\Phrasea\Notification\Mail;
 
 use Alchemy\Phrasea\Notification\Mail\MailInterface;
-use Symfony\Component\Routing\RequestContext;
 
 abstract class MailTestCase extends \PhraseanetTestCase
 {

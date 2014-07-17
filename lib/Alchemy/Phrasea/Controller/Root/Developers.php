@@ -18,7 +18,6 @@ use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Developers implements ControllerProviderInterface
 {
@@ -116,7 +115,6 @@ class Developers implements ControllerProviderInterface
         return $app->json(['success' => true]);
     }
 
-
     /**
      * Change application webhook
      *
@@ -137,7 +135,7 @@ class Developers implements ControllerProviderInterface
             return $app->json(['success' => false]);
         }
 
-        return $app->json(array('success' => true));
+        return $app->json(['success' => true]);
     }
 
     /**
@@ -159,7 +157,7 @@ class Developers implements ControllerProviderInterface
             $app->abort(404, sprintf('Account not found for application %s', $application->getName()));
         }
 
-        if(null !== $devToken = $app['repo.api-oauth-tokens']->findDeveloperToken($account)) {
+        if (null !== $devToken = $app['repo.api-oauth-tokens']->findDeveloperToken($account)) {
             $app['manipulator.api-oauth-token']->renew($devToken);
         } else {
             // dev tokens do not expires

@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Model\Converter;
 
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
-use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BasketConverter implements ConverterInterface

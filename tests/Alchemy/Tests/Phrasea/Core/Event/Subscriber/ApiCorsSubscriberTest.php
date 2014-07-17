@@ -12,17 +12,17 @@ class ApiCorsSubscriberTest extends \PHPUnit_Framework_TestCase
 
     public function testHostRestriction()
     {
-        $response = $this->request(array('enabled' => true, 'hosts' => array('http://api.domain.com')));
+        $response = $this->request(['enabled' => true, 'hosts' => ['http://api.domain.com']]);
         $this->assertArrayNotHasKey('access-control-allow-origin', $response->headers->all());
 
-        $response = $this->request(array('enabled' => true, 'hosts' => array('localhost')));
+        $response = $this->request(['enabled' => true, 'hosts' => ['localhost']]);
         $this->assertArrayHasKey('access-control-allow-origin', $response->headers->all());
     }
 
     public function testExposeHeaders()
     {
         $response = $this->request(
-            array('enabled' => true, 'allow_origin' => array('*'), 'expose_headers' => array('HTTP_X_CUSTOM')),
+            ['enabled' => true, 'allow_origin' => ['*'], 'expose_headers' => ['HTTP_X_CUSTOM']],
             'GET'
         );
         $this->assertArrayHasKey('access-control-expose-headers', $response->headers->all());
@@ -32,17 +32,17 @@ class ApiCorsSubscriberTest extends \PHPUnit_Framework_TestCase
     public function testAllowMethods()
     {
         $response = $this->request(
-            array('enabled' => true, 'allow_origin' => array('*'), 'allow_methods' => array('GET', 'POST', 'PUT')),
+            ['enabled' => true, 'allow_origin' => ['*'], 'allow_methods' => ['GET', 'POST', 'PUT']],
             'OPTIONS'
         );
         $this->assertArrayHasKey('access-control-allow-methods', $response->headers->all());
-        $this->assertEquals(implode(', ', array('GET', 'POST', 'PUT')), $response->headers->get('access-control-allow-methods'));
+        $this->assertEquals(implode(', ', ['GET', 'POST', 'PUT']), $response->headers->get('access-control-allow-methods'));
     }
 
     public function testAllowHeaders()
     {
         $response = $this->request(
-            array('enabled' => true, 'allow_origin' => array('*'), 'allow_headers' => array('HTTP_X_CUSTOM')),
+            ['enabled' => true, 'allow_origin' => ['*'], 'allow_headers' => ['HTTP_X_CUSTOM']],
             'OPTIONS'
         );
         $this->assertArrayHasKey('access-control-allow-headers', $response->headers->all());
@@ -51,26 +51,26 @@ class ApiCorsSubscriberTest extends \PHPUnit_Framework_TestCase
 
     public function testCORSIsEnable()
     {
-        $response = $this->request(array('enabled' => true));
+        $response = $this->request(['enabled' => true]);
         $this->assertArrayHasKey('access-control-allow-origin', $response->headers->all());
     }
 
     public function testCORSIsDisable()
     {
-        $response = $this->request(array('enabled' => false));
+        $response = $this->request(['enabled' => false]);
         $this->assertArrayNotHasKey('access-control-allow-origin', $response->headers->all());
     }
 
     public function testAllowOrigin()
     {
-        $response = $this->request(array('enabled' => true, 'allow_origin' => array('*')));
+        $response = $this->request(['enabled' => true, 'allow_origin' => ['*']]);
         $this->assertArrayHasKey('access-control-allow-origin', $response->headers->all());
         $this->assertEquals($this->origin, $response->headers->get('access-control-allow-origin'));
     }
 
     public function testCredentialIsEnabled()
     {
-        $response = $this->request(array('enabled' => true, 'allow_credentials' => true, 'allow_origin' => array('*')));
+        $response = $this->request(['enabled' => true, 'allow_credentials' => true, 'allow_origin' => ['*']]);
         $this->assertArrayHasKey('access-control-allow-credentials', $response->headers->all());
     }
 
@@ -81,7 +81,7 @@ class ApiCorsSubscriberTest extends \PHPUnit_Framework_TestCase
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    private function request(array $conf, $method = 'GET', array $extraHeaders = array())
+    private function request(array $conf, $method = 'GET', array $extraHeaders = [])
     {
         $app = new Application('test');
         $app['phraseanet.configuration']['api_cors'] = $conf;
@@ -91,13 +91,13 @@ class ApiCorsSubscriberTest extends \PHPUnit_Framework_TestCase
         });
         $client = new Client($app);
         $client->request($method, '/api/v1/test-route',
-            array(),
-            array(),
+            [],
+            [],
             array_merge(
                 $extraHeaders,
-                array(
+                [
                     'HTTP_Origin'    => $this->origin,
-                )
+                ]
             )
         );
 

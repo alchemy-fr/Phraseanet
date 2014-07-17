@@ -471,7 +471,6 @@ class Informations implements ControllerProviderInterface
             $reportArray = $info->buildTabGrpInfo(false, [],  $request->request->get('user'), $conf, false);
 
             if ($request->request->get('printcsv') == 'on' && isset($download)) {
-
                 return $this->getCSVResponse($app, $info, 'info_user');
             }
 
@@ -512,7 +511,7 @@ class Informations implements ControllerProviderInterface
     private function getCSVResponse(Application $app, \module_report $report, $type)
     {
         // set headers
-        $headers = array();
+        $headers = [];
         foreach (array_keys($report->getDisplay()) as $k) {
             $headers[$k] = $k;
         }

@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
-use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Doctrine\ORM\EntityRepository;
 
 /**

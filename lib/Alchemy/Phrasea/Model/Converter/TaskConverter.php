@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Model\Converter;
 
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Repositories\TaskRepository;
-use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TaskConverter implements ConverterInterface

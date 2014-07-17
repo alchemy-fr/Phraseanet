@@ -1779,10 +1779,10 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     public function testLoginPageWithIdleSessionTime()
     {
         $this->logout(self::$DI['app']);
-        self::$DI['app']['phraseanet.configuration']['session'] = array(
+        self::$DI['app']['phraseanet.configuration']['session'] = [
             'idle' =>10,
             'lifetime' => 60475,
-        );
+        ];
 
         $crawler = self::$DI['client']->request('GET', '/login/');
 
@@ -1793,10 +1793,10 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     public function testLoginPageWithNoIdleSessionTime()
     {
         $this->logout(self::$DI['app']);
-        self::$DI['app']['phraseanet.configuration']['session'] = array(
+        self::$DI['app']['phraseanet.configuration']['session'] = [
             'idle' => 0,
             'lifetime' => 60475,
-        );
+        ];
 
         $crawler = self::$DI['client']->request('GET', '/login/');
 

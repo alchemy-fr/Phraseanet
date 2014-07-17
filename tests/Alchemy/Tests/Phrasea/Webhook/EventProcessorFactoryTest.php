@@ -30,8 +30,8 @@ class EventProcessorFactoryTest extends \PhraseanetTestCase
 
     public function eventProvider()
     {
-        return array(
-            array(WebhookEvent::FEED_ENTRY_TYPE, 'Alchemy\Phrasea\Webhook\Processor\FeedEntryProcessor'),
-        );
+        return [
+            [WebhookEvent::FEED_ENTRY_TYPE, 'Alchemy\Phrasea\Webhook\Processor\FeedEntryProcessor'],
+        ];
     }
 }

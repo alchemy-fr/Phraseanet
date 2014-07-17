@@ -2,9 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
-use Alchemy\Phrasea\Controller\Api\V1;
 use Alchemy\Phrasea\Model\Manipulator\WebhookEventDeliveryManipulator;
-use Alchemy\Phrasea\Model\Entities\WebhookEventDelivery;
 use Alchemy\Phrasea\Model\Manipulator\ApiApplicationManipulator;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 

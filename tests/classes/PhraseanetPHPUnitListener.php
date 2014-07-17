@@ -115,6 +115,7 @@ class PhraseanetPHPUnitListener implements PHPUnit_Framework_TestListener
     private static function generateName(PHPUnit_Framework_Test $test)
     {
         $reflect = new \ReflectionClass($test);
+
         return $reflect->getShortName() . '::' . $test->getName();
     }
 }

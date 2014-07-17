@@ -27,7 +27,7 @@ class ConvertersServiceProvider implements ServiceProviderInterface
             return new TaskConverter($app['repo.tasks']);
         });
 
-        $app['converter.task-callback'] = $app->protect(function($id) use ($app) {
+        $app['converter.task-callback'] = $app->protect(function ($id) use ($app) {
             return $app['converter.task']->convert($id);
         });
 

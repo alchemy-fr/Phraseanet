@@ -208,7 +208,7 @@ class ApiOauthToken
     }
 
     /**
-     * @param \DateTime  $lastUsed
+     * @param \DateTime $lastUsed
      *
      * @return ApiOauthToken
      */

@@ -17,7 +17,7 @@ class patch_384alpha3a implements patchInterface
     private $release = '3.8.4-alpha.3';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -58,16 +58,16 @@ class patch_384alpha3a implements patchInterface
     {
         $config = $app['phraseanet.configuration']->getConfig();
 
-        $config['api_cors'] = array(
+        $config['api_cors'] = [
             'enabled' => false,
             'allow_credentials' => false,
-            'allow_origin'    => array(),
-            'allow_headers' => array(),
-            'allow_methods' => array(),
-            'expose_headers' => array(),
+            'allow_origin'    => [],
+            'allow_headers' => [],
+            'allow_methods' => [],
+            'expose_headers' => [],
             'max_age' => 0,
-            'hosts' => array(),
-        );
+            'hosts' => [],
+        ];
 
         $app['phraseanet.configuration']->setConfig($config);
 

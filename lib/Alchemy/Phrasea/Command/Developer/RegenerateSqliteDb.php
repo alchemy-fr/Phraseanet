@@ -342,10 +342,10 @@ class RegenerateSqliteDb extends Command
         $event = new WebhookEvent();
         $event->setName(WebhookEvent::NEW_FEED_ENTRY);
         $event->setType(WebhookEvent::FEED_ENTRY_TYPE);
-        $event->setData(array(
+        $event->setData([
             'feed_id' => $DI['feed_public_entry']->getFeed()->getId(),
             'entry_id' => $DI['feed_public_entry']->getId()
-        ));
+        ]);
         $em->persist($event);
 
         $DI['event_webhook_1'] = $event;
@@ -353,10 +353,10 @@ class RegenerateSqliteDb extends Command
         $event2 = new WebhookEvent();
         $event2->setName(WebhookEvent::NEW_FEED_ENTRY);
         $event2->setType(WebhookEvent::FEED_ENTRY_TYPE);
-        $event2->setData(array(
+        $event2->setData([
             'feed_id' => $DI['feed_public_entry']->getFeed()->getId(),
             'entry_id' => $DI['feed_public_entry']->getId()
-        ));
+        ]);
         $event2->setProcessed(true);
         $em->persist($event2);
     }

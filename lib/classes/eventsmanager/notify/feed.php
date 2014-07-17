@@ -63,7 +63,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
         $this->app['manipulator.webhook-event']->create(
             WebhookEvent::NEW_FEED_ENTRY,
             WebhookEvent::FEED_ENTRY_TYPE,
-            array_merge(array('feed_id' => $entry->getFeed()->getId()), $params)
+            array_merge(['feed_id' => $entry->getFeed()->getId()], $params)
         );
 
         $Query = new \User_Query($this->app);

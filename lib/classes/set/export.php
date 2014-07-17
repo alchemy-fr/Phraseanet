@@ -761,7 +761,7 @@ class set_export extends set_abstract
         $tmplog = [];
         $files = $list['files'];
 
-        $event_name = in_array($type, array(Session_Logger::EVENT_EXPORTMAIL,Session_Logger::EVENT_EXPORTDOWNLOAD)) ? $type : Session_Logger::EVENT_EXPORTDOWNLOAD;
+        $event_name = in_array($type, [Session_Logger::EVENT_EXPORTMAIL,Session_Logger::EVENT_EXPORTDOWNLOAD]) ? $type : Session_Logger::EVENT_EXPORTDOWNLOAD;
 
         foreach ($files as $record) {
             foreach ($record["subdefs"] as $o => $obj) {

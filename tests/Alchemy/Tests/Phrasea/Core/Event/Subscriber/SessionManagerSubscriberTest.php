@@ -13,10 +13,10 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = new Application('test');
         $app['dispatcher']->addSubscriber(new SessionManagerSubscriber($app));
-        $app['phraseanet.configuration']['session'] = array(
+        $app['phraseanet.configuration']['session'] = [
             'idle' => 0,
             'lifetime' => 60475,
-        );
+        ];
 
         $app->get('/login', function () {
             return '';
@@ -39,10 +39,10 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = new Application('test');
         $app['dispatcher']->addSubscriber(new SessionManagerSubscriber($app));
-        $app['phraseanet.configuration']['session'] = array(
+        $app['phraseanet.configuration']['session'] = [
             'idle' => 0,
             'lifetime' => 60475,
-        );
+        ];
 
         $app->get('/login', function () {
             return '';
@@ -53,11 +53,11 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
         });
 
         $client = new Client($app);
-        $client->request('GET', '/prod', array(), array(), array(
+        $client->request('GET', '/prod', [], [], [
             'HTTP_ACCEPT'           => 'application/json',
             'HTTP_X-Requested-With' => 'XMLHttpRequest',
 
-        ));
+        ]);
 
         $this->assertTrue($client->getResponse()->isClientError());
         $this->assertNotNUll($client->getResponse()->headers->get('x-phraseanet-end-session'));
@@ -79,10 +79,10 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
         $app['EM']->expects($this->exactly(4))->method('persist')->will($this->returnValue(null));
         $app['EM']->expects($this->exactly(2))->method('flush')->will($this->returnValue(null));
 
-        $app['phraseanet.configuration']['session'] = array(
+        $app['phraseanet.configuration']['session'] = [
             'idle' => 0,
             'lifetime' => 60475,
-        );
+        ];
         $app->get('/login', function () {
             return '';
         })->bind("homepage");
@@ -114,10 +114,10 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
         $app['EM']->expects($this->any())->method('persist')->will($this->returnValue(null));
         $app['EM']->expects($this->any())->method('flush')->will($this->returnValue(null));
 
-        $app['phraseanet.configuration']['session'] = array(
+        $app['phraseanet.configuration']['session'] = [
             'idle' => 10,
             'lifetime' => 60475,
-        );
+        ];
         $app->get('/login', function () {
             return '';
         })->bind("homepage");
@@ -152,10 +152,10 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
         $app['EM']->expects($this->any())->method('persist')->will($this->returnValue(null));
         $app['EM']->expects($this->any())->method('flush')->will($this->returnValue(null));
 
-        $app['phraseanet.configuration']['session'] = array(
+        $app['phraseanet.configuration']['session'] = [
             'idle' => 10,
             'lifetime' => 60475,
-        );
+        ];
         $app->get('/login', function () {
             return '';
         })->bind("homepage");
@@ -165,10 +165,10 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
         });
 
         $client = new Client($app);
-        $client->request('GET', '/prod', array(), array(), array(
+        $client->request('GET', '/prod', [], [], [
             'HTTP_ACCEPT'           => 'application/json',
             'HTTP_X-Requested-With' => 'XMLHttpRequest',
-        ));
+        ]);
 
         $this->assertTrue($client->getResponse()->isClientError());
         $this->assertNotNUll($client->getResponse()->headers->get('x-phraseanet-end-session'));
@@ -216,18 +216,18 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
         });
 
         $client = new Client($app);
-        $client->request('GET', $route, array(), array(), array(
+        $client->request('GET', $route, [], [], [
             'HTTP_CONTENT-TYPE'     => 'application/json',
             'HTTP_ACCEPT'           => 'application/json',
             'HTTP_X-Requested-With' => 'XMLHttpRequest',
-        ));
+        ]);
     }
 
     public function forbiddenRouteProvider()
     {
-        return array(
-            array('/admin/databox/17/informations/documents/'),
-            array('/admin/task-manager/tasks/'),
-        );
+        return [
+            ['/admin/databox/17/informations/documents/'],
+            ['/admin/task-manager/tasks/'],
+        ];
     }
 }

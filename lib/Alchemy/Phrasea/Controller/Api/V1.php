@@ -1431,7 +1431,7 @@ class V1 implements ControllerProviderInterface
     public function get_publications(Application $app, Request $request)
     {
         $user = $app['authentication']->getUser();
-        $restrictions = (array) ($request->get('feeds') ? : array());
+        $restrictions = (array) ($request->get('feeds') ? : []);
 
         $feed = Aggregate::createFromUser($app, $user, $restrictions);
 

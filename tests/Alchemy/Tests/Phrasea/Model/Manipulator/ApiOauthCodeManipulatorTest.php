@@ -2,11 +2,8 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
-
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Manipulator\ApiOauthCodeManipulator;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class ApiOauthCodeManipulatorTest extends \PhraseanetTestCase
 {

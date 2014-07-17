@@ -2,10 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
-use Alchemy\Phrasea\Model\Manipulator\ApiLogManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiOauthTokenManipulator;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class ApiOauthTokenManipulatorTest extends \PhraseanetTestCase
 {

@@ -482,7 +482,7 @@ class Root implements ControllerProviderInterface
         ];
 
         if ($request->request->get('printcsv') == 'on') {
-            $result = array();
+            $result = [];
 
             $result[] = array_keys($conf_nav);
             foreach ($report['nav']['result'] as $row) {
@@ -677,7 +677,7 @@ class Root implements ControllerProviderInterface
     private function getCSVResponse(Application $app, \module_report $report, $type)
     {
         // set headers
-        $headers = array();
+        $headers = [];
         foreach (array_keys($report->getDisplay()) as $k) {
             $headers[$k] = $k;
         }

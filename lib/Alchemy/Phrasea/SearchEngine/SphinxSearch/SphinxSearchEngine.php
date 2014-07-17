@@ -519,7 +519,7 @@ class SphinxSearchEngine implements SearchEngineInterface
      */
     public function excerpt($query, $fields, \record_adapter $record, SearchEngineOptions $options = null)
     {
-        return array();
+        return [];
     }
 
     /**

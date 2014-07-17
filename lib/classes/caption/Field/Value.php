@@ -64,7 +64,7 @@ class caption_Field_Value implements cache_cacheableInterface
      */
     protected $isThesaurusValue;
 
-    protected static $localCache = array();
+    protected static $localCache = [];
 
     /**
      *
@@ -396,7 +396,7 @@ class caption_Field_Value implements cache_cacheableInterface
         }
 
         if ($bestnode) {
-            list($term, $context) = $this->splitTermAndContext(str_replace(array("[[em]]", "[[/em]]"), array("", ""), $value));
+            list($term, $context) = $this->splitTermAndContext(str_replace(["[[em]]", "[[/em]]"], ["", ""], $value));
             // a value has been found in thesaurus, update value & set the query to bounce to the value
             $this->value = $bestnode->getAttribute('v');
             $this->qjs = $term . ($context ? '['.$context.']' : '');

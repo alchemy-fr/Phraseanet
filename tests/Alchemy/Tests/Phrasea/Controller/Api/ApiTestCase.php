@@ -7,7 +7,6 @@ use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Controller\Api\V1;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Authentication\Context;
-use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -51,7 +50,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
             $this->adminAccessToken = current($tokens);
         }
-
 
         if (null === $this->userAccessToken) {
             $tokens = self::$DI['app']['repo.api-oauth-tokens']->findOauthTokens(self::$DI['oauth2-app-acc-user-not-admin']);

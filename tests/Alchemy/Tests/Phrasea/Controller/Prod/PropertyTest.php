@@ -61,7 +61,6 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
         $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
         $story->appendChild($record2);
 
-
         $acl = $this->getMockBuilder('ACL')
             ->disableOriginalConstructor()
             ->getMock();

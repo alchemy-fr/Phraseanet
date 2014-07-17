@@ -25,7 +25,6 @@ use Alchemy\Phrasea\TaskManager\LiveInformation;
 use Alchemy\Phrasea\TaskManager\TaskManagerStatus;
 use Alchemy\Phrasea\TaskManager\Log\LogFileFactory;
 use Alchemy\Phrasea\TaskManager\Notifier;
-use Alchemy\Phrasea\Webhook\EventProcessorFactory;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 

@@ -48,7 +48,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 
         $user = self::$DI['app']['manipulator.user']->createUser(uniqid('user_'), 'test', 'titi@titi.fr');
 
-        self::giveRightsToUser(self::$DI['app'], self::$DI['app']['authentication']->getUser(), array(self::$DI['collection']->get_base_id()), true);
+        self::giveRightsToUser(self::$DI['app'], self::$DI['app']['authentication']->getUser(), [self::$DI['collection']->get_base_id()], true);
 
         self::$DI['client']->request('POST', '/admin/users/rights/apply/', [
             'users'   => $user->getId(),
@@ -432,7 +432,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         // create a template
         if (null === self::$DI['app']['repo.users']->findByLogin('csv_template')) {
             $user = self::$DI['app']['manipulator.user']->createTemplate('csv_template', self::$DI['app']['authentication']->getUser());
-            self::$DI['app']['acl']->get($user)->update_rights_to_base(self::$DI['collection']->get_base_id(), array('actif'=> 1));
+            self::$DI['app']['acl']->get($user)->update_rights_to_base(self::$DI['collection']->get_base_id(), ['actif'=> 1]);
         }
 
         $nativeQueryMock = $this->getMockBuilder('Alchemy\Phrasea\Model\NativeQueryProvider')
@@ -456,11 +456,11 @@ CSV;
         $filepath = sys_get_temp_dir().'/user.csv';
         file_put_contents($filepath,$data);
 
-        $files = array(
+        $files = [
             'files' => new \Symfony\Component\HttpFoundation\File\UploadedFile($filepath, 'user.csv')
-        );
+        ];
 
-        $crawler = self::$DI['client']->request('POST', '/admin/users/import/file/', array(), $files);
+        $crawler = self::$DI['client']->request('POST', '/admin/users/import/file/', [], $files);
 
         $this->assertGreaterThan(0, $crawler->filter('html:contains("4 Users")')->count());
     }

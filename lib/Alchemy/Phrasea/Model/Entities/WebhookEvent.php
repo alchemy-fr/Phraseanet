@@ -53,12 +53,12 @@ class WebhookEvent
 
     public static function types()
     {
-        return array(self::FEED_ENTRY_TYPE);
+        return [self::FEED_ENTRY_TYPE];
     }
 
     public static function events()
     {
-        return array(self::NEW_FEED_ENTRY);
+        return [self::NEW_FEED_ENTRY];
     }
 
     /**

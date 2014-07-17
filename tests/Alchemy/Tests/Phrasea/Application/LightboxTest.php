@@ -173,9 +173,9 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->authenticate(self::$DI['app']);
         $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 4);
-        $path = self::$DI['app']['url_generator']->generate('lightbox_validation', array(
+        $path = self::$DI['app']['url_generator']->generate('lightbox_validation', [
             'basket' => $basket->getId()
-        ));
+        ]);
 
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
         self::$DI['client']->request('GET', $path);
@@ -225,9 +225,9 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->authenticate(self::$DI['app']);
         $entry = self::$DI['app']['EM']->find('Phraseanet:Feed', 1)->getEntries()->first();
-        $path = self::$DI['app']['url_generator']->generate('lightbox_feed_entry', array(
+        $path = self::$DI['app']['url_generator']->generate('lightbox_feed_entry', [
             'entry_id' => $entry->getId()
-        ));
+        ]);
 
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
         self::$DI['client']->request('GET', $path);

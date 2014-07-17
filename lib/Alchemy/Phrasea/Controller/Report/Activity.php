@@ -217,18 +217,18 @@ class Activity implements ControllerProviderInterface
 
         $report = $activity->getTopQuestion($conf);
 
-        return $app->json(array(
-            'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+        return $app->json([
+            'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
                 'is_doc'      => false
-            )),
+            ]),
             'display_nav' => false,
             'title'       => false
-        ));
+        ]);
     }
 
     /**
@@ -276,18 +276,18 @@ class Activity implements ControllerProviderInterface
 
         $report = $activity->getTopQuestion($conf, true);
 
-        return $app->json(array(
-            'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+        return $app->json([
+            'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
                 'is_doc'      => false
-            )),
+            ]),
             'display_nav' => false,
             'title'       => false
-        ));
+        ]);
     }
 
     /**
@@ -320,18 +320,18 @@ class Activity implements ControllerProviderInterface
 
          $report = $activity->getActivityPerHours();
 
-         return $app->json(array(
-             'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+         return $app->json([
+             'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
                  'result'      => isset($report['report']) ? $report['report'] : $report,
                  'is_infouser' => false,
                  'is_nav'      => false,
                  'is_groupby'  => false,
                  'is_plot'     => true,
                  'is_doc'      => false
-             )),
+             ]),
              'display_nav' => false,
              'title'       => false
-         ));
+         ]);
     }
 
     /**
@@ -380,18 +380,18 @@ class Activity implements ControllerProviderInterface
 
          $report = $activity->getDownloadByBaseByDay($conf);
 
-         return $app->json(array(
-             'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+         return $app->json([
+             'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
                  'result'      => isset($report['report']) ? $report['report'] : $report,
                  'is_infouser' => false,
                  'is_nav'      => false,
                  'is_groupby'  => false,
                  'is_plot'     => false,
                  'is_doc'      => false
-             )),
+             ]),
              'display_nav' => false,
              'title'       => false
-         ));
+         ]);
     }
 
     /**
@@ -852,7 +852,7 @@ class Activity implements ControllerProviderInterface
     private function getCSVResponse(Application $app, \module_report $report, $type)
     {
         // set headers
-        $headers = array();
+        $headers = [];
         foreach (array_keys($report->getDisplay()) as $k) {
             $headers[$k] = $k;
         }

@@ -27,11 +27,11 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['app']['acl'] = $aclProvider;
 
-        $path = self::$DI['app']['url_generator']->generate('datafile', array(
+        $path = self::$DI['app']['url_generator']->generate('datafile', [
             'sbas_id' => self::$DI['record_1']->get_sbas_id(),
             'record_id' => self::$DI['record_1']->get_record_id(),
             'subdef' => $subdef,
-        ));
+        ]);
 
         self::$DI['client']->request('GET', $path);
         $response = self::$DI['client']->getResponse();
@@ -44,11 +44,11 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDatafilesNonExistentSubdef()
     {
-        $path = self::$DI['app']['url_generator']->generate('datafile', array(
+        $path = self::$DI['app']['url_generator']->generate('datafile', [
             'sbas_id' => self::$DI['record_1']->get_sbas_id(),
             'record_id' => self::$DI['record_1']->get_record_id(),
             'subdef' => 'unknown_preview',
-        ));
+        ]);
 
         self::$DI['client']->request('GET', $path);
         $this->assertNotFoundResponse(self::$DI['client']->getResponse());
@@ -73,11 +73,11 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['app']['acl'] = $aclProvider;
 
-        $path = self::$DI['app']['url_generator']->generate('datafile', array(
+        $path = self::$DI['app']['url_generator']->generate('datafile', [
             'sbas_id' => self::$DI['record_1']->get_sbas_id(),
             'record_id' => self::$DI['record_1']->get_record_id(),
             'subdef' => 'preview',
-        ));
+        ]);
 
         self::$DI['client']->request('GET', $path);
         $response = self::$DI['client']->getResponse();
@@ -94,11 +94,11 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
     public function testDatafilesRouteNotAuthenticated()
     {
         self::$DI['app']['authentication']->closeAccount();
-        $path = self::$DI['app']['url_generator']->generate('datafile', array(
+        $path = self::$DI['app']['url_generator']->generate('datafile', [
             'sbas_id' => self::$DI['record_1']->get_sbas_id(),
             'record_id' => self::$DI['record_1']->get_record_id(),
             'subdef' => 'preview',
-        ));
+        ]);
 
         self::$DI['client']->request('GET', $path);
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
@@ -108,11 +108,11 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
     {
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         self::$DI['record_5']->move_to_collection(self::$DI['collection_no_access'], self::$DI['app']['phraseanet.appbox']);
-        $path = self::$DI['app']['url_generator']->generate('datafile', array(
+        $path = self::$DI['app']['url_generator']->generate('datafile', [
             'sbas_id' => self::$DI['record_5']->get_sbas_id(),
             'record_id' => self::$DI['record_5']->get_record_id(),
             'subdef' => 'preview',
-        ));
+        ]);
 
         self::$DI['client']->request('GET', $path);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
@@ -122,11 +122,11 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
     public function testDatafilesRouteNotAuthenticatedUnknownSubdef()
     {
         self::$DI['app']['authentication']->closeAccount();
-        $path = self::$DI['app']['url_generator']->generate('datafile', array(
+        $path = self::$DI['app']['url_generator']->generate('datafile', [
             'sbas_id' => self::$DI['record_1']->get_sbas_id(),
             'record_id' => self::$DI['record_1']->get_record_id(),
             'subdef' => 'preview',
-        ));
+        ]);
 
         self::$DI['client']->request('GET', $path);
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
@@ -145,25 +145,25 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
 
-        $path = self::$DI['app']['url_generator']->generate('permalinks_permalink' ,array(
+        $path = self::$DI['app']['url_generator']->generate('permalinks_permalink' ,[
             'sbas_id' => self::$DI['record_1']->get_sbas_id(),
             'record_id' => self::$DI['record_1']->get_record_id(),
             'label' => 'whatever.jpg',
             'subdef' => 'preview',
             'token' => $token,
             'download' => '1'
-        ));
+        ]);
 
         self::$DI['client']->request('GET', $path);
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isOk());
         $this->assertRegExp('/^attachment;/', $response->headers->get('content-disposition', ''));
-        $url = self::$DI['app']['url_generator']->generate('permalinks_caption', array(
+        $url = self::$DI['app']['url_generator']->generate('permalinks_caption', [
             'sbas_id' => self::$DI['record_1']->get_sbas_id(),
             'record_id' => self::$DI['record_1']->get_record_id(),
             'token' => $token,
-        ), true);
+        ], true);
         $this->assertEquals($url, $response->headers->get("Link"));
     }
 
@@ -193,11 +193,11 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
     public function testCaptionWithaWrongToken()
     {
         $this->assertTrue(self::$DI['app']['authentication']->isAuthenticated());
-        $path = self::$DI['app']['url_generator']->generate('permalinks_caption', array(
+        $path = self::$DI['app']['url_generator']->generate('permalinks_caption', [
             'sbas_id' => self::$DI['record_1']->get_sbas_id(),
             'record_id' => self::$DI['record_1']->get_record_id(),
             'token' => 'unexisting_token',
-        ));
+        ]);
 
         self::$DI['client']->request('GET', $path);
         $response = self::$DI['client']->getResponse();
@@ -208,11 +208,11 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
     public function testCaptionWithaWrongRecord()
     {
         $this->assertTrue(self::$DI['app']['authentication']->isAuthenticated());
-        $path = self::$DI['app']['url_generator']->generate('permalinks_caption', array(
+        $path = self::$DI['app']['url_generator']->generate('permalinks_caption', [
             'sbas_id' => 0,
             'record_id' => 4,
             'token' => 'unexisting_token',
-        ));
+        ]);
 
         self::$DI['client']->request('GET', $path);
         $response = self::$DI['client']->getResponse();
@@ -246,11 +246,11 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['app']['subdef.substituer']->substitute($story, $name, $media);
 
-        $path = self::$DI['app']['url_generator']->generate('datafile', array(
+        $path = self::$DI['app']['url_generator']->generate('datafile', [
             'sbas_id' =>  $story->get_sbas_id(),
             'record_id' => $story->get_record_id(),
             'subdef' => $name,
-        ));
+        ]);
 
         self::$DI['client']->request('GET', $path);
         $response = self::$DI['client']->getResponse();
@@ -260,11 +260,11 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
 
     private function get_a_caption(array $headers = [])
     {
-        $path = self::$DI['app']['url_generator']->generate('permalinks_caption', array(
+        $path = self::$DI['app']['url_generator']->generate('permalinks_caption', [
             'sbas_id' => self::$DI['record_1']->get_sbas_id(),
             'record_id' => self::$DI['record_1']->get_record_id(),
             'token' => self::$DI['record_1']->get_thumbnail()->get_permalink()->get_token(),
-        ));
+        ]);
 
         self::$DI['client']->request('GET', $path);
         $response = self::$DI['client']->getResponse();
@@ -288,13 +288,13 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
 
-        $path = self::$DI['app']['url_generator']->generate('permalinks_permalink_old' ,array(
+        $path = self::$DI['app']['url_generator']->generate('permalinks_permalink_old' ,[
             'sbas_id' => self::$DI['record_1']->get_sbas_id(),
             'record_id' => self::$DI['record_1']->get_record_id(),
             'label' => 'whatever',
             'subdef' => 'preview',
             'token' => $token
-        ));
+        ]);
 
         self::$DI['client']->request('GET', $path);
         $response = self::$DI['client']->getResponse();
@@ -303,11 +303,11 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
             $this->assertEquals($value, $response->headers->get($name));
         }
 
-        $url = self::$DI['app']['url_generator']->generate('permalinks_caption', array(
+        $url = self::$DI['app']['url_generator']->generate('permalinks_caption', [
             'sbas_id' => self::$DI['record_1']->get_sbas_id(),
             'record_id' => self::$DI['record_1']->get_record_id(),
             'token' => $token,
-        ), true);
+        ], true);
         $this->assertEquals($url, $response->headers->get("Link"));
         $this->assertTrue($response->isOk());
     }
@@ -318,11 +318,11 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         $entry = $feed->getEntries()->first();
         $item = $entry->getItems()->first();
 
-        $path = self::$DI['app']['url_generator']->generate('permalinks_permaview', array(
+        $path = self::$DI['app']['url_generator']->generate('permalinks_permaview', [
             'sbas_id' => $item->getRecord(self::$DI['app'])->get_sbas_id(),
             'record_id' => $item->getRecord(self::$DI['app'])->get_record_id(),
             'subdef' => 'preview',
-        ));
+        ]);
 
         self::$DI['app']['authentication']->closeAccount();
         self::$DI['client']->request('GET', $path);
@@ -333,13 +333,13 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
     private function get_a_permaviewBCcompatibility(array $headers = [])
     {
         $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
-        $path = self::$DI['app']['url_generator']->generate('permalinks_permaview_old' ,array(
+        $path = self::$DI['app']['url_generator']->generate('permalinks_permaview_old' ,[
             'sbas_id' => self::$DI['record_1']->get_sbas_id(),
             'record_id' => self::$DI['record_1']->get_record_id(),
             'label' => 'whatever',
             'subdef' => 'preview',
             'token' => $token
-        ));
+        ]);
         self::$DI['client']->request('GET', $path);
         $response = self::$DI['client']->getResponse();
 
@@ -354,13 +354,13 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
 
-        $path = self::$DI['app']['url_generator']->generate('permalinks_permalink' ,array(
+        $path = self::$DI['app']['url_generator']->generate('permalinks_permalink' ,[
             'sbas_id' => self::$DI['record_1']->get_sbas_id(),
             'record_id' => self::$DI['record_1']->get_record_id(),
             'label' => 'whatever.jpg',
             'subdef' => 'preview',
             'token' => $token
-        ));
+        ]);
 
         self::$DI['client']->request('GET', $path);
         $response = self::$DI['client']->getResponse();
@@ -370,11 +370,11 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
             $this->assertEquals($value, $response->headers->get($name));
         }
 
-        $url = self::$DI['app']['url_generator']->generate('permalinks_caption', array(
+        $url = self::$DI['app']['url_generator']->generate('permalinks_caption', [
             'sbas_id' => self::$DI['record_1']->get_sbas_id(),
             'record_id' => self::$DI['record_1']->get_record_id(),
             'token' => $token,
-        ), true);
+        ], true);
         $this->assertEquals($url, $response->headers->get("Link"));
         $this->assertTrue($response->isOk());
 
@@ -389,12 +389,12 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
 
-        $path = self::$DI['app']['url_generator']->generate('permalinks_permaview', array(
+        $path = self::$DI['app']['url_generator']->generate('permalinks_permaview', [
             'sbas_id' => self::$DI['record_1']->get_sbas_id(),
             'record_id' => self::$DI['record_1']->get_record_id(),
             'subdef' => 'preview',
             'token' => $token
-        ));
+        ]);
 
         self::$DI['client']->request('GET', $path);
         $response = self::$DI['client']->getResponse();

@@ -753,7 +753,7 @@ class Xmlhttp implements ControllerProviderInterface
 
         $lcoll = '';
         $collections = $app['authentication']->getUser()->ACL()
-            ->get_granted_base(array(), array($sbid)); // array(), $sbid);
+            ->get_granted_base([], [$sbid]); // array(), $sbid);
         foreach ($collections as $collection) {
             $lcoll .= ($lcoll?",":"") . $collection->get_coll_id();
         }
@@ -779,7 +779,7 @@ class Xmlhttp implements ControllerProviderInterface
                         FROM (thit AS t INNER JOIN record AS r USING(record_id))
                          INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id
                         WHERE t.value LIKE :like AND r.coll_id IN('.$lcoll.') AND (r.status^c.mask_xor)&c.mask_and=0';
-                $sqlparm = array(':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id);
+                $sqlparm = [':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id];
 
                 $stmt = $connbas->prepare($sql);
                 $stmt->execute($sqlparm);
@@ -797,10 +797,10 @@ class Xmlhttp implements ControllerProviderInterface
                          INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id
                         WHERE t.value LIKE :like AND r.coll_id IN('.$lcoll.') AND (r.status^c.mask_xor)&c.mask_and=0
                         GROUP BY k';
-                $sqlparm = array(':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id);
+                $sqlparm = [':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id];
 
                 $stmt = $connbas->prepare($sql);
-                $stmt->execute(array(':like' => $dthid . '%'));
+                $stmt->execute([':like' => $dthid . '%']);
                 $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
                 $stmt->closeCursor();
 
@@ -816,7 +816,7 @@ class Xmlhttp implements ControllerProviderInterface
                          INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id
                         WHERE t.value LIKE :like AND r.coll_id IN('.$lcoll.') AND (r.status^c.mask_xor)&c.mask_and=0
                         GROUP BY k';
-                $sqlparm = array(':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id);
+                $sqlparm = [':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id];
 
                 $stmt = $connbas->prepare($sql);
                 $stmt->execute($sqlparm);
@@ -834,7 +834,7 @@ class Xmlhttp implements ControllerProviderInterface
                          INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id
                         WHERE t.value LIKE :like AND r.coll_id IN('.$lcoll.') AND (r.status^c.mask_xor)&c.mask_and=0
                         GROUP BY k';
-                $sqlparm = array(':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id);
+                $sqlparm = [':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id];
 
                 $stmt = $connbas->prepare($sql);
                 $stmt->execute($sqlparm);

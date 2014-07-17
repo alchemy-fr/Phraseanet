@@ -4,7 +4,6 @@ namespace Alchemy\Tests\Phrasea\Controller\Api;
 
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Authentication\Context;
-use Alchemy\Phrasea\Model\Entities\ApiApplication;
 
 class OAuth2Test extends \PhraseanetAuthenticatedWebTestCase
 {

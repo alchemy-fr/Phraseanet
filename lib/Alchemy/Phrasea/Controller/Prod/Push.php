@@ -217,9 +217,9 @@ class Push implements ControllerProviderInterface
 
                     $app['EM']->flush();
 
-                    $arguments = array(
+                    $arguments = [
                         'basket' => $Basket->getId(),
-                    );
+                    ];
 
                     if (!$app['conf']->get(['registry', 'actions', 'enable-push-authentication']) || !$request->get('force_authentication')) {
                         $arguments['LOG'] = $app['manipulator.token']->createBasketAccessToken($Basket, $user_receiver);
@@ -412,14 +412,14 @@ class Push implements ControllerProviderInterface
 
                     $app['EM']->flush();
 
-                    $arguments = array(
+                    $arguments = [
                         'basket' => $Basket->getId(),
-                    );
+                    ];
 
                     if (!$app['conf']->get(['registry', 'actions', 'enable-push-authentication']) || !$request->get('force_authentication')) {
                         $arguments['LOG'] = $app['manipulator.token']->createBasketAccessToken($Basket, $participant_user);
                     }
-                    
+
                     $url = $app->url('lightbox_validation', $arguments);
 
                     $receipt = $request->get('recept') ? $app['authentication']->getUser()->getEmail() : '';

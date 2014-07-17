@@ -29,7 +29,7 @@ class API_Webhook
             FROM api_webhooks
             WHERE id = :id';
         $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':id' => $id));
+        $stmt->execute([':id' => $id]);
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         if (!$row) {
@@ -48,7 +48,7 @@ class API_Webhook
         $sql = 'DELETE FROM api_webhooks WHERE id = :id';
 
         $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':id' => $this->id));
+        $stmt->execute([':id' => $this->id]);
         $stmt->closeCursor();
 
         return;
@@ -60,10 +60,10 @@ class API_Webhook
             VALUES (null, :type, :data, NOW())';
 
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(
+        $stmt->execute([
             'type' => $type,
             'data' => json_encode($data),
-        ));
+        ]);
         $stmt->closeCursor();
 
         return new API_Webhook($appbox, $appbox->get_connection()->lastInsertId());

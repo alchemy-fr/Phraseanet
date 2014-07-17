@@ -15,11 +15,11 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class CSVFileResponse extends StreamedResponse
 {
-    public function __construct($filename, $callback = null, $status = 200, $headers = array())
+    public function __construct($filename, $callback = null, $status = 200, $headers = [])
     {
         parent::__construct($callback, $status, array_merge(
             // set some headers to fix ie issues
-            array(
+            [
                 'Expires'               => 'Mon, 26 Jul 1997 05:00:00 GMT',
                 'Last-Modified'         => gmdate('D, d M Y H:i:s'). ' GMT',
                 'Cache-Control'         => 'no-store, no-cache, must-revalidate',
@@ -27,7 +27,7 @@ class CSVFileResponse extends StreamedResponse
                 'Pragma'                => 'no-cache',
                 'Cache-Control'         => 'max-age=3600, must-revalidate',
                 'Content-Disposition'   => 'max-age=3600, must-revalidate',
-            ),
+            ],
             $headers
         ));
 

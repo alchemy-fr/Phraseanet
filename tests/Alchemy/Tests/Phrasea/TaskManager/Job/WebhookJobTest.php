@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\TaskManager\Job\WebhookJob;
 
-class WebhookJobTestJobTest extends JobTestCase
+class WebhookJobTest extends JobTestCase
 {
     protected function getJob()
     {

@@ -24,13 +24,13 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $connexion = self::$DI['app']['phraseanet.configuration']['main']['database'];
 
-        $params = array(
+        $params = [
             "hostname" => $connexion['host'],
             "port"     => $connexion['port'],
             "user"     => $connexion['user'],
             "password" => $connexion['password'],
             "dbname"   => $connexion['dbname'],
-        );
+        ];
 
         self::$DI['client']->request("GET", "/admin/tests/connection/mysql/", $params);
         $response = self::$DI['client']->getResponse();
@@ -49,13 +49,13 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
     public function testRouteMysqlFailed()
     {
         $connexion = self::$DI['app']['phraseanet.configuration']['main']['database'];
-        $params = array(
+        $params = [
             "hostname" => $connexion['host'],
             "port"     => $connexion['port'],
             "user"     => $connexion['user'] . 'fake',
             "password" => $connexion['password'],
             "dbname"   => $connexion['dbname'],
-        );
+        ];
 
         self::$DI['client']->request("GET", "/admin/tests/connection/mysql/", $params);
         $response = self::$DI['client']->getResponse();
@@ -75,13 +75,13 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $connexion = self::$DI['app']['phraseanet.configuration']['main']['database'];
 
-        $params = array(
+        $params = [
             "hostname" => $connexion['host'],
             "port"     => $connexion['port'],
             "user"     => $connexion['user'],
             "password" => $connexion['password'],
             "dbname"   => "fake-database-name"
-        );
+        ];
 
         self::$DI['client']->request("GET", "/admin/tests/connection/mysql/", $params);
         $response = self::$DI['client']->getResponse();
@@ -104,7 +104,7 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
     public function testRoutePath()
     {
         $file = new \SplFileObject(__DIR__ . '/../../../../../files/cestlafete.jpg');
-        self::$DI['client']->request("GET", "/admin/tests/pathurl/path/", array('path' => $file->getPathname()));
+        self::$DI['client']->request("GET", "/admin/tests/pathurl/path/", ['path' => $file->getPathname()]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
@@ -120,7 +120,7 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRouteUrl()
     {
-        self::$DI['client']->request("GET", "/admin/tests/pathurl/url/", array('url' => "www.google.com"));
+        self::$DI['client']->request("GET", "/admin/tests/pathurl/url/", ['url' => "www.google.com"]);
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());

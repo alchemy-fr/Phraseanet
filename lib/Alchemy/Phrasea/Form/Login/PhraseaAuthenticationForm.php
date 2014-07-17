@@ -46,20 +46,20 @@ class PhraseaAuthenticationForm extends AbstractType
         ]);
 
         if ($this->app['phraseanet.configuration']['session']['idle'] < 1) {
-            $builder->add('remember-me', 'checkbox' , array(
+            $builder->add('remember-me', 'checkbox' , [
                 'label'    =>  _('Remember me'),
                 'mapped'   => false,
                 'required' => false,
-                'attr'     => array(
+                'attr'     => [
                     'value'   => '1',
-                )
-            ));
+                ]
+            ]);
         } else {
-            $builder->add('remember-me', 'hidden' , array(
+            $builder->add('remember-me', 'hidden' , [
                 'label'    =>  '',
                 'mapped'   => false,
                 'required' => false
-            ));
+            ]);
         }
 
         $builder->add('redirect', 'hidden', [

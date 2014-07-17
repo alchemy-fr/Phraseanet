@@ -25,11 +25,9 @@ use Guzzle\Plugin\Backoff\BackoffPlugin;
 use Guzzle\Plugin\Backoff\TruncatedBackoffStrategy;
 use Guzzle\Plugin\Backoff\CallbackBackoffStrategy;
 use Guzzle\Plugin\Backoff\CurlBackoffStrategy;
-use Guzzle\Plugin\Backoff\ExponentialBackoffStrategy;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-use Guzzle\Http\Exception\MultiTransferException;
 
 class WebhookJob extends AbstractJob
 {
@@ -94,7 +92,7 @@ class WebhookJob extends AbstractJob
             // set max retries
             new TruncatedBackoffStrategy(WebhookEventDelivery::MAX_DELIVERY_TRIES,
                 // set callback which logs success or failure
-                new CallbackBackoffStrategy(function($retries, $request, $response, $e) use ($app, $that) {
+                new CallbackBackoffStrategy(function ($retries, $request, $response, $e) use ($app, $that) {
                     $retry = true;
                     if ($response && (null !== $deliverId = parse_url($request->getUrl(), PHP_URL_FRAGMENT))) {
                         $delivery = $app['repo.webhook-delivery']->find($deliverId);
@@ -153,9 +151,9 @@ class WebhookJob extends AbstractJob
             $uniqueUrl = $this->getUrl($thirdPartyApplication, $delivery);
 
             // create http request with data as request body
-            $batch->add($this->httpClient->createRequest('POST', $uniqueUrl, array(
+            $batch->add($this->httpClient->createRequest('POST', $uniqueUrl, [
                 'Content-Type' => 'application/vnd.phraseanet.event+json'
-            ), json_encode($data)));
+            ], json_encode($data)));
         }
 
         $batch->flush();

@@ -11,9 +11,6 @@
 
 namespace Alchemy\Phrasea\Helper;
 
-use Doctrine\DBAL\DBALException;
-use Alchemy\Phrasea\Core\Connection\ConnectionProvider;
-
 class DatabaseHelper extends Helper
 {
     public function checkConnection()
@@ -75,12 +72,12 @@ class DatabaseHelper extends Helper
             }
         }
 
-        return array(
+        return [
             'connection' => $connection_ok,
             'database'   => $db_ok,
             'is_empty'   => $empty,
             'is_appbox'  => $is_appbox,
             'is_databox' => $is_databox
-        );
+        ];
     }
 }

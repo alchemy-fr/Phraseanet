@@ -2,8 +2,6 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Repositories;
 
-use Alchemy\Phrasea\Model\Entities\ApiApplication;
-
 class ApiOauthTokenRepositoryTest extends \PhraseanetTestCase
 {
     public function testFindDeveloperToken()

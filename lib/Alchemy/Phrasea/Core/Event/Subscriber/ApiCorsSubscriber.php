@@ -25,12 +25,12 @@ class ApiCorsSubscriber implements EventSubscriberInterface
     /**
      * Simple headers as defined in the spec should always be accepted
      */
-    protected static $simpleHeaders = array(
+    protected static $simpleHeaders = [
         'accept',
         'accept-language',
         'content-language',
         'origin',
-    );
+    ];
 
     private $app;
     private $options;
@@ -42,9 +42,9 @@ class ApiCorsSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::REQUEST => array('onKernelRequest', 128),
-        );
+        return [
+            KernelEvents::REQUEST => ['onKernelRequest', 128],
+        ];
     }
 
     public function onKernelRequest(GetResponseEvent $event)
@@ -66,15 +66,15 @@ class ApiCorsSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $options = array_merge(array(
+        $options = array_merge([
             'allow_credentials'=> false,
-            'allow_origin'=> array(),
-            'allow_headers'=> array(),
-            'allow_methods'=> array(),
-            'expose_headers'=> array(),
+            'allow_origin'=> [],
+            'allow_headers'=> [],
+            'allow_methods'=> [],
+            'expose_headers'=> [],
             'max_age'=> 0,
-            'hosts'=> array(),
-        ), $this->app['phraseanet.configuration']['api_cors']);
+            'hosts'=> [],
+        ], $this->app['phraseanet.configuration']['api_cors']);
 
         // skip if the host is not matching
         if (!$this->checkHost($request, $options)) {
@@ -87,13 +87,13 @@ class ApiCorsSubscriber implements EventSubscriberInterface
             return;
         }
         if (!$this->checkOrigin($request, $options)) {
-            $response = new Response('', 403, array('Access-Control-Allow-Origin' => 'null'));
+            $response = new Response('', 403, ['Access-Control-Allow-Origin' => 'null']);
             $event->setResponse($response);
 
             return;
         }
 
-        $this->app['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'onKernelResponse'));
+        $this->app['dispatcher']->addListener(KernelEvents::RESPONSE, [$this, 'onKernelResponse']);
         $this->options = $options;
     }
 

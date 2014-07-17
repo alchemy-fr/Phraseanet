@@ -11,7 +11,6 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class patch_3715alpha1a extends patchAbstract
 {

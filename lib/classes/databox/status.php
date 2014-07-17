@@ -63,11 +63,11 @@ class databox_status
             return;
         }
 
-        $uniqid = md5(implode('-', array(
+        $uniqid = md5(implode('-', [
             $sbas_params[$sbas_id]["host"],
             $sbas_params[$sbas_id]["port"],
             $sbas_params[$sbas_id]["dbname"]
-        )));
+        ]));
 
         $path = $this->path = $app['root.path'] . "/config/status/" . $uniqid;
         $url = $this->url = "/custom/status/" . $uniqid;
