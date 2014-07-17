@@ -47,7 +47,7 @@ class ActionsFormType extends AbstractType
             'label'        => 'Enable this setting to share on Facebook and Twitter',
             'choices'      => ['none' => 'Disabled', 'publishers' => 'Publishers', 'all' => 'Enabled'],
         ]);
-        $builder->add('force-authentication', 'checkbox', [
+        $builder->add('enable-push-authentication', 'checkbox', [
             'label'        => 'Enable Forcing authentication to see push content',
             'help_message' => 'Adds an option to the push form submission to restrict push recipient(s) to Phraseanet users only.',
         ]);

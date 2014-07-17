@@ -48,7 +48,7 @@
                         {% if app['acl'].get(app['authentication'].getUser()).has_right('modifyrecord') %}
                           <div title="" class="context-menu-item menu3-custom-item">
                             <div onclick="editThis('SSTT','{{basket.getId()}}');" style=""
-                                 class="context-menu-item-inner">{% trans 'action::editer' %}
+                                 class="context-menu-item-inner">{{ 'edit' | trans }}
                             </div>
                           </div>
                         {% endif %}
@@ -219,7 +219,7 @@
                              onclick="downloadThis('lst={{story.getRecord(app).get_serialize_key()}}');">{{ 'action::exporter' | trans }}
                         </div>
                       </div>
-                        {% if app['authentication'].getUser().ACL().has_right('modifyrecord') %}
+                        {% if app['acl'].get(app['authentication'].getUser()).has_right('modifyrecord') %}
                       <div title="" class="context-menu-item menu3-custom-item">
                         <div onclick="editThis('IMGT','{{story.getRecord(app).get_serialize_key()}}');" style=""
                              class="context-menu-item-inner">{{ 'action::editer' | trans }}

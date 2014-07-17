@@ -146,6 +146,7 @@ class Order implements ControllerProviderInterface
                     'order_id' => $order->getId(),
                     'usr_id'   => $order->getUser()->getId()
                 ]);
+
                 $success = true;
 
                 $app['EM']->persist($order);

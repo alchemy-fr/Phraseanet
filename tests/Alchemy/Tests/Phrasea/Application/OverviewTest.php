@@ -9,10 +9,28 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testDatafilesRouteAuthenticated()
     {
+        $subdef = 'preview';
+        $acl = $this->getMockBuilder('ACL')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $acl->expects($this->any())
+            ->method('has_access_to_subdef')
+            ->with($this->isInstanceOf('\record_adapter'), $this->equalTo($subdef))
+            ->will($this->returnValue(true));
+
+        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $aclProvider->expects($this->any())
+            ->method('get')
+            ->will($this->returnValue($acl));
+
+        self::$DI['app']['acl'] = $aclProvider;
+
         $path = self::$DI['app']['url_generator']->generate('datafile', array(
             'sbas_id' => self::$DI['record_1']->get_sbas_id(),
             'record_id' => self::$DI['record_1']->get_record_id(),
-            'subdef' => 'preview',
+            'subdef' => $subdef,
         ));
 
         self::$DI['client']->request('GET', $path);
@@ -38,6 +56,23 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testEtag()
     {
+        $acl = $this->getMockBuilder('ACL')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $acl->expects($this->any())
+            ->method('has_access_to_subdef')
+            ->with($this->isInstanceOf('\record_adapter'), $this->isType('string'))
+            ->will($this->returnValue(true));
+
+        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $aclProvider->expects($this->any())
+            ->method('get')
+            ->will($this->returnValue($acl));
+
+        self::$DI['app']['acl'] = $aclProvider;
+
         $path = self::$DI['app']['url_generator']->generate('datafile', array(
             'sbas_id' => self::$DI['record_1']->get_sbas_id(),
             'record_id' => self::$DI['record_1']->get_record_id(),

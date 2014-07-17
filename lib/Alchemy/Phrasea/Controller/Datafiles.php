@@ -66,10 +66,16 @@ class Datafiles extends AbstractDelivery
                 $watermark = !$app['acl']->get($app['authentication']->getUser())->has_right_on_base($record->get_base_id(), 'nowatermark');
 
                 if ($watermark && !$all_access) {
-                    $subdef_class = $databox
-                        ->get_subdef_structure()
-                        ->get_subdef($record->get_type(), $subdef)
-                        ->get_class();
+                    $subdef_class = null;
+                    try {
+                        $subdef_class = $databox
+                            ->get_subdef_structure()
+                            ->get_subdef($record->get_type(), $subdef)
+                            ->get_class();
+                    } catch(\Exception_Databox_SubdefNotFound $e) {
+
+                    }
+
 
                     if ($subdef_class == \databox_subdef::CLASS_PREVIEW && $app['acl']->get($app['authentication']->getUser())->has_preview_grant($record)) {
                         $watermark = false;
@@ -79,10 +85,7 @@ class Datafiles extends AbstractDelivery
                 }
 
                 if ($watermark && !$all_access) {
-
                     $repository = $app['repo.basket-elements'];
-
-                    /* @var $repository BasketElementRepository */
 
                     $ValidationByRecord = $repository->findReceivedValidationElementsByRecord($record, $app['authentication']->getUser());
                     $ReceptionByRecord = $repository->findReceivedElementsByRecord($record, $app['authentication']->getUser());

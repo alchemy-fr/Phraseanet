@@ -238,7 +238,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         ;
         $this->logout(self::$DI['app']);
         $email = $this->generateEmail();
-        $user = self::$DI['app']['manipulator.user']->createUser('test', 'test', $email);
+        $user = self::$DI['app']['manipulator.user']->createUser(uniqid('test_'), uniqid('test_'), $email);
         $token = self::$DI['app']['manipulator.token']->createResetEmailToken($user, $email);
 
         $user->setMailLocked(true);

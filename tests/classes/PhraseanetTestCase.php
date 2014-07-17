@@ -527,7 +527,7 @@ abstract class PhraseanetTestCase extends WebTestCase
      *
      * @param User $user
      */
-    public static function giveRightsToUser(Application $app, User $user, $base_ids = null)
+    public static function giveRightsToUser(Application $app, User $user, $base_ids = null, $force = false)
     {
         $app['acl']->get($user)->delete_data_from_cache(\ACL::CACHE_GLOBAL_RIGHTS);
         $app['acl']->get($user)->give_access_to_sbas(array_keys($app['phraseanet.appbox']->get_databoxes()));
@@ -553,7 +553,7 @@ abstract class PhraseanetTestCase extends WebTestCase
 
                 $app['acl']->get($user)->delete_data_from_cache(\ACL::CACHE_RIGHTS_BAS);
 
-                if ($app['acl']->get($user)->has_access_to_base($base_id)) {
+                if ($app['acl']->get($user)->has_access_to_base($base_id) && false === $force) {
                     continue;
                 }
 

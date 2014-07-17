@@ -221,7 +221,7 @@ class Push implements ControllerProviderInterface
                         'basket' => $Basket->getId(),
                     );
 
-                    if (!$app['conf']->get(['registry', 'actions', 'force-authentication']) || !$request->get('force_authentication')) {
+                    if (!$app['conf']->get(['registry', 'actions', 'enable-push-authentication']) || !$request->get('force_authentication')) {
                         $arguments['LOG'] = $app['manipulator.token']->createBasketAccessToken($Basket, $user_receiver);
                     }
 
@@ -416,7 +416,7 @@ class Push implements ControllerProviderInterface
                         'basket' => $Basket->getId(),
                     );
 
-                    if (!$app['conf']->get(['registry', 'actions', 'force-authentication']) || !$request->get('force_authentication')) {
+                    if (!$app['conf']->get(['registry', 'actions', 'enable-push-authentication']) || !$request->get('force_authentication')) {
                         $arguments['LOG'] = $app['manipulator.token']->createBasketAccessToken($Basket, $participant_user);
                     }
                     

@@ -48,12 +48,13 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 
         $user = self::$DI['app']['manipulator.user']->createUser(uniqid('user_'), 'test', 'titi@titi.fr');
 
+        self::giveRightsToUser(self::$DI['app'], self::$DI['app']['authentication']->getUser(), array(self::$DI['collection']->get_base_id()), true);
+
         self::$DI['client']->request('POST', '/admin/users/rights/apply/', [
             'users'   => $user->getId(),
             'values'  => 'canreport_' . self::$DI['collection']->get_base_id() . '=1&manage_' . self::$DI['collection']->get_base_id() . '=1&canpush_' . self::$DI['collection']->get_base_id() . '=1',
             'user_infos' => ['email' => 'toto@toto.fr' ]
         ]);
-
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOK());
         $this->assertEquals("application/json", $response->headers->get("content-type"));

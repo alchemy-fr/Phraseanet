@@ -593,6 +593,8 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testSetWatermarkBadRequest()
     {
+        $this->setAdmin(true);
+
         self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/picture/watermark/');
 
         $this->assertBadResponse(self::$DI['client']->getResponse());

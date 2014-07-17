@@ -36,7 +36,34 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
      */
     public function testSetExport()
     {
-        self::$DI['app']['acl']->get( self::$DI['app']['authentication']->getUser())->update_rights_to_base(self::$DI['record_1']->get_base_id(), ['order_master' => true]);
+        $acl = $this->getMockBuilder('ACL')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $acl->expects($this->any())
+            ->method('has_right')
+            ->with($this->equalTo('order'))
+            ->will($this->returnValue(true));
+        $acl->expects($this->any())
+            ->method('has_access_to_record')
+            ->with($this->isInstanceOf('\record_adapter'))
+            ->will($this->returnValue(true));
+        $acl->expects($this->any())
+            ->method('has_right_on_base')
+            ->with($this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT), $this->equalTo('cancmd'))
+            ->will($this->returnValue(true));
+        $acl->expects($this->any())
+            ->method('has_right_on_sbas')
+            ->with($this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT), $this->equalTo('cancmd'))
+            ->will($this->returnValue(true));
+
+        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $aclProvider->expects($this->any())
+            ->method('get')
+            ->will($this->returnValue($acl));
+
+        self::$DI['app']['acl'] = $aclProvider;
 
         $eventManagerStub = $this->getMockBuilder('\eventsmanager_broker')
                      ->disableOriginalConstructor()
@@ -49,7 +76,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 
         self::$DI['app']['events-manager'] = $eventManagerStub;
 
-        self::$DI['client']->request('POST', '/prod/order/', [
+        self::$DI['client']->request('POST', self::$DI['app']['url_generator']->generate('prod_order_new'), [
             'lst'      => self::$DI['record_1']->get_serialize_key(),
             'deadline' => '+10 minutes'
         ]);

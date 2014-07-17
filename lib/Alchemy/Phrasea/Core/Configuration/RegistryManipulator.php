@@ -110,7 +110,8 @@ class RegistryManipulator
                 'export-title-choice' => false,
                 'default-export-title' => 'title',
                 'social-tools' => 'none',
-                'force-authentication' => false,
+                'enable-push-authentication' => false,
+                'force-push-authentication' => false,
             ],
             'ftp' => [
                 'ftp-enabled' => false,
