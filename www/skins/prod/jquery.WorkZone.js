@@ -155,6 +155,8 @@ var p4 = p4 || {};
                         }
 
                         selectedItem.remove();
+                    } else {
+                        return p4.WorkZone.reloadCurrent();
                     }
                 } else {
                     humane.error(data.message);
@@ -308,8 +310,8 @@ var p4 = p4 || {};
                 $('a.WorkZoneElementRemover', dest).bind('mousedown',function (event) {
                     return false;
                 }).bind('click', function (event) {
-                        return WorkZoneElementRemover($(this), false);
-                    });
+                    return WorkZoneElementRemover($(this), false);
+                });
 
                 dest.droppable({
                     accept: function (elem) {

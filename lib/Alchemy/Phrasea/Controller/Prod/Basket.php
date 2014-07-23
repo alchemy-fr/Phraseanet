@@ -234,14 +234,22 @@ class Basket implements ControllerProviderInterface
     {
         $basket = $app['EM']->getRepository('\Entities\Basket')
             ->findUserBasket($app, $basket_id, $app['authentication']->getUser(), true);
+        $basketElement = $app['EM']->getRepository('\Entities\BasketElement')
+            ->find($basket_element_id);
+        $ord = $basketElement->getOrd();
 
         foreach ($basket->getElements() as $basket_element) {
+            if ($basket_element->getOrd() > $ord) {
+                $basket_element->setOrd($basket_element->getOrd() - 1);
+            }
             /* @var $basket_element \Entities\BasketElement */
             if ($basket_element->getId() == $basket_element_id) {
+                $basket->removeElement($basket_element);
                 $app['EM']->remove($basket_element);
             }
         }
 
+        $app['EM']->persist($basket);
         $app['EM']->flush();
 
         $data = array(
