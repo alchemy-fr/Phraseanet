@@ -39,8 +39,9 @@
                             {% for key,value in auth.getParams %}
                                 <input type="hidden" name="{{key}}" value="{{value}}">
                             {% endfor %}
-                            {% if errorMessage is defined %}
-                                <p class="login_error">{% trans 'Erreur de login / mot de passe' %}</p>
+                            {% if error == 'login' %}
+                                <br />
+                                <p class="alert alert-error" style="color: #E0215D;padding:10px">{% trans 'Erreur de login / mot de passe' %}</p>
                             {% endif %}
                             <p class="login_hello">
                                 {% trans %}
