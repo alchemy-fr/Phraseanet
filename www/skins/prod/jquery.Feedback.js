@@ -514,7 +514,7 @@
                     var options = {
                         cancelButton: true,
                         buttons: buttons,
-                        size: 'Alert'
+                        size: '700x170'
                     };
 
                     p4.Dialog.Create(options, 2).setContent(box);
@@ -626,7 +626,7 @@
 
             $('button.deleter', $container).bind('click', function (event) {
 
-                var list_id = $(this).find('input[name=list_id]').val();
+                var list_id = $(this).data("list-id");
 
                 var makeDialog = function (box) {
 
