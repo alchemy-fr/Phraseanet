@@ -149,13 +149,13 @@
 
             buttons[language.send] = function () {
                 if ($.trim($('input[name="name"]', $dialog.getDomElement()).val()) === '') {
-                    options = {
+                    var options = {
                         size: 'Alert',
                         closeButton: true,
                         title: language.warning
-                    },
-                        $dialog = p4.Dialog.Create(options, 3);
-                    $dialog.setContent(language.FeedBackNameMandatory);
+                    }
+                    var $dialogAlert = p4.Dialog.Create(options, 3);
+                    $dialogAlert.setContent(language.FeedBackNameMandatory);
 
                     return false;
                 }
