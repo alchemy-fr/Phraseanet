@@ -90,9 +90,9 @@ class Oauth2 implements ControllerProviderInterface
                     }
 
                     $app['authentication']->openAccount(\User_Adapter::getInstance($usr_id, $app));
+                } else {
+                    return new Response($app['twig']->render($template, array("auth" => $oauth2_adapter)));
                 }
-
-                return new Response($app['twig']->render($template, array("auth" => $oauth2_adapter)));
             }
 
             //check if current client is already authorized by current user
