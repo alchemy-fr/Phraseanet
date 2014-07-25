@@ -297,7 +297,7 @@ class Export implements ControllerProviderInterface
                 $mail->setButtonUrl($url);
                 $mail->setExpiration($endDateObject);
 
-                $app['notification.deliverer']->deliver($mail);
+                $app['notification.deliverer']->deliver($mail, !!$request->request->get('reading_confirm', false));
                 unset($remaingEmails[$key]);
             }
 
