@@ -9,14 +9,8 @@
  * file that was distributed with this source code.
  */
 
-/**
- * @todo write tests
- *
- * @package     KonsoleKomander
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Core\Version;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -65,7 +59,7 @@ class module_console_systemUpgrade extends Command
         }
 
         if ($continue == 'y') {
-            $output->write('<info>Upgrading...</info>', true);
+            $output->write(sprintf('Upgrading... from version <info>%s</info> to <info>%s</info>', $this->container['phraseanet.appbox']->get_version(), Version::getNumber()), true);
 
             if (count(User_Adapter::get_wrong_email_users($this->container)) > 0) {
                 return $output->writeln(sprintf('<error>You have to fix your database before upgrade with the system:mailCheck command </error>'));

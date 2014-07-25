@@ -228,10 +228,8 @@ class Application extends SilexApplication
                 }
             }
 
-            $imagineDriver = $app['phraseanet.registry']->get('GV_imagine_driver');
-
-            $configuration['ffmpeg.threads'] = $app['phraseanet.registry']->get('GV_ffmpeg_threads');
-            $configuration['imagine.driver'] = $imagineDriver ?: null;
+            $configuration['ffmpeg.threads'] = $app['phraseanet.registry']->get('GV_ffmpeg_threads') ?: null;
+            $configuration['imagine.driver'] = $app['phraseanet.registry']->get('GV_imagine_driver') ?: null;
 
             return $configuration;
         });
