@@ -107,14 +107,18 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new \API_V1_result($app, $app['request'], $this);
 
-        $taskManager = $app['task-manager'];
-        $ret = $taskManager->getSchedulerState();
+        if ($app['phraseanet.registry"].get("GV_disable_task_manager']) {
+            $ret = array('state' => 'disabled');
+        } else {
+            $taskManager = $app['task-manager'];
+            $ret = $taskManager->getSchedulerState();
+        }
 
         $ret['state'] = $ret['status'];
 
         unset($ret['qdelay'], $ret['status']);
 
-        if (null !== $ret['updated_on']) {
+        if (isset($ret['updated_on']) && null !== $ret['updated_on']) {
             $ret['updated_on'] = $ret['updated_on']->format(DATE_ATOM);
         }
 

@@ -17,6 +17,7 @@
  */
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Monolog\Handler;
 use Monolog\Logger;
 use Symfony\Component\Console\Input\InputInterface;
@@ -36,6 +37,9 @@ class module_console_schedulerStart extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        if ($this->container['phraseanet.registry"].get("GV_disable_task_manager']) {
+            throw new RuntimeException('The use of the task manager is disabled on this instance.');
+        }
         $logger = $this->container['task-manager.logger'];
 
         $streamHandler = new Handler\StreamHandler('php://stdout', $input->getOption('verbose') ? Logger::DEBUG : Logger::WARNING);

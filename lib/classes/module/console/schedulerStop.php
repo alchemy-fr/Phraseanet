@@ -16,6 +16,7 @@
  * @link        www.phraseanet.com
  */
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -33,6 +34,10 @@ class module_console_schedulerStop extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        if ($this->container['phraseanet.registry"].get("GV_disable_task_manager']) {
+            throw new RuntimeException('The use of the task manager is disabled on this instance.');
+        }
+
         try {
             $task_manager = $this->container['task-manager'];
             $task_manager->setSchedulerState(task_manager::STATE_TOSTOP);

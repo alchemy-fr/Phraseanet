@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Exception\XMLParseErrorException;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -71,6 +72,11 @@ class TaskManager implements ControllerProviderInterface
          * route /admin/scheduler/stop
          */
         $controllers->get('/scheduler/stop', function (Application $app, Request $request) use ($app) {
+
+            if ($app['phraseanet.registry"].get("GV_disable_task_manager']) {
+                throw new RuntimeException('The use of the task manager is disabled on this instance.');
+            }
+
             try {
                 $app['task-manager']->setSchedulerState(\task_manager::STATE_TOSTOP);
 
@@ -341,6 +347,10 @@ class TaskManager implements ControllerProviderInterface
 
     public function startScheduler(Application $app, Request $request)
     {
+        if ($app['phraseanet.registry"].get("GV_disable_task_manager']) {
+            throw new RuntimeException('The use of the task manager is disabled on this instance.');
+        }
+
         $app['session']->save();
         set_time_limit(0);
         ignore_user_abort(true);
