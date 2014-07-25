@@ -1,0 +1,7 @@
+---
+:backends: yaml
+:yaml:
+    :datadir: '/vagrant/vagrant/phraseanet-hhvm-nginx/puphpet'
+:hierarchy:
+    - config
+:logger: console

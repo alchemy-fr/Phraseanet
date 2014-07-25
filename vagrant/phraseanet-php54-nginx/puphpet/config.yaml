@@ -1,0 +1,287 @@
+---
+vagrantfile-local:
+    name: phraseanet-php54-nginx
+    vm:
+        box: puphpet/debian75-x64
+        box_url: puphpet/debian75-x64
+        hostname: phraseanet-dev
+        memory: '2048'
+        chosen_provider: virtualbox
+        network:
+            private_network: 192.168.56.101
+            forwarded_port:
+                jjfjpp9VdZ4A:
+                    host: '6592'
+                    guest: '22'
+        provider:
+            virtualbox:
+                modifyvm:
+                    natdnshostresolver1: on
+                setextradata:
+                    VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root: 1
+            vmware:
+                numvcpus: 1
+            parallels:
+                cpus: 1
+        provision:
+            puppet:
+                manifests_path: vagrant/phraseanet-php54-nginx/puphpet/puppet
+                manifest_file: manifest.pp
+                module_path: vagrant/phraseanet-php54-nginx/puphpet/puppet/modules
+                options:
+                    - '--verbose'
+                    - '--hiera_config /vagrant/vagrant/phraseanet-php54-nginx/puphpet/puppet/hiera.yaml'
+                    - '--parser future'
+        synced_folder:
+            KaPfJ4CzfgFk:
+                source: ~/workspace
+                target: /var/www
+                sync_type: nfs
+                rsync:
+                    args: '-z'
+                    exclude: .vagrant/
+                    auto: 'false'
+        usable_port_range: 2200..2250
+    ssh:
+        host: null
+        port: null
+        private_key_path: null
+        username: vagrant
+        guest_port: null
+        keep_alive: true
+        forward_agent: false
+        forward_x11: false
+        shell: 'bash -l'
+    vagrant:
+        host: detect
+server:
+    packages:
+        - imagemagick
+        - libevent-dev
+        - ufraw
+        - ffmpeg
+        - ghostscript
+        - xpdf
+        - unoconv
+        - gpac
+        - swftools
+        - openjdk-7-jre
+        - openjdk-7-jdk
+        - locales
+        - libmariadbclient-dev
+        - pkg-config
+        - libzmq-dev
+        - libxml2-dev
+        - libexpat1-dev
+        - libzmq3-dev
+        - re2c
+        - scons
+        - inkscape
+        - python-setuptools
+        - libmemcache0
+        - libimage-exiftool-perl
+        - git
+        - libfreetype6-dev
+        - libgif-dev
+        - libjpeg62-dev
+    dot_files:
+        -
+            bash_aliases: null
+    _prevent_empty: ''
+mailcatcher:
+    install: '1'
+    settings:
+        smtp_ip: 0.0.0.0
+        smtp_port: 1025
+        http_ip: 0.0.0.0
+        http_port: '1080'
+        mailcatcher_path: /usr/local/bin
+        log_path: /var/log/mailcatcher/mailcatcher.log
+firewall:
+    install: '1'
+    rules: null
+hhvm:
+    install: '1'
+    nightly: '1'
+    settings:
+        host: 127.0.0.1
+        port: '9000'
+apache:
+    install: 0
+    settings:
+        user: www-data
+        group: www-data
+        default_vhost: true
+        manage_user: false
+        manage_group: false
+        sendfile: 0
+    modules:
+        - php
+        - rewrite
+    vhosts:
+        7lQATQxib5dH:
+            servername: awesome.dev
+            serveraliases:
+                - www.awesome.dev
+            docroot: /var/www/awesome
+            port: '80'
+            setenv:
+                - 'APP_ENV dev'
+            override:
+                - All
+            options:
+                - Indexes
+                - FollowSymLinks
+                - MultiViews
+            custom_fragment: ''
+            ssl_cert: ''
+            ssl_key: ''
+            ssl_chain: ''
+            ssl_certs_dir: ''
+    mod_pagespeed: 0
+    mod_spdy: 0
+nginx:
+    install: '1'
+    settings:
+        default_vhost: 1
+        proxy_buffer_size: 128k
+        proxy_buffers: '4 256k'
+    vhosts:
+        issDOx17O4bn:
+            server_name: php54-nginx.phraseanet
+            server_aliases:
+                - php54-nginx.phrasea.net
+                - php54-nginx.alchemyasp.com
+            www_root: /var/www/Phraseanet/www
+            listen_port: '8080'
+            index_files:
+                - index.html
+                - index.htm
+                - index.php
+            envvars:
+                - 'APP_ENV dev'
+                - 'PATH /usr/local/bin:/usr/bin:/bin'
+            ssl: '1'
+            ssl_cert: ''
+            ssl_key: ''
+php:
+    install: '1'
+    version: '54'
+    composer: '1'
+    composer_home: ''
+    modules:
+        php:
+            - cli
+            - intl
+            - mcrypt
+            - memcache
+            - memcached
+            - curl
+            - gd
+            - imagick
+            - enchant
+            - mysql
+            - mbstring
+            - sqlite
+        pear: {  }
+        pecl:
+            - zip
+            - json
+            - amqp
+            - mongo
+            - APC
+    ini:
+        display_errors: On
+        error_reporting: '-1'
+        session.save_path: '/var/lib/php/session'
+        sql.safe_mode: 'false'
+        file_uploads: On
+        session.cache_limiter: Off
+        short_open_tag: Off
+        session.auto_start: Off
+        allow_url_fopen: On
+        session.hash_bits_per_character: '6'
+        session.hash_function: On
+        session.use_only_cookies: On
+        session.use_cookies: On
+        upload_max_filesize: '2000M'
+        post_max_size: '2000M'
+    timezone: Europe/Paris
+xdebug:
+    install: '1'
+    settings:
+        xdebug.default_enable: '1'
+        xdebug.remote_autostart: '0'
+        xdebug.remote_connect_back: '1'
+        xdebug.remote_enable: '1'
+        xdebug.remote_handler: dbgp
+        xdebug.remote_port: '9000'
+        xdebug.max_nesting_level: '1000'
+drush:
+    install: 0
+    settings:
+        drush.tag_branch: 6.x
+mysql:
+    install: 0
+    root_password: '123'
+    adminer: 0
+    databases:
+        AClrSlhQehoc:
+            grant:
+                - ALL
+            name: dbname
+            host: localhost
+            user: dbuser
+            password: '123'
+            sql_file: ''
+postgresql:
+    install: 0
+    settings:
+        root_password: '123'
+        user_group: postgres
+        encoding: UTF8
+        version: '9.3'
+    databases: {  }
+    adminer: 0
+mariadb:
+    install: '1'
+    root_password: toor
+    adminer: '1'
+    databases: {  }
+    version: '10.0'
+sqlite:
+    install: '1'
+    adminer: '1'
+    databases: {  }
+mongodb:
+    install: '1'
+    settings:
+        auth: 1
+        port: '27017'
+    databases: {  }
+redis:
+    install: '1'
+    settings:
+        conf_port: '6379'
+beanstalkd:
+    install: 0
+    settings:
+        listenaddress: 0.0.0.0
+        listenport: '13000'
+        maxjobsize: '65535'
+        maxconnections: '1024'
+        binlogdir: /var/lib/beanstalkd/binlog
+        binlogfsync: null
+        binlogsize: '10485760'
+    beanstalk_console: 0
+    binlogdir: /var/lib/beanstalkd/binlog
+rabbitmq:
+    install: '1'
+    settings:
+        port: '5672'
+elastic_search:
+    install: '1'
+    settings:
+        java_install: true
+        autoupgrade: true
+
