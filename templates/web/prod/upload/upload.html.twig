@@ -394,13 +394,19 @@ $(document).ready(function () {
     //on submit file
     $('#fileupload', UploaderManager.getContainer()).bind('fileuploadsubmit', function (e, data) {
         var $this = $(this);
+        var params = [];
+        data.formData = [];
 
         //get form datas attached to the file
-        data.formData = $.extend(
-            data.context.find('input, select').serializeArray(),
-            $("input", $('.collection-status:visible', UploaderManager.getSettingsBox())).serializeArray(),
-            $("select", UploaderManager.getSettingsBox()).serializeArray()
-        );
+        params.push(data.context.find('input, select').serializeArray());
+        params.push($("input", $('.collection-status:visible', UploaderManager.getSettingsBox())).serializeArray());
+        params.push($("select", UploaderManager.getSettingsBox()).serializeArray());
+
+        $.each(params, function(i, p) {
+            $.each(p, function (i, f){
+                data.formData.push(f);
+            });
+        });
 
         data.formData.push({
             "name": "b64_image",

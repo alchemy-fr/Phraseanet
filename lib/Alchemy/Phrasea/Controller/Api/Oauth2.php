@@ -49,7 +49,7 @@ class Oauth2 implements ControllerProviderInterface
             $params = $oauth2_adapter->getAuthorizationRequestParameters($request);
 
             $app_authorized = false;
-            $errorMessage = false;
+            $error = $request->get('error', '');
 
             $client = \API_OAuth2_Application::load_from_client_id($app, $params['client_id']);
 
@@ -79,26 +79,24 @@ class Oauth2 implements ControllerProviderInterface
                         $usr_id = $app['auth.native']->getUsrId($request->get("login"), $request->get("password"), $request);
 
                         if (null === $usr_id) {
-                            $app['session']->getFlashBag()->set('error', _('login::erreur: Erreur d\'authentification'));
 
-                            return $app->redirectPath('oauth2_authorize');
+                            return $app->redirectPath('oauth2_authorize', array_merge(array('error' => 'login'), $params));
                         }
                     } catch (RequireCaptchaException $e) {
-                        return $app->redirectPath('oauth2_authorize', array('error' => 'captcha'));
+                        return $app->redirectPath('oauth2_authorize', array_merge(array('error' => 'captcha'), $params));
                     } catch (AccountLockedException $e) {
-                        return $app->redirectPath('oauth2_authorize', array('error' => 'account-locked'));
+                        return $app->redirectPath('oauth2_authorize', array_merge(array('error' => 'account-locked'), $params));
                     }
 
                     $app['authentication']->openAccount(\User_Adapter::getInstance($usr_id, $app));
+                } else {
+                    return new Response($app['twig']->render($template, array('error' => $error, "auth" => $oauth2_adapter)));
                 }
-
-                return new Response($app['twig']->render($template, array("auth" => $oauth2_adapter)));
             }
 
             //check if current client is already authorized by current user
             $user_auth_clients = \API_OAuth2_Application::load_authorized_app_by_user(
-                    $app
-                    , $app['authentication']->getUser()
+                    $app, $app['authentication']->getUser()
             );
 
             foreach ($user_auth_clients as $auth_client) {
@@ -114,7 +112,7 @@ class Oauth2 implements ControllerProviderInterface
             if (!$app_authorized && $action_accept === null) {
                 $params = array(
                     "auth"         => $oauth2_adapter,
-                    "errorMessage" => $errorMessage,
+                    "error"        => $error,
                 );
 
                 return new Response($app['twig']->render($template, $params));
