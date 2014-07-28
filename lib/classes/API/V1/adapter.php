@@ -112,11 +112,9 @@ class API_V1_adapter extends API_V1_Abstract
         } else {
             $taskManager = $app['task-manager'];
             $ret = $taskManager->getSchedulerState();
+            $ret['state'] = $ret['status'];
+            unset($ret['qdelay'], $ret['status']);
         }
-
-        $ret['state'] = $ret['status'];
-
-        unset($ret['qdelay'], $ret['status']);
 
         if (isset($ret['updated_on']) && null !== $ret['updated_on']) {
             $ret['updated_on'] = $ret['updated_on']->format(DATE_ATOM);
