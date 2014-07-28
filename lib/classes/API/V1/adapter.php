@@ -107,7 +107,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new \API_V1_result($app, $app['request'], $this);
 
-        if ($app['phraseanet.registry"].get("GV_disable_task_manager']) {
+        if (false === $app['phraseanet.configuration']['main']['task-manager']['enabled']) {
             $ret = array('state' => 'disabled');
         } else {
             $taskManager = $app['task-manager'];

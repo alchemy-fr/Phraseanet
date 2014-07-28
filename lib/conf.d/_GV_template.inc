@@ -342,19 +342,6 @@ return call_user_func_array(function(Application $app) {
                 )
             )
         ), array(
-            'section' => _('Task manager'),
-            'rolled'  => true,
-            'vars'    => array(
-                array(
-                    'type'     => \registry::TYPE_BOOLEAN,
-                    'name'     => 'GV_disable_task_manager',
-                    'comment'  => _('Disable task manager'),
-                    'help'     => '',
-                    'default'  => false,
-                    'required' => true
-                )
-            )
-        ), array(
             'section' => _('Search engine'),
             'rolled'  => true,
             'vars'    => array(

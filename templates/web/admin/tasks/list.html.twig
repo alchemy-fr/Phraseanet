@@ -33,7 +33,7 @@
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        {% if not app["phraseanet.registry"].get("GV_disable_task_manager") %}
+                        {% if app['phraseanet.configuration']['main']['task-manager']['enabled'] %}
                             <li class="schedMenuItem" id="schedulerStart"><a href="#">start</a></li>
                             <li class="schedMenuItem" id="schedulerStop"><a href="#">stop</a></li>
                         {% endif %}
@@ -57,7 +57,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li class="taskMenuItem" id="taskEdit_{{ task.getID() }}"><a href="#">{% trans 'Edit' %}</a></li>
-                        {% if not app["phraseanet.registry"].get("GV_disable_task_manager") %}
+                        {% if app['phraseanet.configuration']['main']['task-manager']['enabled'] %}
                             <li class="taskMenuItem" id="taskStart_{{ task.getID() }}"><a href="#">{% trans 'Start' %}</a></li>
                             <li class="taskMenuItem" id="taskStop_{{ task.getID() }}"><a href="#">{% trans 'Stop' %}</a></li>
                         {% endif %}

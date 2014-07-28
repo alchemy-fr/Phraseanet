@@ -28,6 +28,7 @@ main:
         type: Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine
         options: []
     task-manager:
+        enabled: true
         logger:
             max-files: 10
             enabled: true

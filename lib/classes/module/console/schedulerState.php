@@ -56,7 +56,7 @@ class module_console_schedulerState extends Command
             return self::EXITCODE_SETUP_ERROR;
         }
 
-        if ($this->container['phraseanet.registry"].get("GV_disable_task_manager']) {
+        if (false === $this->container['phraseanet.configuration']['main']['task-manager']['enabled']) {
             throw new RuntimeException('The use of the task manager is disabled on this instance.');
         }
 

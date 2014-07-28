@@ -73,7 +73,7 @@ class TaskManager implements ControllerProviderInterface
          */
         $controllers->get('/scheduler/stop', function (Application $app, Request $request) use ($app) {
 
-            if ($app['phraseanet.registry"].get("GV_disable_task_manager']) {
+            if (false === $app['phraseanet.configuration']['main']['task-manager']['enabled']) {
                 throw new RuntimeException('The use of the task manager is disabled on this instance.');
             }
 
@@ -347,7 +347,7 @@ class TaskManager implements ControllerProviderInterface
 
     public function startScheduler(Application $app, Request $request)
     {
-        if ($app['phraseanet.registry"].get("GV_disable_task_manager']) {
+        if (false === $app['phraseanet.configuration']['main']['task-manager']['enabled']) {
             throw new RuntimeException('The use of the task manager is disabled on this instance.');
         }
 
