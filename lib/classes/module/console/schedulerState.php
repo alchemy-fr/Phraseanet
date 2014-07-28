@@ -16,6 +16,7 @@
  * @link        www.phraseanet.com
  */
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -53,6 +54,10 @@ class module_console_schedulerState extends Command
     {
         if (!$this->container['phraseanet.configuration-tester']->isInstalled()) {
             return self::EXITCODE_SETUP_ERROR;
+        }
+
+        if (false === $this->container['phraseanet.configuration']['main']['task-manager']['enabled']) {
+            throw new RuntimeException('The use of the task manager is disabled on this instance.');
         }
 
         $task_manager = $this->container['task-manager'];

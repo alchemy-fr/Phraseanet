@@ -73,6 +73,10 @@ class module_console_taskrun extends Command
             return self::EXITCODE_SETUP_ERROR;
         }
 
+        if (false === $this->container['phraseanet.configuration']['main']['task-manager']['enabled']) {
+            throw new RuntimeException('The use of the task manager is disabled on this instance.');
+        }
+
         $task_id = (int) $input->getArgument('task_id');
         if ($task_id <= 0 || strlen($task_id) !== strlen($input->getArgument('task_id'))) {
             throw new \RuntimeException('Argument must be an Id.');
