@@ -4,14 +4,14 @@ vagrantfile-local:
     vm:
         box: puphpet/debian75-x64
         box_url: puphpet/debian75-x64
-        hostname: phraseanet-dev
+        hostname: phraseanet-hhvm-nginx
         memory: '2048'
         chosen_provider: virtualbox
         network:
             private_network: 192.168.56.103
             forwarded_port:
                 jjfjpp9VdZ4A:
-                    host: '6592'
+                    host: '6594'
                     guest: '22'
         provider:
             virtualbox:
@@ -165,7 +165,7 @@ nginx:
             ssl_cert: ''
             ssl_key: ''
 php:
-    install: '1'
+    install: '0'
     version: '54'
     composer: '1'
     composer_home: ''

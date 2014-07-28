@@ -4,7 +4,7 @@ vagrantfile-local:
     vm:
         box: puphpet/debian75-x64
         box_url: puphpet/debian75-x64
-        hostname: phraseanet-dev
+        hostname: phraseanet-php54-nginx
         memory: '2048'
         chosen_provider: virtualbox
         network:

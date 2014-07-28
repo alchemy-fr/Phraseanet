@@ -4,14 +4,14 @@ vagrantfile-local:
     vm:
         box: puphpet/debian75-x64
         box_url: puphpet/debian75-x64
-        hostname: phraseanet-dev
+        hostname: phraseanet-php54-apache
         memory: '2048'
         chosen_provider: virtualbox
         network:
             private_network: 192.168.56.102
             forwarded_port:
                 jjfjpp9VdZ4A:
-                    host: '6592'
+                    host: '6593'
                     guest: '22'
         provider:
             virtualbox:
@@ -118,7 +118,7 @@ apache:
             serveraliases:
                 - php54-apache.phrasea.net
                 - php54-apache.phraseanet.alchemyasp.com
-            doc_root: /var/www/Phraseanet/www
+            www_root: /var/www/Phraseanet/www
             port: '8080'
             setenv:
                 - 'APP_ENV dev'
