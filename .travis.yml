@@ -23,7 +23,8 @@ before_script:
   - echo 'extension="redis.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/redis.ini
   - echo 'extension="memcache.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcache.ini
   - echo 'extension="memcached.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcached.ini
-  - yes | pecl install imagick
+  - echo "extension=zmq.so" > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/zmq.ini
+    - yes | pecl install imagick
   - travis_retry composer self-update
   - travis_retry composer install --dev --prefer-source
   - wget http://sphinxsearch.com/files/sphinx-2.0.6-release.tar.gz
