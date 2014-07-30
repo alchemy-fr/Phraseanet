@@ -789,7 +789,7 @@ class set_export extends set_abstract
                     $log["poids"] = $obj["size"];
                     $log["shortXml"] = $record_object->get_caption()->serialize(caption_record::SERIALIZE_XML);
                     $tmplog[$record_object->get_base_id()][] = $log;
-                    if (!$anonymous && $o == 'document') {
+                    if (!$anonymous && $o == 'document' && null !== $app['authentication']->getUser()) {
                         $app['authentication']->getUser()->ACL()->remove_remaining($record_object->get_base_id());
                     }
                 }
@@ -800,7 +800,7 @@ class set_export extends set_abstract
 
         $list_base = array_unique(array_keys($tmplog));
 
-        if (!$anonymous) {
+        if (!$anonymous && null !== $app['authentication']->getUser()) {
             $sql = "UPDATE basusr
             SET remain_dwnld = :remain_dl
             WHERE base_id = :base_id AND usr_id = :usr_id";
@@ -811,8 +811,8 @@ class set_export extends set_abstract
                 if ($app['authentication']->getUser()->ACL()->is_restricted_download($base_id)) {
                     $params = array(
                         ':remain_dl' => $app['authentication']->getUser()->ACL()->remaining_download($base_id)
-                        , ':base_id'   => $base_id
-                        , ':usr_id'    => $app['authentication']->getUser()->get_id()
+                        , ':base_id' => $base_id
+                        , ':usr_id'  => $app['authentication']->getUser()->get_id()
                     );
 
                     $stmt->execute($params);
