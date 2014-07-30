@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "748dacbcdc2199ab5eed1a237bf4fd17",
+    "hash": "81820d7853d2c85cbb34fc57910d6963",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -1494,13 +1494,11 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.4.4",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nlegoff/Media-Alchemyst.git",
                 "reference": "be5c7cd4e207c469fb88d88397bd220c4db323d8"
-                "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "067599fd669b86ff3a1cfb344730014b4a339b7e"
             },
             "dist": {
                 "type": "zip",
@@ -1511,11 +1509,11 @@
             "require": {
                 "alchemy/ghostscript": "~0.4.0",
                 "imagine/imagine": "0.6.x@dev",
-                "mediavorus/mediavorus": "~0.4.2",
+                "mediavorus/mediavorus": "dev-fix-video-dim as 0.4.3",
                 "monolog/monolog": "~1.0",
                 "neutron/temporary-filesystem": "~2.1",
                 "php": ">=5.3.3",
-                "php-ffmpeg/php-ffmpeg": "~0.4.2",
+                "php-ffmpeg/php-ffmpeg": "dev-fix-aspect-ratio as 0.4.4",
                 "php-mp4box/php-mp4box": "~0.3.0",
                 "php-unoconv/php-unoconv": "~0.3.0",
                 "pimple/pimple": "~1.0",
@@ -1540,7 +1538,6 @@
                     "MediaAlchemyst": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1572,16 +1569,16 @@
         },
         {
             "name": "mediavorus/mediavorus",
-            "version": "0.4.3",
+            "version": "dev-fix-video-dim",
             "source": {
                 "type": "git",
-                "url": "https://github.com/romainneutron/MediaVorus.git",
-                "reference": "7cc8c0b8d3440eaff9aa68fff2185216fd72bd75"
+                "url": "https://github.com/nlegoff/Mediavorus.git",
+                "reference": "f11cd2453d5acbc6ac52421dc4edd760433b1515"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/MediaVorus/zipball/7cc8c0b8d3440eaff9aa68fff2185216fd72bd75",
-                "reference": "7cc8c0b8d3440eaff9aa68fff2185216fd72bd75",
+                "url": "https://api.github.com/repos/nlegoff/Mediavorus/zipball/f11cd2453d5acbc6ac52421dc4edd760433b1515",
+                "reference": "f11cd2453d5acbc6ac52421dc4edd760433b1515",
                 "shasum": ""
             },
             "require": {
@@ -1614,7 +1611,6 @@
                     "MediaVorus": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1629,7 +1625,10 @@
             "keywords": [
                 "metadata"
             ],
-            "time": "2014-01-06 15:45:32"
+            "support": {
+                "source": "https://github.com/nlegoff/Mediavorus/tree/fix-video-dim"
+            },
+            "time": "2014-06-10 14:03:47"
         },
         {
             "name": "monolog/monolog",
@@ -1957,16 +1956,16 @@
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
-            "version": "0.4.4",
+            "version": "dev-fix-aspect-ratio",
             "source": {
                 "type": "git",
-                "url": "https://github.com/alchemy-fr/PHP-FFmpeg.git",
-                "reference": "8dfaf1815802614352bbd10eac7299a100bf9757"
+                "url": "https://github.com/nlegoff/PHP-FFmpeg.git",
+                "reference": "c2ea1ca7ab0a4da0e876e36c8cddbfa4d92dbba6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/8dfaf1815802614352bbd10eac7299a100bf9757",
-                "reference": "8dfaf1815802614352bbd10eac7299a100bf9757",
+                "url": "https://api.github.com/repos/nlegoff/PHP-FFmpeg/zipball/c2ea1ca7ab0a4da0e876e36c8cddbfa4d92dbba6",
+                "reference": "c2ea1ca7ab0a4da0e876e36c8cddbfa4d92dbba6",
                 "shasum": ""
             },
             "require": {
@@ -1987,7 +1986,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4-dev"
+                    "dev-master": "0.5-dev"
                 }
             },
             "autoload": {
@@ -1995,7 +1994,6 @@
                     "FFMpeg": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2022,7 +2020,10 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-12-17 16:54:46"
+            "support": {
+                "source": "https://github.com/nlegoff/PHP-FFmpeg/tree/fix-aspect-ratio"
+            },
+            "time": "2014-06-10 10:27:04"
         },
         {
             "name": "php-mp4box/php-mp4box",
@@ -3034,6 +3035,56 @@
             "time": "2013-09-20 10:41:27"
         },
         {
+            "name": "willdurand/negotiation",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/willdurand/Negotiation.git",
+                "reference": "a98fb6b9808610c1aa326c736893d3d77d9383b6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/willdurand/Negotiation/zipball/a98fb6b9808610c1aa326c736893d3d77d9383b6",
+                "reference": "a98fb6b9808610c1aa326c736893d3d77d9383b6",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Negotiation": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "William Durand",
+                    "email": "william.durand1@gmail.com",
+                    "homepage": "http://www.willdurand.fr"
+                }
+            ],
+            "description": "Content Negotiation tools for PHP provided as a standalone library.",
+            "homepage": "http://williamdurand.fr/Negotiation/",
+            "keywords": [
+                "accept",
+                "content",
+                "format",
+                "header",
+                "negotiation"
+            ],
+            "time": "2014-05-16 12:34:51"
+        },
+        {
             "name": "zend/gdata",
             "version": "1.12.1",
             "source": {
@@ -4034,11 +4085,15 @@
             "package": "php-ffmpeg/php-ffmpeg"
         }
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": {
         "imagine/imagine": 20,
+        "mediavorus/mediavorus": 20,
+        "media-alchemyst/media-alchemyst": 20,
+        "php-ffmpeg/php-ffmpeg": 20,
         "doctrine/data-fixtures": 20
     },
+    "prefer-stable": false,
     "platform": {
         "php": ">=5.3.3"
     },
