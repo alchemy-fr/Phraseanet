@@ -23,7 +23,6 @@ before_script:
   - echo 'extension="redis.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/redis.ini
   - echo 'extension="memcache.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcache.ini
   - echo 'extension="memcached.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcached.ini
-  - yes | pecl install zmq-beta
   - yes | pecl install imagick
   - travis_retry composer self-update
   - travis_retry composer install --dev --prefer-source
