@@ -37,18 +37,20 @@ class TaskManager implements ControllerProviderInterface
         })->bind('admin_tasks');
 
         $controllers->get('/tasks/', function (Application $app, Request $request) {
+            if ($request->getContentType() === 'json') {
+                if ($app['phraseanet.configuration']['main']['task-manager']['enabled']) {
+                    return $app->json($app['task-manager']->toArray());
+                }
 
-            if ($request->getContentType() == 'json') {
-                return $app->json($app['task-manager']->toArray());
-            } else {
-
-                $template = 'admin/tasks/list.html.twig';
-
-                return $app['twig']->render($template, array(
-                        'task_manager'  => $app['task-manager'],
-                        'scheduler_key' => \phrasea::scheduler_key($app)
-                    ));
+                return $app->json(array());
             }
+
+            $template = 'admin/tasks/list.html.twig';
+
+            return $app['twig']->render($template, array(
+                'task_manager'  => $app['task-manager'],
+                'scheduler_key' => \phrasea::scheduler_key($app)
+            ));
         })->bind('admin_tasks_list');
 
         $controllers->post('/tasks/create/', function (Application $app, Request $request) {
