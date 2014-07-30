@@ -43,6 +43,12 @@ class API_V1_adapter extends API_V1_Abstract
     const OBJECT_TYPE_STORY = 'http://api.phraseanet.com/api/objects/story';
     const OBJECT_TYPE_STORY_METADATA_BAG = 'http://api.phraseanet.com/api/objects/story-metadata-bag';
 
+    public static $extendedContentTypes = array(
+        'json' => array('application/vnd.phraseanet.record-extended+json'),
+        'yaml' => array('application/vnd.phraseanet.record-extended+yaml'),
+        'jsonp' => array('application/vnd.phraseanet.record-extended+jsonp'),
+    );
+
     /**
      * API constructor
      *
@@ -846,9 +852,9 @@ class API_V1_adapter extends API_V1_Abstract
 
         foreach ($search_result->getResults() as $record) {
             if ($record->is_grouping()) {
-                $ret['results']['stories'][] = $this->list_story($record);
+                $ret['results']['stories'][] = $this->list_story($record, $request->get('_extended'));
             } else {
-                $ret['results']['records'][] = $this->list_record($record);
+                $ret['results']['records'][] = $this->list_record($record, $request->get('_extended'));
             }
         }
 
@@ -876,7 +882,7 @@ class API_V1_adapter extends API_V1_Abstract
         list($ret, $search_result) = $this->prepare_search_request($request);
 
         foreach ($search_result->getResults() as $record) {
-            $ret['results'][] = $this->list_record($record);
+            $ret['results'][] = $this->list_record($record, $request->get('_extended'));
         }
 
         /**
@@ -956,8 +962,8 @@ class API_V1_adapter extends API_V1_Abstract
 
         $record = $this->app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id);
 
-        $stories = array_map(function ($story) use ($that) {
-            return $that->list_story($story);
+        $stories = array_map(function ($story) use ($that, $request) {
+            return $that->list_story($story, $request->get('_extended'));
         }, array_values($record->get_grouping_parents()->get_elements()));
 
         $result->set_datas(array(
@@ -1175,7 +1181,7 @@ class API_V1_adapter extends API_V1_Abstract
             $collection = collection::get_from_base_id($this->app, $request->get('base_id'));
 
             $record->move_to_collection($collection, $this->app['phraseanet.appbox']);
-            $result->set_datas(array("record" => $this->list_record($record)));
+            $result->set_datas(array("record" => $this->list_record($record, $request->get('_extended'))));
         } catch (\Exception $e) {
             $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, $e->getMessage());
         }
@@ -1197,7 +1203,7 @@ class API_V1_adapter extends API_V1_Abstract
         $databox = $this->app['phraseanet.appbox']->get_databox($databox_id);
         try {
             $record = $databox->get_record($record_id);
-            $result->set_datas(array('record' => $this->list_record($record)));
+            $result->set_datas(array('record' => $this->list_record($record, $request->get('_extended'))));
         } catch (NotFoundHttpException $e) {
             $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('Record Not Found'));
         } catch (\Exception $e) {
@@ -1221,7 +1227,7 @@ class API_V1_adapter extends API_V1_Abstract
         $databox = $this->app['phraseanet.appbox']->get_databox($databox_id);
         try {
             $story = $databox->get_record($story_id);
-            $result->set_datas(array('story' => $this->list_story($story)));
+            $result->set_datas(array('story' => $this->list_story($story, $request->get('_extended'))));
         } catch (NotFoundHttpException $e) {
             $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('Story Not Found'));
         } catch (\Exception $e) {
@@ -1337,7 +1343,7 @@ class API_V1_adapter extends API_V1_Abstract
         $result->set_datas(
                 array(
                     "basket"          => $this->list_basket($Basket),
-                    "basket_elements" => $this->list_basket_content($Basket)
+                    "basket_elements" => $this->list_basket_content($Basket, $request->get('_extended'))
                 )
         );
 
@@ -1350,12 +1356,12 @@ class API_V1_adapter extends API_V1_Abstract
      * @param  \Entities\Basket $Basket
      * @return type
      */
-    protected function list_basket_content(\Entities\Basket $Basket)
+    protected function list_basket_content(\Entities\Basket $Basket, $extended = false)
     {
         $ret = array();
 
         foreach ($Basket->getElements() as $basket_element) {
-            $ret[] = $this->list_basket_element($basket_element);
+            $ret[] = $this->list_basket_element($basket_element, $extended);
         }
 
         return $ret;
@@ -1367,12 +1373,12 @@ class API_V1_adapter extends API_V1_Abstract
      * @param  \Entities\BasketElement $basket_element
      * @return type
      */
-    protected function list_basket_element(\Entities\BasketElement $basket_element)
+    protected function list_basket_element(\Entities\BasketElement $basket_element, $extended = false)
     {
         $ret = array(
             'basket_element_id' => $basket_element->getId(),
             'order'             => $basket_element->getOrd(),
-            'record'            => $this->list_record($basket_element->getRecord($this->app)),
+            'record'            => $this->list_record($basket_element->getRecord($this->app), $extended),
             'validation_item'   => null != $basket_element->getBasket()->getValidation(),
         );
 
@@ -1526,7 +1532,7 @@ class API_V1_adapter extends API_V1_Abstract
             'feed'         => $this->list_publication($feed, $user),
             'offset_start' => $offset_start,
             'per_page'     => $per_page,
-            'entries'      => $this->list_publications_entries($feed, $offset_start, $per_page),
+            'entries'      => $this->list_publications_entries($feed, $request->get('_extended'), $offset_start, $per_page),
         );
 
         $result->set_datas($datas);
@@ -1551,7 +1557,7 @@ class API_V1_adapter extends API_V1_Abstract
             'total_entries' => $feed->get_count_total_entries(),
             'offset_start'  => $offset_start,
             'per_page'      => $per_page,
-            'entries'       => $this->list_publications_entries($feed, $offset_start, $per_page),
+            'entries'       => $this->list_publications_entries($feed, $request->get('_extended'), $offset_start, $per_page),
         ));
 
         return $result;
@@ -1609,14 +1615,13 @@ class API_V1_adapter extends API_V1_Abstract
      * @param  int          $how_many
      * @return array
      */
-    protected function list_publications_entries(Feed_Abstract $feed, $offset_start = 0, $how_many = 5)
+    protected function list_publications_entries(Feed_Abstract $feed, $extended = false, $offset_start = 0, $how_many = 5)
     {
-
         $entries = $feed->get_entries($offset_start, $how_many)->get_entries();
 
         $out = array();
         foreach ($entries as $entry) {
-            $out[] = $this->list_publication_entry($entry);
+            $out[] = $this->list_publication_entry($entry, $extended);
         }
 
         return $out;
@@ -1628,11 +1633,11 @@ class API_V1_adapter extends API_V1_Abstract
      * @param  Feed_Entry_Adapter $entry
      * @return array
      */
-    protected function list_publication_entry(Feed_Entry_Adapter $entry)
+    protected function list_publication_entry(Feed_Entry_Adapter $entry, $extended = false)
     {
         $items = array();
         foreach ($entry->get_content() as $item) {
-            $items[] = $this->list_publication_entry_item($item);
+            $items[] = $this->list_publication_entry_item($item, $extended);
         }
 
         return array(
@@ -1657,11 +1662,11 @@ class API_V1_adapter extends API_V1_Abstract
      * @param  Feed_Entry_Item $item
      * @return array
      */
-    protected function list_publication_entry_item(Feed_Entry_Item $item)
+    protected function list_publication_entry_item(Feed_Entry_Item $item, $extended = false)
     {
         $datas = array(
-            'item_id' => $item->get_id()
-            , 'record'  => $this->list_record($item->get_record())
+            'item_id' => $item->get_id(),
+            'record'  => $this->list_record($item->get_record(), $extended)
         );
 
         return $datas;
@@ -1872,7 +1877,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @param  record_adapter $record
      * @return array
      */
-    public function list_record(record_adapter $record)
+    public function list_record(record_adapter $record, $extended = false)
     {
         $technicalInformation = array();
         foreach ($record->get_technical_infos() as $name => $value) {
@@ -1882,7 +1887,7 @@ class API_V1_adapter extends API_V1_Abstract
             );
         }
 
-        return array(
+        $data =  array(
             'databox_id'             => $record->get_sbas_id(),
             'record_id'              => $record->get_record_id(),
             'mime_type'              => $record->get_mime(),
@@ -1897,6 +1902,33 @@ class API_V1_adapter extends API_V1_Abstract
             'phrasea_type'           => $record->get_type(),
             'uuid'                   => $record->get_uuid(),
         );
+
+        if ($extended) {
+            $subdefs = $caption = array();
+
+            foreach ($record->get_embedable_medias(array(), array()) as $name => $media) {
+                $subdefs[] = $this->list_embedable_media($media, $this->app['phraseanet.registry']);
+            }
+
+            foreach ($record->get_caption()->get_fields() as $field) {
+                $caption[] = array(
+                    'meta_structure_id' => $field->get_meta_struct_id(),
+                    'name'              => $field->get_name(),
+                    'value'             => $field->get_serialized_values(';'),
+                );
+            }
+
+            $extendedData = array(
+                'subdefs' => $subdefs,
+                'metadata' => $this->list_record_caption($record->get_caption()),
+                'status' => $this->list_record_status($record->get_databox(), $record->get_status()),
+                'caption' =>  $caption
+            );
+
+            $data = array_merge($data, $extendedData);
+        }
+
+        return $data;
     }
 
     /**
@@ -1906,15 +1938,15 @@ class API_V1_adapter extends API_V1_Abstract
      *
      * @return array
      */
-    public function list_story(record_adapter $story)
+    public function list_story(record_adapter $story, $extended = false)
     {
         if (!$story->is_grouping()) {
             throw new \API_V1_exception_notfound('Story not found');
         }
 
         $that = $this;
-        $records = array_map(function (\record_adapter $record) use ($that) {
-            return $that->list_record($record);
+        $records = array_map(function (\record_adapter $record) use ($that, $extended) {
+            return $that->list_record($record, $extended);
         }, array_values($story->get_children()->get_elements()));
 
         $caption = $story->get_caption();

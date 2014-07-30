@@ -14,77 +14,49 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Yaml\Dumper;
 
 class API_V1_result
 {
     protected $app;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     protected $api_version;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     protected $response_time;
 
-    /**
-     *
-     * @var int
-     */
+    /** @var int */
     protected $http_code = 200;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     protected $error_type;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     protected $error_message;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     protected $error_details;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     protected $request;
 
-    /**
-     *
-     * @var mixed
-     */
+    /** @var mixed */
     protected $response;
 
-    /**
-     *
-     * @var string
-     */
-    protected $response_type;
-
-    /**
-     * Constant for responsetype json
-     */
+    /** Constant for response type json */
     const FORMAT_JSON = 'json';
-    /**
-     * Constant for responsetype yaml
-     */
+    /** Constant for response type yaml */
     const FORMAT_YAML = 'yaml';
-    /**
-     * Constant for responsetype jsonp
-     */
+    /** Constant for response type jsonp */
     const FORMAT_JSONP = 'jsonp';
+    /** Constant for response type json+extended */
+    const FORMAT_JSON_EXTENDED = 'json+extended';
+    /** Constant for response type yaml+extended */
+    const FORMAT_YAML_EXTENDED = 'yaml+extended';
+    /** Constant for response type jsonp+extended */
+    const FORMAT_JSONP_EXTENDED = 'jsonp+extended';
+
     const ERROR_BAD_REQUEST = 'Bad Request';
     const ERROR_UNAUTHORIZED = 'Unauthorized';
     const ERROR_FORBIDDEN = 'Forbidden';
@@ -92,6 +64,7 @@ class API_V1_result
     const ERROR_MAINTENANCE = 'Service Temporarily Unavailable';
     const ERROR_METHODNOTALLOWED = 'Method Not Allowed';
     const ERROR_INTERNALSERVERERROR = 'Internal Server Error';
+    const ERROR_UNACCEPTABLE = 'Unacceptable';
 
     /**
      * API v1 Result constructor
@@ -112,35 +85,7 @@ class API_V1_result
         $this->response_time = $date->format(DATE_ATOM);
         $this->response = new stdClass();
 
-        $this->parse_response_type();
-
         return $this;
-    }
-
-    protected function parse_response_type()
-    {
-        if (trim($this->request->get('callback')) !== '') {
-            return $this->response_type = self::FORMAT_JSONP;
-        }
-
-        $accept = $this->request->getAcceptableContentTypes();
-        $response_types = array();
-
-        foreach ($accept as $key => $app_type) {
-            $response_types[strtolower($app_type)] = true;
-        }
-
-        if (array_key_exists('application/json', $response_types)) {
-            return $this->response_type = self::FORMAT_JSON;
-        }
-        if (array_key_exists('application/yaml', $response_types)) {
-            return $this->response_type = self::FORMAT_YAML;
-        }
-        if (array_key_exists('text/yaml', $response_types)) {
-            return $this->response_type = self::FORMAT_YAML;
-        }
-
-        return $this->response_type = self::FORMAT_JSON;
     }
 
     /**
@@ -153,8 +98,9 @@ class API_V1_result
      */
     public function set_datas(array $datas)
     {
-        if (count($datas) === 0)
+        if (count($datas) === 0) {
             $datas = new stdClass ();
+        }
         $this->response = $datas;
 
         return $this;
@@ -177,16 +123,13 @@ class API_V1_result
      */
     public function format()
     {
-        $request_uri = sprintf('%s %s'
-            , $this->request->getMethod()
-            , $this->request->getBasePath()
-            . $this->request->getPathInfo()
-        );
-
         $ret = array(
             'meta' => array(
                 'api_version'   => $this->api_version
-                , 'request'       => $request_uri
+                , 'request'       => sprintf('%s %s',
+                    $this->request->getMethod(),
+                    $this->request->getBasePath() . $this->request->getPathInfo()
+                )
                 , 'response_time' => $this->response_time
                 , 'http_code'     => $this->http_code
                 , 'error_type'    => $this->error_type
@@ -207,45 +150,25 @@ class API_V1_result
 
         $return_value = false;
 
-        switch ($this->response_type) {
+        switch ($this->request->getRequestFormat(self::FORMAT_JSON)) {
             case self::FORMAT_JSON:
+            case self::FORMAT_JSON_EXTENDED:
             default:
-                $return_value = p4string::jsonencode($ret);
+                $return_value = \p4string::jsonencode($ret);
                 break;
             case self::FORMAT_YAML:
-                if ($ret['response'] instanceof stdClass)
+            case self::FORMAT_YAML_EXTENDED:
+                if ($ret['response'] instanceof \stdClass) {
                     $ret['response'] = array();
+                }
 
-                $dumper = new Symfony\Component\Yaml\Dumper();
+                $dumper = new Dumper();
                 $return_value = $dumper->dump($ret, 8);
                 break;
             case self::FORMAT_JSONP:
+            case self::FORMAT_JSONP_EXTENDED:
                 $callback = trim($this->request->get('callback'));
-                $return_value = $callback . '(' . p4string::jsonencode($ret) . ')';
-                break;
-        }
-
-        return $return_value;
-    }
-
-    /**
-     * Return serailized datas content type
-     *
-     * @return string
-     */
-    public function get_content_type()
-    {
-        switch ($this->response_type) {
-
-            case self::FORMAT_JSON:
-            default:
-                $return_value = 'application/json';
-                break;
-            case self::FORMAT_YAML:
-                $return_value = 'application/yaml';
-                break;
-            case self::FORMAT_JSONP:
-                $return_value = 'text/javascript';
+                $return_value = $callback . '(' . \p4string::jsonencode($ret) . ')';
                 break;
         }
 
@@ -301,6 +224,10 @@ class API_V1_result
                 $this->error_type = $const;
                 $this->error_message = API_V1_exception_maintenance::get_details();
                 break;
+            case self::ERROR_UNACCEPTABLE:
+                $this->http_code = 406;
+                $this->error_type = $const;
+                break;
             case OAUTH2_ERROR_INVALID_REQUEST:
                 $this->error_type = $const;
                 break;
@@ -345,6 +272,10 @@ class API_V1_result
                 $this->error_type = self::ERROR_METHODNOTALLOWED;
                 $this->error_message = API_V1_exception_methodnotallowed::get_details();
                 break;
+            case 406:
+                $this->http_code = $code;
+                $this->error_type = self::ERROR_UNACCEPTABLE;
+                break;
             case 500:
                 $this->http_code = $code;
                 $this->error_type = self::ERROR_INTERNALSERVERERROR;
@@ -362,11 +293,7 @@ class API_V1_result
      */
     public function get_http_code()
     {
-        if ($this->response_type == self::FORMAT_JSONP && $this->http_code != 500) {
-            return 200;
-        } else {
-            return $this->http_code;
-        }
+        return $this->http_code;
     }
 
     /**
@@ -385,11 +312,7 @@ class API_V1_result
      */
     public function get_response()
     {
-        $response = new Response(
-                $this->format(),
-                $this->get_http_code(),
-                array('Content-Type'  => $this->get_content_type())
-        );
+        $response = new Response($this->format(), $this->get_http_code());
         $response->setCharset('UTF-8');
 
         return $response;

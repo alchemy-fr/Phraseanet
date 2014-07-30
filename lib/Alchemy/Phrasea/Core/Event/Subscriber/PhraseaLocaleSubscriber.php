@@ -59,18 +59,6 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
             return;
         }
 
-        /**
-         * add content negotiation here
-         */
-        $contentTypes = $event->getRequest()->getAcceptableContentTypes();
-        $event->getRequest()->setRequestFormat(
-            $event->getRequest()->getFormat(
-                array_shift(
-                    $contentTypes
-                )
-            )
-        );
-
         $this->app['locale'] = $this->app->share(function (Application $app) use ($event) {
             if (isset($app['phraseanet.registry'])) {
                 $event->getRequest()->setDefaultLocale(

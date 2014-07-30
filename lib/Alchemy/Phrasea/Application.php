@@ -76,6 +76,7 @@ use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CacheServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
+use Alchemy\Phrasea\Core\Provider\ContentNegotiationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CSVServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FileServeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FtpServiceProvider;
@@ -301,6 +302,7 @@ class Application extends SilexApplication
         $this->register(new FileServeServiceProvider());
         $this->register(new PluginServiceProvider());
         $this->register(new PhraseaEventServiceProvider());
+        $this->register(new ContentNegotiationServiceProvider());
 
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
             return PhraseaExceptionHandler::register($app['debug']);
@@ -394,6 +396,7 @@ class Application extends SilexApplication
                 $dispatcher->addListener(KernelEvents::RESPONSE, array($app, 'addUTF8Charset'), -128);
                 $dispatcher->addSubscriber($app['phraseanet.logout-subscriber']);
                 $dispatcher->addSubscriber($app['phraseanet.locale-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.content-negotiation-subscriber']);
                 $dispatcher->addSubscriber($app['phraseanet.maintenance-subscriber']);
                 $dispatcher->addSubscriber($app['phraseanet.cookie-disabler-subscriber']);
                 $dispatcher->addSubscriber($app['phraseanet.session-manager-subscriber']);
