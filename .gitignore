@@ -15,3 +15,9 @@ behat.yml
 /datas
 /www/assets
 /www/skins/build
+/vagrant/vms/**/puphpet/dot
+/vagrant/vms/**/puphpet/config.yml
+.idea/
+.vagrant/
+/bin/*
+/node_modules
