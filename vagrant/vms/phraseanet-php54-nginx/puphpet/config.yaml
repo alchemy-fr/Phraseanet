@@ -25,16 +25,16 @@ vagrantfile-local:
                 cpus: 1
         provision:
             puppet:
-                manifests_path: vagrant/phraseanet-php54-nginx/puphpet/puppet
+                manifests_path: vagrant/vms/phraseanet-php54-nginx/puphpet/puppet
                 manifest_file: manifest.pp
-                module_path: vagrant/phraseanet-php54-nginx/puphpet/puppet/modules
+                module_path: vagrant/vms/phraseanet-php54-nginx/puphpet/puppet/modules
                 options:
                     - '--verbose'
-                    - '--hiera_config /vagrant/vagrant/phraseanet-php54-nginx/puphpet/puppet/hiera.yaml'
+                    - '--hiera_config /vagrant/vagrant/vms/phraseanet-php54-nginx/puphpet/puppet/hiera.yaml'
                     - '--parser future'
         synced_folder:
             KaPfJ4CzfgFk:
-                source: ~/workspace/Phraseanet
+                source: ''
                 target: /var/www/phraseanet
                 sync_type: nfs
                 rsync:
@@ -98,10 +98,10 @@ mailcatcher:
         mailcatcher_path: /usr/local/bin
         log_path: /var/log/mailcatcher/mailcatcher.log
 firewall:
-    install: '1'
+    install: '0'
     rules: null
 hhvm:
-    install: '1'
+    install: '0'
     nightly: '1'
     settings:
         host: 127.0.0.1
@@ -246,12 +246,12 @@ postgresql:
 mariadb:
     install: '1'
     root_password: toor
-    adminer: '1'
+    adminer: '0'
     databases: {  }
     version: '10.0'
 sqlite:
     install: '1'
-    adminer: '1'
+    adminer: '0'
     databases: {  }
 mongodb:
     install: '1'

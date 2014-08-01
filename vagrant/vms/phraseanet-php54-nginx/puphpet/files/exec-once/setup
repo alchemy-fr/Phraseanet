@@ -116,7 +116,7 @@ fi
 
 # copy www.conf
 
-sudo sh -c "cat /vagrant/phraseanet/nginx/php5-fpm-www.conf > /etc/php5/fpm/pool.d/www.conf"
+sudo sh -c "cat /vagrant/vagrant/config/nginx/php5-fpm-www.conf > /etc/php5/fpm/pool.d/www.conf"
 
 # restart mysql to get new date system
 

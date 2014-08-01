@@ -3,7 +3,7 @@ require 'yaml'
 root = File.dirname(File.expand_path(__FILE__))
 
 Vagrant.configure("2") do |config|
-    Dir.glob(root+"/vagrant/**/puphpet/config.yaml").each do|f|
+    Dir.glob(root+"/vagrant/vms/**/puphpet/config.yaml").each do|f|
         dir = File.dirname(File.expand_path(f)+"/..")
         base_path = dir[0..-21]
         configValues = YAML.load_file(f)
@@ -74,6 +74,9 @@ Vagrant.configure("2") do |config|
             end
 
             data['vm']['synced_folder'].each do |i, folder|
+            if folder['source'] == ''
+                folder['source'] = root
+            end
             if folder['source'] != '' && folder['target'] != ''
               if folder['sync_type'] == 'nfs'
                 node.vm.synced_folder "#{folder['source']}", "#{folder['target']}", id: "#{i}", type: "nfs"
@@ -163,7 +166,7 @@ Vagrant.configure("2") do |config|
 
             node.vm.provision "shell" do |s|
                 s.path = "#{base_path}/puphpet/shell/initial-setup.sh"
-                s.args = "/vagrant/vagrant/#{data['name']}/puphpet"
+                s.args = "/vagrant/vagrant/vms/#{data['name']}/puphpet"
             end
 
             node.vm.provision "shell" do |kg|
