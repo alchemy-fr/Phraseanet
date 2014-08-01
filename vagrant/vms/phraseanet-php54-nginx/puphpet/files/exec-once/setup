@@ -1,0 +1,123 @@
+#!/bin/bash
+
+# timezone
+
+sudo sh -c 'echo "Europe/Paris" > /etc/timezone'
+sudo dpkg-reconfigure -f noninteractive tzdata
+
+# locales
+
+export LANGUAGE=fr_FR.UTF-8
+export LANG=fr_FR.UTF-8
+export LC_ALL=fr_FR.UTF-8
+sudo sh -c 'echo "en_GB.UTF-8 UTF-8" >> /etc/locale.gen'
+sudo sh -c 'echo "de_DE.UTF-8 UTF-8" >> /etc/locale.gen'
+sudo sh -c 'echo "es_ES.UTF-8 UTF-8" >> /etc/locale.gen'
+sudo sh -c 'echo "fr_FR.UTF-8 UTF-8" >> /etc/locale.gen'
+sudo sh -c 'echo "nl_NL.UTF-8 UTF-8" >> /etc/locale.gen'
+sudo locale-gen en_US en_US.UTF-8 en_GB en_GB.UTF-8 fr_FR fr_FR.UTF-8 de_DE de_DE.UTF-8 nl_NL nl_NL.UTF-8
+sudo dpkg-reconfigure -f noninteractive locales
+
+# node + npm
+
+cd /tmp
+wget "http://nodejs.org/dist/v0.10.29/node-v0.10.29-linux-x64.tar.gz"
+tar -zxvf node-v0.10.29-linux-x64.tar.gz
+cd node-v0.10.29-linux-x64
+find . -maxdepth 1 -type f -exec rm {} \;
+sudo cp -rf * /usr/local/
+
+# npm binaries
+
+sudo npm install -g recess
+sudo npm install -g grunt
+
+# python tools
+
+sudo easy_install -U taschenmesser scour boto
+
+# closure compiler
+
+cd /tmp
+wget http://dl.google.com/closure-compiler/compiler-latest.zip
+unzip compiler-latest.zip -d closure
+mv closure $HOME
+echo 'export JS_COMPILER=$HOME/closure/compiler.jar' >> ~/.bashrc
+source ~/.bashrc
+
+# java
+
+echo 'export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/jre/' >> ~/.bashrc
+source ~/.bashrc
+
+#twig
+
+cd /tmp
+git clone https://github.com/fabpot/Twig.git
+cd Twig/ext/twig
+phpize
+./configure
+make
+sudo make install
+sudo sh -c 'echo "extension=twig.so" > /etc/php5/cli/conf.d/twig.ini'
+sudo sh -c 'echo "extension=twig.so" > /etc/php5/fpm/conf.d/twig.ini'
+
+# phraseanet-extension
+
+cd /tmp
+git clone git://github.com/alchemy-fr/Phraseanet-Extension.git
+cd Phraseanet-Extension
+phpize
+./configure
+make
+sudo make install
+if [ $? -eq 0 ]; then
+    sudo sh -c 'echo "extension=phrasea2.so" > /etc/php5/cli/conf.d/phrasea.ini'
+    sudo sh -c 'echo "extension=phrasea2.so" > /etc/php5/fpm/conf.d/phrasea.ini'
+fi
+
+# phraseanet-indexer
+
+cd /tmp
+git clone git://github.com/alchemy-fr/Phraseanet-Indexer.git
+cd Phraseanet-Indexer
+autoreconf --force --install
+./configure
+make
+sudo make install
+
+# swftools
+
+cd /tmp
+wget http://www.swftools.org/swftools-0.9.2.tar.gz
+tar -xzvf swftools-0.9.2.tar.gz
+cd swftools-0.9.2
+./configure
+make
+sudo make install
+
+# zmq php extension
+
+yes | sudo pecl install zmq-beta
+if [ $? -eq 0 ]; then
+    sudo sh -c 'echo "extension=zmq.so" > /etc/php5/cli/conf.d/zmq.ini'
+    sudo sh -c 'echo "extension=zmq.so" > /etc/php5/fpm/conf.d/zmq.ini'
+fi
+
+# libevent php extension
+
+sudo apt-get autoremove --yes --purge libevent-dev
+sudo apt-get install --yes libevent-dev
+yes | sudo pecl install libevent-beta
+if [ $? -eq 0 ]; then
+    sudo sh -c 'echo ";extension=libevent.so" > /etc/php5/cli/conf.d/libevent.ini'
+    sudo sh -c 'echo ";extension=libevent.so" > /etc/php5/fpm/conf.d/libevent.ini'
+fi
+
+# copy www.conf
+
+sudo sh -c "cat /vagrant/vagrant/config/nginx/php5-fpm-www.conf > /etc/php5/fpm/pool.d/www.conf"
+
+# restart mysql to get new date system
+
+sudo service mysql restart
