@@ -191,7 +191,7 @@ class Permalink extends AbstractDelivery
                 $stamp = true;
                 break;
             case 'wm':
-                $watermark = false;
+                $watermark = true;
                 break;
         }
 
