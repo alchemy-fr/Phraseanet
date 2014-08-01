@@ -34,8 +34,8 @@ vagrantfile-local:
                     - '--parser future'
         synced_folder:
             KaPfJ4CzfgFk:
-                source: ~/workspace
-                target: /var/www
+                source: ~/workspace/Phraseanet
+                target: /var/www/phraseanet
                 sync_type: nfs
                 rsync:
                     args: '-z'
@@ -148,11 +148,11 @@ nginx:
         proxy_buffers: '4 256k'
     vhosts:
         issDOx17O4bn:
-            server_name: php54-nginx.phraseanet
+            server_name: nginx.phraseanet
             server_aliases:
-                - php54-nginx.phrasea.net
-                - php54-nginx.alchemyasp.com
-            www_root: /var/www/Phraseanet/www
+                - nginx.phrasea.net
+                - nginx.alchemyasp.com
+            www_root: /var/www/phraseanet/www
             listen_port: '8080'
             index_files:
                 - index.html
