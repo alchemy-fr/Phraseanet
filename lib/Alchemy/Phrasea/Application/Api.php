@@ -48,7 +48,7 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         $request->setFormat(\API_V1_result::FORMAT_JSONP, array('text/javascript', 'application/javascript'));
 
         // handle content negociation
-        $priorities = array('application/json', 'application/yaml', 'text/yaml', 'text/javascript', 'application/javascript');
+        $priorities = array('application/json', 'application/yaml', 'text/yaml', 'text/javascript', 'application/javascript', 'text/html');
         foreach (\API_V1_adapter::$extendedContentTypes['json'] as $priorities[]);
         foreach (\API_V1_adapter::$extendedContentTypes['yaml'] as $priorities[]);
         $format = $app['format.negociator']->getBest($request->headers->get('accept') ,$priorities);
