@@ -1039,7 +1039,6 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_record_embed(Request $request, $databox_id, $record_id)
     {
-
         $result = new API_V1_result($this->app, $request, $this);
 
         $record = $this->app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id);
@@ -1050,7 +1049,9 @@ class API_V1_adapter extends API_V1_Abstract
         $mimes = $request->get('mimes', array());
 
         foreach ($record->get_embedable_medias($devices, $mimes) as $name => $media) {
-            $ret[] = $this->list_embedable_media($media, $this->app['phraseanet.registry']);
+            if (null !== $subdef = $this->list_embedable_media($record, $media, $this->app['phraseanet.registry'])) {
+                $ret[] = $subdef;
+            }
         }
 
         $result->set_datas(array("embed" => $ret));
@@ -1082,7 +1083,9 @@ class API_V1_adapter extends API_V1_Abstract
         $mimes = $request->get('mimes', array());
 
         foreach ($record->get_embedable_medias($devices, $mimes) as $name => $media) {
-            $ret[] = $this->list_embedable_media($media, $this->app['phraseanet.registry']);
+            if (null !== $subdef = $this->list_embedable_media($record, $media, $this->app['phraseanet.registry'])) {
+                $ret[] = $subdef;
+            }
         }
 
         $result->set_datas(array("embed" => $ret));
@@ -1705,10 +1708,20 @@ class API_V1_adapter extends API_V1_Abstract
      * @param  media_subdef $media
      * @return array
      */
-    protected function list_embedable_media(media_subdef $media, registryInterface $registry)
+    protected function list_embedable_media(\record_adapter $record, media_subdef $media, registryInterface $registry)
     {
         if (!$media->is_physically_present()) {
             return null;
+        }
+
+        if ($this->app['authentication']->isAuthenticated()) {
+           if ($media->get_name() !== 'document' && false === $this->app['authentication']->getUser()->ACL()->has_access_to_subdef($record, $media->get_name())) {
+                return null;
+            } else if ($media->get_name() === 'document'
+               && !$this->app['authentication']->getUser()->ACL()->has_right_on_base($record->get_base_id(), 'candwnldhd')
+                && !$this->app['authentication']->getUser()->ACL()->has_hd_grant($record)) {
+                return null;
+            }
         }
 
         if ($media->get_permalink() instanceof media_Permalink_Adapter) {
@@ -1897,7 +1910,7 @@ class API_V1_adapter extends API_V1_Abstract
             'created_on'             => $record->get_creation_date()->format(DATE_ATOM),
             'collection_id'          => phrasea::collFromBas($this->app, $record->get_base_id()),
             'sha256'                 => $record->get_sha256(),
-            'thumbnail'              => $this->list_embedable_media($record->get_thumbnail(), $this->app['phraseanet.registry']),
+            'thumbnail'              => $this->list_embedable_media($record, $record->get_thumbnail(), $this->app['phraseanet.registry']),
             'technical_informations' => $technicalInformation,
             'phrasea_type'           => $record->get_type(),
             'uuid'                   => $record->get_uuid(),
@@ -1907,7 +1920,9 @@ class API_V1_adapter extends API_V1_Abstract
             $subdefs = $caption = array();
 
             foreach ($record->get_embedable_medias(array(), array()) as $name => $media) {
-                $subdefs[] = $this->list_embedable_media($media, $this->app['phraseanet.registry']);
+                if (null !== $subdef = $this->list_embedable_media($record, $media, $this->app['phraseanet.registry'])) {
+                    $subdefs[] = $subdef;
+                }
             }
 
             foreach ($record->get_caption()->get_fields() as $field) {
@@ -1969,7 +1984,7 @@ class API_V1_adapter extends API_V1_Abstract
             'updated_on'     => $story->get_modification_date()->format(DATE_ATOM),
             'created_on'     => $story->get_creation_date()->format(DATE_ATOM),
             'collection_id'  => phrasea::collFromBas($this->app, $story->get_base_id()),
-            'thumbnail'      => $this->list_embedable_media($story->get_thumbnail(), $this->app['phraseanet.registry']),
+            'thumbnail'      => $this->list_embedable_media($story, $story->get_thumbnail(), $this->app['phraseanet.registry']),
             'uuid'           => $story->get_uuid(),
             'metadatas'      => array(
                 '@entity@'       => self::OBJECT_TYPE_STORY_METADATA_BAG,
