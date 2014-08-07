@@ -76,26 +76,26 @@ class Indexer
             ],
             '_all' => [
                 'analyzer' => 'french',
-            ],
-            'analysis' => [
-                'analyzer' => [
-                    'french' => [
-                        'type'      => 'custom',
-                        'tokenizer' => 'letter',
-                        'filter'    => ["asciifolding", "lowercase", "french_stem", "stop_fr"]
+                'analysis' => [
+                    'analyzer' => [
+                        'french' => [
+                            'type'      => 'custom',
+                            'tokenizer' => 'letter',
+                            'filter'    => ["asciifolding", "lowercase", "french_stem", "stop_fr"]
+                        ],
+                        'autocomplete_french' => [
+                            'type'      => 'custom',
+                            'tokenizer' => 'letter',
+                            'filter'    => ["asciifolding", "lowercase", "stop_fr"]
+                        ]
                     ],
-                    'autocomplete_french' => [
-                        'type'      => 'custom',
-                        'tokenizer' => 'letter',
-                        'filter'    => ["asciifolding", "lowercase", "stop_fr"]
-                    ]
-                ],
-                'filter' => [
-                    'stop_fr' => [
-                        'type' => 'stop',
-                        'stopwords' => ['l', 'm', 't', 'qu', 'n', 's', 'j', 'd'],
-                    ]
-                ],
+                    'filter' => [
+                        'stop_fr' => [
+                            'type' => 'stop',
+                            'stopwords' => ['l', 'm', 't', 'qu', 'n', 's', 'j', 'd'],
+                        ]
+                    ],
+                ]
             ],
             'properties' => [
                 'record_id' => [
