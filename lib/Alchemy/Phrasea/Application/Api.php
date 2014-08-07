@@ -48,7 +48,7 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         $request->setFormat(\API_V1_result::FORMAT_JSONP, array('text/javascript', 'application/javascript'));
 
         // handle content negociation
-        $priorities = array('application/json', 'application/yaml', 'text/yaml', 'text/javascript', 'application/javascript', 'text/html');
+        $priorities = array('application/json', 'application/yaml', 'text/yaml', 'text/javascript', 'application/javascript');
         foreach (\API_V1_adapter::$extendedContentTypes['json'] as $priorities[]);
         foreach (\API_V1_adapter::$extendedContentTypes['yaml'] as $priorities[]);
         $format = $app['format.negociator']->getBest($request->headers->get('accept') ,$priorities);
@@ -80,7 +80,9 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
             $response->setStatusCode(200);
         }
         // set response content type
-        $response->headers->set('Content-Type', $request->getMimeType($request->getRequestFormat(\API_V1_result::FORMAT_JSON)));
+        if (!$response->headers->get('Content-Type')) {
+            $response->headers->set('Content-Type', $request->getMimeType($request->getRequestFormat(\API_V1_result::FORMAT_JSON)));
+        }
     });
 
     $app->register(new \API_V1_Timer());
