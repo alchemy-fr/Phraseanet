@@ -90,7 +90,10 @@ class Oauth2 implements ControllerProviderInterface
 
                     $app['authentication']->openAccount(\User_Adapter::getInstance($usr_id, $app));
                 } else {
-                    return new Response($app['twig']->render($template, array('error' => $error, "auth" => $oauth2_adapter)));
+                    $r = new Response($app['twig']->render($template, array('error' => $error, "auth" => $oauth2_adapter)));
+                    $r->headers->set('Content-Type', 'text/html');
+
+                    return $r;
                 }
             }
 
@@ -115,7 +118,10 @@ class Oauth2 implements ControllerProviderInterface
                     "error"        => $error,
                 );
 
-                return new Response($app['twig']->render($template, $params));
+                $r = new Response($app['twig']->render($template, $params));
+                $r->headers->set('Content-Type', 'text/html');
+
+                return $r;
             } elseif (!$app_authorized && $action_accept !== null) {
                 $app_authorized = (Boolean) $action_accept;
                 $account->set_revoked(!$app_authorized);
@@ -125,7 +131,10 @@ class Oauth2 implements ControllerProviderInterface
             if ($oauth2_adapter->isNativeApp($params['redirect_uri'])) {
                 $params = $oauth2_adapter->finishNativeClientAuthorization($app_authorized, $params);
 
-                return new Response($app['twig']->render("api/auth/native_app_access_token.html.twig", $params));
+                $r = new Response($app['twig']->render("api/auth/native_app_access_token.html.twig", $params));
+                $r->headers->set('Content-Type', 'text/html');
+
+                return $r;
             }
 
             $oauth2_adapter->finishClientAuthorization($app_authorized, $params);
