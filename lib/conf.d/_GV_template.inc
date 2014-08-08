@@ -269,15 +269,21 @@ return call_user_func_array(function(Application $app) {
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_enable_push_authentication',
                     'comment' => _('Enable Forcing authentication to see push content'),
-                    'help'      => _('Adds an option to the push form submission to restrict push recipient(s) to Phraseanet users only.'),
+                    'help'    => _('Adds an option to the push form submission to restrict push recipient(s) to Phraseanet users only.'),
                     'default' => false
                 ),
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_force_push_authentication',
                     'comment' => _('Set force authentication option to see push content as mandatory'),
-                    'help'      => _('Disallow the possibility for the end user to disable push authentication'),
+                    'help'    => _('Disallow the possibility for the end user to disable push authentication'),
                     'default' => false
+                ),
+                array(
+                    'type'    => \registry::TYPE_BOOLEAN,
+                    'name'    => 'GV_enable_feed_notification',
+                    'comment' => _('Enable possibility to notify users when publishing a new feed entry'),
+                    'default' => true
                 ),
                 array(
                     'type'    => \registry::TYPE_STRING,
