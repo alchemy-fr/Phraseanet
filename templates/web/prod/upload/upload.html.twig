@@ -392,22 +392,25 @@ $(document).ready(function () {
     //on submit file
     $('#fileupload', UploaderManager.getContainer()).bind('fileuploadsubmit', function (e, data) {
         var $this = $(this);
+        var params = [];
+        data.formData = [];
 
         //get form datas attached to the file
-        var  dataCollection = [];
-        var pushData = function(k, d) {
-            dataCollection.push(d);
-        };
-        $.each(data.context.find('input, select').serializeArray(), pushData)
-        $.each($("input", $('.collection-status:visible', UploaderManager.getSettingsBox())).serializeArray(), pushData);
-        $.each($("select", UploaderManager.getSettingsBox()).serializeArray(), pushData);
+        params.push(data.context.find('input, select').serializeArray());
+        params.push($("input", $('.collection-status:visible', UploaderManager.getSettingsBox())).serializeArray());
+        params.push($("select", UploaderManager.getSettingsBox()).serializeArray());
+
+        $.each(params, function(i, p) {
+            $.each(p, function (i, f){
+                data.formData.push(f);
+            });
+        });
 
         dataCollection.push({
             "name": "b64_image",
             "value": data["b64_image"]
         });
 
-        data.formData = dataCollection;
         //remove current context
         data.context.remove();
 

@@ -25,7 +25,7 @@
                 </td>
                 {% if list.getOwner(app['authentication'].getUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
                     <td style="text-align:right;white-space:nowrap;width:150px;">
-                        <button class="deleter btn btn-inverse">
+                        <button class="deleter btn btn-inverse" data-list-id="{{ list.getId() }}">
                             {{ 'Delete' | trans }}
                             <input type="hidden" name="list_id" value="{{ list.getId() }}"/>
                         </button>

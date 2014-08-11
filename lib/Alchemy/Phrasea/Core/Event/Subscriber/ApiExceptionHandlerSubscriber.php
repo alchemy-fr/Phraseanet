@@ -56,7 +56,9 @@ class ApiExceptionHandlerSubscriber implements EventSubscriberInterface
             $code = 404;
         } elseif ($e instanceof HttpExceptionInterface) {
             if (503 === $e->getStatusCode()) {
-                $code = 503;
+                $code = \API_V1_result::ERROR_MAINTENANCE;
+            } else if (406 === $e->getStatusCode()) {
+                $code = \API_V1_result::ERROR_UNACCEPTABLE;
             } else {
                 $code = 500;
             }

@@ -43,11 +43,13 @@
                             {% set desc = publishing.basket().getDescription() %}
                         {% endif %}
                         <br />
+                        {% if app["phraseanet.registry"].get("GV_enable_feed_notification") %}
                         <label class="checkbox">
                             <input class="required_text checkbox" type="checkbox" name="notify" id="feed_add_notify" value="1" style="min-height: 0; height: auto" />
                             <i class="icon icon-envelope"></i>&nbsp;{{ 'Notify users about this publication' | trans }}
                         </label>
                         <br />
+                        {% endif %}
                         <label for="feed_add_title"><b>{{ 'publication : titre' | trans }}</b></label>
                         <input class="required_text input-block-level" style="max-width:500px" type="text" name="title" id="feed_add_title" value="{{title}}" />
                         <label for="feed_add_subtitle"><b>{{ 'publication : sous titre' | trans }}</b></label>

@@ -777,8 +777,8 @@ class set_export extends set_abstract
                     $log["poids"] = $obj["size"];
                     $log["shortXml"] = $app['serializer.caption']->serialize($record_object->get_caption(), CaptionSerializer::SERIALIZE_XML);
                     $tmplog[$record_object->get_base_id()][] = $log;
-                    if (!$anonymous && $o == 'document') {
-                        $app['acl']->get($app['authentication']->getUser())->remove_remaining($record_object->get_base_id());
+                    if (!$anonymous && $o == 'document' && null !== $app['authentication']->getUser()) {
+                        $ $app['acl']->get($app['authentication']->getUser())->remove_remaining($record_object->get_base_id());
                     }
                 }
 
@@ -788,7 +788,7 @@ class set_export extends set_abstract
 
         $list_base = array_unique(array_keys($tmplog));
 
-        if (!$anonymous) {
+        if (!$anonymous && null !== $app['authentication']->getUser()) {
             $sql = "UPDATE basusr
             SET remain_dwnld = :remain_dl
             WHERE base_id = :base_id AND usr_id = :usr_id";

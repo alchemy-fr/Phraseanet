@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Core\Event\Subscriber\ContentNegotiationSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\CookiesDisablerSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\LogoutSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\MaintenanceSubscriber;
@@ -37,6 +38,9 @@ class PhraseaEventServiceProvider implements ServiceProviderInterface
         });
         $app['phraseanet.session-manager-subscriber'] = $app->share(function (Application $app) {
             return new SessionManagerSubscriber($app);
+        });
+        $app['phraseanet.content-negotiation-subscriber'] = $app->share(function (Application $app) {
+            return new ContentNegotiationSubscriber($app);
         });
     }
 

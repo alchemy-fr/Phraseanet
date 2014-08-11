@@ -80,7 +80,8 @@
         "twig/extensions"                  : "~1.0",
         "vierbergenlars/php-semver"        : "~2.1",
         "zend/gdata"                       : "~1.12.1",
-        "doctrine/migrations"              : "1.0.x-dev@dev"
+        "doctrine/migrations"              : "1.0.x-dev@dev",
+        willdurand/negotiation"            : "~1.3"
     },
     "require-dev": {
         "phpunit/phpunit"                  : "~3.7",

@@ -48,7 +48,7 @@ class Oauth2 implements ControllerProviderInterface
             $params = $oauth2Adapter->getAuthorizationRequestParameters($request);
 
             $appAuthorized = false;
-            $errorMessage = false;
+            $errorMessage = $request->get('error', '');
 
             if (null === $client = $app['repo.api-applications']->findByClientId($params['client_id'])) {
                 throw new NotFoundHttpException(sprintf('Application with client id %s could not be found', $params['client_id']));
@@ -80,18 +80,21 @@ class Oauth2 implements ControllerProviderInterface
                         if (null === $usrId = $app['auth.native']->getUsrId($request->get("login"), $request->get("password"), $request)) {
                             $app['session']->getFlashBag()->set('error', $app->trans('login::erreur: Erreur d\'authentification'));
 
-                            return $app->redirectPath('oauth2_authorize');
+                            return $app->redirectPath('oauth2_authorize', array_merge(array('error' => 'login'), $params));
                         }
                     } catch (RequireCaptchaException $e) {
-                        return $app->redirectPath('oauth2_authorize', ['error' => 'captcha']);
+                        return $app->redirectPath('oauth2_authorize', array_merge(array('error' => 'captcha'), $params));
                     } catch (AccountLockedException $e) {
-                        return $app->redirectPath('oauth2_authorize', ['error' => 'account-locked']);
+                        return $app->redirectPath('oauth2_authorize', array_merge(array('error' => 'account-locked'), $params));
                     }
 
                     $app['authentication']->openAccount($app['repo.users']->find($usrId));
-                }
+                } else {
+                    $r = new Response($app['twig']->render($template, array('error' => $error, "auth" => $oauth2_adapter)));
+                    $r->headers->set('Content-Type', 'text/html');
 
-                return new Response($app['twig']->render($template, ["auth" => $oauth2Adapter]));
+                    return $r;
+                }
             }
 
             //check if current client is already authorized by current user
@@ -114,10 +117,12 @@ class Oauth2 implements ControllerProviderInterface
                     "errorMessage" => $errorMessage,
                 ];
 
-                return new Response($app['twig']->render($template, $params));
+                $r = new Response($app['twig']->render($template, $params));
+                $r->headers->set('Content-Type', 'text/html');
+
+                return $r;
             } elseif (!$appAuthorized && $actionAccept !== null) {
                 $appAuthorized = (Boolean) $actionAccept;
-
                 if ($appAuthorized) {
                     $app['manipulator.api-account']->authorizeAccess($account);
                 } else {
@@ -129,7 +134,10 @@ class Oauth2 implements ControllerProviderInterface
             if ($oauth2Adapter->isNativeApp($params['redirect_uri'])) {
                 $params = $oauth2Adapter->finishNativeClientAuthorization($appAuthorized, $params);
 
-                return new Response($app['twig']->render("api/auth/native_app_access_token.html.twig", $params));
+                $r = new Response($app['twig']->render("api/auth/native_app_access_token.html.twig", $params));
+                $r->headers->set('Content-Type', 'text/html');
+
+                return $r;
             }
 
             $oauth2Adapter->finishClientAuthorization($appAuthorized, $params);

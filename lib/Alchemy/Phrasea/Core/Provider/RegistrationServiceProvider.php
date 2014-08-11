@@ -67,7 +67,7 @@ class RegistrationServiceProvider implements ServiceProviderInterface
                 ],
                 'address' => [
                     'label' => 'admin::compte-utilisateur adresse',
-                    'type' => 'textarea',
+                    'type' => 'text',
                     'constraints' => [
                         new Assert\NotBlank(),
                     ]
@@ -86,7 +86,7 @@ class RegistrationServiceProvider implements ServiceProviderInterface
                         new Assert\NotBlank(),
                     ]
                 ],
-                'position' => [
+                'job' => [
                     'label' => 'admin::compte-utilisateur poste',
                     'type' => 'text',
                     'constraints' => [
@@ -100,7 +100,7 @@ class RegistrationServiceProvider implements ServiceProviderInterface
                         new Assert\NotBlank(),
                     ]
                 ],
-                'job' => [
+                'position' => [
                     'label' => 'admin::compte-utilisateur activite',
                     'type' => 'text',
                     'constraints' => [

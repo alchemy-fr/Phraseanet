@@ -1,4 +1,4 @@
-
+{% block  content %}
 {% if results.getError() %}
 <div>{{results.getError()}}</div>
 {% else %}
@@ -82,3 +82,4 @@
     </center>
     </div>
 {% endif %}
+{% endblock %}

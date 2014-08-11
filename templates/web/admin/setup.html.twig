@@ -30,6 +30,15 @@
         </div>
     </form>
 
+<form id="GV_form" class="form-horizontal" method="post" action = "{{ path('setup_submit_globals') }}">
+    {% for section in GV %}
+        <fieldset>
+            <legend> {{ section['section'] }} </legend>
+            {% for value in section['vars'] %}
+                {% set readonly = false %}
+                {% if value['readonly'] is defined and value['readonly'] == true %}
+                    {% set readonly = true %}
+                {% endif %}
 
 
     {{ form_start(form, {'method': 'POST', 'action' : path('setup_display_globals'), 'attr': {'class' : 'form-horizontal'}}) }}

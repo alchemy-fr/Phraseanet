@@ -14,6 +14,8 @@ namespace Alchemy\Phrasea\Controller\Admin;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Form\TaskForm;
 use Alchemy\Phrasea\Model\Entities\Task;
+use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Exception\XMLParseErrorException;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -330,6 +332,10 @@ class TaskManager implements ControllerProviderInterface
 
     public function validateXML(Application $app, Request $request)
     {
+        if (false === $app['phraseanet.configuration']['main']['task-manager']['enabled']) {
+            throw new RuntimeException('The use of the task manager is disabled on this instance.');
+        }
+        
         return $app->json(['success' => $this->doValidateXML($request->getContent())]);
     }
 
