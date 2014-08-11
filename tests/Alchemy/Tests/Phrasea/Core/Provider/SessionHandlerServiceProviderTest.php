@@ -41,7 +41,7 @@ class SessionHandlerServiceProviderTest extends \PhraseanetTestCase
              ->disableOriginalConstructor()
              ->getMock();
 
-        $memcached = $this->getMockBuilder('Memcached')
+        @$memcached = $this->getMockBuilder('Memcached')
             ->disableOriginalConstructor()
             ->getMock();
 

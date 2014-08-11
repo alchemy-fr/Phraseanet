@@ -35,6 +35,7 @@
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
+                            {% if app['phraseanet.configuration']['main']['task-manager']['enabled'] %}
                             <li>
                                 <a method="POST" href="{{ path('admin_tasks_scheduler_start') }}">
                                     {{ 'Start' | trans }}
@@ -45,6 +46,7 @@
                                     {{ 'Stop' | trans }}
                                 </a>
                             </li>
+                            {% endif %}
                             <li>
                                 <a href="{{ path('admin_tasks_scheduler_log') }}">
                                     {{ 'Logs' | trans }}
@@ -70,6 +72,7 @@
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
+                                {% if app['phraseanet.configuration']['main']['task-manager']['enabled'] %}
                                 <li>
                                     <a href="{{ path('admin_tasks_task_show', {"task" : task["id"] }) }}">
                                         {{ 'Edit' | trans }}
@@ -90,6 +93,7 @@
                                         {{ 'Delete' | trans }}
                                     </a>
                                 </li>
+                                {% endif %}
                                 <li>
                                     <a href="{{ path('admin_tasks_task_log', {"task" : task["id"] }) }}">
                                         {{ 'Logs' | trans }}

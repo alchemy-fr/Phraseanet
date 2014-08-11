@@ -48,7 +48,7 @@ class Oauth2 implements ControllerProviderInterface
             $params = $oauth2Adapter->getAuthorizationRequestParameters($request);
 
             $appAuthorized = false;
-            $errorMessage = $request->get('error', '');
+            $error = $request->get('error', '');
 
             if (null === $client = $app['repo.api-applications']->findByClientId($params['client_id'])) {
                 throw new NotFoundHttpException(sprintf('Application with client id %s could not be found', $params['client_id']));
@@ -90,7 +90,7 @@ class Oauth2 implements ControllerProviderInterface
 
                     $app['authentication']->openAccount($app['repo.users']->find($usrId));
                 } else {
-                    $r = new Response($app['twig']->render($template, array('error' => $error, "auth" => $oauth2_adapter)));
+                    $r = new Response($app['twig']->render($template, array('error' => $error, "auth" => $oauth2Adapter)));
                     $r->headers->set('Content-Type', 'text/html');
 
                     return $r;
@@ -114,7 +114,7 @@ class Oauth2 implements ControllerProviderInterface
             if (!$appAuthorized && $actionAccept === null) {
                 $params = [
                     "auth"         => $oauth2Adapter,
-                    "errorMessage" => $errorMessage,
+                    "error" => $error,
                 ];
 
                 $r = new Response($app['twig']->render($template, $params));

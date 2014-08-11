@@ -51,6 +51,12 @@ class ActionsFormType extends AbstractType
             'label'        => 'Enable Forcing authentication to see push content',
             'help_message' => 'Adds an option to the push form submission to restrict push recipient(s) to Phraseanet users only.',
         ]);
+        $builder->add('force-push-authentication', 'checkbox', [
+            'label'        => 'Disallow the possibility for the end user to disable push authentication',
+        ]);
+        $builder->add('enable-feed-notification', 'checkbox', [
+            'label'        => 'Enable possibility to notify users when publishing a new feed entry',
+        ]);
     }
 
     public function getName()

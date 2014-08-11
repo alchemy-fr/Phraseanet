@@ -90,7 +90,7 @@ class Session implements ControllerProviderInterface
             'notifications' => $app['events-manager']->get_notifications()
         ]);
 
-        $baskets = $app['EM']->getRepository('\Entities\Basket')->findUnreadActiveByUser($app['authentication']->getUser());
+        $baskets = $app['EM']->getRepository('Phraseanet:Basket')->findUnreadActiveByUser($app['authentication']->getUser());
 
         foreach ($baskets as $basket) {
             $ret['changed'][] = $basket->getId();

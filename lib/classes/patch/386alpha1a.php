@@ -28,6 +28,16 @@ class patch_386alpha1a implements patchInterface
     }
 
     /**
+     * Returns doctrine migrations needed for the patch.
+     *
+     * @return array
+     */
+    public function getDoctrineMigrations()
+    {
+        return array();
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function require_all_upgrades()

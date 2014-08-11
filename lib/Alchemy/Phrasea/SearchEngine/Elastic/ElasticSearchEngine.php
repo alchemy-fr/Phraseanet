@@ -307,21 +307,9 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function excerpt($query, $fields, \record_adapter $record, SearchEngineOptions $options = null)
     {
-        $query = 'all' !== strtolower($query) ? $query : '';
-        $params = $this->createQueryParams($query, $options ?: new SearchEngineOptions(), $record);
+        //@todo implements
 
-        $res = $this->doExecute('search', $params);
-        $ret = [];
-
-        foreach ($fields as $name => $field) {
-            if (isset($res['hits']['hits'][0]['highlight']['caption.'.$name])) {
-                $ret[] = $res['hits']['hits'][0]['highlight']['caption.'.$name][0];
-            } else {
-                $ret[] = $field['value'];
-            }
-        }
-
-        return $ret;
+        return array();
     }
 
     /**

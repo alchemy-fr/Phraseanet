@@ -179,19 +179,23 @@ class BasketController implements ControllerProviderInterface
 
     public function removeBasketElement(Application $app, Request $request, BasketEntity $basket, $basket_element_id)
     {
+        $basketElement = $app['EM']->getRepository('Phraseanet:BasketElement')->find($basket_element_id);
+        $ord = $basketElement->getOrd();
+
         foreach ($basket->getElements() as $basket_element) {
-            /* @var $basket_element BasketElement */
+            if ($basket_element->getOrd() > $ord) {
+                $basket_element->setOrd($basket_element->getOrd() - 1);
+            }
             if ($basket_element->getId() === (int) $basket_element_id) {
+                $basket->removeElement($basket_element);
                 $app['EM']->remove($basket_element);
             }
         }
 
+        $app['EM']->persist($basket);
         $app['EM']->flush();
 
-        $data = [
-            'success' => true
-            , 'message' => $app->trans('Record removed from basket')
-        ];
+        $data = ['success' => true, 'message' => $app->trans('Record removed from basket')];
 
         if ($request->getRequestFormat() === 'json') {
             return $app->json($data);
@@ -350,8 +354,7 @@ class BasketController implements ControllerProviderInterface
 
         foreach ($request->request->get('elements') as $bask_element_id) {
             try {
-                $basket_element = $app['repo.basket-elements']
-                    ->findUserElement($bask_element_id, $app['authentication']->getUser());
+                $basket_element = $app['repo.basket-elements']->findUserElement($bask_element_id, $app['authentication']->getUser());
             } catch (\Exception $e) {
                 continue;
             }
@@ -364,10 +367,7 @@ class BasketController implements ControllerProviderInterface
 
         $app['EM']->flush();
 
-        $data = [
-            'success' => true
-            , 'message' => $app->trans('%quantity% records moved', ['%quantity%' => $n])
-        ];
+        $data = ['success' => true, 'message' => $app->trans('%quantity% records moved', ['%quantity%' => $n])];
 
         if ($request->getRequestFormat() === 'json') {
             return $app->json($data);

@@ -132,6 +132,10 @@ class TaskManager implements ControllerProviderInterface
 
     public function getLiveInformation(Application $app, Request $request)
     {
+        if (false === $app['phraseanet.configuration']['main']['task-manager']['enabled']) {
+            throw new RuntimeException('The use of the task manager is disabled on this instance.');
+        }
+
         if ($request->getRequestFormat() !== "json") {
             $app->abort(406, 'Only JSON format is accepted.');
         }
@@ -149,6 +153,10 @@ class TaskManager implements ControllerProviderInterface
 
     public function getScheduler(Application $app, Request $request)
     {
+        if (false === $app['phraseanet.configuration']['main']['task-manager']['enabled']) {
+            throw new RuntimeException('The use of the task manager is disabled on this instance.');
+        }
+
         if ($request->getRequestFormat() !== "json") {
             $app->abort(406, 'Only JSON format is accepted.');
         }
@@ -241,6 +249,10 @@ class TaskManager implements ControllerProviderInterface
 
     public function postTaskDelete(Application $app, Request $request, Task $task)
     {
+        if (false === $app['phraseanet.configuration']['main']['task-manager']['enabled']) {
+            throw new RuntimeException('The use of the task manager is disabled on this instance.');
+        }
+
         $app['manipulator.task']->delete($task);
 
         return $app->redirectPath('admin_tasks_list');
@@ -248,6 +260,10 @@ class TaskManager implements ControllerProviderInterface
 
     public function postStartTask(Application $app, Request $request, Task $task)
     {
+        if (false === $app['phraseanet.configuration']['main']['task-manager']['enabled']) {
+            throw new RuntimeException('The use of the task manager is disabled on this instance.');
+        }
+
         $app['manipulator.task']->start($task);
 
         return $app->redirectPath('admin_tasks_list');
@@ -255,6 +271,10 @@ class TaskManager implements ControllerProviderInterface
 
     public function postStopTask(Application $app, Request $request, Task $task)
     {
+        if (false === $app['phraseanet.configuration']['main']['task-manager']['enabled']) {
+            throw new RuntimeException('The use of the task manager is disabled on this instance.');
+        }
+
         $app['manipulator.task']->stop($task);
 
         return $app->redirectPath('admin_tasks_list');
@@ -269,6 +289,10 @@ class TaskManager implements ControllerProviderInterface
 
     public function postSaveTask(Application $app, Request $request, Task $task)
     {
+        if (false === $app['phraseanet.configuration']['main']['task-manager']['enabled']) {
+            throw new RuntimeException('The use of the task manager is disabled on this instance.');
+        }
+
         if (!$this->doValidateXML($request->request->get('settings'))) {
             return $app->json(['success' => false, 'message' => sprintf('Unable to load XML %s', $request->request->get('xml'))]);
         }
@@ -306,6 +330,10 @@ class TaskManager implements ControllerProviderInterface
 
     public function getTask(Application $app, Request $request, Task $task)
     {
+        if (false === $app['phraseanet.configuration']['main']['task-manager']['enabled']) {
+            throw new RuntimeException('The use of the task manager is disabled on this instance.');
+        }
+
         if ('json' === $request->getContentType()) {
             return $app->json(array_replace([
                     'id' => $task->getId(),

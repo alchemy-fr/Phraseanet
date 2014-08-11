@@ -42,15 +42,15 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     // handle API content negotiation
     $app->before(function(Request $request) use ($app) {
         // register custom API format
-        $request->setFormat(\API_V1_result::FORMAT_JSON_EXTENDED, \API_V1_adapter::$extendedContentTypes['json']);
-        $request->setFormat(\API_V1_result::FORMAT_YAML_EXTENDED, \API_V1_adapter::$extendedContentTypes['yaml']);
-        $request->setFormat(\API_V1_result::FORMAT_JSONP_EXTENDED, \API_V1_adapter::$extendedContentTypes['jsonp']);
-        $request->setFormat(\API_V1_result::FORMAT_JSONP, array('text/javascript', 'application/javascript'));
+        $request->setFormat(Result::FORMAT_JSON_EXTENDED, V1::$extendedContentTypes['json']);
+        $request->setFormat(Result::FORMAT_YAML_EXTENDED, V1::$extendedContentTypes['yaml']);
+        $request->setFormat(Result::FORMAT_JSONP_EXTENDED, V1::$extendedContentTypes['jsonp']);
+        $request->setFormat(Result::FORMAT_JSONP, array('text/javascript', 'application/javascript'));
 
         // handle content negociation
         $priorities = array('application/json', 'application/yaml', 'text/yaml', 'text/javascript', 'application/javascript');
-        foreach (\API_V1_adapter::$extendedContentTypes['json'] as $priorities[]);
-        foreach (\API_V1_adapter::$extendedContentTypes['yaml'] as $priorities[]);
+        foreach (V1::$extendedContentTypes['json'] as $priorities[]);
+        foreach (V1::$extendedContentTypes['yaml'] as $priorities[]);
         $format = $app['format.negociator']->getBest($request->headers->get('accept') ,$priorities);
 
         // throw unacceptable http error if API can not handle asked format
@@ -59,29 +59,29 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         }
         // set request format according to negotiated content or override format with JSONP if callback parameter is defined
         if (trim($request->get('callback')) !== '') {
-            $request->setRequestFormat(\API_V1_result::FORMAT_JSONP);
+            $request->setRequestFormat(Result::FORMAT_JSONP);
         } else {
             $request->setRequestFormat($request->getFormat($format->getValue()));
         }
 
         // tells whether asked format is extended or not
         $request->attributes->set('_extended', in_array(
-            $request->getRequestFormat(\API_V1_result::FORMAT_JSON),
+            $request->getRequestFormat(Result::FORMAT_JSON),
             array(
-                \API_V1_result::FORMAT_JSON_EXTENDED,
-                \API_V1_result::FORMAT_YAML_EXTENDED,
-                \API_V1_result::FORMAT_JSONP_EXTENDED
+                Result::FORMAT_JSON_EXTENDED,
+                Result::FORMAT_YAML_EXTENDED,
+                Result::FORMAT_JSONP_EXTENDED
             )
         ));
     }, PhraseaApplication::EARLY_EVENT);
 
     $app->after(function(Request $request, Response $response) use ($app) {
-        if ($request->getRequestFormat(\API_V1_result::FORMAT_JSON) === \API_V1_result::FORMAT_JSONP && !$response->isOk() && !$response->isServerError()) {
+        if ($request->getRequestFormat(Result::FORMAT_JSON) === Result::FORMAT_JSONP && !$response->isOk() && !$response->isServerError()) {
             $response->setStatusCode(200);
         }
         // set response content type
         if (!$response->headers->get('Content-Type')) {
-            $response->headers->set('Content-Type', $request->getMimeType($request->getRequestFormat(\API_V1_result::FORMAT_JSON)));
+            $response->headers->set('Content-Type', $request->getMimeType($request->getRequestFormat(Result::FORMAT_JSON)));
         }
     });
 

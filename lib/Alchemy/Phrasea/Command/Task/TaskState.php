@@ -31,6 +31,10 @@ class TaskState extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        if (false === $this->container['phraseanet.configuration']['main']['task-manager']['enabled']) {
+            throw new RuntimeException('The use of the task manager is disabled on this instance.');
+        }
+
         $task_id = $input->getArgument('task_id');
         if (null === $task = $this->container['repo.tasks']->find($task_id)) {
             throw new RuntimeException('Invalid task_id');

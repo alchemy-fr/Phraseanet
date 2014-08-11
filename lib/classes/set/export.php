@@ -778,7 +778,7 @@ class set_export extends set_abstract
                     $log["shortXml"] = $app['serializer.caption']->serialize($record_object->get_caption(), CaptionSerializer::SERIALIZE_XML);
                     $tmplog[$record_object->get_base_id()][] = $log;
                     if (!$anonymous && $o == 'document' && null !== $app['authentication']->getUser()) {
-                        $ $app['acl']->get($app['authentication']->getUser())->remove_remaining($record_object->get_base_id());
+                        $app['acl']->get($app['authentication']->getUser())->remove_remaining($record_object->get_base_id());
                     }
                 }
 

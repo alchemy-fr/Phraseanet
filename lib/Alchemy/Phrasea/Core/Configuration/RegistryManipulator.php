@@ -112,6 +112,7 @@ class RegistryManipulator
                 'social-tools' => 'none',
                 'enable-push-authentication' => false,
                 'force-push-authentication' => false,
+                'enable-feed-notification' => true
             ],
             'ftp' => [
                 'ftp-enabled' => false,

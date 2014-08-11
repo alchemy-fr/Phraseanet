@@ -240,9 +240,14 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $email = $this->generateEmail();
         $user = self::$DI['app']['manipulator.user']->createUser(uniqid('test_'), uniqid('test_'), $email);
         $token = self::$DI['app']['manipulator.token']->createResetEmailToken($user, $email);
-
         $user->setMailLocked(true);
-
+        $revokeBases = array();
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+            foreach ($databox->get_collections() as $collection) {
+                $revokeBases[] = $collection->get_base_id();
+            }
+        }
+        self::$DI['app']['acl']->get($user)->revoke_access_from_bases($revokeBases);
         $this->deleteRequest();
 
         self::$DI['client']->request('GET', '/login/register-confirm/', ['code' => $token->getValue()]);

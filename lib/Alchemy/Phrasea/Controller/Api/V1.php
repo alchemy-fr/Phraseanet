@@ -51,6 +51,12 @@ class V1 implements ControllerProviderInterface
     const OBJECT_TYPE_STORY = 'http://api.phraseanet.com/api/objects/story';
     const OBJECT_TYPE_STORY_METADATA_BAG = 'http://api.phraseanet.com/api/objects/story-metadata-bag';
 
+    public static $extendedContentTypes = array(
+        'json' => array('application/vnd.phraseanet.record-extended+json'),
+        'yaml' => array('application/vnd.phraseanet.record-extended+yaml'),
+        'jsonp' => array('application/vnd.phraseanet.record-extended+jsonp'),
+    );
+
     public function connect(SilexApplication $app)
     {
         $app['controller.api.v1'] = $this;

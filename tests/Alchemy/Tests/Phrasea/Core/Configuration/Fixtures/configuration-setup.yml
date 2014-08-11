@@ -30,6 +30,8 @@ main:
         options: []
     task-manager:
         status: started
+        enabled: started
+        enabled: true
         logger:
             max-files: 10
             enabled: true
