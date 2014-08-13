@@ -274,6 +274,8 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function query($query, $offset, $perPage, SearchEngineOptions $options = null)
     {
+        $parser = new QueryParser();
+
         $query = 'all' !== strtolower($query) ? $query : '';
         $params = $this->createQueryParams($query, $options ?: new SearchEngineOptions());
         $params['from'] = $offset;
@@ -291,7 +293,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             $results[] = new \record_adapter($this->app, $databoxId, $recordId, $n++);
         }
 
-        return new SearchEngineResult($results, $query, $res['took'], $offset, $res['hits']['total'], $res['hits']['total'], null, null, $suggestions, [], $this->indexName);
+        return new SearchEngineResult($results, $parser->parse($query), $res['took'], $offset, $res['hits']['total'], $res['hits']['total'], null, null, $suggestions, [], $this->indexName);
     }
 
     /**
