@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
-class UsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $usersParameters;
 
@@ -48,12 +48,13 @@ class UsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $user = self::$DI['app']['manipulator.user']->createUser(uniqid('user_'), 'test', 'titi@titi.fr');
 
+        self::giveRightsToUser(self::$DI['app'], self::$DI['app']['authentication']->getUser(), [self::$DI['collection']->get_base_id()], true);
+
         self::$DI['client']->request('POST', '/admin/users/rights/apply/', [
             'users'   => $user->getId(),
             'values'  => 'canreport_' . self::$DI['collection']->get_base_id() . '=1&manage_' . self::$DI['collection']->get_base_id() . '=1&canpush_' . self::$DI['collection']->get_base_id() . '=1',
             'user_infos' => ['email' => 'toto@toto.fr' ]
         ]);
-
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOK());
         $this->assertEquals("application/json", $response->headers->get("content-type"));
@@ -429,11 +430,21 @@ class UsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testImportUserCSVFile()
     {
         // create a template
-        if (false === \User_Adapter::get_usr_id_from_login(self::$DI['app'], 'csv_template')) {
-            $created_user = \User_Adapter::create(self::$DI['app'], 'csv_template', \random::generatePassword(16), null, false, false);
-            $created_user->set_template(self::$DI['app']['authentication']->getUser());
-            $created_user->ACL()->update_rights_to_base(self::$DI['collection']->get_base_id(), array('actif'=> 1));
+        if (null === self::$DI['app']['repo.users']->findByLogin('csv_template')) {
+            $user = self::$DI['app']['manipulator.user']->createTemplate('csv_template', self::$DI['app']['authentication']->getUser());
+            self::$DI['app']['acl']->get($user)->update_rights_to_base(self::$DI['collection']->get_base_id(), ['actif'=> 1]);
         }
+
+        $nativeQueryMock = $this->getMockBuilder('Alchemy\Phrasea\Model\NativeQueryProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $nativeQueryMock->expects($this->once())->method('getModelForUser')->will($this->returnValue([
+            $user
+        ]));
+
+        self::$DI['app']['EM.native-query'] = $nativeQueryMock;
+
         $data =
 <<<CSV
 gender;last name;first name;login;password;mail;adress;city;zipcode;phone;fax;function;company;activity;country;FTP_active;FTP_adress;loginFTP;pwdFTP;Destination_folder;Passive_mode;Retry;Prefix_creation_folder;by_default__send
@@ -445,11 +456,11 @@ CSV;
         $filepath = sys_get_temp_dir().'/user.csv';
         file_put_contents($filepath,$data);
 
-        $files = array(
+        $files = [
             'files' => new \Symfony\Component\HttpFoundation\File\UploadedFile($filepath, 'user.csv')
-        );
+        ];
 
-        $crawler = self::$DI['client']->request('POST', '/admin/users/import/file/', array(), $files);
+        $crawler = self::$DI['client']->request('POST', '/admin/users/import/file/', [], $files);
 
         $this->assertGreaterThan(0, $crawler->filter('html:contains("4 Users")')->count());
     }

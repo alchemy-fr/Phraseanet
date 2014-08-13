@@ -23,10 +23,8 @@ before_script:
   - echo 'extension="redis.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/redis.ini
   - echo 'extension="memcache.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcache.ini
   - echo 'extension="memcached.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcached.ini
-  - yes | pecl install zmq-beta
+  - echo "extension=zmq.so" > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/zmq.ini
   - yes | pecl install imagick
-  - travis_retry composer self-update
-  - travis_retry composer install --dev --prefer-source
   - wget http://sphinxsearch.com/files/sphinx-2.0.6-release.tar.gz
   - tar xzf sphinx-2.0.6-release.tar.gz
   - sh -c "cd sphinx-2.0.6-release && wget http://snowball.tartarus.org/dist/libstemmer_c.tgz && tar xzf libstemmer_c.tgz && ./configure --with-libstemmer --with-iconv --with-mysql --enable-id64 --quiet && make -j --quiet && sudo make install"
@@ -48,10 +46,15 @@ php:
   - 5.4
   - 5.5
   - 5.6
+matrix:
+  allow_failures:
+    - php: 5.6
 
 script:
+  - travis_retry composer install --dev --prefer-source -vvv
+  - travis_retry grunt install-assets -vvv
+  - bin/developer assets:compile-less
   - bin/developer system:uninstall
-  - travis_retry bin/developer dependencies:all --prefer-source
   - sh -c " if [ '$SETUP_MODE' = 'update' ]; then
               cp hudson/connexion.inc config/;
               cp hudson/_GV.php config/;
@@ -65,4 +68,5 @@ script:
 #sqlite db generation should occur once Phraseanet is up to date :
   - bin/developer phraseanet:regenerate-sqlite
   - ./node_modules/.bin/grunt test
+#ls -d tests/Alchemy/Tests/Phrasea/*/ | parallel --gnu 'bin/phpunit {};'
   - bin/phpunit

@@ -196,7 +196,6 @@ class Lightbox implements ControllerProviderInterface
             ->assert('item_id', '\d+');
 
         $controllers->get('/validate/{basket}/', function (SilexApplication $app, $basket) {
-
             try {
                 \Session_Logger::updateClientInfos($app, 6);
             } catch (SessionNotFound $e) {
@@ -290,7 +289,6 @@ class Lightbox implements ControllerProviderInterface
             ->assert('basket', '\d+');
 
         $controllers->get('/feeds/entry/{entry_id}/', function (SilexApplication $app, $entry_id) {
-
             try {
                 \Session_Logger::updateClientInfos($app, 6);
             } catch (SessionNotFound $e) {

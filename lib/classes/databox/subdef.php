@@ -303,6 +303,9 @@ class databox_subdef
         if ($sd->dpi) {
             $image->setOptionValue(Image::OPTION_RESOLUTION, (int) $sd->dpi);
         }
+        if ($sd->flatten) {
+            $image->setOptionValue(Image::OPTION_FLATTEN, p4field::isyes($sd->flatten));
+        }
 
         return $image;
     }

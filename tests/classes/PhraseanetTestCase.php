@@ -46,12 +46,19 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     private static $fixtureIds = [];
 
-    private function initializeSqliteDB($path = '/tmp/db.sqlite')
+    protected function initializeSqliteDB($path = '/tmp/db.sqlite')
     {
+        $path = $path . getmypid();
+
         if (is_file($path)) {
             unlink($path);
         }
         copy(__DIR__ . '/../db-ref.sqlite', $path);
+    }
+
+    public function getApplicationPath()
+    {
+        return '/lib/Alchemy/Phrasea/Application/Root.php';
     }
 
     public function createApplication()
@@ -85,7 +92,7 @@ abstract class PhraseanetTestCase extends WebTestCase
         \PHPUnit_Framework_Error_Notice::$enabled = true;
 
         self::$DI['app'] = self::$DI->share(function ($DI) {
-            return $this->loadApp('/lib/Alchemy/Phrasea/Application/Root.php');
+            return $this->loadApp($this->getApplicationPath());
         });
 
         self::$DI['cli'] = self::$DI->share(function ($DI) {
@@ -200,6 +207,10 @@ abstract class PhraseanetTestCase extends WebTestCase
 
         self::$DI['oauth2-app-user'] = self::$DI->share(function ($DI) {
             return $DI['app']['repo.api-applications']->find(self::$fixtureIds['oauth']['user']);
+        });
+
+        self::$DI['webhook-event'] = self::$DI->share(function ($DI) {
+            return $DI['app']['repo.webhook-event']->find(self::$fixtureIds['webhook']['event']);
         });
 
         self::$DI['oauth2-app-user-not-admin'] = self::$DI->share(function ($DI) {
@@ -352,7 +363,8 @@ abstract class PhraseanetTestCase extends WebTestCase
 
         $app['url_generator'] = $app->share($app->extend('url_generator', function ($generator, $app) {
             $host = parse_url($app['conf']->get('servername'), PHP_URL_HOST);
-            $generator->setContext(new RequestContext('', 'GET', $host));
+
+            $generator->setContext(new RequestContext('', 'GET', $host ?: $app['conf']->get('servername')));
 
             return $generator;
         }));
@@ -369,6 +381,14 @@ abstract class PhraseanetTestCase extends WebTestCase
         $app['phraseanet.SE.subscriber']::staticExpects($this->any())
             ->method('getSubscribedEvents')
             ->will($this->returnValue([]));
+
+        $app['EM.dbal-conf'] = $app->share($app->extend('EM.dbal-conf', function ($conf, $app) {
+            if (isset($conf['path'])) {
+                $conf['path'] = $conf['path'].getmypid();
+            }
+
+            return $conf;
+        }));
 
         $app['EM'] = $app->share($app->extend('EM', function ($em) {
             $this->initializeSqliteDB();
@@ -507,11 +527,13 @@ abstract class PhraseanetTestCase extends WebTestCase
      *
      * @param User $user
      */
-    public static function giveRightsToUser(Application $app, User $user, $base_ids = null)
+    public static function giveRightsToUser(Application $app, User $user, $base_ids = null, $force = false)
     {
+        $app['acl']->get($user)->delete_data_from_cache(\ACL::CACHE_GLOBAL_RIGHTS);
         $app['acl']->get($user)->give_access_to_sbas(array_keys($app['phraseanet.appbox']->get_databoxes()));
 
         foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+            $app['acl']->get($user)->delete_data_from_cache(\ACL::CACHE_RIGHTS_SBAS);
 
             $rights = [
                 'bas_manage'        => '1'
@@ -528,6 +550,12 @@ abstract class PhraseanetTestCase extends WebTestCase
                 }
 
                 $base_id = $collection->get_base_id();
+
+                $app['acl']->get($user)->delete_data_from_cache(\ACL::CACHE_RIGHTS_BAS);
+
+                if ($app['acl']->get($user)->has_access_to_base($base_id) && false === $force) {
+                    continue;
+                }
 
                 $app['acl']->get($user)->give_access_to_base([$base_id]);
                 $app['acl']->get($user)->update_rights_to_base($base_id, ['order_master' => true]);

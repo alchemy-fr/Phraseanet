@@ -27,7 +27,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
-
     $app = new PhraseaApplication($environment);
     $app->loadPlugins();
 
@@ -39,6 +38,52 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
 
         return $monolog;
     }));
+
+    // handle API content negotiation
+    $app->before(function(Request $request) use ($app) {
+        // register custom API format
+        $request->setFormat(Result::FORMAT_JSON_EXTENDED, V1::$extendedContentTypes['json']);
+        $request->setFormat(Result::FORMAT_YAML_EXTENDED, V1::$extendedContentTypes['yaml']);
+        $request->setFormat(Result::FORMAT_JSONP_EXTENDED, V1::$extendedContentTypes['jsonp']);
+        $request->setFormat(Result::FORMAT_JSONP, array('text/javascript', 'application/javascript'));
+
+        // handle content negociation
+        $priorities = array('application/json', 'application/yaml', 'text/yaml', 'text/javascript', 'application/javascript');
+        foreach (V1::$extendedContentTypes['json'] as $priorities[]);
+        foreach (V1::$extendedContentTypes['yaml'] as $priorities[]);
+        $format = $app['format.negociator']->getBest($request->headers->get('accept') ,$priorities);
+
+        // throw unacceptable http error if API can not handle asked format
+        if (null === $format) {
+            $app->abort(406);
+        }
+        // set request format according to negotiated content or override format with JSONP if callback parameter is defined
+        if (trim($request->get('callback')) !== '') {
+            $request->setRequestFormat(Result::FORMAT_JSONP);
+        } else {
+            $request->setRequestFormat($request->getFormat($format->getValue()));
+        }
+
+        // tells whether asked format is extended or not
+        $request->attributes->set('_extended', in_array(
+            $request->getRequestFormat(Result::FORMAT_JSON),
+            array(
+                Result::FORMAT_JSON_EXTENDED,
+                Result::FORMAT_YAML_EXTENDED,
+                Result::FORMAT_JSONP_EXTENDED
+            )
+        ));
+    }, PhraseaApplication::EARLY_EVENT);
+
+    $app->after(function(Request $request, Response $response) use ($app) {
+        if ($request->getRequestFormat(Result::FORMAT_JSON) === Result::FORMAT_JSONP && !$response->isOk() && !$response->isServerError()) {
+            $response->setStatusCode(200);
+        }
+        // set response content type
+        if (!$response->headers->get('Content-Type')) {
+            $response->headers->set('Content-Type', $request->getMimeType($request->getRequestFormat(Result::FORMAT_JSON)));
+        }
+    });
 
     $app->get('/api/', function (Request $request, SilexApplication $app) {
         return Result::create($request, [
@@ -73,7 +118,6 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         $app['dispatcher']->dispatch(PhraseaEvents::API_RESULT, new ApiResultEvent($request, $response));
     });
     $app['dispatcher']->addSubscriber(new ApiCorsSubscriber($app));
-    $app['dispatcher']->dispatch(PhraseaEvents::API_LOAD_END, new ApiLoadEndEvent());
 
     return $app;
 }, isset($environment) ? $environment : PhraseaApplication::ENV_PROD);

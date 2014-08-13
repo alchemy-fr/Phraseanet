@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 
-class BasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 

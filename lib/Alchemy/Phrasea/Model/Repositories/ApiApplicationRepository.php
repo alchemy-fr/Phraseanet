@@ -50,4 +50,12 @@ class ApiApplicationRepository extends EntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function findWithDefinedWebhookCallback()
+    {
+        $qb = $this->createQueryBuilder('app');
+        $qb->where($qb->expr()->isNotNull('app.webhookUrl'));
+
+        return $qb->getQuery()->getResult();
+    }
 }

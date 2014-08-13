@@ -185,7 +185,6 @@ class patch_390alpha17a extends patchAbstract
         );
     }
 
-
     private function fillOauthTokenTable(EntityManager $em)
     {
         if (false === $this->tableExists($em, 'api_oauth_tokens')) {

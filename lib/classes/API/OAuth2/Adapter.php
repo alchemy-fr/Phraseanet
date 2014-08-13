@@ -279,7 +279,7 @@ class API_OAuth2_Adapter extends OAuth2
     /**
      *
      * Overrides OAuth2::setAuthCode().
-     * 
+     *
      * @param      $oauthCode
      * @param      $accountId
      * @param      $redirectUri
@@ -421,7 +421,7 @@ class API_OAuth2_Adapter extends OAuth2
         /**
          *  At least one of: existing redirect URI or input redirect URI must be specified
          */
-        if ( ! $redirectUri && ! $input["redirect_uri"]) {
+        if (! $redirectUri && ! $input["redirect_uri"]) {
             $this->errorJsonResponse(OAUTH2_HTTP_FOUND, OAUTH2_ERROR_INVALID_REQUEST);
         }
 
@@ -642,7 +642,7 @@ class API_OAuth2_Adapter extends OAuth2
         $input = filter_input_array(INPUT_POST, $filters);
 
         // Grant Type must be specified.
-        if ( ! $input["grant_type"]) {
+        if (! $input["grant_type"]) {
             $this->errorJsonResponse(OAUTH2_HTTP_BAD_REQUEST, OAUTH2_ERROR_INVALID_REQUEST, 'Invalid grant_type parameter or parameter missing');
         }
 
@@ -669,7 +669,7 @@ class API_OAuth2_Adapter extends OAuth2
         // Do the granting
         switch ($input["grant_type"]) {
             case OAUTH2_GRANT_TYPE_AUTH_CODE:
-                if ( ! $input["code"] || ! $input["redirect_uri"]) {
+                if (! $input["code"] || ! $input["redirect_uri"]) {
                     $this->errorJsonResponse(OAUTH2_HTTP_BAD_REQUEST, OAUTH2_ERROR_INVALID_REQUEST);
                 }
                 $stored = $this->getAuthCode($input["code"]);
@@ -690,7 +690,7 @@ class API_OAuth2_Adapter extends OAuth2
                     $this->errorJsonResponse(OAUTH2_HTTP_BAD_REQUEST, OAUTH2_ERROR_UNSUPPORTED_GRANT_TYPE, 'Password grant type is not enable for your client');
                 }
 
-                if ( ! $input["username"] || ! $input["password"]) {
+                if (! $input["username"] || ! $input["password"]) {
                     $this->errorJsonResponse(OAUTH2_HTTP_BAD_REQUEST, OAUTH2_ERROR_INVALID_REQUEST, 'Missing parameters. "username" and "password" required');
                 }
 
@@ -701,7 +701,7 @@ class API_OAuth2_Adapter extends OAuth2
                 }
                 break;
             case OAUTH2_GRANT_TYPE_ASSERTION:
-                if ( ! $input["assertion_type"] || ! $input["assertion"]) {
+                if (! $input["assertion_type"] || ! $input["assertion"]) {
                     $this->errorJsonResponse(OAUTH2_HTTP_BAD_REQUEST, OAUTH2_ERROR_INVALID_REQUEST);
                 }
 
@@ -713,7 +713,7 @@ class API_OAuth2_Adapter extends OAuth2
 
                 break;
             case OAUTH2_GRANT_TYPE_REFRESH_TOKEN:
-                if ( ! $input["refresh_token"]) {
+                if (! $input["refresh_token"]) {
                     $this->errorJsonResponse(OAUTH2_HTTP_BAD_REQUEST, OAUTH2_ERROR_INVALID_REQUEST, 'No "refresh_token" parameter found');
                 }
 
@@ -744,7 +744,7 @@ class API_OAuth2_Adapter extends OAuth2
             $this->errorJsonResponse(OAUTH2_HTTP_BAD_REQUEST, OAUTH2_ERROR_INVALID_SCOPE);
         }
 
-        if ( ! $input["scope"]) {
+        if (! $input["scope"]) {
             $input["scope"] = null;
         }
 

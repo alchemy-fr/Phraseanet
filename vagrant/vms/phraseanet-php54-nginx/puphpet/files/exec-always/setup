@@ -1,0 +1,10 @@
+#! /bin/bash
+
+# open rabbitmq ports
+sudo iptables -I INPUT -p tcp --dport 15672 -j ACCEPT
+
+# open elastic search ports
+sudo iptables -I INPUT -p tcp --dport 9200 -j ACCEPT
+
+# open mysql ports
+sudo iptables -I INPUT -p tcp --dport 3306 -j ACCEPT

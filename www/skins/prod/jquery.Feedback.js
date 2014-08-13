@@ -149,13 +149,13 @@
 
             buttons[language.send] = function () {
                 if ($.trim($('input[name="name"]', $dialog.getDomElement()).val()) === '') {
-                    options = {
+                    var options = {
                         size: 'Alert',
                         closeButton: true,
                         title: language.warning
-                    },
-                        $dialog = p4.Dialog.Create(options, 3);
-                    $dialog.setContent(language.FeedBackNameMandatory);
+                    }
+                    var $dialogAlert = p4.Dialog.Create(options, 3);
+                    $dialogAlert.setContent(language.FeedBackNameMandatory);
 
                     return false;
                 }
@@ -514,7 +514,7 @@
                     var options = {
                         cancelButton: true,
                         buttons: buttons,
-                        size: 'Alert'
+                        size: '700x170'
                     };
 
                     p4.Dialog.Create(options, 2).setContent(box);
@@ -626,7 +626,7 @@
 
             $('button.deleter', $container).bind('click', function (event) {
 
-                var list_id = $(this).find('input[name=list_id]').val();
+                var list_id = $(this).data("list-id");
 
                 var makeDialog = function (box) {
 

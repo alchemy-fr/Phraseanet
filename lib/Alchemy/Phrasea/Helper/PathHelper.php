@@ -17,18 +17,18 @@ class PathHelper extends Helper
 {
     public function checkPath()
     {
-        return array(
+        return [
             'exists'     => file_exists($this->request->query->get('path')),
             'file'       => is_file($this->request->query->get('path')),
             'dir'        => is_dir($this->request->query->get('path')),
             'readable'   => is_readable($this->request->query->get('path')),
             'writeable'  => is_writable($this->request->query->get('path')),
             'executable' => is_executable($this->request->query->get('path')),
-        );
+        ];
     }
 
     public function checkUrl()
     {
-        return array('code' => \http_query::getHttpCodeFromUrl($this->request->query->get('url')));
+        return ['code' => \http_query::getHttpCodeFromUrl($this->request->query->get('url'))];
     }
 }

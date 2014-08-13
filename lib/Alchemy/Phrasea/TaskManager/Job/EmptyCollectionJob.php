@@ -59,7 +59,7 @@ class EmptyCollectionJob extends AbstractJob
 
         $settings = simplexml_load_string($task->getSettings());
 
-        $baseId = (string) $settings->base_id;
+        $baseId = (string) $settings->bas_id;
 
         $collection = \collection::get_from_base_id($app, $baseId);
         $collection->empty_collection(200);

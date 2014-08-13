@@ -12,11 +12,9 @@
 namespace Alchemy\Phrasea\Model\Manipulator;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityRepository;
 use RandomLib\Generator;
@@ -58,7 +56,7 @@ class ApiApplicationManipulator implements ManipulatorInterface
         $this->om->remove($application);
         $this->om->flush();
     }
-    
+
     public function update(ApiApplication $application)
     {
         $this->om->persist($application);
@@ -80,6 +78,12 @@ class ApiApplicationManipulator implements ManipulatorInterface
     public function setWebsiteUrl(ApiApplication $application, $url)
     {
         $this->doSetWebsiteUrl($application, $url);
+        $this->update($application);
+    }
+
+    public function setWebhookUrl(ApiApplication $application, $url)
+    {
+        $this->doSetWebhookUrl($application, $url);
         $this->update($application);
     }
 
@@ -113,5 +117,14 @@ class ApiApplicationManipulator implements ManipulatorInterface
         }
 
         $application->setWebsite($url);
+    }
+
+    private function doSetWebhookUrl(ApiApplication $application, $url)
+    {
+        if (false === filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED)) {
+            throw new InvalidArgumentException(sprintf('Webhook Url %s is not legal.', $url));
+        }
+
+        $application->setWebhookUrl($url);
     }
 }

@@ -623,7 +623,7 @@ class PhraseaEngine implements SearchEngineInterface
         $sxe = @simplexml_load_string($res['xml']);
 
         foreach ($fields as $name => $field) {
-            $newValues = array();
+            $newValues = [];
             if ($sxe && $sxe->description && $sxe->description->{$name}) {
                 foreach ($sxe->description->{$name} as $value) {
                     $newValues[(string) $value['meta_id']] = (string) $value;

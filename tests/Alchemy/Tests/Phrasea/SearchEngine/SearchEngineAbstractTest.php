@@ -735,17 +735,17 @@ abstract class SearchEngineAbstractTest extends \PhraseanetAuthenticatedTestCase
 
         foreach ($foundRecord->get_caption()->get_fields() as $field) {
             foreach ($field->get_values() as $metaId => $v) {
-                $values[$metaId] = array(
+                $values[$metaId] = [
                     'value' => $v->getValue(),
                     'from_thesaurus' => false,
                     'qjs' => null,
-                );
+                ];
             }
 
-            $fields[$field->get_name()] = array(
+            $fields[$field->get_name()] = [
                 'values' => $values,
                 'separator' => ';',
-            );
+            ];
         }
 
         $found = false;

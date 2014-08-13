@@ -761,7 +761,7 @@ class set_export extends set_abstract
         $tmplog = [];
         $files = $list['files'];
 
-        $event_name = in_array($type, array(Session_Logger::EVENT_EXPORTMAIL,Session_Logger::EVENT_EXPORTDOWNLOAD)) ? $type : Session_Logger::EVENT_EXPORTDOWNLOAD;
+        $event_name = in_array($type, [Session_Logger::EVENT_EXPORTMAIL,Session_Logger::EVENT_EXPORTDOWNLOAD]) ? $type : Session_Logger::EVENT_EXPORTDOWNLOAD;
 
         foreach ($files as $record) {
             foreach ($record["subdefs"] as $o => $obj) {
@@ -777,7 +777,7 @@ class set_export extends set_abstract
                     $log["poids"] = $obj["size"];
                     $log["shortXml"] = $app['serializer.caption']->serialize($record_object->get_caption(), CaptionSerializer::SERIALIZE_XML);
                     $tmplog[$record_object->get_base_id()][] = $log;
-                    if (!$anonymous && $o == 'document') {
+                    if (!$anonymous && $o == 'document' && null !== $app['authentication']->getUser()) {
                         $app['acl']->get($app['authentication']->getUser())->remove_remaining($record_object->get_base_id());
                     }
                 }
@@ -786,15 +786,9 @@ class set_export extends set_abstract
             }
         }
 
-        $export_types = array(
-            'download'    => 0,
-            'mail-export' => 2,
-            'ftp'         => 4
-        );
-
         $list_base = array_unique(array_keys($tmplog));
 
-        if (!$anonymous) {
+        if (!$anonymous && null !== $app['authentication']->getUser()) {
             $sql = "UPDATE basusr
             SET remain_dwnld = :remain_dl
             WHERE base_id = :base_id AND usr_id = :usr_id";

@@ -11,8 +11,6 @@
 
 namespace Alchemy\Phrasea\Helper;
 
-use Symfony\Component\HttpFoundation\Request;
-
 class DatabaseHelper extends Helper
 {
     public function checkConnection()
@@ -26,15 +24,30 @@ class DatabaseHelper extends Helper
         $connection_ok = $db_ok = $is_databox = $is_appbox = $empty = false;
 
         try {
-            $conn = new \connection_pdo('test', $hostname, $port, $user, $password, null, array(), false);
+            $conn = $this->app['dbal.provider']->get([
+                'host'     => $hostname,
+                'port'     => $port,
+                'user'     => $user,
+                'password' => $password
+            ]);
+            $conn->connect();
             $connection_ok = true;
         } catch (\Exception $e) {
 
         }
 
-        if ($dbname && $connection_ok === true) {
+        if (null !== $dbname && $connection_ok) {
             try {
-                $conn = new \connection_pdo('test', $hostname, $port, $user, $password, $dbname, array(), false);
+                $conn = $this->app['dbal.provider']->get([
+                    'host'     => $hostname,
+                    'port'     => $port,
+                    'user'     => $user,
+                    'password' => $password,
+                    'dbname'   => $dbname,
+                ]);
+
+                $conn->connect();
+
                 $db_ok = true;
 
                 $sql = "SHOW TABLE STATUS";
@@ -59,12 +72,12 @@ class DatabaseHelper extends Helper
             }
         }
 
-        return array(
+        return [
             'connection' => $connection_ok,
             'database'   => $db_ok,
             'is_empty'   => $empty,
             'is_appbox'  => $is_appbox,
             'is_databox' => $is_databox
-        );
+        ];
     }
 }

@@ -17,7 +17,7 @@ class patch_384alpha4a implements patchInterface
     private $release = '3.8.4-alpha.4';
 
     /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $concern = [base::APPLICATION_BOX];
 
     /**
      * {@inheritdoc}
@@ -25,6 +25,14 @@ class patch_384alpha4a implements patchInterface
     public function get_release()
     {
         return $this->release;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return [];
     }
 
     /**
@@ -50,10 +58,10 @@ class patch_384alpha4a implements patchInterface
     {
         $config = $app['phraseanet.configuration']->getConfig();
 
-        $config['session'] = array(
+        $config['session'] = [
             'idle' => 0,
             'lifetime' => 604800,
-        );
+        ];
 
         $app['phraseanet.configuration']->setConfig($config);
 

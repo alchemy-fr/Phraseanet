@@ -238,16 +238,21 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         ;
         $this->logout(self::$DI['app']);
         $email = $this->generateEmail();
-        $user = self::$DI['app']['manipulator.user']->createUser('test', 'test', $email);
+        $user = self::$DI['app']['manipulator.user']->createUser(uniqid('test_'), uniqid('test_'), $email);
         $token = self::$DI['app']['manipulator.token']->createResetEmailToken($user, $email);
-
         $user->setMailLocked(true);
-
+        $revokeBases = array();
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+            foreach ($databox->get_collections() as $collection) {
+                $revokeBases[] = $collection->get_base_id();
+            }
+        }
+        self::$DI['app']['acl']->get($user)->revoke_access_from_bases($revokeBases);
         $this->deleteRequest();
 
         self::$DI['client']->request('GET', '/login/register-confirm/', ['code' => $token->getValue()]);
         $response = self::$DI['client']->getResponse();
-        $this->assertTrue($response->isRedirect());
+        $this->assertTrue($response->isRedirect(), $response->getContent());
         $this->assertFlashMessagePopulated(self::$DI['app'], 'info', 1);
         $this->assertEquals('/login/', $response->headers->get('location'));
         $this->assertFalse(self::$DI['user']->isMailLocked());
@@ -587,7 +592,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $crawler = self::$DI['client']->request('POST', '/login/register-classic/');
 
         $this->assertFalse(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertFormOrFlashError($crawler, self::$DI['app']['conf']->get(['registry', 'registration', 'auto-select-collections']) ? 6 : 7);
+        $this->assertFormOrFlashError($crawler, self::$DI['app']['conf']->get(['registry', 'registration', 'auto-select-collections']) ? 7 : 8);
     }
 
     public function provideInvalidRegistrationData()
@@ -987,6 +992,22 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->mockNotificationsDeliverer($emails);
         $this->mockUserNotificationSettings('eventsmanager_notify_register');
 
+        $acl = $this->getMockBuilder('ACL')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $acl->expects($this->once())
+            ->method('get_granted_base')
+            ->will($this->returnValue([]));
+
+        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $aclProvider->expects($this->any())
+            ->method('get')
+            ->will($this->returnValue($acl));
+
+        self::$DI['app']['acl'] = $aclProvider;
+
         $parameters = array_merge(['_token' => 'token'], [
             "password" => [
                 'password' => 'password',
@@ -1032,7 +1053,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         }
 
         self::$DI['client']->request('POST', '/login/register-classic/', $parameters);
-        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect(),self::$DI['client']->getResponse()->getContent());
 
         if (null === $user = self::$DI['app']['repo.users']->findByEmail($parameters['email'])) {
             $this->fail('User not created');
@@ -1065,6 +1086,22 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         ]]));
 
         self::$DI['app']['EM.native-query'] = $nativeQueryMock;
+
+        $acl = $this->getMockBuilder('ACL')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $acl->expects($this->once())
+            ->method('get_granted_base')
+            ->will($this->returnValue([]));
+
+        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $aclProvider->expects($this->any())
+            ->method('get')
+            ->will($this->returnValue($acl));
+
+        self::$DI['app']['acl'] = $aclProvider;
 
         self::$DI['app']['registration.fields'] = $extraParameters;
 
@@ -1102,7 +1139,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         if (null === $user = self::$DI['app']['repo.users']->findByEmail($parameters['email'])) {
             $this->fail('User not created');
         }
-        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect(),self::$DI['client']->getResponse()->getContent());
         $this->assertGreaterThan(0, $emails['Alchemy\Phrasea\Notification\Mail\MailInfoUserRegistered']);
         $this->assertEquals(1, $emails['Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation']);
         $this->assertFlashMessagePopulated(self::$DI['app'], 'info', 1);
@@ -1747,10 +1784,10 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     public function testLoginPageWithIdleSessionTime()
     {
         $this->logout(self::$DI['app']);
-        self::$DI['app']['phraseanet.configuration']['session'] = array(
+        self::$DI['app']['phraseanet.configuration']['session'] = [
             'idle' =>10,
             'lifetime' => 60475,
-        );
+        ];
 
         $crawler = self::$DI['client']->request('GET', '/login/');
 
@@ -1761,10 +1798,10 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     public function testLoginPageWithNoIdleSessionTime()
     {
         $this->logout(self::$DI['app']);
-        self::$DI['app']['phraseanet.configuration']['session'] = array(
+        self::$DI['app']['phraseanet.configuration']['session'] = [
             'idle' => 0,
             'lifetime' => 60475,
-        );
+        ];
 
         $crawler = self::$DI['client']->request('GET', '/login/');
 

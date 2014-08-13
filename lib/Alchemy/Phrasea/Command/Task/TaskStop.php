@@ -29,6 +29,10 @@ class TaskStop extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        if (false === $this->container['phraseanet.configuration']['main']['task-manager']['enabled']) {
+            throw new RuntimeException('The use of the task manager is disabled on this instance.');
+        }
+
         $task = $this->container['converter.task']->convert($input->getArgument('task_id'));
         $this->container['manipulator.task']->stop($task);
 

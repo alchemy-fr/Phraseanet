@@ -17,7 +17,7 @@ class patch_384alpha5a implements patchInterface
     private $release = '3.8.4-alpha.5';
 
     /** @var array */
-    private $concern = array(base::DATA_BOX);
+    private $concern = [base::DATA_BOX];
 
     /**
      * {@inheritdoc}
@@ -25,6 +25,14 @@ class patch_384alpha5a implements patchInterface
     public function get_release()
     {
         return $this->release;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDoctrineMigrations()
+    {
+        return [];
     }
 
     /**

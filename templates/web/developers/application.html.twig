@@ -67,21 +67,21 @@
                             >
                         </td>
                     </tr>
-                    {% if application.get_type() == constant("API_OAuth2_Application::WEB_TYPE") %}
+                    {% if application.getType() == constant("WEB_TYPE", application) %}
                         <tr>
                             <td>
-                                {% trans "Define a webhook URL" %}
+                                {{ "Define a webhook URL" | trans }}
                                 <p style="font-size: 10px;max-width: 450px">
-                                    {% trans "Gives the option to your application to communicate with Phraseanet. This webhook can be used to trigger some actions on your application side." %}
+                                    {{ "Gives the option to your application to communicate with Phraseanet. This webhook can be used to trigger some actions on your application side." | trans }}
                                 </p>
                             </td>
                             <td class="url_callback">
-                                <span class="url_webhook_input">{{ application.getWebhook() }}</span>
-                                <a href="{{ path("submit_application_webhook", {"id" : application.get_id()}) }}" class="save_webhook btn btn-small btn-info" style="display:none;">
-                                    {% trans "Save" %}
+                                <span class="url_webhook_input">{{ application.getWebhookUrl() }}</span>
+                                <a href="{{ path("submit_application_webhook", {"application" : application.getId()}) }}" class="save_webhook btn btn-small btn-info" style="display:none;">
+                                    {{ "Save" | trans }}
                                 </a>
                                 <button type="button" class="webhook-modify-btn btn btn-small">
-                                    {% trans "Modify" %}
+                                    {{ "Modify" | trans }}
                                 </button>
                             </td>
                         </tr>

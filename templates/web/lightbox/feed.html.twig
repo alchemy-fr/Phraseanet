@@ -12,8 +12,6 @@
         href="{{ path('minifier', { 'f' : 'skins/lightbox/lightbox.css' }) }}" media="screen"/>
   {% endblock %}
 
-
-
 {% block content %}
     <div class="PNB10">
         <div class="PNB" id="top_container">
@@ -83,7 +81,7 @@
                         <div class="lightbox_container PNB">
               {% set business = app['acl'].get(app['authentication'].getUser()).has_right_on_base(first_item.getRecord(app).get_base_id(), 'canmodifrecord') %}
               {% if first_item %}
-                {{caption.format_caption(first_item.getRecord(app), '', null, null, business, false, false)}}
+                {{macro.format_caption(first_item.getRecord(app), '', null, business, false, false)}}
               {% endif %}
             </div>
                     </div>

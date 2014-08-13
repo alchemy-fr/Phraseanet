@@ -61,7 +61,7 @@ class CSVServiceProvider implements ServiceProviderInterface
 
         $app['csv.response'] = $app->protect(function ($callback) use ($app) {
             // set headers to fix ie issues
-            $response =  new StreamedResponse($callback, 200,  array(
+            $response =  new StreamedResponse($callback, 200,  [
                 'Expires'               => 'Mon, 26 Jul 1997 05:00:00 GMT',
                 'Last-Modified'         => gmdate('D, d M Y H:i:s'). ' GMT',
                 'Cache-Control'         => 'no-store, no-cache, must-revalidate',
@@ -70,7 +70,7 @@ class CSVServiceProvider implements ServiceProviderInterface
                 'Content-Type'          => 'text/csv',
                 'Cache-Control'         => 'max-age=3600, must-revalidate',
                 'Content-Disposition'   => 'max-age=3600, must-revalidate',
-            ));
+            ]);
 
             $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
                 ResponseHeaderBag::DISPOSITION_ATTACHMENT,

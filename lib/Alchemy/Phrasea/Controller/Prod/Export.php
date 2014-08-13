@@ -243,7 +243,7 @@ class Export implements ControllerProviderInterface
                 $mail->setButtonUrl($url);
                 $mail->setExpiration($token->getExpiration());
 
-                $app['notification.deliverer']->deliver($mail);
+                $app['notification.deliverer']->deliver($mail, !!$request->request->get('reading_confirm', false));
                 unset($remaingEmails[$key]);
             }
 

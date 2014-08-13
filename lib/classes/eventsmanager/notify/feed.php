@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication;
+use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 
 class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
 {
@@ -59,9 +60,11 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
 
         $data = $dom_xml->saveXml();
 
-        API_Webhook::create($this->app['phraseanet.appbox'], API_Webhook::NEW_FEED_ENTRY, array_merge(
-            array('feed_id' => $entry->get_feed()->get_id()), $params
-        ));
+        $this->app['manipulator.webhook-event']->create(
+            WebhookEvent::NEW_FEED_ENTRY,
+            WebhookEvent::FEED_ENTRY_TYPE,
+            array_merge(['feed_id' => $entry->getFeed()->getId()], $params)
+        );
 
         $Query = new \User_Query($this->app);
 

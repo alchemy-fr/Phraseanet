@@ -119,11 +119,17 @@ class ApiApplication
      */
     private $grantPassword = false;
 
-
     /**
      * @ORM\OneToMany(targetEntity="ApiAccount", mappedBy="application", cascade={"remove"})
      **/
     private $accounts;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="webhook_url", type="string", length=128, nullable=true)
+     */
+    private $webhookUrl;
 
     public function __construct()
     {
@@ -396,6 +402,22 @@ class ApiApplication
     public function getWebsite()
     {
         return $this->website;
+    }
+
+    /**
+     * @param string $webhookUrl
+     */
+    public function setWebhookUrl($webhookUrl)
+    {
+        $this->webhookUrl = $webhookUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWebhookUrl()
+    {
+        return $this->webhookUrl;
     }
 
     /**

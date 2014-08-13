@@ -28,7 +28,6 @@ class ApiExceptionHandlerSubscriberTest extends \PhraseanetTestCase
         $client->request('GET', '/');
 
         $this->assertEquals($code, $client->getResponse()->getStatusCode());
-        $this->assertEquals('application/json', $client->getResponse()->headers->get('content-type'));
     }
 
     public function provideExceptionsAndCode()

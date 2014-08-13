@@ -33,6 +33,10 @@ class SchedulerState extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        if (false === $this->container['phraseanet.configuration']['main']['task-manager']['enabled']) {
+            throw new RuntimeException('The use of the task manager is disabled on this instance.');
+        }
+
         $info = $this->container['task-manager.live-information']->getManager();
         $error = $info['configuration'] !== $info['actual'];
         $actual = $error ? "<error>" .$info['actual']. "</error>" : "<info>".$info['actual']."</info>";

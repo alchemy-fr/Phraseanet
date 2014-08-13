@@ -184,7 +184,7 @@ function submiterAction(domSubmiter) {
 
         request = $.ajax({
             type: "POST",
-            url: "/index_dev.php/report/init",
+            url: "/report/init",
             data: data,
             beforeSend: function () {
                 container.find('.content').empty();

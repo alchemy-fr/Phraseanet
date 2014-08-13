@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Core\Event;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
 use Symfony\Component\EventDispatcher\Event as SfEvent;
 

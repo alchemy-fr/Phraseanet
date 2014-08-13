@@ -26,6 +26,10 @@ class SchedulerPauseTasks extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        if (false === $this->container['phraseanet.configuration']['main']['task-manager']['enabled']) {
+            throw new RuntimeException('The use of the task manager is disabled on this instance.');
+        }
+
         $ret = 0;
 
         $this->container['task-manager.status']->stop();

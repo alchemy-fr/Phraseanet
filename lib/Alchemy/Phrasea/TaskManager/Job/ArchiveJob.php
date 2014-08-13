@@ -1000,7 +1000,7 @@ class ArchiveJob extends AbstractJob
             $captionStatus = $this->parseStatusBit(@simplexml_load_file($captionFile));
 
             if ($captionStatus) {
-                $status = \databox_status::operation_or($app, $status, $captionStatus);
+                $status = \databox_status::operation_mask($app, $status, $captionStatus);
             }
         }
 

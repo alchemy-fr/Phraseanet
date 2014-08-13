@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
-class LanguageTest extends \PhraseanetWebTestCase
+class LanguageTest extends \PhraseanetAuthenticatedTestCase
 {
     protected $client;
 

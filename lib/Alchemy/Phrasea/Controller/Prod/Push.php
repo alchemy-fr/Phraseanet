@@ -32,7 +32,7 @@ class Push implements ControllerProviderInterface
     protected function getUserFormatter(Application $app)
     {
         return function (User $user) use ($app) {
-            $subtitle = array_filter([$user->getPosition(), $user->getCompany()]);
+            $subtitle = array_filter([$user->getJob(), $user->getCompany()]);
 
             return [
                 'type'         => 'USER',
@@ -217,11 +217,11 @@ class Push implements ControllerProviderInterface
 
                     $app['EM']->flush();
 
-                    $arguments = array(
-                        'ssel_id' => $Basket->getId(),
-                    );
+                    $arguments = [
+                        'basket' => $Basket->getId(),
+                    ];
 
-                    if (!$app['phraseanet.registry']->get('GV_force_push_authentication') || !$request->get('force_authentication')) {
+                    if (!$app['conf']->get(['registry', 'actions', 'enable-push-authentication']) || !$request->get('force_authentication')) {
                         $arguments['LOG'] = $app['manipulator.token']->createBasketAccessToken($Basket, $user_receiver);
                     }
 
@@ -412,10 +412,15 @@ class Push implements ControllerProviderInterface
 
                     $app['EM']->flush();
 
-                    $url = $app->url('lightbox_validation', [
+                    $arguments = [
                         'basket' => $Basket->getId(),
-                        'LOG' => $app['manipulator.token']->createBasketValidationToken($Basket, $participant_user),
-                    ]);
+                    ];
+
+                    if (!$app['conf']->get(['registry', 'actions', 'enable-push-authentication']) || !$request->get('force_authentication')) {
+                        $arguments['LOG'] = $app['manipulator.token']->createBasketAccessToken($Basket, $participant_user);
+                    }
+
+                    $url = $app->url('lightbox_validation', $arguments);
 
                     $receipt = $request->get('recept') ? $app['authentication']->getUser()->getEmail() : '';
 

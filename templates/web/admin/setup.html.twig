@@ -36,15 +36,15 @@
     <fieldset>
         <legend>{{ daform.vars['label'] }}</legend>
         {%  for formdata in daform %}
-        <div class="control-group">
-            {{  form_label(formdata, null, { 'label_attr': {'class' : 'control-label'} } ) }}
-            <div class="controls">
-                {{  form_widget(formdata, {'attr': {'class': 'input-xxlarge'}}) }}
-            </div>
+            <div class="control-group">
+                {{  form_label(formdata, null, { 'label_attr': {'class' : 'control-label'} } ) }}
+                <div class="controls">
+                    {{  form_widget(formdata, {'attr': {'class': 'input-xxlarge'}}) }}
+                </div>
 
-            <div>{{ formdata.vars['help_message'] }}</div>
-            {{  form_rest(formdata) }}
-        </div>
+                <div>{{ formdata.vars['help_message'] }}</div>
+                {{  form_rest(formdata) }}
+            </div>
         {% endfor %}
         {{ form_rest(daform) }}
     </fieldset>
@@ -58,41 +58,41 @@
 
 <script type='text/javascript'>
     {% autoescape false %}
-        $(document).ready(function() {
-            // use html5 fallback validation if browser do not support required attribute
-            var form = $("#GV_form");
-            var inputs = form.find("input, select, textarea");
-            // if required not supported, emulate it
-            if (!Modernizr.input.required) {
-                form.bind("submit", function (event) {
-                    var required = [];
-                    // loop through input elements looking for required
-                    $.each(inputs, function(k, input){
-                        var input = $(input);
-                        if (typeof input.attr('required') !== "undefined") {
-                            // if the value is empty, add to required array
-                            if (input.val().replace(/^\s+|\s+$/g, '') === '') {
-                                required.push(input.attr('name'));
-                            }
+    $(document).ready(function() {
+        // use html5 fallback validation if browser do not support required attribute
+        var form = $("#GV_form");
+        var inputs = form.find("input, select, textarea");
+        // if required not supported, emulate it
+        if (!Modernizr.input.required) {
+            form.bind("submit", function (event) {
+                var required = [];
+                // loop through input elements looking for required
+                $.each(inputs, function(k, input){
+                    var input = $(input);
+                    if (typeof input.attr('required') !== "undefined") {
+                        // if the value is empty, add to required array
+                        if (input.val().replace(/^\s+|\s+$/g, '') === '') {
+                            required.push(input.attr('name'));
                         }
-                    });
-
-                    // show popover if required array contains any elements
-                    if (required.length > 0) {
-                        $.each(required, function(k, name) {
-                            var $this = $("input[name="+name+"], select[name="+name+"], textarea[name="+name+"]");
-                            $this.popover({ title: language.attention, content: language.requiredValue, placement:"bottom" })
-                            .blur(function () {
-                                $this.popover('hide');
-                            });
-                            $this.popover("show");
-                        });
-                        // prevent the form from being submitted
-                        event.stopImmediatePropagation();
-                        return false;
                     }
                 });
-            }
-        });
+
+                // show popover if required array contains any elements
+                if (required.length > 0) {
+                    $.each(required, function(k, name) {
+                        var $this = $("input[name="+name+"], select[name="+name+"], textarea[name="+name+"]");
+                        $this.popover({ title: language.attention, content: language.requiredValue, placement:"bottom" })
+                                .blur(function () {
+                                    $this.popover('hide');
+                                });
+                        $this.popover("show");
+                    });
+                    // prevent the form from being submitted
+                    event.stopImmediatePropagation();
+                    return false;
+                }
+            });
+        }
+    });
     {% endautoescape %}
 </script>

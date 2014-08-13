@@ -21,9 +21,9 @@
             onDblClick="openPreview('RESULT',{{record.get_number}});">
     {% endif %}
         <div style="padding: 4px;">
-            <div style="height:40px; position: relative; z-index: 95;">
-                <div class="title">
-                {{record.get_title}}
+            <div style="height:40px; position: relative; z-index: 95;margin-bottom:0;border-bottom:none;">
+                <div class="title" style="max-height:100%" title="{{ record.get_title() }}">
+                    {{ record.get_title() }}
                 </div>
                 <div class="status">
                 {{record.get_status_icons|raw}}
@@ -94,6 +94,5 @@
                 </table>
             </div>
         </div>
-
     </div>
 {% endmacro %}

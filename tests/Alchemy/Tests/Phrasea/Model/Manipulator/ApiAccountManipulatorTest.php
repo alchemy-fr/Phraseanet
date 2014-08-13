@@ -4,7 +4,6 @@ namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
 use Alchemy\Phrasea\Controller\Api\V1;
 use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
-use Alchemy\Phrasea\Model\Entities\ApiApplication;
 
 class ApiAccountManipulatorTest extends \PhraseanetTestCase
 {

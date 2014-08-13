@@ -18,7 +18,6 @@ use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Developers implements ControllerProviderInterface
 {
@@ -64,8 +63,9 @@ class Developers implements ControllerProviderInterface
             ->assert('application', '\d+')
             ->bind('submit_application_callback');
 
-        $controllers->post('/application/{id}/webhook/', $this->call('renewAppWebhook'))
-            ->assert('id', '\d+')
+        $controllers->post('/application/{application}/webhook/', 'controller.account.developers:renewAppWebhook')
+            ->before($app['middleware.api-application.converter'])
+            ->assert('application', '\d+')
             ->bind('submit_application_webhook');
 
         return $controllers;
@@ -115,7 +115,6 @@ class Developers implements ControllerProviderInterface
         return $app->json(['success' => true]);
     }
 
-
     /**
      * Change application webhook
      *
@@ -124,19 +123,19 @@ class Developers implements ControllerProviderInterface
      * @param  integer      $id      The application id
      * @return JsonResponse
      */
-    public function renewAppWebhook(Application $app, Request $request, $id)
+    public function renewAppWebhook(Application $app, Request $request, ApiApplication $application)
     {
         if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
         if (null !== $request->request->get("webhook")) {
-            $app['manipulator.api-application']->setWebhook($request->request->get("webhook"));
+            $app['manipulator.api-application']->setWebhookUrl($application, $request->request->get("webhook"));
         } else {
             return $app->json(['success' => false]);
         }
 
-        return $app->json(array('success' => true));
+        return $app->json(['success' => true]);
     }
 
     /**
@@ -158,7 +157,7 @@ class Developers implements ControllerProviderInterface
             $app->abort(404, sprintf('Account not found for application %s', $application->getName()));
         }
 
-        if(null !== $devToken = $app['repo.api-oauth-tokens']->findDeveloperToken($account)) {
+        if (null !== $devToken = $app['repo.api-oauth-tokens']->findDeveloperToken($account)) {
             $app['manipulator.api-oauth-token']->renew($devToken);
         } else {
             // dev tokens do not expires

@@ -10,7 +10,7 @@ class TaskConverterTest extends \PhraseanetTestCase
     {
         $task = self::$DI['app']['EM']->find('Phraseanet:Task', 1);
 
-        $converter = new TaskConverter(self::$DI['app']['EM']);
+        $converter = new TaskConverter(self::$DI['app']['EM']->getRepository('Phraseanet:Task'));
         $this->assertSame($task, $converter->convert(1));
     }
 
@@ -20,7 +20,7 @@ class TaskConverterTest extends \PhraseanetTestCase
      */
     public function testConvertFailure()
     {
-        $converter = new TaskConverter(self::$DI['app']['EM']);
+        $converter = new TaskConverter(self::$DI['app']['EM']->getRepository('Phraseanet:Task'));
         $converter->convert('prout');
     }
 }

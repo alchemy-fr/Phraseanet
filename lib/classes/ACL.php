@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
+use Doctrine\DBAL\DBALException;
 
 class ACL implements cache_cacheableInterface
 {
@@ -1103,7 +1104,16 @@ class ACL implements cache_cacheableInterface
 
         foreach ($base_ids as $base_id) {
             if (!isset($this->_rights_bas[$base_id])) {
-                $stmt_ins->execute([':base_id' => $base_id, ':usr_id'  => $usr_id]);
+                try {
+                    $stmt_ins->execute([':base_id' => $base_id, ':usr_id'  => $usr_id]);
+                } catch (DBALException $e) {
+//                    if (null !== $e) {
+//                        var_dump(get_class($e->getPrevious()));
+//                    }
+                    if (($e->getCode() == 23000)) {
+                        $to_update[] = $base_id;
+                    }
+                }
             } elseif ($this->_rights_bas[$base_id]['actif'] === false) {
                 $to_update[] = $base_id;
             }
@@ -1137,8 +1147,13 @@ class ACL implements cache_cacheableInterface
         $usr_id = $this->user->getId();
 
         foreach ($sbas_ids as $sbas_id) {
-            if (!$this->has_access_to_sbas($sbas_id))
-                $stmt_ins->execute([':sbas_id' => $sbas_id, ':usr_id'  => $usr_id]);
+            if (!$this->has_access_to_sbas($sbas_id)) {
+                try {
+                    $stmt_ins->execute([':sbas_id' => $sbas_id, ':usr_id'  => $usr_id]);
+                } catch (DBALException $e) {
+
+                }
+            }
         }
         $stmt_ins->closeCursor();
         $this->delete_data_from_cache(self::CACHE_RIGHTS_SBAS);
@@ -1429,14 +1444,18 @@ class ACL implements cache_cacheableInterface
         $iord = 0;
 
         foreach ($this->get_granted_base([], [$databox->get_sbas_id()]) as $collection) {
-            $stmt->execute([
-                ':site_id'  => $this->app['conf']->get(['main', 'key']),
-                ':usr_id'   => $this->user->getId(),
-                ':coll_id'  => $collection->get_coll_id(),
-                ':mask_and' => $this->get_mask_and($collection->get_base_id()),
-                ':mask_xor' => $this->get_mask_xor($collection->get_base_id()),
-                ':ord'      => $iord++
-            ]);
+            try {
+                $stmt->execute([
+                    ':site_id'  => $this->app['conf']->get(['main', 'key']),
+                    ':usr_id'   => $this->user->getId(),
+                    ':coll_id'  => $collection->get_coll_id(),
+                    ':mask_and' => $this->get_mask_and($collection->get_base_id()),
+                    ':mask_xor' => $this->get_mask_xor($collection->get_base_id()),
+                    ':ord'      => $iord++
+                ]);
+            } catch (DBALException $e) {
+
+            }
         }
 
         $stmt->closeCursor();
@@ -1575,7 +1594,7 @@ class ACL implements cache_cacheableInterface
      */
     public function get_order_master_collections()
     {
-        $sql = 'SELECT base_id FROM basusr WHERE order_master="1" AND usr_id= :usr_id ';
+        $sql = 'SELECT base_id FROM basusr WHERE order_master="1" AND usr_id= :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->user->getId()]);
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);

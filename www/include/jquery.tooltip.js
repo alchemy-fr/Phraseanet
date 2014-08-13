@@ -414,7 +414,10 @@
                 }
 
                 if (resizeImgTips) {
-                    var factor = Math.max(Math.min((width - 45) / width, (height - 75) / height), 1);
+                    var factor = Math.min((width - 45) / width, (height - 75) / height);
+                    if (factor > 1) {
+                        factor = 1;
+                    }
                     var imgWidth = Math.round(width * factor);
                     var imgHeight = Math.round(height * factor);
 

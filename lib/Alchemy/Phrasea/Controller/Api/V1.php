@@ -51,6 +51,12 @@ class V1 implements ControllerProviderInterface
     const OBJECT_TYPE_STORY = 'http://api.phraseanet.com/api/objects/story';
     const OBJECT_TYPE_STORY_METADATA_BAG = 'http://api.phraseanet.com/api/objects/story-metadata-bag';
 
+    public static $extendedContentTypes = array(
+        'json' => array('application/vnd.phraseanet.record-extended+json'),
+        'yaml' => array('application/vnd.phraseanet.record-extended+yaml'),
+        'jsonp' => array('application/vnd.phraseanet.record-extended+jsonp'),
+    );
+
     public function connect(SilexApplication $app)
     {
         $app['controller.api.v1'] = $this;
@@ -78,21 +84,21 @@ class V1 implements ControllerProviderInterface
             ->before([$this, 'ensureAdmin']);
 
         $controllers->get('/monitor/task/{task}/', 'controller.api.v1:get_task')
-            ->convert('task', [$app['converter.task'], 'convert'])
+            ->convert('task', $app['converter.task-callback'])
             ->before([$this, 'ensureAdmin'])
             ->assert('task', '\d+');
 
         $controllers->post('/monitor/task/{task}/', 'controller.api.v1:set_task_property')
-            ->convert('task', [$app['converter.task'], 'convert'])
+            ->convert('task', $app['converter.task-callback'])
             ->before([$this, 'ensureAdmin'])
             ->assert('task', '\d+');
 
         $controllers->post('/monitor/task/{task}/start/', 'controller.api.v1:start_task')
-            ->convert('task', [$app['converter.task'], 'convert'])
+            ->convert('task', $app['converter.task-callback'])
             ->before([$this, 'ensureAdmin']);
 
         $controllers->post('/monitor/task/{task}/stop/', 'controller.api.v1:stop_task')
-            ->convert('task', [$app['converter.task'], 'convert'])
+            ->convert('task', $app['converter.task-callback'])
             ->before([$this, 'ensureAdmin']);
 
         $controllers->get('/monitor/phraseanet/', 'controller.api.v1:get_phraseanet_monitor')
@@ -1389,11 +1395,11 @@ class V1 implements ControllerProviderInterface
         $user = $app['authentication']->getUser();
         $coll = $app['repo.feeds']->getAllForUser($app['acl']->get($user));
 
-        $datas = array_map(function ($feed) use ($user) {
+        $data = array_map(function ($feed) use ($user) {
             return $this->list_publication($feed, $user);
         }, $coll);
 
-        return Result::create($request, ["feeds" => $datas])->createResponse();
+        return Result::create($request, ["feeds" => $data])->createResponse();
     }
 
     /**
@@ -1413,10 +1419,10 @@ class V1 implements ControllerProviderInterface
             return Result::create($request, [])->createResponse();
         }
 
-        $offset_start = (int) ($request->get('offset_start') ? : 0);
-        $per_page = (int) ($request->get('per_page') ? : 5);
+        $offset_start = (int) $request->get('offset_start', 0);
+        $per_page = (int) $request->get('per_page', 5);
 
-        $per_page = (($per_page >= 1) && ($per_page <= 20)) ? $per_page : 5;
+        $per_page = (($per_page >= 1) && ($per_page <= 100)) ? $per_page : 100;
 
         $data = [
             'feed'         => $this->list_publication($feed, $user),
@@ -1431,14 +1437,14 @@ class V1 implements ControllerProviderInterface
     public function get_publications(Application $app, Request $request)
     {
         $user = $app['authentication']->getUser();
-        $restrictions = (array) ($request->get('feeds') ? : array());
+        $restrictions = (array) ($request->get('feeds') ? : []);
 
         $feed = Aggregate::createFromUser($app, $user, $restrictions);
 
         $offset_start = (int) ($request->get('offset_start') ? : 0);
         $per_page = (int) ($request->get('per_page') ? : 5);
 
-        $per_page = (($per_page >= 1) && ($per_page <= 20)) ? $per_page : 5;
+        $per_page = (($per_page >= 1) && ($per_page <= 20)) ? $per_page : 20;
 
         $data = [
             'total_entries' => $feed->getCountTotalEntries(),
@@ -1523,6 +1529,7 @@ class V1 implements ControllerProviderInterface
             'subtitle'     => $entry->getSubtitle(),
             'items'        => $items,
             'feed_id'      => $entry->getFeed()->getId(),
+            'feed_title'      => $entry->getFeed()->getTitle(),
             'feed_url'     => '/feeds/' . $entry->getFeed()->getId() . '/content/',
             'url'          => '/feeds/entry/' . $entry->getId() . '/',
         ];

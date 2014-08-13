@@ -296,3 +296,10 @@ div.switch_right.unchecked {
 #tab_demandes .table .btn-group {
     display: block;
 }
+
+#admin_setup_registry .control-label {
+    min-width: 260px;
+}
+#admin_setup_registry .form-horizontal .controls, #admin_setup_registry .form-horizontal .help-message {
+    margin-left: 300px;
+}

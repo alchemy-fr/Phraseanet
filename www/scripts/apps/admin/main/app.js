@@ -22,32 +22,32 @@ define([
         eventManager: _.extend({}, Backbone.Events)
     };
 
-    var sessionActive = function() {
+    var pullNotifications = function (){
         $.ajax({
             type: "POST",
-            url: "/session/update/",
+            url:  AdminApp.$scope.data("notif-url"),
             dataType: 'json',
             data: {
                 module : 3,
                 usr : AdminApp.$scope.data("usr")
             },
             error: function(){
-                window.setTimeout(function() {sessionActive();}, 10000);
+                window.setTimeout("pollNotifications();", 10000);
             },
             timeout: function(){
-                window.setTimeout(function() {sessionActive();}, 10000);
+                window.setTimeout("pollNotifications();", 10000);
             },
             success: function(data){
-                if(data) {
+                if (data) {
                     manageSession(data);
-                    var t = 120000;
-                    if(data.apps && parseInt(data.apps)>1) {
-                        t = Math.round((Math.sqrt(parseInt(data.apps)-1) * 1.3 * 120000));
-                    }
-                    window.setTimeout(function() {sessionActive();}, t);
                 }
+                var t = 120000;
+                if (data.apps && parseInt(data.apps) > 1) {
+                    t = Math.round((Math.sqrt(parseInt(data.apps)-1) * 1.3 * 120000));
+                }
+                window.setTimeout("pollNotifications();", t);
             }
-        })
+        });
     };
 
     var create = function() {
@@ -77,7 +77,7 @@ define([
         AdminApp.LeftView.activeTree();
         AdminApp.LeftView.clickSelected();
 
-        window.setTimeout(function() {sessionActive();}, 15000);
+        window.setTimeout(function() {pullNotifications();}, 15000);
     };
 
     return {

@@ -43,6 +43,10 @@ class TaskRun extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        if (false === $this->container['phraseanet.configuration']['main']['task-manager']['enabled']) {
+            throw new RuntimeException('The use of the task manager is disabled on this instance.');
+        }
+
         declare(ticks=1);
 
         if (null === $task = $this->container['repo.tasks']->find($input->getArgument('task_id'))) {

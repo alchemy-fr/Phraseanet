@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Border\Checker\Sha256;
 use Alchemy\Phrasea\Border\Manager;
 use DataURI;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -93,7 +94,8 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
 
             $record = new \record_adapter(self::$DI['app'], $id[0], $id[1]);
             $this->assertTrue($record->get_thumbnail()->is_physically_present());
-            $field = array_pop($record->get_caption()->get_fields(array('FileName')));
+            $fields = $record->get_caption()->get_fields(['FileName']);
+            $field = array_pop($fields);
             $this->assertEquals($field->get_serialized_values(), 'KIKOO.JPG');
         }
     }
@@ -157,6 +159,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
                 )
             ]
         ];
+        self::$DI['app']['border-manager']->registerChecker(new Sha256(self::$DI['app']));
         self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();

@@ -25,7 +25,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Account implements ControllerProviderInterface
 {
@@ -269,6 +268,7 @@ class Account implements ControllerProviderInterface
             ORDER BY s.created DESC';
 
         $query = $app['EM']->createQuery($dql);
+        $query->setMaxResults(100);
         $query->setParameters(['usr_id' => $app['session']->get('usr_id')]);
         $sessions = $query->getResult();
 

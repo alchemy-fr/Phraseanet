@@ -113,7 +113,7 @@ class Firewall
 
     public function requireAuthentication(Request $request = null)
     {
-        $params = array();
+        $params = [];
         if (null !== $request) {
             $params['redirect'] = '..' . $request->getPathInfo();
         }

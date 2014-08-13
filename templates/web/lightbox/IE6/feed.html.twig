@@ -83,21 +83,12 @@
                         <div class="lightbox_container">
               {% set business = app['acl'].get(app['authentication'].getUser()).has_right_on_base(first_item.getRecord(app).get_base_id(), 'canmodifrecord') %}
               {% if first_item %}
-                {{caption.format_caption(first_item.get_record(), '', null null, business, false, fals)}}
+                {{macro.format_caption(first_item.getRecord(app), '', null, business, false, false)}}
               {% endif %}
             </div>
                     </div>
                 </div>
             </div>
-
-
-
-
-
-
-
-
-
         </div>
         <div id="innerBottom" style="position:relative;bottom:0;width:100%;height:196px;">
             <div class="" style="height:30px;width:100%;">

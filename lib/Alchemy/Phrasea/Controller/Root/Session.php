@@ -52,15 +52,15 @@ class Session implements ControllerProviderInterface
             $app->abort(400);
         }
 
-        $ret = array(
+        $ret = [
             'status'  => 'unknown',
             'message' => '',
             'notifications' => false,
-            'changed' => array()
-        );
+            'changed' => []
+        ];
 
         if ($app['authentication']->isAuthenticated()) {
-            $usr_id = $app['authentication']->getUser()->get_id();
+            $usr_id = $app['authentication']->getUser()->getId();
             if ($usr_id != $request->request->get('usr')) { // I logged with another user
                 $ret['status'] = 'disconnected';
 
@@ -86,23 +86,23 @@ class Session implements ControllerProviderInterface
 
         $ret['status'] = 'ok';
 
-        $ret['notifications'] = $app['twig']->render('prod/notifications.html.twig', array(
+        $ret['notifications'] = $app['twig']->render('prod/notifications.html.twig', [
             'notifications' => $app['events-manager']->get_notifications()
-        ));
+        ]);
 
-        $baskets = $app['EM']->getRepository('\Entities\Basket')->findUnreadActiveByUser($app['authentication']->getUser());
+        $baskets = $app['EM']->getRepository('Phraseanet:Basket')->findUnreadActiveByUser($app['authentication']->getUser());
 
         foreach ($baskets as $basket) {
             $ret['changed'][] = $basket->getId();
         }
 
-        if (in_array($app['session']->get('phraseanet.message'), array('1', null))) {
+        if (in_array($app['session']->get('phraseanet.message'), ['1', null])) {
             if ($app['phraseanet.configuration']['main']['maintenance']) {
                 $ret['message'] .= _('The application is going down for maintenance, please logout.');
             }
 
-            if ($app['phraseanet.registry']->get('GV_message_on')) {
-                $ret['message'] .= strip_tags($app['phraseanet.registry']->get('GV_message'));
+            if ($app['conf']->get(['registry', 'maintenance', 'enabled'], false)) {
+                $ret['message'] .= strip_tags($app['conf']->get(['registry', 'maintenance', 'enabled']));
             }
         }
 

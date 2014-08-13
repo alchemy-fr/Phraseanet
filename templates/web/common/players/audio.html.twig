@@ -1,12 +1,10 @@
 {% macro audio_player(thumbnail, url, original_w, original_h, fit) %}
-
     {% set random = thumbnail.get_random() %}
     <div class="record record_audio audioTips" style="width:{{fit.width}}px;height:{{fit.height}}px;top:{{fit.top}}px;">
         <div id="preview_{{thumbnail.get_sbas_id()}}_{{thumbnail.get_record_id()}}_{{random}}" class="PNB" style=""></div>
         <input type="hidden" name="width" value="{{original_w}}"/>
         <input type="hidden" name="height" value="{{original_h}}"/>
     </div>
-
     <script type="text/javascript">
         swfobject.embedSWF(
                 "/include/jslibs/audio-player/player.swf",

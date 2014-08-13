@@ -3,7 +3,6 @@
 namespace Alchemy\Tests\Phrasea\Controller\Root;
 
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
 {

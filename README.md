@@ -14,15 +14,21 @@ Phraseanet 3.9 - Digital Asset Management application
 
 https://docs.phraseanet.com/
 
-#Installation
+#Installation :
 
 You **must** not download the source from GitHub, but download a packaged version here :
 
-https://sourceforge.net/projects/phraseanet/files/
+https://www.phraseanet.com/download/
 
 And follow the install steps described at https://docs.phraseanet.com/Admin/
 
-#License
+#Developement :
+
+For development purpose Phraseanet is shipped with ready to use development environments using vagrant.
+
+See https://docs.phraseanet.com/Devel/
+
+#License :
 
 Phraseanet is licensed under GPL-v3 license.
 

@@ -47,6 +47,10 @@ class Result
     const FORMAT_YAML = 'yaml';
     const FORMAT_JSONP = 'jsonp';
 
+    const FORMAT_JSON_EXTENDED = 'json+extended';
+    const FORMAT_YAML_EXTENDED = 'yaml+extended';
+    const FORMAT_JSONP_EXTENDED = 'jsonp+extended';
+
     const ERROR_BAD_REQUEST = 'Bad Request';
     const ERROR_UNAUTHORIZED = 'Unauthorized';
     const ERROR_FORBIDDEN = 'Forbidden';
@@ -54,6 +58,7 @@ class Result
     const ERROR_MAINTENANCE = 'Service Temporarily Unavailable';
     const ERROR_METHODNOTALLOWED = 'Method Not Allowed';
     const ERROR_INTERNALSERVERERROR = 'Internal Server Error';
+    const ERROR_UNACCEPTABLE = 'Unacceptable';
 
     public function __construct(Request $request, array $data = null, $code = 200, $errorType = null, $errorMessage = null, $errorDetails = null)
     {

@@ -11,14 +11,10 @@
 
 namespace Alchemy\Phrasea\Model\Manipulator;
 
-use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\ApiAccount;
 use Alchemy\Phrasea\Model\Entities\ApiOauthCode;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
-use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityRepository;
 use RandomLib\Generator;

@@ -664,20 +664,24 @@ class databox extends base
         try {
             $metaStructData = $this->get_data_from_cache(self::CACHE_META_STRUCT);
         } catch (\Exception $e) {
-            $sql = 'SELECT id, name FROM metadatas_structure ORDER BY sorter ASC';
+            $sql = 'SELECT id, `name` FROM metadatas_structure ORDER BY sorter ASC';
             $stmt = $this->get_connection()->prepare($sql);
             $stmt->execute();
             $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
-            $metaStructData = $rs;
-            $this->set_data_to_cache($metaStructData, self::CACHE_META_STRUCT);
+            if ($rs) {
+                $metaStructData = $rs;
+                $this->set_data_to_cache($metaStructData, self::CACHE_META_STRUCT);
+            }
         }
 
         $this->meta_struct = new databox_descriptionStructure();
 
-        foreach ($metaStructData as $row) {
-            $this->meta_struct->add_element(databox_field::get_instance($this->app, $this, $row['id']));
+        if ($metaStructData) {
+            foreach ($metaStructData as $row) {
+                $this->meta_struct->add_element(databox_field::get_instance($this->app, $this, $row['id']));
+            }
         }
 
         return $this->meta_struct;
@@ -1385,7 +1389,7 @@ class databox extends base
         $stmt->closeCursor();
 
         foreach ($rs as $row) {
-            $TOU[$row['locale']] = ['updated_on' => $row['updated_on'], 'value'      => $row['value']];
+            $TOU[$row['locale']] = ['updated_on' => $row['updated_on'], 'value' => $row['value']];
         }
 
         $missing_locale = [];
@@ -1397,14 +1401,16 @@ class databox extends base
             }
         }
 
+        $TOU = array_intersect_key($TOU, $avLanguages);
+
         $date_obj = new DateTime();
         $date = $this->app['date-formatter']->format_mysql($date_obj);
         $sql = "INSERT INTO pref (id, prop, value, locale, updated_on, created_on)
               VALUES (null, 'ToU', '', :locale, :date, NOW())";
         $stmt = $this->get_connection()->prepare($sql);
         foreach ($missing_locale as $v) {
-            $stmt->execute([':locale' => $v, ':date'   => $date]);
-            $TOU[$v] = ['updated_on' => $date, 'value'      => ''];
+            $stmt->execute([':locale' => $v, ':date' => $date]);
+            $TOU[$v] = ['updated_on' => $date, 'value' => ''];
         }
         $stmt->closeCursor();
         $this->cgus = $TOU;

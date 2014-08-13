@@ -63,11 +63,11 @@ class databox_status
             return;
         }
 
-        $uniqid = md5(implode('-', array(
+        $uniqid = md5(implode('-', [
             $sbas_params[$sbas_id]["host"],
             $sbas_params[$sbas_id]["port"],
             $sbas_params[$sbas_id]["dbname"]
-        )));
+        ]));
 
         $path = $this->path = $app['root.path'] . "/config/status/" . $uniqid;
         $url = $this->url = "/custom/status/" . $uniqid;
@@ -104,11 +104,11 @@ class databox_status
                 $this->status[$bit]["img_on"] = null;
 
                 if (is_file($path . "-stat_" . $bit . "_0.gif")) {
-                    $this->status[$bit]["img_off"] = $url . "-stat_" . $bit . "_0.gif";
+                    $this->status[$bit]["img_off"] = $url . "-stat_" . $bit . "_0.gif?etag=".md5_file($path . "-stat_" . $bit . "_0.gif");
                     $this->status[$bit]["path_off"] = $path . "-stat_" . $bit . "_0.gif";
                 }
                 if (is_file($path . "-stat_" . $bit . "_1.gif")) {
-                    $this->status[$bit]["img_on"] = $url . "-stat_" . $bit . "_1.gif";
+                    $this->status[$bit]["img_on"] = $url . "-stat_" . $bit . "_1.gif?etag=".md5_file($path . "-stat_" . $bit . "_1.gif");
                     $this->status[$bit]["path_on"] = $path . "-stat_" . $bit . "_1.gif";
                 }
 

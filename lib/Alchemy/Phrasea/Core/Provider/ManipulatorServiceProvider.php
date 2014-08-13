@@ -23,6 +23,8 @@ use Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator;
 use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
+use Alchemy\Phrasea\Model\Manipulator\WebhookEventDeliveryManipulator;
+use Alchemy\Phrasea\Model\Manipulator\WebhookEventManipulator;
 use Alchemy\Phrasea\Model\Manager\UserManager;
 use Silex\Application as SilexApplication;
 use Silex\ServiceProviderInterface;
@@ -81,6 +83,14 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
 
         $app['manipulator.api-log'] = $app->share(function ($app) {
             return new ApiLogManipulator($app['EM'], $app['repo.api-logs']);
+        });
+
+        $app['manipulator.webhook-event'] = $app->share(function ($app) {
+            return new WebhookEventManipulator($app['EM'], $app['repo.webhook-event']);
+        });
+
+        $app['manipulator.webhook-delivery'] = $app->share(function ($app) {
+            return new WebhookEventDeliveryManipulator($app['EM'], $app['repo.webhook-delivery']);
         });
     }
 

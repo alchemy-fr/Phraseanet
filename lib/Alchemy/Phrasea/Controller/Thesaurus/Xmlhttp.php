@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Thesaurus;
 
+use Alchemy\Phrasea\Model\Entities\User;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -374,7 +375,7 @@ class Xmlhttp implements ControllerProviderInterface
                 }
                 $app['manipulator.preset']->delete($preset);
 
-                $ret['html'] = $this->getPresetHTMLList($app, $request->get('sbas'), $app['authentication']->getUser()->getId());
+                $ret['html'] = $this->getPresetHTMLList($app, $request->get('sbas'), $app['authentication']->getUser());
                 break;
             case 'SAVE':
                 $app['manipulator.preset']->create(
@@ -384,10 +385,10 @@ class Xmlhttp implements ControllerProviderInterface
                     $request->get('fields')
                 );
 
-                $ret['html'] = $this->getPresetHTMLList($app, $request->get('sbas'), $app['authentication']->getUser()->getId());
+                $ret['html'] = $this->getPresetHTMLList($app, $request->get('sbas'), $app['authentication']->getUser());
                 break;
             case 'LIST':
-                $ret['html'] = $this->getPresetHTMLList($app, $request->get('sbas'), $app['authentication']->getUser()->getId());
+                $ret['html'] = $this->getPresetHTMLList($app, $request->get('sbas'), $app['authentication']->getUser());
                 break;
             case "LOAD":
                 if (null === $preset = $app['repo.presets']->find($id = $request->get('presetid'))) {
@@ -409,7 +410,7 @@ class Xmlhttp implements ControllerProviderInterface
     private function getPresetHTMLList(Application $app, $sbasId, User $user)
     {
         $data = [];
-        foreach ($app['repo.presets']->findBy(['user' => $user, 'sbasId' => $sbasId], ['creadted' => 'asc']) as $preset) {
+        foreach ($app['repo.presets']->findBy(['user' => $user, 'sbasId' => $sbasId], ['created' => 'asc']) as $preset) {
             $presetData = $fields = [];
             array_walk($preset->getData(), function ($field) use ($fields) {
                 $fields[$field['name']][] = $field['value'];
@@ -752,12 +753,12 @@ class Xmlhttp implements ControllerProviderInterface
 
         $lcoll = '';
         $collections = $app['authentication']->getUser()->ACL()
-            ->get_granted_base(array(), array($sbid)); // array(), $sbid);
+            ->get_granted_base([], [$sbid]); // array(), $sbid);
         foreach ($collections as $collection) {
             $lcoll .= ($lcoll?",":"") . $collection->get_coll_id();
         }
         $site = $app['phraseanet.configuration']['main']['key'];
-        $usr_id = $app['authentication']->getUser()->get_id();
+        $usr_id = $app['authentication']->getUser()->getId();
 
         $tids = explode('.', $request->get('id'));
         $thid = implode('.', $tids);
@@ -778,7 +779,7 @@ class Xmlhttp implements ControllerProviderInterface
                         FROM (thit AS t INNER JOIN record AS r USING(record_id))
                          INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id
                         WHERE t.value LIKE :like AND r.coll_id IN('.$lcoll.') AND (r.status^c.mask_xor)&c.mask_and=0';
-                $sqlparm = array(':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id);
+                $sqlparm = [':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id];
 
                 $stmt = $connbas->prepare($sql);
                 $stmt->execute($sqlparm);
@@ -796,10 +797,10 @@ class Xmlhttp implements ControllerProviderInterface
                          INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id
                         WHERE t.value LIKE :like AND r.coll_id IN('.$lcoll.') AND (r.status^c.mask_xor)&c.mask_and=0
                         GROUP BY k';
-                $sqlparm = array(':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id);
+                $sqlparm = [':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id];
 
                 $stmt = $connbas->prepare($sql);
-                $stmt->execute(array(':like' => $dthid . '%'));
+                $stmt->execute([':like' => $dthid . '%']);
                 $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
                 $stmt->closeCursor();
 
@@ -815,7 +816,7 @@ class Xmlhttp implements ControllerProviderInterface
                          INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id
                         WHERE t.value LIKE :like AND r.coll_id IN('.$lcoll.') AND (r.status^c.mask_xor)&c.mask_and=0
                         GROUP BY k';
-                $sqlparm = array(':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id);
+                $sqlparm = [':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id];
 
                 $stmt = $connbas->prepare($sql);
                 $stmt->execute($sqlparm);
@@ -833,7 +834,7 @@ class Xmlhttp implements ControllerProviderInterface
                          INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id
                         WHERE t.value LIKE :like AND r.coll_id IN('.$lcoll.') AND (r.status^c.mask_xor)&c.mask_and=0
                         GROUP BY k';
-                $sqlparm = array(':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id);
+                $sqlparm = [':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id];
 
                 $stmt = $connbas->prepare($sql);
                 $stmt->execute($sqlparm);

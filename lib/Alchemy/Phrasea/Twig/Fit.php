@@ -21,9 +21,9 @@ class Fit extends \Twig_Extension
 
     public function getFunctions()
     {
-        return array(
+        return [
             'fitIn' => new \Twig_Function_Method($this, 'fitIn')
-        );
+        ];
     }
 
     public function fitIn(array $content, array $box)
@@ -79,11 +79,11 @@ class Fit extends \Twig_Extension
             }
         }
 
-        return array(
+        return [
             'width' => round($width),
             'height' => round($height),
             'top' => round($top),
             'left' => round($left)
-        );
+        ];
     }
 }

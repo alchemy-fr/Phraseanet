@@ -174,24 +174,24 @@ class caption_record implements caption_interface, cache_cacheableInterface
      */
     public function get_highlight_fields($highlight = '', Array $grep_fields = null, SearchEngineInterface $searchEngine = null, $includeBusiness = false, SearchEngineOptions $options = null)
     {
-        $fields = array();
+        $fields = [];
 
         foreach ($this->get_fields($grep_fields, $includeBusiness) as $meta_struct_id => $field) {
-            $values = array();
+            $values = [];
             foreach ($field->get_values() as $metaId => $v) {
-                $values[$metaId] = array(
+                $values[$metaId] = [
                     'value' => $v->getValue(),
                     'from_thesaurus' => $highlight ? $v->isThesaurusValue() : false,
                     'qjs' => $v->getQjs(),
-                 );
+                 ];
             }
-            $fields[$field->get_name()] = array(
+            $fields[$field->get_name()] = [
                 'values'    => $values,
                 'name'      => $field->get_name(),
-                'label'     => $field->get_databox_field()->get_label($this->app['locale.I18n']),
+                'label'     => $field->get_databox_field()->get_label($this->app['locale']),
                 'separator' => $field->get_databox_field()->get_separator(),
                 'sbas_id'   => $field->get_databox_field()->get_databox()->get_sbas_id()
-            );
+            ];
         }
 
         if ($searchEngine instanceof SearchEngineInterface) {

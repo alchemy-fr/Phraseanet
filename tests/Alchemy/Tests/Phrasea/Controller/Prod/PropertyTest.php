@@ -61,6 +61,31 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
         $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
         $story->appendChild($record2);
 
+        $acl = $this->getMockBuilder('ACL')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $acl->expects($this->any())
+            ->method('has_access_to_record')
+            ->with($this->isInstanceOf('\record_adapter'))
+            ->will($this->returnValue(true));
+        $acl->expects($this->any())
+            ->method('has_right_on_base')
+            ->with($this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT), $this->equalTo('chgstatus'))
+            ->will($this->returnValue(true));
+        $acl->expects($this->any())
+            ->method('has_right_on_sbas')
+            ->with($this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT), $this->equalTo('chgstatus'))
+            ->will($this->returnValue(true));
+
+        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $aclProvider->expects($this->any())
+            ->method('get')
+            ->will($this->returnValue($acl));
+
+        self::$DI['app']['acl'] = $aclProvider;
+
         self::$DI['client']->request('POST', '/prod/records/property/status/', [
             'apply_to_children' => [$story->get_sbas_id() => true],
             'status'                                   => [

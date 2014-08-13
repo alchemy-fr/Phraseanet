@@ -530,7 +530,7 @@ class Users implements ControllerProviderInterface
             ];
             $nbUsrToAdd = 0;
 
-            $lines = array();
+            $lines = [];
             $app['csv.interpreter']->addObserver(function (array $row) use (&$lines) {
                 $lines[] = $row;
             });

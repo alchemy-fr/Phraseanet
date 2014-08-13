@@ -122,7 +122,7 @@ class Permalink extends AbstractDelivery
         } else {
             $record = \media_Permalink_Adapter::challenge_token($app, $databox, $token, $record_id, $subdef);
 
-            if (! ($record instanceof \record_adapter)) {
+            if (!($record instanceof \record_adapter)) {
                 throw new NotFoundHttpException('Wrong token.');
             }
         }
@@ -183,7 +183,7 @@ class Permalink extends AbstractDelivery
                 $stamp = true;
                 break;
             case 'wm':
-                $watermark = false;
+                $watermark = true;
                 break;
         }
 
