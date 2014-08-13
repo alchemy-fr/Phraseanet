@@ -66,8 +66,9 @@ class RSSFeeds implements ControllerProviderInterface
                 if ($total > ($page * $perPage))
                     $content->set_next_page($feed->get_homepage_link($app['phraseanet.registry'], $format, ($page + 1)));
             }
-            foreach ($entries->get_entries() as $entry)
+            foreach ($entries->get_entries() as $entry) {
                 $content->set_item($entry);
+            }
 
             $render = $content->render();
             $response = new Response($render, 200, array('Content-Type' => $content->get_mimetype()));

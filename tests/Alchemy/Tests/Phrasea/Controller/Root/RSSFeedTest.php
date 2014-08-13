@@ -166,6 +166,12 @@ class RSSFeedTest extends \PhraseanetWebTestCaseAbstract
         if (self::$feed instanceof \Feed_Adapter) {
             self::$feed->delete();
         }
+        if (self::$public_feeds instanceof \Feed_Collection) {
+            self::$public_feeds->delete_data_from_cache();
+        }
+        if (self::$private_feeds instanceof \Feed_Collection) {
+            self::$public_feeds->delete_data_from_cache();
+        }
         parent::tearDown();
     }
 
