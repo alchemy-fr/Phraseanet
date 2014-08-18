@@ -40,7 +40,6 @@ class Printer extends RecordHelper
         parent::__construct($app, $Request);
 
         $grep = function (\record_adapter $record) {
-
                 try {
                     return $record->get_thumbnail()->get_type() == \media_subdef::TYPE_IMAGE ||
                         $record->get_preview()->get_type() == \media_subdef::TYPE_IMAGE;
