@@ -16,3 +16,5 @@ behat.yml
 /www/assets
 /tmp-assets
 /www/scripts/tests/fixtures
+/.vagrant/
+/bin/
