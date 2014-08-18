@@ -21,6 +21,7 @@
 "dans"                  return 'IN'
 "("                     return '('
 ")"                     return ')'
+"*"                     return '*'
 '"'                     {
                             //js
                             this.begin('literal');
@@ -40,6 +41,7 @@
 
 /* operator associations and precedence */
 
+%left 'WORD'
 %left 'AND' 'OR'
 %left 'IN'
 
@@ -50,12 +52,27 @@
 
 
 query
-    : expression EOF {
+    : expressions EOF {
         //js
         console.log('[QUERY]', $$);
         return $$;
-        //php return $$;
+        /*php
+        return $$;
+        */
     }
+    ;
+
+expressions
+    : expression expressions {
+        //js
+        $$ = '('+$1+' DEF_OP '+$2+')';
+        console.log('[DEF_OP]', $$);
+        // $$ = sprintf('(%s DEF_OP %s)', $1->text, $2->text);
+        /*php
+        $$ = new AST\AndExpression($1->text, $2->text);
+        */
+    }
+    | expression
     ;
 
 expression
@@ -63,43 +80,70 @@ expression
         //js
         $$ = '('+$1+' AND '+$3+')';
         console.log('[AND]', $$);
-        //php $$ = sprintf('(%s AND %s)', $1->text, $3->text);
+        /*php
+        $$ = new AST\AndExpression($1->text, $3->text);
+        */
     }
     | expression OR expression {
         //js
         $$ = '('+$1+' OR '+$3+')';
         console.log('[OR]', $$);
-        //php $$ = sprintf('(%s OR %s)', $1->text, $3->text);
+        /*php
+        $$ = new AST\OrExpression($1->text, $3->text);
+        */
     }
-    | expression IN location {
+    | expression IN keyword {
         //js
         $$ = '('+$1+' IN '+$3+')';
         console.log('[IN]', $$);
-        //php $$ = sprintf('(%s IN %s)', $1->text, $3->text);
+        /*php
+        $$ = new AST\InExpression($3->text, $1->text);
+        */
     }
     | '(' expression ')' {
         //js
         $$ = $2;
         //php $$ = $2;
     }
-    | text {
+    | prefix
+    | text
+    ;
+
+keyword
+    : WORD {
         //js
-        $$ = '"'+$1+'"';
-        console.log('[TEXT]', $$);
-        //php $$ = sprintf('"%s"', $1->text);
+        $$ = '<'+$1+'>';
+        console.log('[FIELD]', $$);
+        //php $$ = new AST\KeywordNode($1->text);
     }
     ;
 
-location
-    : WORD
+prefix
+    : WORD '*' {
+        //js
+        $$ = $1+'*';
+        console.log('[PREFIX]', $$);
+        //php $$ = new AST\PrefixNode($1->text);
+    }
     ;
 
 text
-    : WORD
-    | LITERAL
+    : WORD {
+        //js
+        $$ = '"'+$1+'"';
+        console.log('[WORD]', $$);
+        //php $$ = new AST\TextNode($1->text);
+    }
+    | LITERAL {
+        //js
+        $$ = '"'+$1+'"';
+        console.log('[LITERAL]', $$);
+        //php $$ = new AST\QuotedTextNode($1->text);
+    }
     ;
 
 
 //option namespace:Alchemy\Phrasea\SearchEngine\Elastic
 //option class:QueryParser
+//option use:AST\Node, AST\TextNode, AST\QuotedTextNode, AST\PrefixNode, AST\KeywordNode, AST\AndExpression, AST\OrExpression, AST\InExpression;
 //option fileName:QueryParser.php
