@@ -19,11 +19,6 @@ class XSendFileMappingGeneratorTest extends \PhraseanetTestCase
             ->with('type')
             ->will($this->returnValue('nginx'));
 
-        $input->expects($this->any())
-            ->method('getOption')
-            ->with($this->isType('string'))
-            ->will($this->returnValue($option));
-
         $command = new XSendFileMappingGenerator();
 
         self::$DI['cli']['monolog'] = self::$DI['cli']->share(function () {

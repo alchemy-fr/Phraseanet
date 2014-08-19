@@ -32,10 +32,10 @@ class SetupTest extends \PhraseanetWebTestCase
 
     public function testRouteSlashWhenInstalled()
     {
-        $this->app['phraseanet.configuration-tester']->expects($this->exactly(1))
+        $this->app['phraseanet.configuration-tester']->expects($this->any())
             ->method('isInstalled')
             ->will($this->returnValue(true));
-        $this->app['phraseanet.configuration-tester']->expects($this->once())
+        $this->app['phraseanet.configuration-tester']->expects($this->any())
             ->method('isBlank')
             ->will($this->returnValue(false));
 
@@ -48,10 +48,10 @@ class SetupTest extends \PhraseanetWebTestCase
 
     public function testRouteInstructionsWhenUpgradeRequired()
     {
-        $this->app['phraseanet.configuration-tester']->expects($this->exactly(1))
+        $this->app['phraseanet.configuration-tester']->expects($this->any())
             ->method('isInstalled')
             ->will($this->returnValue(false));
-        $this->app['phraseanet.configuration-tester']->expects($this->once())
+        $this->app['phraseanet.configuration-tester']->expects($this->any())
             ->method('isBlank')
             ->will($this->returnValue(false));
 
@@ -66,7 +66,7 @@ class SetupTest extends \PhraseanetWebTestCase
     {
         $client = $this->createClient();
 
-        $this->app['phraseanet.configuration-tester']->expects($this->once())
+        $this->app['phraseanet.configuration-tester']->expects($this->any())
             ->method('isBlank')
             ->will($this->returnValue(true));
 
@@ -79,7 +79,7 @@ class SetupTest extends \PhraseanetWebTestCase
     {
         $client = $this->createClient();
 
-        $this->app['phraseanet.configuration-tester']->expects($this->once())
+        $this->app['phraseanet.configuration-tester']->expects($this->any())
             ->method('isBlank')
             ->will($this->returnValue(true));
 
@@ -103,30 +103,25 @@ class SetupTest extends \PhraseanetWebTestCase
             ->getMock();
 
         $user = $this->createUserMock();
-
         $user->expects($this->once())
             ->method('getId')
             ->will($this->returnValue(self::$DI['user']->getId()));
 
-        $acl = $this->getMockBuilder('ACL')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $acl->expects($this->once())
-            ->method('get_granted_sbas')
-            ->will($this->returnValue([]));
-
-        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $aclProvider->expects($this->any())
-            ->method('get')
-            ->will($this->returnValue($acl));
-
-        $this->app['acl'] = $aclProvider;
-
         $this->app['phraseanet.installer']->expects($this->once())
             ->method('install')
             ->will($this->returnValue($user));
+        
+        $authenticator = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Authenticator')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $session = $this->getMock('Entities\Session');
+
+        $authenticator->expects($this->once())
+            ->method('openAccount')
+            ->with($this->equalTo($user))
+            ->will($this->returnValue($session));
+
+        $this->app['authentication'] = $authenticator;
 
         $client = $this->createClient();
         $settings = Yaml::parse(file_get_contents(__DIR__ . '/../../../../../hudson/InstallDBs.yml'));
@@ -134,14 +129,12 @@ class SetupTest extends \PhraseanetWebTestCase
 
         $host = isset($settings['host']) ? $settings['host'] : 'localhost';
         $port = isset($settings['port']) ? $settings['port'] : '3306';
-        $MySQLuser = isset($settings['user']) ? $settings['user'] : 'root';
-        $MySQLpassword = isset($settings['password']) ? $settings['password'] : '';
-        $abName = isset($settings['applicationBox']) ? $settings['applicationBox'] : null;
-        $dbName = isset($settings['dataBox']) ? $settings['dataBox'] : null;
+        $user = isset($settings['user']) ? $settings['user'] : 'root';
+        $password = isset($settings['password']) ? $settings['password'] : '';
+        $abName = isset($settings['ab_name']) ? $settings['ab_name'] : null;
+        $dbName = isset($settings['db_name']) ? $settings['db_name'] : null;
 
-        $dataDir = sys_get_temp_dir() . '/datainstall/';
-
-        $params = [
+        $params = array(
             'email'             => 'user@example.org',
             'password'          => 'prètty%%password',
             'binary_xpdf'       => '/path/to/xpdf',
@@ -156,22 +149,22 @@ class SetupTest extends \PhraseanetWebTestCase
             'binary_composite'  => '/path/to/composite',
             'binary_convert'    => '/path/to/convert',
             'binary_php'        => '/path/to/php',
-            'datapath_noweb'    => $dataDir . 'noweb',
+            'datapath_noweb'    => sys_get_temp_dir() . '/datainstall/noweb',
             'ab_hostname'       => $host,
             'ab_port'           => $port,
-            'ab_user'           => $MySQLuser,
-            'ab_password'       => $MySQLpassword,
+            'ab_user'           => $user,
+            'ab_password'       => $password,
             'ab_name'           => $abName,
             'db_name'           => $dbName,
-            'db_template'       => 'en-simple',
-            'create_task'       => [],
+            'db_template'       => 'en',
+            'create_task'       => array(),
             'binary_phraseanet_indexer' => '/path/to/phraseanet_indexer',
-        ];
+        );
 
         $client->request('POST', '/setup/installer/install/', $params);
         $response = $client->getResponse();
         $this->assertEquals(302, $response->getStatusCode());
-        $this->assertTrue(false === strpos($response->headers->get('location'), '/setup/installer/'));
+        $this->assertTrue(false === strpos($response->headers->get('location'), '/setup/installer/'), $response);
     }
 
     public function testSetupProvidesPathTest()

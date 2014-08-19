@@ -56,17 +56,17 @@ script:
   - bin/developer assets:compile-less
   - bin/developer system:uninstall
   - sh -c " if [ '$SETUP_MODE' = 'update' ]; then
-              cp hudson/connexion.inc config/;
-              cp hudson/_GV.php config/;
-              mysql -e 'source `pwd`/hudson/fixtures.sql';
+              bin/setup system:install --email=test@phraseanet.com --password=test --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y -v;
+              bin/developer ini:reset --v3.1 -v;
               bin/setup system:upgrade -y -v -f;
             fi"
   - sh -c " if [ '$SETUP_MODE' = 'install' ]; then
-              bin/setup system:install --email=test@phraseanet.com --password=test --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;
+              bin/setup system:install --email=test@phraseanet.com --password=test --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y -v;
+              bin/developer ini:setup-tests-dbs -v;
             fi"
   - php hudson/cleanupSubdefs.php
-#sqlite db generation should occur once Phraseanet is up to date :
+  #sqlite db generation should occur once Phraseanet is up to date :
   - bin/developer phraseanet:regenerate-sqlite
   - ./node_modules/.bin/grunt test
-#ls -d tests/Alchemy/Tests/Phrasea/*/ | parallel --gnu 'bin/phpunit {};'
+  #ls -d tests/Alchemy/Tests/Phrasea/*/ | parallel --gnu 'bin/phpunit {};'
   - bin/phpunit

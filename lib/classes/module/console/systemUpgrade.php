@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Core\Version;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -58,7 +59,7 @@ class module_console_systemUpgrade extends Command
         }
 
         if ($continue == 'y') {
-            $output->write('<info>Upgrading...</info>', true);
+            $output->write(sprintf('Upgrading... from version <info>%s</info> to <info>%s</info>', $this->container['phraseanet.appbox']->get_version(), Version::getNumber()), true);
 
             try {
                 $upgrader = new Setup_Upgrade($this->container, $input->getOption('force'));

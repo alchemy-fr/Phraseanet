@@ -261,10 +261,8 @@ class Application extends SilexApplication
                 }
             }
 
-            $imagineDriver = $app['conf']->get(['registry', 'executables', 'imagine-driver']);
-
-            $configuration['ffmpeg.threads'] = $app['conf']->get(['registry', 'executables', 'ffmpeg-threads']);
-            $configuration['imagine.driver'] = $imagineDriver ?: null;
+            $configuration['ffmpeg.threads'] = $app['conf']->get(['registry', 'executables', 'ffmpeg-threads']) ?: null;
+            $configuration['imagine.driver'] = $app['conf']->get(['registry', 'executables', 'imagine-driver']) ?: null;
 
             return $configuration;
         });

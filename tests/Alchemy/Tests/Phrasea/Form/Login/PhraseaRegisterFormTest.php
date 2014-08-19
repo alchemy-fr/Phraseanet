@@ -28,53 +28,77 @@ class PhraseaRegisterFormTest extends FormTestCase
 
     public function testFormDoesRegisterValidFields()
     {
-        $available = [
-            'parameter' => [
+        $available = array(
+            'extra-parameter' => array(
                 'type' => 'text',
-                'label' => 'Yollah !',
-            ],
-            'parameter2' => [
+                'label' => '',
+            ),
+            'extra-parameter2' => array(
                 'type' => 'text',
-                'label' => 'Yollah !',
-            ]
-        ];
-        $params = [
-            [
-                'name'     => 'parameter',
+                'label' => '',
+            )
+        );
+        $params = array(
+            array(
+                'name'     => 'extra-parameter',
                 'required' => true
-            ],
-            [
-                'name'     => 'parameter2',
+            ),
+            array(
+                'name'     => 'extra-parameter2',
                 'required' => true
-            ]
+            )
         ];
+
+        $expected = array('email', 'password', 'provider-id', '_token', 'extraParameter','extraParameter2');
+
+        if (self::$DI['app']->hasTermsOfUse()) {
+            $expected[] = 'accept-tou';
+        }
+
+        if (!self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB')) {
+            $expected[] = 'collections';
+        }
 
         $form = new PhraseaRegisterForm(self::$DI['app'], $available, $params, new Camelizer());
 
-        $this->assertCount(self::$DI['app']['conf']->get(['registry', 'registration', 'auto-select-collections']) ? 7 : 8, self::$DI['app']->form($form)->createView()->vars['form']->children);
+        foreach (array_keys(self::$DI['app']->form($form)->createView()->vars['form']->children) as $name) {
+            $this->assertContains($name, $expected);
+        }
     }
 
     public function testFormDoesNotRegisterNonValidFields()
     {
-        $available = [
-            'parameter' => [
+        $available = array(
+            'extra-parameter' => array(
                 'type' => 'text',
-                'label' => 'Yollah !',
-            ]
-        ];
-        $params = [
-            [
-                'name'     => 'parameter',
+                'label' => '',
+            )
+        );
+        $params = array(
+            array(
+                'name'     => 'extra-parameter',
                 'required' => true
-            ],
-            [
-                'name'     => 'parameter2',
+            ),
+            array(
+                'name'     => 'extra-parameter2',
                 'required' => true
-            ]
-        ];
+            )
+        );
+
+        $expected = array('email', 'password', 'provider-id', '_token', 'extraParameter');
+
+        if (self::$DI['app']->hasTermsOfUse()) {
+            $expected[] = 'accept-tou';
+        }
+
+        if (!self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB')) {
+            $expected[] = 'collections';
+        }
 
         $form = new PhraseaRegisterForm(self::$DI['app'], $available, $params, new Camelizer());
 
-        $this->assertCount(self::$DI['app']['conf']->get(['registry', 'registration', 'auto-select-collections']) ? 6 : 7, self::$DI['app']->form($form)->createView()->vars['form']->children);
+        foreach (array_keys(self::$DI['app']->form($form)->createView()->vars['form']->children) as $name) {
+            $this->assertContains($name, $expected);
+        }
     }
 }
