@@ -85,6 +85,7 @@ server:
         - libfreetype6-dev
         - libgif-dev
         - libjpeg62-dev
+        - cachefilesd
     dot_files:
         -
             bash_aliases: null

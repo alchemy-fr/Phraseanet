@@ -98,6 +98,9 @@ if [ $? -eq 0 ]; then
     sudo sh -c 'echo ";extension=libevent.so" > /etc/php5/fpm/conf.d/libevent.ini'
 fi
 
+# cache file sd
+sudo sh -c 'echo "RUN=yes" > /etc/default/cachefilesd'
+
 # copy www.conf
 sudo sh -c "cat /vagrant/vagrant/config/nginx/php5-fpm-www.conf > /etc/php5/fpm/pool.d/www.conf"
 
