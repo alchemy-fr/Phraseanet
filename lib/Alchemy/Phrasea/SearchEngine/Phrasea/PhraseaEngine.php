@@ -35,6 +35,7 @@ class PhraseaEngine implements SearchEngineInterface
     private $needthesaurus = [];
     private $configurationPanel;
     private $resetCacheNextQuery = false;
+    private $sortFields = null;
 
     /**
      * {@inheritdoc}
@@ -106,11 +107,22 @@ class PhraseaEngine implements SearchEngineInterface
      */
     public function getAvailableSort()
     {
-        $date_fields = $this->getAvailableDateFields();
+        if ($this->sortFields == null) {
+            $this->sortFields = array();
+            foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
+                foreach ($databox->get_meta_structure() as $databox_field) {
+                    if ($databox_field->get_type() == \databox_field::TYPE_DATE
+                            || $databox_field->get_type() == \databox_field::TYPE_NUMBER) {
+                        $this->sortFields[] = $databox_field->get_name();
+                    }
+                }
+            }
+            $this->sortFields = array_unique($this->sortFields);
+        }
 
         $sort = ['' => $this->app->trans('No sort')];
 
-        foreach ($date_fields as $field) {
+        foreach ($this->sortFields as $field) {
             $sort[$field] = $field;
         }
 
