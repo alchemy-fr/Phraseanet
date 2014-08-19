@@ -130,7 +130,7 @@ class RecordMoverJob extends AbstractJob
                 break;
             }
 
-            $task = $this->calcSQL($sxtask);
+            $task = $this->calcSQL($app, $sxtask);
 
             if (!$task['active']) {
                 continue;
@@ -229,7 +229,10 @@ class RecordMoverJob extends AbstractJob
 
     private function calcUPDATE(Application $app, $sbas_id, &$sxtask, $playTest)
     {
-        $tws = []; // NEGATION of updates, used to build the 'test' sql
+        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $connbas = $databox->get_connection();
+
+        $tws = array(); // NEGATION of updates, used to build the 'test' sql
         //
         // set coll_id ?
         if (($x = (int) ($sxtask->to->coll['id'])) > 0) {
@@ -238,46 +241,52 @@ class RecordMoverJob extends AbstractJob
 
         // set status ?
         $x = $sxtask->to->status['mask'];
-        $mx = str_replace(' ', '0', ltrim(str_replace(['0', 'x'], [' ', ' '], $x)));
-        $ma = str_replace(' ', '0', ltrim(str_replace(['x', '0'], [' ', '1'], $x)));
-        if ($mx && $ma)
-            $tws[] = '((status ^ 0b' . $mx . ') & 0b' . $ma . ')!=0';
-        elseif ($mx)
-            $tws[] = '(status ^ 0b' . $mx . ')!=0';
-        elseif ($ma)
-            $tws[] = '(status & 0b' . $ma . ')!=0';
+        $mx = str_replace(' ', '0', ltrim(str_replace(array('0', 'x'), array(' ', ' '), $x)));
+        $ma = str_replace(' ', '0', ltrim(str_replace(array('x', '0'), array(' ', '1'), $x)));
+        if ($mx && $ma) {
+            $tws[] = '((status ^ ' . $connbas->quote('0b'.$mx) . ') & ' . $connbas->quote('0b'.$ma) . ')!=0';
+        }
+        elseif ($mx) {
+            $tws[] = '(status ^ ' . $connbas->quote('0b'.$mx) . ')!=0';
+        }
+        elseif ($ma) {
+            $tws[] = '(status & ' . $connbas->quote('0b'.$ma) . ')!=0';
+        }
 
         // compute the 'where' clause
         list($tw, $join) = $this->calcWhere($app, $sbas_id, $sxtask);
 
         // ... complete the where to buid the TEST
-        if (count($tws) == 1)
+        if (count($tws) == 1) {
             $tw[] = $tws[0];
-        elseif (count($tws) > 1)
+        } elseif (count($tws) > 1) {
             $tw[] = '(' . implode(') OR (', $tws) . ')';
+        }
 
         // build the TEST sql (select)
         $sql_test = 'SELECT record_id FROM record' . $join;
-        if (count($tw) > 0)
+        if (count($tw) > 0) {
             $sql_test .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
+        }
 
         // build the real sql (select)
         $sql = 'SELECT record_id FROM record' . $join;
-        if (count($tw) > 0)
+        if (count($tw) > 0) {
             $sql .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
+        }
 
-        $ret = [
-            'real' => [
+        $ret = array(
+            'real' => array(
                 'sql'             => $sql,
                 'sql_htmlencoded' => htmlentities($sql),
-            ],
-            'test'            => [
+            ),
+            'test'            => array(
                 'sql'             => $sql_test,
                 'sql_htmlencoded' => htmlentities($sql_test),
                 'result'          => NULL,
                 'err'             => NULL
-            ]
-        ];
+            )
+        );
 
         if ($playTest) {
             $ret['test']['result'] = $this->playTest($app, $sbas_id, $sql_test);
@@ -348,7 +357,7 @@ class RecordMoverJob extends AbstractJob
         $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
         $connbas = $databox->get_connection();
 
-        $tw = [];
+        $tw = array();
         $join = '';
 
         $ijoin = 0;
@@ -369,9 +378,9 @@ class RecordMoverJob extends AbstractJob
         foreach ($sxtask->from->text as $x) {
             $ijoin++;
             $comp = strtoupper($x['compare']);
-            if (in_array($comp, ['<', '>', '<=', '>=', '=', '!='])) {
-                $s = 'p' . $ijoin . '.name=\'' . $x['field'] . '\' AND p' . $ijoin . '.value' . $comp;
-                $s .= '' . $connbas->quote($x['value']) . '';
+            if (in_array($comp, array('<', '>', '<=', '>=', '=', '!='))) {
+                $s = 'p' . $ijoin . '.name=' . $connbas->quote($x['field']) . ' AND p' . $ijoin . '.value' . $comp
+                    . '' . $connbas->quote($x['value']) . '';
 
                 $tw[] = $s;
                 $join .= ' INNER JOIN prop AS p' . $ijoin . ' USING(record_id)';
@@ -386,12 +395,15 @@ class RecordMoverJob extends AbstractJob
             $s = 'p' . $ijoin . '.name=\'' . $x['field'] . '\' AND NOW()';
             $s .= strtoupper($x['direction']) == 'BEFORE' ? '<' : '>=';
             $delta = (int) ($x['delta']);
-            if ($delta > 0)
+            if ($delta > 0) {
                 $s .= '(p' . $ijoin . '.value+INTERVAL ' . $delta . ' DAY)';
-            elseif ($delta < 0)
+            }
+            elseif ($delta < 0) {
                 $s .= '(p' . $ijoin . '.value-INTERVAL ' . -$delta . ' DAY)';
-            else
+            }
+            else {
                 $s .= 'p' . $ijoin . '.value';
+            }
 
             $tw[] = $s;
             $join .= ' INNER JOIN prop AS p' . $ijoin . ' USING(record_id)';
@@ -421,16 +433,16 @@ class RecordMoverJob extends AbstractJob
 
         // criteria <status mask="XXXXX" />
         $x = $sxtask->from->status['mask'];
-        $mx = str_replace(' ', '0', ltrim(str_replace(['0', 'x'], [' ', ' '], $x)));
-        $ma = str_replace(' ', '0', ltrim(str_replace(['x', '0'], [' ', '1'], $x)));
+        $mx = str_replace(' ', '0', ltrim(str_replace(array('0', 'x'), array(' ', ' '), $x)));
+        $ma = str_replace(' ', '0', ltrim(str_replace(array('x', '0'), array(' ', '1'), $x)));
         if ($mx && $ma) {
-            $tw[] = '((status^0b' . $mx . ')&0b' . $ma . ')=0';
+            $tw[] = '((status ^ ' . $connbas->quote('0b'.$mx) . ') & ' . $connbas->quote('0b'.$ma) . ')=0';
         } elseif ($mx) {
-            $tw[] = '(status^0b' . $mx . ')=0';
+            $tw[] = '(status ^ ' . $connbas->quote('0b'.$mx) . ')=0';
         } elseif ($ma) {
-            $tw[] = '(status&0b' . $ma . ")=0";
+            $tw[] = '(status & ' . $connbas->quote('0b'.$ma) . ")=0";
         }
 
-        return [$tw, $join];
+        return array($tw, $join);
     }
 }
