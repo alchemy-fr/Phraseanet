@@ -76,15 +76,20 @@ class caption_record implements caption_interface, cache_cacheableInterface
             $stmt->execute([':record_id' => $this->record->get_record_id()]);
             $fields = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
-            $this->set_data_to_cache($fields);
+            if ($fields) {
+                $this->set_data_to_cache($fields);
+            }
         }
 
-        $rec_fields = [];
-        foreach ($fields as $row) {
-            $databox_meta_struct = databox_field::get_instance($this->app, $this->databox, $row['structure_id']);
-            $metadata = new caption_field($this->app, $databox_meta_struct, $this->record);
+        $rec_fields = array();
 
-            $rec_fields[$databox_meta_struct->get_id()] = $metadata;
+        if ($fields) {
+            foreach ($fields as $row) {
+                $databox_meta_struct = databox_field::get_instance($this->app, $this->databox, $row['structure_id']);
+                $metadata = new caption_field($this->app, $databox_meta_struct, $this->record);
+
+                $rec_fields[$databox_meta_struct->get_id()] = $metadata;
+            }
         }
         $this->fields = $rec_fields;
 

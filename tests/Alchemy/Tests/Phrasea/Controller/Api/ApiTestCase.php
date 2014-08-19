@@ -903,6 +903,11 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken($this->userAccessToken);
 
+        self::$DI['acl']->get(self::$DI['user_notAdmin'])->update_rights_to_base(self::$DI['collection']->get_base_id(), array(
+            'candwnldpreview' => 1,
+            'candwnldhd' => 1
+        ));
+        
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
@@ -913,6 +918,13 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateMeta200($content);
 
         $this->assertArrayHasKey('embed', $content['response']);
+
+        $embedTypes = array_flip(array_map(function($subdef) {return $subdef['name'];},$content['response']['embed']));
+
+        //access to all subdefs
+        $this->assertArrayHasKey('document', $embedTypes);
+        $this->assertArrayHasKey('preview', $embedTypes);
+        $this->assertArrayHasKey('thumbnail', $embedTypes);
 
         foreach ($content['response']['embed'] as $embed) {
             $this->checkEmbed($embed, self::$DI['record_1']);
@@ -925,6 +937,57 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
     }
 
+    public function testRecordsEmbedRouteNoHdRights()
+    {
+        $this->setToken(self::$token);
+
+        self::$DI['acl']->get(self::$DI['user_notAdmin'])->update_rights_to_base(self::$DI['collection']->get_base_id(), array(
+            'candwnldpreview' => 0,
+            'candwnldhd' => 1
+        ));
+
+        $route = '/api/v1/records/' . $this->record->get_sbas_id() . '/' . $this->record->get_record_id() . '/embed/';
+
+        self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+
+        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateMeta200($content);
+        $this->assertArrayHasKey('embed', $content['response']);
+        // no hd subdef
+        $embedTypes = array_flip(array_map(function($subdef) {return $subdef['name'];},$content['response']['embed']));
+        $this->assertArrayHasKey('preview', $embedTypes);
+        $this->assertArrayNotHasKey('document', $embedTypes);
+    }
+
+
+    public function testRecordsEmbedRouteNoPreviewAndHdRights()
+    {
+        $this->setToken(self::$token);
+
+        self::$DI['user_notAdmin']->ACL()->update_rights_to_base(self::$DI['collection']->get_base_id(), array(
+            'candwnldpreview' => 0,
+            'candwnldhd' => 0
+        ));
+
+        $route = '/api/v1/records/' . $this->record->get_sbas_id() . '/' . $this->record->get_record_id() . '/embed/';
+
+        self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+
+        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateMeta200($content);
+        $this->assertArrayHasKey('embed', $content['response']);
+        // no preview
+        $this->assertArrayNotHasKey('document', array_flip(array_map(function($subdef) {return $subdef['name'];},$content['response']['embed'])));
+        $this->assertArrayNotHasKey('preview', array_flip(array_map(function($subdef) {return $subdef['name'];},$content['response']['embed'])));
+    }
+
+    /**
+     * @covers \API_V1_adapter::get_record_embed
+     * @covers \API_V1_adapter::list_embedable_media
+     * @covers \API_V1_adapter::list_permalink
+     */
     public function testStoriesEmbedRoute()
     {
         $this->setToken($this->userAccessToken);
@@ -1704,6 +1767,25 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $this->evaluateGoodQuarantineItem($content['response']['quarantine_item']);
         $this->assertEquals($quarantineItemId, $content['response']['quarantine_item']['id']);
+    }
+
+    protected function getQuarantineItem()
+    {
+        $lazaretSession = new \Entities\LazaretSession();
+        self::$DI['app']['EM']->persist($lazaretSession);
+
+        $quarantineItem;
+        $callback = function ($element, $visa, $code) use (&$quarantineItem) {
+                $quarantineItem = $element;
+            };
+
+        $tmpname = tempnam(sys_get_temp_dir(), 'test_quarantine');
+        copy(__DIR__ . '/../../../../files/iphone_pic.jpg', $tmpname);
+
+        $file = File::buildFromPathfile($tmpname, self::$DI['collection'], self::$DI['app']);
+        self::$DI['app']['border-manager']->process($lazaretSession, $file, $callback, Manager::FORCE_LAZARET);
+
+        return $quarantineItem;
     }
 
     protected function evaluateGoodQuarantineItem($item)

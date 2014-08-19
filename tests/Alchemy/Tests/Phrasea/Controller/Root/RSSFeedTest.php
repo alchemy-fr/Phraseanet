@@ -52,8 +52,8 @@ class RSSFeedTest extends \PhraseanetWebTestCase
 
     private function evaluateResponse200(Response $response)
     {
-        $this->assertEquals(200, $response->getStatusCode(), 'Test status code ');
-        $this->assertEquals('UTF-8', $response->getCharset(), 'Test charset response');
+        $this->assertEquals(200, $response->getStatusCode(), $response);
+        $this->assertEquals('UTF-8', $response->getCharset(), $response);
     }
 
     public function testPublicFeed()
