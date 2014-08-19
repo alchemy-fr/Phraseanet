@@ -39,12 +39,6 @@ cd /tmp
 wget –quiet http://dl.google.com/closure-compiler/compiler-latest.zip
 unzip compiler-latest.zip -d closure
 mv closure $HOME
-echo 'export JS_COMPILER=$HOME/closure/compiler.jar' >> ~/.bashrc
-source ~/.bashrc
-
-# java
-echo 'export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/jre/' >> ~/.bashrc
-source ~/.bashrc
 
 #twig
 cd /tmp
@@ -103,6 +97,9 @@ if [ $? -eq 0 ]; then
     sudo sh -c 'echo ";extension=libevent.so" > /etc/php5/cli/conf.d/libevent.ini'
     sudo sh -c 'echo ";extension=libevent.so" > /etc/php5/fpm/conf.d/libevent.ini'
 fi
+
+# cache file sd
+sudo sh -c 'echo "RUN=yes" > /etc/default/cachefilesd'
 
 # copy www.conf
 sudo sh -c "cat /vagrant/vagrant/config/nginx/php5-fpm-www.conf > /etc/php5/fpm/pool.d/www.conf"

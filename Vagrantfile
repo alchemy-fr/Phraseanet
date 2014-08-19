@@ -79,7 +79,7 @@ Vagrant.configure("2") do |config|
             end
             if folder['source'] != '' && folder['target'] != ''
               if folder['sync_type'] == 'nfs'
-                node.vm.synced_folder "#{folder['source']}", "#{folder['target']}", id: "#{i}", type: "nfs"
+                node.vm.synced_folder "#{folder['source']}", "#{folder['target']}", id: "#{i}", type: "nfs", mount_options: ['rw', 'vers=3', 'tcp', 'fsc']
               elsif folder['sync_type'] == 'smb'
                 node.vm.synced_folder "#{folder['source']}", "#{folder['target']}", id: "#{i}", type: "smb"
               elsif folder['sync_type'] == 'rsync'
@@ -155,7 +155,8 @@ Vagrant.configure("2") do |config|
             end
                 
             v.memory = "#{data['vm']['memory']}"
-                
+            v.cpus = "#{data['vm']['cpus']}"
+
             if data['vm']['hostname'].to_s.strip.length != 0
                 v.name = node.vm.hostname
                 end
