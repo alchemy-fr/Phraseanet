@@ -1,0 +1,10 @@
+<!DOCTYPE cross-domain-policy SYSTEM "http://www.macromedia.com/xml/dtds/cross-domain-policy.dtd">
+<cross-domain-policy>
+    <site-control permitted-cross-domain-policies="master-only"/>
+    <allow-access-from domain="*.example.com" secure="false"/>
+    <allow-access-from domain="www.example.com" to-ports="507,516-523" secure="true"/>
+    <signatory><certificate fingerprint="01:23:45:67:89:ab:cd:ef:01:23:45:67:89:ab:cd:ef:01:23:45:67" fingerprint-algorithm="sha-1"/></signatory>
+    <signatory><certificate fingerprint="01:23:45:67:89:ab:cd:ef:01:23:45:67:89:ab:cd:ef:01:23:45:67" fingerprint-algorithm="sha256"/></signatory>
+    <allow-http-request-headers-from domain="*.bar.com" headers="SOAPAction, X-Foo*" secure="true"/>
+    <allow-http-request-headers-from domain="foo.example.com" headers="Authorization,X-Foo*" secure="false"/>
+</cross-domain-policy>

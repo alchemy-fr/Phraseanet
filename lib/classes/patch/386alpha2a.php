@@ -10,6 +10,8 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Utilities\CrossDomainParser;
+use Alchemy\Phrasea\Exception\RuntimeException;
 
 class patch_386alpha2a implements patchInterface
 {
@@ -50,14 +52,22 @@ class patch_386alpha2a implements patchInterface
     {
         $config = $app['phraseanet.configuration']->getConfig();
 
-        $config['crossdomain'] = array(
-            'allow-access-from' => array(
-                array(
-                    'domain' => '*.cooliris.com',
-                    'secure' => 'false',
+        $parser = new CrossDomainParser();
+        try {
+            $crossDomainConfig = $parser->parse($app['root.path'].'/www/crossdomain.xml');
+        } catch (RuntimeException $e) {
+            $crossDomainConfig = array(
+                'allow-access-from' => array(
+                    array(
+                        'domain' => '*.cooliris.com',
+                        'secure' => 'false',
+                    )
                 )
-            )
-        );
+            );
+        }
+
+        $config['crossdomain'] = $crossDomainConfig;
+
         $app['phraseanet.configuration']->setConfig($config);
 
         return true;
