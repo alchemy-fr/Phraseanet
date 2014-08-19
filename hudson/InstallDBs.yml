@@ -1,7 +1,7 @@
 database:
   host: 127.0.0.1
-  port: port
-  user: phraseaUnitTests
+  port: 3306
+  user: phr_user
   password: iWvGxPE8
-  applicationBox: ab_unitTests
-  dataBox: db_unitTests
+  ab_name: ab_setup_test
+  db_name: db_setup_test
