@@ -143,6 +143,7 @@ use Silex\Provider\SwiftmailerServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\NullSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Unoconv\UnoconvServiceProvider;
@@ -320,6 +321,9 @@ class Application extends SilexApplication
         });
 
         $this['session.storage.handler'] = $this->share(function ($app) {
+            if (!$this['phraseanet.configuration-tester']->isInstalled()) {
+                return new NullSessionHandler();
+            }
             return $this['session.storage.handler.factory']->create($app['conf']);
         });
 
@@ -331,7 +335,7 @@ class Application extends SilexApplication
         $this->register(new TokensServiceProvider());
         $this->register(new TwigServiceProvider(), [
             'twig.options' => [
-                'cache'           => $this['root.path'] . '/tmp/cache_twig/',
+                'cache' => $this['root.path'].'/tmp/cache_twig/',
             ],
         ]);
 

@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Application;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaExceptionHandlerSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\BridgeExceptionSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\FirewallSubscriber;
@@ -38,6 +39,7 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     }));
 
     $app->before(function (Request $request) use ($app) {
+
         if (0 === strpos($request->getPathInfo(), '/setup')) {
             if (!$app['phraseanet.configuration-tester']->isInstalled()) {
                 if (!$app['phraseanet.configuration-tester']->isBlank()) {
@@ -53,19 +55,22 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
                 $app['firewall']->requireSetup();
             }
         }
-    });
+    }, Application::EARLY_EVENT);
 
     $app->bindRoutes();
 
     if (PhraseaApplication::ENV_DEV === $app->getEnvironment()) {
         $app->register($p = new WebProfilerServiceProvider(), [
-            'profiler.cache_dir'    => $app['root.path'] . '/tmp/cache/profiler',
+            'profiler.cache_dir' => $this['root.path'].'/tmp/cache/profiler',
         ]);
         $app->mount('/_profiler', $p);
-        $app->register(new DoctrineProfilerServiceProvider());
-        $app['db'] = $app->share(function (PhraseaApplication $app) {
-            return $app['EM']->getConnection();
-        });
+
+        if ($app['phraseanet.configuration-tester']->isInstalled()) {
+            $app->register(new DoctrineProfilerServiceProvider());
+            $app['db'] = $app->share(function (PhraseaApplication $app) {
+                return $app['EM']->getConnection();
+            });
+        }
     }
 
     $app['dispatcher'] = $app->share(

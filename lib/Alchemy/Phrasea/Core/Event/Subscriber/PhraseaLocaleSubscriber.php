@@ -59,11 +59,12 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $this->app['locale'] = $this->app->share(function (Application $app) use ($event) {
-            if (isset($app['conf'])) {
-                $locale = $app['conf']->get(['languages', 'default'], 'en');
-                $event->getRequest()->setDefaultLocale($locale);
-                $event->getRequest()->setLocale($locale);
+        $confLocale = $this->app['locale'];
+
+        $this->app['locale'] = $this->app->share(function (Application $app) use ($event, $confLocale) {
+            if (!$app['configuration.store']->isSetup()) {
+                $event->getRequest()->setDefaultLocale($confLocale);
+                $event->getRequest()->setLocale($confLocale);
             }
 
             $languages = $app['locales.available'];
@@ -74,8 +75,6 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
                 return $event->getRequest()->getLocale();
             }
 
-            $localeSet = false;
-
             foreach ($event->getRequest()->getLanguages() as $code) {
                 $data = preg_split('/[-_]/', $code);
                 if (in_array($data[0], array_keys($app['locales.available']), true)) {
@@ -85,8 +84,8 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
                 }
             }
 
-            if (!$localeSet) {
-                $event->getRequest()->setLocale($app['conf']->get(['languages', 'default'], 'en_GB'));
+            if (!$event->getRequest()->getLocale()) {
+                $event->getRequest()->setLocale($confLocale);
             }
 
             return $event->getRequest()->getLocale();
