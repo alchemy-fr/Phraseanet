@@ -166,6 +166,12 @@ class RSSFeedTest extends \PhraseanetWebTestCaseAbstract
         if (self::$feed instanceof \Feed_Adapter) {
             self::$feed->delete();
         }
+        if (self::$public_feeds instanceof \Feed_Collection) {
+            self::$public_feeds->delete_data_from_cache();
+        }
+        if (self::$private_feeds instanceof \Feed_Collection) {
+            self::$public_feeds->delete_data_from_cache();
+        }
         parent::tearDown();
     }
 
@@ -226,8 +232,8 @@ class RSSFeedTest extends \PhraseanetWebTestCaseAbstract
 
     protected function evaluateResponse200(Response $response)
     {
-        $this->assertEquals(200, $response->getStatusCode(), 'Test status code ');
-        $this->assertEquals('UTF-8', $response->getCharset(), 'Test charset response');
+        $this->assertEquals(200, $response->getStatusCode(), $response);
+        $this->assertEquals('UTF-8', $response->getCharset(), $response);
     }
 
     public function testPublicFeed()
@@ -321,7 +327,7 @@ class RSSFeedTest extends \PhraseanetWebTestCaseAbstract
             $this->assertTrue($feed->is_public());
         }
         $crawler = self::$DI['client']->request("GET", "/feeds/aggregated/rss/");
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk(), self::$DI['client']->getResponse());
         $this->assertEquals("application/rss+xml", self::$DI['client']->getResponse()->headers->get("content-type"));
         $xml = self::$DI['client']->getResponse()->getContent();
         $this->verifyXML($xml);

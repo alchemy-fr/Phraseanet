@@ -104,7 +104,7 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertRegExp('/^attachment;/', $response->headers->get('content-disposition'));
 
-        $this->assertEquals(rtrim(self::$DI['app']['phraseanet.configuration']['main']['servername'], '/') . "/permalink/v1/1/". self::$DI['record_1']->get_record_id()."/caption/?token=".$token, $response->headers->get("Link"));
+        $this->assertContains(self::$DI['record_1']->get_record_id()."/caption/?token=".$token, $response->headers->get("Link"));
         $this->assertEquals(200, $response->getStatusCode());
     }
 
@@ -221,7 +221,7 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $this->assertEquals($value, $response->headers->get($name));
         }
 
-        $this->assertEquals(rtrim(self::$DI['app']['phraseanet.configuration']['main']['servername'], '/') . "/permalink/v1/1/". self::$DI['record_1']->get_record_id()."/caption/?token=".$token, $response->headers->get("Link"));
+        $this->assertContains(self::$DI['record_1']->get_record_id()."/caption/?token=".$token, $response->headers->get("Link"));
         $this->assertEquals(200, $response->getStatusCode());
     }
 
@@ -253,7 +253,7 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $this->assertEquals($value, $response->headers->get($name));
         }
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->isOk(), $response);
     }
 
     protected function get_a_permalink(array $headers = array())
@@ -269,7 +269,7 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $this->assertEquals($value, $response->headers->get($name));
         }
 
-        $this->assertEquals(rtrim(self::$DI['app']['phraseanet.configuration']['main']['servername'], '/') . "/permalink/v1/1/". self::$DI['record_1']->get_record_id()."/caption/?token=".$token, $response->headers->get("Link"));
+        $this->assertContains(self::$DI['record_1']->get_record_id()."/caption/?token=".$token, $response->headers->get("Link"));
         $this->assertEquals(200, $response->getStatusCode());
 
         self::$DI['client']->request('OPTIONS', $url);

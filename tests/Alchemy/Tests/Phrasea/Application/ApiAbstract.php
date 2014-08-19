@@ -85,6 +85,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         if (!static::$APIrecord) {
             $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../files/test024.jpg'), self::$DI['collection']);
+
             static::$APIrecord = \record_adapter::createFromFile($file, self::$DI['app']);
             static::$APIrecord->generate_subdefs(static::$APIrecord->get_databox(), self::$DI['app']);
         }
@@ -121,8 +122,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             self::$adminApplication->delete();
         }
 
-        static::$APIrecord->delete();
-        static::$APIrecord = null;
+        if (static::$APIrecord) {
+            static::$APIrecord->delete();
+            static::$APIrecord = null;
+        }
 
         parent::tearDownAfterClass();
     }
@@ -1045,7 +1048,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $keys = array_keys($this->record->get_subdefs());
+        self::$DI['user_notAdmin']->ACL()->update_rights_to_base(self::$DI['collection']->get_base_id(), array(
+            'candwnldpreview' => 1,
+            'candwnldhd' => 1
+        ));
 
         $route = '/api/v1/records/' . $this->record->get_sbas_id() . '/' . $this->record->get_record_id() . '/embed/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
@@ -1058,6 +1064,13 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->assertArrayHasKey('embed', $content['response']);
 
+        $embedTypes = array_flip(array_map(function($subdef) {return $subdef['name'];},$content['response']['embed']));
+
+        //access to all subdefs
+        $this->assertArrayHasKey('document', $embedTypes);
+        $this->assertArrayHasKey('preview', $embedTypes);
+        $this->assertArrayHasKey('thumbnail', $embedTypes);
+
         foreach ($content['response']['embed'] as $embed) {
             $this->checkEmbed($embed, $this->record);
         }
@@ -1067,6 +1080,52 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $route = '/api/v1/records/any_bad_id/sfsd5qfsd5/embed/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+    }
+
+    public function testRecordsEmbedRouteNoHdRights()
+    {
+        $this->setToken(self::$token);
+
+        self::$DI['user_notAdmin']->ACL()->update_rights_to_base(self::$DI['collection']->get_base_id(), array(
+            'candwnldhd' => 0,
+            'candwnldpreview' => 1
+        ));
+
+        $route = '/api/v1/records/' . $this->record->get_sbas_id() . '/' . $this->record->get_record_id() . '/embed/';
+
+        self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+
+        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateMeta200($content);
+        $this->assertArrayHasKey('embed', $content['response']);
+        // no hd subdef
+        $embedTypes = array_flip(array_map(function($subdef) {return $subdef['name'];},$content['response']['embed']));
+        $this->assertArrayHasKey('preview', $embedTypes);
+        $this->assertArrayNotHasKey('document', $embedTypes);
+    }
+
+
+    public function testRecordsEmbedRouteNoPreviewAndHdRights()
+    {
+        $this->setToken(self::$token);
+
+        self::$DI['user_notAdmin']->ACL()->update_rights_to_base(self::$DI['collection']->get_base_id(), array(
+            'candwnldpreview' => 0,
+            'candwnldhd' => 0
+        ));
+
+        $route = '/api/v1/records/' . $this->record->get_sbas_id() . '/' . $this->record->get_record_id() . '/embed/';
+
+        self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+
+        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateMeta200($content);
+        $this->assertArrayHasKey('embed', $content['response']);
+        // no preview
+        $this->assertArrayNotHasKey('document', array_flip(array_map(function($subdef) {return $subdef['name'];},$content['response']['embed'])));
+        $this->assertArrayNotHasKey('preview', array_flip(array_map(function($subdef) {return $subdef['name'];},$content['response']['embed'])));
     }
 
     /**
@@ -2019,7 +2078,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $lazaretSession = new \Entities\LazaretSession();
         self::$DI['app']['EM']->persist($lazaretSession);
 
-        $quarantineItem;
+        $quarantineItem = null;
         $callback = function ($element, $visa, $code) use (&$quarantineItem) {
                 $quarantineItem = $element;
             };

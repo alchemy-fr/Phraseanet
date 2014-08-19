@@ -450,11 +450,14 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
         $rs = $this->retrieve_elements();
         $items = array();
-        foreach ($rs as $item_id) {
-            try {
-                $items[] = new Feed_Entry_Item($this->app['phraseanet.appbox'], $this, $item_id);
-            } catch (NotFoundHttpException $e) {
 
+        if ($rs) {
+            foreach ($rs as $item_id) {
+                try {
+                    $items[] = new Feed_Entry_Item($this->app['phraseanet.appbox'], $this, $item_id);
+                } catch (NotFoundHttpException $e) {
+
+                }
             }
         }
 
