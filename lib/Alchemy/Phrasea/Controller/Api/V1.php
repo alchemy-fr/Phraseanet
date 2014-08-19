@@ -1036,8 +1036,8 @@ class V1 implements ControllerProviderInterface
         $devices = $request->get('devices', []);
         $mimes = $request->get('mimes', []);
 
-        $ret = array_filter(array_map(function ($media) {
-            if (null !== $embed = $this->list_embedable_media($media)) {
+        $ret = array_filter(array_map(function ($media) use ($record) {
+            if (null !== $embed = $this->list_embedable_media($record, $media)) {
                 return $embed;
             }
         }, $record->get_embedable_medias($devices, $mimes)));
@@ -1063,8 +1063,8 @@ class V1 implements ControllerProviderInterface
         $devices = $request->get('devices', []);
         $mimes = $request->get('mimes', []);
 
-        $ret = array_filter(array_map(function ($media) {
-            if (null !== $embed = $this->list_embedable_media($media)) {
+        $ret = array_filter(array_map(function ($media) use ($record) {
+            if (null !== $embed = $this->list_embedable_media($record, $media)) {
                 return $embed;
             }
         }, $record->get_embedable_medias($devices, $mimes)));
@@ -1555,10 +1555,21 @@ class V1 implements ControllerProviderInterface
      * @param  media_subdef $media
      * @return array
      */
-    private function list_embedable_media(\media_subdef $media)
+    private function list_embedable_media(\record_adapter $record, \media_subdef $media)
     {
         if (!$media->is_physically_present()) {
             return null;
+        }
+
+        if ($this->app['authentication']->isAuthenticated()) {
+            if ($media->get_name() !== 'document' && false === $this->app['acl']->get($this->app['authentication']->getUser())->has_access_to_subdef($record, $media->get_name())) {
+                return null;
+            }
+            if ($media->get_name() === 'document'
+                && !$this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($record->get_base_id(), 'candwnldhd')
+                    && !$this->app['acl']->get($this->app['authentication']->getUser())->has_hd_grant($record)) {
+                return null;
+            }
         }
 
         if ($media->get_permalink() instanceof \media_Permalink_Adapter) {
@@ -1746,7 +1757,7 @@ class V1 implements ControllerProviderInterface
             'created_on'             => $record->get_creation_date()->format(DATE_ATOM),
             'collection_id'          => \phrasea::collFromBas($app, $record->get_base_id()),
             'sha256'                 => $record->get_sha256(),
-            'thumbnail'              => $this->list_embedable_media($record->get_thumbnail()),
+            'thumbnail'              => $this->list_embedable_media($record, $record->get_thumbnail()),
             'technical_informations' => $technicalInformation,
             'phrasea_type'           => $record->get_type(),
             'uuid'                   => $record->get_uuid(),
@@ -1791,7 +1802,7 @@ class V1 implements ControllerProviderInterface
             'updated_on'     => $story->get_modification_date()->format(DATE_ATOM),
             'created_on'     => $story->get_creation_date()->format(DATE_ATOM),
             'collection_id'  => \phrasea::collFromBas($app, $story->get_base_id()),
-            'thumbnail'      => $this->list_embedable_media($story->get_thumbnail()),
+            'thumbnail'      => $this->list_embedable_media($story, $story->get_thumbnail()),
             'uuid'           => $story->get_uuid(),
             'metadatas'      => [
                 '@entity@'       => self::OBJECT_TYPE_STORY_METADATA_BAG,

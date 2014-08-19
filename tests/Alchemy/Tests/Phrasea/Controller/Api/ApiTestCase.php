@@ -942,8 +942,8 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->setToken(self::$token);
 
         self::$DI['acl']->get(self::$DI['user_notAdmin'])->update_rights_to_base(self::$DI['collection']->get_base_id(), array(
-            'candwnldpreview' => 0,
-            'candwnldhd' => 1
+            'candwnldpreview' => 1,
+            'candwnldhd' => 0
         ));
 
         $route = '/api/v1/records/' . $this->record->get_sbas_id() . '/' . $this->record->get_record_id() . '/embed/';
@@ -1774,7 +1774,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $lazaretSession = new \Entities\LazaretSession();
         self::$DI['app']['EM']->persist($lazaretSession);
 
-        $quarantineItem;
+        $quarantineItem = null;
         $callback = function ($element, $visa, $code) use (&$quarantineItem) {
                 $quarantineItem = $element;
             };
