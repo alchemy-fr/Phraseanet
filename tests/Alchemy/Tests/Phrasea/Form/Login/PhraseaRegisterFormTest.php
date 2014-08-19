@@ -13,7 +13,7 @@ class PhraseaRegisterFormTest extends FormTestCase
         $available = [
             'parameter' => [
                 'type' => 'text',
-                'label' => 'Yollah !',
+                'label' => '',
             ]
         ];
         $params = [
@@ -47,7 +47,7 @@ class PhraseaRegisterFormTest extends FormTestCase
                 'name'     => 'extra-parameter2',
                 'required' => true
             )
-        ];
+        );
 
         $expected = array('email', 'password', 'provider-id', '_token', 'extraParameter','extraParameter2');
 
@@ -55,7 +55,7 @@ class PhraseaRegisterFormTest extends FormTestCase
             $expected[] = 'accept-tou';
         }
 
-        if (!self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB')) {
+        if (!self::$DI['app']['conf']->get(['registry', 'registration', 'auto-select-collections'])) {
             $expected[] = 'collections';
         }
 
@@ -91,7 +91,7 @@ class PhraseaRegisterFormTest extends FormTestCase
             $expected[] = 'accept-tou';
         }
 
-        if (!self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB')) {
+        if (!self::$DI['app']['conf']->get(['registry', 'registration', 'auto-select-collections'])) {
             $expected[] = 'collections';
         }
 
