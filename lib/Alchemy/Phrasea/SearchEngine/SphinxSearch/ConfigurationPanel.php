@@ -49,7 +49,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
             'configuration' => $configuration,
             'configfile'    => $this->generateSphinxConf($app['phraseanet.appbox']->get_databoxes(), $configuration),
             'charsets'      => $this->getAvailableCharsets(),
-            'date_fields'   => $this->RecordgetAvailableDateFields($app['phraseanet.appbox']->get_databoxes()),
+            'date_fields'   => $this->getAvailableDateFields($app['phraseanet.appbox']->get_databoxes()),
         ];
 
         return $app['twig']->render('admin/search-engine/sphinx-search.html.twig', $params);

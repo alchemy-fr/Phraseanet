@@ -59,39 +59,21 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $confLocale = $this->app['locale'];
+        $event->getRequest()->setLocale($this->app['locale']);
 
-        $this->app['locale'] = $this->app->share(function (Application $app) use ($event, $confLocale) {
-            if (!$app['configuration.store']->isSetup()) {
-                $event->getRequest()->setDefaultLocale($confLocale);
-                $event->getRequest()->setLocale($confLocale);
-            }
-
-            $languages = $app['locales.available'];
-            if ($event->getRequest()->cookies->has('locale')
-                && isset($languages[$event->getRequest()->cookies->get('locale')])) {
-                $event->getRequest()->setLocale($event->getRequest()->cookies->get('locale'));
-
-                return $event->getRequest()->getLocale();
-            }
-
+        if ($event->getRequest()->cookies->has('locale')
+            && isset($this->app['locales.available'][$event->getRequest()->cookies->get('locale')])) {
+            $event->getRequest()->setLocale($event->getRequest()->cookies->get('locale'));
+        } else {
             foreach ($event->getRequest()->getLanguages() as $code) {
                 $data = preg_split('/[-_]/', $code);
-                if (in_array($data[0], array_keys($app['locales.available']), true)) {
+                if (in_array($data[0], array_keys($this->app['locales.available']), true)) {
                     $event->getRequest()->setLocale($data[0]);
-                    $localeSet = true;
-                    break;
                 }
             }
+        }
 
-            if (!$event->getRequest()->getLocale()) {
-                $event->getRequest()->setLocale($confLocale);
-            }
-
-            return $event->getRequest()->getLocale();
-        });
-
-        $this->locale = $this->app['locale'];
+        $this->locale = $this->app['locale'] = $event->getRequest()->getLocale();
     }
 
     public function addLocaleCookie(FilterResponseEvent $event)

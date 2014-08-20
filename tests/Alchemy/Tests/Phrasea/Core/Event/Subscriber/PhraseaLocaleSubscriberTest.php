@@ -108,6 +108,9 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetTestCase
         $app['debug'] = true;
         $app->register(new LocaleServiceProvider());
         $app['configuration.store'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
+        $app['configuration.store']->expects($this->any())
+            ->method('isSetup')
+            ->will($this->returnValue(true));
         $app['conf'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
             ->disableOriginalConstructor()
             ->getMock();
@@ -125,7 +128,17 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetTestCase
     {
         $app['conf']->expects($this->any())
             ->method('get')
-            ->will($this->returnValue($locale));
+            ->will($this->returnCallback(function ($param) use ($locale) {
+
+                switch ($param) {
+                    case ['languages', 'default']:
+                        return $locale;
+                        break;
+                    case ['languages', 'available']:
+                        return [];
+                        break;
+                }
+            }));
     }
 
     private function getClientWithCookie(Application $app, $locale = 'fr')
