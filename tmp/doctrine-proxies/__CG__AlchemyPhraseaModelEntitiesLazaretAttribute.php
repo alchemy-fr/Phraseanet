@@ -64,10 +64,10 @@ class LazaretAttribute extends \Alchemy\Phrasea\Model\Entities\LazaretAttribute 
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'name', 'value', 'created', 'updated', 'lazaretFile');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\LazaretAttribute' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\LazaretAttribute' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\LazaretAttribute' . "\0" . 'value', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\LazaretAttribute' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\LazaretAttribute' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\LazaretAttribute' . "\0" . 'lazaretFile');
         }
 
-        return array('__isInitialized__', 'id', 'name', 'value', 'created', 'updated', 'lazaretFile');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\LazaretAttribute' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\LazaretAttribute' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\LazaretAttribute' . "\0" . 'value', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\LazaretAttribute' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\LazaretAttribute' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\LazaretAttribute' . "\0" . 'lazaretFile');
     }
 
     /**

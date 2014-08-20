@@ -64,10 +64,10 @@ class SessionModule extends \Alchemy\Phrasea\Model\Entities\SessionModule implem
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'module_id', 'created', 'updated', 'session');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\SessionModule' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\SessionModule' . "\0" . 'module_id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\SessionModule' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\SessionModule' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\SessionModule' . "\0" . 'session');
         }
 
-        return array('__isInitialized__', 'id', 'module_id', 'created', 'updated', 'session');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\SessionModule' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\SessionModule' . "\0" . 'module_id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\SessionModule' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\SessionModule' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\SessionModule' . "\0" . 'session');
     }
 
     /**

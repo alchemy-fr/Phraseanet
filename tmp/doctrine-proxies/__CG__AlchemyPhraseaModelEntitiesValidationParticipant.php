@@ -64,10 +64,10 @@ class ValidationParticipant extends \Alchemy\Phrasea\Model\Entities\ValidationPa
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'is_aware', 'is_confirmed', 'can_agree', 'can_see_others', 'reminded', 'datas', 'session', 'user');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationParticipant' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationParticipant' . "\0" . 'is_aware', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationParticipant' . "\0" . 'is_confirmed', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationParticipant' . "\0" . 'can_agree', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationParticipant' . "\0" . 'can_see_others', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationParticipant' . "\0" . 'reminded', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationParticipant' . "\0" . 'datas', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationParticipant' . "\0" . 'session', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationParticipant' . "\0" . 'user');
         }
 
-        return array('__isInitialized__', 'id', 'is_aware', 'is_confirmed', 'can_agree', 'can_see_others', 'reminded', 'datas', 'session', 'user');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationParticipant' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationParticipant' . "\0" . 'is_aware', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationParticipant' . "\0" . 'is_confirmed', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationParticipant' . "\0" . 'can_agree', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationParticipant' . "\0" . 'can_see_others', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationParticipant' . "\0" . 'reminded', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationParticipant' . "\0" . 'datas', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationParticipant' . "\0" . 'session', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationParticipant' . "\0" . 'user');
     }
 
     /**

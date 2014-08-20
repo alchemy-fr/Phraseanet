@@ -64,10 +64,10 @@ class AggregateToken extends \Alchemy\Phrasea\Model\Entities\AggregateToken impl
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'user', 'value');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\AggregateToken' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\AggregateToken' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\AggregateToken' . "\0" . 'value');
         }
 
-        return array('__isInitialized__', 'id', 'user', 'value');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\AggregateToken' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\AggregateToken' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\AggregateToken' . "\0" . 'value');
     }
 
     /**

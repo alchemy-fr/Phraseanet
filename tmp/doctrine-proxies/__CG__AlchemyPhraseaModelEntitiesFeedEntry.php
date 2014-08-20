@@ -64,10 +64,10 @@ class FeedEntry extends \Alchemy\Phrasea\Model\Entities\FeedEntry implements \Do
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'title', 'subtitle', 'authorName', 'authorEmail', 'createdOn', 'updatedOn', 'items', 'publisher', 'feed');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'title', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'subtitle', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'authorName', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'authorEmail', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'createdOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'updatedOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'items', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'publisher', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'feed');
         }
 
-        return array('__isInitialized__', 'id', 'title', 'subtitle', 'authorName', 'authorEmail', 'createdOn', 'updatedOn', 'items', 'publisher', 'feed');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'title', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'subtitle', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'authorName', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'authorEmail', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'createdOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'updatedOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'items', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'publisher', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'feed');
     }
 
     /**

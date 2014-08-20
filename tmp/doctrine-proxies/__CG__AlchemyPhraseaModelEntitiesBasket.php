@@ -64,10 +64,10 @@ class Basket extends \Alchemy\Phrasea\Model\Entities\Basket implements \Doctrine
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'name', 'description', 'user', 'is_read', 'pusher', 'archived', 'created', 'updated', 'validation', 'elements', 'order');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'description', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'is_read', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'pusher', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'archived', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'validation', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'elements', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'order');
         }
 
-        return array('__isInitialized__', 'id', 'name', 'description', 'user', 'is_read', 'pusher', 'archived', 'created', 'updated', 'validation', 'elements', 'order');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'description', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'is_read', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'pusher', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'archived', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'validation', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'elements', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'order');
     }
 
     /**

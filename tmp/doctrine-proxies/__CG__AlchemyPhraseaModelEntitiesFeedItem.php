@@ -64,10 +64,10 @@ class FeedItem extends \Alchemy\Phrasea\Model\Entities\FeedItem implements \Doct
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'recordId', 'sbasId', 'ord', 'createdOn', 'updatedOn', 'entry');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedItem' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedItem' . "\0" . 'recordId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedItem' . "\0" . 'sbasId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedItem' . "\0" . 'ord', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedItem' . "\0" . 'createdOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedItem' . "\0" . 'updatedOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedItem' . "\0" . 'entry');
         }
 
-        return array('__isInitialized__', 'id', 'recordId', 'sbasId', 'ord', 'createdOn', 'updatedOn', 'entry');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedItem' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedItem' . "\0" . 'recordId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedItem' . "\0" . 'sbasId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedItem' . "\0" . 'ord', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedItem' . "\0" . 'createdOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedItem' . "\0" . 'updatedOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedItem' . "\0" . 'entry');
     }
 
     /**

@@ -64,10 +64,10 @@ class Registration extends \Alchemy\Phrasea\Model\Entities\Registration implemen
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'user', 'baseId', 'pending', 'rejected', 'created', 'updated');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Registration' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Registration' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Registration' . "\0" . 'baseId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Registration' . "\0" . 'pending', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Registration' . "\0" . 'rejected', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Registration' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Registration' . "\0" . 'updated');
         }
 
-        return array('__isInitialized__', 'id', 'user', 'baseId', 'pending', 'rejected', 'created', 'updated');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Registration' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Registration' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Registration' . "\0" . 'baseId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Registration' . "\0" . 'pending', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Registration' . "\0" . 'rejected', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Registration' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Registration' . "\0" . 'updated');
     }
 
     /**

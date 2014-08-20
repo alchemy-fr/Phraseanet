@@ -64,10 +64,10 @@ class UsrListOwner extends \Alchemy\Phrasea\Model\Entities\UsrListOwner implemen
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'user', 'role', 'created', 'updated', 'list');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner' . "\0" . 'role', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner' . "\0" . 'list');
         }
 
-        return array('__isInitialized__', 'id', 'user', 'role', 'created', 'updated', 'list');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner' . "\0" . 'role', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner' . "\0" . 'list');
     }
 
     /**

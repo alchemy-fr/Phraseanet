@@ -64,10 +64,10 @@ class ValidationData extends \Alchemy\Phrasea\Model\Entities\ValidationData impl
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'agreement', 'note', 'updated', 'participant', 'basket_element');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationData' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationData' . "\0" . 'agreement', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationData' . "\0" . 'note', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationData' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationData' . "\0" . 'participant', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationData' . "\0" . 'basket_element');
         }
 
-        return array('__isInitialized__', 'id', 'agreement', 'note', 'updated', 'participant', 'basket_element');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationData' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationData' . "\0" . 'agreement', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationData' . "\0" . 'note', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationData' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationData' . "\0" . 'participant', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationData' . "\0" . 'basket_element');
     }
 
     /**

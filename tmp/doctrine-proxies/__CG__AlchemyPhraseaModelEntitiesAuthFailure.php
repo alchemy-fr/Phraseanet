@@ -64,10 +64,10 @@ class AuthFailure extends \Alchemy\Phrasea\Model\Entities\AuthFailure implements
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'username', 'ip', 'locked', 'created');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\AuthFailure' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\AuthFailure' . "\0" . 'username', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\AuthFailure' . "\0" . 'ip', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\AuthFailure' . "\0" . 'locked', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\AuthFailure' . "\0" . 'created');
         }
 
-        return array('__isInitialized__', 'id', 'username', 'ip', 'locked', 'created');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\AuthFailure' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\AuthFailure' . "\0" . 'username', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\AuthFailure' . "\0" . 'ip', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\AuthFailure' . "\0" . 'locked', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\AuthFailure' . "\0" . 'created');
     }
 
     /**
