@@ -71,12 +71,6 @@ main:
         mp4box_timeout: 60
         swftools_timeout: 60
         unoconv_timeout: 60
-    task-manager:
-        status: started
-        listener:
-            protocol: tcp
-            host: 127.0.0.1
-            port: 6700
     storage:
         subdefs:
             default-dir: null
