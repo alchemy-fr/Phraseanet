@@ -64,10 +64,10 @@ class StoryWZ extends \Alchemy\Phrasea\Model\Entities\StoryWZ implements \Doctri
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'sbas_id', 'record_id', 'user', 'created');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\StoryWZ' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\StoryWZ' . "\0" . 'sbas_id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\StoryWZ' . "\0" . 'record_id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\StoryWZ' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\StoryWZ' . "\0" . 'created');
         }
 
-        return array('__isInitialized__', 'id', 'sbas_id', 'record_id', 'user', 'created');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\StoryWZ' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\StoryWZ' . "\0" . 'sbas_id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\StoryWZ' . "\0" . 'record_id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\StoryWZ' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\StoryWZ' . "\0" . 'created');
     }
 
     /**

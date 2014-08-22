@@ -64,10 +64,10 @@ class UserNotificationSetting extends \Alchemy\Phrasea\Model\Entities\UserNotifi
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'user', 'name', 'value', 'created', 'updated');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserNotificationSetting' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserNotificationSetting' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserNotificationSetting' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserNotificationSetting' . "\0" . 'value', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserNotificationSetting' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserNotificationSetting' . "\0" . 'updated');
         }
 
-        return array('__isInitialized__', 'id', 'user', 'name', 'value', 'created', 'updated');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserNotificationSetting' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserNotificationSetting' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserNotificationSetting' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserNotificationSetting' . "\0" . 'value', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserNotificationSetting' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserNotificationSetting' . "\0" . 'updated');
     }
 
     /**

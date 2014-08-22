@@ -64,10 +64,10 @@ class UsrAuthProvider extends \Alchemy\Phrasea\Model\Entities\UsrAuthProvider im
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'user', 'provider', 'distant_id', 'created', 'updated');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrAuthProvider' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrAuthProvider' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrAuthProvider' . "\0" . 'provider', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrAuthProvider' . "\0" . 'distant_id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrAuthProvider' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrAuthProvider' . "\0" . 'updated');
         }
 
-        return array('__isInitialized__', 'id', 'user', 'provider', 'distant_id', 'created', 'updated');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrAuthProvider' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrAuthProvider' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrAuthProvider' . "\0" . 'provider', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrAuthProvider' . "\0" . 'distant_id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrAuthProvider' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrAuthProvider' . "\0" . 'updated');
     }
 
     /**

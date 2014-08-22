@@ -64,10 +64,10 @@ class LazaretCheck extends \Alchemy\Phrasea\Model\Entities\LazaretCheck implemen
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'checkClassname', 'lazaretFile');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\LazaretCheck' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\LazaretCheck' . "\0" . 'checkClassname', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\LazaretCheck' . "\0" . 'lazaretFile');
         }
 
-        return array('__isInitialized__', 'id', 'checkClassname', 'lazaretFile');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\LazaretCheck' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\LazaretCheck' . "\0" . 'checkClassname', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\LazaretCheck' . "\0" . 'lazaretFile');
     }
 
     /**

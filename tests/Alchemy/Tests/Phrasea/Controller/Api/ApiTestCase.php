@@ -903,7 +903,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken($this->userAccessToken);
 
-        self::$DI['acl']->get(self::$DI['user_notAdmin'])->update_rights_to_base(self::$DI['collection']->get_base_id(), array(
+        self::$DI['app']['acl']->get(self::$DI['user_notAdmin'])->update_rights_to_base(self::$DI['collection']->get_base_id(), array(
             'candwnldpreview' => 1,
             'candwnldhd' => 1
         ));
@@ -939,14 +939,14 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testRecordsEmbedRouteNoHdRights()
     {
-        $this->setToken(self::$token);
+        $this->setToken($this->userAccessToken);
 
-        self::$DI['acl']->get(self::$DI['user_notAdmin'])->update_rights_to_base(self::$DI['collection']->get_base_id(), array(
+        self::$DI['app']['acl']->get(self::$DI['user_notAdmin'])->update_rights_to_base(self::$DI['collection']->get_base_id(), array(
             'candwnldpreview' => 1,
             'candwnldhd' => 0
         ));
 
-        $route = '/api/v1/records/' . $this->record->get_sbas_id() . '/' . $this->record->get_record_id() . '/embed/';
+        $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 
         self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
@@ -963,14 +963,14 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testRecordsEmbedRouteNoPreviewAndHdRights()
     {
-        $this->setToken(self::$token);
+        $this->setToken($this->userAccessToken);
 
-        self::$DI['user_notAdmin']->ACL()->update_rights_to_base(self::$DI['collection']->get_base_id(), array(
+        self::$DI['app']['acl']->get(self::$DI['user_notAdmin'])->update_rights_to_base(self::$DI['collection']->get_base_id(), array(
             'candwnldpreview' => 0,
             'candwnldhd' => 0
         ));
 
-        $route = '/api/v1/records/' . $this->record->get_sbas_id() . '/' . $this->record->get_record_id() . '/embed/';
+        $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 
         self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());

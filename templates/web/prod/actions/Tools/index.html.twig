@@ -238,7 +238,7 @@
       </div>
       <form name="formpushdoc" action="{{ path('prod_tools_rotate') }}" method="post">
         <fieldset style='border:1px solid #999;padding:20px;'>
-          <legend style='color:#EEE'>&nbsp;<b>{% trans "image rotation" %}</b>&nbsp;</legend>
+          <legend style='color:#EEE'>&nbsp;<b>{{ "image rotation" | trans  }}</b>&nbsp;</legend>
             <label for="ROTA_90" class="radio">
                 <input type="radio" name="rotation" id="ROTA_90" value="90" checked="checked">
                 {{ "rotation 90 degres horaire" | trans }}
@@ -253,8 +253,8 @@
             <input type="hidden" name="cchd" value="" />
         </fieldset>
         <div style='text-align:right;padding-top:10px;'>
-          <button class="action_submiter btn btn-inverse">{% trans "validate" %}</button>
-          <button class="action_cancel btn btn-inverse">{% trans "cancel" %}</button>
+          <button class="action_submiter btn btn-inverse">{{ "validate"|trans }}</button>
+          <button class="action_cancel btn btn-inverse">{{ "cancel"|trans }}</button>
         </div>
       </form>
     </div>

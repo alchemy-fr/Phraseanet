@@ -64,10 +64,10 @@ class Feed extends \Alchemy\Phrasea\Model\Entities\Feed implements \Doctrine\ORM
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'public', 'iconUrl', 'baseId', 'title', 'subtitle', 'createdOn', 'updatedOn', 'publishers', 'entries', 'tokens');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Feed' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Feed' . "\0" . 'public', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Feed' . "\0" . 'iconUrl', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Feed' . "\0" . 'baseId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Feed' . "\0" . 'title', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Feed' . "\0" . 'subtitle', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Feed' . "\0" . 'createdOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Feed' . "\0" . 'updatedOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Feed' . "\0" . 'publishers', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Feed' . "\0" . 'entries', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Feed' . "\0" . 'tokens');
         }
 
-        return array('__isInitialized__', 'id', 'public', 'iconUrl', 'baseId', 'title', 'subtitle', 'createdOn', 'updatedOn', 'publishers', 'entries', 'tokens');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Feed' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Feed' . "\0" . 'public', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Feed' . "\0" . 'iconUrl', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Feed' . "\0" . 'baseId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Feed' . "\0" . 'title', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Feed' . "\0" . 'subtitle', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Feed' . "\0" . 'createdOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Feed' . "\0" . 'updatedOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Feed' . "\0" . 'publishers', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Feed' . "\0" . 'entries', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Feed' . "\0" . 'tokens');
     }
 
     /**

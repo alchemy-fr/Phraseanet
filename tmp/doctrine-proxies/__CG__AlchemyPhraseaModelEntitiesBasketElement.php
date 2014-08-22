@@ -64,10 +64,10 @@ class BasketElement extends \Alchemy\Phrasea\Model\Entities\BasketElement implem
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'record_id', 'sbas_id', 'ord', 'created', 'updated', 'validation_datas', 'basket');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\BasketElement' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\BasketElement' . "\0" . 'record_id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\BasketElement' . "\0" . 'sbas_id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\BasketElement' . "\0" . 'ord', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\BasketElement' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\BasketElement' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\BasketElement' . "\0" . 'validation_datas', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\BasketElement' . "\0" . 'basket');
         }
 
-        return array('__isInitialized__', 'id', 'record_id', 'sbas_id', 'ord', 'created', 'updated', 'validation_datas', 'basket');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\BasketElement' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\BasketElement' . "\0" . 'record_id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\BasketElement' . "\0" . 'sbas_id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\BasketElement' . "\0" . 'ord', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\BasketElement' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\BasketElement' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\BasketElement' . "\0" . 'validation_datas', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\BasketElement' . "\0" . 'basket');
     }
 
     /**

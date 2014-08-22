@@ -64,10 +64,10 @@ class OrderElement extends \Alchemy\Phrasea\Model\Entities\OrderElement implemen
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'baseId', 'recordId', 'orderMaster', 'deny', 'order');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\OrderElement' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\OrderElement' . "\0" . 'baseId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\OrderElement' . "\0" . 'recordId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\OrderElement' . "\0" . 'orderMaster', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\OrderElement' . "\0" . 'deny', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\OrderElement' . "\0" . 'order');
         }
 
-        return array('__isInitialized__', 'id', 'baseId', 'recordId', 'orderMaster', 'deny', 'order');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\OrderElement' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\OrderElement' . "\0" . 'baseId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\OrderElement' . "\0" . 'recordId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\OrderElement' . "\0" . 'orderMaster', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\OrderElement' . "\0" . 'deny', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\OrderElement' . "\0" . 'order');
     }
 
     /**

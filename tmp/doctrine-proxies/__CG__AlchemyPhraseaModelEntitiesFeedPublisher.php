@@ -64,10 +64,10 @@ class FeedPublisher extends \Alchemy\Phrasea\Model\Entities\FeedPublisher implem
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'user', 'owner', 'createdOn', 'feed');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedPublisher' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedPublisher' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedPublisher' . "\0" . 'owner', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedPublisher' . "\0" . 'createdOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedPublisher' . "\0" . 'feed');
         }
 
-        return array('__isInitialized__', 'id', 'user', 'owner', 'createdOn', 'feed');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedPublisher' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedPublisher' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedPublisher' . "\0" . 'owner', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedPublisher' . "\0" . 'createdOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedPublisher' . "\0" . 'feed');
     }
 
     /**

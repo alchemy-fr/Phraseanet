@@ -64,10 +64,10 @@ class UsrList extends \Alchemy\Phrasea\Model\Entities\UsrList implements \Doctri
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'name', 'created', 'updated', 'owners', 'entries');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrList' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrList' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrList' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrList' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrList' . "\0" . 'owners', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrList' . "\0" . 'entries');
         }
 
-        return array('__isInitialized__', 'id', 'name', 'created', 'updated', 'owners', 'entries');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrList' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrList' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrList' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrList' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrList' . "\0" . 'owners', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UsrList' . "\0" . 'entries');
     }
 
     /**

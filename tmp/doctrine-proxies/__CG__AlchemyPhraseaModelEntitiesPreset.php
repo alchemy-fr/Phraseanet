@@ -64,10 +64,10 @@ class Preset extends \Alchemy\Phrasea\Model\Entities\Preset implements \Doctrine
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'user', 'sbasId', 'title', 'data', 'created');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Preset' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Preset' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Preset' . "\0" . 'sbasId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Preset' . "\0" . 'title', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Preset' . "\0" . 'data', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Preset' . "\0" . 'created');
         }
 
-        return array('__isInitialized__', 'id', 'user', 'sbasId', 'title', 'data', 'created');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Preset' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Preset' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Preset' . "\0" . 'sbasId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Preset' . "\0" . 'title', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Preset' . "\0" . 'data', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Preset' . "\0" . 'created');
     }
 
     /**

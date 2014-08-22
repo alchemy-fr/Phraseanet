@@ -109,7 +109,7 @@ class ApplicationTest extends \PhraseanetTestCase
     public function testCookieLocale()
     {
         foreach (array_keys(Application::getAvailableLanguages()) as $locale) {
-            $client = $this->getClientWithCookie( $this->getAppThatReturnLocale(), $locale);
+            $client = $this->getClientWithCookie($this->getAppThatReturnLocale(), $locale);
             $client->request('GET', '/');
 
             $this->assertEquals($locale, $client->getResponse()->getContent());

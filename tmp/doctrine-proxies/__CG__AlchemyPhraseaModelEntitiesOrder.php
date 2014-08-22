@@ -64,10 +64,10 @@ class Order extends \Alchemy\Phrasea\Model\Entities\Order implements \Doctrine\O
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'user', 'orderUsage', 'todo', 'deadline', 'createdOn', 'elements', 'basket');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'orderUsage', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'todo', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'deadline', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'createdOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'elements', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'basket');
         }
 
-        return array('__isInitialized__', 'id', 'user', 'orderUsage', 'todo', 'deadline', 'createdOn', 'elements', 'basket');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'orderUsage', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'todo', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'deadline', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'createdOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'elements', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'basket');
     }
 
     /**

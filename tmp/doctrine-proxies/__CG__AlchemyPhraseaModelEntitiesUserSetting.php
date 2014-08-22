@@ -64,10 +64,10 @@ class UserSetting extends \Alchemy\Phrasea\Model\Entities\UserSetting implements
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'user', 'name', 'value', 'created', 'updated');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserSetting' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserSetting' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserSetting' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserSetting' . "\0" . 'value', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserSetting' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserSetting' . "\0" . 'updated');
         }
 
-        return array('__isInitialized__', 'id', 'user', 'name', 'value', 'created', 'updated');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserSetting' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserSetting' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserSetting' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserSetting' . "\0" . 'value', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserSetting' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\UserSetting' . "\0" . 'updated');
     }
 
     /**

@@ -64,10 +64,10 @@ class FeedToken extends \Alchemy\Phrasea\Model\Entities\FeedToken implements \Do
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'user', 'value', 'feed');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedToken' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedToken' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedToken' . "\0" . 'value', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedToken' . "\0" . 'feed');
         }
 
-        return array('__isInitialized__', 'id', 'user', 'value', 'feed');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedToken' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedToken' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedToken' . "\0" . 'value', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedToken' . "\0" . 'feed');
     }
 
     /**

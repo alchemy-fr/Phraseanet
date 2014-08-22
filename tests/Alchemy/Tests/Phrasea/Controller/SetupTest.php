@@ -103,9 +103,6 @@ class SetupTest extends \PhraseanetWebTestCase
             ->getMock();
 
         $user = $this->createUserMock();
-        $user->expects($this->once())
-            ->method('getId')
-            ->will($this->returnValue(self::$DI['user']->getId()));
 
         $this->app['phraseanet.installer']->expects($this->once())
             ->method('install')

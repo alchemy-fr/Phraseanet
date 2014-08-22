@@ -64,10 +64,10 @@ class Task extends \Alchemy\Phrasea\Model\Entities\Task implements \Doctrine\ORM
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'name', 'jobId', 'settings', 'completed', 'status', 'crashed', 'singleRun', 'created', 'updated', 'lastExecution', 'period');
+            return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'jobId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'settings', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'completed', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'status', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'crashed', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'singleRun', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'lastExecution', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'period');
         }
 
-        return array('__isInitialized__', 'id', 'name', 'jobId', 'settings', 'completed', 'status', 'crashed', 'singleRun', 'created', 'updated', 'lastExecution', 'period');
+        return array('__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'jobId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'settings', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'completed', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'status', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'crashed', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'singleRun', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'lastExecution', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Task' . "\0" . 'period');
     }
 
     /**
