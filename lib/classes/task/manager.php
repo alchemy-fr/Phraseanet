@@ -69,7 +69,8 @@ class task_manager
                 'id'        => $id,
                 'pid'       => $task->getPID(),
                 'crashed'   => $task->getCrashCounter(),
-                'completed' => $task->getCompletedPercentage(),
+                'todo'      => $task->getTodo(),
+                'done'      => $task->getDone(),
                 'status'    => $task->getState()
             );
         }

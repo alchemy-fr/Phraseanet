@@ -50,6 +50,11 @@
         (<a href="{{ path('admin_database_display_document_details', {'databox_id': databox.get_sbas_id()}) }}" class="ajax" target="rights">{% trans 'phraseanet:: details'%}</a>)
     </li>
 
+    <li>
+        {% trans 'admin::base: subdefs to be created :' %}
+        <span id="subdefs_todo"></span>
+    </li>
+
     {% if showDetail %}
         <li>
             {% trans 'admin::base: nombre de mots uniques sur la base : ' %}
@@ -276,6 +281,13 @@
                     p = 100*data.thesaurus_indexed/data.records;
                     $("#thesaurus_indexed_bar").width(Math.round(2*p));
                     $("#thesaurus_indexed_percent").text((Math.round(p*100)/100)+" %");
+
+                    var t = "";
+                    for(var i in data.jeton_subdef)
+                    {
+                        t += (t==""?"":" ; ") + i + ": " + data.jeton_subdef[i];
+                    }
+                    $("#subdefs_todo").text(t);
                 }
 
                 if(data.printLogoURL)

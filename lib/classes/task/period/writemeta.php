@@ -19,6 +19,8 @@ class task_period_writemeta extends task_databoxAbstract
     protected $clear_doc;
     protected $metasubdefs = array();
 
+    private $_todo = 0; // set by "retrieveSbasContent", dec by "postProcessOneContent"
+
     public static function help()
     {
         return(_("task::writemeta:(re)ecriture des metadatas dans les documents (et subdefs concernees)"));
@@ -222,13 +224,21 @@ class task_period_writemeta extends task_databoxAbstract
 
         $this->metasubdefs = $metasubdefs;
 
-        $sql = 'SELECT record_id, coll_id, jeton
+        $sql = 'SELECT SQL_CALC_FOUND_ROWS record_id, coll_id, jeton
              FROM record WHERE (jeton & ' . JETON_WRITE_META . ' > 0)';
 
         $stmt = $connbas->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
+
+        $sql = 'SELECT FOUND_ROWS()';
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute();
+        $this->_todo = (int) $stmt->fetchColumn(0);
+        $stmt->closeCursor();
+
+        $this->setProgress(0, $this->_todo);
 
         return $rs;
     }
@@ -327,6 +337,9 @@ class task_period_writemeta extends task_databoxAbstract
 
     protected function postProcessOneContent(databox $databox, Array $row)
     {
+        $this->_todo--;
+        $this->setProgress(0, $this->_todo);
+
         $connbas = $databox->get_connection();
 
         $sql = 'UPDATE record SET jeton=jeton & ~' . JETON_WRITE_META . '

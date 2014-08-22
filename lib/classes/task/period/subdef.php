@@ -32,6 +32,8 @@ class task_period_subdef extends task_databoxAbstract
 
     protected $thumbnailExtraction;
 
+    private $_todo = 0; // set by "retrieveSbasContent", dec by "postProcessOneContent"
+
     /**
      * Return about text
      *
@@ -262,7 +264,7 @@ class task_period_subdef extends task_databoxAbstract
 
         $connbas = $databox->get_connection();
 
-        $sql = 'SELECT coll_id, record_id
+        $sql = 'SELECT SQL_CALC_FOUND_ROWS record_id
               FROM record
               WHERE jeton & ' . JETON_MAKE_SUBDEF . ' > 0
               ORDER BY record_id DESC LIMIT 0, '.$this->maxrecs;
@@ -270,6 +272,14 @@ class task_period_subdef extends task_databoxAbstract
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
+
+        $sql = 'SELECT FOUND_ROWS()';
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute();
+        $this->_todo = (int) $stmt->fetchColumn(0);
+        $stmt->closeCursor();
+
+        $this->setProgress(0, $this->_todo);
 
         return $rs;
     }
@@ -308,6 +318,9 @@ class task_period_subdef extends task_databoxAbstract
 
     protected function postProcessOneContent(databox $databox, Array $row)
     {
+        $this->_todo--;
+        $this->setProgress(0, $this->_todo);
+
         $connbas = $databox->get_connection();
         $sql = 'UPDATE record
               SET jeton=(jeton & ~' . JETON_MAKE_SUBDEF . '), moddate=NOW()

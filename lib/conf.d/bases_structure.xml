@@ -3404,14 +3404,22 @@
             <default></default>
             <comment></comment>
           </field>
-          <field>
-            <name>completed</name>
-            <type>tinyint(4)</type>
-            <null></null>
-            <extra></extra>
-            <default>-1</default>
-            <comment></comment>
-          </field>
+            <field>
+                <name>todo</name>
+                <type>int(11)</type>
+                <null></null>
+                <extra></extra>
+                <default>0</default>
+                <comment></comment>
+            </field>
+            <field>
+                <name>done</name>
+                <type>int(11)</type>
+                <null></null>
+                <extra></extra>
+                <default>0</default>
+                <comment></comment>
+            </field>
           <field>
             <name>runner</name>
             <type>char(20)</type>
