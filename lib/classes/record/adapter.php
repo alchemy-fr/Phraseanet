@@ -124,12 +124,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      *
      * @var string
      */
-    protected $bitly_link;
-
-    /**
-     *
-     * @var string
-     */
     protected $uuid;
 
     /**
@@ -174,7 +168,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             $this->mime = $datas['mime'];
             $this->sha256 = $datas['sha256'];
-            $this->bitly_link = $datas['bitly_link'];
             $this->original_name = $datas['original_name'];
             $this->type = $datas['type'];
             $this->grouping = $datas['grouping'];
@@ -209,14 +202,12 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $this->grouping = ($row['parent_record_id'] == '1');
         $this->type = $row['type'];
         $this->original_name = $row['originalname'];
-        $this->bitly_link = $row['bitly'];
         $this->sha256 = $row['sha256'];
         $this->mime = $row['mime'];
 
         $datas = [
             'mime'              => $this->mime
             , 'sha256'            => $this->sha256
-            , 'bitly_link'        => $this->bitly_link
             , 'original_name'     => $this->original_name
             , 'type'              => $this->type
             , 'grouping'          => $this->grouping
