@@ -78,18 +78,23 @@ class Indexer
         $this->disableShardRefreshing();
 
         try {
+            // Prepare the bulk operation
+            $bulk = new BulkOperation($this->client);
+            $bulk->setDefaultIndex($this->options['index']);
+            $bulk->setDefaultType(self::RECORD_TYPE);
+            $bulk->setAutoFlushLimit(1000);
             foreach ($this->appbox->get_databoxes() as $databox) {
                 $fetcher = new RecordFetcher($databox);
                 $fetcher->setBatchSize(200);
                 while ($record = $fetcher->fetch()) {
                     $params = array();
-                    $params['index'] = $this->options['index'];
-                    $params['type'] = self::RECORD_TYPE;
                     $params['id'] = $record['id'];
                     $params['body'] = $record;
-                    $response = $this->client->index($params);
+                    $bulk->index($params);
                 }
             }
+
+            $bulk->flush();
 
             // Optimize index
             $params = array('index' => $this->options['index']);
