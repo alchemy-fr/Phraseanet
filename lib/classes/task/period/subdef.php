@@ -32,7 +32,7 @@ class task_period_subdef extends task_databoxAbstract
 
     protected $thumbnailExtraction;
 
-    private $_todo = 0; // set by "retrieveSbasContent", dec by "postProcessOneContent"
+    protected $recordtype = array();
 
     /**
      * Return about text
@@ -59,6 +59,20 @@ class task_period_subdef extends task_databoxAbstract
     protected function loadSettings(SimpleXMLElement $sx_task_settings)
     {
         $this->thumbnailExtraction = (Boolean) trim($sx_task_settings->embedded);
+        $this->mono_sbas_id = (int) trim($sx_task_settings->sbas);
+
+        foreach(array('image',
+                    'video',
+                    'audio',
+                    'document',
+                    'flash',
+                    'unknown') as $f)
+        {
+            if(!isset($sx_task_settings->{"type_".$f})) {
+                $sx_task_settings->{"type_".$f} = "1";
+            }
+            $this->recordtype[$f] = (Boolean) trim($sx_task_settings->{"type_".$f});
+        }
 
         parent::loadSettings($sx_task_settings);
     }
@@ -73,14 +87,34 @@ class task_period_subdef extends task_databoxAbstract
     {
         $request = http_request::getInstance();
 
-        $parm2 = $request->get_parms('period', 'flush', 'maxrecs', 'maxmegs', 'embedded');
+        $parm2 = $request->get_parms(
+            'period',
+            'sbas',
+            'type_image',
+            'type_video',
+            'type_audio',
+            'type_document',
+            'type_flash',
+            'type_unknown',
+            'flush',
+            'maxrecs',
+            'maxmegs',
+            'embedded'
+        );
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
         if (@$dom->loadXML($oldxml)) {
             $xmlchanged = false;
 
-            foreach (array('str:period', 'str:flush', 'str:maxrecs', 'str:maxmegs', 'boo:embedded') as $pname) {
+            foreach (array('str:period', 'str:sbas'
+                     , 'boo:type_image'
+                     , 'boo:type_video'
+                     , 'boo:type_audio'
+                     , 'boo:type_document'
+                     , 'boo:type_flash'
+                     , 'boo:type_unknown'
+                     , 'str:flush', 'str:maxrecs', 'str:maxmegs', 'boo:embedded') as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
@@ -172,13 +206,24 @@ class task_period_subdef extends task_databoxAbstract
                     xml = $.parseXML(xml);
                     xml = $(xml);
 
-                    with(document.forms['graphicForm'])
+                    with($("#graphicForm"))
                     {
-                        period.value  = xml.find("period").text();
-                        flush.value   = xml.find("flush").text();
-                        maxrecs.value = xml.find("maxrecs").text();
-                        maxmegs.value = xml.find("maxmegs").text();
-                        embedded.checked = !!parseInt(xml.find("embedded").text());
+                        var f = ["period", "flush", "maxrecs", "maxmegs"];
+                        for(var i in f) {
+                            $("INPUT[name='"+f[i]+"'").val(xml.find(f[i]).text());
+                        }
+                        var f = ["image", "video", "audio", "document", "flash", "unknown"];
+                        for(var i  in f) {
+                            // if not defined in settings, default to checked
+                            var v = xml.find("type_"+f[i]).text();
+                            if(v == "") {
+                                v = "1";
+                            }
+                            $("INPUT[name='type_"+f[i]+"'").attr("checked", !!parseInt(v));
+                        }
+                        $("INPUT[name='embedded'").attr("checked", !!parseInt(xml.find("embedded").text()));
+                        $("SELECT[name='sbas']").children("option[value='"+xml.find("sbas").text()+"']").attr("selected", "selected");
+                        $("SELECT[name='recordtype']").children("option[value='"+xml.find("recordtype").text()+"']").attr("selected", "selected");
                     }
                 }
             }
@@ -228,6 +273,46 @@ class task_period_subdef extends task_databoxAbstract
                 </div>
             </div>
             <div class="control-group">
+                <label class="control-label"> <?php echo sprintf(_("Databox")) ?></label>
+                <div class="controls">
+                    <select name="sbas">
+                        <option value=""><?php echo _("All"); ?></option>
+                        <?php
+foreach ($this->dependencyContainer['phraseanet.appbox']->get_databoxes() as $databox) {
+    printf("<option value=\"%s\">%s (%s)</option>\n"
+        , $databox->get_sbas_id()
+        , p4string::MakeString($databox->get_viewname(), 'html')
+        , $databox->get_sbas_id()
+    );
+}
+                        ?>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"> <?php echo _("recordtype"); ?></label>
+                <div class="controls">
+                    <label class="checkbox inline">
+                        <input type="checkbox" name="type_image" value="image"> <?php echo _("image"); ?>
+                    </label>
+                    <label class="checkbox inline">
+                        <input type="checkbox" name="type_video" value="video"> <?php echo _("video"); ?>
+                    </label>
+                    <label class="checkbox inline">
+                        <input type="checkbox" name="type_audio" value="audio"> <?php echo _("audio"); ?>
+                    </label>
+                    <label class="checkbox inline">
+                        <input type="checkbox" name="type_document" value="document"> <?php echo _("document"); ?>
+                    </label>
+                    <label class="checkbox inline">
+                        <input type="checkbox" name="type_flash" value="flash"> <?php echo _("flash"); ?>
+                    </label>
+                    <label class="checkbox inline">
+                        <input type="checkbox" name="type_unknown" value="unknown"> <?php echo _("unknown"); ?>
+                    </label>
+                </div>
+            </div>
+            <div class="control-group">
                 <label class="control-label"> <?php echo sprintf(_("Number of records to process per batch")) ?></label>
                 <div class="controls">
                    <input class="formElem input-mini" type="text" name="flush" value="">
@@ -260,27 +345,33 @@ class task_period_subdef extends task_databoxAbstract
 
     public function retrieveSbasContent(databox $databox)
     {
-        Image2Image::$lookForEmbeddedPreview = $this->thumbnailExtraction;
+        $sqltypes = "";
+        $sqlqmark = array();
+        $sqlparms = array();
+        foreach($this->recordtype as $k=>$v) {
+            if($v > 0) {
+                $sqltypes .= ($sqltypes?',':'') . "'" . $k . "'";
+                $sqlqmark[] = '?';
+                $sqlparms[] = $k;
+            }
+        }
+        $rs = array();
+        if(count($sqlqmark) > 0)
+        {
+            Image2Image::$lookForEmbeddedPreview = $this->thumbnailExtraction;
 
-        $connbas = $databox->get_connection();
+            $connbas = $databox->get_connection();
 
-        $sql = 'SELECT SQL_CALC_FOUND_ROWS record_id
-              FROM record
-              WHERE jeton & ' . JETON_MAKE_SUBDEF . ' > 0
-              ORDER BY record_id DESC LIMIT 0, '.$this->maxrecs;
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $sql = 'SELECT FOUND_ROWS()';
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute();
-        $this->_todo = (int) $stmt->fetchColumn(0);
-        $stmt->closeCursor();
-
-        $this->setProgress(0, $this->_todo);
-
+            $sql = 'SELECT coll_id, record_id'
+                  . ' FROM record'
+                  . ' WHERE jeton & ' . JETON_MAKE_SUBDEF . ' > 0'
+                  . ' AND type IN(' . implode(',', $sqlqmark) . ')'
+                  . ' ORDER BY record_id DESC LIMIT 0, '.$this->maxrecs;
+            $stmt = $connbas->prepare($sql);
+            $stmt->execute($sqlparms);
+            $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+        }
         return $rs;
     }
 
@@ -318,9 +409,6 @@ class task_period_subdef extends task_databoxAbstract
 
     protected function postProcessOneContent(databox $databox, Array $row)
     {
-        $this->_todo--;
-        $this->setProgress(0, $this->_todo);
-
         $connbas = $databox->get_connection();
         $sql = 'UPDATE record
               SET jeton=(jeton & ~' . JETON_MAKE_SUBDEF . '), moddate=NOW()
@@ -378,6 +466,7 @@ class task_period_subdef extends task_databoxAbstract
                 <maxrecs>%s</maxrecs>
                 <maxmegs>%s</maxmegs>
                 <embedded>0</embedded>
+                <sbas></sbas>
             </tasksettings>',
             min(max($period, self::MINPERIOD), self::MAXPERIOD),
             min(max($flush, self::MINFLUSH), self::MAXFLUSH),
