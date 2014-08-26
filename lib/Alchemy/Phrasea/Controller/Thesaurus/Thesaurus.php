@@ -102,7 +102,6 @@ class Thesaurus implements ControllerProviderInterface
                 $acceptable = (int) $dom->getElementsByTagName("cfield")->item(0)->getAttribute("acceptable");
             }
         }
-
         return $app['twig']->render('thesaurus/accept.html.twig', array(
             'dlg'          => $request->get('dlg'),
             'bid'          => $request->get('bid'),
@@ -1142,8 +1141,7 @@ class Thesaurus implements ControllerProviderInterface
     {
         list($term, $context) = $this->splitTermAndContext($request->get("t"));
 
-        $dom = $this->doSearchCandidate($app, $request->get('bid'), $request->get('pid'), $request->get('term'), $request->get('context'), $request->get('piv'));
-
+        $dom = $this->doSearchCandidate($app, $request->get('bid'), $request->get('pid'), $term, $context, $request->get('piv'));
         $xpath = new \DOMXPath($dom);
 
         $candidates = $xpath->query("/result/candidates_list/ct");
@@ -1162,13 +1160,12 @@ class Thesaurus implements ControllerProviderInterface
         $candidates_list = array();
         for ($i = 0; $i < $candidates->length; $i ++) {
             if ($candidates->item($i)->getAttribute("sourceok") == "1") {
-                $candidates_list = array(
+                $candidates_list[] = array(
                     'id'    => $candidates->item($i)->getAttribute("id"),
                     'field' => $candidates->item($i)->getAttribute("field"),
                 );
             }
         }
-
         return $app['twig']->render('thesaurus/new-term.html.twig', array(
             'typ' => $request->get('typ'),
             'bid' => $request->get('bid'),
@@ -3120,7 +3117,7 @@ class Thesaurus implements ControllerProviderInterface
 
         $ret = $this->doSearchCandidate($app, $request->get('bid'), $request->get('pid'), $request->get('t'), $request->get('k'), $request->get('piv'), $request->get('debug'));
 
-        return new Response($ret->saveXML(), 200, array('Content-Type' => 'text/xml'));
+        return new Response($ret->saveXML(), 200, array('Content-Type' => $request->get('debug') ? 'text/text':'text/xml'));
     }
 
     private function doSearchCandidate(Application $app, $bid, $pid, $t, $k, $piv, $debug = false)
@@ -3152,7 +3149,7 @@ class Thesaurus implements ControllerProviderInterface
                 $xpathth = new \DOMXPath($domth);
                 $xpathct = new \DOMXPath($domct);
 
-                // on cherche les champs d'oe peut provenir un candidat, en fct de l'endroit oe on veut inserer le nouveau terme
+                // on cherche les champs d'où peut provenir un candidat, en fct de l'endroit oe on veut inserer le nouveau terme
                 $fields = array();
                 $xpathstruct = new \DOMXPath($domstruct);
                 $nodes = $xpathstruct->query("/record/description/*[@tbranch]");
@@ -3199,7 +3196,7 @@ class Thesaurus implements ControllerProviderInterface
                 );
 
                 if (count($fields) > 0) {
-                    $q = "@w='" . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($k)) . "'";
+                    $q = "@w='" . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($t)) . "'";
                     if ($k) {
                         if ($k != "*") {
                             $q .= " and @k='" . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($k)) . "'";
