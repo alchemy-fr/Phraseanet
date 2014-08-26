@@ -15,4 +15,6 @@ behat.yml
 /datas
 /www/assets
 /tmp-assets
+/www/skins/build
+/www/crossdomain.xml
 /www/scripts/tests/fixtures

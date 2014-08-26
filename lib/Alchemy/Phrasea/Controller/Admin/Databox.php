@@ -699,7 +699,7 @@ class Databox implements ControllerProviderInterface
             $ret['sbas_id'] = $databox_id;
             $ret['xml_indexed'] = $datas['xml_indexed'];
             $ret['thesaurus_indexed'] = $datas['thesaurus_indexed'];
-
+            $ret['jeton_subdef'] = $datas['jeton_subdef'];
             if ($app['filesystem']->exists($app['root.path'] . '/config/minilogos/logopdf_' . $databox_id . '.jpg')) {
                 $ret['printLogoURL'] = '/custom/minilogos/logopdf_' . $databox_id . '.jpg';
             }

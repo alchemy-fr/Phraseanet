@@ -419,20 +419,39 @@ class databox extends base
 
     public function get_indexed_record_amount()
     {
-
         $sql = "SELECT status & 3 AS status, SUM(1) AS n FROM record GROUP BY(status & 3)";
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $ret = ['xml_indexed'       => 0, 'thesaurus_indexed' => 0];
+        $ret = array(
+            'xml_indexed'       => 0,
+            'thesaurus_indexed' => 0,
+            'jeton_subdef' => array()
+        );
+
         foreach ($rs as $row) {
             $status = $row['status'];
             if ($status & 1)
                 $ret['xml_indexed'] += $row['n'];
             if ($status & 2)
                 $ret['thesaurus_indexed'] += $row['n'];
+        }
+
+        $sql = "SELECT type, jeton, COUNT(record_id) AS n FROM record WHERE jeton & ".JETON_MAKE_SUBDEF." GROUP BY type, jeton";
+        $stmt = $this->get_connection()->prepare($sql);
+        $stmt->execute();
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        foreach ($rs as $row) {
+            if(!array_key_exists($row['type'], $ret['jeton_subdef'])) {
+                $ret['jeton_subdef'][$row['type']] = 0;
+            }
+            if((int)$row['jeton'] & JETON_MAKE_SUBDEF) {
+                $ret['jeton_subdef'][$row['type']] += (int)$row['n'];
+            }
         }
 
         return $ret;
