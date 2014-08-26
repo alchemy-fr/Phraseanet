@@ -19,6 +19,7 @@ class RecordFetcher
 {
     private $connection;
     private $statement;
+    private $helper;
 
     private $offset = 0;
     private $batchSize = 1;
@@ -26,10 +27,11 @@ class RecordFetcher
 
     private $databoxId;
 
-    public function __construct(databox $databox)
+    public function __construct(databox $databox, RecordHelper $helper)
     {
         $this->connection = $databox->get_connection();
         $this->databoxId  = $databox->get_sbas_id();
+        $this->helper     = $helper;
     }
 
     public function fetch()
@@ -74,16 +76,11 @@ class RecordFetcher
         $record['record_id']     = (int) $record['record_id'];
         $record['collection_id'] = (int) $record['collection_id'];
         // Some identifiers
+        $record['id'] = $this->helper->getUniqueRecordId($this->databoxId, $record['record_id']);
+        $record['base_id'] = $this->helper->getUniqueCollectionId($this->databoxId, $record['collection_id']);
         $record['databox_id'] = $this->databoxId;
-        $record['base_id']    = null; // TODO
-        $record['id']         = self::uniqueIdentifier($record);
 
         return $record;
-    }
-
-    private static function uniqueIdentifier($record)
-    {
-        return sprintf('%d_%d', $record['databox_id'], $record['record_id']);
     }
 
     private function statement()

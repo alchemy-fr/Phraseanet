@@ -83,8 +83,12 @@ class Indexer
             $bulk->setDefaultIndex($this->options['index']);
             $bulk->setDefaultType(self::RECORD_TYPE);
             $bulk->setAutoFlushLimit(1000);
+
+            // Helper to fetch record related data
+            $recordHelper = new RecordHelper($this->appbox);
+
             foreach ($this->appbox->get_databoxes() as $databox) {
-                $fetcher = new RecordFetcher($databox);
+                $fetcher = new RecordFetcher($databox, $recordHelper);
                 $fetcher->setBatchSize(200);
                 while ($record = $fetcher->fetch()) {
                     $params = array();
