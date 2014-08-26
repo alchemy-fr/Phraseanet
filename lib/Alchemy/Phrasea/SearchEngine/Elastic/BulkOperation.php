@@ -48,13 +48,12 @@ class BulkOperation
 
     public function index(array $params)
     {
-        $body = igorw\get_in($params, ['body']);
-        unset($params['body']);
-
         $header = array();
-        $header['index'] = $params;
-        $this->stack[] = $header;
-        $this->stack[] = $body;
+        $header['_id']    = igorw\get_in($params, ['id']);
+        $header['_index'] = igorw\get_in($params, ['index']);
+        $header['_type']  = igorw\get_in($params, ['type']);
+        $this->stack[] = ['index' => $header];
+        $this->stack[] = igorw\get_in($params, ['body']);
 
         if ($this->flushLimit === count($this->stack) / 2) {
             $this->flush();
