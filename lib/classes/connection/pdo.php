@@ -9,134 +9,161 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @package     connection
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class connection_pdo extends connection_abstract implements connection_interface
 {
     protected $debug;
+    protected $retryFrequency = 2;
+    protected $retryNumber = 1;
 
-    /**
-     *
-     * @param string  $name
-     * @param string  $hostname
-     * @param int     $port
-     * @param string  $user
-     * @param string  $passwd
-     * @param string  $dbname
-     * @param array   $options
-     * @param Boolean $debug
-     *
-     * @return connection_pdo
-     */
-    public function __construct($name, $hostname, $port, $user, $passwd, $dbname = false, $options = array(), $debug = false)
+    public function __construct($name, $hostname, $port, $user, $password, $databaseName = false, $options = array(), $debug = false)
     {
         $this->debug = $debug;
         $this->name = $name;
-
         $this->credentials['hostname'] = $hostname;
         $this->credentials['port'] = $port;
         $this->credentials['user'] = $user;
-        $this->credentials['password'] = $passwd;
+        $this->credentials['password'] = $password;
+        if ($databaseName) {
+            $this->credentials['dbname'] = $databaseName;
+        }
 
-        if ($dbname)
-            $this->credentials['dbname'] = $dbname;
+        $this->dsn = $this->buildDataSourceName($hostname, $port, $databaseName);
 
-        $this->initConn();
+        $this->connect();
 
         return $this;
     }
 
-    protected function initConn()
+    public function setRetryNumber($retryNumber)
     {
-        $this->connection = null;
-
-        if (isset($this->credentials['dbname']))
-            $dsn = 'mysql:dbname=' . $this->credentials['dbname'] . ';host=' . $this->credentials['hostname'] . ';port=' . $this->credentials['port'] . ';';
-        else
-            $dsn = 'mysql:host=' . $this->credentials['hostname'] . ';port=' . $this->credentials['port'] . ';';
-
-        $this->connection = new \PDO($dsn, $this->credentials['user'], $this->credentials['password'], array());
-
-        $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $this->connection->exec("
-            SET character_set_results = 'utf8', character_set_client = 'utf8',
-            character_set_connection = 'utf8', character_set_database = 'utf8',
-            character_set_server = 'utf8'");
+        $this->retryNumber = $retryNumber;
     }
 
-    /**
-     *
-     * @return void
-     */
-    public function disconnect()
+    public function setRetryFrequency($retryFrequency)
     {
-        $this->connection = null;
+        $this->retryFrequency = $retryFrequency;
     }
 
-    /**
-     *
-     * @return void
-     */
+    public function connect()
+    {
+        // already connected do not reconnect
+        if ($this->ping()) {
+            return;
+        }
+
+        // if disconnected close connection
+        $this->close();
+
+        $tries = $this->retryNumber;
+        $infiniteMode = $this->retryNumber <= 0;
+        $lastException = null;
+
+        do {
+            if (!$infiniteMode) {
+                $tries--;
+            }
+            try {
+                $this->init();
+            } catch (\PDOException $e) {
+                $this->connection = null;
+                $lastException = $e;
+
+                // wait only if there is at least one try remaining or in infinite mode
+                // && connection has not been initialized
+                if ($infiniteMode || (!$infiniteMode && $tries !== 0)) {
+                    sleep($this->retryFrequency);
+                }
+            }
+        } while (!$this->is_connected() && ($infiniteMode || (!$infiniteMode && $tries > 0)));
+
+        if (!$this->is_connected()) {
+            throw new Exception(sprintf('Failed to connect to "%s" database', $this->dsn), 0, $lastException);
+        }
+    }
+
     public function close()
     {
-        connection::close_PDO_connection($this->name);
+        $this->connection = null;
     }
 
     public function __call($method, $args)
     {
-        if (null === $this->connection) {
-            $this->initConn();
-        }
+        $this->init();
 
         if (!method_exists($this->connection, $method)) {
             throw new \BadMethodCallException(sprintf('Method %s does not exist', $method));
         }
 
-        $tries = 0;
-
-        do {
-            $tries++;
-            try {
-                set_error_handler(function ($errno, $errstr) {
-                    if (false !== strpos($errstr, 'Error while sending QUERY packet')) {
-                        throw new \Exception('MySQL server has gone away');
-                    }
-                    throw new \Exception($errstr);
-                });
-
-                if ('prepare' === $method && $this->debug) {
-                    $ret = new connection_pdoStatementDebugger(call_user_func_array(array($this->connection, $method), $args));
-                } else {
-                    $ret = call_user_func_array(array($this->connection, $method), $args);
+        try {
+            set_error_handler(function ($errno, $errstr) {
+                if (false !== strpos($errstr, 'Error while sending QUERY packet')) {
+                    throw new \Exception('MySQL server has gone away');
                 }
-                restore_error_handler();
+                throw new \Exception($errstr);
+            });
 
-                return $ret;
-            } catch (\Exception $e) {
-                restore_error_handler();
+            $returnValue = $this->doMethodCall($method, $args);
 
-                $found = (false !== strpos($e->getMessage(), 'MySQL server has gone away')) || (false !== strpos($e->getMessage(), 'errno=32 Broken pipe'));
-                if ($tries >= 2 || !$found) {
-                    throw $e;
-                }
-                $this->initConn();
+            restore_error_handler();
+
+            return $returnValue;
+        } catch (\Exception $e) {
+            restore_error_handler();
+
+            $unreachable = (false !== strpos($e->getMessage(), 'MySQL server has gone away')) || (false !== strpos($e->getMessage(), 'errno=32 Broken pipe'));
+            if (!$unreachable) {
+                throw $e;
             }
-        } while (true);
+
+            $this->connect();
+        }
+
+        return $this->doMethodCall($method, $args);
     }
 
-    /**
-     *
-     * @param  string         $message
-     * @return connection_pdo
-     */
-    protected function log($message)
+    protected function init()
     {
-        file_put_contents(__DIR__ . '/../../../logs/sql_log.log', $message . "\n", FILE_APPEND);
+        if ($this->is_connected()) {
+            return;
+        }
 
-        return $this;
+        $this->connection = new \PDO($this->dsn, $this->credentials['user'], $this->credentials['password'], array());
+
+        $this->connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $this->connection->exec("
+            SET character_set_results = 'utf8', character_set_client = 'utf8',
+            character_set_connection = 'utf8', character_set_database = 'utf8',
+            character_set_server = 'utf8'
+        ");
+    }
+
+    private function doMethodCall($method, $args)
+    {
+        if ('prepare' === $method) {
+            $pdoStatement = call_user_func_array(array($this->connection, $method), $args);
+
+            $statement = new connection_pdoStatement($pdoStatement);
+
+            // decorate statement with reconnectable statement
+            $statement = new connection_pdoStatementReconnectable($statement, $this);
+
+            if ($this->debug) {
+                // decorate reconnectable statement with debugger one
+                $statement = new connection_pdoStatementDebugger($statement);
+            }
+
+           return $statement;
+        }
+
+        return call_user_func_array(array($this->connection, $method), $args);
+    }
+
+    private function buildDataSourceName($host, $port, $databaseName = null)
+    {
+        if (isset($databaseName)) {
+            return sprintf('mysql:host=%s;port=%s;dbname=%s;', $host, $port, $databaseName);
+        }
+
+        return sprintf('host=%s;port=%s;', $host, $port);
     }
 }

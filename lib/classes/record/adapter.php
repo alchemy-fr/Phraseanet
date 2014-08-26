@@ -1652,6 +1652,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $pathdest = $this->generateSubdefPathname($subdef, $app['filesystem'], $pathdest);
 
             $app['task-manager.logger']->addInfo(sprintf('Generating subdef %s to %s', $subdefname, $pathdest));
+
             $this->generate_subdef($app['media-alchemyst'], $subdef, $pathdest, $app['task-manager.logger']);
 
             if (file_exists($pathdest)) {

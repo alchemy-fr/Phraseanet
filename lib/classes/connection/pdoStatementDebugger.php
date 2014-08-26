@@ -9,24 +9,25 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-class connection_pdoStatementDebugger
-{
-    /**
-     *
-     * @var PDOStatement
-     */
-    protected $statement;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
-    public function __construct(PDOStatement $statement)
+class connection_pdoStatementDebugger implements connection_statement
+{
+    protected $statement;
+    protected $logger;
+
+    public function __construct(\connection_statement $statement, Logger $logger = null)
     {
         $this->statement = $statement;
+        $this->logger = $logger ?: new Logger('sql-query', array(new StreamHandler(__DIR__ . '/../../../logs/mysql_log.log')));
 
         return $this;
+    }
+
+    public function getQueryString()
+    {
+        return $this->statement->getQueryString();
     }
 
     public function execute($params = array())
@@ -38,13 +39,17 @@ class connection_pdoStatementDebugger
         } catch (\Exception $e) {
             $exception = $e;
         }
-        $time = microtime(true) - $start;
-        connection::$log[] = array(
-            'query' => '' . str_replace(array_keys($params), array_values($params), $this->statement->queryString),
-            'time'  => $time
-        );
-        if ($exception instanceof Exception)
+
+        $this->logger->addInfo(sprintf(
+            '%s sec - %s - %s',
+            round(microtime(true) - $start, 4),
+            $exception !== null ? 'ERROR QUERY' : 'OK QUERY',
+            str_replace(array_keys($params), array_values($params), $this->getQueryString())
+        ));
+
+        if ($exception instanceof \Exception) {
             throw $exception;
+        }
 
         return $result;
     }

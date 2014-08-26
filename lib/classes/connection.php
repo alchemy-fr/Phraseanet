@@ -12,174 +12,66 @@
 use Alchemy\Phrasea\Application;
 
 /**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
+ * Pool of PDO connections to phraseanet databoxes and appbox;
  */
 class connection
 {
-    /**
-     *
-     * @var Array
-     */
-    private static $_PDO_instance = array();
+    private static $_PDO_instances = array();
+    private static $_self;
 
-    /**
-     *
-     * @var boolean
-     */
-    private static $_selfinstance;
-
-    /**
-     *
-     * @var Array
-     */
-    public static $log = array();
-    protected $app;
-
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
-    /**
-     *
-     */
-    public function __destruct()
-    {
-        self::printLog($this->app);
-
-        return;
-    }
-
-    /**
-     *
-     * @return Void
-     */
-    public static function printLog(Application $app)
-    {
-        if (!$app['debug']) {
-            return;
-        }
-
-        $totalTime = 0;
-
-        foreach (self::$log as $entry) {
-            $query = $entry['query'];
-            do {
-                $query = str_replace(array("\n", "  "), " ", $query);
-            } while ($query != str_replace(array("\n", "  "), " ", $query));
-
-            $totalTime += $entry['time'];
-            $string = $entry['time'] . "\t" . ' - ' . $query . ' - ' . "\n";
-            file_put_contents(__DIR__ . '/../../logs/mysql_log.log', $string, FILE_APPEND);
-        }
-        $string = count(self::$log) . ' queries - ' . $totalTime
-            . "\nEND OF QUERY " . $_SERVER['PHP_SELF']
-            . "?";
-        foreach ($_GET as $key => $value) {
-            $string .= $key . ' = ' . $value . ' & ';
-        }
-        $string .= "\nPOST datas :\n ";
-        foreach ($_POST as $key => $value) {
-            $string .= "\t\t" . $key . ' = ' . (is_scalar($value) ? $value : 'non-scalar value') . "\n";
-        }
-        $string .= "\n\n\n\n";
-
-        file_put_contents(__DIR__ . '/../../logs/mysql_log.log', $string, FILE_APPEND);
-
-        return;
-    }
-
-    /**
-     *
-     * @return type
-     */
-    protected static function instantiate(Application $app)
-    {
-        if (!self::$_selfinstance)
-            self::$_selfinstance = new self($app);
-
-        return;
-    }
-
-    /**
-     *
-     * @param Application $app
-     * @param string      $name
-     *
-     * @return connection_pdo
-     */
     public static function getPDOConnection(Application $app, $name = null)
     {
-        self::instantiate($app);
-        if (trim($name) == '') {
-            $name = 'appbox';
-        } elseif (is_int((int) $name)) {
-            $name = (int) $name;
-        } else {
+        if (!self::$_self) {
+            self::$_self = new self();
+        }
+        if (null !== $name && !is_numeric($name)) {
             return false;
         }
-
-        if (!isset(self::$_PDO_instance[$name])) {
-            $hostname = $port = $user = $password = $dbname = false;
-
-            $connection_params = array();
-
-            if (trim($name) !== 'appbox') {
-                $connection_params = phrasea::sbas_params($app);
-            } else {
-                $connexion = $app['phraseanet.configuration']['main']['database'];
-
-                $hostname = $connexion['host'];
-                $port = $connexion['port'];
-                $user = $connexion['user'];
-                $password = $connexion['password'];
-                $dbname = $connexion['dbname'];
-            }
-
-            if (isset($connection_params[$name])) {
-                $hostname = $connection_params[$name]['host'];
-                $port = $connection_params[$name]['port'];
-                $user = $connection_params[$name]['user'];
-                $password = $connection_params[$name]['pwd'];
-                $dbname = $connection_params[$name]['dbname'];
-            }
-
-            try {
-                self::$_PDO_instance[$name] = new connection_pdo($name, $hostname, $port, $user, $password, $dbname, array(), $app['debug']);
-            } catch (\Exception $e) {
-                throw new Exception('Connection not available');
-            }
-        }
-        if (array_key_exists($name, self::$_PDO_instance)) {
-            return self::$_PDO_instance[$name];
+        if (null === $name) {
+            $name = 'appbox';
+        } else {
+            $name = (int) $name;
         }
 
-        throw new Exception('Connection not available');
+        if (isset(self::$_PDO_instances[$name]) && self::$_PDO_instances[$name] instanceof \connection_pdo) {
+            return self::$_PDO_instances[$name];
+        }
+
+        $hostname = $port = $user = $password = $databaseName = false;
+
+        if (trim($name) !== 'appbox') {
+            $params = phrasea::sbas_params($app);
+            if (!isset($params[$name])) {
+                throw new \Exception(sprintf('Unknown connection parameters for databox "%s"', $name));
+            }
+            $hostname = $params[$name]['host'];
+            $port = $params[$name]['port'];
+            $user = $params[$name]['user'];
+            $password = $params[$name]['pwd'];
+            $databaseName = $params[$name]['dbname'];
+        } else {
+            $params = $app['phraseanet.configuration']['main']['database'];
+
+            $hostname = $params['host'];
+            $port = $params['port'];
+            $user = $params['user'];
+            $password = $params['password'];
+            $databaseName = $params['dbname'];
+        }
+
+        try {
+            return self::$_PDO_instances[$name] = new \connection_pdo($name, $hostname, $port, $user, $password, $databaseName, array(), $app['debug']);
+        } catch (\Exception $e) {
+            throw new \Exception('Connection not available', 0, $e);
+        }
     }
 
-    /**
-     *
-     * @param  type $name
-     * @return type
-     */
-    public static function close_PDO_connection($name)
+    public function __destruct()
     {
-        if (isset(self::$_PDO_instance[$name])) {
-            self::$_PDO_instance[$name]->disconnect();
-            self::$_PDO_instance[$name] = null;
-            unset(self::$_PDO_instance[$name]);
+        foreach (self::$_PDO_instances as $conn) {
+            $conn->close();
         }
-
-        return;
-    }
-
-    public static function close_connections()
-    {
-        foreach (self::$_PDO_instance as $name => $conn) {
-            self::close_PDO_connection($name);
-        }
+        self::$_PDO_instances = array();
 
         return;
     }

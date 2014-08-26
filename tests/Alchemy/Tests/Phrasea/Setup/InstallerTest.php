@@ -11,56 +11,54 @@ use Alchemy\Phrasea\Core\Configuration\Compiler;
 
 class InstallerTest extends \PHPUnit_Framework_TestCase
 {
-
-    public function setUp()
-    {
-        parent::setUp();
-        \connection::close_connections();
-    }
-
-    public function tearDown()
-    {
-        \connection::close_connections();
-        parent::tearDown();
-    }
-
     public static function tearDownAfterClass()
     {
         $app = new Application('test');
-        \connection::close_connections();
         \phrasea::reset_sbasDatas($app['phraseanet.appbox']);
         \phrasea::reset_baseDatas($app['phraseanet.appbox']);
         parent::tearDownAfterClass();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Setup\Installer
-     */
     public function testInstall()
     {
         $app = new Application('test');
         $app->bindRoutes();
 
         $parser = new Parser();
-        $connDatas = $parser->parse(file_get_contents(__DIR__ . '/../../../../../config/configuration.yml'));
-        $credentials = $connDatas['main']['database'];
+        $config = $parser->parse(file_get_contents(__DIR__ . '/../../../../../config/configuration.yml'));
+        $credentials = $config['main']['database'];
 
-        $config = __DIR__ . '/configuration.yml';
-        $compiled = __DIR__ . '/configuration.yml.php';
+        $configFile = __DIR__ . '/configuration.yml';
+        $compiledFile = __DIR__ . '/configuration.yml.php';
 
-        @unlink($config);
-        @unlink($compiled);
+        @unlink($configFile);
+        @unlink($compiledFile);
 
-        $app['phraseanet.configuration'] = new Configuration(new Yaml(), new Compiler(), $config, $compiled, true);
+        $app['phraseanet.configuration'] = new Configuration(new Yaml(), new Compiler(), $configFile, $compiledFile, true);
+
+        $conn = new \connection_pdo('conn', 'localhost', 3306, $credentials['user'], $credentials['password']);
+        // empty databases
+        $conn->exec('DROP DATABASE IF EXISTS `ab_unitTests`;');
+        $conn->exec('CREATE DATABASE IF NOT EXISTS `ab_unitTests`;');
+        $conn->exec('DROP DATABASE IF EXISTS `db_unitTests`;');
+        $conn->exec('CREATE DATABASE IF NOT EXISTS `db_unitTests`;');
+
+        unset($conn);
 
         $abConn = new \connection_pdo('abConn', 'localhost', 3306, $credentials['user'], $credentials['password'], 'ab_unitTests');
         $dbConn = new \connection_pdo('dbConn', 'localhost', 3306, $credentials['user'], $credentials['password'], 'db_unitTests');
 
-        $template = 'en';
+        // empty databases
+        $stmt = $abConn->prepare('DROP DATABASE ab_unitTests; CREATE DATABASE ab_unitTests');
+        $stmt->execute();
+        $stmt = $abConn->prepare('DROP DATABASE db_unitTests; CREATE DATABASE db_unitTests');
+        $stmt->execute();
+        unset($stmt);
+
         $dataPath = __DIR__ . '/../../../../../datas/';
 
         $installer = new Installer($app);
-        $installer->install('admin@example.com', 'sdfsdsd', $abConn, 'http://local.phrasea.test.installer/', $dataPath, $dbConn, $template);
+        $installer->install('admin@example.com', 'sdfsdsd', $abConn, 'http://local.phrasea.test.installer/', $dataPath, $dbConn, 'en');
 
         \User_Adapter::unsetInstances();
 
@@ -76,7 +74,7 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('key', $conf['main']);
         $this->assertGreaterThan(10, strlen($conf['main']['key']));
 
-        @unlink($config);
-        @unlink($compiled);
+        @unlink($configFile);
+        @unlink($compiledFile);
     }
 }

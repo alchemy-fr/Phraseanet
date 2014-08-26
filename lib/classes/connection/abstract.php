@@ -9,18 +9,16 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 abstract class connection_abstract
 {
-    protected $name;
+    protected $name = null;
+    protected $dsn = null;
     protected $credentials = array();
     protected $multi_db = true;
-    protected $connection;
+    protected $connection = null;
+
+    abstract public function close();
+    abstract public function connect();
 
     public function get_credentials()
     {
@@ -32,10 +30,6 @@ abstract class connection_abstract
         return $this->multi_db;
     }
 
-    /**
-     *
-     * @return string
-     */
     public function get_name()
     {
         return $this->name;
@@ -43,29 +37,35 @@ abstract class connection_abstract
 
     public function ping()
     {
-        if (null === $this->connection) {
-            $this->initConn();
+        if (false === $this->is_connected()) {
+            return false;
         }
 
         try {
             $this->connection->query('SELECT 1');
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             return false;
         }
 
         return true;
     }
 
-    /**
-     *
-     * @return string
-     */
     public function server_info()
     {
-        if (null === $this->connection) {
-            $this->initConn();
+        if (false === $this->ping()) {
+            throw new \Exception('Mysql server is not reachable');
         }
 
         return $this->connection->getAttribute(constant("PDO::ATTR_SERVER_VERSION"));
+    }
+
+    public function __destruct()
+    {
+        $this->close();
+    }
+
+    protected function is_connected()
+    {
+        return $this->connection !== null;
     }
 }
