@@ -69,7 +69,7 @@ define([
         }
 
         if (false === WSConnection.isConnected()) {
-            WSConnection.connect(options.wsurl);
+            // WSConnection.connect(options.wsurl);
         }
 
         create();
