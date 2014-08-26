@@ -15,6 +15,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
+use Elasticsearch\Client;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -46,8 +47,33 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             return $app['phraseanet.SE.engine-class']::createSubscriber($app);
         });
 
-        $app['ES.indexer'] = $app->share(function ($app) {
-            return new Indexer($app['phraseanet.SE'], $app['monolog'], $app['phraseanet.appbox']);
+        $app['elasticsearch.indexer'] = $app->share(function ($app) {
+            return new Indexer(
+                $app['elasticsearch.client'],
+                $app['elasticsearch.options'],
+                $app['monolog'],
+                $app['phraseanet.appbox']
+            );
+        });
+
+        $app['elasticsearch.client'] = $app->share(function($app) {
+            $options = $app['elasticsearch.options'];
+            $host = sprintf('%s:%s', $options['host'], $options['port']);
+
+            return new Client(array('hosts' => array($host)));
+        });
+
+        $app['elasticsearch.options'] = $app->share(function($app) {
+            $options = $app['conf']->get(['main', 'search-engine', 'options']);
+            $defaults = [
+                'host'     => '127.0.0.1',
+                'port'     => 9200,
+                'index'    => 'phraseanet',
+                'shards'   => 3,
+                'replicas' => 0
+            ];
+
+            return array_replace($defaults, $options);
         });
     }
 

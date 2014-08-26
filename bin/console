@@ -14,7 +14,9 @@ namespace KonsoleKommander;
 use Alchemy\Phrasea\Command\Plugin\ListPlugin;
 use Alchemy\Phrasea\Command\Setup\H264ConfigurationDumper;
 use Alchemy\Phrasea\Command\Setup\H264MappingGenerator;
-use Alchemy\Phrasea\Command\SearchEngine\IndexFull;
+use Alchemy\Phrasea\Command\SearchEngine\IndexCreateCommand;
+use Alchemy\Phrasea\Command\SearchEngine\IndexDropCommand;
+use Alchemy\Phrasea\Command\SearchEngine\IndexPopulateCommand;
 use Alchemy\Phrasea\Command\WebsocketServer;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\BuildMissingSubdefs;
@@ -116,7 +118,9 @@ $cli->command(new XSendFileConfigurationDumper());
 $cli->command(new XSendFileMappingGenerator());
 
 if ($cli['phraseanet.SE']->getName() === 'ElasticSearch') {
-    $cli->command(new IndexFull('searchengine:index'));
+    $cli->command(new IndexCreateCommand());
+    $cli->command(new IndexDropCommand());
+    $cli->command(new IndexPopulateCommand());
 }
 
 $cli->command(new WebsocketServer('ws-server:run'));

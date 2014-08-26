@@ -11,57 +11,158 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
+use Elasticsearch\Client;
 use Psr\Log\LoggerInterface;
+use igorw;
 
 class Indexer
 {
+    /** @var Elasticsearch\Client */
+    private $client;
+    private $options;
     private $engine;
     private $logger;
     private $appbox;
 
-    public function __construct(ElasticSearchEngine $engine, LoggerInterface $logger, \appbox $appbox)
+    private $previousRefreshInterval = self::DEFAULT_REFRESH_INTERVAL;
+
+    const DEFAULT_REFRESH_INTERVAL = '1s';
+    const REFRESH_INTERVAL_KEY = 'index.refresh_interval';
+
+    const RECORD_TYPE = 'record';
+
+    public function __construct(Client $client, array $options, LoggerInterface $logger, \appbox $appbox)
     {
-        $this->engine = $engine;
+        $this->client = $client;
+        $this->options = $options;
         $this->logger = $logger;
         $this->appbox = $appbox;
     }
 
-    public function createIndex()
+    public function createIndex($withMapping = true)
     {
-        $indexParams['index'] = $this->engine->getIndexName();
+        $params = array();
+        $params['index'] = $this->options['index'];
+        $params['body']['settings']['number_of_shards'] = $this->options['shards'];
+        $params['body']['settings']['number_of_replicas'] = $this->options['replicas'];
+        if ($withMapping) {
+            $params['body']['mappings'][self::RECORD_TYPE] = $this->getRecordMapping();
+        }
+        $this->client->indices()->create($params);
+    }
 
-        // Index Settings
-        $indexParams['body']['settings']['number_of_shards']   = 3;
-        $indexParams['body']['settings']['number_of_replicas'] = 0;
+    public function updateMapping()
+    {
+        $params = array();
+        $params['index'] = $this->options['index'];
+        $params['type'] = self::RECORD_TYPE;
+        $params['body'][self::RECORD_TYPE] = $this->getRecordMapping();
+        $this->client->indices()->putMapping($params);
+    }
 
-        $captionFields = [];
-        $businessFields = [];
+    public function deleteIndex()
+    {
+        $params = array('index' => $this->options['index']);
+        $this->client->indices()->delete($params);
+    }
 
-        foreach ($this->appbox->get_databoxes() as $databox) {
-            foreach ($databox->get_meta_structure() as $dbField) {
-                $type = 'string';
-                if (\databox_field::TYPE_DATE === $dbField->get_type()) {
-                    $type = 'date';
-                }
-                if (isset($captionFields[$dbField->get_name()]) && $type !== $captionFields[$dbField->get_name()]['type']) {
-                    $type = 'string';
-                }
+    public function indexExists()
+    {
+        $params = array('index' => $this->options['index']);
 
-                $captionFields[$dbField->get_name()] = [
-                    'type'           => $type,
-                    'include_in_all' => !$dbField->isBusiness(),
-                    'analyzer'       => 'french',
-                ];
+        return $this->client->indices()->exists($params);
+    }
 
-                if ($dbField->isBusiness()) {
-                    $businessFields[$dbField->get_name()] = [
-                        'type'           => $type,
-                        'include_in_all' => false,
-                        'analyzer'       => 'french',
-                    ];
+    public function populateIndex()
+    {
+        $this->disableShardRefreshing();
+
+        try {
+            foreach ($this->appbox->get_databoxes() as $databox) {
+                $fetcher = new RecordFetcher($databox);
+                $fetcher->setBatchSize(200);
+                while ($record = $fetcher->fetch()) {
+                    $params = array();
+                    $params['index'] = $this->options['index'];
+                    $params['type'] = self::RECORD_TYPE;
+                    $params['id'] = $record['id'];
+                    $params['body'] = $record;
+                    $response = $this->client->index($params);
                 }
             }
+
+            // Optimize index
+            $params = array('index' => $this->options['index']);
+            $this->client->indices()->optimize($params);
+
+        } catch (Exception $e) {
+            $this->restoreShardRefreshing();
+            throw $e;
         }
+    }
+
+    private function disableShardRefreshing()
+    {
+        $refreshInterval = $this->getSetting(self::REFRESH_INTERVAL_KEY);
+        if (null !== $refreshInterval) {
+            $this->previousRefreshInterval = $refreshInterval;
+        }
+        $this->setSetting(self::REFRESH_INTERVAL_KEY, -1);
+    }
+
+    private function restoreShardRefreshing()
+    {
+        $this->setSetting(self::REFRESH_INTERVAL_KEY, $this->previousRefreshInterval);
+        $this->previousRefreshInterval = self::DEFAULT_REFRESH_INTERVAL;
+    }
+
+    private function getSetting($name)
+    {
+        $index = $this->options['index'];
+        $params = array();
+        $params['index'] = $index;
+        $params['name'] = $name;
+        $params['flat_settings'] = true;
+        $response = $this->client->indices()->getSettings($params);
+
+        return igorw\get_in($response, [$index, 'settings', $name]);
+    }
+
+    private function setSetting($name, $value)
+    {
+        $index = $this->options['index'];
+        $params = array();
+        $params['index'] = $index;
+        $params['body'][$name] = $value;
+        $response = $this->client->indices()->putSettings($params);
+
+        return igorw\get_in($response, ['acknowledged']);
+    }
+
+    private function getRecordMapping()
+    {
+        $mapping = new Mapping();
+        $mapping
+            // Identifiers
+            ->add('record_id', 'integer')  // Compound primary key
+            ->add('databox_id', 'integer') // Compound primary key
+            ->add('base_id', 'integer') // Unique collection ID
+            ->add('collection_id', 'integer') // Useless collection ID (local to databox)
+            ->add('uuid', 'string')->notAnalyzed()
+            ->add('sha256', 'string')->notAnalyzed()
+            // Mandatory metadata
+            ->add('original_name', 'string')->notAnalyzed()
+            ->add('mime', 'string')->notAnalyzed()
+            ->add('type', 'string')->notAnalyzed()
+            // Dates
+            ->add('created_at', 'date')->format('yyyy-MM-dd HH:mm:ss')
+            ->add('updated_at', 'date')->format('yyyy-MM-dd HH:mm:ss')
+        ;
+
+        return $mapping->export();
+
+
+        // TODO Migrate code below this line
 
         $status = [];
         for ($i = 0; $i <= 32; $i ++) {
@@ -236,74 +337,6 @@ class Indexer
             $recordTypeMapping['properties']['caption-business'] = [
                 'properties' => $businessFields
             ];
-        }
-
-        $indexParams['body']['mappings']['record'] = $recordTypeMapping;
-
-        if ($this->engine->getClient()->indices()->exists(['index' => $this->engine->getIndexName()])) {
-            $this->engine->getClient()->indices()->delete(['index' => $this->engine->getIndexName()]);
-        }
-
-        $ret = $this->engine->getClient()->indices()->create($indexParams);
-
-        if (!$this->isResultOk($ret)) {
-            throw new \RuntimeException('Unable to create index');
-        }
-    }
-
-    private function isResultOk(array $ret)
-    {
-        if (isset($ret['acknowledged']) && $ret['acknowledged']) {
-            return true;
-        }
-        if (isset($ret['ok']) && $ret['ok']) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function reindexAll()
-    {
-        $qty = 10;
-
-        $params['index'] = $this->engine->getIndexName();
-        $params['body']['index']['refresh_interval'] = 300;
-
-        $ret = $this->engine->getClient()->indices()->putSettings($params);
-
-        if (!$this->isResultOk($ret)) {
-            $this->logger->error('Unable to set the refresh interval to 300 s. .');
-        }
-
-        foreach ($this->appbox->get_databoxes() as $databox) {
-            $offset = 0;
-            do {
-                $sql = 'SELECT record_id FROM record
-                        WHERE parent_record_id = 0
-                        ORDER BY record_id ASC LIMIT '.$offset.', '.$qty;
-                $stmt = $databox->get_connection()->prepare($sql);
-                $stmt->execute();
-                $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
-
-                foreach ($rows as $row) {
-                    $record = $databox->get_record($row['record_id']);
-                    $this->engine->addRecord($record);
-                }
-
-                gc_collect_cycles();
-                $offset += $qty;
-            } while (count($rows) > 0);
-        }
-
-        $params['index'] = $this->engine->getIndexName();
-        $params['body']['index']['refresh_interval'] = 1;
-
-        $ret = $this->engine->getClient()->indices()->putSettings($params);
-
-        if (!$this->isResultOk($ret)) {
-            throw new \RuntimeException('Unable to set the refresh interval to 1 s. .');
         }
     }
 }
