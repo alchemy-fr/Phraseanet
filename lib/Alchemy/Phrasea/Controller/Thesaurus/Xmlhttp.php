@@ -880,25 +880,6 @@ class Xmlhttp implements ControllerProviderInterface
                 }
             } elseif (strlen($thid) > 1) {
                 $dthid = str_replace('.', 'd', $thid);
-                /*
-                $sql = 'SELECT
-                            SUBSTRING_INDEX(SUBSTR(t.value, ' . ($lthid) . '), \'d\', 1) AS k ,
-                            COUNT(DISTINCT t.record_id) AS n
-                        FROM (thit AS t INNER JOIN record AS r USING(record_id))
-                         INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id
-                        WHERE t.value LIKE :like AND r.coll_id IN('.$lcoll.') AND (r.status^c.mask_xor)&c.mask_and=0
-                        GROUP BY k';
-                if($request->get('debug')) {
-                    $sql2 = "SELECT\n"
-                        . " SUBSTRING_INDEX(SUBSTR(t.value, " . ($lthid) . "), 'd', 1) AS k,\n"
-                        . " COUNT(DISTINCT t.record_id) AS n\n"
-                        . " FROM (thit AS t INNER JOIN record AS r USING(record_id))\n"
-                        . " INNER JOIN collusr AS c ON c.site='".$site."' AND c.usr_id=".$usr_id." AND r.coll_id=c.coll_id\n"
-                        . " WHERE t.value LIKE '".$dthid."d%' AND r.coll_id IN(".$lcoll.") AND (r.status^c.mask_xor)&c.mask_and=0\n"
-                        . " GROUP BY k";
-                    printf("<pre>%s\n\n</pre>", $sql2);
-                }
-                */
                 $sql = 'SELECT
                             \'\' AS k ,
                             COUNT(DISTINCT t.record_id) AS n
