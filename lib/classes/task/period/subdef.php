@@ -210,7 +210,7 @@ class task_period_subdef extends task_databoxAbstract
                     {
                         var f = ["period", "flush", "maxrecs", "maxmegs"];
                         for(var i in f) {
-                            $("INPUT[name='"+f[i]+"'").val(xml.find(f[i]).text());
+                            $("INPUT[name='"+f[i]+"']").val(xml.find(f[i]).text());
                         }
                         var f = ["image", "video", "audio", "document", "flash", "unknown"];
                         for(var i  in f) {
@@ -219,9 +219,9 @@ class task_period_subdef extends task_databoxAbstract
                             if(v == "") {
                                 v = "1";
                             }
-                            $("INPUT[name='type_"+f[i]+"'").attr("checked", !!parseInt(v));
+                            $("INPUT[name='type_"+f[i]+"']").attr("checked", !!parseInt(v));
                         }
-                        $("INPUT[name='embedded'").attr("checked", !!parseInt(xml.find("embedded").text()));
+                        $("INPUT[name='embedded']").attr("checked", !!parseInt(xml.find("embedded").text()));
                         $("SELECT[name='sbas']").children("option[value='"+xml.find("sbas").text()+"']").attr("selected", "selected");
                         $("SELECT[name='recordtype']").children("option[value='"+xml.find("recordtype").text()+"']").attr("selected", "selected");
                     }
