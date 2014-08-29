@@ -10,13 +10,13 @@ class CrossDomainParser
     public function parse($file)
     {
         if (!file_exists($file)) {
-            throw new RuntimeException(sprintf('File "%s" does not exist.'));
+            throw new RuntimeException(sprintf('File "%s" does not exist.', $file));
         }
 
         $xml = simplexml_load_file($file);
 
         if (!$xml) {
-            throw new RuntimeException(sprintf('File "%s" could not be parsed.'));
+            throw new RuntimeException(sprintf('File "%s" could not be parsed.', $file));
         }
 
         $conf = array();
