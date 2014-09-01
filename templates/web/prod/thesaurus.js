@@ -340,7 +340,7 @@ function T_acceptCandidates_OK()
             + j.parm['sbid'] + '\\.'
             + j.parm['id'].replace(new RegExp("\\.", "g"), "\\.");	// escape les '.' pour jquery
 
-          $(z).replaceWith(j.html);
+          $(z).children('ul').eq(0).replaceWith(j.html);
         }
         , "json");
       }
@@ -634,12 +634,7 @@ function Xclick(e)
         {
           if(is_ctrl_key(e))
           {
-            var oldField = ul.attr('field');
-            ul.remove();
-            if(oldField)
-              li.append('<ul field="'+oldField+'">{% trans 'prod::thesaurusTab:tree:loading' %}</ul>');
-            else
-              li.append('<ul>{% trans 'prod::thesaurusTab:tree:loading' %}</ul>');
+            ul.text("{% trans 'prod::thesaurusTab:tree:loading' %}");
             li.removeAttr('loaded');
           }
 
@@ -654,7 +649,8 @@ function Xclick(e)
               zurl += "&sortsy=1";
             $.get(zurl, [], function(j)
             {
-              li.replaceWith(j.html);
+              ul.replaceWith(j.html);
+              li.attr('loaded', '1');
             }
             , "json");
           }

@@ -843,103 +843,24 @@ class Xmlhttp implements ControllerProviderInterface
             $lthid = strlen($thid);
 
             // count occurences
-            if ($lthid == 1) {
+            if ($lthid > 1) {
                 $dthid = str_replace('.', 'd', $thid);
-
-                $sql = 'SELECT COUNT(DISTINCT r.record_id) AS n
-                        FROM (thit AS t INNER JOIN record AS r USING(record_id))
-                         INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id
-                        WHERE t.value LIKE :like AND r.coll_id IN('.$lcoll.') AND (r.status^c.mask_xor)&c.mask_and=0';
-                $sqlparm = array(':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id);
-
-                $stmt = $connbas->prepare($sql);
-                $stmt->execute($sqlparm);
-                $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
-
-                foreach ($rs as $rowbas) {
-                    $t_nrec[$thid] = $rowbas;
-                }
-
-                $sql = 'SELECT
-                            SUBSTRING_INDEX(SUBSTR(t.value, ' . ($lthid + 1) . '), "d", 1) AS k ,
-                            COUNT(DISTINCT t.record_id) AS n
-                        FROM (thit AS t INNER JOIN record AS r USING(record_id))
-                         INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id
-                        WHERE t.value LIKE :like AND r.coll_id IN('.$lcoll.') AND (r.status^c.mask_xor)&c.mask_and=0
-                        GROUP BY k';
-                $sqlparm = array(':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id);
-
-                $stmt = $connbas->prepare($sql);
-                $stmt->execute($sqlparm);
-                $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
-
-                foreach ($rs as $rowbas) {
-                    $t_nrec[$thid . $rowbas['k']] = $rowbas;
-                }
-            } elseif (strlen($thid) > 1) {
-                $dthid = str_replace('.', 'd', $thid);
-                $sql = 'SELECT
-                            \'\' AS k ,
-                            COUNT(DISTINCT t.record_id) AS n
-                        FROM (thit AS t INNER JOIN record AS r USING(record_id))
-                         INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id
-                        WHERE t.value LIKE :like AND r.coll_id IN('.$lcoll.') AND (r.status^c.mask_xor)&c.mask_and=0';
-                if($request->get('debug')) {
-                    $sql2 = "SELECT\n"
-                        . " '' AS k,\n"
-                        . " COUNT(DISTINCT t.record_id) AS n\n"
-                        . " FROM (thit AS t INNER JOIN record AS r USING(record_id))\n"
-                        . " INNER JOIN collusr AS c ON c.site='".$site."' AND c.usr_id=".$usr_id." AND r.coll_id=c.coll_id\n"
-                        . " WHERE t.value LIKE '".$dthid."d%' AND r.coll_id IN(".$lcoll.") AND (r.status^c.mask_xor)&c.mask_and=0\n";
-                    printf("<pre>%s\n\n</pre>", $sql2);
-                }
-
+                $sql = "SELECT"
+                       . " 0+SUBSTR(t.value, " . ($lthid + 2) . ") AS k, COUNT(DISTINCT(`record_id`)) AS n"
+                       . " FROM (thit AS t INNER JOIN record AS r USING(record_id))"
+                       . " INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id"
+                       . " WHERE t.value LIKE :like AND r.coll_id IN(".$lcoll.") AND (r.status^c.mask_xor)&c.mask_and=0"
+                       . " GROUP BY k ORDER BY NULL";
                 $sqlparm = array(':like' => $dthid . 'd%', ':site'=>$site, ':usr_id'=>$usr_id);
 
                 $stmt = $connbas->prepare($sql);
                 $stmt->execute($sqlparm);
-                $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
 
-                foreach ($rs as $rowbas) {
-                    $t_nrec[$thid] = $rowbas;
-                }
-                if($request->get('debug')) {
-                    printf("<pre>%s\n\n</pre>", var_export($t_nrec, true));
-                }
-
-                $sql = 'SELECT k, COUNT(DISTINCT(`record_id`)) AS n FROM (
-                        SELECT
-                            0+SUBSTR(t.value, ' . ($lthid + 2) . ') AS k,
-                            t.record_id
-                        FROM (thit AS t INNER JOIN record AS r USING(record_id))
-                         INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id
-                        WHERE t.value LIKE :like AND r.coll_id IN('.$lcoll.') AND (r.status^c.mask_xor)&c.mask_and=0
-                        ) AS t GROUP BY k';
-                if($request->get('debug')) {
-                    $sql2 = "SELECT k, COUNT(DISTINCT(`record_id`)) AS n FROM (SELECT\n"
-                            . " 0+SUBSTR(t.value, " . ($lthid + 2) . ") AS k,\n"
-                            . " t.record_id\n"
-                        . " FROM (thit AS t INNER JOIN record AS r USING(record_id))\n"
-                        . " INNER JOIN collusr AS c ON c.site='".$site."' AND c.usr_id=".$usr_id." AND r.coll_id=c.coll_id\n"
-                        . " WHERE t.value LIKE '".$dthid."d%' AND r.coll_id IN(".$lcoll.") AND (r.status^c.mask_xor)&c.mask_and=0\n"
-                        . ") AS t GROUP BY k" ;
-                    printf("<pre>%s\n\n</pre>", $sql2);
-                }
-                $sqlparm = array(':like' => $dthid . 'd%', ':site'=>$site, ':usr_id'=>$usr_id);
-
-                $stmt = $connbas->prepare($sql);
-                $stmt->execute($sqlparm);
                 $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
                 $stmt->closeCursor();
 
                 foreach ($rs as $rowbas) {
                     $t_nrec[$thid . '.' . $rowbas['k']] = $rowbas;
-                }
-                if($request->get('debug')) {
-                    printf("<pre>%s\n\n</pre>", var_export($t_nrec, true));
                 }
             }
 
@@ -980,17 +901,6 @@ class Xmlhttp implements ControllerProviderInterface
                     if ($request->get('last')) {
                         $class .= ( $class == '' ? '' : ' ') . 'last';
                     }
-
-                    $html .= '<LI id="' . $request->get('type') . 'X_P.' . $sbid . '.' . $thid . '" class="' . $class . '" loaded="1">' . "\n";
-                    $html .= '  <div class="hitarea expandable-hitarea"></div>' . "\n";
-                    $html .= '  <span>' . $label . '</span>';
-
-                    if (isset($t_nrec[$thid])) {
-                        $html .= ' <I>' . $t_nrec[$thid]['n'] . '</I>';
-                    }
-
-                    $html .= "\n";
-
                     // on dresse la liste des termes specifiques avec comme cle le synonyme dans la langue pivot
                     $nts = 0;
                     $tts = array();
