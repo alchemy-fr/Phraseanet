@@ -12,7 +12,9 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Elasticsearch\Client;
+use Exception;
 use Psr\Log\LoggerInterface;
+use media_subdef;
 use igorw;
 
 class Indexer
@@ -164,23 +166,35 @@ class Indexer
             ->add('mime', 'string')->notAnalyzed()
             ->add('type', 'string')->notAnalyzed()
             // Dates
-            ->add('created_at', 'date')->format('yyyy-MM-dd HH:mm:ss')
-            ->add('updated_at', 'date')->format('yyyy-MM-dd HH:mm:ss')
+            ->add('created_at', 'date')->format(Mapping::DATE_FORMAT_MYSQL)
+            ->add('updated_at', 'date')->format(Mapping::DATE_FORMAT_MYSQL)
         ;
+
+        // Caption mapping
+        $captionMapping = new Mapping();
+        $mapping->add('caption', $captionMapping);
+        $privateCaptionMapping = new Mapping();
+        $mapping->add('private_caption', $privateCaptionMapping);
+        foreach ($this->getRecordFieldsStructure() as $name => $params) {
+            if ($params['private']) {
+                $privateCaptionMapping->add($name, $params['type']);
+                // TODO "include_in_all" = false for business fields ?
+            } else {
+                $captionMapping->add($name, $params['type']);
+            }
+        }
+
+        // EXIF
+        $mapping->add('exif', $this->getRecordExifMapping());
+
+        // Status
+        $mapping->add('flags', $this->getRecordFlagsMapping());
 
         return $mapping->export();
 
 
         // TODO Migrate code below this line
-
-        $status = [];
-        for ($i = 0; $i <= 32; $i ++) {
-            $status['status-'.$i] = [
-                'type' => 'integer',
-            ];
-        }
-
-        $recordTypeMapping = [
+        [
             '_source' => [
                 'enabled' => true
             ],
@@ -206,146 +220,121 @@ class Indexer
                         ]
                     ],
                 ]
-            ],
-            'properties' => [
-                'record_id' => [
-                    'type' => 'integer',
-                    'index' => 'not_analyzed',
-                ],
-                'databox_id' => [
-                    'type' => 'integer',
-                    'index' => 'not_analyzed',
-                ],
-                'base_id' => [
-                    'type' => 'integer',
-                    'index' => 'not_analyzed',
-                ],
-                'mime_type' => [
-                    'type' => 'string',
-                    'index' => 'not_analyzed',
-                ],
-                'title' => [
-                    'type' => 'string',
-                    'index' => 'not_analyzed',
-                ],
-                'original_name' => [
-                    'type' => 'string',
-                    'index' => 'not_analyzed',
-                ],
-                'updated_on' => [
-                    'type' => 'date',
-                    'index' => 'not_analyzed',
-                ],
-                'created_on' => [
-                    'type' => 'date',
-                    'index' => 'not_analyzed',
-                ],
-                'collection_id' => [
-                    'type' => 'integer',
-                    'index' => 'not_analyzed',
-                ],
-                'sha256' => [
-                    'type' => 'string',
-                    'index' => 'not_analyzed',
-                ],
-                'type' => [
-                    'type' => 'string',
-                    'index' => 'not_analyzed',
-                ],
-                'phrasea_type' => [
-                    'type' => 'string',
-                    'index' => 'not_analyzed',
-                ],
-                'uuid' => [
-                    'type' => 'string',
-                    'index' => 'not_analyzed',
-                ],
-                'status' => [
-                    'properties' => $status
-                ],
-                "technical_informations" => [
-                    'properties' => [
-                        \media_subdef::TC_DATA_WIDTH => [
-                            'type' => 'integer'
-                        ],
-                        \media_subdef::TC_DATA_HEIGHT => [
-                            'type' => 'integer'
-                        ],
-                        \media_subdef::TC_DATA_COLORSPACE => [
-                            'type' => 'string'
-                        ],
-                        \media_subdef::TC_DATA_CHANNELS => [
-                            'type' => 'integer'
-                        ],
-                        \media_subdef::TC_DATA_ORIENTATION => [
-                            'type' => 'integer'
-                        ],
-                        \media_subdef::TC_DATA_COLORDEPTH => [
-                            'type' => 'integer'
-                        ],
-                        \media_subdef::TC_DATA_DURATION => [
-                            'type' => 'integer'
-                        ],
-                        \media_subdef::TC_DATA_AUDIOCODEC => [
-                            'type' => 'string'
-                        ],
-                        \media_subdef::TC_DATA_AUDIOSAMPLERATE => [
-                            'type' => 'integer'
-                        ],
-                        \media_subdef::TC_DATA_VIDEOCODEC => [
-                            'type' => 'string'
-                        ],
-                        \media_subdef::TC_DATA_FRAMERATE => [
-                            'type' => 'float'
-                        ],
-                        \media_subdef::TC_DATA_MIMETYPE => [
-                            'type' => 'string'
-                        ],
-                        \media_subdef::TC_DATA_FILESIZE => [
-                            'type' => 'long'
-                        ],
-                        \media_subdef::TC_DATA_LONGITUDE => [
-                            'type' => 'float'
-                        ],
-                        \media_subdef::TC_DATA_LATITUDE => [
-                            'type' => 'float'
-                        ],
-                        \media_subdef::TC_DATA_FOCALLENGTH => [
-                            'type' => 'float'
-                        ],
-                        \media_subdef::TC_DATA_CAMERAMODEL => [
-                            'type' => 'string'
-                        ],
-                        \media_subdef::TC_DATA_FLASHFIRED => [
-                            'type' => 'boolean'
-                        ],
-                        \media_subdef::TC_DATA_APERTURE => [
-                            'type' => 'float'
-                        ],
-                        \media_subdef::TC_DATA_SHUTTERSPEED => [
-                            'type' => 'float'
-                        ],
-                        \media_subdef::TC_DATA_HYPERFOCALDISTANCE => [
-                            'type' => 'float'
-                        ],
-                        \media_subdef::TC_DATA_ISO => [
-                            'type' => 'integer'
-                        ],
-                        \media_subdef::TC_DATA_LIGHTVALUE => [
-                            'type' => 'float'
-                        ],
-                    ]
-                ],
-                "caption" => [
-                    'properties' => $captionFields
-                ],
             ]
         ];
+    }
 
-        if (0 < count ($businessFields)) {
-            $recordTypeMapping['properties']['caption-business'] = [
-                'properties' => $businessFields
-            ];
+    private function getRecordFieldsStructure()
+    {
+        $fields = array();
+
+        foreach ($this->appbox->get_databoxes() as $databox) {
+            printf("Databox %d\n", $databox->get_sbas_id());
+            foreach ($databox->get_meta_structure() as $fieldStructure) {
+                $field = array();
+                // Field type
+                switch ($fieldStructure->get_type()) {
+                    case \databox_field::TYPE_DATE:
+                        $field['type'] = 'date';
+                        break;
+                    case \databox_field::TYPE_NUMBER:
+                        $field['type'] = 'string'; // TODO integer, float, double ?
+                        break;
+                    case \databox_field::TYPE_STRING:
+                    case \databox_field::TYPE_TEXT:
+                        $field['type'] = 'string';
+                        break;
+                    default:
+                        throw new Exception(sprintf('Invalid field type "%s", expected "date", "number" or "string".', $fieldStructure->get_type()));
+                        break;
+                }
+
+                // Business rules
+                $field['private'] = $fieldStructure->isBusiness();
+
+                $name = $fieldStructure->get_name();
+
+                printf("Field \"%s\" <%s> (private: %b)\n", $name, $field['type'], $field['private']);
+
+                // Since mapping is merged between databoxes, two fields may
+                // have conflicting names. Indexing is the same for a given
+                // type so we reject only thoose with different types.
+                if (isset($fields[$name])) {
+                    if ($fields[$name]['type'] !== $field['type']) {
+                        throw new Exception('Databox mapping can not be merged, incompatible field types');
+                    }
+                    // TODO other structure incompatibilities
+
+                    printf("Merged with previous \"%s\" field\n", $name);
+                }
+
+                $fields[$name] = $field;
+            }
         }
+
+        return $fields;
+    }
+
+    private function getRecordExifMapping()
+    {
+        $mapping = new Mapping();
+        $mapping
+            ->add(media_subdef::TC_DATA_WIDTH, 'integer')
+            ->add(media_subdef::TC_DATA_HEIGHT, 'integer')
+            ->add(media_subdef::TC_DATA_COLORSPACE, 'string')->notAnalyzed()
+            ->add(media_subdef::TC_DATA_CHANNELS, 'integer')
+            ->add(media_subdef::TC_DATA_ORIENTATION, 'integer')
+            ->add(media_subdef::TC_DATA_COLORDEPTH, 'integer')
+            ->add(media_subdef::TC_DATA_DURATION, 'integer')
+            ->add(media_subdef::TC_DATA_AUDIOCODEC, 'string')->notAnalyzed()
+            ->add(media_subdef::TC_DATA_AUDIOSAMPLERATE, 'integer')
+            ->add(media_subdef::TC_DATA_VIDEOCODEC, 'string')->notAnalyzed()
+            ->add(media_subdef::TC_DATA_FRAMERATE, 'float')
+            ->add(media_subdef::TC_DATA_MIMETYPE, 'string')->notAnalyzed()
+            ->add(media_subdef::TC_DATA_FILESIZE, 'long')
+            // TODO use geo point type for lat/long
+            ->add(media_subdef::TC_DATA_LONGITUDE, 'float')
+            ->add(media_subdef::TC_DATA_LATITUDE, 'float')
+            ->add(media_subdef::TC_DATA_FOCALLENGTH, 'float')
+            ->add(media_subdef::TC_DATA_CAMERAMODEL, 'string')
+            ->add(media_subdef::TC_DATA_FLASHFIRED, 'boolean')
+            ->add(media_subdef::TC_DATA_APERTURE, 'float')
+            ->add(media_subdef::TC_DATA_SHUTTERSPEED, 'float')
+            ->add(media_subdef::TC_DATA_HYPERFOCALDISTANCE, 'float')
+            ->add(media_subdef::TC_DATA_ISO, 'integer')
+            ->add(media_subdef::TC_DATA_LIGHTVALUE, 'float')
+        ;
+
+        return $mapping;
+    }
+
+    private function getRecordFlagsMapping()
+    {
+        $mapping = new Mapping();
+        $seen = array();
+
+        foreach ($this->appbox->get_databoxes() as $databox) {
+            foreach ($databox->get_statusbits() as $bit => $status) {
+                $key = self::normalizeFlagKey($status['labelon']);
+                // We only add to mapping new statuses
+                if (!in_array($key, $seen)) {
+                    $mapping->add($key, 'boolean');
+                    $seen[] = $key;
+                }
+            }
+        }
+
+        return $mapping;
+    }
+
+    private static function normalizeFlagKey($key)
+    {
+        $key = normalizer_normalize($key);
+        $key = preg_replace('/[^A-Za-z1-9]/', '_', $key);
+        $key = preg_replace('/_+/', '_', $key);
+        $key = strtolower($key);
+        $key = trim($key, '_');
+
+        return $key;
     }
 }
