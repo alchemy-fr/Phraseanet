@@ -641,8 +641,9 @@ class module_report_activity extends module_report
                         INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                         WHERE log.site = :site_id
                         AND log_date.action = 'download'
-                        AND (" . $datefilter['sql'] . ")
-                        AND (" . $collfilter['sql'] . ")
+                        AND (" . $datefilter['sql'] . ")" .
+                        (('' !== $collfilter['sql']) ?  "AND (" . $collfilter['sql'] . ")" : '')
+                        . "
                 ) AS tt
                 LEFT JOIN subdef AS s ON (s.record_id = tt.record_id)
                 WHERE s.name = tt.final
@@ -715,9 +716,9 @@ class module_report_activity extends module_report
                 SELECT DISTINCT(log_date.id), log_date.date AS heures
                 FROM log AS log_date FORCE INDEX (date_site)
                 INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
-                WHERE " . $datefilter['sql'] . "
-                AND " . $collfilter['sql'] . "
-                AND log_date.site = :site_id
+                WHERE " . $datefilter['sql'] . "" .
+                (('' !== $collfilter['sql']) ?  "AND (" . $collfilter['sql'] . ")" : '')
+                . " AND log_date.site = :site_id
             ) AS tt";
 
         $stmt = $conn->prepare($sql);
@@ -747,12 +748,10 @@ class module_report_activity extends module_report
     {
         $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
         $conn = $databox->get_connection();
-        $result = [];
-        $res = [];
-        $datefilter =
-            module_report_sqlfilter::constructDateFilter($dmin, $dmax);
-        $collfilter =
-            module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
+        $result = array();
+        $res = array();
+        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+        $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
         $params = [':site_id' => $app['conf']->get(['main', 'key'])];
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
@@ -763,9 +762,9 @@ class module_report_activity extends module_report
                 SELECT DISTINCT(log_date.id), DATE_FORMAT( log_date.date, '%Y-%m-%d' ) AS ddate
                 FROM log AS log_date FORCE INDEX (date_site) INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
                 WHERE " . $datefilter['sql'] . "
-                AND log_date.site = :site_id
-                AND (" . $collfilter['sql'] . ")
-            ) AS tt
+                AND log_date.site = :site_id" .
+                (('' !== $collfilter['sql']) ?  (" AND (" . $collfilter['sql'] . ")") : '')
+            . ") AS tt
             GROUP by  tt.ddate
             ORDER BY  tt.ddate ASC";
 
@@ -807,9 +806,9 @@ class module_report_activity extends module_report
                     INNER JOIN log AS log_date FORCE INDEX (date_site) ON (log_search.log_id = log_date.id)
                     INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
                 WHERE " . $datefilter['sql'] . "
-                AND log_date.site = :site_id
-                AND (" . $collfilter['sql'] . ")
-            ) AS tt
+                AND log_date.site = :site_id" .
+                (('' !== $collfilter['sql']) ?  " AND (" . $collfilter['sql'] . ")" : '')
+            . ") AS tt
             GROUP BY tt.usrid
             ORDER BY nb DESC";
 
@@ -848,9 +847,9 @@ class module_report_activity extends module_report
                     INNER JOIN log AS log_date FORCE INDEX (date_site) ON (log_search.log_id = log_date.id)
                     INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
                 WHERE " . $datefilter['sql'] . "
-                AND log_date.site = :site_id
-                AND (" . $collfilter['sql'] . ")
-            ) AS tt
+                AND log_date.site = :site_id" .
+                (('' !== $collfilter['sql']) ?  " AND (" . $collfilter['sql'] . ")" : '')
+            . ") AS tt
             GROUP BY tt.search
             ORDER BY nb DESC";
 
@@ -889,9 +888,9 @@ class module_report_activity extends module_report
                 FROM (log_view)
                     INNER JOIN log AS log_date FORCE INDEX (date_site) ON (log_view.log_id = log_date.id)
                     INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
-                WHERE " . $datefilter['sql'] . "
-                AND (" . $collfilter['sql'] . ")
-            ) AS tt
+                WHERE " . $datefilter['sql'] . "" .
+                (('' !== $collfilter['sql']) ?  " AND (" . $collfilter['sql'] . ")" : '')
+            . ") AS tt
             GROUP BY referrer
             ORDER BY nb_view DESC ";
 
@@ -933,8 +932,9 @@ class module_report_activity extends module_report
                 FROM (log_docs AS log_date)
                     INNER JOIN log FORCE INDEX (date_site) ON (log_date.log_id = log.id)
                     INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                WHERE " . $datefilter['sql'] . " AND log_date.action = 'add'
-                AND (" . $collfilter['sql'] . ")
+                WHERE " . $datefilter['sql'] . " AND log_date.action = 'add' " .
+            (('' !== $collfilter['sql']) ?  " AND (" . $collfilter['sql'] . ")" : '')
+                . "
             ) AS tt
             GROUP BY tt.ddate
             ORDER BY activity ASC ";
@@ -969,9 +969,9 @@ class module_report_activity extends module_report
                 FROM (log_docs AS log_date)
                     INNER JOIN log FORCE INDEX (date_site) ON (log_date.log_id = log.id)
                     INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                WHERE " . $datefilter['sql'] . " AND log_date.action = 'edit'
-                AND (" . $collfilter['sql'] . ")
-            ) AS tt
+                WHERE " . $datefilter['sql'] . " AND log_date.action = 'edit'" .
+                (('' !== $collfilter['sql']) ?  " AND (" . $collfilter['sql'] . ")" : '')
+            . ") AS tt
             GROUP BY tt.ddate
             ORDER BY activity ASC ";
 
@@ -1006,9 +1006,9 @@ class module_report_activity extends module_report
                 FROM (log_docs AS log_date)
                 INNER JOIN log FORCE INDEX (date_site) ON (log_date.log_id = log.id)
                 INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                WHERE " . $datefilter['sql'] . " AND log_date.action = 'add'
-                AND (" . $collfilter['sql'] . ")
-            ) AS tt
+                WHERE " . $datefilter['sql'] . " AND log_date.action = 'add'" .
+                (('' !== $collfilter['sql']) ?  " AND (" . $collfilter['sql'] . ")" : '')
+            . ") AS tt
             GROUP BY tt.usrid
             ORDER BY nb ASC ";
 

@@ -44,6 +44,7 @@ class Xmlhttp implements ControllerProviderInterface
         $controllers->match('openbranch_prod.j.php', 'controller.thesaurus.xmlhttp:OpenBranchJson');
         $controllers->match('openbranches_prod.h.php', 'controller.thesaurus.xmlhttp:OpenBranchesHtml');
         $controllers->match('openbranches_prod.x.php', 'controller.thesaurus.xmlhttp:OpenBranchesXml');
+        $controllers->match('openbranches_prod.j.php', 'controller.thesaurus.xmlhttp:OpenBranchesJson');
         $controllers->match('replacecandidate.j.php', 'controller.thesaurus.xmlhttp:ReplaceCandidateJson')
             ->before(function () use ($app) {
                 $app['firewall']->requireAccessToModule('thesaurus');
@@ -772,72 +773,19 @@ class Xmlhttp implements ControllerProviderInterface
             $lthid = strlen($thid);
 
             // count occurences
-            if ($lthid == 1) {
+            if ($lthid > 1) {
                 $dthid = str_replace('.', 'd', $thid);
-
-                $sql = 'SELECT COUNT(DISTINCT r.record_id) AS n
-                        FROM (thit AS t INNER JOIN record AS r USING(record_id))
-                         INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id
-                        WHERE t.value LIKE :like AND r.coll_id IN('.$lcoll.') AND (r.status^c.mask_xor)&c.mask_and=0';
-                $sqlparm = [':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id];
-
-                $stmt = $connbas->prepare($sql);
-                $stmt->execute($sqlparm);
-                $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
-
-                foreach ($rs as $rowbas) {
-                    $t_nrec[$thid] = $rowbas;
-                }
-
-                $sql = 'SELECT
-                            SUBSTRING_INDEX(SUBSTR(t.value, ' . ($lthid + 1) . '), "d", 1) AS k ,
-                            COUNT(DISTINCT t.record_id) AS n
-                        FROM (thit AS t INNER JOIN record AS r USING(record_id))
-                         INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id
-                        WHERE t.value LIKE :like AND r.coll_id IN('.$lcoll.') AND (r.status^c.mask_xor)&c.mask_and=0
-                        GROUP BY k';
-                $sqlparm = [':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id];
-
-                $stmt = $connbas->prepare($sql);
-                $stmt->execute([':like' => $dthid . '%']);
-                $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
-
-                foreach ($rs as $rowbas) {
-                    $t_nrec[$thid . $rowbas['k']] = $rowbas;
-                }
-            } elseif (strlen($thid) > 1) {
-                $dthid = str_replace('.', 'd', $thid);
-                $sql = 'SELECT
-                            SUBSTRING_INDEX(SUBSTR(t.value, ' . ($lthid) . '), \'d\', 1) AS k ,
-                            COUNT(DISTINCT t.record_id) AS n
-                        FROM (thit AS t INNER JOIN record AS r USING(record_id))
-                         INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id
-                        WHERE t.value LIKE :like AND r.coll_id IN('.$lcoll.') AND (r.status^c.mask_xor)&c.mask_and=0
-                        GROUP BY k';
-                $sqlparm = [':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id];
+                $sql = "SELECT"
+                       . " 0+SUBSTR(t.value, " . ($lthid + 2) . ") AS k, COUNT(DISTINCT(`record_id`)) AS n"
+                       . " FROM (thit AS t INNER JOIN record AS r USING(record_id))"
+                       . " INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id"
+                       . " WHERE t.value LIKE :like AND r.coll_id IN(".$lcoll.") AND (r.status^c.mask_xor)&c.mask_and=0"
+                       . " GROUP BY k ORDER BY NULL";
+                $sqlparm = array(':like' => $dthid . 'd%', ':site'=>$site, ':usr_id'=>$usr_id);
 
                 $stmt = $connbas->prepare($sql);
                 $stmt->execute($sqlparm);
-                $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
 
-                foreach ($rs as $rowbas) {
-                    $t_nrec[$thid] = $rowbas;
-                }
-
-                $sql = 'SELECT
-                            SUBSTRING_INDEX(SUBSTR(t.value, ' . ($lthid + 2) . '), \'d\', 1) AS k ,
-                            COUNT(DISTINCT t.record_id) AS n
-                        FROM (thit AS t INNER JOIN record AS r USING(record_id))
-                         INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id
-                        WHERE t.value LIKE :like AND r.coll_id IN('.$lcoll.') AND (r.status^c.mask_xor)&c.mask_and=0
-                        GROUP BY k';
-                $sqlparm = [':like' => $dthid . '%', ':site'=>$site, ':usr_id'=>$usr_id];
-
-                $stmt = $connbas->prepare($sql);
-                $stmt->execute($sqlparm);
                 $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
                 $stmt->closeCursor();
 
@@ -879,17 +827,6 @@ class Xmlhttp implements ControllerProviderInterface
                     if ($request->get('last')) {
                         $class .= ( $class == '' ? '' : ' ') . 'last';
                     }
-
-                    $html .= '<LI id="' . $request->get('type') . 'X_P.' . $sbid . '.' . $thid . '" class="' . $class . '" loaded="1">' . "\n";
-                    $html .= '  <div class="hitarea expandable-hitarea"></div>' . "\n";
-                    $html .= '  <span>' . $label . '</span>';
-
-                    if (isset($t_nrec[$thid])) {
-                        $html .= ' <I>' . $t_nrec[$thid]['n'] . '</I>';
-                    }
-
-                    $html .= "\n";
-
                     // on dresse la liste des termes specifiques avec comme cle le synonyme dans la langue pivot
                     $nts = 0;
                     $tts = [];
@@ -1165,6 +1102,92 @@ class Xmlhttp implements ControllerProviderInterface
         }
     }
 
+    public function OpenBranchesJson(Application $app, Request $request)
+    {
+        if ('' === ($mod = strtoupper($request->get('mod')))) {
+            $mod = 'TREE';
+        }
+
+        $ret = array(
+            'parms'=> array(
+                'bid'   => $request->get('bid'),
+                't'     => $request->get('t'),
+                'mod'   => $request->get('mod'),
+                'debug' => $request->get('debug')
+            ),
+            'result'=>NULL,
+            'error'=>'',
+            'error_code'=>0,
+        );
+
+        if (null === ($bid = $request->get('bid'))) {
+            $ret['error'] = 'Missing bid parameter';
+            $ret['error_code'] = 400;
+
+            return json_encode($ret);
+        }
+        if ($mod != 'TREE' && $mod != "LIST") {
+            $ret['error'] = 'bad mod, TREE|LIST';
+            $ret['error_code'] = 400;
+
+            return json_encode($ret);
+        }
+
+
+ $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+        $dom = $databox->get_dom_thesaurus();
+
+        if (!$dom) {
+            $ret['error'] = 'Unable to load thesaurus';
+            $ret['error_code'] = 500;
+
+            return json_encode($ret);
+        }
+
+        $xpath = $databox->get_xpath_thesaurus();
+        $q = '/thesaurus';
+
+        if (($znode = $xpath->query($q)->item(0))) {
+            $q2 = '//sy';
+            if ($request->get('t')) {
+                $t = $this->splitTermAndContext($request->get('t'));
+                $q2 = 'starts-with(@w, \'' . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($t[0])) . '\')';
+                if ($t[1])
+                    $q2 .= ' and starts-with(@k, \'' . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($t[1])) . '\')';
+                $q2 = '//sy[' . $q2 . ']';
+            }
+            $nodes = $xpath->query($q2, $znode);
+            if ($mod == 'TREE') {
+                for ($i = 0; $i < $nodes->length; $i++) {
+                    $nodes->item($i)->setAttribute('bold', '1');
+                    for ($n = $nodes->item($i)->parentNode; $n && $n->nodeType == XML_ELEMENT_NODE && $n->nodeName == 'te'; $n = $n->parentNode) {
+                        $n->setAttribute('open', '1');
+                    }
+                }
+                $ret['result'] = $this->getBrancheJson($bid, $znode, $ret['result'], 0);
+            } else {
+                $ret['result'] = array();
+                for ($i = 0; $i < $nodes->length; $i++) {
+                    $n = $nodes->item($i);
+                    $t = $n->getAttribute('v');
+                    $tid = $n->getAttribute('id');
+
+                    $ret['result'][] = array(
+                        'id' => $n->getAttribute('id'),
+                        't'  => $n->getAttribute('v'),
+                    );
+                }
+            }
+        }
+        if($request->get('debug')) {
+            printf("<pre>%s</pre>", var_export($ret, true));
+            // printf("<pre>%s</pre>", json_encode($ret, JSON_PRETTY_PRINT));
+            die;
+        }
+        return json_encode($ret, JSON_PRETTY_PRINT);
+    }
+
+
     public function OpenBranchesXml(Application $app, Request $request)
     {
         if (null === $mod = $request->get('mod')) {
@@ -1233,7 +1256,44 @@ class Xmlhttp implements ControllerProviderInterface
             $html->appendChild($ret->createTextNode($zhtml));
         }
 
-        return new Response($zhtml, 200, ['Content-Type' => 'text/xml']);
+        return new Response($zhtml, 200, array('Content-Type' => 'text/xml'));
+    }
+
+    private function getBrancheJson($bid, $srcnode, &$ret, $depth)
+    {
+        $tid = $srcnode->getAttribute('id');
+        $nts = 0;
+        $allsy = array();
+        for ($n = $srcnode->firstChild; $n; $n = $n->nextSibling) {
+            if ($n->nodeName == 'sy') {
+                $t = $n->getAttribute('v');
+                $allsy[] = array(
+                    'id' => $n->getAttribute('id'),
+                    't'  => $t,
+                    'lng' => $n->getAttribute('lng'),
+                    'bold' => (bool)$n->getAttribute('bold'),
+                );
+            } elseif ($n->nodeName == 'te') {
+                $nts++;
+            }
+        }
+
+        $nret = array(
+            'id' => $tid,
+            'nts' => $nts,
+            'synonyms' => $allsy,
+            'children' => array(),
+        );
+
+        for ($n = $srcnode->firstChild; $n; $n = $n->nextSibling) {
+            if ($n->nodeName == 'te') {
+                if ($n->getAttribute('open')) {
+                    $nret['children'][] = $this->getBrancheJson($bid, $n, $ret['children'], $depth + 1);
+                }
+            }
+        }
+
+        return $nret;
     }
 
     private function getBrancheXML($bid, $srcnode, &$html, $depth)

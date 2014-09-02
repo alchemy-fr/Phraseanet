@@ -34,7 +34,6 @@ class Installer
         $this->rollbackInstall($abConn, $dbConn);
 
         try {
-
             $this->createConfigFile($abConn, $serverName, $binaryData);
             $this->createAB();
             $this->populateRegistryData($serverName, $dataPath, $binaryData);
@@ -134,7 +133,7 @@ class Installer
 
         foreach ($appbox->tables->table as $table) {
             try {
-                $sql = 'DROP TABLE `' . $table['name'] . '`';
+                $sql = 'DROP TABLE IF EXISTS `' . $table['name'] . '`';
                 $stmt = $abConn->prepare($sql);
                 $stmt->execute();
                 $stmt->closeCursor();
@@ -145,7 +144,7 @@ class Installer
         if (null !== $dbConn) {
             foreach ($databox->tables->table as $table) {
                 try {
-                    $sql = 'DROP TABLE `' . $table['name'] . '`';
+                    $sql = 'DROP TABLE IF EXISTS `' . $table['name'] . '`';
                     $stmt = $dbConn->prepare($sql);
                     $stmt->execute();
                     $stmt->closeCursor();
