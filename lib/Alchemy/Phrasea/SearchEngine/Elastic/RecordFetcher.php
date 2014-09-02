@@ -71,15 +71,20 @@ class RecordFetcher
                 $record = $row;
                 $record['exif'] = array();
                 $record['caption'] = array();
+                $record['private_caption'] = array();
                 // Cleanup query metadata
-                unset($record['metadata_type']);
                 unset($record['metadata_key']);
                 unset($record['metadata_value']);
+                unset($record['metadata_type']);
+                unset($record['metadata_private']);
             }
 
             // Store metadata value
-            $type = $row['metadata_type'];
             $key = $row['metadata_key'];
+            $type = $row['metadata_type'];
+            if ($row['metadata_private']) {
+                $type = 'private_'.$type;
+            }
             // Metadata can be multi-valued
             if (!isset($record[$type][$key])) {
                 $record[$type][$key] = $row['metadata_value'];
@@ -139,20 +144,21 @@ class RecordFetcher
                          , r.type
                          , r.credate as created_at
                          , r.moddate as updated_at
-                         , m.metadata_type
                          , m.metadata_key
                          , m.metadata_value
+                         , m.metadata_type
+                         , m.metadata_private
                     FROM (
                         SELECT * FROM record r
                         WHERE r.parent_record_id = 0 -- Only records, not stories
                         LIMIT :offset, :limit
                     ) AS r
                     LEFT JOIN (
-                        SELECT record_id, ms.name AS metadata_key, m.value AS metadata_value, \'caption\' AS metadata_type
+                        SELECT record_id, ms.name AS metadata_key, m.value AS metadata_value, \'caption\' AS metadata_type, ms.business AS metadata_private
                         FROM metadatas AS m
                         INNER JOIN metadatas_structure AS ms ON (ms.id=m.meta_struct_id)
                         UNION
-                        SELECT record_id, t.name AS metadata_key, t.value AS metadata_value, \'exif\' AS metadata_type
+                        SELECT record_id, t.name AS metadata_key, t.value AS metadata_value, \'exif\' AS metadata_type, 0 AS metadata_private
                         FROM technical_datas AS t
                     ) AS m USING(record_id)
                     ORDER BY r.record_id ASC';
