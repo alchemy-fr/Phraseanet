@@ -69,9 +69,6 @@ class RecordFetcher
             } else {
                 // Keep this row as record data
                 $record = $row;
-                $record['exif'] = array();
-                $record['caption'] = array();
-                $record['private_caption'] = array();
                 // Cleanup query metadata
                 unset($record['metadata_key']);
                 unset($record['metadata_value']);
