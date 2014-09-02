@@ -24,6 +24,7 @@ class RecordFetcher
     private $offset = 0;
     private $batchSize = 1;
     private $needsFetch = true;
+    private $currentRow;
 
     private $databoxId;
 
@@ -42,11 +43,54 @@ class RecordFetcher
         if ($this->needsFetch) {
             $statement->execute();
             $this->needsFetch = false;
-            printf("Query %d/%d -> %d results\n", $this->offset, $this->batchSize, $statement->rowCount());
+            printf("Query %d/%d -> %d rows\n", $this->offset, $this->batchSize, $statement->rowCount());
         }
 
-        if ($record = $statement->fetch()) {
-            // printf("Record found (#%d)\n", $record['id']);
+        $record = null;
+
+        while (true) {
+            // Get a row
+            if ($this->currentRow) {
+                $row = $this->currentRow;
+                $this->currentRow = null;
+            } else {
+                $row = $statement->fetch();
+            }
+            // End of data
+            if (!$row) {
+                break;
+            }
+            if ($record) {
+                // This row belongs to the next record, keep row for next call
+                if ($row['record_id'] !== $record['record_id']) {
+                    $this->currentRow = $row;
+                    break;
+                }
+            } else {
+                // Keep this row as record data
+                $record = $row;
+                $record['exif'] = array();
+                $record['caption'] = array();
+                // Cleanup query metadata
+                unset($record['metadata_type']);
+                unset($record['metadata_key']);
+                unset($record['metadata_value']);
+            }
+
+            // Store metadata value
+            $type = $row['metadata_type'];
+            $key = $row['metadata_key'];
+            // Metadata can be multi-valued
+            if (!isset($record[$type][$key])) {
+                $record[$type][$key] = $row['metadata_value'];
+            } else {
+                $record[$type][$key] = array($record[$type][$key]);
+                $record[$type][$key][] = $row['metadata_value'];
+            }
+        }
+
+        if ($record) {
+            printf("Record found (#%d)\n", $record['record_id']);
             $record = $this->hydrate($record);
             $this->offset++;
         } else {
@@ -86,20 +130,33 @@ class RecordFetcher
     private function statement()
     {
         if (!$this->statement) {
-            $sql = 'SELECT
-                        record_id,
-                        coll_id as collection_id,
-                        uuid,
-                        sha256,
-                        originalname as original_name,
-                        mime,
-                        type,
-                        credate as created_at,
-                        moddate as updated_at
-                    FROM record
-                    WHERE parent_record_id = 0 -- Only records, not stories
-                    ORDER BY record_id ASC
-                    LIMIT :offset, :limit;';
+            $sql = 'SELECT r.record_id
+                         , r.coll_id as collection_id
+                         , r.uuid
+                         , r.sha256 -- TODO rename in "hash"
+                         , r.originalname as original_name
+                         , r.mime
+                         , r.type
+                         , r.credate as created_at
+                         , r.moddate as updated_at
+                         , m.metadata_type
+                         , m.metadata_key
+                         , m.metadata_value
+                    FROM (
+                        SELECT * FROM record r
+                        WHERE r.parent_record_id = 0 -- Only records, not stories
+                        LIMIT :offset, :limit
+                    ) AS r
+                    LEFT JOIN (
+                        SELECT record_id, ms.name AS metadata_key, m.value AS metadata_value, \'caption\' AS metadata_type
+                        FROM metadatas AS m
+                        INNER JOIN metadatas_structure AS ms ON (ms.id=m.meta_struct_id)
+                        UNION
+                        SELECT record_id, t.name AS metadata_key, t.value AS metadata_value, \'exif\' AS metadata_type
+                        FROM technical_datas AS t
+                    ) AS m USING(record_id)
+                    ORDER BY r.record_id ASC';
+
             $statement = $this->connection->prepare($sql);
             $statement->bindParam(':offset', $this->offset, PDO::PARAM_INT);
             $statement->bindParam(':limit', $this->batchSize, PDO::PARAM_INT);
