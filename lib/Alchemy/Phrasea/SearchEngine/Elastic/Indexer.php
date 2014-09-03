@@ -328,11 +328,18 @@ class Indexer
 
     private static function normalizeFlagKey($key)
     {
-        $key = normalizer_normalize($key);
-        $key = preg_replace('/[^A-Za-z1-9]/', '_', $key);
-        $key = preg_replace('/_+/', '_', $key);
-        $key = strtolower($key);
+        // Replace non letter or digits by _
+        $key = preg_replace('/[^\\pL\d]+/u', '_', $key);
         $key = trim($key, '_');
+
+        // Transliterate
+        if (function_exists('iconv')) {
+            $key = iconv('UTF-8', 'ASCII//TRANSLIT', $key);
+        }
+
+        // Remove non wording characters
+        $key = preg_replace('/[^-\w]+/', '', $key);
+        $key = strtolower($key);
 
         return $key;
     }
