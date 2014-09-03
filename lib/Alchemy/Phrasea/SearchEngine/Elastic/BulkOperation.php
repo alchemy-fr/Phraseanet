@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Exception;
 use Elasticsearch\Client;
 use igorw;
 
@@ -76,7 +77,16 @@ class BulkOperation
         }
         $params['body'] = $this->stack;
         printf("ES Bulk query with %d items\n", count($this->stack) / 2);
-        $this->client->bulk($params);
+        $response = $this->client->bulk($params);
         $this->stack = array();
+
+        if (igorw\get_in($response, ['errors'], true)) {
+            // foreach ($response['items'] as $key => $item) {
+            //     if ($item['index']['status'] >= 400) { // 4xx or 5xx error
+            //         printf($key, $item['index']['error']);
+            //     }
+            // }
+            throw new Exception('Errors occurred during bulk indexing request, index may be in an iconsistent state');
+        }
     }
 }
