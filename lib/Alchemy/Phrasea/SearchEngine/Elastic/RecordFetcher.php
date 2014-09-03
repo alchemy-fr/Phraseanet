@@ -77,18 +77,25 @@ class RecordFetcher
             }
 
             // Store metadata value
+            $value = $row['metadata_value'];
             $key = $row['metadata_key'];
             $type = $row['metadata_type'];
+
+            // Do not keep empty values
+            if (empty($value)) {
+                continue;
+            }
+
             if ($row['metadata_private']) {
                 $type = 'private_'.$type;
             }
             // Metadata can be multi-valued
             if (!isset($record[$type][$key])) {
-                $record[$type][$key] = $row['metadata_value'];
+                $record[$type][$key] = $value;
             } elseif (is_array($record[$type][$key])) {
-                $record[$type][$key][] = $row['metadata_value'];
+                $record[$type][$key][] = $value;
             } else {
-                $record[$type][$key] = array($record[$type][$key], $row['metadata_value']);
+                $record[$type][$key] = array($record[$type][$key], $value);
             }
         }
 

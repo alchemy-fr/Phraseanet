@@ -176,11 +176,10 @@ class Indexer
         $privateCaptionMapping = new Mapping();
         $mapping->add('private_caption', $privateCaptionMapping);
         foreach ($this->getRecordFieldsStructure() as $name => $params) {
-            if ($params['private']) {
-                $privateCaptionMapping->add($name, $params['type']);
-                // TODO "include_in_all" = false for business fields ?
-            } else {
-                $captionMapping->add($name, $params['type']);
+            $m = $params['private'] ? $privateCaptionMapping : $captionMapping;
+            $m->add($name, $params['type']);
+            if ($params['type'] === Mapping::TYPE_DATE) {
+                $m->format(Mapping::DATE_FORMAT_CAPTION);
             }
         }
 
@@ -285,7 +284,7 @@ class Indexer
             ->add(media_subdef::TC_DATA_CHANNELS, 'integer')
             ->add(media_subdef::TC_DATA_ORIENTATION, 'integer')
             ->add(media_subdef::TC_DATA_COLORDEPTH, 'integer')
-            ->add(media_subdef::TC_DATA_DURATION, 'integer')
+            ->add(media_subdef::TC_DATA_DURATION, 'float')
             ->add(media_subdef::TC_DATA_AUDIOCODEC, 'string')->notAnalyzed()
             ->add(media_subdef::TC_DATA_AUDIOSAMPLERATE, 'integer')
             ->add(media_subdef::TC_DATA_VIDEOCODEC, 'string')->notAnalyzed()
