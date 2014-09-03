@@ -12,7 +12,9 @@ use Alchemy\Phrasea\Core\Configuration\Configuration;
 use PHPExiftool\Driver\Metadata;
 use PHPExiftool\Driver\Value;
 use PHPExiftool\Driver\Tag;
+use PHPExiftool\Driver\TagFactory;
 use PHPExiftool\Writer;
+use PHPExiftool\Exception\TagUnknown;
 
 class task_period_writemeta extends task_databoxAbstract
 {
@@ -290,6 +292,20 @@ class task_period_writemeta extends task_databoxAbstract
         foreach ($record->get_caption()->get_fields() as $field) {
 
             $meta = $field->get_databox_field();
+            $tagName = $meta->get_tag()->getTagname();
+
+            // skip fields with no src
+            if($tagName == '') {
+                continue;
+            }
+
+            // check exiftool known tags to skip Phraseanet:tf-*
+            try {
+                TagFactory::getFromRDFTagname($tagName);
+            } catch (TagUnknown $e) {
+                continue;
+            }
+
             /* @var $meta \databox_field */
 
             $datas = $field->get_values();
