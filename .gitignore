@@ -1,12 +1,6 @@
 /nbproject
-/config/custom_files
-/config/templates
-/config/topics
-/config/wm
-/config/minilogos
-/config/status
-/config/stamp
-/config/configuration.yml
+/config
+!/config/configuration.sample.yml
 .DS_Store
 /vendor
 /plugins
@@ -16,3 +10,8 @@ behat.yml
 /www/assets
 /www/skins/build
 /www/crossdomain.xml
+/www/plugins
+/bin
+!/bin/console
+!/bin/developer
+!/bin/setup
