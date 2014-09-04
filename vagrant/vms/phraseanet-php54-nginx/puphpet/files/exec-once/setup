@@ -30,16 +30,6 @@ sudo npm install -g recess
 sudo npm install -g grunt-cli
 sudo npm install -g bower
 
-# python tools
-
-sudo easy_install -U taschenmesser scour boto 
-
-# closure compiler
-cd /tmp
-wget –quiet http://dl.google.com/closure-compiler/compiler-latest.zip
-unzip compiler-latest.zip -d closure
-mv closure $HOME
-
 #twig
 cd /tmp
 git clone https://github.com/fabpot/Twig.git
@@ -82,27 +72,26 @@ cd swftools-0.9.2
 make
 sudo make install
 
-# zmq php extension
-yes | sudo pecl install zmq-beta
-if [ $? -eq 0 ]; then
-    sudo sh -c 'echo "extension=zmq.so" > /etc/php5/cli/conf.d/zmq.ini'
-    sudo sh -c 'echo "extension=zmq.so" > /etc/php5/fpm/conf.d/zmq.ini'
-fi
-
-# libevent php extension
-sudo apt-get autoremove --yes --purge libevent-dev
-sudo apt-get install --yes libevent-dev
-yes | sudo pecl install libevent-beta
-if [ $? -eq 0 ]; then
-    sudo sh -c 'echo ";extension=libevent.so" > /etc/php5/cli/conf.d/libevent.ini'
-    sudo sh -c 'echo ";extension=libevent.so" > /etc/php5/fpm/conf.d/libevent.ini'
-fi
-
 # cache file sd
 sudo sh -c 'echo "RUN=yes" > /etc/default/cachefilesd'
 
 # copy www.conf
 sudo sh -c "cat /vagrant/vagrant/config/nginx/php5-fpm-www.conf > /etc/php5/fpm/pool.d/www.conf"
 
+if [ ! -f /var/www/phraseanet/config/configuration.yml ]
+then
+    #copy configuration template
+    mv /var/www/phraseanet/lib/conf.d/configuration.yml /var/www/phraseanet/lib/conf.d/configuration.yml.bkp
+    cp /vagrant/vagrant/config/phraseanet/configuration.yml /var/www/phraseanet/lib/conf.d/configuration.yml
+    cd /var/www/phraseanet
+    composer install -n --prefer-source --dev
+    bin/developer dependencies:bower
+    bin/developer assets:compile-less
+    rm -f /var/www/phraseanet/lib/conf.d/configuration.yml
+    mv /var/www/phraseanet/lib/conf.d/configuration.yml.bkp /var/www/phraseanet/lib/conf.d/configuration.yml
+fi
+
 # restart mysql to get new date system
 sudo service mysql restart
+sudo service php5-fpm restart
+sudo service nginx restart

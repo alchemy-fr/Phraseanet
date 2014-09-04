@@ -150,10 +150,10 @@ nginx:
         proxy_buffers: '4 256k'
     vhosts:
         issDOx17O4bn:
-            server_name: nginx.phraseanet
+            server_name: phraseanet-php54-nginx
             server_aliases:
                 - nginx.phrasea.net
-                - nginx.alchemyasp.com
+                - phraseanet.php54.nginx
             www_root: /var/www/phraseanet/www
             listen_port: '8080'
             index_files:

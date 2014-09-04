@@ -1,57 +1,39 @@
-                                              _
-                                             / )
-                                        .--.; |    _...,-"""-,
-                         .-""-.-""""-. /   _`'-._.'   /`      \
-                        /'     \      \|  (/'-._/     )        ;
-                .-""""-;       (       '--' /-'    _           |
-              .'       |        ;    e     /       a  ,       ;
-             /          \       |      __.'`-.__,    ;       /
-            /            `._     ;    .-'     `--.,__.\    /`
-           //|              \     \,-'                /\_.'
-          // |               `;.___>              /,-'.
-        /`|  /                |`\      _..---\    |    \
-        |/  /     _,.-----\   |  \   /`|      |   |\    \
-           /    .;   |    |   |   \ /  |      |   | \    )
-          |    / |   \    /   |\..' \   \     |   \  \..'
-       jgs \../  \.../    \.../ \.../---'     \.../
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+         _____  _                                         _
+        |  __ \| |                                       | |
+        | |__) | |__  _ __ __ _ ___  ___  __ _ _ __   ___| |_
+        |  ___/| '_ \| '__/ _` / __|/ _ \/ _` | '_ \ / _ \ __|
+        | |    | | | | | | (_| \__ \  __/ (_| | | | |  __/ |_
+        |_|    |_| |_|_|  \__,_|___/\___|\__,_|_| |_|\___|\__|
+
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
 
 Read me for some important information!
 
 If Puppet did not blow up (you do not see a sea of red above), then your VM
 was generated successfully!
 
-* A unique private key was generated for you! It is located at
-  "puphpet/files/dot/ssh/id_rsa". If you are on Windows, a PuTTY-friendly key
-  was also generated at same location with a ".ppk" extension.
-* If you want to use your own private key for future provisions, overwrite the
-  generated key above with your own. Make sure to follow the naming pattern,
-  and include a ".pub" public key.
-* If you wish to add packages, modules, Apache/Nginx vhosts, or anything else,
-  open up "puphpet/config.yaml" and make changes within! Some things will
-  have random strings like "DIdXRs2OI2LJ" - you must create a random string
-  as well! To do so, please apply face to keyboard and roll.
-* If you change "puphpet/config.yaml", simple run "$ vagrant provision" and
-  your VM will be updated with the changes you requested!
+* You can print current ssh information by running 'vagrant ssh-config'
+  command
 
-Did something go wrong? Don't worry! I can (maybe) help! Please go to our
-Github issues page at https://github.com/puphpet/puphpet/issues and search for
-your problem. If you do not find your problem answered, open a new ticket!
+* To access to phraseanet just type 'phraseanet-php54-nginx' in
+  your web browser address bar.
 
-----------------------------------------------------------------------------
-PLEASE REMEMBER TO INCLUDE THE CONTENTS OF YOUR "puphpet/config.yaml" FILE.
-----------------------------------------------------------------------------
+* The mysql default credentials are:
+    user: root
+    password: toor
 
-Make sure to xxx out any potential API keys or passwords that you do not want
-others to see!
+Did something go wrong? Please fill a Github issues at
+https://github.com/alchemy-fr/phraseanet/issues.
 
 Happy programming!
-                                                            - Juan Treminio
+                                                            - Phraseanet Team
 
-┈╭━━━━━━━━━━━━┳━━╮┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
- ┃         ╭╯ ┃ ▋┃╭━┓   ____                _      _    _                    _
-╭┫         ┃  ┃  ┃┃╭┛  |  _ \ ___  __ _  __| |    / \  | |__   _____   _____| |
-┃┃         ╰━━╯ ┃╰╯┃   | |_) / _ \/ _` |/ _` |   / _ \ | '_ \ / _ \ \ / / _ \ |
-╯┃              ╰┳━╯   |  _ <  __/ (_| | (_| |  / ___ \| |_) | (_) \ V /  __/_|
- ┃               ┃     |_| \_\___|\__,_|\__,_| /_/   \_\_.__/ \___/ \_/ \___(_)
- ┃ ┏━┳━━━━━━━┓ ┏ ┃
-▔┗━┻━┛▔▔▔▔▔▔▔┗━┻━┛▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+         ____                _      _    _                    _
+        |  _ \ ___  __ _  __| |    / \  | |__   _____   _____| |
+        | |_) / _ \/ _` |/ _` |   / _ \ | '_ \ / _ \ \ / / _ \ |
+        |  _ <  __/ (_| | (_| |  / ___ \| |_) | (_) \ V /  __/_|
+        |_| \_\___|\__,_|\__,_| /_/   \_\_.__/ \___/ \_/ \___(_)
+
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
