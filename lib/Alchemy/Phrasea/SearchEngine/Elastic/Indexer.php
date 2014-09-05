@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Elasticsearch\Client;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -31,7 +32,8 @@ class Indexer
     const DEFAULT_REFRESH_INTERVAL = '1s';
     const REFRESH_INTERVAL_KEY = 'index.refresh_interval';
 
-    const RECORD_TYPE = 'record';
+    const TYPE_RECORD = 'record';
+    const TYPE_TERM   = 'term';
 
     public function __construct(Client $client, array $options, LoggerInterface $logger, \appbox $appbox)
     {
@@ -48,7 +50,9 @@ class Indexer
         $params['body']['settings']['number_of_shards'] = $this->options['shards'];
         $params['body']['settings']['number_of_replicas'] = $this->options['replicas'];
         if ($withMapping) {
-            $params['body']['mappings'][self::RECORD_TYPE] = $this->getRecordMapping();
+            // TODO Move term/record mapping logic in TermIndexer and a new RecordIndexer
+            $params['body']['mappings'][self::TYPE_RECORD] = $this->getRecordMapping();
+            $params['body']['mappings'][self::TYPE_TERM]   = $this->getTermMapping();
         }
         $this->client->indices()->create($params);
     }
@@ -57,8 +61,8 @@ class Indexer
     {
         $params = array();
         $params['index'] = $this->options['index'];
-        $params['type'] = self::RECORD_TYPE;
-        $params['body'][self::RECORD_TYPE] = $this->getRecordMapping();
+        $params['type'] = self::TYPE_RECORD;
+        $params['body'][self::TYPE_RECORD] = $this->getRecordMapping();
         $this->client->indices()->putMapping($params);
     }
 
@@ -83,13 +87,20 @@ class Indexer
             // Prepare the bulk operation
             $bulk = new BulkOperation($this->client);
             $bulk->setDefaultIndex($this->options['index']);
-            $bulk->setDefaultType(self::RECORD_TYPE);
+            $bulk->setDefaultType(self::TYPE_RECORD);
             $bulk->setAutoFlushLimit(1000);
 
             // Helper to fetch record related data
             $recordHelper = new RecordHelper($this->appbox);
 
             foreach ($this->appbox->get_databoxes() as $databox) {
+                // Update thesaurus terms index
+                $termIndexer = new TermIndexer($this->client, $this->options, $databox);
+                // TODO Pass a BulkOperation object to TermIndexer to muliplex
+                // indexing queries between types
+                $termIndexer->populateIndex();
+                // TODO Create object to query thesaurus for term paths/synonyms
+                // TODO Extract record indexing logic in a RecordIndexer class
                 $fetcher = new RecordFetcher($databox, $recordHelper);
                 $fetcher->setBatchSize(200);
                 while ($record = $fetcher->fetch()) {
@@ -148,6 +159,20 @@ class Indexer
         $response = $this->client->indices()->putSettings($params);
 
         return igorw\get_in($response, ['acknowledged']);
+    }
+
+    private function getTermMapping()
+    {
+        $mapping = new Mapping();
+        $mapping
+            ->add('value', 'string')
+            ->add('context', 'string')
+            ->add('path', 'string')
+            ->add('lang', 'string')->notAnalyzed()
+            ->add('databox_id', 'integer')
+        ;
+
+        return $mapping->export();
     }
 
     private function getRecordMapping()
