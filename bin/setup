@@ -19,6 +19,7 @@ namespace KonsoleKommander;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Command\Setup\Install;
+use Alchemy\Phrasea\Command\Setup\CrossDomainGenerator;
 use Alchemy\Phrasea\Command\Setup\PluginsReset;
 use Alchemy\Phrasea\Command\Plugin\ListPlugin;
 use Alchemy\Phrasea\Command\Plugin\AddPlugin;
@@ -69,5 +70,6 @@ $app->command(new RemovePlugin());
 $app->command(new PluginsReset());
 $app->command(new CheckEnvironment('check:system'));
 $app->command(new Install('system:install'));
+$app->command(new CrossDomainGenerator());
 
 exit(is_int($app->run()) ? : 1);

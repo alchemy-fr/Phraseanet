@@ -17,7 +17,6 @@ namespace KonsoleKommander;
  * @link        www.phraseanet.com
  */
 use Alchemy\Phrasea\Command\Plugin\ListPlugin;
-use Alchemy\Phrasea\Command\Setup\CrossDomainGenerator;
 use Alchemy\Phrasea\Command\Setup\H264ConfigurationDumper;
 use Alchemy\Phrasea\Command\Setup\H264MappingGenerator;
 use Alchemy\Phrasea\Core\Version;
@@ -105,7 +104,6 @@ $cli->command(new H264ConfigurationDumper());
 $cli->command(new H264MappingGenerator());
 $cli->command(new XSendFileConfigurationDumper());
 $cli->command(new XSendFileMappingGenerator());
-$cli->command(new CrossDomainGenerator());
 
 $cli->loadPlugins();
 
