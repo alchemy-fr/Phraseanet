@@ -22,12 +22,10 @@ use Symfony\Component\HttpFoundation\Session\Storage\Handler\WriteCheckSessionHa
 class SessionHandlerFactory
 {
     private $connectionFactory;
-    private $root;
 
-    public function __construct(ConnectionFactory $connectionFactory, $root = null)
+    public function __construct(ConnectionFactory $connectionFactory)
     {
         $this->connectionFactory = $connectionFactory;
-        $this->root = __DIR__ . '/../../../../..';
     }
 
     /**
@@ -62,7 +60,7 @@ class SessionHandlerFactory
                     )
                 );
             case 'file':
-                return new NativeFileSessionHandler($this->root.'/tmp/sessions');
+                return new NativeFileSessionHandler(isset($options['save-path']) ? $options['save-path'] : null);
             case 'redis':
                 return new WriteCheckSessionHandler(
                     new RedisSessionHandler(

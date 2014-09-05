@@ -61,7 +61,7 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
 
     if (PhraseaApplication::ENV_DEV === $app->getEnvironment()) {
         $app->register($p = new WebProfilerServiceProvider(), [
-            'profiler.cache_dir' => $app['root.path'].'/tmp/cache/profiler',
+            'profiler.cache_dir' => $app['cache.path'].'/profiler',
         ]);
         $app->mount('/_profiler', $p);
 

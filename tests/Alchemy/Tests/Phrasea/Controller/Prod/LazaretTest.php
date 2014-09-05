@@ -134,8 +134,8 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
 
         $lazaretFile = $this->getOneLazaretFile();
 
-        $lazaretFileName = self::$DI['app']['root.path'] . '/tmp/lazaret/' . $lazaretFile->getFilename();
-        $lazaretThumbFileName = self::$DI['app']['root.path'] . '/tmp/lazaret/' . $lazaretFile->getThumbFilename();
+        $lazaretFileName = self::$DI['app']['tmp.lazaret.path'].'/'.$lazaretFile->getFilename();
+        $lazaretThumbFileName = self::$DI['app']['tmp.lazaret.path'].'/'.$lazaretFile->getThumbFilename();
 
         copy(__DIR__ . '/../../../../../files/cestlafete.jpg', $lazaretFileName);
         copy(__DIR__ . '/../../../../../files/cestlafete.jpg', $lazaretThumbFileName);
@@ -341,7 +341,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
             ->method('getRecordsToSubstitute')
             ->will($this->returnValue([self::$DI['record_2'], self::$DI['record_1']]));
 
-        copy(__DIR__ . '/../../../../../files/cestlafete.jpg', __DIR__ . '/../../../../../../tmp/lazaret/cestlafete.jpg');
+        copy(__DIR__ . '/../../../../../files/cestlafete.jpg', self::$DI['app']['tmp.lazaret.path'].'/cestlafete.jpg');
 
         $lazaretFile->expects($this->any())
             ->method('getFilename')
@@ -468,7 +468,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $lazaretFile = $this->getMock('Alchemy\Phrasea\Model\Entities\LazaretFile', [], [], '', false);
 
-        copy(__DIR__ . '/../../../../../files/cestlafete.jpg', __DIR__ . '/../../../../../../tmp/lazaret/cestlafete.jpg');
+        copy(__DIR__ . '/../../../../../files/cestlafete.jpg', self::$DI['app']['tmp.lazaret.path'].'/cestlafete.jpg');
 
         $lazaretFile->expects($this->any())
             ->method('getThumbFilename')

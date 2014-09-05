@@ -20,7 +20,8 @@ module.exports = function(grunt) {
             all: ['www/include/js/tests/*.html']
         },
         clean: {
-            "assets": ["<%= path.bower %>", "<%= path.asset %>"]
+            "assets": ["<%= path.asset %>"],
+            "bower": ["<%= path.bower %>"]
         },
         bower: {
             install: {
@@ -253,6 +254,32 @@ module.exports = function(grunt) {
                 "dest": "<%= path.asset %>/normalize-css/",
                 "flatten": true
             },
+            "sinon-chai": {
+                "expand": true,
+                "src": [
+                    "<%= path.bower %>/sinon-chai/lib/sinon-chai.js",
+                    "<%= path.bower %>/sinon-chai/LICENCE.txt",
+                ],
+                "dest": "<%= path.asset %>/sinon-chai/",
+                "flatten": true
+            },
+            "sinonjs": {
+                "expand": true,
+                "src": [
+                    "<%= path.bower %>/sinonjs/sinon.js"
+                ],
+                "dest": "<%= path.asset %>/sinonjs/",
+                "flatten": true
+            },
+            "squire": {
+                "expand": true,
+                "src": [
+                    "<%= path.bower %>/squire/src/Squire.js",
+                    "<%= path.bower %>/squire/LICENCE"
+                ],
+                "dest": "<%= path.asset %>/squire/",
+                "flatten": true
+            },
             "qunit": {
                 "expand": true,
                 "src": [
@@ -390,6 +417,7 @@ module.exports = function(grunt) {
         "copy:blueimp",
         "copy:bootstrap",
         "copy:bootstrap-multiselect",
+        "copy:chai",
         "copy:font-awesome",
         "copy:geonames-server-jquery-plugin",
         "copy:humane-js",
@@ -402,9 +430,16 @@ module.exports = function(grunt) {
         "copy:jquery-ui",
         "copy:jquery.treeview",
         "copy:json2",
+        "copy:js-fixtures",
         "copy:modernizr",
         "copy:normalize",
+        "copy:normalize",
+        "copy:qunit",
+        "copy:mocha",
         "copy:requirejs",
+        "copy:sinon-chai",
+        "copy:sinonjs",
+        "copy:squire",
         "copy:swfobject",
         "copy:tinymce",
         "copy:underscore",
@@ -416,7 +451,8 @@ module.exports = function(grunt) {
         "bower",
         "copy-deps",
         "bower_postinst",
-        "copy-assets"
+        "copy-assets",
+        "clean:bower"
     ]);
     grunt.registerTask('test', ["shell:generate_js_fixtures", "qunit", "mocha_phantomjs"]);
 };

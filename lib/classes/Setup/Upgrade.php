@@ -17,9 +17,9 @@ class Setup_Upgrade
 {
     /**
      *
-     * @var appbox
+     * @var Applications
      */
-    private $appbox;
+    private $app;
 
     /**
      *
@@ -30,16 +30,16 @@ class Setup_Upgrade
     public function __construct(Application $app, $force = false)
     {
         if ($force) {
-            self::remove_lock_file();
+            $this->remove_lock_file();
         }
 
-        if (self::lock_exists()) {
+        if ($this->lock_exists()) {
             throw new Exception_Setup_UpgradeAlreadyStarted('The upgrade is already started');
         }
 
-        $this->appbox = $app['phraseanet.appbox'];
+        $this->app = $app;
 
-        if (version_compare($this->appbox->get_version(), '3.9', '<')
+        if (version_compare($this->app['phraseanet.appbox']->get_version(), '3.9', '<')
                 && count(MailChecker::getWrongEmailUsers($app)) > 0) {
             throw new \Exception_Setup_FixBadEmailAddresses('Please fix the database before starting');
         }
@@ -55,7 +55,7 @@ class Setup_Upgrade
      */
     public function __destruct()
     {
-        self::remove_lock_file();
+        $this->remove_lock_file();
 
         return;
     }
@@ -93,9 +93,9 @@ class Setup_Upgrade
             'last_update'     => $date_obj->format(DATE_ATOM),
         ], 1);
 
-        if (!file_put_contents(self::get_lock_file(), $datas))
+        if (!file_put_contents($this->get_lock_file(), $datas))
             throw new Exception_Setup_CannotWriteLockFile(
-                sprintf('Cannot write lock file to %s', self::get_lock_file())
+                sprintf('Cannot write lock file to %s', $this->get_lock_file())
             );
 
         return $this;
@@ -106,11 +106,11 @@ class Setup_Upgrade
      *
      * @return boolean
      */
-    private static function lock_exists()
+    private function lock_exists()
     {
         clearstatcache();
 
-        return file_exists(self::get_lock_file());
+        return file_exists($this->get_lock_file());
     }
 
     /**
@@ -118,19 +118,19 @@ class Setup_Upgrade
      *
      * @return string
      */
-    private static function get_lock_file()
+    private function get_lock_file()
     {
-        return __DIR__ . '/../../../tmp/upgrade.lock';
+        return $this->app['tmp.path'].'/locks/upgrade.lock';
     }
 
     /**
      *
      * @return Void
      */
-    private static function remove_lock_file()
+    private function remove_lock_file()
     {
-        if (self::lock_exists()) {
-            unlink(self::get_lock_file());
+        if ($this->lock_exists()) {
+            unlink($this->get_lock_file());
         }
 
         return;

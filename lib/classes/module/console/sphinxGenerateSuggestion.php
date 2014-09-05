@@ -42,7 +42,7 @@ class module_console_sphinxGenerateSuggestion extends Command
                 )
             ));
 
-            $tmp_file = $this->container['root.path'] . '/tmp/dict' . $index . '.txt';
+            $tmp_file = sys_get_temp_dir().'/dict' . $index . '.txt';
 
             $databox = $this->getService('phraseanet.appbox')->get_databox($sbas_id);
 

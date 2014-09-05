@@ -252,11 +252,9 @@ class Tools implements ControllerProviderInterface
 
                 $dataUri = DataURI\Parser::parse($request->request->get('image', ''));
 
-                $path = $app['root.path'] . '/tmp';
-
                 $name = sprintf('extractor_thumb_%s', $record->get_serialize_key());
 
-                $fileName = sprintf('%s/%s.png', $path, $name);
+                $fileName = sprintf('%s/%s.png',  sys_get_temp_dir(), $name);
 
                 file_put_contents($fileName, $dataUri->getData());
 

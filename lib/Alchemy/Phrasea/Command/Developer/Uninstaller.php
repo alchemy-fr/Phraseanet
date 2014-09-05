@@ -33,7 +33,6 @@ class Uninstaller extends Command
         $root = $this->container['root.path'];
 
         foreach ([
-            $root.'/tmp/configuration-compiled.php',
             $root.'/config/configuration.yml',
             $root.'/config/services.yml',
             $root.'/config/connexions.yml',
@@ -42,27 +41,48 @@ class Uninstaller extends Command
             $root.'/config/connexion.inc',
             $root.'/config/_GV.php',
             $root.'/config/_GV.php.old',
-            $root.'/tmp/cache_registry.php',
-            $root.'/tmp/cache_registry.yml',
+            $root.'/config/configuration-compiled.php',
             ] as $file) {
-            if (is_file($file)) {
+            if ($this->container['filesystem']->exists($file)) {
                 unlink($file);
             }
         }
 
         foreach ([
-            $root.'/tmp/serializer',
-            $root.'/tmp/cache_twig',
-            $root.'/tmp/translations',
-            $root.'/tmp/cache_minify',
-            $root.'/tmp/download',
-            $root.'/tmp/locks',
-            $root.'/tmp/cache',
-            ] as $dir) {
-            if (is_dir($dir)) {
+            $this->container['tmp.download.path'],
+            $this->container['tmp.lazaret.path'],
+            $this->container['tmp.caption.path'],
+            $this->container['tmp.path'].'/sessions',
+            $this->container['tmp.path'].'/locks',
+        ] as $resource) {
+            if (is_dir($resource)) {
                 $finder = new Finder();
-                foreach ($finder->files()->in($dir) as $file) {
-                    unlink($file);
+                foreach ($finder->files()->in($resource) as $file) {
+                    $this->container['filesystem']->remove($file);
+                }
+            } elseif (is_file($resource)) {
+                $this->container['filesystem']->remove($resource);
+            }
+        }
+
+        foreach ($this->container['cache.paths'] as $path) {
+            foreach ([
+                 $path.'/cache_registry.php',
+                 $path.'/cache_registry.yml',
+                 $path.'/serializer',
+                 $path.'/doctrine',
+                 $path.'/twig',
+                 $path.'/translations',
+                 $path.'/minify',
+                 $path.'/profiler',
+            ] as $resource) {
+                if (is_dir($resource)) {
+                    $finder = new Finder();
+                    foreach ($finder->files()->in($resource) as $file) {
+                        $this->container['filesystem']->remove($file);
+                    }
+                } elseif (is_file($resource)) {
+                    $this->container['filesystem']->remove($resource);
                 }
             }
         }

@@ -100,12 +100,12 @@ class IniReset extends Command
 
         // inject v3.1 fixtures
         if ($input->getOption('v3.1')) {
-            $this->container['filesystem']->copy($this->container['root.path'].'/hudson/connexion.inc', $this->container['root.path'].'/config/connexion.inc');
-            $this->container['filesystem']->copy($this->container['root.path'].'/hudson/_GV.php', $this->container['root.path'].'/config/_GV.php');
+            $this->container['filesystem']->copy($this->container['root.path'].'/resources/hudson/connexion.inc', $this->container['root.path'].'/config/connexion.inc');
+            $this->container['filesystem']->copy($this->container['root.path'].'/resources//hudson/_GV.php', $this->container['root.path'].'/config/_GV.php');
 
             $command = $this->getApplication()->find('dbal:import');
 
-            $content = file_get_contents($this->container['root.path'] . '/hudson/fixtures.sql');
+            $content = file_get_contents($this->container['root.path'] . '/resources//hudson/fixtures.sql');
             $content = str_replace('ab_test', $dbs['ab'], $content);
             $content = str_replace('db_test', $dbName, $content);
 

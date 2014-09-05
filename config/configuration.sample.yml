@@ -79,8 +79,12 @@ main:
             host: 127.0.0.1
             port: 6700
     storage:
-        subdefs:
-            default-dir: null
+        subdefs:null
+        cache: null
+        log : null
+        download: null
+        lazaret: null
+        caption: null
     bridge:
         youtube:
             enabled: false

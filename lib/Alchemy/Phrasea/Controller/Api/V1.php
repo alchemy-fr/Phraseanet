@@ -519,8 +519,8 @@ class V1 implements ControllerProviderInterface
                 'report'   => [
                     'anonymous' => $app['conf']->get(['registry', 'modules', 'anonymous-report']),
                 ],
-                'filesystem'           => [
-                    'noWeb'        => $app['conf']->get(['main', 'storage', 'subdefs', 'default-dir']),
+                'storage'           => [
+                    'documents'        => $app['conf']->get(['main', 'storage', 'subdefs']),
                 ],
                 'searchEngine' => [
                     'configuration' => [

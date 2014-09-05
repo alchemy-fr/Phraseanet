@@ -52,7 +52,7 @@ class SchedulerRun extends Command
         }
 
         $this->container['signal-handler']->register([SIGINT, SIGTERM], [$this, 'signalHandler']);
-        $this->container['task-manager']->addSubscriber(new LockFileSubscriber($this->container['task-manager.logger'], $this->container['root.path'].'/tmp/locks'));
+        $this->container['task-manager']->addSubscriber(new LockFileSubscriber($this->container['task-manager.logger'], $this->container['tmp.path'].'/locks'));
         $this->container['task-manager']->start();
     }
 }

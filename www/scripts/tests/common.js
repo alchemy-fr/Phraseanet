@@ -1,14 +1,14 @@
 require.config({
     baseUrl: "../../scripts",
     paths: {
-        "chai"    : "../../tmp-assets/chai/chai",
-        "fixtures": "../../tmp-assets/js-fixtures/fixtures",
+        "chai"    : "../assets/chai/chai",
+        "fixtures": "../assets/js-fixtures/fixtures",
         "jquery": "../assets/jquery/jquery",
         "backbone": "../assets/backbone-amd/backbone",
         "i18n": "../assets/i18next/i18next.amd-1.6.3",
         "bootstrap": "../assets/bootstrap/js/bootstrap.min",
-        "sinonchai": "../../tmp-assets/sinon-chai/lib/sinon-chai",
-        "squire": "../../tmp-assets/squire/src/Squire",
+        "sinonchai": "../assets/sinon-chai/sinon-chai",
+        "squire": "../assets/squire/Squire",
         "jquery.ui": "../assets/jquery.ui/jquery-ui",
         "underscore": "../assets/underscore-amd/underscore",
         "jquery.ui.widget": "../assets/jquery-file-upload/jquery.ui.widget",

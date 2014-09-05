@@ -59,13 +59,16 @@ class Installer
 
     private function populateRegistryData($serverName, $dataPath)
     {
-        if (null === realpath($dataPath)) {
+        if (null === $dataPath = realpath($dataPath)) {
             throw new \InvalidArgumentException(sprintf('Path %s does not exist.', $dataPath));
         }
 
-        $dataPath = realpath($dataPath) . DIRECTORY_SEPARATOR;
-
-        $this->app['conf']->set(['main', 'storage', 'subdefs', 'default-dir'], $dataPath);
+        $this->app['conf']->set(['main', 'storage', 'subdefs'], $dataPath);
+        $this->app['conf']->set(['main', 'storage', 'cache'], realpath(__DIR__ . '/../../../../cache'));
+        $this->app['conf']->set(['main', 'storage', 'log'], realpath(__DIR__ . '/../../../../logs'));
+        $this->app['conf']->set(['main', 'storage', 'download'], realpath(__DIR__ . '/../../../../tmp/download'));
+        $this->app['conf']->set(['main', 'storage', 'lazaret'], realpath(__DIR__ . '/../../../../tmp/lazaret'));
+        $this->app['conf']->set(['main', 'storage', 'caption'], realpath(__DIR__ . '/../../../../tmp/caption'));
         $this->app['conf']->set('servername', $serverName);
         $this->app['conf']->set('registry', $this->app['registry.manipulator']->getRegistryData());
     }

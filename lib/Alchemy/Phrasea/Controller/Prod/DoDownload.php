@@ -136,7 +136,7 @@ class DoDownload implements ControllerProviderInterface
             $mime = $subdef['mime'];
             $list['complete'] = true;
         } else {
-            $exportFile = $app['root.path'] . '/tmp/download/' . $token->getValue() . '.zip';
+            $exportFile = $app['tmp.download.path'].'/'.$token->getValue() . '.zip';
             $mime = 'application/zip';
         }
 
@@ -184,7 +184,7 @@ class DoDownload implements ControllerProviderInterface
             $app,
             $token,
             $list,
-            sprintf($app['root.path'] . '/tmp/download/%s.zip', $token->getValue()) // Dest file
+            sprintf($app['tmp.download.path'].'/%s.zip', $token->getValue()) // Dest file
         );
 
         return $app->json([
