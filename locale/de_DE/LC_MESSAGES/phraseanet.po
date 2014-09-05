@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-14 14:10+0100\n"
-"PO-Revision-Date: 2014-07-08 11:57+0100\n"
-"Last-Translator: Jennifer <guerin@alchemy.fr>\n"
+"PO-Revision-Date: 2014-09-05 17:30+0100\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: /Users/romain/Documents/workspace/Phraseanet\n"
 "X-Poedit-KeywordsList: _e;__\n"
-"X-POOTLE-MTIME: 1401867081.000000\n"
+"X-POOTLE-MTIME: 1406297568.000000\n"
 "X-Poedit-SearchPath-0: config\n"
 "X-Poedit-SearchPath-1: lib/classes\n"
 "X-Poedit-SearchPath-2: lib/conf.d\n"
@@ -11657,8 +11657,18 @@ msgstr "Unmöglich, Vorlage zu erstellen: Name bereits vergeben"
 msgid "Unable to create the user."
 msgstr "Unmöglich, Benutzer zu erstellen"
 
+#: ../lib/Alchemy/Phrasea/Media/Subdef/Image.php:37
 msgid "Flatten layers"
 msgstr "Flatten Schichten"
+
+#: ../lib/conf.d/_GV_template.inc:278
+msgid "Set force authentication option to see push content as mandatory"
+msgstr ""
+
+#: ../lib/conf.d/_GV_template.inc:279
+msgid ""
+"Disallow the possibility for the end user to disable push authentication"
+msgstr ""
 
 #~ msgid "Enable H264 stream mode"
 #~ msgstr "H264 Stream Modus aktivieren"

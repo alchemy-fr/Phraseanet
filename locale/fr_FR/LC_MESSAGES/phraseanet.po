@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-14 14:10+0100\n"
-"PO-Revision-Date: 2014-07-08 11:58+0100\n"
-"Last-Translator: Anthony <acabot@alchemy.fr>\n"
+"PO-Revision-Date: 2014-09-05 17:30+0100\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: /Users/romain/Documents/workspace/Phraseanet\n"
 "X-Poedit-KeywordsList: _e;__\n"
-"X-POOTLE-MTIME: 1404404560.000000\n"
+"X-POOTLE-MTIME: 1409915751.000000\n"
 "X-Poedit-SearchPath-0: config\n"
 "X-Poedit-SearchPath-1: lib/classes\n"
 "X-Poedit-SearchPath-2: lib/conf.d\n"
@@ -6457,7 +6457,7 @@ msgstr "Créer une base"
 #: tmp/cache_twig/98/93/7d0a71abf2bb9dbce8679222208d475e97386c87f03b6847cea9a11043a8.php:236
 msgid ""
 "phraseanet:: Creer une base sur un serveur different de l'application box"
-msgstr "Créer une base sur un autre serveur"
+msgstr "Créer une base sur un serveur different de celui de l'Application Box"
 
 #: tmp/cache_twig/98/93/7d0a71abf2bb9dbce8679222208d475e97386c87f03b6847cea9a11043a8.php:242
 #: tmp/cache_twig/98/93/7d0a71abf2bb9dbce8679222208d475e97386c87f03b6847cea9a11043a8.php:323
@@ -6496,7 +6496,9 @@ msgstr "Monter une base"
 msgid ""
 "phraseanet:: Monter une base provenant d'un serveur different de "
 "l'application box"
-msgstr "Monter une base provenant d'un serveur different  de l'application box"
+msgstr ""
+"Monter une base existante provenant d'un serveur different de celui de "
+"l'Application Box"
 
 #: tmp/cache_twig/98/93/7d0a71abf2bb9dbce8679222208d475e97386c87f03b6847cea9a11043a8.php:350
 msgid "boutton::monter"
@@ -11508,8 +11510,8 @@ msgid ""
 "Adds an option to the push form submission to restrict push recipient(s) to "
 "Phraseanet users only."
 msgstr ""
-"Force les utilisateurs destinataires d'un Push et d'une validation à "
-"s'authentifier."
+"Ajoute une option dans les formulaires d'envoi pour contraindre les "
+"destinataires d'un Push ou d'une Validation à s'authentifier."
 
 #: ../lib/classes/task/period/apiwebhooks.php:18
 msgid "Api Webhook"
@@ -11678,8 +11680,20 @@ msgstr "Impossible le créer ce modèle, le nom donné est déjà utilisé."
 msgid "Unable to create the user."
 msgstr "Impossible de créer cet utilisateur."
 
+#: ../lib/Alchemy/Phrasea/Media/Subdef/Image.php:37
 msgid "Flatten layers"
 msgstr "Aplatir les calques"
+
+#: ../lib/conf.d/_GV_template.inc:278
+msgid "Set force authentication option to see push content as mandatory"
+msgstr "Forcer l'authentification pour les Pushs et les Validations"
+
+#: ../lib/conf.d/_GV_template.inc:279
+msgid ""
+"Disallow the possibility for the end user to disable push authentication"
+msgstr ""
+"Supprime le choix des options d'authentification dans les formulaires "
+"d'envoi."
 
 #~ msgid "Enable H264 stream mode"
 #~ msgstr "Activer H264 en mode flux continu (lecture en streaming)"
