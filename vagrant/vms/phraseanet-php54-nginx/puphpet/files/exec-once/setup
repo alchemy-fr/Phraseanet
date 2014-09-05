@@ -85,7 +85,7 @@ then
     cp /vagrant/vagrant/config/phraseanet/configuration.yml /var/www/phraseanet/lib/conf.d/configuration.yml
     cd /var/www/phraseanet
     composer install -n --prefer-source --dev
-    bin/developer dependencies:bower
+    bower install --config.interactive=false
     bin/developer assets:compile-less
     rm -f /var/www/phraseanet/lib/conf.d/configuration.yml
     mv /var/www/phraseanet/lib/conf.d/configuration.yml.bkp /var/www/phraseanet/lib/conf.d/configuration.yml
