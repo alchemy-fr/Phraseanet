@@ -184,7 +184,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $this->doExecute('index', [
             'body'  => $this->serializer->serialize($record),
             'index' => $this->indexName,
-            'type'  => 'record',
+            'type'  => self::GEM_TYPE_RECORD,
             'id'    => sprintf('%d-%d', $record->get_sbas_id(), $record->get_record_id()),
         ]);
 
@@ -198,7 +198,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
         $this->doExecute('delete', [
             'index' => $this->indexName,
-            'type'  => 'record',
+            'type'  => self::GEM_TYPE_RECORD,
             'id'    => sprintf('%s-%s', $record->get_sbas_id(), $record->get_record_id()),
         ]);
 
@@ -363,7 +363,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
         $params = [
             'index' => $this->indexName,
-            'type'  => 'record',
+            'type'  => self::GEM_TYPE_RECORD,
             'body'  => [
                 'fields' => ['databox_id', 'record_id'],
                 'sort'   => $this->createSortQueryParams($options),

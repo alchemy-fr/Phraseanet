@@ -49,6 +49,129 @@ class Indexer
         $params['index'] = $this->options['index'];
         $params['body']['settings']['number_of_shards'] = $this->options['shards'];
         $params['body']['settings']['number_of_replicas'] = $this->options['replicas'];
+
+        // @todo Dynamic list depending on the client locales?
+        $params['body']['settings']['analysis'] = [
+            'analyzer' => [
+                'fr_full' => [
+                    'type'      => 'custom',
+                    'tokenizer' => 'icu_tokenizer', // better support for some Asian languages and using custom rules to break Myanmar and Khmer text.
+                    'filter'    => ['nfkc_normalizer', 'lowercase', 'stop_fr', 'stem_fr']
+                ],
+                'en_full' => [
+                    'type'      => 'custom',
+                    'tokenizer' => 'icu_tokenizer',
+                    'filter'    => ['nfkc_normalizer', 'lowercase', 'stop_en', 'stem_en']
+                ],
+                'de_full' => [
+                    'type'      => 'custom',
+                    'tokenizer' => 'icu_tokenizer',
+                    'filter'    => ['nfkc_normalizer', 'lowercase', 'stop_de', 'stem_de']
+                ],
+                'nl_full' => [
+                    'type'      => 'custom',
+                    'tokenizer' => 'icu_tokenizer',
+                    'filter'    => ['nfkc_normalizer', 'lowercase', 'stop_nl', 'stem_nl_override', 'stem_nl']
+                ],
+                'es_full' => [
+                    'type'      => 'custom',
+                    'tokenizer' => 'icu_tokenizer',
+                    'filter'    => ['nfkc_normalizer', 'lowercase', 'stop_es', 'stem_es']
+                ],
+                'ar_full' => [
+                    'type'      => 'custom',
+                    'tokenizer' => 'icu_tokenizer',
+                    'filter'    => ['nfkc_normalizer', 'lowercase', 'stop_ar', 'stem_ar']
+                ],
+                'ru_full' => [
+                    'type'      => 'custom',
+                    'tokenizer' => 'icu_tokenizer',
+                    'filter'    => ['nfkc_normalizer', 'lowercase', 'stop_ru', 'stem_ru']
+                ],
+                'cn_full' => [ // Standard chinese analyzer is not exposed
+                    'type'      => 'custom',
+                    'tokenizer' => 'icu_tokenizer',
+                    'filter'    => ['nfkc_normalizer', 'lowercase']
+                ]
+            ],
+            'filter' => [
+                'nfkc_normalizer' => [ // weißkopfseeadler => weisskopfseeadler, ١٢٣٤٥ => 12345.
+                    'type' => 'icu_normalizer', // œ => oe, and use the fewest  bytes possible.
+                    'name' => 'nfkc_cf' // nfkc_cf do the asciifolding job too.
+                ],
+
+                'stop_fr' => [
+                    'type' => 'stop',
+                    'stopwords' => ['l', 'm', 't', 'qu', 'n', 's', 'j', 'd'],
+                ],
+                'stop_en' => [
+                    'type' => 'stop',
+                    'stopwords' => '_english_' // Use the Lucene default
+                ],
+                'stop_de' => [
+                    'type' => 'stop',
+                    'stopwords' => '_german_' // Use the Lucene default
+                ],
+                'stop_nl' => [
+                    'type' => 'stop',
+                    'stopwords' => '_dutch_' // Use the Lucene default
+                ],
+                'stop_es' => [
+                    'type' => 'stop',
+                    'stopwords' => '_spanish_' // Use the Lucene default
+                ],
+                'stop_ar' => [
+                    'type' => 'stop',
+                    'stopwords' => '_arabic_' // Use the Lucene default
+                ],
+                'stop_ru' => [
+                    'type' => 'stop',
+                    'stopwords' => '_russian_' // Use the Lucene default
+                ],
+
+                // See http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/analysis-stemmer-tokenfilter.html
+                'stem_fr' => [
+                    'type' => 'stemmer',
+                    'name' => 'light_french',
+                ],
+                'stem_en' => [
+                    'type' => 'stemmer',
+                    'name' => 'english', // Porter stemming algorithm
+                ],
+                'stem_de' => [
+                    'type' => 'stemmer',
+                    'name' => 'light_german',
+                ],
+                'stem_nl' => [
+                    'type' => 'stemmer',
+                    'name' => 'dutch', // Snowball algo
+                ],
+                'stem_es' => [
+                    'type' => 'stemmer',
+                    'name' => 'light_spanish',
+                ],
+                'stem_ar' => [
+                    'type' => 'stemmer',
+                    'name' => 'arabic', // Lucene Arabic stemmer
+                ],
+                'stem_ru' => [
+                    'type' => 'stemmer',
+                    'name' => 'russian', // Snowball algo
+                ],
+
+                // Some custom rules
+                'stem_nl_override' => [
+                    'type' => 'stemmer_override',
+                    'rules' => [
+                        "fiets=>fiets",
+                        "bromfiets=>bromfiets",
+                        "ei=>eier",
+                        "kind=>kinder"
+                    ]
+                ]
+            ],
+        ];
+
         if ($withMapping) {
             // TODO Move term/record mapping logic in TermIndexer and a new RecordIndexer
             $params['body']['mappings'][self::TYPE_RECORD] = $this->getRecordMapping();
