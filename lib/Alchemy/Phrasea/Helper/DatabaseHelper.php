@@ -26,7 +26,7 @@ class DatabaseHelper extends Helper
         $connection_ok = $db_ok = $is_databox = $is_appbox = $empty = false;
 
         try {
-            $conn = new \connection_pdo('test', $hostname, $port, $user, $password, null, array(), false);
+            new \connection_pdo('test', $hostname, $port, $user, $password, $dbname, array(), false);
             $connection_ok = true;
         } catch (\Exception $e) {
 

@@ -59,15 +59,15 @@
 
                   password : {password:"#create_admin input[name=email]"},
                   password_confirm : {equalTo:"#create_admin input[name=password]"},
-                  ab_hostname : {required:true},
-                  ab_user : {required:true},
+                  hostname : {required:true},
+                  user : {required:true},
                   ab_name : {required:true}
                 },
                 messages: {
                   email:{
                     email : language.validateEmail
                   },
-                  ab_hostname : {
+                  hostname : {
                     required :  language.requiredField
                   },
                   password : {
@@ -149,10 +149,10 @@
           function test_connection_appbox(callback)
           {
             var scope = $('.appbox_settings');
-            var hostname_input = $('input[name="ab_hostname"]:visible', scope);
-            var port_input = $('input[name="ab_port"]:visible', scope);
-            var user_input = $('input[name="ab_user"]', scope);
-            var password_input = $('input[name="ab_password"]', scope);
+            var hostname_input = $('input[name="hostname"]:visible', scope);
+            var port_input = $('input[name="port"]:visible', scope);
+            var user_input = $('input[name="user"]', scope);
+            var password_input = $('input[name="password"]', scope);
             var dbname_input = $('input[name="ab_name"]', scope);
 
             var user = user_input.val();
@@ -187,10 +187,10 @@
             var appbox_scope = $('.appbox_settings');
             var databox_scope = $('.databox_settings');
 
-            var hostname_input = $('input[name="ab_hostname"]', appbox_scope);
-            var port_input = $('input[name="ab_port"]', appbox_scope);
-            var user_input = $('input[name="ab_user"]', appbox_scope);
-            var password_input = $('input[name="ab_password"]', appbox_scope);
+            var hostname_input = $('input[name="hostname"]', appbox_scope);
+            var port_input = $('input[name="port"]', appbox_scope);
+            var user_input = $('input[name="user"]', appbox_scope);
+            var password_input = $('input[name="password"]', appbox_scope);
 
             var dbname_input = $('input[name="db_name"]', databox_scope);
 
@@ -559,19 +559,19 @@
                               </tr>
                               <tr class="optional_ab_datas">
                                 <td style="width:200px;"><label>{% trans 'phraseanet:: adresse' %}</label></td>
-                                <td><input autocomplete="off" type="text" name="ab_hostname" value="localhost" /></td>
+                                <td><input autocomplete="off" type="text" name="hostname" value="localhost" /></td>
                               </tr>
                               <tr>
                                 <td style="width:200px;"><label>{% trans 'Database user' %}</label></td>
-                                <td><input type="text" name="ab_user" value=""  /></td>
+                                <td><input type="text" name="user" value=""  /></td>
                               </tr>
                               <tr>
                                 <td style="width:200px;"><label>{% trans 'admin::compte-utilisateur mot de passe' %}</label></td>
-                                <td><input type="password" name="ab_password" value="" autocomplete="off" /></td>
+                                <td><input type="password" name="password" value="" autocomplete="off" /></td>
                               </tr>
                               <tr class="optional_ab_datas">
                                 <td style="width:200px;"><label>{% trans 'phraseanet:: port' %}</label></td>
-                                <td><input autocomplete="off" type="text" name="ab_port" value="3306" /></td>
+                                <td><input autocomplete="off" type="text" name="port" value="3306" /></td>
                               </tr>
                               <tr>
                                 <td style="width:200px;"><label>{% trans 'Database' %}</label></td>

@@ -164,6 +164,6 @@ class connection_pdo extends connection_abstract implements connection_interface
             return sprintf('mysql:host=%s;port=%s;dbname=%s;', $host, $port, $databaseName);
         }
 
-        return sprintf('host=%s;port=%s;', $host, $port);
+        return sprintf('mysql:host=%s;port=%s;', $host, $port);
     }
 }
