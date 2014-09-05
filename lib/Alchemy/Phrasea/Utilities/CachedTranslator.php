@@ -45,11 +45,17 @@ class CachedTranslator extends Translator
             return;
         }
 
-        if (null === $this->options['cache_dir']) {
+        if (is_callable($this->options['cache_dir'])) {
+            $cache_dir = call_user_func($this->options['cache_dir'], $this->app);
+        } else {
+            $cache_dir = $this->options['cache_dir'];
+        }
+
+        if (null === $cache_dir) {
             return parent::loadCatalogue($locale);
         }
 
-        $cache = new ConfigCache($this->options['cache_dir'].'/catalogue.'.$locale.'.php', $this->options['debug']);
+        $cache = new ConfigCache($cache_dir.'/catalogue.'.$locale.'.php', $this->options['debug']);
         if (!$cache->isFresh()) {
             parent::loadCatalogue($locale);
 

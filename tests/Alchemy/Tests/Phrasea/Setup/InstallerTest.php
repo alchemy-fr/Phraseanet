@@ -45,7 +45,7 @@ class InstallerTest extends \PhraseanetTestCase
         @unlink($configFile);
         @unlink($compiledFile);
 
-        $app['configuration.store'] = new Configuration(new Yaml(), new Compiler(), $config, $compiled, true);
+        $app['configuration.store'] = new Configuration(new Yaml(), new Compiler(), $configFile, $compiledFile, true);
 
         $abConn = self::$DI['app']['dbal.provider']->get([
             'host'     => 'localhost',
@@ -74,7 +74,7 @@ class InstallerTest extends \PhraseanetTestCase
         $dataPath = __DIR__ . '/../../../../../datas/';
 
         $installer = new Installer($app);
-        $installer->install(uniqid('admin') . '@example.com', 'sdfsdsd', $abConn, 'http://local.phrasea.test.installer/', $dataPath, $dbConn, $template);
+        $installer->install(uniqid('admin') . '@example.com', 'sdfsdsd', $abConn, 'http://local.phrasea.test.installer/', $dataPath, $dbConn, 'en');
 
         $this->assertTrue($app['configuration.store']->isSetup());
         $this->assertTrue($app['phraseanet.configuration-tester']->isUpToDate());

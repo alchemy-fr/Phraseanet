@@ -37,7 +37,7 @@ class SetupTestsDbs extends Command
             ));
         }
 
-        $settings = Yaml::parse(file_get_contents(__DIR__ . '/../../../../../hudson/InstallDBs.yml'));
+        $settings = Yaml::parse(file_get_contents(__DIR__ . '/../../../../../resources/hudson/InstallDBs.yml'));
 
         $dbs = array();
 

@@ -223,7 +223,7 @@ class Export implements ControllerProviderInterface
                 $app,
                 $token,
                 $list,
-                $app['root.path'] . '/tmp/download/' . $token->getValue() . '.zip'
+                $app['tmp.download.path'].'/'. $token->getValue() . '.zip'
             );
 
             $remaingEmails = $destMails;

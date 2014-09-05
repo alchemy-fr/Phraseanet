@@ -89,7 +89,7 @@ class patch_370alpha7a extends patchAbstract
         $i = 0;
 
         foreach ($rs as $row) {
-            $filePath = $app['root.path'] . '/tmp/lazaret/' . $row['filepath'];
+            $filePath = $app['tmp.lazaret.path'].'/'.$row['filepath'];
             if (null === $user = $this->loadUser($app['EM'], $row['usr_id'])) {
                 continue;
             }
@@ -100,7 +100,7 @@ class patch_370alpha7a extends patchAbstract
                 $spec->setResizeMode(ImageSpec::RESIZE_MODE_INBOUND_FIXEDRATIO);
                 $spec->setDimensions(375, 275);
 
-                $thumbPath = $app['root.path'] . '/tmp/lazaret/' . sprintf("thumb_%s", $row['filepath']);
+                $thumbPath = $app['tmp.lazaret.path'].'/'.sprintf("thumb_%s", $row['filepath']);
 
                 try {
                     $app['media-alchemyst']->turnInto($filePath, $thumbPath, $spec);

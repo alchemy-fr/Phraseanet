@@ -1,0 +1,39 @@
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+         _____  _                                         _
+        |  __ \| |                                       | |
+        | |__) | |__  _ __ __ _ ___  ___  __ _ _ __   ___| |_
+        |  ___/| '_ \| '__/ _` / __|/ _ \/ _` | '_ \ / _ \ __|
+        | |    | | | | | | (_| \__ \  __/ (_| | | | |  __/ |_
+        |_|    |_| |_|_|  \__,_|___/\___|\__,_|_| |_|\___|\__|
+
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+
+Read me for some important information!
+
+If Puppet did not blow up (you do not see a sea of red above), then your VM
+was generated successfully!
+
+* You can print current ssh information by running 'vagrant ssh-config'
+  command
+
+* To access to phraseanet just type 'phraseanet-php54-nginx' in
+  your web browser address bar.
+
+* The mysql default credentials are:
+    user: root
+    password: toor
+
+Did something go wrong? Please fill a Github issues at
+https://github.com/alchemy-fr/phraseanet/issues.
+
+Happy programming!
+                                                            - Phraseanet Team
+
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+         ____                _      _    _                    _
+        |  _ \ ___  __ _  __| |    / \  | |__   _____   _____| |
+        | |_) / _ \/ _` |/ _` |   / _ \ | '_ \ / _ \ \ / / _ \ |
+        |  _ <  __/ (_| | (_| |  / ___ \| |_) | (_) \ V /  __/_|
+        |_| \_\___|\__,_|\__,_| /_/   \_\_.__/ \___/ \_/ \___(_)
+
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔

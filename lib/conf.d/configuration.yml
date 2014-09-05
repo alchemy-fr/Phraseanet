@@ -72,8 +72,12 @@ main:
         swftools_timeout: 60
         unoconv_timeout: 60
     storage:
-        subdefs:
-            default-dir: null
+        subdefs: null
+        cache: null
+        log : null
+        download: null
+        lazaret: null
+        caption: null
     bridge:
         youtube:
             enabled: false

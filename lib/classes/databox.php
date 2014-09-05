@@ -594,7 +594,7 @@ class databox extends base
         $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
         $databox->insert_datas();
         $databox->setNewStructure(
-            $data_template, $app['conf']->get(['main', 'storage', 'subdefs', 'default-dir'])
+            $data_template, $app['conf']->get(['main', 'storage', 'subdefs'])
         );
 
         return $databox;
@@ -934,7 +934,7 @@ class databox extends base
 
         $contents = str_replace(
             ["{{basename}}", "{{datapathnoweb}}"]
-            , [$this->dbname, $path_doc]
+            , [$this->dbname, rtrim($path_doc, '/').'/']
             , $contents
         );
 

@@ -103,8 +103,8 @@ class Upgrade39UsersTest extends \PhraseanetTestCase
     public function provideVariousFixtures()
     {
         return [
-            ['tests/update39_fixtureFrom38.sql'],
-            ['tests/update39_fixtureFrom31.sql'],
+            ['tests/fixtures/update39_fixtureFrom38.sql'],
+            ['tests/fixtures/update39_fixtureFrom31.sql'],
         ];
     }
 

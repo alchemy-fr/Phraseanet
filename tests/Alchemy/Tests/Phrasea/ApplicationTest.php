@@ -341,7 +341,7 @@ class ApplicationTest extends \PhraseanetTestCase
      */
     public function testCachedTranslator($key, $locale, $expected)
     {
-        $tempDir = __DIR__ . '/temp-trans';
+        $tempDir = sys_get_temp_dir() . '/temp-trans';
         $this->cleanupTempDir($tempDir);
 
         $app = $this->getPreparedApp($tempDir);

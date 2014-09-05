@@ -31,16 +31,12 @@ class FilesystemRequirements extends RequirementCollection implements Requiremen
             $baseDir . '/config/wm',
             $baseDir . '/logs',
             $baseDir . '/tmp',
-            $baseDir . '/www/custom',
             $baseDir . '/tmp/locks',
-            $baseDir . '/tmp/cache_twig',
-            $baseDir . '/tmp/serializer',
-            $baseDir . '/tmp/doctrine',
-            $baseDir . '/tmp/cache_minify',
+            $baseDir . '/tmp/caption',
             $baseDir . '/tmp/lazaret',
-            $baseDir . '/tmp/desc_tmp',
             $baseDir . '/tmp/download',
-            $baseDir . '/tmp/batches'
+            $baseDir . '/cache',
+            $baseDir . '/www/custom',
         ];
 
         foreach ($paths as $path) {

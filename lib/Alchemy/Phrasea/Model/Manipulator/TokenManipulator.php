@@ -205,7 +205,7 @@ class TokenManipulator implements ManipulatorInterface
             switch ($token->getType()) {
                 case 'download':
                 case 'email':
-                    $file = $this->app['root.path'] . '/tmp/download/' . $token->getValue() . '.zip';
+                    $file = $this->app['tmp.download.path'].'/' . $token->getValue() . '.zip';
                     if (is_file($file)) {
                         unlink($file);
                     }

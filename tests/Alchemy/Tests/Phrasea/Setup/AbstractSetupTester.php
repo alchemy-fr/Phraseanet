@@ -33,7 +33,7 @@ abstract class AbstractSetupTester extends \PhraseanetTestCase
 
         $this->uninstall();
 
-        copy(__DIR__ . '/../../../../../hudson/_GV.php', __DIR__ . '/../../../../../config/_GV.php');
+        copy(__DIR__ . '/../../../../../resources/hudson/_GV.php', __DIR__ . '/../../../../../config/_GV.php');
 
         file_put_contents( __DIR__ . '/../../../../../config/_GV.php', str_replace('http://local.phrasea/', 'http://local.phrasea.tester/', file_get_contents( __DIR__ . '/../../../../../config/_GV.php')));
 

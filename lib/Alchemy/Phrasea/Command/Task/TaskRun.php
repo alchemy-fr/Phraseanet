@@ -61,7 +61,7 @@ class TaskRun extends Command
             $logger->pushHandler(new RotatingFileHandler($file->getPath(), $this->container['task-manager.logger.configuration']['max-files'], $this->container['task-manager.logger.configuration']['level']));
         }
 
-        $job->addSubscriber(new LockFileSubscriber('task-'.$task->getId(), $logger, $this->container['root.path'].'/tmp/locks'));
+        $job->addSubscriber(new LockFileSubscriber('task-'.$task->getId(), $logger, $this->container['tmp.path'].'/locks'));
         $job->addSubscriber(new StopSignalSubscriber($this->container['signal-handler'], $logger));
 
         if ($input->getOption('listen-signal')) {

@@ -795,7 +795,7 @@ class Users implements ControllerProviderInterface
 
         $controllers->get('/import/example/csv/', function (Application $app) {
 
-            $file = new \SplFileInfo($app['root.path'] . '/lib/Fixtures/exampleImportUsers.csv');
+            $file = new \SplFileInfo($app['root.path'] . '/resources/examples/example_import_users.csv');
 
             if (!$file->isFile()) {
                 $app->abort(400);
@@ -814,7 +814,7 @@ class Users implements ControllerProviderInterface
 
         $controllers->get('/import/example/rtf/', function (Application $app) {
 
-            $file = new \SplFileInfo($app['root.path'] . '/lib/Fixtures/Fields.rtf');
+            $file = new \SplFileInfo($app['root.path'] . '/resources/examples/fields.rtf');
 
             if (!$file->isFile()) {
                 $app->abort(400);

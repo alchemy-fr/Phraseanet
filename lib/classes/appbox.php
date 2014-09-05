@@ -288,30 +288,33 @@ class appbox extends base
         $app['phraseanet.pre-schema-upgrader']->apply($app);
 
         $finder = new Finder();
-        $finder->in([
-            $this->app['root.path'] . '/tmp/cache_minify/',
-            $this->app['root.path'] . '/tmp/cache_twig/',
-            $this->app['root.path'] . '/tmp/translations/',
-            $this->app['root.path'] . '/tmp/cache/profiler/',
-            $this->app['root.path'] . '/tmp/doctrine/',
-            $this->app['root.path'] . '/tmp/serializer/',
-        ])
+        $in = [];
+        foreach ($app['cache.paths'] as $path) {
+            $in[] = $path.'/minify/';
+            $in[] = $path.'/twig/';
+            $in[] = $path.'/translations/';
+            $in[] = $path.'/profiler/';
+            $in[] = $path.'/doctrine/';
+            $in[] = $path.'/serializer/';
+        };
+        $finder->in(array_filter($in, function($path) {
+            return is_dir($path);
+        }))
             ->depth(0)
             ->ignoreVCS(true)
             ->ignoreDotFiles(true);
 
-        foreach ($finder as $file) {
-            $app['filesystem']->remove($file);
-        }
+
+        $app['filesystem']->remove($finder);
 
         foreach ([
-        'config/custom_files/' => 'www/custom/',
-        'config/minilogos/'    => 'www/custom/minilogos/',
-        'config/stamp/'        => 'www/custom/stamp/',
-        'config/status/'       => 'www/custom/status/',
-        'config/wm/'           => 'www/custom/wm/',
+            'config/custom_files/' => 'www/custom/',
+            'config/minilogos/'    => 'www/custom/minilogos/',
+            'config/stamp/'        => 'www/custom/stamp/',
+            'config/status/'       => 'www/custom/status/',
+            'config/wm/'           => 'www/custom/wm/',
         ] as $source => $target) {
-            $app['filesystem']->mirror($this->app['root.path'] . '/' . $source, $this->app['root.path'] . '/' . $target);
+            $app['filesystem']->mirror($this->app['root.path'] . '/' . $source, $this->app['root.path'] . '/' . $target, null, array('override' => true));
         }
 
         $advices = $this->upgradeDB(true, $app);
