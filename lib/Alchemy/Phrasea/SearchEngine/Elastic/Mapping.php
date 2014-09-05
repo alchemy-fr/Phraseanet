@@ -100,6 +100,45 @@ class Mapping
         return $this;
     }
 
+    public function notIndexed()
+    {
+        $field = &$this->currentField();
+        $field['index'] = 'no';
+
+        return $this;
+    }
+
+    public function addRawVersion()
+    {
+        $field = &$this->currentField();
+
+        $field['fields']['raw'] = [
+            'type' => $field['type'],
+            'index' => 'not_analyzed'
+        ];
+
+        return $this;
+    }
+
+    public function addAnalyzedVersion(array $langs)
+    {
+        $field = &$this->currentField();
+
+        foreach ($langs as $lang) {
+            $field['fields'][$lang] = [
+                'type' => $field['type'],
+                'analyzer' => sprintf('%s_full', $lang)
+            ];
+        }
+
+        $field['fields']['light'] = [
+            'type' => $field['type'],
+            'analyzer' => 'general_light'
+        ];
+
+        return $this;
+    }
+
     public function format($format)
     {
         $field = &$this->currentField();
