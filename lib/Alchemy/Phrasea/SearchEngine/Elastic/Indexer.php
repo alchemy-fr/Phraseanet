@@ -196,8 +196,8 @@ class Indexer
             ->add('mime', 'string')->notAnalyzed()
             ->add('type', 'string')->notAnalyzed()
             // Dates
-            ->add('created_at', 'date')->format(Mapping::DATE_FORMAT_MYSQL)
-            ->add('updated_at', 'date')->format(Mapping::DATE_FORMAT_MYSQL)
+            ->add('created_on', 'date')->format(Mapping::DATE_FORMAT_MYSQL)
+            ->add('updated_on', 'date')->format(Mapping::DATE_FORMAT_MYSQL)
         ;
 
         // Caption mapping

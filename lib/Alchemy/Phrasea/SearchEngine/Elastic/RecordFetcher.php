@@ -147,8 +147,8 @@ class RecordFetcher
                          , r.originalname as original_name
                          , r.mime
                          , r.type
-                         , r.credate as created_at
-                         , r.moddate as updated_at
+                         , r.credate as created_on
+                         , r.moddate as updated_on
                          , m.metadata_key
                          , m.metadata_value
                          , m.metadata_type
