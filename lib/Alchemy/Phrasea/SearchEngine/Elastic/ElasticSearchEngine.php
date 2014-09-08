@@ -345,7 +345,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      * {@inheritdoc}
      *
      * @todo Allow multiple hosts!
-     * @return ElastcSearchEngine
+     * @return \Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine
      */
     public static function create(Application $app, array $options = [])
     {

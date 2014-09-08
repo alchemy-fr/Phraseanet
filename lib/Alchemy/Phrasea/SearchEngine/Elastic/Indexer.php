@@ -49,7 +49,6 @@ class Indexer
         $params['index'] = $this->options['index'];
         $params['body']['settings']['number_of_shards'] = $this->options['shards'];
         $params['body']['settings']['number_of_replicas'] = $this->options['replicas'];
-
         $params['body']['settings']['analysis'] = $this->getAnalysis();;
 
         if ($withMapping) {
@@ -57,6 +56,7 @@ class Indexer
             $params['body']['mappings'][self::TYPE_RECORD] = $this->getRecordMapping();
             $params['body']['mappings'][self::TYPE_TERM]   = $this->getTermMapping();
         }
+
         $this->client->indices()->create($params);
     }
 
@@ -261,7 +261,7 @@ class Indexer
                 // Business rules
                 $field['private'] = $fieldStructure->isBusiness();
                 $field['indexable'] = $fieldStructure->is_indexable();
-                $field['to_aggregate'] = false; // @todo
+                $field['to_aggregate'] = false; // @todo, dev in progress
 
                 $name = $fieldStructure->get_name();
 
@@ -359,54 +359,54 @@ class Indexer
                 'general_light' => [
                     'type'      => 'custom',
                     'tokenizer' => 'icu_tokenizer',
-                    'filter'    => ['nfkc_normalizer', 'lowercase']
+                    'filter'    => ['nfkc_normalizer', 'asciifolding']
                 ],
                 // Lang specific
                 'fr_full' => [
                     'type'      => 'custom',
                     'tokenizer' => 'icu_tokenizer', // better support for some Asian languages and using custom rules to break Myanmar and Khmer text.
-                    'filter'    => ['nfkc_normalizer', 'lowercase', 'stop_fr', 'stem_fr']
+                    'filter'    => ['nfkc_normalizer', 'asciifolding', 'elision', 'stop_fr', 'stem_fr']
                 ],
                 'en_full' => [
                     'type'      => 'custom',
                     'tokenizer' => 'icu_tokenizer',
-                    'filter'    => ['nfkc_normalizer', 'lowercase', 'stop_en', 'stem_en']
+                    'filter'    => ['nfkc_normalizer', 'asciifolding', 'stop_en', 'stem_en']
                 ],
                 'de_full' => [
                     'type'      => 'custom',
                     'tokenizer' => 'icu_tokenizer',
-                    'filter'    => ['nfkc_normalizer', 'lowercase', 'stop_de', 'stem_de']
+                    'filter'    => ['nfkc_normalizer', 'asciifolding', 'stop_de', 'stem_de']
                 ],
                 'nl_full' => [
                     'type'      => 'custom',
                     'tokenizer' => 'icu_tokenizer',
-                    'filter'    => ['nfkc_normalizer', 'lowercase', 'stop_nl', 'stem_nl_override', 'stem_nl']
+                    'filter'    => ['nfkc_normalizer', 'asciifolding', 'stop_nl', 'stem_nl_override', 'stem_nl']
                 ],
                 'es_full' => [
                     'type'      => 'custom',
                     'tokenizer' => 'icu_tokenizer',
-                    'filter'    => ['nfkc_normalizer', 'lowercase', 'stop_es', 'stem_es']
+                    'filter'    => ['nfkc_normalizer', 'asciifolding', 'stop_es', 'stem_es']
                 ],
                 'ar_full' => [
                     'type'      => 'custom',
                     'tokenizer' => 'icu_tokenizer',
-                    'filter'    => ['nfkc_normalizer', 'lowercase', 'stop_ar', 'stem_ar']
+                    'filter'    => ['nfkc_normalizer', 'asciifolding', 'stop_ar', 'stem_ar']
                 ],
                 'ru_full' => [
                     'type'      => 'custom',
                     'tokenizer' => 'icu_tokenizer',
-                    'filter'    => ['nfkc_normalizer', 'lowercase', 'stop_ru', 'stem_ru']
+                    'filter'    => ['nfkc_normalizer', 'asciifolding', 'stop_ru', 'stem_ru']
                 ],
                 'cn_full' => [ // Standard chinese analyzer is not exposed
                     'type'      => 'custom',
                     'tokenizer' => 'icu_tokenizer',
-                    'filter'    => ['nfkc_normalizer', 'lowercase']
+                    'filter'    => ['nfkc_normalizer', 'asciifolding']
                 ]
             ],
             'filter' => [
                 'nfkc_normalizer' => [ // weißkopfseeadler => weisskopfseeadler, ١٢٣٤٥ => 12345.
                     'type' => 'icu_normalizer', // œ => oe, and use the fewest  bytes possible.
-                    'name' => 'nfkc_cf' // nfkc_cf do the asciifolding job too.
+                    'name' => 'nfkc_cf' // nfkc_cf do the lowercase job too.
                 ],
 
                 'stop_fr' => [
