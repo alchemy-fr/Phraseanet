@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Core\Event\FeedEntryEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication;
 
@@ -26,6 +27,12 @@ class FeedEntrySubscriber extends AbstractNotificationSubscriber
             'entry_id' => $entry->getId(),
             'notify_email' => $event->hasEmailNotification(),
         ];
+
+        $this->app['manipulator.webhook-event']->create(
+            WebhookEvent::NEW_FEED_ENTRY,
+            WebhookEvent::FEED_ENTRY_TYPE,
+            array_merge(array('feed_id' => $entry->getFeed()->getId()), $params)
+        );
 
         $datas = json_encode($params);
 
