@@ -41,7 +41,7 @@ class random
                 switch ($row['type']) {
                     case 'download':
                     case 'email':
-                        $file = $this->app['root.path'] . '/tmp/download/' . $row['value'] . '.zip';
+                        $file = $this->app['tmp.download.path'].'/'.$row['value'].'.zip';
                         if (is_file($file))
                             unlink($file);
                         break;

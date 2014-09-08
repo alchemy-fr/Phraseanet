@@ -35,8 +35,8 @@ class FilesystemProbe extends FilesystemRequirements implements ProbeInterface
             );
         }
 
-        if ($conf->has(['main', 'storage', 'subdefs', 'default-dir'])) {
-            $paths[] = $conf->get(['main', 'storage', 'subdefs', 'default-dir']);
+        if ($conf->has(['main', 'storage', 'subdefs'])) {
+            $paths[] = $conf->get(['main', 'storage', 'subdefs']);
         }
 
         foreach ($paths as $path) {

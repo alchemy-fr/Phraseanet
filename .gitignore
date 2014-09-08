@@ -1,20 +1,61 @@
+# Exclude common IDE project files
 /nbproject
-/config/custom_files
-/config/templates
-/config/topics
-/config/wm
-/config/minilogos
-/config/status
-/config/stamp
-/config/configuration.yml
-/vendor
-/plugins
-/node_modules
-composer.phar
-behat.yml
-/datas
+/.idea
+
+# Exclude javascript dependencies folder
 /www/assets
 /tmp-assets
+
+# Exclude node.js dependencies folder
+/node_modules
+
+# Exclude compiled LESS folder
+/www/skins/build
+
+# Exclude compiled javascript test fixture folder
 /www/scripts/tests/fixtures
-/.vagrant/
-/bin/
+
+# Exclude configuration folder exception the configuration sample file
+/config
+!/config/configuration.sample.yml
+
+# Exclude generated proxies from doctrine2
+/resources/proxies
+
+# Exclude temporaries resources (zip files, quarantine documents etc ..) folder
+/tmp
+
+# Exclude cache folder
+/cache
+
+# Exclude log folder
+/logs
+
+# Exclude plugin folder
+/plugins
+# Excluse assets plugin folder
+/www/plugins
+
+# Exclude folder for storing documents (images, videos, PDF) and their sub-definitions
+/datas
+
+# Exclude dependencies folder
+/vendor
+
+# Exclude package's binaries folder except the Phraseanet's ones
+/bin
+!/bin/console
+!/bin/developer
+!/bin/setup
+
+# Exclude composer
+composer.phar
+
+# Exclude behat configuration file
+behat.yml
+
+# Exclude vagrant configuration file
+.vagrant
+
+# Exclude crossdomain.xml file it's generated
+/www/crossdomain.xml

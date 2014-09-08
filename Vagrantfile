@@ -1,11 +1,15 @@
 require 'yaml'
 
+unless Vagrant.has_plugin?("vagrant-hostsupdater")
+  raise 'vagrant-hostmanager is not installed! please run "vagrant plugin install vagrant-hostsupdater'
+end
+
 root = File.dirname(File.expand_path(__FILE__))
 
 Vagrant.configure("2") do |config|
-    Dir.glob(root+"/vagrant/vms/**/puphpet/config.yaml").each do|f|
-        dir = File.dirname(File.expand_path(f)+"/..")
-        base_path = dir[0..-21]
+    Dir.glob(root+"/resources/vagrant/vms/**/puphpet/config.yaml").each do|f|
+        dir = File.dirname(File.expand_path(f+"/.."))
+        base_path = dir
         configValues = YAML.load_file(f)
         data = configValues['vagrantfile-local']
 
@@ -167,7 +171,7 @@ Vagrant.configure("2") do |config|
 
             node.vm.provision "shell" do |s|
                 s.path = "#{base_path}/puphpet/shell/initial-setup.sh"
-                s.args = "/vagrant/vagrant/vms/#{data['name']}/puphpet"
+                s.args = "/vagrant/resources/vagrant/vms/#{data['name']}/puphpet"
             end
 
             node.vm.provision "shell" do |kg|

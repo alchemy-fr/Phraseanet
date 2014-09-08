@@ -30,12 +30,12 @@ class JsFixtures extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $dbRefPath = __DIR__ . '/../../../../../tests/db-ref.sqlite';
+        $dbRefPath = sys_get_temp_dir() . '/db-ref.sqlite';
         if (!file_exists($dbRefPath)) {
             throw new RuntimeException('You must generate sqlite db first, run "bin/console phraseanet:regenerate-sqlite" command.');
         }
 
-        copy($dbRefPath, '/tmp/db.sqlite');
+        copy($dbRefPath, sys_get_temp_dir().'/db.sqlite');
 
         $sbasId = current($this->container['phraseanet.appbox']->get_databoxes())->get_sbas_id();
         $this->writeResponse($output, 'GET', '/login/', '/home/login/index.html');

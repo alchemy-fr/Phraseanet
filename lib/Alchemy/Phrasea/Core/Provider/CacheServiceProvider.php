@@ -21,7 +21,9 @@ class CacheServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['phraseanet.cache-registry'] = $app['root.path'] . '/tmp/cache_registry.php';
+        $app['phraseanet.cache-registry'] = $app->share(function () use ($app) {
+            return $app['cache.path'].'/cache_registry.php';
+        });
 
         $app['phraseanet.cache-compiler'] = $app->share(function () {
             return new Compiler();

@@ -50,7 +50,11 @@ class module_report_sqlfilter
                 $coll_filter[] =  'log_colls.coll_id = ' . $val;
             }
         }
-        $ret['sql'] = ' (' . implode(' OR ', array_unique($coll_filter)) . ') ';
+        $collections = array_unique($coll_filter);
+
+        if (count($collections) > 0) {
+            $ret['sql'] = ' (' . implode(' OR ', $collections) . ') ';
+        }
 
         return $ret;
     }
@@ -66,15 +70,15 @@ class module_report_sqlfilter
 
         $params = [':log_site' => $this->app['conf']->get(['main', 'key'])];
 
-        if ($this->filter['date']) {
+        if ($this->filter['date'] && $this->filter['date']['sql'] !== '') {
             $finalfilter .= $this->filter['date']['sql'] . ' AND ';
             $params = array_merge($params, $this->filter['date']['params']);
         }
-        if ($this->filter['user']) {
+        if ($this->filter['user'] && $this->filter['user']['sql'] !== '') {
             $finalfilter .= $this->filter['user']['sql'] . ' AND ';
             $params = array_merge($params, $this->filter['user']['params']);
         }
-        if ($this->filter['collection']) {
+        if ($this->filter['collection'] && $this->filter['collection']['sql'] !== '') {
             $finalfilter .= $this->filter['collection']['sql'] . ' AND ';
             $params = array_merge($params, $this->filter['collection']['params']);
         }
@@ -174,9 +178,12 @@ class module_report_sqlfilter
 
                 $n ++;
             }
-            $filter_user = ['sql' => implode(' AND ', $filter), 'params' => $params];
 
-            $this->filter['user'] = $filter_user;
+            if (count($filter) > 0) {
+                $filter_user = array('sql' => implode(' AND ', $filter), 'params' => $params);
+                $this->filter['user'] = $filter_user;
+            }
+
         }
 
         return;
@@ -201,7 +208,11 @@ class module_report_sqlfilter
                 }
             }
 
-            $this->filter['collection'] = ['sql' => ' (' . implode(' OR ', array_unique($coll_filter)) . ') ', 'params' => []];
+            $collections = array_unique($coll_filter);
+
+            if (count($collections) > 0) {
+                $this->filter['collection'] = array('sql' => ' (' . implode(' OR ', array_unique($coll_filter)) . ') ', 'params' => array());
+            }
         }
 
         return;
@@ -219,7 +230,9 @@ class module_report_sqlfilter
                 $params[":record_fil" . $n] = phrasea::collFromBas($this->app, $val);
                 $n ++;
             }
-            $this->filter['record'] = ['sql' => implode(' OR ', $dl_coll_filter), 'params' => $params];
+            if (count($dl_coll_filter) > 0) {
+                $this->filter['record'] = array('sql' => implode(' OR ', $dl_coll_filter), 'params' => $params);
+            }
         }
 
         return;

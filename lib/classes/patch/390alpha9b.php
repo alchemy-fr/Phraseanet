@@ -165,7 +165,7 @@ class patch_390alpha9b extends patchAbstract
             'GV_smtp_secure' => ['registry', 'email', 'smtp-secure-mode'],
             'GV_smtp_user' => ['registry', 'email', 'smtp-user'],
             'GV_smtp_password' => ['registry', 'email', 'smtp-password'],
-            'GV_base_datapath_noweb' => ['main', 'storage', 'subdefs', 'default-dir'],
+            'GV_base_datapath_noweb' => ['main', 'storage', 'subdefs'],
             'GV_youtube_api' => ['main', 'bridge', 'youtube', 'enabled'],
             'GV_youtube_client_id' => ['main', 'bridge', 'youtube', 'client_id'],
             'GV_youtube_client_secret' => ['main', 'bridge', 'youtube', 'client_secret'],

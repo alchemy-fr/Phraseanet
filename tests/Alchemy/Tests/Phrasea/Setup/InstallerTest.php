@@ -30,25 +30,22 @@ class InstallerTest extends \PhraseanetTestCase
         parent::tearDownAfterClass();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Setup\Installer
-     */
     public function testInstall()
     {
         $app = new Application('test');
         $app->bindRoutes();
 
         $parser = new Parser();
-        $connDatas = $parser->parse(file_get_contents(__DIR__ . '/../../../../../config/configuration.yml'));
-        $credentials = $connDatas['main']['database'];
+        $config = $parser->parse(file_get_contents(__DIR__ . '/../../../../../config/configuration.yml'));
+        $credentials = $config['main']['database'];
 
-        $config = __DIR__ . '/configuration.yml';
-        $compiled = __DIR__ . '/configuration.yml.php';
+        $configFile = __DIR__ . '/configuration.yml';
+        $compiledFile = __DIR__ . '/configuration.yml.php';
 
-        @unlink($config);
-        @unlink($compiled);
+        @unlink($configFile);
+        @unlink($compiledFile);
 
-        $app['configuration.store'] = new Configuration(new Yaml(), new Compiler(), $config, $compiled, true);
+        $app['configuration.store'] = new Configuration(new Yaml(), new Compiler(), $configFile, $compiledFile, true);
 
         $abConn = self::$DI['app']['dbal.provider']->get([
             'host'     => 'localhost',
@@ -67,11 +64,17 @@ class InstallerTest extends \PhraseanetTestCase
         ]);
         $dbConn->connect();
 
-        $template = 'en';
+        // empty databases
+        $stmt = $abConn->prepare('DROP DATABASE ab_unitTests; CREATE DATABASE ab_unitTests');
+        $stmt->execute();
+        $stmt = $abConn->prepare('DROP DATABASE db_unitTests; CREATE DATABASE db_unitTests');
+        $stmt->execute();
+        unset($stmt);
+
         $dataPath = __DIR__ . '/../../../../../datas/';
 
         $installer = new Installer($app);
-        $installer->install(uniqid('admin') . '@example.com', 'sdfsdsd', $abConn, 'http://local.phrasea.test.installer/', $dataPath, $dbConn, $template);
+        $installer->install(uniqid('admin') . '@example.com', 'sdfsdsd', $abConn, 'http://local.phrasea.test.installer/', $dataPath, $dbConn, 'en');
 
         $this->assertTrue($app['configuration.store']->isSetup());
         $this->assertTrue($app['phraseanet.configuration-tester']->isUpToDate());
@@ -85,7 +88,7 @@ class InstallerTest extends \PhraseanetTestCase
         $this->assertArrayHasKey('key', $conf['main']);
         $this->assertGreaterThan(10, strlen($conf['main']['key']));
 
-        @unlink($config);
-        @unlink($compiled);
+        @unlink($configFile);
+        @unlink($compiledFile);
     }
 }

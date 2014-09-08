@@ -72,8 +72,12 @@ main:
         swftools_timeout: 60
         unoconv_timeout: 60
     storage:
-        subdefs:
-            default-dir: null
+        subdefs: null
+        cache: null
+        log : null
+        download: null
+        lazaret: null
+        caption: null
     bridge:
         youtube:
             enabled: false
@@ -199,3 +203,8 @@ session:
   idle: 0
   # 1 week
   lifetime: 604800
+crossdomain:
+  allow-access-from:
+    -
+      domain: '*.cooliris.com'
+      secure: 'false'

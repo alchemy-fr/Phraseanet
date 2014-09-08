@@ -31,21 +31,16 @@ class module_console_systemClearCache extends Command
     {
         $finder = new Finder();
 
+        $in = [];
+        foreach ($this->container['cache.paths'] as $path) {
+            $in[] = $path;
+        };
         $finder
             ->exclude('.git')
             ->exclude('.svn')
-            ->in([
-                $this->container['root.path'] . '/tmp/cache_minify/',
-                $this->container['root.path'] . '/tmp/cache_twig/',
-                $this->container['root.path'] . '/tmp/translations/',
-                $this->container['root.path'] . '/tmp/cache/profiler/',
-                $this->container['root.path'] . '/tmp/doctrine/',
-                $this->container['root.path'] . '/tmp/serializer/',
-            ]);
+            ->in($in);
 
-        $filesystem = new Filesystem();
-
-        $filesystem->remove($finder);
+        $this->container['filesystem']->remove($finder);
 
         if ($this->container['phraseanet.configuration-tester']->isInstalled()) {
             $this->getService('phraseanet.cache-service')->flushAll();

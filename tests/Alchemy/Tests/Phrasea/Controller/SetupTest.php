@@ -121,7 +121,7 @@ class SetupTest extends \PhraseanetWebTestCase
         $this->app['authentication'] = $authenticator;
 
         $client = $this->createClient();
-        $settings = Yaml::parse(file_get_contents(__DIR__ . '/../../../../../hudson/InstallDBs.yml'));
+        $settings = Yaml::parse(file_get_contents(__DIR__ . '/../../../../../resources/hudson/InstallDBs.yml'));
         $settings = $settings['database'];
 
         $host = isset($settings['host']) ? $settings['host'] : 'localhost';

@@ -170,14 +170,14 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
             self::$DI['app'],
             $token,
             $list,
-            sprintf('%s/../../../../../../tmp/download/%s.zip', __DIR__, $token->getValue()) // Dest file
+            sprintf('%s/%s.zip', self::$DI['app']['tmp.download.path'], $token->getValue()) // Dest file
         );
 
         // Check response
         $url = sprintf('/download/%s/get/', $token->getValue());
         self::$DI['client']->request('POST', $url);
         $response = self::$DI['client']->getResponse();
-        $this->assertTrue($response->isOk());
+        $this->assertTrue($response->isOk(),$response);
         $this->assertRegExp('#attachment#', $response->headers->get('content-disposition'));
         $this->assertEquals('application/zip', $response->headers->get('content-type'));
         $nbRowLogsAfter = $this->getNbRowLogs(self::$DI['record_1']->get_databox());

@@ -63,11 +63,11 @@ class patch_380alpha16a extends patchAbstract
         }
 
         $xsendfile['mapping'][] = [
-            'directory' => $app['root.path'] . '/tmp/lazaret/',
+            'directory' => $app['tmp.lazaret.path'],
             'mount-point' => '/lazaret/',
         ];
         $xsendfile['mapping'][] = [
-            'directory' => $app['root.path'] . '/tmp/download/',
+            'directory' => $app['tmp.download.path'],
             'mount-point' => '/download/',
         ];
 

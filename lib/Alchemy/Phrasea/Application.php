@@ -188,17 +188,17 @@ class Application extends SilexApplication
 
         error_reporting(-1);
 
-        $this['root.path'] = realpath(__DIR__ . '/../../..');
         $this->environment = $environment;
 
-        mb_internal_encoding("UTF-8");
+        $this->setupApplicationPaths($this);
+
+        $this['charset'] = 'UTF-8';
+        mb_internal_encoding($this['charset']);
 
         !defined('JETON_MAKE_SUBDEF') ? define('JETON_MAKE_SUBDEF', 0x01) : '';
         !defined('JETON_WRITE_META_DOC') ? define('JETON_WRITE_META_DOC', 0x02) : '';
         !defined('JETON_WRITE_META_SUBDEF') ? define('JETON_WRITE_META_SUBDEF', 0x04) : '';
         !defined('JETON_WRITE_META') ? define('JETON_WRITE_META', 0x06) : '';
-
-        $this['charset'] = 'UTF-8';
 
         $this['debug'] = $this->share(function (Application $app) {
             return Application::ENV_PROD !== $app->getEnvironment();
@@ -206,7 +206,7 @@ class Application extends SilexApplication
 
         if ($this['debug'] === true) {
             ini_set('log_errors', 'on');
-            ini_set('error_log', $this['root.path'] . '/logs/php_error.log');
+            ini_set('error_log', $this['root.path'].'/logs/php_error.log');
         }
 
         $this->register(new BasketMiddlewareProvider());
@@ -218,6 +218,7 @@ class Application extends SilexApplication
         $this->register(new AuthenticationManagerServiceProvider());
         $this->register(new BorderManagerServiceProvider());
         $this->register(new BrowserServiceProvider());
+        $this->register(new FilesystemServiceProvider());
         $this->register(new ConfigurationServiceProvider());
         $this->register(new ConfigurationTesterServiceProvider);
         $this->register(new ConvertersServiceProvider());
@@ -229,7 +230,6 @@ class Application extends SilexApplication
         $this->register(new JMSSerializerServiceProvider());
         $this->register(new FFMpegServiceProvider());
         $this->register(new FeedServiceProvider());
-        $this->register(new FilesystemServiceProvider());
         $this->register(new FtpServiceProvider());
         $this->register(new GeonamesServiceProvider());
         $this['geonames.server-uri'] = $this->share(function (Application $app) {
@@ -333,7 +333,7 @@ class Application extends SilexApplication
         $this->register(new TokensServiceProvider());
         $this->register(new TwigServiceProvider(), [
             'twig.options' => [
-                'cache' => $this['root.path'].'/tmp/cache_twig/',
+                'cache' => $this->share(function($app) {return $app['cache.path'].'/twig';}),
             ],
         ]);
 
@@ -341,7 +341,7 @@ class Application extends SilexApplication
             'locale_fallbacks' => ['fr'],
             'translator.cache-options' => [
                 'debug' => $this['debug'],
-                'cache_dir' => $this['root.path'].'/tmp/translations'
+                'cache_dir' => $this->share(function($app) {return $app['cache.path'].'/translations';}),
             ],
         ]);
 
@@ -589,6 +589,8 @@ class Application extends SilexApplication
     {
         $this['twig'] = $this->share(
             $this->extend('twig', function ($twig, $app) {
+                $twig->setCache($app['cache.path'].'/twig');
+
                 $paths = require $app['plugins.directory'] . '/twig-paths.php';
 
                 if ($app['browser']->isTablet() || $app['browser']->isMobile()) {
@@ -898,5 +900,93 @@ class Application extends SilexApplication
     public static function getAvailableFlashTypes()
     {
         return static::$flashTypes;
+    }
+
+    private function setupApplicationPaths(Application $app)
+    {
+        // app root path
+        $this['root.path'] = realpath(__DIR__ . '/../../..');
+        // temporary resources default path such as download zip, quarantined documents etc ..
+        $this['tmp.path'] = $this['root.path'].'/tmp';
+
+        // cache path for dev env
+        $this['cache.dev.path'] = $app->share(function() use ($app) {
+            $path =  sys_get_temp_dir().'/'.md5($app['root.path']);
+            // ensure path is created
+            $app['filesystem']->mkdir($path);
+
+            return $path;
+        });
+
+        // cache path (twig, minify, translations, configuration, doctrine metas serializer metas, profiler etc ...)
+        $this['cache.path'] = $app->share(function() use ($app) {
+//            if ($app->getEnvironment() !== Application::ENV_PROD) {
+//                return $this['cache.dev.path'];
+//            }
+            $path = $this['root.path'].'/cache';
+            if ($app['phraseanet.configuration']->isSetup()) {
+                $path = $app['conf']->get(['main', 'storage', 'cache'], $path);
+            }
+            // ensure path is created
+            $app['filesystem']->mkdir($path);
+
+            return $path;
+        });
+
+        $app['cache.paths'] = $app->share(function() use ($app) {
+            return array(
+                self::ENV_DEV => $this['cache.path'],
+                self::ENV_TEST => $this['cache.path'],
+                self::ENV_PROD => $this['cache.path']
+            );
+        });
+
+        // log path
+        $this['log.path'] = $app->share(function() use ($app) {
+            $path = $this['root.path'].'/logs';
+            if ($app['phraseanet.configuration']->isSetup()) {
+                return $app['conf']->get(['main', 'storage', 'log'], $path);
+            }
+            // ensure path is created
+            $app['filesystem']->mkdir($path);
+
+            return $path;
+        });
+
+        // temporary download file path (zip file)
+        $this['tmp.download.path'] = $app->share(function() use ($app) {
+            $path = $this['tmp.path'].'/download';
+            if ($app['phraseanet.configuration']->isSetup()) {
+                return $app['conf']->get(['main', 'storage', 'download'], $path);
+            }
+            // ensure path is created
+            $app['filesystem']->mkdir($path);
+
+            return $path;
+        });
+
+        // quarantined file path
+        $this['tmp.lazaret.path'] = $app->share(function() use ($app) {
+            $path = $this['tmp.path'].'/lazaret';
+            if ($app['phraseanet.configuration']->isSetup()) {
+                return $app['conf']->get(['main', 'storage', 'quarantine'], $path);
+            }
+            // ensure path is created
+            $app['filesystem']->mkdir($path);
+
+            return $path;
+        });
+
+        // document caption file path
+        $this['tmp.caption.path'] = $app->share(function() use ($app) {
+            $path = $this['tmp.path'].'/caption';
+            if ($app['phraseanet.configuration']->isSetup()) {
+                return $app['conf']->get(['main', 'storage', 'caption'], $path);
+            }
+            // ensure path is created
+            $app['filesystem']->mkdir($path);
+
+            return $path;
+        });
     }
 }

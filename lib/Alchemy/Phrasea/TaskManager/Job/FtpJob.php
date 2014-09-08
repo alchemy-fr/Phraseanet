@@ -190,14 +190,14 @@ class FtpJob extends AbstractJob
                     if ($subdef == 'caption') {
                         $desc = $app['serializer.caption']->serialize($record->get_caption(), CaptionSerializer::SERIALIZE_XML, $exportElement->isBusinessfields());
 
-                        $localfile = $app['root.path'] . '/tmp/' . md5($desc . time() . mt_rand());
+                        $localfile = sys_get_temp_dir().'/' . md5($desc . time() . mt_rand());
                         if (file_put_contents($localfile, $desc) === false) {
                             throw new \Exception('Impossible de creer un fichier temporaire');
                         }
                     } elseif ($subdef == 'caption-yaml') {
                         $desc = $app['serializer.caption']->serialize($record->get_caption(), CaptionSerializer::SERIALIZE_YAML, $exportElement->isBusinessfields());
 
-                        $localfile = $app['root.path'] . '/tmp/' . md5($desc . time() . mt_rand());
+                        $localfile = sys_get_temp_dir().'/' . md5($desc . time() . mt_rand());
                         if (file_put_contents($localfile, $desc) === false) {
                             throw new \Exception('Impossible de creer un fichier temporaire');
                         }
@@ -272,7 +272,7 @@ class FtpJob extends AbstractJob
                     $buffer .= $root . '/' . $folder . $filename . "\n";
                 }
 
-                $tmpfile = $app['root.path'] . '/tmp/tmpftpbuffer' . $date->format('U') . '.txt';
+                $tmpfile = sys_get_temp_dir().'/tmpftpbuffer' . $date->format('U') . '.txt';
 
                 file_put_contents($tmpfile, $buffer);
 

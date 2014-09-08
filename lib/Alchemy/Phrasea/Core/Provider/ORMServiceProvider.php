@@ -37,7 +37,9 @@ class ORMServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['EM.sql-logger.file'] = $app['root.path'] . '/logs/doctrine-log.log';
+        $app['EM.sql-logger.file'] = $app->share(function (Application $app) {
+            return $app['log.path'].'/doctrine-log.log';
+        });
         $app['EM.sql-logger.max-files'] = 5;
 
         $app['EM.sql-logger'] = $app->share(function (Application $app) {
@@ -55,7 +57,7 @@ class ORMServiceProvider implements ServiceProviderInterface
             $annotationReader = new AnnotationReader();
             $fileCacheReader = new FileCacheReader(
                 $annotationReader,
-                $app['root.path']."/tmp/doctrine",
+                $app['cache.path'].'/doctrine',
                 $app['debug']
             );
 
@@ -97,7 +99,7 @@ class ORMServiceProvider implements ServiceProviderInterface
 
             $config->setMetadataDriverImpl($app['EM.driver']);
 
-            $config->setProxyDir($app['root.path'] . '/tmp/doctrine-proxies');
+            $config->setProxyDir($app['root.path'].'/resources/proxies');
             $config->setProxyNamespace('Alchemy\Phrasea\Model\Proxies');
             $config->setAutoGenerateProxyClasses($app['debug']);
             $config->addEntityNamespace('Phraseanet', 'Alchemy\Phrasea\Model\Entities');

@@ -631,8 +631,7 @@ class set_export extends set_abstract
             $files[$id]["export_name"] = $tmp_name;
 
             if (in_array('caption', $subdefs)) {
-                $caption_dir = $this->app['root.path'] . '/tmp/desc_tmp/'
-                    . time() . $this->app['authentication']->getUser()->getId() . '/';
+                $caption_dir = $this->app['tmp.caption.path'].'/'.time().$this->app['authentication']->getUser()->getId().'/';
 
                 $filesystem->mkdir($caption_dir, 0750);
 
@@ -653,8 +652,7 @@ class set_export extends set_abstract
             }
 
             if (in_array('caption-yaml', $subdefs)) {
-                $caption_dir = $this->app['root.path'] . '/tmp/desc_tmp/'
-                    . time() . $this->app['authentication']->getUser()->getId() . '/';
+                $caption_dir = $this->app['tmp.caption.path'].'/'.time().$this->app['authentication']->getUser()->getId().'/';
 
                 $filesystem->mkdir($caption_dir, 0750);
 

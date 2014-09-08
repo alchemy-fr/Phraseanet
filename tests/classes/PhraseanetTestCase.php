@@ -46,14 +46,17 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     private static $fixtureIds = [];
 
-    protected function initializeSqliteDB($path = '/tmp/db.sqlite')
+    protected function initializeSqliteDB($path = null)
     {
+        if (null === $path) {
+            $path = sys_get_temp_dir().'/db.sqlite';
+        }
         $path = $path . getmypid();
 
         if (is_file($path)) {
             unlink($path);
         }
-        copy(__DIR__ . '/../db-ref.sqlite', $path);
+        copy(sys_get_temp_dir().'/db-ref.sqlite', $path);
     }
 
     public function getApplicationPath()
@@ -250,7 +253,7 @@ abstract class PhraseanetTestCase extends WebTestCase
                 exit(1);
             }
 
-            self::$fixtureIds = array_merge(self::$fixtureIds, json_decode(file_get_contents(__DIR__ .'/../fixtures.json'), true));
+            self::$fixtureIds = array_merge(self::$fixtureIds, json_decode(file_get_contents(sys_get_temp_dir().'/fixtures.json'), true));
 
             self::resetUsersRights(self::$DI['app'], self::$DI['user']);
             self::resetUsersRights(self::$DI['app'], self::$DI['user_notAdmin']);

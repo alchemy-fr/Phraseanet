@@ -21,7 +21,10 @@ class JMSSerializerServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['serializer.cache-directory'] = $app['root.path'] . '/tmp/serializer/';
+        $app['serializer.cache-directory'] = $app->share(function () use ($app) {
+            return $app['cache.path'].'/serializer/';
+        });
+
         $app['serializer.src_directory'] = $app['root.path'] . '/vendor/jms/serializer/src/';
 
         $app['serializer.metadata.annotation_reader'] = $app->share(function () use ($app) {

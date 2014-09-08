@@ -54,16 +54,16 @@ class RegenerateSqliteDb extends Command
     {
         parent::__construct('phraseanet:regenerate-sqlite');
 
-        $this->setDescription("Updates the sqlite 'tests/db-ref.sqlite' database with current database definition.");
+        $this->setDescription("Updates the sqlite 'db-ref.sqlite' database with current database definition.");
     }
 
     public function doExecute(InputInterface $input, OutputInterface $output)
     {
         $fs = new Filesystem();
 
-        $source = __DIR__ . '/../../../../../tests/db-ref.sqlite';
-        $target = __DIR__ . '/../../../../../tests/db-ref.sqlite.bkp';
-        $json = __DIR__ . '/../../../../../tests/fixtures.json';
+        $source = sys_get_temp_dir().'/db-ref.sqlite';
+        $target = sys_get_temp_dir().'/db-ref.sqlite.bkp';
+        $json = sys_get_temp_dir().'/fixtures.json';
         $renamed = false;
 
         if (is_file($source)) {

@@ -23,7 +23,7 @@ class SessionHandlerServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['session.storage.handler.factory'] = $app->share(function (Application $app) {
-            return new SessionHandlerFactory($app['cache.connection-factory'], $app['root.path']);
+            return new SessionHandlerFactory($app['cache.connection-factory']);
         });
     }
 

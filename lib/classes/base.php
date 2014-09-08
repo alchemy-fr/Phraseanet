@@ -412,7 +412,7 @@ abstract class base implements cache_cacheableInterface
     {
         $field_stmt = $defaults_stmt = [];
 
-        $create_stmt = "CREATE TABLE `" . $table['name'] . "` (";
+        $create_stmt = "CREATE TABLE IF NOT EXISTS `" . $table['name'] . "` (";
 
         foreach ($table->fields->field as $field) {
             $isnull = trim($field->null) == "" ? "NOT NULL" : "NULL";

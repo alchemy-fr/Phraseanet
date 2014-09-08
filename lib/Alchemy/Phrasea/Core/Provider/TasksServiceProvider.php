@@ -58,7 +58,7 @@ class TasksServiceProvider implements ServiceProviderInterface
         });
 
         $app['task-manager.log-file.root'] = $app->share(function (Application $app) {
-            return $app['root.path'].'/logs';
+            return $app['log.path'];
         });
 
         $app['task-manager.log-file.factory'] = $app->share(function (Application $app) {
