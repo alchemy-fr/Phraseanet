@@ -11,11 +11,12 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\MergeException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
-use Elasticsearch\Client;
-use Exception;
 use Psr\Log\LoggerInterface;
+use Elasticsearch\Client;
 use media_subdef;
+use Exception;
 use igorw;
 
 class Indexer
@@ -301,7 +302,15 @@ class Indexer
                 // type so we reject only those with different types.
                 if (isset($fields[$name])) {
                     if ($fields[$name]['type'] !== $field['type']) {
-                        throw new Exception('Databox mapping can not be merged, incompatible field types');
+                        throw new MergeException(sprintf("Field %s can't be merged, incompatible types (%s vs %s)", $name, $fields[$name]['type'], $field['type']));
+                    }
+
+                    if ($fields[$name]['indexable'] !== $field['indexable']) {
+                        throw new MergeException(sprintf("Field %s can't be merged, incompatible indexable state", $name));
+                    }
+
+                    if ($fields[$name]['to_aggregate'] !== $field['to_aggregate']) {
+                        throw new MergeException(sprintf("Field %s can't be merged, incompatible to_aggregate state", $name));
                     }
                     // TODO other structure incompatibilities
 
